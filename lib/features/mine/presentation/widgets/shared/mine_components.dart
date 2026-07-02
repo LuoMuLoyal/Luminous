@@ -21,28 +21,24 @@ class MineHeaderActionChip extends StatelessWidget {
     final colors = context.theme.colors;
     return Tooltip(
       message: label,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
+      child: FTappable(
+        onPress: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: onTap == null
+                ? colors.background.withValues(alpha: 0.72)
+                : colors.background,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+            border: Border.all(color: colors.border),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.level3),
+            child: Icon(
+              icon,
+              size: 18,
               color: onTap == null
-                  ? colors.background.withValues(alpha: 0.72)
-                  : colors.background,
-              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-              border: Border.all(color: colors.border),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.level3),
-              child: Icon(
-                icon,
-                size: 18,
-                color: onTap == null
-                    ? colors.mutedForeground.withValues(alpha: 0.5)
-                    : colors.foreground,
-              ),
+                  ? colors.mutedForeground.withValues(alpha: 0.5)
+                  : colors.foreground,
             ),
           ),
         ),
@@ -71,45 +67,41 @@ class MineSettingRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    final row = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level3,
-            vertical: AppSpacingTokens.level4,
-          ),
-          child: Row(
-            children: [
-              Icon(icon, size: 18, color: colors.foreground),
-              const SizedBox(width: AppSpacingTokens.level4),
-              Expanded(
-                child: Text(
-                  title,
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+    final row = FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level3,
+          vertical: AppSpacingTokens.level4,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: colors.foreground),
+            const SizedBox(width: AppSpacingTokens.level4),
+            Expanded(
+              child: Text(
+                title,
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              if (value != null) ...[
-                const SizedBox(width: AppSpacingTokens.level3),
-                Text(
-                  value!,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+            ),
+            if (value != null) ...[
+              const SizedBox(width: AppSpacingTokens.level3),
+              Text(
+                value!,
+                style: textTheme.bodySmall?.copyWith(
+                  color: colors.mutedForeground,
                 ),
-              ],
-              const SizedBox(width: AppSpacingTokens.level2),
-              Icon(
-                FLucideIcons.chevronRight,
-                size: 18,
-                color: colors.mutedForeground,
               ),
             ],
-          ),
+            const SizedBox(width: AppSpacingTokens.level2),
+            Icon(
+              FLucideIcons.chevronRight,
+              size: 18,
+              color: colors.mutedForeground,
+            ),
+          ],
         ),
       ),
     );
@@ -123,45 +115,6 @@ class MineSettingRow extends StatelessWidget {
         row,
         Divider(height: 1, color: colors.border),
       ],
-    );
-  }
-}
-
-class MineProgressRing extends StatelessWidget {
-  const MineProgressRing({
-    super.key,
-    required this.progress,
-    required this.color,
-    this.icon = FLucideIcons.badgeCheck,
-    this.size = 54,
-  });
-
-  final double progress;
-  final Color color;
-  final IconData icon;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            width: size,
-            height: size,
-            child: CircularProgressIndicator(
-              value: progress,
-              strokeWidth: 5,
-              backgroundColor: color.withValues(alpha: 0.12),
-              valueColor: AlwaysStoppedAnimation<Color>(color),
-            ),
-          ),
-          Icon(icon, size: 22, color: color),
-        ],
-      ),
     );
   }
 }

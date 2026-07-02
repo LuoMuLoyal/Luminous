@@ -185,7 +185,9 @@ class _TrendPlaceholder extends StatelessWidget {
           children: List.generate(
             4,
             (_) => const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.level2,
+              ),
               child: AppInlineSkeletonBlock(
                 height: 8,
                 width: 24,

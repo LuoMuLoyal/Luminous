@@ -71,10 +71,9 @@ class _AssistantEntryButton extends ConsumerWidget {
       message: l10n.assistantEntryTitle,
       child: Material(
         color: Colors.transparent,
-        child: InkWell(
+        child: FTappable(
           key: const Key('today-assistant-entry'),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          onTap: () async {
+          onPress: () async {
             if (session.canAccessProtectedData) {
               unawaited(context.push('/assistant'));
               return;
@@ -159,7 +158,9 @@ class _NotificationButton extends ConsumerWidget {
                   color: colors.destructive,
                   shape: BoxShape.circle,
                 ),
-                child: const SizedBox.square(dimension: AppSpacingTokens.level2),
+                child: const SizedBox.square(
+                  dimension: AppSpacingTokens.level2,
+                ),
               ),
             ),
         ],

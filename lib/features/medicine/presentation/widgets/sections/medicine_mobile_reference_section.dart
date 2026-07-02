@@ -163,13 +163,17 @@ class _SafetyTipsSection extends ConsumerWidget {
                     height: AppSpacingTokens.level8,
                     decoration: BoxDecoration(
                       color: colors.border,
-                      borderRadius: BorderRadius.circular(AppSpacingTokens.level4),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacingTokens.level4,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.level4),
                 const Expanded(
-                  child: AppInlineSkeletonBlock(height: AppSpacingTokens.level5),
+                  child: AppInlineSkeletonBlock(
+                    height: AppSpacingTokens.level5,
+                  ),
                 ),
               ],
             ),

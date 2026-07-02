@@ -41,177 +41,186 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
     final top = _topResult;
     final sorted = _sortedResults;
 
-    return Dialog(
-      child: ConstrainedBox(
+    return FDialog(
+      title: const Text('识别结果'),
+      body: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level5),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      File(widget.imagePath),
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  child: Image.file(
+                    File(widget.imagePath),
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(width: AppSpacingTokens.level4),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('识别结果', style: theme.textTheme.titleMedium),
-                        Text(
-                          '来源: ${widget.methodLabel}',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: Color(0xFF0F766E),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.level5),
-
-              if (top != null) ...[
-                // Top result card
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level4),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _infoRow('药品', top.name),
-                      if (top.approvalNumber != null)
-                        _infoRow('批准文号', top.approvalNumber!),
-                      const SizedBox(height: AppSpacingTokens.level2),
+                      Text('识别结果', style: typography.body.md),
                       Text(
-                        '置信度: ${(top.confidence * 100).toInt()}%',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Color(0xFF0F766E),
+                        '来源: ${widget.methodLabel}',
+                        style: typography.body.sm.copyWith(
+                          color: colors.primary,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ] else ...[
-                Text('未能识别到药品信息', style: theme.textTheme.bodyLarge),
               ],
+            ),
+            const SizedBox(height: AppSpacingTokens.level5),
 
-              const SizedBox(height: AppSpacingTokens.level4),
-
-              // Candidate list expander
-              if (sorted.length > 1)
-                InkWell(
-                  onTap: () =>
-                      setState(() => _showCandidateList = !_showCandidateList),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacingTokens.level3,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          _showCandidateList
-                              ? Icons.expand_less
-                              : Icons.expand_more,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '从列表选择其他匹配 (${sorted.length})',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            if (top != null) ...[
+              // Top result card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                decoration: BoxDecoration(
+                  color: colors.background,
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                  border: Border.all(color: colors.border),
                 ),
-
-              if (_showCandidateList && sorted.length > 1)
-                Container(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: sorted.length,
-                    itemBuilder: (_, i) {
-                      final r = sorted[i];
-                      return ListTile(
-                        leading: Icon(
-                          _selectedIndex == i
-                              ? Icons.radio_button_checked
-                              : Icons.radio_button_unchecked,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        title: Text(r.name),
-                        subtitle: Text(
-                          '${r.matchType.name} · ${(r.confidence * 100).toInt()}%',
-                        ),
-                        onTap: () => setState(() => _selectedIndex = i),
-                        dense: true,
-                      );
-                    },
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _infoRow('药品', top.name),
+                    if (top.approvalNumber != null)
+                      _infoRow('批准文号', top.approvalNumber!),
+                    const SizedBox(height: AppSpacingTokens.level2),
+                    Text(
+                      '置信度: ${(top.confidence * 100).toInt()}%',
+                      style: typography.body.sm.copyWith(color: colors.primary),
+                    ),
+                  ],
                 ),
-
-              const SizedBox(height: AppSpacingTokens.level5),
-
-              // Actions
-              Row(
-                children: [
-                  Expanded(
-                    child: FButton(
-                      variant: FButtonVariant.outline,
-                      onPress: widget.onRetake,
-                      child: const Text('重新拍照'),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacingTokens.level3),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: top != null || _selectedIndex != null
-                          ? () {
-                              final result = _selectedIndex != null
-                                  ? sorted[_selectedIndex!]
-                                  : top;
-                              if (result?.id != null) {
-                                Navigator.pop(context);
-                                context.push(
-                                  '/medicine/reminders/${result!.id}',
-                                );
-                              }
-                            }
-                          : null,
-                      child: const Text('确认，查看详情'),
-                    ),
-                  ),
-                ],
               ),
+            ] else ...[
+              Text('未能识别到药品信息', style: typography.body.md),
             ],
-          ),
+
+            const SizedBox(height: AppSpacingTokens.level4),
+
+            // Candidate list expander
+            if (sorted.length > 1)
+              FTappable(
+                onPress: () =>
+                    setState(() => _showCandidateList = !_showCandidateList),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacingTokens.level3,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _showCandidateList
+                            ? FLucideIcons.chevronUp
+                            : FLucideIcons.chevronDown,
+                        size: 20,
+                        color: colors.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '从列表选择其他匹配 (${sorted.length})',
+                        style: typography.body.md.copyWith(
+                          color: colors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            if (_showCandidateList && sorted.length > 1)
+              Container(
+                constraints: const BoxConstraints(maxHeight: 200),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: sorted.length,
+                  itemBuilder: (_, i) {
+                    final r = sorted[i];
+                    return FTappable(
+                      onPress: () => setState(() => _selectedIndex = i),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacingTokens.level2,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              _selectedIndex == i
+                                  ? FLucideIcons.checkCircle2
+                                  : FLucideIcons.circle,
+                              color: colors.primary,
+                              size: 20,
+                            ),
+                            const SizedBox(width: AppSpacingTokens.level3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(r.name, style: typography.body.md),
+                                  Text(
+                                    '${r.matchType.name} · ${(r.confidence * 100).toInt()}%',
+                                    style: typography.body.sm.copyWith(
+                                      color: colors.mutedForeground,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+          ],
         ),
       ),
+      actions: [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: widget.onRetake,
+          child: const Text('重新拍照'),
+        ),
+        FButton(
+          onPress: top != null || _selectedIndex != null
+              ? () {
+                  final result = _selectedIndex != null
+                      ? sorted[_selectedIndex!]
+                      : top;
+                  if (result?.id != null) {
+                    Navigator.of(context).pop();
+                    context.push('/medicine/reminders/${result!.id}');
+                  }
+                }
+              : null,
+          child: const Text('确认，查看详情'),
+        ),
+      ],
     );
   }
 
   Widget _infoRow(String label, String value) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Row(
@@ -220,14 +229,10 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
             width: 64,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              style: typography.body.sm.copyWith(color: colors.mutedForeground),
             ),
           ),
-          Expanded(
-            child: Text(value, style: Theme.of(context).textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: typography.body.md)),
         ],
       ),
     );

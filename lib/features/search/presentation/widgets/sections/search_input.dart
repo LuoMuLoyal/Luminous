@@ -44,12 +44,12 @@ class SearchInput extends HookWidget {
       suffixBuilder: controller.text.isEmpty
           ? null
           : (context, style, variants) => GestureDetector(
-                onTap: () {
-                  controller.clear();
-                  onChanged('');
-                },
-                child: Icon(FLucideIcons.circleX, color: colors.mutedForeground),
-              ),
+              onTap: () {
+                controller.clear();
+                onChanged('');
+              },
+              child: Icon(FLucideIcons.circleX, color: colors.mutedForeground),
+            ),
     );
   }
 }

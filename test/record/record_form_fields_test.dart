@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -12,11 +13,7 @@ void main() {
 
     await _pumpForm(tester, DailyRecordKind.water);
 
-    expect(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-      findsOneWidget,
-    );
-    expect(find.byType(DropdownButtonFormField<String>), findsOneWidget);
+    expect(find.byKey(const Key('daily-record-kind-water')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-unit-field')), findsOneWidget);
     expect(find.text(l10n.recordWaterUnitMl), findsOneWidget);
@@ -31,10 +28,7 @@ void main() {
   testWidgets('DailyRecordFormFields shows vital fields', (tester) async {
     await _pumpForm(tester, DailyRecordKind.vital);
 
-    expect(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('daily-record-kind-vital')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-unit-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-title-field')), findsOneWidget);
@@ -46,10 +40,7 @@ void main() {
 
     await _pumpForm(tester, DailyRecordKind.symptom);
 
-    expect(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('daily-record-kind-symptom')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
     expect(find.text(l10n.recordCreateValueSymptom), findsOneWidget);
     expect(find.byKey(const Key('daily-record-unit-field')), findsNothing);
@@ -60,15 +51,13 @@ void main() {
   testWidgets('DailyRecordFormFields shows note fields', (tester) async {
     await _pumpForm(tester, DailyRecordKind.note);
 
-    expect(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('daily-record-kind-note')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-value-field')), findsNothing);
     expect(find.byKey(const Key('daily-record-unit-field')), findsNothing);
     expect(find.byKey(const Key('daily-record-title-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-note-field')), findsOneWidget);
   });
+
 }
 
 Future<void> _pumpForm(WidgetTester tester, DailyRecordKind kind) async {

@@ -94,7 +94,8 @@ class _DrugBoxSection extends StatelessWidget {
                               height: 1,
                               thickness: 1,
                               indent:
-                                  AppSpacingTokens.level7 + AppSpacingTokens.level3,
+                                  AppSpacingTokens.level7 +
+                                  AppSpacingTokens.level3,
                               color: colors.border,
                             ),
                         ],

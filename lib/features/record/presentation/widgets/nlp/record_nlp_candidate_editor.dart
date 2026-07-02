@@ -35,21 +35,21 @@ class RecordNlpCandidateEditor extends HookWidget {
     useEffect(() {
       final text = item.title ?? '';
       if (titleController.text != text) {
-        titleController.text = text;
+        Future.microtask(() => titleController.text = text);
       }
       return null;
     }, [item.title]);
     useEffect(() {
       final text = item.value ?? '';
       if (valueController.text != text) {
-        valueController.text = text;
+        Future.microtask(() => valueController.text = text);
       }
       return null;
     }, [item.value]);
     useEffect(() {
       final text = item.note ?? '';
       if (noteController.text != text) {
-        noteController.text = text;
+        Future.microtask(() => noteController.text = text);
       }
       return null;
     }, [item.note]);
@@ -236,7 +236,8 @@ class _WaterUnitField extends StatelessWidget {
       },
       control: FSelectControl.lifted(
         value: normalizedUnit,
-        onChange: (nextValue) => onChanged(nextValue ?? dailyRecordWaterDefaultUnit),
+        onChange: (nextValue) =>
+            onChanged(nextValue ?? dailyRecordWaterDefaultUnit),
       ),
       enabled: enabled,
       children: [
@@ -307,9 +308,8 @@ class _SleepCandidateFields extends StatelessWidget {
           key: Key('record-nlp-candidate-sleep-quality-$index'),
           label: Text(l10n.recordSleepQualityLabel),
           hint: l10n.recordSleepQualityLabel,
-          format: (value) => sleepQualityOptions(l10n)
-              .firstWhere((q) => q.key == value)
-              .label,
+          format: (value) =>
+              sleepQualityOptions(l10n).firstWhere((q) => q.key == value).label,
           control: FSelectControl.lifted(
             value: quality,
             onChange: (value) {

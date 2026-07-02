@@ -69,10 +69,7 @@ void main() {
     expect(find.text(l10n.recordQuickSectionTitle), findsOneWidget);
     for (final key in <String>['record-quick-actions', 'record-timeline']) {
       expect(
-        find.descendant(
-          of: find.byKey(Key(key)),
-          matching: find.byType(FCard),
-        ),
+        find.descendant(of: find.byKey(Key(key)), matching: find.byType(FCard)),
         findsOneWidget,
       );
     }
@@ -461,9 +458,7 @@ void main() {
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           recordDashboardProvider.overrideWith((ref) => pending.future),
         ],
-        child: const TestForuiApp(
-          home: RecordPage(),
-        ),
+        child: const TestForuiApp(home: RecordPage()),
       ),
     );
     await tester.pump();
@@ -487,9 +482,7 @@ void main() {
             () => _SignedInAuthSessionNotifier(),
           ),
         ],
-        child: TestForuiRouterApp(
-          routerConfig: _buildEditTestRouter(),
-        ),
+        child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
       ),
     );
 
@@ -525,12 +518,13 @@ void main() {
     expect(repo.getCalledWith, 'test-id-1');
 
     final fields = find.byType(TextField);
-    expect(fields, findsNWidgets(4));
-    for (var index = 0; index < 4; index += 1) {
+    expect(fields, findsNWidgets(5));
+    // Index 0 is the kind selector; clear the remaining title/value/unit/note fields.
+    for (var index = 1; index < 5; index += 1) {
       await tester.enterText(fields.at(index), '');
     }
 
-    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    final saveButton = find.byKey(const Key('record-edit-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
     await tester.tap(saveButton);
@@ -573,9 +567,7 @@ void main() {
               () => _SignedInAuthSessionNotifier(),
             ),
           ],
-          child: TestForuiRouterApp(
-            routerConfig: _buildEditTestRouter(),
-          ),
+          child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
         ),
       );
 
@@ -617,16 +609,14 @@ void main() {
             () => _SignedInAuthSessionNotifier(),
           ),
         ],
-        child: TestForuiRouterApp(
-          routerConfig: _buildEditTestRouter(),
-        ),
+        child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
       ),
     );
 
     await tester.pumpAndSettle();
 
     // Find and tap delete button
-    final deleteButton = find.widgetWithText(OutlinedButton, '删除');
+    final deleteButton = find.byKey(const Key('record-edit-delete-action'));
     expect(deleteButton, findsOneWidget);
     await tester.ensureVisible(deleteButton);
     await tester.pump();
@@ -634,10 +624,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Confirm delete in dialog
-    final confirmButton = find.descendant(
-      of: find.byType(AlertDialog),
-      matching: find.widgetWithText(FilledButton, '删除'),
-    );
+    final confirmButton = find.byKey(const Key('record-delete-confirm-action'));
     expect(confirmButton, findsOneWidget);
     await tester.tap(confirmButton);
     await tester.pumpAndSettle();
@@ -660,9 +647,7 @@ void main() {
             () => _SignedOutAuthSessionNotifier(),
           ),
         ],
-        child: TestForuiRouterApp(
-          routerConfig: _buildEditTestRouter(),
-        ),
+        child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
       ),
     );
 
@@ -693,9 +678,7 @@ void main() {
             () => _SignedOutAuthSessionNotifier(),
           ),
         ],
-        child: TestForuiRouterApp(
-          routerConfig: _buildEditTestRouter(),
-        ),
+        child: TestForuiRouterApp(routerConfig: _buildEditTestRouter()),
       ),
     );
 
@@ -762,16 +745,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final deleteButton = find.widgetWithText(OutlinedButton, '删除');
+    final deleteButton = find.byKey(const Key('record-detail-delete-action'));
     expect(deleteButton, findsOneWidget);
     await tester.ensureVisible(deleteButton);
     await tester.tap(deleteButton);
     await tester.pumpAndSettle();
 
-    final confirmButton = find.descendant(
-      of: find.byType(AlertDialog),
-      matching: find.widgetWithText(FilledButton, '删除'),
-    );
+    final confirmButton = find.byKey(const Key('record-delete-confirm-action'));
     expect(confirmButton, findsOneWidget);
     await tester.tap(confirmButton);
     await tester.pumpAndSettle();
@@ -845,10 +825,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.sleep);
+    expect(find.byKey(const Key('daily-record-kind-sleep')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -975,10 +952,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.water);
+    expect(find.byKey(const Key('daily-record-kind-water')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -1049,10 +1023,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.meal);
+    expect(find.byKey(const Key('daily-record-kind-meal')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -1125,10 +1096,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.symptom);
+    expect(find.byKey(const Key('daily-record-kind-symptom')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -1199,10 +1167,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.note);
+    expect(find.byKey(const Key('daily-record-kind-note')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -1274,10 +1239,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
-    final dropdown = tester.widget<DropdownButtonFormField<DailyRecordKind>>(
-      find.byType(DropdownButtonFormField<DailyRecordKind>),
-    );
-    expect(dropdown.initialValue, DailyRecordKind.mood);
+    expect(find.byKey(const Key('daily-record-kind-mood')), findsOneWidget);
     expect(find.text('日期 · 2026-06-06'), findsOneWidget);
     expect(find.text('时间 · 09:45'), findsOneWidget);
   });
@@ -1335,7 +1297,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    final saveButton = find.byKey(const Key('record-create-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
     await tester.tap(saveButton);
@@ -1377,7 +1339,7 @@ void main() {
       'After lunch',
     );
 
-    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    final saveButton = find.byKey(const Key('record-create-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
     await tester.tap(saveButton);
@@ -1414,7 +1376,7 @@ void main() {
       'No special symptoms',
     );
 
-    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    final saveButton = find.byKey(const Key('record-create-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
     await tester.tap(saveButton);
@@ -1467,7 +1429,7 @@ void main() {
       '',
     );
 
-    final saveButton = find.widgetWithText(ElevatedButton, '保存');
+    final saveButton = find.byKey(const Key('record-edit-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
     await tester.tap(saveButton);
@@ -1755,9 +1717,7 @@ void main() {
             (ref) => Future<RecordDashboard>.error(Exception('test error')),
           ),
         ],
-        child: const TestForuiApp(
-          home: RecordPage(),
-        ),
+        child: const TestForuiApp(home: RecordPage()),
       ),
     );
 
@@ -1841,10 +1801,7 @@ Future<void> _pumpRecordPage(
   await tester.pumpWidget(
     ProviderScope(
       overrides: overrides,
-      child: TestForuiApp(
-        locale: locale,
-        home: const RecordPage(),
-      ),
+      child: TestForuiApp(locale: locale, home: const RecordPage()),
     ),
   );
 }

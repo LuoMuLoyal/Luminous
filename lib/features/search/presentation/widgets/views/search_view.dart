@@ -61,7 +61,9 @@ class MedicineSearchView extends StatelessWidget {
           expand: true,
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? AppSpacingTokens.level5 : AppSpacingTokens.level4,
+              vertical: isDesktop
+                  ? AppSpacingTokens.level5
+                  : AppSpacingTokens.level4,
             ),
             child: isDesktop
                 ? _DesktopSearchLayout(
@@ -353,7 +355,9 @@ class _DesktopSearchPanel extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level4),
               ...state.results.map(
                 (result) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.level4),
+                  padding: const EdgeInsets.only(
+                    bottom: AppSpacingTokens.level4,
+                  ),
                   child: SearchResultTile(
                     result: result,
                     l10n: l10n,

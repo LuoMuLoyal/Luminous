@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-06-30
+Last updated: 2026-07-03
 
 This file records work that is still missing or intentionally gated. Current facts belong in `Current_State.md`; implementation order belongs in `Next_Plan.md`.
 
@@ -33,6 +33,7 @@ This file records work that is still missing or intentionally gated. Current fac
 - Fixed red-flag rules, audited offline-care escalation copy, and help-resource completeness.
 - Agent-assisted support discovery or map-backed nearby-care lookup.
 - Deeper medicine safety rule coverage and clearer unsupported / low-confidence wording beyond the frozen current boundary.
+- Final Material-wrapper cleanup in `record_new_entry_panel.dart` and `record_quick_entry_panel.dart`: remove the remaining transparent `Material(color: Colors.transparent)` wrappers after the inner `InkWell` → `FTappable` migration is stable. Verify with `dart format` and `flutter analyze`.
 - Report/export finish-pass cleanup in the client only: final status wording consistency, expired-link handling, and one real-environment acceptance run. Do not reopen backend/export scope unless a real bug is found.
 - Worker-written reminder delivery history for local/push/SMS channels.
 - Environment-driven Today or Mine suggestions.

@@ -115,9 +115,7 @@ class NotificationListPage extends ConsumerWidget {
                               ? const SizedBox(
                                   width: 24,
                                   height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
+                                  child: FCircularProgress(),
                                 )
                               : FButton(
                                   variant: FButtonVariant.outline,

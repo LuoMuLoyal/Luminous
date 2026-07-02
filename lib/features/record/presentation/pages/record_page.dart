@@ -269,9 +269,9 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return;
     }
 
-    await showDialog<void>(
+    await showFDialog<void>(
       context: context,
-      builder: (dialogContext) => RecordFastEntryDialog(
+      builder: (dialogContext, style, animation) => RecordFastEntryDialog(
         kind: kind,
         occurredAt: date,
         currentDateTime: now,

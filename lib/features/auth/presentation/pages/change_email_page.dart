@@ -143,9 +143,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
+                                child: FCircularProgress(),
                               )
                             : Text(
                                 l10n?.authChangeEmailSubmit ?? 'Update email',
@@ -249,7 +247,7 @@ class _VerificationCodeField extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: FCircularProgress(),
                     )
                   : Text(buttonLabel),
             ),

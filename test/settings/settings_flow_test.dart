@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
@@ -100,7 +101,7 @@ void main() {
 
       final medicationSwitchFinder = find.descendant(
         of: find.byKey(const Key('notification-switch-medication')),
-        matching: find.byType(Switch),
+        matching: find.byType(FSwitch),
       );
       expect(medicationSwitchFinder, findsOneWidget);
 
@@ -258,6 +259,9 @@ bool _readSwitchValue(WidgetTester tester, Finder finder) {
     return widget.value;
   }
   if (widget is CupertinoSwitch) {
+    return widget.value;
+  }
+  if (widget is FSwitch) {
     return widget.value;
   }
   throw StateError('Unsupported switch widget: ${widget.runtimeType}');

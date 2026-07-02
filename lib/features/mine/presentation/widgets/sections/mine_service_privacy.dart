@@ -20,9 +20,8 @@ class MinePrivacyNoticeSection extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: () => pushAuthRequiredRoute(context, '/account'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+      child: FTappable(
+        onPress: () => pushAuthRequiredRoute(context, '/account'),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Color.alphaBlend(
@@ -36,7 +35,11 @@ class MinePrivacyNoticeSection extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Row(
               children: [
-                Icon(notice.icon, color: mineGreen, size: AppSpacingTokens.level5),
+                Icon(
+                  notice.icon,
+                  color: mineGreen,
+                  size: AppSpacingTokens.level5,
+                ),
                 const SizedBox(width: AppSpacingTokens.level3),
                 Expanded(
                   child: Text(

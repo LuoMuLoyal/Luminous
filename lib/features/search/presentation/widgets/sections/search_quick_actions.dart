@@ -46,8 +46,8 @@ class _QuickActionButton extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
+      child: FTappable(
+        onPress: () {
           switch (action.type) {
             case MedicineSearchActionType.barcode:
               context.push('/scan/barcode');
@@ -57,7 +57,6 @@ class _QuickActionButton extends StatelessWidget {
               AppToast.show(context, actionToast(l10n, action.type));
           }
         },
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Row(

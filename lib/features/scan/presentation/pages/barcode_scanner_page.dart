@@ -10,6 +10,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
+import 'package:forui/forui.dart';
 
 class BarcodeScannerPage extends ConsumerStatefulWidget {
   const BarcodeScannerPage({super.key});
@@ -79,6 +80,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
   }
 
   void _showCandidatePicker(List<MedicineSearchItemDto> items) {
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
     showModalBottomSheet(
       context: context,
       builder: (ctx) => ListView.builder(
@@ -86,13 +90,30 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
         itemCount: items.length,
         itemBuilder: (_, i) {
           final item = items[i];
-          return ListTile(
-            title: Text(item.name),
-            subtitle: Text(item.subtitle?.toString() ?? ''),
-            onTap: () {
+          return FTappable(
+            onPress: () {
               Navigator.pop(ctx);
               unawaited(context.push('/medicine/reminders/${item.id}'));
             },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.level5,
+                vertical: AppSpacingTokens.level4,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(item.name, style: typography.body.md),
+                  if (item.subtitle != null)
+                    Text(
+                      item.subtitle.toString(),
+                      style: typography.body.sm.copyWith(
+                        color: colors.mutedForeground,
+                      ),
+                    ),
+                ],
+              ),
+            ),
           );
         },
       ),
@@ -108,19 +129,20 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
         leading: const AppBackButton(),
         title: const Text('扫描条形码', style: TextStyle(color: Colors.white)),
         actions: [
-          IconButton(
-            icon: Icon(
+          FButton.icon(
+            variant: FButtonVariant.ghost,
+            onPress: () => _controller?.toggleTorch(),
+            child: Icon(
               _controller?.torchEnabled == true
                   ? Icons.flash_on
                   : Icons.flash_off,
               color: Colors.white,
             ),
-            onPressed: () => _controller?.toggleTorch(),
           ),
         ],
       ),
       body: _controller == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: FCircularProgress())
           : Stack(
               children: [
                 MobileScanner(controller: _controller!, onDetect: _onDetect),

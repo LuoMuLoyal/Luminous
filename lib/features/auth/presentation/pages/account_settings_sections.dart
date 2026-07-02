@@ -143,7 +143,7 @@ class LinkedIdentitiesSection extends StatelessWidget {
               ? const SizedBox(
                   width: 18,
                   height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
+                  child: FCircularProgress(),
                 )
               : Text(l10n.authIdentityLinkWechatAction),
         ),
@@ -273,7 +273,7 @@ class PasswordSection extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: FCircularProgress(),
                     )
                   : Text(l10n.authChangePasswordAction),
             ),
@@ -323,7 +323,7 @@ class DeleteAccountSection extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: FCircularProgress(),
                     )
                   : Text(l10n.authDeleteAccountAction),
             ),
@@ -353,7 +353,8 @@ class _SectionColumn extends StatelessWidget {
       const SizedBox(height: AppSpacingTokens.level5),
       for (final child in children) ...[
         child,
-        if (child != children.last) const SizedBox(height: AppSpacingTokens.level4),
+        if (child != children.last)
+          const SizedBox(height: AppSpacingTokens.level4),
       ],
     ],
   );

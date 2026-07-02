@@ -126,8 +126,9 @@ class _CandidateTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed: enabled ? onRemove : null,
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: enabled ? onRemove : null,
                   child: Text(l10n.recordNlpRemoveAction),
                 ),
               ],

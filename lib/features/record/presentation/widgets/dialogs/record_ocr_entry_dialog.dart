@@ -130,10 +130,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(FLucideIcons.x),
-                    onPressed: () => Navigator.of(context).pop(),
-                    visualDensity: VisualDensity.compact,
+                  FButton.icon(
+                    onPress: () => Navigator.of(context).pop(),
+                    variant: FButtonVariant.ghost,
+                    child: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -193,13 +193,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                       // Recognizing indicator
                       if (isRecognizing.value) ...[
                         const SizedBox(height: AppSpacingTokens.level5),
-                        SizedBox(
+                        const SizedBox(
                           width: 24,
                           height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: theme.colorScheme.primary,
-                          ),
+                          child: FCircularProgress(),
                         ),
                         const SizedBox(height: AppSpacingTokens.level3),
                         Text(
@@ -251,9 +248,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                 ),
                 child: SizedBox(
                   width: double.infinity,
-                  child: FilledButton(
-                    onPressed:
-                        (recognizedText.value?.trim().isNotEmpty ?? false)
+                  child: FButton(
+                    onPress: (recognizedText.value?.trim().isNotEmpty ?? false)
                         ? handleUseText
                         : null,
                     child: Text(l10n.recordVoiceUseText),

@@ -35,7 +35,11 @@ class ReminderInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.level5),
+          Icon(
+            icon,
+            color: colors.mutedForeground,
+            size: AppSpacingTokens.level5,
+          ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Text(
@@ -67,7 +71,9 @@ class ReminderInfoRow extends StatelessWidget {
           height: 1,
           thickness: 1,
           indent:
-              AppSpacingTokens.level4 + AppSpacingTokens.level5 + AppSpacingTokens.level4,
+              AppSpacingTokens.level4 +
+              AppSpacingTokens.level5 +
+              AppSpacingTokens.level4,
           color: colors.border,
         ),
       ],
@@ -131,13 +137,10 @@ class ValueActionRow extends StatelessWidget {
             ),
             if (onClear != null) ...[
               const SizedBox(width: AppSpacingTokens.level2),
-              IconButton(
-                tooltip: AppLocalizations.of(
-                  context,
-                )!.medicineReminderClearDateAction,
-                visualDensity: VisualDensity.compact,
-                onPressed: onClear,
-                icon: const Icon(FLucideIcons.x, size: 18),
+              FButton.icon(
+                variant: FButtonVariant.ghost,
+                onPress: onClear,
+                child: const Icon(FLucideIcons.x, size: 18),
               ),
             ] else ...[
               const SizedBox(width: AppSpacingTokens.level2),
@@ -239,7 +242,11 @@ class UnavailableMethodRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: colors.mutedForeground, size: AppSpacingTokens.level5),
+          Icon(
+            icon,
+            color: colors.mutedForeground,
+            size: AppSpacingTokens.level5,
+          ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Column(

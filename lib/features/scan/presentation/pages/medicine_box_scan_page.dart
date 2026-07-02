@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:luminous/core/design/app_design.dart';
@@ -17,9 +18,30 @@ enum _ScanMethod { ocr, ai }
 /// Shows a bottom sheet for medicine box recognition method selection,
 /// then launches the camera, processes the photo, and shows the result dialog.
 Future<void> showMedicineBoxScanSheet(BuildContext context) async {
-  final method = await showDialog<_ScanMethod>(
+  final method = await showFDialog<_ScanMethod>(
     context: context,
-    builder: (ctx) => Dialog(child: _MethodSelector()),
+    builder: (dialogContext, style, animation) => FDialog(
+      title: const Text('选择识别方式'),
+      actions: const [],
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _MethodTile(
+            icon: FLucideIcons.camera,
+            title: 'OCR 文字识别',
+            subtitle: '设备端识别，快速离线',
+            onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
+          ),
+          const SizedBox(height: AppSpacingTokens.level3),
+          _MethodTile(
+            icon: FLucideIcons.sparkles,
+            title: 'AI 智能识别',
+            subtitle: '云端大模型，更准确',
+            onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
+          ),
+        ],
+      ),
+    ),
   );
 
   if (method == null || !context.mounted) return;
@@ -41,15 +63,15 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
     Navigator.of(context, rootNavigator: true).pop();
 
     unawaited(
-      showDialog(
+      showFDialog(
         context: context,
         barrierDismissible: false,
-        builder: (ctx) => MedicineRecognizeDialog(
+        builder: (dialogContext, style, animation) => MedicineRecognizeDialog(
           imagePath: photo.path,
           methodLabel: method == _ScanMethod.ocr ? 'OCR 识别' : 'AI 识别',
           results: results,
           onRetake: () {
-            Navigator.pop(ctx);
+            Navigator.of(dialogContext).pop();
             // Re-show the scan sheet after dismiss
             showMedicineBoxScanSheet(context);
           },
@@ -65,27 +87,20 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
 }
 
 void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
-  showDialog(
+  showFDialog(
     context: context,
     barrierDismissible: false,
-    useRootNavigator: true,
-    builder: (_) => PopScope(
+    builder: (_, style, animation) => PopScope(
       canPop: false,
-      child: Center(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level6),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(),
-                const SizedBox(height: AppSpacingTokens.level4),
-                Text(
-                  method == _ScanMethod.ocr ? '正在 OCR 识别...' : '正在 AI 识别...',
-                ),
-              ],
-            ),
-          ),
+      child: FDialog(
+        actions: const [],
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const FCircularProgress(),
+            const SizedBox(height: AppSpacingTokens.level4),
+            Text(method == _ScanMethod.ocr ? '正在 OCR 识别...' : '正在 AI 识别...'),
+          ],
         ),
       ),
     ),
@@ -118,6 +133,7 @@ Future<List<MedicineMatchResult>> _processPhoto(
         );
       }
     }
+
     return results;
   } else {
     final bytes = await File(photo.path).readAsBytes();
@@ -146,44 +162,6 @@ Future<List<MedicineMatchResult>> _processPhoto(
   }
 }
 
-class _MethodSelector extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.level5),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.photo_camera_outlined,
-            size: 48,
-            color: Color(0xFF0F766E),
-          ),
-          const SizedBox(height: AppSpacingTokens.level4),
-          Text('选择识别方式', style: theme.textTheme.titleMedium),
-          const SizedBox(height: AppSpacingTokens.level5),
-          _MethodTile(
-            icon: Icons.text_snippet_outlined,
-            title: 'OCR 文字识别',
-            subtitle: '设备端识别，快速离线',
-            onTap: () => Navigator.pop(context, _ScanMethod.ocr),
-          ),
-          const SizedBox(height: AppSpacingTokens.level3),
-          _MethodTile(
-            icon: Icons.auto_awesome_outlined,
-            title: 'AI 智能识别',
-            subtitle: '云端大模型，更准确',
-            onTap: () => Navigator.pop(context, _ScanMethod.ai),
-          ),
-          const SizedBox(height: AppSpacingTokens.level5),
-        ],
-      ),
-    );
-  }
-}
-
 class _MethodTile extends StatelessWidget {
   const _MethodTile({
     required this.icon,
@@ -199,13 +177,41 @@ class _MethodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: Color(0xFF0F766E), size: 32),
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: onTap,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
+    return FTappable(
+      onPress: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        decoration: BoxDecoration(
+          color: colors.background,
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+          border: Border.all(color: colors.border),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: colors.primary, size: 32),
+            const SizedBox(width: AppSpacingTokens.level4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: typography.body.md),
+                  const SizedBox(height: AppSpacingTokens.level1),
+                  Text(
+                    subtitle,
+                    style: typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(FLucideIcons.chevronRight, color: colors.mutedForeground),
+          ],
+        ),
+      ),
     );
   }
 }

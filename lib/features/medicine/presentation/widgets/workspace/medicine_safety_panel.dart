@@ -138,7 +138,9 @@ class _PromisePanel extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level4),
               ...workspace.promisePoints.map(
                 (point) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacingTokens.level4),
+                  padding: const EdgeInsets.only(
+                    bottom: AppSpacingTokens.level4,
+                  ),
                   child: Text(
                     medicineCopy(l10n, point.copyKey),
                     style: textTheme.bodySmall?.copyWith(

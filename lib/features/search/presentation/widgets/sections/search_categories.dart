@@ -3,6 +3,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:forui/forui.dart';
 
 class Categories extends StatelessWidget {
   const Categories({
@@ -55,13 +56,14 @@ class _CategoryItem extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap:
+      child: FTappable(
+        onPress:
             onTap ??
             () => AppToast.show(context, categoryLabel(l10n, category.type)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+          padding: const EdgeInsets.symmetric(
+            vertical: AppSpacingTokens.level2,
+          ),
           child: Column(
             children: [
               DecoratedBox(

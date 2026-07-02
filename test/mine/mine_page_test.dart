@@ -40,7 +40,6 @@ void main() {
     expect(find.text(l10n.mineAlertAllergyTitle), findsWidgets);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
 
-    final scrollable = find.byType(Scrollable).hitTestable().first;
     final keys = <String>[
       'mine-account-header',
       'mine-status-overview',
@@ -49,8 +48,8 @@ void main() {
     ];
 
     for (final key in keys) {
-      final finder = find.byKey(Key(key));
-      await tester.scrollUntilVisible(finder, 260, scrollable: scrollable);
+      final finder = find.byKey(Key(key)).first;
+      await tester.ensureVisible(finder);
       await tester.pump(const Duration(milliseconds: 200));
       expect(finder, findsOneWidget);
     }
@@ -100,11 +99,7 @@ void main() {
     expect(find.text(l10n.mineErrorTitle), findsNothing);
 
     final basicSubtitle = find.text(l10n.mineArchiveBasicSubtitle);
-    await tester.scrollUntilVisible(
-      basicSubtitle,
-      260,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(basicSubtitle);
     await tester.pump();
     expect(basicSubtitle, findsOneWidget);
     expect(find.text(l10n.mineProfileMeta('--', '--')), findsNothing);
@@ -281,11 +276,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     final basicInfo = find.text(l10n.mineArchiveBasicTitle);
-    await tester.scrollUntilVisible(
-      basicInfo,
-      240,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(basicInfo);
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
 
@@ -340,11 +331,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     final basicInfo = find.text(l10n.mineArchiveBasicTitle);
-    await tester.scrollUntilVisible(
-      basicInfo,
-      240,
-      scrollable: find.byType(Scrollable).first,
-    );
+    await tester.ensureVisible(basicInfo);
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
 

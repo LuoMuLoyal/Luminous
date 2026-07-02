@@ -33,15 +33,16 @@ class SourceSwitch extends StatelessWidget {
                 ),
                 child: Material(
                   color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => onChanged(source),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                  child: FTappable(
+                    onPress: () => onChanged(source),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: source == selectedSource
                             ? colors.primary.withValues(alpha: 0.1)
                             : colors.background,
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.level4,
+                        ),
                         border: Border.all(
                           color: source == selectedSource
                               ? colors.primary

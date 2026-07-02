@@ -69,8 +69,8 @@ class _ArchiveRow extends StatelessWidget {
 
     final row = Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
+      child: FTappable(
+        onPress: () {
           final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
           if (route == null) {
             showMineToast(context, mineCopy(l10n, entry.titleKey));

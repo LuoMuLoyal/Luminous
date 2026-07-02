@@ -83,7 +83,9 @@ class TodayOverviewSection extends StatelessWidget {
                 for (var index = 0; index < items.length; index += 1) ...[
                   Expanded(child: _OverviewMetric(item: items[index])),
                   if (index < items.length - 1)
-                    const _VerticalMetricDivider(height: AppSpacingTokens.level8),
+                    const _VerticalMetricDivider(
+                      height: AppSpacingTokens.level8,
+                    ),
                 ],
               ],
             ),

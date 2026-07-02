@@ -58,12 +58,12 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                     ),
                   ),
                 ),
-                _CalendarIconButton(
+                _CalendarIconActionButton(
                   icon: FLucideIcons.chevronLeft,
                   label: l10n.recordPreviousDayAction,
                   onTap: () => _changeMonth(-1),
                 ),
-                _CalendarIconButton(
+                _CalendarIconActionButton(
                   icon: FLucideIcons.chevronRight,
                   label: l10n.recordNextDayAction,
                   onTap: () => _changeMonth(1),
@@ -319,8 +319,8 @@ class _FilterRow extends StatelessWidget {
   }
 }
 
-class _CalendarIconButton extends StatelessWidget {
-  const _CalendarIconButton({
+class _CalendarIconActionButton extends StatelessWidget {
+  const _CalendarIconActionButton({
     required this.icon,
     required this.label,
     this.onTap,
@@ -332,12 +332,7 @@ class _CalendarIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      tooltip: label,
-      visualDensity: VisualDensity.compact,
-      onPressed: onTap,
-      icon: Icon(icon, size: 18),
-    );
+    return FButton.icon(onPress: onTap, child: Icon(icon, size: 18));
   }
 }
 

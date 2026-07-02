@@ -121,8 +121,9 @@ class MedicineReminderDetailPage extends ConsumerWidget {
           titleAlignment: Alignment.center,
           prefixes: [const AppBackButton()],
           suffixes: [
-            TextButton(
-              onPressed: () => context.push(
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: () => context.push(
                 '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}/edit',
               ),
               child: Text(l10n.recordEditAction),
@@ -272,19 +273,10 @@ class _ReminderDetailBody extends ConsumerWidget {
           ReminderDeliveryLogPanel(logs: data.deliveryLogs),
           if (reminders.isNotEmpty) ...[
             const SizedBox(height: AppSpacingTokens.level5),
-            FilledButton.icon(
+            FButton(
               key: const Key('medicine-reminder-delete-button'),
-              style: FilledButton.styleFrom(
-                backgroundColor: colors.destructive,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppSpacingTokens.level4,
-                ),
-              ),
-              onPressed: () async {
+              variant: FButtonVariant.destructive,
+              onPress: () async {
                 final confirmed = await showMedicineReminderDeleteDialog(
                   context,
                 );
@@ -301,8 +293,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                   unawaited(AppToast.show(context, l10n.settingsSyncFailed));
                 }
               },
-              icon: const Icon(FLucideIcons.trash2),
-              label: Text(l10n.medicineReminderDeleteAction),
+              prefix: const Icon(FLucideIcons.trash2),
+              child: Text(l10n.medicineReminderDeleteAction),
             ),
           ],
         ],

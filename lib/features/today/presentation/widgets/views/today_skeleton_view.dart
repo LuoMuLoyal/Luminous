@@ -34,23 +34,33 @@ class TodaySkeletonView extends StatelessWidget {
         children: [
           _TopBarPlaceholder(isDesktop: isDesktop),
           SizedBox(
-            height: isDesktop ? AppSpacingTokens.level6 : AppSpacingTokens.level5,
+            height: isDesktop
+                ? AppSpacingTokens.level6
+                : AppSpacingTokens.level5,
           ),
           _OverviewPlaceholder(isDesktop: isDesktop),
           SizedBox(
-            height: isDesktop ? AppSpacingTokens.level6 : AppSpacingTokens.level5,
+            height: isDesktop
+                ? AppSpacingTokens.level6
+                : AppSpacingTokens.level5,
           ),
           _AiSummaryPlaceholder(),
           SizedBox(
-            height: isDesktop ? AppSpacingTokens.level6 : AppSpacingTokens.level5,
+            height: isDesktop
+                ? AppSpacingTokens.level6
+                : AppSpacingTokens.level5,
           ),
           _PriorityPlaceholder(),
           SizedBox(
-            height: isDesktop ? AppSpacingTokens.level6 : AppSpacingTokens.level5,
+            height: isDesktop
+                ? AppSpacingTokens.level6
+                : AppSpacingTokens.level5,
           ),
           _RecommendationPlaceholder(),
           SizedBox(
-            height: isDesktop ? AppSpacingTokens.level6 : AppSpacingTokens.level5,
+            height: isDesktop
+                ? AppSpacingTokens.level6
+                : AppSpacingTokens.level5,
           ),
           _TodoPlaceholder(),
         ],

@@ -340,19 +340,21 @@ class RecordEditPage extends HookConsumerWidget {
     }
 
     Future<void> onDelete() async {
-      final confirmed = await showDialog<bool>(
+      final confirmed = await showFDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (dialogContext, style, animation) => FDialog(
           title: Text(l10n.authIdentityUnlinkConfirmTitle),
-          content: Text(l10n.recordDeleteConfirmMessage),
+          body: Text(l10n.recordDeleteConfirmMessage),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: () => Navigator.of(dialogContext).pop(false),
               child: Text(l10n.authCancelAction),
             ),
-            FilledButton(
+            FButton(
               key: const Key('record-delete-confirm-action'),
-              onPressed: () => Navigator.of(ctx).pop(true),
+              variant: FButtonVariant.destructive,
+              onPress: () => Navigator.of(dialogContext).pop(true),
               child: Text(l10n.recordDeleteAction),
             ),
           ],
@@ -631,7 +633,7 @@ class RecordEditPage extends HookConsumerWidget {
                         ? const SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
+                            child: FCircularProgress(),
                           )
                         : const Icon(FLucideIcons.trash2, size: 18),
                     child: Text(l10n.recordDeleteAction),

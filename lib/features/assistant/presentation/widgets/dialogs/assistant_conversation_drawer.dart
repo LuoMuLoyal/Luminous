@@ -44,9 +44,10 @@ class AssistantConversationDrawer extends StatelessWidget {
               Row(
                 children: [
                   Expanded(child: Text(title, style: textTheme.headlineSmall)),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(FLucideIcons.x),
+                  FButton.icon(
+                    variant: FButtonVariant.ghost,
+                    onPress: () => Navigator.of(context).pop(),
+                    child: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -105,14 +106,11 @@ class AssistantConversationDrawer extends StatelessWidget {
                             ),
                             border: Border.all(color: borderColor),
                           ),
-                          child: InkWell(
+                          child: FTappable(
                             key: Key(
                               'assistant-recent-conversation-${item.id}',
                             ),
-                            borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.level4,
-                            ),
-                            onTap: state.isOpeningConversation
+                            onPress: state.isOpeningConversation
                                 ? null
                                 : () => onSelect(item.id),
                             child: Padding(
@@ -130,7 +128,9 @@ class AssistantConversationDrawer extends StatelessWidget {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  const SizedBox(height: AppSpacingTokens.level2),
+                                  const SizedBox(
+                                    height: AppSpacingTokens.level2,
+                                  ),
                                   Row(
                                     children: [
                                       Expanded(

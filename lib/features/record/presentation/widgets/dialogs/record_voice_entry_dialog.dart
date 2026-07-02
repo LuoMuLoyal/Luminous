@@ -187,10 +187,10 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(FLucideIcons.x),
-                    onPressed: () => Navigator.of(context).pop(),
-                    visualDensity: VisualDensity.compact,
+                  FButton.icon(
+                    onPress: () => Navigator.of(context).pop(),
+                    variant: FButtonVariant.ghost,
+                    child: const Icon(FLucideIcons.x),
                   ),
                 ],
               ),
@@ -300,8 +300,8 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
               ),
               child: SizedBox(
                 width: double.infinity,
-                child: FilledButton(
-                  onPressed: recognizedText.value.trim().isNotEmpty
+                child: FButton(
+                  onPress: recognizedText.value.trim().isNotEmpty
                       ? handleUseText
                       : null,
                   child: Text(l10n.recordVoiceUseText),

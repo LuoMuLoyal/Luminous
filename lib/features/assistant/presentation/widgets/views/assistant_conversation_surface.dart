@@ -173,7 +173,8 @@ class _ConversationView extends StatelessWidget {
           onDismissProposal: onDismissProposal,
         );
       },
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacingTokens.level4),
+      separatorBuilder: (_, __) =>
+          const SizedBox(height: AppSpacingTokens.level4),
       itemCount: items.length,
     );
   }

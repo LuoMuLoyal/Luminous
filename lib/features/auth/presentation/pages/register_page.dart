@@ -229,7 +229,7 @@ class RegisterPage extends HookConsumerWidget {
                       ? const SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: FCircularProgress(),
                         )
                       : Text(l10n?.authCreateAccountAction ?? 'Create account'),
                 ),
@@ -308,7 +308,7 @@ class _VerificationCodeField extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: FCircularProgress(),
                     )
                   : Text(buttonLabel),
             ),

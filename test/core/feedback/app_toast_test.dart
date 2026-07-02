@@ -87,6 +87,7 @@ void main() {
 
       await tester.tap(find.byIcon(FLucideIcons.x));
       await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
 
       expect(find.text('Close me'), findsNothing);
     });

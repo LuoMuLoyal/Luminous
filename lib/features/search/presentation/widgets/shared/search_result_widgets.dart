@@ -29,9 +29,8 @@ class SearchResultTile extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+      child: FTappable(
+        onPress: onTap,
         child: FCard.raw(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.level5),

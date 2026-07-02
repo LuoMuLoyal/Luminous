@@ -56,8 +56,7 @@ class RecordNewEntryPanel extends StatelessWidget {
               color: Colors.transparent,
               child: Opacity(
                 opacity: onNewEntry == null ? 0.5 : 1.0,
-                child:                 FTappable(
-
+                child: FTappable(
                   onPress: onNewEntry,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -89,7 +88,6 @@ class RecordNewEntryPanel extends StatelessWidget {
                       ),
                     ),
                   ),
-                
                 ),
               ),
             ),
@@ -114,13 +112,12 @@ class _NewEntryChip extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child:       FTappable(
-
+      child: FTappable(
         onPress: onTap == null ? null : () => onTap!(action),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: action.softColor.withValues(alpha: 0.68),
-            ),
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level3,
@@ -142,7 +139,6 @@ class _NewEntryChip extends StatelessWidget {
             ),
           ),
         ),
-      
       ),
     );
   }

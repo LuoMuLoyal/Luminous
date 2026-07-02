@@ -49,12 +49,6 @@ class AuthTermsNotice extends StatelessWidget {
       color: colors.primary,
       fontWeight: FontWeight.w600,
     );
-    final linkButtonStyle = TextButton.styleFrom(
-      padding: EdgeInsets.zero,
-      minimumSize: const Size(0, 28),
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    );
-
     final String leadText =
         l10n?.authTermsAgreement('', '') ??
         'By creating an account, you agree to the ';
@@ -71,7 +65,9 @@ class AuthTermsNotice extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level2,
+        ),
         child: Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -83,9 +79,9 @@ class AuthTermsNotice extends StatelessWidget {
                 color: colors.mutedForeground,
               ),
             ),
-            TextButton(
-              onPressed: onTerms,
-              style: linkButtonStyle,
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: onTerms,
               child: Text(termsLabel, style: linkStyle),
             ),
             Text(
@@ -94,9 +90,9 @@ class AuthTermsNotice extends StatelessWidget {
                 color: colors.mutedForeground,
               ),
             ),
-            TextButton(
-              onPressed: onPrivacy,
-              style: linkButtonStyle,
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: onPrivacy,
               child: Text(privacyLabel, style: linkStyle),
             ),
           ],

@@ -45,10 +45,9 @@ class MineAccountHero extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: FTappable(
         key: const Key('mine-account-manage-link'),
-        onTap: () => pushAuthRequiredRoute(context, '/account'),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+        onPress: () => pushAuthRequiredRoute(context, '/account'),
         child: FCard.raw(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.level5),
@@ -113,13 +112,8 @@ class MineAccountHero extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                             AppRadiusTokens.levelFull,
                           ),
-                          child: LinearProgressIndicator(
-                            minHeight: 8,
+                          child: FDeterminateProgress(
                             value: dashboard.completion.progress,
-                            backgroundColor: mineGreen.withValues(alpha: 0.12),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              mineGreen,
-                            ),
                           ),
                         ),
                       ),

@@ -63,12 +63,13 @@ class _StatusOverviewItem extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        onTap: () =>
+      child: FTappable(
+        onPress: () =>
             pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level1,
+          ),
           child: Column(
             children: [
               _SoftIcon(

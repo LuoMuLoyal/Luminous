@@ -65,7 +65,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                       padding: const EdgeInsets.all(AppSpacingTokens.level3),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFEF3C7).withValues(alpha: 0.42),
-                        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.level3,
+                        ),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,

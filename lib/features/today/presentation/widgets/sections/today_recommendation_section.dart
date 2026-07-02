@@ -60,7 +60,7 @@ class TodayRecommendationSection extends ConsumerWidget {
           },
           loading: () => const SizedBox(
             height: 144,
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: FCircularProgress()),
           ),
           error: (_, __) => AppStateErrorView(
             title: l10n.todayRecommendationErrorTitle,
@@ -151,8 +151,8 @@ class _RecommendationRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
-      onTap: onTap,
+    return FTappable(
+      onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,

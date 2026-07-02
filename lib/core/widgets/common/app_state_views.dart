@@ -357,7 +357,6 @@ class AppInlineSkeletonSection extends StatelessWidget {
         color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
         border: Border.all(color: colors.border),
-
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level5),

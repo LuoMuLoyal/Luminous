@@ -137,9 +137,10 @@ class RecordNlpDialog extends HookConsumerWidget {
                   ),
                 ),
               ),
-              IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(FLucideIcons.x),
+              FButton.icon(
+                variant: FButtonVariant.ghost,
+                onPress: () => Navigator.of(context).pop(),
+                child: const Icon(FLucideIcons.x),
               ),
             ],
           ),
@@ -177,9 +178,9 @@ class RecordNlpDialog extends HookConsumerWidget {
               ),
               const SizedBox(width: AppSpacingTokens.level3),
               Expanded(
-                child: FilledButton(
+                child: FButton(
                   key: const Key('record-nlp-generate-action'),
-                  onPressed: state.isGenerating || state.isSaving
+                  onPress: state.isGenerating || state.isSaving
                       ? null
                       : handleGenerate,
                   child: Text(
@@ -216,9 +217,9 @@ class RecordNlpDialog extends HookConsumerWidget {
             const SizedBox(height: AppSpacingTokens.level4),
             SizedBox(
               width: double.infinity,
-              child: FilledButton(
+              child: FButton(
                 key: const Key('record-nlp-save-selected-action'),
-                onPressed: state.isSaving ? null : handleSaveSelected,
+                onPress: state.isSaving ? null : handleSaveSelected,
                 child: Text(
                   state.isSaving
                       ? l10n.recordNlpSavingAction
@@ -228,7 +229,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             ),
           ] else if (state.status == RecordNlpStatus.generating) ...[
             const SizedBox(height: AppSpacingTokens.level5),
-            const LinearProgressIndicator(),
+            const FProgress(),
           ],
         ],
       ),

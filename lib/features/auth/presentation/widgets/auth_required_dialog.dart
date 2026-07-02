@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -62,30 +63,29 @@ Future<void> showAuthRequiredDialog(
   required VoidCallback onLogin,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  await showDialog<void>(
+  await showFDialog<void>(
     context: context,
-    builder: (dialogContext) {
-      return AlertDialog(
-        key: const Key('auth-required-dialog'),
-        title: Text(l10n.authNotSignedIn),
-        content: Text(l10n.authLoginRequiredPrompt),
-        actions: [
-          TextButton(
-            key: const Key('auth-required-cancel-action'),
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.authCancelAction),
-          ),
-          FilledButton(
-            key: const Key('auth-required-login-action'),
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              onLogin();
-            },
-            child: Text(l10n.authGoLogin),
-          ),
-        ],
-      );
-    },
+    builder: (dialogContext, style, animation) => FDialog(
+      key: const Key('auth-required-dialog'),
+      title: Text(l10n.authNotSignedIn),
+      body: Text(l10n.authLoginRequiredPrompt),
+      actions: [
+        FButton(
+          variant: FButtonVariant.ghost,
+          key: const Key('auth-required-cancel-action'),
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: Text(l10n.authCancelAction),
+        ),
+        FButton(
+          key: const Key('auth-required-login-action'),
+          onPress: () {
+            Navigator.of(dialogContext).pop();
+            onLogin();
+          },
+          child: Text(l10n.authGoLogin),
+        ),
+      ],
+    ),
   );
 }
 

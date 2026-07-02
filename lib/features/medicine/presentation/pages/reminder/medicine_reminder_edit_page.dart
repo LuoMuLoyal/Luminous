@@ -430,8 +430,9 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           titleAlignment: Alignment.center,
           prefixes: [const AppBackButton()],
           suffixes: [
-            TextButton(
-              onPressed: formState.isSaving || isLoading
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: formState.isSaving || isLoading
                   ? null
                   : () =>
                         onSave(snapshot.asData?.value, reminders.asData?.value),
@@ -467,8 +468,8 @@ class _MedicineSelectorPrompt extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            FilledButton(
-              onPressed: onSelect,
+            FButton(
+              onPress: onSelect,
               child: Text(l10n.medicineReminderSelectMedicineAction),
             ),
           ],

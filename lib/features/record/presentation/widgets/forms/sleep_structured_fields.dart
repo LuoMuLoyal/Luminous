@@ -100,14 +100,24 @@ class SleepStructuredFields extends StatelessWidget {
           ),
         ],
         const SizedBox(height: AppSpacingTokens.level3),
-        DropdownButtonFormField<String>(
+        FSelect<String>.rich(
           key: const Key('sleep-quality-field'),
-          initialValue: quality,
-          decoration: InputDecoration(labelText: l10n.recordSleepQualityLabel),
-          items: sleepQualityOptions(l10n)
-              .map((q) => DropdownMenuItem(value: q.key, child: Text(q.label)))
+          label: Text(l10n.recordSleepQualityLabel),
+          hint: l10n.recordSleepQualityLabel,
+          format: (value) =>
+              sleepQualityOptions(l10n).firstWhere((q) => q.key == value).label,
+          control: FSelectControl.lifted(
+            value: quality,
+            onChange: onQualityChanged,
+          ),
+          children: sleepQualityOptions(l10n)
+              .map(
+                (option) => FSelectItem.item(
+                  title: Text(option.label),
+                  value: option.key,
+                ),
+              )
               .toList(),
-          onChanged: onQualityChanged,
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         Row(

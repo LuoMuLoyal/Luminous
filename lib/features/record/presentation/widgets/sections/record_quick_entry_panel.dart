@@ -52,8 +52,7 @@ class RecordAiInputBar extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
-                child:                 FTappable(
-
+                child: FTappable(
                   onPress: onTap,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -68,14 +67,15 @@ class RecordAiInputBar extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level3),
               DecoratedBox(
                 decoration: BoxDecoration(
                   color: Color(0xFF0F766E).withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+                  borderRadius: BorderRadius.circular(
+                    AppRadiusTokens.levelFull,
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -92,12 +92,12 @@ class RecordAiInputBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level1),
-              _IconButton(
+              _IconActionButton(
                 tooltip: l10n.recordVoiceInputTitle,
                 icon: FLucideIcons.mic,
                 onTap: onMicTap,
               ),
-              _IconButton(
+              _IconActionButton(
                 tooltip: l10n.recordOcrEntryTitle,
                 icon: FLucideIcons.camera,
                 onTap: onCameraTap,
@@ -110,8 +110,12 @@ class RecordAiInputBar extends StatelessWidget {
   }
 }
 
-class _IconButton extends StatelessWidget {
-  const _IconButton({required this.tooltip, required this.icon, this.onTap});
+class _IconActionButton extends StatelessWidget {
+  const _IconActionButton({
+    required this.tooltip,
+    required this.icon,
+    this.onTap,
+  });
 
   final String tooltip;
   final IconData icon;
@@ -121,8 +125,7 @@ class _IconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child:       FTappable(
-
+      child: FTappable(
         onPress: onTap,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level1),
@@ -132,7 +135,6 @@ class _IconButton extends StatelessWidget {
             size: AppSpacingTokens.level5,
           ),
         ),
-      
       ),
     );
   }
@@ -320,8 +322,7 @@ class _QuickRecordTile extends StatelessWidget {
     return Material(
       key: Key('record-quick-${action.type.name}'),
       color: Colors.transparent,
-      child:       FTappable(
-
+      child: FTappable(
         onPress: (onQuickAction == null || isLocked)
             ? null
             : () => onQuickAction!(action),
@@ -374,7 +375,6 @@ class _QuickRecordTile extends StatelessWidget {
             ),
           ),
         ),
-      
       ),
     );
   }

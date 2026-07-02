@@ -106,7 +106,6 @@ class _AppToastSurface extends StatelessWidget {
           color: backgroundColor,
           border: Border.all(color: borderColor),
           borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-
         ),
         child: Padding(
           padding: const EdgeInsets.only(
@@ -132,15 +131,10 @@ class _AppToastSurface extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.level2),
-                IconButton(
-                  onPressed: onClose,
-                  icon: Icon(FLucideIcons.x, size: 16, color: iconColor),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
-                  tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                FButton.icon(
+                  variant: FButtonVariant.ghost,
+                  onPress: onClose,
+                  child: Icon(FLucideIcons.x, size: 16, color: iconColor),
                 ),
               ],
             ),

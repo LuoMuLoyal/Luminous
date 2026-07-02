@@ -91,7 +91,7 @@ class DataExportPage extends ConsumerWidget {
     if (requestInFlight.inFlight) {
       return const SizedBox.square(
         dimension: 18,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child: Center(child: FCircularProgress()),
       );
     }
 

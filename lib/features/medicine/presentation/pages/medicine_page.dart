@@ -243,32 +243,32 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
       child: FTappable(
-      onPress: () => context.push('/medicine/risk-check'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-          vertical: AppSpacingTokens.level2,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              FLucideIcons.shieldCheck,
-              color: Color(0xFF0F766E),
-              size: AppSpacingTokens.level5,
-            ),
-            const SizedBox(width: AppSpacingTokens.level2),
-            Text(
-              l10n.medicineSafetyGuardLabel,
-              style: textTheme.labelMedium?.copyWith(
-                color: colors.foreground,
-                fontWeight: FontWeight.w700,
+        onPress: () => context.push('/medicine/risk-check'),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level2,
+            vertical: AppSpacingTokens.level2,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                FLucideIcons.shieldCheck,
+                color: Color(0xFF0F766E),
+                size: AppSpacingTokens.level5,
               ),
-            ),
-          ],
+              const SizedBox(width: AppSpacingTokens.level2),
+              Text(
+                l10n.medicineSafetyGuardLabel,
+                style: textTheme.labelMedium?.copyWith(
+                  color: colors.foreground,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
@@ -286,15 +286,11 @@ class _MedicineNotificationButton extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          IconButton(
-            onPressed: () =>
+          FButton.icon(
+            onPress: () =>
                 pushAuthRequiredRoute(context, '/medicine/reminders/new'),
-            icon: const Icon(FLucideIcons.bell),
-            color: theme.colorScheme.onSurface,
-            visualDensity: VisualDensity.compact,
-            style: const ButtonStyle(
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+            variant: FButtonVariant.ghost,
+            child: Icon(FLucideIcons.bell, color: theme.colorScheme.onSurface),
           ),
           Positioned(
             right: AppSpacingTokens.level3,

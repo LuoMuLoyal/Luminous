@@ -52,7 +52,8 @@ class _MedicineRecordsSection extends ConsumerWidget {
                       Divider(
                         height: 1,
                         thickness: 1,
-                        indent: AppSpacingTokens.level11 + AppSpacingTokens.level3,
+                        indent:
+                            AppSpacingTokens.level11 + AppSpacingTokens.level3,
                         color: colors.border,
                       ),
                   ],

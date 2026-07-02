@@ -27,7 +27,6 @@ class TodayGlyphTile extends StatelessWidget {
               colors: [color.withValues(alpha: 0.92), color],
             ),
             borderRadius: BorderRadius.circular(radius),
-
           )
         : BoxDecoration(
             color: color.withValues(alpha: 0.1),

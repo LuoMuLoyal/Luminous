@@ -112,11 +112,11 @@ class RecordDetailPage extends ConsumerWidget {
           titleAlignment: Alignment.center,
           prefixes: [const AppBackButton()],
           suffixes: [
-            IconButton(
-              tooltip: l10n.recordEditAction,
-              onPressed: () =>
+            FButton.icon(
+              variant: FButtonVariant.ghost,
+              onPress: () =>
                   pushAuthRequiredRoute(context, '/record/$recordId/edit'),
-              icon: const Icon(FLucideIcons.pencil),
+              child: const Icon(FLucideIcons.pencil),
             ),
           ],
         ),
@@ -380,19 +380,21 @@ class _RecordDetailBody extends ConsumerWidget {
     String recordId,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showFDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (dialogContext, style, animation) => FDialog(
         title: Text(l10n.recordDeleteAction),
-        content: Text(l10n.recordDeleteConfirmMessage),
+        body: Text(l10n.recordDeleteConfirmMessage),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
+          FButton(
+            variant: FButtonVariant.ghost,
+            onPress: () => Navigator.of(dialogContext).pop(false),
             child: Text(l10n.authCancelAction),
           ),
-          FilledButton(
+          FButton(
             key: const Key('record-delete-confirm-action'),
-            onPressed: () => Navigator.of(ctx).pop(true),
+            variant: FButtonVariant.destructive,
+            onPress: () => Navigator.of(dialogContext).pop(true),
             child: Text(l10n.recordDeleteAction),
           ),
         ],

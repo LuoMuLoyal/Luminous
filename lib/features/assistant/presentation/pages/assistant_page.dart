@@ -198,28 +198,28 @@ class AssistantPage extends HookConsumerWidget {
           titleAlignment: Alignment.center,
           prefixes: [AppBackButton(onPressed: () => context.pop())],
           suffixes: [
-            IconButton(
+            FButton.icon(
               key: const Key('assistant-recent-conversations-action'),
-              tooltip: l10n.assistantRecentConversationsAction,
-              onPressed:
+              variant: FButtonVariant.ghost,
+              onPress:
                   !session.canAccessProtectedData ||
                       chatState.isLoadingRecentConversations ||
                       chatState.isOpeningConversation
                   ? null
                   : openRecentConversationsDrawer,
-              icon: const Icon(FLucideIcons.clock4),
+              child: const Icon(FLucideIcons.clock4),
             ),
-            IconButton(
+            FButton.icon(
               key: const Key('assistant-new-conversation-action'),
-              tooltip: l10n.assistantNewConversationAction,
-              onPressed:
+              variant: FButtonVariant.ghost,
+              onPress:
                   !session.canAccessProtectedData ||
                       chatState.isLoadingConversation ||
                       chatState.isSending ||
                       chatState.isOpeningConversation
                   ? null
                   : handleStartNewConversation,
-              icon: const Icon(FLucideIcons.plus),
+              child: const Icon(FLucideIcons.plus),
             ),
           ],
         ),

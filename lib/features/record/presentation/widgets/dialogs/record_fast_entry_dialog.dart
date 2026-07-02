@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -44,18 +45,18 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
     final typeLabel = dailyRecordKindLabel(l10n, widget.kind);
     final choices = recordFastEntryChoicesFor(widget.kind, l10n);
 
-    return AlertDialog(
+    return FDialog(
       key: Key('record-fast-entry-${widget.kind.name}'),
       title: Text(l10n.recordFastEntryTitle(typeLabel)),
-      content: Column(
+      body: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.recordFastEntryDateHint(widget.occurredAt),
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: Color(0xFF6B7280)),
+            style: context.theme.typography.body.sm.copyWith(
+              color: context.theme.colors.mutedForeground,
+            ),
           ),
           const SizedBox(height: AppSpacingTokens.level4),
           Wrap(
@@ -77,13 +78,15 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
         ],
       ),
       actions: [
-        TextButton(
+        FButton(
+          variant: FButtonVariant.ghost,
           key: const Key('record-fast-entry-more-action'),
-          onPressed: _saving ? null : _openMore,
+          onPress: _saving ? null : _openMore,
           child: Text(l10n.recordFastEntryMoreAction),
         ),
-        TextButton(
-          onPressed: _saving ? null : () => Navigator.of(context).pop(),
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: _saving ? null : () => Navigator.of(context).pop(),
           child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
       ],
@@ -155,10 +158,11 @@ class _QuickChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      avatar: prefix,
-      label: Text(label),
-      onPressed: enabled ? onTap : null,
+    return FButton(
+      variant: FButtonVariant.outline,
+      onPress: enabled ? onTap : null,
+      prefix: prefix,
+      child: Text(label),
     );
   }
 }

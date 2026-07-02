@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -8,12 +9,13 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
 }) {
   final l10n = AppLocalizations.of(context)!;
 
-  return showDialog<ReportDashboardQuery>(
+  return showFDialog<ReportDashboardQuery>(
     context: context,
-    builder: (dialogContext) {
-      return AlertDialog(
+    builder: (dialogContext, style, animation) {
+      return FDialog(
         title: Text(l10n.reportRangePickerTitle),
-        content: Column(
+        actions: const [],
+        body: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _RangeOptionTile(
@@ -85,10 +87,21 @@ class _RangeOptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(label),
-      trailing: selected ? const Icon(Icons.check_rounded) : null,
-      onTap: onTap,
+    final colors = context.theme.colors;
+    final typography = context.theme.typography;
+
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Expanded(child: Text(label, style: typography.body.md)),
+            if (selected)
+              Icon(FLucideIcons.check, color: colors.primary, size: 20),
+          ],
+        ),
+      ),
     );
   }
 }
