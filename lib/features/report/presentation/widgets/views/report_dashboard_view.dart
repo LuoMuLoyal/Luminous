@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -52,23 +51,12 @@ class ReportDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final content = isDesktop
-        ? _buildDesktopLayout(
-            l10n: l10n,
-            surface: surface,
-            typography: typography,
-          )
-        : _buildMobileLayout(
-            l10n: l10n,
-            surface: surface,
-            typography: typography,
-          );
+        ? _buildDesktopLayout(l10n: l10n)
+        : _buildMobileLayout(l10n: l10n);
 
     final scopedContent = AppSkeletonScope(
       isLoading: isLoading,
@@ -91,11 +79,7 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildMobileLayout({
-    required AppLocalizations l10n,
-    required AppThemeSurface surface,
-    required AppTypographyScale typography,
-  }) {
+  Widget _buildMobileLayout({required AppLocalizations l10n}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,8 +87,6 @@ class ReportDashboardView extends StatelessWidget {
           key: const Key('report-score-hero'),
           dashboard: dashboard,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         ReportMetricsGrid(
@@ -112,8 +94,6 @@ class ReportDashboardView extends StatelessWidget {
           dashboard: dashboard,
           metrics: dashboard.metrics,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onMetricSelected: onMetricSelected,
         ),
         const SizedBox(height: AppSpacingTokens.md),
@@ -123,16 +103,12 @@ class ReportDashboardView extends StatelessWidget {
           selectedQuery: dashboardQuery,
           onQueryChanged: onDashboardQueryChanged ?? (_) {},
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         ReportFindingsSection(
           key: const Key('report-findings-section'),
           findings: dashboard.findings,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         ReportAiSummarySection(
@@ -145,8 +121,6 @@ class ReportDashboardView extends StatelessWidget {
           onRangeChanged: onAiSummaryRangeChanged,
           onGenerate: onGenerateAiSummary,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.lg),
         ReportExportSection(
@@ -156,33 +130,23 @@ class ReportDashboardView extends StatelessWidget {
           requestInFlight: exportRequestInFlight,
           onActionTap: onExportActionTap,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.lg),
         ReportPatternsSection(
           key: const Key('report-patterns-section'),
           patterns: dashboard.patterns,
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
         const SizedBox(height: AppSpacingTokens.md),
         ReportReferenceNotice(
           key: const Key('report-reference-notice'),
           l10n: l10n,
-          typography: typography,
-          surface: surface,
         ),
       ],
     );
   }
 
-  Widget _buildDesktopLayout({
-    required AppLocalizations l10n,
-    required AppThemeSurface surface,
-    required AppTypographyScale typography,
-  }) {
+  Widget _buildDesktopLayout({required AppLocalizations l10n}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -195,8 +159,6 @@ class ReportDashboardView extends StatelessWidget {
                 key: const Key('report-score-hero'),
                 dashboard: dashboard,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ReportTrendSection(
@@ -205,16 +167,12 @@ class ReportDashboardView extends StatelessWidget {
                 selectedQuery: dashboardQuery,
                 onQueryChanged: onDashboardQueryChanged ?? (_) {},
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ReportFindingsSection(
                 key: const Key('report-findings-section'),
                 findings: dashboard.findings,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ReportAiSummarySection(
@@ -227,8 +185,6 @@ class ReportDashboardView extends StatelessWidget {
                 onRangeChanged: onAiSummaryRangeChanged,
                 onGenerate: onGenerateAiSummary,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
             ],
           ),
@@ -244,8 +200,6 @@ class ReportDashboardView extends StatelessWidget {
                 dashboard: dashboard,
                 metrics: dashboard.metrics,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
                 onMetricSelected: onMetricSelected,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
@@ -256,23 +210,17 @@ class ReportDashboardView extends StatelessWidget {
                 requestInFlight: exportRequestInFlight,
                 onActionTap: onExportActionTap,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ReportPatternsSection(
                 key: const Key('report-patterns-section'),
                 patterns: dashboard.patterns,
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
               const SizedBox(height: AppSpacingTokens.lg),
               ReportReferenceNotice(
                 key: const Key('report-reference-notice'),
                 l10n: l10n,
-                typography: typography,
-                surface: surface,
               ),
             ],
           ),

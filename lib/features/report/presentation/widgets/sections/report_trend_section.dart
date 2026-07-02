@@ -1,14 +1,11 @@
-import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_section_header.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/report_range_picker_dialog.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -20,31 +17,40 @@ class ReportTrendSection extends StatelessWidget {
     required this.selectedQuery,
     required this.onQueryChanged,
     required this.l10n,
-    required this.typography,
-    required this.surface,
   });
 
   final List<ReportTrendSeries> trends;
   final ReportDashboardQuery selectedQuery;
   final ValueChanged<ReportDashboardQuery> onQueryChanged;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(
-          title: l10n.reportTrendSectionTitle,
-          trailing: ReportPeriodPill(
-            range: selectedQuery.range,
-            onTap: () => _showRangePicker(context),
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                l10n.reportTrendSectionTitle,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            ReportPeriodPill(
+              range: selectedQuery.range,
+              onTap: () => _showRangePicker(context),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacingTokens.sm),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
+        Divider(height: 1, thickness: 1, color: colors.border),
         const SizedBox(height: AppSpacingTokens.md),
         Wrap(
           spacing: AppSpacingTokens.md,
@@ -54,26 +60,20 @@ class ReportTrendSection extends StatelessWidget {
               _LegendDot(
                 color: series.color,
                 label: reportMetricTitle(l10n, series.kind),
-                typography: typography,
-                surface: surface,
               ),
           ],
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        _TrendPlaceholder(
-          trends: trends,
-          l10n: l10n,
-          typography: typography,
-          surface: surface,
-        ),
+        _TrendPlaceholder(trends: trends, l10n: l10n),
         const SizedBox(height: AppSpacingTokens.sm),
         Align(
           alignment: Alignment.centerRight,
-          child: AppTextAction(
-            label: l10n.reportViewDetailsAction,
-            flexible: true,
-            color: AppColorTokens.link,
-            onTap: null,
+          child: Text(
+            l10n.reportViewDetailsAction,
+            style: textTheme.labelMedium?.copyWith(
+              color: colors.primary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],
@@ -92,27 +92,23 @@ class ReportTrendSection extends StatelessWidget {
 }
 
 class _TrendPlaceholder extends StatelessWidget {
-  const _TrendPlaceholder({
-    required this.trends,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _TrendPlaceholder({required this.trends, required this.l10n});
 
   final List<ReportTrendSeries> trends;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: surface.canvasSoft,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
-      ),
-      child: Padding(
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return FCard.raw(
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.secondary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(color: colors.border),
+        ),
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Column(
           children: [
@@ -129,7 +125,7 @@ class _TrendPlaceholder extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       for (var index = 0; index < 5; index += 1)
-                        Divider(height: 1, color: surface.hairline),
+                        Divider(height: 1, color: colors.border),
                     ],
                   ),
                   Align(
@@ -149,10 +145,9 @@ class _TrendPlaceholder extends StatelessWidget {
                                 width: 46,
                                 radius: AppRadiusTokens.sm,
                               ),
-                              child: AppStatusPill(
+                              child: _TrendValuePill(
                                 label: series.currentValue,
                                 color: series.color,
-                                backgroundAlpha: 0.92,
                               ),
                             ),
                           ),
@@ -196,9 +191,8 @@ class _TrendPlaceholder extends StatelessWidget {
                   Expanded(
                     child: Text(
                       label,
-                      style: typography.caption.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.mutedForeground,
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -215,20 +209,16 @@ class _TrendPlaceholder extends StatelessWidget {
 }
 
 class _LegendDot extends StatelessWidget {
-  const _LegendDot({
-    required this.color,
-    required this.label,
-    required this.typography,
-    required this.surface,
-  });
+  const _LegendDot({required this.color, required this.label});
 
   final Color color;
   final String label;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -239,12 +229,41 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.xs),
         Text(
           label,
-          style: typography.caption.copyWith(
-            color: surface.body,
-            letterSpacing: 0,
-          ),
+          style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
         ),
       ],
+    );
+  }
+}
+
+class _TrendValuePill extends StatelessWidget {
+  const _TrendValuePill({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.xs,
+          vertical: AppSpacingTokens.xxs,
+        ),
+        child: Text(
+          label,
+          style: textTheme.labelSmall?.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ),
     );
   }
 }

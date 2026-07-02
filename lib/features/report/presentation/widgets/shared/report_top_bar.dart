@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/report_range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -28,9 +28,8 @@ class ReportTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -44,17 +43,15 @@ class ReportTopBar extends StatelessWidget {
                 children: [
                   Text(
                     l10n.tabReport,
-                    style: typography.displayXl.copyWith(
+                    style: textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
                     ),
                   ),
                   const SizedBox(height: AppSpacingTokens.sm),
                   Text(
                     dateRangeLabel,
-                    style: typography.bodyLg.copyWith(
-                      color: surface.body,
-                      letterSpacing: 0,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colors.mutedForeground,
                     ),
                   ),
                 ],
@@ -67,31 +64,22 @@ class ReportTopBar extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.xs),
-        _ReportSnapshotStatus(typography: typography, surface: surface),
-        const SizedBox(height: AppSpacingTokens.xs),
+        const SizedBox(height: AppSpacingTokens.sm),
+        const _ReportSnapshotStatus(),
+        const SizedBox(height: AppSpacingTokens.sm),
         Row(
           children: [
             Expanded(
-              child: FilledButton.icon(
+              child: FButton(
                 key: const Key('report-generate-action'),
-                onPressed: isGenerating ? null : onGenerate,
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColorTokens.health,
-                  foregroundColor: AppColorTokens.onPrimary,
-                  disabledBackgroundColor: AppColorTokens.health.withValues(
-                    alpha: 0.38,
-                  ),
-                  disabledForegroundColor: AppColorTokens.onPrimary.withValues(
-                    alpha: 0.7,
-                  ),
-                ),
-                icon: Icon(
+                onPress: isGenerating ? null : onGenerate,
+                prefix: Icon(
                   isGenerating
-                      ? Icons.hourglass_top_rounded
-                      : Icons.auto_awesome_rounded,
+                      ? FLucideIcons.loaderCircle
+                      : FLucideIcons.sparkles,
+                  size: 16,
                 ),
-                label: Text(
+                child: Text(
                   l10n.reportGenerateAction,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -101,16 +89,15 @@ class ReportTopBar extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.sm),
             Tooltip(
               message: l10n.reportSyncAction,
-              child: IconButton.outlined(
+              child: FButton(
                 key: const Key('report-sync-action'),
-                onPressed: isSyncing ? null : onSync,
-                icon: Icon(
-                  isSyncing ? Icons.hourglass_top_rounded : Icons.sync_rounded,
-                ),
-                color: theme.colorScheme.onSurface,
-                visualDensity: VisualDensity.compact,
-                style: const ButtonStyle(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                variant: FButtonVariant.secondary,
+                onPress: isSyncing ? null : onSync,
+                child: Icon(
+                  isSyncing
+                      ? FLucideIcons.loaderCircle
+                      : FLucideIcons.refreshCw,
+                  size: 16,
                 ),
               ),
             ),
@@ -132,64 +119,55 @@ class ReportTopBar extends StatelessWidget {
 }
 
 class _ReportSnapshotStatus extends StatelessWidget {
-  const _ReportSnapshotStatus({
-    required this.typography,
-    required this.surface,
-  });
-
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
+  const _ReportSnapshotStatus();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
-    return Column(
+    return Container(
       key: const Key('report-snapshot-status'),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.sm),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.history_rounded,
-                color: AppColorTokens.link,
-                size: AppSpacingTokens.lg,
-              ),
-              const SizedBox(width: AppSpacingTokens.sm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.reportSnapshotStatus,
-                      style: typography.bodySmStrong.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.xxs),
-                    Text(
-                      l10n.reportSnapshotHint,
-                      style: typography.caption.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.md,
+        vertical: AppSpacingTokens.sm,
+      ),
+      decoration: BoxDecoration(
+        color: colors.secondary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+        border: Border.all(color: colors.border),
+      ),
+      child: Row(
+        children: [
+          Icon(FLucideIcons.history, color: colors.primary, size: 18),
+          const SizedBox(width: AppSpacingTokens.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.reportSnapshotStatus,
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Text(
+                  l10n.reportSnapshotHint,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
-        ),
-        Divider(height: 1, thickness: 1, color: surface.hairline),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -209,20 +187,19 @@ class ReportPeriodPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.md),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: surface.canvas,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.md),
-            border: Border.all(color: surface.hairline),
+            color: colors.background,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.pill),
+            border: Border.all(color: colors.border),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -234,13 +211,15 @@ class ReportPeriodPill extends StatelessWidget {
               children: [
                 Text(
                   _label(l10n),
-                  style: typography.bodyMdStrong.copyWith(letterSpacing: 0),
+                  style: textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(width: AppSpacingTokens.xxs),
                 Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: AppSpacingTokens.lg,
-                  color: surface.body,
+                  FLucideIcons.chevronDown,
+                  size: 16,
+                  color: colors.mutedForeground,
                 ),
               ],
             ),

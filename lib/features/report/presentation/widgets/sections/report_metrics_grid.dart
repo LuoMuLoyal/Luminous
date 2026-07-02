@@ -1,14 +1,12 @@
-import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -18,16 +16,12 @@ class ReportMetricsGrid extends StatelessWidget {
     required this.dashboard,
     required this.metrics,
     required this.l10n,
-    required this.typography,
-    required this.surface,
     this.onMetricSelected,
   });
 
   final ReportDashboard dashboard;
   final List<ReportMetric> metrics;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<ReportDataKind>? onMetricSelected;
 
   @override
@@ -47,8 +41,6 @@ class ReportMetricsGrid extends StatelessWidget {
         return _MetricCard(
           metric: displayMetrics[index],
           l10n: l10n,
-          typography: typography,
-          surface: surface,
           onTap: onMetricSelected,
         );
       },
@@ -64,7 +56,7 @@ class ReportMetricsGrid extends StatelessWidget {
       normalized.add(
         ReportMetric(
           kind: ReportDataKind.general,
-          icon: Icons.monitor_heart_rounded,
+          icon: FLucideIcons.heartPulse,
           color: AppColorTokens.health,
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
@@ -132,30 +124,24 @@ class ReportMetricsGrid extends StatelessWidget {
 }
 
 class _MetricCard extends StatelessWidget {
-  const _MetricCard({
-    required this.metric,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-    this.onTap,
-  });
+  const _MetricCard({required this.metric, required this.l10n, this.onTap});
 
   final ReportMetric metric;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
   final ValueChanged<ReportDataKind>? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final title = reportMetricTitle(l10n, metric.kind);
     final directionIcon = switch (metric.direction) {
-      ReportMetricDirection.up => Icons.arrow_upward_rounded,
-      ReportMetricDirection.down => Icons.arrow_downward_rounded,
-      ReportMetricDirection.flat => Icons.arrow_forward_rounded,
+      ReportMetricDirection.up => FLucideIcons.arrowUp,
+      ReportMetricDirection.down => FLucideIcons.arrowDown,
+      ReportMetricDirection.flat => FLucideIcons.arrowRight,
     };
     final directionColor = switch (metric.direction) {
-      ReportMetricDirection.down => Theme.of(context).colorScheme.error,
+      ReportMetricDirection.down => colors.destructive,
       _ => AppColorTokens.cyanDeep,
     };
 
@@ -164,128 +150,150 @@ class _MetricCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap == null ? null : () => onTap!(metric.kind),
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        child: AppSectionSurface(
-          padding: const EdgeInsets.all(AppSpacingTokens.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  AppIconBadge(
-                    icon: metric.icon,
-                    color: metric.color,
-                    size: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.084,
-                      minValue: 28,
-                      maxValue: 36,
-                    ),
-                    iconSize: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.046,
-                      minValue: 16,
-                      maxValue: 20,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                  const SizedBox(width: AppSpacingTokens.xs),
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: typography.bodyMdStrong.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.sm),
-              Wrap(
-                spacing: AppSpacingTokens.xxs,
-                crossAxisAlignment: WrapCrossAlignment.end,
-                children: [
-                  AppSkeletonText(
-                    text: metric.value,
-                    style: typography.displayLg.copyWith(
+        child: FCard.raw(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    AppIconBadge(
+                      icon: metric.icon,
                       color: metric.color,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                    widthFactor: 0.32,
-                  ),
-                  if (metric.unit.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.xxs,
+                      size: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.084,
+                        minValue: 28,
+                        maxValue: 36,
                       ),
+                      iconSize: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.046,
+                        minValue: 16,
+                        maxValue: 20,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Expanded(
                       child: Text(
-                        metric.unit,
-                        style: typography.bodySm.copyWith(
-                          color: surface.body,
-                          letterSpacing: 0,
+                        title,
+                        style: textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.sm),
+                Wrap(
+                  spacing: AppSpacingTokens.xxs,
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  children: [
+                    AppSkeletonText(
+                      text: metric.value,
+                      style: textTheme.headlineMedium?.copyWith(
+                        color: metric.color,
+                        fontWeight: FontWeight.w800,
+                      ),
+                      widthFactor: 0.32,
+                    ),
+                    if (metric.unit.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacingTokens.xxs,
+                        ),
+                        child: Text(
+                          metric.unit,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colors.mutedForeground,
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.xxs),
-              Row(
-                children: [
-                  AppSkeletonSlot(
-                    skeleton: AppInlineSkeletonBlock(
-                      height: (typography.bodySm.fontSize ?? 14) + 8,
-                      widthFactor: 0.36,
-                      radius: AppRadiusTokens.sm,
-                    ),
-                    child: AppStatusPill(
-                      label: reportStatusLabel(l10n, metric.status),
-                      color: reportStatusColor(metric.status),
-                      backgroundAlpha: 0.1,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacingTokens.xs),
-                  Icon(
-                    directionIcon,
-                    size: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.034,
-                      minValue: 12,
-                      maxValue: 16,
-                    ),
-                    color: directionColor,
-                  ),
-                  const SizedBox(width: AppSpacingTokens.xxs),
-                  Expanded(
-                    child: AppSkeletonText(
-                      text: metric.delta,
-                      style: typography.caption.copyWith(
-                        color: surface.body,
-                        letterSpacing: 0,
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.xxs),
+                Row(
+                  children: [
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 20,
+                        widthFactor: 0.36,
+                        radius: AppRadiusTokens.sm,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.82,
+                      child: _MetricBadge(
+                        label: reportStatusLabel(l10n, metric.status),
+                        color: reportStatusColor(metric.status),
+                      ),
                     ),
+                    const SizedBox(width: AppSpacingTokens.xs),
+                    Icon(directionIcon, size: 14, color: directionColor),
+                    const SizedBox(width: AppSpacingTokens.xxs),
+                    Expanded(
+                      child: AppSkeletonText(
+                        text: metric.delta,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: colors.mutedForeground,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        widthFactor: 0.82,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 22,
+                    radius: AppRadiusTokens.sm,
                   ),
-                ],
-              ),
-              const Spacer(),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
-                  height: 22,
-                  radius: AppRadiusTokens.sm,
+                  child: ReportMetricTrack(
+                    values: metric.sparkline,
+                    color: metric.color,
+                    height: 22,
+                  ),
                 ),
-                child: ReportMetricTrack(
-                  values: metric.sparkline,
-                  color: metric.color,
-                  height: 22,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricBadge extends StatelessWidget {
+  const _MetricBadge({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.sm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.xs,
+          vertical: AppSpacingTokens.xxs,
+        ),
+        child: Text(
+          label,
+          style: textTheme.labelSmall?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w800,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
