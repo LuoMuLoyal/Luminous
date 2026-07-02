@@ -1,39 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportReferenceNotice extends StatelessWidget {
-  const ReportReferenceNotice({
-    super.key,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const ReportReferenceNotice({super.key, required this.l10n});
 
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          AppColorTokens.warning.withValues(alpha: 0.1),
-          surface.canvas,
+    final textTheme = Theme.of(context).textTheme;
+
+    return FCard.raw(
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColorTokens.warning.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
+          border: Border.all(
+            color: AppColorTokens.warning.withValues(alpha: 0.16),
+          ),
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(
-          color: AppColorTokens.warning.withValues(alpha: 0.18),
-        ),
-      ),
-      child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Row(
           children: [
             const Icon(
-              Icons.warning_amber_rounded,
+              FLucideIcons.triangleAlert,
               color: AppColorTokens.warning,
               size: AppSpacingTokens.lg,
             ),
@@ -41,9 +33,9 @@ class ReportReferenceNotice extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.reportReferenceNotice,
-                style: typography.bodySm.copyWith(
+                style: textTheme.bodySmall?.copyWith(
                   color: AppColorTokens.warning,
-                  letterSpacing: 0,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

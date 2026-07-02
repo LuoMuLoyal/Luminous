@@ -14,20 +14,6 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 
 ## Remaining Phases
 
-### Report
-
-- Files:
-  - `lib/features/report/presentation/widgets/views/report_dashboard_view.dart`
-  - `lib/features/report/presentation/widgets/report_top_bar.dart`
-  - `lib/features/report/presentation/widgets/sections/report_score_hero.dart`
-  - `lib/features/report/presentation/widgets/sections/report_metrics_grid.dart`
-  - `lib/features/report/presentation/widgets/sections/report_findings_section.dart`
-  - `lib/features/report/presentation/widgets/sections/report_patterns_section.dart`
-  - `lib/features/report/presentation/widgets/sections/report_export_section.dart`
-  - `lib/features/report/presentation/widgets/sections/report_ai_summary_section.dart`
-- Action:
-  - Remove the report dashboard's remaining old surface/token stack.
-
 ### Medicine / Reminder / Risk / Search
 
 - Files:

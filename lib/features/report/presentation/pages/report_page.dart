@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -10,7 +11,6 @@ import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -223,7 +223,7 @@ class ReportPage extends ConsumerWidget {
       dataExportControllerProvider.select((s) => s.asData?.value),
     );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
@@ -434,9 +434,9 @@ class ReportPage extends ConsumerWidget {
         error: (error, _) {
           final l10n = AppLocalizations.of(context)!;
           return Scaffold(
-            backgroundColor: surface.canvasSoft,
+            backgroundColor: colors.background,
             appBar: AppBar(
-              backgroundColor: surface.canvasSoft,
+              backgroundColor: colors.background,
               elevation: 0,
               leading: const AppBackButton(),
             ),
@@ -445,7 +445,7 @@ class ReportPage extends ConsumerWidget {
               child: AppStateErrorView(
                 title: l10n.reportErrorTitle,
                 description: l10n.reportErrorDescription,
-                icon: Icons.bar_chart_rounded,
+                icon: FLucideIcons.chartColumnBig,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref.invalidate(
                   reportDashboardProvider(selectedDashboardQuery),
@@ -464,16 +464,15 @@ class _ReportSignedOutNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final surface = theme.extension<AppThemeSurface>()!;
-    final typography = AppTypographyTokens.mobile(theme.colorScheme.onSurface);
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       key: const Key('report-signed-out-notice'),
       decoration: BoxDecoration(
-        color: surface.canvas,
+        color: colors.background,
         borderRadius: BorderRadius.circular(AppRadiusTokens.lg),
-        border: Border.all(color: surface.hairline),
+        border: Border.all(color: colors.border),
       ),
       padding: const EdgeInsets.all(AppSpacingTokens.md),
       child: Row(
@@ -482,13 +481,10 @@ class _ReportSignedOutNotice extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
+              color: colors.secondary.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(AppRadiusTokens.md),
             ),
-            child: Icon(
-              Icons.lock_outline_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+            child: Icon(FLucideIcons.lock, color: colors.primary),
           ),
           const SizedBox(width: AppSpacingTokens.sm),
           Expanded(
@@ -497,17 +493,15 @@ class _ReportSignedOutNotice extends StatelessWidget {
               children: [
                 Text(
                   l10n.authNotSignedIn,
-                  style: typography.bodyMdStrong.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 0,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.xxs),
                 Text(
                   l10n.reportSignedOutInlineHint,
-                  style: typography.bodySm.copyWith(
-                    color: surface.body,
-                    letterSpacing: 0,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
               ],
@@ -546,10 +540,10 @@ class _ReportDesktopShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
         child: RefreshIndicator(
@@ -596,10 +590,10 @@ class _ReportMobileShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: surface.canvasSoft),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
         child: RefreshIndicator(

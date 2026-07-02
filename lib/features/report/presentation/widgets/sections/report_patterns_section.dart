@@ -1,14 +1,12 @@
-import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
-import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_section_surface.dart';
-import 'package:luminous/core/widgets/common/app_section_header.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
+import 'package:luminous/core/design/app_responsive_sizing.dart';
+import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -17,14 +15,10 @@ class ReportPatternsSection extends StatelessWidget {
     super.key,
     required this.patterns,
     required this.l10n,
-    required this.typography,
-    required this.surface,
   });
 
   final List<ReportPatternCard> patterns;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   double _patternCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -35,10 +29,15 @@ class ReportPatternsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(title: l10n.reportPatternSectionTitle),
+        Text(
+          l10n.reportPatternSectionTitle,
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
         const SizedBox(height: AppSpacingTokens.sm),
         GridView.builder(
           shrinkWrap: true,
@@ -51,12 +50,7 @@ class ReportPatternsSection extends StatelessWidget {
             mainAxisExtent: _patternCardHeight(context),
           ),
           itemBuilder: (context, index) {
-            return _PatternCard(
-              pattern: patterns[index],
-              l10n: l10n,
-              typography: typography,
-              surface: surface,
-            );
+            return _PatternCard(pattern: patterns[index], l10n: l10n);
           },
         ),
       ],
@@ -65,23 +59,19 @@ class ReportPatternsSection extends StatelessWidget {
 }
 
 class _PatternCard extends StatelessWidget {
-  const _PatternCard({
-    required this.pattern,
-    required this.l10n,
-    required this.typography,
-    required this.surface,
-  });
+  const _PatternCard({required this.pattern, required this.l10n});
 
   final ReportPatternCard pattern;
   final AppLocalizations l10n;
-  final AppTypographyScale typography;
-  final AppThemeSurface surface;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: AppSectionSurface(
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -108,9 +98,8 @@ class _PatternCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     pattern.title,
-                    style: typography.bodySmStrong.copyWith(
+                    style: textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -121,9 +110,8 @@ class _PatternCard extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.md),
             AppSkeletonText(
               text: reportStatusLabel(l10n, pattern.status),
-              style: typography.bodyMdStrong.copyWith(
+              style: textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w800,
-                letterSpacing: 0,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -132,9 +120,8 @@ class _PatternCard extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.xxs),
             AppSkeletonText(
               text: pattern.body,
-              style: typography.bodySm.copyWith(
-                color: surface.body,
-                letterSpacing: 0,
+              style: textTheme.bodySmall?.copyWith(
+                color: colors.mutedForeground,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -145,13 +132,8 @@ class _PatternCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppSkeletonSlot(
-                    skeleton: AppInlineSkeletonBlock(
-                      height: AppResponsiveSizing.scaleByHeight(
-                        context,
-                        fraction: 0.034,
-                        minValue: 22,
-                        maxValue: 30,
-                      ),
+                    skeleton: const AppInlineSkeletonBlock(
+                      height: 22,
                       radius: AppRadiusTokens.sm,
                     ),
                     child: ReportMetricTrack(
@@ -168,9 +150,9 @@ class _PatternCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacingTokens.sm),
                 Icon(
-                  Icons.chevron_right_rounded,
-                  color: surface.body,
-                  size: AppSpacingTokens.lg,
+                  FLucideIcons.chevronRight,
+                  color: colors.mutedForeground,
+                  size: 18,
                 ),
               ],
             ),
