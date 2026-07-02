@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 class ReportMetricTrack extends StatelessWidget {
   const ReportMetricTrack({
@@ -16,7 +15,6 @@ class ReportMetricTrack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
     final visibleValues = values.isEmpty ? const <double>[0, 0] : values;
     final minValue = visibleValues.reduce((a, b) => a < b ? a : b);
     final maxValue = visibleValues.reduce((a, b) => a > b ? a : b);
@@ -42,7 +40,9 @@ class ReportMetricTrack extends StatelessWidget {
                         borderRadius: BorderRadius.circular(
                           AppRadiusTokens.pill,
                         ),
-                        border: Border.all(color: surface.hairline),
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outlineVariant,
+                        ),
                       ),
                       child: const SizedBox(width: AppSpacingTokens.xxs),
                     ),

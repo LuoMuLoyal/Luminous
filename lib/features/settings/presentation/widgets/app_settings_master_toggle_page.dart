@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold_shell.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -31,7 +31,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final surface = Theme.of(context).extension<AppThemeSurface>()!;
+    final colors = context.theme.colors;
 
     return PageScaffoldShell(
       title: title,
@@ -45,7 +45,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
           onChanged: onMasterChanged,
         ),
         const SizedBox(height: AppSpacingTokens.md),
-        Divider(height: 1, color: surface.hairline),
+        Divider(height: 1, color: colors.border),
         const SizedBox(height: AppSpacingTokens.md),
         _DisabledScope(
           disabled: !masterValue,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/theme/app_theme_extensions.dart';
 
 IconData medicineSafetyTipIcon(String category) {
   return switch (category) {
@@ -20,17 +19,17 @@ IconData medicineSafetyTipIcon(String category) {
 Color medicineSafetyTipColor(String category, Object palette) {
   final success = switch (palette) {
     FColors colors => colors.primary,
-    AppThemeSurface surface => surface.success,
+    Color color => color,
     _ => AppColorTokens.cyanDeep,
   };
   final warning = switch (palette) {
     FColors colors => colors.primaryForeground,
-    AppThemeSurface surface => surface.warning,
+    Color color => color,
     _ => AppColorTokens.warning,
   };
   final destructive = switch (palette) {
     FColors colors => colors.destructive,
-    AppThemeSurface surface => surface.error,
+    Color color => color,
     _ => AppColorTokens.warningDeep,
   };
   return switch (category) {
