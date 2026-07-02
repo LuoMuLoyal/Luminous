@@ -17,13 +17,18 @@ Continue the aggressive `Luminous` -> `Forui` migration by removing the remainin
 ### Record
 
 - Files:
-  - `lib/features/record/presentation/widgets/panels/record_nlp_candidate_review.dart`
-  - `lib/features/record/presentation/widgets/panels/record_nlp_retry_panel.dart`
-  - `lib/features/record/presentation/widgets/cards/meal_analysis_summary_card.dart`
-  - `lib/features/record/presentation/widgets/fields/daily_record_image_attachment_field.dart`
-  - visible sibling card/panel surfaces found during this phase
+  - remaining larger record shells and sections after the visible-panel pass:
+    `lib/features/record/presentation/pages/record_page.dart`
+    `lib/features/record/presentation/pages/record_detail.dart`
+    `lib/features/record/presentation/widgets/views/record_dashboard_view.dart`
+    `lib/features/record/presentation/widgets/sections/record_sidebar.dart`
+    `lib/features/record/presentation/widgets/sections/record_timeline.dart`
+    `lib/features/record/presentation/widgets/sections/record_summary_grid.dart`
+    `lib/features/record/presentation/widgets/sections/record_quick_actions.dart`
+    `lib/features/record/presentation/widgets/shared/record_components.dart`
+    `lib/features/record/presentation/widgets/shared/record_shared_widgets.dart`
 - Action:
-  - Prioritize directly visible legacy cards/panels.
+  - Continue from the now-finished visible-panel pass and remove the old theme stack from the remaining record page/detail/section shells.
 
 ### Shared Common Widgets
 
