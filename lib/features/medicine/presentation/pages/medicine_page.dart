@@ -242,30 +242,31 @@ class _MedicineSafeGuardPill extends StatelessWidget {
 
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
-      child: FTappable(
+      child: FButton(
         onPress: () => context.push('/medicine/risk-check'),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level2,
-            vertical: AppSpacingTokens.level2,
+        variant: FButtonVariant.ghost,
+        mainAxisSize: MainAxisSize.min,
+        style: .delta(
+          contentStyle: .delta(
+            padding: .value(
+              const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.level2,
+                vertical: AppSpacingTokens.level2,
+              ),
+            ),
+            spacing: AppSpacingTokens.level2,
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                FLucideIcons.shieldCheck,
-                color: context.theme.colors.primary,
-                size: AppSpacingTokens.level5,
-              ),
-              const SizedBox(width: AppSpacingTokens.level2),
-              Text(
-                l10n.medicineSafetyGuardLabel,
-                style: textTheme.labelMedium?.copyWith(
-                  color: colors.foreground,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+        ),
+        prefix: Icon(
+          FLucideIcons.shieldCheck,
+          color: colors.primary,
+          size: AppSpacingTokens.level5,
+        ),
+        child: Text(
+          l10n.medicineSafetyGuardLabel,
+          style: textTheme.labelMedium?.copyWith(
+            color: colors.foreground,
+            fontWeight: FontWeight.w700,
           ),
         ),
       ),
@@ -279,7 +280,7 @@ class _MedicineNotificationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
 
     return Tooltip(
       message: l10n.medicineNotificationsTooltip,
@@ -290,17 +291,20 @@ class _MedicineNotificationButton extends StatelessWidget {
             onPress: () =>
                 pushAuthRequiredRoute(context, '/medicine/reminders/new'),
             variant: FButtonVariant.ghost,
-            child: Icon(FLucideIcons.bell, color: theme.colorScheme.onSurface),
+            child: Icon(FLucideIcons.bell, color: colors.foreground),
           ),
           Positioned(
             right: AppSpacingTokens.level3,
             top: AppSpacingTokens.level2,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.error,
-                shape: BoxShape.circle,
+            child: FBadge.raw(
+              style: .delta(
+                decoration: .shapeDelta(
+                  color: colors.destructive,
+                  shape: const CircleBorder(),
+                ),
               ),
-              child: const SizedBox.square(dimension: AppSpacingTokens.level2),
+              builder: (context, style) =>
+                  SizedBox.square(dimension: AppSpacingTokens.level2),
             ),
           ),
         ],
@@ -318,40 +322,49 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: () => context.push('/medicine/search'),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: colors.border),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level3,
+      variant: FButtonVariant.ghost,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: colors.background,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(color: colors.border),
+                borderRadius: context.theme.style.borderRadius.lg,
+              ),
+            ),
           ),
-          child: Row(
-            children: [
-              Icon(
-                FLucideIcons.search,
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
+            ),
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            FLucideIcons.search,
+            color: colors.mutedForeground,
+            size: AppSpacingTokens.level5,
+          ),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Text(
+              l10n.medicineHomeSearchHint,
+              style: textTheme.bodyMedium?.copyWith(
                 color: colors.mutedForeground,
-                size: AppSpacingTokens.level5,
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Expanded(
-                child: Text(
-                  l10n.medicineHomeSearchHint,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

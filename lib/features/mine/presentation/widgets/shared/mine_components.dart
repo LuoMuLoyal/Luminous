@@ -22,26 +22,30 @@ class MineHeaderActionChip extends StatelessWidget {
     final colors = context.theme.colors;
     return Tooltip(
       message: label,
-      child: FTappable(
+      child: FButton.raw(
         onPress: onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: onTap == null
-                ? colors.background.withValues(alpha: 0.72)
-                : colors.background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-            border: Border.all(color: colors.border),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level3),
-            child: Icon(
-              icon,
-              size: 18,
-              color: onTap == null
-                  ? colors.mutedForeground.withValues(alpha: 0.5)
-                  : colors.foreground,
+        variant: FButtonVariant.outline,
+        style: .delta(
+          decoration: .delta([
+            .all(
+              .shapeDelta(
+                color: onTap == null
+                    ? colors.background.withValues(alpha: 0.72)
+                    : colors.background,
+                shape: CircleBorder(side: BorderSide(color: colors.border)),
+              ),
             ),
+          ]),
+          contentStyle: .delta(
+            padding: .value(const EdgeInsets.all(AppSpacingTokens.level3)),
           ),
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: onTap == null
+              ? colors.mutedForeground.withValues(alpha: 0.5)
+              : colors.foreground,
         ),
       ),
     );

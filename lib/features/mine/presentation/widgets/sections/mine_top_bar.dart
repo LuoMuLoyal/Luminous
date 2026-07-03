@@ -85,13 +85,17 @@ class _IconActionButton extends StatelessWidget {
             Positioned(
               right: 6,
               top: 6,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.destructive,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colors.background, width: 2),
+              child: FBadge.raw(
+                style: .delta(
+                  decoration: .shapeDelta(
+                    color: colors.destructive,
+                    shape: CircleBorder(
+                      side: BorderSide(color: colors.background, width: 2),
+                    ),
+                  ),
                 ),
-                child: const SizedBox.square(dimension: 10),
+                builder: (context, style) =>
+                    const SizedBox.square(dimension: 10),
               ),
             ),
         ],

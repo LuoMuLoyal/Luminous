@@ -160,28 +160,37 @@ class _PriorityActionPill extends ConsumerWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: item.color.resolve(colors),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level3,
-            vertical: AppSpacingTokens.level2,
-          ),
-          child: Text(
-            item.action,
-            style: textTheme.labelMedium?.copyWith(
-              color: context.theme.colors.primary,
-              fontWeight: FontWeight.w800,
+      variant: FButtonVariant.primary,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: item.color.resolve(colors),
+              shape: RoundedSuperellipseBorder(
+                borderRadius: context.theme.style.borderRadius.sm,
+              ),
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level3,
+              vertical: AppSpacingTokens.level2,
+            ),
           ),
         ),
+      ),
+      child: Text(
+        item.action,
+        style: textTheme.labelMedium?.copyWith(
+          color: colors.primary,
+          fontWeight: FontWeight.w800,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

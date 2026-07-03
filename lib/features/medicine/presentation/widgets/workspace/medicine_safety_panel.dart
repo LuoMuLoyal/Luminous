@@ -59,12 +59,16 @@ class _AlertTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: alert.softColor.resolve(colors).withValues(alpha: 0.42),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(
-          color: alert.color.resolve(colors).withValues(alpha: 0.18),
+    return FCard.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: alert.softColor.resolve(colors).withValues(alpha: 0.42),
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(
+              color: alert.color.resolve(colors).withValues(alpha: 0.18),
+            ),
+            borderRadius: context.theme.style.borderRadius.lg,
+          ),
         ),
       ),
       child: Padding(
@@ -120,12 +124,14 @@ class _PromisePanel extends StatelessWidget {
         l10n.medicinePromiseTitle,
         l10n.medicineOpenPromiseToast,
       ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.theme.colors.primary,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(
-            color: context.theme.colors.primary.withValues(alpha: 0.2),
+      child: FCard.raw(
+        style: .delta(
+          decoration: .shapeDelta(
+            color: colors.primary,
+            shape: RoundedSuperellipseBorder(
+              side: BorderSide(color: colors.primary.withValues(alpha: 0.2)),
+              borderRadius: context.theme.style.borderRadius.lg,
+            ),
           ),
         ),
         child: Padding(

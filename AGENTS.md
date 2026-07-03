@@ -1,16 +1,19 @@
 # AGENTS.md - Luminous
 
+!!! Short-term top-level rule !!!
+Comprehensively refactor the Luminous project from the legacy custom-token system to the forui system on all fronts. Adopt the most aggressive refactoring strategy—retain no compatibility layers, ignore all testing, leave no room for compromise, and decisively steer the entire Luminous ecosystem toward forui.
+
 ## Documentation Rules
 
 After every code change, the following docs **MUST** be updated:
 
-| Change type | Update target | Action |
-|-------------|---------------|--------|
-| Any frontend code change | `docs/migration-log/YYYY-MM-DD.md` | Append change entry |
-| Current UI/data/runtime state change | `docs/Current_State.md` | Add/update completed item |
-| Closing a TODO item | `docs/TODO.md` | Delete the line |
-| Finishing a plan section | `plans/*.md` | Delete the entire section |
-| Visible text or l10n change | `docs/Localization.md` | Sync update |
+| Change type                          | Update target                      | Action                    |
+| ------------------------------------ | ---------------------------------- | ------------------------- |
+| Any frontend code change             | `docs/migration-log/YYYY-MM-DD.md` | Append change entry       |
+| Current UI/data/runtime state change | `docs/Current_State.md`            | Add/update completed item |
+| Closing a TODO item                  | `docs/TODO.md`                     | Delete the line           |
+| Finishing a plan section             | `plans/*.md`                       | Delete the entire section |
+| Visible text or l10n change          | `docs/Localization.md`             | Sync update               |
 
 - Completed items are **deleted** outright — no `✅`, `DONE`, strikethrough, or any other marker.
 

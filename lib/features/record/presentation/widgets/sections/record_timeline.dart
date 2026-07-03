@@ -177,11 +177,15 @@ class _TimelineCard extends StatelessWidget {
       onPress: entry.recordId != null
           ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
           : null,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: colors.border),
+      child: FCard.raw(
+        style: .delta(
+          decoration: .shapeDelta(
+            color: colors.background,
+            shape: RoundedSuperellipseBorder(
+              side: BorderSide(color: colors.border),
+              borderRadius: context.theme.style.borderRadius.lg,
+            ),
+          ),
         ),
         child: Padding(
           padding: EdgeInsets.all(

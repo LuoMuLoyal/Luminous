@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_section_header.dart';
 import 'package:luminous/core/widgets/common/app_text_action.dart';
@@ -15,7 +16,9 @@ void main() {
   group('AppIconBadge', () {
     testWidgets('renders icon with color', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppIconBadge(icon: Icons.star, color: Colors.amber)),
+        _appShell(
+          const AppIconBadge(icon: Icons.star, color: AppColors.primary),
+        ),
       );
 
       expect(find.byIcon(Icons.star), findsOneWidget);
@@ -23,7 +26,12 @@ void main() {
 
     testWidgets('renders square by default', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppIconBadge(icon: Icons.favorite, color: Colors.red)),
+        _appShell(
+          const AppIconBadge(
+            icon: Icons.favorite,
+            color: AppColors.destructive,
+          ),
+        ),
       );
 
       expect(find.byType(DecoratedBox), findsOneWidget);
@@ -34,7 +42,7 @@ void main() {
         _appShell(
           const AppIconBadge(
             icon: Icons.check,
-            color: Colors.green,
+            color: AppColors.secondary,
             shape: BoxShape.circle,
           ),
         ),

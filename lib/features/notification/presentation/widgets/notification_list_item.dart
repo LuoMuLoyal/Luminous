@@ -40,15 +40,19 @@ class NotificationListItemWidget extends StatelessWidget {
         ),
       ),
       onDismissed: (_) => onDismiss(),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: item.isRead
-              ? colors.background
-              : colors.primary.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-          border: Border.all(
-            color: item.isRead ? colors.border : colors.primary,
-            width: item.isRead ? 1 : 1.2,
+      child: FCard.raw(
+        style: .delta(
+          decoration: .shapeDelta(
+            color: item.isRead
+                ? colors.background
+                : colors.primary.withValues(alpha: 0.06),
+            shape: RoundedSuperellipseBorder(
+              side: BorderSide(
+                color: item.isRead ? colors.border : colors.primary,
+                width: item.isRead ? 1 : 1.2,
+              ),
+              borderRadius: context.theme.style.borderRadius.md,
+            ),
           ),
         ),
         child: FTappable(
@@ -101,12 +105,10 @@ class NotificationListItemWidget extends StatelessWidget {
                 ),
                 if (!item.isRead) ...[
                   const SizedBox(width: AppSpacingTokens.level3),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const SizedBox(width: 8, height: 8),
+                  FAvatar.raw(
+                    size: 8,
+                    style: .delta(backgroundColor: colors.primary),
+                    child: const SizedBox.shrink(),
                   ),
                 ],
               ],

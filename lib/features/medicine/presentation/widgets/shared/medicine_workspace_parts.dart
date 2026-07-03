@@ -28,34 +28,45 @@ class MedicineHeaderActionChip extends StatelessWidget {
         ? colors.primaryForeground
         : colors.foreground;
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          border: Border.all(color: emphasized ? emphasisColor : colors.border),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level3,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: foreground),
-              const SizedBox(width: AppSpacingTokens.level2),
-              Text(
-                label,
-                style: textTheme.labelLarge?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: background,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(
+                  color: emphasized ? emphasisColor : colors.border,
                 ),
+                borderRadius: context.theme.style.borderRadius.pill,
               ),
-            ],
+            ),
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
+            ),
           ),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: foreground),
+          const SizedBox(width: AppSpacingTokens.level2),
+          Text(
+            label,
+            style: textTheme.labelLarge?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

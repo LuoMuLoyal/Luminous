@@ -74,11 +74,15 @@ class _MedicationPlanTile extends StatelessWidget {
     return FTappable(
       onPress: () =>
           showPlannedAction(context, nameText, l10n.medicineOpenPlanItemToast),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: colors.border),
+      child: FCard.raw(
+        style: .delta(
+          decoration: .shapeDelta(
+            color: colors.background,
+            shape: RoundedSuperellipseBorder(
+              side: BorderSide(color: colors.border),
+              borderRadius: context.theme.style.borderRadius.lg,
+            ),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),

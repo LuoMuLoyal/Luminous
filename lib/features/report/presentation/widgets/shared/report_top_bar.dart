@@ -127,46 +127,52 @@ class _ReportSnapshotStatus extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
+    return FCard.raw(
       key: const Key('report-snapshot-status'),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
-      ),
-      decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(color: colors.border),
-      ),
-      child: Row(
-        children: [
-          Icon(FLucideIcons.history, color: colors.primary, size: 18),
-          const SizedBox(width: AppSpacingTokens.level3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.reportSnapshotStatus,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacingTokens.level1),
-                Text(
-                  l10n.reportSnapshotHint,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
+      style: .delta(
+        decoration: .shapeDelta(
+          color: colors.secondary.withValues(alpha: 0.08),
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.border),
+            borderRadius: context.theme.style.borderRadius.lg,
           ),
-        ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(FLucideIcons.history, color: colors.primary, size: 18),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.reportSnapshotStatus,
+                    style: textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level1),
+                  Text(
+                    l10n.reportSnapshotHint,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -190,36 +196,44 @@ class ReportPeriodPill extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          border: Border.all(color: colors.border),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level3,
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: colors.background,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(color: colors.border),
+                borderRadius: context.theme.style.borderRadius.sm,
+              ),
+            ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                _label(l10n),
-                style: textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.level1),
-              Icon(
-                FLucideIcons.chevronDown,
-                size: 16,
-                color: colors.mutedForeground,
-              ),
-            ],
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level3,
+            ),
           ),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            _label(l10n),
+            style: textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(width: AppSpacingTokens.level1),
+          Icon(
+            FLucideIcons.chevronDown,
+            size: 16,
+            color: colors.mutedForeground,
+          ),
+        ],
       ),
     );
   }

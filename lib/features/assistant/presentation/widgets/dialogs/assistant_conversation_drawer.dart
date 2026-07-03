@@ -98,21 +98,22 @@ class AssistantConversationDrawer extends StatelessWidget {
                             ? colors.primary.withValues(alpha: 0.1)
                             : colors.background;
 
-                        return DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: backgroundColor,
-                            borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.level4,
+                        return FTappable(
+                          key: Key('assistant-recent-conversation-${item.id}'),
+                          onPress: state.isOpeningConversation
+                              ? null
+                              : () => onSelect(item.id),
+                          child: FCard.raw(
+                            style: .delta(
+                              decoration: .shapeDelta(
+                                color: backgroundColor,
+                                shape: RoundedSuperellipseBorder(
+                                  side: BorderSide(color: borderColor),
+                                  borderRadius:
+                                      context.theme.style.borderRadius.lg,
+                                ),
+                              ),
                             ),
-                            border: Border.all(color: borderColor),
-                          ),
-                          child: FTappable(
-                            key: Key(
-                              'assistant-recent-conversation-${item.id}',
-                            ),
-                            onPress: state.isOpeningConversation
-                                ? null
-                                : () => onSelect(item.id),
                             child: Padding(
                               padding: const EdgeInsets.all(
                                 AppSpacingTokens.level4,

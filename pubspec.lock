@@ -586,6 +586,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.23.0"
+  forui_hooks:
+    dependency: "direct main"
+    description:
+      name: forui_hooks
+      sha256: ccbe05cf5532ec7c11ac920a6fcd42953f0b144d415e110cf14e64d4cbb3cbe6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.23.0"
   freezed:
     dependency: "direct dev"
     description:

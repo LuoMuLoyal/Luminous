@@ -20,15 +20,17 @@ class MinePrivacyNoticeSection extends StatelessWidget {
 
     return FTappable(
       onPress: () => pushAuthRequiredRoute(context, '/account'),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Color.alphaBlend(
-            context.theme.colors.primary.withValues(alpha: 0.05),
-            colors.background,
-          ),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(
-            color: context.theme.colors.primary.withValues(alpha: 0.14),
+      child: FCard.raw(
+        style: .delta(
+          decoration: .shapeDelta(
+            color: Color.alphaBlend(
+              colors.primary.withValues(alpha: 0.05),
+              colors.background,
+            ),
+            shape: RoundedSuperellipseBorder(
+              side: BorderSide(color: colors.primary.withValues(alpha: 0.14)),
+              borderRadius: context.theme.style.borderRadius.lg,
+            ),
           ),
         ),
         child: Padding(

@@ -43,46 +43,55 @@ class RecordDateBar extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.level2),
         Expanded(
-          child: FTappable(
+          child: FButton.raw(
             onPress: onPickDate,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.background,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-                border: Border.all(color: colors.border),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level4,
-                  vertical: AppSpacingTokens.level3,
+            variant: FButtonVariant.outline,
+            style: .delta(
+              decoration: .delta([
+                .all(
+                  .shapeDelta(
+                    color: colors.background,
+                    shape: RoundedSuperellipseBorder(
+                      side: BorderSide(color: colors.border),
+                      borderRadius: context.theme.style.borderRadius.pill,
+                    ),
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Icon(
-                      FLucideIcons.calendarDays,
-                      color: colors.foreground,
-                      size: AppSpacingTokens.level5,
-                    ),
-                    const SizedBox(width: AppSpacingTokens.level2),
-                    Expanded(
-                      child: Text(
-                        dateLabel,
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacingTokens.level2),
-                    Icon(
-                      FLucideIcons.chevronDown,
-                      color: colors.mutedForeground,
-                      size: AppSpacingTokens.level5,
-                    ),
-                  ],
+              ]),
+              contentStyle: .delta(
+                padding: .value(
+                  const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.level4,
+                    vertical: AppSpacingTokens.level3,
+                  ),
                 ),
               ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  FLucideIcons.calendarDays,
+                  color: colors.foreground,
+                  size: AppSpacingTokens.level5,
+                ),
+                const SizedBox(width: AppSpacingTokens.level2),
+                Expanded(
+                  child: Text(
+                    dateLabel,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level2),
+                Icon(
+                  FLucideIcons.chevronDown,
+                  color: colors.mutedForeground,
+                  size: AppSpacingTokens.level5,
+                ),
+              ],
             ),
           ),
         ),
@@ -110,22 +119,27 @@ class _DateStepButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return FTappable(
+    return FButton.raw(
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          border: Border.all(color: colors.border),
-        ),
-        child: SizedBox.square(
-          dimension: 44,
-          child: Icon(
-            icon,
-            color: colors.foreground,
-            size: AppSpacingTokens.level5,
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: colors.background,
+              shape: CircleBorder(side: BorderSide(color: colors.border)),
+            ),
           ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(EdgeInsets.zero),
+          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
         ),
+      ),
+      child: Icon(
+        icon,
+        color: colors.foreground,
+        size: AppSpacingTokens.level5,
       ),
     );
   }

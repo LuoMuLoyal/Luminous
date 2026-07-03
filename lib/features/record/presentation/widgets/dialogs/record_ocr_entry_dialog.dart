@@ -282,25 +282,33 @@ class _OptionCard extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = theme.textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
-        decoration: BoxDecoration(
-          color: colors.background,
-          border: Border.all(color: colors.border),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 36, color: theme.colorScheme.primary),
-            const SizedBox(height: AppSpacingTokens.level3),
-            Text(
-              label,
-              style: textTheme.bodySmall,
-              textAlign: TextAlign.center,
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: colors.background,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(color: colors.border),
+                borderRadius: context.theme.style.borderRadius.sm,
+              ),
             ),
-          ],
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
+          ),
         ),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 36, color: theme.colorScheme.primary),
+          const SizedBox(height: AppSpacingTokens.level3),
+          Text(label, style: textTheme.bodySmall, textAlign: TextAlign.center),
+        ],
       ),
     );
   }

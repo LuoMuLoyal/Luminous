@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -85,40 +84,41 @@ class _QuickActionTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final label = recordCopy(l10n, action.titleKey);
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(action),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: colors.border),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level2,
-            vertical: AppSpacingTokens.level4,
-          ),
-          child: Column(
-            children: [
-              AppIconBadge(
-                icon: action.icon,
-                color: action.accent,
-                backgroundColor: action.softColor.resolve(colors),
-                size: 40,
-              ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              Text(
-                label,
-                style: textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([.all(.shapeDelta(color: colors.background))]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level2,
+              vertical: AppSpacingTokens.level4,
+            ),
           ),
         ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FAvatar.raw(
+            size: 40,
+            style: .delta(backgroundColor: action.softColor.resolve(colors)),
+            child: Icon(
+              action.icon,
+              color: action.accent.resolve(colors),
+              size: 20,
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.level3),
+          Text(
+            label,
+            style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

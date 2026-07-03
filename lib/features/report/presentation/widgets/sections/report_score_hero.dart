@@ -108,27 +108,22 @@ class ReportScoreHero extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level4),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.theme.colors.primary,
-                shape: BoxShape.circle,
+            FAvatar.raw(
+              size: AppResponsiveSizing.scaleByWidth(
+                context,
+                fraction: 0.26,
+                minValue: 80,
+                maxValue: 112,
               ),
-              child: SizedBox.square(
-                dimension: AppResponsiveSizing.scaleByWidth(
+              style: .delta(backgroundColor: colors.primary),
+              child: Icon(
+                FLucideIcons.badgeCheck,
+                color: colors.primaryForeground,
+                size: AppResponsiveSizing.scaleByWidth(
                   context,
-                  fraction: 0.26,
-                  minValue: 80,
-                  maxValue: 112,
-                ),
-                child: Icon(
-                  FLucideIcons.badgeCheck,
-                  color: context.theme.colors.primary,
-                  size: AppResponsiveSizing.scaleByWidth(
-                    context,
-                    fraction: 0.16,
-                    minValue: 48,
-                    maxValue: 68,
-                  ),
+                  fraction: 0.16,
+                  minValue: 48,
+                  maxValue: 68,
                 ),
               ),
             ),
@@ -151,12 +146,16 @@ class _StatusBadge extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final resolvedColor = color.resolve(colors);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: resolvedColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+    return FBadge.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: resolvedColor.withValues(alpha: 0.12),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: context.theme.style.borderRadius.pill,
+          ),
+        ),
       ),
-      child: Padding(
+      builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level3,
           vertical: AppSpacingTokens.level1,

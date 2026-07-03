@@ -180,37 +180,25 @@ class _MethodTile extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return FTappable(
-      onPress: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
-        decoration: BoxDecoration(
+    return FCard.raw(
+      style: .delta(
+        decoration: .shapeDelta(
           color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: colors.border),
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.border),
+            borderRadius: context.theme.style.borderRadius.lg,
+          ),
         ),
-        child: Row(
-          children: [
-            Icon(icon, color: colors.primary, size: 32),
-            const SizedBox(width: AppSpacingTokens.level4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: typography.body.md),
-                  const SizedBox(height: AppSpacingTokens.level1),
-                  Text(
-                    subtitle,
-                    style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(FLucideIcons.chevronRight, color: colors.mutedForeground),
-          ],
+      ),
+      child: FTile(
+        onPress: onTap,
+        prefix: Icon(icon, color: colors.primary, size: 32),
+        title: Text(title),
+        subtitle: Text(
+          subtitle,
+          style: typography.body.sm.copyWith(color: colors.mutedForeground),
         ),
+        suffix: Icon(FLucideIcons.chevronRight, color: colors.mutedForeground),
       ),
     );
   }

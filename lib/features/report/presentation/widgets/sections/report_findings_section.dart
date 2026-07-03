@@ -3,7 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -63,56 +62,61 @@ class _FindingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
+    final resolvedColor = finding.color.resolve(colors);
 
     return FCard.raw(
-      child: Container(
-        decoration: BoxDecoration(
-          color: finding.color.resolve(colors).withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(
-            color: finding.color.resolve(colors).withValues(alpha: 0.18),
+      style: .delta(
+        decoration: .shapeDelta(
+          color: resolvedColor.withValues(alpha: 0.08),
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: resolvedColor.withValues(alpha: 0.18)),
+            borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
+      ),
+      child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                AppIconBadge(
-                  icon: finding.icon,
-                  color: finding.color,
+                FAvatar.raw(
                   size: AppResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.1,
                     minValue: 36,
                     maxValue: 44,
                   ),
-                  iconSize: AppResponsiveSizing.scaleByWidth(
-                    context,
-                    fraction: 0.052,
-                    minValue: 18,
-                    maxValue: 24,
+                  child: Icon(
+                    finding.icon,
+                    color: resolvedColor,
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.052,
+                      minValue: 18,
+                      maxValue: 24,
+                    ),
                   ),
-                  shape: BoxShape.circle,
                 ),
                 const Spacer(),
-                AppIconBadge(
-                  icon: FLucideIcons.chevronRight,
-                  color: AppColors.muted,
+                FAvatar.raw(
                   size: AppResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.068,
                     minValue: 24,
                     maxValue: 30,
                   ),
-                  iconSize: AppResponsiveSizing.scaleByWidth(
-                    context,
-                    fraction: 0.042,
-                    minValue: 16,
-                    maxValue: 20,
+                  child: Icon(
+                    FLucideIcons.chevronRight,
+                    color: AppColors.muted.resolve(colors),
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.042,
+                      minValue: 16,
+                      maxValue: 20,
+                    ),
                   ),
-                  shape: BoxShape.circle,
                 ),
               ],
             ),

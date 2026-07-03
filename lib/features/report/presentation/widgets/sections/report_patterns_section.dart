@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
@@ -77,22 +77,23 @@ class _PatternCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                AppIconBadge(
-                  icon: pattern.icon,
-                  color: pattern.color,
+                FAvatar.raw(
                   size: AppResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.088,
                     minValue: 30,
                     maxValue: 38,
                   ),
-                  iconSize: AppResponsiveSizing.scaleByWidth(
-                    context,
-                    fraction: 0.048,
-                    minValue: 16,
-                    maxValue: 22,
+                  child: Icon(
+                    pattern.icon,
+                    color: pattern.color.resolve(colors),
+                    size: AppResponsiveSizing.scaleByWidth(
+                      context,
+                      fraction: 0.048,
+                      minValue: 16,
+                      maxValue: 22,
+                    ),
                   ),
-                  shape: BoxShape.circle,
                 ),
                 const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(

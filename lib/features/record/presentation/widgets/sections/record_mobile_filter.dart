@@ -88,59 +88,70 @@ class _FilterChip extends StatelessWidget {
     final resolvedColor = color.resolve(colors);
     final foreground = selected ? resolvedColor : colors.foreground;
 
-    return FTappable(
+    return FButton.raw(
       key: chipKey,
-
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: selected
-              ? resolvedColor.withValues(alpha: 0.1)
-              : colors.background,
-          border: Border.all(color: selected ? resolvedColor : colors.border),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level2,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: textTheme.labelLarge?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
+      variant: FButtonVariant.outline,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: selected
+                  ? resolvedColor.withValues(alpha: 0.1)
+                  : colors.background,
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(
+                  color: selected ? resolvedColor : colors.border,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                borderRadius: context.theme.style.borderRadius.sm,
               ),
-              if (locked) ...[
-                const SizedBox(width: AppSpacingTokens.level2),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.secondary.withValues(alpha: 0.22),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacingTokens.level2,
-                      vertical: 2,
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.recordNotEnabledLabel,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.foreground,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ],
+            ),
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level4,
+              vertical: AppSpacingTokens.level2,
+            ),
           ),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: textTheme.labelLarge?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w700,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (locked) ...[
+            const SizedBox(width: AppSpacingTokens.level2),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.secondary.withValues(alpha: 0.22),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.level2,
+                  vertical: 2,
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.recordNotEnabledLabel,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: colors.foreground,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

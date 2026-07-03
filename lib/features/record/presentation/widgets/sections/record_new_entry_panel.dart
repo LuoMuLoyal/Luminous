@@ -53,39 +53,42 @@ class RecordNewEntryPanel extends StatelessWidget {
                   .toList(),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            Opacity(
-              opacity: onNewEntry == null ? 0.5 : 1.0,
-              child: FTappable(
-                onPress: onNewEntry,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: colors.secondary.withValues(alpha: 0.18),
-                    border: Border.all(color: colors.border),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacingTokens.level4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          FLucideIcons.mic,
-                          color: context.theme.colors.primary,
-                          size: 20,
-                        ),
-                        const SizedBox(width: AppSpacingTokens.level3),
-                        Flexible(
-                          child: Text(
-                            l10n.recordVoiceAction,
-                            style: textTheme.labelLarge?.copyWith(
-                              color: context.theme.colors.primary,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+            FButton(
+              onPress: onNewEntry,
+              variant: FButtonVariant.ghost,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              style: .delta(
+                decoration: .delta([
+                  .all(
+                    .shapeDelta(
+                      color: colors.secondary.withValues(alpha: 0.18),
+                      shape: RoundedSuperellipseBorder(
+                        side: BorderSide(color: colors.border),
+                        borderRadius: context.theme.style.borderRadius.sm,
+                      ),
                     ),
                   ),
+                ]),
+                contentStyle: .delta(
+                  padding: .value(
+                    const EdgeInsets.all(AppSpacingTokens.level4),
+                  ),
+                ),
+              ),
+              prefix: Icon(
+                FLucideIcons.mic,
+                color: context.theme.colors.primary,
+                size: 20,
+              ),
+              child: Flexible(
+                child: Text(
+                  l10n.recordVoiceAction,
+                  style: textTheme.labelLarge?.copyWith(
+                    color: context.theme.colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
@@ -109,32 +112,42 @@ class _NewEntryChip extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(action),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: action.softColor.resolve(colors).withValues(alpha: 0.68),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level3,
-            vertical: AppSpacingTokens.level3,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(action.icon, color: action.accent.resolve(colors), size: 16),
-              const SizedBox(width: AppSpacingTokens.level2),
-              Text(
-                label,
-                style: textTheme.labelSmall?.copyWith(
-                  color: action.accent.resolve(colors),
-                  fontWeight: FontWeight.w600,
-                ),
+      variant: FButtonVariant.ghost,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: action.softColor.resolve(colors).withValues(alpha: 0.68),
+              shape: RoundedSuperellipseBorder(
+                borderRadius: context.theme.style.borderRadius.sm,
               ),
-            ],
+            ),
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level3,
+              vertical: AppSpacingTokens.level3,
+            ),
           ),
         ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(action.icon, color: action.accent.resolve(colors), size: 16),
+          const SizedBox(width: AppSpacingTokens.level2),
+          Text(
+            label,
+            style: textTheme.labelSmall?.copyWith(
+              color: action.accent.resolve(colors),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

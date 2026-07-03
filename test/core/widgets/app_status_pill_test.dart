@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 
 import '../../helpers/test_forui_app.dart';
@@ -13,7 +14,9 @@ void main() {
   group('AppStatusPill', () {
     testWidgets('renders label text', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppStatusPill(label: 'Active', color: Colors.green)),
+        _appShell(
+          const AppStatusPill(label: 'Active', color: AppColors.primary),
+        ),
       );
 
       expect(find.text('Active'), findsOneWidget);
@@ -24,7 +27,7 @@ void main() {
         _appShell(
           const AppStatusPill(
             label: 'Verified',
-            color: Colors.blue,
+            color: AppColors.secondary,
             icon: Icons.check,
           ),
         ),
@@ -36,7 +39,7 @@ void main() {
 
     testWidgets('does not render icon when omitted', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppStatusPill(label: 'Basic', color: Colors.grey)),
+        _appShell(const AppStatusPill(label: 'Basic', color: AppColors.muted)),
       );
 
       expect(find.text('Basic'), findsOneWidget);
@@ -48,7 +51,7 @@ void main() {
         _appShell(
           const AppStatusPill(
             label: 'Large',
-            color: Colors.orange,
+            color: AppColors.destructive,
             large: true,
           ),
         ),
@@ -62,7 +65,7 @@ void main() {
         _appShell(
           const AppStatusPill(
             label: 'Custom',
-            color: Colors.purple,
+            color: AppColors.background,
             padding: EdgeInsets.all(16),
           ),
         ),
@@ -76,7 +79,7 @@ void main() {
         _appShell(
           const AppStatusPill(
             label: 'Faded',
-            color: Colors.red,
+            color: AppColors.foreground,
             backgroundAlpha: 0.5,
           ),
         ),

@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~10:45 local time)
+Last updated: 2026-07-03 (~13:45 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -41,6 +41,7 @@ This file records current implementation facts only. Product direction lives in 
 - Record fast-entry UX is in place: quick actions open a lightweight fast-entry surface first, common values save with the current time, and `more` opens the full form.
 - **语音 / 拍照 OCR 记录录入**（2026-07-01）：Record 页面 AI 输入栏提供麦克风（`speech_to_text`）和相机（`google_mlkit_text_recognition` OCR）入口。语音录入会按当前 app locale 选择识别 locale（中文优先 `zh_CN`，英文优先 `en_US`，并回退到同语种可用变体），拍照识别会按当前 app locale 选择 OCR script（中文 `chinese`，其他 `latin`）。语音听写和拍照识别完成后都会把文本送入现有 `record_nlp_controller` NLP pipeline（解析→候选预览→确认保存），OCR 失败时使用专用失败 toast，而不是复用 NLP 输入提示。
 - **OAuth Provider 扩展**（2026-06-29）：Apple Sign In + QQ 互联完成。后端 4 个 Provider（WeChat Web / WeChat Mobile / Apple / QQ）统一实现 `OAuthProvider` 接口，WeChat 共用 `WechatBaseOAuthProvider` 基类。`AuthOAuthStateService` 按 provider 隔离缓存 key，避免 state 碰撞。Apple 使用 `jsonwebtoken` 校验 identityToken（JWKS→PEM→jwt.verify），QQ 使用标准 OAuth 2.0 三步式流程。前端 `login_page.dart` 增加了 Apple（`sign_in_with_apple`）/ QQ 登录面板，`router.dart` 新增 `/login/oauth/qq` 路由。
+- **Forui 迁移债务清偿计划**（2026-07-03）：引入 `forui_hooks: ^0.23.0` 作为带 controller 的 Forui 组件首选状态管理方式，并在 `Luminous/plans/2026-07-03-forui-debt-paydown-plan.md` 落地剩余债务清偿计划。剩余工作聚焦图标清理、手绘 surface 替换、wrapper 内联、token 定型和测试/CI 恢复。
 
 ## UX Audit Remediation (Completed)
 
@@ -297,6 +298,7 @@ Deferred code that remains useful should be marked with:
 - Auth form validation is shared through `AuthValidationMixin` and `CooldownTimerMixin` (`lib/features/auth/presentation/providers/shared/auth_form_mixin.dart`). `RegisterFormNotifier`, `PasswordResetNotifier`, and `LoginFormNotifier` all use both mixins. Email validation delegates to the `email_validator` package — no hand-written email regexes remain in any auth provider.
 - `flutter_hooks` / `hooks_riverpod` are used project-wide: all 16 files that previously managed `TextEditingController` lifecycle manually have been migrated to `HookConsumerWidget` / `HookWidget` with `useTextEditingController()`. Zero manual `initState`/`dispose` controller boilerplate remains.
 - Material input widgets have been fully replaced by Forui equivalents in runtime `lib/`: no remaining `TextFormField`, `DropdownButton`, `Switch`, or `Checkbox` usages; `FTextField`/`FTextFormField`, `FSelect`, `FSwitch`, and `FCheckbox` are used instead. The only remaining `showDialog` calls have also been migrated to `showAppDialog`/`showFDialog`.
+- **2026-07-03 follow-up (local surface replacement)**: The most obvious hand-built chip/card/badge/avatar surfaces across search, record, medicine, mine, report, today, notification, and assistant have been migrated from `FTappable` + `DecoratedBox`/`Container` to native Forui widgets (`FButton.raw`, `FCard.raw`, `FAvatar.raw`). Remaining surfaces from plan section 1.3 are now concentrated in a few report cards/badges (`report_metrics_grid`, `report_export_section`, `report_score_hero`, `report_findings_section`, `report_patterns_section`) and small top-bar buttons (`today_top_bar` assistant entry, `medicine_page` notification bell, `mine_top_bar` icon action).
 - Transparent `Material(color: Colors.transparent)` wrappers have been removed from runtime `lib/`; their former children (scrollable page bodies, `FTappable` tiles, `FCard.raw` surfaces, and dialog content) now render directly without a Material ancestor because all descendants already use Forui components.
 - Material `Scaffold`/`AppBar`/`Drawer` have been fully replaced by Forui equivalents in runtime `lib/`; all pages now use `FScaffold` + `FHeader`, and the assistant recent-conversations drawer was migrated to `showFSheet(side: FLayout.rtl, ...)`. The only remaining `Drawer(` references are custom widget class names.
 - Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.

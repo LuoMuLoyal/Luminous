@@ -9,22 +9,11 @@ class _MedicationAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: item.color.resolve(colors).withValues(alpha: 0.1),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: item.color.resolve(colors).withValues(alpha: 0.16),
-        ),
-      ),
-      child: SizedBox.square(
-        dimension: size,
-        child: Icon(
-          FLucideIcons.pillBottle,
-          color: item.color.resolve(colors),
-          size: size * 0.52,
-        ),
-      ),
+    final color = item.color.resolve(colors);
+    return FAvatar.raw(
+      size: size,
+      style: .delta(backgroundColor: color.withValues(alpha: 0.1)),
+      child: Icon(FLucideIcons.pillBottle, color: color, size: size * 0.52),
     );
   }
 }
@@ -34,57 +23,35 @@ class _DoseActionButton extends StatelessWidget {
     super.key,
     required this.label,
     required this.icon,
-    required this.color,
     required this.onTap,
+    this.color = AppColors.primary,
     this.filled = false,
   });
 
   final String label;
   final IconData icon;
-  final AppColors color;
   final VoidCallback onTap;
+  final AppColors color;
   final bool filled;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
-    final resolvedColor = color.resolve(colors);
-    final foreground = filled
-        ? AppColors.primary.resolve(colors)
-        : resolvedColor;
+    final foregroundColor = filled
+        ? colors.primaryForeground
+        : color.resolve(colors);
 
-    return FTappable(
+    return FButton(
       onPress: onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: filled ? resolvedColor : resolvedColor.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-          border: Border.all(color: resolvedColor.withValues(alpha: 0.32)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level3,
-            vertical: AppSpacingTokens.level2,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: foreground, size: AppSpacingTokens.level4),
-              const SizedBox(width: AppSpacingTokens.level1),
-              Flexible(
-                child: Text(
-                  label,
-                  style: textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: foreground,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+      variant: filled ? FButtonVariant.primary : FButtonVariant.outline,
+      size: FButtonSizeVariant.sm,
+      mainAxisSize: MainAxisSize.min,
+      prefix: Icon(icon, size: AppSpacingTokens.level4, color: foregroundColor),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: foregroundColor,
         ),
       ),
     );

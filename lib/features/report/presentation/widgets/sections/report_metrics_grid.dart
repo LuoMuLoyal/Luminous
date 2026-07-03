@@ -4,7 +4,6 @@ import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_components.dart';
@@ -146,8 +145,10 @@ class _MetricCard extends StatelessWidget {
       _ => context.theme.colors.primary,
     };
 
-    return FTappable(
+    return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(metric.kind),
+      variant: FButtonVariant.ghost,
+      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
       child: FCard.raw(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),
@@ -156,22 +157,23 @@ class _MetricCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  AppIconBadge(
-                    icon: metric.icon,
-                    color: metric.color,
+                  FAvatar.raw(
                     size: AppResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.084,
                       minValue: 28,
                       maxValue: 36,
                     ),
-                    iconSize: AppResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.046,
-                      minValue: 16,
-                      maxValue: 20,
+                    child: Icon(
+                      metric.icon,
+                      color: metric.color.resolve(colors),
+                      size: AppResponsiveSizing.scaleByWidth(
+                        context,
+                        fraction: 0.046,
+                        minValue: 16,
+                        maxValue: 20,
+                      ),
                     ),
-                    shape: BoxShape.circle,
                   ),
                   const SizedBox(width: AppSpacingTokens.level2),
                   Expanded(
@@ -275,12 +277,16 @@ class _MetricBadge extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final resolvedColor = color.resolve(colors);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: resolvedColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+    return FBadge.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: resolvedColor.withValues(alpha: 0.12),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: context.theme.style.borderRadius.sm,
+          ),
+        ),
       ),
-      child: Padding(
+      builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level2,
           vertical: AppSpacingTokens.level1,

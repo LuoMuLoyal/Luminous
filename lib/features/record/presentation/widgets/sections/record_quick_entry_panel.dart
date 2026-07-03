@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -31,13 +30,15 @@ class RecordAiInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return DecoratedBox(
+    return FCard.raw(
       key: const Key('record-ai-input'),
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(
-          color: context.theme.colors.primary.withValues(alpha: 0.32),
+      style: .delta(
+        decoration: .shapeDelta(
+          color: colors.background,
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.primary.withValues(alpha: 0.32)),
+            borderRadius: context.theme.style.borderRadius.lg,
+          ),
         ),
       ),
       child: Padding(
@@ -49,7 +50,7 @@ class RecordAiInputBar extends StatelessWidget {
           children: [
             Icon(
               FLucideIcons.sparkles,
-              color: context.theme.colors.primary,
+              color: colors.primary,
               size: AppSpacingTokens.level6,
             ),
             const SizedBox(width: AppSpacingTokens.level4),
@@ -72,12 +73,16 @@ class RecordAiInputBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.theme.colors.primary.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+            FBadge.raw(
+              style: .delta(
+                decoration: .shapeDelta(
+                  color: colors.primary.withValues(alpha: 0.12),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: context.theme.style.borderRadius.pill,
+                  ),
+                ),
               ),
-              child: Padding(
+              builder: (context, style) => Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacingTokens.level3,
                   vertical: AppSpacingTokens.level1,
@@ -85,7 +90,7 @@ class RecordAiInputBar extends StatelessWidget {
                 child: Text(
                   l10n.recordAiBadge,
                   style: textTheme.labelSmall?.copyWith(
-                    color: context.theme.colors.primary,
+                    color: colors.primary,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -124,16 +129,11 @@ class _IconActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: FTappable(
+      child: FButton.icon(
         onPress: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level1),
-          child: Icon(
-            icon,
-            color: context.theme.colors.foreground,
-            size: AppSpacingTokens.level5,
-          ),
-        ),
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.sm,
+        child: Icon(icon, size: AppSpacingTokens.level5),
       ),
     );
   }
@@ -305,11 +305,13 @@ class _QuickRecordTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.theme.colors;
 
-    return FTappable(
+    return FButton.raw(
       key: Key('record-quick-${action.type.name}'),
       onPress: (onQuickAction == null || isLocked)
           ? null
           : () => onQuickAction!(action),
+      variant: FButtonVariant.ghost,
+      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
       child: Semantics(
         button: true,
         label: isLocked
@@ -325,12 +327,16 @@ class _QuickRecordTile extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppIconBadge(
-                  icon: action.icon,
-                  color: action.accent,
-                  backgroundColor: action.softColor.resolve(colors),
+                FAvatar.raw(
                   size: AppSpacingTokens.level6,
-                  iconSize: AppSpacingTokens.level4,
+                  style: .delta(
+                    backgroundColor: action.softColor.resolve(colors),
+                  ),
+                  child: Icon(
+                    action.icon,
+                    color: action.accent.resolve(colors),
+                    size: AppSpacingTokens.level4,
+                  ),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(

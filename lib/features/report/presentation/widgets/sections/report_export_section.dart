@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
@@ -100,18 +100,27 @@ class _ExportCard extends StatelessWidget {
         ? FLucideIcons.chevronRight
         : FLucideIcons.lock;
 
-    return FTappable(
+    return FButton.raw(
       onPress: !enabled || requestInFlight.inFlight
           ? null
           : () async {
               await onTap!(action.kind);
             },
+      variant: FButtonVariant.ghost,
+      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
       child: FCard.raw(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Row(
             children: [
-              AppIconBadge(icon: action.icon, color: action.color),
+              FAvatar.raw(
+                size: AppSpacingTokens.level8,
+                child: Icon(
+                  action.icon,
+                  color: action.color.resolve(colors),
+                  size: AppSpacingTokens.level5,
+                ),
+              ),
               const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
                 child: Column(

@@ -64,7 +64,7 @@ class _QuickActionTile extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FButton.raw(
       onPress: () {
         if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
             action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
@@ -79,38 +79,39 @@ class _QuickActionTile extends StatelessWidget {
           );
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
-        child: Column(
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              decoration: BoxDecoration(
-                color: action.accent.resolve(colors).withValues(alpha: 0.11),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.level5),
-                border: Border.all(
+      variant: FButtonVariant.ghost,
+      style: .delta(
+        decoration: .delta([
+          .all(
+            .shapeDelta(
+              color: action.accent.resolve(colors).withValues(alpha: 0.11),
+              shape: RoundedSuperellipseBorder(
+                side: BorderSide(
                   color: action.accent.resolve(colors).withValues(alpha: 0.12),
                 ),
-              ),
-              child: Icon(
-                action.icon,
-                color: action.accent.resolve(colors),
-                size: 32,
+                borderRadius: context.theme.style.borderRadius.lg,
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
-            Text(
-              medicineCopy(l10n, action.titleKey),
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+          ),
+        ]),
+        contentStyle: .delta(
+          padding: .value(
+            const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+          ),
         ),
+      ),
+      child: Column(
+        children: [
+          Icon(action.icon, color: action.accent.resolve(colors), size: 32),
+          const SizedBox(height: AppSpacingTokens.level3),
+          Text(
+            medicineCopy(l10n, action.titleKey),
+            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
