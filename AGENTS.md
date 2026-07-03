@@ -88,7 +88,11 @@ flutter test
 - Regenerate: `dart run tool/regenerate_lucent_openapi.dart`
 - Generated output: `packages/lucent_openapi/`
 
-## forui reference
+## Forui Reference
 
-- C:\Users\25080\AppData\Local\Pub\Cache\hosted\pub.dev\forui-0.23.0
-- https://forui.dev/docs
+- **项目速查**：`docs/Forui_Reference.md` —— 项目实际用法、常用组件示例、应避免的习惯。
+- **完整机器可读文档**：`forui-docs/llms-full.txt` —— 纯 Markdown，聚合全部官方文档和代码示例，喂给 LLM 的首选。
+- **文档索引**：`forui-docs/llms.txt` —— 快速看有哪些页面。
+- **官方站**：https://forui.dev/docs
+- **API 文档**：https://pub.dev/documentation/forui
+- **源码参考**：`Pub/Cache/hosted/pub.dev/forui-0.23.0/lib/src/widgets/`（查 API 签名和默认样式最准确）。
