@@ -87,7 +87,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         data: Theme.of(context).brightness == Brightness.dark
             ? _foruiDark
             : _foruiLight,
-        child: child ?? const SizedBox.shrink(),
+        child: FToaster(child: child ?? const SizedBox.shrink()),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,

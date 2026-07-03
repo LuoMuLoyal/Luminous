@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~14:30 local time)
+Last updated: 2026-07-03 (~17:55 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -42,6 +42,7 @@ This file records current implementation facts only. Product direction lives in 
 - **语音 / 拍照 OCR 记录录入**（2026-07-01）：Record 页面 AI 输入栏提供麦克风（`speech_to_text`）和相机（`google_mlkit_text_recognition` OCR）入口。语音录入会按当前 app locale 选择识别 locale（中文优先 `zh_CN`，英文优先 `en_US`，并回退到同语种可用变体），拍照识别会按当前 app locale 选择 OCR script（中文 `chinese`，其他 `latin`）。语音听写和拍照识别完成后都会把文本送入现有 `record_nlp_controller` NLP pipeline（解析→候选预览→确认保存），OCR 失败时使用专用失败 toast，而不是复用 NLP 输入提示。
 - **OAuth Provider 扩展**（2026-06-29）：Apple Sign In + QQ 互联完成。后端 4 个 Provider（WeChat Web / WeChat Mobile / Apple / QQ）统一实现 `OAuthProvider` 接口，WeChat 共用 `WechatBaseOAuthProvider` 基类。`AuthOAuthStateService` 按 provider 隔离缓存 key，避免 state 碰撞。Apple 使用 `jsonwebtoken` 校验 identityToken（JWKS→PEM→jwt.verify），QQ 使用标准 OAuth 2.0 三步式流程。前端 `login_page.dart` 增加了 Apple（`sign_in_with_apple`）/ QQ 登录面板，`router.dart` 新增 `/login/oauth/qq` 路由。
 - **Forui 迁移债务清偿计划**（2026-07-03）：引入 `forui_hooks: ^0.23.0` 作为带 controller 的 Forui 组件首选状态管理方式，并在 `Luminous/plans/2026-07-03-forui-debt-paydown-plan.md` 落地剩余债务清偿计划。剩余工作聚焦图标清理、手绘 surface 替换、wrapper 内联、token 定型和测试/CI 恢复。
+- **Forui 运行时迁移收尾**（2026-07-03）：完成了 runtime `lib/` 中最后一批自定义 surface 的 Forui 替换，包括 `showModalBottomSheet` → `showFSheet`、自定义 `TodayLinearProgress` → `FDeterminateProgress`、chip/pill → `FBadge`、列表行 → `FTile`、自定义 tabs → `FButton` tab pills、toast → `showFToast`/`FToaster`，并删除了 `RecordIndentedDivider`、`RecordShortVerticalDivider`、`AuthSectionCard`、`MineSettingRow` 等薄包装。`flutter analyze --no-pub` 为 0 issues；测试修复工作仍未处理。
 
 ## UX Audit Remediation (Completed)
 

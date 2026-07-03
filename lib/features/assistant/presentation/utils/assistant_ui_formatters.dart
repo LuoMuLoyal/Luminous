@@ -1,5 +1,5 @@
-import 'package:forui/forui.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
@@ -77,13 +77,13 @@ String proposalStateText(
   };
 }
 
-Color proposalStateColor(ThemeData theme, AssistantProposedAction proposal) {
+Color proposalStateColor(FColors colors, AssistantProposedAction proposal) {
   return switch (proposal.executionState) {
-    AssistantProposalExecutionState.pending => theme.colorScheme.primary,
-    AssistantProposalExecutionState.executing => theme.colorScheme.primary,
-    AssistantProposalExecutionState.confirmed => theme.colorScheme.tertiary,
-    AssistantProposalExecutionState.dismissed => theme.colorScheme.outline,
-    AssistantProposalExecutionState.failed => theme.colorScheme.error,
+    AssistantProposalExecutionState.pending => colors.primary,
+    AssistantProposalExecutionState.executing => colors.primary,
+    AssistantProposalExecutionState.confirmed => colors.secondary,
+    AssistantProposalExecutionState.dismissed => colors.mutedForeground,
+    AssistantProposalExecutionState.failed => colors.destructive,
   };
 }
 

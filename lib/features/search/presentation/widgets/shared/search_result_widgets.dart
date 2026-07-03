@@ -25,7 +25,7 @@ class SearchResultTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return FTappable(
       onPress: onTap,
@@ -41,7 +41,7 @@ class SearchResultTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       result.name,
-                      style: textTheme.headlineSmall?.copyWith(
+                      style: typography.body.lg.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -52,21 +52,21 @@ class SearchResultTile extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 result.subtitle,
-                style: textTheme.bodyMedium?.copyWith(
+                style: typography.body.sm.copyWith(
                   color: colors.mutedForeground,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.level1),
               Text(
                 sourceRefLabel(l10n, result.source, result.id),
-                style: textTheme.labelSmall?.copyWith(
+                style: typography.body.xs.copyWith(
                   color: colors.mutedForeground,
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 result.summary,
-                style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
+                style: typography.body.md.copyWith(color: colors.foreground),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -111,33 +111,14 @@ class _SourceBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final isCn = source == MedicineSearchSource.cn;
-    final color = isCn
-        ? context.theme.colors.primary
-        : context.theme.colors.primary;
-    final background = isCn
-        ? context.theme.colors.primary
-        : context.theme.colors.primary;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level2,
-        ),
-        child: Text(
-          sourceLabel(l10n, source),
-          style: textTheme.labelSmall?.copyWith(
-            color: color,
-            fontWeight: FontWeight.w700,
-          ),
+    return FBadge(
+      variant: FBadgeVariant.primary,
+      style: .delta(
+        decoration: .boxDelta(
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
         ),
       ),
+      child: Text(sourceLabel(l10n, source)),
     );
   }
 }
@@ -150,26 +131,17 @@ class _TagPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level2,
+    return FBadge(
+      variant: FBadgeVariant.primary,
+      style: .delta(
+        decoration: .boxDelta(
+          color: colors.primary.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
         ),
-        child: Text(
-          label,
-          style: textTheme.labelSmall?.copyWith(
-            color: colors.primary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        contentStyle: .delta(labelTextStyle: .delta(color: colors.primary)),
       ),
+      child: Text(label),
     );
   }
 }
@@ -184,7 +156,7 @@ class PreviewPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final preview = state.detailPreview;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return FCard.raw(
       child: Padding(
@@ -195,15 +167,13 @@ class PreviewPanel extends StatelessWidget {
             children: [
               Text(
                 l10n.medicineSearchPreviewTitle,
-                style: textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
               if (preview != null) ...[
                 const SizedBox(height: AppSpacingTokens.level5),
                 Text(
                   preview.title,
-                  style: textTheme.titleMedium?.copyWith(
+                  style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -211,7 +181,7 @@ class PreviewPanel extends StatelessWidget {
                 if (preview.conditions.isNotEmpty) ...[
                   Text(
                     l10n.medicineSearchPreviewClinical,
-                    style: textTheme.labelLarge?.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: colors.mutedForeground,
                       fontWeight: FontWeight.w700,
                     ),
@@ -233,7 +203,7 @@ class PreviewPanel extends StatelessWidget {
                           Expanded(
                             child: Text(
                               c,
-                              style: textTheme.bodyMedium?.copyWith(
+                              style: typography.body.md.copyWith(
                                 color: colors.mutedForeground,
                               ),
                             ),
@@ -247,7 +217,7 @@ class PreviewPanel extends StatelessWidget {
                 if (preview.checklist.isNotEmpty) ...[
                   Text(
                     l10n.medicineSearchPreviewSafety,
-                    style: textTheme.labelLarge?.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: colors.mutedForeground,
                       fontWeight: FontWeight.w700,
                     ),
@@ -268,7 +238,7 @@ class PreviewPanel extends StatelessWidget {
                           ),
                           const SizedBox(width: AppSpacingTokens.level3),
                           Expanded(
-                            child: Text(item, style: textTheme.bodyMedium),
+                            child: Text(item, style: typography.body.md),
                           ),
                         ],
                       ),
@@ -281,7 +251,7 @@ class PreviewPanel extends StatelessWidget {
                   padding: const EdgeInsets.only(top: AppSpacingTokens.level5),
                   child: Text(
                     l10n.medicineSearchPreviewEmpty,
-                    style: textTheme.bodyMedium?.copyWith(
+                    style: typography.body.md.copyWith(
                       color: colors.mutedForeground,
                     ),
                   ),
@@ -305,7 +275,7 @@ class NoResultTools extends StatelessWidget {
       (FLucideIcons.search, l10n.medicineSearchNoResultKeyword),
       (FLucideIcons.arrowLeftRight, l10n.medicineSearchNoResultSwitch),
     ];
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return FCard.raw(
       child: Padding(
@@ -314,9 +284,7 @@ class NoResultTools extends StatelessWidget {
           children: [
             Text(
               l10n.medicineSearchNoResultTitle,
-              style: textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             Row(
@@ -344,7 +312,7 @@ class _NoResultAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacingTokens.level3),
@@ -352,7 +320,7 @@ class _NoResultAction extends StatelessWidget {
         children: [
           Icon(icon, color: colors.primary),
           const SizedBox(height: AppSpacingTokens.level2),
-          Text(label, textAlign: TextAlign.center, style: textTheme.labelSmall),
+          Text(label, textAlign: TextAlign.center, style: typography.body.xs),
         ],
       ),
     );

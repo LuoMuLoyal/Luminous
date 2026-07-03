@@ -48,47 +48,6 @@ class TodayGlyphTile extends StatelessWidget {
   }
 }
 
-class TodayLinearProgress extends StatelessWidget {
-  const TodayLinearProgress({
-    super.key,
-    required this.progress,
-    required this.color,
-    this.height = AppSpacingTokens.level2,
-  });
-
-  final double progress;
-  final Color color;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    final value = progress.clamp(0, 1).toDouble();
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-      child: Stack(
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(color: context.theme.colors.primary),
-            child: SizedBox(height: height, width: double.infinity),
-          ),
-          FractionallySizedBox(
-            widthFactor: value,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [color.withValues(alpha: 0.82), color],
-                ),
-              ),
-              child: SizedBox(height: height, width: double.infinity),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class TodayMiniTrendChart extends StatelessWidget {
   const TodayMiniTrendChart({
     super.key,

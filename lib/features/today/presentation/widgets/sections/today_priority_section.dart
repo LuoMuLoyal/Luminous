@@ -66,7 +66,7 @@ class _PriorityRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return FTappable(
       key: item.key,
@@ -93,7 +93,7 @@ class _PriorityRow extends ConsumerWidget {
                 children: [
                   Text(
                     item.title,
-                    style: textTheme.titleMedium?.copyWith(
+                    style: typography.body.md.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                     maxLines: 1,
@@ -102,7 +102,7 @@ class _PriorityRow extends ConsumerWidget {
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     item.subtitle,
-                    style: textTheme.bodySmall?.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: colors.mutedForeground,
                     ),
                     maxLines: 1,
@@ -110,10 +110,30 @@ class _PriorityRow extends ConsumerWidget {
                   ),
                   if (item.progress != null) ...[
                     const SizedBox(height: AppSpacingTokens.level2),
-                    TodayLinearProgress(
-                      progress: item.progress!,
-                      color: item.color.resolve(colors),
-                      height: 5,
+                    FDeterminateProgress(
+                      value: item.progress!,
+                      style: .delta(
+                        constraints: const BoxConstraints(
+                          minWidth: double.infinity,
+                        ),
+                        trackDecoration: .shapeDelta(color: colors.primary),
+                        fillDecoration: .value(
+                          ShapeDecoration(
+                            shape: RoundedSuperellipseBorder(
+                              borderRadius:
+                                  context.theme.style.borderRadius.pill,
+                            ),
+                            gradient: LinearGradient(
+                              colors: [
+                                item.color
+                                    .resolve(colors)
+                                    .withValues(alpha: 0.82),
+                                item.color.resolve(colors),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ],
@@ -128,7 +148,7 @@ class _PriorityRow extends ConsumerWidget {
                 children: [
                   AppSkeletonText(
                     text: item.detail,
-                    style: textTheme.labelMedium?.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: colors.mutedForeground,
                       fontWeight: FontWeight.w800,
                     ),

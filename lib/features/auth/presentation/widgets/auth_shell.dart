@@ -30,7 +30,6 @@ class AuthShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final width = MediaQuery.sizeOf(context).width;
     final layout = AppLayoutTokens.resolve(width);
 
@@ -53,7 +52,6 @@ class AuthShell extends StatelessWidget {
                     title: title,
                     leading: leading,
                     centerTitle: centerTitle,
-                    textTheme: textTheme,
                     logo: logo,
                     subtitle: subtitle,
                   ),
@@ -81,7 +79,6 @@ class _AuthPageHeader extends StatelessWidget {
     required this.title,
     required this.leading,
     required this.centerTitle,
-    required this.textTheme,
     this.logo,
     this.subtitle,
   });
@@ -89,12 +86,13 @@ class _AuthPageHeader extends StatelessWidget {
   final String title;
   final Widget? leading;
   final bool centerTitle;
-  final TextTheme textTheme;
   final Widget? logo;
   final String? subtitle;
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.theme.typography;
+
     if (logo == null && subtitle == null) {
       return Row(
         children: [
@@ -108,9 +106,7 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           const SizedBox(width: 48),
@@ -130,35 +126,19 @@ class _AuthPageHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacingTokens.level2),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(
+            style: typography.body.md.copyWith(
               color: context.theme.colors.mutedForeground,
             ),
           ),
         ],
       ],
-    );
-  }
-}
-
-class AuthSectionCard extends StatelessWidget {
-  const AuthSectionCard({super.key, required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return FCard.raw(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
-        child: child,
-      ),
     );
   }
 }

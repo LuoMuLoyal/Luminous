@@ -12,18 +12,15 @@ class AuthBrandLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colors = context.theme.colors;
 
     return Image.asset(
       _assetPath,
       width: size,
       height: size,
       fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) => Icon(
-        FLucideIcons.shieldPlus,
-        color: theme.colorScheme.primary,
-        size: size,
-      ),
+      errorBuilder: (context, error, stackTrace) =>
+          Icon(FLucideIcons.shieldPlus, color: colors.primary, size: size),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class MineHeaderActionChip extends StatelessWidget {
   const MineHeaderActionChip({
@@ -48,78 +47,6 @@ class MineHeaderActionChip extends StatelessWidget {
               : colors.foreground,
         ),
       ),
-    );
-  }
-}
-
-class MineSettingRow extends StatelessWidget {
-  const MineSettingRow({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.value,
-    required this.onTap,
-    this.showDivider = false,
-  });
-
-  final IconData icon;
-  final String title;
-  final String? value;
-  final VoidCallback onTap;
-  final bool showDivider;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
-    final row = FTappable(
-      onPress: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level4,
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: colors.foreground),
-            const SizedBox(width: AppSpacingTokens.level4),
-            Expanded(
-              child: Text(
-                title,
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            if (value != null) ...[
-              const SizedBox(width: AppSpacingTokens.level3),
-              Text(
-                value!,
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ],
-            const SizedBox(width: AppSpacingTokens.level2),
-            Icon(
-              FLucideIcons.chevronRight,
-              size: 18,
-              color: colors.mutedForeground,
-            ),
-          ],
-        ),
-      ),
-    );
-
-    if (!showDivider) {
-      return row;
-    }
-
-    return Column(
-      children: [
-        row,
-        AppDivider(color: colors.border),
-      ],
     );
   }
 }

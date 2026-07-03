@@ -25,48 +25,26 @@ class ReminderInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
-    final row = Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
+    final tile = FTile(
+      prefix: Icon(
+        icon,
+        color: colors.mutedForeground,
+        size: AppSpacingTokens.level5,
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            color: colors.mutedForeground,
-            size: AppSpacingTokens.level5,
-          ),
-          const SizedBox(width: AppSpacingTokens.level4),
-          Expanded(
-            child: Text(
-              label,
-              style: textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.level3),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
-            ),
-          ),
-        ],
+      title: Text(label),
+      details: Text(
+        value,
+        textAlign: TextAlign.right,
+        style: TextStyle(color: colors.mutedForeground),
       ),
     );
 
-    if (!showDivider) return row;
+    if (!showDivider) return tile;
+
     return Column(
       children: [
-        row,
+        tile,
         AppDivider(color: colors.border),
       ],
     );
@@ -92,59 +70,32 @@ class ValueActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
-    return FTappable(
+    return FTile(
       onPress: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
+      prefix: Icon(
+        icon,
+        color: colors.mutedForeground,
+        size: AppSpacingTokens.level5,
+      ),
+      title: Text(title),
+      details: Text(
+        value,
+        textAlign: TextAlign.right,
+        style: TextStyle(color: colors.mutedForeground),
+      ),
+      suffix: onClear != null
+          ? FButton.icon(
+              variant: FButtonVariant.ghost,
+              size: .sm,
+              onPress: onClear,
+              child: const Icon(FLucideIcons.x, size: 18),
+            )
+          : Icon(
+              FLucideIcons.chevronRight,
               color: colors.mutedForeground,
               size: AppSpacingTokens.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.level4),
-            Expanded(
-              child: Text(
-                title,
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.level3),
-            Flexible(
-              child: Text(
-                value,
-                textAlign: TextAlign.right,
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
-              ),
-            ),
-            if (onClear != null) ...[
-              const SizedBox(width: AppSpacingTokens.level2),
-              FButton.icon(
-                variant: FButtonVariant.ghost,
-                onPress: onClear,
-                child: const Icon(FLucideIcons.x, size: 18),
-              ),
-            ] else ...[
-              const SizedBox(width: AppSpacingTokens.level2),
-              Icon(
-                FLucideIcons.chevronRight,
-                color: colors.mutedForeground,
-                size: AppSpacingTokens.level5,
-              ),
-            ],
-          ],
-        ),
-      ),
     );
   }
 }
@@ -166,7 +117,7 @@ class SwitchRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -187,14 +138,14 @@ class SwitchRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: textTheme.labelLarge?.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   subtitle,
-                  style: textTheme.bodySmall?.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
                 ),
@@ -225,7 +176,7 @@ class UnavailableMethodRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -246,14 +197,13 @@ class UnavailableMethodRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: textTheme.labelLarge?.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   subtitle,
-                  style: textTheme.bodySmall?.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
                 ),
@@ -261,43 +211,7 @@ class UnavailableMethodRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          FBadge.raw(
-            builder: (context, style) {
-              final resolvedColor = AppColors.muted.resolve(colors);
-              final foreground = 0.12 > 0.5
-                  ? colors.primaryForeground
-                  : resolvedColor;
-              return DecoratedBox(
-                decoration: ShapeDecoration(
-                  color: resolvedColor.withValues(alpha: 0.12),
-                  shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
-                    vertical: AppSpacingTokens.level1,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        status,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: foreground,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+          FBadge(variant: FBadgeVariant.secondary, child: Text(status)),
         ],
       ),
     );
@@ -318,7 +232,7 @@ class SoundPreferenceRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -339,14 +253,14 @@ class SoundPreferenceRow extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineReminderSoundLabel,
-                  style: textTheme.labelLarge?.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.medicineReminderSoundLocalHint,
-                  style: textTheme.bodySmall?.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
                 ),
@@ -381,7 +295,7 @@ class SelectedMedicineRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacingTokens.level4),
@@ -400,7 +314,7 @@ class SelectedMedicineRow extends StatelessWidget {
               children: [
                 Text(
                   medicine.displayName,
-                  style: textTheme.labelLarge?.copyWith(
+                  style: typography.body.sm.copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                   maxLines: 1,
@@ -409,7 +323,7 @@ class SelectedMedicineRow extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineDoseText(l10n, medicine),
-                  style: textTheme.bodySmall?.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
                   maxLines: 1,

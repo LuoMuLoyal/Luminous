@@ -83,10 +83,16 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    showModalBottomSheet(
+    showFSheet(
       context: context,
+      side: FLayout.btt,
+      useSafeArea: true,
+      mainAxisMaxRatio: null,
       builder: (ctx) => ListView.builder(
         shrinkWrap: true,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.paddingOf(ctx).bottom + AppSpacingTokens.level4,
+        ),
         itemCount: items.length,
         itemBuilder: (_, i) {
           final item = items[i];

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
 
 class AssistantToolChip extends StatelessWidget {
   const AssistantToolChip({super.key, required this.label});
@@ -10,27 +9,22 @@ class AssistantToolChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-        border: Border.all(color: colors.border),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: 2,
-        ),
-        child: Text(
-          label,
-          style: textTheme.labelSmall?.copyWith(
-            color: colors.mutedForeground,
-            fontWeight: FontWeight.w600,
+    return FBadge(
+      variant: FBadgeVariant.secondary,
+      style: .delta(
+        decoration: .shapeDelta(
+          color: colors.secondary,
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.border),
+            borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
+        contentStyle: .delta(
+          labelTextStyle: .delta(color: colors.mutedForeground),
+        ),
       ),
+      child: Text(label),
     );
   }
 }

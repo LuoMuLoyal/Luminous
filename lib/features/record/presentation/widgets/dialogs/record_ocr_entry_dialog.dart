@@ -23,15 +23,11 @@ Future<String?> showRecordOcrEntrySheet(
   RecordOcrImagePicker? pickImage,
   RecordOcrRecognizer? recognizeText,
 }) {
-  return showModalBottomSheet<String>(
+  return showFSheet<String>(
     context: context,
-    isScrollControlled: true,
+    side: FLayout.btt,
     useSafeArea: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(AppRadiusTokens.level5),
-      ),
-    ),
+    resizeToAvoidBottomInset: true,
     builder: (dialogContext) => _RecordOcrEntrySheet(
       pickImage:
           pickImage ??
@@ -57,9 +53,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+    final typography = context.theme.typography;
 
     // State
     final recognizedText = useState<String?>(null);
@@ -103,17 +98,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
         height: 420,
         child: Column(
           children: [
-            // Drag handle
-            const SizedBox(height: AppSpacingTokens.level3),
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colors.border,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const _SheetDragHandle(),
 
             // Title
             Padding(
@@ -125,7 +110,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                   Expanded(
                     child: Text(
                       l10n.recordOcrEntryTitle,
-                      style: textTheme.titleLarge?.copyWith(
+                      style: typography.body.xl2.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -201,7 +186,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         const SizedBox(height: AppSpacingTokens.level3),
                         Text(
                           l10n.recordOcrRecognizingHint,
-                          style: textTheme.labelSmall?.copyWith(
+                          style: typography.body.sm.copyWith(
                             color: colors.mutedForeground,
                           ),
                         ),
@@ -227,10 +212,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                                 ? l10n.recordNlpEmptyCandidatesToast
                                 : recognizedText.value!,
                             style: recognizedText.value!.isEmpty
-                                ? textTheme.bodyMedium?.copyWith(
+                                ? typography.body.md.copyWith(
                                     color: colors.mutedForeground,
                                   )
-                                : textTheme.bodyMedium,
+                                : typography.body.md,
                           ),
                         ),
                       ],
@@ -278,9 +263,8 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+    final typography = context.theme.typography;
 
     return FButton.raw(
       onPress: onTap,
@@ -305,11 +289,40 @@ class _OptionCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, size: 36, color: theme.colorScheme.primary),
+          Icon(icon, size: 36, color: colors.primary),
           const SizedBox(height: AppSpacingTokens.level3),
-          Text(label, style: textTheme.bodySmall, textAlign: TextAlign.center),
+          Text(
+            label,
+            style: typography.body.sm.copyWith(color: colors.foreground),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _SheetDragHandle extends StatelessWidget {
+  const _SheetDragHandle();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: AppSpacingTokens.level3),
+        Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(
+            color: colors.border,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.level4),
+      ],
     );
   }
 }

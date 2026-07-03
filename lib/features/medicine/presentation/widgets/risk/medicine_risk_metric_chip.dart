@@ -15,13 +15,17 @@ class MedicineRiskMetricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        border: Border.all(color: colors.border),
+    return FCard.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: colors.secondary.withValues(alpha: 0.08),
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.border),
+            borderRadius: context.theme.style.borderRadius.lg,
+          ),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -34,16 +38,12 @@ class MedicineRiskMetricChip extends StatelessWidget {
           children: [
             Text(
               label,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: typography.body.sm.copyWith(color: colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level1),
             Text(
               value,
-              style: textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: typography.body.xl.copyWith(fontWeight: FontWeight.w800),
             ),
           ],
         ),

@@ -11,7 +11,7 @@ class DesktopTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+    final typography = context.theme.typography;
 
     return Row(
       children: [
@@ -21,15 +21,67 @@ class DesktopTabs extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level3),
             Text(
               l10n.medicineSearchAssistantTitle,
-              style: textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),
         const Spacer(),
-        _TopTab(label: l10n.medicineSearchPageTitle, active: true),
-        _TopTab(label: l10n.medicineSearchMyBoxTab, active: false),
+        FButton(
+          variant: FButtonVariant.ghost,
+          style: .delta(
+            contentStyle: .delta(
+              padding: .value(
+                const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.level4,
+                  vertical: AppSpacingTokens.level2,
+                ),
+              ),
+            ),
+          ),
+          onPress: () {},
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.medicineSearchPageTitle,
+                style: typography.body.sm.copyWith(
+                  color: colors.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacingTokens.level2),
+              Container(width: 42, height: 2, color: colors.primary),
+            ],
+          ),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          style: .delta(
+            contentStyle: .delta(
+              padding: .value(
+                const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.level4,
+                  vertical: AppSpacingTokens.level2,
+                ),
+              ),
+            ),
+          ),
+          onPress: () {},
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                l10n.medicineSearchMyBoxTab,
+                style: typography.body.sm.copyWith(
+                  color: colors.foreground,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacingTokens.level2),
+              Container(width: 42, height: 2, color: Colors.transparent),
+            ],
+          ),
+        ),
         const SizedBox(width: AppSpacingTokens.level5),
         DecoratedBox(
           decoration: BoxDecoration(
@@ -47,40 +99,6 @@ class DesktopTabs extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _TopTab extends StatelessWidget {
-  const _TopTab({required this.label, required this.active});
-
-  final String label;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
-      child: Column(
-        children: [
-          Text(
-            label,
-            style: textTheme.labelLarge?.copyWith(
-              color: active ? colors.primary : colors.foreground,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: AppSpacingTokens.level2),
-          Container(
-            width: 42,
-            height: 2,
-            color: active ? colors.primary : Colors.transparent,
-          ),
-        ],
-      ),
     );
   }
 }

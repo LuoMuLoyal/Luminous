@@ -28,9 +28,8 @@ class AssistantProposalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+    final typography = context.theme.typography;
     final l10n = AppLocalizations.of(context)!;
 
     return DecoratedBox(
@@ -49,33 +48,33 @@ class AssistantProposalCard extends StatelessWidget {
                 Icon(
                   proposalIcon(proposal.type),
                   size: 18,
-                  color: theme.colorScheme.primary,
+                  color: colors.primary,
                 ),
                 const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(
                   child: Text(
                     proposal.title,
-                    style: textTheme.titleMedium?.copyWith(
+                    style: typography.body.lg.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
                 Text(
                   proposalStateText(l10n, proposal),
-                  style: textTheme.labelMedium?.copyWith(
-                    color: proposalStateColor(theme, proposal),
+                  style: typography.body.sm.copyWith(
+                    color: proposalStateColor(colors, proposal),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level2),
-            Text(proposal.summary, style: textTheme.bodyMedium),
+            Text(proposal.summary, style: typography.body.md),
             if (proposal.reason case final reason?) ...[
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 reason,
-                style: textTheme.bodySmall?.copyWith(
+                style: typography.body.sm.copyWith(
                   color: colors.mutedForeground,
                 ),
               ),
@@ -97,9 +96,7 @@ class AssistantProposalCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 error,
-                style: textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
+                style: typography.body.sm.copyWith(color: colors.destructive),
               ),
             ],
             const SizedBox(height: AppSpacingTokens.level3),
@@ -149,9 +146,8 @@ class _ProposalMetaSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+    final typography = context.theme.typography;
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
     final metaRows = <String>[
@@ -179,7 +175,7 @@ class _ProposalMetaSection extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   row,
-                  style: textTheme.bodySmall?.copyWith(
+                  style: typography.body.sm.copyWith(
                     color: colors.mutedForeground,
                   ),
                 ),
@@ -188,9 +184,7 @@ class _ProposalMetaSection extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.assistantProposalConstraintsLabel,
-                style: textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 2),
               for (final constraint in proposal.constraints)
@@ -198,7 +192,7 @@ class _ProposalMetaSection extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 2),
                   child: Text(
                     '• $constraint',
-                    style: textTheme.bodySmall?.copyWith(
+                    style: typography.body.sm.copyWith(
                       color: colors.mutedForeground,
                     ),
                   ),
@@ -208,9 +202,7 @@ class _ProposalMetaSection extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.assistantProposalExpiredHint,
-                style: textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.error,
-                ),
+                style: typography.body.sm.copyWith(color: colors.destructive),
               ),
             ],
           ],

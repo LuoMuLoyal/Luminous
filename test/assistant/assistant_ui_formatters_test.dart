@@ -34,40 +34,40 @@ AssistantProposedAction _p(AssistantProposalExecutionState s) {
 
 void main() {
   group('proposalStateColor', () {
-    final theme = ThemeData.light();
+    final colors = FThemes.neutral.light.touch.colors;
     test('pending → primary', () {
       expect(
-        proposalStateColor(theme, _p(AssistantProposalExecutionState.pending)),
-        theme.colorScheme.primary,
+        proposalStateColor(colors, _p(AssistantProposalExecutionState.pending)),
+        colors.primary,
       );
     });
-    test('confirmed → tertiary', () {
+    test('confirmed → secondary', () {
       expect(
         proposalStateColor(
-          theme,
+          colors,
           _p(AssistantProposalExecutionState.confirmed),
         ),
-        theme.colorScheme.tertiary,
+        colors.secondary,
       );
     });
-    test('dismissed → outline', () {
+    test('dismissed → mutedForeground', () {
       expect(
         proposalStateColor(
-          theme,
+          colors,
           _p(AssistantProposalExecutionState.dismissed),
         ),
-        theme.colorScheme.outline,
+        colors.mutedForeground,
       );
     });
-    test('failed → error', () {
+    test('failed → destructive', () {
       expect(
-        proposalStateColor(theme, _p(AssistantProposalExecutionState.failed)),
-        theme.colorScheme.error,
+        proposalStateColor(colors, _p(AssistantProposalExecutionState.failed)),
+        colors.destructive,
       );
     });
     test('covers all states', () {
       for (final s in AssistantProposalExecutionState.values) {
-        expect(proposalStateColor(theme, _p(s)), isA<Color>());
+        expect(proposalStateColor(colors, _p(s)), isA<Color>());
       }
     });
   });

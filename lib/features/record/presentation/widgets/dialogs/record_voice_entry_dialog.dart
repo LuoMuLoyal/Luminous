@@ -14,15 +14,11 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// Returns `null` if the user cancels or no text was recognized.
 Future<String?> showRecordVoiceEntrySheet(BuildContext context) {
-  return showModalBottomSheet<String>(
+  return showFSheet<String>(
     context: context,
-    isScrollControlled: true,
+    side: FLayout.btt,
     useSafeArea: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(AppRadiusTokens.level5),
-      ),
-    ),
+    resizeToAvoidBottomInset: true,
     builder: (dialogContext) => _RecordVoiceEntrySheet(),
   );
 }
@@ -31,9 +27,8 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+    final typography = context.theme.typography;
 
     // Service lifecycle: create once, dispose on unmount.
     final service = useMemoized(() => VoiceRecordingService());
@@ -147,10 +142,10 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
       return null;
     }, []);
 
-    final primaryColor = theme.colorScheme.primary;
+    final primaryColor = colors.primary;
     final micColor = isListening.value
         ? primaryColor
-        : theme.colorScheme.onSurface.withValues(alpha: 0.55);
+        : colors.mutedForeground.withValues(alpha: 0.55);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -160,17 +155,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         height: 380,
         child: Column(
           children: [
-            // Drag handle
-            const SizedBox(height: AppSpacingTokens.level3),
-            Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: colors.border,
-                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-              ),
-            ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const _SheetDragHandle(),
 
             // Title
             Padding(
@@ -182,7 +167,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   Expanded(
                     child: Text(
                       l10n.recordVoiceEntryTitle,
-                      style: textTheme.titleLarge?.copyWith(
+                      style: typography.body.xl2.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -215,10 +200,10 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         ? l10n.recordVoiceTapToStart
                         : recognizedText.value,
                     style: recognizedText.value.isEmpty
-                        ? textTheme.bodyMedium?.copyWith(
+                        ? typography.body.md.copyWith(
                             color: colors.mutedForeground,
                           )
-                        : textTheme.bodyMedium,
+                        : typography.body.md,
                   ),
                 ),
               ),
@@ -254,7 +239,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         shape: BoxShape.circle,
                         color: isListening.value
                             ? primaryColor
-                            : theme.colorScheme.surfaceContainerHighest,
+                            : colors.secondary,
                         boxShadow: [
                           BoxShadow(
                             color:
@@ -285,9 +270,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                       bottom: 0,
                       child: Text(
                         l10n.recordVoiceListeningHint,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: primaryColor,
-                        ),
+                        style: typography.body.xs.copyWith(color: primaryColor),
                       ),
                     ),
                 ],
@@ -324,4 +307,29 @@ Future<String?> _resolveSpeechLocaleId(
 ) async {
   final locales = await service.locales();
   return resolveSpeechLocaleId(locale, locales.map((entry) => entry.localeId));
+}
+
+class _SheetDragHandle extends StatelessWidget {
+  const _SheetDragHandle();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: AppSpacingTokens.level3),
+        Container(
+          width: 36,
+          height: 4,
+          decoration: BoxDecoration(
+            color: colors.border,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+          ),
+        ),
+        const SizedBox(height: AppSpacingTokens.level4),
+      ],
+    );
+  }
 }
