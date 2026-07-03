@@ -174,7 +174,7 @@ class ConditionEditPage extends HookConsumerWidget {
               AppStateErrorView(
                 title: l10n.mineErrorDescription,
                 description: '',
-                icon: Icons.error_outline_rounded,
+                icon: FLucideIcons.circleAlert,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => context.pop(),
               ),

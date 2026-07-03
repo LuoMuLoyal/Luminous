@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -142,7 +143,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         ? result.coverageSummary
         : null;
     final coverageAlert = MedicineAlert(
-      icon: Icons.info_outline_rounded,
+      icon: FLucideIcons.info,
       color: AppColors.primary,
       softColor: AppColors.primary,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
@@ -176,7 +177,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
   return [
     MedicineAlert(
-      icon: Icons.verified_outlined,
+      icon: FLucideIcons.badgeCheck,
       color: AppColors.primary,
       softColor: AppColors.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
@@ -189,11 +190,11 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
 IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
   return switch (finding.type) {
-    MedicineRiskFindingType.interaction => Icons.sync_problem_rounded,
-    MedicineRiskFindingType.duplicateIngredient => Icons.content_copy_rounded,
-    MedicineRiskFindingType.allergy => Icons.warning_amber_rounded,
-    MedicineRiskFindingType.specialGroup => Icons.health_and_safety_rounded,
-    MedicineRiskFindingType.foodInteraction => Icons.restaurant_rounded,
+    MedicineRiskFindingType.interaction => FLucideIcons.circleAlert,
+    MedicineRiskFindingType.duplicateIngredient => FLucideIcons.copy,
+    MedicineRiskFindingType.allergy => FLucideIcons.triangleAlert,
+    MedicineRiskFindingType.specialGroup => FLucideIcons.shieldCheck,
+    MedicineRiskFindingType.foodInteraction => FLucideIcons.utensils,
   };
 }
 

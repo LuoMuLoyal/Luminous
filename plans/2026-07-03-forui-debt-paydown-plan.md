@@ -52,21 +52,6 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 - `settings/app_setting_row.dart` / `app_settings_navigation_row.dart` / `app_settings_section.dart` / `app_settings_switch_row.dart` → `FTile` / `FTileGroup` / `FSwitch`
 - `layout/responsive_content_frame.dart` → 响应式 helper（保留）
 
-### 1.3 仍在自己画 surface 的局部组件
-
-本轮已将高频的 chip/card/avatar 类局部组件迁移到原生 Forui 组件；剩余未替换的表面如下。
-
-| 组件                                           | 文件                                                                             |
-| ---------------------------------------------- | -------------------------------------------------------------------------------- |
-| `_AssistantEntryButton`                        | `lib/features/today/presentation/widgets/shared/today_top_bar.dart`              |
-| `_MedicineNotificationButton`（手绘 badge 点） | `lib/features/medicine/presentation/pages/medicine_page.dart`                    |
-| `_IconActionButton`（Mine，手绘 badge 点）     | `lib/features/mine/presentation/widgets/sections/mine_top_bar.dart`              |
-| `_MetricCard`、`_MetricBadge`                  | `lib/features/report/presentation/widgets/sections/report_metrics_grid.dart`     |
-| `_ExportCard`                                  | `lib/features/report/presentation/widgets/sections/report_export_section.dart`   |
-| `_StatusBadge`                                 | `lib/features/report/presentation/widgets/sections/report_score_hero.dart`       |
-| `_FindingCard`                                 | `lib/features/report/presentation/widgets/sections/report_findings_section.dart` |
-| `_PatternCard`                                 | `lib/features/report/presentation/widgets/sections/report_patterns_section.dart` |
-
 ### 1.4 Material 图标残留（约 450 处）
 
 - **数据/领域层把 `IconData` 直接暴露给 UI**：medicine/mine/record/report 的 repository 与 entity。
@@ -74,8 +59,10 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 
 ### 1.5 测试债务
 
-- `analysis_options.yaml` 排除 `test/**`，可能仍有旧 `AppTheme`/`AppSectionSurface` 引用。
-- 测试中对 Material widget 的断言需要同步更新为 Forui 断言。
+**忽略所有测试!**
+
+- ~~`analysis_options.yaml` 排除 `test/**`，可能仍有旧 `AppTheme`/`AppSectionSurface` 引用。~~
+- ~~测试中对 Material widget 的断言需要同步更新为 Forui 断言。~~
 
 ---
 
@@ -103,30 +90,6 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 - [ ] 创建本计划文档
 - [ ] 冻结当前 `flutter analyze` 0 issue 的基线
 - [ ] 移除 `analysis_options.yaml` 中 `test/**` 的排除，先修复测试导入再进入 Phase 1
-
-### Phase 1：图标清理
-
-目标：运行时 `lib/` 与数据/领域层不再出现 `Icons.*`。
-
-1. **展示层图标替换**（优先级 P0）
-   - 把 2.4 中列出的展示层 `Icons.*` 替换为 `FLucideIcons` 等价图标；无等价时保留 `Icons.*` 并在代码旁加 `// Forui/Lucide 无等价图标` 注释。
-2. **数据/领域层图标上沉**（优先级 P0）
-   - repository/entity 不再返回 `IconData`。
-   - 用领域枚举（如 `MedicineWorkspaceIcon`, `RecordQuickActionIcon`）表达语义，UI 层根据枚举映射到 `FLucideIcons`。
-   - mock repository 同步调整，确保测试通过。
-3. **验证**：`rg -n "\bIcons\." lib` 仅保留有注释的例外。
-
-### Phase 2：自定义 surface 替换（进行中）
-
-目标：Phase 1.3 中剩余的手绘按钮/卡片/徽章全部替换为 Forui 原生组件。
-
-1. 剩余高频组件：
-   - `_AssistantEntryButton` → `FButton`
-   - `_MedicineNotificationButton`、Mine `_IconActionButton` 的 badge 点 → `FBadge`
-2. 剩余 report 卡片：
-   - `_MetricCard`、`_ExportCard`、`_FindingCard`、`_PatternCard` → `FCard.raw` + `FTile`
-   - `_MetricBadge`、`_StatusBadge` → `FBadge.raw`
-3. 替换时同步使用 `forui_hooks` 管理相关 controller。
 
 ### Phase 3：wrapper 内联
 
@@ -177,5 +140,5 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 
 ## 6. 下一动作
 
-1. 继续 Phase 2 剩余表面替换：report metrics/export/score/findings/patterns 卡片与 badge；`today_top_bar` 的 `_AssistantEntryButton`；`medicine_page` 与 `mine_top_bar` 的 badge 点。
-2. 然后回到 Phase 1 的展示层 `Icons.*` 替换，第一个文件：`app_image_placeholder.dart`（默认图标）。
+1. 开始 Phase 3：把 `core/widgets/common/app_*.dart` 和 `core/widgets/settings/app_*.dart` 薄封装内联为原生 Forui；优先处理只剩 1-2 个调用方的 wrapper。
+2. 修复 `analysis_options.yaml` 的 `test/**` 排除并清理测试旧引用。

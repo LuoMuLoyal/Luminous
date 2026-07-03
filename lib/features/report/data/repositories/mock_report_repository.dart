@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
@@ -56,7 +56,7 @@ class MockReportRepository implements ReportRepository {
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,
-        icon: Icons.medication_rounded,
+        icon: FLucideIcons.pill,
         color: AppColors.primary,
         value: '--',
         unit: '%',
@@ -67,7 +67,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.sleep,
-        icon: Icons.nightlight_round,
+        icon: FLucideIcons.moon,
         color: AppColors.primary,
         value: '--',
         unit: 'h',
@@ -78,7 +78,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.water,
-        icon: Icons.water_drop_rounded,
+        icon: FLucideIcons.droplets,
         color: AppColors.primary,
         value: '--',
         unit: 'L',
@@ -114,7 +114,7 @@ class MockReportRepository implements ReportRepository {
     findings: <ReportFinding>[
       ReportFinding(
         kind: ReportInsightKind.general,
-        icon: Icons.insights_rounded,
+        icon: FLucideIcons.chartLine,
         color: AppColors.primary,
         title: 'Preparing report',
         body: 'The latest contract-backed report is loading.',
@@ -123,24 +123,24 @@ class MockReportRepository implements ReportRepository {
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,
-        icon: Icons.local_hospital_rounded,
+        icon: FLucideIcons.hospital,
         color: AppColors.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.monthly,
-        icon: Icons.bar_chart_rounded,
+        icon: FLucideIcons.barChart,
         color: AppColors.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
-        icon: Icons.print_rounded,
+        icon: FLucideIcons.printer,
         color: AppColors.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
-        icon: Icons.insights_rounded,
+        icon: FLucideIcons.chartLine,
         color: AppColors.primary,
         title: 'Preparing report',
         status: ReportStatus.stable,
@@ -164,7 +164,7 @@ class MockReportRepository implements ReportRepository {
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,
-        icon: Icons.medication_rounded,
+        icon: FLucideIcons.pill,
         color: AppColors.primary,
         value: '--',
         unit: '%',
@@ -175,7 +175,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.sleep,
-        icon: Icons.nightlight_round,
+        icon: FLucideIcons.moon,
         color: AppColors.primary,
         value: '--',
         unit: 'h',
@@ -186,7 +186,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.water,
-        icon: Icons.water_drop_rounded,
+        icon: FLucideIcons.droplets,
         color: AppColors.primary,
         value: '--',
         unit: 'L',
@@ -222,7 +222,7 @@ class MockReportRepository implements ReportRepository {
     findings: <ReportFinding>[
       ReportFinding(
         kind: ReportInsightKind.general,
-        icon: Icons.lock_outline_rounded,
+        icon: FLucideIcons.lock,
         color: AppColors.primary,
         title: '登录后解锁报告',
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
@@ -231,24 +231,24 @@ class MockReportRepository implements ReportRepository {
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,
-        icon: Icons.local_hospital_rounded,
+        icon: FLucideIcons.hospital,
         color: AppColors.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.monthly,
-        icon: Icons.bar_chart_rounded,
+        icon: FLucideIcons.barChart,
         color: AppColors.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
-        icon: Icons.print_rounded,
+        icon: FLucideIcons.printer,
         color: AppColors.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
-        icon: Icons.lock_outline_rounded,
+        icon: FLucideIcons.lock,
         color: AppColors.primary,
         title: '等待登录',
         status: ReportStatus.insufficientData,

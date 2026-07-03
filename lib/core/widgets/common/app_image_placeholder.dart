@@ -8,7 +8,7 @@ class AppImagePlaceholder extends StatelessWidget {
     required this.label,
     this.width,
     this.height,
-    this.icon = Icons.image_outlined,
+    this.icon = FLucideIcons.image,
   });
 
   final String label;

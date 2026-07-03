@@ -284,10 +284,10 @@ class _TimelineCard extends StatelessWidget {
   }
 
   IconData _trailingIcon() {
-    if (entry.trailingIcon == Icons.check_circle_outline_rounded) {
+    if (entry.trailingIcon == FLucideIcons.checkCircle2) {
       return FLucideIcons.badgeCheck;
     }
-    if (entry.trailingIcon == Icons.chevron_right_rounded ||
+    if (entry.trailingIcon == FLucideIcons.chevronRight ||
         entry.trailingIcon == null) {
       return FLucideIcons.chevronRight;
     }
@@ -295,7 +295,7 @@ class _TimelineCard extends StatelessWidget {
   }
 
   Color _trailingColor(FColors colors) {
-    if (entry.trailingIcon == Icons.check_circle_outline_rounded) {
+    if (entry.trailingIcon == FLucideIcons.checkCircle2) {
       return colors.foreground;
     }
     return colors.mutedForeground;

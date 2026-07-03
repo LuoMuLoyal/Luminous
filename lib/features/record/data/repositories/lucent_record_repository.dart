@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
@@ -78,14 +78,14 @@ class LucentRecordRepository implements RecordRepository {
     final soft = AppColors.secondary;
 
     final icon = switch (kind) {
-      DailyRecordKind.water => Icons.water_drop_rounded,
-      DailyRecordKind.meal => Icons.restaurant_rounded,
-      DailyRecordKind.vital => Icons.favorite_rounded,
-      DailyRecordKind.mood => Icons.sentiment_satisfied_rounded,
-      DailyRecordKind.symptom => Icons.healing_rounded,
-      DailyRecordKind.activity => Icons.directions_run_rounded,
-      DailyRecordKind.note => Icons.notes_rounded,
-      DailyRecordKind.sleep => Icons.dark_mode_rounded,
+      DailyRecordKind.water => FLucideIcons.droplets,
+      DailyRecordKind.meal => FLucideIcons.utensils,
+      DailyRecordKind.vital => FLucideIcons.heart,
+      DailyRecordKind.mood => FLucideIcons.smile,
+      DailyRecordKind.symptom => FLucideIcons.cross,
+      DailyRecordKind.activity => FLucideIcons.personStanding,
+      DailyRecordKind.note => FLucideIcons.notebookPen,
+      DailyRecordKind.sleep => FLucideIcons.moon,
     };
 
     // Mood records created through the fast-entry dialog store the level in
@@ -272,7 +272,7 @@ class LucentRecordRepository implements RecordRepository {
   static final _staticQuickActions = <RecordQuickAction>[
     RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: Icons.medical_services_outlined,
+      icon: FLucideIcons.briefcaseMedical,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -280,7 +280,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -289,7 +289,7 @@ class LucentRecordRepository implements RecordRepository {
     // Lightweight mood self-check-in quick action.
     RecordQuickAction(
       type: RecordEntryType.mood,
-      icon: Icons.sentiment_satisfied_rounded,
+      icon: FLucideIcons.smile,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -297,7 +297,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: Icons.restaurant_rounded,
+      icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -305,7 +305,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
-      icon: Icons.water_drop_rounded,
+      icon: FLucideIcons.droplets,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: AppColors.primary,
@@ -313,7 +313,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.vitals,
-      icon: Icons.favorite_rounded,
+      icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
       accent: AppColors.primary,
@@ -321,7 +321,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: Icons.dark_mode_rounded,
+      icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -329,7 +329,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -349,56 +349,56 @@ class LucentRecordRepository implements RecordRepository {
     RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: Icons.medical_services_outlined,
+      icon: FLucideIcons.briefcaseMedical,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: Icons.sentiment_satisfied_rounded,
+      icon: FLucideIcons.smile,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: Icons.water_drop_rounded,
+      icon: FLucideIcons.droplets,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: Icons.restaurant_rounded,
+      icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
-      icon: Icons.favorite_rounded,
+      icon: FLucideIcons.heart,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: Icons.dark_mode_rounded,
+      icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       accent: AppColors.primary,
       selected: true,
     ),

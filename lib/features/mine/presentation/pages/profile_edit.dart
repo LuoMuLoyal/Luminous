@@ -169,7 +169,7 @@ class ProfileEditPage extends HookConsumerWidget {
               error: (_, __) => AppStateErrorView(
                 title: l10n.mineErrorTitle,
                 description: l10n.mineErrorDescription,
-                icon: Icons.badge_outlined,
+                icon: FLucideIcons.badge,
                 actionLabel: l10n.todayRetryAction,
                 onAction: () => ref.invalidate(healthContextSnapshotProvider),
                 tone: AppStateTone.warning,

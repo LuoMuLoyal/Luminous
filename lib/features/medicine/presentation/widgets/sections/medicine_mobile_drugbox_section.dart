@@ -199,7 +199,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
           children: [
             Expanded(
               child: _DrugBoxMetricItem(
-                icon: Icons.schedule_rounded,
+                icon: FLucideIcons.clock,
                 color: AppColors.primary,
                 label: l10n.medicineNextDoseReminderTitle,
                 value: value,

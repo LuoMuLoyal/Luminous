@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
@@ -213,7 +213,7 @@ class MockRecordRepository implements RecordRepository {
   static final _quickActions = <RecordQuickAction>[
     RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
       accent: AppColors.primary,
@@ -221,7 +221,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.vitals,
-      icon: Icons.favorite_rounded,
+      icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
       accent: AppColors.primary,
@@ -229,7 +229,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: AppColors.primary,
@@ -237,7 +237,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: Icons.sick_outlined,
+      icon: FLucideIcons.thermometer,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -245,7 +245,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -254,7 +254,7 @@ class MockRecordRepository implements RecordRepository {
     // Lightweight mood self-check-in quick action.
     RecordQuickAction(
       type: RecordEntryType.mood,
-      icon: Icons.mood_rounded,
+      icon: FLucideIcons.smile,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -262,7 +262,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: Icons.dark_mode_rounded,
+      icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -270,7 +270,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -287,7 +287,7 @@ class MockRecordRepository implements RecordRepository {
   static final _summaryItems = <RecordSummaryItem>[
     RecordSummaryItem(
       type: RecordEntryType.meal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.summaryMealTitle,
       value: '2',
       unitKey: RecordCopyKey.summaryTimesUnit,
@@ -296,7 +296,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordSummaryItem(
       type: RecordEntryType.water,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.summaryWaterTitle,
       value: '5 / 8',
       unitKey: RecordCopyKey.summaryCupsUnit,
@@ -305,7 +305,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     RecordSummaryItem(
       type: RecordEntryType.vitals,
-      icon: Icons.favorite_rounded,
+      icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.summaryLatestVitalTitle,
       value: '118/76',
       detailKey: RecordCopyKey.summaryNormal,
@@ -318,35 +318,35 @@ class MockRecordRepository implements RecordRepository {
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
-      icon: Icons.favorite_rounded,
+      icon: FLucideIcons.heart,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: Icons.sick_outlined,
+      icon: FLucideIcons.thermometer,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: AppColors.primary,
       selected: true,
     ),
@@ -355,21 +355,21 @@ class MockRecordRepository implements RecordRepository {
     RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: Icons.mood_rounded,
+      icon: FLucideIcons.smile,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: Icons.dark_mode_rounded,
+      icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       accent: AppColors.primary,
       selected: true,
     ),
@@ -411,29 +411,29 @@ class MockRecordRepository implements RecordRepository {
     RecordTimelineEntry(
       time: '08:30',
       type: RecordEntryType.medication,
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.typeMedication,
       valueKey: RecordCopyKey.timelineMedicationName,
       detailKey: RecordCopyKey.timelineMedicationDetail,
-      trailingIcon: Icons.check_circle_outline_rounded,
+      trailingIcon: FLucideIcons.checkCircle2,
     ),
     RecordTimelineEntry(
       time: '09:15',
       type: RecordEntryType.water,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.typeWater,
       valueKey: RecordCopyKey.timelineWaterAmount,
       detailKey: RecordCopyKey.timelineWaterProgress,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
     RecordTimelineEntry(
       time: '12:45',
       type: RecordEntryType.meal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.timelineMealLunch,
@@ -441,18 +441,18 @@ class MockRecordRepository implements RecordRepository {
       detailKey: RecordCopyKey.timelineMealNutrition,
       badgeKey: RecordCopyKey.timelineAiBadge,
       imagePlaceholderKey: RecordCopyKey.foodImagePlaceholder,
-      trailingIcon: Icons.more_horiz_rounded,
+      trailingIcon: FLucideIcons.ellipsis,
     ),
     RecordTimelineEntry(
       time: '15:20',
       type: RecordEntryType.symptom,
-      icon: Icons.sick_outlined,
+      icon: FLucideIcons.thermometer,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.timelineSymptomRecord,
       detailKey: RecordCopyKey.timelineSymptomDetail,
       badgeKey: RecordCopyKey.timelineManualBadge,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
     // Deferred by Product_Vision MVP: keep lightweight mood timeline data
     // because it is useful for future self-check-ins, but do not surface it in
@@ -460,43 +460,43 @@ class MockRecordRepository implements RecordRepository {
     RecordTimelineEntry(
       time: '10:30',
       type: RecordEntryType.mood,
-      icon: Icons.mood_rounded,
+      icon: FLucideIcons.smile,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.timelineMoodCalm,
       detailKey: RecordCopyKey.timelineMoodDetail,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
     RecordTimelineEntry(
       time: '23:30',
       type: RecordEntryType.sleep,
-      icon: Icons.dark_mode_rounded,
+      icon: FLucideIcons.moon,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.timelineSleepRecord,
       detailKey: RecordCopyKey.timelineSleepDetail,
       badgeKey: RecordCopyKey.summaryNormal,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
     RecordTimelineEntry(
       time: '16:00',
       type: RecordEntryType.note,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.typeNote,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
     RecordTimelineEntry(
       time: '06:10',
       type: RecordEntryType.weight,
-      icon: Icons.water_drop_outlined,
+      icon: FLucideIcons.droplets,
       accent: AppColors.primary,
       softColor: AppColors.secondary,
       titleKey: RecordCopyKey.typeWeight,
       value: '--',
       detailKey: RecordCopyKey.timelineWeightDetail,
-      trailingIcon: Icons.chevron_right_rounded,
+      trailingIcon: FLucideIcons.chevronRight,
     ),
   ];
 

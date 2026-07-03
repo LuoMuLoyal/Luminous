@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -49,7 +50,7 @@ class TodayErrorView extends StatelessWidget {
     return AppStateErrorView(
       title: l10n.todayErrorTitle,
       description: l10n.todayErrorDescription,
-      icon: Icons.question_mark_rounded,
+      icon: FLucideIcons.circleHelp,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.danger,
@@ -70,7 +71,7 @@ class TodayEmptyView extends StatelessWidget {
         child: AppStateMessageView(
           title: l10n.todayEmptyTitle,
           description: l10n.todayEmptyDescription,
-          icon: Icons.medical_information_outlined,
+          icon: FLucideIcons.info,
           actionLabel: l10n.todayEmptyAction,
           onAction: () => context.push('/record/create'),
           tone: AppStateTone.success,

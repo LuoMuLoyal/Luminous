@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:forui/forui.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
@@ -147,7 +147,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
     MedicineQuickAction(
-      icon: Icons.search_rounded,
+      icon: FLucideIcons.search,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
       accent: AppColors.primary,
@@ -161,19 +161,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // recognition, and prescription contract/product job is ready.
   static final deferredScanQuickActions = <MedicineQuickAction>[
     MedicineQuickAction(
-      icon: Icons.photo_camera_outlined,
+      icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
       accent: AppColors.primary,
     ),
     MedicineQuickAction(
-      icon: Icons.qr_code_scanner_rounded,
+      icon: FLucideIcons.scanLine,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: AppColors.primary,
     ),
     MedicineQuickAction(
-      icon: Icons.receipt_long_outlined,
+      icon: FLucideIcons.receiptText,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
       accent: AppColors.primary,

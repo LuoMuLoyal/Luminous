@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/report_remote_data_source.dart';
@@ -137,10 +138,10 @@ class LucentReportRepository implements ReportRepository {
 
   IconData _metricIcon(ReportDataKind kind) {
     return switch (kind) {
-      ReportDataKind.medication => Icons.medication_rounded,
-      ReportDataKind.water => Icons.water_drop_rounded,
-      ReportDataKind.sleep => Icons.nightlight_round,
-      ReportDataKind.general => Icons.monitor_heart_rounded,
+      ReportDataKind.medication => FLucideIcons.pill,
+      ReportDataKind.water => FLucideIcons.droplets,
+      ReportDataKind.sleep => FLucideIcons.moon,
+      ReportDataKind.general => FLucideIcons.heartPulse,
     };
   }
 
@@ -155,10 +156,10 @@ class LucentReportRepository implements ReportRepository {
 
   IconData _insightIcon(ReportInsightKind kind) {
     return switch (kind) {
-      ReportInsightKind.medication => Icons.verified_rounded,
-      ReportInsightKind.hydration => Icons.water_drop_rounded,
-      ReportInsightKind.sleep => Icons.nightlight_round,
-      ReportInsightKind.general => Icons.insights_rounded,
+      ReportInsightKind.medication => FLucideIcons.badgeCheck,
+      ReportInsightKind.hydration => FLucideIcons.droplets,
+      ReportInsightKind.sleep => FLucideIcons.moon,
+      ReportInsightKind.general => FLucideIcons.chartLine,
     };
   }
 
@@ -175,22 +176,22 @@ class LucentReportRepository implements ReportRepository {
 final _exportActions = <ReportExportAction>[
   ReportExportAction(
     kind: ReportExportKind.hospital,
-    icon: Icons.local_hospital_rounded,
+    icon: FLucideIcons.hospital,
     color: AppColors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.monthly,
-    icon: Icons.bar_chart_rounded,
+    icon: FLucideIcons.barChart,
     color: AppColors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.print,
-    icon: Icons.print_rounded,
+    icon: FLucideIcons.printer,
     color: AppColors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.clinicShare,
-    icon: Icons.share_rounded,
+    icon: FLucideIcons.share2,
     color: AppColors.primary,
   ),
 ];

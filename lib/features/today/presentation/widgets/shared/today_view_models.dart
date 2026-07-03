@@ -294,7 +294,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
 
   return [
     TodayAiSummaryItem(
-      icon: Icons.medication_liquid_outlined,
+      icon: FLucideIcons.pill,
       color: AppColors.primary,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
@@ -303,14 +303,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
           : l10n.todayAiSummaryMedicationDone,
     ),
     TodayAiSummaryItem(
-      icon: Icons.local_drink_outlined,
+      icon: FLucideIcons.cupSoda,
       color: waterRemaining == 0 ? AppColors.primary : AppColors.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
-      icon: Icons.bedtime_outlined,
+      icon: FLucideIcons.bed,
       color: AppColors.primary,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),

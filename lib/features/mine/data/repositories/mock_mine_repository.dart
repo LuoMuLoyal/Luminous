@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
@@ -80,21 +80,21 @@ class MockMineRepository implements MineRepository {
 
   static final _mockAlerts = [
     MineStatusCard(
-      icon: Icons.warning_rounded,
+      icon: FLucideIcons.triangleAlert,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     MineStatusCard(
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
       badgeKey: MineCopyKey.alertMedicineBadge,
     ),
     MineStatusCard(
-      icon: Icons.verified_user_rounded,
+      icon: FLucideIcons.userCheck,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -104,7 +104,7 @@ class MockMineRepository implements MineRepository {
 
   static final _mockArchiveEntries = [
     MineArchiveEntry(
-      icon: Icons.badge_rounded,
+      icon: FLucideIcons.badge,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
@@ -112,7 +112,7 @@ class MockMineRepository implements MineRepository {
       route: '/mine/profile/edit',
     ),
     MineArchiveEntry(
-      icon: Icons.water_drop_rounded,
+      icon: FLucideIcons.droplets,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
@@ -120,14 +120,14 @@ class MockMineRepository implements MineRepository {
       route: '/mine/allergy/new',
     ),
     MineArchiveEntry(
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: '/mine/medicine/new',
     ),
     MineArchiveEntry(
-      icon: Icons.contact_emergency_rounded,
+      icon: FLucideIcons.contact,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveEmergencyTitle,
       subtitleKey: MineCopyKey.archiveEmergencySubtitle,

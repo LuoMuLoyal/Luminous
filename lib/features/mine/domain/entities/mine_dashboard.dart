@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -40,7 +41,7 @@ abstract class MineDashboard with _$MineDashboard {
     alerts: <MineStatusCard>[],
     archiveEntries: <MineArchiveEntry>[],
     privacyNotice: MinePrivacyNotice(
-      icon: Icons.shield_rounded,
+      icon: FLucideIcons.shield,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
@@ -25,7 +26,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: Icons.search_rounded,
+        icon: FLucideIcons.search,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: AppColors.primary,

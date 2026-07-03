@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -68,7 +69,7 @@ abstract class RecordDashboard with _$RecordDashboard {
   static final _defaultQuickActions = <RecordQuickAction>[
     RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
       accent: AppColors.primary,
@@ -76,7 +77,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: AppColors.primary,
@@ -84,7 +85,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: Icons.healing_rounded,
+      icon: FLucideIcons.cross,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -92,7 +93,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -100,7 +101,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: Icons.nightlight_round,
+      icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: AppColors.primary,
@@ -112,35 +113,35 @@ abstract class RecordDashboard with _$RecordDashboard {
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: Icons.local_drink_rounded,
+      icon: FLucideIcons.cupSoda,
       accent: AppColors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: Icons.restaurant_menu_rounded,
+      icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: Icons.healing_rounded,
+      icon: FLucideIcons.cross,
       accent: AppColors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: Icons.nightlight_round,
+      icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: Icons.notes_rounded,
+      icon: FLucideIcons.notebookPen,
       accent: AppColors.primary,
       selected: false,
     ),

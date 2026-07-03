@@ -134,8 +134,8 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
               onPress: () => _controller?.toggleTorch(),
               child: Icon(
                 _controller?.torchEnabled == true
-                    ? Icons.flash_on
-                    : Icons.flash_off,
+                    ? FLucideIcons.zap
+                    : FLucideIcons.zapOff,
                 color: context.theme.colors.primaryForeground,
               ),
             ),

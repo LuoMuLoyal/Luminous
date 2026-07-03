@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -68,7 +68,7 @@ MineDashboard buildDashboard({
     alerts: alerts,
     archiveEntries: archiveEntries,
     privacyNotice: const MinePrivacyNotice(
-      icon: Icons.shield_rounded,
+      icon: FLucideIcons.shield,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),
@@ -114,14 +114,14 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
     MineStatusCard(
-      icon: Icons.warning_rounded,
+      icon: FLucideIcons.triangleAlert,
       accent: _red,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     MineStatusCard(
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: _blue,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
@@ -130,7 +130,7 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
           : MineCopyKey.archiveNeedsFill,
     ),
     MineStatusCard(
-      icon: Icons.verified_user_rounded,
+      icon: FLucideIcons.userCheck,
       accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -144,7 +144,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
 
   return [
     MineArchiveEntry(
-      icon: Icons.badge_rounded,
+      icon: FLucideIcons.badge,
       accent: _green,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
@@ -154,7 +154,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: '/mine/profile/edit',
     ),
     MineArchiveEntry(
-      icon: Icons.water_drop_rounded,
+      icon: FLucideIcons.droplets,
       accent: _pink,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
@@ -164,7 +164,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: '/mine/allergy/new',
     ),
     MineArchiveEntry(
-      icon: Icons.medication_rounded,
+      icon: FLucideIcons.pill,
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
