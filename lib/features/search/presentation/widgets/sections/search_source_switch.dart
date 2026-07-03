@@ -51,9 +51,9 @@ class SourceSwitch extends StatelessWidget {
                         ),
                       ),
                     ]),
-                    contentStyle: .delta(
+                    contentStyle: const .delta(
                       padding: .value(
-                        const EdgeInsets.symmetric(
+                        EdgeInsets.symmetric(
                           horizontal: AppSpacingTokens.level4,
                           vertical: AppSpacingTokens.level3,
                         ),

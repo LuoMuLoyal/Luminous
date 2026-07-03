@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/daily_record_form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';

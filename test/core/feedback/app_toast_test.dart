@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 
 import '../../helpers/test_forui_app.dart';

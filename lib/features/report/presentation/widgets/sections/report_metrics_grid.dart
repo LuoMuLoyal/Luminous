@@ -114,9 +114,9 @@ class ReportMetricsGrid extends StatelessWidget {
 
   double _metricCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    if (width >= AppBreakpoints.desktop) return 188;
-    if (width >= AppBreakpoints.tablet) return 176;
-    return 164;
+    if (width >= AppBreakpoints.desktop) return 216;
+    if (width >= AppBreakpoints.tablet) return 204;
+    return 192;
   }
 
   bool get _allMetricValuesUnavailable =>
@@ -148,7 +148,9 @@ class _MetricCard extends StatelessWidget {
     return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(metric.kind),
       variant: FButtonVariant.ghost,
-      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
+      style: const .delta(
+        contentStyle: .delta(padding: .value(EdgeInsets.zero)),
+      ),
       child: FCard.raw(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),

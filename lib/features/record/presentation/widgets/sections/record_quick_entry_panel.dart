@@ -315,7 +315,9 @@ class _QuickRecordTile extends StatelessWidget {
           ? null
           : () => onQuickAction!(action),
       variant: FButtonVariant.ghost,
-      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
+      style: const .delta(
+        contentStyle: .delta(padding: .value(EdgeInsets.zero)),
+      ),
       child: Semantics(
         button: true,
         label: isLocked

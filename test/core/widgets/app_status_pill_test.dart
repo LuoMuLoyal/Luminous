@@ -57,12 +57,12 @@ void main() {
 
 /// Reusable builder for icon + label badge.
 Widget _iconLabelBuilder(BuildContext context, FBadgeStyle style) {
-  return Row(
+  return const Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      const Icon(FLucideIcons.check, size: 14),
-      const SizedBox(width: 4),
-      const Text('Verified'),
+      Icon(FLucideIcons.check, size: 14),
+      SizedBox(width: 4),
+      Text('Verified'),
     ],
   );
 }

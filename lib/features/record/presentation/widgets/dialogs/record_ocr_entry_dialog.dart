@@ -281,9 +281,9 @@ class _OptionCard extends StatelessWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
+            EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
           ),
         ),
       ),

@@ -26,7 +26,6 @@ import 'package:luminous/features/record/domain/entities/daily_record_candidates
 import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

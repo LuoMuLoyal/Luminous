@@ -7,7 +7,6 @@ import 'package:luminous/features/assistant/presentation/widgets/shared/assistan
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_state_card.dart';
-import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
 

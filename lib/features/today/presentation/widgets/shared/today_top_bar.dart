@@ -96,9 +96,9 @@ class _AssistantEntryButton extends ConsumerWidget {
               ),
             ),
           ]),
-          contentStyle: .delta(
+          contentStyle: const .delta(
             padding: .value(
-              const EdgeInsets.symmetric(
+              EdgeInsets.symmetric(
                 horizontal: AppSpacingTokens.level3,
                 vertical: AppSpacingTokens.level2,
               ),
@@ -165,7 +165,7 @@ class _NotificationButton extends ConsumerWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    SizedBox.square(dimension: AppSpacingTokens.level2),
+                    const SizedBox.square(dimension: AppSpacingTokens.level2),
               ),
             ),
         ],

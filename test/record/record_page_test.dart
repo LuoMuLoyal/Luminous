@@ -2112,7 +2112,7 @@ class _FakeRecordRepository implements RecordRepository {
     );
     final timeline = withRecordEntry
         ? [
-            RecordTimelineEntry(
+            const RecordTimelineEntry(
               time: '09:45',
               type: RecordEntryType.vitals,
               icon: Icons.favorite_rounded,

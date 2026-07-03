@@ -17,9 +17,9 @@ void main() {
         _appShell(
           FButton(
             prefix: const Icon(FLucideIcons.search),
-            child: const Text('Search'),
             onPress: () {},
             mainAxisSize: MainAxisSize.min,
+            child: const Text('Search'),
           ),
         ),
       );
@@ -33,9 +33,9 @@ void main() {
       await tester.pumpWidget(
         _appShell(
           FButton(
-            child: const Text('Tap me'),
             onPress: () => tapped = true,
             mainAxisSize: MainAxisSize.min,
+            child: const Text('Tap me'),
           ),
         ),
       );

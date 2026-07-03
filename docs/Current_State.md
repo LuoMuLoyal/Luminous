@@ -44,6 +44,8 @@ This file records current implementation facts only. Product direction lives in 
 - **Forui 迁移债务清偿计划**（2026-07-03）：引入 `forui_hooks: ^0.23.0` 作为带 controller 的 Forui 组件首选状态管理方式，并在 `Luminous/plans/2026-07-03-forui-debt-paydown-plan.md` 落地剩余债务清偿计划。剩余工作聚焦图标清理、手绘 surface 替换、wrapper 内联、token 定型和测试/CI 恢复。
 - **Forui 运行时迁移收尾**（2026-07-03）：完成了 runtime `lib/` 中最后一批自定义 surface 的 Forui 替换，包括 `showModalBottomSheet` → `showFSheet`、自定义 `TodayLinearProgress` → `FDeterminateProgress`、chip/pill → `FBadge`、列表行 → `FTile`、自定义 tabs → `FButton` tab pills、toast → `showFToast`/`FToaster`，并删除了 `RecordIndentedDivider`、`RecordShortVerticalDivider`、`AuthSectionCard`、`MineSettingRow` 等薄包装。
 - **Typography 统一到 Forui level token**（2026-07-03）：新增 `AppTypographyTokens`，将 `level1`–`level10` 映射到 Forui `FTypeface` 的 `xs3`–`xl4`，并把 runtime `lib/` 中所有 Material `textTheme.*` 引用（约 302 处）迁移到 `AppTypographyToken.levelN.body(context)` / `.display(context)`；剩余硬编码 `fontSize:` 也替换为对应 token。`flutter analyze --no-pub` 为 0 issues；测试修复工作仍未处理。
+- **布局溢出修复**（2026-07-03）：修复了 `report_metrics_grid.dart` 在移动/桌面断点下的 Column 底部溢出（ mobile 164→192 / tablet 176→204 / desktop 188→216 ），并压缩了 Mine 退出登录状态的首屏高度（头像 84→64、account/archive/status 的 padding/间距收紧），使 `mine_page_test` 中档案入口在未登录首屏可点击并弹出登录对话框。`test/report/report_page_test.dart`、`test/app/shell_page_test.dart`、`test/mine/mine_page_test.dart` 全部通过。
+- **全仓库 lint 自动清理**（2026-07-03）：在 `analysis_options.yaml` 启用 `prefer_const_constructors` 并移除 `test/**` 排除后，运行 `dart fix --apply` 修复 179 处 lint（`prefer_const_constructors`、`unused_import`、`duplicate_import`、`sort_child_properties_last`），涉及 56 个文件。`flutter analyze --no-pub` 现为 0 issues，`flutter test --no-pub` 854/854 passed。
 
 ## UX Audit Remediation (Completed)
 

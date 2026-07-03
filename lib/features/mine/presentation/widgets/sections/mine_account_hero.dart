@@ -23,7 +23,7 @@ class MineSignedOutNotice extends StatelessWidget {
       actionKey: const Key('mine-signed-out-login-action'),
       onAction: () => context.push(loginRouteForCurrentLocation(context)),
       tone: AppStateTone.warning,
-      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
     );
   }
 }
@@ -48,7 +48,7 @@ class MineAccountHero extends StatelessWidget {
       onPress: () => pushAuthRequiredRoute(context, '/account'),
       child: FCard.raw(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
           child: Row(
             children: [
               _AvatarPlaceholder(),
@@ -102,7 +102,7 @@ class MineAccountHero extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacingTokens.level4),
+                    const SizedBox(height: AppSpacingTokens.level2),
                     AppSkeletonSlot(
                       skeleton: const AppInlineSkeletonBlock(
                         height: 8,
@@ -145,11 +145,11 @@ class _AvatarPlaceholder extends StatelessWidget {
         border: Border.all(color: colors.border),
       ),
       child: SizedBox.square(
-        dimension: 84,
+        dimension: 64,
         child: Icon(
           FLucideIcons.userRound,
           color: colors.mutedForeground,
-          size: 48,
+          size: 32,
         ),
       ),
     );

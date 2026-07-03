@@ -270,7 +270,7 @@ class LucentRecordRepository implements RecordRepository {
   }
 
   static final _staticQuickActions = <RecordQuickAction>[
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: FLucideIcons.briefcaseMedical,
       titleKey: RecordCopyKey.typeSymptom,
@@ -278,7 +278,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.medication,
       icon: FLucideIcons.pill,
       titleKey: RecordCopyKey.typeMedication,
@@ -287,7 +287,7 @@ class LucentRecordRepository implements RecordRepository {
       softColor: AppColors.primary,
     ),
     // Lightweight mood self-check-in quick action.
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.mood,
       icon: FLucideIcons.smile,
       titleKey: RecordCopyKey.typeMood,
@@ -295,7 +295,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
@@ -303,7 +303,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.water,
       icon: FLucideIcons.droplets,
       titleKey: RecordCopyKey.typeWater,
@@ -311,7 +311,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.typeVitals,
@@ -319,7 +319,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
@@ -327,7 +327,7 @@ class LucentRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.primary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
@@ -346,56 +346,56 @@ class LucentRecordRepository implements RecordRepository {
   static const _staticSummary = RecordDaySummary(items: []);
 
   static final _staticFilters = <RecordFilter>[
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
       icon: FLucideIcons.pill,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: FLucideIcons.briefcaseMedical,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
       icon: FLucideIcons.smile,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: FLucideIcons.droplets,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: FLucideIcons.heart,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: FLucideIcons.notebookPen,
@@ -424,7 +424,7 @@ class LucentRecordRepository implements RecordRepository {
   }
 
   static final _staticTrends = <RecordTrend>[
-    RecordTrend(
+    const RecordTrend(
       kind: RecordTrendKind.bloodSugar,
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,

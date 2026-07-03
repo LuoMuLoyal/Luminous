@@ -72,146 +72,221 @@ class MockRecordRepository implements RecordRepository {
   }
 
   static final _monthDays = <RecordCalendarDay>[
-    RecordCalendarDay(day: 28, inMonth: false, selected: false, markers: []),
-    RecordCalendarDay(day: 29, inMonth: false, selected: false, markers: []),
-    RecordCalendarDay(day: 30, inMonth: false, selected: false, markers: []),
-    RecordCalendarDay(day: 1, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 2, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 3, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 4, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 5, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 6, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 7, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 8, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 9, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 10, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(day: 11, inMonth: true, selected: false, markers: []),
-    RecordCalendarDay(
+    const RecordCalendarDay(
+      day: 28,
+      inMonth: false,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 29,
+      inMonth: false,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 30,
+      inMonth: false,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 1,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 2,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 3,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 4,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 5,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 6,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 7,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 8,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 9,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 10,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
+      day: 11,
+      inMonth: true,
+      selected: false,
+      markers: [],
+    ),
+    const RecordCalendarDay(
       day: 12,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 13,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 14,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 15,
       inMonth: true,
       selected: true,
       markers: <AppColors>[AppColors.primary, AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 16,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 17,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
       hasAlert: true,
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 18,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 19,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 20,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 21,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 22,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 23,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 24,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 25,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 26,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 27,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 28,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 29,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 30,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(
+    const RecordCalendarDay(
       day: 31,
       inMonth: true,
       selected: false,
       markers: <AppColors>[AppColors.primary],
     ),
-    RecordCalendarDay(day: 1, inMonth: false, selected: false, markers: []),
+    const RecordCalendarDay(
+      day: 1,
+      inMonth: false,
+      selected: false,
+      markers: [],
+    ),
   ];
 
   static final _quickActions = <RecordQuickAction>[
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
@@ -219,7 +294,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.typeVitals,
@@ -227,7 +302,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.water,
       icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.typeWater,
@@ -235,7 +310,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: FLucideIcons.thermometer,
       titleKey: RecordCopyKey.typeSymptom,
@@ -243,7 +318,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.medication,
       icon: FLucideIcons.pill,
       titleKey: RecordCopyKey.typeMedication,
@@ -252,7 +327,7 @@ class MockRecordRepository implements RecordRepository {
       softColor: AppColors.secondary,
     ),
     // Lightweight mood self-check-in quick action.
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.mood,
       icon: FLucideIcons.smile,
       titleKey: RecordCopyKey.typeMood,
@@ -260,7 +335,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
@@ -268,7 +343,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
@@ -285,7 +360,7 @@ class MockRecordRepository implements RecordRepository {
   }
 
   static final _summaryItems = <RecordSummaryItem>[
-    RecordSummaryItem(
+    const RecordSummaryItem(
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.summaryMealTitle,
@@ -294,7 +369,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordSummaryItem(
+    const RecordSummaryItem(
       type: RecordEntryType.water,
       icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.summaryWaterTitle,
@@ -303,7 +378,7 @@ class MockRecordRepository implements RecordRepository {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordSummaryItem(
+    const RecordSummaryItem(
       type: RecordEntryType.vitals,
       icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.summaryLatestVitalTitle,
@@ -315,35 +390,35 @@ class MockRecordRepository implements RecordRepository {
   ];
 
   static final _filters = <RecordFilter>[
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: FLucideIcons.heart,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: FLucideIcons.cupSoda,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: FLucideIcons.thermometer,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
       icon: FLucideIcons.pill,
@@ -352,21 +427,21 @@ class MockRecordRepository implements RecordRepository {
     ),
     // Deferred by Product_Vision MVP: keep mood filters available for future
     // self-check-in contracts, but filter them out of the active Record surface.
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
       icon: FLucideIcons.smile,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: true,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: FLucideIcons.notebookPen,
@@ -408,7 +483,7 @@ class MockRecordRepository implements RecordRepository {
   }
 
   static final _timeline = <RecordTimelineEntry>[
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '08:30',
       type: RecordEntryType.medication,
       icon: FLucideIcons.pill,
@@ -419,7 +494,7 @@ class MockRecordRepository implements RecordRepository {
       detailKey: RecordCopyKey.timelineMedicationDetail,
       trailingIcon: FLucideIcons.checkCircle2,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '09:15',
       type: RecordEntryType.water,
       icon: FLucideIcons.cupSoda,
@@ -430,7 +505,7 @@ class MockRecordRepository implements RecordRepository {
       detailKey: RecordCopyKey.timelineWaterProgress,
       trailingIcon: FLucideIcons.chevronRight,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '12:45',
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
@@ -443,7 +518,7 @@ class MockRecordRepository implements RecordRepository {
       imagePlaceholderKey: RecordCopyKey.foodImagePlaceholder,
       trailingIcon: FLucideIcons.ellipsis,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '15:20',
       type: RecordEntryType.symptom,
       icon: FLucideIcons.thermometer,
@@ -457,7 +532,7 @@ class MockRecordRepository implements RecordRepository {
     // Deferred by Product_Vision MVP: keep lightweight mood timeline data
     // because it is useful for future self-check-ins, but do not surface it in
     // the active Record timeline until the product job is ready.
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '10:30',
       type: RecordEntryType.mood,
       icon: FLucideIcons.smile,
@@ -467,7 +542,7 @@ class MockRecordRepository implements RecordRepository {
       detailKey: RecordCopyKey.timelineMoodDetail,
       trailingIcon: FLucideIcons.chevronRight,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '23:30',
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
@@ -478,7 +553,7 @@ class MockRecordRepository implements RecordRepository {
       badgeKey: RecordCopyKey.summaryNormal,
       trailingIcon: FLucideIcons.chevronRight,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '16:00',
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
@@ -487,7 +562,7 @@ class MockRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeNote,
       trailingIcon: FLucideIcons.chevronRight,
     ),
-    RecordTimelineEntry(
+    const RecordTimelineEntry(
       time: '06:10',
       type: RecordEntryType.weight,
       icon: FLucideIcons.droplets,
@@ -501,7 +576,7 @@ class MockRecordRepository implements RecordRepository {
   ];
 
   static final _trends = <RecordTrend>[
-    RecordTrend(
+    const RecordTrend(
       kind: RecordTrendKind.bloodSugar,
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,
@@ -509,7 +584,7 @@ class MockRecordRepository implements RecordRepository {
       points: <double>[],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
     ),
-    RecordTrend(
+    const RecordTrend(
       kind: RecordTrendKind.hydration,
       titleKey: RecordCopyKey.trendHydrationTitle,
       rangeKey: RecordCopyKey.range30Days,

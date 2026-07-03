@@ -22,7 +22,7 @@ class MineStatusOverview extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level5,
+          vertical: AppSpacingTokens.level4,
         ),
         child: Row(
           children: [

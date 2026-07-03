@@ -79,21 +79,21 @@ class MockMineRepository implements MineRepository {
   );
 
   static final _mockAlerts = [
-    MineStatusCard(
+    const MineStatusCard(
       icon: FLucideIcons.triangleAlert,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
-    MineStatusCard(
+    const MineStatusCard(
       icon: FLucideIcons.pill,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
       badgeKey: MineCopyKey.alertMedicineBadge,
     ),
-    MineStatusCard(
+    const MineStatusCard(
       icon: FLucideIcons.userCheck,
       accent: AppColors.primary,
       titleKey: MineCopyKey.alertPrivacyTitle,
@@ -103,7 +103,7 @@ class MockMineRepository implements MineRepository {
   ];
 
   static final _mockArchiveEntries = [
-    MineArchiveEntry(
+    const MineArchiveEntry(
       icon: FLucideIcons.badge,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveBasicTitle,
@@ -111,7 +111,7 @@ class MockMineRepository implements MineRepository {
       statusKey: MineCopyKey.archiveCompleted,
       route: '/mine/profile/edit',
     ),
-    MineArchiveEntry(
+    const MineArchiveEntry(
       icon: FLucideIcons.droplets,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveAllergyTitle,
@@ -119,14 +119,14 @@ class MockMineRepository implements MineRepository {
       statusKey: MineCopyKey.archiveCompleted,
       route: '/mine/allergy/new',
     ),
-    MineArchiveEntry(
+    const MineArchiveEntry(
       icon: FLucideIcons.pill,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: '/mine/medicine/new',
     ),
-    MineArchiveEntry(
+    const MineArchiveEntry(
       icon: FLucideIcons.contact,
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveEmergencyTitle,

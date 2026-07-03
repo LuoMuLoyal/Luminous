@@ -107,7 +107,9 @@ class _ExportCard extends StatelessWidget {
               await onTap!(action.kind);
             },
       variant: FButtonVariant.ghost,
-      style: .delta(contentStyle: .delta(padding: .value(EdgeInsets.zero))),
+      style: const .delta(
+        contentStyle: .delta(padding: .value(EdgeInsets.zero)),
+      ),
       child: FCard.raw(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level4),

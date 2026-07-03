@@ -5,7 +5,7 @@ import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('AuthBrandLogo renders', (tester) async {
-    await tester.pumpWidget(TestForuiApp(home: const AuthBrandLogo()));
+    await tester.pumpWidget(const TestForuiApp(home: AuthBrandLogo()));
     expect(find.byType(AuthBrandLogo), findsOneWidget);
   });
 

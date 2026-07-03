@@ -93,9 +93,9 @@ class _QuickActionTile extends StatelessWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+            EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
           ),
         ),
       ),

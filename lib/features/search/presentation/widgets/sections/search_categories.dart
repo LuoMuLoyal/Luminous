@@ -60,10 +60,10 @@ class _CategoryItem extends StatelessWidget {
           onTap ??
           () => AppToast.show(context, categoryLabel(l10n, category.type)),
       variant: FButtonVariant.ghost,
-      style: .delta(
+      style: const .delta(
         contentStyle: .delta(
           padding: .value(
-            const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+            EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
           ),
         ),
       ),

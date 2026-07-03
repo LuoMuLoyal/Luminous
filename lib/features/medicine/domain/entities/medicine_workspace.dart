@@ -18,7 +18,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
   }) = _MedicineWorkspace;
 
   /// A minimal workspace for signed-out users with no real or mock data.
-  static MedicineWorkspace signedOut() => MedicineWorkspace(
+  static MedicineWorkspace signedOut() => const MedicineWorkspace(
     hero: MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',

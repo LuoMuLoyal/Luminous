@@ -146,7 +146,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   }
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.search,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
@@ -160,19 +160,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // they are useful later, but do not surface them until the matching camera,
   // recognition, and prescription contract/product job is ready.
   static final deferredScanQuickActions = <MedicineQuickAction>[
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
       accent: AppColors.primary,
     ),
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.scanLine,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: AppColors.primary,
     ),
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.receiptText,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,

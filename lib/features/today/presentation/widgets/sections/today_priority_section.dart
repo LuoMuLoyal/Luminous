@@ -193,9 +193,9 @@ class _PriorityActionPill extends ConsumerWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(
+            EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level3,
               vertical: AppSpacingTokens.level2,
             ),

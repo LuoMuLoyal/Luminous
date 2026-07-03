@@ -499,9 +499,9 @@ class RecordEditPage extends HookConsumerWidget {
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [_RecordEditLoading()],
+            children: [_RecordEditLoading()],
           ),
         ),
       );

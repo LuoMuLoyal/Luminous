@@ -70,10 +70,8 @@ class RecordNewEntryPanel extends StatelessWidget {
                     ),
                   ),
                 ]),
-                contentStyle: .delta(
-                  padding: .value(
-                    const EdgeInsets.all(AppSpacingTokens.level4),
-                  ),
+                contentStyle: const .delta(
+                  padding: .value(EdgeInsets.all(AppSpacingTokens.level4)),
                 ),
               ),
               prefix: Icon(
@@ -127,9 +125,9 @@ class _NewEntryChip extends StatelessWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(
+            EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level3,
               vertical: AppSpacingTokens.level3,
             ),

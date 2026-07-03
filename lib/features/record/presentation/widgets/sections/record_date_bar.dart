@@ -58,9 +58,9 @@ class RecordDateBar extends StatelessWidget {
                   ),
                 ),
               ]),
-              contentStyle: .delta(
+              contentStyle: const .delta(
                 padding: .value(
-                  const EdgeInsets.symmetric(
+                  EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.level4,
                     vertical: AppSpacingTokens.level3,
                   ),
@@ -131,9 +131,9 @@ class _DateStepButton extends StatelessWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(EdgeInsets.zero),
-          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+          constraints: BoxConstraints(minWidth: 44, minHeight: 44),
         ),
       ),
       child: Icon(

@@ -174,22 +174,22 @@ class LucentReportRepository implements ReportRepository {
 }
 
 final _exportActions = <ReportExportAction>[
-  ReportExportAction(
+  const ReportExportAction(
     kind: ReportExportKind.hospital,
     icon: FLucideIcons.hospital,
     color: AppColors.primary,
   ),
-  ReportExportAction(
+  const ReportExportAction(
     kind: ReportExportKind.monthly,
     icon: FLucideIcons.barChart,
     color: AppColors.primary,
   ),
-  ReportExportAction(
+  const ReportExportAction(
     kind: ReportExportKind.print,
     icon: FLucideIcons.printer,
     color: AppColors.primary,
   ),
-  ReportExportAction(
+  const ReportExportAction(
     kind: ReportExportKind.clinicShare,
     icon: FLucideIcons.share2,
     color: AppColors.primary,

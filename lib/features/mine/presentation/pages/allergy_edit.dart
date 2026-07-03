@@ -209,9 +209,9 @@ class AllergyEditPage extends HookConsumerWidget {
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [_MineEditFormLoading()],
+            children: [_MineEditFormLoading()],
           ),
         ),
       );

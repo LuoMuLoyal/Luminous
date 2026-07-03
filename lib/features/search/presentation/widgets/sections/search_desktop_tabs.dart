@@ -28,10 +28,10 @@ class DesktopTabs extends StatelessWidget {
         const Spacer(),
         FButton(
           variant: FButtonVariant.ghost,
-          style: .delta(
+          style: const .delta(
             contentStyle: .delta(
               padding: .value(
-                const EdgeInsets.symmetric(
+                EdgeInsets.symmetric(
                   horizontal: AppSpacingTokens.level4,
                   vertical: AppSpacingTokens.level2,
                 ),
@@ -56,10 +56,10 @@ class DesktopTabs extends StatelessWidget {
         ),
         FButton(
           variant: FButtonVariant.ghost,
-          style: .delta(
+          style: const .delta(
             contentStyle: .delta(
               padding: .value(
-                const EdgeInsets.symmetric(
+                EdgeInsets.symmetric(
                   horizontal: AppSpacingTokens.level4,
                   vertical: AppSpacingTokens.level2,
                 ),

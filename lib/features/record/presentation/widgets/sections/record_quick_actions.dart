@@ -89,9 +89,9 @@ class _QuickActionTile extends StatelessWidget {
       variant: FButtonVariant.outline,
       style: .delta(
         decoration: .delta([.all(.shapeDelta(color: colors.background))]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(
+            EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level2,
               vertical: AppSpacingTokens.level4,
             ),

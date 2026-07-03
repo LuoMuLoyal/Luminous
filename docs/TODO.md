@@ -7,9 +7,6 @@ This file records work that is still missing or intentionally gated. Current fac
 ## 延后（有明确原因）
 
 - Forui 0.23.0 `FToaster` 的 `_entranceDismissController` LateInitializationError — 已通过移除测试树中的 `FToaster`、`AppToast.show` 加 try-catch 降级规避。升级至 Forui 0.24+ 后恢复 toast 测试
-- `report_metrics_grid.dart:155` Column 溢出 6.0px — 影响 `shell_page_test`、`report_page_test`（布局溢出）
-- `mine_page_test` auth-required-dialog 未显示 — 退出登录状态下点档案入口未弹登录对话框
-- `ReportPanel` / `MedicinePanel` 默认 padding (md→lg) — 布局溢出，当前默认与 `AppLayoutTokens.cardPadding` 一致
 - `formz` 表单校验 — 新增依赖，当前 AppToast 校验模式工作正常
 - `intl.DateFormat` 替代 ISO 字符串 — padLeft 是线协议格式，DateFormat 不适用
 

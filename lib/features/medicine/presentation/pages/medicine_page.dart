@@ -244,10 +244,10 @@ class _MedicineSafeGuardPill extends StatelessWidget {
         onPress: () => context.push('/medicine/risk-check'),
         variant: FButtonVariant.ghost,
         mainAxisSize: MainAxisSize.min,
-        style: .delta(
+        style: const .delta(
           contentStyle: .delta(
             padding: .value(
-              const EdgeInsets.symmetric(
+              EdgeInsets.symmetric(
                 horizontal: AppSpacingTokens.level2,
                 vertical: AppSpacingTokens.level2,
               ),
@@ -301,7 +301,7 @@ class _MedicineNotificationButton extends StatelessWidget {
                 ),
               ),
               builder: (context, style) =>
-                  SizedBox.square(dimension: AppSpacingTokens.level2),
+                  const SizedBox.square(dimension: AppSpacingTokens.level2),
             ),
           ),
         ],
@@ -333,9 +333,9 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             ),
           ),
         ]),
-        contentStyle: .delta(
+        contentStyle: const .delta(
           padding: .value(
-            const EdgeInsets.symmetric(
+            EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level4,
               vertical: AppSpacingTokens.level3,
             ),

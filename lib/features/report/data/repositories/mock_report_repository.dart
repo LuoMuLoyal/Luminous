@@ -43,7 +43,7 @@ class MockReportRepository implements ReportRepository {
     return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
   }
 
-  static final previewDashboard = ReportDashboard(
+  static final previewDashboard = const ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
@@ -151,7 +151,7 @@ class MockReportRepository implements ReportRepository {
     aiSummaryEnabled: false,
   );
 
-  static final signedOutDashboard = ReportDashboard(
+  static final signedOutDashboard = const ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',

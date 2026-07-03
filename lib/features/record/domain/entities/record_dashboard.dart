@@ -67,7 +67,7 @@ abstract class RecordDashboard with _$RecordDashboard {
   }
 
   static final _defaultQuickActions = <RecordQuickAction>[
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
@@ -75,7 +75,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.water,
       icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.typeWater,
@@ -83,7 +83,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: FLucideIcons.cross,
       titleKey: RecordCopyKey.typeSymptom,
@@ -91,7 +91,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
@@ -99,7 +99,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       accent: AppColors.primary,
       softColor: AppColors.secondary,
     ),
-    RecordQuickAction(
+    const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
@@ -110,35 +110,35 @@ abstract class RecordDashboard with _$RecordDashboard {
   ];
 
   static final _defaultFilters = <RecordFilter>[
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: FLucideIcons.cupSoda,
       accent: AppColors.primary,
       selected: false,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: FLucideIcons.utensils,
       accent: AppColors.primary,
       selected: false,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: FLucideIcons.cross,
       accent: AppColors.primary,
       selected: false,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: FLucideIcons.moon,
       accent: AppColors.primary,
       selected: false,
     ),
-    RecordFilter(
+    const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: FLucideIcons.notebookPen,

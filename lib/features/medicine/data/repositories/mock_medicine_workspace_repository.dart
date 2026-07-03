@@ -40,19 +40,19 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // they are useful later, but do not surface them until the matching camera,
   // recognition, and prescription contract/product job is ready.
   static final deferredScanQuickActions = <MedicineQuickAction>[
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
       accent: AppColors.primary,
     ),
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.scanLine,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: AppColors.primary,
     ),
-    MedicineQuickAction(
+    const MedicineQuickAction(
       icon: FLucideIcons.receiptText,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
@@ -67,7 +67,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       metricNextDose: '--',
     ),
     quickActions: [
-      MedicineQuickAction(
+      const MedicineQuickAction(
         icon: FLucideIcons.search,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
@@ -76,7 +76,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ...deferredScanQuickActions,
     ],
-    plan: MedicinePlanSurface(
+    plan: const MedicinePlanSurface(
       items: <MedicinePlanItem>[
         MedicinePlanItem(
           color: AppColors.primary,
@@ -140,7 +140,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       ],
     ),
     alerts: <MedicineAlert>[
-      MedicineAlert(
+      const MedicineAlert(
         icon: FLucideIcons.wine,
         titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
@@ -149,7 +149,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColors.primary,
         softColor: AppColors.primary,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: FLucideIcons.coffee,
         titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
@@ -158,7 +158,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColors.primary,
         softColor: AppColors.primary,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: FLucideIcons.copy,
         titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
@@ -167,7 +167,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         color: AppColors.primary,
         softColor: AppColors.primary,
       ),
-      MedicineAlert(
+      const MedicineAlert(
         icon: FLucideIcons.droplets,
         titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,

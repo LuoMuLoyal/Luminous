@@ -49,9 +49,9 @@ void main() {
     testWidgets('支持前缀图标列表', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          FHeader.nested(
-            title: const Text('Profile'),
-            prefixes: const [Icon(Icons.person)],
+          const FHeader.nested(
+            title: Text('Profile'),
+            prefixes: [Icon(Icons.person)],
           ),
         ),
       );
@@ -63,9 +63,9 @@ void main() {
     testWidgets('支持后缀组件列表', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          FHeader.nested(
-            title: const Text('Actions'),
-            suffixes: const [Text('Edit')],
+          const FHeader.nested(
+            title: Text('Actions'),
+            suffixes: [Text('Edit')],
           ),
         ),
       );

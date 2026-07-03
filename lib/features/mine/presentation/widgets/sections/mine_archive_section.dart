@@ -80,7 +80,7 @@ class _ArchiveRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level5,
-          vertical: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
         ),
         child: Row(
           children: [

@@ -1,4 +1,3 @@
-import 'package:luminous/core/design/app_design.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -457,7 +456,7 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-final _completedWorkspace = MedicineWorkspace(
+final _completedWorkspace = const MedicineWorkspace(
   hero: MedicineHero(
     metricDosesToday: '1/1',
     metricAdherence: '100%',

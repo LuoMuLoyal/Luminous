@@ -433,9 +433,9 @@ class ReportPage extends ConsumerWidget {
         error: (error, _) {
           final l10n = AppLocalizations.of(context)!;
           return FScaffold(
-            header: SafeArea(
+            header: const SafeArea(
               bottom: false,
-              child: FHeader.nested(prefixes: [const AppBackButton()]),
+              child: FHeader.nested(prefixes: [AppBackButton()]),
             ),
             child: SafeArea(
               bottom: false,

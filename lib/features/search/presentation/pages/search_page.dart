@@ -35,9 +35,9 @@ class SearchPage extends ConsumerWidget {
     return FScaffold(
       header: isDesktop
           ? null
-          : SafeArea(
+          : const SafeArea(
               bottom: false,
-              child: FHeader.nested(prefixes: [const AppBackButton()]),
+              child: FHeader.nested(prefixes: [AppBackButton()]),
             ),
       child: MedicineSearchView(
         state: searchState,
