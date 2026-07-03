@@ -1,6 +1,7 @@
 # Luminous Plans
 
-Use this directory for active, repo-local execution plans that are too detailed for `docs/Next_Plan.md`.
+Use this directory for active, repo-local execution plans that are too detailed for
+`docs/00-current/Next_Plan.md`.
 
 ## What Goes Here
 
@@ -10,9 +11,9 @@ Use this directory for active, repo-local execution plans that are too detailed 
 
 ## What Does Not Go Here
 
-- current product facts: put those in `docs/Current_State.md`
-- next work ordering for the repo as a whole: put that in `docs/Next_Plan.md`
-- historical change logs: put those in `docs/migration-log/YYYY-MM-DD.md`
+- current product facts: put those in `docs/00-current/Current_State.md`
+- next work ordering for the repo as a whole: put that in `docs/00-current/Next_Plan.md`
+- historical change logs: put those in `docs/03-logs/migration-log/YYYY-MM-DD.md`
 - completed plans that no longer drive work
 
 ## Naming

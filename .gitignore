@@ -66,5 +66,10 @@ temp_git_data
 docs/assets
 .codebase-memory/
 
+# Obsidian
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
 # Windows null-device artifact (Bash writes to "nul" as a file)
 nul

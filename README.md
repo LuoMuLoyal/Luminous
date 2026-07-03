@@ -82,19 +82,42 @@ Key shared backend contract docs live in `../Lucent/docs/public/`:
 - [reminder-contract](../Lucent/docs/public/reminder-contract.md)
 - [environment-contract](../Lucent/docs/public/environment-contract.md)
 - [data-sources](../Lucent/docs/public/data-sources.md)
+- [data-sources-cn-products](../Lucent/docs/public/data-sources-cn-products.md)
+- [data-sources-drugbank](../Lucent/docs/public/data-sources-drugbank.md)
+- [data-sources-medical-qa](../Lucent/docs/public/data-sources-medical-qa.md)
+- [data-sources-food-composition](../Lucent/docs/public/data-sources-food-composition.md)
 - [assistant-contract](../Lucent/docs/public/assistant-contract.md)
+- [assistant-capabilities](../Lucent/docs/public/assistant-capabilities.md)
+- [assistant-rollout](../Lucent/docs/public/assistant-rollout.md)
+- [assistant-safety](../Lucent/docs/public/assistant-safety.md)
 - [mine-settings-contract](../Lucent/docs/public/mine-settings-contract.md)
+- [support-resources-contract](../Lucent/docs/public/support-resources-contract.md)
+- [app-info-contract](../Lucent/docs/public/app-info-contract.md)
+- [data-export-contract](../Lucent/docs/public/data-export-contract.md)
 
 Key frontend docs:
 
-- [docs/architecture.md](docs/architecture.md) — Unified Flutter architecture
-- [docs/adr/](docs/adr/) — Architecture Decision Records
-- [docs/Product_Vision.md](docs/Product_Vision.md)
-- [docs/Current_State.md](docs/Current_State.md)
-- [docs/MigrationLog.md](docs/MigrationLog.md)
-- [docs/Next_Plan.md](docs/Next_Plan.md)
-- [docs/MVP_Demo_Baseline.md](docs/MVP_Demo_Baseline.md)
-- [docs/MVP_Demo_Script.md](docs/MVP_Demo_Script.md)
-- [docs/Project_Guardrails.md](docs/Project_Guardrails.md)
-- [docs/OpenApi_Client.md](docs/OpenApi_Client.md)
-- [docs/Localization.md](docs/Localization.md)
+- [docs/README.md](docs/README.md) — Vault home / navigation map
+- [docs/00-current/Current_State.md](docs/00-current/Current_State.md) — Current implementation state
+- [docs/00-current/Next_Plan.md](docs/00-current/Next_Plan.md) — Next work ordering
+- [docs/00-current/TODO.md](docs/00-current/TODO.md) — Deferred follow-up items
+- [docs/01-product/Product_Vision.md](docs/01-product/Product_Vision.md)
+- [docs/01-product/Product_MVP_Scope.md](docs/01-product/Product_MVP_Scope.md)
+- [docs/01-product/Product_AI_Design.md](docs/01-product/Product_AI_Design.md)
+- [docs/01-product/Product_Insights.md](docs/01-product/Product_Insights.md)
+- [docs/01-product/Product_Safety_Privacy.md](docs/01-product/Product_Safety_Privacy.md)
+- [docs/01-product/Product_Information_Architecture.md](docs/01-product/Product_Information_Architecture.md)
+- [docs/01-product/MVP_Demo_Baseline.md](docs/01-product/MVP_Demo_Baseline.md)
+- [docs/01-product/MVP_Demo_Script.md](docs/01-product/MVP_Demo_Script.md)
+- [docs/02-reference/architecture.md](docs/02-reference/architecture.md) — Unified Flutter architecture
+- [docs/02-reference/state-management.md](docs/02-reference/state-management.md)
+- [docs/02-reference/routing.md](docs/02-reference/routing.md)
+- [docs/02-reference/data-layer.md](docs/02-reference/data-layer.md)
+- [docs/02-reference/adr/](docs/02-reference/adr/) — Architecture Decision Records
+- [docs/02-reference/Design_System.md](docs/02-reference/Design_System.md)
+- [docs/02-reference/Design_System_Components.md](docs/02-reference/Design_System_Components.md)
+- [docs/02-reference/Design_System_Migration.md](docs/02-reference/Design_System_Migration.md)
+- [docs/02-reference/Project_Guardrails.md](docs/02-reference/Project_Guardrails.md)
+- [docs/02-reference/OpenApi_Client.md](docs/02-reference/OpenApi_Client.md)
+- [docs/02-reference/Localization.md](docs/02-reference/Localization.md)
+- [docs/03-logs/MigrationLog.md](docs/03-logs/MigrationLog.md) — Change history index

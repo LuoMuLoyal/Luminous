@@ -407,7 +407,7 @@ prefix: const Text('😫'),
 
 ## 8. 2026-07-03 晚间修复更新
 
-基于当天 `docs/TODO.md` 中记录的源文件级问题进行了修复，并同步更新了相关文档。以下早间审查中标记的状态已变化：
+基于当天 `docs/00-current/TODO.md` 中记录的源文件级问题进行了修复，并同步更新了相关文档。以下早间审查中标记的状态已变化：
 
 ### 8.1 `report_metrics_grid.dart` Column 溢出 — 已修复
 
@@ -437,13 +437,13 @@ prefix: const Text('😫'),
 
 **原问题：** TODO 中记录 `ReportPanel` / `MedicinePanel` 默认 padding 从 md 改到 lg 导致布局溢出。
 
-**现状：** 代码库中已不存在 `ReportPanel` 或 `MedicinePanel` 类（`rg` / `grep` 在 `lib/` 中无匹配）。该 TODO 项属于历史残留，已从 `docs/TODO.md` 删除。
+**现状：** 代码库中已不存在 `ReportPanel` 或 `MedicinePanel` 类（`rg` / `grep` 在 `lib/` 中无匹配）。该 TODO 项属于历史残留，已从 `docs/00-current/TODO.md` 删除。
 
 ### 8.4 文档同步
 
-- `docs/TODO.md` 删除了本节提到的 3 条已关闭/过时记录。
-- `docs/Current_State.md` 在 Completed Baselines 中追加"布局溢出修复"条目。
-- `docs/migration-log/2026-07-03.md` 追加修复记录。
+- `docs/00-current/TODO.md` 删除了本节提到的 3 条已关闭/过时记录。
+- `docs/00-current/Current_State.md` 在 Completed Baselines 中追加"布局溢出修复"条目。
+- `docs/03-logs/migration-log/2026-07-03.md` 追加修复记录。
 
 ### 8.5 当前相关测试状态
 

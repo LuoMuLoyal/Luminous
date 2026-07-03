@@ -1,6 +1,6 @@
 # TODO 实施方案
 
-> 基于 `Lucent/docs/TODO.md` 和 `Luminous/docs/TODO.md`（2026-06-29）中所有未完成项，逐项给出实施方案、依赖与预期效果，末尾附推荐执行顺序。
+> 基于 `Lucent/docs/00-current/TODO.md` 和 `Luminous/docs/00-current/TODO.md`（2026-06-29）中所有未完成项，逐项给出实施方案、依赖与预期效果，末尾附推荐执行顺序。
 
 ---
 

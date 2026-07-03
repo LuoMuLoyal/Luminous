@@ -4,15 +4,23 @@
 
 After every code change, the following docs **MUST** be updated:
 
-| Change type                          | Update target                      | Action                    |
-| ------------------------------------ | ---------------------------------- | ------------------------- |
-| Any frontend code change             | `docs/migration-log/YYYY-MM-DD.md` | Append change entry       |
-| Current UI/data/runtime state change | `docs/Current_State.md`            | Add/update completed item |
-| Closing a TODO item                  | `docs/TODO.md`                     | Delete the line           |
-| Finishing a plan section             | `plans/*.md`                       | Delete the entire section |
-| Visible text or l10n change          | `docs/Localization.md`             | Sync update               |
+- Any frontend code change
+  - Update target: `docs/03-logs/migration-log/YYYY-MM-DD.md`
+  - Action: Append change entry
+- Current UI/data/runtime state change
+  - Update target: `docs/00-current/Current_State.md`
+  - Action: Add/update completed item
+- Closing a TODO item
+  - Update target: `docs/00-current/TODO.md`
+  - Action: Delete the line
+- Finishing a plan section
+  - Update target: `plans/*.md`
+  - Action: Delete the entire section
+- Visible text or l10n change
+  - Update target: `docs/02-reference/Localization.md`
+  - Action: Sync update
 
-- Completed items are **deleted** outright — no `✅`, `DONE`, strikethrough, or any other marker.
+Completed items are **deleted** outright — no `✅`, `DONE`, strikethrough, or any other marker.
 
 ## Stack
 
@@ -51,7 +59,7 @@ flutter test
 ## Design System
 
 - Root theming is Forui-led: `lib/app/app.dart` derives `ThemeData` from `FThemes.neutral` and injects `FTheme` at the app root.
-- `AppColors` (`lib/core/design/app_colors.dart`) — semantic color enum used by data/domain layers; widgets resolve it via `AppColors.resolve(context.theme.colors)`.
+- `AppColors` (`lib/core/design/app_colors.dart`) — semantic color enum used by data/domain layers. Widgets resolve it via `AppColors.resolve(context.theme.colors)`.
 - `AppSpacingTokens` — `level1` through `level12` spacing scale retained as the project layout vocabulary because Forui has no generic spacing scale.
 - `AppRadiusTokens` — `level0` through `level9` plus `levelFull`, mapped to Forui’s `FBorderRadius` scale.
 - `AppTypographyTokens` (`lib/core/design/app_typography_tokens.dart`) — `level1` through `level10` mapped to Forui’s `FTypeface` scale (`xs3` through `xl4`). Widgets resolve a token via `AppTypographyToken.levelN.body(context)` or `.display(context)`.
@@ -90,9 +98,9 @@ flutter test
 
 ## Forui Reference
 
-- **项目速查**：`docs/Forui_Reference.md` —— 项目实际用法、常用组件示例、应避免的习惯。
-- **完整机器可读文档**：`forui-docs/llms-full.txt` —— 纯 Markdown，聚合全部官方文档和代码示例，喂给 LLM 的首选。
-- **文档索引**：`forui-docs/llms.txt` —— 快速看有哪些页面。
+- **项目速查**：`docs/02-reference/Forui_Reference.md` — 项目实际用法、常用组件示例、应避免的习惯。
+- **完整机器可读文档**：`forui-docs/llms-full.txt` — 纯 Markdown，聚合全部官方文档和代码示例，喂给 LLM 的首选。
+- **文档索引**：`forui-docs/llms.txt` — 快速看有哪些页面。
 - **官方站**：https://forui.dev/docs
 - **API 文档**：https://pub.dev/documentation/forui
 - **源码参考**：`Pub/Cache/hosted/pub.dev/forui-0.23.0/lib/src/widgets/`（查 API 签名和默认样式最准确）。

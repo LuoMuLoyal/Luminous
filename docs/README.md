@@ -1,68 +1,41 @@
 # Luminous Docs
 
-Last updated: 2026-06-29
+Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和工作流的权威来源。
 
-This directory keeps the authoritative current product, frontend, and workflow documentation for the Luminous Flutter client. Historical execution plans are not active docs. If a complex task needs a live execution plan, put it under `../plans/` instead of `docs/`.
+## 快速导航
 
-## Document Boundaries
+- [[00-current/Current_State]] — 当前实现状态入口
+- [[00-current/Next_Plan]] — 下一步实现顺序
+- [[00-current/TODO]] — 剩余 MVP 缺口与延后项
+- [[01-product/Product_Vision]] — 产品愿景总览
+- [[01-product/Product_MVP_Scope]] — MVP 范围
+- [[01-product/Product_AI_Design]] — AI 能力设计
+- [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
+- [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
+- [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
+- [[02-reference/architecture]] — 目录与模块结构总览
+- [[02-reference/state-management]] — Riverpod 状态管理
+- [[02-reference/routing]] — GoRouter 路由
+- [[02-reference/data-layer]] — 数据层与 API 客户端
+- [[02-reference/adr/README]] — 架构决策记录
+- [[03-logs/MigrationLog]] — 变更日志索引
+- [[04-archive/current-state-archive]] — 已归档历史
 
-| Document | Responsibility | Do not put here |
-| --- | --- | --- |
-| `Product_Vision.md` | Product positioning, MVP scope, tab responsibilities, AI/safety boundaries | Current implementation status or task logs |
-| `Current_State.md` | What is implemented or intentionally deferred right now | Future plans, long rationale, or change history |
-| `Next_Plan.md` | The next implementation order and explicit non-start items | Completed work details, current-state facts, or historical plans |
-| `architecture.md` | Unified Flutter architecture: directory structure, state management, routing, design system, data layer, conventions | Product scope or change history |
-| `adr/` | Architecture Decision Records for significant technical choices | Implementation details or task logs |
-| `TODO.md` | Remaining MVP gaps and gated backlog that still needs delivery | Current-state facts or historical change logs |
-| `MigrationLog.md` + `migration-log/YYYY-MM-DD.md` | Date-based change history only | Source-of-truth product rules |
-| `Project_Guardrails.md` | Reusable project-specific mistakes to avoid | One-off task notes |
-| `Auth_Forui_Migration_Pattern.md` | Reusable auth-to-Forui migration pattern and anti-pattern notes for later UI migrations | Product scope, backlog, or change history |
-| `OpenApi_Client.md` | Flutter client regeneration workflow and current generated-client boundary | Endpoint prose or old regeneration history |
-| `Localization.md` | Flutter l10n workflow and locale ownership | Lists of every current string |
-| `MVP_Demo_Baseline.md` | Repeatable deployed-MVP demo baseline: deploy smoke, demo account/data, pre-demo checks | Product scope or long change history |
-| `MVP_Demo_Script.md` | Short operator script for demo/defense of the current real MVP path | Source-of-truth scope, current-state facts, or backlog |
+## Obsidian 用法
 
-## Update Map
+1. 在 Obsidian 中选择「打开本地仓库」。
+2. 选择 `Luminous/docs/` 作为 vault 根目录。
+3. 新建笔记默认保存在 `00-current/`。
 
-| Change | Update |
-| --- | --- |
-| Product scope or positioning | `Product_Vision.md` |
-| Current UI/data/auth/runtime facts | `Current_State.md` |
-| Next implementation order | `Next_Plan.md` |
-| Remaining MVP gaps or gated backlog | `TODO.md` |
-| Flutter architecture, state management, routing, design system | `architecture.md` |
-| Significant architectural decision | Create an ADR in `adr/NNNN-title.md` |
-| Visible text or l10n mechanics | `Localization.md` |
-| Lucent OpenAPI/client generation flow | `OpenApi_Client.md` |
-| Reusable guardrail | `Project_Guardrails.md` |
-| Reusable feature-migration pattern | `Auth_Forui_Migration_Pattern.md` |
-| Demo baseline / rehearsal prerequisites | `MVP_Demo_Baseline.md` |
-| Demo/defense operator walkthrough | `MVP_Demo_Script.md` |
-| Any frontend-visible change | Today's `migration-log/YYYY-MM-DD.md` |
+## 归档策略
 
-## Relationship With `Lumos-docs`
+- `04-archive/` 存放旧计划和已完成的 audit remediation，仅供考古。
+- 活跃文档完成后应直接删除，不留 `✅` 或 `DONE` 标记。
 
-`Lumos-docs/` is a separate showcase documentation site. It mirrors content from `Lucent/docs/` and `Luminous/docs/` for browsing convenience, but it **is not the source of truth** and is updated more slowly than the repo docs.
+## 文档治理
 
-- Treat `Lucent/docs/` and `Luminous/docs/` inside each repo as the authoritative reference.
-- Do not edit `Lumos-docs/` copies by hand to keep them "in sync"; the site should consume repo docs through its build pipeline.
-- If you find a discrepancy, trust the repo-local doc and open a site ingestion issue instead of patching the mirror.
-
-## Archive Policy
-
-Old plans, audits, and superseded design references should not stay in active docs. If they are needed for archaeology, use the workspace archive outside this repo, such as the sibling `docs-archive/` directory at the workspace level.
-
-Active repo-local plans, when needed, belong in:
-
-```text
-Luminous/plans/
-```
-
-After the task is complete, move stable facts into the owning docs and delete the plan file.
-
-## Boundary Reminder
-
-- If a sentence says what is already done or what is currently true, it belongs in `Current_State.md` or the migration log, not `Next_Plan.md`.
-- `Next_Plan.md` should stay focused on sequencing, priorities, and explicit non-start items.
-- **When a goal in `Next_Plan.md` is completed, delete it from `Next_Plan.md`; do not mark it complete there.** Move the resulting current-state facts to `Current_State.md` and record the change in the daily `migration-log/YYYY-MM-DD.md`.
-- When a plan starts collecting status bullets, move those bullets out instead of letting the plan become a second state document.
+- **单一来源**：术语见 [[Glossary]]，Forui 用法见 [[02-reference/Forui_Reference]]，OpenAPI 客户端流程见
+  [[02-reference/OpenApi_Client]]。
+- **活跃文档 ≤ 250 行**：超过时拆成子文件，用 wikilink 互连。
+- **优先链接，避免重复**：同一条规则只写一次，其它地方用链接引用。
+- **多用列表，少用表格**：表格只在需要横向对比时使用。
