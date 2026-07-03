@@ -10,6 +10,7 @@ import 'package:luminous/features/report/presentation/widgets/shared/report_comp
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class ReportTrendSection extends StatelessWidget {
   const ReportTrendSection({
@@ -51,7 +52,7 @@ class ReportTrendSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        Divider(height: 1, thickness: 1, color: colors.border),
+        AppDivider(color: colors.border),
         const SizedBox(height: AppSpacingTokens.level4),
         Wrap(
           spacing: AppSpacingTokens.level4,
@@ -126,7 +127,7 @@ class _TrendPlaceholder extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       for (var index = 0; index < 5; index += 1)
-                        Divider(height: 1, color: colors.border),
+                        AppDivider(color: colors.border),
                     ],
                   ),
                   Align(

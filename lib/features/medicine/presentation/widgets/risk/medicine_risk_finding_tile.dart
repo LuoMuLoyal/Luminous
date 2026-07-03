@@ -6,6 +6,7 @@ import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class MedicineRiskFindingTile extends StatelessWidget {
   const MedicineRiskFindingTile({
@@ -104,7 +105,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
     return Column(
       children: [
         tile,
-        Divider(height: 1, color: colors.border),
+        AppDivider(color: colors.border),
       ],
     );
   }

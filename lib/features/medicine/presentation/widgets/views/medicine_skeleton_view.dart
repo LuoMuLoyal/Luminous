@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 /// Skeleton placeholder for the Medicine tab loading state.
 ///
@@ -130,7 +131,7 @@ class _DrugBoxPlaceholder extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        const Divider(height: 1, thickness: 1),
+        const AppDivider(),
         const SizedBox(height: AppSpacingTokens.level3),
         const Row(
           children: [

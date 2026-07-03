@@ -8,6 +8,7 @@ import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class TodayOverviewSection extends StatelessWidget {
   const TodayOverviewSection({super.key, required this.dashboard});
@@ -170,7 +171,7 @@ class _VerticalMetricDivider extends StatelessWidget {
 
     return SizedBox(
       height: height,
-      child: VerticalDivider(width: 1, thickness: 1, color: colors.border),
+      child: AppDivider(axis: Axis.vertical, color: colors.border),
     );
   }
 }

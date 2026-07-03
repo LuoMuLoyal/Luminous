@@ -10,6 +10,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/today_compon
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class TodayPrioritySection extends ConsumerWidget {
   const TodayPrioritySection({super.key, required this.dashboard});
@@ -47,13 +48,7 @@ class TodayPrioritySection extends ConsumerWidget {
                 item: items[index],
                 onTap: () => _handleItemTap(context, ref, items[index]),
               ),
-              if (index < items.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.level10,
-                  color: colors.border,
-                ),
+              if (index < items.length - 1) AppDivider(color: colors.border),
             ],
           ],
         ),

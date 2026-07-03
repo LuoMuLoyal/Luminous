@@ -71,9 +71,8 @@ class _DrugBoxSection extends StatelessWidget {
                   const SizedBox(width: AppSpacingTokens.level3),
                   SizedBox(
                     height: AppSpacingTokens.level10,
-                    child: VerticalDivider(
-                      width: 1,
-                      thickness: 1,
+                    child: AppDivider(
+                      axis: Axis.vertical,
                       color: colors.border,
                     ),
                   ),
@@ -92,14 +91,7 @@ class _DrugBoxSection extends StatelessWidget {
                             onOpenReminder: onOpenReminder,
                           ),
                           if (index < items.length - 1)
-                            Divider(
-                              height: 1,
-                              thickness: 1,
-                              indent:
-                                  AppSpacingTokens.level7 +
-                                  AppSpacingTokens.level3,
-                              color: colors.border,
-                            ),
+                            AppDivider(color: colors.border),
                         ],
                       ],
                     ),
@@ -107,7 +99,7 @@ class _DrugBoxSection extends StatelessWidget {
                 ],
               ),
             const SizedBox(height: AppSpacingTokens.level3),
-            Divider(height: 1, thickness: 1, color: colors.border),
+            AppDivider(color: colors.border),
             const SizedBox(height: AppSpacingTokens.level3),
             _DrugBoxReminderStrip(
               key: const Key('medicine-next-reminder'),
@@ -335,7 +327,7 @@ class _MetricDivider extends StatelessWidget {
     final colors = context.theme.colors;
     return SizedBox(
       height: AppSpacingTokens.level9,
-      child: VerticalDivider(width: 1, thickness: 1, color: colors.border),
+      child: AppDivider(axis: Axis.vertical, color: colors.border),
     );
   }
 }

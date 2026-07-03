@@ -11,6 +11,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class RecordTimelinePanel extends StatelessWidget {
   const RecordTimelinePanel({
@@ -117,11 +118,7 @@ class _TimelineEntryRow extends StatelessWidget {
               if (!isLast)
                 SizedBox(
                   height: dense ? 88 : 104,
-                  child: VerticalDivider(
-                    width: 1,
-                    thickness: 1,
-                    color: colors.border,
-                  ),
+                  child: AppDivider(axis: Axis.vertical, color: colors.border),
                 ),
             ],
           ),

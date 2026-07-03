@@ -8,6 +8,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class ReminderInfoRow extends StatelessWidget {
   const ReminderInfoRow({
@@ -68,15 +69,7 @@ class ReminderInfoRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(
-          height: 1,
-          thickness: 1,
-          indent:
-              AppSpacingTokens.level4 +
-              AppSpacingTokens.level5 +
-              AppSpacingTokens.level4,
-          color: colors.border,
-        ),
+        AppDivider(color: colors.border),
       ],
     );
   }

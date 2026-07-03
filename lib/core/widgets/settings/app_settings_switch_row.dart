@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 /// A standard settings row with a title, optional subtitle, and a trailing
 /// [Switch]. The whole row is tappable to toggle the switch.
@@ -42,7 +43,7 @@ class AppSettingsSwitchRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: colors.border),
+        AppDivider(color: colors.border),
       ],
     );
   }

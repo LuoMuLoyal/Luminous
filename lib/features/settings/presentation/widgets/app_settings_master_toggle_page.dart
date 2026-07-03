@@ -5,6 +5,7 @@ import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 /// A reusable settings page template with a master toggle at the top and a
 /// list of child settings below.
@@ -50,7 +51,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
               onChanged: onMasterChanged,
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            Divider(height: 1, color: colors.border),
+            AppDivider(color: colors.border),
             const SizedBox(height: AppSpacingTokens.level4),
             _DisabledScope(
               disabled: !masterValue,

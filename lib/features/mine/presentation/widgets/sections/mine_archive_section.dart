@@ -9,6 +9,7 @@ import 'package:luminous/features/mine/presentation/widgets/shared/mine_componen
 import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/mine_shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class MineArchiveSection extends StatelessWidget {
   const MineArchiveSection({super.key, required this.dashboard});
@@ -150,7 +151,7 @@ class _ArchiveRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: colors.border),
+        AppDivider(color: colors.border),
       ],
     );
   }

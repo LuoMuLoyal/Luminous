@@ -49,13 +49,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
                       onMarkDose: onMarkDose,
                     ),
                     if (index < rows.length - 1)
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        indent:
-                            AppSpacingTokens.level11 + AppSpacingTokens.level3,
-                        color: colors.border,
-                      ),
+                      AppDivider(color: colors.border),
                   ],
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -146,9 +140,8 @@ class _MedicineRecordRow extends StatelessWidget {
                 if (!isLast)
                   SizedBox(
                     height: AppSpacingTokens.level9,
-                    child: VerticalDivider(
-                      width: 1,
-                      thickness: 1,
+                    child: AppDivider(
+                      axis: Axis.vertical,
                       color: colors.border,
                     ),
                   ),

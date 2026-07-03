@@ -56,15 +56,7 @@ class _QuickOperationSection extends StatelessWidget {
               for (var index = 0; index < operations.length; index += 1) ...[
                 _QuickOperationRow(operation: operations[index]),
                 if (index < operations.length - 1)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent:
-                        AppSpacingTokens.level4 +
-                        AppSpacingTokens.level8 +
-                        AppSpacingTokens.level3,
-                    color: colors.border,
-                  ),
+                  AppDivider(color: colors.border),
               ],
             ],
           ),

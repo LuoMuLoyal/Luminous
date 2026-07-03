@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class MineHeaderActionChip extends StatelessWidget {
   const MineHeaderActionChip({
@@ -113,7 +114,7 @@ class MineSettingRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: colors.border),
+        AppDivider(color: colors.border),
       ],
     );
   }

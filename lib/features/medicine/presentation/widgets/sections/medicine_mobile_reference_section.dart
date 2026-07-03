@@ -129,16 +129,7 @@ class _SafetyTipsSection extends ConsumerWidget {
               text: tips[index].text,
             ),
           ),
-          if (index < tips.length - 1)
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent:
-                  AppSpacingTokens.level4 +
-                  AppSpacingTokens.level8 +
-                  AppSpacingTokens.level4,
-              color: colors.border,
-            ),
+          if (index < tips.length - 1) AppDivider(color: colors.border),
         ],
       ],
     );
@@ -179,16 +170,7 @@ class _SafetyTipsSection extends ConsumerWidget {
               ],
             ),
           ),
-          if (index < 3)
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent:
-                  AppSpacingTokens.level4 +
-                  AppSpacingTokens.level8 +
-                  AppSpacingTokens.level4,
-              color: colors.border,
-            ),
+          if (index < 3) AppDivider(color: colors.border),
         ],
       ],
     );

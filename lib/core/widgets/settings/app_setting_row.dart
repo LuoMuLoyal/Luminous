@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class AppSettingRow extends StatelessWidget {
   const AppSettingRow({
@@ -47,7 +48,7 @@ class AppSettingRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(height: 1, color: colors.border),
+        AppDivider(color: colors.border),
       ],
     );
   }

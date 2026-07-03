@@ -9,6 +9,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class RecordMobileTimeline extends StatelessWidget {
   const RecordMobileTimeline({
@@ -46,13 +47,7 @@ class RecordMobileTimeline extends StatelessWidget {
                   isLast: index == entries.length - 1,
                 ),
                 if (index < entries.length - 1)
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: AppSpacingTokens.level11 + AppSpacingTokens.level4,
-                    endIndent: AppSpacingTokens.level4,
-                    color: colors.border,
-                  ),
+                  AppDivider(color: colors.border),
               ],
             ],
           ),
@@ -140,9 +135,8 @@ class _TimelineRow extends StatelessWidget {
                   if (!isLast)
                     SizedBox(
                       height: AppSpacingTokens.level8,
-                      child: VerticalDivider(
-                        width: 1,
-                        thickness: 1,
+                      child: AppDivider(
+                        axis: Axis.vertical,
                         color: colors.border,
                       ),
                     ),

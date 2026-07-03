@@ -10,6 +10,7 @@ import 'package:luminous/features/report/domain/entities/report_ai_summary.dart'
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class ReportAiSummarySection extends StatelessWidget {
   const ReportAiSummarySection({
@@ -128,7 +129,7 @@ class ReportAiSummarySection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            Divider(height: 1, thickness: 1, color: colors.border),
+            AppDivider(color: colors.border),
             if (content.summaryText != null) ...[
               Padding(
                 padding: const EdgeInsets.only(
@@ -143,7 +144,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   widthFactor: 0.94,
                 ),
               ),
-              Divider(height: 1, thickness: 1, color: colors.border),
+              AppDivider(color: colors.border),
             ],
             for (var index = 0; index < content.bullets.length; index += 1) ...[
               Padding(
@@ -181,16 +182,11 @@ class ReportAiSummarySection extends StatelessWidget {
                 ),
               ),
               if (index < content.bullets.length - 1)
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.level5,
-                  color: colors.border,
-                ),
+                AppDivider(color: colors.border),
             ],
             if (content.footer != null) ...[
               const SizedBox(height: AppSpacingTokens.level3),
-              Divider(height: 1, thickness: 1, color: colors.border),
+              AppDivider(color: colors.border),
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 content.footer!,

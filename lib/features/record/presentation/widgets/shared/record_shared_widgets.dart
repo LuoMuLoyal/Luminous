@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class RecordIndentedDivider extends StatelessWidget {
   const RecordIndentedDivider({
@@ -14,13 +15,7 @@ class RecordIndentedDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      indent: indent,
-      endIndent: endIndent,
-      color: color,
-    );
+    return AppDivider(color: color);
   }
 }
 
@@ -39,7 +34,7 @@ class RecordShortVerticalDivider extends StatelessWidget {
     return Center(
       child: SizedBox(
         height: height,
-        child: VerticalDivider(width: 1, thickness: 1, color: color),
+        child: AppDivider(axis: Axis.vertical, color: color),
       ),
     );
   }

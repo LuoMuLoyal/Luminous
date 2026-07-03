@@ -7,6 +7,7 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class ReminderTodayLogPanel extends StatelessWidget {
   const ReminderTodayLogPanel({super.key, required this.logs});
@@ -189,12 +190,7 @@ class _DeliveryLogRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(
-          height: 1,
-          thickness: 1,
-          indent: AppSpacingTokens.level4 + AppSpacingTokens.level5,
-          color: colors.border,
-        ),
+        AppDivider(color: colors.border),
       ],
     );
   }
@@ -249,12 +245,7 @@ class _TodayLogRow extends StatelessWidget {
     return Column(
       children: [
         row,
-        Divider(
-          height: 1,
-          thickness: 1,
-          indent: AppSpacingTokens.level4 + AppSpacingTokens.level5,
-          color: colors.border,
-        ),
+        AppDivider(color: colors.border),
       ],
     );
   }

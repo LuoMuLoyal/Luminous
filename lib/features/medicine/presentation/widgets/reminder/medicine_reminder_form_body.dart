@@ -11,6 +11,7 @@ import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_form_fields.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class ReminderFormBody extends StatelessWidget {
   const ReminderFormBody({
@@ -99,7 +100,7 @@ class ReminderFormBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _SectionTitle(label: l10n.medicineReminderMedicineSectionTitle),
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 if (isEdit && selectedMedicine != null)
                   SelectedMedicineRow(medicine: selectedMedicine)
                 else
@@ -148,7 +149,7 @@ class ReminderFormBody extends StatelessWidget {
                   ),
                 ),
                 if (frequency != ReminderFrequency.daily) ...[
-                  Divider(height: 1, thickness: 1, color: colors.border),
+                  AppDivider(color: colors.border),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacingTokens.level4,
@@ -160,7 +161,7 @@ class ReminderFormBody extends StatelessWidget {
                     ),
                   ),
                 ],
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.level4,
@@ -172,14 +173,14 @@ class ReminderFormBody extends StatelessWidget {
                     onRemoveTime: onRemoveTime,
                   ),
                 ),
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 ValueActionRow(
                   icon: FLucideIcons.calendar,
                   title: l10n.medicineReminderStartDateLabel,
                   value: dateLabel(l10n, startDate),
                   onTap: onStartDateTap,
                 ),
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 ValueActionRow(
                   icon: FLucideIcons.calendarX2,
                   title: l10n.medicineReminderEndDateLabel,
@@ -202,14 +203,14 @@ class ReminderFormBody extends StatelessWidget {
                   value: isActive,
                   onChanged: onActiveChanged,
                 ),
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 UnavailableMethodRow(
                   icon: FLucideIcons.messageSquare,
                   title: l10n.medicineReminderSmsLabel,
                   subtitle: l10n.medicineReminderSmsUnavailableHint,
                   status: l10n.medicineReminderUnavailableStatus,
                 ),
-                Divider(height: 1, thickness: 1, color: colors.border),
+                AppDivider(color: colors.border),
                 SoundPreferenceRow(
                   value: soundPreference,
                   onChanged: onSoundChanged,

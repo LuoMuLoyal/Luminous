@@ -11,6 +11,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/today_compon
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class TodayRecommendationSection extends ConsumerWidget {
   const TodayRecommendationSection({super.key, this.compact = false});
@@ -44,14 +45,7 @@ class TodayRecommendationSection extends ConsumerWidget {
                 ),
               );
               if (index < recommendations.length - 1) {
-                rows.add(
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: AppSpacingTokens.level9 + AppSpacingTokens.level2,
-                    color: colors.border,
-                  ),
-                );
+                rows.add(AppDivider(color: colors.border));
               }
             }
             if (rows.isEmpty) {

@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~09:50 local time)
+Last updated: 2026-07-03 (~10:00 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -282,7 +282,7 @@ Deferred code that remains useful should be marked with:
 - Freezed is applied to 74 classes across presentation state and domain entities; all hand-written data classes have been migrated.
 - Shared dialog shell `AppDialog` (`lib/core/widgets/app_dialog.dart`) is the default for new dialogs; `RecordNlpDialog` and `MedicineAddPrecheckDialog` already use it.
 - Shared feedback chrome is also on the same theme source: `AppToast` now resolves color and icon treatment from Forui theme values instead of leaning on the old compatibility theme layer.
-- Shared common widgets now also follow the same direction: `app_state_views.dart`, `app_text_action.dart`, `app_status_pill.dart`, `app_image_placeholder.dart`, and `app_header_action_chip.dart` use direct Forui colors plus Material `textTheme`, and `lib/core/widgets/common/` no longer retains `AppSectionSurface`.
+- Shared common widgets now also follow the same direction: `app_state_views.dart`, `app_text_action.dart`, `app_status_pill.dart`, `app_image_placeholder.dart`, `app_header_action_chip.dart`, and `app_divider.dart` use direct Forui colors plus Material `textTheme`, and `lib/core/widgets/common/` no longer retains `AppSectionSurface`.
 - Dialog infrastructure is now being rebuilt as a thin Forui-first layout helper instead of a design-system wrapper: `lib/core/widgets/common/app_dialog_shell.dart` only centralizes `maxWidth/maxHeight`, shared padding, scroll behavior, and keyboard inset handling on top of `showFDialog + FDialog.raw`.
 - The active migration strategy is now explicitly “official Forui first”: when a Forui component or CLI-generated style already exists for the needed surface, it should replace local custom wrappers instead of adding another compatibility abstraction. Local `dart run forui style ls` confirms official style support for dialog, toast, sidebar, checkbox, switch, text-field, calendar, date-time-picker, time-picker, popover-menu, tooltip, and related shell primitives.
 - The auth surface has now been pushed further to official-style Forui composition: login/register/forgot-password/change-email/account-settings now use direct `FButton`, `FTabs`, `FToast`, and `FDialog` composition, while the main form pages specifically use `Form` + `GlobalKey<FormState>` with `FTextFormField.email/password` and `AutovalidateMode.onUserInteraction` instead of the deleted auth-local wrappers. The old wrapper files (`auth_text_field.dart`, `auth_action_row.dart`, `auth_status_message.dart`, `auth_field_error.dart`) are gone outright instead of being kept as compatibility shims, and `auth_shell.dart` remains only as a thin page-shell/card layout helper.

@@ -16,6 +16,7 @@ import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class TodayAiSummarySection extends ConsumerWidget {
   const TodayAiSummarySection({super.key, required this.dashboard});
@@ -134,7 +135,7 @@ class TodayAiSummarySection extends ConsumerWidget {
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: colors.border),
+          AppDivider(color: colors.border),
           if (content.summary != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -157,12 +158,7 @@ class TodayAiSummarySection extends ConsumerWidget {
           for (var index = 0; index < content.bullets.length; index += 1) ...[
             _AiSummaryRow(item: content.bullets[index]),
             if (index < content.bullets.length - 1)
-              Divider(
-                height: 1,
-                thickness: 1,
-                indent: AppSpacingTokens.level9 + AppSpacingTokens.level3,
-                color: colors.border.withValues(alpha: 0.62),
-              ),
+              AppDivider(color: colors.border.withValues(alpha: 0.62)),
           ],
           if (content.footer != null)
             Padding(

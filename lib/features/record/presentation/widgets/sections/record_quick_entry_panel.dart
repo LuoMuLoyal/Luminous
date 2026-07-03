@@ -7,6 +7,7 @@ import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 
 // ---------------------------------------------------------------------------
 // AI input bar
@@ -185,13 +186,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
                 onQuickAction: onQuickAction,
               ),
               if (secondary.isNotEmpty) ...[
-                Divider(
-                  height: 1,
-                  thickness: 1,
-                  indent: AppSpacingTokens.level4,
-                  endIndent: AppSpacingTokens.level4,
-                  color: colors.border,
-                ),
+                AppDivider(color: colors.border),
                 _QuickRecordRow3(
                   actions: secondary,
                   l10n: l10n,
@@ -252,14 +247,7 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
                 const Expanded(child: SizedBox.shrink()),
             ],
           ),
-          if (rowIndex < rows.length - 1)
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent: AppSpacingTokens.level4,
-              endIndent: AppSpacingTokens.level4,
-              color: colors.border,
-            ),
+          if (rowIndex < rows.length - 1) AppDivider(color: colors.border),
         ],
       ],
     );
@@ -454,7 +442,7 @@ class _ShortVerticalDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: height,
-      child: VerticalDivider(width: 1, thickness: 1, color: color),
+      child: AppDivider(axis: Axis.vertical, color: color),
     );
   }
 }
