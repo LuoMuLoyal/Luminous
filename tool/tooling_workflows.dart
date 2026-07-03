@@ -4,6 +4,14 @@ import 'tooling_support.dart';
 
 Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   await runLoggedCommand(
+    'dart',
+    ['run', 'tool/check_doc_coverage.dart'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run tool/check_doc_coverage.dart',
+  );
+  stdout.writeln('');
+
+  await runLoggedCommand(
     'flutter',
     ['pub', 'get'],
     workingDirectory: context.repoRoot,
@@ -56,6 +64,14 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
+  await runLoggedCommand(
+    'dart',
+    ['run', 'tool/check_doc_coverage.dart', '--staged'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run tool/check_doc_coverage.dart --staged',
+  );
+  stdout.writeln('');
+
   await runLoggedCommand(
     'flutter',
     ['gen-l10n'],

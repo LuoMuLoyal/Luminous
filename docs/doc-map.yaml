@@ -1,0 +1,83 @@
+rules:
+  - name: docs-tooling
+    code:
+      - tool/check_doc_coverage.dart
+      - tool/doc_coverage.dart
+      - tool/tooling_workflows.dart
+      - tool/git_hook.dart
+      - tool/run_daily_checks.dart
+      - .github/workflows/flutter-ci.yml
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/Project_Guardrails.md
+      - docs/03-logs/migration-log/*.md
+  - name: app-shell
+    code:
+      - lib/app/**
+      - lib/core/router/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_Mobile_UI.md
+      - docs/02-reference/routing.md
+      - docs/03-logs/migration-log/*.md
+  - name: auth
+    code:
+      - lib/features/auth/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/02-reference/Localization.md
+      - docs/03-logs/migration-log/*.md
+  - name: record
+    code:
+      - lib/features/record/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Record.md
+      - docs/03-logs/migration-log/*.md
+  - name: medicine
+    code:
+      - lib/features/medicine/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Medicine.md
+      - docs/03-logs/migration-log/*.md
+  - name: report
+    code:
+      - lib/features/report/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Report.md
+      - docs/03-logs/migration-log/*.md
+  - name: mine-settings
+    code:
+      - lib/features/mine/**
+      - lib/features/settings/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+  - name: today-assistant
+    code:
+      - lib/features/today/**
+      - lib/features/assistant/**
+      - lib/features/support/**
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Today.md
+      - docs/01-product/Product_AI_Design.md
+      - docs/03-logs/migration-log/*.md
+  - name: shared-runtime
+    code:
+      - lib/core/network/**
+      - lib/core/i18n/**
+      - lib/core/notifications/**
+      - lib/core/feedback/**
+      - tool/regenerate_lucent_openapi.dart
+      - tool/verify_lucent_openapi_sync.dart
+    docs_required:
+      - docs/00-current/Current_State.md
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/OpenApi_Client.md
+      - docs/02-reference/Localization.md
+      - docs/03-logs/migration-log/*.md
