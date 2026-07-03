@@ -91,14 +91,6 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 - [ ] 冻结当前 `flutter analyze` 0 issue 的基线
 - [ ] 移除 `analysis_options.yaml` 中 `test/**` 的排除，先修复测试导入再进入 Phase 1
 
-### Phase 3：wrapper 内联
-
-目标：所有 `core/widgets/common/app_*.dart` 和 `core/widgets/settings/app_*.dart` 的薄封装在被 touched 时内联为原生 Forui。
-
-1. 不批量删除未使用的 wrapper；但在修改调用它的页面时，顺手内联。
-2. 当某个 wrapper 只剩 1-2 个调用方时，直接删除 wrapper 并内联。
-3. `app_toast.dart` 保留自定义 overlay 行为，但彻底移除任何手写颜色/图标常量，全部来自 Forui theme。
-
 ### Phase 4：token 文件定型
 
 1. **`AppColors` 保持语义桥梁定位**
@@ -140,5 +132,5 @@ Forui 的主题由 `FThemeData` 持有，主要包括：
 
 ## 6. 下一动作
 
-1. 开始 Phase 3：把 `core/widgets/common/app_*.dart` 和 `core/widgets/settings/app_*.dart` 薄封装内联为原生 Forui；优先处理只剩 1-2 个调用方的 wrapper。
-2. 修复 `analysis_options.yaml` 的 `test/**` 排除并清理测试旧引用。
+1. 开始 Phase 4：token 文件定型 —— 把 `AppRadiusTokens` 里与 `context.theme.style.borderRadius` 等价的值对齐到 `FBorderRadius`；审计 `AppSpacingTokens` 删除未使用的 level；补充 `AppLayoutTokens`/`AppBreakpoints`/`AppResponsiveSizing` 注释说明其为响应式 helper。
+2. 然后进入 Phase 5：移除 `analysis_options.yaml` 的 `test/**` 排除并清理测试旧引用。

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -59,12 +58,13 @@ class ReportAiSummarySection extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppIconBadge(
-                  icon: FLucideIcons.sparkles,
-                  color: AppColors.primary,
+                FAvatar.raw(
                   size: AppSpacingTokens.level8,
-                  iconSize: AppSpacingTokens.level5,
-                  shape: BoxShape.circle,
+                  child: Icon(
+                    FLucideIcons.sparkles,
+                    color: AppColors.primary.resolve(colors),
+                    size: AppSpacingTokens.level5,
+                  ),
                 ),
                 const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(

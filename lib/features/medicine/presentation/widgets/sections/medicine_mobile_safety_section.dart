@@ -9,18 +9,55 @@ class _SafetyEngineSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final visibleAlerts = alerts.take(3).toList(growable: false);
 
     return Column(
       key: const Key('medicine-safety-panel'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(
-          title: l10n.medicineSafetyEngineTitle,
-          trailing: AppTextAction(
-            label: l10n.medicineSafetyAllRecordsAction,
-            onTap: () => context.push('/medicine/risk-check'),
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.medicineSafetyEngineTitle,
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            FButton(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => context.push('/medicine/risk-check'),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.medicineSafetyAllRecordsAction,
+                    style: TextStyle(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.level1),
+                  Icon(
+                    FLucideIcons.chevronRight,
+                    size: AppSpacingTokens.level4,
+                    color: colors.foreground,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
@@ -58,16 +95,13 @@ class _SafetyAlertRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            AppIconBadge(
-              icon: alert.icon,
-              color: alert.color,
-              backgroundColor: Color.alphaBlend(
-                alert.softColor.resolve(colors).withValues(alpha: 0.18),
-                colors.background,
-              ),
-              shape: BoxShape.circle,
+            FAvatar.raw(
               size: AppSpacingTokens.level8,
-              iconSize: AppSpacingTokens.level5,
+              child: Icon(
+                alert.icon,
+                color: alert.color.resolve(colors),
+                size: AppSpacingTokens.level5,
+              ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
@@ -103,9 +137,44 @@ class _SafetyAlertRow extends StatelessWidget {
                 width: 54,
                 radius: AppRadiusTokens.levelFull,
               ),
-              child: AppStatusPill(
-                label: medicineAlertAction(l10n, alert),
-                color: alert.color,
+              child: FBadge.raw(
+                builder: (context, style) {
+                  final resolvedColor = alert.color.resolve(colors);
+                  final foreground = 0.12 > 0.5
+                      ? colors.primaryForeground
+                      : resolvedColor;
+                  return DecoratedBox(
+                    decoration: ShapeDecoration(
+                      color: resolvedColor.withValues(alpha: 0.12),
+                      shape: RoundedSuperellipseBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.level2,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacingTokens.level2,
+                        vertical: AppSpacingTokens.level1,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            medicineAlertAction(l10n, alert),
+                            style: textTheme.labelSmall?.copyWith(
+                              color: foreground,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             Icon(

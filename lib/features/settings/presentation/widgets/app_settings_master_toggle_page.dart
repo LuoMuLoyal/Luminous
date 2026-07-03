@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -44,11 +43,13 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSettingsSwitchRow(
-              title: masterTitle,
-              subtitle: masterSubtitle,
-              value: masterValue,
-              onChanged: onMasterChanged,
+            FTile(
+              onPress: () => onMasterChanged(!masterValue),
+              title: Text(masterTitle),
+              subtitle: masterSubtitle == null || masterSubtitle!.isEmpty
+                  ? null
+                  : Text(masterSubtitle!),
+              suffix: FSwitch(value: masterValue, onChange: onMasterChanged),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             AppDivider(color: colors.border),
@@ -79,8 +80,8 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
   }
 }
 
-/// Wraps [child] and forces all [AppSettingsSwitchRow] /
-/// [AppSettingsNavigationRow] descendants to render in a disabled state.
+/// Wraps [child] and forces all descendant settings rows to render in a
+/// disabled state.
 class _DisabledScope extends StatelessWidget {
   const _DisabledScope({required this.disabled, required this.child});
 

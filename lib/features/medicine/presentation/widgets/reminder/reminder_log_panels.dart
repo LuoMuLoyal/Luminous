@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
@@ -179,9 +178,42 @@ class _DeliveryLogRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          AppStatusPill(
-            label: deliveryStatusLabel(l10n, log.status),
-            color: color,
+          FBadge.raw(
+            builder: (context, style) {
+              final resolvedColor = color.resolve(colors);
+              final foreground = 0.12 > 0.5
+                  ? colors.primaryForeground
+                  : resolvedColor;
+              return DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: resolvedColor.withValues(alpha: 0.12),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.level2,
+                    vertical: AppSpacingTokens.level1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        deliveryStatusLabel(l10n, log.status),
+                        style: textTheme.labelSmall?.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -237,7 +269,43 @@ class _TodayLogRow extends StatelessWidget {
               ),
             ),
           ),
-          AppStatusPill(label: label, color: color),
+          FBadge.raw(
+            builder: (context, style) {
+              final resolvedColor = color.resolve(colors);
+              final foreground = 0.12 > 0.5
+                  ? colors.primaryForeground
+                  : resolvedColor;
+              return DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: resolvedColor.withValues(alpha: 0.12),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.level2,
+                    vertical: AppSpacingTokens.level1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        label,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -164,13 +162,13 @@ class _ReminderDetailBody extends ConsumerWidget {
           FCard.raw(
             child: Row(
               children: [
-                AppIconBadge(
-                  icon: FLucideIcons.pillBottle,
-                  color: AppColors.primary,
-                  backgroundColor: context.theme.colors.primary,
-                  shape: BoxShape.circle,
+                FAvatar.raw(
                   size: AppSpacingTokens.level9,
-                  iconSize: AppSpacingTokens.level6,
+                  child: Icon(
+                    FLucideIcons.pillBottle,
+                    color: AppColors.primary.resolve(colors),
+                    size: AppSpacingTokens.level6,
+                  ),
                 ),
                 const SizedBox(width: AppSpacingTokens.level4),
                 Expanded(
@@ -198,11 +196,49 @@ class _ReminderDetailBody extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacingTokens.level3),
-                AppStatusPill(
-                  label: isActive
-                      ? l10n.medicineReminderEnabledStatus
-                      : l10n.medicineReminderDisabledStatus,
-                  color: isActive ? AppColors.primary : AppColors.muted,
+                FBadge.raw(
+                  builder: (context, style) {
+                    final pillColor = isActive
+                        ? AppColors.primary
+                        : AppColors.muted;
+                    final resolvedColor = pillColor.resolve(colors);
+                    final foreground = 0.12 > 0.5
+                        ? colors.primaryForeground
+                        : resolvedColor;
+                    return DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: resolvedColor.withValues(alpha: 0.12),
+                        shape: RoundedSuperellipseBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppRadiusTokens.level2,
+                          ),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacingTokens.level2,
+                          vertical: AppSpacingTokens.level1,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              isActive
+                                  ? l10n.medicineReminderEnabledStatus
+                                  : l10n.medicineReminderDisabledStatus,
+                              style: textTheme.labelSmall?.copyWith(
+                                color: foreground,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

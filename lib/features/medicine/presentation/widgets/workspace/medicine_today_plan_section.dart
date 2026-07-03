@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -113,11 +113,43 @@ class _MedicationPlanTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacingTokens.level3),
-                  AppStatusPill(
-                    label: stateText,
-                    color: item.stateColor,
-                    radius: AppRadiusTokens.levelFull,
-                    large: true,
+                  FBadge.raw(
+                    builder: (context, style) {
+                      final resolvedColor = item.stateColor.resolve(colors);
+                      final foreground = 0.12 > 0.5
+                          ? colors.primaryForeground
+                          : resolvedColor;
+                      return DecoratedBox(
+                        decoration: ShapeDecoration(
+                          color: resolvedColor.withValues(alpha: 0.12),
+                          shape: RoundedSuperellipseBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadiusTokens.levelFull,
+                            ),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacingTokens.level2,
+                            vertical: AppSpacingTokens.level1,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                stateText,
+                                style: textTheme.labelMedium?.copyWith(
+                                  color: foreground,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

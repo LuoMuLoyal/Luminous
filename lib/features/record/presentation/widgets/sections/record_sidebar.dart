@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -126,6 +125,7 @@ class RecordFilterPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return FCard.raw(
       key: const Key('record-filter-panel'),
       child: Padding(
@@ -144,9 +144,32 @@ class RecordFilterPanel extends StatelessWidget {
                   ),
                 ),
                 if (onFilterSelected != null)
-                  AppTextAction(
-                    label: l10n.recordFilterSelectAll,
-                    onTap: () => onFilterSelected!(null),
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.xs,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: () => onFilterSelected!(null),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          l10n.recordFilterSelectAll,
+                          style: TextStyle(
+                            color: colors.foreground,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(width: AppSpacingTokens.level1),
+                        Icon(
+                          FLucideIcons.chevronRight,
+                          size: AppSpacingTokens.level4,
+                          color: colors.foreground,
+                        ),
+                      ],
+                    ),
                   ),
               ],
             ),

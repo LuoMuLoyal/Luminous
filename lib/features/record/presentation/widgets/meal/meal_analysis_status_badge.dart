@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
 import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MealAnalysisStatusBadge extends StatelessWidget {
@@ -20,11 +20,52 @@ class MealAnalysisStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final (label, color, icon) = _statusSpec(context, l10n, status);
     final coverageLabel = _coverageLabel(l10n, coverage);
     final text = coverageLabel == null ? label : '$label · $coverageLabel';
+    final resolvedColor = color.resolve(colors);
+    final foreground = 0.12 > 0.5 ? colors.primaryForeground : resolvedColor;
 
-    return AppStatusPill(label: text, color: color, icon: icon, large: large);
+    return FBadge.raw(
+      builder: (context, style) => DecoratedBox(
+        decoration: ShapeDecoration(
+          color: resolvedColor.withValues(alpha: 0.12),
+          shape: RoundedSuperellipseBorder(
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level2,
+            vertical: AppSpacingTokens.level1,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: foreground, size: AppSpacingTokens.level3),
+              const SizedBox(width: AppSpacingTokens.level1),
+              Text(
+                text,
+                style: large
+                    ? textTheme.labelMedium?.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w600,
+                      )
+                    : textTheme.labelSmall?.copyWith(
+                        color: foreground,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0,
+                      ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   (String, AppColors, IconData) _statusSpec(

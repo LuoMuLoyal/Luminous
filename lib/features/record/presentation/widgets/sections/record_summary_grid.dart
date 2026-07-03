@@ -3,7 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -96,21 +95,36 @@ class _SummaryTile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  AppIconBadge(
-                    icon: item.icon,
-                    color: item.accent,
-                    backgroundColor: item.softColor.resolve(colors),
-                    size: AppResponsiveSizing.scaleByWidth(
+                  Container(
+                    width: AppResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.072,
                       minValue: 24,
                       maxValue: 32,
                     ),
-                    iconSize: AppResponsiveSizing.scaleByWidth(
+                    height: AppResponsiveSizing.scaleByWidth(
                       context,
-                      fraction: 0.042,
-                      minValue: 14,
-                      maxValue: 18,
+                      fraction: 0.072,
+                      minValue: 24,
+                      maxValue: 32,
+                    ),
+                    decoration: BoxDecoration(
+                      color: item.softColor.resolve(colors),
+                      borderRadius: BorderRadius.circular(
+                        AppRadiusTokens.level4,
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        item.icon,
+                        color: item.accent.resolve(colors),
+                        size: AppResponsiveSizing.scaleByWidth(
+                          context,
+                          fraction: 0.042,
+                          minValue: 14,
+                          maxValue: 18,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: AppSpacingTokens.level3),

@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
-import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -29,6 +25,7 @@ class RecordTimelinePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return FCard.raw(
       key: const Key('record-timeline'),
       child: Padding(
@@ -47,10 +44,32 @@ class RecordTimelinePanel extends StatelessWidget {
                   ),
                 ),
                 if (onClearFilter != null)
-                  AppTextAction(
-                    label: l10n.recordAllTypesAction,
-                    icon: FLucideIcons.chevronDown,
-                    onTap: onClearFilter!,
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.xs,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: onClearFilter!,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          l10n.recordAllTypesAction,
+                          style: TextStyle(
+                            color: colors.foreground,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(width: AppSpacingTokens.level1),
+                        Icon(
+                          FLucideIcons.chevronDown,
+                          size: AppSpacingTokens.level4,
+                          color: colors.foreground,
+                        ),
+                      ],
+                    ),
                   ),
               ],
             ),
@@ -194,12 +213,20 @@ class _TimelineCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppIconBadge(
-                icon: entry.icon,
-                color: entry.accent,
-                backgroundColor: entry.softColor.resolve(colors),
-                size: 38,
-                iconSize: 19,
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: entry.softColor.resolve(colors),
+                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                ),
+                child: Center(
+                  child: Icon(
+                    entry.icon,
+                    color: entry.accent.resolve(colors),
+                    size: 19,
+                  ),
+                ),
               ),
               const SizedBox(width: AppSpacingTokens.level4),
               Expanded(
@@ -219,9 +246,46 @@ class _TimelineCard extends StatelessWidget {
                         ),
                         if (entry.badgeKey != null) ...[
                           const SizedBox(width: AppSpacingTokens.level3),
-                          AppStatusPill(
-                            label: recordCopy(l10n, entry.badgeKey!),
-                            color: entry.accent,
+                          FBadge.raw(
+                            builder: (context, style) {
+                              final resolvedColor = entry.accent.resolve(
+                                colors,
+                              );
+                              final foreground = 0.12 > 0.5
+                                  ? colors.primaryForeground
+                                  : resolvedColor;
+                              return DecoratedBox(
+                                decoration: ShapeDecoration(
+                                  color: resolvedColor.withValues(alpha: 0.12),
+                                  shape: RoundedSuperellipseBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadiusTokens.level2,
+                                    ),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacingTokens.level2,
+                                    vertical: AppSpacingTokens.level1,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        recordCopy(l10n, entry.badgeKey!),
+                                        style: textTheme.labelSmall?.copyWith(
+                                          color: foreground,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ],
@@ -267,11 +331,39 @@ class _TimelineCard extends StatelessWidget {
                 ),
               ] else if (entry.imagePlaceholderKey != null && !dense) ...[
                 const SizedBox(width: AppSpacingTokens.level4),
-                AppImagePlaceholder(
-                  label: recordCopy(l10n, entry.imagePlaceholderKey!),
-                  width: 96,
-                  height: 72,
-                  icon: FLucideIcons.utensils,
+                FCard.raw(
+                  child: SizedBox(
+                    width: 96,
+                    height: 72,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacingTokens.level3,
+                          vertical: AppSpacingTokens.level2,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              FLucideIcons.utensils,
+                              size: 22,
+                              color: colors.mutedForeground,
+                            ),
+                            const SizedBox(height: AppSpacingTokens.level1),
+                            Text(
+                              recordCopy(l10n, entry.imagePlaceholderKey!),
+                              style: textTheme.labelSmall?.copyWith(
+                                color: colors.foreground,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
               const SizedBox(width: AppSpacingTokens.level3),

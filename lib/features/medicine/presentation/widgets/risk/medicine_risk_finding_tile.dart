@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -80,19 +79,85 @@ class MedicineRiskFindingTile extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              AppStatusPill(
-                label: medicineRiskSeverityLabel(l10n, finding.severity),
-                color: color,
-                radius: AppRadiusTokens.levelFull,
-                backgroundAlpha: 0.08,
+              FBadge.raw(
+                builder: (context, style) {
+                  final resolvedColor = color.resolve(colors);
+                  final foreground = 0.08 > 0.5
+                      ? colors.primaryForeground
+                      : resolvedColor;
+                  return DecoratedBox(
+                    decoration: ShapeDecoration(
+                      color: resolvedColor.withValues(alpha: 0.08),
+                      shape: RoundedSuperellipseBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.levelFull,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacingTokens.level2,
+                        vertical: AppSpacingTokens.level1,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            medicineRiskSeverityLabel(l10n, finding.severity),
+                            style: textTheme.labelSmall?.copyWith(
+                              color: foreground,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
               if (contextLabel.isNotEmpty) ...[
                 const SizedBox(height: AppSpacingTokens.level1),
-                AppStatusPill(
-                  label: contextLabel,
-                  color: AppColors.muted,
-                  radius: AppRadiusTokens.levelFull,
-                  backgroundAlpha: 0.08,
+                FBadge.raw(
+                  builder: (context, style) {
+                    final resolvedColor = AppColors.muted.resolve(colors);
+                    final foreground = 0.08 > 0.5
+                        ? colors.primaryForeground
+                        : resolvedColor;
+                    return DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: resolvedColor.withValues(alpha: 0.08),
+                        shape: RoundedSuperellipseBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppRadiusTokens.levelFull,
+                          ),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacingTokens.level2,
+                          vertical: AppSpacingTokens.level1,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              contextLabel,
+                              style: textTheme.labelSmall?.copyWith(
+                                color: foreground,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ],

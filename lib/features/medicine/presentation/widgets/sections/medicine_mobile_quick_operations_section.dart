@@ -12,6 +12,7 @@ class _QuickOperationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final operations = [
       _QuickOperation(
         icon: FLucideIcons.plus,
@@ -48,7 +49,21 @@ class _QuickOperationSection extends StatelessWidget {
       key: const Key('medicine-quick-actions'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(title: l10n.medicineQuickOperationTitle),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.medicineQuickOperationTitle,
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
@@ -84,15 +99,13 @@ class _QuickOperationRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            AppIconBadge(
-              icon: operation.icon,
-              color: operation.color,
-              backgroundColor: operation.color
-                  .resolve(colors)
-                  .withValues(alpha: 0.08),
-              shape: BoxShape.circle,
+            FAvatar.raw(
               size: AppSpacingTokens.level8,
-              iconSize: AppSpacingTokens.level5,
+              child: Icon(
+                operation.icon,
+                color: operation.color.resolve(colors),
+                size: AppSpacingTokens.level5,
+              ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
             Expanded(

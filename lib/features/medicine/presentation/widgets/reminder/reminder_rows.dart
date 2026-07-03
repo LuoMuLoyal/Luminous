@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_icon_badge.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
@@ -263,7 +261,43 @@ class UnavailableMethodRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          AppStatusPill(label: status, color: AppColors.muted),
+          FBadge.raw(
+            builder: (context, style) {
+              final resolvedColor = AppColors.muted.resolve(colors);
+              final foreground = 0.12 > 0.5
+                  ? colors.primaryForeground
+                  : resolvedColor;
+              return DecoratedBox(
+                decoration: ShapeDecoration(
+                  color: resolvedColor.withValues(alpha: 0.12),
+                  shape: RoundedSuperellipseBorder(
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacingTokens.level2,
+                    vertical: AppSpacingTokens.level1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        status,
+                        style: textTheme.labelSmall?.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -353,10 +387,11 @@ class SelectedMedicineRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacingTokens.level4),
       child: Row(
         children: [
-          AppIconBadge(
-            icon: FLucideIcons.pill,
-            color: AppColors.primary,
-            shape: BoxShape.circle,
+          FAvatar.raw(
+            child: Icon(
+              FLucideIcons.pill,
+              color: AppColors.primary.resolve(colors),
+            ),
           ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(

@@ -32,23 +32,67 @@ class _DrugBoxSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSectionHeader(
-              title: l10n.medicineDrugboxTitle,
-              compact: true,
-              leading: AppIconBadge(
-                icon: FLucideIcons.briefcaseMedical,
-                color: AppColors.primary,
-                backgroundColor: AppColors.primary
-                    .resolve(colors)
-                    .withValues(alpha: 0.12),
-                size: AppSpacingTokens.level7,
-                iconSize: AppSpacingTokens.level5,
-              ),
-              trailing: AppTextAction(
-                label: l10n.medicineManageMedicinesAction,
-                onTap: () =>
-                    pushAuthRequiredRoute(context, '/mine/medicine/new'),
-              ),
+            Row(
+              children: [
+                Container(
+                  width: AppSpacingTokens.level7,
+                  height: AppSpacingTokens.level7,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary
+                        .resolve(colors)
+                        .withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      FLucideIcons.briefcaseMedical,
+                      color: AppColors.primary.resolve(colors),
+                      size: AppSpacingTokens.level5,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level2),
+                Expanded(
+                  child: Text(
+                    l10n.medicineDrugboxTitle,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level3),
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.xs,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () =>
+                      pushAuthRequiredRoute(context, '/mine/medicine/new'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.medicineManageMedicinesAction,
+                        style: TextStyle(
+                          color: colors.foreground,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: AppSpacingTokens.level1),
+                      Icon(
+                        FLucideIcons.chevronRight,
+                        size: AppSpacingTokens.level4,
+                        color: colors.foreground,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacingTokens.level1),
             Text(
@@ -345,15 +389,13 @@ class _DrugBoxEmpty extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
       child: Row(
         children: [
-          AppIconBadge(
-            icon: FLucideIcons.pillBottle,
-            color: AppColors.primary,
-            backgroundColor: AppColors.primary
-                .resolve(colors)
-                .withValues(alpha: 0.12),
-            shape: BoxShape.circle,
+          FAvatar.raw(
             size: AppSpacingTokens.level8,
-            iconSize: AppSpacingTokens.level5,
+            child: Icon(
+              FLucideIcons.pillBottle,
+              color: AppColors.primary.resolve(colors),
+              size: AppSpacingTokens.level5,
+            ),
           ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
@@ -460,9 +502,46 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                           width: 54,
                           radius: AppRadiusTokens.levelFull,
                         ),
-                        child: AppStatusPill(
-                          label: state,
-                          color: item.stateColor,
+                        child: FBadge.raw(
+                          builder: (context, style) {
+                            final resolvedColor = item.stateColor.resolve(
+                              colors,
+                            );
+                            final foreground = 0.12 > 0.5
+                                ? colors.primaryForeground
+                                : resolvedColor;
+                            return DecoratedBox(
+                              decoration: ShapeDecoration(
+                                color: resolvedColor.withValues(alpha: 0.12),
+                                shape: RoundedSuperellipseBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadiusTokens.level2,
+                                  ),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacingTokens.level2,
+                                  vertical: AppSpacingTokens.level1,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      state,
+                                      style: textTheme.labelSmall?.copyWith(
+                                        color: foreground,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ],

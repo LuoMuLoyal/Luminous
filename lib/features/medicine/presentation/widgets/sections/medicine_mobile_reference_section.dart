@@ -61,30 +61,65 @@ class _SafetyTipsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final tipsAsync = ref.watch(medicineSafetyTipListProvider);
 
     return Column(
       key: const Key('medicine-safety-tips'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(
-          title: l10n.medicineSafetyTipsTitle,
-          leading: Icon(
-            FLucideIcons.lightbulb,
-            color: AppColors.primary.resolve(colors),
-            size: AppSpacingTokens.level5,
-          ),
-          compact: true,
-          trailing: AppTextAction(
-            label: l10n.medicineSafetyTipsRefreshAction,
-            icon: FLucideIcons.refreshCw,
-            color: AppColors.primary,
-            onTap: tipsAsync.isLoading
-                ? () {}
-                : () => ref
-                      .read(medicineSafetyTipListProvider.notifier)
-                      .refresh(),
-          ),
+        Row(
+          children: [
+            Icon(
+              FLucideIcons.lightbulb,
+              color: AppColors.primary.resolve(colors),
+              size: AppSpacingTokens.level5,
+            ),
+            const SizedBox(width: AppSpacingTokens.level2),
+            Expanded(
+              child: Text(
+                l10n.medicineSafetyTipsTitle,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            FButton(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              mainAxisSize: MainAxisSize.min,
+              onPress: tipsAsync.isLoading
+                  ? () {}
+                  : () => ref
+                        .read(medicineSafetyTipListProvider.notifier)
+                        .refresh(),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.medicineSafetyTipsRefreshAction,
+                    style: TextStyle(
+                      color: AppColors.primary.resolve(colors),
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(width: AppSpacingTokens.level1),
+                  Icon(
+                    FLucideIcons.refreshCw,
+                    size: AppSpacingTokens.level4,
+                    color: AppColors.primary.resolve(colors),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
@@ -193,12 +228,20 @@ class _SafetyTipRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          AppIconBadge(
-            icon: tip.icon,
-            color: tip.color,
-            backgroundColor: tip.color.resolve(colors).withValues(alpha: 0.08),
-            size: AppSpacingTokens.level8,
-            iconSize: AppSpacingTokens.level5,
+          Container(
+            width: AppSpacingTokens.level8,
+            height: AppSpacingTokens.level8,
+            decoration: BoxDecoration(
+              color: tip.color.resolve(colors).withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+            ),
+            child: Center(
+              child: Icon(
+                tip.icon,
+                color: tip.color.resolve(colors),
+                size: AppSpacingTokens.level5,
+              ),
+            ),
           ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_text_action.dart';
-import 'package:luminous/core/widgets/common/app_section_header.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class TodaySection extends StatelessWidget {
@@ -19,14 +18,60 @@ class TodaySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
+    final foreground = onAction == null
+        ? colors.mutedForeground
+        : colors.foreground;
+    final actionText = Text(
+      actionLabel ?? '',
+      style: TextStyle(
+        color: foreground,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppSectionHeader(
-          title: title,
-          trailing: actionLabel == null
-              ? null
-              : AppTextAction(label: actionLabel!, onTap: onAction ?? () {}),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (actionLabel != null) ...[
+              const SizedBox(width: AppSpacingTokens.level3),
+              FButton(
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.xs,
+                mainAxisSize: MainAxisSize.min,
+                onPress: onAction ?? () {},
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    actionText,
+                    const SizedBox(width: AppSpacingTokens.level1),
+                    Icon(
+                      FLucideIcons.chevronRight,
+                      size: AppSpacingTokens.level4,
+                      color: foreground,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         child,

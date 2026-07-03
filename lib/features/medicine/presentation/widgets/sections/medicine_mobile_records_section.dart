@@ -15,6 +15,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
+    final textTheme = Theme.of(context).textTheme;
     final rows = _recordRowsFor(l10n, items).take(4).toList(growable: false);
 
     return FCard.raw(
@@ -24,16 +25,29 @@ class _MedicineRecordsSection extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppSectionHeader(
-              title: l10n.medicineRecordsTitle,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _FilterText(label: l10n.medicineAllMedicinesFilter),
-                  const SizedBox(width: AppSpacingTokens.level3),
-                  _FilterText(label: l10n.medicineLastSevenDaysFilter),
-                ],
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.medicineRecordsTitle,
+                    style: textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level3),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _FilterText(label: l10n.medicineAllMedicinesFilter),
+                    const SizedBox(width: AppSpacingTokens.level3),
+                    _FilterText(label: l10n.medicineLastSevenDaysFilter),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             if (rows.isEmpty)
@@ -56,10 +70,32 @@ class _MedicineRecordsSection extends ConsumerWidget {
                       vertical: AppSpacingTokens.level4,
                     ),
                     child: Center(
-                      child: AppTextAction(
-                        label: l10n.medicineViewMoreRecordsAction,
-                        color: AppColors.primary,
-                        onTap: () => context.go('/record'),
+                      child: FButton(
+                        variant: FButtonVariant.ghost,
+                        size: FButtonSizeVariant.xs,
+                        mainAxisSize: MainAxisSize.min,
+                        onPress: () => context.go('/record'),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10n.medicineViewMoreRecordsAction,
+                              style: TextStyle(
+                                color: AppColors.primary.resolve(colors),
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(width: AppSpacingTokens.level1),
+                            Icon(
+                              FLucideIcons.chevronRight,
+                              size: AppSpacingTokens.level4,
+                              color: AppColors.primary.resolve(colors),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -127,15 +163,13 @@ class _MedicineRecordRow extends StatelessWidget {
             width: AppSpacingTokens.level5,
             child: Column(
               children: [
-                AppIconBadge(
-                  icon: row.statusIcon,
-                  color: row.statusColor,
-                  backgroundColor: row.statusColor
-                      .resolve(colors)
-                      .withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
+                FAvatar.raw(
                   size: AppSpacingTokens.level5,
-                  iconSize: AppSpacingTokens.level4,
+                  child: Icon(
+                    row.statusIcon,
+                    color: row.statusColor.resolve(colors),
+                    size: AppSpacingTokens.level4,
+                  ),
                 ),
                 if (!isLast)
                   SizedBox(
@@ -183,9 +217,44 @@ class _MedicineRecordRow extends StatelessWidget {
                         width: 44,
                         radius: AppRadiusTokens.levelFull,
                       ),
-                      child: AppStatusPill(
-                        label: row.statusLabel,
-                        color: row.statusColor,
+                      child: FBadge.raw(
+                        builder: (context, style) {
+                          final resolvedColor = row.statusColor.resolve(colors);
+                          final foreground = 0.12 > 0.5
+                              ? colors.primaryForeground
+                              : resolvedColor;
+                          return DecoratedBox(
+                            decoration: ShapeDecoration(
+                              color: resolvedColor.withValues(alpha: 0.12),
+                              shape: RoundedSuperellipseBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadiusTokens.level2,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacingTokens.level2,
+                                vertical: AppSpacingTokens.level1,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    row.statusLabel,
+                                    style: textTheme.labelSmall?.copyWith(
+                                      color: foreground,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],
