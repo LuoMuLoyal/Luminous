@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_spacing_tokens.dart';
 
+/// Responsive layout scale resolved from the current screen width.
+///
+/// This is a layout helper, not a visual design token. The values here
+/// describe how page padding, section spacing, card padding, and max content
+/// width adapt across breakpoints; they intentionally delegate spacing to
+/// [AppSpacingTokens] rather than defining a second visual scale.
 @immutable
 class AppLayoutScale {
   const AppLayoutScale({

@@ -27,7 +27,7 @@ lib/
 │   ├── router/            # Shared route helpers (action_route_mapper, external_url_launcher)
 │   ├── theme/             # App theme, theme controller, theme extensions
 │   └── widgets/           # Shared UI components
-│       ├── common/        # AppBackButton, AppDialog, AppStateErrorView, AppInkWell, etc.
+│       ├── common/        # AppBackButton, AppDialogShell, AppStateErrorView, AppStateMessageView, etc.
 │       ├── layout/        # PageScaffoldShell, ResponsiveContentFrame
 │       └── settings/      # Legacy settings-row wrappers still used by untouched /settings/* sub-pages
 │
@@ -171,11 +171,11 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 | Layer | Location | Responsibility |
 |-------|----------|----------------|
 | Root theme | `lib/core/theme/app_theme.dart` | Owns the app-level Forui light/dark theme bootstrap |
-| Compatibility bridge | `lib/core/theme/app_theme_extensions.dart` | Maps Forui `FColors` into `AppThemeSurface` for legacy pages still reading semantic surface fields |
-| Legacy token bridge | `lib/core/design/` | Compatibility token names that now point at Forui-aligned color/spacing/radius/shadow/type values for still-unmigrated pages |
+| Color token bridge | `lib/core/design/app_colors.dart` | Semantic color enum used by data/domain layers; resolved through the current Forui theme in widgets |
+| Spacing/radius tokens | `lib/core/design/app_spacing_tokens.dart`, `app_radius_tokens.dart` | Project layout vocabulary mapped to Forui’s scale; legacy aliases removed |
 | Theme preference | `lib/core/theme/app_theme_controller.dart` | Persists only `ThemeMode` (`system / light / dark`) |
 
-Shared page chrome has started moving with the same strategy: `PageScaffoldShell` now composes `FScaffold` and `FHeader`, `AppBackButton` is a Forui icon button, `AppDialog` uses `FDialog.raw`, and shared state surfaces use `FCard`/`FButton`. `PageScaffoldShell` intentionally keeps a transparent `Material` wrapper around its content area so legacy Material descendants can survive until their owning pages finish migration.
+Shared page chrome is now Forui-based: child pages compose `FScaffold` and `FHeader` directly, `AppBackButton` is a Forui icon button, `showAppDialog` / `AppDialogShell` wraps `showFDialog` / `FDialog.raw`, and shared state surfaces use `FCard`/`FButton`. Legacy bridge files (`AppThemeSurface`, `AppTypographyTokens`, `AppSectionSurface`, `AppColorTokens`, `AppShadowTokens`, `AppInkWell`, `AppDialog`) have been removed from runtime `lib/`.
 
 That same direction now also covers shared feedback/control surfaces: global toast presentation resolves from `FTheme`, and feature-level control panels such as the assistant settings block are expected to use page-local Forui tiles/switches directly instead of routing new work back through the old `AppSettings*` wrapper set.
 

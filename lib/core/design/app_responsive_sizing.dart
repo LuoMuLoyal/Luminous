@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 
-/// Lightweight responsive sizing helpers for cards, sidebars, and grid counts.
+/// Lightweight responsive sizing helpers for cards, sidebars, grid counts, and
+/// scalable dimensions.
 ///
-/// These helpers deliberately use simple fractions and min/max clamps rather
-/// than a full layout grid, so they can be adopted incrementally without
-/// rewriting the existing design system.
+/// These are layout helpers, not visual design tokens. They use simple
+/// fractions and min/max clamps to adapt structural dimensions to the current
+/// screen size; color, spacing, radius, and typography values should come from
+/// the current Forui theme or the dedicated token files instead.
 abstract final class AppResponsiveSizing {
   /// Returns a card width that occupies a fraction of the screen on small
   /// devices while staying within a comfortable min/max range.
