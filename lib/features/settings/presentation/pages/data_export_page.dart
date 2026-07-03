@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -12,6 +11,8 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import 'package:luminous/core/design/app_design.dart';
+
 class DataExportPage extends ConsumerWidget {
   const DataExportPage({super.key});
 
@@ -19,7 +20,7 @@ class DataExportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final exportAsync = ref.watch(dataExportControllerProvider);
     final export = exportAsync.asData?.value;
 
@@ -38,9 +39,9 @@ class DataExportPage extends ConsumerWidget {
                 children: [
                   Text(
                     l10n.settingsExportDescription,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colors.foreground,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.foreground),
                   ),
                   const SizedBox(height: AppSpacingTokens.level5),
                   _StatusRow(
@@ -210,20 +211,21 @@ class _StatusRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Row(
       children: [
         Text(
           label,
-          style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(color: colors.foreground),
         ),
         const Spacer(),
         Text(
           value,
-          style: textTheme.bodyMedium?.copyWith(
-            color: colors.foreground,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
         ),
       ],
     );

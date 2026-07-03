@@ -19,7 +19,7 @@ class _DrugBoxSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final items = workspace.plan.items
         .where((item) => item.currentMedicineId != null)
         .take(2)
@@ -55,10 +55,12 @@ class _DrugBoxSection extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.medicineDrugboxTitle,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -97,9 +99,9 @@ class _DrugBoxSection extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level1),
             Text(
               l10n.medicineDrugboxSubtitle,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             if (items.isEmpty)
@@ -168,7 +170,7 @@ class _DrugBoxCountSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return SizedBox(
       width: AppSpacingTokens.level9,
       child: Column(
@@ -176,9 +178,9 @@ class _DrugBoxCountSummary extends StatelessWidget {
         children: [
           AppSkeletonText(
             text: l10n.medicineDrugboxTotal(count),
-            style: textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypographyToken.level8
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.72,
@@ -186,7 +188,9 @@ class _DrugBoxCountSummary extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level1),
           Text(
             l10n.medicineDrugboxTotalPrefix,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -310,7 +314,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
       child: Column(
@@ -327,9 +331,9 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -339,10 +343,12 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level1),
           AppSkeletonText(
             text: value,
-            style: textTheme.titleMedium?.copyWith(
-              color: color.resolve(colors).withValues(alpha: 0.92),
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(
+                  color: color.resolve(colors).withValues(alpha: 0.92),
+                  fontWeight: FontWeight.w800,
+                ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.76,
@@ -350,9 +356,9 @@ class _DrugBoxMetricItem extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level1),
           AppSkeletonText(
             text: detail,
-            style: textTheme.labelSmall?.copyWith(
-              color: colors.mutedForeground,
-            ),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.88,
@@ -384,7 +390,7 @@ class _DrugBoxEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
       child: Row(
@@ -404,16 +410,16 @@ class _DrugBoxEmpty extends StatelessWidget {
               children: [
                 Text(
                   l10n.medicineNoMedicineTitle,
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),
@@ -438,7 +444,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final name = _itemName(l10n, item);
     final dosage = _itemDosage(l10n, item);
     final schedule = _itemSchedule(l10n, item);
@@ -474,9 +480,9 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: name,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.72,
@@ -489,9 +495,9 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     children: [
                       AppSkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         widthFactor: 0.66,
@@ -529,11 +535,13 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                                   children: [
                                     Text(
                                       state,
-                                      style: textTheme.labelSmall?.copyWith(
-                                        color: foreground,
-                                        fontWeight: FontWeight.w700,
-                                        letterSpacing: 0,
-                                      ),
+                                      style: AppTypographyToken.level3
+                                          .body(context)
+                                          .copyWith(
+                                            color: foreground,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: 0,
+                                          ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),

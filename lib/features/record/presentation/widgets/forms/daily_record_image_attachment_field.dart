@@ -30,7 +30,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final hasAttachment =
         selectedBytes != null ||
         existingAttachment?.objectKey.isNotEmpty == true;
@@ -44,9 +44,9 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
           children: [
             Text(
               l10n.recordImageSectionTitle,
-              style: textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacingTokens.level3),
             Row(
@@ -65,18 +65,18 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         hasAttachment
                             ? l10n.recordImageAttachedLabel
                             : l10n.recordImageEmptyLabel,
-                        style: textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
                         const SizedBox(height: AppSpacingTokens.level1),
                         Text(
                           fileName,
-                          style: textTheme.labelSmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],

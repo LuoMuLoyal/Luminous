@@ -95,14 +95,15 @@ class TimePickerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.medicineReminderTimesLabel,
-          style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         Wrap(

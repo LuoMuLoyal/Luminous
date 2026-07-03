@@ -62,7 +62,6 @@ class _QuickActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress: () {
@@ -106,7 +105,9 @@ class _QuickActionTile extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             medicineCopy(l10n, action.titleKey),
-            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,

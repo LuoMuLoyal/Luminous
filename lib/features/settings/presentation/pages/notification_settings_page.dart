@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
@@ -10,6 +9,8 @@ import 'package:luminous/features/settings/presentation/providers/notification_s
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'package:luminous/core/design/app_design.dart';
 
 class NotificationSettingsPage extends ConsumerWidget {
   const NotificationSettingsPage({super.key});
@@ -208,10 +209,9 @@ class _PermissionCard extends StatelessWidget {
       prefix: Icon(icon, color: color),
       title: Text(
         title,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(color: color, fontWeight: FontWeight.w600),
       ),
       subtitle: subtitle.isEmpty ? null : Text(subtitle),
       suffix: state == NotificationPermissionState.granted
@@ -230,15 +230,17 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
       child: Text(
         label,
-        style: textTheme.labelSmall?.copyWith(
-          color: colors.mutedForeground,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTypographyToken.level3
+            .body(context)
+            .copyWith(
+              color: colors.mutedForeground,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }

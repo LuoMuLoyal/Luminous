@@ -44,7 +44,6 @@ class _QuickActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: () {
@@ -66,9 +65,9 @@ class _QuickActionButton extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level3),
             Text(
               actionLabel(l10n, action.type),
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
           ],
         ),

@@ -27,7 +27,7 @@ class TodayAiSummarySection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final canAccessProtectedData = ref.watch(
       authSessionProvider.select((s) => s.canAccessProtectedData),
     );
@@ -81,20 +81,24 @@ class TodayAiSummarySection extends ConsumerWidget {
                     children: [
                       Text(
                         l10n.todayAiSummaryTitle,
-                        style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         l10n.todayAiSummarySubtitle,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                          letterSpacing: 0,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: colors.mutedForeground,
+                              letterSpacing: 0,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -148,10 +152,9 @@ class TodayAiSummarySection extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   content.summary!,
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700, letterSpacing: 0),
                 ),
               ),
             ),
@@ -172,10 +175,12 @@ class TodayAiSummarySection extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   content.footer!,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                    letterSpacing: 0,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: colors.mutedForeground,
+                        letterSpacing: 0,
+                      ),
                 ),
               ),
             ),
@@ -193,7 +198,6 @@ class _AiSummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -211,10 +215,9 @@ class _AiSummaryRow extends StatelessWidget {
           Expanded(
             child: Text(
               item.text,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-                letterSpacing: 0,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground, letterSpacing: 0),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

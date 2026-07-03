@@ -37,7 +37,7 @@ class MineAccountHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final account = dashboard.account;
     final name = account.displayName?.trim().isNotEmpty == true
         ? account.displayName!.trim()
@@ -62,9 +62,9 @@ class MineAccountHero extends StatelessWidget {
                         Flexible(
                           child: Text(
                             name,
-                            style: textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
+                            style: AppTypographyToken.level7
+                                .display(context)
+                                .copyWith(fontWeight: FontWeight.w800),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -80,9 +80,9 @@ class MineAccountHero extends StatelessWidget {
                       children: [
                         Text(
                           mineCopy(l10n, dashboard.completion.titleKey),
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level4
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                         AppSkeletonSlot(
                           skeleton: const AppInlineSkeletonBlock(
@@ -92,10 +92,12 @@ class MineAccountHero extends StatelessWidget {
                           ),
                           child: Text(
                             dashboard.completion.percentLabel,
-                            style: textTheme.titleMedium?.copyWith(
-                              color: context.theme.colors.primary,
-                              fontWeight: FontWeight.w800,
-                            ),
+                            style: AppTypographyToken.level5
+                                .body(context)
+                                .copyWith(
+                                  color: context.theme.colors.primary,
+                                  fontWeight: FontWeight.w800,
+                                ),
                           ),
                         ),
                       ],
@@ -161,7 +163,6 @@ class _RolePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: context.theme.colors.primary.withValues(alpha: 0.1),
@@ -183,10 +184,12 @@ class _RolePill extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level1),
             Text(
               label,
-              style: textTheme.labelSmall?.copyWith(
-                color: context.theme.colors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(
+                    color: context.theme.colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
           ],
         ),

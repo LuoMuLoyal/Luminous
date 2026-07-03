@@ -17,7 +17,6 @@ class MedicineMetricsPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -34,7 +33,6 @@ class MedicineMetricsPanel extends StatelessWidget {
                 suffix: l10n.medicineHeroMetricTodayCountUnit,
                 accent: context.theme.colors.primary,
                 muted: colors.mutedForeground,
-                textTheme: textTheme,
               ),
             ),
             Container(width: 1, height: 70, color: colors.border),
@@ -45,7 +43,6 @@ class MedicineMetricsPanel extends StatelessWidget {
                 suffix: l10n.medicineHeroMetricAdherenceUnit,
                 accent: context.theme.colors.primary,
                 muted: colors.mutedForeground,
-                textTheme: textTheme,
               ),
             ),
           ],
@@ -62,7 +59,6 @@ class _MetricBlock extends StatelessWidget {
     required this.suffix,
     required this.accent,
     required this.muted,
-    required this.textTheme,
   });
 
   final String label;
@@ -70,7 +66,6 @@ class _MetricBlock extends StatelessWidget {
   final String suffix;
   final Color accent;
   final Color muted;
-  final TextTheme textTheme;
 
   @override
   Widget build(BuildContext context) {
@@ -81,24 +76,24 @@ class _MetricBlock extends StatelessWidget {
         children: [
           Text(
             label,
-            style: textTheme.bodySmall?.copyWith(color: muted),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: muted),
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppSpacingTokens.level2),
           RichText(
             text: TextSpan(
-              style: textTheme.headlineMedium?.copyWith(
-                color: accent,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level8
+                  .display(context)
+                  .copyWith(color: accent, fontWeight: FontWeight.w700),
               children: [
                 TextSpan(text: value),
                 TextSpan(
                   text: suffix,
-                  style: textTheme.labelLarge?.copyWith(
-                    color: accent,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(color: accent, fontWeight: FontWeight.w700),
                 ),
               ],
             ),

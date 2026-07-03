@@ -54,7 +54,7 @@ class _WeekDayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final foreground = day.selected ? colors.background : colors.foreground;
 
     return FTappable(
@@ -65,9 +65,9 @@ class _WeekDayCell extends StatelessWidget {
           children: [
             Text(
               recordCopy(l10n, day.weekdayKey),
-              style: textTheme.labelSmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level2),
             DecoratedBox(
@@ -80,10 +80,12 @@ class _WeekDayCell extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '${day.day}',
-                    style: textTheme.labelLarge?.copyWith(
-                      color: foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
               ),

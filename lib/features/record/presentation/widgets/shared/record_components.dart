@@ -23,7 +23,7 @@ class RecordHeaderActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = context.theme.colors.primary;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final foreground = emphasized
         ? colors.primaryForeground
         : colors.foreground;
@@ -64,10 +64,9 @@ class RecordHeaderActionChip extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.level2),
               Text(
                 label,
-                style: textTheme.labelLarge?.copyWith(
-                  color: foreground,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(color: foreground, fontWeight: FontWeight.w700),
               ),
             ],
           ],

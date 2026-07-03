@@ -60,7 +60,6 @@ class _StatusOverviewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: () =>
@@ -80,9 +79,9 @@ class _StatusOverviewItem extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level3),
             Text(
               mineCopy(l10n, entry.titleKey),
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w800),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -90,9 +89,9 @@ class _StatusOverviewItem extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level1),
             AppSkeletonText(
               text: mineCopy(l10n, entry.subtitleKey),
-              style: textTheme.labelSmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
@@ -165,7 +164,7 @@ class _TinyBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final resolvedColor = color.resolve(colors);
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -179,10 +178,9 @@ class _TinyBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelSmall?.copyWith(
-            color: resolvedColor,
-            fontWeight: FontWeight.w800,
-          ),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

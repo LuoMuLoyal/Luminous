@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -11,6 +10,8 @@ import 'package:luminous/features/settings/presentation/widgets/settings_subpage
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import 'package:luminous/core/design/app_design.dart';
+
 class AboutSettingsPage extends ConsumerWidget {
   const AboutSettingsPage({super.key});
 
@@ -18,7 +19,7 @@ class AboutSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final infoAsync = ref.watch(appInfoProvider);
     final description = infoAsync.asData?.value?.description;
     final supportEmail = infoAsync.asData?.value?.supportEmail;
@@ -47,16 +48,16 @@ class AboutSettingsPage extends ConsumerWidget {
                   const SizedBox(height: AppSpacingTokens.level4),
                   Text(
                     infoAsync.asData?.value?.name ?? 'Luminous',
-                    style: textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypographyToken.level6
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: AppSpacingTokens.level2),
                   Text(
                     '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                   if (infoAsync.asData?.value?.buildDate.isNotEmpty ??
                       false) ...[
@@ -65,18 +66,18 @@ class AboutSettingsPage extends ConsumerWidget {
                       l10n.settingsAboutBuildNumberLabel(
                         infoAsync.asData!.value!.buildDate,
                       ),
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                     ),
                   ],
                   if (description != null && description.isNotEmpty) ...[
                     const SizedBox(height: AppSpacingTokens.level3),
                     Text(
                       description,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.foreground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.foreground),
                       textAlign: TextAlign.center,
                     ),
                   ],

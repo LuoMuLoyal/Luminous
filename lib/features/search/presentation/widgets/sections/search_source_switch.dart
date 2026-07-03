@@ -19,7 +19,6 @@ class SourceSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       children: MedicineSearchSource.values
@@ -64,12 +63,14 @@ class SourceSwitch extends StatelessWidget {
                   child: Text(
                     sourceLabel(l10n, source),
                     textAlign: TextAlign.center,
-                    style: textTheme.labelLarge?.copyWith(
-                      color: source == selectedSource
-                          ? colors.primary
-                          : colors.foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(
+                          color: source == selectedSource
+                              ? colors.primary
+                              : colors.foreground,
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
               ),

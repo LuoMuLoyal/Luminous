@@ -67,7 +67,6 @@ class _ArchiveRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     final row = FTappable(
       onPress: () {
@@ -93,18 +92,18 @@ class _ArchiveRow extends StatelessWidget {
                 children: [
                   Text(
                     mineCopy(l10n, entry.titleKey),
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   AppSkeletonText(
                     text: subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.74,
@@ -122,12 +121,14 @@ class _ArchiveRow extends StatelessWidget {
                 ),
                 child: Text(
                   mineCopy(l10n, entry.statusKey!),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                        ? context.theme.colors.primary
-                        : context.theme.colors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: entry.statusKey == MineCopyKey.archiveNeedsFill
+                            ? context.theme.colors.primary
+                            : context.theme.colors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ),
             ],

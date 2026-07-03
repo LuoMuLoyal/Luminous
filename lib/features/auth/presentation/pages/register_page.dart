@@ -241,9 +241,9 @@ class RegisterPage extends HookConsumerWidget {
                 Expanded(
                   child: Text(
                     l10n?.authHaveAccountPrompt ?? 'Already have an account?',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.theme.colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
                   ),
                 ),
                 FButton(
@@ -347,12 +347,11 @@ class _TermsLinks extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final l10n = AppLocalizations.of(context)!;
-    final linkStyle = textTheme.bodySmall?.copyWith(
-      color: colors.primary,
-      fontWeight: FontWeight.w600,
-    );
+    final linkStyle = AppTypographyToken.level3
+        .body(context)
+        .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
 
     return Wrap(
       spacing: AppSpacingTokens.level2,
@@ -368,7 +367,9 @@ class _TermsLinks extends StatelessWidget {
         ),
         Text(
           '/',
-          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
         ),
         FButton(
           variant: FButtonVariant.ghost,

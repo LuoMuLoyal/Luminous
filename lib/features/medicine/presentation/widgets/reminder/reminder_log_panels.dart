@@ -17,7 +17,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final visibleLogs = logs.isEmpty
         ? <DoseLogItem>[]
         : logs.take(3).toList(growable: false);
@@ -29,7 +29,9 @@ class ReminderTodayLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
@@ -48,9 +50,9 @@ class ReminderTodayLogPanel extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                       ),
                     ],
@@ -80,7 +82,7 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final visibleLogs = logs.take(5).toList(growable: false);
 
     return Column(
@@ -90,7 +92,9 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
           padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
@@ -109,9 +113,9 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                       ),
                     ],
@@ -142,7 +146,7 @@ class _DeliveryLogRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final color = _deliveryStatusColor(log.status);
     final row = Padding(
       padding: const EdgeInsets.symmetric(
@@ -163,16 +167,16 @@ class _DeliveryLogRow extends StatelessWidget {
               children: [
                 Text(
                   dateTimeShortLabel(l10n, log.scheduledFor),
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),
@@ -201,11 +205,13 @@ class _DeliveryLogRow extends StatelessWidget {
                     children: [
                       Text(
                         deliveryStatusLabel(l10n, log.status),
-                        style: textTheme.labelSmall?.copyWith(
-                          color: foreground,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: foreground,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -238,7 +244,7 @@ class _TodayLogRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final color = switch (log.status) {
       DoseLogStatus.taken => AppColors.primary,
       DoseLogStatus.skipped => AppColors.primary,
@@ -264,9 +270,9 @@ class _TodayLogRow extends StatelessWidget {
           Expanded(
             child: Text(
               dateTimeTimeLabel(log.scheduledFor),
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
           ),
           FBadge.raw(
@@ -292,11 +298,13 @@ class _TodayLogRow extends StatelessWidget {
                     children: [
                       Text(
                         label,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: foreground,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: foreground,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0,
+                            ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

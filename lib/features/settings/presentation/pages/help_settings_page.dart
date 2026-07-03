@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
@@ -14,6 +13,8 @@ import 'package:luminous/features/support/data/providers/support_resources_provi
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'package:luminous/core/design/app_design.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
   const HelpSettingsPage({super.key});
@@ -113,13 +114,14 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacingTokens.level5),
       child: Text(
         message,
-        style: textTheme.bodyMedium?.copyWith(color: colors.mutedForeground),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(color: colors.mutedForeground),
         textAlign: TextAlign.center,
       ),
     );

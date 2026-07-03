@@ -451,9 +451,9 @@ class LoginPage extends HookConsumerWidget {
                 Expanded(
                   child: Text(
                     l10n?.authNeedAccountPrompt ?? 'Need an account?',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: context.theme.colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
                   ),
                 ),
                 FButton(

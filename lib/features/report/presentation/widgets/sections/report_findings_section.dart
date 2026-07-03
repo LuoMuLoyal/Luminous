@@ -21,14 +21,15 @@ class ReportFindingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reportFindingsSectionTitle,
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         AppDivider(color: colors.border),
@@ -61,7 +62,7 @@ class _FindingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final resolvedColor = finding.color.resolve(colors);
 
     return FCard.raw(
@@ -123,17 +124,17 @@ class _FindingCard extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level4),
             AppSkeletonText(
               text: finding.title,
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w800),
               widthFactor: 0.7,
             ),
             const SizedBox(height: AppSpacingTokens.level3),
             AppSkeletonText(
               text: finding.body,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.9,

@@ -14,7 +14,6 @@ class MealAnalysisSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -27,9 +26,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMealAnalysisSectionTitle,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 MealAnalysisStatusBadge(
@@ -43,9 +42,9 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 data.mealDescription!,
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
               ),
             ],
             if (data.recognizedDishes.isNotEmpty) ...[
@@ -99,18 +98,18 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 data.mealCommentary!,
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
               ),
             ],
             if (data.isEstimate) ...[
               const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 l10n.recordMealAnalysisEstimateDisclaimer,
-                style: textTheme.labelSmall?.copyWith(
-                  color: context.theme.colors.primary,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: context.theme.colors.primary),
               ),
             ],
           ],
@@ -127,10 +126,11 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Text(
       title,
-      style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+      style: AppTypographyToken.level5
+          .body(context)
+          .copyWith(fontWeight: FontWeight.w700),
     );
   }
 }
@@ -143,12 +143,14 @@ class _BulletText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.level1),
       child: Text(
         '• $text',
-        style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+        style: AppTypographyToken.level3
+            .body(context)
+            .copyWith(color: colors.mutedForeground),
       ),
     );
   }

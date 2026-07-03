@@ -10,8 +10,6 @@ class ReportReferenceNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
@@ -33,10 +31,12 @@ class ReportReferenceNotice extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.reportReferenceNotice,
-                style: textTheme.bodySmall?.copyWith(
-                  color: context.theme.colors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(
+                      color: context.theme.colors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ),
           ],

@@ -131,7 +131,7 @@ class _RecordDetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final imageAttachment = record.attachments
         .where((item) => item.kind == DailyRecordAttachmentKind.image)
         .firstOrNull;
@@ -157,9 +157,9 @@ class _RecordDetailBody extends ConsumerWidget {
                       children: [
                         Text(
                           record.title ?? _kindLabel(l10n, record.kind),
-                          style: textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+                          style: AppTypographyToken.level7
+                              .display(context)
+                              .copyWith(fontWeight: FontWeight.w800),
                         ),
                         const SizedBox(height: AppSpacingTokens.level2),
                         Text(
@@ -167,9 +167,9 @@ class _RecordDetailBody extends ConsumerWidget {
                             record.occurredAt,
                             occurredTime: record.occurredTime,
                           ),
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                       ],
                     ),
@@ -220,9 +220,9 @@ class _RecordDetailBody extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       l10n.recordMealAnalysisStatusAnalyzing,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                     ),
                   ),
                 ],
@@ -242,9 +242,9 @@ class _RecordDetailBody extends ConsumerWidget {
                     const SizedBox(height: AppSpacingTokens.level3),
                     Text(
                       mealAnalysis.failureReason!,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                     ),
                   ],
                 ],
@@ -261,9 +261,9 @@ class _RecordDetailBody extends ConsumerWidget {
               children: [
                 Text(
                   l10n.recordImageSectionTitle,
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: AppSpacingTokens.level4),
                 _RecordDetailImage(attachment: imageAttachment),
@@ -271,9 +271,9 @@ class _RecordDetailBody extends ConsumerWidget {
                   const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     imageAttachment.fileName!,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -442,7 +442,6 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,14 +450,18 @@ class _DetailRow extends StatelessWidget {
           width: 88,
           child: Text(
             data.label,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level4),
         Expanded(
           child: Text(
             data.value,
-            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
             overflow: TextOverflow.visible,
           ),
         ),

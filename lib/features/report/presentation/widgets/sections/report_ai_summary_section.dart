@@ -36,7 +36,7 @@ class ReportAiSummarySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final content = buildReportAiSummaryContent(
       l10n: l10n,
       dashboard: dashboard,
@@ -73,16 +73,16 @@ class ReportAiSummarySection extends StatelessWidget {
                     children: [
                       Text(
                         l10n.reportAiSummaryTitle,
-                        style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         content.subtitle,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                       ),
                       const SizedBox(height: AppSpacingTokens.level3),
                       Wrap(
@@ -138,9 +138,9 @@ class ReportAiSummarySection extends StatelessWidget {
                 ),
                 child: AppSkeletonText(
                   text: content.summaryText!,
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                   widthFactor: 0.94,
                 ),
               ),
@@ -172,9 +172,9 @@ class ReportAiSummarySection extends StatelessWidget {
                     Expanded(
                       child: AppSkeletonText(
                         text: content.bullets[index].text,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                         widthFactor: 0.9,
                       ),
                     ),
@@ -190,9 +190,9 @@ class ReportAiSummarySection extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 content.footer!,
-                style: textTheme.labelSmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
               ),
             ],
             if (content.showGenerateButton) ...[

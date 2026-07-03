@@ -23,7 +23,7 @@ class RecordDateBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final dateLabel = l10n.recordDatePillLabel(
       dashboard.selectedDate.month,
       dashboard.selectedDate.day,
@@ -78,9 +78,9 @@ class RecordDateBar extends StatelessWidget {
                 Expanded(
                   child: Text(
                     dateLabel,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

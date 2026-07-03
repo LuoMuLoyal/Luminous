@@ -94,10 +94,9 @@ class SleepStructuredFields extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
-            style: TextStyle(
-              color: context.theme.colors.mutedForeground,
-              fontSize: 13,
-            ),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: context.theme.colors.mutedForeground),
           ),
         ],
         const SizedBox(height: AppSpacingTokens.level3),
@@ -216,7 +215,7 @@ class _TimePickerField extends StatelessWidget {
       },
       child: InputDecorator(
         decoration: InputDecoration(labelText: label),
-        child: Text(text ?? '', style: const TextStyle(fontSize: 14)),
+        child: Text(text ?? '', style: AppTypographyToken.level3.body(context)),
       ),
     );
   }

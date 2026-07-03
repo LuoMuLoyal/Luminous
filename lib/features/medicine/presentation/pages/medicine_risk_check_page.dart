@@ -92,15 +92,13 @@ class _RiskCheckSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: textTheme.titleLarge),
+            Text(title, style: AppTypographyToken.level6.body(context)),
             const SizedBox(height: 20),
             child,
           ],
@@ -123,7 +121,6 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
@@ -179,9 +176,9 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                   Expanded(
                     child: Text(
                       result.coverageSummary,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                     ),
                   ),
                 ],

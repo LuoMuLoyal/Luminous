@@ -18,14 +18,14 @@ class Categories extends StatelessWidget {
   final ValueChanged<MedicineSearchCategory>? onCategorySelected;
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.medicineSearchCategoryTitle,
-          style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         Row(
@@ -54,7 +54,6 @@ class _CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress:
@@ -82,7 +81,7 @@ class _CategoryItem extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             categoryLabel(l10n, category.type),
-            style: textTheme.labelSmall,
+            style: AppTypographyToken.level3.body(context),
             textAlign: TextAlign.center,
           ),
         ],

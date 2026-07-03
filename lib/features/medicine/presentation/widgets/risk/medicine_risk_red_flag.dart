@@ -17,8 +17,6 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.level4),
       decoration: BoxDecoration(
@@ -41,10 +39,12 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 redFlagBannerTitle(l10n),
-                style: textTheme.labelLarge?.copyWith(
-                  color: context.theme.colors.primary,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(
+                      color: context.theme.colors.primary,
+                      fontWeight: FontWeight.w800,
+                    ),
               ),
             ],
           ),
@@ -72,7 +72,6 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.level3),
@@ -89,9 +88,9 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
               children: [
                 Text(
                   redFlagAlertCopy(l10n, alert),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.foreground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.foreground),
                 ),
                 const SizedBox(height: AppSpacingTokens.level3),
                 Row(
@@ -106,10 +105,12 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         redFlagActionCopy(l10n, alert),
-                        style: textTheme.bodySmall?.copyWith(
-                          color: context.theme.colors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: context.theme.colors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                     ),
                   ],

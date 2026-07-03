@@ -21,7 +21,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final (label, color, icon) = _statusSpec(context, l10n, status);
     final coverageLabel = _coverageLabel(l10n, coverage);
     final text = coverageLabel == null ? label : '$label · $coverageLabel';
@@ -49,15 +49,19 @@ class MealAnalysisStatusBadge extends StatelessWidget {
               Text(
                 text,
                 style: large
-                    ? textTheme.labelMedium?.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w600,
-                      )
-                    : textTheme.labelSmall?.copyWith(
-                        color: foreground,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0,
-                      ),
+                    ? AppTypographyToken.level4
+                          .body(context)
+                          .copyWith(
+                            color: foreground,
+                            fontWeight: FontWeight.w600,
+                          )
+                    : AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(
+                            color: foreground,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0,
+                          ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

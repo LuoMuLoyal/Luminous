@@ -335,16 +335,16 @@ Future<bool> _confirmUnlinkIdentity(
       children: [
         Text(
           l10n.authIdentityUnlinkConfirmTitle,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          style: AppTypographyToken.level6
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         Text(
           l10n.authIdentityUnlinkConfirmMessage(
             identityProviderLabel(identity.provider, l10n),
           ),
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: AppTypographyToken.level4.body(context),
         ),
         const SizedBox(height: AppSpacingTokens.level6),
         Row(
@@ -394,9 +394,9 @@ class _ProfileSection extends StatelessWidget {
       children: [
         Text(
           l10n.authProfileSectionTitle,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: AppTypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacingTokens.level5),
         FTextField(

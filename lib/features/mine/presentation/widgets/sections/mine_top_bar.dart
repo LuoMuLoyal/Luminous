@@ -18,7 +18,7 @@ class MineTopBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
@@ -28,9 +28,9 @@ class MineTopBar extends ConsumerWidget {
         Expanded(
           child: Text(
             l10n.tabMine,
-            style: textTheme.headlineLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypographyToken.level9
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level4),

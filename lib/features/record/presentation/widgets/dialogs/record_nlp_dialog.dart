@@ -19,7 +19,7 @@ class RecordNlpDialog extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final state = ref.watch(recordNlpControllerProvider);
     final controller = useTextEditingController(
       text: ref.read(recordNlpControllerProvider).draft,
@@ -132,9 +132,9 @@ class RecordNlpDialog extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.recordNlpSheetTitle,
-                  style: textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level6
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
               FButton.icon(
@@ -147,7 +147,9 @@ class RecordNlpDialog extends HookConsumerWidget {
           const SizedBox(height: AppSpacingTokens.level2),
           Text(
             l10n.recordNlpSheetSubtitle,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.level4),
           FTextField(

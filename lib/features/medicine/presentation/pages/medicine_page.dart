@@ -209,7 +209,6 @@ class _MedicineMobileTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,9 +216,9 @@ class _MedicineMobileTopBar extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.tabMedicine,
-            style: textTheme.headlineLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypographyToken.level9
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level3),
@@ -238,7 +237,6 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Tooltip(
       message: l10n.medicineSafetyGuardLabel,
@@ -264,10 +262,9 @@ class _MedicineSafeGuardPill extends StatelessWidget {
         ),
         child: Text(
           l10n.medicineSafetyGuardLabel,
-          style: textTheme.labelMedium?.copyWith(
-            color: colors.foreground,
-            fontWeight: FontWeight.w700,
-          ),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(color: colors.foreground, fontWeight: FontWeight.w700),
         ),
       ),
     );
@@ -320,7 +317,6 @@ class _MedicineMobileSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress: () => context.push('/medicine/search'),
@@ -357,9 +353,9 @@ class _MedicineMobileSearchBar extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.medicineHomeSearchHint,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

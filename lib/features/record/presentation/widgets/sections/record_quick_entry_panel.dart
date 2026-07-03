@@ -29,7 +29,7 @@ class RecordAiInputBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FCard.raw(
       key: const Key('record-ai-input'),
       style: .delta(
@@ -63,9 +63,9 @@ class RecordAiInputBar extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.recordAiInputHint,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -89,10 +89,12 @@ class RecordAiInputBar extends StatelessWidget {
                 ),
                 child: Text(
                   l10n.recordAiBadge,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.primary,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: colors.primary,
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
               ),
             ),
@@ -158,7 +160,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     // Split into a primary 2x2 grid and a secondary 1x3 row.
     final primary = actions.take(4).toList(growable: false);
     final secondary = actions.skip(4).toList(growable: false);
@@ -169,7 +171,9 @@ class RecordQuickEntryPanel extends StatelessWidget {
       children: [
         Text(
           l10n.recordQuickSectionTitle,
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
@@ -302,7 +306,7 @@ class _QuickRecordTile extends StatelessWidget {
     final actionLabel = quickRecordLabel(l10n, action);
     final displayLabel = recordCopy(l10n, action.titleKey);
     final isLocked = action.locked;
-    final textTheme = Theme.of(context).textTheme;
+
     final colors = context.theme.colors;
 
     return FButton.raw(
@@ -341,9 +345,9 @@ class _QuickRecordTile extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   displayLabel,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -352,10 +356,12 @@ class _QuickRecordTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     l10n.recordNotEnabledLabel,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colors.mutedForeground,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(
+                          color: colors.mutedForeground,
+                          fontWeight: FontWeight.w600,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -381,7 +387,7 @@ class RecordGuideRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FCard.raw(
       key: const Key('record-guide-row'),
       child: Padding(
@@ -400,7 +406,9 @@ class RecordGuideRow extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.recordGuideHint,
-                style: textTheme.bodySmall?.copyWith(color: colors.foreground),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.foreground),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -408,10 +416,12 @@ class RecordGuideRow extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level3),
             Text(
               l10n.recordGuideAction,
-              style: textTheme.labelLarge?.copyWith(
-                color: context.theme.colors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(
+                    color: context.theme.colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
             Icon(
               FLucideIcons.chevronRight,

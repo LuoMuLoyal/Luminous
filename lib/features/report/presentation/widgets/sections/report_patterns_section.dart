@@ -29,14 +29,14 @@ class ReportPatternsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reportPatternSectionTitle,
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         GridView.builder(
@@ -67,7 +67,6 @@ class _PatternCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -99,9 +98,9 @@ class _PatternCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     pattern.title,
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -111,9 +110,9 @@ class _PatternCard extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level4),
             AppSkeletonText(
               text: reportStatusLabel(l10n, pattern.status),
-              style: textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w800),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,
@@ -121,9 +120,9 @@ class _PatternCard extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level1),
             AppSkeletonText(
               text: pattern.body,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.88,

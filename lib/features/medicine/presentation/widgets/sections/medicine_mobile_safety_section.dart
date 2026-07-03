@@ -9,7 +9,7 @@ class _SafetyEngineSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final visibleAlerts = alerts.take(3).toList(growable: false);
 
     return Column(
@@ -21,10 +21,9 @@ class _SafetyEngineSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineSafetyEngineTitle,
-                style: textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
+                style: AppTypographyToken.level7
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -85,7 +84,7 @@ class _SafetyAlertRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FTappable(
       onPress: () => context.push('/medicine/risk-check'),
       child: Padding(
@@ -110,9 +109,9 @@ class _SafetyAlertRow extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: medicineAlertTitle(l10n, alert),
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.74,
@@ -120,9 +119,9 @@ class _SafetyAlertRow extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.level1),
                   AppSkeletonText(
                     text: medicineAlertBody(l10n, alert),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.92,
@@ -162,11 +161,13 @@ class _SafetyAlertRow extends StatelessWidget {
                         children: [
                           Text(
                             medicineAlertAction(l10n, alert),
-                            style: textTheme.labelSmall?.copyWith(
-                              color: foreground,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                            ),
+                            style: AppTypographyToken.level3
+                                .body(context)
+                                .copyWith(
+                                  color: foreground,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

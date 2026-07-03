@@ -22,7 +22,6 @@ class ReportScoreHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final score = dashboard.score;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -39,9 +38,9 @@ class ReportScoreHero extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.reportScoreTitle,
-                          style: textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w800,
-                          ),
+                          style: AppTypographyToken.level7
+                              .display(context)
+                              .copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
                       Icon(
@@ -64,24 +63,26 @@ class ReportScoreHero extends StatelessWidget {
                         ),
                         child: Text(
                           score.value.toString(),
-                          style: textTheme.displayMedium?.copyWith(
-                            color: context.theme.colors.primary,
-                            fontSize: AppResponsiveSizing.scaleByWidth(
-                              context,
-                              fraction: 0.128,
-                              minValue: 40,
-                              maxValue: 54,
-                            ),
-                            height: 1,
-                            fontWeight: FontWeight.w800,
-                          ),
+                          style: AppTypographyToken.level9
+                              .display(context)
+                              .copyWith(
+                                color: context.theme.colors.primary,
+                                fontSize: AppResponsiveSizing.scaleByWidth(
+                                  context,
+                                  fraction: 0.128,
+                                  minValue: 40,
+                                  maxValue: 54,
+                                ),
+                                height: 1,
+                                fontWeight: FontWeight.w800,
+                              ),
                         ),
                       ),
                       Text(
                         l10n.reportScoreOutOf(score.maxValue),
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                       ),
                       AppSkeletonSlot(
                         skeleton: const AppInlineSkeletonBlock(
@@ -99,9 +100,9 @@ class ReportScoreHero extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.level5),
                   AppSkeletonText(
                     text: score.summary,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w600),
                     widthFactor: 0.88,
                   ),
                 ],
@@ -143,7 +144,7 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final resolvedColor = color.resolve(colors);
 
     return FBadge.raw(
@@ -162,10 +163,9 @@ class _StatusBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelSmall?.copyWith(
-            color: resolvedColor,
-            fontWeight: FontWeight.w800,
-          ),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
         ),
       ),
     );

@@ -133,7 +133,7 @@ class _MetricCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final title = reportMetricTitle(l10n, metric.kind);
     final directionIcon = switch (metric.direction) {
       ReportMetricDirection.up => FLucideIcons.arrowUp,
@@ -179,9 +179,9 @@ class _MetricCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w700),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -195,10 +195,12 @@ class _MetricCard extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: metric.value,
-                    style: textTheme.headlineMedium?.copyWith(
-                      color: metric.color.resolve(colors),
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level8
+                        .display(context)
+                        .copyWith(
+                          color: metric.color.resolve(colors),
+                          fontWeight: FontWeight.w800,
+                        ),
                     widthFactor: 0.32,
                   ),
                   if (metric.unit.isNotEmpty)
@@ -208,9 +210,9 @@ class _MetricCard extends StatelessWidget {
                       ),
                       child: Text(
                         metric.unit,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                       ),
                     ),
                 ],
@@ -235,9 +237,9 @@ class _MetricCard extends StatelessWidget {
                   Expanded(
                     child: AppSkeletonText(
                       text: metric.delta,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       widthFactor: 0.82,
@@ -274,7 +276,7 @@ class _MetricBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final resolvedColor = color.resolve(colors);
 
     return FBadge.raw(
@@ -293,10 +295,9 @@ class _MetricBadge extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelSmall?.copyWith(
-            color: resolvedColor,
-            fontWeight: FontWeight.w800,
-          ),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

@@ -29,7 +29,6 @@ class ReportTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,16 +42,16 @@ class ReportTopBar extends StatelessWidget {
                 children: [
                   Text(
                     l10n.tabReport,
-                    style: textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level9
+                        .display(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     dateRangeLabel,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ),
@@ -125,7 +124,6 @@ class _ReportSnapshotStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       key: const Key('report-snapshot-status'),
@@ -153,18 +151,18 @@ class _ReportSnapshotStatus extends StatelessWidget {
                 children: [
                   Text(
                     l10n.reportSnapshotStatus,
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     l10n.reportSnapshotHint,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -194,7 +192,6 @@ class ReportPeriodPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress: onTap,
@@ -225,7 +222,9 @@ class ReportPeriodPill extends StatelessWidget {
         children: [
           Text(
             _label(l10n),
-            style: textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(width: AppSpacingTokens.level1),
           Icon(

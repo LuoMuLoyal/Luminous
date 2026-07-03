@@ -49,10 +49,9 @@ class _DoseActionButton extends StatelessWidget {
       prefix: Icon(icon, size: AppSpacingTokens.level4, color: foregroundColor),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: foregroundColor,
-        ),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w700, color: foregroundColor),
       ),
     );
   }
@@ -66,14 +65,15 @@ class _FilterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           label,
-          style: textTheme.bodySmall?.copyWith(color: colors.foreground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.foreground),
         ),
         const SizedBox(width: AppSpacingTokens.level1),
         Icon(

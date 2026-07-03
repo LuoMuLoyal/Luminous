@@ -19,7 +19,7 @@ class TodaySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final foreground = onAction == null
         ? colors.mutedForeground
         : colors.foreground;
@@ -42,10 +42,9 @@ class TodaySection extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
+                style: AppTypographyToken.level7
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

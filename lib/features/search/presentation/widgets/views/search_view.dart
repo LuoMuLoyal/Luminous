@@ -164,7 +164,6 @@ class _MobileSearchLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     if (state.isSearching) {
       return const MedicineSearchLoadingView();
@@ -207,9 +206,9 @@ class _MobileSearchLayout extends StatelessWidget {
         if (state.query.trim().isNotEmpty) ...[
           Text(
             l10n.medicineSearchResultCount(state.results.length),
-            style: textTheme.labelLarge?.copyWith(
-              color: colors.mutedForeground,
-            ),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.level4),
           ...state.results.map(
@@ -305,7 +304,6 @@ class _DesktopSearchPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -316,9 +314,9 @@ class _DesktopSearchPanel extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level6),
             Text(
               l10n.medicineSearchPageTitle,
-              style: textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTypographyToken.level8
+                  .display(context)
+                  .copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             SearchInput(
@@ -349,9 +347,9 @@ class _DesktopSearchPanel extends StatelessWidget {
             if (state.query.trim().isNotEmpty) ...[
               Text(
                 l10n.medicineSearchResultCount(state.results.length),
-                style: textTheme.labelLarge?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
               ),
               const SizedBox(height: AppSpacingTokens.level4),
               ...state.results.map(

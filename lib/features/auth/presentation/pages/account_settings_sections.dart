@@ -170,7 +170,6 @@ class _LinkedIdentityTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final canUnlink = user.hasPassword || user.linkedIdentities.length > 1;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -189,9 +188,9 @@ class _LinkedIdentityTile extends StatelessWidget {
                 children: [
                   Text(
                     identityProviderLabel(identity.provider, l10n),
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
@@ -201,9 +200,9 @@ class _LinkedIdentityTile extends StatelessWidget {
                         formatDate(identity.linkedAt),
                       ),
                     ].join(' · '),
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ),
@@ -346,9 +345,9 @@ class _SectionColumn extends StatelessWidget {
     children: [
       Text(
         title,
-        style: Theme.of(
-          context,
-        ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+        style: AppTypographyToken.level5
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w600),
       ),
       const SizedBox(height: AppSpacingTokens.level5),
       for (final child in children) ...[
@@ -374,7 +373,7 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Row(
       children: [
         Icon(icon, size: 18, color: colors.mutedForeground),
@@ -382,7 +381,9 @@ class _InfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level4),
@@ -391,7 +392,9 @@ class _InfoRow extends StatelessWidget {
             value,
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
-            style: textTheme.bodySmall?.copyWith(color: colors.foreground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.foreground),
           ),
         ),
       ],
@@ -409,9 +412,9 @@ class _MutedText extends StatelessWidget {
     final colors = context.theme.colors;
     return Text(
       text,
-      style: Theme.of(
-        context,
-      ).textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+      style: AppTypographyToken.level3
+          .body(context)
+          .copyWith(color: colors.mutedForeground),
     );
   }
 }

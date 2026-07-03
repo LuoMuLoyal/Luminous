@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'package:luminous/core/design/app_design.dart';
 
 class AssistantControlsPanel extends StatelessWidget {
   const AssistantControlsPanel({
@@ -33,7 +34,6 @@ class AssistantControlsPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Column(
@@ -41,12 +41,16 @@ class AssistantControlsPanel extends StatelessWidget {
         children: [
           Text(
             l10n.assistantStatusSectionTitle,
-            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             l10n.assistantEntrySubtitle,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: AppSpacingTokens.level4),
           FTileGroup(

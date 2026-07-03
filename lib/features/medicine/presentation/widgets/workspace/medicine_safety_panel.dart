@@ -58,7 +58,7 @@ class _AlertTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FCard.raw(
       style: .delta(
         decoration: .shapeDelta(
@@ -78,19 +78,24 @@ class _AlertTile extends StatelessWidget {
           children: [
             Text(
               medicineAlertTitle(l10n, alert),
-              style: textTheme.labelLarge?.copyWith(
-                color: alert.color.resolve(colors),
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(
+                    color: alert.color.resolve(colors),
+                    fontWeight: FontWeight.w700,
+                  ),
             ),
             const SizedBox(height: AppSpacingTokens.level3),
-            Text(medicineAlertBody(l10n, alert), style: textTheme.bodyMedium),
+            Text(
+              medicineAlertBody(l10n, alert),
+              style: AppTypographyToken.level4.body(context),
+            ),
             const SizedBox(height: AppSpacingTokens.level2),
             Text(
               medicineAlertDetail(l10n, alert),
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             Align(
@@ -117,7 +122,7 @@ class _PromisePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FTappable(
       onPress: () => showPlannedAction(
         context,
@@ -141,10 +146,12 @@ class _PromisePanel extends StatelessWidget {
             children: [
               Text(
                 l10n.medicinePromiseTitle,
-                style: textTheme.titleSmall?.copyWith(
-                  color: context.theme.colors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: context.theme.colors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
               const SizedBox(height: AppSpacingTokens.level4),
               ...workspace.promisePoints.map(
@@ -154,9 +161,9 @@ class _PromisePanel extends StatelessWidget {
                   ),
                   child: Text(
                     medicineCopy(l10n, point.copyKey),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ),
               ),

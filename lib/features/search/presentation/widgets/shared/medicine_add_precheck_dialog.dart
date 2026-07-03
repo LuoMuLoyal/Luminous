@@ -29,7 +29,6 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return AppDialogShell(
       maxWidth: 480,
@@ -43,16 +42,16 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
           Text(
             l10n.medicineSearchPrecheckTitle,
             textAlign: TextAlign.center,
-            style: textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: AppTypographyToken.level7
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
           Text(
             l10n.medicineSearchPrecheckDescription,
             textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.mutedForeground,
-            ),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
           Flexible(
             child: SingleChildScrollView(
@@ -84,9 +83,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                           Expanded(
                             child: Text(
                               result.coverageSummary,
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colors.foreground,
-                              ),
+                              style: AppTypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.foreground),
                             ),
                           ),
                         ],
@@ -97,9 +96,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     const SizedBox(height: AppSpacingTokens.level5),
                     Text(
                       l10n.medicineRiskCheckFindingsTitle,
-                      style: textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: AppTypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: AppSpacingTokens.level3),
                     ...result.findings
@@ -117,9 +116,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     const SizedBox(height: AppSpacingTokens.level4),
                     Text(
                       l10n.medicineRiskCheckCoverageTitle,
-                      style: textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: AppTypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: AppSpacingTokens.level3),
                     ...result.coverageIssues
@@ -164,7 +163,7 @@ class _PrecheckFindingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
+
     final colors = context.theme.colors;
     final color = medicineRiskSeverityColor(finding.severity);
 
@@ -193,16 +192,16 @@ class _PrecheckFindingRow extends StatelessWidget {
                 children: [
                   Text(
                     medicineRiskFindingTitle(l10n, finding),
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     medicineRiskFindingBody(l10n, finding),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.foreground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.foreground),
                   ),
                 ],
               ),
@@ -223,7 +222,6 @@ class _PrecheckCoverageRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -250,16 +248,16 @@ class _PrecheckCoverageRow extends StatelessWidget {
                 children: [
                   Text(
                     issue.medicineName,
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.foreground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.foreground),
                   ),
                 ],
               ),

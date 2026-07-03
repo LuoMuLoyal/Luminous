@@ -23,7 +23,7 @@ class RecordNewEntryPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FCard.raw(
       key: const Key('record-new-entry-panel'),
       child: Padding(
@@ -33,9 +33,9 @@ class RecordNewEntryPanel extends StatelessWidget {
           children: [
             Text(
               l10n.recordNewEntrySectionTitle,
-              style: textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             Wrap(
@@ -84,10 +84,12 @@ class RecordNewEntryPanel extends StatelessWidget {
               child: Flexible(
                 child: Text(
                   l10n.recordVoiceAction,
-                  style: textTheme.labelLarge?.copyWith(
-                    color: context.theme.colors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(
+                        color: context.theme.colors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -110,7 +112,6 @@ class _NewEntryChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = recordCopy(l10n, action.titleKey);
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(action),
@@ -142,10 +143,12 @@ class _NewEntryChip extends StatelessWidget {
           const SizedBox(width: AppSpacingTokens.level2),
           Text(
             label,
-            style: textTheme.labelSmall?.copyWith(
-              color: action.accent.resolve(colors),
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(
+                  color: action.accent.resolve(colors),
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ],
       ),

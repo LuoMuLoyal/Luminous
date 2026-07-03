@@ -178,7 +178,6 @@ class _PriorityActionPill extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FButton.raw(
       onPress: onTap,
@@ -205,10 +204,9 @@ class _PriorityActionPill extends ConsumerWidget {
       ),
       child: Text(
         item.action,
-        style: textTheme.labelMedium?.copyWith(
-          color: colors.primary,
-          fontWeight: FontWeight.w800,
-        ),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(color: colors.primary, fontWeight: FontWeight.w800),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

@@ -16,7 +16,6 @@ class MinePrivacyNoticeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: () => pushAuthRequiredRoute(context, '/account'),
@@ -46,18 +45,20 @@ class MinePrivacyNoticeSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   mineCopy(l10n, notice.titleKey),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 mineCopy(l10n, notice.actionKey),
-                style: textTheme.labelMedium?.copyWith(
-                  color: colors.foreground,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
               Icon(
                 FLucideIcons.chevronRight,

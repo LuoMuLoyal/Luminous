@@ -8,7 +8,7 @@ class _ReferenceNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
@@ -26,17 +26,19 @@ class _ReferenceNotice extends StatelessWidget {
                 children: [
                   Text(
                     l10n.medicineReferenceNoticeTitle,
-                    style: textTheme.titleSmall?.copyWith(
-                      color: AppColors.primary.resolve(colors),
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(
+                          color: AppColors.primary.resolve(colors),
+                          fontWeight: FontWeight.w800,
+                        ),
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     l10n.medicineReferenceNoticeBody,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ),
@@ -61,7 +63,7 @@ class _SafetyTipsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final tipsAsync = ref.watch(medicineSafetyTipListProvider);
 
     return Column(
@@ -79,10 +81,9 @@ class _SafetyTipsSection extends ConsumerWidget {
             Expanded(
               child: Text(
                 l10n.medicineSafetyTipsTitle,
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -143,13 +144,15 @@ class _SafetyTipsSection extends ConsumerWidget {
 
   Widget _buildTipList(BuildContext context, List<MedicineSafetyTip> tips) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     if (tips.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Text(
           l10n.medicineSafetyTipsTitle,
-          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
         ),
       );
     }
@@ -220,7 +223,7 @@ class _SafetyTipRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.level4,
@@ -247,9 +250,9 @@ class _SafetyTipRow extends StatelessWidget {
           Expanded(
             child: Text(
               tip.text,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

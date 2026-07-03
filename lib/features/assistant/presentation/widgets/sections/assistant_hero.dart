@@ -16,9 +16,8 @@ class AssistantHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final colors = context.theme.colors;
-    final textTheme = theme.textTheme;
+
     final l10n = AppLocalizations.of(context)!;
 
     return DecoratedBox(
@@ -52,9 +51,9 @@ class AssistantHero extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.assistantPageTitle,
-                    style: textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level7
+                        .display(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
@@ -62,9 +61,9 @@ class AssistantHero extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level3),
             Text(
               statusSummary,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             Wrap(
@@ -107,7 +106,6 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -128,10 +126,12 @@ class _StatusChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelMedium?.copyWith(
-            color: enabled ? colors.primary : colors.mutedForeground,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(
+                color: enabled ? colors.primary : colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ),
     );

@@ -38,9 +38,9 @@ class RecordTimelinePanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordTimelineSectionTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 if (onClearFilter != null)
@@ -111,7 +111,7 @@ class _TimelineEntryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -119,7 +119,9 @@ class _TimelineEntryRow extends StatelessWidget {
           width: dense ? 44 : 56,
           child: Text(
             entry.time,
-            style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
           ),
         ),
         SizedBox(
@@ -177,7 +179,7 @@ class _TimelineCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
     final value = entry.valueKey == null
         ? entry.value
@@ -238,9 +240,9 @@ class _TimelineCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             label,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colors.mutedForeground,
-                            ),
+                            style: AppTypographyToken.level3
+                                .body(context)
+                                .copyWith(color: colors.mutedForeground),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -273,11 +275,13 @@ class _TimelineCard extends StatelessWidget {
                                     children: [
                                       Text(
                                         recordCopy(l10n, entry.badgeKey!),
-                                        style: textTheme.labelSmall?.copyWith(
-                                          color: foreground,
-                                          fontWeight: FontWeight.w700,
-                                          letterSpacing: 0,
-                                        ),
+                                        style: AppTypographyToken.level3
+                                            .body(context)
+                                            .copyWith(
+                                              color: foreground,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 0,
+                                            ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -294,18 +298,20 @@ class _TimelineCard extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.level2),
                       Text.rich(
                         TextSpan(
-                          style: textTheme.titleSmall?.copyWith(
-                            color: colors.foreground,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: AppTypographyToken.level4
+                              .body(context)
+                              .copyWith(
+                                color: colors.foreground,
+                                fontWeight: FontWeight.w700,
+                              ),
                           children: [
                             TextSpan(text: value),
                             if (unit != null)
                               TextSpan(
                                 text: ' $unit',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: colors.mutedForeground,
-                                ),
+                                style: AppTypographyToken.level3
+                                    .body(context)
+                                    .copyWith(color: colors.mutedForeground),
                               ),
                           ],
                         ),
@@ -315,9 +321,9 @@ class _TimelineCard extends StatelessWidget {
                       const SizedBox(height: AppSpacingTokens.level2),
                       Text(
                         detail,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                       ),
                     ],
                   ],
@@ -352,9 +358,9 @@ class _TimelineCard extends StatelessWidget {
                             const SizedBox(height: AppSpacingTokens.level1),
                             Text(
                               recordCopy(l10n, entry.imagePlaceholderKey!),
-                              style: textTheme.labelSmall?.copyWith(
-                                color: colors.foreground,
-                              ),
+                              style: AppTypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.foreground),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import 'package:luminous/core/design/app_design.dart';
 
 class ThemeSettingsPage extends ConsumerWidget {
   const ThemeSettingsPage({super.key});
@@ -99,16 +100,17 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
       child: Text(
         label,
-        style: textTheme.labelSmall?.copyWith(
-          color: colors.mutedForeground,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTypographyToken.level3
+            .body(context)
+            .copyWith(
+              color: colors.mutedForeground,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }

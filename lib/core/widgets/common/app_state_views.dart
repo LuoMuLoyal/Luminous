@@ -29,8 +29,6 @@ class AppStateMessageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     final colors = context.theme.colors;
     final accent = _accentFor(colors);
 
@@ -54,17 +52,17 @@ class AppStateMessageView extends StatelessWidget {
               const SizedBox(height: AppSpacingTokens.level4),
               Text(
                 title,
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 description,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[

@@ -34,14 +34,14 @@ class ReportExportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.reportExportSectionTitle,
-          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         GridView.builder(
@@ -87,7 +87,7 @@ class _ExportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final title = reportExportTitle(l10n, action.kind);
     final subtitle = reportExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
@@ -129,18 +129,18 @@ class _ExportCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w700),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppSpacingTokens.level1),
                     Text(
                       subtitle,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -21,7 +21,6 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     final tile = Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
@@ -40,16 +39,16 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
               children: [
                 Text(
                   issue.medicineName,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),

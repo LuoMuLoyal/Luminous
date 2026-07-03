@@ -31,7 +31,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final weekdayKeys = const <RecordCopyKey>[
       RecordCopyKey.weekdaySun,
       RecordCopyKey.weekdayMon,
@@ -53,9 +53,9 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMonthLabel,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 _CalendarIconActionButton(
@@ -78,9 +78,9 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                       child: Text(
                         recordCopy(l10n, key),
                         textAlign: TextAlign.center,
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                       ),
                     ),
                   )
@@ -138,9 +138,9 @@ class RecordFilterPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordFilterSectionTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 if (onFilterSelected != null)
@@ -215,7 +215,7 @@ class _MonthDayCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final color = day.inMonth ? colors.foreground : colors.mutedForeground;
     final markerColors = day.hasAlert
         ? [...day.markers.resolveAll(colors), colors.primary]
@@ -238,12 +238,14 @@ class _MonthDayCell extends StatelessWidget {
               child: Center(
                 child: Text(
                   '${day.day}',
-                  style: textTheme.labelMedium?.copyWith(
-                    color: day.selected ? colors.background : color,
-                    fontWeight: day.selected
-                        ? FontWeight.w700
-                        : FontWeight.w400,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(
+                        color: day.selected ? colors.background : color,
+                        fontWeight: day.selected
+                            ? FontWeight.w700
+                            : FontWeight.w400,
+                      ),
                 ),
               ),
             ),
@@ -288,7 +290,7 @@ class _FilterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final label = recordCopy(l10n, filter.titleKey);
 
     return FTappable(
@@ -312,9 +314,9 @@ class _FilterRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -330,9 +332,9 @@ class _FilterRow extends StatelessWidget {
                   ),
                   child: Text(
                     l10n.recordNotEnabledLabel,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: colors.foreground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.foreground),
                   ),
                 ),
               ),

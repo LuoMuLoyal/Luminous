@@ -270,8 +270,6 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacingTokens.level4,
@@ -281,7 +279,9 @@ class _SectionTitle extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+        style: AppTypographyToken.level5
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w800),
       ),
     );
   }

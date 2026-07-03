@@ -24,14 +24,16 @@ class RecordMobileTimeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       key: const Key('record-timeline'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.recordTodayEntriesTitle(totalCount),
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
@@ -71,7 +73,7 @@ class _TimelineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
     final value = entry.valueKey == null
         ? entry.value
@@ -106,9 +108,9 @@ class _TimelineRow extends StatelessWidget {
               width: AppSpacingTokens.level8,
               child: AppSkeletonText(
                 text: entry.time,
-                style: textTheme.bodySmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
                 widthFactor: 0.68,
                 maxLines: 1,
               ),
@@ -164,9 +166,9 @@ class _TimelineRow extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: label,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.64,
@@ -175,9 +177,9 @@ class _TimelineRow extends StatelessWidget {
                     const SizedBox(height: AppSpacingTokens.level1),
                     AppSkeletonText(
                       text: subtitle,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       widthFactor: 0.78,
@@ -190,7 +192,9 @@ class _TimelineRow extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.level2),
               AppSkeletonSlot(
                 skeleton: AppInlineSkeletonBlock(
-                  height: (textTheme.bodySmall?.fontSize ?? 14) + 8,
+                  height:
+                      (AppTypographyToken.level3.body(context).fontSize ?? 14) +
+                      8,
                   widthFactor: 0.16,
                   radius: AppRadiusTokens.level2,
                 ),
@@ -219,11 +223,13 @@ class _TimelineRow extends StatelessWidget {
                           children: [
                             Text(
                               recordCopy(l10n, entry.badgeKey!),
-                              style: textTheme.labelSmall?.copyWith(
-                                color: foreground,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0,
-                              ),
+                              style: AppTypographyToken.level3
+                                  .body(context)
+                                  .copyWith(
+                                    color: foreground,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

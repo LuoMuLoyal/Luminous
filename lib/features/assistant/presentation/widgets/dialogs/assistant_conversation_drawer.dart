@@ -27,7 +27,7 @@ class AssistantConversationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final items = state.recentConversations;
     final width = MediaQuery.sizeOf(context).width < 600
         ? MediaQuery.sizeOf(context).width * 0.8
@@ -43,7 +43,12 @@ class AssistantConversationDrawer extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(title, style: textTheme.headlineSmall)),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: AppTypographyToken.level7.display(context),
+                    ),
+                  ),
                   FButton.icon(
                     variant: FButtonVariant.ghost,
                     onPress: () => Navigator.of(context).pop(),
@@ -125,9 +130,9 @@ class AssistantConversationDrawer extends StatelessWidget {
                                     conversationTitle(context, item),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    style: AppTypographyToken.level5
+                                        .body(context)
+                                        .copyWith(fontWeight: FontWeight.w600),
                                   ),
                                   const SizedBox(
                                     height: AppSpacingTokens.level2,
@@ -140,9 +145,11 @@ class AssistantConversationDrawer extends StatelessWidget {
                                             context,
                                             item,
                                           ),
-                                          style: textTheme.bodySmall?.copyWith(
-                                            color: colors.mutedForeground,
-                                          ),
+                                          style: AppTypographyToken.level3
+                                              .body(context)
+                                              .copyWith(
+                                                color: colors.mutedForeground,
+                                              ),
                                         ),
                                       ),
                                       if (selected)
@@ -150,8 +157,9 @@ class AssistantConversationDrawer extends StatelessWidget {
                                           AppLocalizations.of(
                                             context,
                                           )!.assistantRecentConversationCurrentLabel,
-                                          style: textTheme.labelMedium
-                                              ?.copyWith(
+                                          style: AppTypographyToken.level4
+                                              .body(context)
+                                              .copyWith(
                                                 color: colors.primary,
                                                 fontWeight: FontWeight.w600,
                                               ),

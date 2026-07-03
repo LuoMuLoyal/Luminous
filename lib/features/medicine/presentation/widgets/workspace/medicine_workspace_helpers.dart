@@ -18,16 +18,15 @@ class SectionTextAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return FTappable(
       onPress: onTap,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level1),
         child: Text(
           label,
-          style: textTheme.bodySmall?.copyWith(
-            color: context.theme.colors.primary,
-          ),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: context.theme.colors.primary),
         ),
       ),
     );

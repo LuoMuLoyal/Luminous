@@ -18,7 +18,6 @@ class NotificationListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Dismissible(
       key: ValueKey(item.id),
@@ -72,11 +71,13 @@ class NotificationListItemWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               item.title,
-                              style: textTheme.titleMedium?.copyWith(
-                                fontWeight: item.isRead
-                                    ? FontWeight.w500
-                                    : FontWeight.w700,
-                              ),
+                              style: AppTypographyToken.level5
+                                  .body(context)
+                                  .copyWith(
+                                    fontWeight: item.isRead
+                                        ? FontWeight.w500
+                                        : FontWeight.w700,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -84,19 +85,21 @@ class NotificationListItemWidget extends StatelessWidget {
                           const SizedBox(width: AppSpacingTokens.level2),
                           Text(
                             _formatTime(item.createdAt),
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colors.mutedForeground,
-                            ),
+                            style: AppTypographyToken.level3
+                                .body(context)
+                                .copyWith(color: colors.mutedForeground),
                           ),
                         ],
                       ),
                       const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         item.content,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.mutedForeground,
-                          height: 1.4,
-                        ),
+                        style: AppTypographyToken.level4
+                            .body(context)
+                            .copyWith(
+                              color: colors.mutedForeground,
+                              height: 1.4,
+                            ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

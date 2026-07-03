@@ -63,7 +63,6 @@ class _TodoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: onTap,
@@ -90,9 +89,9 @@ class _TodoRow extends StatelessWidget {
                 children: [
                   AppSkeletonText(
                     text: item.title,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.84,
@@ -101,9 +100,9 @@ class _TodoRow extends StatelessWidget {
                   const SizedBox(height: AppSpacingTokens.level2),
                   AppSkeletonText(
                     text: item.subtitle,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.84,
@@ -128,10 +127,12 @@ class _TodoRow extends StatelessWidget {
                 ),
                 child: Text(
                   item.source,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: item.color.resolve(colors),
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: item.color.resolve(colors),
+                        fontWeight: FontWeight.w700,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

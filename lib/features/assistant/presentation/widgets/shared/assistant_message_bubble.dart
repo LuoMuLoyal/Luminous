@@ -38,7 +38,7 @@ class AssistantMessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final isUser = role == AssistantMessageRole.user;
     final align = isUser ? Alignment.centerRight : Alignment.centerLeft;
     final background = isUser
@@ -64,7 +64,9 @@ class AssistantMessageBubble extends StatelessWidget {
                 if (isUser)
                   Text(
                     content,
-                    style: textTheme.bodyMedium?.copyWith(color: foreground),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(color: foreground),
                   )
                 else
                   MarkdownBody(
@@ -72,19 +74,21 @@ class AssistantMessageBubble extends StatelessWidget {
                     selectable: true,
                     styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
                         .copyWith(
-                          p: textTheme.bodyMedium?.copyWith(color: foreground),
-                          blockquote: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          p: AppTypographyToken.level4
+                              .body(context)
+                              .copyWith(color: foreground),
+                          blockquote: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                   ),
                 if (isStreaming) ...[
                   const SizedBox(height: AppSpacingTokens.level3),
                   Text(
                     AppLocalizations.of(context)!.assistantStreamingLabel,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ],
                 if (!isStreaming && usedTools.isNotEmpty) ...[

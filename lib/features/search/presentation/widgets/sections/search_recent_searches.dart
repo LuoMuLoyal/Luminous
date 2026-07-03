@@ -18,7 +18,6 @@ class RecentSearches extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,17 +26,16 @@ class RecentSearches extends StatelessWidget {
           children: [
             Text(
               l10n.medicineSearchRecentTitle,
-              style: textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
             const Spacer(),
             Text(
               l10n.medicineSearchClearAction,
-              style: textTheme.labelMedium?.copyWith(
-                color: colors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
             ),
           ],
         ),

@@ -226,7 +226,6 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -235,10 +234,12 @@ class _SectionHeader extends StatelessWidget {
       ),
       child: Text(
         title,
-        style: textTheme.labelMedium?.copyWith(
-          color: colors.mutedForeground,
-          fontWeight: FontWeight.w600,
-        ),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(
+              color: colors.mutedForeground,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }

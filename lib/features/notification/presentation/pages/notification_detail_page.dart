@@ -93,7 +93,6 @@ class _DetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +101,16 @@ class _DetailBody extends ConsumerWidget {
         const SizedBox(height: AppSpacingTokens.level4),
         Text(
           detail.title,
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         Text(
           _formatTime(detail.createdAt),
-          style: textTheme.bodySmall?.copyWith(color: colors.mutedForeground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: AppSpacingTokens.level5),
         FCard.raw(
@@ -115,7 +118,9 @@ class _DetailBody extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacingTokens.level4),
             child: Text(
               detail.content,
-              style: textTheme.bodyLarge?.copyWith(height: 1.6),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(height: 1.6),
             ),
           ),
         ),
@@ -172,7 +177,6 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final colors = context.theme.colors;
     final (label, color) = switch (type) {
       UserNotificationType.aiTodaySummary => ('AI 总结', colors.primary),
@@ -200,10 +204,9 @@ class _TypeChip extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelMedium?.copyWith(
-            color: color,
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(color: color, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -279,12 +282,12 @@ class _ActionBar extends StatelessWidget {
         children: [
           Text(
             l10n.notificationDeleteConfirmTitle,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: AppTypographyToken.level6.body(context),
           ),
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             l10n.notificationDeleteConfirmDescription,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: AppTypographyToken.level4.body(context),
           ),
           const SizedBox(height: AppSpacingTokens.level5),
           Row(

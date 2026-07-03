@@ -141,7 +141,7 @@ class _ReminderDetailBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final reminders = [...data.reminders]..sort(compareReminderTime);
     final isActive = reminders.any((item) => item.isActive);
     final firstReminder = reminders.firstOrNull;
@@ -177,18 +177,18 @@ class _ReminderDetailBody extends ConsumerWidget {
                     children: [
                       Text(
                         data.medicine.displayName,
-                        style: textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w800),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         medicineDoseText(l10n, data.medicine),
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colors.mutedForeground,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -226,11 +226,13 @@ class _ReminderDetailBody extends ConsumerWidget {
                               isActive
                                   ? l10n.medicineReminderEnabledStatus
                                   : l10n.medicineReminderDisabledStatus,
-                              style: textTheme.labelSmall?.copyWith(
-                                color: foreground,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0,
-                              ),
+                              style: AppTypographyToken.level3
+                                  .body(context)
+                                  .copyWith(
+                                    color: foreground,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

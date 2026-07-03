@@ -22,7 +22,6 @@ class TodayTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,16 +32,16 @@ class TodayTopBar extends StatelessWidget {
             children: [
               Text(
                 l10n.todayHeroTitle,
-                style: textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
+                style: AppTypographyToken.level9
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: AppSpacingTokens.level1),
               AppSkeletonText(
                 text: greetingSubtitle(l10n, moment),
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.mutedForeground,
-                ),
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
                 widthFactor: 0.64,
               ),
             ],
@@ -64,7 +63,7 @@ class _AssistantEntryButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final session = ref.watch(authSessionProvider);
 
     return Tooltip(
@@ -117,10 +116,9 @@ class _AssistantEntryButton extends ConsumerWidget {
             const SizedBox(width: AppSpacingTokens.level1),
             Text(
               l10n.assistantEntryTitle,
-              style: textTheme.labelMedium?.copyWith(
-                color: colors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
             ),
           ],
         ),

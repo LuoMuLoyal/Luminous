@@ -3,6 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import 'package:luminous/core/design/app_design.dart';
+
 class SearchTopBar extends StatelessWidget {
   const SearchTopBar({super.key, required this.l10n});
 
@@ -10,8 +12,6 @@ class SearchTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Row(
       children: [
         FButton(
@@ -24,7 +24,9 @@ class SearchTopBar extends StatelessWidget {
           child: Text(
             l10n.medicineSearchPageTitle,
             textAlign: TextAlign.center,
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            style: AppTypographyToken.level6
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
         const SizedBox(width: 40),

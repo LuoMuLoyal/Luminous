@@ -39,13 +39,12 @@ class AuthTermsNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final l10n = AppLocalizations.of(context);
 
-    final linkStyle = textTheme.bodySmall?.copyWith(
-      color: colors.primary,
-      fontWeight: FontWeight.w600,
-    );
+    final linkStyle = AppTypographyToken.level3
+        .body(context)
+        .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
     final String leadText =
         l10n?.authTermsAgreement('', '') ??
         'By creating an account, you agree to the ';
@@ -72,9 +71,9 @@ class AuthTermsNotice extends StatelessWidget {
           children: [
             Text(
               trimmedLead,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             FButton(
               variant: FButtonVariant.ghost,
@@ -83,9 +82,9 @@ class AuthTermsNotice extends StatelessWidget {
             ),
             Text(
               connector,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             FButton(
               variant: FButtonVariant.ghost,

@@ -22,7 +22,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final color = medicineRiskSeverityColor(finding.severity);
     final contextLabel = medicineRiskContextLabel(l10n, finding.context);
 
@@ -54,23 +54,23 @@ class MedicineRiskFindingTile extends StatelessWidget {
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),
@@ -104,11 +104,13 @@ class MedicineRiskFindingTile extends StatelessWidget {
                         children: [
                           Text(
                             medicineRiskSeverityLabel(l10n, finding.severity),
-                            style: textTheme.labelSmall?.copyWith(
-                              color: foreground,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                            ),
+                            style: AppTypographyToken.level3
+                                .body(context)
+                                .copyWith(
+                                  color: foreground,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0,
+                                ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -145,11 +147,13 @@ class MedicineRiskFindingTile extends StatelessWidget {
                           children: [
                             Text(
                               contextLabel,
-                              style: textTheme.labelSmall?.copyWith(
-                                color: foreground,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0,
-                              ),
+                              style: AppTypographyToken.level3
+                                  .body(context)
+                                  .copyWith(
+                                    color: foreground,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0,
+                                  ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),

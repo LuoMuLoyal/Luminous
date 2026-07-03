@@ -144,7 +144,6 @@ class _RecommendationRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: onTap,
@@ -169,18 +168,18 @@ class _RecommendationRow extends StatelessWidget {
                 children: [
                   Text(
                     item.title,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: compact ? 1 : 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacingTokens.level2),
                   Text(
                     item.subtitle,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: compact ? 1 : 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -190,10 +189,12 @@ class _RecommendationRow extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level2),
             Text(
               item.action,
-              style: textTheme.labelMedium?.copyWith(
-                color: item.color.resolve(colors),
-                fontWeight: FontWeight.w800,
-              ),
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(
+                    color: item.color.resolve(colors),
+                    fontWeight: FontWeight.w800,
+                  ),
             ),
           ],
         ),

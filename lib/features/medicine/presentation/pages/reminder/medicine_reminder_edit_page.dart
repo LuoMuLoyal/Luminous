@@ -451,7 +451,6 @@ class _MedicineSelectorPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -461,7 +460,7 @@ class _MedicineSelectorPrompt extends StatelessWidget {
           children: [
             Text(
               l10n.medicineReminderSelectMedicineHint,
-              style: textTheme.bodyMedium,
+              style: AppTypographyToken.level4.body(context),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacingTokens.level4),

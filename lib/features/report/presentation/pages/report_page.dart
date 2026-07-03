@@ -462,7 +462,6 @@ class _ReportSignedOutNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       key: const Key('report-signed-out-notice'),
@@ -490,16 +489,16 @@ class _ReportSignedOutNotice extends StatelessWidget {
               children: [
                 Text(
                   l10n.authNotSignedIn,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   l10n.reportSignedOutInlineHint,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),

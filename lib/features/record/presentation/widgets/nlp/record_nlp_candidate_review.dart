@@ -26,7 +26,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final meta = state.resultMeta;
     if (meta == null) return const SizedBox.shrink();
 
@@ -35,17 +35,23 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.level2),
         Text(
           meta.confirmationHint,
-          style: textTheme.bodySmall?.copyWith(color: colors.foreground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.foreground),
         ),
         const SizedBox(height: AppSpacingTokens.level2),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
-          style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
@@ -86,7 +92,6 @@ class _CandidateTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Padding(
@@ -110,17 +115,19 @@ class _CandidateTile extends StatelessWidget {
                     children: [
                       Text(
                         _kindLabel(l10n, item.kind),
-                        style: textTheme.labelLarge?.copyWith(
-                          color: context.theme.colors.primary,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: AppTypographyToken.level5
+                            .body(context)
+                            .copyWith(
+                              color: context.theme.colors.primary,
+                              fontWeight: FontWeight.w800,
+                            ),
                       ),
                       const SizedBox(height: AppSpacingTokens.level1),
                       Text(
                         _candidateTitle(l10n, item),
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: AppTypographyToken.level4
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
                       ),
                     ],
                   ),
@@ -142,17 +149,17 @@ class _CandidateTile extends StatelessWidget {
             const SizedBox(height: AppSpacingTokens.level2),
             Text(
               item.rationale,
-              style: textTheme.labelSmall?.copyWith(
-                color: colors.mutedForeground,
-              ),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
             ),
             if (item.lastErrorMessage != null) ...[
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(item.lastErrorMessage!),
-                style: textTheme.labelSmall?.copyWith(
-                  color: colors.destructive,
-                ),
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.destructive),
               ),
             ],
           ],

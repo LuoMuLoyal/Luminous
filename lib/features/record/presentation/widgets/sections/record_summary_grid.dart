@@ -70,7 +70,7 @@ class _SummaryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final unit = item.unitKey == null ? null : recordCopy(l10n, item.unitKey!);
     final detail = item.detailKey == null
         ? null
@@ -131,9 +131,9 @@ class _SummaryTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       recordCopy(l10n, item.titleKey),
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       maxLines: 2,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
@@ -145,18 +145,20 @@ class _SummaryTile extends StatelessWidget {
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
-                    style: textTheme.headlineSmall?.copyWith(
-                      color: colors.foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level7
+                        .display(context)
+                        .copyWith(
+                          color: colors.foreground,
+                          fontWeight: FontWeight.w700,
+                        ),
                     children: [
                       TextSpan(text: item.value),
                       if (unit != null)
                         TextSpan(
                           text: ' $unit',
-                          style: textTheme.labelSmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                     ],
                   ),
@@ -164,17 +166,17 @@ class _SummaryTile extends StatelessWidget {
               else
                 Text(
                   detail ?? '',
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
               if (detail != null && item.value.isNotEmpty) ...[
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   detail,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: item.accent.resolve(colors),
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: item.accent.resolve(colors)),
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

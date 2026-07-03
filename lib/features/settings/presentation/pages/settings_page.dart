@@ -16,6 +16,8 @@ import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import 'package:luminous/core/design/app_design.dart';
+
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
@@ -229,12 +231,12 @@ class _PrivacySection extends ConsumerWidget {
             children: [
               Text(
                 l10n.settingsDataSharingConfirmTitle,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: AppTypographyToken.level6.body(context),
               ),
               const SizedBox(height: 12),
               Text(
                 l10n.settingsDataSharingConfirmDescription,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: AppTypographyToken.level4.body(context),
               ),
               const SizedBox(height: 20),
               Row(
@@ -363,7 +365,6 @@ class _SettingsGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,10 +373,12 @@ class _SettingsGroup extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             label,
-            style: textTheme.labelMedium?.copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(
+                  color: colors.mutedForeground,
+                  fontWeight: FontWeight.w600,
+                ),
           ),
         ),
         FTileGroup(
@@ -434,7 +437,6 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FTile.raw(
       key: tileKey,
@@ -447,17 +449,17 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
               children: [
                 Text(
                   title,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: colors.foreground,
-                  ),
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(color: colors.foreground),
                 ),
                 if (subtitle != null && subtitle!.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     subtitle!,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ],

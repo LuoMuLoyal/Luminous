@@ -29,7 +29,6 @@ class ReportTrendSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,9 +39,9 @@ class ReportTrendSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.reportTrendSectionTitle,
-                style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
             ),
             ReportPeriodPill(
@@ -72,10 +71,9 @@ class ReportTrendSection extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Text(
             l10n.reportViewDetailsAction,
-            style: textTheme.labelMedium?.copyWith(
-              color: colors.primary,
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTypographyToken.level4
+                .body(context)
+                .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
           ),
         ),
       ],
@@ -102,7 +100,6 @@ class _TrendPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return FCard.raw(
       child: Container(
@@ -193,9 +190,9 @@ class _TrendPlaceholder extends StatelessWidget {
                   Expanded(
                     child: Text(
                       label,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.clip,
@@ -219,7 +216,6 @@ class _LegendDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -234,7 +230,9 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: AppSpacingTokens.level2),
         Text(
           label,
-          style: textTheme.labelSmall?.copyWith(color: colors.mutedForeground),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
         ),
       ],
     );
@@ -250,7 +248,6 @@ class _TrendValuePill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -264,10 +261,12 @@ class _TrendValuePill extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: textTheme.labelSmall?.copyWith(
-            color: context.theme.colors.primaryForeground,
-            fontWeight: FontWeight.w800,
-          ),
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(
+                color: context.theme.colors.primaryForeground,
+                fontWeight: FontWeight.w800,
+              ),
         ),
       ),
     );

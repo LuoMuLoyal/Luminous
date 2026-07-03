@@ -15,7 +15,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final rows = _recordRowsFor(l10n, items).take(4).toList(growable: false);
 
     return FCard.raw(
@@ -30,10 +30,12 @@ class _MedicineRecordsSection extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     l10n.medicineRecordsTitle,
-                    style: textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                    ),
+                    style: AppTypographyToken.level7
+                        .display(context)
+                        .copyWith(
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                        ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -125,7 +127,7 @@ class _MedicineRecordRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final canMark =
         row.item.currentMedicineId != null &&
         onMarkDose != null &&
@@ -146,13 +148,13 @@ class _MedicineRecordRow extends StatelessWidget {
               children: [
                 AppSkeletonText(
                   text: row.date,
-                  style: textTheme.bodySmall,
+                  style: AppTypographyToken.level3.body(context),
                   width: 34,
                 ),
                 const SizedBox(height: AppSpacingTokens.level1),
                 AppSkeletonText(
                   text: row.time,
-                  style: textTheme.bodySmall,
+                  style: AppTypographyToken.level3.body(context),
                   width: 32,
                 ),
               ],
@@ -191,9 +193,9 @@ class _MedicineRecordRow extends StatelessWidget {
               children: [
                 AppSkeletonText(
                   text: row.name,
-                  style: textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   widthFactor: 0.66,
@@ -206,9 +208,9 @@ class _MedicineRecordRow extends StatelessWidget {
                   children: [
                     AppSkeletonText(
                       text: row.detail,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
+                      style: AppTypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
                       width: 94,
                     ),
                     AppSkeletonSlot(
@@ -242,11 +244,13 @@ class _MedicineRecordRow extends StatelessWidget {
                                 children: [
                                   Text(
                                     row.statusLabel,
-                                    style: textTheme.labelSmall?.copyWith(
-                                      color: foreground,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: 0,
-                                    ),
+                                    style: AppTypographyToken.level3
+                                        .body(context)
+                                        .copyWith(
+                                          color: foreground,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0,
+                                        ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),

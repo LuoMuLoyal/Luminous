@@ -20,7 +20,6 @@ class RecordMobileFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     final allSelected = filters.every((filter) => filter.selected);
 
     return Column(
@@ -29,7 +28,9 @@ class RecordMobileFilter extends StatelessWidget {
       children: [
         Text(
           l10n.recordFilterMobileTitle,
-          style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w800),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         Wrap(
@@ -84,7 +85,7 @@ class _FilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final resolvedColor = color.resolve(colors);
     final foreground = selected ? resolvedColor : colors.foreground;
 
@@ -122,10 +123,9 @@ class _FilterChip extends StatelessWidget {
         children: [
           Text(
             label,
-            style: textTheme.labelLarge?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w700,
-            ),
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(color: foreground, fontWeight: FontWeight.w700),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -142,9 +142,9 @@ class _FilterChip extends StatelessWidget {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.recordNotEnabledLabel,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.foreground,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.foreground),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

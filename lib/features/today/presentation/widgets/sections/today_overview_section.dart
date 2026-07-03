@@ -19,7 +19,7 @@ class TodayOverviewSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final items = buildOverviewItems(l10n, dashboard);
 
     return FCard.raw(
@@ -45,9 +45,9 @@ class TodayOverviewSection extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.todayHealthSummaryCardTitle,
-                    style: textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
                 AppSkeletonSlot(
@@ -68,10 +68,12 @@ class TodayOverviewSection extends StatelessWidget {
                       ),
                       child: Text(
                         l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-                        style: textTheme.labelSmall?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: AppTypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: colors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ),
@@ -106,7 +108,6 @@ class _OverviewMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
@@ -126,10 +127,12 @@ class _OverviewMetric extends StatelessWidget {
               children: [
                 Text(
                   item.label,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w600,
+                      ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -144,9 +147,9 @@ class _OverviewMetric extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       item.value,
-                      style: textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                      style: AppTypographyToken.level4
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w800),
                       maxLines: 1,
                     ),
                   ),

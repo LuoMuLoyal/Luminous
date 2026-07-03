@@ -63,7 +63,7 @@ class _MedicationPlanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final nameText = item.rawName ?? medicineCopy(l10n, item.nameKey);
     final dosageText = item.rawDosage ?? medicineCopy(l10n, item.dosageKey);
     final scheduleText =
@@ -98,16 +98,16 @@ class _MedicationPlanTile extends StatelessWidget {
                       children: [
                         Text(
                           nameText,
-                          style: textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: AppTypographyToken.level4
+                              .body(context)
+                              .copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: AppSpacingTokens.level2),
                         Text(
                           '$dosageText · $scheduleText',
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colors.mutedForeground,
-                          ),
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
                         ),
                       ],
                     ),
@@ -138,10 +138,12 @@ class _MedicationPlanTile extends StatelessWidget {
                             children: [
                               Text(
                                 stateText,
-                                style: textTheme.labelMedium?.copyWith(
-                                  color: foreground,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: AppTypographyToken.level4
+                                    .body(context)
+                                    .copyWith(
+                                      color: foreground,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),

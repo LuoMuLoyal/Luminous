@@ -12,7 +12,7 @@ class _QuickOperationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final operations = [
       _QuickOperation(
         icon: FLucideIcons.plus,
@@ -54,10 +54,9 @@ class _QuickOperationSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineQuickOperationTitle,
-                style: textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0,
-                ),
+                style: AppTypographyToken.level7
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -89,7 +88,7 @@ class _QuickOperationRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     return FTappable(
       onPress: operation.onTap,
       child: Padding(
@@ -114,18 +113,18 @@ class _QuickOperationRow extends StatelessWidget {
                 children: [
                   Text(
                     operation.title,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacingTokens.level1),
                   Text(
                     operation.subtitle,
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

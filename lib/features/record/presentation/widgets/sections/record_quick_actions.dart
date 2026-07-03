@@ -31,9 +31,9 @@ class RecordQuickActions extends StatelessWidget {
           children: [
             Text(
               l10n.recordQuickSectionTitle,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             LayoutBuilder(
@@ -81,7 +81,7 @@ class _QuickActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final textTheme = Theme.of(context).textTheme;
+
     final label = recordCopy(l10n, action.titleKey);
 
     return FButton.raw(
@@ -113,7 +113,9 @@ class _QuickActionTile extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             label,
-            style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w600),
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
