@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
@@ -329,7 +330,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     }
 
     ref.read(recordNlpControllerProvider.notifier).reset();
-    await showDialog<void>(
+    await showAppDialog<void>(
       context: context,
       builder: (dialogContext) =>
           RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
@@ -362,7 +363,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         .generate(occurredAt: formatRecordDate(selectedDate));
 
     if (!context.mounted) return;
-    await showDialog<void>(
+    await showAppDialog<void>(
       context: context,
       builder: (dialogContext) =>
           RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
@@ -395,7 +396,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         .generate(occurredAt: formatRecordDate(selectedDate));
 
     if (!context.mounted) return;
-    await showDialog<void>(
+    await showAppDialog<void>(
       context: context,
       builder: (dialogContext) =>
           RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),

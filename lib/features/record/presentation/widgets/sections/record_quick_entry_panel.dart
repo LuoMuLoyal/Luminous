@@ -31,83 +31,78 @@ class RecordAiInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    return Material(
+    return DecoratedBox(
       key: const Key('record-ai-input'),
-      color: Colors.transparent,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.background,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(
-            color: context.theme.colors.primary.withValues(alpha: 0.32),
-          ),
+      decoration: BoxDecoration(
+        color: colors.background,
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+        border: Border.all(
+          color: context.theme.colors.primary.withValues(alpha: 0.32),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level3,
-          ),
-          child: Row(
-            children: [
-              Icon(
-                FLucideIcons.sparkles,
-                color: context.theme.colors.primary,
-                size: AppSpacingTokens.level6,
-              ),
-              const SizedBox(width: AppSpacingTokens.level4),
-              Expanded(
-                child: FTappable(
-                  onPress: onTap,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacingTokens.level1,
-                    ),
-                    child: Text(
-                      l10n.recordAiInputHint,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: context.theme.colors.primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(
-                    AppRadiusTokens.levelFull,
-                  ),
-                ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              FLucideIcons.sparkles,
+              color: context.theme.colors.primary,
+              size: AppSpacingTokens.level6,
+            ),
+            const SizedBox(width: AppSpacingTokens.level4),
+            Expanded(
+              child: FTappable(
+                onPress: onTap,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level3,
                     vertical: AppSpacingTokens.level1,
                   ),
                   child: Text(
-                    l10n.recordAiBadge,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: context.theme.colors.primary,
-                      fontWeight: FontWeight.w800,
+                    l10n.recordAiInputHint,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colors.mutedForeground,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level1),
-              _IconActionButton(
-                tooltip: l10n.recordVoiceInputTitle,
-                icon: FLucideIcons.mic,
-                onTap: onMicTap,
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: context.theme.colors.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
               ),
-              _IconActionButton(
-                tooltip: l10n.recordOcrEntryTitle,
-                icon: FLucideIcons.camera,
-                onTap: onCameraTap,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacingTokens.level3,
+                  vertical: AppSpacingTokens.level1,
+                ),
+                child: Text(
+                  l10n.recordAiBadge,
+                  style: textTheme.labelSmall?.copyWith(
+                    color: context.theme.colors.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: AppSpacingTokens.level1),
+            _IconActionButton(
+              tooltip: l10n.recordVoiceInputTitle,
+              icon: FLucideIcons.mic,
+              onTap: onMicTap,
+            ),
+            _IconActionButton(
+              tooltip: l10n.recordOcrEntryTitle,
+              icon: FLucideIcons.camera,
+              onTap: onCameraTap,
+            ),
+          ],
         ),
       ),
     );
@@ -310,59 +305,56 @@ class _QuickRecordTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colors = context.theme.colors;
 
-    return Material(
+    return FTappable(
       key: Key('record-quick-${action.type.name}'),
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: (onQuickAction == null || isLocked)
-            ? null
-            : () => onQuickAction!(action),
-        child: Semantics(
-          button: true,
-          label: isLocked
-              ? '$actionLabel ${l10n.recordNotEnabledLabel}'
-              : actionLabel,
-          child: Opacity(
-            opacity: isLocked ? 0.76 : 1,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level1,
-                vertical: AppSpacingTokens.level1,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppIconBadge(
-                    icon: action.icon,
-                    color: action.accent,
-                    backgroundColor: action.softColor.resolve(colors),
-                    size: AppSpacingTokens.level6,
-                    iconSize: AppSpacingTokens.level4,
+      onPress: (onQuickAction == null || isLocked)
+          ? null
+          : () => onQuickAction!(action),
+      child: Semantics(
+        button: true,
+        label: isLocked
+            ? '$actionLabel ${l10n.recordNotEnabledLabel}'
+            : actionLabel,
+        child: Opacity(
+          opacity: isLocked ? 0.76 : 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level1,
+              vertical: AppSpacingTokens.level1,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppIconBadge(
+                  icon: action.icon,
+                  color: action.accent,
+                  backgroundColor: action.softColor.resolve(colors),
+                  size: AppSpacingTokens.level6,
+                  iconSize: AppSpacingTokens.level4,
+                ),
+                const SizedBox(height: AppSpacingTokens.level1),
+                Text(
+                  displayLabel,
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (isLocked) ...[
+                  const SizedBox(height: 2),
                   Text(
-                    displayLabel,
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
+                    l10n.recordNotEnabledLabel,
+                    style: textTheme.labelSmall?.copyWith(
+                      color: colors.mutedForeground,
+                      fontWeight: FontWeight.w600,
                     ),
-                    textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  if (isLocked) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      l10n.recordNotEnabledLabel,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.mutedForeground,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
           ),
         ),
@@ -386,46 +378,41 @@ class RecordGuideRow extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return FCard.raw(
       key: const Key('record-guide-row'),
-      child: Material(
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level3,
-          ),
-          child: Row(
-            children: [
-              Icon(
-                FLucideIcons.lightbulb,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              FLucideIcons.lightbulb,
+              color: context.theme.colors.primary,
+              size: AppSpacingTokens.level5,
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Expanded(
+              child: Text(
+                l10n.recordGuideHint,
+                style: textTheme.bodySmall?.copyWith(color: colors.foreground),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Text(
+              l10n.recordGuideAction,
+              style: textTheme.labelLarge?.copyWith(
                 color: context.theme.colors.primary,
-                size: AppSpacingTokens.level5,
+                fontWeight: FontWeight.w700,
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Expanded(
-                child: Text(
-                  l10n.recordGuideHint,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.foreground,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Text(
-                l10n.recordGuideAction,
-                style: textTheme.labelLarge?.copyWith(
-                  color: context.theme.colors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Icon(
-                FLucideIcons.chevronRight,
-                color: context.theme.colors.primary,
-                size: AppSpacingTokens.level5,
-              ),
-            ],
-          ),
+            ),
+            Icon(
+              FLucideIcons.chevronRight,
+              color: context.theme.colors.primary,
+              size: AppSpacingTokens.level5,
+            ),
+          ],
         ),
       ),
     );

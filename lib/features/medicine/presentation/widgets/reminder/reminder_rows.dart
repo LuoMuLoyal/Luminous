@@ -203,7 +203,7 @@ class SwitchRow extends StatelessWidget {
               ],
             ),
           ),
-          Switch(value: value, onChanged: onChanged),
+          FSwitch(value: value, onChange: onChanged),
         ],
       ),
     );
@@ -320,20 +320,16 @@ class SoundPreferenceRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          DropdownButtonHideUnderline(
-            child: DropdownButton<MedicineReminderSoundPreference>(
+          FSelect<MedicineReminderSoundPreference>(
+            items: {
+              for (final item in MedicineReminderSoundPreference.values)
+                soundPreferenceLabel(l10n, item): item,
+            },
+            control: FSelectControl.lifted(
               value: value,
-              onChanged: (next) {
+              onChange: (next) {
                 if (next != null) onChanged(next);
               },
-              items: MedicineReminderSoundPreference.values
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item,
-                      child: Text(soundPreferenceLabel(l10n, item)),
-                    ),
-                  )
-                  .toList(growable: false),
             ),
           ),
         ],

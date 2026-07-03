@@ -69,79 +69,75 @@ class _ArchiveRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    final row = Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: () {
-          final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
-          if (route == null) {
-            showMineToast(context, mineCopy(l10n, entry.titleKey));
-            return;
-          }
-          pushAuthRequiredRoute(context, route);
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level5,
-            vertical: AppSpacingTokens.level4,
-          ),
-          child: Row(
-            children: [
-              _SoftIcon(icon: entry.icon, color: entry.accent),
-              const SizedBox(width: AppSpacingTokens.level4),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      mineCopy(l10n, entry.titleKey),
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: AppSpacingTokens.level1),
-                    AppSkeletonText(
-                      text:
-                          subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-                      style: textTheme.bodySmall?.copyWith(
-                        color: colors.mutedForeground,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      widthFactor: 0.74,
-                    ),
-                  ],
-                ),
-              ),
-              if (entry.statusKey != null) ...[
-                const SizedBox(width: AppSpacingTokens.level3),
-                AppSkeletonSlot(
-                  skeleton: const AppInlineSkeletonBlock(
-                    height: 18,
-                    width: 46,
-                    radius: AppRadiusTokens.level2,
-                  ),
-                  child: Text(
-                    mineCopy(l10n, entry.statusKey!),
-                    style: textTheme.labelSmall?.copyWith(
-                      color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                          ? context.theme.colors.primary
-                          : context.theme.colors.primary,
+    final row = FTappable(
+      onPress: () {
+        final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
+        if (route == null) {
+          showMineToast(context, mineCopy(l10n, entry.titleKey));
+          return;
+        }
+        pushAuthRequiredRoute(context, route);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level5,
+          vertical: AppSpacingTokens.level4,
+        ),
+        child: Row(
+          children: [
+            _SoftIcon(icon: entry.icon, color: entry.accent),
+            const SizedBox(width: AppSpacingTokens.level4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mineCopy(l10n, entry.titleKey),
+                    style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level1),
+                  AppSkeletonText(
+                    text: subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
+                    style: textTheme.bodySmall?.copyWith(
+                      color: colors.mutedForeground,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    widthFactor: 0.74,
+                  ),
+                ],
+              ),
+            ),
+            if (entry.statusKey != null) ...[
+              const SizedBox(width: AppSpacingTokens.level3),
+              AppSkeletonSlot(
+                skeleton: const AppInlineSkeletonBlock(
+                  height: 18,
+                  width: 46,
+                  radius: AppRadiusTokens.level2,
+                ),
+                child: Text(
+                  mineCopy(l10n, entry.statusKey!),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: entry.statusKey == MineCopyKey.archiveNeedsFill
+                        ? context.theme.colors.primary
+                        : context.theme.colors.primary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ],
-              const SizedBox(width: AppSpacingTokens.level2),
-              Icon(
-                FLucideIcons.chevronRight,
-                color: colors.mutedForeground,
-                size: AppSpacingTokens.level5,
               ),
             ],
-          ),
+            const SizedBox(width: AppSpacingTokens.level2),
+            Icon(
+              FLucideIcons.chevronRight,
+              color: colors.mutedForeground,
+              size: AppSpacingTokens.level5,
+            ),
+          ],
         ),
       ),
     );

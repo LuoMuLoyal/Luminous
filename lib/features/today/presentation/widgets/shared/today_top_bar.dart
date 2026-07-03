@@ -69,52 +69,49 @@ class _AssistantEntryButton extends ConsumerWidget {
 
     return Tooltip(
       message: l10n.assistantEntryTitle,
-      child: Material(
-        color: Colors.transparent,
-        child: FTappable(
-          key: const Key('today-assistant-entry'),
-          onPress: () async {
-            if (session.canAccessProtectedData) {
-              unawaited(context.push('/assistant'));
-              return;
-            }
-            if (session.isLoading) {
-              return;
-            }
-            await showAuthRequiredDialog(
-              context,
-              onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
-            );
-          },
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-              border: Border.all(color: colors.border),
+      child: FTappable(
+        key: const Key('today-assistant-entry'),
+        onPress: () async {
+          if (session.canAccessProtectedData) {
+            unawaited(context.push('/assistant'));
+            return;
+          }
+          if (session.isLoading) {
+            return;
+          }
+          await showAuthRequiredDialog(
+            context,
+            onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
+          );
+        },
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+            border: Border.all(color: colors.border),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacingTokens.level3,
+              vertical: AppSpacingTokens.level2,
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level3,
-                vertical: AppSpacingTokens.level2,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    FLucideIcons.sparkles,
-                    size: AppSpacingTokens.level4,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  FLucideIcons.sparkles,
+                  size: AppSpacingTokens.level4,
+                  color: colors.primary,
+                ),
+                const SizedBox(width: AppSpacingTokens.level1),
+                Text(
+                  l10n.assistantEntryTitle,
+                  style: textTheme.labelMedium?.copyWith(
                     color: colors.primary,
+                    fontWeight: FontWeight.w700,
                   ),
-                  const SizedBox(width: AppSpacingTokens.level1),
-                  Text(
-                    l10n.assistantEntryTitle,
-                    style: textTheme.labelMedium?.copyWith(
-                      color: colors.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

@@ -31,38 +31,35 @@ class SourceSwitch extends StatelessWidget {
                       ? 0
                       : AppSpacingTokens.level3,
                 ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: FTappable(
-                    onPress: () => onChanged(source),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
+                child: FTappable(
+                  onPress: () => onChanged(source),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: source == selectedSource
+                          ? colors.primary.withValues(alpha: 0.1)
+                          : colors.background,
+                      borderRadius: BorderRadius.circular(
+                        AppRadiusTokens.level4,
+                      ),
+                      border: Border.all(
                         color: source == selectedSource
-                            ? colors.primary.withValues(alpha: 0.1)
-                            : colors.background,
-                        borderRadius: BorderRadius.circular(
-                          AppRadiusTokens.level4,
-                        ),
-                        border: Border.all(
+                            ? colors.primary
+                            : colors.border,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacingTokens.level4,
+                        vertical: AppSpacingTokens.level3,
+                      ),
+                      child: Text(
+                        sourceLabel(l10n, source),
+                        textAlign: TextAlign.center,
+                        style: textTheme.labelLarge?.copyWith(
                           color: source == selectedSource
                               ? colors.primary
-                              : colors.border,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.level4,
-                          vertical: AppSpacingTokens.level3,
-                        ),
-                        child: Text(
-                          sourceLabel(l10n, source),
-                          textAlign: TextAlign.center,
-                          style: textTheme.labelLarge?.copyWith(
-                            color: source == selectedSource
-                                ? colors.primary
-                                : colors.foreground,
-                            fontWeight: FontWeight.w700,
-                          ),
+                              : colors.foreground,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),

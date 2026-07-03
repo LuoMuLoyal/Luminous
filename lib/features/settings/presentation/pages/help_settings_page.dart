@@ -78,13 +78,7 @@ class HelpSettingsPage extends ConsumerWidget {
           prefixes: [const AppBackButton()],
         ),
       ),
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: SingleChildScrollView(child: content),
-        ),
-      ),
+      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
     );
   }
 

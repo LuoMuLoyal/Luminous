@@ -226,138 +226,135 @@ class AssistantPage extends HookConsumerWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Material(
-          color: Colors.transparent,
-          child: ResponsiveContentFrame(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: width < AppBreakpoints.mobile ? 24 : 32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (session.isRestoring) ...[
-                    const AssistantLoadingView(),
-                  ] else if (!session.canAccessProtectedData) ...[
-                    AssistantStateCard(
-                      title: l10n.authNotSignedIn,
-                      description: l10n.assistantSignedOutDescription,
-                      icon: FLucideIcons.circleAlert,
-                      actionLabel: l10n.authGoLogin,
-                      onAction: () =>
-                          context.go(loginRouteForReturnTo('/assistant')),
-                    ),
-                  ] else if (chatState.isLoadingCapabilities &&
-                      chatState.isLoadingConversation &&
-                      capabilities == null &&
-                      chatState.capabilityError == null) ...[
-                    const AssistantLoadingView(),
-                  ] else if (chatState.isLoadingConversation &&
-                      !chatState.hasConversation) ...[
-                    const AssistantLoadingView(),
-                  ] else if (capabilities == null) ...[
-                    AssistantStateCard(
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (session.isRestoring) ...[
+                  const AssistantLoadingView(),
+                ] else if (!session.canAccessProtectedData) ...[
+                  AssistantStateCard(
+                    title: l10n.authNotSignedIn,
+                    description: l10n.assistantSignedOutDescription,
+                    icon: FLucideIcons.circleAlert,
+                    actionLabel: l10n.authGoLogin,
+                    onAction: () =>
+                        context.go(loginRouteForReturnTo('/assistant')),
+                  ),
+                ] else if (chatState.isLoadingCapabilities &&
+                    chatState.isLoadingConversation &&
+                    capabilities == null &&
+                    chatState.capabilityError == null) ...[
+                  const AssistantLoadingView(),
+                ] else if (chatState.isLoadingConversation &&
+                    !chatState.hasConversation) ...[
+                  const AssistantLoadingView(),
+                ] else if (capabilities == null) ...[
+                  AssistantStateCard(
+                    title: l10n.assistantLoadErrorTitle,
+                    description:
+                        chatState.capabilityError ??
+                        l10n.assistantLoadErrorFallback,
+                    icon: FLucideIcons.circleAlert,
+                    tone: AppStateTone.warning,
+                    actionLabel: l10n.todayRetryAction,
+                    onAction: () => ref
+                        .read(assistantControllerProvider.notifier)
+                        .loadCapabilities(),
+                  ),
+                ] else ...[
+                  AssistantHero(
+                    capabilities: capabilities,
+                    statusSummary: statusSummaryText(l10n, capabilities),
+                  ),
+                  if (chatState.conversationError != null) ...[
+                    const SizedBox(height: AppSpacingTokens.level4),
+                    AppStateMessageView(
                       title: l10n.assistantLoadErrorTitle,
-                      description:
-                          chatState.capabilityError ??
-                          l10n.assistantLoadErrorFallback,
+                      description: chatState.conversationError!,
                       icon: FLucideIcons.circleAlert,
                       tone: AppStateTone.warning,
                       actionLabel: l10n.todayRetryAction,
                       onAction: () => ref
                           .read(assistantControllerProvider.notifier)
-                          .loadCapabilities(),
-                    ),
-                  ] else ...[
-                    AssistantHero(
-                      capabilities: capabilities,
-                      statusSummary: statusSummaryText(l10n, capabilities),
-                    ),
-                    if (chatState.conversationError != null) ...[
-                      const SizedBox(height: AppSpacingTokens.level4),
-                      AppStateMessageView(
-                        title: l10n.assistantLoadErrorTitle,
-                        description: chatState.conversationError!,
-                        icon: FLucideIcons.circleAlert,
-                        tone: AppStateTone.warning,
-                        actionLabel: l10n.todayRetryAction,
-                        onAction: () => ref
-                            .read(assistantControllerProvider.notifier)
-                            .loadLatestConversation(),
-                      ),
-                    ],
-                    const SizedBox(height: AppSpacingTokens.level4),
-                    Expanded(
-                      child: AssistantConversationSurface(
-                        state: chatState,
-                        capabilities: capabilities,
-                        scrollController: scrollController,
-                        controller: inputController,
-                        onSend: handleSend,
-                        onRetry: chatState.lastFailedInput != null
-                            ? () => ref
-                                  .read(assistantControllerProvider.notifier)
-                                  .retryLastMessage()
-                            : null,
-                        onConfirmProposal:
-                            ({required messageId, required proposalId}) =>
-                                handleConfirmProposal(
-                                  context,
-                                  messageId: messageId,
-                                  proposalId: proposalId,
-                                ),
-                        onDismissProposal:
-                            ({required messageId, required proposalId}) {
-                              ref
-                                  .read(assistantControllerProvider.notifier)
-                                  .dismissProposedAction(
-                                    messageId: messageId,
-                                    proposalId: proposalId,
-                                  );
-                            },
-                      ),
-                    ),
-                    if (chatState.recentConversationError != null) ...[
-                      const SizedBox(height: AppSpacingTokens.level4),
-                      AppStateMessageView(
-                        title: l10n.assistantRecentConversationsTitle,
-                        description: chatState.recentConversationError!,
-                        icon: FLucideIcons.circleAlert,
-                        tone: AppStateTone.warning,
-                        actionLabel: l10n.todayRetryAction,
-                        onAction: () => ref
-                            .read(assistantControllerProvider.notifier)
-                            .loadRecentConversations(),
-                      ),
-                    ],
-                    const SizedBox(height: AppSpacingTokens.level4),
-                    AssistantControlsPanel(
-                      settings: settings,
-                      fallbackContext: effectiveContext,
-                      capabilities: capabilities,
-                      onToggleEnabled: (nextValue) =>
-                          toggleAssistantEnabled(context, nextValue),
-                      onToggleMemoryEnabled: (nextValue) =>
-                          toggleAssistantMemoryEnabled(context, nextValue),
-                      onToggleContext:
-                          ({
-                            bool? healthProfile,
-                            bool? dailyRecords,
-                            bool? sleepRecords,
-                            bool? currentMedicines,
-                          }) => toggleContextSetting(
-                            context,
-                            settings: settings,
-                            fallbackContext: effectiveContext,
-                            healthProfile: healthProfile,
-                            dailyRecords: dailyRecords,
-                            sleepRecords: sleepRecords,
-                            currentMedicines: currentMedicines,
-                          ),
+                          .loadLatestConversation(),
                     ),
                   ],
+                  const SizedBox(height: AppSpacingTokens.level4),
+                  Expanded(
+                    child: AssistantConversationSurface(
+                      state: chatState,
+                      capabilities: capabilities,
+                      scrollController: scrollController,
+                      controller: inputController,
+                      onSend: handleSend,
+                      onRetry: chatState.lastFailedInput != null
+                          ? () => ref
+                                .read(assistantControllerProvider.notifier)
+                                .retryLastMessage()
+                          : null,
+                      onConfirmProposal:
+                          ({required messageId, required proposalId}) =>
+                              handleConfirmProposal(
+                                context,
+                                messageId: messageId,
+                                proposalId: proposalId,
+                              ),
+                      onDismissProposal:
+                          ({required messageId, required proposalId}) {
+                            ref
+                                .read(assistantControllerProvider.notifier)
+                                .dismissProposedAction(
+                                  messageId: messageId,
+                                  proposalId: proposalId,
+                                );
+                          },
+                    ),
+                  ),
+                  if (chatState.recentConversationError != null) ...[
+                    const SizedBox(height: AppSpacingTokens.level4),
+                    AppStateMessageView(
+                      title: l10n.assistantRecentConversationsTitle,
+                      description: chatState.recentConversationError!,
+                      icon: FLucideIcons.circleAlert,
+                      tone: AppStateTone.warning,
+                      actionLabel: l10n.todayRetryAction,
+                      onAction: () => ref
+                          .read(assistantControllerProvider.notifier)
+                          .loadRecentConversations(),
+                    ),
+                  ],
+                  const SizedBox(height: AppSpacingTokens.level4),
+                  AssistantControlsPanel(
+                    settings: settings,
+                    fallbackContext: effectiveContext,
+                    capabilities: capabilities,
+                    onToggleEnabled: (nextValue) =>
+                        toggleAssistantEnabled(context, nextValue),
+                    onToggleMemoryEnabled: (nextValue) =>
+                        toggleAssistantMemoryEnabled(context, nextValue),
+                    onToggleContext:
+                        ({
+                          bool? healthProfile,
+                          bool? dailyRecords,
+                          bool? sleepRecords,
+                          bool? currentMedicines,
+                        }) => toggleContextSetting(
+                          context,
+                          settings: settings,
+                          fallbackContext: effectiveContext,
+                          healthProfile: healthProfile,
+                          dailyRecords: dailyRecords,
+                          sleepRecords: sleepRecords,
+                          currentMedicines: currentMedicines,
+                        ),
+                  ),
                 ],
-              ),
+              ],
             ),
           ),
         ),

@@ -97,12 +97,11 @@ class _CandidateTile extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Checkbox(
+                FCheckbox(
                   key: Key('record-nlp-candidate-select-$index'),
                   value: item.selected,
-                  onChanged: enabled
-                      ? (value) => onToggleSelected(value ?? false)
-                      : null,
+                  enabled: enabled,
+                  onChange: enabled ? onToggleSelected : null,
                 ),
                 const SizedBox(width: AppSpacingTokens.level2),
                 Expanded(

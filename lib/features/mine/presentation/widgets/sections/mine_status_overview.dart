@@ -62,59 +62,56 @@ class _StatusOverviewItem extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: () =>
-            pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level1,
-          ),
-          child: Column(
-            children: [
-              _SoftIcon(
-                icon: entry.icon,
+    return FTappable(
+      onPress: () =>
+          pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level1,
+        ),
+        child: Column(
+          children: [
+            _SoftIcon(
+              icon: entry.icon,
+              color: entry.accent,
+              size: 42,
+              iconSize: 23,
+            ),
+            const SizedBox(height: AppSpacingTokens.level3),
+            Text(
+              mineCopy(l10n, entry.titleKey),
+              style: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppSpacingTokens.level1),
+            AppSkeletonText(
+              text: mineCopy(l10n, entry.subtitleKey),
+              style: textTheme.labelSmall?.copyWith(
+                color: colors.mutedForeground,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              height: 14,
+              widthFactor: 0.72,
+            ),
+            const SizedBox(height: AppSpacingTokens.level2),
+            AppSkeletonSlot(
+              skeleton: const AppInlineSkeletonBlock(
+                height: 20,
+                width: 44,
+                radius: AppRadiusTokens.level2,
+              ),
+              child: _TinyBadge(
+                label: mineCopy(l10n, entry.badgeKey),
                 color: entry.accent,
-                size: 42,
-                iconSize: 23,
               ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              Text(
-                mineCopy(l10n, entry.titleKey),
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppSpacingTokens.level1),
-              AppSkeletonText(
-                text: mineCopy(l10n, entry.subtitleKey),
-                style: textTheme.labelSmall?.copyWith(
-                  color: colors.mutedForeground,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                height: 14,
-                widthFactor: 0.72,
-              ),
-              const SizedBox(height: AppSpacingTokens.level2),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
-                  height: 20,
-                  width: 44,
-                  radius: AppRadiusTokens.level2,
-                ),
-                child: _TinyBadge(
-                  label: mineCopy(l10n, entry.badgeKey),
-                  color: entry.accent,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

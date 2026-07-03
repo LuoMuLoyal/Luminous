@@ -295,10 +295,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Material(
-            color: Colors.transparent,
-            child: SingleChildScrollView(child: content),
-          ),
+          child: SingleChildScrollView(child: content),
         ),
       );
     }

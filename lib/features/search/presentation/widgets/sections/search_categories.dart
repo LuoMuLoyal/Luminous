@@ -56,41 +56,36 @@ class _CategoryItem extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress:
-            onTap ??
-            () => AppToast.show(context, categoryLabel(l10n, category.type)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: AppSpacingTokens.level2,
-          ),
-          child: Column(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: category.softColor
-                      .resolve(colors)
-                      .withValues(alpha: 0.74),
-                  shape: BoxShape.circle,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level3),
-                  child: Icon(
-                    category.icon,
-                    color: category.accent.resolve(colors),
-                  ),
+    return FTappable(
+      onPress:
+          onTap ??
+          () => AppToast.show(context, categoryLabel(l10n, category.type)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+        child: Column(
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: category.softColor
+                    .resolve(colors)
+                    .withValues(alpha: 0.74),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacingTokens.level3),
+                child: Icon(
+                  category.icon,
+                  color: category.accent.resolve(colors),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              Text(
-                categoryLabel(l10n, category.type),
-                style: textTheme.labelSmall,
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: AppSpacingTokens.level3),
+            Text(
+              categoryLabel(l10n, category.type),
+              style: textTheme.labelSmall,
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );

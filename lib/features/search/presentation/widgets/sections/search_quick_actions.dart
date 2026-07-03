@@ -46,34 +46,31 @@ class _QuickActionButton extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: () {
-          switch (action.type) {
-            case MedicineSearchActionType.barcode:
-              context.push('/scan/barcode');
-            case MedicineSearchActionType.photo:
-              unawaited(showMedicineBoxScanSheet(context));
-            default:
-              AppToast.show(context, actionToast(l10n, action.type));
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(action.icon, color: action.accent.resolve(colors)),
-              const SizedBox(width: AppSpacingTokens.level3),
-              Text(
-                actionLabel(l10n, action.type),
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+    return FTappable(
+      onPress: () {
+        switch (action.type) {
+          case MedicineSearchActionType.barcode:
+            context.push('/scan/barcode');
+          case MedicineSearchActionType.photo:
+            unawaited(showMedicineBoxScanSheet(context));
+          default:
+            AppToast.show(context, actionToast(l10n, action.type));
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(action.icon, color: action.accent.resolve(colors)),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Text(
+              actionLabel(l10n, action.type),
+              style: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~10:00 local time)
+Last updated: 2026-07-03 (~10:35 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -75,7 +75,7 @@ This file records current implementation facts only. Product direction lives in 
 - `TodayRecommendationSection` error state renders `AppStateErrorView` in compact mode with localized title, description, and retry action.
 - `MedicineReminderDetailPage` distinguishes a missing reminder (404) from a generic load failure and surfaces localized copy for each.
 - `AppStateErrorView` supports a `compact` flag and uses `LayoutBuilder` to avoid infinite-height issues inside scrollable parents.
-- Shared child-page infrastructure is now primarily Forui-based: child pages compose `FScaffold` / `FHeader` directly, `AppDialog` uses `FDialog.raw`, and `AppStateMessageView` / `AppStateErrorView` use `FCard` / `FButton`. No raw `TextField` instances remain in runtime `lib/`; assistant, medicine reminder, record NLP/forms, sleep fields, and search input now all use `FTextField`. Phase 1 of the Material-widget migration is complete across `lib/`: all `AlertDialog`/`showDialog` usages now use `FDialog`/`showFDialog`, `FilledButton`/`TextButton`/`IconButton`/`ElevatedButton`/`OutlinedButton` have been replaced by `FButton`/`FButton.icon` with the correct variants, `CircularProgressIndicator`/`LinearProgressIndicator` have been replaced by `FCircularProgress`/`FProgress`/`FDeterminateProgress`, and remaining `InkWell`/`Material + InkWell` tap targets have been replaced with `FTappable`. The only remaining transparent `Material` wrappers are in `record_new_entry_panel.dart` and `record_quick_entry_panel.dart`, where the inner `InkWell` was replaced by `FTappable` but the wrapper itself was kept to avoid bracket-matching rework; this is tracked for a final cleanup sweep.
+- Shared child-page infrastructure is now primarily Forui-based: child pages compose `FScaffold` / `FHeader` directly, `AppDialog` uses `FDialog.raw`, and `AppStateMessageView` / `AppStateErrorView` use `FCard` / `FButton`. No raw `TextField` instances remain in runtime `lib/`; assistant, medicine reminder, record NLP/forms, sleep fields, and search input now all use `FTextField`. Phase 1 of the Material-widget migration is complete across `lib/`: all `AlertDialog`/`showDialog` usages now use `FDialog`/`showFDialog`, `FilledButton`/`TextButton`/`IconButton`/`ElevatedButton`/`OutlinedButton` have been replaced by `FButton`/`FButton.icon` with the correct variants, `CircularProgressIndicator`/`LinearProgressIndicator` have been replaced by `FCircularProgress`/`FProgress`/`FDeterminateProgress`, and remaining `InkWell`/`Material + InkWell` tap targets have been replaced with `FTappable`.
 
 ### Medium/Low Remediation
 
@@ -296,6 +296,8 @@ Deferred code that remains useful should be marked with:
 - After the 2026-07-02 root-removal pass, `rg -n "AppThemeSurface|AppTypographyTokens|AppSectionSurface|Icons\\." lib` returns no matches. Runtime `lib/` no longer ships the old bridge files, and the aggressive migration temporarily excludes `test/**` from analyzer scope so legacy test imports do not block the final Forui runtime sweep.
 - Auth form validation is shared through `AuthValidationMixin` and `CooldownTimerMixin` (`lib/features/auth/presentation/providers/shared/auth_form_mixin.dart`). `RegisterFormNotifier`, `PasswordResetNotifier`, and `LoginFormNotifier` all use both mixins. Email validation delegates to the `email_validator` package — no hand-written email regexes remain in any auth provider.
 - `flutter_hooks` / `hooks_riverpod` are used project-wide: all 16 files that previously managed `TextEditingController` lifecycle manually have been migrated to `HookConsumerWidget` / `HookWidget` with `useTextEditingController()`. Zero manual `initState`/`dispose` controller boilerplate remains.
+- Material input widgets have been fully replaced by Forui equivalents in runtime `lib/`: no remaining `TextFormField`, `DropdownButton`, `Switch`, or `Checkbox` usages; `FTextField`/`FTextFormField`, `FSelect`, `FSwitch`, and `FCheckbox` are used instead. The only remaining `showDialog` calls have also been migrated to `showAppDialog`/`showFDialog`.
+- Transparent `Material(color: Colors.transparent)` wrappers have been removed from runtime `lib/`; their former children (scrollable page bodies, `FTappable` tiles, `FCard.raw` surfaces, and dialog content) now render directly without a Material ancestor because all descendants already use Forui components.
 - Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.
 - `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
 - Login page password/code mode switch uses `flutter_animate`'s `.fadeIn().slideX()` instead of `AnimatedSwitcher`, matching the project-wide entrance animation pattern.

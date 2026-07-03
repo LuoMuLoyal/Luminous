@@ -53,40 +53,37 @@ class RecordNewEntryPanel extends StatelessWidget {
                   .toList(),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            Material(
-              color: Colors.transparent,
-              child: Opacity(
-                opacity: onNewEntry == null ? 0.5 : 1.0,
-                child: FTappable(
-                  onPress: onNewEntry,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colors.secondary.withValues(alpha: 0.18),
-                      border: Border.all(color: colors.border),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.level4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            FLucideIcons.mic,
-                            color: context.theme.colors.primary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: AppSpacingTokens.level3),
-                          Flexible(
-                            child: Text(
-                              l10n.recordVoiceAction,
-                              style: textTheme.labelLarge?.copyWith(
-                                color: context.theme.colors.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+            Opacity(
+              opacity: onNewEntry == null ? 0.5 : 1.0,
+              child: FTappable(
+                onPress: onNewEntry,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.secondary.withValues(alpha: 0.18),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          FLucideIcons.mic,
+                          color: context.theme.colors.primary,
+                          size: 20,
+                        ),
+                        const SizedBox(width: AppSpacingTokens.level3),
+                        Flexible(
+                          child: Text(
+                            l10n.recordVoiceAction,
+                            style: textTheme.labelLarge?.copyWith(
+                              color: context.theme.colors.primary,
+                              fontWeight: FontWeight.w700,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -112,37 +109,30 @@ class _NewEntryChip extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: onTap == null ? null : () => onTap!(action),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: action.softColor.resolve(colors).withValues(alpha: 0.68),
+    return FTappable(
+      onPress: onTap == null ? null : () => onTap!(action),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: action.softColor.resolve(colors).withValues(alpha: 0.68),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level3,
+            vertical: AppSpacingTokens.level3,
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level3,
-              vertical: AppSpacingTokens.level3,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  action.icon,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(action.icon, color: action.accent.resolve(colors), size: 16),
+              const SizedBox(width: AppSpacingTokens.level2),
+              Text(
+                label,
+                style: textTheme.labelSmall?.copyWith(
                   color: action.accent.resolve(colors),
-                  size: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-                const SizedBox(width: AppSpacingTokens.level2),
-                Text(
-                  label,
-                  style: textTheme.labelSmall?.copyWith(
-                    color: action.accent.resolve(colors),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

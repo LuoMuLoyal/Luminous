@@ -27,80 +27,75 @@ class SearchResultTile extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: onTap,
-        child: FCard.raw(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        result.name,
-                        style: textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+    return FTappable(
+      onPress: onTap,
+      child: FCard.raw(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      result.name,
+                      style: textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    _SourceBadge(source: result.source, l10n: l10n),
-                  ],
+                  ),
+                  _SourceBadge(source: result.source, l10n: l10n),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.level2),
+              Text(
+                result.subtitle,
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colors.mutedForeground,
                 ),
-                const SizedBox(height: AppSpacingTokens.level2),
-                Text(
-                  result.subtitle,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colors.mutedForeground,
+              ),
+              const SizedBox(height: AppSpacingTokens.level1),
+              Text(
+                sourceRefLabel(l10n, result.source, result.id),
+                style: textTheme.labelSmall?.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+              const SizedBox(height: AppSpacingTokens.level4),
+              Text(
+                result.summary,
+                style: textTheme.bodyMedium?.copyWith(color: colors.foreground),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: AppSpacingTokens.level4),
+              Wrap(
+                spacing: AppSpacingTokens.level3,
+                runSpacing: AppSpacingTokens.level3,
+                children: [
+                  ...result.tags.map((tag) => _TagPill(label: tag)),
+                  _TagPill(
+                    label:
+                        '${l10n.medicineSearchMatchedBy}：${matchTypeLabel(l10n, result.matchType)}',
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacingTokens.level4),
+              Align(
+                alignment: expandedAction
+                    ? Alignment.center
+                    : Alignment.centerRight,
+                child: SizedBox(
+                  width: expandedAction ? double.infinity : null,
+                  child: FButton(
+                    onPress: onAddToCurrentMedicines,
+                    child: Text(l10n.medicineSearchAddToBoxAction),
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
-                Text(
-                  sourceRefLabel(l10n, result.source, result.id),
-                  style: textTheme.labelSmall?.copyWith(
-                    color: colors.mutedForeground,
-                  ),
-                ),
-                const SizedBox(height: AppSpacingTokens.level4),
-                Text(
-                  result.summary,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colors.foreground,
-                  ),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: AppSpacingTokens.level4),
-                Wrap(
-                  spacing: AppSpacingTokens.level3,
-                  runSpacing: AppSpacingTokens.level3,
-                  children: [
-                    ...result.tags.map((tag) => _TagPill(label: tag)),
-                    _TagPill(
-                      label:
-                          '${l10n.medicineSearchMatchedBy}：${matchTypeLabel(l10n, result.matchType)}',
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacingTokens.level4),
-                Align(
-                  alignment: expandedAction
-                      ? Alignment.center
-                      : Alignment.centerRight,
-                  child: SizedBox(
-                    width: expandedAction ? double.infinity : null,
-                    child: FButton(
-                      onPress: onAddToCurrentMedicines,
-                      child: Text(l10n.medicineSearchAddToBoxAction),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

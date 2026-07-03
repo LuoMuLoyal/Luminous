@@ -44,7 +44,7 @@ class AppDialogShell extends StatelessWidget {
           child = SingleChildScrollView(child: child);
         }
 
-        return Material(color: Colors.transparent, child: child);
+        return child;
       },
     );
   }

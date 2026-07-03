@@ -43,91 +43,88 @@ class MineAccountHero extends StatelessWidget {
         ? account.displayName!.trim()
         : mineCopy(l10n, account.displayNameKey);
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        key: const Key('mine-account-manage-link'),
-        onPress: () => pushAuthRequiredRoute(context, '/account'),
-        child: FCard.raw(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level5),
-            child: Row(
-              children: [
-                _AvatarPlaceholder(),
-                const SizedBox(width: AppSpacingTokens.level5),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              name,
-                              style: textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+    return FTappable(
+      key: const Key('mine-account-manage-link'),
+      onPress: () => pushAuthRequiredRoute(context, '/account'),
+      child: FCard.raw(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          child: Row(
+            children: [
+              _AvatarPlaceholder(),
+              const SizedBox(width: AppSpacingTokens.level5),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            name,
+                            style: textTheme.headlineSmall?.copyWith(
+                              fontWeight: FontWeight.w800,
                             ),
-                          ),
-                          const SizedBox(width: AppSpacingTokens.level3),
-                          _RolePill(label: mineCopy(l10n, account.roleKey)),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level2),
-                      Wrap(
-                        spacing: AppSpacingTokens.level2,
-                        runSpacing: AppSpacingTokens.level1,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Text(
-                            mineCopy(l10n, dashboard.completion.titleKey),
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colors.mutedForeground,
-                            ),
-                          ),
-                          AppSkeletonSlot(
-                            skeleton: const AppInlineSkeletonBlock(
-                              height: 22,
-                              width: 42,
-                              radius: AppRadiusTokens.level2,
-                            ),
-                            child: Text(
-                              dashboard.completion.percentLabel,
-                              style: textTheme.titleMedium?.copyWith(
-                                color: context.theme.colors.primary,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level4),
-                      AppSkeletonSlot(
-                        skeleton: const AppInlineSkeletonBlock(
-                          height: 8,
-                          radius: AppRadiusTokens.levelFull,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.levelFull,
-                          ),
-                          child: FDeterminateProgress(
-                            value: dashboard.completion.progress,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: AppSpacingTokens.level3),
+                        _RolePill(label: mineCopy(l10n, account.roleKey)),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level2),
+                    Wrap(
+                      spacing: AppSpacingTokens.level2,
+                      runSpacing: AppSpacingTokens.level1,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        Text(
+                          mineCopy(l10n, dashboard.completion.titleKey),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                        AppSkeletonSlot(
+                          skeleton: const AppInlineSkeletonBlock(
+                            height: 22,
+                            width: 42,
+                            radius: AppRadiusTokens.level2,
+                          ),
+                          child: Text(
+                            dashboard.completion.percentLabel,
+                            style: textTheme.titleMedium?.copyWith(
+                              color: context.theme.colors.primary,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level4),
+                    AppSkeletonSlot(
+                      skeleton: const AppInlineSkeletonBlock(
+                        height: 8,
+                        radius: AppRadiusTokens.levelFull,
                       ),
-                    ],
-                  ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          AppRadiusTokens.levelFull,
+                        ),
+                        child: FDeterminateProgress(
+                          value: dashboard.completion.progress,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
-                Icon(
-                  FLucideIcons.chevronRight,
-                  color: colors.mutedForeground,
-                  size: AppSpacingTokens.level6,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(width: AppSpacingTokens.level3),
+              Icon(
+                FLucideIcons.chevronRight,
+                color: colors.mutedForeground,
+                size: AppSpacingTokens.level6,
+              ),
+            ],
           ),
         ),
       ),

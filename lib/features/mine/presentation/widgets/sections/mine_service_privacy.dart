@@ -18,54 +18,51 @@ class MinePrivacyNoticeSection extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
-    return Material(
-      color: Colors.transparent,
-      child: FTappable(
-        onPress: () => pushAuthRequiredRoute(context, '/account'),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: Color.alphaBlend(
-              context.theme.colors.primary.withValues(alpha: 0.05),
-              colors.background,
-            ),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-            border: Border.all(
-              color: context.theme.colors.primary.withValues(alpha: 0.14),
-            ),
+    return FTappable(
+      onPress: () => pushAuthRequiredRoute(context, '/account'),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Color.alphaBlend(
+            context.theme.colors.primary.withValues(alpha: 0.05),
+            colors.background,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
-            child: Row(
-              children: [
-                Icon(
-                  notice.icon,
-                  color: context.theme.colors.primary,
-                  size: AppSpacingTokens.level5,
-                ),
-                const SizedBox(width: AppSpacingTokens.level3),
-                Expanded(
-                  child: Text(
-                    mineCopy(l10n, notice.titleKey),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+          border: Border.all(
+            color: context.theme.colors.primary.withValues(alpha: 0.14),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          child: Row(
+            children: [
+              Icon(
+                notice.icon,
+                color: context.theme.colors.primary,
+                size: AppSpacingTokens.level5,
+              ),
+              const SizedBox(width: AppSpacingTokens.level3),
+              Expanded(
+                child: Text(
+                  mineCopy(l10n, notice.titleKey),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.mutedForeground,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
-                Text(
-                  mineCopy(l10n, notice.actionKey),
-                  style: textTheme.labelMedium?.copyWith(
-                    color: colors.foreground,
-                    fontWeight: FontWeight.w700,
-                  ),
+              ),
+              const SizedBox(width: AppSpacingTokens.level3),
+              Text(
+                mineCopy(l10n, notice.actionKey),
+                style: textTheme.labelMedium?.copyWith(
+                  color: colors.foreground,
+                  fontWeight: FontWeight.w700,
                 ),
-                Icon(
-                  FLucideIcons.chevronRight,
-                  color: colors.mutedForeground,
-                  size: AppSpacingTokens.level5,
-                ),
-              ],
-            ),
+              ),
+              Icon(
+                FLucideIcons.chevronRight,
+                color: colors.mutedForeground,
+                size: AppSpacingTokens.level5,
+              ),
+            ],
           ),
         ),
       ),
