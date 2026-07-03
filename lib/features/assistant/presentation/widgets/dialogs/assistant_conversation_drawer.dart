@@ -33,7 +33,7 @@ class AssistantConversationDrawer extends StatelessWidget {
         ? MediaQuery.sizeOf(context).width * 0.8
         : 360.0;
 
-    return Drawer(
+    return SizedBox(
       width: width,
       child: SafeArea(
         child: Padding(

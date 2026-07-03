@@ -223,7 +223,6 @@ class ReportPage extends ConsumerWidget {
       dataExportControllerProvider.select((s) => s.asData?.value),
     );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
-    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
@@ -433,14 +432,12 @@ class ReportPage extends ConsumerWidget {
               ),
         error: (error, _) {
           final l10n = AppLocalizations.of(context)!;
-          return Scaffold(
-            backgroundColor: colors.background,
-            appBar: AppBar(
-              backgroundColor: colors.background,
-              elevation: 0,
-              leading: const AppBackButton(),
+          return FScaffold(
+            header: SafeArea(
+              bottom: false,
+              child: FHeader.nested(prefixes: [const AppBackButton()]),
             ),
-            body: SafeArea(
+            child: SafeArea(
               bottom: false,
               child: AppStateErrorView(
                 title: l10n.reportErrorTitle,

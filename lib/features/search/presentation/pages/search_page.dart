@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -31,9 +32,14 @@ class SearchPage extends ConsumerWidget {
     final isDesktop =
         MediaQuery.sizeOf(context).width >= AppBreakpoints.desktop;
 
-    return Scaffold(
-      appBar: isDesktop ? null : AppBar(leading: const AppBackButton()),
-      body: MedicineSearchView(
+    return FScaffold(
+      header: isDesktop
+          ? null
+          : SafeArea(
+              bottom: false,
+              child: FHeader.nested(prefixes: [const AppBackButton()]),
+            ),
+      child: MedicineSearchView(
         state: searchState,
         onQueryChanged: (q) =>
             ref.read(medicineSearchNotifierProvider.notifier).updateQuery(q),

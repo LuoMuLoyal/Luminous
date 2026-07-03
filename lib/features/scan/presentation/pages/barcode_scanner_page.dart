@@ -122,29 +122,27 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.theme.colors.background,
-      appBar: AppBar(
-        backgroundColor: context.theme.colors.background,
-        leading: const AppBackButton(),
-        title: Text(
-          '扫描条形码',
-          style: TextStyle(color: context.theme.colors.primaryForeground),
-        ),
-        actions: [
-          FButton.icon(
-            variant: FButtonVariant.ghost,
-            onPress: () => _controller?.toggleTorch(),
-            child: Icon(
-              _controller?.torchEnabled == true
-                  ? Icons.flash_on
-                  : Icons.flash_off,
-              color: context.theme.colors.primaryForeground,
+    return FScaffold(
+      header: SafeArea(
+        bottom: false,
+        child: FHeader.nested(
+          title: const Text('扫描条形码'),
+          prefixes: [const AppBackButton()],
+          suffixes: [
+            FButton.icon(
+              variant: FButtonVariant.ghost,
+              onPress: () => _controller?.toggleTorch(),
+              child: Icon(
+                _controller?.torchEnabled == true
+                    ? Icons.flash_on
+                    : Icons.flash_off,
+                color: context.theme.colors.primaryForeground,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      body: _controller == null
+      child: _controller == null
           ? const Center(child: FCircularProgress())
           : Stack(
               children: [

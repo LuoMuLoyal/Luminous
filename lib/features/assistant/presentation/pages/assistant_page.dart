@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -48,7 +50,6 @@ class AssistantPage extends HookConsumerWidget {
 
     final inputController = useTextEditingController();
     final scrollController = useMemoized(() => ScrollController());
-    final drawerScaffoldKey = useMemoized(() => GlobalKey<ScaffoldState>());
 
     void scrollToBottom() {
       if (!scrollController.hasClients) return;
@@ -186,7 +187,27 @@ class AssistantPage extends HookConsumerWidget {
     }
 
     void openRecentConversationsDrawer() {
-      drawerScaffoldKey.currentState?.openEndDrawer();
+      unawaited(
+        showFSheet<void>(
+          context: context,
+          side: FLayout.rtl,
+          builder: (sheetContext) => AssistantConversationDrawer(
+            state: chatState,
+            title: l10n.assistantRecentConversationsTitle,
+            emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
+            emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
+            onRetry: () => ref
+                .read(assistantControllerProvider.notifier)
+                .loadRecentConversations(),
+            onSelect: (conversationId) async {
+              Navigator.of(sheetContext).pop();
+              await ref
+                  .read(assistantControllerProvider.notifier)
+                  .openConversation(conversationId);
+            },
+          ),
+        ),
+      );
     }
 
     final width = MediaQuery.sizeOf(context).width;
@@ -361,27 +382,6 @@ class AssistantPage extends HookConsumerWidget {
       ),
     );
 
-    return Scaffold(
-      key: drawerScaffoldKey,
-      backgroundColor: context.theme.colors.background,
-      endDrawer: Drawer(
-        child: AssistantConversationDrawer(
-          state: chatState,
-          title: l10n.assistantRecentConversationsTitle,
-          emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
-          emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
-          onRetry: () => ref
-              .read(assistantControllerProvider.notifier)
-              .loadRecentConversations(),
-          onSelect: (conversationId) async {
-            Navigator.of(context).pop();
-            await ref
-                .read(assistantControllerProvider.notifier)
-                .openConversation(conversationId);
-          },
-        ),
-      ),
-      body: scaffoldBody,
-    );
+    return scaffoldBody;
   }
 }

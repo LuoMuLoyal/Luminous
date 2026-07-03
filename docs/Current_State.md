@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~10:35 local time)
+Last updated: 2026-07-03 (~10:45 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -298,6 +298,7 @@ Deferred code that remains useful should be marked with:
 - `flutter_hooks` / `hooks_riverpod` are used project-wide: all 16 files that previously managed `TextEditingController` lifecycle manually have been migrated to `HookConsumerWidget` / `HookWidget` with `useTextEditingController()`. Zero manual `initState`/`dispose` controller boilerplate remains.
 - Material input widgets have been fully replaced by Forui equivalents in runtime `lib/`: no remaining `TextFormField`, `DropdownButton`, `Switch`, or `Checkbox` usages; `FTextField`/`FTextFormField`, `FSelect`, `FSwitch`, and `FCheckbox` are used instead. The only remaining `showDialog` calls have also been migrated to `showAppDialog`/`showFDialog`.
 - Transparent `Material(color: Colors.transparent)` wrappers have been removed from runtime `lib/`; their former children (scrollable page bodies, `FTappable` tiles, `FCard.raw` surfaces, and dialog content) now render directly without a Material ancestor because all descendants already use Forui components.
+- Material `Scaffold`/`AppBar`/`Drawer` have been fully replaced by Forui equivalents in runtime `lib/`; all pages now use `FScaffold` + `FHeader`, and the assistant recent-conversations drawer was migrated to `showFSheet(side: FLayout.rtl, ...)`. The only remaining `Drawer(` references are custom widget class names.
 - Shared utility `coerceToStringMap` in `lib/core/network/map_utils.dart` deduplicates 5 copies of the same `_coerceToMap` helper.
 - `compareReminderTime` deduplicated from 3 copies to 1 public version in `medicine_reminder_formatters.dart`.
 - Login page password/code mode switch uses `flutter_animate`'s `.fadeIn().slideX()` instead of `AnimatedSwitcher`, matching the project-wide entrance animation pattern.
