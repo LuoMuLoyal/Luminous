@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -466,7 +467,7 @@ final _completedWorkspace = MedicineWorkspace(
   plan: MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -481,7 +482,7 @@ final _completedWorkspace = MedicineWorkspace(
           ),
         ],
         stateKey: MedicineCopyKey.doseStatusSkipped,
-        stateColor: FThemes.neutral.light.touch.colors.primary,
+        stateColor: AppColors.primary,
         todayStatus: MedicineDoseStatus.skipped,
         currentMedicineId: 'med-1',
       ),

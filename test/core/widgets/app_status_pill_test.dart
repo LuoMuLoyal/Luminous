@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/widgets/common/app_status_pill.dart';
 
 import '../../helpers/test_forui_app.dart';
 
@@ -11,81 +9,60 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppStatusPill', () {
-    testWidgets('renders label text', (tester) async {
+  group('FBadge — 状态标签', () {
+    testWidgets('FBadge.primary 渲染标签文本', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStatusPill(label: 'Active', color: AppColors.primary),
+          FBadge(variant: FBadgeVariant.primary, child: const Text('Active')),
         ),
       );
 
       expect(find.text('Active'), findsOneWidget);
     });
 
-    testWidgets('renders icon when provided', (tester) async {
+    testWidgets('FBadge.raw 支持图标 + 标签', (tester) async {
       await tester.pumpWidget(
-        _appShell(
-          const AppStatusPill(
-            label: 'Verified',
-            color: AppColors.secondary,
-            icon: Icons.check,
-          ),
-        ),
+        _appShell(const FBadge.raw(builder: _iconLabelBuilder)),
       );
 
       expect(find.text('Verified'), findsOneWidget);
-      expect(find.byIcon(Icons.check), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.check), findsOneWidget);
     });
 
-    testWidgets('does not render icon when omitted', (tester) async {
+    testWidgets('FBadge.secondary 无图标时只显示文本', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppStatusPill(label: 'Basic', color: AppColors.muted)),
+        _appShell(
+          FBadge(variant: FBadgeVariant.secondary, child: const Text('Basic')),
+        ),
       );
 
       expect(find.text('Basic'), findsOneWidget);
-      expect(find.byIcon(Icons.check), findsNothing);
+      expect(find.byIcon(FLucideIcons.check), findsNothing);
     });
 
-    testWidgets('uses large typography when large is true', (tester) async {
+    testWidgets('FBadge.destructive 渲染不同变体', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStatusPill(
-            label: 'Large',
-            color: AppColors.destructive,
-            large: true,
+          FBadge(
+            variant: FBadgeVariant.destructive,
+            child: const Text('Danger'),
           ),
         ),
       );
 
-      expect(find.text('Large'), findsOneWidget);
-    });
-
-    testWidgets('accepts custom padding', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          const AppStatusPill(
-            label: 'Custom',
-            color: AppColors.background,
-            padding: EdgeInsets.all(16),
-          ),
-        ),
-      );
-
-      expect(find.text('Custom'), findsOneWidget);
-    });
-
-    testWidgets('renders with background transparency', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          const AppStatusPill(
-            label: 'Faded',
-            color: AppColors.foreground,
-            backgroundAlpha: 0.5,
-          ),
-        ),
-      );
-
-      expect(find.text('Faded'), findsOneWidget);
+      expect(find.text('Danger'), findsOneWidget);
     });
   });
+}
+
+/// Reusable builder for icon + label badge.
+Widget _iconLabelBuilder(BuildContext context, FBadgeStyle style) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const Icon(FLucideIcons.check, size: 14),
+      const SizedBox(width: 4),
+      const Text('Verified'),
+    ],
+  );
 }

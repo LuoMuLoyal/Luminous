@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_safety_tip_style.dart';
 
 void main() {
@@ -36,36 +37,32 @@ void main() {
 
   group('medicineSafetyTipColor', () {
     final colors = FThemes.neutral.light.touch.colors;
-
     test('returns primary for alcohol', () {
-      expect(medicineSafetyTipColor('alcohol', colors), colors.primary);
+      expect(medicineSafetyTipColor('alcohol', colors), AppColors.primary);
     });
     test('returns primary for caffeine', () {
-      expect(medicineSafetyTipColor('caffeine', colors), colors.primary);
+      expect(medicineSafetyTipColor('caffeine', colors), AppColors.primary);
     });
     test('returns primary for timing', () {
-      expect(medicineSafetyTipColor('timing', colors), colors.primary);
+      expect(medicineSafetyTipColor('timing', colors), AppColors.primary);
     });
     test('returns primary for storage', () {
-      expect(medicineSafetyTipColor('storage', colors), colors.primary);
+      expect(medicineSafetyTipColor('storage', colors), AppColors.primary);
     });
     test('returns primary for food', () {
-      expect(medicineSafetyTipColor('food', colors), colors.primary);
+      expect(medicineSafetyTipColor('food', colors), AppColors.primary);
     });
-    test('returns primaryForeground for pregnancy', () {
-      expect(
-        medicineSafetyTipColor('pregnancy', colors),
-        colors.primaryForeground,
-      );
+    test('returns primary for pregnancy', () {
+      expect(medicineSafetyTipColor('pregnancy', colors), AppColors.primary);
     });
     test('returns destructive for allergy', () {
-      expect(medicineSafetyTipColor('allergy', colors), colors.destructive);
+      expect(medicineSafetyTipColor('allergy', colors), AppColors.destructive);
     });
     test('returns primary for driving', () {
-      expect(medicineSafetyTipColor('driving', colors), colors.primary);
+      expect(medicineSafetyTipColor('driving', colors), AppColors.primary);
     });
     test('returns primary as default', () {
-      expect(medicineSafetyTipColor('unknown', colors), colors.primary);
+      expect(medicineSafetyTipColor('unknown', colors), AppColors.primary);
     });
   });
 }

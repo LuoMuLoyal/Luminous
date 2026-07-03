@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
@@ -8,13 +9,15 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   group('reportStatusColor', () {
-    final colors = FThemes.neutral.light.touch.colors;
     test('all statuses map to primary', () {
-      expect(reportStatusColor(ReportStatus.good), colors.primary);
-      expect(reportStatusColor(ReportStatus.stable), colors.primary);
-      expect(reportStatusColor(ReportStatus.needsAttention), colors.primary);
-      expect(reportStatusColor(ReportStatus.insufficientData), colors.primary);
-      expect(reportStatusColor(ReportStatus.unknown), colors.primary);
+      expect(reportStatusColor(ReportStatus.good), AppColors.primary);
+      expect(reportStatusColor(ReportStatus.stable), AppColors.primary);
+      expect(reportStatusColor(ReportStatus.needsAttention), AppColors.primary);
+      expect(
+        reportStatusColor(ReportStatus.insufficientData),
+        AppColors.primary,
+      );
+      expect(reportStatusColor(ReportStatus.unknown), AppColors.primary);
     });
   });
 

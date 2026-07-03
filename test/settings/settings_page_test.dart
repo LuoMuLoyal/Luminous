@@ -6,9 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
-import 'package:luminous/core/widgets/settings/app_settings_section.dart';
-import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
@@ -80,7 +77,6 @@ void main() {
 
   testWidgets('Settings back button routes to previous page', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     final router = GoRouter(
       initialLocation: '/',
       routes: [
@@ -111,38 +107,10 @@ void main() {
     expect(find.text('mine-page'), findsOneWidget);
   });
 
-  testWidgets(
-    'Settings page no longer depends on legacy shared settings wrappers',
-    (tester) async {
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
-
-      await _pumpSettingsPage(
-        tester,
-        router: GoRouter(
-          initialLocation: '/settings',
-          routes: [
-            GoRoute(
-              path: '/settings',
-              builder: (context, state) => const SettingsPage(),
-            ),
-          ],
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-
-      expect(find.byType(AppSettingsSection), findsNothing);
-      expect(find.byType(AppSettingsNavigationRow), findsNothing);
-      expect(find.byType(AppSettingsSwitchRow), findsNothing);
-    },
-  );
-
   testWidgets('Settings account row routes to account settings page', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -230,7 +198,6 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -265,7 +232,6 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -300,7 +266,6 @@ void main() {
     'Settings notifications row routes to notification settings page',
     (tester) async {
       SharedPreferences.setMockInitialValues(const <String, Object>{});
-
       await _pumpSettingsPage(
         tester,
         router: GoRouter(
@@ -336,7 +301,6 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -371,7 +335,6 @@ void main() {
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await _pumpSettingsPage(
       tester,
       router: GoRouter(
@@ -404,7 +367,6 @@ void main() {
 
   testWidgets('Settings export row routes to data export page', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
-
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

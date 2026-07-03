@@ -51,7 +51,7 @@ class TestForuiApp extends StatelessWidget {
         data: Theme.of(context).brightness == Brightness.dark
             ? _foruiDark
             : _foruiLight,
-        child: FToaster(child: child ?? const SizedBox.shrink()),
+        child: child ?? const SizedBox.shrink(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
@@ -92,7 +92,7 @@ class TestForuiRouterApp extends StatelessWidget {
         data: Theme.of(context).brightness == Brightness.dark
             ? _foruiDark
             : _foruiLight,
-        child: FToaster(child: child ?? const SizedBox.shrink()),
+        child: child ?? const SizedBox.shrink(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,

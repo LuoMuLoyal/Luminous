@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_header_action_chip.dart';
-import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
-import 'package:luminous/core/widgets/settings/app_setting_row.dart';
-import 'package:luminous/core/widgets/settings/app_settings_navigation_row.dart';
-import 'package:luminous/core/widgets/settings/app_settings_section.dart';
-import 'package:luminous/core/widgets/settings/app_settings_switch_row.dart';
 
 import '../../helpers/test_forui_app.dart';
 
@@ -15,30 +9,33 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppHeaderActionChip', () {
-    testWidgets('renders label and icon', (tester) async {
+  // ── Header Action Chip → FButton.icon ───────────────────────
+
+  group('FButton.icon — 操作按钮', () {
+    testWidgets('渲染标签和前缀图标', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppHeaderActionChip(
-            label: 'Search',
-            icon: Icons.search,
-            onTap: () {},
+          FButton(
+            prefix: const Icon(FLucideIcons.search),
+            child: const Text('Search'),
+            onPress: () {},
+            mainAxisSize: MainAxisSize.min,
           ),
         ),
       );
 
       expect(find.text('Search'), findsOneWidget);
-      expect(find.byIcon(Icons.search), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.search), findsOneWidget);
     });
 
-    testWidgets('calls onTap when tapped', (tester) async {
+    testWidgets('点击触发回调', (tester) async {
       bool tapped = false;
       await tester.pumpWidget(
         _appShell(
-          AppHeaderActionChip(
-            label: 'Tap me',
-            icon: Icons.touch_app,
-            onTap: () => tapped = true,
+          FButton(
+            child: const Text('Tap me'),
+            onPress: () => tapped = true,
+            mainAxisSize: MainAxisSize.min,
           ),
         ),
       );
@@ -49,31 +46,76 @@ void main() {
     });
   });
 
-  group('AppImagePlaceholder', () {
-    testWidgets('renders label and default icon', (tester) async {
+  // ── Image Placeholder → Container + Icon + Text ────────────
+
+  group('图片占位符', () {
+    testWidgets('渲染标签和默认图标', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppImagePlaceholder(label: 'No image')),
+        _appShell(
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(FLucideIcons.image, size: 32),
+                SizedBox(height: 8),
+                Text('No image'),
+              ],
+            ),
+          ),
+        ),
       );
 
       expect(find.text('No image'), findsOneWidget);
-      expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.image), findsOneWidget);
     });
 
-    testWidgets('renders custom icon', (tester) async {
+    testWidgets('支持自定义图标', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppImagePlaceholder(label: 'Photo', icon: Icons.photo_camera),
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(FLucideIcons.camera, size: 32),
+                SizedBox(height: 8),
+                Text('Photo'),
+              ],
+            ),
+          ),
         ),
       );
 
       expect(find.text('Photo'), findsOneWidget);
-      expect(find.byIcon(Icons.photo_camera), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.camera), findsOneWidget);
     });
 
-    testWidgets('respects width and height', (tester) async {
+    testWidgets('支持指定宽高', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppImagePlaceholder(label: 'Sized', width: 200, height: 150),
+          const SizedBox(
+            width: 200,
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(FLucideIcons.image, size: 32),
+                SizedBox(height: 8),
+                Text('Sized'),
+              ],
+            ),
+          ),
         ),
       );
 
@@ -81,14 +123,15 @@ void main() {
     });
   });
 
-  group('AppSettingsSwitchRow', () {
-    testWidgets('renders title and switch', (tester) async {
+  // ── Settings Switch Row → FTile + FSwitch ─────────────────
+
+  group('FTile + FSwitch — 设置开关行', () {
+    testWidgets('渲染标题和开关', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingsSwitchRow(
-            title: 'Enable feature',
-            value: true,
-            onChanged: (_) {},
+          FTile(
+            title: const Text('Enable feature'),
+            suffix: FSwitch(value: true, onChange: (_) {}),
           ),
         ),
       );
@@ -97,14 +140,13 @@ void main() {
       expect(find.byType(FSwitch), findsOneWidget);
     });
 
-    testWidgets('renders subtitle when provided', (tester) async {
+    testWidgets('带副标题', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingsSwitchRow(
-            title: 'Notifications',
-            subtitle: 'Get push alerts',
-            value: false,
-            onChanged: (_) {},
+          FTile(
+            title: const Text('Notifications'),
+            subtitle: const Text('Get push alerts'),
+            suffix: FSwitch(value: false, onChange: (_) {}),
           ),
         ),
       );
@@ -113,46 +155,34 @@ void main() {
       expect(find.text('Get push alerts'), findsOneWidget);
     });
 
-    testWidgets('toggles when tapped', (tester) async {
+    testWidgets('点击 FSwitch 切换开关', (tester) async {
       bool toggled = false;
       await tester.pumpWidget(
         _appShell(
-          AppSettingsSwitchRow(
-            title: 'Toggle me',
-            value: false,
-            onChanged: (v) => toggled = v,
+          FTile(
+            title: const Text('Toggle me'),
+            suffix: FSwitch(value: false, onChange: (v) => toggled = v),
           ),
         ),
       );
 
-      await tester.tap(find.text('Toggle me'));
+      await tester.tap(find.byType(FSwitch));
       await tester.pumpAndSettle();
       expect(toggled, isTrue);
     });
-
-    testWidgets('shows divider when showDivider is true', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          AppSettingsSwitchRow(
-            title: 'Divided',
-            value: true,
-            onChanged: (_) {},
-            showDivider: true,
-          ),
-        ),
-      );
-
-      expect(find.text('Divided'), findsOneWidget);
-      expect(find.byType(Divider), findsOneWidget);
-    });
   });
 
-  group('AppSettingRow', () {
-    testWidgets('renders title and triggers onTap', (tester) async {
+  // ── Setting Row → FTile ──────────────────────────────────
+
+  group('FTile — 设置行', () {
+    testWidgets('渲染标题并响应点击', (tester) async {
       bool tapped = false;
       await tester.pumpWidget(
         _appShell(
-          AppSettingRow(title: 'Open settings', onTap: () => tapped = true),
+          FTile(
+            title: const Text('Open settings'),
+            onPress: () => tapped = true,
+          ),
         ),
       );
 
@@ -161,24 +191,26 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('shows chevron when showChevron is true', (tester) async {
+    testWidgets('带头部箭头图标', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingRow(title: 'With chevron', onTap: () {}, showChevron: true),
+          FTile(
+            title: const Text('With chevron'),
+            suffix: const Icon(FLucideIcons.chevronRight),
+          ),
         ),
       );
 
       expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     });
 
-    testWidgets('shows subtitle and value', (tester) async {
+    testWidgets('带副标题和值', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingRow(
-            title: 'Profile',
-            subtitle: 'Manage your data',
-            value: 'View',
-            onTap: () {},
+          FTile(
+            title: const Text('Profile'),
+            subtitle: const Text('Manage your data'),
+            details: const Text('View'),
           ),
         ),
       );
@@ -188,49 +220,45 @@ void main() {
       expect(find.text('View'), findsOneWidget);
     });
 
-    testWidgets('renders trailing widget', (tester) async {
+    testWidgets('支持自定义后缀组件', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingRow(
-            title: 'With trailing',
-            onTap: () {},
-            trailing: const Icon(Icons.star),
+          FTile(
+            title: const Text('With trailing'),
+            suffix: const Icon(Icons.star),
           ),
         ),
       );
 
       expect(find.byIcon(Icons.star), findsOneWidget);
     });
-
-    testWidgets('shows divider when showDivider is true', (tester) async {
-      await tester.pumpWidget(
-        _appShell(
-          AppSettingRow(title: 'Divided', onTap: () {}, showDivider: true),
-        ),
-      );
-
-      expect(find.byType(Divider), findsOneWidget);
-    });
   });
 
-  group('AppSettingsNavigationRow', () {
-    testWidgets('renders title and chevron', (tester) async {
+  // ── Settings Navigation Row → FTile + chevron ────────────
+
+  group('FTile — 导航行', () {
+    testWidgets('渲染标题和箭头', (tester) async {
       await tester.pumpWidget(
-        _appShell(AppSettingsNavigationRow(title: 'Go to page', onTap: () {})),
+        _appShell(
+          FTile(
+            title: const Text('Go to page'),
+            suffix: const Icon(FLucideIcons.chevronRight),
+          ),
+        ),
       );
 
       expect(find.text('Go to page'), findsOneWidget);
       expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
     });
 
-    testWidgets('renders subtitle and value', (tester) async {
+    testWidgets('带副标题和值', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingsNavigationRow(
-            title: 'Language',
-            subtitle: 'App locale',
-            value: 'English',
-            onTap: () {},
+          FTile(
+            title: const Text('Language'),
+            subtitle: const Text('App locale'),
+            details: const Text('English'),
+            suffix: const Icon(FLucideIcons.chevronRight),
           ),
         ),
       );
@@ -240,13 +268,14 @@ void main() {
       expect(find.text('English'), findsOneWidget);
     });
 
-    testWidgets('triggers onTap when enabled', (tester) async {
+    testWidgets('点击触发导航', (tester) async {
       bool tapped = false;
       await tester.pumpWidget(
         _appShell(
-          AppSettingsNavigationRow(
-            title: 'Navigate',
-            onTap: () => tapped = true,
+          FTile(
+            title: const Text('Navigate'),
+            onPress: () => tapped = true,
+            suffix: const Icon(FLucideIcons.chevronRight),
           ),
         ),
       );
@@ -255,29 +284,41 @@ void main() {
       await tester.pumpAndSettle();
       expect(tapped, isTrue);
     });
+  });
 
-    testWidgets('shows divider when showDivider is true', (tester) async {
+  // ── Settings Section → Text section label ────────────────
+
+  group('FTileGroup — 段落标签', () {
+    testWidgets('渲染段落标题', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppSettingsNavigationRow(
-            title: 'Divided',
-            onTap: () {},
-            showDivider: true,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: 16, bottom: 4),
+                child: Text(
+                  'General',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              FTileGroup(
+                children: [
+                  FTile(title: const Text('Item 1')),
+                  FTile(title: const Text('Item 2')),
+                ],
+              ),
+            ],
           ),
         ),
       );
 
-      expect(find.byType(Divider), findsOneWidget);
-    });
-  });
-
-  group('AppSettingsSection', () {
-    testWidgets('renders section label', (tester) async {
-      await tester.pumpWidget(
-        _appShell(const AppSettingsSection(label: 'General')),
-      );
-
       expect(find.text('General'), findsOneWidget);
+      expect(find.byType(FTileGroup), findsOneWidget);
     });
   });
 }

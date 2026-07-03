@@ -11,24 +11,24 @@ void main() {
       expect(AppRadiusTokens.level1, equals(4));
     });
 
-    test('level2 is 8', () {
-      expect(AppRadiusTokens.level2, equals(8));
+    test('level2 is 6 (Forui xs)', () {
+      expect(AppRadiusTokens.level2, equals(6));
     });
 
-    test('level3 is 12', () {
-      expect(AppRadiusTokens.level3, equals(12));
+    test('level3 is 8 (Forui sm)', () {
+      expect(AppRadiusTokens.level3, equals(8));
     });
 
-    test('level4 is 16', () {
-      expect(AppRadiusTokens.level4, equals(16));
+    test('level4 is 10 (Forui md)', () {
+      expect(AppRadiusTokens.level4, equals(10));
     });
 
-    test('level5 is 20', () {
-      expect(AppRadiusTokens.level5, equals(20));
+    test('level5 is 14 (Forui lg)', () {
+      expect(AppRadiusTokens.level5, equals(14));
     });
 
-    test('levelFull is 9999', () {
-      expect(AppRadiusTokens.levelFull, equals(9999));
+    test('levelFull is 100 (Forui pill)', () {
+      expect(AppRadiusTokens.levelFull, equals(100));
     });
 
     test('values are non-negative', () {

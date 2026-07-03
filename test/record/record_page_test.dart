@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/network/lucent_api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
@@ -2115,8 +2116,8 @@ class _FakeRecordRepository implements RecordRepository {
               time: '09:45',
               type: RecordEntryType.vitals,
               icon: Icons.favorite_rounded,
-              accent: FThemes.neutral.light.touch.colors.primary,
-              softColor: FThemes.neutral.light.touch.colors.secondary,
+              accent: AppColors.primary,
+              softColor: AppColors.secondary,
               titleKey: RecordCopyKey.typeVitals,
               rawTitle: 'Blood pressure',
               value: '118/76 mmHg',

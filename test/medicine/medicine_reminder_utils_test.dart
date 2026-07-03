@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
 
@@ -30,13 +31,13 @@ void main() {
   group('deliveryStatusColor', () {
     final colors = FThemes.neutral.light.touch.colors;
     test('delivered returns primary', () {
-      expect(deliveryStatusColor('delivered', colors), colors.primary);
+      expect(deliveryStatusColor('delivered', colors), AppColors.primary);
     });
-    test('failed returns error', () {
-      expect(deliveryStatusColor('failed', colors), colors.destructive);
+    test('failed returns destructive', () {
+      expect(deliveryStatusColor('failed', colors), AppColors.destructive);
     });
-    test('default returns mute', () {
-      expect(deliveryStatusColor('unknown', colors), colors.mutedForeground);
+    test('default returns muted', () {
+      expect(deliveryStatusColor('unknown', colors), AppColors.muted);
     });
   });
 

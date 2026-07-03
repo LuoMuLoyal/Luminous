@@ -31,23 +31,29 @@ class AppToast {
       }
     });
 
-    _currentEntry = showFToast(
-      context: context,
-      alignment: FToastAlignment.topCenter,
-      duration: null,
-      title: Text(message),
-      suffixBuilder: (context, entry) => FButton.icon(
-        variant: FButtonVariant.ghost,
-        size: .sm,
-        onPress: entry.dismiss,
-        child: const Icon(FLucideIcons.x, size: 16),
-      ),
-      onDismiss: () {
-        if (_currentMessage == message) {
-          _reset();
-        }
-      },
-    );
+    try {
+      _currentEntry = showFToast(
+        context: context,
+        alignment: FToastAlignment.topCenter,
+        duration: null,
+        title: Text(message),
+        suffixBuilder: (context, entry) => FButton.icon(
+          variant: FButtonVariant.ghost,
+          size: .sm,
+          onPress: entry.dismiss,
+          child: const Icon(FLucideIcons.x, size: 16),
+        ),
+        onDismiss: () {
+          if (_currentMessage == message) {
+            _reset();
+          }
+        },
+      );
+    } catch (_) {
+      // FToaster 不可用（如测试环境无 FToaster），静默降级
+      _reset();
+      return false;
+    }
 
     return true;
   }
