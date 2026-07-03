@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
@@ -65,9 +66,11 @@ class _FindingCard extends StatelessWidget {
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: finding.color.withValues(alpha: 0.08),
+          color: finding.color.resolve(colors).withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: finding.color.withValues(alpha: 0.18)),
+          border: Border.all(
+            color: finding.color.resolve(colors).withValues(alpha: 0.18),
+          ),
         ),
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Column(
@@ -95,7 +98,7 @@ class _FindingCard extends StatelessWidget {
                 const Spacer(),
                 AppIconBadge(
                   icon: FLucideIcons.chevronRight,
-                  color: colors.mutedForeground,
+                  color: AppColors.muted,
                   size: AppResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.068,

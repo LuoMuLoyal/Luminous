@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -142,12 +143,7 @@ class _DeliveryLogRow extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    final color = _deliveryStatusColor(
-      log.status,
-      destructive: colors.destructive,
-      primary: colors.primary,
-      mutedForeground: colors.mutedForeground,
-    );
+    final color = _deliveryStatusColor(log.status);
     final row = Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.level4,
@@ -155,7 +151,11 @@ class _DeliveryLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(deliveryStatusIcon(log.status), color: color, size: 18),
+          Icon(
+            deliveryStatusIcon(log.status),
+            color: color.resolve(colors),
+            size: 18,
+          ),
           const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Column(
@@ -212,10 +212,10 @@ class _TodayLogRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final color = switch (log.status) {
-      DoseLogStatus.taken => context.theme.colors.primary,
-      DoseLogStatus.skipped => context.theme.colors.primary,
-      DoseLogStatus.missed => colors.destructive,
-      DoseLogStatus.planned => colors.primary,
+      DoseLogStatus.taken => AppColors.primary,
+      DoseLogStatus.skipped => AppColors.primary,
+      DoseLogStatus.missed => AppColors.destructive,
+      DoseLogStatus.planned => AppColors.primary,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
@@ -231,7 +231,7 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(FLucideIcons.badgeCheck, color: color, size: 18),
+          Icon(FLucideIcons.badgeCheck, color: color.resolve(colors), size: 18),
           const SizedBox(width: AppSpacingTokens.level3),
           Expanded(
             child: Text(
@@ -260,16 +260,11 @@ class _TodayLogRow extends StatelessWidget {
   }
 }
 
-Color _deliveryStatusColor(
-  String value, {
-  required Color destructive,
-  required Color primary,
-  required Color mutedForeground,
-}) {
+AppColors _deliveryStatusColor(String value) {
   return switch (value) {
-    'delivered' => primary,
-    'failed' => destructive,
-    'scheduled' => primary,
-    _ => mutedForeground,
+    'delivered' => AppColors.primary,
+    'failed' => AppColors.destructive,
+    'scheduled' => AppColors.primary,
+    _ => AppColors.muted,
   };
 }

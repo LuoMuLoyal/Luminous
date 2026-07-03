@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -88,7 +89,7 @@ class _WeekDayCell extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacingTokens.level2),
-            _MarkerDots(colors: day.markers, hasAlert: day.hasAlert),
+            _MarkerDots(markers: day.markers, hasAlert: day.hasAlert),
           ],
         ),
       ),
@@ -97,16 +98,17 @@ class _WeekDayCell extends StatelessWidget {
 }
 
 class _MarkerDots extends StatelessWidget {
-  const _MarkerDots({required this.colors, required this.hasAlert});
+  const _MarkerDots({required this.markers, required this.hasAlert});
 
-  final List<Color> colors;
+  final List<AppColors> markers;
   final bool hasAlert;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final markerColors = hasAlert
-        ? [...colors, context.theme.colors.primary]
-        : colors;
+        ? [...markers.resolveAll(colors), colors.primary]
+        : markers.resolveAll(colors);
 
     return SizedBox(
       height: 6,

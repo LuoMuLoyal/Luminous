@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:luminous/core/widgets/common/app_text_action.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_section_header.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';

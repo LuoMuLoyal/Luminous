@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -143,8 +143,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : null;
     final coverageAlert = MedicineAlert(
       icon: Icons.info_outline_rounded,
-      color: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
+      softColor: AppColors.primary,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
       rawBody: l10n.medicineRiskCheckCoverageAlertBody(
         result.coverageIssues.length,
@@ -177,8 +177,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   return [
     MedicineAlert(
       icon: Icons.verified_outlined,
-      color: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
+      softColor: AppColors.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
       rawBody: l10n.medicineRiskCheckAllClearAlertBody,
       rawDetail: l10n.medicineRiskCheckAllClearAlertDetail,
@@ -197,19 +197,19 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
   };
 }
 
-Color medicineRiskSeverityColor(MedicineRiskSeverity severity) {
+AppColors medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => FThemes.neutral.light.touch.colors.primary,
-    MedicineRiskSeverity.medium => FThemes.neutral.light.touch.colors.primary,
-    MedicineRiskSeverity.info => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.high => AppColors.primary,
+    MedicineRiskSeverity.medium => AppColors.primary,
+    MedicineRiskSeverity.info => AppColors.primary,
   };
 }
 
-Color medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
+AppColors medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => FThemes.neutral.light.touch.colors.primary,
-    MedicineRiskSeverity.medium => FThemes.neutral.light.touch.colors.primary,
-    MedicineRiskSeverity.info => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.high => AppColors.primary,
+    MedicineRiskSeverity.medium => AppColors.primary,
+    MedicineRiskSeverity.info => AppColors.primary,
   };
 }
 

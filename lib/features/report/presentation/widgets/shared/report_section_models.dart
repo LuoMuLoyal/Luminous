@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
@@ -42,7 +42,7 @@ class ReportAiSummaryContent {
 class ReportAiSummaryItem {
   const ReportAiSummaryItem({required this.color, required this.text});
 
-  final Color color;
+  final AppColors color;
   final String text;
 }
 
@@ -60,13 +60,13 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
   };
 }
 
-Color reportStatusColor(ReportStatus status) {
+AppColors reportStatusColor(ReportStatus status) {
   return switch (status) {
-    ReportStatus.good => FThemes.neutral.light.touch.colors.primary,
-    ReportStatus.stable => FThemes.neutral.light.touch.colors.primary,
-    ReportStatus.needsAttention => FThemes.neutral.light.touch.colors.primary,
-    ReportStatus.insufficientData => FThemes.neutral.light.touch.colors.primary,
-    ReportStatus.unknown => FThemes.neutral.light.touch.colors.primary,
+    ReportStatus.good => AppColors.primary,
+    ReportStatus.stable => AppColors.primary,
+    ReportStatus.needsAttention => AppColors.primary,
+    ReportStatus.insufficientData => AppColors.primary,
+    ReportStatus.unknown => AppColors.primary,
   };
 }
 
@@ -132,13 +132,14 @@ ReportAiSummaryContent buildReportAiSummaryContent({
   required bool? aiSummariesEnabled,
   required ReportAiSummaryCardState aiState,
   required ReportAiSummaryRange selectedRange,
+  required FColors colors,
 }) {
   if (!canAccessProtectedData) {
     return ReportAiSummaryContent(
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.authLoginRequiredPrompt,
         ),
       ],
@@ -151,7 +152,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.reportAiSummaryDisabledHint,
         ),
       ],
@@ -179,7 +180,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         ReportAiSummaryItem(
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
         ),
         ...reportAiSummaryFallbackBullets(dashboard),
@@ -195,7 +196,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       summaryText: aiState.streamingSummary,
       bullets: [
         ReportAiSummaryItem(
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ...reportAiSummaryFallbackBullets(dashboard),

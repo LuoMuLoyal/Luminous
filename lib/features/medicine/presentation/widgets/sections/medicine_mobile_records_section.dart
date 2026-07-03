@@ -64,7 +64,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
                     child: Center(
                       child: AppTextAction(
                         label: l10n.medicineViewMoreRecordsAction,
-                        color: FThemes.neutral.light.touch.colors.primary,
+                        color: AppColors.primary,
                         onTap: () => context.go('/record'),
                       ),
                     ),
@@ -136,7 +136,9 @@ class _MedicineRecordRow extends StatelessWidget {
                 AppIconBadge(
                   icon: row.statusIcon,
                   color: row.statusColor,
-                  backgroundColor: row.statusColor.withValues(alpha: 0.1),
+                  backgroundColor: row.statusColor
+                      .resolve(colors)
+                      .withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.level5,
                   iconSize: AppSpacingTokens.level4,
@@ -204,7 +206,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-taken'),
                           label: l10n.medicineDoseActionTaken,
                           icon: FLucideIcons.check,
-                          color: FThemes.neutral.light.touch.colors.primary,
+                          color: AppColors.primary,
                           filled: true,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
@@ -218,7 +220,7 @@ class _MedicineRecordRow extends StatelessWidget {
                           key: const Key('medicine-record-dose-action-skipped'),
                           label: l10n.medicineDoseActionSkipped,
                           icon: FLucideIcons.ban,
-                          color: FThemes.neutral.light.touch.colors.primary,
+                          color: AppColors.primary,
                           onTap: () => onMarkDose!(
                             row.item.currentMedicineId!,
                             MedicineDoseAction.skipped,

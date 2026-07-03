@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -26,31 +27,30 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     return AppStatusPill(label: text, color: color, icon: icon, large: large);
   }
 
-  (String, Color, IconData) _statusSpec(
+  (String, AppColors, IconData) _statusSpec(
     BuildContext context,
     AppLocalizations l10n,
     String? currentStatus,
   ) {
-    final colors = context.theme.colors;
     return switch (currentStatus) {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
-        context.theme.colors.primary,
+        AppColors.primary,
         FLucideIcons.clock3,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
-        context.theme.colors.primary,
+        AppColors.primary,
         FLucideIcons.badgeCheck,
       ),
       'analysis_failed' => (
         l10n.recordMealAnalysisStatusFailed,
-        colors.destructive,
+        AppColors.destructive,
         FLucideIcons.circleAlert,
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
-        context.theme.colors.primary,
+        AppColors.primary,
         FLucideIcons.badgeHelp,
       ),
     };

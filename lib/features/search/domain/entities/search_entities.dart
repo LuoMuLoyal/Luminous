@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'search_entities.freezed.dart';
@@ -45,7 +46,7 @@ abstract class MedicineSearchQuickAction with _$MedicineSearchQuickAction {
   const factory MedicineSearchQuickAction({
     required MedicineSearchActionType type,
     required IconData icon,
-    required Color accent,
+    required AppColors accent,
   }) = _MedicineSearchQuickAction;
 }
 
@@ -54,8 +55,8 @@ abstract class MedicineSearchCategory with _$MedicineSearchCategory {
   const factory MedicineSearchCategory({
     required MedicineSearchCategoryType type,
     required IconData icon,
-    required Color accent,
-    required Color softColor,
+    required AppColors accent,
+    required AppColors softColor,
   }) = _MedicineSearchCategory;
 }
 

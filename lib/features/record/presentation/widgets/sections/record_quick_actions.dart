@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -102,7 +103,7 @@ class _QuickActionTile extends StatelessWidget {
               AppIconBadge(
                 icon: action.icon,
                 color: action.accent,
-                backgroundColor: action.softColor.withValues(alpha: 0.45),
+                backgroundColor: action.softColor.resolve(colors),
                 size: 40,
               ),
               const SizedBox(height: AppSpacingTokens.level3),

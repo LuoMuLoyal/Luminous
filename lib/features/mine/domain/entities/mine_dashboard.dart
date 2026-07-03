@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'mine_dashboard.freezed.dart';
@@ -87,7 +88,7 @@ abstract class MineCompletion with _$MineCompletion {
 abstract class MineStatusCard with _$MineStatusCard {
   const factory MineStatusCard({
     required IconData icon,
-    required Color accent,
+    required AppColors accent,
     required MineCopyKey titleKey,
     required MineCopyKey subtitleKey,
     required MineCopyKey badgeKey,
@@ -98,7 +99,7 @@ abstract class MineStatusCard with _$MineStatusCard {
 abstract class MineArchiveEntry with _$MineArchiveEntry {
   const factory MineArchiveEntry({
     required IconData icon,
-    required Color accent,
+    required AppColors accent,
     required MineCopyKey titleKey,
     required MineCopyKey subtitleKey,
     MineCopyKey? statusKey,

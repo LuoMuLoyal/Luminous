@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/scan/presentation/pages/medicine_box_scan_page.dart';
@@ -42,6 +43,7 @@ class _QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return Material(
@@ -62,7 +64,7 @@ class _QuickActionButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(action.icon, color: action.accent),
+              Icon(action.icon, color: action.accent.resolve(colors)),
               const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 actionLabel(l10n, action.type),

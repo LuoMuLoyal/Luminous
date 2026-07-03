@@ -8,17 +8,20 @@ class _MedicationAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: item.color.withValues(alpha: 0.1),
+        color: item.color.resolve(colors).withValues(alpha: 0.1),
         shape: BoxShape.circle,
-        border: Border.all(color: item.color.withValues(alpha: 0.16)),
+        border: Border.all(
+          color: item.color.resolve(colors).withValues(alpha: 0.16),
+        ),
       ),
       child: SizedBox.square(
         dimension: size,
         child: Icon(
           FLucideIcons.pillBottle,
-          color: item.color,
+          color: item.color.resolve(colors),
           size: size * 0.52,
         ),
       ),
@@ -38,24 +41,26 @@ class _DoseActionButton extends StatelessWidget {
 
   final String label;
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final VoidCallback onTap;
   final bool filled;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
+    final resolvedColor = color.resolve(colors);
     final foreground = filled
-        ? FThemes.neutral.light.touch.colors.primary
-        : color;
+        ? AppColors.primary.resolve(colors)
+        : resolvedColor;
 
     return FTappable(
       onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: filled ? color : color.withValues(alpha: 0.08),
+          color: filled ? resolvedColor : resolvedColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-          border: Border.all(color: color.withValues(alpha: 0.32)),
+          border: Border.all(color: resolvedColor.withValues(alpha: 0.32)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -131,7 +136,7 @@ class _QuickOperation {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
@@ -155,7 +160,7 @@ class _RecordRow {
   final String date;
   final String time;
   final String statusLabel;
-  final Color statusColor;
+  final AppColors statusColor;
   final IconData statusIcon;
 }
 
@@ -167,7 +172,7 @@ class _SafetyTip {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String text;
 }
 
@@ -222,9 +227,9 @@ _RecordRow _rowFromItem(
 ) {
   final status = slot?.status ?? MedicineDoseStatus.pending;
   final statusColor = switch (status) {
-    MedicineDoseStatus.taken => FThemes.neutral.light.touch.colors.primary,
-    MedicineDoseStatus.skipped => FThemes.neutral.light.touch.colors.primary,
-    MedicineDoseStatus.pending => FThemes.neutral.light.touch.colors.primary,
+    MedicineDoseStatus.taken => AppColors.primary,
+    MedicineDoseStatus.skipped => AppColors.primary,
+    MedicineDoseStatus.pending => AppColors.primary,
   };
   final statusIcon = switch (status) {
     MedicineDoseStatus.taken => FLucideIcons.check,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -159,20 +160,22 @@ class _SoftIcon extends StatelessWidget {
   const _SoftIcon({required this.icon, required this.color});
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   static const _defaultSize = 44.0;
   static const _defaultIconSize = 22.0;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final resolvedColor = color.resolve(colors);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: resolvedColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: _defaultSize,
-        child: Icon(icon, color: color, size: _defaultIconSize),
+        child: Icon(icon, color: resolvedColor, size: _defaultIconSize),
       ),
     );
   }

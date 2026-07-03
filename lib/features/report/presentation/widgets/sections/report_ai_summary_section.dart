@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
@@ -43,6 +44,7 @@ class ReportAiSummarySection extends StatelessWidget {
       aiSummariesEnabled: aiSummariesEnabled,
       aiState: aiState,
       selectedRange: selectedRange,
+      colors: colors,
     );
     final action = aiState.summary?.action;
     final actionLabel = aiState.summary?.actionLabel;
@@ -58,7 +60,7 @@ class ReportAiSummarySection extends StatelessWidget {
               children: [
                 AppIconBadge(
                   icon: FLucideIcons.sparkles,
-                  color: context.theme.colors.primary,
+                  color: AppColors.primary,
                   size: AppSpacingTokens.level8,
                   iconSize: AppSpacingTokens.level5,
                   shape: BoxShape.circle,
@@ -157,7 +159,7 @@ class ReportAiSummarySection extends StatelessWidget {
                       ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: content.bullets[index].color,
+                          color: content.bullets[index].color.resolve(colors),
                           shape: BoxShape.circle,
                         ),
                         child: const SizedBox.square(

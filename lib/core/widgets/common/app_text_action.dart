@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 
+/// A thin wrapper around Forui's [FButton] ghost variant.
 class AppTextAction extends StatelessWidget {
   const AppTextAction({
     super.key,
@@ -15,17 +17,17 @@ class AppTextAction extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
   final IconData? icon;
-  final Color? color;
+  final AppColors? color;
   final bool flexible;
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final foreground = color ?? context.theme.colors.foreground;
+    final foreground =
+        color?.resolve(context.theme.colors) ?? context.theme.colors.foreground;
 
     final text = Text(
       label,
-      style: textTheme.labelMedium?.copyWith(
+      style: TextStyle(
         color: foreground,
         fontWeight: FontWeight.w600,
         letterSpacing: 0,
@@ -37,8 +39,8 @@ class AppTextAction extends StatelessWidget {
     return FButton(
       variant: FButtonVariant.ghost,
       size: FButtonSizeVariant.xs,
-      onPress: onTap,
       mainAxisSize: MainAxisSize.min,
+      onPress: onTap,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

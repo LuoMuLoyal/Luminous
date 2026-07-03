@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -142,15 +143,17 @@ class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.label, required this.color});
 
   final String label;
-  final Color color;
+  final AppColors color;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
+    final resolvedColor = color.resolve(colors);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: resolvedColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
       ),
       child: Padding(
@@ -161,7 +164,7 @@ class _StatusBadge extends StatelessWidget {
         child: Text(
           label,
           style: textTheme.labelSmall?.copyWith(
-            color: color,
+            color: resolvedColor,
             fontWeight: FontWeight.w800,
           ),
         ),

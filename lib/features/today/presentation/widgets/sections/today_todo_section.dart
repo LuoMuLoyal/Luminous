@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
@@ -82,7 +83,9 @@ class _TodoRow extends StatelessWidget {
               item.completed
                   ? FLucideIcons.circleCheckBig
                   : FLucideIcons.circleCheck,
-              color: item.completed ? item.color : colors.mutedForeground,
+              color: item.completed
+                  ? item.color.resolve(colors)
+                  : colors.mutedForeground,
               size: AppSpacingTokens.level7,
             ),
             const SizedBox(width: AppSpacingTokens.level3),
@@ -117,9 +120,11 @@ class _TodoRow extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level3),
             DecoratedBox(
               decoration: BoxDecoration(
-                color: item.color.withValues(alpha: 0.08),
+                color: item.color.resolve(colors).withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-                border: Border.all(color: item.color.withValues(alpha: 0.12)),
+                border: Border.all(
+                  color: item.color.resolve(colors).withValues(alpha: 0.12),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -129,7 +134,7 @@ class _TodoRow extends StatelessWidget {
                 child: Text(
                   item.source,
                   style: textTheme.labelSmall?.copyWith(
-                    color: item.color,
+                    color: item.color.resolve(colors),
                     fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -60,9 +61,11 @@ class _AlertTile extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: alert.softColor.withValues(alpha: 0.42),
+        color: alert.softColor.resolve(colors).withValues(alpha: 0.42),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(color: alert.color.withValues(alpha: 0.18)),
+        border: Border.all(
+          color: alert.color.resolve(colors).withValues(alpha: 0.18),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
@@ -72,7 +75,7 @@ class _AlertTile extends StatelessWidget {
             Text(
               medicineAlertTitle(l10n, alert),
               style: textTheme.labelLarge?.copyWith(
-                color: alert.color,
+                color: alert.color.resolve(colors),
                 fontWeight: FontWeight.w700,
               ),
             ),

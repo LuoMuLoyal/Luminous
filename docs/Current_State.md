@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~09:35 local time)
+Last updated: 2026-07-03 (~09:50 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -151,7 +151,7 @@ All 16 files with manual `TextEditingController` lifecycle (`late final` + `init
 
 - Stack: Flutter + Riverpod + GoRouter + `hooks_riverpod` + `flutter_hooks`.
 - `LuminousApp` now boots a fully Forui-led root theme: `MaterialApp.router` uses Forui-derived light/dark `ThemeData`, wraps the tree with `FTheme`, and runtime `lib/` no longer carries the old `AppThemeSurface` bridge.
-- The root Forui migration has now moved past the old theme/dialog/color bridge files: runtime `lib/` no longer uses `AppTheme`, `AppDialog`, `AppColorTokens`, or `AppInkWell`, and the remaining legacy wrapper call sites are being cut over page-by-page.
+- The root Forui migration has now moved past the old theme/dialog/color bridge files: runtime `lib/` no longer uses `AppTheme`, `AppDialog`, `AppColorTokens`, or `AppInkWell`, and the remaining legacy wrapper call sites are being cut over page-by-page. The new semantic color token enum `AppColors` lives in `lib/core/design/app_colors.dart` and is used by data/domain layers; widgets resolve it through the current Forui theme.
 - `AppSpacingTokens` now exposes only the `level1..level12` numeric scale; the old semantic aliases (`xxs`, `xs`, `sm`, `md`, `lg`, `xl`, `x2l`, `x3l`, `x4l`, `x5l`, `x6l`, `section`) have been removed, and all call sites across `lib/` have been migrated to the level tokens.
 - `AppRadiusTokens` now exposes only the `level0..level5` plus `levelFull` numeric scale; the old semantic aliases (`none`, `xs`, `sm`, `md`, `lg`, `xl`, `pillSm`, `pill`, `full`) have been removed, and all call sites across `lib/` have been migrated to the level tokens.
 - `PageScaffoldShell` has been removed: all child pages now compose `FScaffold` + `FHeader` + `ResponsiveContentFrame` directly, with drawer/FAB cases handled locally. No `PageScaffoldShell` references remain in runtime code or tests.
@@ -242,7 +242,7 @@ Deferred code that remains useful should be marked with:
 - Skin recognition.
 - Report photo import.
 - Desktop-first workflows.
-- Feature-level palette classes (`MedicinePalette`, `TodayPalette`, `ReportPalette`) have been removed entirely. All color references now use `AppColorTokens` directly.
+- Feature-level palette classes (`MedicinePalette`, `TodayPalette`, `ReportPalette`) have been removed entirely. The old `AppColorTokens` wrapper has also been removed. All color references now go through the semantic `AppColors` token enum or direct `context.theme.colors.*` reads.
 - Pregnancy/lactation/children/elderly special-group fields from health context, risk checker, and Prisma schema.
 
 ## Design System
@@ -267,10 +267,10 @@ Deferred code that remains useful should be marked with:
 - After the 2026-07-02 record finish pass, `rg -n "AppThemeSurface|AppTypographyTokens|AppSectionSurface|Icons\\." lib/features/record` returns no matches.
 - Dense settings-page UI is now being dragged over at both the page and core-wrapper levels: the top-level `SettingsPage` plus the main secondary settings sub-pages already use page-local Forui tiles/switch rows directly, and the remaining shared settings wrappers in `core/widgets/settings/` now render through `FTile` / `FSwitch` instead of Material `InkWell` / `Switch`.
 - The assistant controls surface is now on the same path: `AssistantControlsPanel` no longer composes `AppSettingRow` or `AppSectionSurface`, and instead renders its enable/memory/context toggles through direct Forui tiles and switches.
-- `AppColorTokens` and `AppTypographyTokens` have been deleted. `AppShadowTokens` has also been deleted and was not replaced: its level1/level2 values were inlined temporarily, then removed entirely from `app_toast.dart`, `app_state_views.dart`, and `today_components.dart` to match the flatter Forui-first visual direction. `AppSpacingTokens` and `AppRadiusTokens` still exist as compatibility names with `level*` primary naming, but their actual values were aggressively reset on 2026-07-02 to track the current Forui-led foundation instead of preserving the old handcrafted scale.
+- `AppColorTokens` and `AppTypographyTokens` have been deleted. `AppShadowTokens` has also been deleted and was not replaced: its level1/level2 values were inlined temporarily, then removed entirely from `app_toast.dart`, `app_state_views.dart`, and `today_components.dart` to match the flatter Forui-first visual direction. `AppSpacingTokens` and `AppRadiusTokens` still exist as compatibility names with `level*` primary naming, but their actual values were aggressively reset on 2026-07-02 to track the current Forui-led foundation instead of preserving the old handcrafted scale. A new `AppColors` enum in `lib/core/design/app_colors.dart` provides the minimal semantic color tokens (`primary`, `secondary`, `destructive`, `muted`, `background`, `border`, `foreground`) used by data/domain layers; widgets resolve the tokens via `context.theme.colors` so light/dark switching is automatic.
 - `AppSpacingTokens` and `AppRadiusTokens` expose `level*` primary naming (`level1`, `level2`, ...). The legacy `xxs/xs/...` and `xs/sm/...` aliases were removed once all call sites were migrated to the level names.
 - The old theme palette variants (`classic / bluePink / yellowGreen`) and `theme.palette` preference are removed from active UI/state. Current theme preference is mode-only (`theme.mode`).
-- `RecordTypeColors` (`lib/features/record/domain/entities/record_type_colors.dart`) centralizes per-record-type foreground/background color pairs consumed by mock data, Lucent repository, detail pages, and dashboard tokens.
+- `RecordTypeColors` (`lib/features/record/domain/entities/record_type_colors.dart`) has been deleted. Per-record-type color pairs are now expressed as `AppColors` tokens and resolved at widget build time.
 - UI components standardize on: pill alpha `0.12`, status pill radius `AppRadiusTokens.sm`, panel radius `AppRadiusTokens.lg`, section header fontWeight `w600`, icon badge size `48px`, text action icon `16px`.
 - Spacing uses the retuned `AppSpacingTokens` bridge (xxs=4, xs=6, sm=10, md=14, lg=20, xl=28, x2l=36, x3l=44, x4l=56, x5l=72, x6l=96, section=128); hardcoded pixel values are being replaced with token references project-wide even while those token values themselves are being pulled toward Forui.
 - Breakpoints reference `AppBreakpoints` constants; no hardcoded `600`.

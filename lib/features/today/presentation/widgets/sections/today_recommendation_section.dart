@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
@@ -98,35 +99,35 @@ class TodayRecommendationSection extends ConsumerWidget {
     return switch (category) {
       'medicine' => TodayRecommendationItem(
         icon: FLucideIcons.shieldPlus,
-        color: context.theme.colors.primary,
+        color: AppColors.primary,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationMedicineSafetyBody,
         action: l10n.todayLearnMoreAction,
       ),
       'sleep' => TodayRecommendationItem(
         icon: FLucideIcons.moonStar,
-        color: context.theme.colors.primary,
+        color: AppColors.primary,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       'record' => TodayRecommendationItem(
         icon: FLucideIcons.filePenLine,
-        color: context.theme.colors.primary,
+        color: AppColors.primary,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
         action: l10n.todayCompleteAction,
       ),
       'report' => TodayRecommendationItem(
         icon: FLucideIcons.chartColumnBig,
-        color: context.theme.colors.primary,
+        color: AppColors.primary,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationSleepBody,
         action: l10n.todayLearnMoreAction,
       ),
       _ => TodayRecommendationItem(
         icon: FLucideIcons.lightbulb,
-        color: context.theme.colors.primary,
+        color: AppColors.primary,
         title: recommendation.text,
         subtitle: l10n.todayRecommendationWaterBody,
         action: l10n.todayLearnMoreAction,
@@ -162,7 +163,7 @@ class _RecommendationRow extends StatelessWidget {
           children: [
             TodayGlyphTile(
               icon: item.icon,
-              color: item.color,
+              color: item.color.resolve(colors),
               size: AppSpacingTokens.level7 + AppSpacingTokens.level1,
               radius: AppRadiusTokens.level3,
               gradient: false,
@@ -196,7 +197,7 @@ class _RecommendationRow extends StatelessWidget {
             Text(
               item.action,
               style: textTheme.labelMedium?.copyWith(
-                color: item.color,
+                color: item.color.resolve(colors),
                 fontWeight: FontWeight.w800,
               ),
             ),

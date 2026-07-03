@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 
+/// A thin wrapper around Forui's [FBadge.raw] that resolves a semantic
+/// [AppColors] token against the current theme.
 class AppStatusPill extends StatelessWidget {
   const AppStatusPill({
     super.key,
@@ -18,7 +21,7 @@ class AppStatusPill extends StatelessWidget {
   });
 
   final String label;
-  final Color color;
+  final AppColors color;
   final IconData? icon;
   final double backgroundAlpha;
   final double radius;
@@ -28,14 +31,16 @@ class AppStatusPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colors = context.theme.colors;
+    final resolvedColor = color.resolve(colors);
     final foreground = backgroundAlpha > 0.5
-        ? context.theme.colors.primaryForeground
-        : color;
+        ? colors.primaryForeground
+        : resolvedColor;
 
     return FBadge.raw(
       builder: (context, style) => DecoratedBox(
         decoration: ShapeDecoration(
-          color: color.withValues(alpha: backgroundAlpha),
+          color: resolvedColor.withValues(alpha: backgroundAlpha),
           shape: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(radius),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
@@ -57,7 +58,7 @@ class ReportMetricsGrid extends StatelessWidget {
         ReportMetric(
           kind: ReportDataKind.general,
           icon: FLucideIcons.heartPulse,
-          color: context.theme.colors.primary,
+          color: AppColors.primary,
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
           status: dashboard.score.status,
@@ -193,7 +194,7 @@ class _MetricCard extends StatelessWidget {
                   AppSkeletonText(
                     text: metric.value,
                     style: textTheme.headlineMedium?.copyWith(
-                      color: metric.color,
+                      color: metric.color.resolve(colors),
                       fontWeight: FontWeight.w800,
                     ),
                     widthFactor: 0.32,
@@ -266,15 +267,17 @@ class _MetricBadge extends StatelessWidget {
   const _MetricBadge({required this.label, required this.color});
 
   final String label;
-  final Color color;
+  final AppColors color;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
+    final resolvedColor = color.resolve(colors);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: resolvedColor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
@@ -285,7 +288,7 @@ class _MetricBadge extends StatelessWidget {
         child: Text(
           label,
           style: textTheme.labelSmall?.copyWith(
-            color: color,
+            color: resolvedColor,
             fontWeight: FontWeight.w800,
           ),
           maxLines: 1,

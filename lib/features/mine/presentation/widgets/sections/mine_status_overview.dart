@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
@@ -137,20 +138,22 @@ class _SoftIcon extends StatelessWidget {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final double size;
   final double iconSize;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final resolvedColor = color.resolve(colors);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: resolvedColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: size,
-        child: Icon(icon, color: color, size: iconSize),
+        child: Icon(icon, color: resolvedColor, size: iconSize),
       ),
     );
   }
@@ -160,14 +163,16 @@ class _TinyBadge extends StatelessWidget {
   const _TinyBadge({required this.label, required this.color});
 
   final String label;
-  final Color color;
+  final AppColors color;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
+    final resolvedColor = color.resolve(colors);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: resolvedColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
@@ -178,7 +183,7 @@ class _TinyBadge extends StatelessWidget {
         child: Text(
           label,
           style: textTheme.labelSmall?.copyWith(
-            color: color,
+            color: resolvedColor,
             fontWeight: FontWeight.w800,
           ),
           maxLines: 1,

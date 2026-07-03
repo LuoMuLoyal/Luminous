@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
@@ -38,7 +39,7 @@ class RecordMobileFilter extends StatelessWidget {
             _FilterChip(
               chipKey: const Key('record-filter-all'),
               label: l10n.recordFilterAllAction,
-              color: context.theme.colors.primary,
+              color: AppColors.primary,
               selected: allSelected,
               locked: false,
               onTap: onFilterSelected == null
@@ -75,7 +76,7 @@ class _FilterChip extends StatelessWidget {
 
   final Key chipKey;
   final String label;
-  final Color color;
+  final AppColors color;
   final bool selected;
   final bool locked;
   final VoidCallback? onTap;
@@ -84,7 +85,8 @@ class _FilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
-    final foreground = selected ? color : colors.foreground;
+    final resolvedColor = color.resolve(colors);
+    final foreground = selected ? resolvedColor : colors.foreground;
 
     return FTappable(
       key: chipKey,
@@ -92,8 +94,10 @@ class _FilterChip extends StatelessWidget {
       onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: selected ? color.withValues(alpha: 0.1) : colors.background,
-          border: Border.all(color: selected ? color : colors.border),
+          color: selected
+              ? resolvedColor.withValues(alpha: 0.1)
+              : colors.background,
+          border: Border.all(color: selected ? resolvedColor : colors.border),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(

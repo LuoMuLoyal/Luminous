@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -205,7 +206,11 @@ class _AiSummaryRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.level5),
+          Icon(
+            item.icon,
+            color: item.color.resolve(colors),
+            size: AppSpacingTokens.level5,
+          ),
           const SizedBox(width: AppSpacingTokens.level4),
           Expanded(
             child: Text(

@@ -37,8 +37,9 @@ class _DrugBoxSection extends StatelessWidget {
               compact: true,
               leading: AppIconBadge(
                 icon: FLucideIcons.briefcaseMedical,
-                color: FThemes.neutral.light.touch.colors.primary,
-                backgroundColor: FThemes.neutral.light.touch.colors.primary
+                color: AppColors.primary,
+                backgroundColor: AppColors.primary
+                    .resolve(colors)
                     .withValues(alpha: 0.12),
                 size: AppSpacingTokens.level7,
                 iconSize: AppSpacingTokens.level5,
@@ -207,7 +208,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
             Expanded(
               child: _DrugBoxMetricItem(
                 icon: Icons.schedule_rounded,
-                color: FThemes.neutral.light.touch.colors.primary,
+                color: AppColors.primary,
                 label: l10n.medicineNextDoseReminderTitle,
                 value: value,
                 detail: detail,
@@ -217,7 +218,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
             Expanded(
               child: _DrugBoxMetricItem(
                 icon: FLucideIcons.badgeCheck,
-                color: FThemes.neutral.light.touch.colors.primary,
+                color: AppColors.primary,
                 label: l10n.medicineHeroMetricAdherenceLabel,
                 value: workspace.hero.metricAdherence,
                 detail: l10n.medicineDoseDueStatus,
@@ -233,7 +234,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 key: const Key('medicine-next-dose-action-taken'),
                 label: l10n.medicineDoseActionTaken,
                 icon: FLucideIcons.check,
-                color: FThemes.neutral.light.touch.colors.primary,
+                color: AppColors.primary,
                 filled: true,
                 onTap: () =>
                     onMarkDose!(currentMedicineId, MedicineDoseAction.taken),
@@ -243,7 +244,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
                 icon: FLucideIcons.ban,
-                color: FThemes.neutral.light.touch.colors.primary,
+                color: AppColors.primary,
                 onTap: () =>
                     onMarkDose!(currentMedicineId, MedicineDoseAction.skipped),
               ),
@@ -265,7 +266,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String label;
   final String value;
   final String detail;
@@ -281,7 +282,11 @@ class _DrugBoxMetricItem extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: color.withValues(alpha: 0.78), size: 16),
+              Icon(
+                icon,
+                color: color.resolve(colors).withValues(alpha: 0.78),
+                size: 16,
+              ),
               const SizedBox(width: AppSpacingTokens.level1),
               Expanded(
                 child: Text(
@@ -299,7 +304,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
           AppSkeletonText(
             text: value,
             style: textTheme.titleMedium?.copyWith(
-              color: color.withValues(alpha: 0.92),
+              color: color.resolve(colors).withValues(alpha: 0.92),
               fontWeight: FontWeight.w800,
             ),
             maxLines: 1,
@@ -350,8 +355,9 @@ class _DrugBoxEmpty extends StatelessWidget {
         children: [
           AppIconBadge(
             icon: FLucideIcons.pillBottle,
-            color: FThemes.neutral.light.touch.colors.primary,
-            backgroundColor: FThemes.neutral.light.touch.colors.primary
+            color: AppColors.primary,
+            backgroundColor: AppColors.primary
+                .resolve(colors)
                 .withValues(alpha: 0.12),
             shape: BoxShape.circle,
             size: AppSpacingTokens.level8,

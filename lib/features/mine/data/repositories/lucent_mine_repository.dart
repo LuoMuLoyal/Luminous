@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -173,7 +173,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-final _green = FThemes.neutral.light.touch.colors.primary;
-final _pink = FThemes.neutral.light.touch.colors.primary;
-final _red = FThemes.neutral.light.touch.colors.primary;
-final _blue = FThemes.neutral.light.touch.colors.primary;
+final _green = AppColors.primary;
+final _pink = AppColors.primary;
+final _red = AppColors.primary;
+final _blue = AppColors.primary;

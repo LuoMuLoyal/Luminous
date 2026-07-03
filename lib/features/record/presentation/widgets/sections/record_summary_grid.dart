@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
@@ -93,7 +94,7 @@ class _SummaryTile extends StatelessWidget {
                   AppIconBadge(
                     icon: item.icon,
                     color: item.accent,
-                    backgroundColor: item.softColor,
+                    backgroundColor: item.softColor.resolve(colors),
                     size: AppResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.072,
@@ -152,7 +153,9 @@ class _SummaryTile extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.level1),
                 Text(
                   detail,
-                  style: textTheme.labelSmall?.copyWith(color: item.accent),
+                  style: textTheme.labelSmall?.copyWith(
+                    color: item.accent.resolve(colors),
+                  ),
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

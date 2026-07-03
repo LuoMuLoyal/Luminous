@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogRemoteDataSource, DoseLogStatus;
@@ -82,12 +82,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         _ => MedicineCopyKey.doseStatusPending,
       };
       final stateColor = switch (doseStatus) {
-        DoseLogStatus.taken => FThemes.neutral.light.touch.colors.primary,
-        DoseLogStatus.skipped => FThemes.neutral.light.touch.colors.primary,
-        _ => FThemes.neutral.light.touch.colors.primary,
+        DoseLogStatus.taken => AppColors.primary,
+        DoseLogStatus.skipped => AppColors.primary,
+        _ => AppColors.primary,
       };
       return MedicinePlanItem(
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -150,7 +150,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: Icons.search_rounded,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ...deferredScanQuickActions,
@@ -164,19 +164,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: Icons.photo_camera_outlined,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.qr_code_scanner_rounded,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.receipt_long_outlined,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
     ),
   ];
 

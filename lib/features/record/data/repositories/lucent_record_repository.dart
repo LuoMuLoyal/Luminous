@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:collection/collection.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -74,8 +74,8 @@ class LucentRecordRepository implements RecordRepository {
     final kind = record.kind;
     final timeStr = formatRecordTimeLabel(record.occurredTime);
 
-    final accent = FThemes.neutral.light.touch.colors.primary;
-    final soft = FThemes.neutral.light.touch.colors.secondary;
+    final accent = AppColors.primary;
+    final soft = AppColors.secondary;
 
     final icon = switch (kind) {
       DailyRecordKind.water => Icons.water_drop_rounded,
@@ -220,9 +220,7 @@ class LucentRecordRepository implements RecordRepository {
         day: day.day,
         weekdayKey: _weekdayKey(day.weekday),
         selected: _isSameDay(day, today),
-        markers: day.day == today.day
-            ? [FThemes.neutral.light.touch.colors.primary]
-            : [],
+        markers: day.day == today.day ? [AppColors.primary] : [],
       );
     });
   }
@@ -248,9 +246,7 @@ class LucentRecordRepository implements RecordRepository {
           day: d,
           inMonth: true,
           selected: d == today.day,
-          markers: d == today.day
-              ? [FThemes.neutral.light.touch.colors.primary]
-              : [],
+          markers: d == today.day ? [AppColors.primary] : [],
         ),
       );
     }
@@ -279,16 +275,16 @@ class LucentRecordRepository implements RecordRepository {
       icon: Icons.medical_services_outlined,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.medication,
       icon: Icons.medication_rounded,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     // Lightweight mood self-check-in quick action.
     RecordQuickAction(
@@ -296,48 +292,48 @@ class LucentRecordRepository implements RecordRepository {
       icon: Icons.sentiment_satisfied_rounded,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.meal,
       icon: Icons.restaurant_rounded,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
       icon: Icons.water_drop_rounded,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: Icons.favorite_rounded,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.dark_mode_rounded,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
       icon: Icons.notes_rounded,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: FThemes.neutral.light.touch.colors.primary,
-      softColor: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
+      softColor: AppColors.primary,
     ),
   ];
 
@@ -354,56 +350,56 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
       icon: Icons.medication_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: Icons.medical_services_outlined,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
       icon: Icons.sentiment_satisfied_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: Icons.water_drop_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: Icons.restaurant_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: Icons.favorite_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: Icons.dark_mode_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: Icons.notes_rounded,
-      accent: FThemes.neutral.light.touch.colors.primary,
+      accent: AppColors.primary,
       selected: true,
     ),
   ];
@@ -432,7 +428,7 @@ class LucentRecordRepository implements RecordRepository {
       kind: RecordTrendKind.bloodSugar,
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       points: [5.1, 5.8, 5.4, 6.2, 5.6, 6.5, 5.9],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
     ),

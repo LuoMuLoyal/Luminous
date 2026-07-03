@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/design/app_responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -211,7 +212,7 @@ class _TrendPlaceholder extends StatelessWidget {
 class _LegendDot extends StatelessWidget {
   const _LegendDot({required this.color, required this.label});
 
-  final Color color;
+  final AppColors color;
   final String label;
 
   @override
@@ -223,7 +224,10 @@ class _LegendDot extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         DecoratedBox(
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          decoration: BoxDecoration(
+            color: color.resolve(colors),
+            shape: BoxShape.circle,
+          ),
           child: const SizedBox.square(dimension: 8),
         ),
         const SizedBox(width: AppSpacingTokens.level2),
@@ -240,15 +244,16 @@ class _TrendValuePill extends StatelessWidget {
   const _TrendValuePill({required this.label, required this.color});
 
   final String label;
-  final Color color;
+  final AppColors color;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.92),
+        color: color.resolve(colors).withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(

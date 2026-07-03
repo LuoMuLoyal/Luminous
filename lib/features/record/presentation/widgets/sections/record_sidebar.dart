@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_text_action.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -194,8 +195,8 @@ class _MonthDayCell extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final color = day.inMonth ? colors.foreground : colors.mutedForeground;
     final markerColors = day.hasAlert
-        ? [...day.markers, context.theme.colors.primary]
-        : day.markers;
+        ? [...day.markers.resolveAll(colors), colors.primary]
+        : day.markers.resolveAll(colors);
 
     return FTappable(
       onPress: onTap == null
@@ -283,7 +284,7 @@ class _FilterRow extends StatelessWidget {
               size: 18,
             ),
             const SizedBox(width: AppSpacingTokens.level3),
-            Icon(filter.icon, color: filter.accent, size: 18),
+            Icon(filter.icon, color: filter.accent.resolve(colors), size: 18),
             const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Text(

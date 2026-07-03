@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_image_placeholder.dart';
@@ -107,7 +108,7 @@ class _TimelineEntryRow extends StatelessWidget {
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: entry.accent,
+                  color: entry.accent.resolve(colors),
                   shape: BoxShape.circle,
                   border: Border.all(color: colors.background, width: 3),
                 ),
@@ -195,7 +196,7 @@ class _TimelineCard extends StatelessWidget {
               AppIconBadge(
                 icon: entry.icon,
                 color: entry.accent,
-                backgroundColor: entry.softColor,
+                backgroundColor: entry.softColor.resolve(colors),
                 size: 38,
                 iconSize: 19,
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'report_dashboard.freezed.dart';
@@ -76,7 +77,7 @@ abstract class ReportMetric with _$ReportMetric {
   const factory ReportMetric({
     required ReportDataKind kind,
     required IconData icon,
-    required Color color,
+    required AppColors color,
     required String value,
     required String unit,
     required ReportStatus status,
@@ -92,7 +93,7 @@ enum ReportMetricDirection { up, down, flat }
 abstract class ReportTrendSeries with _$ReportTrendSeries {
   const factory ReportTrendSeries({
     required ReportDataKind kind,
-    required Color color,
+    required AppColors color,
     required String unit,
     required List<double> values,
     required String currentValue,
@@ -104,7 +105,7 @@ abstract class ReportFinding with _$ReportFinding {
   const factory ReportFinding({
     required ReportInsightKind kind,
     required IconData icon,
-    required Color color,
+    required AppColors color,
     required String title,
     required String body,
   }) = _ReportFinding;
@@ -115,7 +116,7 @@ abstract class ReportExportAction with _$ReportExportAction {
   const factory ReportExportAction({
     required ReportExportKind kind,
     required IconData icon,
-    required Color color,
+    required AppColors color,
   }) = _ReportExportAction;
 }
 
@@ -124,7 +125,7 @@ abstract class ReportPatternCard with _$ReportPatternCard {
   const factory ReportPatternCard({
     required ReportInsightKind kind,
     required IconData icon,
-    required Color color,
+    required AppColors color,
     required String title,
     required ReportStatus status,
     required String body,

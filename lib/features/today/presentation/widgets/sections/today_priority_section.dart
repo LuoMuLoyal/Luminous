@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -85,7 +86,7 @@ class _PriorityRow extends ConsumerWidget {
           children: [
             TodayGlyphTile(
               icon: item.icon,
-              color: item.color,
+              color: item.color.resolve(colors),
               size: AppSpacingTokens.level7,
               radius: AppRadiusTokens.level3,
               gradient: false,
@@ -116,7 +117,7 @@ class _PriorityRow extends ConsumerWidget {
                     const SizedBox(height: AppSpacingTokens.level2),
                     TodayLinearProgress(
                       progress: item.progress!,
-                      color: item.color,
+                      color: item.color.resolve(colors),
                       height: 5,
                     ),
                   ],
@@ -161,13 +162,14 @@ class _PriorityActionPill extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
       onPress: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: item.color,
+          color: item.color.resolve(colors),
           borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
         ),
         child: Padding(

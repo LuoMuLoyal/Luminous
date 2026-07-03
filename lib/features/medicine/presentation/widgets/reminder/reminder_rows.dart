@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
@@ -269,7 +270,7 @@ class UnavailableMethodRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          AppStatusPill(label: status, color: colors.mutedForeground),
+          AppStatusPill(label: status, color: AppColors.muted),
         ],
       ),
     );
@@ -365,7 +366,7 @@ class SelectedMedicineRow extends StatelessWidget {
         children: [
           AppIconBadge(
             icon: FLucideIcons.pill,
-            color: context.theme.colors.primary,
+            color: AppColors.primary,
             shape: BoxShape.circle,
           ),
           const SizedBox(width: AppSpacingTokens.level4),

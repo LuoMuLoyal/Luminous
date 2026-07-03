@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
@@ -108,6 +109,7 @@ class _NewEntryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = recordCopy(l10n, action.titleKey);
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return Material(
@@ -116,7 +118,7 @@ class _NewEntryChip extends StatelessWidget {
         onPress: onTap == null ? null : () => onTap!(action),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: action.softColor.withValues(alpha: 0.68),
+            color: action.softColor.resolve(colors).withValues(alpha: 0.68),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -126,12 +128,16 @@ class _NewEntryChip extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(action.icon, color: action.accent, size: 16),
+                Icon(
+                  action.icon,
+                  color: action.accent.resolve(colors),
+                  size: 16,
+                ),
                 const SizedBox(width: AppSpacingTokens.level2),
                 Text(
                   label,
                   style: textTheme.labelSmall?.copyWith(
-                    color: action.accent,
+                    color: action.accent.resolve(colors),
                     fontWeight: FontWeight.w600,
                   ),
                 ),

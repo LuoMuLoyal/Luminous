@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
@@ -709,8 +710,8 @@ class E2eRecordRepository implements RecordRepository {
           time: '09:45',
           type: RecordEntryType.vitals,
           icon: Icons.favorite_rounded,
-          accent: Color(0xFFFF4D57),
-          softColor: Color(0xFFFFEEEE),
+          accent: AppColors.destructive,
+          softColor: AppColors.secondary,
           titleKey: RecordCopyKey.typeVitals,
           rawTitle: 'E2E blood pressure',
           value: '118/76 mmHg',
@@ -821,7 +822,7 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       plan: const MedicinePlanSurface(
         items: [
           MedicinePlanItem(
-            color: Color(0xFF00B8D9),
+            color: AppColors.primary,
             nameKey: MedicineCopyKey.genericName,
             dosageKey: MedicineCopyKey.genericDosage,
             scheduleKey: MedicineCopyKey.genericSchedule,
@@ -833,7 +834,7 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               ),
             ],
             stateKey: MedicineCopyKey.statusStable,
-            stateColor: Color(0xFF00B8D9),
+            stateColor: AppColors.primary,
             rawName: 'E2E medicine',
             rawDosage: '1 tablet',
             rawSchedule: 'morning',

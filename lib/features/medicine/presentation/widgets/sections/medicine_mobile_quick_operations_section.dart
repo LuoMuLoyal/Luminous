@@ -15,21 +15,21 @@ class _QuickOperationSection extends StatelessWidget {
     final operations = [
       _QuickOperation(
         icon: FLucideIcons.plus,
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
         onTap: () => context.push('/medicine/search'),
       ),
       _QuickOperation(
         icon: FLucideIcons.clipboardCheck,
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
         onTap: () => context.push('/record/create'),
       ),
       _QuickOperation(
         icon: FLucideIcons.bell,
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
@@ -37,7 +37,7 @@ class _QuickOperationSection extends StatelessWidget {
       ),
       _QuickOperation(
         icon: FLucideIcons.shieldAlert,
-        color: FThemes.neutral.light.touch.colors.primary,
+        color: AppColors.primary,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
         onTap: () => pushAuthRequiredRoute(context, '/medicine/risk-check'),
@@ -95,7 +95,9 @@ class _QuickOperationRow extends StatelessWidget {
             AppIconBadge(
               icon: operation.icon,
               color: operation.color,
-              backgroundColor: operation.color.withValues(alpha: 0.08),
+              backgroundColor: operation.color
+                  .resolve(colors)
+                  .withValues(alpha: 0.08),
               shape: BoxShape.circle,
               size: AppSpacingTokens.level8,
               iconSize: AppSpacingTokens.level5,

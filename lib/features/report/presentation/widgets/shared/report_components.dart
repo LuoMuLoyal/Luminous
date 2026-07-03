@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class ReportMetricTrack extends StatelessWidget {
@@ -11,11 +12,13 @@ class ReportMetricTrack extends StatelessWidget {
   });
 
   final List<double> values;
-  final Color color;
+  final AppColors color;
   final double height;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final resolvedColor = color.resolve(colors);
     final visibleValues = values.isEmpty ? const <double>[0, 0] : values;
     final minValue = visibleValues.reduce((a, b) => a < b ? a : b);
     final maxValue = visibleValues.reduce((a, b) => a > b ? a : b);
@@ -37,7 +40,7 @@ class ReportMetricTrack extends StatelessWidget {
                         ((visibleValues[index] - minValue) / span * 0.62),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: color.withValues(alpha: 0.18),
+                        color: resolvedColor.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(
                           AppRadiusTokens.levelFull,
                         ),

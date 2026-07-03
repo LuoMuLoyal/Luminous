@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
@@ -346,7 +347,7 @@ class _QuickRecordTile extends StatelessWidget {
                   AppIconBadge(
                     icon: action.icon,
                     color: action.accent,
-                    backgroundColor: action.softColor,
+                    backgroundColor: action.softColor.resolve(colors),
                     size: AppSpacingTokens.level6,
                     iconSize: AppSpacingTokens.level4,
                   ),

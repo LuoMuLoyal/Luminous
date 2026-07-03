@@ -70,7 +70,7 @@ class _SafetyAlertRow extends StatelessWidget {
               icon: alert.icon,
               color: alert.color,
               backgroundColor: Color.alphaBlend(
-                alert.softColor.withValues(alpha: 0.18),
+                alert.softColor.resolve(colors).withValues(alpha: 0.18),
                 colors.background,
               ),
               shape: BoxShape.circle,

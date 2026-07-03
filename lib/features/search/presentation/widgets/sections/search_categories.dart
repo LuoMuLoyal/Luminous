@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/search/domain/entities/search_entities.dart';
@@ -52,6 +53,7 @@ class _CategoryItem extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return Material(
@@ -68,12 +70,17 @@ class _CategoryItem extends StatelessWidget {
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: category.softColor.withValues(alpha: 0.74),
+                  color: category.softColor
+                      .resolve(colors)
+                      .withValues(alpha: 0.74),
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacingTokens.level3),
-                  child: Icon(category.icon, color: category.accent),
+                  child: Icon(
+                    category.icon,
+                    color: category.accent.resolve(colors),
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacingTokens.level3),

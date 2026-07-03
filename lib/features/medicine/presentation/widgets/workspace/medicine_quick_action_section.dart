@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
@@ -60,6 +61,7 @@ class _QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
 
     return FTappable(
@@ -85,13 +87,17 @@ class _QuickActionTile extends StatelessWidget {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: action.accent.withValues(alpha: 0.11),
+                color: action.accent.resolve(colors).withValues(alpha: 0.11),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.level5),
                 border: Border.all(
-                  color: action.accent.withValues(alpha: 0.12),
+                  color: action.accent.resolve(colors).withValues(alpha: 0.12),
                 ),
               ),
-              child: Icon(action.icon, color: action.accent, size: 32),
+              child: Icon(
+                action.icon,
+                color: action.accent.resolve(colors),
+                size: 32,
+              ),
             ),
             const SizedBox(height: AppSpacingTokens.level3),
             Text(

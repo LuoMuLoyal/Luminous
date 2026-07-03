@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:forui/forui.dart';
 
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -114,22 +115,12 @@ IconData deliveryStatusIcon(String value) {
   };
 }
 
-Color deliveryStatusColor(String value, Object palette) {
-  final destructive = switch (palette) {
-    FColors colors => colors.destructive,
-    Color color => color,
-    _ => FThemes.neutral.light.touch.colors.primary,
-  };
-  final muted = switch (palette) {
-    FColors colors => colors.mutedForeground,
-    Color color => color,
-    _ => FThemes.neutral.light.touch.colors.primary,
-  };
+AppColors deliveryStatusColor(String value, FColors colors) {
   return switch (value) {
-    'delivered' => FThemes.neutral.light.touch.colors.primary,
-    'failed' => destructive,
-    'scheduled' => FThemes.neutral.light.touch.colors.primary,
-    _ => muted,
+    'delivered' => AppColors.primary,
+    'failed' => AppColors.destructive,
+    'scheduled' => AppColors.primary,
+    _ => AppColors.muted,
   };
 }
 

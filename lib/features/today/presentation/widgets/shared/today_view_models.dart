@@ -1,6 +1,7 @@
 import 'package:forui/forui.dart';
 
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -20,7 +21,7 @@ class TodayOverviewItem {
   final IconData icon;
   final String label;
   final String value;
-  final Color color;
+  final AppColors color;
 }
 
 class TodayViewPriorityItem {
@@ -39,7 +40,7 @@ class TodayViewPriorityItem {
   final Key key;
   final TodayPriorityItemType type;
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String title;
   final String subtitle;
   final String detail;
@@ -57,7 +58,7 @@ class TodayRecommendationItem {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String title;
   final String subtitle;
   final String action;
@@ -71,7 +72,7 @@ class TodayAiSummaryItem {
   });
 
   final IconData icon;
-  final Color color;
+  final AppColors color;
   final String text;
 }
 
@@ -107,7 +108,7 @@ class TodayTodoItem {
   final String subtitle;
   final String source;
   final String action;
-  final Color color;
+  final AppColors color;
   final bool completed;
   final bool statusIsDynamic;
   final bool subtitleIsDynamic;
@@ -166,7 +167,7 @@ List<TodayOverviewItem> buildOverviewItems(
       icon: FLucideIcons.pill,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
     ),
     TodayOverviewItem(
       icon: FLucideIcons.droplets,
@@ -175,13 +176,13 @@ List<TodayOverviewItem> buildOverviewItems(
         dashboard.water.completedCount,
         dashboard.water.targetCount,
       ),
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
     ),
     TodayOverviewItem(
       icon: FLucideIcons.moonStar,
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
     ),
   ];
 }
@@ -204,7 +205,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-medication-card'),
           type: TodayPriorityItemType.medication,
           icon: FLucideIcons.pill,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           title: l10n.todayMedicationCardTitle,
           subtitle: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -219,7 +220,7 @@ List<TodayViewPriorityItem> buildPriorityItems(
           key: const Key('today-water-card'),
           type: TodayPriorityItemType.water,
           icon: FLucideIcons.droplets,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           title: l10n.todayWaterPriorityTitle,
           subtitle: l10n.todayWaterGoalCount(
             item.targetCount ?? dashboard.water.targetCount,
@@ -260,21 +261,21 @@ List<TodayRecommendationItem> buildRecommendationItems(
   return [
     TodayRecommendationItem(
       icon: FLucideIcons.shieldPlus,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       title: l10n.todayRecommendationMedicineSafetyTitle,
       subtitle: l10n.todayRecommendationMedicineSafetyBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: FLucideIcons.moonStar,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       title: l10n.todayRecommendationSleepTitle,
       subtitle: l10n.todayRecommendationSleepBody,
       action: l10n.todayLearnMoreAction,
     ),
     TodayRecommendationItem(
       icon: FLucideIcons.droplets,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       title: l10n.todayRecommendationWaterTitle,
       subtitle: l10n.todayRecommendationWaterBody,
       action: dashboard.water.progress >= 1
@@ -294,7 +295,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
   return [
     TodayAiSummaryItem(
       icon: Icons.medication_liquid_outlined,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
               dashboard.medication.pendingCount,
@@ -303,16 +304,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
     ),
     TodayAiSummaryItem(
       icon: Icons.local_drink_outlined,
-      color: waterRemaining == 0
-          ? FThemes.neutral.light.touch.colors.primary
-          : FThemes.neutral.light.touch.colors.primary,
+      color: waterRemaining == 0 ? AppColors.primary : AppColors.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
       icon: Icons.bedtime_outlined,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
   ];
@@ -330,7 +329,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.badgeAlert,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.todayAiSummarySignedOutHint,
         ),
       ],
@@ -343,7 +342,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.brain,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.todayAiSummaryDisabledHint,
         ),
       ],
@@ -365,7 +364,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.badgeAlert,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.todayAiSummaryErrorHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -380,7 +379,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.refreshCw,
-          color: FThemes.neutral.light.touch.colors.primary,
+          color: AppColors.primary,
           text: l10n.todayAiSummaryGeneratingHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -404,14 +403,10 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   };
 
   final color = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication =>
-      FThemes.neutral.light.touch.colors.primary,
-    TodayAiAnalysisBulletKind.hydration =>
-      FThemes.neutral.light.touch.colors.primary,
-    TodayAiAnalysisBulletKind.sleep =>
-      FThemes.neutral.light.touch.colors.primary,
-    TodayAiAnalysisBulletKind.general =>
-      FThemes.neutral.light.touch.colors.primary,
+    TodayAiAnalysisBulletKind.medication => AppColors.primary,
+    TodayAiAnalysisBulletKind.hydration => AppColors.primary,
+    TodayAiAnalysisBulletKind.sleep => AppColors.primary,
+    TodayAiAnalysisBulletKind.general => AppColors.primary,
   };
 
   return TodayAiSummaryItem(icon: icon, color: color, text: bullet.text);
@@ -438,7 +433,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.medication.pendingCount == 0
           ? l10n.todayStatusCompleted
           : l10n.todayMedicationTakeAction,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       completed: dashboard.medication.pendingCount == 0,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -451,7 +446,7 @@ List<TodayTodoItem> buildTodoItems(
       action: dashboard.water.progress >= 1
           ? l10n.todayStatusCompleted
           : l10n.todayDrinkWaterAction,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       completed: dashboard.water.progress >= 1,
       statusIsDynamic: true,
       subtitleIsDynamic: true,
@@ -462,7 +457,7 @@ List<TodayTodoItem> buildTodoItems(
       subtitle: l10n.todayTodoCustomSubtitle,
       source: l10n.todayTodoSourceUser,
       action: l10n.todayTodoAddAction,
-      color: FThemes.neutral.light.touch.colors.primary,
+      color: AppColors.primary,
       completed: false,
       statusIsDynamic: false,
       subtitleIsDynamic: false,

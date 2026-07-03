@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -111,7 +112,11 @@ class _OverviewMetric extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(item.icon, color: item.color, size: AppSpacingTokens.level4),
+          Icon(
+            item.icon,
+            color: item.color.resolve(colors),
+            size: AppSpacingTokens.level4,
+          ),
           const SizedBox(width: AppSpacingTokens.level2),
           Flexible(
             child: Column(

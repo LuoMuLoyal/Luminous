@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -19,12 +20,12 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         MedicineSearchQuickAction(
           type: MedicineSearchActionType.barcode,
           icon: FLucideIcons.scanLine,
-          accent: FThemes.neutral.light.touch.colors.primary,
+          accent: AppColors.primary,
         ),
         MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
           icon: FLucideIcons.camera,
-          accent: FThemes.neutral.light.touch.colors.primary,
+          accent: AppColors.primary,
         ),
       ]
     : <MedicineSearchQuickAction>[];

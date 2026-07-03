@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 
@@ -28,7 +28,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
         icon: Icons.search_rounded,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: FThemes.neutral.light.touch.colors.primary,
+        accent: AppColors.primary,
       ),
     ],
     plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
@@ -53,7 +53,7 @@ abstract class MedicineQuickAction with _$MedicineQuickAction {
     required IconData icon,
     required MedicineCopyKey titleKey,
     required MedicineCopyKey subtitleKey,
-    required Color accent,
+    required AppColors accent,
   }) = _MedicineQuickAction;
 }
 
@@ -66,13 +66,13 @@ abstract class MedicinePlanSurface with _$MedicinePlanSurface {
 @freezed
 abstract class MedicinePlanItem with _$MedicinePlanItem {
   const factory MedicinePlanItem({
-    required Color color,
+    required AppColors color,
     required MedicineCopyKey nameKey,
     required MedicineCopyKey dosageKey,
     required MedicineCopyKey scheduleKey,
     required List<MedicineDoseSlot> slots,
     required MedicineCopyKey stateKey,
-    required Color stateColor,
+    required AppColors stateColor,
     MedicineDoseStatus? todayStatus,
 
     /// When non-null, the view should use these raw strings instead of
@@ -106,8 +106,8 @@ abstract class MedicineAlert with _$MedicineAlert {
     MedicineCopyKey? bodyKey,
     MedicineCopyKey? detailKey,
     MedicineCopyKey? actionKey,
-    required Color color,
-    required Color softColor,
+    required AppColors color,
+    required AppColors softColor,
     String? rawTitle,
     String? rawBody,
     String? rawDetail,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
@@ -34,14 +35,14 @@ class MedicineRiskFindingTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: medicineRiskSeveritySoftColor(
                 finding.severity,
-              ).withValues(alpha: 0.56),
+              ).resolve(colors).withValues(alpha: 0.56),
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
               dimension: AppSpacingTokens.level9,
               child: Icon(
                 medicineRiskFindingIcon(finding),
-                color: color,
+                color: color.resolve(colors),
                 size: AppSpacingTokens.level5,
               ),
             ),
@@ -88,7 +89,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.level1),
                 AppStatusPill(
                   label: contextLabel,
-                  color: colors.mutedForeground,
+                  color: AppColors.muted,
                   radius: AppRadiusTokens.levelFull,
                   backgroundAlpha: 0.08,
                 ),

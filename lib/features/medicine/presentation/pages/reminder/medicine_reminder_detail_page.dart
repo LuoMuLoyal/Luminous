@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/core/widgets/common/app_icon_badge.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -168,7 +169,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               children: [
                 AppIconBadge(
                   icon: FLucideIcons.pillBottle,
-                  color: context.theme.colors.primary,
+                  color: AppColors.primary,
                   backgroundColor: context.theme.colors.primary,
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.level9,
@@ -204,9 +205,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   label: isActive
                       ? l10n.medicineReminderEnabledStatus
                       : l10n.medicineReminderDisabledStatus,
-                  color: isActive
-                      ? context.theme.colors.primary
-                      : colors.mutedForeground,
+                  color: isActive ? AppColors.primary : AppColors.muted,
                 ),
               ],
             ),

@@ -16,7 +16,7 @@ class _ReferenceNotice extends StatelessWidget {
           children: [
             Icon(
               FLucideIcons.triangleAlert,
-              color: FThemes.neutral.light.touch.colors.primary,
+              color: AppColors.primary.resolve(colors),
               size: AppSpacingTokens.level6,
             ),
             const SizedBox(width: AppSpacingTokens.level3),
@@ -27,7 +27,7 @@ class _ReferenceNotice extends StatelessWidget {
                   Text(
                     l10n.medicineReferenceNoticeTitle,
                     style: textTheme.titleSmall?.copyWith(
-                      color: FThemes.neutral.light.touch.colors.primary,
+                      color: AppColors.primary.resolve(colors),
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -43,7 +43,7 @@ class _ReferenceNotice extends StatelessWidget {
             ),
             Icon(
               FLucideIcons.chevronRight,
-              color: FThemes.neutral.light.touch.colors.primary,
+              color: AppColors.primary.resolve(colors),
               size: AppSpacingTokens.level5,
             ),
           ],
@@ -60,6 +60,7 @@ class _SafetyTipsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.theme.colors;
     final tipsAsync = ref.watch(medicineSafetyTipListProvider);
 
     return Column(
@@ -70,14 +71,14 @@ class _SafetyTipsSection extends ConsumerWidget {
           title: l10n.medicineSafetyTipsTitle,
           leading: Icon(
             FLucideIcons.lightbulb,
-            color: FThemes.neutral.light.touch.colors.primary,
+            color: AppColors.primary.resolve(colors),
             size: AppSpacingTokens.level5,
           ),
           compact: true,
           trailing: AppTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: FLucideIcons.refreshCw,
-            color: FThemes.neutral.light.touch.colors.primary,
+            color: AppColors.primary,
             onTap: tipsAsync.isLoading
                 ? () {}
                 : () => ref
@@ -213,7 +214,7 @@ class _SafetyTipRow extends StatelessWidget {
           AppIconBadge(
             icon: tip.icon,
             color: tip.color,
-            backgroundColor: tip.color.withValues(alpha: 0.08),
+            backgroundColor: tip.color.resolve(colors).withValues(alpha: 0.08),
             size: AppSpacingTokens.level8,
             iconSize: AppSpacingTokens.level5,
           ),
