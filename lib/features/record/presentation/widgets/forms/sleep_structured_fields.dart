@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -94,7 +95,7 @@ class SleepStructuredFields extends StatelessWidget {
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
             style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: context.theme.colors.mutedForeground,
               fontSize: 13,
             ),
           ),

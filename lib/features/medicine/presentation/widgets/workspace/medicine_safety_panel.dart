@@ -119,9 +119,11 @@ class _PromisePanel extends StatelessWidget {
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Color(0xFFCCFBF1),
+          color: context.theme.colors.primary,
           borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: Color(0xFF0F766E).withValues(alpha: 0.2)),
+          border: Border.all(
+            color: context.theme.colors.primary.withValues(alpha: 0.2),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacingTokens.level5),
@@ -131,7 +133,7 @@ class _PromisePanel extends StatelessWidget {
               Text(
                 l10n.medicinePromiseTitle,
                 style: textTheme.titleSmall?.copyWith(
-                  color: Color(0xFF0F766E),
+                  color: context.theme.colors.primary,
                   fontWeight: FontWeight.w700,
                 ),
               ),

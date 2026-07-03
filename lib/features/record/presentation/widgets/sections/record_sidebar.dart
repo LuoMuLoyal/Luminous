@@ -194,7 +194,7 @@ class _MonthDayCell extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final color = day.inMonth ? colors.foreground : colors.mutedForeground;
     final markerColors = day.hasAlert
-        ? [...day.markers, const Color(0xFFFF4D57)]
+        ? [...day.markers, context.theme.colors.primary]
         : day.markers;
 
     return FTappable(

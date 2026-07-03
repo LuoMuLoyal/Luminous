@@ -118,8 +118,12 @@ class _SourceBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final isCn = source == MedicineSearchSource.cn;
-    final color = isCn ? const Color(0xFF0E9F6E) : Color(0xFF166534);
-    final background = isCn ? const Color(0xFFE7F8EF) : Color(0xFFDCFCE7);
+    final color = isCn
+        ? context.theme.colors.primary
+        : context.theme.colors.primary;
+    final background = isCn
+        ? context.theme.colors.primary
+        : context.theme.colors.primary;
 
     return DecoratedBox(
       decoration: BoxDecoration(

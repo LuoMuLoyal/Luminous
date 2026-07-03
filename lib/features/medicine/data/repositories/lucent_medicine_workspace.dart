@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogRemoteDataSource, DoseLogStatus;
@@ -81,12 +82,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         _ => MedicineCopyKey.doseStatusPending,
       };
       final stateColor = switch (doseStatus) {
-        DoseLogStatus.taken => Color(0xFF16A34A),
-        DoseLogStatus.skipped => Color(0xFFB45309),
-        _ => Color(0xFFF59E0B),
+        DoseLogStatus.taken => FThemes.neutral.light.touch.colors.primary,
+        DoseLogStatus.skipped => FThemes.neutral.light.touch.colors.primary,
+        _ => FThemes.neutral.light.touch.colors.primary,
       };
       return MedicinePlanItem(
-        color: Color(0xFF16A34A),
+        color: FThemes.neutral.light.touch.colors.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -145,11 +146,11 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   }
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
-    const MedicineQuickAction(
+    MedicineQuickAction(
       icon: Icons.search_rounded,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-      accent: Color(0xFF0F766E),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ...deferredScanQuickActions,
@@ -158,24 +159,24 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
   // they are useful later, but do not surface them until the matching camera,
   // recognition, and prescription contract/product job is ready.
-  static const deferredScanQuickActions = <MedicineQuickAction>[
+  static final deferredScanQuickActions = <MedicineQuickAction>[
     MedicineQuickAction(
       icon: Icons.photo_camera_outlined,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: Color(0xFF16A34A),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.qr_code_scanner_rounded,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: Color(0xFF0F766E),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.receipt_long_outlined,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: Color(0xFFB45309),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
   ];
 

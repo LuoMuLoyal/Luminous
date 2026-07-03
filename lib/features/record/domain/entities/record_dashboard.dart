@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'record_dashboard.freezed.dart';
@@ -64,83 +65,83 @@ abstract class RecordDashboard with _$RecordDashboard {
     });
   }
 
-  static const _defaultQuickActions = <RecordQuickAction>[
+  static final _defaultQuickActions = <RecordQuickAction>[
     RecordQuickAction(
       type: RecordEntryType.meal,
       icon: Icons.restaurant_menu_rounded,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: Color(0xFFE67E22),
-      softColor: Color(0x33E67E22),
+      accent: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.secondary,
     ),
     RecordQuickAction(
       type: RecordEntryType.water,
       icon: Icons.local_drink_rounded,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: Color(0xFF2196F3),
-      softColor: Color(0x332196F3),
+      accent: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.secondary,
     ),
     RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: Icons.healing_rounded,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: Color(0xFFE91E63),
-      softColor: Color(0x33E91E63),
+      accent: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.secondary,
     ),
     RecordQuickAction(
       type: RecordEntryType.note,
       icon: Icons.notes_rounded,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: Color(0xFF607D8B),
-      softColor: Color(0x33607D8B),
+      accent: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.secondary,
     ),
     RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: Icons.nightlight_round,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: Color(0xFF7C4DFF),
-      softColor: Color(0x337C4DFF),
+      accent: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.secondary,
     ),
   ];
 
-  static const _defaultFilters = <RecordFilter>[
+  static final _defaultFilters = <RecordFilter>[
     RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: Icons.local_drink_rounded,
-      accent: Color(0xFF2196F3),
+      accent: FThemes.neutral.light.touch.colors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: Icons.restaurant_menu_rounded,
-      accent: Color(0xFFE67E22),
+      accent: FThemes.neutral.light.touch.colors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: Icons.healing_rounded,
-      accent: Color(0xFFE91E63),
+      accent: FThemes.neutral.light.touch.colors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: Icons.nightlight_round,
-      accent: Color(0xFF7C4DFF),
+      accent: FThemes.neutral.light.touch.colors.primary,
       selected: false,
     ),
     RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: Icons.notes_rounded,
-      accent: Color(0xFF607D8B),
+      accent: FThemes.neutral.light.touch.colors.primary,
       selected: false,
     ),
   ];

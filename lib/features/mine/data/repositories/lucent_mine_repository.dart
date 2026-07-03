@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -112,7 +113,7 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
 
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
-    const MineStatusCard(
+    MineStatusCard(
       icon: Icons.warning_rounded,
       accent: _red,
       titleKey: MineCopyKey.alertAllergyTitle,
@@ -128,7 +129,7 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
           ? MineCopyKey.alertMedicineBadge
           : MineCopyKey.archiveNeedsFill,
     ),
-    const MineStatusCard(
+    MineStatusCard(
       icon: Icons.verified_user_rounded,
       accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
@@ -162,7 +163,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
           : MineCopyKey.archiveNeedsFill,
       route: '/mine/allergy/new',
     ),
-    const MineArchiveEntry(
+    MineArchiveEntry(
       icon: Icons.medication_rounded,
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
@@ -172,7 +173,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-const _green = Color(0xFF0F766E);
-const _pink = Color(0xFFE11D48);
-const _red = Color(0xFFDC2626);
-const _blue = Color(0xFF16A34A);
+final _green = FThemes.neutral.light.touch.colors.primary;
+final _pink = FThemes.neutral.light.touch.colors.primary;
+final _red = FThemes.neutral.light.touch.colors.primary;
+final _blue = FThemes.neutral.light.touch.colors.primary;

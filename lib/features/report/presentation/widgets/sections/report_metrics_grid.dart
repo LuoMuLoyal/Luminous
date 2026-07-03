@@ -26,7 +26,7 @@ class ReportMetricsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayMetrics = _buildDisplayMetrics();
+    final displayMetrics = _buildDisplayMetrics(context);
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -47,7 +47,7 @@ class ReportMetricsGrid extends StatelessWidget {
     );
   }
 
-  List<ReportMetric> _buildDisplayMetrics() {
+  List<ReportMetric> _buildDisplayMetrics(BuildContext context) {
     final normalized = List<ReportMetric>.of(metrics);
     final hasGeneral = normalized.any(
       (metric) => metric.kind == ReportDataKind.general,
@@ -57,7 +57,7 @@ class ReportMetricsGrid extends StatelessWidget {
         ReportMetric(
           kind: ReportDataKind.general,
           icon: FLucideIcons.heartPulse,
-          color: Color(0xFF15803D),
+          color: context.theme.colors.primary,
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
           status: dashboard.score.status,
@@ -142,7 +142,7 @@ class _MetricCard extends StatelessWidget {
     };
     final directionColor = switch (metric.direction) {
       ReportMetricDirection.down => colors.destructive,
-      _ => Color(0xFF0F766E),
+      _ => context.theme.colors.primary,
     };
 
     return FTappable(

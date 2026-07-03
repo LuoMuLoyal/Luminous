@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+
 import 'package:luminous/core/widgets/common/app_status_pill.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -35,12 +35,12 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     return switch (currentStatus) {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
-        Color(0xFF16A34A),
+        context.theme.colors.primary,
         FLucideIcons.clock3,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
-        Color(0xFF0F766E),
+        context.theme.colors.primary,
         FLucideIcons.badgeCheck,
       ),
       'analysis_failed' => (
@@ -50,7 +50,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
-        Color(0xFFB45309),
+        context.theme.colors.primary,
         FLucideIcons.badgeHelp,
       ),
     };

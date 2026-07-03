@@ -363,9 +363,9 @@ class SelectedMedicineRow extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacingTokens.level4),
       child: Row(
         children: [
-          const AppIconBadge(
+          AppIconBadge(
             icon: FLucideIcons.pill,
-            color: Color(0xFF0F766E),
+            color: context.theme.colors.primary,
             shape: BoxShape.circle,
           ),
           const SizedBox(width: AppSpacingTokens.level4),

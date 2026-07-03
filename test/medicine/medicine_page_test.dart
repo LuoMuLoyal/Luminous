@@ -84,10 +84,7 @@ void main() {
       'medicine-safety-tips',
     ]) {
       expect(
-        find.descendant(
-          of: find.byKey(Key(key)),
-          matching: find.byType(FCard),
-        ),
+        find.descendant(of: find.byKey(Key(key)), matching: find.byType(FCard)),
         findsAtLeastNWidgets(1),
       );
     }
@@ -140,7 +137,7 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
-            const _StaticMedicineWorkspaceRepository(_completedWorkspace),
+            _StaticMedicineWorkspaceRepository(_completedWorkspace),
           ),
         ],
         child: const TestForuiApp(home: MedicinePage()),
@@ -459,7 +456,7 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-const _completedWorkspace = MedicineWorkspace(
+final _completedWorkspace = MedicineWorkspace(
   hero: MedicineHero(
     metricDosesToday: '1/1',
     metricAdherence: '100%',
@@ -469,7 +466,7 @@ const _completedWorkspace = MedicineWorkspace(
   plan: MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
-        color: const Color(0xFF0891B2),
+        color: FThemes.neutral.light.touch.colors.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -484,7 +481,7 @@ const _completedWorkspace = MedicineWorkspace(
           ),
         ],
         stateKey: MedicineCopyKey.doseStatusSkipped,
-        stateColor: const Color(0xFFD97706),
+        stateColor: FThemes.neutral.light.touch.colors.primary,
         todayStatus: MedicineDoseStatus.skipped,
         currentMedicineId: 'med-1',
       ),

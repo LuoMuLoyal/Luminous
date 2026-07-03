@@ -13,7 +13,6 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
 import 'package:luminous/features/record/domain/entities/daily_record.dart';
-import 'package:luminous/features/record/domain/entities/record_type_colors.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
@@ -501,7 +500,9 @@ class _KindIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (color, background) = RecordTypeColors.forKind(kind);
+    final colors = context.theme.colors;
+    final color = colors.primary;
+    final background = colors.secondary;
 
     final icon = switch (kind) {
       DailyRecordKind.water => FLucideIcons.droplets,

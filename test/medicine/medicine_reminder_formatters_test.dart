@@ -69,17 +69,14 @@ void main() {
 
   group('deliveryStatusColor', () {
     final colors = FThemes.neutral.light.touch.colors;
-    test('delivered → teal', () {
-      expect(deliveryStatusColor('delivered', colors), const Color(0xFF0F766E));
+    test('delivered → primary', () {
+      expect(deliveryStatusColor('delivered', colors), colors.primary);
     });
     test('failed → error', () {
       expect(deliveryStatusColor('failed', colors), colors.destructive);
     });
-    test('scheduled → warningDeep', () {
-      expect(
-        deliveryStatusColor('scheduled', colors),
-        const Color(0xFFB45309),
-      );
+    test('scheduled → primary', () {
+      expect(deliveryStatusColor('scheduled', colors), colors.primary);
     });
     test('unknown → mute', () {
       expect(deliveryStatusColor('?', colors), colors.mutedForeground);

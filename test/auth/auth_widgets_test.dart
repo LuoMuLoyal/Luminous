@@ -7,7 +7,9 @@ import '../helpers/test_forui_app.dart';
 void main() {
   testWidgets('AuthBrandLogo renders asset image', (tester) async {
     await tester.pumpWidget(
-      const TestForuiApp(home: Scaffold(body: Center(child: AuthBrandLogo()))),
+      const TestForuiApp(
+        home: Scaffold(body: Center(child: AuthBrandLogo())),
+      ),
     );
 
     // Logo 容器存在; 图片资源在测试环境可能加载失败,但 errorBuilder 保证不崩溃。

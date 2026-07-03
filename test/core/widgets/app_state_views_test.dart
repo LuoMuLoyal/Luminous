@@ -6,7 +6,9 @@ import 'package:luminous/core/widgets/common/app_state_views.dart';
 import '../../helpers/test_forui_app.dart';
 
 Widget _appShell(Widget child) {
-  return TestForuiApp(home: Scaffold(body: Center(child: child)));
+  return TestForuiApp(
+    home: Scaffold(body: Center(child: child)),
+  );
 }
 
 void main() {

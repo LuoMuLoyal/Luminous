@@ -260,7 +260,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                             color:
                                 (isListening.value
                                         ? primaryColor
-                                        : Colors.black)
+                                        : colors.foreground)
                                     .withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
@@ -271,7 +271,9 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         isListening.value
                             ? FLucideIcons.mic
                             : FLucideIcons.micOff,
-                        color: isListening.value ? Colors.white : micColor,
+                        color: isListening.value
+                            ? colors.primaryForeground
+                            : micColor,
                         size: 32,
                       ),
                     ),

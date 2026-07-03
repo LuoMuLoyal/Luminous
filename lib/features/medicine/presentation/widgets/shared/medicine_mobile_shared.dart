@@ -45,7 +45,9 @@ class _DoseActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final foreground = filled ? Color(0xFFFFFFFF) : color;
+    final foreground = filled
+        ? FThemes.neutral.light.touch.colors.primary
+        : color;
 
     return FTappable(
       onPress: onTap,
@@ -220,9 +222,9 @@ _RecordRow _rowFromItem(
 ) {
   final status = slot?.status ?? MedicineDoseStatus.pending;
   final statusColor = switch (status) {
-    MedicineDoseStatus.taken => Color(0xFF0F766E),
-    MedicineDoseStatus.skipped => Color(0xFFB45309),
-    MedicineDoseStatus.pending => Color(0xFF16A34A),
+    MedicineDoseStatus.taken => FThemes.neutral.light.touch.colors.primary,
+    MedicineDoseStatus.skipped => FThemes.neutral.light.touch.colors.primary,
+    MedicineDoseStatus.pending => FThemes.neutral.light.touch.colors.primary,
   };
   final statusIcon = switch (status) {
     MedicineDoseStatus.taken => FLucideIcons.check,

@@ -27,9 +27,7 @@ void main() {
             ),
           ),
         ],
-        child: const TestForuiApp(
-          home: AboutSettingsPage(),
-        ),
+        child: const TestForuiApp(home: AboutSettingsPage()),
       ),
     );
 
@@ -58,9 +56,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [appInfoProvider.overrideWith((ref) async => null)],
-        child: const TestForuiApp(
-          home: AboutSettingsPage(),
-        ),
+        child: const TestForuiApp(home: AboutSettingsPage()),
       ),
     );
 

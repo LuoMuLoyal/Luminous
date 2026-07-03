@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 
@@ -16,7 +17,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
   }) = _MedicineWorkspace;
 
   /// A minimal workspace for signed-out users with no real or mock data.
-  static MedicineWorkspace signedOut() => const MedicineWorkspace(
+  static MedicineWorkspace signedOut() => MedicineWorkspace(
     hero: MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',
@@ -27,7 +28,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
         icon: Icons.search_rounded,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: Color(0xFF00838F),
+        accent: FThemes.neutral.light.touch.colors.primary,
       ),
     ],
     plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),

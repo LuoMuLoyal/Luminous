@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
@@ -118,17 +118,17 @@ Color deliveryStatusColor(String value, Object palette) {
   final destructive = switch (palette) {
     FColors colors => colors.destructive,
     Color color => color,
-    _ => Color(0xFFB45309),
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
   final muted = switch (palette) {
     FColors colors => colors.mutedForeground,
     Color color => color,
-    _ => Color(0xFFB45309),
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
   return switch (value) {
-    'delivered' => Color(0xFF0F766E),
+    'delivered' => FThemes.neutral.light.touch.colors.primary,
     'failed' => destructive,
-    'scheduled' => Color(0xFFB45309),
+    'scheduled' => FThemes.neutral.light.touch.colors.primary,
     _ => muted,
   };
 }

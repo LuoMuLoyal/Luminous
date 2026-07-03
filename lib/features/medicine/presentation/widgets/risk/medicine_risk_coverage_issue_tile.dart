@@ -27,9 +27,9 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             FLucideIcons.circleAlert,
-            color: Color(0xFFB45309),
+            color: context.theme.colors.primary,
             size: AppSpacingTokens.level5,
           ),
           const SizedBox(width: AppSpacingTokens.level3),

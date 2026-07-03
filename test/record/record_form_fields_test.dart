@@ -57,7 +57,6 @@ void main() {
     expect(find.byKey(const Key('daily-record-title-field')), findsOneWidget);
     expect(find.byKey(const Key('daily-record-note-field')), findsOneWidget);
   });
-
 }
 
 Future<void> _pumpForm(WidgetTester tester, DailyRecordKind kind) async {

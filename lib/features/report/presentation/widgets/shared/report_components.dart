@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class ReportMetricTrack extends StatelessWidget {
@@ -40,9 +41,7 @@ class ReportMetricTrack extends StatelessWidget {
                         borderRadius: BorderRadius.circular(
                           AppRadiusTokens.levelFull,
                         ),
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.outlineVariant,
-                        ),
+                        border: Border.all(color: context.theme.colors.border),
                       ),
                       child: const SizedBox(width: AppSpacingTokens.level1),
                     ),

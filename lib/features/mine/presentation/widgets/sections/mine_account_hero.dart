@@ -6,7 +6,7 @@ import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_shared.dart';
+
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineSignedOutNotice extends StatelessWidget {
@@ -95,7 +95,7 @@ class MineAccountHero extends StatelessWidget {
                             child: Text(
                               dashboard.completion.percentLabel,
                               style: textTheme.titleMedium?.copyWith(
-                                color: mineGreen,
+                                color: context.theme.colors.primary,
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
@@ -167,7 +167,7 @@ class _RolePill extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: mineGreen.withValues(alpha: 0.1),
+        color: context.theme.colors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
       ),
       child: Padding(
@@ -178,12 +178,16 @@ class _RolePill extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(FLucideIcons.badgeCheck, color: mineGreen, size: 14),
+            Icon(
+              FLucideIcons.badgeCheck,
+              color: context.theme.colors.primary,
+              size: 14,
+            ),
             const SizedBox(width: AppSpacingTokens.level1),
             Text(
               label,
               style: textTheme.labelSmall?.copyWith(
-                color: mineGreen,
+                color: context.theme.colors.primary,
                 fontWeight: FontWeight.w700,
               ),
             ),

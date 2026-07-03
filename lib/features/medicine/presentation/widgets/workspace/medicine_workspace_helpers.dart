@@ -6,13 +6,6 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-abstract final class MedicineWorkspacePalette {
-  static const Color green = Color(0xFF0F766E);
-  static const Color greenSoft = Color(0xFFCCFBF1);
-  static const Color greenLine = Color(0xFFCCFBF1);
-  static const Color orange = Color(0xFFF59E0B);
-}
-
 class SectionTextAction extends StatelessWidget {
   const SectionTextAction({
     super.key,
@@ -33,7 +26,7 @@ class SectionTextAction extends StatelessWidget {
         child: Text(
           label,
           style: textTheme.bodySmall?.copyWith(
-            color: MedicineWorkspacePalette.green,
+            color: context.theme.colors.primary,
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/report_section_models.dart';
@@ -7,26 +8,13 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   group('reportStatusColor', () {
-    test('good maps to green', () {
-      expect(reportStatusColor(ReportStatus.good), const Color(0xFF0F766E));
-    });
-    test('stable maps to previewScore', () {
-      expect(reportStatusColor(ReportStatus.stable), const Color(0xFF15803D));
-    });
-    test('needsAttention maps to orange', () {
-      expect(
-        reportStatusColor(ReportStatus.needsAttention),
-        const Color(0xFFF59E0B),
-      );
-    });
-    test('insufficientData maps to blue', () {
-      expect(
-        reportStatusColor(ReportStatus.insufficientData),
-        const Color(0xFF16A34A),
-      );
-    });
-    test('unknown maps to blue', () {
-      expect(reportStatusColor(ReportStatus.unknown), const Color(0xFF16A34A));
+    final colors = FThemes.neutral.light.touch.colors;
+    test('all statuses map to primary', () {
+      expect(reportStatusColor(ReportStatus.good), colors.primary);
+      expect(reportStatusColor(ReportStatus.stable), colors.primary);
+      expect(reportStatusColor(ReportStatus.needsAttention), colors.primary);
+      expect(reportStatusColor(ReportStatus.insufficientData), colors.primary);
+      expect(reportStatusColor(ReportStatus.unknown), colors.primary);
     });
   });
 

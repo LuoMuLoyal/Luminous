@@ -2111,12 +2111,12 @@ class _FakeRecordRepository implements RecordRepository {
     );
     final timeline = withRecordEntry
         ? [
-            const RecordTimelineEntry(
+            RecordTimelineEntry(
               time: '09:45',
               type: RecordEntryType.vitals,
               icon: Icons.favorite_rounded,
-              accent: Color(0xFFFF4D57),
-              softColor: Color(0xFFFFEEEE),
+              accent: FThemes.neutral.light.touch.colors.primary,
+              softColor: FThemes.neutral.light.touch.colors.secondary,
               titleKey: RecordCopyKey.typeVitals,
               rawTitle: 'Blood pressure',
               value: '118/76 mmHg',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
@@ -77,34 +78,34 @@ class MockMineRepository implements MineRepository {
     basicInfoCompleted: true,
   );
 
-  static const _mockAlerts = [
+  static final _mockAlerts = [
     MineStatusCard(
       icon: Icons.warning_rounded,
-      accent: Color(0xFFF59E0B),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     MineStatusCard(
       icon: Icons.medication_rounded,
-      accent: Color(0xFF16A34A),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
       badgeKey: MineCopyKey.alertMedicineBadge,
     ),
     MineStatusCard(
       icon: Icons.verified_user_rounded,
-      accent: Color(0xFF0F766E),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
       badgeKey: MineCopyKey.alertPrivacyBadge,
     ),
   ];
 
-  static const _mockArchiveEntries = [
+  static final _mockArchiveEntries = [
     MineArchiveEntry(
       icon: Icons.badge_rounded,
-      accent: Color(0xFF0F766E),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
       statusKey: MineCopyKey.archiveCompleted,
@@ -112,7 +113,7 @@ class MockMineRepository implements MineRepository {
     ),
     MineArchiveEntry(
       icon: Icons.water_drop_rounded,
-      accent: Color(0xFFE11D48),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
       statusKey: MineCopyKey.archiveCompleted,
@@ -120,14 +121,14 @@ class MockMineRepository implements MineRepository {
     ),
     MineArchiveEntry(
       icon: Icons.medication_rounded,
-      accent: Color(0xFF16A34A),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: '/mine/medicine/new',
     ),
     MineArchiveEntry(
       icon: Icons.contact_emergency_rounded,
-      accent: Color(0xFFF59E0B),
+      accent: FThemes.neutral.light.touch.colors.primary,
       titleKey: MineCopyKey.archiveEmergencyTitle,
       subtitleKey: MineCopyKey.archiveEmergencySubtitle,
       statusKey: MineCopyKey.archiveNeedsFill,

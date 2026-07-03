@@ -45,9 +45,7 @@ void main() {
               EnabledUserSettingsController.new,
             ),
           ],
-          child: const TestForuiApp(
-            home: ReportPage(),
-          ),
+          child: const TestForuiApp(home: ReportPage()),
         ),
       );
 
@@ -119,9 +117,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -154,9 +150,7 @@ void main() {
             DisabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -207,9 +201,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -252,9 +244,7 @@ void main() {
           lucentDataExportApiProvider.overrideWithValue(exportApi),
           externalUrlLauncherProvider.overrideWithValue(launcher),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -314,9 +304,7 @@ void main() {
             ),
             lucentDataExportApiProvider.overrideWithValue(exportApi),
           ],
-          child: const TestForuiApp(
-            home: ReportPage(),
-          ),
+          child: const TestForuiApp(home: ReportPage()),
         ),
       );
 
@@ -357,9 +345,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -395,9 +381,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -426,9 +410,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 
@@ -458,9 +440,7 @@ void main() {
             EnabledUserSettingsController.new,
           ),
         ],
-        child: const TestForuiApp(
-          home: ReportPage(),
-        ),
+        child: const TestForuiApp(home: ReportPage()),
       ),
     );
 

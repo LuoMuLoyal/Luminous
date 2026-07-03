@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -142,8 +143,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : null;
     final coverageAlert = MedicineAlert(
       icon: Icons.info_outline_rounded,
-      color: Color(0xFFB45309),
-      softColor: Color(0xFFFEF3C7),
+      color: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.primary,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
       rawBody: l10n.medicineRiskCheckCoverageAlertBody(
         result.coverageIssues.length,
@@ -176,8 +177,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   return [
     MedicineAlert(
       icon: Icons.verified_outlined,
-      color: Color(0xFF16A34A),
-      softColor: Color(0xFFDCFCE7),
+      color: FThemes.neutral.light.touch.colors.primary,
+      softColor: FThemes.neutral.light.touch.colors.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
       rawBody: l10n.medicineRiskCheckAllClearAlertBody,
       rawDetail: l10n.medicineRiskCheckAllClearAlertDetail,
@@ -198,17 +199,17 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
 
 Color medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => Color(0xFFDC2626),
-    MedicineRiskSeverity.medium => Color(0xFFB45309),
-    MedicineRiskSeverity.info => Color(0xFF0F766E),
+    MedicineRiskSeverity.high => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.medium => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.info => FThemes.neutral.light.touch.colors.primary,
   };
 }
 
 Color medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => Color(0xFFFEE2E2),
-    MedicineRiskSeverity.medium => Color(0xFFFEF3C7),
-    MedicineRiskSeverity.info => Color(0xFFCCFBF1),
+    MedicineRiskSeverity.high => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.medium => FThemes.neutral.light.touch.colors.primary,
+    MedicineRiskSeverity.info => FThemes.neutral.light.touch.colors.primary,
   };
 }
 

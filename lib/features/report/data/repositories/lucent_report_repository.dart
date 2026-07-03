@@ -1,5 +1,5 @@
-import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/report_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -146,10 +146,10 @@ class LucentReportRepository implements ReportRepository {
 
   Color _metricColor(ReportDataKind kind) {
     return switch (kind) {
-      ReportDataKind.medication => Color(0xFF0F766E),
-      ReportDataKind.water => Color(0xFF16A34A),
-      ReportDataKind.sleep => Color(0xFF7C3AED),
-      ReportDataKind.general => Color(0xFF15803D),
+      ReportDataKind.medication => FThemes.neutral.light.touch.colors.primary,
+      ReportDataKind.water => FThemes.neutral.light.touch.colors.primary,
+      ReportDataKind.sleep => FThemes.neutral.light.touch.colors.primary,
+      ReportDataKind.general => FThemes.neutral.light.touch.colors.primary,
     };
   }
 
@@ -164,33 +164,34 @@ class LucentReportRepository implements ReportRepository {
 
   Color _insightColor(ReportInsightKind kind) {
     return switch (kind) {
-      ReportInsightKind.medication => Color(0xFF0F766E),
-      ReportInsightKind.hydration => Color(0xFF16A34A),
-      ReportInsightKind.sleep => Color(0xFF7C3AED),
-      ReportInsightKind.general => Color(0xFFF59E0B),
+      ReportInsightKind.medication =>
+        FThemes.neutral.light.touch.colors.primary,
+      ReportInsightKind.hydration => FThemes.neutral.light.touch.colors.primary,
+      ReportInsightKind.sleep => FThemes.neutral.light.touch.colors.primary,
+      ReportInsightKind.general => FThemes.neutral.light.touch.colors.primary,
     };
   }
 }
 
-const _exportActions = <ReportExportAction>[
+final _exportActions = <ReportExportAction>[
   ReportExportAction(
     kind: ReportExportKind.hospital,
     icon: Icons.local_hospital_rounded,
-    color: Color(0xFF16A34A),
+    color: FThemes.neutral.light.touch.colors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.monthly,
     icon: Icons.bar_chart_rounded,
-    color: Color(0xFF16A34A),
+    color: FThemes.neutral.light.touch.colors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.print,
     icon: Icons.print_rounded,
-    color: Color(0xFFF59E0B),
+    color: FThemes.neutral.light.touch.colors.primary,
   ),
   ReportExportAction(
     kind: ReportExportKind.clinicShare,
     icon: Icons.share_rounded,
-    color: Color(0xFF16A34A),
+    color: FThemes.neutral.light.touch.colors.primary,
   ),
 ];

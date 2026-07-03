@@ -1,5 +1,5 @@
-import 'package:luminous/core/design/app_design.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -62,11 +62,11 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
 
 Color reportStatusColor(ReportStatus status) {
   return switch (status) {
-    ReportStatus.good => Color(0xFF0F766E),
-    ReportStatus.stable => Color(0xFF15803D),
-    ReportStatus.needsAttention => Color(0xFFF59E0B),
-    ReportStatus.insufficientData => Color(0xFF16A34A),
-    ReportStatus.unknown => Color(0xFF16A34A),
+    ReportStatus.good => FThemes.neutral.light.touch.colors.primary,
+    ReportStatus.stable => FThemes.neutral.light.touch.colors.primary,
+    ReportStatus.needsAttention => FThemes.neutral.light.touch.colors.primary,
+    ReportStatus.insufficientData => FThemes.neutral.light.touch.colors.primary,
+    ReportStatus.unknown => FThemes.neutral.light.touch.colors.primary,
   };
 }
 
@@ -138,7 +138,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: Color(0xFFF59E0B),
+          color: FThemes.neutral.light.touch.colors.primary,
           text: l10n.authLoginRequiredPrompt,
         ),
       ],
@@ -151,7 +151,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: Color(0xFF16A34A),
+          color: FThemes.neutral.light.touch.colors.primary,
           text: l10n.reportAiSummaryDisabledHint,
         ),
       ],
@@ -179,7 +179,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         ReportAiSummaryItem(
-          color: Color(0xFFF59E0B),
+          color: FThemes.neutral.light.touch.colors.primary,
           text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
         ),
         ...reportAiSummaryFallbackBullets(dashboard),
@@ -195,7 +195,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       summaryText: aiState.streamingSummary,
       bullets: [
         ReportAiSummaryItem(
-          color: Color(0xFF0F766E),
+          color: FThemes.neutral.light.touch.colors.primary,
           text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ...reportAiSummaryFallbackBullets(dashboard),

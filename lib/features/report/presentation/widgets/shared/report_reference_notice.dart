@@ -15,16 +15,18 @@ class ReportReferenceNotice extends StatelessWidget {
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFF59E0B).withValues(alpha: 0.08),
+          color: context.theme.colors.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: Color(0xFFF59E0B).withValues(alpha: 0.16)),
+          border: Border.all(
+            color: context.theme.colors.primary.withValues(alpha: 0.16),
+          ),
         ),
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               FLucideIcons.triangleAlert,
-              color: Color(0xFFF59E0B),
+              color: context.theme.colors.primary,
               size: AppSpacingTokens.level5,
             ),
             const SizedBox(width: AppSpacingTokens.level3),
@@ -32,7 +34,7 @@ class ReportReferenceNotice extends StatelessWidget {
               child: Text(
                 l10n.reportReferenceNotice,
                 style: textTheme.bodySmall?.copyWith(
-                  color: Color(0xFFF59E0B),
+                  color: context.theme.colors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),

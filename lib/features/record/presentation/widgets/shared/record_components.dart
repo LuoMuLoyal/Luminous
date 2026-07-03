@@ -21,12 +21,12 @@ class RecordHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF0F766E);
+    final accent = context.theme.colors.primary;
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final foreground = emphasized
-        ? Theme.of(context).colorScheme.onPrimary
-        : Theme.of(context).colorScheme.onSurface;
+        ? colors.primaryForeground
+        : colors.foreground;
 
     return Tooltip(
       message: label,

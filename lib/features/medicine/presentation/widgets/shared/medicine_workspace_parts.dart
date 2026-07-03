@@ -20,13 +20,13 @@ class MedicineHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const emphasisColor = Color(0xFF0F766E);
+    final emphasisColor = context.theme.colors.primary;
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final background = emphasized ? emphasisColor : colors.background;
     final foreground = emphasized
-        ? Colors.white
-        : Theme.of(context).colorScheme.onSurface;
+        ? colors.primaryForeground
+        : colors.foreground;
 
     return FTappable(
       onPress: onTap,

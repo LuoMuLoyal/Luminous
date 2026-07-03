@@ -10,9 +10,7 @@ void main() {
   });
 
   testWidgets('AuthBrandLogo with custom size', (tester) async {
-    await tester.pumpWidget(
-      const TestForuiApp(home: AuthBrandLogo(size: 80)),
-    );
+    await tester.pumpWidget(const TestForuiApp(home: AuthBrandLogo(size: 80)));
     expect(find.byType(AuthBrandLogo), findsOneWidget);
   });
 }

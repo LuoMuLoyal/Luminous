@@ -166,10 +166,10 @@ class _ReminderDetailBody extends ConsumerWidget {
           FCard.raw(
             child: Row(
               children: [
-                const AppIconBadge(
+                AppIconBadge(
                   icon: FLucideIcons.pillBottle,
-                  color: Color(0xFFB45309),
-                  backgroundColor: Color(0xFFFEF3C7),
+                  color: context.theme.colors.primary,
+                  backgroundColor: context.theme.colors.primary,
                   shape: BoxShape.circle,
                   size: AppSpacingTokens.level9,
                   iconSize: AppSpacingTokens.level6,
@@ -204,7 +204,9 @@ class _ReminderDetailBody extends ConsumerWidget {
                   label: isActive
                       ? l10n.medicineReminderEnabledStatus
                       : l10n.medicineReminderDisabledStatus,
-                  color: isActive ? Color(0xFF0F766E) : colors.mutedForeground,
+                  color: isActive
+                      ? context.theme.colors.primary
+                      : colors.mutedForeground,
                 ),
               ],
             ),

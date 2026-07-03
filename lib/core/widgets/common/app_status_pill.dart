@@ -28,7 +28,9 @@ class AppStatusPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final foreground = backgroundAlpha > 0.5 ? Colors.white : color;
+    final foreground = backgroundAlpha > 0.5
+        ? context.theme.colors.primaryForeground
+        : color;
 
     return FBadge.raw(
       builder: (context, style) => DecoratedBox(

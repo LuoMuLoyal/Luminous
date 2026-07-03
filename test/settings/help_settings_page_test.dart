@@ -54,9 +54,7 @@ void main() {
             ],
           ),
         ],
-        child: const TestForuiApp(
-          home: HelpSettingsPage(),
-        ),
+        child: const TestForuiApp(home: HelpSettingsPage()),
       ),
     );
 
@@ -80,9 +78,7 @@ void main() {
         overrides: [
           supportResourcesProvider('help').overrideWith((ref) async => []),
         ],
-        child: const TestForuiApp(
-          home: HelpSettingsPage(),
-        ),
+        child: const TestForuiApp(home: HelpSettingsPage()),
       ),
     );
 

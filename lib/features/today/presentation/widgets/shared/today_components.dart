@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 class TodayGlyphTile extends StatelessWidget {
@@ -39,7 +40,7 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          color: gradient ? Color(0xFFFFFFFF) : color,
+          color: gradient ? context.theme.colors.primary : color,
           size: size * 0.5,
         ),
       ),
@@ -68,7 +69,7 @@ class TodayLinearProgress extends StatelessWidget {
       child: Stack(
         children: [
           DecoratedBox(
-            decoration: const BoxDecoration(color: Color(0xFFE5E7EB)),
+            decoration: BoxDecoration(color: context.theme.colors.primary),
             child: SizedBox(height: height, width: double.infinity),
           ),
           FractionallySizedBox(
@@ -133,7 +134,9 @@ class TodayMiniTrendChart extends StatelessWidget {
                     Expanded(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: index == 3 ? color : Color(0xFFD1D5DB),
+                          color: index == 3
+                              ? color
+                              : context.theme.colors.primary,
                           borderRadius: BorderRadius.circular(
                             AppRadiusTokens.levelFull,
                           ),

@@ -64,7 +64,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacingTokens.level3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFEF3C7).withValues(alpha: 0.42),
+                        color: context.theme.colors.primary.withValues(
+                          alpha: 0.42,
+                        ),
                         borderRadius: BorderRadius.circular(
                           AppRadiusTokens.level3,
                         ),
@@ -72,9 +74,9 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
+                          Icon(
                             FLucideIcons.circleAlert,
-                            color: Color(0xFFB45309),
+                            color: context.theme.colors.primary,
                             size: 18,
                           ),
                           const SizedBox(width: AppSpacingTokens.level3),
@@ -218,10 +220,10 @@ class _PrecheckCoverageRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF3C7).withValues(alpha: 0.42),
+        color: context.theme.colors.primary.withValues(alpha: 0.42),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
         border: Border.all(
-          color: const Color(0xFFB45309).withValues(alpha: 0.18),
+          color: context.theme.colors.primary.withValues(alpha: 0.18),
         ),
       ),
       child: Padding(
@@ -229,9 +231,9 @@ class _PrecheckCoverageRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(
+            Icon(
               FLucideIcons.circleAlert,
-              color: Color(0xFFB45309),
+              color: context.theme.colors.primary,
               size: 18,
             ),
             const SizedBox(width: AppSpacingTokens.level3),

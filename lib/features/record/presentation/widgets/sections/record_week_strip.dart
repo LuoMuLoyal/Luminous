@@ -105,7 +105,7 @@ class _MarkerDots extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final markerColors = hasAlert
-        ? [...colors, const Color(0xFFFF4D57)]
+        ? [...colors, context.theme.colors.primary]
         : colors;
 
     return SizedBox(

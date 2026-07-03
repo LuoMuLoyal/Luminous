@@ -16,15 +16,15 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
     ? <MedicineSearchQuickAction>[
-        const MedicineSearchQuickAction(
+        MedicineSearchQuickAction(
           type: MedicineSearchActionType.barcode,
           icon: FLucideIcons.scanLine,
-          accent: Color(0xFF0F766E),
+          accent: FThemes.neutral.light.touch.colors.primary,
         ),
-        const MedicineSearchQuickAction(
+        MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
           icon: FLucideIcons.camera,
-          accent: Color(0xFF16A34A),
+          accent: FThemes.neutral.light.touch.colors.primary,
         ),
       ]
     : <MedicineSearchQuickAction>[];

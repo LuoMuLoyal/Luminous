@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-const mineGreen = Color(0xFF0F766E);
-
 class MineSectionTitle extends StatelessWidget {
   const MineSectionTitle({super.key, required this.title});
 

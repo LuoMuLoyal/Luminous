@@ -318,7 +318,9 @@ void main() {
               GoRoute(
                 path: '/login',
                 builder: (context, state) => Scaffold(
-                  body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+                  body: Text(
+                    "login-page:${state.uri.queryParameters['returnTo']}",
+                  ),
                 ),
               ),
             ],

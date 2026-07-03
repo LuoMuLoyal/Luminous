@@ -29,11 +29,8 @@ void main() {
 
   group('deliveryStatusColor', () {
     final colors = FThemes.neutral.light.touch.colors;
-    test('delivered returns teal', () {
-      expect(
-        deliveryStatusColor('delivered', colors),
-        const Color(0xFF0F766E),
-      );
+    test('delivered returns primary', () {
+      expect(deliveryStatusColor('delivered', colors), colors.primary);
     });
     test('failed returns error', () {
       expect(deliveryStatusColor('failed', colors), colors.destructive);

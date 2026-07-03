@@ -22,25 +22,27 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacingTokens.level4),
       decoration: BoxDecoration(
-        color: Color(0xFFDC2626).withValues(alpha: 0.08),
+        color: context.theme.colors.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        border: Border.all(color: Color(0xFFDC2626).withValues(alpha: 0.22)),
+        border: Border.all(
+          color: context.theme.colors.primary.withValues(alpha: 0.22),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 FLucideIcons.triangleAlert,
-                color: Color(0xFFDC2626),
+                color: context.theme.colors.primary,
                 size: 20,
               ),
               const SizedBox(width: AppSpacingTokens.level3),
               Text(
                 redFlagBannerTitle(l10n),
                 style: textTheme.labelLarge?.copyWith(
-                  color: Color(0xFFDC2626),
+                  color: context.theme.colors.primary,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -95,9 +97,9 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       FLucideIcons.siren,
-                      color: Color(0xFFDC2626),
+                      color: context.theme.colors.primary,
                       size: 16,
                     ),
                     const SizedBox(width: AppSpacingTokens.level2),
@@ -105,7 +107,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                       child: Text(
                         redFlagActionCopy(l10n, alert),
                         style: textTheme.bodySmall?.copyWith(
-                          color: Color(0xFFDC2626),
+                          color: context.theme.colors.primary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),

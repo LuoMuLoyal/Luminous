@@ -113,9 +113,7 @@ void main() {
             'campus',
           ).overrideWith((ref) async => const []),
         ],
-        child: const TestForuiApp(
-          home: ShellPage(),
-        ),
+        child: const TestForuiApp(home: ShellPage()),
       ),
     );
 
@@ -203,9 +201,7 @@ void main() {
             'campus',
           ).overrideWith((ref) async => const []),
         ],
-        child: const TestForuiApp(
-          home: ShellPage(),
-        ),
+        child: const TestForuiApp(home: ShellPage()),
       ),
     );
 
@@ -288,9 +284,7 @@ void main() {
             () => _SignedOutAuthSessionNotifier(),
           ),
         ],
-        child: const TestForuiApp(
-          home: ShellPage(),
-        ),
+        child: const TestForuiApp(home: ShellPage()),
       ),
     );
     await tester.pumpAndSettle();
@@ -361,9 +355,7 @@ void main() {
             'campus',
           ).overrideWith((ref) async => const []),
         ],
-        child: const TestForuiApp(
-          home: ShellPage(),
-        ),
+        child: const TestForuiApp(home: ShellPage()),
       ),
     );
 
@@ -448,9 +440,7 @@ void main() {
             'campus',
           ).overrideWith((ref) async => const []),
         ],
-        child: const TestForuiApp(
-          home: ShellPage(),
-        ),
+        child: const TestForuiApp(home: ShellPage()),
       ),
     );
 
@@ -520,9 +510,7 @@ Future<void> _pumpShell(WidgetTester tester) async {
           'campus',
         ).overrideWith((ref) async => const []),
       ],
-      child: const TestForuiApp(
-        home: ShellPage(),
-      ),
+      child: const TestForuiApp(home: ShellPage()),
     ),
   );
   await tester.pump();

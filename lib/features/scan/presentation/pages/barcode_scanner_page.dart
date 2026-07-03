@@ -123,11 +123,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: context.theme.colors.background,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: context.theme.colors.background,
         leading: const AppBackButton(),
-        title: const Text('扫描条形码', style: TextStyle(color: Colors.white)),
+        title: Text(
+          '扫描条形码',
+          style: TextStyle(color: context.theme.colors.primaryForeground),
+        ),
         actions: [
           FButton.icon(
             variant: FButtonVariant.ghost,
@@ -136,7 +139,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
               _controller?.torchEnabled == true
                   ? Icons.flash_on
                   : Icons.flash_off,
-              color: Colors.white,
+              color: context.theme.colors.primaryForeground,
             ),
           ),
         ],
@@ -152,7 +155,10 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
                     width: 280,
                     height: 120,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xFF0F766E), width: 2),
+                      border: Border.all(
+                        color: context.theme.colors.primary,
+                        width: 2,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),

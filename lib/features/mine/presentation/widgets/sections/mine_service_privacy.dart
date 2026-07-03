@@ -4,7 +4,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_shared.dart';
+
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MinePrivacyNoticeSection extends StatelessWidget {
@@ -25,11 +25,13 @@ class MinePrivacyNoticeSection extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Color.alphaBlend(
-              mineGreen.withValues(alpha: 0.05),
+              context.theme.colors.primary.withValues(alpha: 0.05),
               colors.background,
             ),
             borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-            border: Border.all(color: mineGreen.withValues(alpha: 0.14)),
+            border: Border.all(
+              color: context.theme.colors.primary.withValues(alpha: 0.14),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacingTokens.level4),
@@ -37,7 +39,7 @@ class MinePrivacyNoticeSection extends StatelessWidget {
               children: [
                 Icon(
                   notice.icon,
-                  color: mineGreen,
+                  color: context.theme.colors.primary,
                   size: AppSpacingTokens.level5,
                 ),
                 const SizedBox(width: AppSpacingTokens.level3),

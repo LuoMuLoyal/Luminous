@@ -164,15 +164,15 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacingTokens.level4),
               decoration: BoxDecoration(
-                color: Color(0xFFFEF3C7).withValues(alpha: 0.42),
+                color: context.theme.colors.primary.withValues(alpha: 0.42),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(
+                  Icon(
                     FLucideIcons.circleAlert,
-                    color: Color(0xFFB45309),
+                    color: context.theme.colors.primary,
                     size: AppSpacingTokens.level5,
                   ),
                   const SizedBox(width: AppSpacingTokens.level3),

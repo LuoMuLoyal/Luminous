@@ -178,7 +178,7 @@ class _PriorityActionPill extends ConsumerWidget {
           child: Text(
             item.action,
             style: textTheme.labelMedium?.copyWith(
-              color: const Color(0xFFFFFFFF),
+              color: context.theme.colors.primary,
               fontWeight: FontWeight.w800,
             ),
             maxLines: 1,

@@ -113,7 +113,7 @@ class _TimelineRow extends StatelessWidget {
               child: AppSkeletonText(
                 text: entry.time,
                 style: textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: colors.mutedForeground,
                 ),
                 widthFactor: 0.68,
                 maxLines: 1,

@@ -37,29 +37,17 @@ void main() {
   group('medicineSafetyTipColor', () {
     final colors = FThemes.neutral.light.touch.colors;
 
-    test('returns green for alcohol', () {
-      expect(
-        medicineSafetyTipColor('alcohol', colors),
-        const Color(0xFF16A34A),
-      );
+    test('returns primary for alcohol', () {
+      expect(medicineSafetyTipColor('alcohol', colors), colors.primary);
     });
-    test('returns amber for caffeine', () {
-      expect(
-        medicineSafetyTipColor('caffeine', colors),
-        const Color(0xFFB45309),
-      );
+    test('returns primary for caffeine', () {
+      expect(medicineSafetyTipColor('caffeine', colors), colors.primary);
     });
-    test('returns green for timing', () {
-      expect(
-        medicineSafetyTipColor('timing', colors),
-        const Color(0xFF16A34A),
-      );
+    test('returns primary for timing', () {
+      expect(medicineSafetyTipColor('timing', colors), colors.primary);
     });
-    test('returns teal for storage', () {
-      expect(
-        medicineSafetyTipColor('storage', colors),
-        const Color(0xFF0F766E),
-      );
+    test('returns primary for storage', () {
+      expect(medicineSafetyTipColor('storage', colors), colors.primary);
     });
     test('returns primary for food', () {
       expect(medicineSafetyTipColor('food', colors), colors.primary);
@@ -73,17 +61,11 @@ void main() {
     test('returns destructive for allergy', () {
       expect(medicineSafetyTipColor('allergy', colors), colors.destructive);
     });
-    test('returns teal for driving', () {
-      expect(
-        medicineSafetyTipColor('driving', colors),
-        const Color(0xFF14B8A6),
-      );
+    test('returns primary for driving', () {
+      expect(medicineSafetyTipColor('driving', colors), colors.primary);
     });
-    test('returns green as default', () {
-      expect(
-        medicineSafetyTipColor('unknown', colors),
-        const Color(0xFF16A34A),
-      );
+    test('returns primary as default', () {
+      expect(medicineSafetyTipColor('unknown', colors), colors.primary);
     });
   });
 }

@@ -70,7 +70,10 @@ void main() {
 
       await tester.pump();
 
-      final changeEmailButton = find.widgetWithText(FButton, l10n.authEmailChangeAction);
+      final changeEmailButton = find.widgetWithText(
+        FButton,
+        l10n.authEmailChangeAction,
+      );
       await tester.scrollUntilVisible(
         changeEmailButton,
         240,
@@ -172,7 +175,10 @@ void main() {
     await tester.ensureVisible(oldPasswordField);
     await tester.enterText(oldPasswordField, 'old-password');
     await tester.enterText(passwordFields.at(1), 'new-password');
-    final changePasswordButton = find.widgetWithText(FButton, l10n.authChangePasswordAction);
+    final changePasswordButton = find.widgetWithText(
+      FButton,
+      l10n.authChangePasswordAction,
+    );
     await tester.ensureVisible(changePasswordButton);
     await tester.tap(changePasswordButton);
     await tester.pumpAndSettle();
@@ -225,7 +231,10 @@ void main() {
     final deletePasswordField = passwordFields.last;
     await tester.ensureVisible(deletePasswordField);
     await tester.enterText(deletePasswordField, 'delete-password');
-    final deleteButton = find.widgetWithText(FButton, l10n.authDeleteAccountAction);
+    final deleteButton = find.widgetWithText(
+      FButton,
+      l10n.authDeleteAccountAction,
+    );
     await tester.ensureVisible(deleteButton);
     await tester.tap(deleteButton);
     await tester.pumpAndSettle();
@@ -280,7 +289,9 @@ void main() {
 
     await tester.pump();
 
-    final unlinkButton = find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).first;
+    final unlinkButton = find
+        .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
+        .first;
     await tester.scrollUntilVisible(
       unlinkButton,
       240,
@@ -288,7 +299,9 @@ void main() {
     );
     await tester.tap(unlinkButton);
     await tester.pumpAndSettle();
-    final confirmUnlinkButton = find.widgetWithText(FButton, l10n.authIdentityUnlinkAction).last;
+    final confirmUnlinkButton = find
+        .widgetWithText(FButton, l10n.authIdentityUnlinkAction)
+        .last;
     await tester.tap(confirmUnlinkButton);
     await tester.pumpAndSettle();
 
@@ -397,8 +410,14 @@ void main() {
       find.text(l10n.authDeleteAccountPasswordRequiredHint),
       findsOneWidget,
     );
-    expect(find.widgetWithText(FButton, l10n.authChangePasswordAction), findsNothing);
-    expect(find.widgetWithText(FButton, l10n.authDeleteAccountAction), findsNothing);
+    expect(
+      find.widgetWithText(FButton, l10n.authChangePasswordAction),
+      findsNothing,
+    );
+    expect(
+      find.widgetWithText(FButton, l10n.authDeleteAccountAction),
+      findsNothing,
+    );
   });
 }
 

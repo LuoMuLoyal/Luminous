@@ -259,7 +259,7 @@ class _TrendValuePill extends StatelessWidget {
         child: Text(
           label,
           style: textTheme.labelSmall?.copyWith(
-            color: Colors.white,
+            color: context.theme.colors.primaryForeground,
             fontWeight: FontWeight.w800,
           ),
         ),

@@ -127,7 +127,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       canvasColor: theme.colors.background,
       cardColor: theme.colors.card,
       dividerColor: theme.colors.border,
-      shadowColor: Colors.black.withValues(
+      shadowColor: theme.colors.foreground.withValues(
         alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
       ),
     );

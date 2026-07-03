@@ -65,9 +65,9 @@ class TodayAiSummarySection extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                const TodayGlyphTile(
+                TodayGlyphTile(
                   icon: FLucideIcons.sparkles,
-                  color: Color(0xFF0F766E),
+                  color: context.theme.colors.primary,
                   size: AppSpacingTokens.level7,
                   radius: AppRadiusTokens.level3,
                   gradient: false,

@@ -86,8 +86,8 @@ class AppStateMessageView extends StatelessWidget {
   Color _accentFor(FColors colors) {
     return switch (tone) {
       AppStateTone.neutral => colors.primary,
-      AppStateTone.success => const Color(0xFF16A34A),
-      AppStateTone.warning => const Color(0xFFF59E0B),
+      AppStateTone.success => colors.primary,
+      AppStateTone.warning => colors.primary,
       AppStateTone.danger => colors.destructive,
     };
   }

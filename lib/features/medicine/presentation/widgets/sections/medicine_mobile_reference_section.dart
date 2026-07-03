@@ -14,9 +14,9 @@ class _ReferenceNotice extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         child: Row(
           children: [
-            const Icon(
+            Icon(
               FLucideIcons.triangleAlert,
-              color: Color(0xFFB45309),
+              color: FThemes.neutral.light.touch.colors.primary,
               size: AppSpacingTokens.level6,
             ),
             const SizedBox(width: AppSpacingTokens.level3),
@@ -27,7 +27,7 @@ class _ReferenceNotice extends StatelessWidget {
                   Text(
                     l10n.medicineReferenceNoticeTitle,
                     style: textTheme.titleSmall?.copyWith(
-                      color: Color(0xFFB45309),
+                      color: FThemes.neutral.light.touch.colors.primary,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -41,9 +41,9 @@ class _ReferenceNotice extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               FLucideIcons.chevronRight,
-              color: Color(0xFFB45309),
+              color: FThemes.neutral.light.touch.colors.primary,
               size: AppSpacingTokens.level5,
             ),
           ],
@@ -68,16 +68,16 @@ class _SafetyTipsSection extends ConsumerWidget {
       children: [
         AppSectionHeader(
           title: l10n.medicineSafetyTipsTitle,
-          leading: const Icon(
+          leading: Icon(
             FLucideIcons.lightbulb,
-            color: Color(0xFFB45309),
+            color: FThemes.neutral.light.touch.colors.primary,
             size: AppSpacingTokens.level5,
           ),
           compact: true,
           trailing: AppTextAction(
             label: l10n.medicineSafetyTipsRefreshAction,
             icon: FLucideIcons.refreshCw,
-            color: Color(0xFF16A34A),
+            color: FThemes.neutral.light.touch.colors.primary,
             onTap: tipsAsync.isLoading
                 ? () {}
                 : () => ref

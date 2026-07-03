@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'dart:io';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -38,24 +39,24 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
   // they are useful later, but do not surface them until the matching camera,
   // recognition, and prescription contract/product job is ready.
-  static const deferredScanQuickActions = <MedicineQuickAction>[
+  static final deferredScanQuickActions = <MedicineQuickAction>[
     MedicineQuickAction(
       icon: Icons.photo_camera_outlined,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: Color(0xFF16A34A),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.qr_code_scanner_rounded,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: Color(0xFF0F766E),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
     MedicineQuickAction(
       icon: Icons.receipt_long_outlined,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: Color(0xFFB45309),
+      accent: FThemes.neutral.light.touch.colors.primary,
     ),
   ];
 
@@ -66,19 +67,19 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       metricNextDose: '--',
     ),
     quickActions: [
-      const MedicineQuickAction(
+      MedicineQuickAction(
         icon: Icons.search_rounded,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: Color(0xFF0F766E),
+        accent: FThemes.neutral.light.touch.colors.primary,
       ),
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ...deferredScanQuickActions,
     ],
-    plan: const MedicinePlanSurface(
+    plan: MedicinePlanSurface(
       items: <MedicinePlanItem>[
         MedicinePlanItem(
-          color: Color(0xFF16A34A),
+          color: FThemes.neutral.light.touch.colors.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -98,10 +99,10 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.statusStable,
-          stateColor: Color(0xFF16A34A),
+          stateColor: FThemes.neutral.light.touch.colors.primary,
         ),
         MedicinePlanItem(
-          color: Color(0xFFF59E0B),
+          color: FThemes.neutral.light.touch.colors.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -116,10 +117,10 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.statusNeedsCheckin,
-          stateColor: Color(0xFFB45309),
+          stateColor: FThemes.neutral.light.touch.colors.primary,
         ),
         MedicinePlanItem(
-          color: Color(0xFFE11D48),
+          color: FThemes.neutral.light.touch.colors.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -134,46 +135,46 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.doseStatusPending,
-          stateColor: Color(0xFFB45309),
+          stateColor: FThemes.neutral.light.touch.colors.primary,
         ),
       ],
     ),
     alerts: <MedicineAlert>[
-      const MedicineAlert(
+      MedicineAlert(
         icon: Icons.wine_bar_rounded,
         titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
         detailKey: MedicineCopyKey.alertAlcoholRiskDetail,
         actionKey: MedicineCopyKey.alertAlcoholRiskStatus,
-        color: Color(0xFFB45309),
-        softColor: Color(0xFFFEF3C7),
+        color: FThemes.neutral.light.touch.colors.primary,
+        softColor: FThemes.neutral.light.touch.colors.primary,
       ),
-      const MedicineAlert(
+      MedicineAlert(
         icon: Icons.coffee_rounded,
         titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
         detailKey: MedicineCopyKey.alertCoffeeReminderDetail,
         actionKey: MedicineCopyKey.alertCoffeeReminderStatus,
-        color: Color(0xFFB45309),
-        softColor: Color(0xFFFEF3C7),
+        color: FThemes.neutral.light.touch.colors.primary,
+        softColor: FThemes.neutral.light.touch.colors.primary,
       ),
-      const MedicineAlert(
+      MedicineAlert(
         icon: Icons.content_copy_rounded,
         titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
         detailKey: MedicineCopyKey.alertDuplicateCheckDetail,
         actionKey: MedicineCopyKey.alertDuplicateCheckStatus,
-        color: Color(0xFF0F766E),
-        softColor: Color(0xFFCCFBF1),
+        color: FThemes.neutral.light.touch.colors.primary,
+        softColor: FThemes.neutral.light.touch.colors.primary,
       ),
-      const MedicineAlert(
+      MedicineAlert(
         icon: Icons.water_drop_rounded,
         titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
         detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,
         actionKey: MedicineCopyKey.alertSpecialGroupSafetyStatus,
-        color: Color(0xFFDC2626),
-        softColor: Color(0xFFFEE2E2),
+        color: FThemes.neutral.light.touch.colors.primary,
+        softColor: FThemes.neutral.light.touch.colors.primary,
       ),
     ],
     promisePoints: <MedicinePromisePoint>[

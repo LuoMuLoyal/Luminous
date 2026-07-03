@@ -179,15 +179,19 @@ class _TypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final colors = context.theme.colors;
     final (label, color) = switch (type) {
-      UserNotificationType.aiTodaySummary => ('AI 总结', Colors.teal),
-      UserNotificationType.reportGenerated => ('报告', Colors.blue),
-      UserNotificationType.passwordChanged => ('安全', Colors.orange),
-      UserNotificationType.aiProactiveSuggestion => ('AI 建议', Colors.purple),
-      UserNotificationType.medicineMissedDose => ('用药', Colors.red),
-      UserNotificationType.medicineReminder => ('提醒', Colors.green),
-      UserNotificationType.systemAnnouncement => ('系统', Colors.indigo),
-      UserNotificationType.unknownDefaultOpenApi => ('通知', Colors.grey),
+      UserNotificationType.aiTodaySummary => ('AI 总结', colors.primary),
+      UserNotificationType.reportGenerated => ('报告', colors.primary),
+      UserNotificationType.passwordChanged => ('安全', colors.destructive),
+      UserNotificationType.aiProactiveSuggestion => ('AI 建议', colors.primary),
+      UserNotificationType.medicineMissedDose => ('用药', colors.destructive),
+      UserNotificationType.medicineReminder => ('提醒', colors.primary),
+      UserNotificationType.systemAnnouncement => ('系统', colors.primary),
+      UserNotificationType.unknownDefaultOpenApi => (
+        '通知',
+        colors.mutedForeground,
+      ),
     };
 
     return DecoratedBox(

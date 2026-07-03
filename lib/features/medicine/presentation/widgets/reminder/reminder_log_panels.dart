@@ -145,6 +145,7 @@ class _DeliveryLogRow extends StatelessWidget {
     final color = _deliveryStatusColor(
       log.status,
       destructive: colors.destructive,
+      primary: colors.primary,
       mutedForeground: colors.mutedForeground,
     );
     final row = Padding(
@@ -211,8 +212,8 @@ class _TodayLogRow extends StatelessWidget {
     final colors = context.theme.colors;
     final textTheme = Theme.of(context).textTheme;
     final color = switch (log.status) {
-      DoseLogStatus.taken => Color(0xFF0F766E),
-      DoseLogStatus.skipped => Color(0xFFB45309),
+      DoseLogStatus.taken => context.theme.colors.primary,
+      DoseLogStatus.skipped => context.theme.colors.primary,
       DoseLogStatus.missed => colors.destructive,
       DoseLogStatus.planned => colors.primary,
     };
@@ -262,12 +263,13 @@ class _TodayLogRow extends StatelessWidget {
 Color _deliveryStatusColor(
   String value, {
   required Color destructive,
+  required Color primary,
   required Color mutedForeground,
 }) {
   return switch (value) {
-    'delivered' => Color(0xFF0F766E),
+    'delivered' => primary,
     'failed' => destructive,
-    'scheduled' => Color(0xFFB45309),
+    'scheduled' => primary,
     _ => mutedForeground,
   };
 }

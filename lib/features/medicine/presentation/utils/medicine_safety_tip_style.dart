@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
 
 IconData medicineSafetyTipIcon(String category) {
   return switch (category) {
@@ -20,27 +19,27 @@ Color medicineSafetyTipColor(String category, Object palette) {
   final success = switch (palette) {
     FColors colors => colors.primary,
     Color color => color,
-    _ => Color(0xFF0F766E),
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
   final warning = switch (palette) {
     FColors colors => colors.primaryForeground,
     Color color => color,
-    _ => Color(0xFFF59E0B),
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
   final destructive = switch (palette) {
     FColors colors => colors.destructive,
     Color color => color,
-    _ => Color(0xFFB45309),
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
   return switch (category) {
-    'alcohol' => Color(0xFF16A34A),
-    'caffeine' => Color(0xFFB45309),
-    'timing' => Color(0xFF16A34A),
-    'storage' => Color(0xFF0F766E),
+    'alcohol' => FThemes.neutral.light.touch.colors.primary,
+    'caffeine' => FThemes.neutral.light.touch.colors.primary,
+    'timing' => FThemes.neutral.light.touch.colors.primary,
+    'storage' => FThemes.neutral.light.touch.colors.primary,
     'food' => success,
     'pregnancy' => warning,
     'allergy' => destructive,
-    'driving' => Color(0xFF14B8A6),
-    _ => Color(0xFF16A34A),
+    'driving' => FThemes.neutral.light.touch.colors.primary,
+    _ => FThemes.neutral.light.touch.colors.primary,
   };
 }

@@ -47,7 +47,10 @@ void main() {
       expect(AppRadiusTokens.level2, lessThanOrEqualTo(AppRadiusTokens.level3));
       expect(AppRadiusTokens.level3, lessThanOrEqualTo(AppRadiusTokens.level4));
       expect(AppRadiusTokens.level4, lessThanOrEqualTo(AppRadiusTokens.level5));
-      expect(AppRadiusTokens.level5, lessThanOrEqualTo(AppRadiusTokens.levelFull));
+      expect(
+        AppRadiusTokens.level5,
+        lessThanOrEqualTo(AppRadiusTokens.levelFull),
+      );
     });
   });
 }

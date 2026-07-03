@@ -36,7 +36,9 @@ class RecordAiInputBar extends StatelessWidget {
         decoration: BoxDecoration(
           color: colors.background,
           borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-          border: Border.all(color: Color(0xFF0F766E).withValues(alpha: 0.32)),
+          border: Border.all(
+            color: context.theme.colors.primary.withValues(alpha: 0.32),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -45,9 +47,9 @@ class RecordAiInputBar extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 FLucideIcons.sparkles,
-                color: Color(0xFF7C3AED),
+                color: context.theme.colors.primary,
                 size: AppSpacingTokens.level6,
               ),
               const SizedBox(width: AppSpacingTokens.level4),
@@ -72,7 +74,7 @@ class RecordAiInputBar extends StatelessWidget {
               const SizedBox(width: AppSpacingTokens.level3),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Color(0xFF0F766E).withValues(alpha: 0.12),
+                  color: context.theme.colors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(
                     AppRadiusTokens.levelFull,
                   ),
@@ -85,7 +87,7 @@ class RecordAiInputBar extends StatelessWidget {
                   child: Text(
                     l10n.recordAiBadge,
                     style: textTheme.labelSmall?.copyWith(
-                      color: Color(0xFF0F766E),
+                      color: context.theme.colors.primary,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -131,7 +133,7 @@ class _IconActionButton extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacingTokens.level1),
           child: Icon(
             icon,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: context.theme.colors.foreground,
             size: AppSpacingTokens.level5,
           ),
         ),
@@ -404,9 +406,9 @@ class RecordGuideRow extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 FLucideIcons.lightbulb,
-                color: Color(0xFFF59E0B),
+                color: context.theme.colors.primary,
                 size: AppSpacingTokens.level5,
               ),
               const SizedBox(width: AppSpacingTokens.level3),
@@ -424,13 +426,13 @@ class RecordGuideRow extends StatelessWidget {
               Text(
                 l10n.recordGuideAction,
                 style: textTheme.labelLarge?.copyWith(
-                  color: Color(0xFF16A34A),
+                  color: context.theme.colors.primary,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const Icon(
+              Icon(
                 FLucideIcons.chevronRight,
-                color: Color(0xFF16A34A),
+                color: context.theme.colors.primary,
                 size: AppSpacingTokens.level5,
               ),
             ],

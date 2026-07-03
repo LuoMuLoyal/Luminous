@@ -34,9 +34,9 @@ class TodayOverviewSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(
+                Icon(
                   FLucideIcons.badgeCheck,
-                  color: Color(0xFF0F766E),
+                  color: context.theme.colors.primary,
                   size: AppSpacingTokens.level5,
                 ),
                 const SizedBox(width: AppSpacingTokens.level2),
