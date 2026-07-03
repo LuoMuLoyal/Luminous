@@ -17,6 +17,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_
 import 'package:luminous/features/medicine/presentation/widgets/views/medicine_workspace_view.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicinePage extends ConsumerWidget {
@@ -148,6 +149,7 @@ class _MedicineMobileShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
     return DecoratedBox(
@@ -163,7 +165,13 @@ class _MedicineMobileShell extends StatelessWidget {
             AppSpacingTokens.level10,
           ),
           children: [
-            const _MedicineMobileTopBar(),
+            AppTopBar(
+              title: l10n.tabMedicine,
+              trailing: const [
+                _MedicineSafeGuardPill(),
+                _MedicineNotificationButton(),
+              ],
+            ),
             const SizedBox(height: AppSpacingTokens.level4),
             const _MedicineMobileSearchBar(),
             const SizedBox(height: AppSpacingTokens.level4),
@@ -199,33 +207,6 @@ class _MedicineDesktopShell extends StatelessWidget {
           children: [child],
         ),
       ),
-    );
-  }
-}
-
-class _MedicineMobileTopBar extends StatelessWidget {
-  const _MedicineMobileTopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Text(
-            l10n.tabMedicine,
-            style: AppTypographyToken.level9
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level3),
-        const _MedicineSafeGuardPill(),
-        const SizedBox(width: AppSpacingTokens.level2),
-        const _MedicineNotificationButton(),
-      ],
     );
   }
 }

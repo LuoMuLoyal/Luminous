@@ -87,3 +87,8 @@ flutter test
 - Source: `Lucent/docs/openapi.json`
 - Regenerate: `dart run tool/regenerate_lucent_openapi.dart`
 - Generated output: `packages/lucent_openapi/`
+
+## forui reference
+
+- C:\Users\25080\AppData\Local\Pub\Cache\hosted\pub.dev\forui-0.23.0
+- https://forui.dev/docs

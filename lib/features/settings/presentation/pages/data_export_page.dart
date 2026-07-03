@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
@@ -58,16 +58,9 @@ class DataExportPage extends ConsumerWidget {
       ),
     );
 
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.mineSettingExportTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.mineSettingExportTitle,
+      child: SingleChildScrollView(child: content),
     );
   }
 

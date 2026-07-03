@@ -14,7 +14,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AllergyEditPage extends HookConsumerWidget {
@@ -122,9 +122,11 @@ class AllergyEditPage extends HookConsumerWidget {
       }
     });
 
+    final Widget content;
+
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -142,192 +144,140 @@ class AllergyEditPage extends HookConsumerWidget {
           ),
         ),
       );
+    } else {
+      final snapshot = ref.watch(healthContextSnapshotProvider);
+      snapshot.whenOrNull(data: (_) => tryPrefill());
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(
-              isNew ? l10n.mineEditAllergyNewTitle : l10n.mineEditAllergyTitle,
+      if (notFound.value) {
+        final width = MediaQuery.sizeOf(context).width;
+        content = ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: width < AppBreakpoints.mobile ? 24 : 32,
             ),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
-        ),
-      );
-    }
-
-    final snapshot = ref.watch(healthContextSnapshotProvider);
-    snapshot.whenOrNull(data: (_) => tryPrefill());
-
-    if (notFound.value) {
-      final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppStateErrorView(
-                title: l10n.mineErrorDescription,
-                description: '',
-                icon: FLucideIcons.circleAlert,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () => context.pop(),
-              ),
-            ],
-          ),
-        ),
-      );
-
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.mineEditAllergyTitle),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
-        ),
-      );
-    }
-
-    if (isEdit && !prefilled.value && !snapshot.hasError) {
-      final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
-          ),
-          child: const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_MineEditFormLoading()],
-          ),
-        ),
-      );
-
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.mineEditAllergyTitle),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
-        ),
-      );
-    }
-
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.level4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _enumDropdown<HealthAllergyKind>(
-                    label: l10n.mineEditFieldKind,
-                    value: kind.value,
-                    values: HealthAllergyKind.values,
-                    onChanged: (v) => kind.value = v,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  FTextField(
-                    key: const Key('allergy-label-field'),
-                    control: FTextFieldControl.managed(
-                      controller: labelController,
-                    ),
-                    label: Text(l10n.mineEditFieldLabel),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  FTextField(
-                    control: FTextFieldControl.managed(
-                      controller: reactionController,
-                    ),
-                    label: Text(l10n.mineEditFieldReaction),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  FSelect<HealthAllergySeverity>.rich(
-                    label: Text(l10n.mineEditFieldSeverity),
-                    hint: l10n.mineEditFieldSeverity,
-                    format: (value) => value.value,
-                    control: FSelectControl.lifted(
-                      value: severity.value,
-                      onChange: (v) {
-                        if (v != null) severity.value = v;
-                      },
-                    ),
-                    children: HealthAllergySeverity.values
-                        .map(
-                          (v) =>
-                              FSelectItem.item(title: Text(v.value), value: v),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  FTextField(
-                    control: FTextFieldControl.managed(
-                      controller: noteController,
-                    ),
-                    label: Text(l10n.mineEditFieldNote),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level5),
-                  FButton(
-                    key: const Key('allergy-save-button'),
-                    onPress: onSave,
-                    child: Text(l10n.mineEditSaveAction),
-                  ),
-                  if (!isNew) ...[
-                    const SizedBox(height: AppSpacingTokens.level3),
-                    FButton(
-                      key: const Key('allergy-delete-button'),
-                      variant: FButtonVariant.destructive,
-                      onPress: onDelete,
-                      child: Text(l10n.mineEditDeleteAction),
-                    ),
-                  ],
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppStateErrorView(
+                  title: l10n.mineErrorDescription,
+                  description: '',
+                  icon: FLucideIcons.circleAlert,
+                  actionLabel: l10n.todayRetryAction,
+                  onAction: () => context.pop(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(
-            isNew ? l10n.mineEditAllergyNewTitle : l10n.mineEditAllergyTitle,
           ),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+        );
+      } else if (isEdit && !prefilled.value && !snapshot.hasError) {
+        final width = MediaQuery.sizeOf(context).width;
+        content = ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [_MineEditFormLoading()],
+            ),
+          ),
+        );
+      } else {
+        final width = MediaQuery.sizeOf(context).width;
+        content = ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _enumDropdown<HealthAllergyKind>(
+                        label: l10n.mineEditFieldKind,
+                        value: kind.value,
+                        values: HealthAllergyKind.values,
+                        onChanged: (v) => kind.value = v,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      FTextField(
+                        key: const Key('allergy-label-field'),
+                        control: FTextFieldControl.managed(
+                          controller: labelController,
+                        ),
+                        label: Text(l10n.mineEditFieldLabel),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: reactionController,
+                        ),
+                        label: Text(l10n.mineEditFieldReaction),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      FSelect<HealthAllergySeverity>.rich(
+                        label: Text(l10n.mineEditFieldSeverity),
+                        hint: l10n.mineEditFieldSeverity,
+                        format: (value) => value.value,
+                        control: FSelectControl.lifted(
+                          value: severity.value,
+                          onChange: (v) {
+                            if (v != null) severity.value = v;
+                          },
+                        ),
+                        children: HealthAllergySeverity.values
+                            .map(
+                              (v) => FSelectItem.item(
+                                title: Text(v.value),
+                                value: v,
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      FTextField(
+                        control: FTextFieldControl.managed(
+                          controller: noteController,
+                        ),
+                        label: Text(l10n.mineEditFieldNote),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: AppSpacingTokens.level5),
+                      FButton(
+                        key: const Key('allergy-save-button'),
+                        onPress: onSave,
+                        child: Text(l10n.mineEditSaveAction),
+                      ),
+                      if (!isNew) ...[
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        FButton(
+                          key: const Key('allergy-delete-button'),
+                          variant: FButtonVariant.destructive,
+                          onPress: onDelete,
+                          child: Text(l10n.mineEditDeleteAction),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    final title = isNew
+        ? l10n.mineEditAllergyNewTitle
+        : l10n.mineEditAllergyTitle;
+
+    return PageScaffold(
+      title: title,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

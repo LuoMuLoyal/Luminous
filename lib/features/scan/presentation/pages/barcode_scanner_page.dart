@@ -8,7 +8,8 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:forui/forui.dart';
 
@@ -128,26 +129,22 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: const Text('扫描条形码'),
-          prefixes: [const AppBackButton()],
-          suffixes: [
-            FButton.icon(
-              variant: FButtonVariant.ghost,
-              onPress: () => _controller?.toggleTorch(),
-              child: Icon(
-                _controller?.torchEnabled == true
-                    ? FLucideIcons.zap
-                    : FLucideIcons.zapOff,
-                color: context.theme.colors.primaryForeground,
-              ),
-            ),
-          ],
+    final l10n = AppLocalizations.of(context)!;
+    return PageScaffold(
+      title: l10n.medicineQuickActionBarcodeTitle,
+      useSafeArea: false,
+      actions: [
+        FButton.icon(
+          variant: FButtonVariant.ghost,
+          onPress: () => _controller?.toggleTorch(),
+          child: Icon(
+            _controller?.torchEnabled == true
+                ? FLucideIcons.zap
+                : FLucideIcons.zapOff,
+            color: context.theme.colors.primaryForeground,
+          ),
         ),
-      ),
+      ],
       child: _controller == null
           ? const Center(child: FCircularProgress())
           : Stack(

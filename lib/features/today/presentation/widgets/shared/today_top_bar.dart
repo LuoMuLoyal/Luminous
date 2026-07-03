@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -23,35 +24,16 @@ class TodayTopBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.todayHeroTitle,
-                style: AppTypographyToken.level9
-                    .display(context)
-                    .copyWith(fontWeight: FontWeight.w800),
-              ),
-              const SizedBox(height: AppSpacingTokens.level1),
-              AppSkeletonText(
-                text: greetingSubtitle(l10n, moment),
-                style: AppTypographyToken.level4
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
-                widthFactor: 0.64,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level4),
-        const _AssistantEntryButton(),
-        const SizedBox(width: AppSpacingTokens.level2),
-        const _NotificationButton(),
-      ],
+    return AppTopBar(
+      title: l10n.todayHeroTitle,
+      subtitle: AppSkeletonText(
+        text: greetingSubtitle(l10n, moment),
+        style: AppTypographyToken.level4
+            .body(context)
+            .copyWith(color: colors.mutedForeground),
+        widthFactor: 0.64,
+      ),
+      trailing: const [_AssistantEntryButton(), _NotificationButton()],
     );
   }
 }

@@ -20,7 +20,7 @@ import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis
 import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_summary_card.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -34,9 +34,11 @@ class RecordDetailPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
+    final Widget content;
+
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -54,70 +56,51 @@ class RecordDetailPage extends ConsumerWidget {
           ),
         ),
       );
+    } else {
+      final detail = ref.watch(dailyRecordDetailProvider(recordId));
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.recordDetailTitle),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              detail.when(
+                data: (record) => _RecordDetailBody(record: record),
+                loading: () => const _RecordDetailLoading(),
+                error: (_, __) => AppStateErrorView(
+                  title: l10n.recordDetailErrorTitle,
+                  description: l10n.recordErrorDescription,
+                  icon: FLucideIcons.notebookPen,
+                  actionLabel: l10n.todayRetryAction,
+                  onAction: () =>
+                      ref.invalidate(dailyRecordDetailProvider(recordId)),
+                  tone: AppStateTone.warning,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    final detail = ref.watch(dailyRecordDetailProvider(recordId));
+    final actions = <Widget>[
+      if (session.canAccessProtectedData)
+        FButton.icon(
+          variant: FButtonVariant.ghost,
+          onPress: () =>
+              pushAuthRequiredRoute(context, '/record/$recordId/edit'),
+          child: const Icon(FLucideIcons.pencil),
+        ),
+    ];
 
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            detail.when(
-              data: (record) => _RecordDetailBody(record: record),
-              loading: () => const _RecordDetailLoading(),
-              error: (_, __) => AppStateErrorView(
-                title: l10n.recordDetailErrorTitle,
-                description: l10n.recordErrorDescription,
-                icon: FLucideIcons.notebookPen,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () =>
-                    ref.invalidate(dailyRecordDetailProvider(recordId)),
-                tone: AppStateTone.warning,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.recordDetailTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-          suffixes: [
-            FButton.icon(
-              variant: FButtonVariant.ghost,
-              onPress: () =>
-                  pushAuthRequiredRoute(context, '/record/$recordId/edit'),
-              child: const Icon(FLucideIcons.pencil),
-            ),
-          ],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.recordDetailTitle,
+      actions: actions,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

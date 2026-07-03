@@ -32,7 +32,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/record_occur
 import 'package:luminous/features/record/presentation/widgets/meal/meal_dish_editor_section.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -442,6 +442,7 @@ class RecordEditPage extends HookConsumerWidget {
     }
 
     final session = ref.watch(authSessionProvider);
+    final Widget content;
 
     // Trigger load on first eligible frame
     useEffect(() {
@@ -457,7 +458,7 @@ class RecordEditPage extends HookConsumerWidget {
 
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -475,26 +476,9 @@ class RecordEditPage extends HookConsumerWidget {
           ),
         ),
       );
-
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.recordEditAction),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
-          ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
-        ),
-      );
-    }
-
-    if (!loaded.value) {
+    } else if (!loaded.value) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -505,157 +489,137 @@ class RecordEditPage extends HookConsumerWidget {
           ),
         ),
       );
-
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.recordEditAction),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+    } else {
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RecordOccurredAtFields(
+                      date: recordOccurredAt.value ?? DateTime.now(),
+                      time: recordOccurredTime.value,
+                      onDateTap: pickRecordDate,
+                      onTimeTap: pickRecordTime,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    DailyRecordFormFields(
+                      kind: kind.value,
+                      onKindChanged: onKindChanged,
+                      valueController: valueController,
+                      unitController: unitController,
+                      titleController: titleController,
+                      noteController: noteController,
+                    ),
+                    if (kind.value == DailyRecordKind.sleep) ...[
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      SleepStructuredFields(
+                        l10n: l10n,
+                        bedtime: sleepBedtime.value,
+                        wakeTime: sleepWakeTime.value,
+                        quality: sleepQuality.value,
+                        deepMinutes: sleepDeepMinutes.value,
+                        lightMinutes: sleepLightMinutes.value,
+                        remMinutes: sleepRemMinutes.value,
+                        onBedtimeChanged: (v) => sleepBedtime.value = v,
+                        onWakeTimeChanged: (v) => sleepWakeTime.value = v,
+                        onQualityChanged: (v) => sleepQuality.value = v,
+                        onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
+                        onLightMinutesChanged: (v) =>
+                            sleepLightMinutes.value = v,
+                        onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
+                      ),
+                    ],
+                    if (kind.value == DailyRecordKind.meal) ...[
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      MealDishEditorSection(
+                        dishNames: mealDishNames.value,
+                        enabled: !saving.value && !deleting.value,
+                        onDishChanged: (index, value) {
+                          final next = [...mealDishNames.value];
+                          if (index >= 0 && index < next.length) {
+                            next[index] = value;
+                            mealDishNames.value = next;
+                          }
+                        },
+                        onDishRemoved: (index) {
+                          final next = [...mealDishNames.value]
+                            ..removeAt(index);
+                          mealDishNames.value = next;
+                        },
+                        onDishAdded: () {
+                          mealDishNames.value = [...mealDishNames.value, ''];
+                        },
+                      ),
+                      if (canConfirmMealAnalysis.value) ...[
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: FButton(
+                            variant: FButtonVariant.outline,
+                            key: const Key('meal-confirm-action'),
+                            onPress: () => confirmMealAnalysis.value = true,
+                            child: Text(
+                              confirmMealAnalysis.value
+                                  ? l10n.recordMealConfirmActionSelected
+                                  : l10n.recordMealConfirmAction,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    DailyRecordImageAttachmentField(
+                      l10n: l10n,
+                      selectedBytes: selectedImage.value?.bytes,
+                      selectedFileName: selectedImage.value?.fileName,
+                      existingAttachment: attachmentsChanged.value
+                          ? null
+                          : existingImageAttachment.value,
+                      onPick: onPickImage,
+                      onRemove: onRemoveImage,
+                      enabled: !saving.value && !deleting.value,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level5),
+                    FButton(
+                      key: const Key('record-edit-save-action'),
+                      onPress: saving.value ? null : onSave,
+                      child: Text(l10n.mineEditSaveAction),
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    FButton(
+                      key: const Key('record-edit-delete-action'),
+                      variant: FButtonVariant.destructive,
+                      onPress: deleting.value || saving.value ? null : onDelete,
+                      prefix: deleting.value
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: FCircularProgress(),
+                            )
+                          : const Icon(FLucideIcons.trash2, size: 18),
+                      child: Text(l10n.recordDeleteAction),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.level4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  RecordOccurredAtFields(
-                    date: recordOccurredAt.value ?? DateTime.now(),
-                    time: recordOccurredTime.value,
-                    onDateTap: pickRecordDate,
-                    onTimeTap: pickRecordTime,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  DailyRecordFormFields(
-                    kind: kind.value,
-                    onKindChanged: onKindChanged,
-                    valueController: valueController,
-                    unitController: unitController,
-                    titleController: titleController,
-                    noteController: noteController,
-                  ),
-                  if (kind.value == DailyRecordKind.sleep) ...[
-                    const SizedBox(height: AppSpacingTokens.level3),
-                    SleepStructuredFields(
-                      l10n: l10n,
-                      bedtime: sleepBedtime.value,
-                      wakeTime: sleepWakeTime.value,
-                      quality: sleepQuality.value,
-                      deepMinutes: sleepDeepMinutes.value,
-                      lightMinutes: sleepLightMinutes.value,
-                      remMinutes: sleepRemMinutes.value,
-                      onBedtimeChanged: (v) => sleepBedtime.value = v,
-                      onWakeTimeChanged: (v) => sleepWakeTime.value = v,
-                      onQualityChanged: (v) => sleepQuality.value = v,
-                      onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
-                      onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
-                      onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
-                    ),
-                  ],
-                  if (kind.value == DailyRecordKind.meal) ...[
-                    const SizedBox(height: AppSpacingTokens.level3),
-                    MealDishEditorSection(
-                      dishNames: mealDishNames.value,
-                      enabled: !saving.value && !deleting.value,
-                      onDishChanged: (index, value) {
-                        final next = [...mealDishNames.value];
-                        if (index >= 0 && index < next.length) {
-                          next[index] = value;
-                          mealDishNames.value = next;
-                        }
-                      },
-                      onDishRemoved: (index) {
-                        final next = [...mealDishNames.value]..removeAt(index);
-                        mealDishNames.value = next;
-                      },
-                      onDishAdded: () {
-                        mealDishNames.value = [...mealDishNames.value, ''];
-                      },
-                    ),
-                    if (canConfirmMealAnalysis.value) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: FButton(
-                          variant: FButtonVariant.outline,
-                          key: const Key('meal-confirm-action'),
-                          onPress: () => confirmMealAnalysis.value = true,
-                          child: Text(
-                            confirmMealAnalysis.value
-                                ? l10n.recordMealConfirmActionSelected
-                                : l10n.recordMealConfirmAction,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  DailyRecordImageAttachmentField(
-                    l10n: l10n,
-                    selectedBytes: selectedImage.value?.bytes,
-                    selectedFileName: selectedImage.value?.fileName,
-                    existingAttachment: attachmentsChanged.value
-                        ? null
-                        : existingImageAttachment.value,
-                    onPick: onPickImage,
-                    onRemove: onRemoveImage,
-                    enabled: !saving.value && !deleting.value,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level5),
-                  FButton(
-                    key: const Key('record-edit-save-action'),
-                    onPress: saving.value ? null : onSave,
-                    child: Text(l10n.mineEditSaveAction),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  FButton(
-                    key: const Key('record-edit-delete-action'),
-                    variant: FButtonVariant.destructive,
-                    onPress: deleting.value || saving.value ? null : onDelete,
-                    prefix: deleting.value
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: FCircularProgress(),
-                          )
-                        : const Icon(FLucideIcons.trash2, size: 18),
-                    child: Text(l10n.recordDeleteAction),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.recordEditAction),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.recordEditAction,
+      child: SingleChildScrollView(child: content),
     );
   }
 

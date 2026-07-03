@@ -97,7 +97,7 @@ class _AuthPageHeader extends StatelessWidget {
       return Row(
         children: [
           SizedBox(
-            width: 48,
+            width: AppSpacingTokens.level8,
             child: leading == null
                 ? null
                 : Align(alignment: Alignment.centerLeft, child: leading),
@@ -106,10 +106,12 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+              style: AppTypographyToken.level7
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
           ),
-          const SizedBox(width: 48),
+          const SizedBox(width: AppSpacingTokens.level8),
         ],
       );
     }
@@ -126,7 +128,9 @@ class _AuthPageHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: typography.body.lg.copyWith(fontWeight: FontWeight.w700),
+          style: AppTypographyToken.level7
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: AppSpacingTokens.level2),

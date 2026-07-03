@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -23,24 +24,15 @@ class MineTopBar extends ConsumerWidget {
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            l10n.tabMine,
-            style: AppTypographyToken.level9
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level4),
+    return AppTopBar(
+      title: l10n.tabMine,
+      trailing: [
         _IconActionButton(
           tooltip: l10n.mineHeaderNotifications,
           icon: FLucideIcons.bell,
           onTap: onNotificationsTap,
           showBadge: hasUnread,
         ),
-        const SizedBox(width: AppSpacingTokens.level2),
         _IconActionButton(
           key: const Key('mine-settings-action'),
           tooltip: l10n.mineHeaderSettings,
@@ -83,8 +75,8 @@ class _IconActionButton extends StatelessWidget {
           ),
           if (showBadge)
             Positioned(
-              right: 6,
-              top: 6,
+              right: AppSpacingTokens.level2,
+              top: AppSpacingTokens.level2,
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
@@ -95,7 +87,7 @@ class _IconActionButton extends StatelessWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    const SizedBox.square(dimension: 10),
+                    const SizedBox.square(dimension: AppSpacingTokens.level3),
               ),
             ),
         ],

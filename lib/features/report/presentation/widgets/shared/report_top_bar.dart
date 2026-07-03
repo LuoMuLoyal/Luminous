@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
@@ -28,81 +29,59 @@ class ReportTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.tabReport,
-                    style: AppTypographyToken.level9
-                        .display(context)
-                        .copyWith(fontWeight: FontWeight.w800),
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  Text(
-                    dateRangeLabel,
-                    style: AppTypographyToken.level4
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.level4),
-            ReportPeriodPill(
-              range: selectedQuery.range,
-              onTap: () => _showRangePicker(context),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacingTokens.level3),
-        const _ReportSnapshotStatus(),
-        const SizedBox(height: AppSpacingTokens.level3),
-        Row(
-          children: [
-            Expanded(
-              child: FButton(
-                key: const Key('report-generate-action'),
-                onPress: isGenerating ? null : onGenerate,
-                prefix: Icon(
-                  isGenerating
-                      ? FLucideIcons.loaderCircle
-                      : FLucideIcons.sparkles,
-                  size: 16,
-                ),
-                child: Text(
-                  l10n.reportGenerateAction,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.level3),
-            Tooltip(
-              message: l10n.reportSyncAction,
-              child: FButton(
-                key: const Key('report-sync-action'),
-                variant: FButtonVariant.secondary,
-                onPress: isSyncing ? null : onSync,
-                child: Icon(
-                  isSyncing
-                      ? FLucideIcons.loaderCircle
-                      : FLucideIcons.refreshCw,
-                  size: 16,
-                ),
-              ),
-            ),
-          ],
+    return AppTopBar(
+      title: l10n.tabReport,
+      subtitle: Text(dateRangeLabel),
+      trailing: [
+        ReportPeriodPill(
+          range: selectedQuery.range,
+          onTap: () => _showRangePicker(context),
         ),
       ],
+      bottom: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _ReportSnapshotStatus(),
+          const SizedBox(height: AppSpacingTokens.level3),
+          Row(
+            children: [
+              Expanded(
+                child: FButton(
+                  key: const Key('report-generate-action'),
+                  onPress: isGenerating ? null : onGenerate,
+                  prefix: Icon(
+                    isGenerating
+                        ? FLucideIcons.loaderCircle
+                        : FLucideIcons.sparkles,
+                    size: 16,
+                  ),
+                  child: Text(
+                    l10n.reportGenerateAction,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacingTokens.level3),
+              Tooltip(
+                message: l10n.reportSyncAction,
+                child: FButton(
+                  key: const Key('report-sync-action'),
+                  variant: FButtonVariant.secondary,
+                  onPress: isSyncing ? null : onSync,
+                  child: Icon(
+                    isSyncing
+                        ? FLucideIcons.loaderCircle
+                        : FLucideIcons.refreshCw,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

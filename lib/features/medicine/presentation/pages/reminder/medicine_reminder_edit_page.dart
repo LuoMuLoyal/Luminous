@@ -21,7 +21,7 @@ import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_reminder_form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderEditPage extends HookConsumerWidget {
@@ -259,9 +259,12 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       );
     }
 
+    final Widget content;
+    final List<Widget> actions;
+
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -279,166 +282,143 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           ),
         ),
       );
+      actions = const [];
+    } else {
+      final snapshot = ref.watch(healthContextSnapshotProvider);
+      final reminders = ref.watch(medicineReminderListProvider);
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(
-              isEdit
-                  ? l10n.medicineReminderEditTitle
-                  : l10n.medicineReminderNewTitle,
-            ),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+      snapshot.whenOrNull(
+        data: (data) =>
+            reminders.whenOrNull(data: (items) => tryPrefill(data, items)),
+      );
+
+      final isLoading =
+          snapshot.isLoading || reminders.isLoading || !prefilled.value;
+      final hasError = snapshot.hasError || reminders.hasError;
+
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (hasError)
+                AppStateErrorView(
+                  title: l10n.medicineReminderNotFoundTitle,
+                  description: '',
+                  icon: FLucideIcons.circleAlert,
+                  actionLabel: l10n.todayRetryAction,
+                  onAction: () {
+                    ref.invalidate(healthContextSnapshotProvider);
+                    ref.invalidate(medicineReminderListProvider);
+                  },
+                )
+              else if (isLoading)
+                const ReminderLoading()
+              else if (!isEdit && selectedMedicineId.value == null)
+                _MedicineSelectorPrompt(
+                  onSelect: () => context.push('/medicine/search'),
+                )
+              else
+                Builder(
+                  builder: (ctx) {
+                    final snapshotData = snapshot.requireValue;
+                    final reminderItems = reminders.requireValue;
+
+                    return ReminderFormBody(
+                      snapshot: snapshotData,
+                      reminders: reminderItems,
+                      selectedMedicineId: selectedMedicineId.value,
+                      frequency: frequency.value,
+                      selectedWeekdays: selectedWeekdays.value,
+                      times: times.value,
+                      startDate: startDate.value,
+                      endDate: endDate.value,
+                      isActive: isActive.value,
+                      soundPreference: soundPreference,
+                      noteController: noteController,
+                      isSaving: formState.isSaving,
+                      isEdit: isEdit,
+                      onMedicineChanged: isEdit
+                          ? null
+                          : (value) {
+                              if (value == null) return;
+                              selectedMedicineId.value = value;
+                              applyReminderState(
+                                remindersFor(reminderItems, value),
+                              );
+                            },
+                      onFrequencyChanged: (value) {
+                        frequency.value = value;
+                        if (value == ReminderFrequency.daily) {
+                          selectedWeekdays.value = <int>{};
+                        } else if (selectedWeekdays.value.isEmpty) {
+                          selectedWeekdays.value = {DateTime.now().weekday % 7};
+                        }
+                      },
+                      onWeekdayToggled: (day) {
+                        final updated = selectedWeekdays.value.toSet();
+                        if (updated.contains(day)) {
+                          updated.remove(day);
+                        } else {
+                          updated.add(day);
+                        }
+                        selectedWeekdays.value = updated;
+                        if (updated.isEmpty) {
+                          frequency.value = ReminderFrequency.daily;
+                        }
+                      },
+                      onAddTime: addTime,
+                      onRemoveTime: (index) {
+                        if (times.value.length > 1) {
+                          final updated = [...times.value];
+                          updated.removeAt(index);
+                          times.value = updated;
+                        }
+                      },
+                      onStartDateTap: pickStartDate,
+                      onEndDateTap: pickEndDate,
+                      onClearEndDate: endDate.value == null
+                          ? null
+                          : () => endDate.value = null,
+                      onActiveChanged: (value) => isActive.value = value,
+                      onSoundChanged: (value) => ref
+                          .read(medicineReminderSoundProvider.notifier)
+                          .setSound(value),
+                      onSave: () => onSave(snapshotData, reminderItems),
+                      onDelete: isEdit
+                          ? () => confirmDelete(reminderItems)
+                          : null,
+                    );
+                  },
+                ),
+            ],
           ),
         ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
-        ),
       );
+
+      actions = [
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: formState.isSaving || isLoading
+              ? null
+              : () => onSave(snapshot.asData?.value, reminders.asData?.value),
+          child: Text(l10n.mineEditSaveAction),
+        ),
+      ];
     }
 
-    final snapshot = ref.watch(healthContextSnapshotProvider);
-    final reminders = ref.watch(medicineReminderListProvider);
-
-    snapshot.whenOrNull(
-      data: (data) =>
-          reminders.whenOrNull(data: (items) => tryPrefill(data, items)),
-    );
-
-    final isLoading =
-        snapshot.isLoading || reminders.isLoading || !prefilled.value;
-    final hasError = snapshot.hasError || reminders.hasError;
     final title = isEdit
         ? l10n.medicineReminderEditTitle
         : l10n.medicineReminderNewTitle;
 
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (hasError)
-              AppStateErrorView(
-                title: l10n.medicineReminderNotFoundTitle,
-                description: '',
-                icon: FLucideIcons.circleAlert,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () {
-                  ref.invalidate(healthContextSnapshotProvider);
-                  ref.invalidate(medicineReminderListProvider);
-                },
-              )
-            else if (isLoading)
-              const ReminderLoading()
-            else if (!isEdit && selectedMedicineId.value == null)
-              _MedicineSelectorPrompt(
-                onSelect: () => context.push('/medicine/search'),
-              )
-            else
-              Builder(
-                builder: (ctx) {
-                  final snapshotData = snapshot.requireValue;
-                  final reminderItems = reminders.requireValue;
-
-                  return ReminderFormBody(
-                    snapshot: snapshotData,
-                    reminders: reminderItems,
-                    selectedMedicineId: selectedMedicineId.value,
-                    frequency: frequency.value,
-                    selectedWeekdays: selectedWeekdays.value,
-                    times: times.value,
-                    startDate: startDate.value,
-                    endDate: endDate.value,
-                    isActive: isActive.value,
-                    soundPreference: soundPreference,
-                    noteController: noteController,
-                    isSaving: formState.isSaving,
-                    isEdit: isEdit,
-                    onMedicineChanged: isEdit
-                        ? null
-                        : (value) {
-                            if (value == null) return;
-                            selectedMedicineId.value = value;
-                            applyReminderState(
-                              remindersFor(reminderItems, value),
-                            );
-                          },
-                    onFrequencyChanged: (value) {
-                      frequency.value = value;
-                      if (value == ReminderFrequency.daily) {
-                        selectedWeekdays.value = <int>{};
-                      } else if (selectedWeekdays.value.isEmpty) {
-                        selectedWeekdays.value = {DateTime.now().weekday % 7};
-                      }
-                    },
-                    onWeekdayToggled: (day) {
-                      final updated = selectedWeekdays.value.toSet();
-                      if (updated.contains(day)) {
-                        updated.remove(day);
-                      } else {
-                        updated.add(day);
-                      }
-                      selectedWeekdays.value = updated;
-                      if (updated.isEmpty) {
-                        frequency.value = ReminderFrequency.daily;
-                      }
-                    },
-                    onAddTime: addTime,
-                    onRemoveTime: (index) {
-                      if (times.value.length > 1) {
-                        final updated = [...times.value];
-                        updated.removeAt(index);
-                        times.value = updated;
-                      }
-                    },
-                    onStartDateTap: pickStartDate,
-                    onEndDateTap: pickEndDate,
-                    onClearEndDate: endDate.value == null
-                        ? null
-                        : () => endDate.value = null,
-                    onActiveChanged: (value) => isActive.value = value,
-                    onSoundChanged: (value) => ref
-                        .read(medicineReminderSoundProvider.notifier)
-                        .setSound(value),
-                    onSave: () => onSave(snapshotData, reminderItems),
-                    onDelete: isEdit
-                        ? () => confirmDelete(reminderItems)
-                        : null,
-                  );
-                },
-              ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(title),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-          suffixes: [
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: formState.isSaving || isLoading
-                  ? null
-                  : () =>
-                        onSave(snapshot.asData?.value, reminders.asData?.value),
-              child: Text(l10n.mineEditSaveAction),
-            ),
-          ],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: title,
+      actions: actions,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

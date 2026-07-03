@@ -8,7 +8,7 @@ import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
@@ -70,16 +70,9 @@ class HelpSettingsPage extends ConsumerWidget {
       ),
     );
 
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.mineSettingHelpTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.mineSettingHelpTitle,
+      child: SingleChildScrollView(child: content),
     );
   }
 

@@ -177,8 +177,6 @@ class _MobileSearchLayout extends StatelessWidget {
       key: const PageStorageKey<String>('medicine-search-scroll'),
       padding: const EdgeInsets.only(bottom: AppSpacingTokens.level6),
       children: [
-        SearchTopBar(l10n: l10n),
-        const SizedBox(height: AppSpacingTokens.level5),
         SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
         const SizedBox(height: AppSpacingTokens.level4),
         SourceSwitch(

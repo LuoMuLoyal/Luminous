@@ -14,7 +14,7 @@ import 'package:luminous/features/health_context/data/providers/health_context_d
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ProfileEditPage extends HookConsumerWidget {
@@ -59,9 +59,11 @@ class ProfileEditPage extends HookConsumerWidget {
       ref.read(healthProfileFormProvider.notifier).save(input);
     }
 
+    final Widget content;
+
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -79,117 +81,95 @@ class ProfileEditPage extends HookConsumerWidget {
           ),
         ),
       );
+    } else {
+      ref.listen<HealthProfileFormState>(healthProfileFormProvider, (_, next) {
+        if (next.saved) {
+          AppToast.show(context, l10n.mineEditSavedToast);
+          if (context.mounted) context.pop();
+        }
+      });
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.mineEditProfileTitle),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+      final snapshot = ref.watch(healthContextSnapshotProvider);
+
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              snapshot.when(
+                data: (ctx) {
+                  initFromSnapshot(ctx.profile);
+                  return Padding(
+                    padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: birthDateController,
+                          ),
+                          label: Text(l10n.mineEditFieldBirthDate),
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: heightCmController,
+                          ),
+                          label: Text(l10n.mineEditFieldHeightCm),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: bloodTypeController,
+                          ),
+                          label: Text(l10n.mineEditFieldBloodType),
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        _enumDropdown<HealthUnitSystem>(
+                          label: l10n.mineEditFieldUnitSystem,
+                          value: unitSystem.value,
+                          values: HealthUnitSystem.values,
+                          onChanged: (v) => unitSystem.value = v,
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        FSwitch(
+                          label: Text(l10n.mineEditFieldOnboardingCompleted),
+                          value: onboardingCompleted.value ?? false,
+                          onChange: (v) => onboardingCompleted.value = v,
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level5),
+                        FButton(
+                          onPress: onSave,
+                          child: Text(l10n.mineEditSaveAction),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                loading: () => const _MineEditFormLoading(),
+                error: (_, __) => AppStateErrorView(
+                  title: l10n.mineErrorTitle,
+                  description: l10n.mineErrorDescription,
+                  icon: FLucideIcons.badge,
+                  actionLabel: l10n.todayRetryAction,
+                  onAction: () => ref.invalidate(healthContextSnapshotProvider),
+                  tone: AppStateTone.warning,
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    ref.listen<HealthProfileFormState>(healthProfileFormProvider, (_, next) {
-      if (next.saved) {
-        AppToast.show(context, l10n.mineEditSavedToast);
-        if (context.mounted) context.pop();
-      }
-    });
-
-    final snapshot = ref.watch(healthContextSnapshotProvider);
-
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            snapshot.when(
-              data: (ctx) {
-                initFromSnapshot(ctx.profile);
-                return Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: birthDateController,
-                        ),
-                        label: Text(l10n.mineEditFieldBirthDate),
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: heightCmController,
-                        ),
-                        label: Text(l10n.mineEditFieldHeightCm),
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: bloodTypeController,
-                        ),
-                        label: Text(l10n.mineEditFieldBloodType),
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level3),
-                      _enumDropdown<HealthUnitSystem>(
-                        label: l10n.mineEditFieldUnitSystem,
-                        value: unitSystem.value,
-                        values: HealthUnitSystem.values,
-                        onChanged: (v) => unitSystem.value = v,
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level3),
-                      FSwitch(
-                        label: Text(l10n.mineEditFieldOnboardingCompleted),
-                        value: onboardingCompleted.value ?? false,
-                        onChange: (v) => onboardingCompleted.value = v,
-                      ),
-                      const SizedBox(height: AppSpacingTokens.level5),
-                      FButton(
-                        onPress: onSave,
-                        child: Text(l10n.mineEditSaveAction),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              loading: () => const _MineEditFormLoading(),
-              error: (_, __) => AppStateErrorView(
-                title: l10n.mineErrorTitle,
-                description: l10n.mineErrorDescription,
-                icon: FLucideIcons.badge,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () => ref.invalidate(healthContextSnapshotProvider),
-                tone: AppStateTone.warning,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.mineEditProfileTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.mineEditProfileTitle,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

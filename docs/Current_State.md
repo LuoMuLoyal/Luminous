@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-03 (~18:15 local time)
+Last updated: 2026-07-03 (~21:50 local time)
 
 This file records current implementation facts only. Product direction lives in `Product_Vision.md`; next work lives in `Next_Plan.md`; reusable rules live in `Project_Guardrails.md`.
 
@@ -46,6 +46,7 @@ This file records current implementation facts only. Product direction lives in 
 - **Typography 统一到 Forui level token**（2026-07-03）：新增 `AppTypographyTokens`，将 `level1`–`level10` 映射到 Forui `FTypeface` 的 `xs3`–`xl4`，并把 runtime `lib/` 中所有 Material `textTheme.*` 引用（约 302 处）迁移到 `AppTypographyToken.levelN.body(context)` / `.display(context)`；剩余硬编码 `fontSize:` 也替换为对应 token。`flutter analyze --no-pub` 为 0 issues；测试修复工作仍未处理。
 - **布局溢出修复**（2026-07-03）：修复了 `report_metrics_grid.dart` 在移动/桌面断点下的 Column 底部溢出（ mobile 164→192 / tablet 176→204 / desktop 188→216 ），并压缩了 Mine 退出登录状态的首屏高度（头像 84→64、account/archive/status 的 padding/间距收紧），使 `mine_page_test` 中档案入口在未登录首屏可点击并弹出登录对话框。`test/report/report_page_test.dart`、`test/app/shell_page_test.dart`、`test/mine/mine_page_test.dart` 全部通过。
 - **全仓库 lint 自动清理**（2026-07-03）：在 `analysis_options.yaml` 启用 `prefer_const_constructors` 并移除 `test/**` 排除后，运行 `dart fix --apply` 修复 179 处 lint（`prefer_const_constructors`、`unused_import`、`duplicate_import`、`sort_child_properties_last`），涉及 56 个文件。`flutter analyze --no-pub` 现为 0 issues，`flutter test --no-pub` 854/854 passed。
+- **Header 统一重构**（2026-07-03）：子页全面改用 `PageScaffold`（`FScaffold + FHeader.nested + SafeArea` 的统一封装，默认 `AppBackButton`），Tab 根页顶部栏全面改用 `AppTopBar`（`level9.display + w800`）。涉及 assistant、scan、notification、record、mine、medicine、settings、search、report、today 等页面；`SearchPage` 移除双重 header；`AuthShell` 标题样式与占位尺寸改用 design token。`flutter analyze --no-pub` 0 issues，`flutter test --no-pub` 854/854 passed。
 
 ## UX Audit Remediation (Completed)
 

@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
@@ -130,16 +130,9 @@ class AboutSettingsPage extends ConsumerWidget {
       ),
     );
 
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.mineSettingAboutTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.mineSettingAboutTitle,
+      child: SingleChildScrollView(child: content),
     );
   }
 

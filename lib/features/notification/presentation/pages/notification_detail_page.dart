@@ -9,7 +9,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
@@ -70,16 +70,10 @@ class NotificationDetailPage extends ConsumerWidget {
       ),
     );
 
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.notificationDetailTitle),
-          titleAlignment: Alignment.centerLeft,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.notificationDetailTitle,
+      centerTitle: false,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

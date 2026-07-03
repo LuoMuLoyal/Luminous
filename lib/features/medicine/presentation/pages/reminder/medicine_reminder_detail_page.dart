@@ -18,7 +18,7 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/medicin
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_log_panels.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {
@@ -34,9 +34,11 @@ class MedicineReminderDetailPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
+    final Widget content;
+
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -54,80 +56,63 @@ class MedicineReminderDetailPage extends ConsumerWidget {
           ),
         ),
       );
+    } else {
+      final detail = ref.watch(
+        medicineReminderDetailProvider(currentMedicineId),
+      );
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.medicineReminderDetailTitle),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              detail.when(
+                data: (data) => _ReminderDetailBody(data: data),
+                loading: () => const ReminderLoading(),
+                error: (error, _) {
+                  final isNotFound =
+                      error is StateError &&
+                      error.message == 'Medicine not found.';
+                  return AppStateErrorView(
+                    title: isNotFound
+                        ? l10n.medicineReminderNotFoundTitle
+                        : l10n.medicineReminderGenericErrorTitle,
+                    description: isNotFound
+                        ? l10n.medicineReminderNotFoundDescription
+                        : l10n.medicineReminderGenericErrorDescription,
+                    icon: FLucideIcons.circleAlert,
+                    actionLabel: l10n.todayRetryAction,
+                    onAction: () => ref.invalidate(
+                      medicineReminderDetailProvider(currentMedicineId),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    final detail = ref.watch(medicineReminderDetailProvider(currentMedicineId));
+    final actions = <Widget>[
+      if (session.canAccessProtectedData)
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: () => context.push(
+            '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}/edit',
+          ),
+          child: Text(l10n.recordEditAction),
+        ),
+    ];
 
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            detail.when(
-              data: (data) => _ReminderDetailBody(data: data),
-              loading: () => const ReminderLoading(),
-              error: (error, _) {
-                final isNotFound =
-                    error is StateError &&
-                    error.message == 'Medicine not found.';
-                return AppStateErrorView(
-                  title: isNotFound
-                      ? l10n.medicineReminderNotFoundTitle
-                      : l10n.medicineReminderGenericErrorTitle,
-                  description: isNotFound
-                      ? l10n.medicineReminderNotFoundDescription
-                      : l10n.medicineReminderGenericErrorDescription,
-                  icon: FLucideIcons.circleAlert,
-                  actionLabel: l10n.todayRetryAction,
-                  onAction: () => ref.invalidate(
-                    medicineReminderDetailProvider(currentMedicineId),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.medicineReminderDetailTitle),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-          suffixes: [
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: () => context.push(
-                '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}/edit',
-              ),
-              child: Text(l10n.recordEditAction),
-            ),
-          ],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.medicineReminderDetailTitle,
+      actions: actions,
+      child: SingleChildScrollView(child: content),
     );
   }
 }

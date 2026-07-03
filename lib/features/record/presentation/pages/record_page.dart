@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
+import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
@@ -196,10 +197,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
     return ShellDeferredContent(
       child: FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader(title: Text(l10n.tabRecord), suffixes: headerActions),
-        ),
+        header: AppTopBar(title: l10n.tabRecord, trailing: headerActions),
         child: fab == null
             ? scaffoldBody
             : Stack(

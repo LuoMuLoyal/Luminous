@@ -15,7 +15,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_ri
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_metric_chip.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/medicine_risk_check_loading.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {
@@ -55,27 +55,17 @@ class MedicineRiskCheckPage extends ConsumerWidget {
       );
     }
 
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.medicineRiskCheckPageTitle),
-          titleAlignment: Alignment.center,
-          prefixes: const [AppBackButton()],
-        ),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          child: ResponsiveContentFrame(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: width < AppBreakpoints.mobile ? 24 : 32,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [bodyContent],
-              ),
+    return PageScaffold(
+      title: l10n.medicineRiskCheckPageTitle,
+      child: SingleChildScrollView(
+        child: ResponsiveContentFrame(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [bodyContent],
             ),
           ),
         ),

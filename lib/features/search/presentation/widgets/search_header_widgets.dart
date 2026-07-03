@@ -1,4 +1,3 @@
-export 'sections/search_top_bar.dart';
 export 'sections/search_desktop_tabs.dart';
 export 'sections/search_input.dart';
 export 'sections/search_source_switch.dart';

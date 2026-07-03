@@ -24,7 +24,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/daily_record
 import 'package:luminous/features/record/presentation/widgets/forms/record_occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/report/presentation/providers/report_dashboard_provider.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -304,10 +304,11 @@ class RecordCreatePage extends HookConsumerWidget {
     }
 
     final session = ref.watch(authSessionProvider);
+    final Widget content;
 
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
-      final content = ResponsiveContentFrame(
+      content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < AppBreakpoints.mobile ? 24 : 32,
@@ -325,106 +326,85 @@ class RecordCreatePage extends HookConsumerWidget {
           ),
         ),
       );
+    } else {
+      final dateStr = formatRecordDate(recordDate.value);
 
-      return FScaffold(
-        header: SafeArea(
-          bottom: false,
-          child: FHeader.nested(
-            title: Text(l10n.recordAddAction),
-            titleAlignment: Alignment.center,
-            prefixes: [const AppBackButton()],
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < AppBreakpoints.mobile ? 24 : 32,
           ),
-        ),
-        child: SafeArea(
-          top: false,
-          child: SingleChildScrollView(child: content),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    RecordOccurredAtFields(
+                      date: recordDate.value,
+                      time: recordTime.value,
+                      onDateTap: pickRecordDate,
+                      onTimeTap: pickRecordTime,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    DailyRecordFormFields(
+                      kind: kind.value,
+                      onKindChanged: onKindChanged,
+                      valueController: valueController,
+                      unitController: unitController,
+                      titleController: titleController,
+                      noteController: noteController,
+                    ),
+                    if (kind.value == DailyRecordKind.sleep) ...[
+                      const SizedBox(height: AppSpacingTokens.level3),
+                      SleepStructuredFields(
+                        l10n: l10n,
+                        bedtime: sleepBedtime.value,
+                        wakeTime: sleepWakeTime.value,
+                        quality: sleepQuality.value,
+                        deepMinutes: sleepDeepMinutes.value,
+                        lightMinutes: sleepLightMinutes.value,
+                        remMinutes: sleepRemMinutes.value,
+                        onBedtimeChanged: (v) => sleepBedtime.value = v,
+                        onWakeTimeChanged: (v) => sleepWakeTime.value = v,
+                        onQualityChanged: (v) => sleepQuality.value = v,
+                        onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
+                        onLightMinutesChanged: (v) =>
+                            sleepLightMinutes.value = v,
+                        onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
+                      ),
+                    ],
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    DailyRecordImageAttachmentField(
+                      l10n: l10n,
+                      selectedBytes: selectedImage.value?.bytes,
+                      selectedFileName: selectedImage.value?.fileName,
+                      existingAttachment: null,
+                      onPick: onPickImage,
+                      onRemove: onRemoveImage,
+                      enabled: !saving.value,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level5),
+                    FButton(
+                      key: const Key('record-create-save-action'),
+                      onPress: saving.value ? null : () => onSave(dateStr),
+                      child: Text(l10n.mineEditSaveAction),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
 
-    final dateStr = formatRecordDate(recordDate.value);
-
-    final width = MediaQuery.sizeOf(context).width;
-    final content = ResponsiveContentFrame(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppSpacingTokens.level4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  RecordOccurredAtFields(
-                    date: recordDate.value,
-                    time: recordTime.value,
-                    onDateTap: pickRecordDate,
-                    onTimeTap: pickRecordTime,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  DailyRecordFormFields(
-                    kind: kind.value,
-                    onKindChanged: onKindChanged,
-                    valueController: valueController,
-                    unitController: unitController,
-                    titleController: titleController,
-                    noteController: noteController,
-                  ),
-                  if (kind.value == DailyRecordKind.sleep) ...[
-                    const SizedBox(height: AppSpacingTokens.level3),
-                    SleepStructuredFields(
-                      l10n: l10n,
-                      bedtime: sleepBedtime.value,
-                      wakeTime: sleepWakeTime.value,
-                      quality: sleepQuality.value,
-                      deepMinutes: sleepDeepMinutes.value,
-                      lightMinutes: sleepLightMinutes.value,
-                      remMinutes: sleepRemMinutes.value,
-                      onBedtimeChanged: (v) => sleepBedtime.value = v,
-                      onWakeTimeChanged: (v) => sleepWakeTime.value = v,
-                      onQualityChanged: (v) => sleepQuality.value = v,
-                      onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
-                      onLightMinutesChanged: (v) => sleepLightMinutes.value = v,
-                      onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
-                    ),
-                  ],
-                  const SizedBox(height: AppSpacingTokens.level3),
-                  DailyRecordImageAttachmentField(
-                    l10n: l10n,
-                    selectedBytes: selectedImage.value?.bytes,
-                    selectedFileName: selectedImage.value?.fileName,
-                    existingAttachment: null,
-                    onPick: onPickImage,
-                    onRemove: onRemoveImage,
-                    enabled: !saving.value,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level5),
-                  FButton(
-                    key: const Key('record-create-save-action'),
-                    onPress: saving.value ? null : () => onSave(dateStr),
-                    child: Text(l10n.mineEditSaveAction),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-
-    return FScaffold(
-      header: SafeArea(
-        bottom: false,
-        child: FHeader.nested(
-          title: Text(l10n.recordAddAction),
-          titleAlignment: Alignment.center,
-          prefixes: [const AppBackButton()],
-        ),
-      ),
-      child: SafeArea(top: false, child: SingleChildScrollView(child: content)),
+    return PageScaffold(
+      title: l10n.recordAddAction,
+      child: SingleChildScrollView(child: content),
     );
   }
 
