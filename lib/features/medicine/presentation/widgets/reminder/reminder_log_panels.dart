@@ -225,12 +225,7 @@ class _DeliveryLogRow extends StatelessWidget {
       ),
     );
     if (isLast) return row;
-    return Column(
-      children: [
-        row,
-        AppDivider(color: colors.border),
-      ],
-    );
+    return Column(children: [row, const AppDivider()]);
   }
 }
 
@@ -318,12 +313,7 @@ class _TodayLogRow extends StatelessWidget {
       ),
     );
     if (isLast) return row;
-    return Column(
-      children: [
-        row,
-        AppDivider(color: colors.border),
-      ],
-    );
+    return Column(children: [row, const AppDivider()]);
   }
 }
 

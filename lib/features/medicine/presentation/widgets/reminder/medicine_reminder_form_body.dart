@@ -72,7 +72,6 @@ class ReminderFormBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final medicines = snapshot.currentMedicines
         .where((item) => item.isCurrent)
         .toList(growable: false);
@@ -100,7 +99,7 @@ class ReminderFormBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _SectionTitle(label: l10n.medicineReminderMedicineSectionTitle),
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 if (isEdit && selectedMedicine != null)
                   SelectedMedicineRow(medicine: selectedMedicine)
                 else
@@ -149,7 +148,7 @@ class ReminderFormBody extends StatelessWidget {
                   ),
                 ),
                 if (frequency != ReminderFrequency.daily) ...[
-                  AppDivider(color: colors.border),
+                  const AppDivider(),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacingTokens.level4,
@@ -161,7 +160,7 @@ class ReminderFormBody extends StatelessWidget {
                     ),
                   ),
                 ],
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.level4,
@@ -173,14 +172,14 @@ class ReminderFormBody extends StatelessWidget {
                     onRemoveTime: onRemoveTime,
                   ),
                 ),
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 ValueActionRow(
                   icon: FLucideIcons.calendar,
                   title: l10n.medicineReminderStartDateLabel,
                   value: dateLabel(l10n, startDate),
                   onTap: onStartDateTap,
                 ),
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 ValueActionRow(
                   icon: FLucideIcons.calendarX2,
                   title: l10n.medicineReminderEndDateLabel,
@@ -203,14 +202,14 @@ class ReminderFormBody extends StatelessWidget {
                   value: isActive,
                   onChanged: onActiveChanged,
                 ),
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 UnavailableMethodRow(
                   icon: FLucideIcons.messageSquare,
                   title: l10n.medicineReminderSmsLabel,
                   subtitle: l10n.medicineReminderSmsUnavailableHint,
                   status: l10n.medicineReminderUnavailableStatus,
                 ),
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 SoundPreferenceRow(
                   value: soundPreference,
                   onChanged: onSoundChanged,

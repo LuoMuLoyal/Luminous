@@ -23,8 +23,6 @@ class RecordMobileTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       key: const Key('record-timeline'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,8 +44,7 @@ class RecordMobileTimeline extends StatelessWidget {
                   l10n: l10n,
                   isLast: index == entries.length - 1,
                 ),
-                if (index < entries.length - 1)
-                  AppDivider(color: colors.border),
+                if (index < entries.length - 1) const AppDivider(),
               ],
             ],
           ),
@@ -133,12 +130,9 @@ class _TimelineRow extends StatelessWidget {
                     ),
                   ),
                   if (!isLast)
-                    SizedBox(
+                    const SizedBox(
                       height: AppSpacingTokens.level8,
-                      child: AppDivider(
-                        axis: Axis.vertical,
-                        color: colors.border,
-                      ),
+                      child: AppDivider(axis: Axis.vertical),
                     ),
                 ],
               ),

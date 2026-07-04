@@ -18,7 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
-- [2026-07-04](migration-log/2026-07-04.md) — Doc coverage warning automation
+- [2026-07-04](migration-log/2026-07-04.md) — Doc coverage warning automation + phase guide
 - [2026-07-03](migration-log/2026-07-03.md) — Docs restructure + Forui debt closeout
 - [2026-07-02](migration-log/2026-07-02.md)
 - [2026-07-01](migration-log/2026-07-01.md)

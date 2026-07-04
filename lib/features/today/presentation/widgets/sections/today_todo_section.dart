@@ -31,7 +31,6 @@ class TodayTodoSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final items = buildTodoItems(l10n, dashboard);
 
     return TodaySection(
@@ -45,7 +44,7 @@ class TodayTodoSection extends ConsumerWidget {
                 item: items[index],
                 onTap: () => _handleTap(context, ref, items[index]),
               ),
-              if (index < items.length - 1) AppDivider(color: colors.border),
+              if (index < items.length - 1) const AppDivider(),
             ],
           ],
         ),

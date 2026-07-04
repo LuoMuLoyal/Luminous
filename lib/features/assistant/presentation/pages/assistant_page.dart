@@ -19,7 +19,7 @@ import 'package:luminous/features/assistant/presentation/widgets/views/assistant
 import 'package:luminous/features/assistant/presentation/widgets/sections/assistant_hero.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_state_card.dart';
+
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
@@ -249,7 +249,8 @@ class AssistantPage extends HookConsumerWidget {
               if (session.isRestoring) ...[
                 const AssistantLoadingView(),
               ] else if (!session.canAccessProtectedData) ...[
-                AssistantStateCard(
+                AppStateMessageView(
+                  maxWidth: 560,
                   title: l10n.authNotSignedIn,
                   description: l10n.assistantSignedOutDescription,
                   icon: FLucideIcons.circleAlert,
@@ -266,7 +267,8 @@ class AssistantPage extends HookConsumerWidget {
                   !chatState.hasConversation) ...[
                 const AssistantLoadingView(),
               ] else if (capabilities == null) ...[
-                AssistantStateCard(
+                AppStateMessageView(
+                  maxWidth: 560,
                   title: l10n.assistantLoadErrorTitle,
                   description:
                       chatState.capabilityError ??

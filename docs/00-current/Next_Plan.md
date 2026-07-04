@@ -8,16 +8,22 @@ Last updated: 2026-07-01
 
 **Shipping Luminous v4.0.0**。A 类占位交互已接入；剩余 B/C 类项需要后端/API 工作或产品决策。
 
+长期阶段排序见 [[00-current/Work_Phase_Guide]]。当前进入 Forui 迁移落地收敛期：先稳定当前工作树与移动端可见 UI，再处理可靠性和架构债。
+
 ## 立即下一步
 
-1. **运行完整 v4.0.0 验证门**
+1. **完成 Forui 迁移落地收敛**
+   - 修复移动端已确认的可见 overflow、截断、空态/登录态层级问题
+   - 收口当前基础组件改动，避免继续扩大改动面
+   - 对被改 Tab 运行页面测试并做移动端可见性复核
+2. **运行完整 v4.0.0 验证门**
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
    - `dart run tool/run_fullstack_checks.dart`（Android 模拟器 + Lucent test runtime）
-2. **门通过后打 v4.0.0 tag**
-3. **助手演进限定在 concrete 场景**
+3. **门通过后打 v4.0.0 tag**
+4. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals
    - Memory 保持可选、显式、用户控制
-4. **Web 作为 deliberate 决策保留**
+5. **Web 作为 deliberate 决策保留**
    - `Luminous-site` 是竞赛/营销表面，不是签入式产品壳
    - 如后续需要认证 Web 报告预览，另开专用计划
 

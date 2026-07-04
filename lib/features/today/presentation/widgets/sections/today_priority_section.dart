@@ -33,7 +33,6 @@ class TodayPrioritySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final items = buildPriorityItems(l10n, dashboard);
 
     return TodaySection(
@@ -48,7 +47,7 @@ class TodayPrioritySection extends ConsumerWidget {
                 item: items[index],
                 onTap: () => _handleItemTap(context, ref, items[index]),
               ),
-              if (index < items.length - 1) AppDivider(color: colors.border),
+              if (index < items.length - 1) const AppDivider(),
             ],
           ],
         ),

@@ -15,17 +15,29 @@ import 'package:luminous/core/widgets/common/app_back_button.dart';
 class PageScaffold extends StatelessWidget {
   const PageScaffold({
     super.key,
-    required this.title,
+    this.title,
+    this.titleWidget,
     this.centerTitle = true,
     this.leading = const AppBackButton(),
     this.actions = const [],
     required this.child,
     this.resizeToAvoidBottomInset = true,
     this.useSafeArea = true,
-  });
+    this.headerStyle = const FHeaderStyleDelta.context(),
+  }) : assert(
+         title != null || titleWidget != null,
+         'title or titleWidget must be provided',
+       );
 
   /// 页面标题，会包装为 [Text]。
-  final String title;
+  ///
+  /// 与 [titleWidget] 互斥，优先使用 [titleWidget]。
+  final String? title;
+
+  /// 自定义标题 widget。
+  ///
+  /// 传入时优先于 [title]。
+  final Widget? titleWidget;
 
   /// 标题是否居中。默认为 `true`；设为 `false` 时标题左对齐。
   final bool centerTitle;
@@ -47,16 +59,20 @@ class PageScaffold extends StatelessWidget {
   /// 全屏页面（如扫码）可设为 `false`，让 child 自行处理安全区域。
   final bool useSafeArea;
 
+  /// 自定义 header 样式。默认为 Forui 上下文样式。
+  final FHeaderStyleDelta headerStyle;
+
   @override
   Widget build(BuildContext context) {
     return FScaffold(
       childPad: false,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       header: FHeader.nested(
-        title: Text(title),
+        title: titleWidget ?? Text(title!),
         titleAlignment: centerTitle ? Alignment.center : Alignment.centerLeft,
         prefixes: leading == null ? const [] : [leading!],
         suffixes: actions,
+        style: headerStyle,
       ),
       child: useSafeArea ? SafeArea(top: false, child: child) : child,
     );

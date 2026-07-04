@@ -20,8 +20,6 @@ class ReportFindingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +30,7 @@ class ReportFindingsSection extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        AppDivider(color: colors.border),
+        const AppDivider(),
         const SizedBox(height: AppSpacingTokens.level4),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,

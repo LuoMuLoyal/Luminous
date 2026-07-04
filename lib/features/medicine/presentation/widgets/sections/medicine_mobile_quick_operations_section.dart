@@ -11,8 +11,6 @@ class _QuickOperationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final operations = [
       _QuickOperation(
         icon: FLucideIcons.plus,
@@ -69,8 +67,7 @@ class _QuickOperationSection extends StatelessWidget {
             children: [
               for (var index = 0; index < operations.length; index += 1) ...[
                 _QuickOperationRow(operation: operations[index]),
-                if (index < operations.length - 1)
-                  AppDivider(color: colors.border),
+                if (index < operations.length - 1) const AppDivider(),
               ],
             ],
           ),

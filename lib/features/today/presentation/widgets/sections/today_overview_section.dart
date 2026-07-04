@@ -170,11 +170,9 @@ class _VerticalMetricDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return SizedBox(
       height: height,
-      child: AppDivider(axis: Axis.vertical, color: colors.border),
+      child: const AppDivider(axis: Axis.vertical),
     );
   }
 }

@@ -139,7 +139,7 @@ class _TimelineEntryRow extends StatelessWidget {
               if (!isLast)
                 SizedBox(
                   height: dense ? 88 : 104,
-                  child: AppDivider(axis: Axis.vertical, color: colors.border),
+                  child: const AppDivider(axis: Axis.vertical),
                 ),
             ],
           ),

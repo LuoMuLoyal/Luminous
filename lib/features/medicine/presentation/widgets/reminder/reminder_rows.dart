@@ -42,12 +42,7 @@ class ReminderInfoRow extends StatelessWidget {
 
     if (!showDivider) return tile;
 
-    return Column(
-      children: [
-        tile,
-        AppDivider(color: colors.border),
-      ],
-    );
+    return Column(children: [tile, const AppDivider()]);
   }
 }
 

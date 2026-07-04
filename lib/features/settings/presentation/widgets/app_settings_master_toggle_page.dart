@@ -32,8 +32,6 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final width = MediaQuery.sizeOf(context).width;
     final content = ResponsiveContentFrame(
       child: Padding(
@@ -52,7 +50,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
               suffix: FSwitch(value: masterValue, onChange: onMasterChanged),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            AppDivider(color: colors.border),
+            const AppDivider(),
             const SizedBox(height: AppSpacingTokens.level4),
             _DisabledScope(
               disabled: !masterValue,

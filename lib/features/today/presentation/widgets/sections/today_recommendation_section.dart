@@ -21,7 +21,6 @@ class TodayRecommendationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
     final recommendationsAsync = ref.watch(todayRecommendationsProvider);
 
     return TodaySection(
@@ -45,7 +44,7 @@ class TodayRecommendationSection extends ConsumerWidget {
                 ),
               );
               if (index < recommendations.length - 1) {
-                rows.add(AppDivider(color: colors.border));
+                rows.add(const AppDivider());
               }
             }
             if (rows.isEmpty) {

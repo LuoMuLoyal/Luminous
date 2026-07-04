@@ -129,7 +129,7 @@ class ReportAiSummarySection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            AppDivider(color: colors.border),
+            const AppDivider(),
             if (content.summaryText != null) ...[
               Padding(
                 padding: const EdgeInsets.only(
@@ -144,7 +144,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   widthFactor: 0.94,
                 ),
               ),
-              AppDivider(color: colors.border),
+              const AppDivider(),
             ],
             for (var index = 0; index < content.bullets.length; index += 1) ...[
               Padding(
@@ -181,12 +181,11 @@ class ReportAiSummarySection extends StatelessWidget {
                   ],
                 ),
               ),
-              if (index < content.bullets.length - 1)
-                AppDivider(color: colors.border),
+              if (index < content.bullets.length - 1) const AppDivider(),
             ],
             if (content.footer != null) ...[
               const SizedBox(height: AppSpacingTokens.level3),
-              AppDivider(color: colors.border),
+              const AppDivider(),
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
                 content.footer!,

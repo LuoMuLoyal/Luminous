@@ -139,7 +139,7 @@ class TodayAiSummarySection extends ConsumerWidget {
               ],
             ),
           ),
-          AppDivider(color: colors.border),
+          const AppDivider(),
           if (content.summary != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(

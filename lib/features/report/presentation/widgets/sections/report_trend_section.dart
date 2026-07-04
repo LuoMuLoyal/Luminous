@@ -51,7 +51,7 @@ class ReportTrendSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        AppDivider(color: colors.border),
+        const AppDivider(),
         const SizedBox(height: AppSpacingTokens.level4),
         Wrap(
           spacing: AppSpacingTokens.level4,
@@ -124,7 +124,7 @@ class _TrendPlaceholder extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       for (var index = 0; index < 5; index += 1)
-                        AppDivider(color: colors.border),
+                        const AppDivider(),
                     ],
                   ),
                   Align(

@@ -167,7 +167,7 @@ class _SafetyTipsSection extends ConsumerWidget {
               text: tips[index].text,
             ),
           ),
-          if (index < tips.length - 1) AppDivider(color: colors.border),
+          if (index < tips.length - 1) const AppDivider(),
         ],
       ],
     );
@@ -208,7 +208,7 @@ class _SafetyTipsSection extends ConsumerWidget {
               ],
             ),
           ),
-          if (index < 3) AppDivider(color: colors.border),
+          if (index < 3) const AppDivider(),
         ],
       ],
     );

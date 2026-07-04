@@ -64,8 +64,7 @@ class _SafetyEngineSection extends StatelessWidget {
             children: [
               for (var index = 0; index < visibleAlerts.length; index += 1) ...[
                 _SafetyAlertRow(alert: visibleAlerts[index], l10n: l10n),
-                if (index < visibleAlerts.length - 1)
-                  AppDivider(color: colors.border),
+                if (index < visibleAlerts.length - 1) const AppDivider(),
               ],
             ],
           ),

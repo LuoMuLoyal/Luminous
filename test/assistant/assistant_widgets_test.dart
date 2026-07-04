@@ -6,7 +6,6 @@ import 'package:luminous/features/assistant/presentation/providers/assistant_con
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_state_card.dart';
 
 import '../helpers/test_forui_app.dart';
 
@@ -56,11 +55,12 @@ void main() {
     });
   });
 
-  group('AssistantStateCard', () {
-    testWidgets('renders title and description', (tester) async {
+  group('Assistant state message', () {
+    testWidgets('renders title and description with maxWidth', (tester) async {
       await tester.pumpWidget(
         _shell(
-          const AssistantStateCard(
+          const AppStateMessageView(
+            maxWidth: 560,
             title: 'Ready',
             description: 'Assistant is active',
             icon: FLucideIcons.check,
@@ -74,7 +74,8 @@ void main() {
     testWidgets('renders action button', (tester) async {
       await tester.pumpWidget(
         _shell(
-          AssistantStateCard(
+          AppStateMessageView(
+            maxWidth: 560,
             title: 'Error',
             description: 'Something went wrong',
             icon: FLucideIcons.circleAlert,

@@ -159,8 +159,6 @@ class RecordQuickEntryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     // Split into a primary 2x2 grid and a secondary 1x3 row.
     final primary = actions.take(4).toList(growable: false);
     final secondary = actions.skip(4).toList(growable: false);
@@ -185,7 +183,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
                 onQuickAction: onQuickAction,
               ),
               if (secondary.isNotEmpty) ...[
-                AppDivider(color: colors.border),
+                const AppDivider(),
                 _QuickRecordRow3(
                   actions: secondary,
                   l10n: l10n,
@@ -246,7 +244,7 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
                 const Expanded(child: SizedBox.shrink()),
             ],
           ),
-          if (rowIndex < rows.length - 1) AppDivider(color: colors.border),
+          if (rowIndex < rows.length - 1) const AppDivider(),
         ],
       ],
     );

@@ -145,12 +145,7 @@ class _ArchiveRow extends StatelessWidget {
 
     if (!showDivider) return row;
 
-    return Column(
-      children: [
-        row,
-        AppDivider(color: colors.border),
-      ],
-    );
+    return Column(children: [row, const AppDivider()]);
   }
 }
 
