@@ -28,6 +28,9 @@ Last updated: 2026-07-04
   - VS Code 项目设置已启用 `dart.mcpServer`
   - app-side AI 试验 seam 建立在 `lib/core/ai/`，默认关闭，不替代 Lucent-backed
     assistant/report 生产链路
+  - 编译期环境变量统一通过 `lib/core/config/env_keys.dart` + `env_reader.dart`
+    读取，Web/JS 构建不再依赖动态 `String.fromEnvironment(key)`；`.env.example`
+    现在同时承载 app 运行时与 full-stack E2E 所需键。
 - Forui-first 编码统一性优化完成：
   - 页面骨架统一：`PageScaffold`（26 子页）+ `AppTopBar`（5 Tab 根页）+ `AuthShell`（5 Auth 页）。
   - Material 组件全面迁移：按钮、进度、InkWell、图标、对话框、输入、选择、列表、卡片、Chip、导航、Tab、Drawer 等。

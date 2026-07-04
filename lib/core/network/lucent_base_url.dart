@@ -1,11 +1,12 @@
+import 'package:luminous/core/config/env_keys.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:luminous/core/config/env_reader.dart';
 
 abstract final class LucentBaseUrl {
-  static const String defineKey = 'LUCENT_BASE_URL';
+  static String get defineKey => EnvKey.lucentBaseUrl.wireName;
 
   static String get value {
-    final raw = dotenv.get(defineKey, fallback: '');
+    final raw = EnvReader.string(EnvKey.lucentBaseUrl);
     final normalized = raw.trim();
     if (normalized.isEmpty) {
       if (kReleaseMode) {

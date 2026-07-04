@@ -16,7 +16,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "toolArgs": [
-        "--dart-define-from-file=.env.fullstack-e2e"
+        "--dart-define-from-file=.env"
       ]
     }
   ]

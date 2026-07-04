@@ -38,7 +38,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_dotenv: ^5.2.1
   flutter_riverpod: ^3.3.1
   flutter_hooks: ^0.21.3
   hooks_riverpod: ^3.0.0
@@ -132,13 +131,13 @@ melos:
       run: dart run tool/run_fullstack_checks.dart
     fullstack-auth:
       description: Run the full-stack auth smoke lane
-      run: flutter test integration_test/auth/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+      run: flutter test integration_test/auth/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define-from-file=.env
     fullstack-record:
       description: Run the full-stack record CRUD lane
-      run: flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+      run: flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define-from-file=.env
     fullstack-sleep:
       description: Run the full-stack sleep structured-entry lane
-      run: flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+      run: flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define-from-file=.env
     fullstack-today-report:
       description: Run the full-stack today/report AI lane
-      run: flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define-from-file=.env.fullstack-e2e
+      run: flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define-from-file=.env

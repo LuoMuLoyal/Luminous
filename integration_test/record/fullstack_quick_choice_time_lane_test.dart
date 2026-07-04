@@ -11,7 +11,7 @@ import '../support/fullstack_e2e_helpers.dart';
 ///   dart run tool/run_fullstack_checks.dart
 ///
 /// Or with an env-style define file:
-///   dart run tool/run_fullstack_checks.dart --define-file .env.fullstack-e2e
+///   dart run tool/run_fullstack_checks.dart --define-file .env
 ///
 /// Or standalone (e.g. for debugging a single lane):
 ///   cd Luminous

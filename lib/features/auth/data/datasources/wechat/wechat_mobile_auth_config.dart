@@ -1,19 +1,13 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/config/env_reader.dart';
 
 abstract final class WechatMobileAuthConfig {
-  static const String appIdDefineKey = 'WECHAT_MOBILE_APP_ID';
-  static const String iosUniversalLinkDefineKey = 'WECHAT_IOS_UNIVERSAL_LINK';
+  static String get appIdDefineKey => EnvKey.wechatMobileAppId.wireName;
+  static String get iosUniversalLinkDefineKey =>
+      EnvKey.wechatIosUniversalLink.wireName;
 
-  static String get appId => _env(appIdDefineKey);
-  static String get iosUniversalLink => _env(iosUniversalLinkDefineKey);
-
-  static String _env(String key) {
-    try {
-      return dotenv.get(key, fallback: '');
-    } catch (_) {
-      return '';
-    }
-  }
-
+  static String get appId => EnvReader.string(EnvKey.wechatMobileAppId);
+  static String get iosUniversalLink =>
+      EnvReader.string(EnvKey.wechatIosUniversalLink);
   static bool get hasAppId => appId.trim().isNotEmpty;
 }

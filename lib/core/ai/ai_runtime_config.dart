@@ -1,3 +1,6 @@
+import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/config/env_reader.dart';
+
 enum AiRuntimeProviderKind { none, aiToolkit, genUi, custom }
 
 extension AiRuntimeProviderKindX on AiRuntimeProviderKind {
@@ -26,17 +29,17 @@ class AiRuntimeEnvironment {
   });
 
   factory AiRuntimeEnvironment.fromPlatform() {
-    const enabled = bool.fromEnvironment(
-      'LUMINOUS_EXPERIMENTAL_AI_RUNTIME',
-      defaultValue: false,
+    final enabled = EnvReader.boolValue(
+      EnvKey.luminousExperimentalAiRuntime,
+      fallback: false,
     );
-    const providerValue = String.fromEnvironment(
-      'LUMINOUS_AI_RUNTIME_PROVIDER',
-      defaultValue: 'none',
+    final providerValue = EnvReader.string(
+      EnvKey.luminousAiRuntimeProvider,
+      fallback: 'none',
     );
-    const genUiEnabled = bool.fromEnvironment(
-      'LUMINOUS_ENABLE_GEN_UI',
-      defaultValue: false,
+    final genUiEnabled = EnvReader.boolValue(
+      EnvKey.luminousEnableGenUi,
+      fallback: false,
     );
 
     return AiRuntimeEnvironment._fromEnvironment(

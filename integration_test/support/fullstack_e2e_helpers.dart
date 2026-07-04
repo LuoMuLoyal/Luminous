@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/app.dart';
+import 'package:luminous/core/config/env_keys.dart';
+import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
 import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
@@ -17,10 +19,10 @@ class FullstackE2eConfig {
     this.nickname = 'E2E Record Lane',
   });
 
-  static const String emailDefineKey = 'E2E_TEST_EMAIL';
-  static const String passwordDefineKey = 'E2E_TEST_PASSWORD';
-  static const String recordDateDefineKey = 'E2E_RECORD_DATE';
-  static const String nicknameDefineKey = 'E2E_TEST_NICKNAME';
+  static String get emailDefineKey => EnvKey.e2eTestEmail.wireName;
+  static String get passwordDefineKey => EnvKey.e2eTestPassword.wireName;
+  static String get recordDateDefineKey => EnvKey.e2eRecordDate.wireName;
+  static String get nicknameDefineKey => EnvKey.e2eTestNickname.wireName;
 
   final String baseUrl;
   final String email;
@@ -29,24 +31,21 @@ class FullstackE2eConfig {
   final String nickname;
 
   static FullstackE2eConfig fromEnvironment() {
-    const baseUrl = String.fromEnvironment(LucentBaseUrl.defineKey);
-    const email = String.fromEnvironment(emailDefineKey);
-    const password = String.fromEnvironment(passwordDefineKey);
-    const recordDate = String.fromEnvironment(
-      recordDateDefineKey,
-      defaultValue: '2026-06-12',
-    );
-    const nickname = String.fromEnvironment(
-      nicknameDefineKey,
-      defaultValue: 'E2E Record Lane',
-    );
-
-    final config = const FullstackE2eConfig(
-      baseUrl: baseUrl,
-      email: email,
-      password: password,
-      recordDate: recordDate,
-      nickname: nickname,
+    final config = FullstackE2eConfig(
+      baseUrl: EnvReader.string(
+        EnvKey.e2eLucentBaseUrl,
+        fallback: EnvReader.string(EnvKey.lucentBaseUrl),
+      ),
+      email: EnvReader.string(EnvKey.e2eTestEmail),
+      password: EnvReader.string(EnvKey.e2eTestPassword),
+      recordDate: EnvReader.string(
+        EnvKey.e2eRecordDate,
+        fallback: '2026-06-12',
+      ),
+      nickname: EnvReader.string(
+        EnvKey.e2eTestNickname,
+        fallback: 'E2E Record Lane',
+      ),
     );
     config.assertUsable();
     return config;
@@ -54,7 +53,7 @@ class FullstackE2eConfig {
 
   void assertUsable() {
     final missing = <String>[
-      if (baseUrl.trim().isEmpty) LucentBaseUrl.defineKey,
+      if (baseUrl.trim().isEmpty) EnvKey.e2eLucentBaseUrl.wireName,
       if (email.trim().isEmpty) emailDefineKey,
       if (password.trim().isEmpty) passwordDefineKey,
     ];
@@ -70,7 +69,7 @@ class FullstackE2eConfig {
         normalizedBaseUrl.contains('localhost')) {
       throw TestFailure(
         'Full-stack mobile E2E must use a host-reachable Lucent URL, not localhost/127.0.0.1. '
-        'For Android emulator use --dart-define=${LucentBaseUrl.defineKey}=http://10.0.2.2:3000',
+        'For Android emulator use --dart-define=${EnvKey.e2eLucentBaseUrl.wireName}=http://10.0.2.2:3000',
       );
     }
   }

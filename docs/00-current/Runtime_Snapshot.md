@@ -3,6 +3,11 @@
 ## 技术栈
 
 - Flutter + Riverpod + GoRouter + `hooks_riverpod` + `flutter_hooks`。
+- 编译期环境变量入口统一为 `lib/core/config/env_keys.dart` +
+  `lib/core/config/env_reader.dart`。
+- 默认通过 `--dart-define-from-file=.env` 注入运行时与 full-stack E2E 所需键；
+  Android 模拟器专用地址使用 `E2E_LUCENT_BASE_URL`，避免和 app 本地调试的
+  `LUCENT_BASE_URL=http://127.0.0.1:3000` 冲突。
 - AI 开发增强入口：
   - `.github/copilot-instructions.md`
   - `.cursor/mcp.json`

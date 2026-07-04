@@ -174,6 +174,7 @@ Future<void> runFullstackChecks(
   } else {
     commonArgs.addAll([
       '--dart-define=LUCENT_BASE_URL=${options.baseUrl}',
+      '--dart-define=E2E_LUCENT_BASE_URL=${options.baseUrl}',
       '--dart-define=E2E_TEST_EMAIL=${options.email}',
       '--dart-define=E2E_TEST_PASSWORD=${options.password}',
       '--dart-define=E2E_RECORD_DATE=${options.recordDate}',
@@ -216,11 +217,12 @@ String? _resolveActiveDefineFile(
     return file.path;
   }
 
-  final defaultFile = File(
-    '${repoRoot.path}${Platform.pathSeparator}.env.fullstack-e2e',
-  );
-  if (defaultFile.existsSync()) {
-    return defaultFile.path;
+  final defaultFiles = <String>['.env', '.env.fullstack-e2e'];
+  for (final name in defaultFiles) {
+    final file = File('${repoRoot.path}${Platform.pathSeparator}$name');
+    if (file.existsSync()) {
+      return file.path;
+    }
   }
 
   return null;
