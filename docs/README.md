@@ -19,6 +19,7 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 - [[02-reference/routing]] — GoRouter 路由
 - [[02-reference/data-layer]] — 数据层与 API 客户端
 - [[02-reference/adr/README]] — 架构决策记录
+- [[02-reference/AI_Development_Workflow]] — AI 开发工作流、MCP 与 app-side AI seam
 - [[03-logs/MigrationLog]] — 变更日志索引
 - [[04-archive/current-state-archive]] — 已归档历史
 
@@ -36,7 +37,7 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 ## 文档治理
 
 - **单一来源**：术语见 [[Glossary]]，Forui 用法见 [[02-reference/Forui_Reference]]，OpenAPI 客户端流程见
-  [[02-reference/OpenApi_Client]]。
+  [[02-reference/OpenApi_Client]]，AI 开发工作流见 [[02-reference/AI_Development_Workflow]]。
 - **活跃文档 ≤ 250 行**：超过时拆成子文件，用 wikilink 互连。
 - **优先链接，避免重复**：同一条规则只写一次，其它地方用链接引用。
 - **多用列表，少用表格**：表格只在需要横向对比时使用。

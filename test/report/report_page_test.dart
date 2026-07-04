@@ -155,6 +155,9 @@ void main() {
 
     await tester.pumpAndSettle();
 
+    // Ensure metric cards and other sections fit within the viewport without overflow.
+    expect(tester.takeException(), isNull);
+
     expect(find.byKey(const Key('report-signed-out-notice')), findsOneWidget);
     expect(
       find.descendant(

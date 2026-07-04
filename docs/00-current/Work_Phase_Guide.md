@@ -164,3 +164,48 @@ dart run tool/run_fullstack_checks.dart
 - 历史记录：`docs/03-logs/migration-log/YYYY-MM-DD.md`。
 - 产品范围：`docs/01-product/`。
 - 技术规则和避错清单：`docs/02-reference/Project_Guardrails.md`。
+
+## 以下为补充:
+
+UI 调整方向
+当前 UI 最大问题不是“不够花”，而是 所有东西都像同一层级的白卡 + 黑字 + 灰边框。Forui 迁移后组件统一了，但视觉语义还没统一。
+建议定一个视觉读法：
+冷静、可信、低干扰的学生健康工作台。信息密度中等偏高，视觉变化克制，优先保证状态清楚、操作可扫读、无溢出。
+
+具体调整优先级：
+先修破损
+Report 指标卡 overflow。
+Today 右侧黑色按钮/截断块。
+加载 spinner 换成形状匹配的 skeleton。
+所有 pill/chip/button 固定高度和最大宽，长文本必须可预测换行或退化为图标按钮。
+
+降低卡片泛滥
+外层 section 可以保留 panel。
+panel 内部不要再像卡片，改成 row + divider + compact badge。
+Record 快速记录现在像表格按钮，边框太重；应该保留外框，内部只用轻分割线和 hover/press feedback。
+
+重新分配字号层级
+页面标题最大，只允许 今日 / 记录 / 用药 / 报告 / 我的 这一层用超大黑体。
+section 标题降一级。
+row title 再降一级。
+数字和状态 badge 用稳定宽度，避免 --、0、未开通 把布局撑乱。
+
+状态文案收短
+Today AI 总结里“登录后才会...”重复了两次，应只留一次。
+Report 的“预览 / 未开通 / 尚未登录”同时出现太多，主状态只能有一个，其它做辅助说明。
+Mine 未登录说明太长，压成一句，详细解释放登录页或设置说明。
+
+每个 Tab 一个主任务
+Today：今天要做什么。
+Record：快速记录和回看。
+Medicine：当前用药和安全。
+Report：最近趋势和导出。
+Mine：身份、档案、设置。
+当前有些页面把说明、状态、操作、预览都放在同一视觉重量上，用户扫不出重点。
+
+不要急着抽共享组件
+redesign-existing-projects 的规则也支持这个判断：先修布局、层级、状态，再抽组件。
+现在看到重复私有 widget，不代表应该马上共享。共享太早会把 Forui 迁移债变成新的 wrapper 债。
+
+我的建议执行顺序不变，但更明确了：Phase 1 不是“美化”，是把迁移后的 UI 语义重新校准。
+先从 Report overflow + Today priority 截断开始，收益最高。

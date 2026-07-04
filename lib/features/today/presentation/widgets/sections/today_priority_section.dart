@@ -205,7 +205,10 @@ class _PriorityActionPill extends ConsumerWidget {
         item.action,
         style: AppTypographyToken.level4
             .body(context)
-            .copyWith(color: colors.primary, fontWeight: FontWeight.w800),
+            .copyWith(
+              color: colors.primaryForeground,
+              fontWeight: FontWeight.w800,
+            ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

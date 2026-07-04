@@ -6,6 +6,17 @@ Flutter personal health copilot. Current mainline is the reset five-tab shell ba
 
 Current version: **v4.0.0-dev**
 
+## AI Workflow
+
+- Repo AI-development reference: `docs/02-reference/AI_Development_Workflow.md`
+- Editor-assistant entry: `.github/copilot-instructions.md`
+- Agent entries: `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`
+- MCP entry for compatible clients: `.cursor/mcp.json`
+- VS Code project setting enables the Dart/Flutter MCP server: `.vscode/settings.json`
+- Experimental app-side AI runtime seam lives in `lib/core/ai/` and is kept
+  separate from Lucent-backed production assistant/report flows.
+- Runtime seam flags are documented in `docs/02-reference/AI_Development_Workflow.md`
+
 ## Baseline
 
 - Tabs: `today / record / medicine / report / mine`

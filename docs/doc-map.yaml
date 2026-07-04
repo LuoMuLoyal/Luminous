@@ -7,10 +7,17 @@ rules:
       - tool/git_hook.dart
       - tool/run_daily_checks.dart
       - .github/workflows/flutter-ci.yml
+      - .github/copilot-instructions.md
+      - .cursor/mcp.json
+      - .vscode/settings.json
+      - .vscode/extensions.json
+      - CLAUDE.md
+      - GEMINI.md
     docs_required:
       - docs/00-current/Current_State.md
       - docs/00-current/Runtime_Snapshot.md
       - docs/02-reference/Project_Guardrails.md
+      - docs/02-reference/AI_Development_Workflow.md
       - docs/03-logs/migration-log/*.md
   - name: app-shell
     code:
@@ -69,6 +76,7 @@ rules:
       - docs/03-logs/migration-log/*.md
   - name: shared-runtime
     code:
+      - lib/core/ai/**
       - lib/core/network/**
       - lib/core/i18n/**
       - lib/core/notifications/**
@@ -78,6 +86,8 @@ rules:
     docs_required:
       - docs/00-current/Current_State.md
       - docs/00-current/Runtime_Snapshot.md
+      - docs/00-current/Mock_Or_Deferred.md
+      - docs/02-reference/AI_Development_Workflow.md
       - docs/02-reference/OpenApi_Client.md
       - docs/02-reference/Localization.md
       - docs/03-logs/migration-log/*.md

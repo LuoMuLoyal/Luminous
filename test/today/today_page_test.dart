@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -180,6 +181,51 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
     expect(todoCard, findsOneWidget);
     expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
+  });
+
+  testWidgets('Today priority action pills use visible foreground color', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final expectedColor = FThemes.neutral.light.touch.colors.primaryForeground;
+
+    final medicationAction = find.descendant(
+      of: find.byKey(const Key('today-medication-card')),
+      matching: find.text(l10n.todayMedicationTakeAction),
+    );
+    expect(medicationAction, findsOneWidget);
+    expect(tester.widget<Text>(medicationAction).style?.color, expectedColor);
+
+    final waterAction = find.descendant(
+      of: find.byKey(const Key('today-water-card')),
+      matching: find.text(l10n.todayDrinkWaterAction),
+    );
+    expect(waterAction, findsOneWidget);
+    expect(tester.widget<Text>(waterAction).style?.color, expectedColor);
+
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('Today page uses wide dashboard layout on desktop', (

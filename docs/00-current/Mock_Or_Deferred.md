@@ -26,6 +26,8 @@
   - 确定性 CN -> DrugBank 候选匹配
   - 结构化 DrugBank 详情读取
 - 但仍是受控的服务器端预生成工具层，而非自由形式函数调用。
+- `lib/core/ai/` 已新增 app-side AI runtime 实验 seam，但默认关闭；当前不接入助手或
+  Report 的 shipping 流程。
 
 ## 导出生命周期
 

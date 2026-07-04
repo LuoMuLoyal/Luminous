@@ -3,6 +3,11 @@
 ## 技术栈
 
 - Flutter + Riverpod + GoRouter + `hooks_riverpod` + `flutter_hooks`。
+- AI 开发增强入口：
+  - `.github/copilot-instructions.md`
+  - `.cursor/mcp.json`
+  - `.vscode/settings.json` 中的 `dart.mcpServer`
+  - `lib/core/ai/` 实验 runtime seam
 
 ## 主题与设计系统
 
@@ -65,6 +70,8 @@
 ## 共享边界
 
 - support-resource 读取放在独立的 `features/support/` 边界，不再嵌套在 `settings` 下。
+- app-side AI runtime 边界放在 `lib/core/ai/`，只承载本地实验配置与 provider seam。
+- shipping assistant/report AI 仍通过 Lucent 合同与 API 执行。
 
 ## 受保护内容
 

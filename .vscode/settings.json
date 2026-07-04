@@ -2,6 +2,7 @@
   "commitlint.enable": true,
   "commitlint.preferBundledLibraries": true,
   "commitlint.log.enabled": false,
+  "dart.mcpServer": true,
   "commitlint.config.extend.rules": {
     "header-max-length": [2, "always", 120],
     "scope-case": [2, "always", "lower-case"],

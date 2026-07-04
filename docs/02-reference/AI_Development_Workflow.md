@@ -1,0 +1,111 @@
+# AI Development Workflow
+
+Last updated: 2026-07-04
+
+## Purpose
+
+This document is the repo-level source of truth for AI-assisted development in
+`Luminous`.
+
+It complements:
+
+- `AGENTS.md` for agent behavior and repo guardrails
+- `.github/copilot-instructions.md` for editor assistants
+- `.cursor/mcp.json` for MCP-capable clients
+
+## Current Integration Boundary
+
+- `Luminous` is on `Flutter 3.44.0` and `Dart 3.12.0`.
+- AI-assisted coding is enabled through committed repo instructions plus a
+  committed MCP config, not by relying on private IDE state.
+- Shipping in-app AI features still use Lucent-owned APIs.
+- Local app-side AI runtime work is currently a non-shipping seam under
+  `lib/core/ai/`.
+
+## Repo Priorities For AI Tools
+
+1. Preserve the current architecture:
+   - Flutter + Riverpod + GoRouter + Forui
+   - vertical slices under `lib/features/`
+2. Prefer existing repo workflows:
+   - `flutter gen-l10n`
+   - `flutter analyze`
+   - `flutter test`
+   - `dart run tool/run_daily_checks.dart`
+3. Respect generated and contract-owned files:
+   - do not hand-edit `lib/l10n/app_localizations*.dart`
+   - do not hand-edit `packages/lucent_openapi/`
+4. Keep app-side AI experiments isolated from Lucent-backed product flows unless
+   an explicit task says otherwise.
+
+## MCP Usage
+
+- Preferred MCP entry: the committed `.cursor/mcp.json`.
+- The config points clients to the Dart/Flutter MCP server using the workspace's
+  Flutter toolchain.
+- If a client cannot consume `.cursor/mcp.json` directly, mirror the same
+  command/args in that client instead of inventing a different setup.
+
+## App-Side AI Runtime Boundary
+
+`lib/core/ai/` is reserved for local runtime concerns such as:
+
+- experiment flags
+- provider wiring
+- runtime capability descriptors
+- future vendor adapters
+
+It is not the place for:
+
+- Lucent API DTO mapping
+- assistant conversation UI state
+- report AI summary transport
+
+Those stay in their existing feature boundaries unless a separate plan changes
+that architecture.
+
+## Experimental Runtime Flags
+
+The current seam is compile-time gated and defaults to off.
+
+Example:
+
+```bash
+flutter run \
+  --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=true \
+  --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=ai_toolkit
+```
+
+Optional `GenUI` exploration flag:
+
+```bash
+flutter run \
+  --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=true \
+  --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=gen_ui \
+  --dart-define=LUMINOUS_ENABLE_GEN_UI=true
+```
+
+Accepted provider values today:
+
+- `none`
+- `ai_toolkit`
+- `gen_ui`
+- `custom`
+
+## GenUI / AI Toolkit Status
+
+- `AI Toolkit` is an allowed future direction for app-side experiments.
+- `GenUI` remains experimental and should be treated as optional exploration, not
+  as a required dependency of the current product shell.
+- Any future model SDK or Firebase binding should sit behind the `lib/core/ai/`
+  seam first.
+
+## Verification Expectations
+
+When touching AI workflow files or `lib/core/ai/`:
+
+- run `flutter test test/core/ai`
+- run `flutter analyze`
+- update `docs/00-current/Current_State.md`
+- update `docs/00-current/Runtime_Snapshot.md`
+- append `docs/03-logs/migration-log/YYYY-MM-DD.md`

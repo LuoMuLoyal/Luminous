@@ -21,6 +21,13 @@ Last updated: 2026-07-04
 - 历史 completed baselines 与 audit remediation 已归档：[[04-archive/current-state-archive]]
 - 文档治理现在带有 warning-only 的路径映射检查：`docs/doc-map.yaml` + `tool/check_doc_coverage.dart`
   会在 `pre-commit` 与 `tool/run_daily_checks.dart` 中提醒本次代码改动需要复核哪些文档。
+- AI 开发工作流增强已接入仓库级入口：
+  - 编辑器助手入口：`.github/copilot-instructions.md`
+  - agent 入口：`AGENTS.md`、`CLAUDE.md`、`GEMINI.md`
+  - MCP 入口：`.cursor/mcp.json`
+  - VS Code 项目设置已启用 `dart.mcpServer`
+  - app-side AI 试验 seam 建立在 `lib/core/ai/`，默认关闭，不替代 Lucent-backed
+    assistant/report 生产链路
 - Forui-first 编码统一性优化完成：
   - 页面骨架统一：`PageScaffold`（26 子页）+ `AppTopBar`（5 Tab 根页）+ `AuthShell`（5 Auth 页）。
   - Material 组件全面迁移：按钮、进度、InkWell、图标、对话框、输入、选择、列表、卡片、Chip、导航、Tab、Drawer 等。
@@ -37,6 +44,9 @@ Last updated: 2026-07-04
   - `AssistantStateCard` 删除，合并到 `AppStateMessageView(maxWidth: 560)`。
   - `ResponsiveContentFrame` 支持 `padding` 覆盖。
   - `PageScaffold` 支持 `titleWidget` 与 `headerStyle`。
+- Phase 1 可见问题修复进行中：
+  - Report 页指标卡移动端 `BOTTOM OVERFLOWED BY 2.0 PIXELS` 已修复。
+  - Today 页优先事项卡片右侧 action pill 文字颜色已修复，不再与背景融为一体。
 
 ## 相关文档
 

@@ -116,7 +116,8 @@ class ReportMetricsGrid extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     if (width >= AppBreakpoints.desktop) return 216;
     if (width >= AppBreakpoints.tablet) return 204;
-    return 192;
+    // Mobile height must fit: padding + title row + value row + status row + track.
+    return 200;
   }
 
   bool get _allMetricValuesUnavailable =>
