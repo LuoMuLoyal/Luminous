@@ -20,7 +20,12 @@
 - 选中日期时间线 / 详情 / 创建 / 编辑。
 - 顶部日期栏、筛选器。
 - panel-backed 快速记录与时间线 section。
-- 内部行使用 divider 而非嵌套卡片。
+- 创建/编辑表单使用 Forui `FDateField.calendar` + `FTimeField.picker` 选择发生日期与时间。
+
+## 时间线
+
+- 桌面端 `RecordTimelinePanel` 与移动端 `RecordMobileTimeline` 均使用 `timeline_tile` 绘制节点与连线。
+- 时间线项保持可点击跳转详情，并保留骨架屏加载态。
 
 ## 创建与快捷操作
 

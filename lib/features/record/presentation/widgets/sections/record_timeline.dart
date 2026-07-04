@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
 
 class RecordTimelinePanel extends StatelessWidget {
   const RecordTimelinePanel({
@@ -124,41 +124,59 @@ class _TimelineEntryRow extends StatelessWidget {
                 .copyWith(color: colors.mutedForeground),
           ),
         ),
-        SizedBox(
-          width: 20,
-          child: Column(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: entry.accent.resolve(colors),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colors.background, width: 3),
-                ),
-                child: const SizedBox.square(dimension: 10),
-              ),
-              if (!isLast)
-                SizedBox(
-                  height: dense ? 88 : 104,
-                  child: const AppDivider(axis: Axis.vertical),
-                ),
-            ],
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level3),
         Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: isLast ? 0 : AppSpacingTokens.level4,
+          child: TimelineTile(
+            alignment: TimelineAlign.start,
+            isFirst: index == 0,
+            isLast: isLast,
+            indicatorStyle: IndicatorStyle(
+              width: 10,
+              height: 10,
+              indicator: _TimelineDot(entry: entry, size: 10, borderWidth: 3),
+              padding: const EdgeInsets.only(right: AppSpacingTokens.level3),
+              indicatorXY: 0.25,
             ),
-            child: _TimelineCard(
-              entry: entry,
-              index: index,
-              l10n: l10n,
-              dense: dense,
+            beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
+            afterLineStyle: LineStyle(color: colors.border, thickness: 1),
+            endChild: Padding(
+              padding: EdgeInsets.only(
+                bottom: isLast ? 0 : AppSpacingTokens.level4,
+              ),
+              child: _TimelineCard(
+                entry: entry,
+                index: index,
+                l10n: l10n,
+                dense: dense,
+              ),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _TimelineDot extends StatelessWidget {
+  const _TimelineDot({
+    required this.entry,
+    required this.size,
+    required this.borderWidth,
+  });
+
+  final RecordTimelineEntry entry;
+  final double size;
+  final double borderWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: entry.accent.resolve(colors),
+        shape: BoxShape.circle,
+        border: Border.all(color: colors.background, width: borderWidth),
+      ),
+      child: SizedBox.square(dimension: size),
     );
   }
 }

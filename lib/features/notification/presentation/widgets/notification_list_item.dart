@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -19,26 +20,21 @@ class NotificationListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Dismissible(
+    return Slidable(
       key: ValueKey(item.id),
-      direction: DismissDirection.endToStart,
-      background: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.destructive,
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        ),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: AppSpacingTokens.level4),
-            child: Icon(
-              FLucideIcons.trash2,
-              color: colors.destructiveForeground,
-            ),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            onPressed: (_) => onDismiss(),
+            backgroundColor: colors.destructive,
+            foregroundColor: colors.destructiveForeground,
+            icon: FLucideIcons.trash2,
+            borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
           ),
-        ),
+        ],
       ),
-      onDismissed: (_) => onDismiss(),
       child: FCard.raw(
         style: .delta(
           decoration: .shapeDelta(

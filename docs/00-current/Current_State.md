@@ -42,6 +42,9 @@ Last updated: 2026-07-04
     - `FloatingActionButton.extended` → `FButton`（Record NLP FAB）
     - `showDatePicker`/`showDateRangePicker` → `FDateField.calendar`/`FCalendar.grid`
     - `showTimePicker` → `FTimeField.picker`/`FTimePicker`
+  - 已替换的手写组件：
+    - Record 时间轴 → `timeline_tile`（桌面 `RecordTimelinePanel` + 移动 `RecordMobileTimeline`）
+    - 通知列表滑动删除 → `flutter_slidable`（替代 `Dismissible`）
 - 基础组件优化完成：
   - `AppDivider` 支持 `width` 参数，清理冗余默认色调用。
   - `AppStateViews` 拆分为 `app_state_message.dart` + `app_skeleton.dart`，修复 tone 语义，

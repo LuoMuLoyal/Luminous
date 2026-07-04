@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/features/notification/presentation/widgets/notification_list_item.dart';
@@ -83,7 +84,7 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('includes Dismissible for swipe-to-delete', (tester) async {
+    testWidgets('includes Slidable for swipe-to-delete', (tester) async {
       await tester.pumpWidget(
         _appShell(
           NotificationListItemWidget(
@@ -94,7 +95,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(Dismissible), findsOneWidget);
+      expect(find.byType(Slidable), findsOneWidget);
     });
 
     testWidgets('formats createdAt as time for today', (tester) async {
