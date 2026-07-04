@@ -67,15 +67,10 @@ Future<void> showAuthRequiredDialog(
     context: context,
     builder: (dialogContext, style, animation) => FDialog(
       key: const Key('auth-required-dialog'),
+      direction: Axis.horizontal,
       title: Text(l10n.authNotSignedIn),
       body: Text(l10n.authLoginRequiredPrompt),
       actions: [
-        FButton(
-          variant: FButtonVariant.ghost,
-          key: const Key('auth-required-cancel-action'),
-          onPress: () => Navigator.of(dialogContext).pop(),
-          child: Text(l10n.authCancelAction),
-        ),
         FButton(
           key: const Key('auth-required-login-action'),
           onPress: () {
@@ -83,6 +78,12 @@ Future<void> showAuthRequiredDialog(
             onLogin();
           },
           child: Text(l10n.authGoLogin),
+        ),
+        FButton(
+          variant: FButtonVariant.ghost,
+          key: const Key('auth-required-cancel-action'),
+          onPress: () => Navigator.of(dialogContext).pop(),
+          child: Text(l10n.authCancelAction),
         ),
       ],
     ),

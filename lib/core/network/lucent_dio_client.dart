@@ -74,7 +74,7 @@ class LucentDioClient {
   final LucentSessionStore _sessionStore;
   final String _baseUrl;
   final String Function()? _localeResolver;
-  final Future<void> Function()? _onSessionExpired;
+  Future<void> Function()? _onSessionExpired;
   late final Dio _refreshDio;
 
   static BaseOptions _createBaseOptions({
@@ -122,7 +122,8 @@ class LucentDioClient {
           handler.next(options);
         },
         onError: (error, handler) async {
-          if (await _shouldRefresh(error)) {
+          final shouldRefresh = await _shouldRefresh(error);
+          if (shouldRefresh) {
             final refreshedTokens = await _refreshTokens();
             if (refreshedTokens != null && refreshedTokens.hasAccessToken) {
               final retryResponse = await _retry(
@@ -132,10 +133,13 @@ class LucentDioClient {
               handler.resolve(retryResponse);
               return;
             }
+          }
 
+          if (shouldRefresh || _isAuthFailure(error)) {
             await _sessionStore.clear();
-            if (_onSessionExpired != null) {
-              await _onSessionExpired();
+            final onSessionExpired = _onSessionExpired;
+            if (onSessionExpired != null) {
+              await onSessionExpired();
             }
           }
 
@@ -196,6 +200,17 @@ class LucentDioClient {
 
   Future<void> clearSession() {
     return _sessionStore.clear();
+  }
+
+  /// Callback invoked when the session can no longer be refreshed (or any 401
+  /// response is received without a refreshable token). Set by the auth layer
+  /// so the UI can transition to a signed-out state.
+  set onSessionExpired(Future<void> Function()? callback) {
+    _onSessionExpired = callback;
+  }
+
+  bool _isAuthFailure(DioException error) {
+    return error.response?.statusCode == 401;
   }
 
   void dispose() {

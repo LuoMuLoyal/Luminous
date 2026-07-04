@@ -399,7 +399,7 @@ void main() {
 
     // ── No refresh for 401 without tokenExpired code ──
 
-    test('does not refresh on 401 with non-token-expired code', () async {
+    test('clears session on 401 with non-token-expired code', () async {
       final store = _MemorySessionStore();
       await store.write(
         const LucentSessionTokens(
@@ -408,6 +408,7 @@ void main() {
         ),
       );
 
+      bool sessionExpiredCalled = false;
       final adapter = _CaptureAdapter(responseData: _unauthorizedBody);
       adapter.statusCode = 401;
       adapter.statusMessage = 'Unauthorized';
@@ -415,6 +416,9 @@ void main() {
       final client = LucentDioClient(
         baseUrl: 'http://localhost:3000',
         sessionStore: store,
+        onSessionExpired: () async {
+          sessionExpiredCalled = true;
+        },
         httpClientAdapter: adapter,
       );
 
@@ -424,13 +428,16 @@ void main() {
         // Expected
       }
 
-      // Only one call — no refresh for non-tokenExpired 401
+      // No refresh attempted, but session is cleared and callback invoked
       expect(adapter.callCount, equals(1));
+      final storedTokens = await store.read();
+      expect(storedTokens, isNull);
+      expect(sessionExpiredCalled, isTrue);
     });
 
     // ── No refresh when no refresh token stored ──
 
-    test('does not refresh when no refresh token in store', () async {
+    test('clears session when no refresh token in store', () async {
       final store = _MemorySessionStore();
       // Only access token, no refresh token
       await store.write(
@@ -440,6 +447,7 @@ void main() {
         ),
       );
 
+      bool sessionExpiredCalled = false;
       final adapter = _CaptureAdapter(responseData: _tokenExpiredBody);
       adapter.statusCode = 401;
       adapter.statusMessage = 'Unauthorized';
@@ -447,6 +455,9 @@ void main() {
       final client = LucentDioClient(
         baseUrl: 'http://localhost:3000',
         sessionStore: store,
+        onSessionExpired: () async {
+          sessionExpiredCalled = true;
+        },
         httpClientAdapter: adapter,
       );
 
@@ -456,8 +467,11 @@ void main() {
         // Expected
       }
 
-      // Only one call — no refresh because refresh token is empty
+      // No refresh attempted, but session is cleared and callback invoked
       expect(adapter.callCount, equals(1));
+      final storedTokens = await store.read();
+      expect(storedTokens, isNull);
+      expect(sessionExpiredCalled, isTrue);
     });
 
     // ── Prevents infinite retry loop ──
@@ -540,6 +554,41 @@ void main() {
         expect(sessionExpiredCalled, isTrue);
       },
     );
+
+    test('onSessionExpired setter wires callback after construction', () async {
+      final store = _MemorySessionStore();
+      await store.write(
+        const LucentSessionTokens(
+          accessToken: 'expired-token',
+          refreshToken: '',
+        ),
+      );
+
+      bool sessionExpiredCalled = false;
+      final adapter = _CaptureAdapter(responseData: _tokenExpiredBody);
+      adapter.statusCode = 401;
+      adapter.statusMessage = 'Unauthorized';
+
+      final client = LucentDioClient(
+        baseUrl: 'http://localhost:3000',
+        sessionStore: store,
+        httpClientAdapter: adapter,
+      );
+      client.onSessionExpired = () async {
+        sessionExpiredCalled = true;
+      };
+
+      try {
+        await client.dio.get('/api/v1/test');
+      } on DioException {
+        // Expected
+      }
+
+      expect(adapter.callCount, equals(1));
+      final storedTokens = await store.read();
+      expect(storedTokens, isNull);
+      expect(sessionExpiredCalled, isTrue);
+    });
 
     // ── Concurrent refresh deduplication ──
 

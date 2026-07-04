@@ -38,6 +38,17 @@ Future<T> pendingAuthSessionResolution<T>() => Completer<T>().future;
 class AuthSessionNotifier extends Notifier<AuthSessionState> {
   @override
   AuthSessionState build() {
+    // Wire the Dio client's session-expired callback so that any unrecoverable
+    // 401 (token expired, unauthorized, missing refresh token, etc.) clears the
+    // UI session without waiting for the next explicit restore().
+    final client = ref.read(lucentDioClientProvider);
+    client.onSessionExpired = () async {
+      // Don't race with restore(): its catch block already sets the final
+      // signed-out state. Only clear if restore() has finished.
+      if (!state.isLoading) {
+        state = const AuthSessionState();
+      }
+    };
     return const AuthSessionState(isLoading: true);
   }
 
