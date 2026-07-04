@@ -333,6 +333,76 @@ void main() {
     expect(find.byKey(const Key('today-health-summary-card')), findsOneWidget);
   });
 
+  testWidgets('Signed-out AI summary shows single hint line', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final aiCard = find.byKey(const Key('today-ai-summary-card'));
+    await tester.scrollUntilVisible(
+      aiCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text(l10n.todayAiSummarySignedOutHint), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Today priority action pills are not clipped', (tester) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final medicationCard = find.byKey(const Key('today-medication-card'));
+    await tester.scrollUntilVisible(
+      medicationCard,
+      240,
+      scrollable: _todayDashboardScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text(l10n.todayMedicationTakeAction), findsOneWidget);
+    expect(find.text(l10n.todayDrinkWaterAction), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('Error state shows retry', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);

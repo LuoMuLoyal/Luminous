@@ -333,7 +333,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           text: l10n.todayAiSummarySignedOutHint,
         ),
       ],
-      footer: l10n.todayAiSummarySignedOutHint,
     );
   }
 
@@ -346,7 +345,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           text: l10n.todayAiSummaryDisabledHint,
         ),
       ],
-      footer: l10n.todayAiSummaryDisabledHint,
     );
   }
 

@@ -8,6 +8,8 @@
 - UI 层自定义待办。
 - 手动触发 Lucent-backed Today AI 分析生成。
 - 卡片状态：signed-out / disabled / loading / success / error。
+- signed-out / disabled 空态只保留单条提示，不重复显示 footer。
+- 优先事项 action pill 使用 `IntrinsicWidth` 自然撑开，避免短文案被固定宽度截断成黑块。
 - 真实增量摘要流：`/api/v1/user/today-analysis/generate/stream`。
 - 流完成后渲染结构化 bullets / action / confidence。
 - 即时风险与主动建议。

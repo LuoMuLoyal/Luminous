@@ -139,8 +139,7 @@ class _PriorityRow extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
-            SizedBox(
-              width: 82,
+            IntrinsicWidth(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,

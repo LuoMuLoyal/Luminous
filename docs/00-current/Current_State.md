@@ -54,7 +54,8 @@ Last updated: 2026-07-04
   - `PageScaffold` 支持 `titleWidget` 与 `headerStyle`。
 - Phase 1 可见问题修复进行中：
   - Report 页指标卡移动端 `BOTTOM OVERFLOWED BY 2.0 PIXELS` 已修复。
-  - Today 页优先事项卡片右侧 action pill 文字颜色已修复，不再与背景融为一体。
+  - Today 页优先事项卡片右侧 action pill 文字颜色已修复，不再与背景融为一体；宽度改为 `IntrinsicWidth` 自然撑开，避免 “去服用” / “去喝水” 截断。
+  - Today 页 AI 日总结 signed-out / disabled 空态 footer 已移除，只保留单条 bullet 提示，避免重复文案。
 
 ## 相关文档
 
