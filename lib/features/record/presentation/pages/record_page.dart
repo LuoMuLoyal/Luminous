@@ -62,9 +62,15 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final isAuthLoading = ref.watch(
       authSessionProvider.select((s) => s.isLoading),
     );
-    final width = MediaQuery.sizeOf(context).width;
+    final size = MediaQuery.sizeOf(context);
+    final width = size.width;
+    final height = size.height;
     final isCompact = width < AppBreakpoints.mobile;
     final isMobileLayout = width < AppBreakpoints.desktop;
+    final contentVerticalPadding = EdgeInsets.only(
+      top: (height * 0.012).clamp(10.0, 16.0),
+      bottom: (height * 0.025).clamp(16.0, 28.0),
+    );
 
     final fab = isMobileLayout
         ? FButton(
@@ -144,8 +150,9 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       top: false,
       child: ResponsiveContentFrame(
         child: SingleChildScrollView(
+          key: const Key('record-dashboard-scrollable'),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: isCompact ? 24 : 32),
+            padding: contentVerticalPadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -156,7 +163,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         .read(selectedRecordFilterProvider.notifier)
                         .setFilter(type),
                     onDateSelected: (date) => _setSelectedDate(date),
-                    onPickDate: () => _pickSelectedDate(context, selectedDate),
                     onQuickAction: (action) =>
                         _handleQuickAction(context, action),
                     onAiInputTap: () => _openNlpDialog(
@@ -286,23 +292,28 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         maxWidth: 360,
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         builder: (_) => SizedBox(
-          height: 360,
-          child: FCalendar.grid(
-            control: FGridCalendarControl(
+          height: 400,
+          child: FCalendar.splitGrid(
+            control: FGridSplitCalendarControl(
               start: DateTime(2000),
               end: today.add(const Duration(days: 365)),
             ),
-            selectionControl: FDateSelectionControl.lifted(
-              selected: (date) => _dateOnly(date) == _dateOnly(selectedDate),
-              select: (date) =>
-                  Navigator.of(dialogContext).pop(_dateOnly(date)),
+            selectionControl: FDateSelectionControl.managedSingle(
+              initial: selectedDate,
+              onChange: (date) {
+                if (date != null) {
+                  _setSelectedDate(_dateOnly(date));
+                }
+                Navigator.of(dialogContext).pop(date);
+              },
             ),
           ),
         ),
       ),
     );
-    if (picked == null) return;
-    _setSelectedDate(picked);
+    if (picked != null) {
+      _setSelectedDate(_dateOnly(picked));
+    }
   }
 
   DateTime _dateOnly(DateTime value) {

@@ -51,7 +51,6 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
 
-    final scrollable = find.byType(Scrollable);
     final keys = <String>[
       'record-quick-actions',
       'record-ai-input',
@@ -62,8 +61,7 @@ void main() {
 
     for (final key in keys) {
       final finder = find.byKey(Key(key));
-      await tester.scrollUntilVisible(finder, 240, scrollable: scrollable);
-      await tester.pump(const Duration(milliseconds: 200));
+      await _scrollDashboardTo(tester, finder);
       expect(finder, findsOneWidget);
     }
 
@@ -734,7 +732,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final entry = find.text('Blood pressure');
-    await tester.scrollUntilVisible(entry, 240);
+    await _scrollDashboardTo(tester, entry);
+    await tester.ensureVisible(entry);
     await tester.tap(entry);
     await tester.pumpAndSettle();
 
@@ -1479,7 +1478,8 @@ void main() {
     await tester.pumpAndSettle();
 
     final filter = find.byKey(const Key('record-filter-water'));
-    await tester.scrollUntilVisible(filter, 240);
+    await _scrollDashboardTo(tester, filter);
+    await tester.ensureVisible(filter);
     await tester.tap(filter);
     await tester.pumpAndSettle();
 
@@ -2207,4 +2207,15 @@ HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
     conditions: const <ConditionItem>[],
     currentMedicines: const <CurrentMedicineItem>[],
   );
+}
+
+Future<void> _scrollDashboardTo(WidgetTester tester, Finder finder) async {
+  const maxDrags = 10;
+  for (var i = 0; i < maxDrags && finder.evaluate().isEmpty; i++) {
+    await tester.drag(
+      find.byKey(const Key('record-dashboard-scrollable')),
+      const Offset(0, -300),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+  }
 }

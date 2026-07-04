@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
@@ -165,6 +167,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
         .where((action) => action.type != RecordEntryType.note)
         .take(6)
         .toList(growable: false);
+    final metrics = _QuickRecordMetrics.resolve(context);
 
     return Column(
       key: const Key('record-quick-actions'),
@@ -176,13 +179,14 @@ class RecordQuickEntryPanel extends StatelessWidget {
               .display(context)
               .copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        SizedBox(height: metrics.sectionGap),
         FCard.raw(
           child: Column(
             children: [
               _QuickRecordGrid(
                 actions: gridActions,
                 l10n: l10n,
+                metrics: metrics,
                 onTap: onQuickAction,
               ),
               if (noteAction != null) ...[
@@ -190,6 +194,7 @@ class RecordQuickEntryPanel extends StatelessWidget {
                 _QuickRecordNoteButton(
                   action: noteAction,
                   l10n: l10n,
+                  metrics: metrics,
                   onTap: onQuickAction,
                 ),
               ],
@@ -201,15 +206,68 @@ class RecordQuickEntryPanel extends StatelessWidget {
   }
 }
 
+class _QuickRecordMetrics {
+  const _QuickRecordMetrics({
+    required this.sectionGap,
+    required this.tileVerticalPadding,
+    required this.avatarSize,
+    required this.notePadding,
+    required this.dividerHeight,
+  });
+
+  factory _QuickRecordMetrics.resolve(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final shortEdge = math.min(size.width, size.height);
+    final scale = ((shortEdge - 600) / 280).clamp(0.0, 1.0);
+    return _QuickRecordMetrics(
+      sectionGap: _lerpDouble(
+        AppSpacingTokens.level2,
+        AppSpacingTokens.level3,
+        scale,
+      ),
+      tileVerticalPadding: _lerpDouble(
+        AppSpacingTokens.level2,
+        AppSpacingTokens.level4,
+        scale,
+      ),
+      avatarSize: _lerpDouble(
+        AppSpacingTokens.level5,
+        AppSpacingTokens.level6,
+        scale,
+      ),
+      notePadding: _lerpDouble(
+        AppSpacingTokens.level2,
+        AppSpacingTokens.level4,
+        scale,
+      ),
+      dividerHeight: _lerpDouble(
+        AppSpacingTokens.level6,
+        AppSpacingTokens.level8,
+        scale,
+      ),
+    );
+  }
+
+  final double sectionGap;
+  final double tileVerticalPadding;
+  final double avatarSize;
+  final double notePadding;
+  final double dividerHeight;
+}
+
+double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
+
 class _QuickRecordGrid extends StatelessWidget {
   const _QuickRecordGrid({
     required this.actions,
     required this.l10n,
+    required this.metrics,
     this.onTap,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
+  final _QuickRecordMetrics metrics;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
@@ -234,12 +292,13 @@ class _QuickRecordGrid extends StatelessWidget {
                   child: _QuickRecordTile(
                     action: rows[rowIndex][index],
                     l10n: l10n,
+                    metrics: metrics,
                     onTap: onTap,
                   ),
                 ),
                 if (index < rows[rowIndex].length - 1)
                   SizedBox(
-                    height: AppSpacingTokens.level8,
+                    height: metrics.dividerHeight,
                     child: AppDivider(
                       axis: Axis.vertical,
                       color: colors.border,
@@ -261,11 +320,13 @@ class _QuickRecordTile extends StatelessWidget {
   const _QuickRecordTile({
     required this.action,
     required this.l10n,
+    required this.metrics,
     this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
+  final _QuickRecordMetrics metrics;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
@@ -285,14 +346,14 @@ class _QuickRecordTile extends StatelessWidget {
         child: Opacity(
           opacity: isLocked ? 0.76 : 1,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppSpacingTokens.level4,
+            padding: EdgeInsets.symmetric(
+              vertical: metrics.tileVerticalPadding,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FAvatar.raw(
-                  size: AppSpacingTokens.level6,
+                  size: metrics.avatarSize,
                   style: .delta(
                     backgroundColor: action.softColor.resolve(colors),
                   ),
@@ -325,11 +386,13 @@ class _QuickRecordNoteButton extends StatelessWidget {
   const _QuickRecordNoteButton({
     required this.action,
     required this.l10n,
+    required this.metrics,
     this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
+  final _QuickRecordMetrics metrics;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
@@ -347,8 +410,8 @@ class _QuickRecordNoteButton extends StatelessWidget {
         decoration: .delta([
           .all(.shapeDelta(color: colors.secondary.withValues(alpha: 0.18))),
         ]),
-        contentStyle: const .delta(
-          padding: .value(EdgeInsets.all(AppSpacingTokens.level4)),
+        contentStyle: .delta(
+          padding: .value(EdgeInsets.all(metrics.notePadding)),
         ),
       ),
       prefix: Icon(

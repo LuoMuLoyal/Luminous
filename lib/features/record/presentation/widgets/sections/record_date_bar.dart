@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDateBar extends StatelessWidget {
@@ -12,118 +12,181 @@ class RecordDateBar extends StatelessWidget {
     required this.dashboard,
     required this.l10n,
     this.onDateSelected,
-    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final ValueChanged<DateTime>? onDateSelected;
-  final VoidCallback? onPickDate;
+
+  static final DateTime _minDate = DateTime(2000);
+  static final DateTime _maxDate = DateTime.now().add(
+    const Duration(days: 365),
+  );
+
+  double _calendarHeight(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
+    return (height * 0.055).clamp(40.0, 52.0);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    final dateLabel = l10n.recordDatePillLabel(
-      dashboard.selectedDate.month,
-      dashboard.selectedDate.day,
-      recordCopy(l10n, weekdayKeyFromDate(dashboard.selectedDate)),
-    );
-
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        _DateStepButton(
-          key: const Key('record-date-previous-action'),
-          icon: FLucideIcons.chevronLeft,
-          onTap: onDateSelected == null
-              ? null
-              : () => onDateSelected!(
-                  dashboard.selectedDate.subtract(const Duration(days: 1)),
-                ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level2),
         Expanded(
-          child: FButton(
-            onPress: onPickDate,
-            variant: FButtonVariant.outline,
-            style: const .delta(
-              contentStyle: .delta(
-                padding: .value(
-                  EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level4,
-                    vertical: AppSpacingTokens.level3,
-                  ),
-                ),
+          child: SizedBox(
+            height: _calendarHeight(context),
+            child: FLineCalendar(
+              control: FLineCalendarControl.lifted(
+                date: dashboard.selectedDate,
+                onChange: (date) {
+                  if (date != null) {
+                    onDateSelected?.call(_dateOnly(date));
+                  }
+                },
               ),
-            ),
-            prefix: Icon(
-              FLucideIcons.calendarDays,
-              color: colors.foreground,
-              size: AppSpacingTokens.level5,
-            ),
-            suffix: Icon(
-              FLucideIcons.chevronDown,
-              color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
-            ),
-            child: Expanded(
-              child: Text(
-                dateLabel,
-                style: AppTypographyToken.level4
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              selectable: _isSelectable,
+              builder: (context, data, child) =>
+                  _CompactCalendarItem(data: data),
             ),
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level2),
-        _DateStepButton(
-          key: const Key('record-date-next-action'),
-          icon: FLucideIcons.chevronRight,
-          onTap: onDateSelected == null
-              ? null
-              : () => onDateSelected!(
-                  dashboard.selectedDate.add(const Duration(days: 1)),
-                ),
+        _CalendarPickerButton(
+          selectedDate: dashboard.selectedDate,
+          onDateSelected: onDateSelected,
         ),
+      ],
+    );
+  }
+
+  static DateTime _dateOnly(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
+  }
+
+  bool _isSelectable(DateTime date) {
+    final value = _dateOnly(date);
+    return !value.isBefore(_dateOnly(_minDate)) &&
+        !value.isAfter(_dateOnly(_maxDate));
+  }
+}
+
+class _CompactCalendarItem extends StatelessWidget {
+  const _CompactCalendarItem({required this.data});
+
+  final FLineCalendarItemData data;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = FLocalizations.of(context) ?? FDefaultLocalizations();
+    final date = data.date;
+    final variants = data.variants;
+    final style = data.style;
+    final isToday = variants.contains(FLineCalendarItemVariant.today);
+
+    return Stack(
+      children: [
+        SizedBox.expand(
+          child: DecoratedBox(
+            decoration: style.decoration.resolve(variants),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                spacing: 2,
+                children: [
+                  DefaultTextStyle.merge(
+                    style: style.weekdayTextStyle
+                        .resolve(variants)
+                        .copyWith(fontSize: 11, height: 1.0),
+                    child: Text(localizations.shortWeekDays[date.weekday % 7]),
+                  ),
+                  DefaultTextStyle.merge(
+                    style: style.dateTextStyle
+                        .resolve(variants)
+                        .copyWith(fontSize: 14, height: 1.0),
+                    child: Text(
+                      DateFormat.d(localizations.localeName).format(date),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        if (isToday)
+          Positioned(
+            top: 4,
+            right: 4,
+            child: Container(
+              width: 4,
+              height: 4,
+              decoration: BoxDecoration(
+                color: style.todayIndicatorColor.resolve(variants),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
       ],
     );
   }
 }
 
-class _DateStepButton extends StatelessWidget {
-  const _DateStepButton({super.key, required this.icon, required this.onTap});
+class _CalendarPickerButton extends StatelessWidget {
+  const _CalendarPickerButton({
+    required this.selectedDate,
+    this.onDateSelected,
+  });
 
-  final IconData icon;
-  final VoidCallback? onTap;
+  final DateTime selectedDate;
+  final ValueChanged<DateTime>? onDateSelected;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return FButton.raw(
-      onPress: onTap,
-      variant: FButtonVariant.outline,
-      style: .delta(
-        decoration: .delta([
-          .all(
-            .shapeDelta(
-              color: colors.background,
-              shape: CircleBorder(side: BorderSide(color: colors.border)),
+    return FButton.icon(
+      key: const Key('record-date-picker-action'),
+      onPress: onDateSelected == null
+          ? null
+          : () => _showCalendarPicker(context),
+      variant: FButtonVariant.ghost,
+      size: FButtonSizeVariant.sm,
+      child: const Icon(FLucideIcons.calendarDays),
+    );
+  }
+
+  Future<void> _showCalendarPicker(BuildContext context) async {
+    final picked = await showFDialog<DateTime?>(
+      context: context,
+      builder: (dialogContext, style, animation) => AppDialogShell(
+        maxWidth: 360,
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        builder: (_) => SizedBox(
+          height: 400,
+          child: FCalendar.splitGrid(
+            control: FGridSplitCalendarControl(
+              start: RecordDateBar._minDate,
+              end: RecordDateBar._maxDate,
+            ),
+            selectionControl: FDateSelectionControl.managedSingle(
+              initial: selectedDate,
+              onChange: (date) {
+                if (date != null) {
+                  onDateSelected?.call(_dateOnly(date));
+                }
+                Navigator.of(dialogContext).pop(date);
+              },
             ),
           ),
-        ]),
-        contentStyle: const .delta(
-          padding: .value(EdgeInsets.zero),
-          constraints: BoxConstraints(minWidth: 44, minHeight: 44),
         ),
       ),
-      child: Icon(
-        icon,
-        color: colors.foreground,
-        size: AppSpacingTokens.level5,
-      ),
     );
+    if (picked != null) {
+      onDateSelected?.call(_dateOnly(picked));
+    }
+  }
+
+  static DateTime _dateOnly(DateTime value) {
+    return DateTime(value.year, value.month, value.day);
   }
 }

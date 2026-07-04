@@ -27,8 +27,19 @@ class RecordHeaderActionChip extends StatelessWidget {
         onPress: onTap,
         variant: emphasized ? FButtonVariant.primary : FButtonVariant.outline,
         mainAxisSize: MainAxisSize.min,
-        style: .delta(
-          contentStyle: .delta(
+        style: FButtonStyleDelta.delta(
+          decoration: iconOnly && emphasized
+              ? .delta([
+                  .all(
+                    .shapeDelta(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ])
+              : null,
+          contentStyle: FButtonContentStyleDelta.delta(
             padding: .value(
               EdgeInsets.symmetric(
                 horizontal: iconOnly

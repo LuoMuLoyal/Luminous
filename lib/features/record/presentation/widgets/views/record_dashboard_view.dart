@@ -26,7 +26,6 @@ class RecordDashboardView extends StatelessWidget {
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
-    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
@@ -38,7 +37,6 @@ class RecordDashboardView extends StatelessWidget {
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
-  final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +62,6 @@ class RecordDashboardView extends StatelessWidget {
             onCameraTap: onCameraTap,
             onFilterSelected: onFilterSelected,
             onDateSelected: onDateSelected,
-            onPickDate: onPickDate,
           );
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
@@ -81,7 +78,6 @@ class _MobileRecordDashboard extends StatelessWidget {
     this.onCameraTap,
     this.onFilterSelected,
     this.onDateSelected,
-    this.onPickDate,
   });
 
   final RecordDashboard dashboard;
@@ -92,7 +88,6 @@ class _MobileRecordDashboard extends StatelessWidget {
   final VoidCallback? onCameraTap;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
-  final VoidCallback? onPickDate;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +102,6 @@ class _MobileRecordDashboard extends StatelessWidget {
           dashboard: dashboard,
           l10n: l10n,
           onDateSelected: onDateSelected,
-          onPickDate: onPickDate,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         RecordAiInputBar(

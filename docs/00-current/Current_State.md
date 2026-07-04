@@ -77,6 +77,20 @@ Last updated: 2026-07-04
       `FAvatar` + `AppDivider`，去掉重复 outline 边框与手写分隔线；未启用项显示锁图标并降低透明度。
     - 修复 Record 快速记录“用药”点击断言失败：`_handleQuickAction` 现在对无法映射到 `DailyRecordKind` 的类型
       （如 medication）统一打开通用创建页，并将登录检查前置，使七个快速记录项的登录提示行为一致。
+    - Record 页日期选择器重构：移除顶部左右步进按钮，改为内联 `FLineCalendar` 横向滑动选日期；
+      右侧保留日历按钮，点击弹出 `FCalendar.splitGrid` 月/年网格选择器。为彻底压缩高度并避免
+      `FLineCalendar` 默认 `ItemContent` 在不同屏幕下 overflow，使用自定义 `builder` 绘制紧凑日期项：
+      字号调整为 weekday 11 / date 14，垂直间距 4 / 2，保留 today 指示点与选中/禁用装饰；
+      自定义项用 `SizedBox.expand` 占满 `FLineCalendar` 的 item 宽度，使选中态背景接近正方形。
+      `RecordDateBar` 高度改为按屏幕高度连续计算（`height * 0.055`，clamp 40~52），不再使用固定档位。
+    - Record 页 UI 紧凑化与顶部按钮对齐：
+      - `AppTopBar` 的 trailing 操作区改为与标题垂直居中对齐，解决右上角加号按钮偏高问题。
+      - 移动端 Record 加号按钮（iconOnly + emphasized）圆角从 pill 改为 10px 圆角矩形，视觉更克制。
+      - `RecordPage` body 顶部内边距改为按屏幕高度连续计算（`height * 0.012`，clamp 10~16），
+        减小标题与日期条之间的空白。
+      - `RecordQuickEntryPanel` 尺寸改为按屏幕短边连续计算（`(shortEdge - 600) / 280`，clamp 0~1），
+        标题与卡片间距、格子垂直内边距、头像尺寸、备注按钮内边距和分隔线高度均随屏幕尺寸平滑缩放，
+        避免在小屏设备上快速记录区占用过多空间。
 
 ## 相关文档
 
