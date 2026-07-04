@@ -208,29 +208,27 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle();
 
-    Finder collapseToggle(String tooltip) => find.descendant(
-      of: find.byTooltip(tooltip),
-      matching: find.byType(FButton),
-    );
+    const toggleKey = Key('desktop-sidebar-toggle');
+    Finder collapseToggle() => find.byKey(toggleKey);
 
-    // Initially expanded: collapse button tooltip and settings labels show.
-    expect(collapseToggle('收起侧边栏'), findsOneWidget);
+    // Initially expanded: collapse button and settings labels show.
+    expect(collapseToggle(), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
 
-    await tester.tap(collapseToggle('收起侧边栏'));
+    await tester.tap(collapseToggle());
     await tester.pumpAndSettle();
 
-    // Collapsed: toggle tooltip flips and labels are hidden.
-    expect(collapseToggle('展开侧边栏'), findsOneWidget);
+    // Collapsed: toggle remains and labels are hidden.
+    expect(collapseToggle(), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsNothing);
     expect(find.text(l10n.desktopSidebarHelp), findsNothing);
 
-    await tester.tap(collapseToggle('展开侧边栏'));
+    await tester.tap(collapseToggle());
     await tester.pumpAndSettle();
 
     // Expanded again.
-    expect(collapseToggle('收起侧边栏'), findsOneWidget);
+    expect(collapseToggle(), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
   });

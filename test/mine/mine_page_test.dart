@@ -142,7 +142,6 @@ void main() {
   });
 
   testWidgets('Mine settings action routes to settings page', (tester) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final container = ProviderContainer(
       overrides: [
         authSessionProvider.overrideWith(
@@ -177,7 +176,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    await tester.tap(find.byTooltip(l10n.mineHeaderSettings));
+    await tester.tap(find.byKey(const Key('mine-settings-action')));
     await tester.pumpAndSettle();
 
     expect(find.text('settings-page'), findsOneWidget);

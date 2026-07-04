@@ -3,7 +3,7 @@
 - Lucent-backed report dashboard。
 - 真实 medication / water / sleep 聚合。
 - 用户可选范围：`last_7_days` / `last_30_days` / `custom`。
-- 使用平台日期范围选择器。
+- 自定义范围使用 Forui `FCalendar.grid` 日期范围选择器。
 - 合同驱动的 findings / patterns 文本。
 - 手动 AI 摘要生成，真实增量流：
   - `/api/v1/user/reports/summary/generate/stream`

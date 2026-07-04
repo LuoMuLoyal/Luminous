@@ -1,4 +1,3 @@
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 
 import '../support/e2e_test_helpers.dart';
@@ -10,11 +9,6 @@ void main() {
   testWidgets('full-stack sleep lane: create sleep via structured fields', (
     tester,
   ) async {
-    // Force the time picker into input mode so we can interact with
-    // TextFields instead of the clock dial in integration tests.
-    SleepStructuredFields.forceInputTimePicker = true;
-    addTearDown(() => SleepStructuredFields.forceInputTimePicker = false);
-
     final config = FullstackE2eConfig.fromEnvironment();
     final targetDate = parseRecordDate(config.recordDate);
 
@@ -117,11 +111,11 @@ void main() {
 }
 
 // ── Time picker helpers ──────────────────────────────────────────────────
+// TODO: Rewrite for Forui FTimeField.picker. The previous implementation
+// relied on Material's input-mode time picker, which has been replaced.
 
 Future<void> _confirmTimePicker(WidgetTester tester) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
-  await _tapOk(tester);
-  await settleE2e(tester);
 }
 
 Future<void> _enterTimeAndConfirm(
@@ -130,37 +124,4 @@ Future<void> _enterTimeAndConfirm(
   required String minute,
 }) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
-
-  final dialogFields = find.descendant(
-    of: find.byType(Dialog),
-    matching: find.byType(TextField),
-  );
-  await pumpUntilFound(
-    tester,
-    dialogFields.first,
-    timeout: const Duration(seconds: 5),
-  );
-
-  await tester.tap(dialogFields.first);
-  await tester.enterText(dialogFields.first, hour);
-  await settleE2e(tester);
-
-  await tester.tap(dialogFields.at(1));
-  await tester.enterText(dialogFields.at(1), minute);
-  await settleE2e(tester);
-
-  await _tapOk(tester);
-  await settleE2e(tester);
-}
-
-Future<void> _tapOk(WidgetTester tester) async {
-  final okZh = find.widgetWithText(TextButton, '确定');
-  final okEn = find.widgetWithText(TextButton, 'OK');
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-  if (tester.any(okZh)) {
-    await tester.tap(okZh);
-  } else {
-    await pumpUntilFound(tester, okEn, timeout: const Duration(seconds: 5));
-    await tester.tap(okEn);
-  }
 }

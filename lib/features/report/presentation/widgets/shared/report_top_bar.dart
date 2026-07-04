@@ -64,8 +64,9 @@ class ReportTopBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level3),
-              Tooltip(
-                message: l10n.reportSyncAction,
+              FTooltip(
+                tipBuilder: (context, controller) =>
+                    Text(l10n.reportSyncAction),
                 child: FButton(
                   key: const Key('report-sync-action'),
                   variant: FButtonVariant.secondary,

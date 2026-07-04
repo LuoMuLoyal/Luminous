@@ -35,8 +35,13 @@ Last updated: 2026-07-04
     `context.theme.colors.*` / `AppColors` 语义 token。
   - 排版系统：所有 `textTheme.*` 已替换为 `AppTypographyToken`。
   - `Theme.of(context).brightness` 已替换为 `MediaQuery.platformBrightnessOf(context)`。
-  - 合理遗留：`showDatePicker`/`showTimePicker`、`FloatingActionButton`、`RefreshIndicator`、
-    `Tooltip`（Forui 未提供等效组件或 API 差异较大）。
+  - 合理遗留：`RefreshIndicator`（Forui 未提供等效组件）。
+  - 已迁移的剩余 Material 组件：
+    - `Tooltip` → `FTooltip`（12 处）
+    - `SegmentedButton` → `FSelectGroup`/`FSelectGroupItemMixin.radio`
+    - `FloatingActionButton.extended` → `FButton`（Record NLP FAB）
+    - `showDatePicker`/`showDateRangePicker` → `FDateField.calendar`/`FCalendar.grid`
+    - `showTimePicker` → `FTimeField.picker`/`FTimePicker`
 - 基础组件优化完成：
   - `AppDivider` 支持 `width` 参数，清理冗余默认色调用。
   - `AppStateViews` 拆分为 `app_state_message.dart` + `app_skeleton.dart`，修复 tone 语义，

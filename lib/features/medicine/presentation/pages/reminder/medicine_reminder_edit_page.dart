@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -140,13 +141,36 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       prefilled.value = true;
     }
 
+    Future<DateTime?> showForuiDatePicker(
+      BuildContext context, {
+      required DateTime initial,
+      required DateTime first,
+      required DateTime last,
+    }) => showFDialog<DateTime?>(
+      context: context,
+      builder: (dialogContext, style, animation) => AppDialogShell(
+        maxWidth: 360,
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        builder: (_) => SizedBox(
+          height: 360,
+          child: FCalendar.grid(
+            control: FGridCalendarControl(start: first, end: last),
+            selectionControl: FDateSelectionControl.lifted(
+              selected: (date) => dateOnly(date) == dateOnly(initial),
+              select: (date) => Navigator.of(dialogContext).pop(dateOnly(date)),
+            ),
+          ),
+        ),
+      ),
+    );
+
     Future<void> pickStartDate() async {
       final now = dateOnly(DateTime.now());
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: startDate.value ?? now,
-        firstDate: DateTime(now.year - 5),
-        lastDate: DateTime(now.year + 10, 12, 31),
+      final picked = await showForuiDatePicker(
+        context,
+        initial: startDate.value ?? now,
+        first: DateTime(now.year - 5),
+        last: DateTime(now.year + 10, 12, 31),
       );
       if (picked == null) return;
       final next = dateOnly(picked);
@@ -159,11 +183,11 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     Future<void> pickEndDate() async {
       final now = dateOnly(DateTime.now());
       final first = startDate.value ?? DateTime(now.year - 5);
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: endDate.value ?? startDate.value ?? now,
-        firstDate: first,
-        lastDate: DateTime(now.year + 10, 12, 31),
+      final picked = await showForuiDatePicker(
+        context,
+        initial: endDate.value ?? startDate.value ?? now,
+        first: first,
+        last: DateTime(now.year + 10, 12, 31),
       );
       if (picked == null) return;
       endDate.value = dateOnly(picked);
@@ -171,17 +195,42 @@ class MedicineReminderEditPage extends HookConsumerWidget {
 
     Future<void> addTime() async {
       final latest = times.value.isEmpty ? null : times.value.last;
-      final picked = await showTimePicker(
+      final timeController = FTimePickerController(
+        time: FTime(latest?.hour ?? 8, latest?.minute ?? 0),
+      );
+      final picked = await showFSheet<FTime?>(
         context: context,
-        initialTime: TimeOfDay(
-          hour: latest?.hour ?? 8,
-          minute: latest?.minute ?? 0,
+        side: FLayout.btt,
+        builder: (sheetContext) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 240,
+                  child: FTimePicker(
+                    control: FTimePickerControl.managed(
+                      controller: timeController,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacingTokens.level4),
+                FButton(
+                  onPress: () =>
+                      Navigator.of(sheetContext).pop(timeController.value),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                ),
+              ],
+            ),
+          ),
         ),
       );
+      timeController.dispose();
       if (picked == null) return;
       final updated = [
         ...times.value,
-        MedicineReminderTimeInput.fromTimeOfDay(picked),
+        MedicineReminderTimeInput(hour: picked.hour, minute: picked.minute),
       ];
       updated.sort((left, right) {
         final hour = left.hour.compareTo(right.hour);

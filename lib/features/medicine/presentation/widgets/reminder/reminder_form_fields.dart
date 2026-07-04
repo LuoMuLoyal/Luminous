@@ -19,24 +19,25 @@ class FrequencySegments extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return SegmentedButton<ReminderFrequency>(
-      segments: [
-        ButtonSegment(
+    return FSelectGroup<ReminderFrequency>(
+      control: FMultiValueControl.lifted(
+        value: {frequency},
+        onChange: (value) => onChanged(value.single),
+      ),
+      children: [
+        FSelectGroupItemMixin.radio(
           value: ReminderFrequency.daily,
           label: Text(l10n.medicineReminderFrequencyDaily),
         ),
-        ButtonSegment(
+        FSelectGroupItemMixin.radio(
           value: ReminderFrequency.weekly,
           label: Text(l10n.medicineReminderFrequencyWeekly),
         ),
-        ButtonSegment(
+        FSelectGroupItemMixin.radio(
           value: ReminderFrequency.custom,
           label: Text(l10n.medicineReminderFrequencyCustom),
         ),
       ],
-      selected: {frequency},
-      showSelectedIcon: false,
-      onSelectionChanged: (value) => onChanged(value.single),
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -66,16 +67,16 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final isMobileLayout = width < AppBreakpoints.desktop;
 
     final fab = isMobileLayout
-        ? FloatingActionButton.extended(
+        ? FButton(
             key: const Key('record-nlp-fab'),
-            onPressed: () => _openNlpDialog(
+            onPress: () => _openNlpDialog(
               context,
               canAccessProtectedData: canAccessProtectedData,
               isAuthLoading: isAuthLoading,
               selectedDate: selectedDate,
             ),
-            icon: const Icon(FLucideIcons.sparkles),
-            label: Text(l10n.recordNlpFabAction),
+            prefix: const Icon(FLucideIcons.sparkles),
+            child: Text(l10n.recordNlpFabAction),
           )
         : null;
     final headerActions = isMobileLayout
@@ -284,11 +285,26 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     DateTime selectedDate,
   ) async {
     final today = _dateOnly(DateTime.now());
-    final picked = await showDatePicker(
+    final picked = await showFDialog<DateTime?>(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: today.add(const Duration(days: 365)),
+      builder: (dialogContext, style, animation) => AppDialogShell(
+        maxWidth: 360,
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        builder: (_) => SizedBox(
+          height: 360,
+          child: FCalendar.grid(
+            control: FGridCalendarControl(
+              start: DateTime(2000),
+              end: today.add(const Duration(days: 365)),
+            ),
+            selectionControl: FDateSelectionControl.lifted(
+              selected: (date) => _dateOnly(date) == _dateOnly(selectedDate),
+              select: (date) =>
+                  Navigator.of(dialogContext).pop(_dateOnly(date)),
+            ),
+          ),
+        ),
+      ),
     );
     if (picked == null) return;
     _setSelectedDate(picked);

@@ -62,8 +62,8 @@ class _IconActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Tooltip(
-      message: tooltip,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(tooltip),
       child: Stack(
         clipBehavior: Clip.none,
         children: [

@@ -28,7 +28,7 @@
 - 这些类型的快捷操作先打开快速选择 bottom sheet：
   - 点击快速选项立即保存，使用选中日期与真实当前 `HH:mm`。
   - `more` 打开完整创建表单，可编辑日期与时间。
-- 创建/编辑表单暴露显式日期 + 时间选择器。
+- 创建/编辑表单使用 Forui `FDateField.calendar` + `FTimeField.picker` 选择发生日期与时间。
 - Lucent daily-record 持久化保留 `occurredAt` 作为日期键，单独持久化 `occurredTime`。
 - 时间线/详情显示保存的具体时/分，而不是从时间戳回退推断。
 

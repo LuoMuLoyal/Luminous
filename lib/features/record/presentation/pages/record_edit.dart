@@ -380,33 +380,6 @@ class RecordEditPage extends HookConsumerWidget {
       }
     }
 
-    Future<void> pickRecordDate() async {
-      final initialDate = recordOccurredAt.value ?? DateTime.now();
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: initialDate,
-        firstDate: DateTime(2000),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
-      );
-      if (picked == null) return;
-      recordOccurredAt.value = DateTime(picked.year, picked.month, picked.day);
-    }
-
-    Future<void> pickRecordTime() async {
-      final parsed = parseRecordTime(recordOccurredTime.value);
-      final picked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay(
-          hour: parsed?.hour ?? DateTime.now().hour,
-          minute: parsed?.minute ?? DateTime.now().minute,
-        ),
-      );
-      if (picked == null) return;
-      recordOccurredTime.value = formatRecordTimeValue(
-        DateTime(2000, 1, 1, picked.hour, picked.minute),
-      );
-    }
-
     Future<void> onPickImage() async {
       try {
         final image = await imagePicker.pickImage(
@@ -507,8 +480,31 @@ class RecordEditPage extends HookConsumerWidget {
                     RecordOccurredAtFields(
                       date: recordOccurredAt.value ?? DateTime.now(),
                       time: recordOccurredTime.value,
-                      onDateTap: pickRecordDate,
-                      onTimeTap: pickRecordTime,
+                      onDateChanged: (date) =>
+                          recordOccurredAt.value = DateTime(
+                            date.year,
+                            date.month,
+                            date.day,
+                            recordOccurredAt.value?.hour ?? DateTime.now().hour,
+                            recordOccurredAt.value?.minute ??
+                                DateTime.now().minute,
+                          ),
+                      onTimeChanged: (time) {
+                        if (time == null) {
+                          recordOccurredTime.value = null;
+                          return;
+                        }
+                        recordOccurredAt.value = DateTime(
+                          recordOccurredAt.value?.year ?? DateTime.now().year,
+                          recordOccurredAt.value?.month ?? DateTime.now().month,
+                          recordOccurredAt.value?.day ?? DateTime.now().day,
+                          time.hour,
+                          time.minute,
+                        );
+                        recordOccurredTime.value = formatRecordTimeValue(
+                          DateTime(2000, 1, 1, time.hour, time.minute),
+                        );
+                      },
                     ),
                     const SizedBox(height: AppSpacingTokens.level3),
                     DailyRecordFormFields(

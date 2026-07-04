@@ -28,8 +28,8 @@ class RecordHeaderActionChip extends StatelessWidget {
         ? colors.primaryForeground
         : colors.foreground;
 
-    return Tooltip(
-      message: label,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(label),
       child: FButton.raw(
         onPress: onTap,
         variant: FButtonVariant.outline,

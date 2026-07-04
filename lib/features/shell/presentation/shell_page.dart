@@ -232,11 +232,12 @@ class _DesktopSidebarHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final toggle = Tooltip(
-      message: collapsed ? '展开侧边栏' : '收起侧边栏',
+    final toggle = FTooltip(
+      tipBuilder: (context, controller) => Text(collapsed ? '展开侧边栏' : '收起侧边栏'),
       child: SizedBox.square(
         dimension: 24,
         child: FButton.icon(
+          key: const Key('desktop-sidebar-toggle'),
           onPress: onToggle,
           variant: FButtonVariant.ghost,
           size: FButtonSizeVariant.xs,
@@ -319,7 +320,10 @@ class _DesktopSidebarTabItem extends StatelessWidget {
     );
 
     if (collapsed) {
-      return Tooltip(message: label, child: item);
+      return FTooltip(
+        tipBuilder: (context, controller) => Text(label),
+        child: item,
+      );
     }
 
     return item;
@@ -348,7 +352,10 @@ class _DesktopSidebarActionItem extends StatelessWidget {
     );
 
     if (collapsed) {
-      return Tooltip(message: label, child: item);
+      return FTooltip(
+        tipBuilder: (context, controller) => Text(label),
+        child: item,
+      );
     }
 
     return item;

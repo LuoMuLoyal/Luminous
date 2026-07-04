@@ -9,43 +9,43 @@ class RecordOccurredAtFields extends StatelessWidget {
     super.key,
     required this.date,
     required this.time,
-    required this.onDateTap,
-    required this.onTimeTap,
+    required this.onDateChanged,
+    required this.onTimeChanged,
   });
 
   final DateTime date;
   final String? time;
-  final VoidCallback onDateTap;
-  final VoidCallback onTimeTap;
+  final ValueChanged<DateTime> onDateChanged;
+  final ValueChanged<FTime?> onTimeChanged;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final parsedTime = parseRecordTime(time);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FButton(
-          variant: FButtonVariant.outline,
+        FDateField.calendar(
           key: const Key('record-date-field'),
-          onPress: onDateTap,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              '${l10n.recordCreateFieldDate} · ${formatRecordDate(date)}',
-            ),
+          label: Text(l10n.recordCreateFieldDate),
+          selectionControl: FDateSelectionControl.managedSingle(
+            initial: date,
+            toggleable: false,
+            onChange: (value) {
+              if (value != null) onDateChanged(value);
+            },
           ),
         ),
         const SizedBox(height: AppSpacingTokens.level3),
-        FButton(
-          variant: FButtonVariant.outline,
+        FTimeField.picker(
           key: const Key('record-time-field'),
-          onPress: onTimeTap,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              '${l10n.recordCreateFieldTime} · ${formatRecordTimeLabel(time)}',
-            ),
+          label: Text(l10n.recordCreateFieldTime),
+          control: FTimeFieldControl.lifted(
+            time: parsedTime == null
+                ? null
+                : FTime(parsedTime.hour, parsedTime.minute),
+            onChange: onTimeChanged,
           ),
         ),
       ],

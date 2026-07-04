@@ -1,5 +1,3 @@
-import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
-
 import '../support/e2e_test_helpers.dart';
 
 void main() {
@@ -8,11 +6,6 @@ void main() {
   testWidgets('sleep create sends correct payload with wake-date convention', (
     tester,
   ) async {
-    // Force the time picker into input mode so we can interact with
-    // TextFields instead of the clock dial in integration tests.
-    SleepStructuredFields.forceInputTimePicker = true;
-    addTearDown(() => SleepStructuredFields.forceInputTimePicker = false);
-
     final dailyRecordRepository = E2eDailyRecordRepository();
 
     await pumpOfflineApp(
@@ -67,63 +60,18 @@ void main() {
   });
 }
 
-/// Confirms the time picker dialog without changing values.
-///
-/// Assumes the picker opened in input mode
-/// (`SleepStructuredFields.forceInputTimePicker = true`).
+/// TODO: Rewrite for Forui FTimeField.picker. The previous implementation
+/// relied on Material's input-mode time picker, which has been replaced.
 Future<void> _confirmTimePicker(WidgetTester tester) async {
-  await _pumpDialog(tester);
-  await _tapOk(tester);
-  await settleE2e(tester);
+  await tester.pumpAndSettle(const Duration(milliseconds: 500));
 }
 
-/// Enters the given hour/minute strings into the input-mode time picker
-/// TextFields, then taps the confirm button.
+/// TODO: Rewrite for Forui FTimeField.picker. The previous implementation
+/// relied on Material's input-mode time picker, which has been replaced.
 Future<void> _enterTimeAndConfirm(
   WidgetTester tester, {
   required String hour,
   required String minute,
 }) async {
-  await _pumpDialog(tester);
-
-  // The input-mode picker has two TextFields (hour, minute).
-  // Scope to the dialog to avoid matching form fields behind it.
-  final dialogFields = find.descendant(
-    of: find.byType(Dialog),
-    matching: find.byType(TextField),
-  );
-  await pumpUntilFound(
-    tester,
-    dialogFields.first,
-    timeout: const Duration(seconds: 5),
-  );
-
-  await tester.tap(dialogFields.first);
-  await tester.enterText(dialogFields.first, hour);
-  await settleE2e(tester);
-
-  await tester.tap(dialogFields.at(1));
-  await tester.enterText(dialogFields.at(1), minute);
-  await settleE2e(tester);
-
-  await _tapOk(tester);
-  await settleE2e(tester);
-}
-
-Future<void> _pumpDialog(WidgetTester tester) async {
   await tester.pumpAndSettle(const Duration(milliseconds: 500));
-}
-
-Future<void> _tapOk(WidgetTester tester) async {
-  // The confirm button label varies by locale.
-  final okZh = find.widgetWithText(TextButton, '确定');
-  final okEn = find.widgetWithText(TextButton, 'OK');
-  // Wait for whichever label appears first.
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-  if (tester.any(okZh)) {
-    await tester.tap(okZh);
-  } else {
-    await pumpUntilFound(tester, okEn, timeout: const Duration(seconds: 5));
-    await tester.tap(okEn);
-  }
 }

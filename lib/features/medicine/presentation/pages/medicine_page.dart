@@ -219,8 +219,8 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return Tooltip(
-      message: l10n.medicineSafetyGuardLabel,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.medicineSafetyGuardLabel),
       child: FButton(
         onPress: () => context.push('/medicine/risk-check'),
         variant: FButtonVariant.ghost,
@@ -260,8 +260,9 @@ class _MedicineNotificationButton extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return Tooltip(
-      message: l10n.medicineNotificationsTooltip,
+    return FTooltip(
+      tipBuilder: (context, controller) =>
+          Text(l10n.medicineNotificationsTooltip),
       child: Stack(
         clipBehavior: Clip.none,
         children: [

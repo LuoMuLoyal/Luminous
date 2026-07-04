@@ -48,8 +48,8 @@ class _AssistantEntryButton extends ConsumerWidget {
 
     final session = ref.watch(authSessionProvider);
 
-    return Tooltip(
-      message: l10n.assistantEntryTitle,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.assistantEntryTitle),
       child: FButton.raw(
         key: const Key('today-assistant-entry'),
         onPress: () async {
@@ -120,8 +120,8 @@ class _NotificationButton extends ConsumerWidget {
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
-    return Tooltip(
-      message: l10n.todayNotificationsTooltip,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.todayNotificationsTooltip),
       child: Stack(
         clipBehavior: Clip.none,
         children: [

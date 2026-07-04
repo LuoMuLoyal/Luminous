@@ -519,10 +519,16 @@ void main() {
     expect(repo.getCalledWith, 'test-id-1');
 
     final fields = find.byType(TextField);
-    expect(fields, findsNWidgets(5));
-    // Index 0 is the kind selector; clear the remaining title/value/unit/note fields.
-    for (var index = 1; index < 5; index += 1) {
-      await tester.enterText(fields.at(index), '');
+    expect(fields, findsNWidgets(7));
+    // Clear the title/value/unit/note fields by key. Date/time and kind fields
+    // are kept intact.
+    for (final key in [
+      'daily-record-title-field',
+      'daily-record-value-field',
+      'daily-record-unit-field',
+      'daily-record-note-field',
+    ]) {
+      await tester.enterText(find.byKey(Key(key)), '');
     }
 
     final saveButton = find.byKey(const Key('record-edit-save-action'));
@@ -827,8 +833,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-sleep')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record mobile note quick action opens fast entry first', (
@@ -872,7 +880,6 @@ void main() {
       tester.view.resetDevicePixelRatio();
       tester.view.resetPhysicalSize();
     });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final repo = _FakeRecordRepository();
 
     await _pumpRecordPage(
@@ -885,7 +892,7 @@ void main() {
 
     expect(repo.requestedDates, contains(DateTime(2026, 6, 6)));
 
-    await tester.tap(find.byTooltip(l10n.recordPreviousDayAction).first);
+    await tester.tap(find.byKey(const Key('record-date-previous-action')));
     await tester.pumpAndSettle();
 
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
@@ -954,8 +961,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-water')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record meal quick action opens fast entry and saves', (
@@ -1025,8 +1034,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-meal')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record symptom quick action opens fast entry and saves', (
@@ -1098,8 +1109,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-symptom')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record note quick action opens fast entry and saves', (
@@ -1169,8 +1182,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-note')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record mood quick action opens fast entry and saves', (
@@ -1241,8 +1256,10 @@ void main() {
 
     expect(find.byType(RecordCreatePage), findsOneWidget);
     expect(find.byKey(const Key('daily-record-kind-mood')), findsOneWidget);
-    expect(find.text('日期 · 2026-06-06'), findsOneWidget);
-    expect(find.text('时间 · 09:45'), findsOneWidget);
+    expect(find.text('日期'), findsOneWidget);
+    expect(find.text('2026年6月6日'), findsOneWidget);
+    expect(find.text('时间'), findsOneWidget);
+    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record mobile quick action shows login dialog when signed out', (

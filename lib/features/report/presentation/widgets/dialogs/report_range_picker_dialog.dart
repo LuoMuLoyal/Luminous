@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -41,27 +43,54 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
               selected: selectedQuery.range == ReportDashboardRange.custom,
               onTap: () async {
                 final now = DateTime.now();
-                final initialDateRange = selectedQuery.isCustom
-                    ? DateTimeRange(
-                        start: selectedQuery.startDate!,
-                        end: selectedQuery.endDate!,
-                      )
-                    : DateTimeRange(
-                        start: now.subtract(const Duration(days: 7)),
-                        end: now,
-                      );
-                final picked = await showDateRangePicker(
-                  context: dialogContext,
-                  firstDate: DateTime(2020),
-                  lastDate: now,
-                  initialDateRange: initialDateRange,
+                final initialRange = selectedQuery.isCustom
+                    ? (selectedQuery.startDate!, selectedQuery.endDate!)
+                    : (now.subtract(const Duration(days: 7)), now);
+                final rangeController = FDateSelectionController.range(
+                  initial: initialRange,
                 );
+                final picked = await showFDialog<(DateTime, DateTime)?>(
+                  context: dialogContext,
+                  builder: (calendarContext, style, animation) =>
+                      AppDialogShell(
+                        maxWidth: 360,
+                        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                        builder: (_) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 360,
+                              child: FCalendar.grid(
+                                control: FGridCalendarControl(
+                                  start: DateTime(2020),
+                                  end: now,
+                                ),
+                                selectionControl:
+                                    FDateSelectionControl.managedRange(
+                                      controller: rangeController,
+                                    ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacingTokens.level4),
+                            FButton(
+                              onPress: () => Navigator.of(
+                                calendarContext,
+                              ).pop(rangeController.value),
+                              child: Text(
+                                MaterialLocalizations.of(context).okButtonLabel,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                );
+                rangeController.dispose();
                 if (picked != null && dialogContext.mounted) {
                   Navigator.of(dialogContext).pop(
                     ReportDashboardQuery(
                       range: ReportDashboardRange.custom,
-                      startDate: picked.start,
-                      endDate: picked.end,
+                      startDate: picked.$1,
+                      endDate: picked.$2,
                     ),
                   );
                 }

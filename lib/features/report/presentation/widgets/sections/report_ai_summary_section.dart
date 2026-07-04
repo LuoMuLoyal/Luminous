@@ -90,30 +90,35 @@ class ReportAiSummarySection extends StatelessWidget {
                         runSpacing: AppSpacingTokens.level3,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          SegmentedButton<ReportAiSummaryRange>(
+                          FSelectGroup<ReportAiSummaryRange>(
                             key: const Key('report-ai-summary-range-toggle'),
-                            segments: [
-                              ButtonSegment(
+                            control: onRangeChanged == null
+                                ? FMultiValueControl.lifted(
+                                    value: {selectedRange},
+                                    onChange: (_) {},
+                                  )
+                                : FMultiValueControl.lifted(
+                                    value: {selectedRange},
+                                    onChange: (selection) {
+                                      if (selection.isNotEmpty) {
+                                        onRangeChanged!(selection.first);
+                                      }
+                                    },
+                                  ),
+                            children: [
+                              FSelectGroupItemMixin.radio(
                                 value: ReportAiSummaryRange.last7Days,
                                 label: Text(l10n.reportRangeLast7Days),
                               ),
-                              ButtonSegment(
+                              FSelectGroupItemMixin.radio(
                                 value: ReportAiSummaryRange.last30Days,
                                 label: Text(l10n.reportRangeLast30Days),
                               ),
-                              ButtonSegment(
+                              FSelectGroupItemMixin.radio(
                                 value: ReportAiSummaryRange.custom,
                                 label: Text(l10n.reportRangeCustom),
                               ),
                             ],
-                            selected: {selectedRange},
-                            onSelectionChanged: onRangeChanged == null
-                                ? null
-                                : (selection) {
-                                    if (selection.isNotEmpty) {
-                                      onRangeChanged!(selection.first);
-                                    }
-                                  },
                           ),
                           if (actionLabel != null && action != null)
                             FButton(

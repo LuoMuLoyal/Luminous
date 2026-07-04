@@ -166,32 +166,6 @@ class RecordCreatePage extends HookConsumerWidget {
       applyKindDefaults(newKind);
     }
 
-    Future<void> pickRecordDate() async {
-      final picked = await showDatePicker(
-        context: context,
-        initialDate: recordDate.value,
-        firstDate: DateTime(2000),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
-      );
-      if (picked == null) return;
-      recordDate.value = DateTime(picked.year, picked.month, picked.day);
-    }
-
-    Future<void> pickRecordTime() async {
-      final parsed = parseRecordTime(recordTime.value);
-      final picked = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay(
-          hour: parsed?.hour ?? DateTime.now().hour,
-          minute: parsed?.minute ?? DateTime.now().minute,
-        ),
-      );
-      if (picked == null) return;
-      recordTime.value = formatRecordTimeValue(
-        DateTime(2000, 1, 1, picked.hour, picked.minute),
-      );
-    }
-
     Future<void> onPickImage() async {
       try {
         final image = await imagePicker.pickImage(
@@ -346,8 +320,16 @@ class RecordCreatePage extends HookConsumerWidget {
                     RecordOccurredAtFields(
                       date: recordDate.value,
                       time: recordTime.value,
-                      onDateTap: pickRecordDate,
-                      onTimeTap: pickRecordTime,
+                      onDateChanged: (date) => recordDate.value = DateTime(
+                        date.year,
+                        date.month,
+                        date.day,
+                      ),
+                      onTimeChanged: (time) => recordTime.value = time == null
+                          ? null
+                          : formatRecordTimeValue(
+                              DateTime(2000, 1, 1, time.hour, time.minute),
+                            ),
                     ),
                     const SizedBox(height: AppSpacingTokens.level3),
                     DailyRecordFormFields(

@@ -60,48 +60,33 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                   ignoring: !settings.sleepReminderEnabled,
                   child: Opacity(
                     opacity: settings.sleepReminderEnabled ? 1 : 0.45,
-                    child: FTileGroup(
-                      style: settingsSubpageTileGroupStyle(context.theme),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        FTile(
-                          title: Text(l10n.settingsNotificationsSleepBedtime),
-                          details: Text(
-                            _formatTimeOfDay(settings.sleepBedtime),
+                        FTimeField.picker(
+                          label: Text(l10n.settingsNotificationsSleepBedtime),
+                          enabled: settings.sleepReminderEnabled,
+                          control: FTimeFieldControl.lifted(
+                            time:
+                                settings.sleepBedtime?.toFTime() ??
+                                const FTime(23, 0),
+                            onChange: (value) => controller.setSleepBedtime(
+                              value?.toTimeOfDay(),
+                            ),
                           ),
-                          suffix: const Icon(FLucideIcons.chevronRight),
-                          onPress: settings.sleepReminderEnabled
-                              ? () async {
-                                  final selected = await showTimePicker(
-                                    context: context,
-                                    initialTime:
-                                        settings.sleepBedtime ??
-                                        const TimeOfDay(hour: 23, minute: 0),
-                                  );
-                                  if (selected != null) {
-                                    await controller.setSleepBedtime(selected);
-                                  }
-                                }
-                              : null,
                         ),
-                        FTile(
-                          title: Text(l10n.settingsNotificationsSleepWakeTime),
-                          details: Text(
-                            _formatTimeOfDay(settings.sleepWakeTime),
+                        const SizedBox(height: AppSpacingTokens.level3),
+                        FTimeField.picker(
+                          label: Text(l10n.settingsNotificationsSleepWakeTime),
+                          enabled: settings.sleepReminderEnabled,
+                          control: FTimeFieldControl.lifted(
+                            time:
+                                settings.sleepWakeTime?.toFTime() ??
+                                const FTime(7, 0),
+                            onChange: (value) => controller.setSleepWakeTime(
+                              value?.toTimeOfDay(),
+                            ),
                           ),
-                          suffix: const Icon(FLucideIcons.chevronRight),
-                          onPress: settings.sleepReminderEnabled
-                              ? () async {
-                                  final selected = await showTimePicker(
-                                    context: context,
-                                    initialTime:
-                                        settings.sleepWakeTime ??
-                                        const TimeOfDay(hour: 7, minute: 0),
-                                  );
-                                  if (selected != null) {
-                                    await controller.setSleepWakeTime(selected);
-                                  }
-                                }
-                              : null,
                         ),
                       ],
                     ),
@@ -114,11 +99,12 @@ class SleepReminderSettingsPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  String _formatTimeOfDay(TimeOfDay? time) {
-    if (time == null) return '--:--';
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
+extension _SleepReminderTimeOfDay on TimeOfDay {
+  FTime toFTime() => FTime(hour, minute);
+}
+
+extension _SleepReminderFTime on FTime {
+  TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
 }

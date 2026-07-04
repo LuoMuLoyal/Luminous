@@ -20,16 +20,6 @@ List<SleepQuality> sleepQualityOptions(AppLocalizations l10n) => [
 ];
 
 class SleepStructuredFields extends StatelessWidget {
-  /// When true, the time picker opens in input mode instead of dial mode.
-  /// Intended for integration tests that need to interact with TextFields.
-  /// Tests must reset this to false in `addTearDown`.
-  static bool forceInputTimePicker = false;
-
-  /// Optional test-only override queue for deterministic picked times without
-  /// opening the platform time-picker dialog.
-  /// Tests must clear this in `addTearDown`.
-  static final List<TimeOfDay> forcedPickedTimes = <TimeOfDay>[];
-
   const SleepStructuredFields({
     super.key,
     required this.l10n,
@@ -72,20 +62,24 @@ class SleepStructuredFields extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: _TimePickerField(
+              child: FTimeField.picker(
                 key: const Key('sleep-bedtime-picker'),
-                label: l10n.recordSleepBedtimeLabel,
-                time: bedtime,
-                onPicked: onBedtimeChanged,
+                label: Text(l10n.recordSleepBedtimeLabel),
+                control: FTimeFieldControl.lifted(
+                  time: bedtime?.toFTime(),
+                  onChange: (value) => onBedtimeChanged(value?.toTimeOfDay()),
+                ),
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level4),
             Expanded(
-              child: _TimePickerField(
+              child: FTimeField.picker(
                 key: const Key('sleep-waketime-picker'),
-                label: l10n.recordSleepWakeTimeLabel,
-                time: wakeTime,
-                onPicked: onWakeTimeChanged,
+                label: Text(l10n.recordSleepWakeTimeLabel),
+                control: FTimeFieldControl.lifted(
+                  time: wakeTime?.toFTime(),
+                  onChange: (value) => onWakeTimeChanged(value?.toTimeOfDay()),
+                ),
               ),
             ),
           ],
@@ -182,43 +176,12 @@ String? formatSleepTimeRange(TimeOfDay? bedtime, TimeOfDay? wakeTime) {
 String _fmt(TimeOfDay t) =>
     '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
-class _TimePickerField extends StatelessWidget {
-  const _TimePickerField({
-    super.key,
-    required this.label,
-    required this.time,
-    required this.onPicked,
-  });
+extension _SleepTimeOfDay on TimeOfDay {
+  FTime toFTime() => FTime(hour, minute);
+}
 
-  final String label;
-  final TimeOfDay? time;
-  final ValueChanged<TimeOfDay?> onPicked;
-
-  @override
-  Widget build(BuildContext context) {
-    final text = time == null ? null : _fmt(time!);
-
-    return FTappable(
-      onPress: () async {
-        if (SleepStructuredFields.forcedPickedTimes.isNotEmpty) {
-          onPicked(SleepStructuredFields.forcedPickedTimes.removeAt(0));
-          return;
-        }
-        final picked = await showTimePicker(
-          context: context,
-          initialTime: time ?? const TimeOfDay(hour: 23, minute: 0),
-          initialEntryMode: SleepStructuredFields.forceInputTimePicker
-              ? TimePickerEntryMode.input
-              : TimePickerEntryMode.dial,
-        );
-        onPicked(picked);
-      },
-      child: InputDecorator(
-        decoration: InputDecoration(labelText: label),
-        child: Text(text ?? '', style: AppTypographyToken.level3.body(context)),
-      ),
-    );
-  }
+extension _SleepFTime on FTime {
+  TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
 }
 
 class _NumberField extends HookWidget {

@@ -19,8 +19,8 @@ class MineHeaderActionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return Tooltip(
-      message: label,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(label),
       child: FButton.raw(
         onPress: onTap,
         variant: FButtonVariant.outline,

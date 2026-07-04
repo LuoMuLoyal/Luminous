@@ -1,6 +1,7 @@
 # Active UI — Today
 
 - 压缩健康概览。
+- 顶部栏操作按钮使用 Forui `FTooltip` 提供语义提示。
 - repository 提供的用药/饮水优先级列表。
 - 用药任务。
 - 饮水任务（带数量目标）。

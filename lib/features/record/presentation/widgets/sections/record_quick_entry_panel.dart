@@ -129,8 +129,8 @@ class _IconActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(tooltip),
       child: FButton.icon(
         onPress: onTap,
         variant: FButtonVariant.ghost,
