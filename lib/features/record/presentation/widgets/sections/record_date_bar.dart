@@ -43,22 +43,11 @@ class RecordDateBar extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.level2),
         Expanded(
-          child: FButton.raw(
+          child: FButton(
             onPress: onPickDate,
             variant: FButtonVariant.outline,
-            style: .delta(
-              decoration: .delta([
-                .all(
-                  .shapeDelta(
-                    color: colors.background,
-                    shape: RoundedSuperellipseBorder(
-                      side: BorderSide(color: colors.border),
-                      borderRadius: context.theme.style.borderRadius.pill,
-                    ),
-                  ),
-                ),
-              ]),
-              contentStyle: const .delta(
+            style: const .delta(
+              contentStyle: .delta(
                 padding: .value(
                   EdgeInsets.symmetric(
                     horizontal: AppSpacingTokens.level4,
@@ -67,31 +56,25 @@ class RecordDateBar extends StatelessWidget {
                 ),
               ),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  FLucideIcons.calendarDays,
-                  color: colors.foreground,
-                  size: AppSpacingTokens.level5,
-                ),
-                const SizedBox(width: AppSpacingTokens.level2),
-                Expanded(
-                  child: Text(
-                    dateLabel,
-                    style: AppTypographyToken.level4
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: AppSpacingTokens.level2),
-                Icon(
-                  FLucideIcons.chevronDown,
-                  color: colors.mutedForeground,
-                  size: AppSpacingTokens.level5,
-                ),
-              ],
+            prefix: Icon(
+              FLucideIcons.calendarDays,
+              color: colors.foreground,
+              size: AppSpacingTokens.level5,
+            ),
+            suffix: Icon(
+              FLucideIcons.chevronDown,
+              color: colors.mutedForeground,
+              size: AppSpacingTokens.level5,
+            ),
+            child: Expanded(
+              child: Text(
+                dateLabel,
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ),

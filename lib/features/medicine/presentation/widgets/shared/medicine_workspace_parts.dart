@@ -20,32 +20,12 @@ class MedicineHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final emphasisColor = context.theme.colors.primary;
-    final colors = context.theme.colors;
-
-    final background = emphasized ? emphasisColor : colors.background;
-    final foreground = emphasized
-        ? colors.primaryForeground
-        : colors.foreground;
-
-    return FButton.raw(
+    return FButton(
       onPress: onTap,
-      variant: FButtonVariant.outline,
-      style: .delta(
-        decoration: .delta([
-          .all(
-            .shapeDelta(
-              color: background,
-              shape: RoundedSuperellipseBorder(
-                side: BorderSide(
-                  color: emphasized ? emphasisColor : colors.border,
-                ),
-                borderRadius: context.theme.style.borderRadius.pill,
-              ),
-            ),
-          ),
-        ]),
-        contentStyle: const .delta(
+      variant: emphasized ? FButtonVariant.primary : FButtonVariant.outline,
+      mainAxisSize: MainAxisSize.min,
+      style: const .delta(
+        contentStyle: .delta(
           padding: .value(
             EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level4,
@@ -54,18 +34,12 @@ class MedicineHeaderActionChip extends StatelessWidget {
           ),
         ),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18, color: foreground),
-          const SizedBox(width: AppSpacingTokens.level2),
-          Text(
-            label,
-            style: AppTypographyToken.level5
-                .body(context)
-                .copyWith(color: foreground, fontWeight: FontWeight.w700),
-          ),
-        ],
+      prefix: Icon(icon, size: 18),
+      child: Text(
+        label,
+        style: AppTypographyToken.level5
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w700),
       ),
     );
   }

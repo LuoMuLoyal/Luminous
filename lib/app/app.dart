@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
+import 'package:luminous/theme/styles/button_styles.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -23,8 +24,21 @@ class LuminousApp extends ConsumerStatefulWidget {
 }
 
 class _LuminousAppState extends ConsumerState<LuminousApp> {
-  static final FThemeData _foruiLight = FThemes.neutral.light.touch;
-  static final FThemeData _foruiDark = FThemes.neutral.dark.touch;
+  static FThemeData _foruiLight() =>
+      _withButtonStyles(FThemes.neutral.light.touch);
+  static FThemeData _foruiDark() =>
+      _withButtonStyles(FThemes.neutral.dark.touch);
+
+  static FThemeData _withButtonStyles(FThemeData base) {
+    return base.copyWith(
+      buttonStyles: buttonStyles(
+        colors: base.colors,
+        typography: base.typography,
+        style: base.style,
+        touch: true,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -79,14 +93,14 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       onGenerateTitle: (context) =>
           AppLocalizations.of(context)?.appTitle ?? 'Luminous',
       debugShowCheckedModeBanner: false,
-      theme: _materialTheme(_foruiLight),
-      darkTheme: _materialTheme(_foruiDark),
+      theme: _materialTheme(_foruiLight()),
+      darkTheme: _materialTheme(_foruiDark()),
       themeMode: themeMode,
       locale: locale?.flutterLocale,
       builder: (context, child) => FTheme(
         data: Theme.of(context).brightness == Brightness.dark
-            ? _foruiDark
-            : _foruiLight,
+            ? _foruiDark()
+            : _foruiLight(),
         child: FToaster(child: child ?? const SizedBox.shrink()),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[

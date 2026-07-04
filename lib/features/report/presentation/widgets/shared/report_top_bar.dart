@@ -173,22 +173,12 @@ class ReportPeriodPill extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return FButton.raw(
+    return FButton(
       onPress: onTap,
       variant: FButtonVariant.outline,
-      style: .delta(
-        decoration: .delta([
-          .all(
-            .shapeDelta(
-              color: colors.background,
-              shape: RoundedSuperellipseBorder(
-                side: BorderSide(color: colors.border),
-                borderRadius: context.theme.style.borderRadius.sm,
-              ),
-            ),
-          ),
-        ]),
-        contentStyle: const .delta(
+      mainAxisSize: MainAxisSize.min,
+      style: const .delta(
+        contentStyle: .delta(
           padding: .value(
             EdgeInsets.symmetric(
               horizontal: AppSpacingTokens.level4,

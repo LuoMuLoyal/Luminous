@@ -21,30 +21,13 @@ class RecordHeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.theme.colors.primary;
-    final colors = context.theme.colors;
-
-    final foreground = emphasized
-        ? colors.primaryForeground
-        : colors.foreground;
-
     return FTooltip(
       tipBuilder: (context, controller) => Text(label),
-      child: FButton.raw(
+      child: FButton(
         onPress: onTap,
-        variant: FButtonVariant.outline,
+        variant: emphasized ? FButtonVariant.primary : FButtonVariant.outline,
+        mainAxisSize: MainAxisSize.min,
         style: .delta(
-          decoration: .delta([
-            .all(
-              .shapeDelta(
-                color: emphasized ? accent : colors.background,
-                shape: RoundedSuperellipseBorder(
-                  side: BorderSide(color: emphasized ? accent : colors.border),
-                  borderRadius: context.theme.style.borderRadius.sm,
-                ),
-              ),
-            ),
-          ]),
           contentStyle: .delta(
             padding: .value(
               EdgeInsets.symmetric(
@@ -56,21 +39,15 @@ class RecordHeaderActionChip extends StatelessWidget {
             ),
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 18, color: foreground),
-            if (!iconOnly) ...[
-              const SizedBox(width: AppSpacingTokens.level2),
-              Text(
+        prefix: Icon(icon, size: 18),
+        child: iconOnly
+            ? const SizedBox.shrink()
+            : Text(
                 label,
                 style: AppTypographyToken.level5
                     .body(context)
-                    .copyWith(color: foreground, fontWeight: FontWeight.w700),
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
-            ],
-          ],
-        ),
       ),
     );
   }

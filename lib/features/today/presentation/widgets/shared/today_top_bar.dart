@@ -50,7 +50,7 @@ class _AssistantEntryButton extends ConsumerWidget {
 
     return FTooltip(
       tipBuilder: (context, controller) => Text(l10n.assistantEntryTitle),
-      child: FButton.raw(
+      child: FButton(
         key: const Key('today-assistant-entry'),
         onPress: () async {
           if (session.canAccessProtectedData) {
@@ -66,6 +66,8 @@ class _AssistantEntryButton extends ConsumerWidget {
           );
         },
         variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.sm,
+        mainAxisSize: MainAxisSize.min,
         style: .delta(
           decoration: .delta([
             .all(
@@ -78,32 +80,13 @@ class _AssistantEntryButton extends ConsumerWidget {
               ),
             ),
           ]),
-          contentStyle: const .delta(
-            padding: .value(
-              EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level3,
-                vertical: AppSpacingTokens.level2,
-              ),
-            ),
-          ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              FLucideIcons.sparkles,
-              size: AppSpacingTokens.level4,
-              color: colors.primary,
-            ),
-            const SizedBox(width: AppSpacingTokens.level1),
-            Text(
-              l10n.assistantEntryTitle,
-              style: AppTypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
-            ),
-          ],
+        prefix: Icon(
+          FLucideIcons.sparkles,
+          size: AppSpacingTokens.level4,
+          color: colors.primary,
         ),
+        child: Text(l10n.assistantEntryTitle),
       ),
     );
   }

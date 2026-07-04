@@ -9,7 +9,7 @@ import 'package:luminous/core/design/app_design.dart';
 /// 顶部使用，因此自带水平内边距与 [SafeArea]。
 ///
 /// 视觉规范：
-/// - 标题使用 [AppTypographyToken.level9] display + [FontWeight.w800]。
+/// - 标题使用 [AppTypographyToken.level8] display + [FontWeight.w800]。
 /// - 可选副标题使用 [AppTypographyToken.level4] body + muted foreground。
 /// - trailing 操作按钮横向排列，与标题之间保持 [AppSpacingTokens.level4]。
 /// - header 与 body 共享同一背景，不额外添加底部分割线或背景色。
@@ -57,7 +57,7 @@ class AppTopBar extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: AppTypographyToken.level9
+                        style: AppTypographyToken.level8
                             .display(context)
                             .copyWith(fontWeight: FontWeight.w800),
                       ),

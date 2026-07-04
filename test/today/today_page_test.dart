@@ -216,14 +216,20 @@ void main() {
       matching: find.text(l10n.todayMedicationTakeAction),
     );
     expect(medicationAction, findsOneWidget);
-    expect(tester.widget<Text>(medicationAction).style?.color, expectedColor);
+    expect(
+      DefaultTextStyle.of(tester.element(medicationAction)).style.color,
+      expectedColor,
+    );
 
     final waterAction = find.descendant(
       of: find.byKey(const Key('today-water-card')),
       matching: find.text(l10n.todayDrinkWaterAction),
     );
     expect(waterAction, findsOneWidget);
-    expect(tester.widget<Text>(waterAction).style?.color, expectedColor);
+    expect(
+      DefaultTextStyle.of(tester.element(waterAction)).style.color,
+      expectedColor,
+    );
 
     expect(tester.takeException(), isNull);
   });

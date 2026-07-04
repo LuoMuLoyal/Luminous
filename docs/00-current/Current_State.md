@@ -61,6 +61,15 @@ Last updated: 2026-07-04
   - Today 页 AI 日总结 signed-out / disabled 空态 footer 已移除，只保留单条 bullet 提示，避免重复文案。
   - 登录提示弹窗（尚未登录 / 是否去登录）的取消/去登录按钮已改为横向布局，去登录位于右侧。
   - 通知页返回后若接口返回 401，`LucentDioClient` 现在会清理本地 session 并通过回调同步到 `authSessionProvider`，避免 UI 卡在“已登录但请求持续失败”的状态。
+  - Today 页顶部标题从 36px 降到 30px，与其他 Tab 根页统一。
+  - 胶囊按钮统一收敛到 Forui 主题样式：使用 `dart run forui style create buttons` 生成
+    `lib/theme/styles/button_styles.dart`，将默认按钮圆角改为 `pill` 并接入 `FThemeData`。
+    - 删除 `AppPillButton` 中间层；Today/Record/Medicine/Report 顶部与操作行中的胶囊按钮
+      全部改用标准 `FButton`，依靠主题默认获得一致的 pill 外观，仅在需要处保留内边距/最小宽度覆盖。
+    - Today 页“AI 对话”、优先事项“去服用/去喝水”、Report 周期选择 pill、Record 日期选择 pill、
+      Record 顶部 action chips、Medicine workspace header action chip 已统一。
+    - 根据移动端截图反馈，将 touch 模式下 `md`/`sm`/`lg` 按钮的 `minHeight` 与垂直内边距各下调 4px，
+      使胶囊按钮看起来更紧凑。
 
 ## 相关文档
 
