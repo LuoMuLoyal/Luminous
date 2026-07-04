@@ -88,7 +88,6 @@ class _QuickActionTile extends StatelessWidget {
                 side: BorderSide(
                   color: action.accent.resolve(colors).withValues(alpha: 0.12),
                 ),
-                borderRadius: context.theme.style.borderRadius.lg,
               ),
             ),
           ),

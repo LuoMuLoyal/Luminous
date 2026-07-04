@@ -233,21 +233,16 @@ class _RecordPageState extends ConsumerState<RecordPage> {
   ) async {
     assert(!action.locked, 'Locked quick actions should be disabled by UI');
 
-    final kind = dailyRecordKindForEntryType(action.type);
-    assert(
-      kind != null,
-      'All active quick actions must map to a DailyRecordKind',
-    );
-    if (kind == null) return;
-
     final selectedDate = ref.read(selectedRecordDateProvider);
     final now = ref.read(currentRecordDateTimeProvider);
     final date = formatRecordDate(selectedDate);
     final currentTime = formatRecordTimeValue(now);
-    final route =
-        '/record/create?kind=${Uri.encodeComponent(kind.name)}'
-        '&date=${Uri.encodeComponent(date)}'
-        '&time=${Uri.encodeComponent(currentTime)}';
+    final kind = dailyRecordKindForEntryType(action.type);
+    final route = kind == null
+        ? '/record/create?date=${Uri.encodeComponent(date)}'
+        : '/record/create?kind=${Uri.encodeComponent(kind.name)}'
+              '&date=${Uri.encodeComponent(date)}'
+              '&time=${Uri.encodeComponent(currentTime)}';
     final session = ref.read(authSessionProvider);
 
     if (!session.canAccessProtectedData) {
@@ -261,7 +256,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return;
     }
 
-    if (!_usesFastEntry(kind)) {
+    if (kind == null || !_usesFastEntry(kind)) {
       if (!context.mounted) {
         return;
       }

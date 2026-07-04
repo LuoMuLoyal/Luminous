@@ -276,7 +276,6 @@ class _OptionCard extends StatelessWidget {
               color: colors.background,
               shape: RoundedSuperellipseBorder(
                 side: BorderSide(color: colors.border),
-                borderRadius: context.theme.style.borderRadius.sm,
               ),
             ),
           ),

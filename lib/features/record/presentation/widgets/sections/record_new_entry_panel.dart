@@ -119,9 +119,7 @@ class _NewEntryChip extends StatelessWidget {
           .all(
             .shapeDelta(
               color: action.softColor.resolve(colors).withValues(alpha: 0.68),
-              shape: RoundedSuperellipseBorder(
-                borderRadius: context.theme.style.borderRadius.sm,
-              ),
+              shape: const RoundedSuperellipseBorder(),
             ),
           ),
         ]),

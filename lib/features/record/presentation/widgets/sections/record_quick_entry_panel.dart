@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/widgets/common/app_divider.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/record_dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
 
 // ---------------------------------------------------------------------------
 // AI input bar
@@ -159,9 +158,13 @@ class RecordQuickEntryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Split into a primary 2x2 grid and a secondary 1x3 row.
-    final primary = actions.take(4).toList(growable: false);
-    final secondary = actions.skip(4).toList(growable: false);
+    final noteAction = actions
+        .where((action) => action.type == RecordEntryType.note)
+        .firstOrNull;
+    final gridActions = actions
+        .where((action) => action.type != RecordEntryType.note)
+        .take(6)
+        .toList(growable: false);
 
     return Column(
       key: const Key('record-quick-actions'),
@@ -177,17 +180,17 @@ class RecordQuickEntryPanel extends StatelessWidget {
         FCard.raw(
           child: Column(
             children: [
-              _QuickRecordGrid2x2(
-                actions: primary,
+              _QuickRecordGrid(
+                actions: gridActions,
                 l10n: l10n,
-                onQuickAction: onQuickAction,
+                onTap: onQuickAction,
               ),
-              if (secondary.isNotEmpty) ...[
+              if (noteAction != null) ...[
                 const AppDivider(),
-                _QuickRecordRow3(
-                  actions: secondary,
+                _QuickRecordNoteButton(
+                  action: noteAction,
                   l10n: l10n,
-                  onQuickAction: onQuickAction,
+                  onTap: onQuickAction,
                 ),
               ],
             ],
@@ -198,23 +201,23 @@ class RecordQuickEntryPanel extends StatelessWidget {
   }
 }
 
-class _QuickRecordGrid2x2 extends StatelessWidget {
-  const _QuickRecordGrid2x2({
+class _QuickRecordGrid extends StatelessWidget {
+  const _QuickRecordGrid({
     required this.actions,
     required this.l10n,
-    this.onQuickAction,
+    this.onTap,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordQuickAction>? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final rows = <List<RecordQuickAction>>[];
-    for (var index = 0; index < actions.length; index += 2) {
-      rows.add(actions.skip(index).take(2).toList(growable: false));
+    for (var index = 0; index < actions.length; index += 3) {
+      rows.add(actions.skip(index).take(3).toList(growable: false));
     }
 
     return Column(
@@ -231,16 +234,19 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
                   child: _QuickRecordTile(
                     action: rows[rowIndex][index],
                     l10n: l10n,
-                    onQuickAction: onQuickAction,
+                    onTap: onTap,
                   ),
                 ),
                 if (index < rows[rowIndex].length - 1)
-                  _ShortVerticalDivider(
-                    height: AppSpacingTokens.level9,
-                    color: colors.border,
+                  SizedBox(
+                    height: AppSpacingTokens.level8,
+                    child: AppDivider(
+                      axis: Axis.vertical,
+                      color: colors.border,
+                    ),
                   ),
               ],
-              for (var filler = rows[rowIndex].length; filler < 2; filler += 1)
+              for (var filler = rows[rowIndex].length; filler < 3; filler += 1)
                 const Expanded(child: SizedBox.shrink()),
             ],
           ),
@@ -251,85 +257,39 @@ class _QuickRecordGrid2x2 extends StatelessWidget {
   }
 }
 
-class _QuickRecordRow3 extends StatelessWidget {
-  const _QuickRecordRow3({
-    required this.actions,
-    required this.l10n,
-    this.onQuickAction,
-  });
-
-  final List<RecordQuickAction> actions;
-  final AppLocalizations l10n;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return Row(
-      children: [
-        for (var index = 0; index < actions.length; index += 1) ...[
-          Expanded(
-            child: _QuickRecordTile(
-              action: actions[index],
-              l10n: l10n,
-              onQuickAction: onQuickAction,
-            ),
-          ),
-          if (index < actions.length - 1)
-            _ShortVerticalDivider(
-              height: AppSpacingTokens.level9,
-              color: colors.border,
-            ),
-        ],
-        for (var filler = actions.length; filler < 3; filler += 1)
-          const Expanded(child: SizedBox.shrink()),
-      ],
-    );
-  }
-}
-
 class _QuickRecordTile extends StatelessWidget {
   const _QuickRecordTile({
     required this.action,
     required this.l10n,
-    this.onQuickAction,
+    this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
-  final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordQuickAction>? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final actionLabel = quickRecordLabel(l10n, action);
-    final displayLabel = recordCopy(l10n, action.titleKey);
-    final isLocked = action.locked;
-
     final colors = context.theme.colors;
+    final isLocked = action.locked;
+    final displayLabel = recordCopy(l10n, action.titleKey);
 
-    return FButton.raw(
+    return FTappable(
       key: Key('record-quick-${action.type.name}'),
-      onPress: (onQuickAction == null || isLocked)
-          ? null
-          : () => onQuickAction!(action),
-      variant: FButtonVariant.ghost,
-      style: const .delta(
-        contentStyle: .delta(padding: .value(EdgeInsets.zero)),
-      ),
+      onPress: (onTap == null || isLocked) ? null : () => onTap!(action),
       child: Semantics(
         button: true,
         label: isLocked
-            ? '$actionLabel ${l10n.recordNotEnabledLabel}'
-            : actionLabel,
+            ? '$displayLabel ${l10n.recordNotEnabledLabel}'
+            : displayLabel,
         child: Opacity(
           opacity: isLocked ? 0.76 : 1,
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level1,
-              vertical: AppSpacingTokens.level1,
+              vertical: AppSpacingTokens.level4,
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 FAvatar.raw(
                   size: AppSpacingTokens.level6,
@@ -337,12 +297,12 @@ class _QuickRecordTile extends StatelessWidget {
                     backgroundColor: action.softColor.resolve(colors),
                   ),
                   child: Icon(
-                    action.icon,
+                    isLocked ? FLucideIcons.lock : action.icon,
                     color: action.accent.resolve(colors),
                     size: AppSpacingTokens.level4,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: AppSpacingTokens.level2),
                 Text(
                   displayLabel,
                   style: AppTypographyToken.level5
@@ -352,24 +312,54 @@ class _QuickRecordTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (isLocked) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.recordNotEnabledLabel,
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(
-                          color: colors.mutedForeground,
-                          fontWeight: FontWeight.w600,
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _QuickRecordNoteButton extends StatelessWidget {
+  const _QuickRecordNoteButton({
+    required this.action,
+    required this.l10n,
+    this.onTap,
+  });
+
+  final RecordQuickAction action;
+  final AppLocalizations l10n;
+  final ValueChanged<RecordQuickAction>? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final isLocked = action.locked;
+    final label = recordCopy(l10n, action.titleKey);
+
+    return FButton(
+      key: const Key('record-quick-note'),
+      onPress: (onTap == null || isLocked) ? null : () => onTap!(action),
+      variant: FButtonVariant.ghost,
+      mainAxisSize: MainAxisSize.max,
+      style: .delta(
+        decoration: .delta([
+          .all(.shapeDelta(color: colors.secondary.withValues(alpha: 0.18))),
+        ]),
+        contentStyle: const .delta(
+          padding: .value(EdgeInsets.all(AppSpacingTokens.level4)),
+        ),
+      ),
+      prefix: Icon(
+        isLocked ? FLucideIcons.lock : action.icon,
+        color: action.accent.resolve(colors),
+      ),
+      child: Text(
+        label,
+        style: AppTypographyToken.level5
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -431,21 +421,6 @@ class RecordGuideRow extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ShortVerticalDivider extends StatelessWidget {
-  const _ShortVerticalDivider({required this.height, required this.color});
-
-  final double height;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      child: AppDivider(axis: Axis.vertical, color: color),
     );
   }
 }

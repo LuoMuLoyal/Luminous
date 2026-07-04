@@ -46,7 +46,6 @@ class SourceSwitch extends StatelessWidget {
                                   ? colors.primary
                                   : colors.border,
                             ),
-                            borderRadius: context.theme.style.borderRadius.lg,
                           ),
                         ),
                       ),

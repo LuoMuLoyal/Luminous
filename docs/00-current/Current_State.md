@@ -70,6 +70,13 @@ Last updated: 2026-07-04
       Record 顶部 action chips、Medicine workspace header action chip 已统一。
     - 根据移动端截图反馈，将 touch 模式下 `md`/`sm`/`lg` 按钮的 `minHeight` 与垂直内边距各下调 4px，
       使胶囊按钮看起来更紧凑。
+    - 扫描并继续统一了剩余自定义圆角的胶囊操作按钮：Medicine workspace quick actions、Search 源切换、
+      Record OCR 选项卡、Record 新建记录 chip。当前仅保留搜索条 `lg`、圆形图标按钮、卡片/静态 badge、
+      以及 filter chips 的原有圆角。
+    - Record 页“快速记录”网格已重构为 2×3 布局，底部新增占满宽度的“备注”按钮；格子改用 `FTappable` +
+      `FAvatar` + `AppDivider`，去掉重复 outline 边框与手写分隔线；未启用项显示锁图标并降低透明度。
+    - 修复 Record 快速记录“用药”点击断言失败：`_handleQuickAction` 现在对无法映射到 `DailyRecordKind` 的类型
+      （如 medication）统一打开通用创建页，并将登录检查前置，使七个快速记录项的登录提示行为一致。
 
 ## 相关文档
 
