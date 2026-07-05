@@ -43,8 +43,9 @@ class ShellPage extends ConsumerWidget {
     final content = navigationShell ?? _pages[currentIndex];
 
     void onSelectTab(int index) {
-      if (navigationShell != null) {
-        navigationShell!.goBranch(index);
+      final shell = navigationShell;
+      if (shell != null) {
+        shell.goBranch(index);
       } else {
         legacyNotifier.selectTab(index);
       }
@@ -165,8 +166,9 @@ class _DesktopSidebar extends ConsumerWidget {
     );
 
     void onSelect(int index) {
-      if (navigationShell != null) {
-        navigationShell!.goBranch(index);
+      final shell = navigationShell;
+      if (shell != null) {
+        shell.goBranch(index);
       } else {
         ref.read(shellProvider.notifier).selectTab(index);
       }

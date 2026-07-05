@@ -196,21 +196,23 @@ class RecordEditPage extends HookConsumerWidget {
       final minutes = resolvedSleepDurationMinutes();
       if (minutes == null || minutes <= 0) return null;
       final payload = <String, dynamic>{'durationMinutes': minutes};
-      if (sleepBedtime.value != null && sleepWakeTime.value != null) {
+      final bedTime = sleepBedtime.value;
+      final wakeTime = sleepWakeTime.value;
+      if (bedTime != null && wakeTime != null) {
         final occurredAt = recordOccurredAt.value ?? clock.now();
         final wake = DateTime(
           occurredAt.year,
           occurredAt.month,
           occurredAt.day,
-          sleepWakeTime.value!.hour,
-          sleepWakeTime.value!.minute,
+          wakeTime.hour,
+          wakeTime.minute,
         );
         var bed = DateTime(
           occurredAt.year,
           occurredAt.month,
           occurredAt.day,
-          sleepBedtime.value!.hour,
-          sleepBedtime.value!.minute,
+          bedTime.hour,
+          bedTime.minute,
         );
         if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
         payload['startAt'] = bed.toUtc().toIso8601String();

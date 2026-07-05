@@ -339,9 +339,13 @@ class LucentDioClient {
       response: response,
       type: error.type,
       error: LucentApiException(
-        message: envelope?.message.isNotEmpty == true
-            ? envelope!.message
-            : _fallbackMessage(error),
+        message: () {
+          final env = envelope;
+          if (env != null && env.message.isNotEmpty) {
+            return env.message;
+          }
+          return _fallbackMessage(error);
+        }(),
         code: envelope?.code,
         statusCode: response?.statusCode,
         requestId: requestId,

@@ -35,7 +35,7 @@ class RedFlagEvaluator {
           (f) =>
               f.type == MedicineRiskFindingType.allergy &&
               f.relatedLabel != null &&
-              severeAllergens.contains(f.relatedLabel!.trim()),
+              severeAllergens.contains(f.relatedLabel?.trim()),
         )
         .map(
           (f) => RedFlagAlert(

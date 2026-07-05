@@ -132,7 +132,10 @@ class _SwitchTile extends StatelessWidget with FTileMixin {
     return FTile(
       key: tileKey,
       title: Text(title),
-      subtitle: subtitle == null || subtitle!.isEmpty ? null : Text(subtitle!),
+      subtitle: () {
+        final s = subtitle;
+        return s == null || s.isEmpty ? null : Text(s);
+      }(),
       suffix: FSwitch(value: value, onChange: onChanged),
       onPress: () => onChanged(!value),
     );

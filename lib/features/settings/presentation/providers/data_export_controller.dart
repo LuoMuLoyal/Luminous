@@ -103,7 +103,7 @@ DataExportUiStatus dataExportUiStatusForRequest(
     DataExportStatus.requested => DataExportUiStatus.requested,
     DataExportStatus.processing => DataExportUiStatus.processing,
     DataExportStatus.completed =>
-      request.downloadUrl == null || request.downloadUrl!.isEmpty
+      request.downloadUrl?.isNotEmpty != true
           ? DataExportUiStatus.completedLinkMissing
           : DataExportUiStatus.completed,
     DataExportStatus.failed => DataExportUiStatus.failed,

@@ -40,7 +40,7 @@ class MineAccountHero extends StatelessWidget {
 
     final account = dashboard.account;
     final name = account.displayName?.trim().isNotEmpty == true
-        ? account.displayName!.trim()
+        ? account.displayName?.trim() ?? ''
         : mineCopy(l10n, account.displayNameKey);
 
     return FTappable(

@@ -26,7 +26,9 @@ class ScanRepository {
       page: 1,
       pageSize: 20,
     );
-    return response.data!.data;
+    final data = response.data;
+    if (data == null) throw Exception('Search response is empty.');
+    return data.data;
   }
 
   Future<String> uploadImage({

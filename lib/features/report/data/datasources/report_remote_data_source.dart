@@ -21,6 +21,8 @@ class ReportRemoteDataSource {
           : null,
       endDate: query.isCustom ? _dateOnlyFormat.format(query.endDate!) : null,
     );
-    return response.data!.data;
+    final data = response.data;
+    if (data == null) throw Exception('Report dashboard response is empty.');
+    return data.data;
   }
 }

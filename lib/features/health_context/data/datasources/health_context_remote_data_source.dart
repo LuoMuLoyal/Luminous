@@ -20,7 +20,9 @@ class HealthContextRemoteDataSource {
   Future<HealthContextDataDto> fetchHealthContext() async {
     final response = await _api
         .userHealthContextControllerGetUserHealthContextV1();
-    return response.data!.data;
+    final data = response.data;
+    if (data == null) throw Exception('Health context response is empty.');
+    return data.data;
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.

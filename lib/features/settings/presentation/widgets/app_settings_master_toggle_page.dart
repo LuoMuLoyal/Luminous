@@ -43,9 +43,10 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
             FTile(
               onPress: () => onMasterChanged(!masterValue),
               title: Text(masterTitle),
-              subtitle: masterSubtitle == null || masterSubtitle!.isEmpty
-                  ? null
-                  : Text(masterSubtitle!),
+              subtitle: () {
+                final ms = masterSubtitle;
+                return ms == null || ms.isEmpty ? null : Text(ms);
+              }(),
               suffix: FSwitch(value: masterValue, onChange: onMasterChanged),
             ),
             const SizedBox(height: AppSpacingTokens.level4),

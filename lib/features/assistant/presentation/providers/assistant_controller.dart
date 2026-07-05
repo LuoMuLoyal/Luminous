@@ -468,24 +468,21 @@ class AssistantController extends Notifier<AssistantState> {
       case AssistantUpdateUserSettingsProposalPayload():
         final payload =
             proposal.payload as AssistantUpdateUserSettingsProposalPayload;
+        final ctx = payload.draft.assistantContext;
         await ref
             .read(userSettingsControllerProvider.notifier)
             .applySettingsPatch(
               UpdateUserSettingsDto(
                 assistantEnabled: payload.draft.assistantEnabled,
                 assistantMemoryEnabled: payload.draft.assistantMemoryEnabled,
-                assistantContext: payload.draft.assistantContext == null
-                    ? null
-                    : UpdateAssistantContextSettingsDto(
-                        healthProfile:
-                            payload.draft.assistantContext!.healthProfile,
-                        dailyRecords:
-                            payload.draft.assistantContext!.dailyRecords,
-                        sleepRecords:
-                            payload.draft.assistantContext!.sleepRecords,
-                        currentMedicines:
-                            payload.draft.assistantContext!.currentMedicines,
-                      ),
+                assistantContext: ctx != null
+                    ? UpdateAssistantContextSettingsDto(
+                        healthProfile: ctx.healthProfile,
+                        dailyRecords: ctx.dailyRecords,
+                        sleepRecords: ctx.sleepRecords,
+                        currentMedicines: ctx.currentMedicines,
+                      )
+                    : null,
               ),
             );
         await loadCapabilities();

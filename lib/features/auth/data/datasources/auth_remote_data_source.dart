@@ -31,11 +31,15 @@ class AuthRemoteDataSource {
     String? password,
     String? code,
   }) async {
+    final trimmedPassword = password?.trim();
+    final trimmedCode = code?.trim();
     final response = await _client.authApi.authControllerLoginV1(
       loginDto: LoginDto(
         email: email.trim(),
-        password: password?.trim().isEmpty ?? true ? null : password!.trim(),
-        code: code?.trim().isEmpty ?? true ? null : code!.trim(),
+        password: trimmedPassword == null || trimmedPassword.isEmpty
+            ? null
+            : trimmedPassword,
+        code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
       ),
     );
     final body = response.data;
@@ -55,11 +59,13 @@ class AuthRemoteDataSource {
   Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl({
     String? callbackUri,
   }) async {
+    final trimmedCallbackUri = callbackUri?.trim();
     final response = await _client.authApi
         .authControllerCreateWechatWebAuthorizeUrlV1(
-          oAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
-              ? null
-              : OAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+          oAuthAuthorizeDto:
+              trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
+              ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
+              : null,
         );
     final body = response.data;
     if (body == null) {
@@ -73,11 +79,14 @@ class AuthRemoteDataSource {
   Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
     String? callbackUri,
   }) async {
+    final trimmedIdentityCallbackUri = callbackUri?.trim();
     final response = await _client.accountApi
         .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
-          oAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
-              ? null
-              : OAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+          oAuthAuthorizeDto:
+              trimmedIdentityCallbackUri != null &&
+                  trimmedIdentityCallbackUri.isNotEmpty
+              ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
+              : null,
         );
     final body = response.data;
     if (body == null) {
@@ -166,10 +175,12 @@ class AuthRemoteDataSource {
   Future<OAuthAuthorizeDataDto> createQqAuthorizeUrl({
     String? callbackUri,
   }) async {
+    final trimmedQqCallbackUri = callbackUri?.trim();
     final response = await _client.authApi.authControllerCreateQqAuthorizeUrlV1(
-      qqOAuthAuthorizeDto: callbackUri?.trim().isEmpty ?? true
-          ? null
-          : QqOAuthAuthorizeDto(callbackUri: callbackUri!.trim()),
+      qqOAuthAuthorizeDto:
+          trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
+          ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
+          : null,
     );
     final body = response.data;
     if (body == null) {
@@ -244,12 +255,15 @@ class AuthRemoteDataSource {
     required String code,
     String? nickname,
   }) async {
+    final trimmedNickname = nickname?.trim();
     final response = await _client.authApi.authControllerRegisterV1(
       registerDto: RegisterDto(
         email: email.trim(),
         password: password.trim(),
         code: code.trim(),
-        nickname: nickname?.trim().isEmpty ?? true ? null : nickname!.trim(),
+        nickname: trimmedNickname == null || trimmedNickname.isEmpty
+            ? null
+            : trimmedNickname,
       ),
     );
     final body = response.data;

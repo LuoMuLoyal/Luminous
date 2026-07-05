@@ -175,7 +175,8 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       if (picked == null) return;
       final next = dateOnly(picked);
       startDate.value = next;
-      if (endDate.value != null && endDate.value!.isBefore(next)) {
+      final end = endDate.value;
+      if (end != null && end.isBefore(next)) {
         endDate.value = null;
       }
     }
@@ -265,13 +266,14 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       final daysOfWeek = frequency.value == ReminderFrequency.daily
           ? null
           : (selectedWeekdays.value.toList()..sort());
-      if (frequency.value != ReminderFrequency.daily && daysOfWeek!.isEmpty) {
+      if (frequency.value != ReminderFrequency.daily &&
+          (daysOfWeek?.isEmpty ?? true)) {
         AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
         return;
       }
-      if (startDate.value != null &&
-          endDate.value != null &&
-          endDate.value!.isBefore(startDate.value!)) {
+      final start = startDate.value;
+      final end2 = endDate.value;
+      if (start != null && end2 != null && end2.isBefore(start)) {
         AppToast.show(context, l10n.medicineReminderDateRangeInvalidToast);
         return;
       }

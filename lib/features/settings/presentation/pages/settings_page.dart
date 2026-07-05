@@ -398,8 +398,14 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
     return FTile(
       key: tileKey,
       title: Text(title),
-      subtitle: subtitle == null || subtitle!.isEmpty ? null : Text(subtitle!),
-      details: value == null || value!.isEmpty ? null : Text(value!),
+      subtitle: () {
+        final s = subtitle;
+        return s == null || s.isEmpty ? null : Text(s);
+      }(),
+      details: () {
+        final v = value;
+        return v == null || v.isEmpty ? null : Text(v);
+      }(),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: onTap,
     );
@@ -440,10 +446,10 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
                       .body(context)
                       .copyWith(color: colors.foreground),
                 ),
-                if (subtitle != null && subtitle!.isNotEmpty) ...[
+                if (subtitle?.isNotEmpty ?? false) ...[
                   const SizedBox(height: 4),
                   Text(
-                    subtitle!,
+                    subtitle ?? '',
                     style: AppTypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),

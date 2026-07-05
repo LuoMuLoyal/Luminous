@@ -224,7 +224,7 @@ class _ActionBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     final actions = <Widget>[
-      if (detail.action != null && detail.action!.isNotEmpty)
+      if (detail.action?.isNotEmpty ?? false)
         Expanded(
           child: FButton(
             onPress: onNavigate,
@@ -232,7 +232,7 @@ class _ActionBar extends StatelessWidget {
             child: Text(l10n.notificationActionNavigate),
           ),
         ),
-      if (detail.action != null && detail.action!.isNotEmpty)
+      if (detail.action?.isNotEmpty ?? false)
         const SizedBox(width: AppSpacingTokens.level3),
       Expanded(
         child: FButton(

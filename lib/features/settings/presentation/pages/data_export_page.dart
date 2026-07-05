@@ -171,7 +171,7 @@ class DataExportPage extends ConsumerWidget {
           await AppToast.show(
             context,
             request?.errorMessage?.isNotEmpty == true
-                ? request!.errorMessage!
+                ? request?.errorMessage ?? ''
                 : dataExportUiStatusForRequest(request) ==
                       DataExportUiStatus.unavailable
                 ? l10n.mineExportStatusUnavailable

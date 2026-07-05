@@ -22,6 +22,7 @@ class AboutSettingsPage extends ConsumerWidget {
     final infoAsync = ref.watch(appInfoProvider);
     final description = infoAsync.asData?.value?.description;
     final supportEmail = infoAsync.asData?.value?.supportEmail;
+    final buildDate = infoAsync.asData?.value?.buildDate;
 
     final width = MediaQuery.sizeOf(context).width;
     final content = ResponsiveContentFrame(
@@ -58,13 +59,10 @@ class AboutSettingsPage extends ConsumerWidget {
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
-                  if (infoAsync.asData?.value?.buildDate.isNotEmpty ??
-                      false) ...[
+                  if (buildDate != null && buildDate.isNotEmpty) ...[
                     const SizedBox(height: AppSpacingTokens.level1),
                     Text(
-                      l10n.settingsAboutBuildNumberLabel(
-                        infoAsync.asData!.value!.buildDate,
-                      ),
+                      l10n.settingsAboutBuildNumberLabel(buildDate),
                       style: AppTypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),

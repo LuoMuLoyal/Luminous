@@ -86,7 +86,15 @@ class DailyRecordRemoteDataSource {
         fileName: input.fileName,
       ),
     );
-    final upload = presignResponse.data!.data;
+    final presignData = presignResponse.data;
+    if (presignData == null) {
+      throw _emptyResponse(
+        presignResponse.requestOptions,
+        presignResponse,
+        'Image upload presign response is empty.',
+      );
+    }
+    final upload = presignData.data;
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -126,7 +134,15 @@ class DailyRecordRemoteDataSource {
         occurredAt: occurredAt,
       ),
     );
-    final dto = response.data!.data;
+    final genData = response.data;
+    if (genData == null) {
+      throw _emptyResponse(
+        response.requestOptions,
+        response,
+        'Generate candidates response is empty.',
+      );
+    }
+    final dto = genData.data;
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,

@@ -60,11 +60,7 @@
 
 ## 三、低优先级观察
 
-### 3.1 结果解析/日期解析未复用（🟢）
-
-`lucent_assistant_repository.dart` 的 `_parseDateTime()` 与 `lucent_today_ai_repository.dart` 的直接 `DateTime.parse()` 重复。
-
-### 3.2 !. 强制解引用（🟢 74 处）
+### 3.2 !. 强制解引用（🟡 74 处）
 
 半数以上在 `.freezed.dart` 生成代码中，业务代码约 30+ 处需逐步清理。
 

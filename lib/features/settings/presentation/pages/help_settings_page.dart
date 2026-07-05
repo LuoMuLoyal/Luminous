@@ -44,11 +44,10 @@ class HelpSettingsPage extends ConsumerWidget {
                     for (final resource in actionable)
                       FTile(
                         title: Text(resource.title),
-                        subtitle:
-                            resource.subtitle == null ||
-                                resource.subtitle!.isEmpty
-                            ? null
-                            : Text(resource.subtitle!),
+                        subtitle: () {
+                          final sub = resource.subtitle;
+                          return sub == null || sub.isEmpty ? null : Text(sub);
+                        }(),
                         suffix: const Icon(FLucideIcons.chevronRight),
                         onPress: () => _openResource(context, resource),
                       ),
@@ -78,7 +77,7 @@ class HelpSettingsPage extends ConsumerWidget {
   bool _isActionable(SupportResourceDto resource) {
     return resource.available &&
         resource.actionUrl != null &&
-        resource.actionUrl!.isNotEmpty &&
+        (resource.actionUrl?.isNotEmpty ?? false) &&
         resource.actionType != null;
   }
 

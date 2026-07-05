@@ -55,15 +55,17 @@ class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
         return;
       }
 
-      if (response.isSuccessful && response.code?.trim().isNotEmpty == true) {
-        completer.complete(response.code!.trim());
+      final code = response.code?.trim();
+      if (response.isSuccessful && code != null && code.isNotEmpty) {
+        completer.complete(code);
         return;
       }
 
+      final errStr = response.errStr?.trim();
       completer.completeError(
         LucentApiException(
-          message: response.errStr?.trim().isNotEmpty == true
-              ? response.errStr!.trim()
+          message: errStr != null && errStr.isNotEmpty
+              ? errStr
               : 'WeChat authorization was cancelled or failed.',
         ),
       );

@@ -407,8 +407,7 @@ class LoginPage extends HookConsumerWidget {
                   await notifier.sendCode();
                 },
               ),
-            if (state.errorMessage != null &&
-                state.errorMessage!.isNotEmpty) ...[
+            if (state.errorMessage?.isNotEmpty ?? false) ...[
               const SizedBox(height: AppSpacingTokens.level4),
               FToast(
                 variant: FToastVariant.destructive,

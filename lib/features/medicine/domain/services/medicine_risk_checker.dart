@@ -244,7 +244,7 @@ class MedicineRiskChecker {
         reason: MedicineRiskCoverageReason.manualEntry,
       );
     }
-    if (item.sourceRefId == null || item.sourceRefId!.trim().isEmpty) {
+    if ((item.sourceRefId?.trim().isEmpty ?? true)) {
       return MedicineRiskCoverageIssue(
         medicineName: item.displayName,
         reason: MedicineRiskCoverageReason.missingSourceRef,

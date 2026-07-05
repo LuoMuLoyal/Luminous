@@ -209,10 +209,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                             border: Border.all(color: colors.border),
                           ),
                           child: Text(
-                            recognizedText.value!.isEmpty
+                            recognizedText.value?.isEmpty ?? true
                                 ? l10n.recordNlpEmptyCandidatesToast
-                                : recognizedText.value!,
-                            style: recognizedText.value!.isEmpty
+                                : recognizedText.value ?? '',
+                            style: (recognizedText.value?.isEmpty ?? true)
                                 ? typography.body.md.copyWith(
                                     color: colors.mutedForeground,
                                   )

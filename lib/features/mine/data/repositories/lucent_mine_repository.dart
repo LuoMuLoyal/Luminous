@@ -35,8 +35,9 @@ class LucentMineRepository implements MineRepository {
 
   MineAccount _buildAccount() {
     final currentUser = _ref.read(authSessionProvider).user;
-    final displayName = currentUser?.nickname?.trim().isNotEmpty == true
-        ? currentUser!.nickname!.trim()
+    final nick = currentUser?.nickname?.trim();
+    final displayName = nick != null && nick.isNotEmpty
+        ? nick
         : currentUser?.email ?? currentUser?.id ?? '';
 
     return MineAccount(

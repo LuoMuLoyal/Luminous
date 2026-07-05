@@ -268,7 +268,11 @@ abstract class AssistantProposedAction with _$AssistantProposedAction {
     String? executionError,
   }) = _AssistantProposedAction;
 
-  bool get isExpired => expiresAt != null && expiresAt!.isBefore(clock.now());
+  bool get isExpired {
+    final e = expiresAt;
+    return e != null && e.isBefore(clock.now());
+  }
+
   bool get isVisible =>
       executionState != AssistantProposalExecutionState.dismissed;
   bool get isActionable =>

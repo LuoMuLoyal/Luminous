@@ -209,12 +209,13 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
         FButton(
           onPress: top != null || _selectedIndex != null
               ? () {
-                  final result = _selectedIndex != null
+                  final res = _selectedIndex != null
                       ? sorted[_selectedIndex!]
                       : top;
-                  if (result?.id != null) {
+                  final id = res?.id;
+                  if (id != null) {
                     Navigator.of(context).pop();
-                    context.push('/medicine/reminders/${result!.id}');
+                    context.push('/medicine/reminders/$id');
                   }
                 }
               : null,
