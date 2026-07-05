@@ -86,6 +86,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.6
   build_runner: ^2.15.0
   json_serializable: ^6.9.5
   freezed: ^3.2.5
@@ -111,6 +112,20 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: assets/icon/app_icon.png
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#171717"
+  image: assets/icon/app_icon.png
+  android_12:
+    image: assets/icon/app_icon.png
+    color: "#FFFFFF"
+    color_dark: "#171717"
+    icon_background_color: "#FFFFFF"
+    icon_background_color_dark: "#171717"
+  android: true
+  ios: true
+  web: true
 
 flutter:
   uses-material-design: true
