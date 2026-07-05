@@ -16,6 +16,20 @@ import 'router/router_record.dart';
 import 'router/router_scan.dart';
 import 'router/router_settings.dart';
 
+/// Named route constants used throughout the codebase.
+///
+/// Prefer these over hardcoded path strings to avoid typos and make
+/// route changes easier to audit.
+class AppRoutes {
+  const AppRoutes._();
+
+  static const home = '/';
+  static const login = '/login';
+  static const forgotPassword = '/forgot-password';
+  static const register = '/register';
+  static const account = '/account';
+}
+
 /// The main application router.
 ///
 /// The five main tabs live inside a [StatefulShellRoute.indexedStack] so that

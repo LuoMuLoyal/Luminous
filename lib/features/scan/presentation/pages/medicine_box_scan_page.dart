@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
 import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
@@ -21,7 +22,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   final method = await showFDialog<_ScanMethod>(
     context: context,
     builder: (dialogContext, style, animation) => FDialog(
-      title: const Text('选择识别方式'),
+      title: Text(AppLocalizations.of(context)!.scanMethodPickerTitle),
       actions: const [],
       body: Column(
         mainAxisSize: MainAxisSize.min,

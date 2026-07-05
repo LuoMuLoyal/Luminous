@@ -58,7 +58,12 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
       if (!mounted) return;
 
       if (items.isEmpty) {
-        unawaited(AppToast.show(context, '未找到该条码对应的药品'));
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.scanBarcodeNotFoundToast,
+          ),
+        );
         setState(() => _hasScanned = false);
         unawaited(_controller?.start());
         return;
@@ -74,7 +79,12 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
     } catch (e) {
       debugPrint('BarcodeScannerPage._handleDetect: failed: $e');
       if (mounted) {
-        unawaited(AppToast.show(context, '搜索失败: $e'));
+        unawaited(
+          AppToast.show(
+            context,
+            AppLocalizations.of(context)!.scanSearchFailedToast(e.toString()),
+          ),
+        );
         setState(() => _hasScanned = false);
         unawaited(_controller?.start());
       }

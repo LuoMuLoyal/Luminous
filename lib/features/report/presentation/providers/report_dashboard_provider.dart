@@ -16,8 +16,11 @@ final reportDashboardProvider =
           return Future.value(
             MockReportRepository.signedOutDashboard.copyWith(
               range: query.range,
-              startDate: _dateOnly(query.startDate ?? DateTime(2026, 6, 6)),
-              endDate: _dateOnly(query.endDate ?? DateTime(2026, 6, 12)),
+              startDate: _dateOnly(
+                query.startDate ??
+                    DateTime.now().subtract(const Duration(days: 7)),
+              ),
+              endDate: _dateOnly(query.endDate ?? DateTime.now()),
             ),
           );
         }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 export 'auth_branding.dart';
@@ -44,7 +43,9 @@ class AuthShell extends StatelessWidget {
           ),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
+              constraints: const BoxConstraints(
+                maxWidth: AppBreakpoints.assistantContent,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -168,11 +169,14 @@ class _AuthFormPanel extends StatelessWidget {
 
     return panel
         .animate()
-        .fadeIn(duration: 180.ms, curve: Curves.easeOut)
+        .fadeIn(
+          duration: AppAnimationDurations.authFadeIn,
+          curve: Curves.easeOut,
+        )
         .slideY(
           begin: 0.03,
           end: 0,
-          duration: 180.ms,
+          duration: AppAnimationDurations.authFadeIn,
           curve: Curves.easeOutCubic,
         );
   }

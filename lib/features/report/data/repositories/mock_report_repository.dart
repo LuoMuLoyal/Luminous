@@ -27,8 +27,9 @@ class MockReportRepository implements ReportRepository {
   }
 
   static ReportDashboard _dashboardForQuery(ReportDashboardQuery query) {
-    final startDate = query.startDate ?? DateTime(2026, 6, 6);
-    final endDate = query.endDate ?? DateTime(2026, 6, 12);
+    final startDate =
+        query.startDate ?? DateTime.now().subtract(const Duration(days: 7));
+    final endDate = query.endDate ?? DateTime.now();
     final startIso = _dateOnly(startDate);
     final endIso = _dateOnly(endDate);
     return previewDashboard.copyWith(

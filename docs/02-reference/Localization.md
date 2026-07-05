@@ -57,6 +57,11 @@ Persisted preference keys:
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.
+- Scan feature strings such as recognition result titles, retake/confirm actions, method picker
+  labels, barcode not-found toasts, and search-failed toasts are owned by the Scan ARB entries
+  (`scan*` keys).
+- Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
+  `authQqCallbackLabel`, `authQqCompleteAction`).
 - Deferred strings may remain only when deferred code still references them and the code is
    annotated.
 - When an action moves to another tab, remove the old tab's action strings instead of keeping

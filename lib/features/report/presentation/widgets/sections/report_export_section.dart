@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/report/domain/entities/report_dashboard.dart';

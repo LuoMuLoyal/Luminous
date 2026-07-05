@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -48,9 +49,9 @@ class LoginPage extends HookConsumerWidget {
       final trimmed = value?.trim();
       if (trimmed == null || trimmed.isEmpty) return null;
       if (!trimmed.startsWith('/') || trimmed.startsWith('//')) return null;
-      if (trimmed == '/login' ||
-          trimmed.startsWith('/login?') ||
-          trimmed.startsWith('/login/')) {
+      if (trimmed == AppRoutes.login ||
+          trimmed.startsWith('${AppRoutes.login}?') ||
+          trimmed.startsWith('${AppRoutes.login}/')) {
         return null;
       }
       return trimmed;
@@ -62,7 +63,7 @@ class LoginPage extends HookConsumerWidget {
         context.go(target);
         return;
       }
-      if (fallbackHome) context.go('/');
+      if (fallbackHome) context.go(AppRoutes.home);
     }
 
     String? webWechatCallbackUri() {
@@ -306,7 +307,7 @@ class LoginPage extends HookConsumerWidget {
       title: l10n?.authWelcomeBack ?? 'Welcome back',
       subtitle: l10n?.authLoginSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: '/'),
+      leading: const AppBackButton(fallbackRoute: AppRoutes.home),
       centerTitle: true,
       formModeSelector: FTabs(
         key: const ValueKey('auth-login-mode-tabs'),
@@ -601,6 +602,7 @@ class _QqOAuthPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -615,14 +617,14 @@ class _QqOAuthPanel extends StatelessWidget {
                   height: 18,
                   child: FCircularProgress(),
                 )
-              : const Text('Sign in with QQ'),
+              : Text(l10n.authQqSignIn),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: AppSpacingTokens.level4),
           FTextField(
             key: const Key('qq-callback-input'),
             control: FTextFieldControl.managed(controller: callbackController),
-            label: const Text('QQ callback link / code'),
+            label: Text(l10n.authQqCallbackLabel),
             hint: 'Paste the callback URL after authorization',
             keyboardType: TextInputType.url,
           ),
@@ -637,7 +639,7 @@ class _QqOAuthPanel extends StatelessWidget {
                       height: 18,
                       child: FCircularProgress(),
                     )
-                  : const Text('Complete QQ sign-in'),
+                  : Text(l10n.authQqCompleteAction),
             ),
           ),
         ],

@@ -10,7 +10,6 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
 import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
@@ -257,7 +256,7 @@ class AssistantPage extends HookConsumerWidget {
                 const AssistantLoadingView(),
               ] else if (!session.canAccessProtectedData) ...[
                 AppStateMessageView(
-                  maxWidth: 560,
+                  maxWidth: AppBreakpoints.assistantContent,
                   title: l10n.authNotSignedIn,
                   description: l10n.assistantSignedOutDescription,
                   icon: FLucideIcons.circleAlert,
@@ -275,7 +274,7 @@ class AssistantPage extends HookConsumerWidget {
                 const AssistantLoadingView(),
               ] else if (capabilities == null) ...[
                 AppStateMessageView(
-                  maxWidth: 560,
+                  maxWidth: AppBreakpoints.assistantContent,
                   title: l10n.assistantLoadErrorTitle,
                   description:
                       chatState.capabilityError ??

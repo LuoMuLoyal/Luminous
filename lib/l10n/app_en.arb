@@ -1657,5 +1657,22 @@
     "placeholders": {
       "buildNumber": {}
     }
-  }
+  },
+  "scanResultTitle": "Recognition result",
+  "scanNoResultTitle": "Could not identify medicine information",
+  "scanRetakeAction": "Retake photo",
+  "scanConfirmDetailAction": "Confirm, view details",
+  "scanMethodPickerTitle": "Choose recognition method",
+  "scanBarcodeNotFoundToast": "No medicine found for this barcode",
+  "scanSearchFailedToast": "Search failed: {error}",
+  "@scanSearchFailedToast": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "authQqSignIn": "Sign in with QQ",
+  "authQqCallbackLabel": "QQ callback link / code",
+  "authQqCompleteAction": "Complete QQ sign-in"
 }

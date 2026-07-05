@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRecognizeDialog extends StatefulWidget {
   const MedicineRecognizeDialog({
@@ -47,7 +48,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
     final sorted = _sortedResults;
 
     return FDialog(
-      title: const Text('识别结果'),
+      title: Text(AppLocalizations.of(context)!.scanResultTitle),
       body: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
         child: Column(
@@ -71,7 +72,10 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('识别结果', style: typography.body.md),
+                      Text(
+                        AppLocalizations.of(context)!.scanResultTitle,
+                        style: typography.body.md,
+                      ),
                       Text(
                         '来源: ${widget.methodLabel}',
                         style: typography.body.sm.copyWith(
@@ -110,7 +114,10 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                 ),
               ),
             ] else ...[
-              Text('未能识别到药品信息', style: typography.body.md),
+              Text(
+                AppLocalizations.of(context)!.scanNoResultTitle,
+                style: typography.body.md,
+              ),
             ],
 
             const SizedBox(height: AppSpacingTokens.level4),
@@ -197,7 +204,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
         FButton(
           variant: FButtonVariant.outline,
           onPress: widget.onRetake,
-          child: const Text('重新拍照'),
+          child: Text(AppLocalizations.of(context)!.scanRetakeAction),
         ),
         FButton(
           onPress: top != null || _selectedIndex != null
@@ -211,7 +218,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                   }
                 }
               : null,
-          child: const Text('确认，查看详情'),
+          child: Text(AppLocalizations.of(context)!.scanConfirmDetailAction),
         ),
       ],
     );

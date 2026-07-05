@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 
 /// 响应式内容容器。

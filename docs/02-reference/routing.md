@@ -1,5 +1,7 @@
 # Routing (GoRouter)
 
+Last updated: 2026-07-05
+
 本文件是 [[architecture]] 拆分后的子文档。
 
 相关子文档：
@@ -25,12 +27,51 @@ hides the bottom navigation bar and desktop sidebar:
 ```
 GoRoute (top-level, no shell)
 ├── /record/create, /record/:id, /record/:id/edit
-├── /medicine/search, /medicine/reminders/new, /medicine/reminders/:id
+├── /medicine/search, /medicine/risk-check, /medicine/reminders/*
 ├── /settings, /settings/*
 ├── /assistant
 ├── /notifications, /notifications/:id
-├── /login, /register, /forgot-password
-└── /login/oauth/wechat, /login/oauth/qq, /login/oauth/apple
+├── /login, /login/oauth/*, /register, /forgot-password
+├── /account, /account/oauth/wechat, /account/change-email
+└── /scan/barcode
+```
+
+### File Structure
+
+Routes are split by feature into `lib/app/router/`:
+
+```
+lib/app/
+├── router.dart                         # Main entry: shell branches + feature route spread
+└── router/
+    ├── router_helpers.dart             # fadePage / slidePage transitions
+    ├── router_settings.dart            # /settings + 8 sub-routes
+    ├── router_auth.dart                # /login ×3 + /forgot-password + /register
+    ├── router_account.dart             # /account ×3
+    ├── router_record.dart              # /record/create + /record/:id + /record/:id/edit
+    ├── router_medicine.dart            # /medicine/search + risk-check + reminders ×3
+    ├── router_mine.dart                # /mine/profile + allergy ×2 + condition ×2 + medicine ×2
+    ├── router_notifications.dart       # /notifications + /notifications/:id
+    ├── router_assistant.dart           # /assistant
+    └── router_scan.dart                # /scan/barcode
+```
+
+Each feature file exports a list constant (`settingsRoutes`, `authRoutes`, ...) or a single route
+(`assistantRoute`, `scanRoute`). The main `router.dart` uses `...spread` to assemble them.
+
+### Route Constants
+
+Route path strings are centralized in `AppRoutes` (defined in `lib/app/router.dart`) to avoid
+hardcoded strings across the codebase:
+
+```dart
+class AppRoutes {
+  static const home = '/';
+  static const login = '/login';
+  static const forgotPassword = '/forgot-password';
+  static const register = '/register';
+  static const account = '/account';
+}
 ```
 
 ### Key Conventions
@@ -38,7 +79,8 @@ GoRoute (top-level, no shell)
 - Use `context.push()` for sub-page navigation (preserves tab state).
 - Use `context.go()` for auth redirects and tab switching.
 - Shell branches only model the five visible tabs; no hidden branches.
-- `AppBackButton` uses `context.pop()` when the route can pop, otherwise falls back to `/today`.
+- `AppBackButton` uses `context.pop()` when the route can pop, otherwise falls back to
+  `AppRoutes.home`.
 
 ### Why GoRouter
 

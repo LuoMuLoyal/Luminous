@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -32,7 +33,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
       title: l10n?.authResetPasswordAction ?? 'Reset password',
       subtitle: l10n?.authForgotPasswordSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: '/'),
+      leading: const AppBackButton(fallbackRoute: AppRoutes.home),
       centerTitle: true,
       form: Form(
         key: formKey,

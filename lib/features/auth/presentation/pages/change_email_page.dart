@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
@@ -170,8 +171,9 @@ class ChangeEmailPage extends HookConsumerWidget {
                         variant: FButtonVariant.ghost,
                         size: FButtonSizeVariant.sm,
                         mainAxisSize: MainAxisSize.min,
-                        onPress: () =>
-                            context.push(!isSignedIn ? '/login' : '/'),
+                        onPress: () => context.push(
+                          !isSignedIn ? AppRoutes.login : AppRoutes.home,
+                        ),
                         child: Text(
                           !isSignedIn
                               ? l10n?.authSignIn ?? 'Sign in'

@@ -9,7 +9,6 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';

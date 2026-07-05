@@ -9,4 +9,7 @@ abstract final class AppBreakpoints {
   static const double tablet = 960;
   static const double desktop = 1200;
   static const double wide = 1400;
+
+  /// Fixed max-width for assistant panels and auth forms.
+  static const double assistantContent = 560;
 }

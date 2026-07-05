@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
@@ -11,10 +10,11 @@ import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/shell/providers/shell_sidebar_provider.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
+import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 const _shellInset = 16.0;
-const _sidebarAnimationDuration = Duration(milliseconds: 200);
+const _sidebarAnimationDuration = AppAnimationDurations.sidebarSlide;
 
 class ShellPage extends ConsumerWidget {
   const ShellPage({super.key, this.navigationShell});

@@ -94,6 +94,7 @@ Last updated: 2026-07-05
 - 裸 catch 修复完成（全项目，约 75 处）：所有 `catch (_)` 改为 `catch (e)` 并添加 `debugPrint` 日志；`flutter analyze` 通过。
   注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、动画时长统一、maxWidth 提取 4 项曾被误标为完成，
   经实查确认问题仍存在，暂列待办未完成。
+- 清除 `unnecessary_import` 警告（40 个文件）：删除 `app_design.dart` 已 re-export 的冗余 `app_breakpoints.dart` import 行；`flutter analyze` 通过。
 
 ## 相关文档
 

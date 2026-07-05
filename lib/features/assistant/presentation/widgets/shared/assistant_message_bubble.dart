@@ -49,7 +49,9 @@ class AssistantMessageBubble extends StatelessWidget {
     return Align(
       alignment: align,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
+        constraints: const BoxConstraints(
+          maxWidth: AppBreakpoints.assistantContent,
+        ),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: background,
