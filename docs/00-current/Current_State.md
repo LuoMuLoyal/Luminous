@@ -91,18 +91,9 @@ Last updated: 2026-07-05
       - `RecordQuickEntryPanel` 尺寸改为按屏幕短边连续计算（`(shortEdge - 600) / 280`，clamp 0~1），
         标题与卡片间距、格子垂直内边距、头像尺寸、备注按钮内边距和分隔线高度均随屏幕尺寸平滑缩放，
         避免在小屏设备上快速记录区占用过多空间。
-- 裸 catch 修复完成（全项目，约 75 处）：
-  - A-D 类（data/repository、页面、dialog 层，约 20 处）：`lucent_medicine_workspace.dart` 的 2 处完全空 `catch (_) {}` 已修复，
-    其余 `catch (_)` / `catch (e)` 块均添加 `debugPrint` 日志。
-  - E 类（provider/controller 层，55 处）：`assistant_controller.dart`（7）、`assistant_page.dart`（5）、
-    `health_edit_forms.dart`（7）、`login_form_provider.dart`（9）、`auth_account_provider.dart`（5）、
-    `register_form_provider.dart`（2）、`password_reset_provider.dart`（2）、`auth_session_provider.dart`（1）、
-    `medicine_reminder_providers.dart`（2）、`medicine_page.dart`（1）、`today_ai_analysis_provider.dart`（1）、
-    `report_ai_summary_provider.dart`（1）、`report_page.dart`（2）、`settings_profile_sync_provider.dart`（1）、
-    `data_export_page.dart`（1）、`language_settings_page.dart`（1）、`search_provider.dart`（1）、
-    `search_page.dart`（1）、`barcode_scanner_page.dart`（1）、`medicine_box_scan_page.dart`（1）、
-    `login_page.dart`（1）、`record_nlp_controller.dart`（2）的 catch 块首行添加 `debugPrint`。
-  - 所有 `catch (_)` 改为 `catch (e)` 并记录错误；`flutter analyze` 通过。
+- 裸 catch 修复完成（全项目，约 75 处）：所有 `catch (_)` 改为 `catch (e)` 并添加 `debugPrint` 日志；`flutter analyze` 通过。
+  注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、动画时长统一、maxWidth 提取 4 项曾被误标为完成，
+  经实查确认问题仍存在，暂列待办未完成。
 
 ## 相关文档
 
