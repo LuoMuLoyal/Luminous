@@ -279,6 +279,7 @@ class LoginPage extends HookConsumerWidget {
         if (session == null || !context.mounted) return;
         goAfterLogin(fallbackHome: true);
       } catch (e) {
+        debugPrint('LoginPage.startAppleLogin: failed: $e');
         if (context.mounted) await AppToast.show(context, failMessage);
       }
     }

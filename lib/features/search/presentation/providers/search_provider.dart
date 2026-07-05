@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
@@ -83,6 +84,7 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
             : null,
       );
     } catch (e) {
+      debugPrint('MedicineSearchNotifier._doSearch: failed: $e');
       state = state.copyWith(
         isSearching: false,
         errorMessage: e.toString().replaceFirst('Exception: ', ''),

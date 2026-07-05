@@ -150,7 +150,8 @@ class RecordEditPage extends HookConsumerWidget {
         recordOccurredTime.value = record.occurredTime?.trim();
         loaded.value = true;
         loadingRecord.value = false;
-      } catch (_) {
+      } catch (e) {
+        debugPrint('RecordEditPage.loadRecord: failed: $e');
         if (context.mounted) {
           unawaited(AppToast.show(context, l10n.recordCreateFailedToast));
           context.pop();
@@ -330,7 +331,8 @@ class RecordEditPage extends HookConsumerWidget {
           if (!context.mounted) return;
           context.pop();
         }
-      } catch (_) {
+      } catch (e) {
+        debugPrint('RecordEditPage.onSave: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordCreateFailedToast);
         }
@@ -371,7 +373,8 @@ class RecordEditPage extends HookConsumerWidget {
           if (!context.mounted) return;
           context.pop();
         }
-      } catch (_) {
+      } catch (e) {
+        debugPrint('RecordEditPage.onDelete: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordCreateFailedToast);
         }
@@ -402,7 +405,8 @@ class RecordEditPage extends HookConsumerWidget {
           contentType: contentType,
         );
         attachmentsChanged.value = true;
-      } catch (_) {
+      } catch (e) {
+        debugPrint('RecordEditPage.onPickImage: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordImagePickFailedToast);
         }

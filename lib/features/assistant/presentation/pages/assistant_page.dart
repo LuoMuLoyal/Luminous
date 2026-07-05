@@ -82,6 +82,7 @@ class AssistantPage extends HookConsumerWidget {
             .setAssistantEnabled(nextValue);
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
+        debugPrint('AssistantPage.toggleAssistantEnabled: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -97,6 +98,9 @@ class AssistantPage extends HookConsumerWidget {
             .setAssistantMemoryEnabled(nextValue);
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
+        debugPrint(
+          'AssistantPage.toggleAssistantMemoryEnabled: failed: $error',
+        );
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -130,6 +134,7 @@ class AssistantPage extends HookConsumerWidget {
               .read(assistantControllerProvider.notifier)
               .loadCapabilities();
         } catch (error) {
+          debugPrint('AssistantPage.toggleContextSetting: failed: $error');
           if (!ctx.mounted) return;
           await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
         }
@@ -148,6 +153,7 @@ class AssistantPage extends HookConsumerWidget {
             );
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
+        debugPrint('AssistantPage.toggleContextSetting: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -181,6 +187,7 @@ class AssistantPage extends HookConsumerWidget {
         if (!ctx.mounted) return;
         await AppToast.show(ctx, l.assistantProposalConfirmedToast);
       } catch (error) {
+        debugPrint('AssistantPage.handleConfirmProposal: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }

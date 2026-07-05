@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -48,6 +49,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       );
       return true;
     } catch (error) {
+      debugPrint('AuthAccountNotifier.sendVerificationCode: failed: $error');
       return _fail(error);
     }
   }
@@ -155,6 +157,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
         state = state.copyWith(isSubmitting: false, successMessage: '');
         return WechatIdentityLinkResult.completed;
       } catch (error) {
+        debugPrint(
+          'AuthAccountNotifier.startWechatIdentityLink: failed: $error',
+        );
         return _failWithResult(error);
       }
     }
@@ -183,6 +188,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
           ? WechatIdentityLinkResult.opened
           : WechatIdentityLinkResult.unsupported;
     } catch (error) {
+      debugPrint('AuthAccountNotifier.startWechatIdentityLink: failed: $error');
       return _failWithResult(error);
     }
   }
@@ -210,6 +216,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       state = state.copyWith(isSubmitting: false, successMessage: '');
       return true;
     } catch (error) {
+      debugPrint('AuthAccountNotifier._run: failed: $error');
       return _fail(error);
     }
   }
@@ -259,6 +266,9 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       state = state.copyWith(isSubmitting: false, successMessage: '');
       return WechatIdentityLinkResult.completed;
     } catch (error) {
+      debugPrint(
+        'AuthAccountNotifier._startWechatDesktopIdentityLink: failed: $error',
+      );
       return _failWithResult(error);
     } finally {
       await server?.close();

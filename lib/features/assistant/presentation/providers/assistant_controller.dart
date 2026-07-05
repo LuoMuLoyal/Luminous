@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
@@ -97,6 +98,7 @@ class AssistantController extends Notifier<AssistantState> {
         capabilityError: null,
       );
     } catch (error) {
+      debugPrint('AssistantController.loadCapabilities: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(
         isLoadingCapabilities: false,
@@ -138,6 +140,7 @@ class AssistantController extends Notifier<AssistantState> {
         lastFailedInput: null,
       );
     } catch (error) {
+      debugPrint('AssistantController.loadLatestConversation: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(
         isLoadingConversation: false,
@@ -172,6 +175,7 @@ class AssistantController extends Notifier<AssistantState> {
         recentConversationError: null,
       );
     } catch (error) {
+      debugPrint('AssistantController.loadRecentConversations: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(
         isLoadingRecentConversations: false,
@@ -209,6 +213,7 @@ class AssistantController extends Notifier<AssistantState> {
       );
       await loadRecentConversations();
     } catch (error) {
+      debugPrint('AssistantController.openConversation: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(
         isOpeningConversation: false,
@@ -285,6 +290,7 @@ class AssistantController extends Notifier<AssistantState> {
         lastFailedInput: trimmed,
       );
     } catch (error) {
+      debugPrint('AssistantController._sendMessageInternal: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       final errorType = _classifySendError(error);
       state = state.copyWith(
@@ -330,6 +336,7 @@ class AssistantController extends Notifier<AssistantState> {
     try {
       await ref.read(assistantRepositoryProvider).clearLatestConversation();
     } catch (error) {
+      debugPrint('AssistantController.clearConversation: failed: $error');
       final message = LucentErrorMapper.fromObject(error).message;
       state = state.copyWith(conversationError: message);
       return;
@@ -388,6 +395,7 @@ class AssistantController extends Notifier<AssistantState> {
         executionError: null,
       );
     } catch (error) {
+      debugPrint('AssistantController.confirmProposedAction: failed: $error');
       final messageText = LucentErrorMapper.fromObject(error).message;
       _updateProposalState(
         messageId: messageId,

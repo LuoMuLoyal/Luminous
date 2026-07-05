@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
@@ -167,8 +168,8 @@ final medicineReminderNotificationSyncProvider = FutureProvider<void>((
       texts: texts,
       now: now,
     );
-  } catch (_) {
-    // Keep the existing on-device schedule when reminder data cannot be fetched.
+  } catch (e) {
+    debugPrint('MedicineReminderNotificationCoordinator: resync failed: $e');
     return;
   }
 });

@@ -107,6 +107,7 @@ class SearchPage extends ConsumerWidget {
         unawaited(AppToast.show(context, l10n.mineEditSavedToast));
       }
     } catch (e) {
+      debugPrint('SearchPage._addToCurrentMedicines: failed: $e');
       if (context.mounted) {
         unawaited(
           AppToast.show(

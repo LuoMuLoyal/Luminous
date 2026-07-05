@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:collection/collection.dart';
@@ -50,7 +51,8 @@ class LucentRecordRepository implements RecordRepository {
               return _isActiveRecordEntryType(type);
             })
             .toList(growable: false);
-      } catch (_) {
+      } catch (e) {
+        debugPrint('LucentRecordRepository: fetchRecords failed: $e');
         records = [];
       }
     }

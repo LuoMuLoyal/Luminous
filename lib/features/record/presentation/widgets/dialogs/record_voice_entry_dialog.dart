@@ -90,7 +90,8 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         try {
           final perm = await service.hasPermission;
           hasPermission.value = perm;
-        } catch (_) {
+        } catch (e) {
+          debugPrint('RecordVoiceEntryDialog.init: hasPermission failed: $e');
           hasPermission.value = false;
         }
       }

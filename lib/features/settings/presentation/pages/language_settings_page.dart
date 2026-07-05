@@ -85,6 +85,7 @@ Future<void> _handleLocaleTap(
   try {
     await ref.read(settingsProfileSyncProvider.notifier).setLocale(locale);
   } catch (error) {
+    debugPrint('_handleLocaleTap: failed: $error');
     if (!context.mounted) {
       return;
     }

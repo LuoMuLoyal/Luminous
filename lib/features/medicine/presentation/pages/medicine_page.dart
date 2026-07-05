@@ -105,6 +105,7 @@ Future<void> _markDose(
       unawaited(AppToast.show(context, l10n.medicineDoseActionSavedToast));
     }
   } catch (error) {
+    debugPrint('_markDose: failed: $error');
     if (context.mounted) {
       unawaited(AppToast.show(context, l10n.medicineDoseActionFailedToast));
     }

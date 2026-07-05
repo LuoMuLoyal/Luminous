@@ -72,6 +72,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
         _showCandidatePicker(items);
       }
     } catch (e) {
+      debugPrint('BarcodeScannerPage._handleDetect: failed: $e');
       if (mounted) {
         unawaited(AppToast.show(context, '搜索失败: $e'));
         setState(() => _hasScanned = false);

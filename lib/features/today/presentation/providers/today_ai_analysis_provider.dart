@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
 import 'package:luminous/core/network/lucent_result_code.dart';
@@ -61,6 +62,7 @@ class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
 
       throw StateError('今日 AI 流式响应已结束，但没有返回最终结果。');
     } catch (error) {
+      debugPrint('TodayAiAnalysisController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.code == LucentResultCode.forbidden) {
         state = const TodayAiAnalysisCardState.disabled();

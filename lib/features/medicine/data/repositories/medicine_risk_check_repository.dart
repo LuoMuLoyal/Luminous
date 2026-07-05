@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
@@ -42,8 +43,8 @@ class MedicineRiskCheckRepository {
         details.add(
           MedicineRiskMedicineDetail(item: item, detail: response.data),
         );
-      } catch (_) {
-        // The page and workspace surface missing coverage explicitly later.
+      } catch (e) {
+        debugPrint('MedicineRiskCheckRepository: risk detail fetch failed: $e');
       }
     }
 

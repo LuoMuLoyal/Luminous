@@ -390,7 +390,8 @@ class _RecordDetailBody extends ConsumerWidget {
       if (!context.mounted) return;
       await AppToast.show(context, l10n.mineEditDeletedToast);
       if (context.mounted) context.pop();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('RecordDetailPage.onDelete: failed: $e');
       if (context.mounted) {
         await AppToast.show(context, l10n.recordCreateFailedToast);
       }

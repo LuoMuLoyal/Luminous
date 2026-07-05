@@ -192,7 +192,8 @@ class RecordCreatePage extends HookConsumerWidget {
           fileName: image.name,
           contentType: contentType,
         );
-      } catch (_) {
+      } catch (e) {
+        debugPrint('RecordCreatePage.onPickImage: failed: $e');
         if (context.mounted) {
           await AppToast.show(
             context,
@@ -264,6 +265,7 @@ class RecordCreatePage extends HookConsumerWidget {
           context.pop();
         }
       } catch (e) {
+        debugPrint('RecordCreatePage.onSave: failed: $e');
         if (context.mounted) {
           unawaited(
             AppToast.show(

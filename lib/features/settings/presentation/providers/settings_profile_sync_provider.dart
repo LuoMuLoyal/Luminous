@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
@@ -31,6 +32,7 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
       );
       _refreshDerivedState();
     } catch (error) {
+      debugPrint('SettingsProfileSyncNotifier.syncPreferences: failed: $error');
       if (hasLocaleChange) {
         await ref
             .read(appLocaleControllerProvider.notifier)

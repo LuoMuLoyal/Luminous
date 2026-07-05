@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
@@ -32,6 +33,7 @@ class HealthProfileFormNotifier extends Notifier<HealthProfileFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const HealthProfileFormState(saved: true);
     } catch (e) {
+      debugPrint('HealthProfileFormNotifier.save: failed: $e');
       state = HealthProfileFormState(
         isSaving: false,
         errorMessage: e.toString(),
@@ -78,6 +80,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
+      debugPrint('AllergyFormNotifier.save: failed: $e');
       state = AllergyFormState(isSaving: false, errorMessage: e.toString());
     }
   }
@@ -92,6 +95,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const AllergyFormState(saved: true);
     } catch (e) {
+      debugPrint('AllergyFormNotifier.delete: failed: $e');
       state = AllergyFormState(isSaving: false, errorMessage: e.toString());
     }
   }
@@ -135,6 +139,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
+      debugPrint('ConditionFormNotifier.save: failed: $e');
       state = ConditionFormState(isSaving: false, errorMessage: e.toString());
     }
   }
@@ -149,6 +154,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref.invalidate(mineDashboardProvider);
       state = const ConditionFormState(saved: true);
     } catch (e) {
+      debugPrint('ConditionFormNotifier.delete: failed: $e');
       state = ConditionFormState(isSaving: false, errorMessage: e.toString());
     }
   }
@@ -194,6 +200,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
       ref.invalidate(todayDashboardProvider);
       state = const CurrentMedicineFormState(saved: true);
     } catch (e) {
+      debugPrint('CurrentMedicineFormNotifier.save: failed: $e');
       state = CurrentMedicineFormState(
         isSaving: false,
         errorMessage: e.toString(),
@@ -213,6 +220,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
       ref.invalidate(todayDashboardProvider);
       state = const CurrentMedicineFormState(saved: true);
     } catch (e) {
+      debugPrint('CurrentMedicineFormNotifier.delete: failed: $e');
       state = CurrentMedicineFormState(
         isSaving: false,
         errorMessage: e.toString(),

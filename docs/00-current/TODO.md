@@ -47,3 +47,5 @@ Last updated: 2026-07-03
 - Environment-driven Today 或 Mine 建议
 - 真实药品条码/OCR/拍照/处方识别流程
 - 超越竞赛/营销首页的真实认证 Web 报告预览
+- 环境驱动的 Today/Mine 建议
+- Agent 辅助就医发现

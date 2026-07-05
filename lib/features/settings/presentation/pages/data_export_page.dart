@@ -186,6 +186,7 @@ class DataExportPage extends ConsumerWidget {
           await AppToast.show(context, l10n.mineExportStatusFailed);
       }
     } catch (error) {
+      debugPrint('DataExportPage._requestExport: failed: $error');
       if (!context.mounted) {
         return;
       }

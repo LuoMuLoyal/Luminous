@@ -240,6 +240,7 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
       state = const MedicineReminderFormState(saved: true);
       return true;
     } catch (error) {
+      debugPrint('MedicineReminderFormNotifier.saveGroup: failed: $error');
       state = MedicineReminderFormState(errorMessage: error.toString());
       return false;
     }
@@ -257,6 +258,7 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
       state = const MedicineReminderFormState(saved: true, deleted: true);
       return true;
     } catch (error) {
+      debugPrint('MedicineReminderFormNotifier.deleteGroup: failed: $error');
       state = MedicineReminderFormState(errorMessage: error.toString());
       return false;
     }

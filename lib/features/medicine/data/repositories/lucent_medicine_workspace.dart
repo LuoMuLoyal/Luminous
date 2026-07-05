@@ -54,7 +54,11 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
           doseStatusByMedicine[medicineId] = log.status;
         }
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint(
+        'LucentMedicineWorkspace.fetchWorkspace: dose logs failed: $e',
+      );
+    }
 
     final remindersByMedicine = <String, List<MedicineReminderItem>>{};
     try {
@@ -67,7 +71,11 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       for (final reminders in remindersByMedicine.values) {
         reminders.sort(compareReminderTime);
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint(
+        'LucentMedicineWorkspace.fetchWorkspace: reminders failed: $e',
+      );
+    }
 
     final planItems = medicines.map((m) {
       final doseStatus = doseStatusByMedicine[m.id];

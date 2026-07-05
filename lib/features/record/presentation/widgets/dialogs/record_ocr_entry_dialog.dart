@@ -74,6 +74,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
         final text = await recognizeText(photo, locale);
         recognizedText.value = text;
       } catch (e) {
+        debugPrint('RecordOcrEntryDialog: recognizeText failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordOcrRecognitionFailed);
         }

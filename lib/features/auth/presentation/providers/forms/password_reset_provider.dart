@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -130,6 +131,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       );
       return true;
     } catch (error) {
+      debugPrint('PasswordResetNotifier.sendResetCode: failed: $error');
       return _fail(error);
     }
   }
@@ -151,6 +153,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       state = state.copyWith(isSubmitting: false, successMessage: '');
       return true;
     } catch (error) {
+      debugPrint('PasswordResetNotifier.resetPassword: failed: $error');
       return _fail(error);
     }
   }

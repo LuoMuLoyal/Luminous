@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -139,6 +140,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       );
       return true;
     } catch (error) {
+      debugPrint('RegisterFormNotifier.sendCode: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSendingCode: false,
@@ -167,6 +169,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       state = state.copyWith(isSubmitting: false, successMessage: '');
       return true;
     } catch (error) {
+      debugPrint('RegisterFormNotifier.submit: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSubmitting: false,

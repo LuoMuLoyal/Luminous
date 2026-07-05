@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/core/network/lucent_network_providers.dart';
@@ -58,7 +59,10 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
         conditions: detail.subtitle?.toString().split('\n') ?? [],
         checklist: const [],
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint(
+        'LucentMedicineSearchRepository.fetchSafetyPreview: failed: $e',
+      );
       return null;
     }
   }

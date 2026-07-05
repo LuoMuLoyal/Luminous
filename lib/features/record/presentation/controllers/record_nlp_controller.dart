@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_error_mapper.dart';
@@ -91,6 +92,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
       );
       return state;
     } catch (error) {
+      debugPrint('RecordNlpController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         status: previousCandidates.isEmpty
@@ -143,6 +145,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
         await repo.create(item.toCreateInput());
         savedCount += 1;
       } catch (error) {
+        debugPrint('RecordNlpController._saveCandidates: failed: $error');
         final apiError = LucentErrorMapper.fromObject(error);
         lastErrorMessage = apiError.message;
         failedItemsByIndex[index] = item.copyWith(

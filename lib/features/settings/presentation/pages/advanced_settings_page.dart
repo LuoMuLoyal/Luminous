@@ -59,7 +59,10 @@ class AdvancedSettingsPage extends ConsumerWidget {
                           await ref
                               .read(settingsProfileSyncProvider.notifier)
                               .resetProfilePreferences();
-                        } catch (_) {
+                        } catch (e) {
+                          debugPrint(
+                            'AdvancedSettingsPage: resetProfilePreferences failed: $e',
+                          );
                           await ref
                               .read(appLocaleControllerProvider.notifier)
                               .setLocale(AppLocale.system);

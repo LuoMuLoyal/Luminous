@@ -129,8 +129,10 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       }
 
       await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
-    } catch (_) {
-      // Locale backfill is best-effort and should not block app startup.
+    } catch (e) {
+      debugPrint(
+        'App._syncLocaleFromHealthContext: locale backfill failed: $e',
+      );
     }
   }
 

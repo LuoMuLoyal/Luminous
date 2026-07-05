@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -41,8 +42,8 @@ class LucentTodayRepository implements TodayRepository {
           sleepPayload = s.latest?.payload;
         }
       }
-    } catch (_) {
-      // Fall back to static mock if records aren't available
+    } catch (e) {
+      debugPrint('LucentTodayRepository: fetchSummary failed: $e');
     }
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
@@ -59,8 +60,8 @@ class LucentTodayRepository implements TodayRepository {
           completedMedicineIds.add(medicineId);
         }
       }
-    } catch (_) {
-      // Keep Today factual and available even if manual dose logs are absent.
+    } catch (e) {
+      debugPrint('LucentTodayRepository: dose logs failed: $e');
     }
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
@@ -185,7 +186,8 @@ class LucentTodayRepository implements TodayRepository {
               .toList(growable: false)
             ..sort(_compareReminderTime);
       return todayReminders.firstOrNull;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('LucentTodayRepository._nextReminderFor: failed: $e');
       return null;
     }
   }

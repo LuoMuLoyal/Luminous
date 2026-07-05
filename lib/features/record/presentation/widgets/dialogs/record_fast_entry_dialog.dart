@@ -129,7 +129,8 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
         ),
       );
       Navigator.of(context).pop();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('RecordFastEntryDialog._saveChoice: failed: $e');
       if (!mounted) return;
       unawaited(
         AppToast.show(

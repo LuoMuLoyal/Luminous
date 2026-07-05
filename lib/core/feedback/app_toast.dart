@@ -49,8 +49,8 @@ class AppToast {
           }
         },
       );
-    } catch (_) {
-      // FToaster 不可用（如测试环境无 FToaster），静默降级
+    } catch (e) {
+      debugPrint('AppToast.show: FToaster unavailable: $e');
       _reset();
       return false;
     }

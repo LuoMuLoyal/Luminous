@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/network/lucent_api.dart';
@@ -68,6 +69,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         isAuthenticated: true,
       );
     } catch (error) {
+      debugPrint('AuthSessionNotifier.restore: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       await ref.read(lucentDioClientProvider).clearSession();
       state = AuthSessionState(

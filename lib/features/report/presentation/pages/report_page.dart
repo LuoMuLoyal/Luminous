@@ -96,6 +96,7 @@ class ReportPage extends ConsumerWidget {
         request: request,
       );
     } catch (error) {
+      debugPrint('ReportPage._handleExportAction: failed: $error');
       if (!context.mounted) {
         return;
       }
@@ -124,6 +125,7 @@ class ReportPage extends ConsumerWidget {
         ShareParams(text: shareUrl, subject: l10n.reportExportClinicShareTitle),
       );
     } catch (error) {
+      debugPrint('ReportPage._handleClinicShare: failed: $error');
       if (!context.mounted) return;
       final message = LucentErrorMapper.fromObject(error).message;
       await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
