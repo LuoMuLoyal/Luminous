@@ -3,6 +3,9 @@
 - 旧 More tab 及其剩余 `features/more` mock 工作区。
 - 女性健康与经期管理。
 - 运动恢复。
+- 校园服务模块（Mine 校园区块、RedFlagAlert 的 campus-resource escalation、campus l10n keys）。
+- 2FA / TOTP 双因素认证（已替换为 Security PIN + JWT elevation token）。
+- 多色板主题偏好设置（主题仅保留 system / light / dark）。
 - 专家健康包。
 - 智能设备。
 - 家庭档案。

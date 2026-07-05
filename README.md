@@ -2,7 +2,7 @@
 
 [![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
 
-Flutter personal health copilot. Current mainline is the reset five-tab shell backed by Lucent.
+Flutter 个人健康助手。以用药安全为入口，连接日常记录与 AI 驱动的主动提醒、总结和报告。
 
 Current version: **v4.0.0-dev**
 
@@ -20,7 +20,8 @@ Current version: **v4.0.0-dev**
 ## Baseline
 
 - Tabs: `today / record / medicine / report / mine`
-- Design tokens: color / type / spacing / radius / shadow / breakpoints
+- Design tokens: color / type / spacing / radius / breakpoints / animation
+- UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
 - API client: `packages/lucent_openapi`
 - Network layer: `lib/core/network/`
 - i18n: Flutter `gen-l10n`
