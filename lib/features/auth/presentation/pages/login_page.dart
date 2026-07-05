@@ -7,6 +7,7 @@ import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -338,7 +339,7 @@ class LoginPage extends HookConsumerWidget {
               label: Text(l10n?.authEmailLabel ?? 'Email'),
               hint: l10n?.authEmailHint ?? 'name@example.com',
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => _validateEmail(
+              validator: (value) => EmailInput.validate(
                 value,
                 requiredMessage:
                     l10n?.authEmailRequiredError ?? 'Please enter your email.',
@@ -359,7 +360,7 @@ class LoginPage extends HookConsumerWidget {
                     l10n?.authPasswordHint ??
                     'At least 8 characters, ideally with mixed case and numbers',
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => _validateRequired(
+                validator: (value) => RequiredInput.validate(
                   value,
                   l10n?.authPasswordRequiredError ??
                       'Please enter your password.',
@@ -375,13 +376,13 @@ class LoginPage extends HookConsumerWidget {
                     : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
                           'Send again (${state.cooldownSeconds}s)',
                 isLoading: state.isSendingCode,
-                validator: (value) => _validateRequired(
+                validator: (value) => RequiredInput.validate(
                   value,
                   l10n?.authCodeRequiredError ??
                       'Please enter the verification code.',
                 ),
                 onSendCode: () async {
-                  final emailError = _validateEmail(
+                  final emailError = EmailInput.validate(
                     emailController.text,
                     requiredMessage:
                         l10n?.authEmailRequiredError ??
@@ -708,28 +709,6 @@ class _VerificationCodeField extends StatelessWidget {
       ],
     );
   }
-}
-
-String? _validateRequired(String? value, String message) {
-  if ((value ?? '').trim().isEmpty) {
-    return message;
-  }
-  return null;
-}
-
-String? _validateEmail(
-  String? value, {
-  required String requiredMessage,
-  required String invalidMessage,
-}) {
-  final trimmed = (value ?? '').trim();
-  if (trimmed.isEmpty) {
-    return requiredMessage;
-  }
-  if (!trimmed.contains('@')) {
-    return invalidMessage;
-  }
-  return null;
 }
 
 class _AppleOAuthPanel extends StatefulWidget {

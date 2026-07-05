@@ -1,50 +1,6 @@
 import 'dart:async';
 
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-/// Shared validation helpers for auth forms (register, password reset, etc.).
-mixin AuthValidationMixin {
-  bool isValidEmail(String value) => EmailValidator.validate(value);
-
-  String? validateEmail(
-    String email, {
-    required String emailRequired,
-    required String emailInvalid,
-  }) {
-    final trimmed = email.trim();
-    if (trimmed.isEmpty) {
-      return emailRequired;
-    }
-    return isValidEmail(trimmed) ? null : emailInvalid;
-  }
-
-  String? validateCode(String code, {required String codeRequired}) {
-    return code.trim().isEmpty ? codeRequired : null;
-  }
-
-  String? validatePassword(
-    String password, {
-    required String passwordRequired,
-  }) {
-    return password.trim().isEmpty ? passwordRequired : null;
-  }
-
-  String? validateConfirmPassword(
-    String password,
-    String confirmPassword, {
-    required String confirmPasswordRequired,
-    required String passwordsDoNotMatch,
-  }) {
-    if (confirmPassword.trim().isEmpty) {
-      return confirmPasswordRequired;
-    }
-    if (confirmPassword != password) {
-      return passwordsDoNotMatch;
-    }
-    return null;
-  }
-}
 
 /// Shared cooldown timer logic for verification-code buttons.
 ///

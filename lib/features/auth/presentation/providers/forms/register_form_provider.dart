@@ -5,6 +5,8 @@ import 'package:luminous/core/network/lucent_api.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 
+import 'package:luminous/core/forms/validators.dart';
+
 import '../shared/auth_form_mixin.dart';
 
 part 'register_form_provider.freezed.dart';
@@ -30,7 +32,7 @@ abstract class RegisterFormState with _$RegisterFormState {
 }
 
 class RegisterFormNotifier extends Notifier<RegisterFormState>
-    with AuthValidationMixin, CooldownTimerMixin<RegisterFormState> {
+    with CooldownTimerMixin<RegisterFormState> {
   @override
   RegisterFormState build() {
     ref.onDispose(disposeCooldown);
@@ -77,21 +79,21 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
     required String confirmPasswordRequired,
     required String passwordsDoNotMatch,
   }) {
-    final emailError = validateEmail(
+    final emailError = EmailInput.validate(
       state.email,
-      emailRequired: emailRequired,
-      emailInvalid: emailInvalid,
+      requiredMessage: emailRequired,
+      invalidMessage: emailInvalid,
     );
-    final codeError = validateCode(state.code, codeRequired: codeRequired);
-    final passwordError = validatePassword(
+    final codeError = CodeInput.validate(state.code, codeRequired);
+    final passwordError = PasswordInput.validate(
       state.password,
-      passwordRequired: passwordRequired,
+      passwordRequired,
     );
-    final confirmPasswordError = validateConfirmPassword(
-      state.password,
+    final confirmPasswordError = ConfirmPasswordInput.validate(
       state.confirmPassword,
-      confirmPasswordRequired: confirmPasswordRequired,
-      passwordsDoNotMatch: passwordsDoNotMatch,
+      state.password,
+      requiredMessage: confirmPasswordRequired,
+      mismatchMessage: passwordsDoNotMatch,
     );
 
     state = state.copyWith(

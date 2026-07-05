@@ -6,6 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/password_reset_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
@@ -46,7 +47,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
               label: Text(l10n?.authEmailLabel ?? 'Email'),
               hint: l10n?.authEmailHint ?? 'name@example.com',
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => _validateEmail(
+              validator: (value) => EmailInput.validate(
                 value,
                 requiredMessage:
                     l10n?.authEmailRequiredError ?? 'Please enter your email.',
@@ -65,13 +66,13 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
                         'Send again (${state.cooldownSeconds}s)',
               isLoading: state.isSendingCode,
-              validator: (value) => _validateRequired(
+              validator: (value) => RequiredInput.validate(
                 value,
                 l10n?.authCodeRequiredError ??
                     'Please enter the verification code.',
               ),
               onSendCode: () async {
-                final emailError = _validateEmail(
+                final emailError = EmailInput.validate(
                   emailController.text,
                   requiredMessage:
                       l10n?.authEmailRequiredError ??
@@ -107,7 +108,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   l10n?.authPasswordHint ??
                   'At least 8 characters, ideally with mixed case and numbers',
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => _validateRequired(
+              validator: (value) => RequiredInput.validate(
                 value,
                 l10n?.authPasswordRequiredError ??
                     'Please enter your password.',
@@ -124,7 +125,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   'At least 8 characters, ideally with mixed case and numbers',
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
-                final requiredError = _validateRequired(
+                final requiredError = RequiredInput.validate(
                   value,
                   l10n?.authConfirmPasswordRequiredError ??
                       'Please confirm your password.',
@@ -274,26 +275,4 @@ class _VerificationCodeField extends StatelessWidget {
       ],
     );
   }
-}
-
-String? _validateRequired(String? value, String message) {
-  if ((value ?? '').trim().isEmpty) {
-    return message;
-  }
-  return null;
-}
-
-String? _validateEmail(
-  String? value, {
-  required String requiredMessage,
-  required String invalidMessage,
-}) {
-  final trimmed = (value ?? '').trim();
-  if (trimmed.isEmpty) {
-    return requiredMessage;
-  }
-  if (!trimmed.contains('@')) {
-    return invalidMessage;
-  }
-  return null;
 }

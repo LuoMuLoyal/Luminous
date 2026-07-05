@@ -10,6 +10,7 @@ import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oa
 import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/auth_session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/auth_form_mixin.dart';
 
 part 'login_form_provider.freezed.dart';
@@ -45,7 +46,7 @@ abstract class LoginFormState with _$LoginFormState {
 }
 
 class LoginFormNotifier extends Notifier<LoginFormState>
-    with AuthValidationMixin, CooldownTimerMixin<LoginFormState> {
+    with CooldownTimerMixin<LoginFormState> {
   @override
   LoginFormState build() {
     ref.onDispose(disposeCooldown);
@@ -86,23 +87,20 @@ class LoginFormNotifier extends Notifier<LoginFormState>
     required String passwordRequired,
     required String codeRequired,
   }) {
-    final emailError = validateEmail(
+    final emailError = EmailInput.validate(
       state.email,
-      emailRequired: emailRequired,
-      emailInvalid: emailInvalid,
+      requiredMessage: emailRequired,
+      invalidMessage: emailInvalid,
     );
 
     final String? passwordError;
     final String? codeError;
     if (state.mode == AuthLoginMode.password) {
-      passwordError = validatePassword(
-        state.password,
-        passwordRequired: passwordRequired,
-      );
+      passwordError = PasswordInput.validate(state.password, passwordRequired);
       codeError = null;
     } else {
       passwordError = null;
-      codeError = validateCode(state.code, codeRequired: codeRequired);
+      codeError = CodeInput.validate(state.code, codeRequired);
     }
 
     state = state.copyWith(

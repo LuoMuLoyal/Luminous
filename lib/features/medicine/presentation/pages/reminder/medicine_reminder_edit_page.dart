@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -245,18 +246,26 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       HealthContextSnapshot? snapshot,
       List<MedicineReminderItem>? reminders,
     ) {
+      if (snapshot == null || reminders == null) return;
+
       final medId = selectedMedicineId.value;
-      if (snapshot == null || reminders == null || medId == null) {
-        AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
+      final medIdError = RequiredInput.validate(
+        medId,
+        l10n.medicineReminderMedicineRequiredToast,
+      );
+      if (medIdError != null) {
+        AppToast.show(context, medIdError);
         return;
       }
+      final effectiveMedId = medId!;
+
       if (times.value.isEmpty) {
         AppToast.show(context, l10n.medicineReminderTimeRequiredToast);
         return;
       }
 
       final medicine = snapshot.currentMedicines
-          .where((item) => item.id == medId)
+          .where((item) => item.id == effectiveMedId)
           .firstOrNull;
       if (medicine == null) {
         AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
@@ -271,6 +280,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
         return;
       }
+
       final start = startDate.value;
       final end2 = endDate.value;
       if (start != null && end2 != null && end2.isBefore(start)) {
@@ -281,9 +291,9 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       ref
           .read(medicineReminderFormProvider.notifier)
           .saveGroup(
-            existingReminders: remindersFor(reminders, medId),
+            existingReminders: remindersFor(reminders, effectiveMedId),
             input: MedicineReminderGroupWriteInput(
-              currentMedicineId: medId,
+              currentMedicineId: effectiveMedId,
               label: medicine.displayName,
               times: times.value,
               daysOfWeek: daysOfWeek,

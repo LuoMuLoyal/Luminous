@@ -8,6 +8,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -51,7 +52,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                     label: Text(l10n?.authNewEmailLabel ?? 'New email'),
                     hint: l10n?.authEmailHint ?? 'name@example.com',
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) => _validateEmail(
+                    validator: (value) => EmailInput.validate(
                       value,
                       requiredMessage:
                           l10n?.authEmailRequiredError ??
@@ -73,7 +74,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                               ) ??
                               'Send again (${accountState.lastCooldownSeconds}s)',
                     isLoading: accountState.isSendingCode,
-                    validator: (value) => _validateRequired(
+                    validator: (value) => RequiredInput.validate(
                       value,
                       l10n?.authCodeRequiredError ??
                           'Please enter the verification code.',
@@ -81,7 +82,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                     onSendCode: !isSignedIn
                         ? null
                         : () async {
-                            final emailError = _validateEmail(
+                            final emailError = EmailInput.validate(
                               emailController.text,
                               requiredMessage:
                                   l10n?.authEmailRequiredError ??
@@ -259,26 +260,4 @@ class _VerificationCodeField extends StatelessWidget {
       ],
     );
   }
-}
-
-String? _validateRequired(String? value, String message) {
-  if ((value ?? '').trim().isEmpty) {
-    return message;
-  }
-  return null;
-}
-
-String? _validateEmail(
-  String? value, {
-  required String requiredMessage,
-  required String invalidMessage,
-}) {
-  final trimmed = (value ?? '').trim();
-  if (trimmed.isEmpty) {
-    return requiredMessage;
-  }
-  if (!trimmed.contains('@')) {
-    return invalidMessage;
-  }
-  return null;
 }

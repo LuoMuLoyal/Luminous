@@ -6,6 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/register_form_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -47,7 +48,7 @@ class RegisterPage extends HookConsumerWidget {
               label: Text(l10n?.authEmailLabel ?? 'Email'),
               hint: l10n?.authEmailHint ?? 'name@example.com',
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => _validateEmail(
+              validator: (value) => EmailInput.validate(
                 value,
                 requiredMessage:
                     l10n?.authEmailRequiredError ?? 'Please enter your email.',
@@ -66,13 +67,13 @@ class RegisterPage extends HookConsumerWidget {
                   : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
                         'Send again (${state.cooldownSeconds}s)',
               isLoading: state.isSendingCode,
-              validator: (value) => _validateRequired(
+              validator: (value) => RequiredInput.validate(
                 value,
                 l10n?.authCodeRequiredError ??
                     'Please enter the verification code.',
               ),
               onSendCode: () async {
-                final emailError = _validateEmail(
+                final emailError = EmailInput.validate(
                   emailController.text,
                   requiredMessage:
                       l10n?.authEmailRequiredError ??
@@ -108,7 +109,7 @@ class RegisterPage extends HookConsumerWidget {
                   l10n?.authPasswordHint ??
                   'At least 8 characters, ideally with mixed case and numbers',
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => _validateRequired(
+              validator: (value) => RequiredInput.validate(
                 value,
                 l10n?.authPasswordRequiredError ??
                     'Please enter your password.',
@@ -125,7 +126,7 @@ class RegisterPage extends HookConsumerWidget {
                   'At least 8 characters, ideally with mixed case and numbers',
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
-                final requiredError = _validateRequired(
+                final requiredError = RequiredInput.validate(
                   value,
                   l10n?.authConfirmPasswordRequiredError ??
                       'Please confirm your password.',
@@ -320,13 +321,6 @@ class _VerificationCodeField extends StatelessWidget {
   }
 }
 
-String? _validateRequired(String? value, String message) {
-  if ((value ?? '').trim().isEmpty) {
-    return message;
-  }
-  return null;
-}
-
 Future<void> _openLegalUrl(
   BuildContext context,
   ExternalUrlLauncher launcher,
@@ -382,19 +376,4 @@ class _TermsLinks extends StatelessWidget {
       ],
     );
   }
-}
-
-String? _validateEmail(
-  String? value, {
-  required String requiredMessage,
-  required String invalidMessage,
-}) {
-  final trimmed = (value ?? '').trim();
-  if (trimmed.isEmpty) {
-    return requiredMessage;
-  }
-  if (!trimmed.contains('@')) {
-    return invalidMessage;
-  }
-  return null;
 }

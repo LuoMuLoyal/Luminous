@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -62,11 +63,12 @@ class ConditionEditPage extends HookConsumerWidget {
     }
 
     void onSave() {
-      if (labelController.text.trim().isEmpty) {
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.authCodeRequiredToast,
-        );
+      final labelError = RequiredInput.validate(
+        labelController.text,
+        AppLocalizations.of(context)!.authCodeRequiredToast,
+      );
+      if (labelError != null) {
+        AppToast.show(context, labelError);
         return;
       }
 
