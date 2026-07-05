@@ -8,7 +8,7 @@ class AuthBrandLogo extends StatelessWidget {
 
   final double size;
 
-  static const String _assetPath = 'assets/icons/luminous_app_icon.png';
+  static const String _assetPath = 'assets/icon/app_icon.png';
 
   @override
   Widget build(BuildContext context) {

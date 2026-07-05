@@ -95,6 +95,7 @@ Last updated: 2026-07-05
   注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、动画时长统一、maxWidth 提取 4 项曾被误标为完成，
   经实查确认问题仍存在，暂列待办未完成。
 - 清除 `unnecessary_import` 警告（40 个文件）：删除 `app_design.dart` 已 re-export 的冗余 `app_breakpoints.dart` import 行；`flutter analyze` 通过。
+- 应用图标规范化：图标源文件从 `assets/icons/Luminous-icon.png` 迁移到 `assets/icon/app_icon.png`，通过 `flutter_launcher_icons` 生成全平台图标；`pubspec.yaml` 和 `auth_branding.dart` 路径已同步更新。
 
 ## 相关文档
 
