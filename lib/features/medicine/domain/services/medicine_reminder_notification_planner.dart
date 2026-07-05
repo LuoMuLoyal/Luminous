@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:luminous/core/utils/clock.dart';
+import 'package:clock/clock.dart';
 import 'package:luminous/core/utils/string_utils.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_reminder_sound_preference.dart';
@@ -43,7 +43,7 @@ class MedicineReminderNotificationPlanner {
     this.horizonDays = 7,
     this.maxNotifications = 60,
     int Function(String value)? hashValue,
-    this._clock = const SystemClock(),
+    this._clock = const Clock(),
   }) : _hashValue = hashValue ?? _defaultFfnv1a32;
 
   static int _defaultFfnv1a32(String value) {

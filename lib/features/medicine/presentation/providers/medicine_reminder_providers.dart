@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -123,7 +124,7 @@ final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
     throw const AuthRequiredException();
   }
 
-  final today = DateTime.now();
+  final today = clock.now();
   final date =
       '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
   return ref.watch(doseLogRemoteDataSourceProvider).fetchForDate(date);

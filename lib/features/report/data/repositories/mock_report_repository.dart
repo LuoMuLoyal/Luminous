@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,8 +33,8 @@ class MockReportRepository implements ReportRepository {
 
   static ReportDashboard _dashboardForQuery(ReportDashboardQuery query) {
     final startDate =
-        query.startDate ?? DateTime.now().subtract(const Duration(days: 7));
-    final endDate = query.endDate ?? DateTime.now();
+        query.startDate ?? clock.now().subtract(const Duration(days: 7));
+    final endDate = query.endDate ?? clock.now();
     final startIso = _dateOnly(startDate);
     final endIso = _dateOnly(endDate);
     return previewDashboard.copyWith(

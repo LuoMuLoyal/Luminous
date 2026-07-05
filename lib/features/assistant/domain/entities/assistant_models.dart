@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -267,8 +268,7 @@ abstract class AssistantProposedAction with _$AssistantProposedAction {
     String? executionError,
   }) = _AssistantProposedAction;
 
-  bool get isExpired =>
-      expiresAt != null && expiresAt!.isBefore(DateTime.now());
+  bool get isExpired => expiresAt != null && expiresAt!.isBefore(clock.now());
   bool get isVisible =>
       executionState != AssistantProposalExecutionState.dismissed;
   bool get isActionable =>

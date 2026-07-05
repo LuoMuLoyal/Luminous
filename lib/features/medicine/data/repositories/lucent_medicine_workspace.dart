@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
 
 import 'package:flutter/foundation.dart';
@@ -37,7 +38,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
 
-    final today = DateTime.now();
+    final today = clock.now();
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
     final doseStatusByMedicine = <String, DoseLogStatus>{};

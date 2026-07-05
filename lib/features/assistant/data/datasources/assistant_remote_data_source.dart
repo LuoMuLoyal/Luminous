@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/core/network/lucent_api_exception.dart';
@@ -101,7 +102,7 @@ class AssistantRemoteDataSource {
             content: data['content']?.toString() ?? '',
             usedTools: usedTools,
             generatedAt:
-                DateTime.tryParse(generatedAtText ?? '') ?? DateTime.now(),
+                DateTime.tryParse(generatedAtText ?? '') ?? clock.now(),
             proposedActions: _readMapList(data['proposedActions']),
           );
         case 'error':

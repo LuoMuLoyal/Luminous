@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
@@ -20,9 +21,9 @@ final reportDashboardProvider =
         return base.copyWith(
           range: query.range,
           startDate: _dateOnly(
-            query.startDate ?? DateTime.now().subtract(const Duration(days: 7)),
+            query.startDate ?? clock.now().subtract(const Duration(days: 7)),
           ),
-          endDate: _dateOnly(query.endDate ?? DateTime.now()),
+          endDate: _dateOnly(query.endDate ?? clock.now()),
         );
       }
       if (session.isLoading) {

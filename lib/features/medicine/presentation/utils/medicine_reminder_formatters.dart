@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:forui/forui.dart';
@@ -127,7 +128,7 @@ AppColors deliveryStatusColor(String value, FColors colors) {
 String dateTimeShortLabel(AppLocalizations l10n, String value) {
   final parsed = DateTime.tryParse(value);
   if (parsed == null) return value;
-  final now = DateTime.now();
+  final now = clock.now();
   final date = dateOnly(parsed);
   final today = dateOnly(now);
   final datePrefix = date == today

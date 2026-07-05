@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
@@ -42,7 +43,7 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
               label: l10n.reportRangeCustom,
               selected: selectedQuery.range == ReportDashboardRange.custom,
               onTap: () async {
-                final now = DateTime.now();
+                final now = clock.now();
                 final initialRange = selectedQuery.isCustom
                     ? (selectedQuery.startDate!, selectedQuery.endDate!)
                     : (now.subtract(const Duration(days: 7)), now);

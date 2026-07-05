@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -90,7 +91,7 @@ Future<void> _markDose(
   }
 
   final l10n = AppLocalizations.of(context)!;
-  final today = DateTime.now();
+  final today = clock.now();
   final dateStr =
       '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 

@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
@@ -19,9 +20,7 @@ class RecordDateBar extends StatelessWidget {
   final ValueChanged<DateTime>? onDateSelected;
 
   static final DateTime _minDate = DateTime(2000);
-  static final DateTime _maxDate = DateTime.now().add(
-    const Duration(days: 365),
-  );
+  static final DateTime _maxDate = clock.now().add(const Duration(days: 365));
 
   double _calendarHeight(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;

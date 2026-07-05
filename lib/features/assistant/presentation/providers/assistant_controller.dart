@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -245,7 +246,7 @@ class AssistantController extends Notifier<AssistantState> {
             AssistantMessage(
               role: AssistantMessageRole.user,
               content: trimmed,
-              createdAt: DateTime.now(),
+              createdAt: clock.now(),
             ),
           ]
         : List<AssistantMessage>.of(state.messages);

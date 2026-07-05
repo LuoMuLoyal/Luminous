@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class LucentTodayRepository implements TodayRepository {
         .toList(growable: false);
 
     // Fetch daily record summary for today
-    final today = DateTime.now();
+    final today = clock.now();
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 

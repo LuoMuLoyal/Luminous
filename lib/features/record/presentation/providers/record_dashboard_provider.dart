@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
@@ -6,7 +7,7 @@ import 'package:luminous/features/auth/presentation/providers/session/auth_sessi
 
 class SelectedRecordDateNotifier extends Notifier<DateTime> {
   @override
-  DateTime build() => _dateOnly(DateTime.now());
+  DateTime build() => _dateOnly(clock.now());
 
   void setDate(DateTime value) {
     state = _dateOnly(value);

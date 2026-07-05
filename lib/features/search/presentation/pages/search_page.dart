@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -124,7 +125,7 @@ HealthContextSnapshot _snapshotWithCandidate(
   HealthContextSnapshot snapshot,
   MedicineSearchResult result,
 ) {
-  final now = DateTime.now().toIso8601String();
+  final now = clock.now().toIso8601String();
   return snapshot.copyWith(
     currentMedicines: [
       ...snapshot.currentMedicines,

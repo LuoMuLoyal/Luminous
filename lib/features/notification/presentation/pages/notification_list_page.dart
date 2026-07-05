@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -158,7 +159,7 @@ class NotificationListPage extends ConsumerWidget {
   Map<String, List<NotificationListItemDto>> _groupByRelativeDate(
     List<NotificationListItemDto> items,
   ) {
-    final now = DateTime.now();
+    final now = clock.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -196,7 +197,7 @@ class RecordEditPage extends HookConsumerWidget {
       if (minutes == null || minutes <= 0) return null;
       final payload = <String, dynamic>{'durationMinutes': minutes};
       if (sleepBedtime.value != null && sleepWakeTime.value != null) {
-        final occurredAt = recordOccurredAt.value ?? DateTime.now();
+        final occurredAt = recordOccurredAt.value ?? clock.now();
         final wake = DateTime(
           occurredAt.year,
           occurredAt.month,
@@ -312,9 +313,7 @@ class RecordEditPage extends HookConsumerWidget {
           recordId,
           DailyRecordUpdateInput(
             kind: kind.value,
-            occurredAt: formatRecordDate(
-              recordOccurredAt.value ?? DateTime.now(),
-            ),
+            occurredAt: formatRecordDate(recordOccurredAt.value ?? clock.now()),
             occurredTime: recordOccurredTime.value,
             title: rules.showTitle ? optionalText(titleController) : null,
             value: rules.showValue ? normalizedValueForKind(kind.value) : null,
@@ -481,16 +480,16 @@ class RecordEditPage extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     RecordOccurredAtFields(
-                      date: recordOccurredAt.value ?? DateTime.now(),
+                      date: recordOccurredAt.value ?? clock.now(),
                       time: recordOccurredTime.value,
                       onDateChanged: (date) =>
                           recordOccurredAt.value = DateTime(
                             date.year,
                             date.month,
                             date.day,
-                            recordOccurredAt.value?.hour ?? DateTime.now().hour,
+                            recordOccurredAt.value?.hour ?? clock.now().hour,
                             recordOccurredAt.value?.minute ??
-                                DateTime.now().minute,
+                                clock.now().minute,
                           ),
                       onTimeChanged: (time) {
                         if (time == null) {
@@ -498,9 +497,9 @@ class RecordEditPage extends HookConsumerWidget {
                           return;
                         }
                         recordOccurredAt.value = DateTime(
-                          recordOccurredAt.value?.year ?? DateTime.now().year,
-                          recordOccurredAt.value?.month ?? DateTime.now().month,
-                          recordOccurredAt.value?.day ?? DateTime.now().day,
+                          recordOccurredAt.value?.year ?? clock.now().year,
+                          recordOccurredAt.value?.month ?? clock.now().month,
+                          recordOccurredAt.value?.day ?? clock.now().day,
                           time.hour,
                           time.minute,
                         );

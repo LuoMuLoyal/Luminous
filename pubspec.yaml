@@ -76,6 +76,7 @@ dependencies:
   forui_hooks: ^0.23.0
   timeline_tile: ^2.0.0
   flutter_slidable: ^4.0.3
+  clock: ^1.1.2
 
 dev_dependencies:
   flutter_test:

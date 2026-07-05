@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
 import 'package:luminous/core/network/lucent_network_providers.dart';
@@ -179,8 +180,8 @@ class LucentAssistantRepository implements AssistantRepository {
           .map(_mapConversationMessage)
           .toList(growable: false),
       lastMessageAt: _parseDateTime(dto.lastMessageAt),
-      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
-      updatedAt: _parseDateTime(dto.updatedAt) ?? DateTime.now(),
+      createdAt: _parseDateTime(dto.createdAt) ?? clock.now(),
+      updatedAt: _parseDateTime(dto.updatedAt) ?? clock.now(),
     );
   }
 
@@ -192,8 +193,8 @@ class LucentAssistantRepository implements AssistantRepository {
       title: dto.title?.toString(),
       status: dto.status.value,
       lastMessageAt: _parseDateTime(dto.lastMessageAt),
-      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
-      updatedAt: _parseDateTime(dto.updatedAt) ?? DateTime.now(),
+      createdAt: _parseDateTime(dto.createdAt) ?? clock.now(),
+      updatedAt: _parseDateTime(dto.updatedAt) ?? clock.now(),
     );
   }
 
@@ -210,7 +211,7 @@ class LucentAssistantRepository implements AssistantRepository {
           AssistantMessageRole.assistant,
       },
       content: dto.content,
-      createdAt: _parseDateTime(dto.createdAt) ?? DateTime.now(),
+      createdAt: _parseDateTime(dto.createdAt) ?? clock.now(),
       usedTools: dto.usedTools,
     );
   }

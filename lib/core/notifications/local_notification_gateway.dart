@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -74,7 +75,7 @@ class LocalNotificationGateway {
     required String channelDescription,
     String? payload,
   }) async {
-    if (!await ensureInitialized() || !scheduledAt.isAfter(DateTime.now())) {
+    if (!await ensureInitialized() || !scheduledAt.isAfter(clock.now())) {
       return;
     }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -142,7 +143,7 @@ Future<List<MedicineMatchResult>> _processPhoto(
     final imageUrl = await repo.uploadImage(
       bytes: bytes,
       contentType: 'image/jpeg',
-      fileName: 'medicine-box-${DateTime.now().millisecondsSinceEpoch}.jpg',
+      fileName: 'medicine-box-${clock.now().millisecondsSinceEpoch}.jpg',
     );
     final json = await repo.recognizeMedicine(imageUrl);
 

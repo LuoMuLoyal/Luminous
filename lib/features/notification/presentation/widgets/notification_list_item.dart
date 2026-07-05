@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
@@ -121,7 +122,7 @@ class NotificationListItemWidget extends StatelessWidget {
   String _formatTime(String iso8601) {
     final dt = DateTime.tryParse(iso8601);
     if (dt == null) return '';
-    final now = DateTime.now();
+    final now = clock.now();
     final today = DateTime(now.year, now.month, now.day);
     final date = DateTime(dt.year, dt.month, dt.day);
     if (date == today) {

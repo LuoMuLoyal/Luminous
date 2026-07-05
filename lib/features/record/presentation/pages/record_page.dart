@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -105,7 +106,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               key: const Key('record-date-today-action'),
               label: l10n.recordTodayAction,
               icon: FLucideIcons.calendarDays,
-              onTap: () => _setSelectedDate(DateTime.now()),
+              onTap: () => _setSelectedDate(clock.now()),
               iconOnly: isCompact,
             ),
             RecordHeaderActionChip(
@@ -284,7 +285,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     BuildContext context,
     DateTime selectedDate,
   ) async {
-    final today = _dateOnly(DateTime.now());
+    final today = _dateOnly(clock.now());
     final picked = await showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(

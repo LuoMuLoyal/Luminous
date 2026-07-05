@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -98,7 +99,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         }
       } else {
         isActive.value = true;
-        startDate.value = dateOnly(DateTime.now());
+        startDate.value = dateOnly(clock.now());
         endDate.value = null;
         frequency.value = ReminderFrequency.daily;
         selectedWeekdays.value = <int>{};
@@ -164,7 +165,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     );
 
     Future<void> pickStartDate() async {
-      final now = dateOnly(DateTime.now());
+      final now = dateOnly(clock.now());
       final picked = await showForuiDatePicker(
         context,
         initial: startDate.value ?? now,
@@ -180,7 +181,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     }
 
     Future<void> pickEndDate() async {
-      final now = dateOnly(DateTime.now());
+      final now = dateOnly(clock.now());
       final first = startDate.value ?? DateTime(now.year - 5);
       final picked = await showForuiDatePicker(
         context,
@@ -404,7 +405,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                         if (value == ReminderFrequency.daily) {
                           selectedWeekdays.value = <int>{};
                         } else if (selectedWeekdays.value.isEmpty) {
-                          selectedWeekdays.value = {DateTime.now().weekday % 7};
+                          selectedWeekdays.value = {clock.now().weekday % 7};
                         }
                       },
                       onWeekdayToggled: (day) {
