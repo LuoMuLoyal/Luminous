@@ -14,6 +14,12 @@ class MockRecordRepository implements RecordRepository {
   const MockRecordRepository();
 
   @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) => fetchDashboard(selectedDate, filterType: filterType);
+
+  @override
   Future<RecordDashboard> fetchDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,

@@ -13,7 +13,11 @@ import 'package:luminous/features/mine/domain/repositories/mine_repository.dart'
 class MockMineRepository implements MineRepository {
   const MockMineRepository();
 
-  static MineDashboard get signedOutDashboard {
+  @override
+  Future<MineDashboard> get signedOutDashboard =>
+      Future.value(_signedOutDashboard);
+
+  static MineDashboard get _signedOutDashboard {
     return buildDashboard(
       account: const MineAccount(
         isAuthenticated: false,

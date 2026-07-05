@@ -171,6 +171,10 @@ class LucentReportRepository implements ReportRepository {
       ReportInsightKind.general => AppColors.primary,
     };
   }
+
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
 }
 
 final _exportActions = <ReportExportAction>[

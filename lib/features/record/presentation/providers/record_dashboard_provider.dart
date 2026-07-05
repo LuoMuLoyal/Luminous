@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
@@ -38,13 +37,9 @@ final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
   final selectedDate = ref.watch(selectedRecordDateProvider);
   final selectedFilter = ref.watch(selectedRecordFilterProvider);
   if (session.isConfirmedSignedOut) {
-    if (kDebugMode) {
-      return const MockRecordRepository().fetchDashboard(
-        selectedDate,
-        filterType: selectedFilter,
-      );
-    }
-    return RecordDashboard.signedOut(selectedDate);
+    return ref
+        .watch(recordRepositoryProvider)
+        .signedOutDashboard(selectedDate, filterType: selectedFilter);
   }
   if (!session.canAccessProtectedData) {
     return pendingAuthSessionResolution<RecordDashboard>();

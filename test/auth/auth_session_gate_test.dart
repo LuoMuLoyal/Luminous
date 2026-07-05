@@ -141,6 +141,10 @@ class _CountingTodayRepository implements TodayRepository {
     calls += 1;
     return MockTodayRepository.previewDashboard;
   }
+
+  @override
+  Future<TodayDashboard> get signedOutDashboard =>
+      Future.value(TodayDashboard.signedOut());
 }
 
 class _CountingMedicineWorkspaceRepository
@@ -152,6 +156,10 @@ class _CountingMedicineWorkspaceRepository
     calls += 1;
     return MockMedicineWorkspaceRepository.previewWorkspace;
   }
+
+  @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(MedicineWorkspace.signedOut());
 }
 
 class _CountingMineRepository implements MineRepository {
@@ -162,6 +170,10 @@ class _CountingMineRepository implements MineRepository {
     calls += 1;
     return const MockMineRepository().fetchDashboard();
   }
+
+  @override
+  Future<MineDashboard> get signedOutDashboard =>
+      Future.value(MineDashboard.signedOut());
 }
 
 class _CountingRecordRepository implements RecordRepository {
@@ -178,6 +190,12 @@ class _CountingRecordRepository implements RecordRepository {
       filterType: filterType,
     );
   }
+
+  @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) => Future.value(RecordDashboard.signedOut(selectedDate));
 }
 
 class _CountingHealthContextRepository implements HealthContextRepository {

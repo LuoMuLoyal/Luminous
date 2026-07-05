@@ -20,11 +20,15 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   const MockMedicineWorkspaceRepository();
 
   @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(_signedOutWorkspace);
+
+  @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     return previewWorkspace;
   }
 
-  static final signedOutWorkspace = MedicineWorkspace(
+  static final _signedOutWorkspace = MedicineWorkspace(
     hero: const MedicineHero(
       metricDosesToday: '0',
       metricAdherence: '--',

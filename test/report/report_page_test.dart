@@ -465,6 +465,10 @@ class _PendingReportRepository implements ReportRepository {
     return _pending.future;
   }
 
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
+
   void complete(ReportDashboard dashboard) {
     _pending.complete(dashboard);
   }
@@ -489,6 +493,10 @@ class _RefreshableReportRepository implements ReportRepository {
     }
     return _pending.removeAt(0).future;
   }
+
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
 
   void completeNext(ReportDashboard dashboard) {
     if (_pending.isEmpty) {
@@ -625,6 +633,10 @@ class _CountingPendingReportRepository implements ReportRepository {
     return _pending.future;
   }
 
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
+
   void complete(ReportDashboard dashboard) {
     _pending.complete(dashboard);
   }
@@ -635,6 +647,10 @@ class _ThrowingReportRepository implements ReportRepository {
   Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     throw Exception('Test error');
   }
+
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
 }
 
 class _EmptyReportRepository implements ReportRepository {
@@ -642,6 +658,10 @@ class _EmptyReportRepository implements ReportRepository {
   Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     return _emptyDashboard;
   }
+
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
 
   static const _emptyDashboard = ReportDashboard(
     range: ReportDashboardRange.last7Days,

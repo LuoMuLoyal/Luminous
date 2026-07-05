@@ -447,6 +447,10 @@ class _StaticMedicineWorkspaceRepository
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async => workspace;
+
+  @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(MedicineWorkspace.signedOut());
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {

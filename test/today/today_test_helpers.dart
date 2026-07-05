@@ -20,6 +20,10 @@ class StaticTodayRepository implements TodayRepository {
     if (delay != Duration.zero) await Future.delayed(delay);
     return dashboard;
   }
+
+  @override
+  Future<TodayDashboard> get signedOutDashboard =>
+      Future.value(TodayDashboard.signedOut());
 }
 
 class EnabledUserSettingsController extends UserSettingsController {

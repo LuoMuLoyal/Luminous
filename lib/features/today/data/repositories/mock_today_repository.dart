@@ -10,6 +10,10 @@ import 'package:luminous/features/today/domain/repositories/today_repository.dar
 class MockTodayRepository implements TodayRepository {
   const MockTodayRepository();
 
+  @override
+  Future<TodayDashboard> get signedOutDashboard =>
+      Future.value(placeholderDashboard);
+
   static const placeholderDashboard = TodayDashboard(
     user: TodayUserSnapshot(
       moment: TodayDayMoment.morning,

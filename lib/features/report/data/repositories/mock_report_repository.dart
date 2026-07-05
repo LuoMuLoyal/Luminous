@@ -22,6 +22,10 @@ class MockReportRepository implements ReportRepository {
   const MockReportRepository();
 
   @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(_signedOutDashboard);
+
+  @override
   Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
     return _dashboardForQuery(query);
   }
@@ -152,7 +156,7 @@ class MockReportRepository implements ReportRepository {
     aiSummaryEnabled: false,
   );
 
-  static final signedOutDashboard = const ReportDashboard(
+  static final _signedOutDashboard = const ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',

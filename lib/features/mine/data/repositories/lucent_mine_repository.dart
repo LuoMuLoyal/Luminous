@@ -52,6 +52,10 @@ class LucentMineRepository implements MineRepository {
       lastLoginAt: currentUser?.lastLoginAt,
     );
   }
+
+  @override
+  Future<MineDashboard> get signedOutDashboard =>
+      Future.value(MineDashboard.signedOut());
 }
 
 MineDashboard buildDashboard({

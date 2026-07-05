@@ -194,4 +194,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointPrivacy),
     MedicinePromisePoint(copyKey: MedicineCopyKey.promisePointDiagnosis),
   ];
+
+  @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(MedicineWorkspace.signedOut());
 }

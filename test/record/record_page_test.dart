@@ -2154,6 +2154,12 @@ class _FakeRecordRepository implements RecordRepository {
       trends: mock.trends,
     );
   }
+
+  @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) => Future.value(RecordDashboard.signedOut(selectedDate));
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

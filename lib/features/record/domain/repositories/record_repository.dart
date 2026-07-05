@@ -5,4 +5,8 @@ abstract interface class RecordRepository {
     DateTime selectedDate, {
     RecordEntryType? filterType,
   });
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  });
 }

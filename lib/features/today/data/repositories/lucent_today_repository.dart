@@ -214,4 +214,8 @@ class LucentTodayRepository implements TodayRepository {
     final minute = value.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
   }
+
+  @override
+  Future<TodayDashboard> get signedOutDashboard =>
+      Future.value(TodayDashboard.signedOut());
 }

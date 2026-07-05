@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
@@ -9,22 +8,22 @@ import 'package:luminous/features/report/domain/entities/report_dashboard.dart';
 const _reportDashboardTimeout = Duration(seconds: 5);
 
 final reportDashboardProvider =
-    FutureProvider.family<ReportDashboard, ReportDashboardQuery>((ref, query) {
+    FutureProvider.family<ReportDashboard, ReportDashboardQuery>((
+      ref,
+      query,
+    ) async {
       final session = ref.watch(authSessionProvider);
       if (session.isConfirmedSignedOut) {
-        if (kDebugMode) {
-          return Future.value(
-            MockReportRepository.signedOutDashboard.copyWith(
-              range: query.range,
-              startDate: _dateOnly(
-                query.startDate ??
-                    DateTime.now().subtract(const Duration(days: 7)),
-              ),
-              endDate: _dateOnly(query.endDate ?? DateTime.now()),
-            ),
-          );
-        }
-        return Future.value(ReportDashboard.signedOut());
+        final base = await ref
+            .watch(reportRepositoryProvider)
+            .signedOutDashboard;
+        return base.copyWith(
+          range: query.range,
+          startDate: _dateOnly(
+            query.startDate ?? DateTime.now().subtract(const Duration(days: 7)),
+          ),
+          endDate: _dateOnly(query.endDate ?? DateTime.now()),
+        );
       }
       if (session.isLoading) {
         return pendingAuthSessionResolution<ReportDashboard>();

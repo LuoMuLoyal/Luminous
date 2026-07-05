@@ -54,20 +54,14 @@
 
 主 `router.dart` 从 418 行缩减至 ~100 行，仅保留 StatefulShellBranch + 各 feature 路由的 spread。
 
-### 2.2 层间耦合未完全解耦（🟡 7 处）
+### 2.2 层间耦合未完全解耦（🟡 7 处 — 已修复 ✅）
 
-Provider 仍直接 import 具体 mock 实现，而非依赖抽象接口：
+6 个 Provider 不再直接 import mock 实现类。通过以下方式解耦：
 
-| Provider | 直接依赖的 Mock |
-|----------|----------------|
-| `today_dashboard_provider.dart` | `mock_today_repository.dart` |
-| `report_dashboard_provider.dart` | `mock_report_repository.dart` |
-| `record_dashboard_provider.dart` | `mock_record_repository.dart` |
-| `mine_dashboard_provider.dart` | `mock_mine_repository.dart` |
-| `medicine_workspace_provider.dart` | `mock_medicine_workspace_repository.dart` |
-| `medicine_reminder_providers.dart` | `mock_medicine_workspace_repository.dart` |
-
-**建议：** 使用 Riverpod 的 `override` 机制在顶层注入实现，Provider 中只依赖接口类型。
+1. 5 个仓库接口新增 `signedOutDashboard` / `signedOutWorkspace` 方法
+2. Lucent 实现类返回空 signed-out 数据，Mock 实现类返回 mock 数据
+3. Provider 中所有 mock 导入和 `kDebugMode` 分支移除，统一调用 `ref.watch(xxxRepositoryProvider).signedOutDashboard`
+4. `main.dart` 中通过 `ProviderScope(overrides: [...])` 在 debug 模式注入 5 个 mock 仓库
 
 ### 2.3 超大页面（🟡）
 
@@ -125,14 +119,14 @@ Forui 迁移主体已完成，Phase 1 退出条件基本满足（`flutter analyz
 
 | 顺位 | 任务 | 工作量 | 理由 |
 |------|------|--------|------|
-| **1** | **层间解耦**（6 个 Provider） | 中 | 使用 Riverpod override 机制 |
-| **2** | button_styles 评估 | 小 | 确定是否可与 forui 合并 |
+| **1** | button_styles 评估 | 小 | 确定是否可与 forui 合并 |
+| **2** | 重复组件名提取 | 中 | 减少代码重复 |
 | — | Clock 注入、页面拆分 | **暂缓** | Phase Guide 明确"现在不要做" |
-| — | 重复组件名提取、Provider 一致性、Mock 清理 | **暂缓** | 非 Phase 2 目标 |
+| — | Provider 一致性、Mock 清理 | **暂缓** | 非 Phase 2 目标 |
 
 ### 建议下一步
 
-**先做层间解耦**：6 个 Provider 直接 import mock 实现，是 Phase 2 前最后一处 P1 架构债。
+所有 P1 架构债已清偿。可以开始 **button_styles 评估** 或直接进入 **Phase 2 移动端体验打磨**。
 
 ---
 

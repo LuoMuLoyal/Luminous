@@ -721,6 +721,12 @@ class E2eRecordRepository implements RecordRepository {
       trends: mock.trends,
     );
   }
+
+  @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) => Future.value(RecordDashboard.signedOut(selectedDate));
 }
 
 class E2eDailyRecordRepository implements DailyRecordRepository {
@@ -848,6 +854,10 @@ class E2eMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       promisePoints: mock.promisePoints,
     );
   }
+
+  @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(MedicineWorkspace.signedOut());
 }
 
 class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {

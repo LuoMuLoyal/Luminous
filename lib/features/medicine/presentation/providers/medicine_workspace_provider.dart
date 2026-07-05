@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
@@ -7,10 +6,7 @@ import 'package:luminous/features/medicine/domain/entities/medicine_workspace.da
 final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
   final session = ref.watch(authSessionProvider);
   if (session.isConfirmedSignedOut) {
-    if (kDebugMode) {
-      return Future.value(MockMedicineWorkspaceRepository.signedOutWorkspace);
-    }
-    return Future.value(MedicineWorkspace.signedOut());
+    return ref.watch(medicineWorkspaceRepositoryProvider).signedOutWorkspace;
   }
   if (!session.canAccessProtectedData) {
     return pendingAuthSessionResolution();

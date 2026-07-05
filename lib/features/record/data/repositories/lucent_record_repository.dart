@@ -448,4 +448,10 @@ class LucentRecordRepository implements RecordRepository {
       _ => false,
     };
   }
+
+  @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) => Future.value(RecordDashboard.signedOut(selectedDate));
 }
