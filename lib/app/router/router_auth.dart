@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
@@ -7,14 +8,14 @@ import 'router_helpers.dart';
 
 final authRoutes = [
   GoRoute(
-    path: '/login',
+    path: AppRoutes.login,
     pageBuilder: (context, state) => fadePage(
       key: state.pageKey,
       child: LoginPage(returnTo: state.uri.queryParameters['returnTo']),
     ),
   ),
   GoRoute(
-    path: '/login/oauth/wechat',
+    path: AppRoutes.loginOauthWechat,
     pageBuilder: (context, state) => fadePage(
       key: state.pageKey,
       child: LoginPage(
@@ -25,7 +26,7 @@ final authRoutes = [
     ),
   ),
   GoRoute(
-    path: '/login/oauth/qq',
+    path: AppRoutes.loginOauthQq,
     pageBuilder: (context, state) => fadePage(
       key: state.pageKey,
       child: LoginPage(
@@ -36,12 +37,12 @@ final authRoutes = [
     ),
   ),
   GoRoute(
-    path: '/forgot-password',
+    path: AppRoutes.forgotPassword,
     pageBuilder: (context, state) =>
         fadePage(key: state.pageKey, child: const ForgotPasswordPage()),
   ),
   GoRoute(
-    path: '/register',
+    path: AppRoutes.register,
     pageBuilder: (context, state) =>
         fadePage(key: state.pageKey, child: const RegisterPage()),
   ),

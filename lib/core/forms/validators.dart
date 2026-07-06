@@ -1,36 +1,19 @@
 import 'package:email_validator/email_validator.dart';
-import 'package:formz/formz.dart';
 
-class RequiredInput extends FormzInput<String, String> {
-  const RequiredInput.pure([super.value = '']) : super.pure();
-  const RequiredInput.dirty([super.value = '']) : super.dirty();
-
-  @override
-  String? validator(String value) {
-    if (value.trim().isEmpty) {
-      return ' ';
-    }
-    return null;
-  }
-
+/// Validates that a value is not empty after trimming.
+///
+/// Returns [message] when the value is null or whitespace-only.
+abstract final class RequiredInput {
   static String? validate(String? value, String message) {
     if ((value ?? '').trim().isEmpty) return message;
     return null;
   }
 }
 
-class EmailInput extends FormzInput<String, String> {
-  const EmailInput.pure([super.value = '']) : super.pure();
-  const EmailInput.dirty([super.value = '']) : super.dirty();
-
-  @override
-  String? validator(String value) {
-    final trimmed = value.trim();
-    if (trimmed.isEmpty) return ' ';
-    if (!EmailValidator.validate(trimmed)) return ' ';
-    return null;
-  }
-
+/// Validates an email address.
+///
+/// Returns [requiredMessage] when empty, [invalidMessage] when malformed.
+abstract final class EmailInput {
   static String? validate(
     String? value, {
     required String requiredMessage,
@@ -43,53 +26,31 @@ class EmailInput extends FormzInput<String, String> {
   }
 }
 
-class CodeInput extends FormzInput<String, String> {
-  const CodeInput.pure([super.value = '']) : super.pure();
-  const CodeInput.dirty([super.value = '']) : super.dirty();
-
-  @override
-  String? validator(String value) {
-    if (value.trim().isEmpty) return ' ';
-    return null;
-  }
-
+/// Validates that a verification code is not empty.
+///
+/// Returns [message] when the value is null or whitespace-only.
+abstract final class CodeInput {
   static String? validate(String? value, String message) {
     if ((value ?? '').trim().isEmpty) return message;
     return null;
   }
 }
 
-class PasswordInput extends FormzInput<String, String> {
-  const PasswordInput.pure([super.value = '']) : super.pure();
-  const PasswordInput.dirty([super.value = '']) : super.dirty();
-
-  @override
-  String? validator(String value) {
-    if (value.trim().isEmpty) return ' ';
-    return null;
-  }
-
+/// Validates that a password is not empty.
+///
+/// Returns [message] when the value is null or whitespace-only.
+abstract final class PasswordInput {
   static String? validate(String? value, String message) {
     if ((value ?? '').trim().isEmpty) return message;
     return null;
   }
 }
 
-class ConfirmPasswordInput extends FormzInput<String, String> {
-  final String password;
-
-  const ConfirmPasswordInput.pure({required this.password, String value = ''})
-    : super.pure(value);
-  const ConfirmPasswordInput.dirty({required this.password, String value = ''})
-    : super.dirty(value);
-
-  @override
-  String? validator(String value) {
-    if (value.trim().isEmpty) return ' ';
-    if (value != password) return ' ';
-    return null;
-  }
-
+/// Validates that a confirm-password value matches the original password.
+///
+/// Returns [requiredMessage] when empty, [mismatchMessage] when the
+/// two values differ.
+abstract final class ConfirmPasswordInput {
   static String? validate(
     String? value,
     String password, {

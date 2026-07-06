@@ -17,14 +17,14 @@ class _QuickOperationSection extends StatelessWidget {
         color: AppColors.primary,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
-        onTap: () => context.push('/medicine/search'),
+        onTap: () => context.push(AppRoutes.medicineSearch),
       ),
       _QuickOperation(
         icon: FLucideIcons.clipboardCheck,
         color: AppColors.primary,
         title: l10n.medicineQuickRecordTitle,
         subtitle: l10n.medicineQuickRecordSubtitle,
-        onTap: () => context.push('/record/create'),
+        onTap: () => context.push(AppRoutes.recordCreate),
       ),
       _QuickOperation(
         icon: FLucideIcons.bell,
@@ -32,7 +32,8 @@ class _QuickOperationSection extends StatelessWidget {
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
-            onCreateReminder ?? () => context.push('/medicine/reminders/new'),
+            onCreateReminder ??
+            () => context.push(AppRoutes.medicineRemindersNew),
       ),
       _QuickOperation(
         icon: FLucideIcons.shieldAlert,

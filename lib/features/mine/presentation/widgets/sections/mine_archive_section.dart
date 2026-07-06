@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -176,10 +177,10 @@ class _SoftIcon extends StatelessWidget {
 
 String? _fallbackRouteFor(MineCopyKey titleKey) {
   return switch (titleKey) {
-    MineCopyKey.archiveBasicTitle => '/mine/profile/edit',
-    MineCopyKey.archiveAllergyTitle => '/mine/allergy/new',
-    MineCopyKey.archiveMedicineTitle => '/mine/medicine/new',
-    MineCopyKey.archiveEmergencyTitle => '/settings',
+    MineCopyKey.archiveBasicTitle => AppRoutes.mineProfileEdit,
+    MineCopyKey.archiveAllergyTitle => AppRoutes.mineAllergyNew,
+    MineCopyKey.archiveMedicineTitle => AppRoutes.mineMedicineNew,
+    MineCopyKey.archiveEmergencyTitle => AppRoutes.settings,
     _ => null,
   };
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -24,9 +25,9 @@ class TodayPrioritySection extends ConsumerWidget {
   ) {
     switch (item.type) {
       case TodayPriorityItemType.medication:
-        context.go('/medicine');
+        context.go(AppRoutes.medicine);
       case TodayPriorityItemType.water:
-        context.push('/record/create?kind=water');
+        context.push('${AppRoutes.recordCreate}?kind=water');
     }
   }
 
@@ -38,7 +39,7 @@ class TodayPrioritySection extends ConsumerWidget {
     return TodaySection(
       title: l10n.todayPrioritySectionTitle,
       actionLabel: l10n.todayManageAction,
-      onAction: () => context.go('/record'),
+      onAction: () => context.go(AppRoutes.record),
       child: FCard.raw(
         child: Column(
           children: [

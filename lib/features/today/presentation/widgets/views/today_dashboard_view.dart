@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
@@ -72,7 +73,7 @@ class TodayEmptyView extends StatelessWidget {
           description: l10n.todayEmptyDescription,
           icon: FLucideIcons.info,
           actionLabel: l10n.todayEmptyAction,
-          onAction: () => context.push('/record/create'),
+          onAction: () => context.push(AppRoutes.recordCreate),
           tone: AppStateTone.success,
         ),
       ),

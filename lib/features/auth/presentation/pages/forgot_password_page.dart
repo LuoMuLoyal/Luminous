@@ -208,7 +208,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push('/login'),
+                  onPress: () => context.push(AppRoutes.login),
                   child: Text(l10n?.authSignIn ?? 'Sign in'),
                 ),
               ],

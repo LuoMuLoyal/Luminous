@@ -5,14 +5,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/pages/today_page.dart';
+import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'today_test_helpers.dart';
+
+class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
+  @override
+  Future<List<TodayRecommendation>> build() async => const [];
+}
 
 void main() {
   testWidgets('Today AI card shows signed-out hint and keeps generate action', (
@@ -27,12 +35,15 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(
       find.text(l10n.todayAiSummarySignedOutHint),
@@ -59,12 +70,17 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               DisabledUserSettingsController.new,
             ),
+            todayRecommendationsProvider.overrideWith(
+              () => _EmptyRecommendationsNotifier(),
+            ),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
           ],
           child: const TestForuiApp(home: TodayPage()),
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(
         find.text(l10n.todayAiSummaryDisabledHint),
@@ -94,12 +110,16 @@ void main() {
             EnabledUserSettingsController.new,
           ),
           todayAiRepositoryProvider.overrideWithValue(repository),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(
       find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
@@ -109,7 +129,7 @@ void main() {
     await tester.tap(
       find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(
       find.widgetWithText(FButton, l10n.todayAiSummaryGeneratingAction),
@@ -136,7 +156,7 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。'), findsOneWidget);
     expect(find.text('还有 1 项今日用药待确认，先核对是否已经服用。'), findsOneWidget);

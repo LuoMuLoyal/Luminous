@@ -75,7 +75,7 @@ class _MedicineRecordsSection extends ConsumerWidget {
                         variant: FButtonVariant.ghost,
                         size: FButtonSizeVariant.xs,
                         mainAxisSize: MainAxisSize.min,
-                        onPress: () => context.go('/record'),
+                        onPress: () => context.go(AppRoutes.record),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

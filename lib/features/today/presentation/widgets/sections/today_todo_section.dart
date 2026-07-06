@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -22,9 +23,9 @@ class TodayTodoSection extends ConsumerWidget {
       case TodayTodoType.medication:
         ref.read(shellProvider.notifier).selectTab(2);
       case TodayTodoType.water:
-        context.push('/record/create?kind=water');
+        context.push('${AppRoutes.recordCreate}?kind=water');
       case TodayTodoType.custom:
-        context.push('/record/create');
+        context.push(AppRoutes.recordCreate);
     }
   }
 

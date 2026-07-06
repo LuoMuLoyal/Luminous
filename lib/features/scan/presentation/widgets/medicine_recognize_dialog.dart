@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -215,7 +216,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                   final id = res?.id;
                   if (id != null) {
                     Navigator.of(context).pop();
-                    context.push('/medicine/reminders/$id');
+                    context.push('${AppRoutes.medicineReminders}/$id');
                   }
                 }
               : null,

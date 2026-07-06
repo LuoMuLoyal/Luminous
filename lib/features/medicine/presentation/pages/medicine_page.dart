@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -133,7 +134,7 @@ Future<void> _openReminder(
 
   if (!context.mounted) return;
   if (currentMedicineId == null) {
-    unawaited(context.push('/medicine/reminders/new'));
+    unawaited(context.push(AppRoutes.medicineRemindersNew));
     return;
   }
   unawaited(
@@ -223,7 +224,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     return FTooltip(
       tipBuilder: (context, controller) => Text(l10n.medicineSafetyGuardLabel),
       child: FButton(
-        onPress: () => context.push('/medicine/risk-check'),
+        onPress: () => context.push(AppRoutes.medicineRiskCheck),
         variant: FButtonVariant.ghost,
         mainAxisSize: MainAxisSize.min,
         style: const .delta(
@@ -302,7 +303,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final colors = context.theme.colors;
 
     return FButton.raw(
-      onPress: () => context.push('/medicine/search'),
+      onPress: () => context.push(AppRoutes.medicineSearch),
       variant: FButtonVariant.ghost,
       style: .delta(
         decoration: .delta([

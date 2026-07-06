@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -102,7 +103,7 @@ class _AlertTile extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: FButton(
                 variant: FButtonVariant.outline,
-                onPress: () => context.push('/medicine/risk-check'),
+                onPress: () => context.push(AppRoutes.medicineRiskCheck),
                 child: Text(medicineAlertAction(l10n, alert)),
               ),
             ),

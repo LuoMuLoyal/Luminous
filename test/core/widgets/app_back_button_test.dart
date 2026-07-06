@@ -16,8 +16,8 @@ Widget _appShell(Widget child) {
         builder: (_, __) => Scaffold(body: child),
       ),
       GoRoute(
-        path: '/today',
-        builder: (_, __) => const Scaffold(body: Text('Today fallback')),
+        path: '/',
+        builder: (_, __) => const Scaffold(body: Text('Home fallback')),
       ),
       GoRoute(
         path: '/other',
@@ -57,7 +57,7 @@ void main() {
       await tester.tap(find.byType(FButton));
       await tester.pumpAndSettle();
 
-      expect(find.text('Today fallback'), findsOneWidget);
+      expect(find.text('Home fallback'), findsOneWidget);
     });
   });
 }

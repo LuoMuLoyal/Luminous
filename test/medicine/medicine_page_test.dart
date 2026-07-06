@@ -20,6 +20,8 @@ import 'package:luminous/features/medicine/presentation/widgets/views/medicine_s
 import 'package:luminous/features/medicine/presentation/widgets/views/medicine_workspace_view.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_risk_check_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
+import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.dart';
+import 'package:luminous/features/medicine/presentation/providers/medicine_safety_tips_provider.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -204,9 +206,9 @@ void main() {
 
     final riskRow = find.text(l10n.medicineQuickSafetyCheckTitle);
     await tester.ensureVisible(riskRow);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(riskRow);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text(l10n.medicineRiskCheckPageTitle), findsOneWidget);
   });
@@ -259,9 +261,9 @@ void main() {
 
       final riskRow = find.text(l10n.medicineQuickSafetyCheckTitle);
       await tester.ensureVisible(riskRow);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 300));
       await tester.tap(riskRow);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     },
@@ -406,11 +408,14 @@ void main() {
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
+          medicineSafetyTipListProvider.overrideWith(
+            () => _EmptySafetyTipListNotifier(),
+          ),
         ],
         child: const TestForuiApp(home: MedicinePage()),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Desktop layout uses a PageStorageKey for scroll position
     expect(
@@ -418,6 +423,11 @@ void main() {
       findsOneWidget,
     );
   });
+}
+
+class _EmptySafetyTipListNotifier extends MedicineSafetyTipListNotifier {
+  @override
+  Future<List<MedicineSafetyTip>> build() async => const [];
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {

@@ -5,6 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
@@ -69,7 +70,7 @@ class AccountSettingsPage extends HookConsumerWidget {
       if (!context.mounted) return;
       if (ok) {
         await AppToast.show(context, l10n.authIdentityLinkSuccess);
-        if (context.mounted) context.go('/account');
+        if (context.mounted) context.go(AppRoutes.account);
       }
     }
 
@@ -161,7 +162,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                             user: user,
                             emailController: emailController,
                             onChangeEmail: () =>
-                                context.push('/account/change-email'),
+                                context.push(AppRoutes.accountChangeEmail),
                           ),
                           const SizedBox(height: AppSpacingTokens.level6),
                           LinkedIdentitiesSection(
@@ -231,7 +232,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 ctx,
                                 l10n.authChangePasswordSuccess,
                               );
-                              if (ctx.mounted) router.go('/login');
+                              if (ctx.mounted) router.go(AppRoutes.login);
                             },
                           ),
                           const SizedBox(height: AppSpacingTokens.level6),
@@ -259,7 +260,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 ctx,
                                 l10n.authDeleteAccountSuccess,
                               );
-                              if (ctx.mounted) router.go('/login');
+                              if (ctx.mounted) router.go(AppRoutes.login);
                             },
                           ),
                         ],

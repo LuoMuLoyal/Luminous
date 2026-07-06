@@ -6,7 +6,11 @@ import 'package:luminous/features/today/presentation/providers/today_dashboard_p
 
 void main() {
   test('returns placeholderDashboard when signed out', () async {
-    final c = ProviderContainer();
+    final c = ProviderContainer(
+      overrides: [
+        todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+      ],
+    );
     addTearDown(c.dispose);
     c.read(authSessionProvider.notifier).state = const AuthSessionState(
       isAuthenticated: false,

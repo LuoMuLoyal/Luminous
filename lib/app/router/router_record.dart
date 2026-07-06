@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
 import 'package:luminous/features/record/presentation/pages/record_create.dart';
 import 'package:luminous/features/record/presentation/pages/record_detail.dart';
@@ -9,7 +10,7 @@ import 'router_helpers.dart';
 
 final recordRoutes = [
   GoRoute(
-    path: '/record/create',
+    path: AppRoutes.recordCreate,
     pageBuilder: (context, state) => slidePage(
       key: state.pageKey,
       child: RecordCreatePage(

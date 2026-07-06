@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
@@ -38,8 +39,8 @@ class MinePage extends ConsumerWidget {
           ? _MineDesktopShell(
               onRefresh: () => _refreshDashboard(ref),
               topBar: MineTopBar(
-                onNotificationsTap: () => context.push('/notifications'),
-                onSettingsTap: () => context.push('/settings'),
+                onNotificationsTap: () => context.push(AppRoutes.notifications),
+                onSettingsTap: () => context.push(AppRoutes.settings),
               ),
               child: body,
             )
@@ -63,8 +64,8 @@ class MinePage extends ConsumerWidget {
                     children: [
                       MineTopBar(
                         onNotificationsTap: () =>
-                            context.push('/notifications'),
-                        onSettingsTap: () => context.push('/settings'),
+                            context.push(AppRoutes.notifications),
+                        onSettingsTap: () => context.push(AppRoutes.settings),
                       ),
                       const SizedBox(height: AppSpacingTokens.level4),
                       body,

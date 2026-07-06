@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -119,9 +120,9 @@ class _StatusOverviewItem extends StatelessWidget {
 
 String _routeForStatus(MineCopyKey titleKey) {
   return switch (titleKey) {
-    MineCopyKey.alertAllergyTitle => '/mine/allergy/new',
-    MineCopyKey.alertMedicineTitle => '/mine/medicine/new',
-    MineCopyKey.alertPrivacyTitle || _ => '/account',
+    MineCopyKey.alertAllergyTitle => AppRoutes.mineAllergyNew,
+    MineCopyKey.alertMedicineTitle => AppRoutes.mineMedicineNew,
+    MineCopyKey.alertPrivacyTitle || _ => AppRoutes.account,
   };
 }
 

@@ -14,6 +14,7 @@ import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/mine_skeleton_view.dart';
+import 'package:luminous/features/mine/data/repositories/mock_mine_repository.dart';
 import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -84,6 +85,7 @@ void main() {
           healthContextSnapshotProvider.overrideWith(
             (ref) async => throw Exception('should not fetch when signed out'),
           ),
+          mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
         ],
         child: const TestForuiApp(home: MinePage()),
       ),
@@ -298,6 +300,7 @@ void main() {
         healthContextSnapshotProvider.overrideWith(
           (ref) async => throw Exception('should not fetch when signed out'),
         ),
+        mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
       ],
     );
     addTearDown(container.dispose);
@@ -334,7 +337,7 @@ void main() {
     final basicInfo = find.text(l10n.mineArchiveBasicTitle);
     await tester.ensureVisible(basicInfo);
     await tester.tap(basicInfo);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(MinePage), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);
@@ -344,16 +347,18 @@ void main() {
     expect(find.text('login-page:/'), findsNothing);
 
     await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
     expect(find.byType(MinePage), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);
 
     await tester.tap(basicInfo);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     await tester.tap(find.byKey(const Key('auth-required-login-action')));
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('login-page:/'), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);

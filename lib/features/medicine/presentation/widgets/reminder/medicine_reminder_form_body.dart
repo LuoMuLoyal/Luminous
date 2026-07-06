@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
@@ -85,7 +86,7 @@ class ReminderFormBody extends StatelessWidget {
         description: l10n.medicineNoMedicineBody,
         icon: FLucideIcons.pill,
         actionLabel: l10n.medicineQuickAddTitle,
-        onAction: () => context.push('/medicine/search'),
+        onAction: () => context.push(AppRoutes.medicineSearch),
       );
     }
 

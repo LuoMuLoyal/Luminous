@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
@@ -8,12 +9,12 @@ import 'router_helpers.dart';
 
 final mineRoutes = [
   GoRoute(
-    path: '/mine/profile/edit',
+    path: AppRoutes.mineProfileEdit,
     pageBuilder: (context, state) =>
         slidePage(key: state.pageKey, child: const ProfileEditPage()),
   ),
   GoRoute(
-    path: '/mine/allergy/new',
+    path: AppRoutes.mineAllergyNew,
     pageBuilder: (context, state) =>
         slidePage(key: state.pageKey, child: const AllergyEditPage()),
   ),
@@ -25,7 +26,7 @@ final mineRoutes = [
     ),
   ),
   GoRoute(
-    path: '/mine/condition/new',
+    path: AppRoutes.mineConditionNew,
     pageBuilder: (context, state) =>
         slidePage(key: state.pageKey, child: const ConditionEditPage()),
   ),
@@ -37,7 +38,7 @@ final mineRoutes = [
     ),
   ),
   GoRoute(
-    path: '/mine/medicine/new',
+    path: AppRoutes.mineMedicineNew,
     pageBuilder: (context, state) =>
         slidePage(key: state.pageKey, child: const CurrentMedicineEditPage()),
   ),

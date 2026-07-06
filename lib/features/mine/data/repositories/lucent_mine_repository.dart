@@ -1,4 +1,5 @@
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -173,7 +174,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
-      route: '/mine/medicine/new',
+      route: AppRoutes.mineMedicineNew,
     ),
   ];
 }

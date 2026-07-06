@@ -20,14 +20,72 @@ import 'router/router_settings.dart';
 ///
 /// Prefer these over hardcoded path strings to avoid typos and make
 /// route changes easier to audit.
+///
+/// For routes with path parameters (e.g. `/record/:id`), use the base
+/// constant and interpolate the segment, e.g. `'${AppRoutes.record}/$id'`.
 class AppRoutes {
   const AppRoutes._();
 
+  // -- Shell tabs --
   static const home = '/';
+  static const record = '/record';
+  static const medicine = '/medicine';
+  static const report = '/report';
+  static const mine = '/mine';
+
+  // -- Auth --
   static const login = '/login';
+  static const loginOauthWechat = '/login/oauth/wechat';
+  static const loginOauthQq = '/login/oauth/qq';
   static const forgotPassword = '/forgot-password';
   static const register = '/register';
+
+  // -- Account --
   static const account = '/account';
+  static const accountOauthWechat = '/account/oauth/wechat';
+  static const accountChangeEmail = '/account/change-email';
+
+  // -- Settings --
+  static const settings = '/settings';
+  static const settingsLanguage = '/settings/language';
+  static const settingsTheme = '/settings/theme';
+  static const settingsMore = '/settings/more';
+  static const settingsNotifications = '/settings/notifications';
+  static const settingsNotificationsSleep = '/settings/notifications/sleep';
+  static const settingsAi = '/settings/ai';
+  static const settingsExport = '/settings/export';
+  static const settingsHelp = '/settings/help';
+  static const settingsAbout = '/settings/about';
+
+  // -- Record --
+  static const recordCreate = '/record/create';
+  static const recordDetail = '/record'; // /record/:id
+  static const recordEdit = '/record'; // /record/:id/edit
+
+  // -- Medicine --
+  static const medicineSearch = '/medicine/search';
+  static const medicineRiskCheck = '/medicine/risk-check';
+  static const medicineRemindersNew = '/medicine/reminders/new';
+  static const medicineReminders =
+      '/medicine/reminders'; // /medicine/reminders/:medicineId
+
+  // -- Mine --
+  static const mineProfileEdit = '/mine/profile/edit';
+  static const mineAllergyNew = '/mine/allergy/new';
+  static const mineAllergy = '/mine/allergy'; // /mine/allergy/:id/edit
+  static const mineConditionNew = '/mine/condition/new';
+  static const mineCondition = '/mine/condition'; // /mine/condition/:id/edit
+  static const mineMedicineNew = '/mine/medicine/new';
+  static const mineMedicine = '/mine/medicine'; // /mine/medicine/:id/edit
+
+  // -- Notifications --
+  static const notifications = '/notifications';
+
+  // -- Assistant --
+  static const assistant = '/assistant';
+
+  // -- Scan --
+  static const scanBarcode = '/scan/barcode';
 }
 
 /// The main application router.
@@ -40,7 +98,7 @@ class AppRoutes {
 /// top-level full-screen routes so they hide the tab chrome and can be pushed
 /// and popped naturally.
 final router = GoRouter(
-  initialLocation: '/',
+  initialLocation: AppRoutes.home,
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
@@ -49,7 +107,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/',
+              path: AppRoutes.home,
               pageBuilder: (context, state) => NoTransitionPage(
                 key: state.pageKey,
                 child: const TodayPage(),
@@ -60,7 +118,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/record',
+              path: AppRoutes.record,
               pageBuilder: (context, state) => NoTransitionPage(
                 key: state.pageKey,
                 child: const RecordPage(),
@@ -71,7 +129,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/medicine',
+              path: AppRoutes.medicine,
               pageBuilder: (context, state) => NoTransitionPage(
                 key: state.pageKey,
                 child: const MedicinePage(),
@@ -82,7 +140,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/report',
+              path: AppRoutes.report,
               pageBuilder: (context, state) => NoTransitionPage(
                 key: state.pageKey,
                 child: const ReportPage(),
@@ -93,7 +151,7 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/mine',
+              path: AppRoutes.mine,
               pageBuilder: (context, state) =>
                   NoTransitionPage(key: state.pageKey, child: const MinePage()),
             ),

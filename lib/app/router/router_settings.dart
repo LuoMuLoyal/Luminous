@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
@@ -14,7 +15,7 @@ import 'router_helpers.dart';
 
 final settingsRoutes = [
   GoRoute(
-    path: '/settings',
+    path: AppRoutes.settings,
     pageBuilder: (context, state) =>
         slidePage(key: state.pageKey, child: const SettingsPage()),
     routes: [

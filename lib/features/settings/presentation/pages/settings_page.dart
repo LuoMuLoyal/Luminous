@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
@@ -60,7 +61,8 @@ class SettingsPage extends ConsumerWidget {
                       tileKey: const Key('settings-row-notifications'),
                       title: l10n.mineSettingsNotificationsTitle,
                       value: _notificationSummary(l10n, ref),
-                      onTap: () => context.push('/settings/notifications'),
+                      onTap: () =>
+                          context.push(AppRoutes.settingsNotifications),
                     ),
                   ],
                 ),
@@ -86,7 +88,7 @@ class SettingsPage extends ConsumerWidget {
                           if (!context.mounted) {
                             return;
                           }
-                          context.go('/login');
+                          context.go(AppRoutes.login);
                         },
                 ),
               ],
@@ -196,7 +198,7 @@ class _PrivacySection extends ConsumerWidget {
               pushAuthRequiredRoute(context, '/settings');
               return;
             }
-            context.push('/settings/ai');
+            context.push(AppRoutes.settingsAi);
           },
         ),
       ],
@@ -268,18 +270,18 @@ class _GeneralSection extends ConsumerWidget {
           tileKey: const Key('settings-row-theme'),
           title: l10n.mineSettingsThemeTitle,
           value: _themeModeLabel(l10n, currentTheme),
-          onTap: () => context.push('/settings/theme'),
+          onTap: () => context.push(AppRoutes.settingsTheme),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-language'),
           title: l10n.mineSettingsLanguageTitle,
           value: _languageLabel(l10n, currentLocale),
-          onTap: () => context.push('/settings/language'),
+          onTap: () => context.push(AppRoutes.settingsLanguage),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-advanced'),
           title: l10n.mineSettingsAdvancedTitle,
-          onTap: () => context.push('/settings/more'),
+          onTap: () => context.push(AppRoutes.settingsMore),
         ),
       ],
     );
@@ -320,12 +322,12 @@ class _AboutSection extends ConsumerWidget {
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-help'),
           title: l10n.mineSettingHelpTitle,
-          onTap: () => context.push('/settings/help'),
+          onTap: () => context.push(AppRoutes.settingsHelp),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-about'),
           title: l10n.mineSettingAboutTitle,
-          onTap: () => context.push('/settings/about'),
+          onTap: () => context.push(AppRoutes.settingsAbout),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-export'),
@@ -335,7 +337,7 @@ class _AboutSection extends ConsumerWidget {
               pushAuthRequiredRoute(context, '/settings');
               return;
             }
-            context.push('/settings/export');
+            context.push(AppRoutes.settingsExport);
           },
         ),
       ],

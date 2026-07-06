@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
@@ -129,7 +130,8 @@ class NotificationSettingsPage extends ConsumerWidget {
                   title: Text(l10n.settingsNotificationsSleepReminderTitle),
                   details: Text(_sleepReminderSummary(l10n, settings)),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('/settings/notifications/sleep'),
+                  onPress: () =>
+                      context.push(AppRoutes.settingsNotificationsSleep),
                 ),
               ],
             ),

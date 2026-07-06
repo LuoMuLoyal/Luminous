@@ -195,7 +195,10 @@ class _CountingRecordRepository implements RecordRepository {
   Future<RecordDashboard> signedOutDashboard(
     DateTime selectedDate, {
     RecordEntryType? filterType,
-  }) => Future.value(RecordDashboard.signedOut(selectedDate));
+  }) => const MockRecordRepository().signedOutDashboard(
+    selectedDate,
+    filterType: filterType,
+  );
 }
 
 class _CountingHealthContextRepository implements HealthContextRepository {

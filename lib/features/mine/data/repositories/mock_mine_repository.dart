@@ -1,4 +1,5 @@
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.dart';
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
@@ -128,7 +129,7 @@ class MockMineRepository implements MineRepository {
       accent: AppColors.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
-      route: '/mine/medicine/new',
+      route: AppRoutes.mineMedicineNew,
     ),
     const MineArchiveEntry(
       icon: FLucideIcons.contact,

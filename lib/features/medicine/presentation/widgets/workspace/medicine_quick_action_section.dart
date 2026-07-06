@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
@@ -69,7 +70,7 @@ class _QuickActionTile extends StatelessWidget {
             action.titleKey == MedicineCopyKey.quickActionPrescriptionTitle) {
           unawaited(showMedicineBoxScanSheet(context));
         } else if (action.titleKey == MedicineCopyKey.quickActionBarcodeTitle) {
-          context.push('/scan/barcode');
+          context.push(AppRoutes.scanBarcode);
         } else {
           showPlannedAction(
             context,

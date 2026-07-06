@@ -5,6 +5,7 @@ import 'package:luminous/core/widgets/common/app_top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -54,7 +55,7 @@ class _AssistantEntryButton extends ConsumerWidget {
         key: const Key('today-assistant-entry'),
         onPress: () async {
           if (session.canAccessProtectedData) {
-            unawaited(context.push('/assistant'));
+            unawaited(context.push(AppRoutes.assistant));
             return;
           }
           if (session.isLoading) {
@@ -111,7 +112,7 @@ class _NotificationButton extends ConsumerWidget {
           FButton(
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
-            onPress: () => context.push('/notifications'),
+            onPress: () => context.push(AppRoutes.notifications),
             child: Icon(
               FLucideIcons.bell,
               size: AppSpacingTokens.level5 + AppSpacingTokens.level1,

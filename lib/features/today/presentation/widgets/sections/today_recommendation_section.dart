@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
@@ -75,11 +76,11 @@ class TodayRecommendationSection extends ConsumerWidget {
 
   VoidCallback? _navigateForCategory(BuildContext context, String? category) {
     return switch (category) {
-      'medicine' => () => context.push('/medicine'),
-      'sleep' => () => context.push('/record/create?kind=sleep'),
-      'record' => () => context.push('/record/create?kind=water'),
-      'report' => () => context.push('/report'),
-      'habit' || _ => () => context.push('/record'),
+      'medicine' => () => context.push(AppRoutes.medicine),
+      'sleep' => () => context.push('${AppRoutes.recordCreate}?kind=sleep'),
+      'record' => () => context.push('${AppRoutes.recordCreate}?kind=water'),
+      'report' => () => context.push(AppRoutes.report),
+      'habit' || _ => () => context.push(AppRoutes.record),
     };
   }
 

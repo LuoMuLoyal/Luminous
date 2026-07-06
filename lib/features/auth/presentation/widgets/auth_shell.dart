@@ -170,13 +170,13 @@ class _AuthFormPanel extends StatelessWidget {
     return panel
         .animate()
         .fadeIn(
-          duration: AppAnimationDurations.authFadeIn,
+          duration: AppAnimationDurations.authContentFadeIn,
           curve: Curves.easeOut,
         )
         .slideY(
           begin: 0.03,
           end: 0,
-          duration: AppAnimationDurations.authFadeIn,
+          duration: AppAnimationDurations.authContentFadeIn,
           curve: Curves.easeOutCubic,
         );
   }

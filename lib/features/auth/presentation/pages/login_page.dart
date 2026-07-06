@@ -75,7 +75,7 @@ class LoginPage extends HookConsumerWidget {
         scheme: base.scheme,
         host: base.host,
         port: base.hasPort ? base.port : null,
-        path: '/login/oauth/wechat',
+        path: AppRoutes.loginOauthWechat,
         queryParameters: rt == null ? null : {'returnTo': rt},
       ).toString();
     }
@@ -88,7 +88,7 @@ class LoginPage extends HookConsumerWidget {
         scheme: base.scheme,
         host: base.host,
         port: base.hasPort ? base.port : null,
-        path: '/login/oauth/qq',
+        path: AppRoutes.loginOauthQq,
         queryParameters: rt == null ? null : {'returnTo': rt},
       ).toString();
     }
@@ -462,14 +462,14 @@ class LoginPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push('/register'),
+                  onPress: () => context.push(AppRoutes.register),
                   child: Text(l10n?.authRegisterNowAction ?? 'Register now'),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push('/forgot-password'),
+                  onPress: () => context.push(AppRoutes.forgotPassword),
                   child: Text(
                     l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
                   ),

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-const authTransitionIn = Duration(milliseconds: 400);
-const authTransitionOut = Duration(milliseconds: 280);
-const crudTransitionIn = Duration(milliseconds: 220);
-const crudTransitionOut = Duration(milliseconds: 150);
+import 'package:luminous/core/design/app_design.dart';
 
 CustomTransitionPage<T> fadePage<T>({
   required LocalKey key,
@@ -15,8 +11,8 @@ CustomTransitionPage<T> fadePage<T>({
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
         FadeTransition(opacity: animation, child: child),
-    transitionDuration: authTransitionIn,
-    reverseTransitionDuration: authTransitionOut,
+    transitionDuration: AppAnimationDurations.authPageTransitionIn,
+    reverseTransitionDuration: AppAnimationDurations.authPageTransitionOut,
   );
 }
 
@@ -38,7 +34,7 @@ CustomTransitionPage<T> slidePage<T>({
             child: child,
           ),
         ),
-    transitionDuration: crudTransitionIn,
-    reverseTransitionDuration: crudTransitionOut,
+    transitionDuration: AppAnimationDurations.crudPageTransitionIn,
+    reverseTransitionDuration: AppAnimationDurations.crudPageTransitionOut,
   );
 }

@@ -33,7 +33,7 @@ class _SafetyEngineSection extends StatelessWidget {
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
               mainAxisSize: MainAxisSize.min,
-              onPress: () => context.push('/medicine/risk-check'),
+              onPress: () => context.push(AppRoutes.medicineRiskCheck),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -85,7 +85,7 @@ class _SafetyAlertRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     return FTappable(
-      onPress: () => context.push('/medicine/risk-check'),
+      onPress: () => context.push(AppRoutes.medicineRiskCheck),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacingTokens.level4,

@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-05
+Last updated: 2026-07-06
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 
@@ -92,11 +92,17 @@ Last updated: 2026-07-05
         标题与卡片间距、格子垂直内边距、头像尺寸、备注按钮内边距和分隔线高度均随屏幕尺寸平滑缩放，
         避免在小屏设备上快速记录区占用过多空间。
 - 裸 catch 修复完成（全项目，约 75 处）：所有 `catch (_)` 改为 `catch (e)` 并添加 `debugPrint` 日志；`flutter analyze` 通过。
-  注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、动画时长统一、maxWidth 提取 4 项曾被误标为完成，
-  经实查确认问题仍存在，暂列待办未完成。
+  注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、maxWidth 提取 3 项曾被误标为完成，
+  经实查确认问题仍存在，暂列待办未完成。动画时长统一已于一审修复中完成。
 - 清除 `unnecessary_import` 警告（40 个文件）：删除 `app_design.dart` 已 re-export 的冗余 `app_breakpoints.dart` import 行；`flutter analyze` 通过。
 - 应用图标规范化：图标源文件从 `assets/icons/Luminous-icon.png` 迁移到 `assets/icon/app_icon.png`，通过 `flutter_launcher_icons` 生成全平台图标；`pubspec.yaml` 和 `auth_branding.dart` 路径已同步更新。
 - 启动屏统一（flutter_native_splash）：通过 `flutter_native_splash` 自动生成全平台启动屏素材（Android/iOS/Web），亮色背景 `#FFFFFF` + 暗色背景 `#171717`，图标使用 `assets/icon/app_icon.png`。修复了暗色模式白屏问题（`values-night/colors.xml` 全部改为 `#171717`），统一了 `styles.xml` 引用，删除了旧的手写矢量 XML（`splash_wordmark_icon.xml`、`launch_screen.xml`）和 Web 端旧 HTML splash。
+- 一审修复完成（2026-07-06）：
+  - **AppRoutes 全覆盖**：`AppRoutes` 从 5 个常量扩展到全部路由路径（Shell tabs / Auth / Account / Settings / Record / Medicine / Mine / Notifications / Assistant / Scan），所有路由定义与导航调用中的硬编码字符串替换为常量引用；`AppBackButton` 默认 fallback 从不存在的 `/today` 修正为 `AppRoutes.home`。
+  - **动画时长统一**：`router_helpers.dart` 中的 4 个路由过渡时长常量移入 `AppAnimationDurations`（`authPageTransitionIn/Out`、`crudPageTransitionIn/Out`），`authFadeIn` 重命名为 `authContentFadeIn` 以区分路由过渡与内容入场动画；所有时长集中管理。
+  - **Formz 用法统一**：移除 `validators.dart` 中 5 个 `FormzInput` 子类继承和返回空格的实例 `validator`，改为 `abstract final class` + 纯静态方法；移除 `formz` 包依赖。
+  - **AppBreakpoints.assistantContent**：确认在 3 个文件中使用中，无需移除。
+  - **18 个 pre-existing 测试失败修复**：修复全部 18 个测试失败，包括路由常量迁移导致的不匹配（`app_back_button_test`）、provider 测试缺少 override（`today_dashboard_provider_test`、`auth_session_gate_test`）、shimmer 动画导致 `pumpAndSettle` 超时（`shell_page_test`、`today_ai_card_test`、`mine_page_test`、`medicine_page_test`）、真实 Dio 调用导致 pending timer（`today_ai_card_test`、`shell_page_test`、`medicine_page_test`、edit page tests）、signed-out 测试缺少 `mineRepositoryProvider` override（`mine_page_test`）、报告日期硬编码（`report_page_test`）。`flutter test` 896 passed, 0 failed。
 
 ## 相关文档
 

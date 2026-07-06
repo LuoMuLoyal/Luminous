@@ -6,6 +6,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/today_compon
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
@@ -116,7 +117,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                           }
 
                           if (aiSummariesEnabled == false) {
-                            unawaited(context.push('/settings'));
+                            unawaited(context.push(AppRoutes.settings));
                             return;
                           }
 

@@ -52,14 +52,12 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.text(l10n.tabReport), findsOneWidget);
+      final now = DateTime.now();
       final startLabel = DateFormat(
         'M月d日',
         'zh',
-      ).format(DateTime.parse('2026-06-06'));
-      final endLabel = DateFormat(
-        'M月d日',
-        'zh',
-      ).format(DateTime.parse('2026-06-12'));
+      ).format(now.subtract(const Duration(days: 7)));
+      final endLabel = DateFormat('M月d日', 'zh').format(now);
       expect(find.text('$startLabel - $endLabel'), findsOneWidget);
       expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
       expect(

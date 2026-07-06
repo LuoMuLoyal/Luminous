@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/forms/validators.dart';
@@ -381,7 +382,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                 const ReminderLoading()
               else if (!isEdit && selectedMedicineId.value == null)
                 _MedicineSelectorPrompt(
-                  onSelect: () => context.push('/medicine/search'),
+                  onSelect: () => context.push(AppRoutes.medicineSearch),
                 )
               else
                 Builder(

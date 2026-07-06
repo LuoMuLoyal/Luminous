@@ -14,10 +14,17 @@ import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
 import 'package:luminous/features/shell/providers/shell_sidebar_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
+import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
+import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/auth_test_helpers.dart';
 import '../helpers/test_forui_app.dart';
+
+class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
+  @override
+  Future<List<TodayRecommendation>> build() async => const [];
+}
 
 class _ExpandedShellSidebarNotifier extends ShellSidebarNotifier {
   @override
@@ -206,7 +213,7 @@ void main() {
     );
 
     await tester.pump();
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     const toggleKey = Key('desktop-sidebar-toggle');
     Finder collapseToggle() => find.byKey(toggleKey);
@@ -217,7 +224,7 @@ void main() {
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
 
     await tester.tap(collapseToggle());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Collapsed: toggle remains and labels are hidden.
     expect(collapseToggle(), findsOneWidget);
@@ -225,7 +232,7 @@ void main() {
     expect(find.text(l10n.desktopSidebarHelp), findsNothing);
 
     await tester.tap(collapseToggle());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Expanded again.
     expect(collapseToggle(), findsOneWidget);
@@ -281,11 +288,14 @@ void main() {
           authSessionProvider.overrideWith(
             () => _SignedOutAuthSessionNotifier(),
           ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
         ],
         child: const TestForuiApp(home: ShellPage()),
       ),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     // Shell should render without exceptions
     expect(tester.takeException(), isNull);
@@ -370,7 +380,7 @@ void main() {
     for (final tab in tabs) {
       expect(find.text(tab), findsAtLeastNWidgets(1));
       await tester.tap(find.text(tab).first);
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 500));
       // Consume any layout overflow warnings from nested tab pages
       tester.takeException();
     }

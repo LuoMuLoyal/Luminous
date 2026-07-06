@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
 import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
 import 'package:luminous/features/record/presentation/pages/record_page.dart';
@@ -192,14 +193,14 @@ class _DesktopSidebar extends ConsumerWidget {
               collapsed: collapsed,
               icon: FLucideIcons.settings,
               label: l10n?.desktopSidebarSettings ?? '设置',
-              onPress: () => context.push('/settings'),
+              onPress: () => context.push(AppRoutes.settings),
             ),
             const SizedBox(height: 4),
             _DesktopSidebarActionItem(
               collapsed: collapsed,
               icon: FLucideIcons.circleHelp,
               label: l10n?.desktopSidebarHelp ?? '帮助',
-              onPress: () => context.push('/assistant'),
+              onPress: () => context.push(AppRoutes.assistant),
             ),
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -92,7 +93,7 @@ Future<void> showAuthRequiredDialog(
 
 String loginRouteForReturnTo(String returnTo) {
   return Uri(
-    path: '/login',
+    path: AppRoutes.login,
     queryParameters: {'returnTo': returnTo},
   ).toString();
 }
@@ -100,7 +101,7 @@ String loginRouteForReturnTo(String returnTo) {
 String loginRouteForCurrentLocation(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
   if (location.isEmpty || !location.startsWith('/')) {
-    return loginRouteForReturnTo('/');
+    return loginRouteForReturnTo(AppRoutes.home);
   }
   return loginRouteForReturnTo(location);
 }
