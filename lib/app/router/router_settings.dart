@@ -10,6 +10,7 @@ import 'package:luminous/features/settings/presentation/pages/notification_setti
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/security_pin_settings_page.dart';
 
 import 'router_helpers.dart';
 
@@ -69,6 +70,13 @@ final settingsRoutes = [
         path: 'about',
         pageBuilder: (context, state) =>
             slidePage(key: state.pageKey, child: const AboutSettingsPage()),
+      ),
+      GoRoute(
+        path: 'security-pin',
+        pageBuilder: (context, state) => slidePage(
+          key: state.pageKey,
+          child: const SecurityPinSettingsPage(),
+        ),
       ),
     ],
   ),

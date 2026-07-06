@@ -45,6 +45,47 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
     await _patch(dto);
   }
 
+  // -- Security PIN --
+
+  Future<void> enableSecurityPin(String pin) async {
+    final api = ref.read(lucentUserSettingsApiProvider);
+    final response = await api.userSettingsControllerEnableSecurityPinV1(
+      enableSecurityPinDto: EnableSecurityPinDto(pin: pin),
+    );
+    final data = response.data?.data;
+    if (data == null) {
+      throw StateError('Enable security PIN response data is null.');
+    }
+    state = AsyncData(data);
+  }
+
+  Future<void> changeSecurityPin(String oldPin, String newPin) async {
+    final api = ref.read(lucentUserSettingsApiProvider);
+    final response = await api.userSettingsControllerChangeSecurityPinV1(
+      changeSecurityPinDto: ChangeSecurityPinDto(
+        oldPin: oldPin,
+        newPin: newPin,
+      ),
+    );
+    final data = response.data?.data;
+    if (data == null) {
+      throw StateError('Change security PIN response data is null.');
+    }
+    state = AsyncData(data);
+  }
+
+  Future<void> disableSecurityPin(String pin) async {
+    final api = ref.read(lucentUserSettingsApiProvider);
+    final response = await api.userSettingsControllerDisableSecurityPinV1(
+      disableSecurityPinDto: DisableSecurityPinDto(pin: pin),
+    );
+    final data = response.data?.data;
+    if (data == null) {
+      throw StateError('Disable security PIN response data is null.');
+    }
+    state = AsyncData(data);
+  }
+
   Future<void> _patch(UpdateUserSettingsDto dto) async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerUpdateSettingsV1(

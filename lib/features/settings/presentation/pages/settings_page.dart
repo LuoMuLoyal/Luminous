@@ -10,7 +10,6 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/settings/presentation/theme_preference_labels.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -51,6 +50,18 @@ class SettingsPage extends ConsumerWidget {
                       tileKey: const Key('settings-row-account-security'),
                       title: l10n.mineSettingsAccountTitle,
                       onTap: () => pushAuthRequiredRoute(context, '/account'),
+                    ),
+                    _SettingsNavigationTile(
+                      tileKey: const Key('settings-row-security-pin'),
+                      title: l10n.settingsSecurityPinTitle,
+                      subtitle: l10n.settingsSecurityPinSubtitle,
+                      onTap: () {
+                        if (!signedIn) {
+                          pushAuthRequiredRoute(context, '/settings');
+                          return;
+                        }
+                        context.push(AppRoutes.settingsSecurityPin);
+                      },
                     ),
                   ],
                 ),
@@ -258,8 +269,9 @@ class _GeneralSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final currentTheme =
-        ref.watch(appThemeControllerProvider).value ??
-        const AppThemePreference();
+        (ref.watch(appThemeControllerProvider).value ??
+                const AppThemePreference())
+            .mode;
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
@@ -270,7 +282,7 @@ class _GeneralSection extends ConsumerWidget {
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-theme'),
           title: l10n.mineSettingsThemeTitle,
-          value: themePreferenceSummary(l10n, currentTheme),
+          value: _themeModeLabel(l10n, currentTheme),
           onTap: () => context.push(AppRoutes.settingsTheme),
         ),
         _SettingsNavigationTile(
@@ -286,6 +298,17 @@ class _GeneralSection extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String _themeModeLabel(
+    AppLocalizations l10n,
+    AppThemeModePreference preference,
+  ) {
+    return switch (preference) {
+      AppThemeModePreference.system => l10n.mineThemeModeSystem,
+      AppThemeModePreference.light => l10n.mineThemeModeLight,
+      AppThemeModePreference.dark => l10n.mineThemeModeDark,
+    };
   }
 
   String _languageLabel(AppLocalizations l10n, AppLocale locale) {
