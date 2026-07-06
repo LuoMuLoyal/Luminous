@@ -72,6 +72,7 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
       currentMedicines: true,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
+    securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
   );
 }
 

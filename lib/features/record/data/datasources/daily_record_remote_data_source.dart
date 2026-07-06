@@ -22,9 +22,14 @@ class DailyRecordRemoteDataSource {
   }) async {
     final response = await api.dailyRecordsControllerListV1(
       date: date,
-      kind: kind,
-      page: page.toString(),
-      pageSize: pageSize.toString(),
+      kind: kind != null
+          ? lucent.DailyRecordKind.values.firstWhere(
+              (k) => k.value == kind,
+              orElse: () => lucent.DailyRecordKind.unknownDefaultOpenApi,
+            )
+          : null,
+      page: page,
+      pageSize: pageSize,
     );
     final dto = response.data?.data;
     if (dto == null) {

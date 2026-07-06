@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show
         AssistantContextSettingsDto,
+        SecurityPinSettingsDto,
         UpdateAssistantContextSettingsDto,
         UpdateUserSettingsDto,
         UserSettingsDataDto;
@@ -644,6 +645,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
         currentMedicines: true,
       ),
       updatedAt: null,
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     );
   }
 }

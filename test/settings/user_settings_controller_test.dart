@@ -449,6 +449,7 @@ UserSettingsResponseDto _buildResponse({
             currentMedicines: true,
           ),
       updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 }
@@ -479,6 +480,7 @@ class _FakeUserSettingsApi extends UserSettingsApi {
         currentMedicines: true,
       ),
       updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 
