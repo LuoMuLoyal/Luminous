@@ -27,6 +27,7 @@ class PlannedNotification {
     required this.body,
     required this.scheduledAt,
     required this.playSound,
+    required this.enableVibration,
     required this.payload,
   });
 
@@ -35,6 +36,7 @@ class PlannedNotification {
   final String body;
   final DateTime scheduledAt;
   final bool playSound;
+  final bool enableVibration;
   final String payload;
 }
 
@@ -70,6 +72,14 @@ class MedicineReminderNotificationPlanner {
     required MedicineReminderSoundPreference sound,
     required MedicineReminderNotificationTexts texts,
     DateTime? now,
+    int advanceMinutes = 0,
+    bool dndEnabled = false,
+    int dndStartHour = 22,
+    int dndStartMinute = 0,
+    int dndEndHour = 7,
+    int dndEndMinute = 0,
+    bool enableVibration = true,
+    bool soundEnabled = true,
   }) {
     if (!remindersEnabled || reminders.isEmpty) {
       return const <PlannedNotification>[];
@@ -82,7 +92,8 @@ class MedicineReminderNotificationPlanner {
       referenceNow.day,
     );
     final usedIds = <int>{};
-    final playSound = sound != MedicineReminderSoundPreference.silent;
+    final playSound =
+        soundEnabled && sound != MedicineReminderSoundPreference.silent;
     final planned = <PlannedNotification>[];
 
     for (var dayOffset = 0; dayOffset < horizonDays; dayOffset += 1) {
@@ -97,14 +108,32 @@ class MedicineReminderNotificationPlanner {
           continue;
         }
 
-        final scheduledAt = DateTime(
+        var scheduledAt = DateTime(
           date.year,
           date.month,
           date.day,
           reminder.scheduledHour,
           reminder.scheduledMinute,
         );
+
+        // Apply advance reminder offset.
+        if (advanceMinutes > 0) {
+          scheduledAt = scheduledAt.subtract(Duration(minutes: advanceMinutes));
+        }
+
         if (!scheduledAt.isAfter(referenceNow)) {
+          continue;
+        }
+
+        // Skip notifications that fall within the DND window.
+        if (dndEnabled &&
+            _isInDndWindow(
+              scheduledAt,
+              dndStartHour,
+              dndStartMinute,
+              dndEndHour,
+              dndEndMinute,
+            )) {
           continue;
         }
 
@@ -120,6 +149,7 @@ class MedicineReminderNotificationPlanner {
             body: normalizeNullableText(reminder.note) ?? texts.defaultBody,
             scheduledAt: scheduledAt,
             playSound: playSound,
+            enableVibration: enableVibration && playSound,
             payload: reminder.id,
           ),
         );
@@ -163,6 +193,34 @@ class MedicineReminderNotificationPlanner {
 
     usedIds.add(candidate);
     return candidate;
+  }
+
+  /// Checks whether [scheduledAt] falls inside a DND window.
+  ///
+  /// The window may cross midnight, e.g. 22:00 → 07:00.
+  bool _isInDndWindow(
+    DateTime scheduledAt,
+    int startHour,
+    int startMinute,
+    int endHour,
+    int endMinute,
+  ) {
+    final startMinutes = startHour * 60 + startMinute;
+    final endMinutes = endHour * 60 + endMinute;
+    final scheduledMinutes = scheduledAt.hour * 60 + scheduledAt.minute;
+
+    if (startMinutes == endMinutes) {
+      // Zero-length window — nothing is blocked.
+      return false;
+    }
+
+    if (startMinutes < endMinutes) {
+      // Same-day window, e.g. 14:00 → 18:00.
+      return scheduledMinutes >= startMinutes && scheduledMinutes < endMinutes;
+    }
+
+    // Cross-midnight window, e.g. 22:00 → 07:00.
+    return scheduledMinutes >= startMinutes || scheduledMinutes < endMinutes;
   }
 
   String _notificationMomentKey(DateTime value) {

@@ -32,6 +32,14 @@ class MedicineReminderNotificationCoordinator {
     required MedicineReminderSoundPreference sound,
     required MedicineReminderNotificationTexts texts,
     DateTime? now,
+    int advanceMinutes = 0,
+    bool dndEnabled = false,
+    int dndStartHour = 22,
+    int dndStartMinute = 0,
+    int dndEndHour = 7,
+    int dndEndMinute = 0,
+    bool enableVibration = true,
+    bool soundEnabled = true,
   }) async {
     if (!await gateway.ensureInitialized()) {
       return;
@@ -66,6 +74,14 @@ class MedicineReminderNotificationCoordinator {
       sound: sound,
       texts: texts,
       now: now,
+      advanceMinutes: advanceMinutes,
+      dndEnabled: dndEnabled,
+      dndStartHour: dndStartHour,
+      dndStartMinute: dndStartMinute,
+      dndEndHour: dndEndHour,
+      dndEndMinute: dndEndMinute,
+      enableVibration: enableVibration,
+      soundEnabled: soundEnabled,
     );
 
     for (final notification in planned) {
@@ -75,6 +91,7 @@ class MedicineReminderNotificationCoordinator {
         body: notification.body,
         scheduledAt: notification.scheduledAt,
         playSound: notification.playSound,
+        enableVibration: notification.enableVibration,
         channelName: texts.channelName,
         channelDescription: texts.channelDescription,
         payload: notification.payload,
@@ -167,6 +184,14 @@ final medicineReminderNotificationSyncProvider = FutureProvider<void>((
       sound: sound,
       texts: texts,
       now: now,
+      advanceMinutes: settings.reminderAdvanceMinutes,
+      dndEnabled: settings.dndEnabled,
+      dndStartHour: settings.dndStartTime?.hour ?? 22,
+      dndStartMinute: settings.dndStartTime?.minute ?? 0,
+      dndEndHour: settings.dndEndTime?.hour ?? 7,
+      dndEndMinute: settings.dndEndTime?.minute ?? 0,
+      enableVibration: settings.notificationVibrationEnabled,
+      soundEnabled: settings.notificationSoundEnabled,
     );
   } catch (e) {
     debugPrint('MedicineReminderNotificationCoordinator: resync failed: $e');

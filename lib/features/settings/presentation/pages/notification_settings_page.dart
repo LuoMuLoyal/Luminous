@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -84,6 +85,42 @@ class NotificationSettingsPage extends ConsumerWidget {
                         : (value) => controller.setWeeklySummary(value),
                   ),
                 ),
+                FTile(
+                  key: const Key('notification-switch-sound'),
+                  title: Text(l10n.settingsNotificationsSound),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () => controller.setNotificationSoundEnabled(
+                          !settings.notificationSoundEnabled,
+                        )
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.notificationSoundEnabled,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) =>
+                              controller.setNotificationSoundEnabled(value),
+                  ),
+                ),
+                FTile(
+                  key: const Key('notification-switch-vibration'),
+                  title: Text(l10n.settingsNotificationsVibration),
+                  enabled: !settingsAsync.isLoading,
+                  onPress: !settingsAsync.isLoading
+                      ? () => controller.setNotificationVibrationEnabled(
+                          !settings.notificationVibrationEnabled,
+                        )
+                      : null,
+                  suffix: FSwitch(
+                    value: settings.notificationVibrationEnabled,
+                    enabled: !settingsAsync.isLoading,
+                    onChange: settingsAsync.isLoading
+                        ? null
+                        : (value) =>
+                              controller.setNotificationVibrationEnabled(value),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level5),
@@ -133,6 +170,20 @@ class NotificationSettingsPage extends ConsumerWidget {
                   onPress: () =>
                       context.push(AppRoutes.settingsNotificationsSleep),
                 ),
+                FTile(
+                  title: Text(l10n.settingsNotificationsDndTitle),
+                  subtitle: Text(_dndSummary(l10n, settings)),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () =>
+                      context.push(AppRoutes.settingsNotificationsDnd),
+                ),
+                FTile(
+                  title: Text(l10n.settingsNotificationsAdvance),
+                  details: Text(_advanceSummary(l10n, settings)),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () =>
+                      _showAdvancePicker(context, settings, controller),
+                ),
               ],
             ),
           ],
@@ -156,6 +207,53 @@ class NotificationSettingsPage extends ConsumerWidget {
     final bedtime = _formatTimeOfDay(settings.sleepBedtime);
     final wakeTime = _formatTimeOfDay(settings.sleepWakeTime);
     return '$bedtime - $wakeTime';
+  }
+
+  String _dndSummary(
+    AppLocalizations l10n,
+    NotificationSettingsState settings,
+  ) {
+    if (!settings.dndEnabled) {
+      return l10n.settingsNotificationsTimeUnset;
+    }
+    final start = _formatTimeOfDay(settings.dndStartTime);
+    final end = _formatTimeOfDay(settings.dndEndTime);
+    return '$start - $end';
+  }
+
+  String _advanceSummary(
+    AppLocalizations l10n,
+    NotificationSettingsState settings,
+  ) {
+    if (settings.reminderAdvanceMinutes <= 0) {
+      return l10n.settingsNotificationsAdvanceOff;
+    }
+    return l10n.settingsNotificationsAdvanceMinutes(
+      settings.reminderAdvanceMinutes,
+    );
+  }
+
+  Future<void> _showAdvancePicker(
+    BuildContext context,
+    NotificationSettingsState settings,
+    NotificationSettingsController controller,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    const options = <int>[0, 5, 10, 15, 30];
+
+    await showFSheet(
+      context: context,
+      side: FLayout.btt,
+      builder: (context) => _AdvancePickerSheet(
+        options: options,
+        selected: settings.reminderAdvanceMinutes,
+        l10n: l10n,
+        onSelect: (minutes) {
+          controller.setReminderAdvanceMinutes(minutes);
+          Navigator.of(context).pop();
+        },
+      ),
+    );
   }
 
   String _formatTimeOfDay(TimeOfDay? time) {
@@ -235,6 +333,61 @@ class _SectionLabel extends StatelessWidget {
               color: colors.mutedForeground,
               fontWeight: FontWeight.w600,
             ),
+      ),
+    );
+  }
+}
+
+class _AdvancePickerSheet extends StatelessWidget {
+  const _AdvancePickerSheet({
+    required this.options,
+    required this.selected,
+    required this.l10n,
+    required this.onSelect,
+  });
+
+  final List<int> options;
+  final int selected;
+  final AppLocalizations l10n;
+  final ValueChanged<int> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+              child: Text(
+                l10n.settingsNotificationsAdvance,
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            FTileGroup(
+              style: settingsSubpageTileGroupStyle(context.theme),
+              children: [
+                for (final minutes in options)
+                  FTile(
+                    title: Text(
+                      minutes == 0
+                          ? l10n.settingsNotificationsAdvanceOff
+                          : l10n.settingsNotificationsAdvanceMinutes(minutes),
+                    ),
+                    suffix: SettingsSelectionIcon(
+                      selected: selected == minutes,
+                    ),
+                    onPress: () => onSelect(minutes),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

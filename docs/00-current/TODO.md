@@ -16,38 +16,24 @@ Last updated: 2026-07-03
 
 一、后端已就绪，前端缺失（优先级最高）
 
-1. 🔒 安全 PIN 码设置
-   后端状态：UserSettingsDataDto.securityPin 已返回 { enabled, lastChangedAt }，后端有完整的 enable / verify / change / disable 四个端点（/api/v1/user/settings/security-pin\*）
-   前端缺失：Flutter 端完全没有暴露安全 PIN 相关 UI
-   建议：在「账户与安全」分组下新增「安全 PIN 码」入口，子页面包含：
-   开启/关闭 PIN 码（需输入当前 PIN 验证后关闭）
-   修改 PIN 码（旧 PIN → 新 PIN）
-   显示最后修改时间
-2. 🤖 AI 助手上下文权限
-   后端状态：assistantContext 包含 4 个细粒度权限开关：
-   healthProfile — 允许助手读取健康档案/过敏/疾病
-   dailyRecords — 允许助手读取近期日常记录
-   sleepRecords — 允许助手读取睡眠记录
-   currentMedicines — 允许助手读取当前药品/药盒
-   前端缺失：ai_settings_page.dart 只展示了 3 个开关（摘要/助手/记忆），完全没有展示这 4 个上下文权限
-   建议：在 AI 设置页面新增「助手数据访问权限」分组，展示 4 个开关
-   二、合理的新增扩展（需后端配合或纯前端实现）
-3. 🔔 通知增强
+二、合理的新增扩展（需后端配合或纯前端实现）
+
+1. 🔔 通知增强
    免打扰时段 — 设置时间段，期间暂停所有提醒（纯前端 SharedPreferences）
    通知声音/振动 — 提醒到达时的反馈方式选择（纯前端）
    用药提醒提前量 — 提前几分钟提醒（纯前端，影响调度逻辑）
-4. ♿ 无障碍设置
+2. ♿ 无障碍设置
    字体大小 — 小/标准/大/超大（纯前端 MediaQuery textScaleFactor）
    减少动画 — 降低过渡动画强度（纯前端）
    高对比度模式 — 增强视觉对比（纯前端主题扩展）
-5. 📊 数据与存储
+3. 📊 数据与存储
    离线数据保留期 — 30天/90天/永久（影响本地缓存清理策略）
    图片质量 — 标准/省流（影响药品图片等加载质量）
    同步设置 — 仅 Wi-Fi 同步 / 移动网络也同步
-6. 🏥 健康档案快捷入口
+4. 🏥 健康档案快捷入口
    当前状态：健康档案（过敏、疾病、当前用药）编辑入口分散在 mine 功能区
    建议：在设置页隐私或通用分组下增加「健康档案」入口，直达 health_context 编辑页
-7. 🌐 开发者选项（Advanced 扩展）
+5. 🌐 开发者选项（Advanced 扩展）
    API 端点切换 — 开发/生产环境切换（仅 debug 模式可见）
    日志级别 — verbose/info/warning/error
    功能开关（Feature Flags） — 实验性功能灰度控制

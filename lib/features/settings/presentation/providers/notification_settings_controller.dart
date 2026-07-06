@@ -20,6 +20,13 @@ abstract class NotificationSettingsState with _$NotificationSettingsState {
     @Default(TimeOfDay(hour: 7, minute: 0)) TimeOfDay? sleepWakeTime,
     @Default(NotificationPermissionState.unsupported)
     NotificationPermissionState permissionState,
+    // -- 通知增强 --
+    @Default(false) bool dndEnabled,
+    @Default(TimeOfDay(hour: 22, minute: 0)) TimeOfDay? dndStartTime,
+    @Default(TimeOfDay(hour: 7, minute: 0)) TimeOfDay? dndEndTime,
+    @Default(true) bool notificationSoundEnabled,
+    @Default(true) bool notificationVibrationEnabled,
+    @Default(0) int reminderAdvanceMinutes,
   }) = _NotificationSettingsState;
 }
 
@@ -34,6 +41,13 @@ class NotificationSettingsController
       'settings.notifications.sleepReminderEnabled';
   static const _sleepBedtimeKey = 'settings.notifications.sleepBedtime';
   static const _sleepWakeTimeKey = 'settings.notifications.sleepWakeTime';
+  static const _dndEnabledKey = 'settings.notifications.dnd.enabled';
+  static const _dndStartTimeKey = 'settings.notifications.dnd.startTime';
+  static const _dndEndTimeKey = 'settings.notifications.dnd.endTime';
+  static const _soundEnabledKey = 'settings.notifications.soundEnabled';
+  static const _vibrationEnabledKey = 'settings.notifications.vibrationEnabled';
+  static const _reminderAdvanceMinutesKey =
+      'settings.notifications.reminderAdvanceMinutes';
 
   @override
   Future<NotificationSettingsState> build() async {
@@ -56,6 +70,18 @@ class NotificationSettingsController
           _parseTime(preferences.getString(_sleepWakeTimeKey)) ??
           const TimeOfDay(hour: 7, minute: 0),
       permissionState: permissionState,
+      dndEnabled: preferences.getBool(_dndEnabledKey) ?? false,
+      dndStartTime:
+          _parseTime(preferences.getString(_dndStartTimeKey)) ??
+          const TimeOfDay(hour: 22, minute: 0),
+      dndEndTime:
+          _parseTime(preferences.getString(_dndEndTimeKey)) ??
+          const TimeOfDay(hour: 7, minute: 0),
+      notificationSoundEnabled: preferences.getBool(_soundEnabledKey) ?? true,
+      notificationVibrationEnabled:
+          preferences.getBool(_vibrationEnabledKey) ?? true,
+      reminderAdvanceMinutes:
+          preferences.getInt(_reminderAdvanceMinutesKey) ?? 0,
     );
   }
 
@@ -152,6 +178,74 @@ class NotificationSettingsController
     );
   }
 
+  Future<void> setDndEnabled(bool enabled) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(dndEnabled: enabled);
+    await _save(
+      next,
+      update: (preferences) => preferences.setBool(_dndEnabledKey, enabled),
+    );
+  }
+
+  Future<void> setDndStartTime(TimeOfDay? time) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(dndStartTime: time);
+    await _save(
+      next,
+      update: (preferences) async {
+        if (time == null) {
+          await preferences.remove(_dndStartTimeKey);
+        } else {
+          await preferences.setString(_dndStartTimeKey, _formatTime(time));
+        }
+      },
+    );
+  }
+
+  Future<void> setDndEndTime(TimeOfDay? time) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(dndEndTime: time);
+    await _save(
+      next,
+      update: (preferences) async {
+        if (time == null) {
+          await preferences.remove(_dndEndTimeKey);
+        } else {
+          await preferences.setString(_dndEndTimeKey, _formatTime(time));
+        }
+      },
+    );
+  }
+
+  Future<void> setNotificationSoundEnabled(bool enabled) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(notificationSoundEnabled: enabled);
+    await _save(
+      next,
+      update: (preferences) => preferences.setBool(_soundEnabledKey, enabled),
+    );
+  }
+
+  Future<void> setNotificationVibrationEnabled(bool enabled) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(notificationVibrationEnabled: enabled);
+    await _save(
+      next,
+      update: (preferences) =>
+          preferences.setBool(_vibrationEnabledKey, enabled),
+    );
+  }
+
+  Future<void> setReminderAdvanceMinutes(int minutes) async {
+    final next = (state.asData?.value ?? const NotificationSettingsState())
+        .copyWith(reminderAdvanceMinutes: minutes);
+    await _save(
+      next,
+      update: (preferences) =>
+          preferences.setInt(_reminderAdvanceMinutesKey, minutes),
+    );
+  }
+
   Future<void> reset() async {
     await _save(
       NotificationSettingsState(
@@ -168,6 +262,12 @@ class NotificationSettingsController
         await preferences.remove(_sleepReminderEnabledKey);
         await preferences.remove(_sleepBedtimeKey);
         await preferences.remove(_sleepWakeTimeKey);
+        await preferences.remove(_dndEnabledKey);
+        await preferences.remove(_dndStartTimeKey);
+        await preferences.remove(_dndEndTimeKey);
+        await preferences.remove(_soundEnabledKey);
+        await preferences.remove(_vibrationEnabledKey);
+        await preferences.remove(_reminderAdvanceMinutesKey);
       },
     );
   }

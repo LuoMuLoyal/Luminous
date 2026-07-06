@@ -1,9 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/accessibility_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/dnd_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
@@ -49,7 +51,19 @@ final settingsRoutes = [
               child: const SleepReminderSettingsPage(),
             ),
           ),
+          GoRoute(
+            path: 'dnd',
+            pageBuilder: (context, state) =>
+                slidePage(key: state.pageKey, child: const DndSettingsPage()),
+          ),
         ],
+      ),
+      GoRoute(
+        path: 'accessibility',
+        pageBuilder: (context, state) => slidePage(
+          key: state.pageKey,
+          child: const AccessibilitySettingsPage(),
+        ),
       ),
       GoRoute(
         path: 'ai',

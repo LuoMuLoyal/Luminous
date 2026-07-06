@@ -1724,5 +1724,31 @@
   "settingsSecurityPinDisableSuccess": "PIN disabled",
   "settingsSecurityPinChangeSuccess": "PIN changed",
   "settingsSecurityPinInvalidPin": "PIN must be 6 digits",
-  "settingsSecurityPinDescription": "When enabled, sensitive operations (such as data export and account deletion) require PIN verification."
+  "settingsSecurityPinDescription": "When enabled, sensitive operations (such as data export and account deletion) require PIN verification.",
+  "settingsNotificationsDndTitle": "Do Not Disturb",
+  "settingsNotificationsDndSubtitle": "Pause all reminders during a set time period",
+  "settingsNotificationsDndEnabled": "Enable Do Not Disturb",
+  "settingsNotificationsDndStart": "Start time",
+  "settingsNotificationsDndEnd": "End time",
+  "settingsNotificationsSound": "Notification sound",
+  "settingsNotificationsVibration": "Vibration",
+  "settingsNotificationsAdvance": "Early reminder",
+  "settingsNotificationsAdvanceMinutes": "{minutes} min early",
+  "@settingsNotificationsAdvanceMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "settingsNotificationsAdvanceOff": "Off",
+  "settingsAccessibilityTitle": "Accessibility",
+  "settingsAccessibilitySubtitle": "Font size, animations, contrast",
+  "settingsAccessibilityFontSizeSection": "Font size",
+  "settingsAccessibilityFontSizeSmall": "Small",
+  "settingsAccessibilityFontSizeStandard": "Standard",
+  "settingsAccessibilityFontSizeLarge": "Large",
+  "settingsAccessibilityFontSizeExtraLarge": "Extra large",
+  "settingsAccessibilityReduceAnimations": "Reduce animations",
+  "settingsAccessibilityReduceAnimationsSubtitle": "Minimize transition animations",
+  "settingsAccessibilityHighContrast": "High contrast",
+  "settingsAccessibilityHighContrastSubtitle": "Enhance visual contrast"
 }

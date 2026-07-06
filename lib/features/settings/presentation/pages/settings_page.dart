@@ -19,6 +19,8 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 
+const _kGroupSpacing = 20.0;
+
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
@@ -42,17 +44,21 @@ class SettingsPage extends ConsumerWidget {
                   signedIn: signedIn,
                   onTap: () => pushAuthRequiredRoute(context, '/account'),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 账号与安全 --
                 _SettingsGroup(
                   label: l10n.settingsAccountSecuritySectionTitle,
                   children: [
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-account-security'),
+                      icon: FLucideIcons.shieldCheck,
                       title: l10n.mineSettingsAccountTitle,
                       onTap: () => pushAuthRequiredRoute(context, '/account'),
                     ),
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-security-pin'),
+                      icon: FLucideIcons.lockKeyhole,
                       title: l10n.settingsSecurityPinTitle,
                       subtitle: l10n.settingsSecurityPinSubtitle,
                       onTap: () {
@@ -65,12 +71,19 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 通用 --
+                const _GeneralSection(),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 通知 --
                 _SettingsGroup(
                   label: l10n.settingsNotificationsSectionTitle,
                   children: [
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-notifications'),
+                      icon: FLucideIcons.bell,
                       title: l10n.mineSettingsNotificationsTitle,
                       value: _notificationSummary(l10n, ref),
                       onTap: () =>
@@ -78,30 +91,29 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- AI 与隐私 --
                 _PrivacySection(signedIn: signedIn),
-                const SizedBox(height: 20),
-                const _GeneralSection(),
-                const SizedBox(height: 20),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 关于与帮助 --
                 _AboutSection(signedIn: signedIn),
-                const SizedBox(height: 28),
-                _FooterAction(
-                  buttonKey: const Key('settings-footer-action'),
-                  label: signedIn ? l10n.authSignOut : l10n.authGoLogin,
-                  destructive: signedIn,
-                  onPress: session.isLoading
-                      ? null
-                      : () async {
-                          if (!session.canAccessProtectedData) {
-                            context.go(loginRouteForCurrentLocation(context));
-                            return;
-                          }
-                          await ref.read(authSessionProvider.notifier).logout();
-                          if (!context.mounted) {
-                            return;
-                          }
-                          context.go(AppRoutes.login);
-                        },
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 退出登录 --
+                _SignOutTile(
+                  signedIn: signedIn,
+                  isLoading: session.isLoading,
+                  onTap: () async {
+                    if (!session.canAccessProtectedData) {
+                      context.go(loginRouteForCurrentLocation(context));
+                      return;
+                    }
+                    await ref.read(authSessionProvider.notifier).logout();
+                    if (!context.mounted) return;
+                    context.go(AppRoutes.login);
+                  },
                 ),
               ],
             ),
@@ -128,6 +140,10 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Account header
+// ---------------------------------------------------------------------------
+
 class _AccountHeader extends StatelessWidget {
   const _AccountHeader({
     required this.session,
@@ -149,15 +165,24 @@ class _AccountHeader extends StatelessWidget {
     final subtitle =
         session.user?.email ?? (signedIn ? '' : l10n.mineAccountSignedOutMeta);
 
-    return FTile(
-      title: Text(displayName),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle),
-      prefix: FAvatar.raw(size: 48, child: const Icon(FLucideIcons.userRound)),
-      suffix: const Icon(FLucideIcons.chevronRight),
-      onPress: onTap,
+    return FCard.raw(
+      child: FTile(
+        title: Text(displayName),
+        subtitle: subtitle.isEmpty ? null : Text(subtitle),
+        prefix: FAvatar.raw(
+          size: 64,
+          child: const Icon(FLucideIcons.userRound, size: 32),
+        ),
+        suffix: const Icon(FLucideIcons.chevronRight),
+        onPress: onTap,
+      ),
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Privacy section (AI + data sharing + data export)
+// ---------------------------------------------------------------------------
 
 class _PrivacySection extends ConsumerWidget {
   const _PrivacySection({required this.signedIn});
@@ -175,8 +200,22 @@ class _PrivacySection extends ConsumerWidget {
     return _SettingsGroup(
       label: l10n.settingsPrivacySectionTitle,
       children: [
+        _SettingsNavigationTile(
+          tileKey: const Key('settings-row-ai'),
+          icon: FLucideIcons.sparkles,
+          title: l10n.settingsAiTitle,
+          subtitle: l10n.settingsAiSubtitle,
+          onTap: () {
+            if (!signedIn) {
+              pushAuthRequiredRoute(context, '/settings');
+              return;
+            }
+            context.push(AppRoutes.settingsAi);
+          },
+        ),
         _SettingsSwitchTile(
           tileKey: const Key('settings-row-privacy-report'),
+          icon: FLucideIcons.share2,
           title: l10n.minePrivacyReportTitle,
           subtitle: l10n.minePrivacyReportSubtitle,
           value: settings?.dataSharingConsent ?? false,
@@ -189,9 +228,7 @@ class _PrivacySection extends ConsumerWidget {
               context,
               value,
             );
-            if (!context.mounted) {
-              return;
-            }
+            if (!context.mounted) return;
             if (confirmed) {
               unawaited(
                 ref
@@ -202,15 +239,15 @@ class _PrivacySection extends ConsumerWidget {
           },
         ),
         _SettingsNavigationTile(
-          tileKey: const Key('settings-row-ai'),
-          title: l10n.settingsAiTitle,
-          subtitle: l10n.settingsAiSubtitle,
+          tileKey: const Key('settings-row-export'),
+          icon: FLucideIcons.arrowDownToLine,
+          title: l10n.mineSettingExportTitle,
           onTap: () {
             if (!signedIn) {
               pushAuthRequiredRoute(context, '/settings');
               return;
             }
-            context.push(AppRoutes.settingsAi);
+            context.push(AppRoutes.settingsExport);
           },
         ),
       ],
@@ -262,6 +299,10 @@ class _PrivacySection extends ConsumerWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// General section (theme + language + advanced)
+// ---------------------------------------------------------------------------
+
 class _GeneralSection extends ConsumerWidget {
   const _GeneralSection();
 
@@ -281,20 +322,30 @@ class _GeneralSection extends ConsumerWidget {
       children: [
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-theme'),
+          icon: FLucideIcons.palette,
           title: l10n.mineSettingsThemeTitle,
           value: _themeModeLabel(l10n, currentTheme),
           onTap: () => context.push(AppRoutes.settingsTheme),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-language'),
+          icon: FLucideIcons.globe,
           title: l10n.mineSettingsLanguageTitle,
           value: _languageLabel(l10n, currentLocale),
           onTap: () => context.push(AppRoutes.settingsLanguage),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-advanced'),
+          icon: FLucideIcons.slidersHorizontal,
           title: l10n.mineSettingsAdvancedTitle,
           onTap: () => context.push(AppRoutes.settingsMore),
+        ),
+        _SettingsNavigationTile(
+          tileKey: const Key('settings-row-accessibility'),
+          icon: FLucideIcons.accessibility,
+          title: l10n.settingsAccessibilityTitle,
+          subtitle: l10n.settingsAccessibilitySubtitle,
+          onTap: () => context.push(AppRoutes.settingsAccessibility),
         ),
       ],
     );
@@ -320,6 +371,10 @@ class _GeneralSection extends ConsumerWidget {
   }
 }
 
+// ---------------------------------------------------------------------------
+// About section (help + about)
+// ---------------------------------------------------------------------------
+
 class _AboutSection extends ConsumerWidget {
   const _AboutSection({required this.signedIn});
 
@@ -334,29 +389,64 @@ class _AboutSection extends ConsumerWidget {
       children: [
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-help'),
+          icon: FLucideIcons.circleHelp,
           title: l10n.mineSettingHelpTitle,
           onTap: () => context.push(AppRoutes.settingsHelp),
         ),
         _SettingsNavigationTile(
           tileKey: const Key('settings-row-about'),
+          icon: FLucideIcons.info,
           title: l10n.mineSettingAboutTitle,
           onTap: () => context.push(AppRoutes.settingsAbout),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-export'),
-          title: l10n.mineSettingExportTitle,
-          onTap: () {
-            if (!signedIn) {
-              pushAuthRequiredRoute(context, '/settings');
-              return;
-            }
-            context.push(AppRoutes.settingsExport);
-          },
         ),
       ],
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Sign-out tile
+// ---------------------------------------------------------------------------
+
+class _SignOutTile extends StatelessWidget {
+  const _SignOutTile({
+    required this.signedIn,
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool signedIn;
+  final bool isLoading;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    return FTileGroup(
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        FTile(
+          title: Center(
+            child: Text(
+              signedIn ? l10n.authSignOut : l10n.authGoLogin,
+              style: AppTypographyToken.level5
+                  .body(context)
+                  .copyWith(color: colors.error),
+            ),
+          ),
+          enabled: !isLoading,
+          onPress: isLoading ? null : onTap,
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Shared group + tile widgets
+// ---------------------------------------------------------------------------
 
 class _SettingsGroup extends StatelessWidget {
   const _SettingsGroup({required this.label, required this.children});
@@ -396,6 +486,7 @@ class _SettingsGroup extends StatelessWidget {
 class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
   const _SettingsNavigationTile({
     required this.title,
+    this.icon,
     this.subtitle,
     this.value,
     this.tileKey,
@@ -403,6 +494,7 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
   });
 
   final String title;
+  final IconData? icon;
   final String? subtitle;
   final String? value;
   final Key? tileKey;
@@ -417,6 +509,7 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
         final s = subtitle;
         return s == null || s.isEmpty ? null : Text(s);
       }(),
+      prefix: icon != null ? Icon(icon, size: 20) : null,
       details: () {
         final v = value;
         return v == null || v.isEmpty ? null : Text(v);
@@ -427,9 +520,10 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
   }
 }
 
-class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
+class _SettingsSwitchTile extends ConsumerWidget with FTileMixin {
   const _SettingsSwitchTile({
     required this.title,
+    this.icon,
     this.subtitle,
     required this.value,
     required this.onChanged,
@@ -437,13 +531,14 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
   });
 
   final String title;
+  final IconData? icon;
   final String? subtitle;
   final bool value;
   final ValueChanged<bool> onChanged;
   final Key? tileKey;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
 
     return FTile.raw(
@@ -451,6 +546,10 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
       onPress: () => onChanged(!value),
       child: Row(
         children: [
+          if (icon != null) ...[
+            Icon(icon, size: 20, color: colors.foreground),
+            const SizedBox(width: 12),
+          ],
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,35 +575,6 @@ class _SettingsSwitchTile extends StatelessWidget with FTileMixin {
           const SizedBox(width: 12),
           IgnorePointer(child: FSwitch(value: value)),
         ],
-      ),
-    );
-  }
-}
-
-class _FooterAction extends StatelessWidget {
-  const _FooterAction({
-    required this.label,
-    required this.onPress,
-    required this.destructive,
-    this.buttonKey,
-  });
-
-  final String label;
-  final VoidCallback? onPress;
-  final bool destructive;
-  final Key? buttonKey;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: FButton(
-        key: buttonKey,
-        variant: destructive
-            ? FButtonVariant.destructive
-            : FButtonVariant.outline,
-        onPress: onPress,
-        child: Text(label),
       ),
     );
   }

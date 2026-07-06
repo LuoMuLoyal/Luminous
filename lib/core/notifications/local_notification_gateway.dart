@@ -74,6 +74,7 @@ class LocalNotificationGateway {
     required String channelName,
     required String channelDescription,
     String? payload,
+    bool enableVibration = true,
   }) async {
     if (!await ensureInitialized() || !scheduledAt.isAfter(clock.now())) {
       return;
@@ -84,6 +85,7 @@ class LocalNotificationGateway {
       playSound: playSound,
       channelName: channelName,
       channelDescription: channelDescription,
+      enableVibration: enableVibration,
     );
 
     final preferredMode = await _preferredAndroidScheduleMode();
@@ -175,6 +177,7 @@ class LocalNotificationGateway {
     required bool playSound,
     required String channelName,
     required String channelDescription,
+    bool enableVibration = true,
   }) {
     final android = AndroidNotificationDetails(
       playSound ? _soundingChannelId : _silentChannelId,
@@ -183,7 +186,7 @@ class LocalNotificationGateway {
       importance: Importance.high,
       priority: Priority.high,
       playSound: playSound,
-      enableVibration: playSound,
+      enableVibration: playSound && enableVibration,
       silent: !playSound,
     );
     final darwin = DarwinNotificationDetails(

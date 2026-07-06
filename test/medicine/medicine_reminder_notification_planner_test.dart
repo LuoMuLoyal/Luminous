@@ -204,6 +204,104 @@ void main() {
     expect(gentle.single.title, texts.defaultTitle);
     expect(gentle.single.body, texts.defaultBody);
   });
+
+  test('advanceMinutes shifts scheduled time earlier', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[
+        _reminder(id: 'advance', hour: 10, minute: 30),
+      ],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+      advanceMinutes: 15,
+    );
+
+    expect(planned, hasLength(1));
+    expect(planned.single.scheduledAt, DateTime(2026, 6, 10, 10, 15));
+  });
+
+  test('DND cross-midnight window filters notifications', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    // DND 22:00 → 07:00 should filter a 23:00 reminder but allow a 10:00 one.
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[
+        _reminder(id: 'night', hour: 23, minute: 0),
+        _reminder(id: 'morning', hour: 10, minute: 0),
+      ],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+      dndEnabled: true,
+      dndStartHour: 22,
+      dndStartMinute: 0,
+      dndEndHour: 7,
+      dndEndMinute: 0,
+    );
+
+    expect(planned, hasLength(1));
+    expect(planned.single.payload, 'morning');
+  });
+
+  test('DND same-day window filters notifications', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    // DND 09:00 → 12:00 should filter the 10:00 reminder but allow 14:00.
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[
+        _reminder(id: 'filtered', hour: 10, minute: 0),
+        _reminder(id: 'kept', hour: 14, minute: 0),
+      ],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+      dndEnabled: true,
+      dndStartHour: 9,
+      dndStartMinute: 0,
+      dndEndHour: 12,
+      dndEndMinute: 0,
+    );
+
+    expect(planned, hasLength(1));
+    expect(planned.single.payload, 'kept');
+  });
+
+  test('soundEnabled false overrides non-silent sound preference', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[_reminder(id: 'muted', hour: 10)],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+      soundEnabled: false,
+    );
+
+    expect(planned.single.playSound, isFalse);
+    expect(planned.single.enableVibration, isFalse);
+  });
+
+  test('enableVibration false disables vibration while keeping sound', () {
+    const planner = MedicineReminderNotificationPlanner(horizonDays: 1);
+
+    final planned = planner.plan(
+      reminders: <MedicineReminderItem>[_reminder(id: 'no-vibrate', hour: 10)],
+      remindersEnabled: true,
+      sound: MedicineReminderSoundPreference.defaultTone,
+      texts: texts,
+      now: now,
+      enableVibration: false,
+    );
+
+    expect(planned.single.playSound, isTrue);
+    expect(planned.single.enableVibration, isFalse);
+  });
 }
 
 MedicineReminderItem _reminder({

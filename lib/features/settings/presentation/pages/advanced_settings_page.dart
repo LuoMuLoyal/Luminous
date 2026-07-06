@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/accessibility/accessibility_settings_controller.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
@@ -74,6 +75,11 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         await ref
                             .read(
                               notificationSettingsControllerProvider.notifier,
+                            )
+                            .reset();
+                        await ref
+                            .read(
+                              accessibilitySettingsControllerProvider.notifier,
                             )
                             .reset();
                         if (!context.mounted) {

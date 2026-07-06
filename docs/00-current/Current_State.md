@@ -117,6 +117,15 @@ Last updated: 2026-07-06
   - **Forui 主题定制文件已移除**：当前不再保留 `button_styles.dart` 或手写 colors/theme overrides，直接使用 Forui 内置主题族与标准按钮语义。
   - **Record 过滤器横向布局修复**：`FButton` 默认 `mainAxisSize: MainAxisSize.max` 导致在 `Wrap` 中撑满宽度，添加 `mainAxisSize: MainAxisSize.min` 恢复横向排列。
   - **primary FButton 黑底黑字修复**：Forui `FTypography` 的 `TextStyle` 携带 `color: colors.foreground`（近黑），当 `Text` 使用 `AppTypographyToken` style 时会覆盖 `FButton` 的 `DefaultTextStyle` 设置的 `colors.primaryForeground`（白）。修复 `RecordHeaderActionChip`、`MedicineHeaderActionChip` 中 `Text` 的 style，移除 `AppTypographyToken` 引用改为 `TextStyle(fontWeight: FontWeight.w700)`，让 `FButton` 的前景色正确传递。FAB 添加 `mainAxisSize: MainAxisSize.min`。
+  - **通知增强**：
+    - 免打扰时段：`NotificationSettingsState` 新增 `dndEnabled` / `dndStartTime` / `dndEndTime`，DND 子页面使用 `FTimeField.picker` 选择时段；`MedicineReminderNotificationPlanner` 在 `plan()` 中过滤落在 DND 窗口内的通知（支持跨午夜）。
+    - 通知声音/振动：`NotificationSettingsState` 新增 `notificationSoundEnabled` / `notificationVibrationEnabled`，在 planner 中与 `MedicineReminderSoundPreference` 取 AND；`LocalNotificationGateway` 的 `enableVibration` 参数独立控制振动。
+    - 用药提醒提前量：`NotificationSettingsState` 新增 `reminderAdvanceMinutes`（0/5/10/15/30），planner 在 `scheduledAt` 上做 `subtract`；通知设置页通过 `showFSheet` 底部弹窗选择。
+  - **无障碍设置**：
+    - `AccessibilitySettingsController`（纯前端 SharedPreferences）：`FontSizePreference`（small/standard/large/extraLarge）、`reduceAnimations`、`highContrast`。
+    - `app.dart` 的 `builder` 注入 `MediaQuery.copyWith(textScaler, accessibleNavigation)`，高对比度通过 `FColors.copyWith` 重建 `FThemeData`。
+    - 无障碍设置页面：字体大小用 `FTileGroup` + `SettingsSelectionIcon` 选择，减少动画和高对比度用 `FSwitch` tile。
+    - 设置页 General section 新增无障碍入口，高级设置"恢复默认"同时重置无障碍偏好。
 
 ## 相关文档
 

@@ -333,6 +333,7 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
     required String channelName,
     required String channelDescription,
     String? payload,
+    bool enableVibration = true,
   }) async {
     scheduledCalls.add(
       _ScheduledCall(
@@ -344,6 +345,7 @@ class _FakeLocalNotificationGateway extends LocalNotificationGateway {
         channelName: channelName,
         channelDescription: channelDescription,
         payload: payload,
+        enableVibration: enableVibration,
       ),
     );
   }
@@ -359,6 +361,7 @@ class _ScheduledCall {
     required this.channelName,
     required this.channelDescription,
     required this.payload,
+    required this.enableVibration,
   });
 
   final int id;
@@ -369,6 +372,7 @@ class _ScheduledCall {
   final String channelName;
   final String channelDescription;
   final String? payload;
+  final bool enableVibration;
 }
 
 class _FakeReminderSource extends MedicineReminderRemoteDataSource {

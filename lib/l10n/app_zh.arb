@@ -1724,5 +1724,31 @@
   "settingsSecurityPinDisableSuccess": "PIN 码已关闭",
   "settingsSecurityPinChangeSuccess": "PIN 码已修改",
   "settingsSecurityPinInvalidPin": "PIN 码必须为 6 位数字",
-  "settingsSecurityPinDescription": "开启后，执行敏感操作（如数据导出、账户删除）时需要验证 PIN 码。"
+  "settingsSecurityPinDescription": "开启后，执行敏感操作（如数据导出、账户删除）时需要验证 PIN 码。",
+  "settingsNotificationsDndTitle": "免打扰",
+  "settingsNotificationsDndSubtitle": "在设定时段内暂停所有提醒",
+  "settingsNotificationsDndEnabled": "开启免打扰",
+  "settingsNotificationsDndStart": "开始时间",
+  "settingsNotificationsDndEnd": "结束时间",
+  "settingsNotificationsSound": "通知声音",
+  "settingsNotificationsVibration": "振动",
+  "settingsNotificationsAdvance": "提前提醒",
+  "settingsNotificationsAdvanceMinutes": "提前 {minutes} 分钟",
+  "@settingsNotificationsAdvanceMinutes": {
+    "placeholders": {
+      "minutes": {}
+    }
+  },
+  "settingsNotificationsAdvanceOff": "关闭",
+  "settingsAccessibilityTitle": "无障碍",
+  "settingsAccessibilitySubtitle": "字体大小、动画、对比度",
+  "settingsAccessibilityFontSizeSection": "字体大小",
+  "settingsAccessibilityFontSizeSmall": "小",
+  "settingsAccessibilityFontSizeStandard": "标准",
+  "settingsAccessibilityFontSizeLarge": "大",
+  "settingsAccessibilityFontSizeExtraLarge": "超大",
+  "settingsAccessibilityReduceAnimations": "减少动画",
+  "settingsAccessibilityReduceAnimationsSubtitle": "减少过渡动画",
+  "settingsAccessibilityHighContrast": "高对比度",
+  "settingsAccessibilityHighContrastSubtitle": "增强视觉对比度"
 }

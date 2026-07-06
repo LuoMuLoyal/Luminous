@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/accessibility/accessibility_settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
@@ -72,9 +73,24 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           orElse: () => const AppThemePreference(),
         );
     final themeMode = themePreference.mode.themeMode;
-    final lightTheme = appThemeData(themePreference.family, Brightness.light);
-    final darkTheme = appThemeData(themePreference.family, Brightness.dark);
+    var lightTheme = appThemeData(themePreference.family, Brightness.light);
+    var darkTheme = appThemeData(themePreference.family, Brightness.dark);
     final locale = ref.watch(appLocaleControllerProvider).asData?.value;
+
+    final accessibility = ref
+        .watch(accessibilitySettingsControllerProvider)
+        .asData
+        ?.value;
+    final highContrast = accessibility?.highContrast ?? false;
+    if (highContrast) {
+      lightTheme = _applyHighContrast(lightTheme);
+      darkTheme = _applyHighContrast(darkTheme);
+    }
+
+    final textScaler = accessibility != null
+        ? TextScaler.linear(accessibility.fontSize.scaleFactor)
+        : TextScaler.noScaling;
+    final reduceAnimations = accessibility?.reduceAnimations ?? false;
 
     return MaterialApp.router(
       onGenerateTitle: (context) =>
@@ -84,12 +100,20 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       darkTheme: foruiMaterialTheme(darkTheme),
       themeMode: themeMode,
       locale: locale?.flutterLocale,
-      builder: (context, child) => FTheme(
-        data: Theme.of(context).brightness == Brightness.dark
-            ? darkTheme
-            : lightTheme,
-        child: FToaster(child: child ?? const SizedBox.shrink()),
-      ),
+      builder: (context, child) {
+        final brightness = Theme.of(context).brightness;
+        final fTheme = brightness == Brightness.dark ? darkTheme : lightTheme;
+        return FTheme(
+          data: fTheme,
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              textScaler: textScaler,
+              accessibleNavigation: reduceAnimations,
+            ),
+            child: FToaster(child: child ?? const SizedBox.shrink()),
+          ),
+        );
+      },
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,
         FLocalizations.delegate,
@@ -122,4 +146,22 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       );
     }
   }
+}
+
+/// Creates a high-contrast variant of [theme] by maximizing foreground/
+/// background contrast and strengthening borders.
+FThemeData _applyHighContrast(FThemeData theme) {
+  final colors = theme.colors;
+  final isDark = colors.brightness == Brightness.dark;
+  return FThemeData(
+    touch: true,
+    debugLabel: theme.debugLabel,
+    colors: colors.copyWith(
+      foreground: isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
+      mutedForeground: isDark
+          ? const Color(0xFFE0E0E0)
+          : const Color(0xFF1A1A1A),
+      border: isDark ? const Color(0xFFCCCCCC) : const Color(0xFF333333),
+    ),
+  );
 }

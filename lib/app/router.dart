@@ -52,6 +52,8 @@ class AppRoutes {
   static const settingsMore = '/settings/more';
   static const settingsNotifications = '/settings/notifications';
   static const settingsNotificationsSleep = '/settings/notifications/sleep';
+  static const settingsNotificationsDnd = '/settings/notifications/dnd';
+  static const settingsAccessibility = '/settings/accessibility';
   static const settingsAi = '/settings/ai';
   static const settingsExport = '/settings/export';
   static const settingsHelp = '/settings/help';
