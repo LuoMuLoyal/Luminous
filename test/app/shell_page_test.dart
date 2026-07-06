@@ -12,7 +12,6 @@ import 'package:luminous/features/report/data/repositories/mock_report_repositor
 import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
 import 'package:luminous/features/shell/presentation/shell_page.dart';
 import 'package:luminous/features/shell/presentation/shell_tab.dart';
-import 'package:luminous/features/shell/providers/shell_sidebar_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
@@ -24,13 +23,6 @@ import '../helpers/test_forui_app.dart';
 class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
   @override
   Future<List<TodayRecommendation>> build() async => const [];
-}
-
-class _ExpandedShellSidebarNotifier extends ShellSidebarNotifier {
-  @override
-  Future<ShellSidebarState> build() async {
-    return const ShellSidebarState(collapsed: false);
-  }
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
@@ -98,9 +90,6 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          shellSidebarProvider.overrideWith(
-            () => _ExpandedShellSidebarNotifier(),
-          ),
           healthContextSnapshotProvider.overrideWith(
             (ref) => Future.value(mockSnapshot),
           ),
@@ -128,7 +117,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
 
     expect(find.byType(FSidebar), findsOneWidget);
-    expect(find.text(l10n.appTitle), findsOneWidget);
+    expect(find.text(l10n.appTitle), findsNWidgets(2));
     expect(find.text(l10n.tabToday), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabRecord), findsAtLeastNWidgets(1));
     expect(find.text(l10n.tabMedicine), findsAtLeastNWidgets(1));
@@ -146,98 +135,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
-  });
-
-  testWidgets('Desktop sidebar can be collapsed and expanded', (tester) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final mockSnapshot = const HealthContextSnapshot(
-      summary: HealthSummary(
-        age: 27,
-        onboardingCompleted: true,
-        activeAllergyCount: 2,
-        conditionCount: 1,
-        currentMedicineCount: 3,
-        missingCoreProfileFields: [],
-      ),
-      profile: HealthProfile(
-        birthDate: null,
-        sexAtBirth: null,
-        heightCm: null,
-        bloodType: null,
-        locale: null,
-        timezone: null,
-        unitSystem: null,
-        onboardingCompletedAt: null,
-        extras: {},
-      ),
-      allergies: [],
-      conditions: [],
-      currentMedicines: [],
-    );
-
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(1440, 1000);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          shellSidebarProvider.overrideWith(
-            () => _ExpandedShellSidebarNotifier(),
-          ),
-          healthContextSnapshotProvider.overrideWith(
-            (ref) => Future.value(mockSnapshot),
-          ),
-          medicineWorkspaceRepositoryProvider.overrideWithValue(
-            const MockMedicineWorkspaceRepository(),
-          ),
-          recordRepositoryProvider.overrideWithValue(
-            const MockRecordRepository(),
-          ),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-          reportRepositoryProvider.overrideWithValue(
-            const MockReportRepository(),
-          ),
-          supportResourcesProvider(
-            'campus',
-          ).overrideWith((ref) async => const []),
-        ],
-        child: const TestForuiApp(home: ShellPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-
-    const toggleKey = Key('desktop-sidebar-toggle');
-    Finder collapseToggle() => find.byKey(toggleKey);
-
-    // Initially expanded: collapse button and settings labels show.
-    expect(collapseToggle(), findsOneWidget);
-    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
-    expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
-
-    await tester.tap(collapseToggle());
-    await tester.pump(const Duration(milliseconds: 500));
-
-    // Collapsed: toggle remains and labels are hidden.
-    expect(collapseToggle(), findsOneWidget);
-    expect(find.text(l10n.desktopSidebarSettings), findsNothing);
-    expect(find.text(l10n.desktopSidebarHelp), findsNothing);
-
-    await tester.tap(collapseToggle());
-    await tester.pump(const Duration(milliseconds: 500));
-
-    // Expanded again.
-    expect(collapseToggle(), findsOneWidget);
-    expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
-    expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
   });
 
   testWidgets('Shell page renders mobile bottom navigation', (tester) async {
@@ -341,9 +238,6 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          shellSidebarProvider.overrideWith(
-            () => _ExpandedShellSidebarNotifier(),
-          ),
           healthContextSnapshotProvider.overrideWith(
             (ref) => Future.value(mockSnapshot),
           ),
@@ -385,7 +279,7 @@ void main() {
       tester.takeException();
     }
     // App title still visible after cycling through all tabs
-    expect(find.text(l10n.appTitle), findsOneWidget);
+    expect(find.text(l10n.appTitle), findsNWidgets(2));
   });
 
   testWidgets('Mine page shows status badges', (tester) async {
@@ -426,9 +320,6 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-          shellSidebarProvider.overrideWith(
-            () => _ExpandedShellSidebarNotifier(),
-          ),
           healthContextSnapshotProvider.overrideWith(
             (ref) => Future.value(mockSnapshot),
           ),
@@ -498,9 +389,6 @@ Future<void> _pumpShell(WidgetTester tester) async {
     ProviderScope(
       overrides: [
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
-        shellSidebarProvider.overrideWith(
-          () => _ExpandedShellSidebarNotifier(),
-        ),
         healthContextSnapshotProvider.overrideWith(
           (ref) => Future.value(mockSnapshot),
         ),

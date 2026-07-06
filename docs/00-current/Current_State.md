@@ -126,6 +126,11 @@ Last updated: 2026-07-06
     - `app.dart` 的 `builder` 注入 `MediaQuery.copyWith(textScaler, accessibleNavigation)`，高对比度通过 `FColors.copyWith` 重建 `FThemeData`。
     - 无障碍设置页面：字体大小用 `FTileGroup` + `SettingsSelectionIcon` 选择，减少动画和高对比度用 `FSwitch` tile。
     - 设置页 General section 新增无障碍入口，高级设置"恢复默认"同时重置无障碍偏好。
+- 桌面侧边栏重构完成：
+  - 移除自定义折叠/展开机制（`ShellSidebarProvider` + `SharedPreferences` 持久化 + `AnimatedContainer`），改为纯 Forui `FSidebar` 原生实现。
+  - 去边框化：侧边栏样式从自定义 `FSidebarStyle`（含 `Border.all` + `borderRadius.xl`）改为 `BoxDecoration(color: background)`，继承 Forui 极简主义美学。
+  - 侧边栏新增 `FSidebarItem.children` 展开子项：记录、用药、我的、设置四个顶层项可展开显示子导航（共 15 个子项），Forui 原生箭头展开/收起。
+  - 内容区新增 Forui `FBreadcrumb`：两级面包屑（App 名称 → 当前 Tab），替换原 `FCard.raw` 包裹。
 
 ## 相关文档
 

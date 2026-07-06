@@ -1750,5 +1750,21 @@
   "settingsAccessibilityReduceAnimations": "减少动画",
   "settingsAccessibilityReduceAnimationsSubtitle": "减少过渡动画",
   "settingsAccessibilityHighContrast": "高对比度",
-  "settingsAccessibilityHighContrastSubtitle": "增强视觉对比度"
+  "settingsAccessibilityHighContrastSubtitle": "增强视觉对比度",
+  "sidebarRecordCreate": "新建记录",
+  "sidebarMedicineSearch": "药品搜索",
+  "sidebarMedicineRiskCheck": "安全检查",
+  "sidebarMedicineReminders": "用药提醒",
+  "sidebarMineProfile": "个人资料",
+  "sidebarMineAllergy": "过敏史",
+  "sidebarMineCondition": "健康状况",
+  "sidebarMineMedicine": "用药档案",
+  "sidebarSettingsNotifications": "通知设置",
+  "sidebarSettingsTheme": "主题外观",
+  "sidebarSettingsLanguage": "语言",
+  "sidebarSettingsAccessibility": "无障碍",
+  "sidebarSettingsAi": "AI 设置",
+  "sidebarSettingsExport": "数据导出",
+  "sidebarSettingsSecurityPin": "安全锁",
+  "sidebarSettingsAbout": "关于"
 }

@@ -1750,5 +1750,21 @@
   "settingsAccessibilityReduceAnimations": "Reduce animations",
   "settingsAccessibilityReduceAnimationsSubtitle": "Minimize transition animations",
   "settingsAccessibilityHighContrast": "High contrast",
-  "settingsAccessibilityHighContrastSubtitle": "Enhance visual contrast"
+  "settingsAccessibilityHighContrastSubtitle": "Enhance visual contrast",
+  "sidebarRecordCreate": "New Record",
+  "sidebarMedicineSearch": "Search Medicines",
+  "sidebarMedicineRiskCheck": "Safety Check",
+  "sidebarMedicineReminders": "Medicine Reminders",
+  "sidebarMineProfile": "Profile",
+  "sidebarMineAllergy": "Allergies",
+  "sidebarMineCondition": "Health Conditions",
+  "sidebarMineMedicine": "Medicine Archive",
+  "sidebarSettingsNotifications": "Notifications",
+  "sidebarSettingsTheme": "Theme",
+  "sidebarSettingsLanguage": "Language",
+  "sidebarSettingsAccessibility": "Accessibility",
+  "sidebarSettingsAi": "AI Settings",
+  "sidebarSettingsExport": "Data Export",
+  "sidebarSettingsSecurityPin": "Security PIN",
+  "sidebarSettingsAbout": "About"
 }
