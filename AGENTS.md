@@ -58,7 +58,7 @@ flutter test
 
 ## Design System
 
-- Root theming is Forui-led: `lib/app/app.dart` derives `ThemeData` from `FThemes.neutral` and injects `FTheme` at the app root.
+- Root theming is Forui-led: `lib/theme/theme.dart` owns the app theme-family catalog and maps `theme.family` to stock Forui `FThemes.*` light/dark touch themes; `lib/app/app.dart` derives `ThemeData` from the selected family and injects `FTheme` at the app root.
 - `AppColors` (`lib/core/design/app_colors.dart`) — semantic color enum used by data/domain layers. Widgets resolve it via `AppColors.resolve(context.theme.colors)`.
 - `AppSpacingTokens` — `level1` through `level12` spacing scale retained as the project layout vocabulary because Forui has no generic spacing scale.
 - `AppRadiusTokens` — `level0` through `level9` plus `levelFull`, mapped to Forui’s `FBorderRadius` scale.

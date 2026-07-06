@@ -21,6 +21,7 @@ Persisted preference keys:
 
 - Locale: `app.locale`
 - Theme mode: `theme.mode`
+- Theme family: `theme.family`
 
 ## Rules
 
@@ -49,8 +50,9 @@ Persisted preference keys:
    sleep-stage labels are owned by the Record feature ARB entries.
 - Mine no longer owns any campus-service strings; support-resource copy is limited to settings
    help/about surfaces plus backend-provided titles when present.
-- Theme settings are mode-only right now. Do not add palette-specific ARB keys unless the product
-   explicitly reintroduces multi-palette theming.
+- Theme settings now own both mode strings (`system / light / dark`) and theme-family strings
+  (`blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`), plus the
+  section labels used by the theme settings subpage and the general-settings summary.
 - Assistant tool inventory strings are owned by the Assistant ARB entries, including medicine
    retrieval tools such as leaflet search, DrugBank entity resolution, DrugBank passage search, and
    medical-QA search.

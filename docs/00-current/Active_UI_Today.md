@@ -1,17 +1,24 @@
 # Active UI — Today
 
 - 压缩健康概览。
+- Today 主题语气跟随当前 Forui 内置主题族；默认使用 `blue` 家族，不再依赖手写 sky-blue 自定义色值。
+- Today 条目卡片背景统一回到纯白，保留当前主题色边框和按钮，不再使用淡色 card fill。
 - 顶部栏操作按钮使用 Forui `FTooltip` 提供语义提示。
+- 顶部 `AI chat` 入口使用 Forui `secondary` 胶囊按钮，通知入口使用 `outline` 图标按钮，交互权重更清晰。
 - repository 提供的用药/饮水优先级列表。
+- 移动端顺序为 `健康概览 → 优先事项 → AI summary → 主动建议 → todos`，优先事项在 AI 卡片之前。
 - 用药任务。
 - 饮水任务（带数量目标）。
+- 优先事项 detail 移回主内容列，右侧只保留 action pill，降低横向拥挤。
 - UI 层自定义待办。
 - 手动触发 Lucent-backed Today AI 分析生成。
 - 卡片状态：signed-out / disabled / loading / success / error。
 - signed-out / disabled 空态只保留单条提示，不重复显示 footer。
+- AI summary 在首次生成 loading 时使用骨架占位，不再只显示文案。
 - 优先事项 action pill 使用 `IntrinsicWidth` 自然撑开，避免短文案被固定宽度截断成黑块。
 - 真实增量摘要流：`/api/v1/user/today-analysis/generate/stream`。
 - 流完成后渲染结构化 bullets / action / confidence。
 - 即时风险与主动建议。
+- Proactive advice loading 改为 recommendation row skeleton；失败态缩成 inline retry，不再占用整张大错误卡。
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
 - 使用中性错误文案，不再出现 `mock` 字样。

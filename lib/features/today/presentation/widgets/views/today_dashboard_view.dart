@@ -95,8 +95,8 @@ class _MobileTodayDashboard extends StatelessWidget {
     final sections = <Widget>[
       TodayTopBar(moment: dashboard.user.moment),
       TodayOverviewSection(dashboard: dashboard),
-      TodayAiSummarySection(dashboard: dashboard),
       TodayPrioritySection(dashboard: dashboard),
+      TodayAiSummarySection(dashboard: dashboard),
       const TodayRecommendationSection(),
       TodayTodoSection(dashboard: dashboard),
     ];
@@ -148,8 +148,6 @@ class _DesktopTodayDashboard extends StatelessWidget {
           const SizedBox(height: AppSpacingTokens.level6),
           TodayOverviewSection(dashboard: dashboard),
           const SizedBox(height: AppSpacingTokens.level6),
-          TodayAiSummarySection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -159,15 +157,19 @@ class _DesktopTodayDashboard extends StatelessWidget {
                   children: [
                     TodayPrioritySection(dashboard: dashboard),
                     const SizedBox(height: AppSpacingTokens.level6),
-                    TodayTodoSection(dashboard: dashboard),
+                    TodayAiSummarySection(dashboard: dashboard),
                   ],
                 ),
               ),
               const SizedBox(width: AppSpacingTokens.level6),
-              const Expanded(
+              Expanded(
                 flex: 5,
                 child: Column(
-                  children: [TodayRecommendationSection(compact: true)],
+                  children: [
+                    const TodayRecommendationSection(compact: true),
+                    const SizedBox(height: AppSpacingTokens.level6),
+                    TodayTodoSection(dashboard: dashboard),
+                  ],
                 ),
               ),
             ],

@@ -106,13 +106,14 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 derives `MaterialApp` light/dark themes from Forui `FThemeData` through
 `toApproximateMaterialTheme()`.
 
-- **Root theme** → `lib/core/theme/app_theme.dart` — Owns the app-level Forui light/dark theme
-  bootstrap
+- **Root theme** → `lib/theme/theme.dart` — Owns the app-level Forui theme-family catalog and stock
+  light/dark theme mapping
 - **Color token bridge** → `lib/core/design/app_colors.dart` — Semantic color enum used by
   data/domain layers; resolved through the current Forui theme in widgets
 - **Spacing/radius tokens** → `lib/core/design/app_spacing_tokens.dart`, `app_radius_tokens.dart` —
   Project layout vocabulary mapped to Forui’s scale; legacy aliases removed
-- **Theme preference** → `lib/core/theme/app_theme_controller.dart` — Persists only `ThemeMode`
+- **Theme preference** → `lib/core/theme/app_theme_controller.dart` — Persists both `ThemeMode`
+  and `theme.family`
   (`system / light / dark`)
 
 Shared page chrome is now Forui-based: child pages compose `FScaffold` and `FHeader` directly,

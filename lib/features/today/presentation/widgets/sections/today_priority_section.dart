@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
@@ -41,6 +41,7 @@ class TodayPrioritySection extends ConsumerWidget {
       actionLabel: l10n.todayManageAction,
       onAction: () => context.go(AppRoutes.record),
       child: FCard.raw(
+        style: todayCardStyle(context, tone: TodayCardTone.emphasis),
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
@@ -110,6 +111,16 @@ class _PriorityRow extends ConsumerWidget {
                   ),
                   if (item.progress != null) ...[
                     const SizedBox(height: AppSpacingTokens.level2),
+                    Text(
+                      item.detail,
+                      style: typography.body.sm.copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacingTokens.level2),
                     FDeterminateProgress(
                       value: item.progress!,
                       style: .delta(
@@ -135,30 +146,26 @@ class _PriorityRow extends ConsumerWidget {
                         ),
                       ),
                     ),
+                  ] else ...[
+                    const SizedBox(height: AppSpacingTokens.level2),
+                    Text(
+                      item.detail,
+                      style: typography.body.sm.copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ],
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
             IntrinsicWidth(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  AppSkeletonText(
-                    text: item.detail,
-                    style: typography.body.sm.copyWith(
-                      color: colors.mutedForeground,
-                      fontWeight: FontWeight.w800,
-                    ),
-                    textAlign: TextAlign.end,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    widthFactor: 0.76,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level2),
-                  _PriorityActionPill(item: item, onTap: onTap),
-                ],
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: _PriorityActionPill(item: item, onTap: onTap),
               ),
             ),
           ],

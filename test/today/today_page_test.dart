@@ -21,10 +21,45 @@ import 'package:luminous/features/today/presentation/providers/today_recommendat
 import 'package:luminous/features/today/presentation/widgets/views/today_dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/today_skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/theme/theme.dart';
 
 import 'today_test_helpers.dart';
 
 void main() {
+  testWidgets('Today page prioritizes priorities above AI summary on mobile', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final prioritiesTop = tester.getTopLeft(
+      find.text(l10n.todayPrioritySectionTitle),
+    );
+    final aiSummaryTop = tester.getTopLeft(find.text(l10n.todayAiSummaryTitle));
+
+    expect(prioritiesTop.dy, lessThan(aiSummaryTop.dy));
+  });
+
   testWidgets('Today page renders key mobile dashboard sections', (
     tester,
   ) async {
@@ -50,17 +85,13 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final scrollable = _todayDashboardScrollable();
-    final keys = <String>[
-      'today-health-summary-card',
-      'today-ai-summary-card',
-      'today-medication-card',
-      'today-water-card',
-      'today-recommendation-card',
-      'today-todo-card',
-    ];
+    expect(find.byKey(const Key('today-health-summary-card')), findsOneWidget);
+    expect(find.byKey(const Key('today-ai-summary-card')), findsOneWidget);
+    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
+    expect(find.byKey(const Key('today-water-card')), findsOneWidget);
 
-    for (final key in keys) {
+    final scrollable = _todayDashboardScrollable();
+    for (final key in ['today-recommendation-card', 'today-todo-card']) {
       final finder = find.byKey(Key(key));
       await tester.scrollUntilVisible(finder, 220, scrollable: scrollable);
       await tester.pump(const Duration(milliseconds: 400));
@@ -209,7 +240,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final expectedColor = FThemes.neutral.light.touch.colors.primaryForeground;
+    final expectedColor = appThemeData(
+      appDefaultThemeFamily,
+      Brightness.light,
+    ).colors.primaryForeground;
 
     final medicationAction = find.descendant(
       of: find.byKey(const Key('today-medication-card')),
@@ -479,9 +513,64 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.todayRecommendationErrorTitle), findsOneWidget);
-    expect(find.text(l10n.todayRecommendationErrorDescription), findsOneWidget);
+    expect(find.text(l10n.todayRecommendationErrorDescription), findsNothing);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
+
+  testWidgets(
+    'Today recommendation section shows row skeletons instead of spinner while loading',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            todayRepositoryProvider.overrideWithValue(
+              const MockTodayRepository(),
+            ),
+            todayRecommendationsRemoteDataSourceProvider.overrideWithValue(
+              _PendingTodayRecommendationsDataSource(),
+            ),
+          ],
+          child: const TestForuiApp(home: TodayPage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      final recommendationCard = find.byKey(
+        const Key('today-recommendation-card'),
+      );
+      await tester.scrollUntilVisible(
+        recommendationCard,
+        240,
+        scrollable: _todayDashboardScrollable(),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(
+        find.descendant(
+          of: recommendationCard,
+          matching: find.byType(FCircularProgress),
+        ),
+        findsNothing,
+      );
+      expect(
+        find.descendant(
+          of: recommendationCard,
+          matching: find.byType(AppInlineSkeletonBlock),
+        ),
+        findsWidgets,
+      );
+    },
+  );
 
   testWidgets('Pull-to-refresh renders RefreshIndicator', (tester) async {
     tester.view.devicePixelRatio = 1;
@@ -594,6 +683,19 @@ class _FailingTodayRecommendationsDataSource
     List<String>? excludeIds,
   }) async {
     throw Exception('test error');
+  }
+}
+
+class _PendingTodayRecommendationsDataSource
+    extends TodayRecommendationsRemoteDataSource {
+  _PendingTodayRecommendationsDataSource()
+    : super(api: TodayAnalysisApi(Dio(BaseOptions())));
+
+  @override
+  Future<List<TodayRecommendation>> fetchRecommendations({
+    List<String>? excludeIds,
+  }) {
+    return Completer<List<TodayRecommendation>>().future;
   }
 }
 

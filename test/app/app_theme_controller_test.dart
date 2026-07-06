@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
+import 'package:luminous/core/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -15,29 +16,50 @@ void main() {
     );
   });
 
-  test('theme controller restores and persists the selected mode', () async {
-    SharedPreferences.setMockInitialValues(<String, Object>{
-      'theme.mode': AppThemeModePreference.dark.storageValue,
-    });
-
-    final container = ProviderContainer.test();
-    addTearDown(container.dispose);
-
-    await expectLater(
-      container.read(appThemeControllerProvider.future),
-      completion(AppThemeModePreference.dark),
-    );
-
-    await container
-        .read(appThemeControllerProvider.notifier)
-        .setMode(AppThemeModePreference.light);
-
-    expect(
-      container.read(appThemeControllerProvider).requireValue,
-      AppThemeModePreference.light,
-    );
-
-    final preferences = await SharedPreferences.getInstance();
-    expect(preferences.getString('theme.mode'), 'light');
+  test('theme family defaults to blue for empty or unknown values', () {
+    expect(AppThemeFamily.fromStorage(null), AppThemeFamily.blue);
+    expect(AppThemeFamily.fromStorage('unexpected'), AppThemeFamily.blue);
   });
+
+  test(
+    'theme controller restores and persists the selected mode and family',
+    () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        'theme.mode': AppThemeModePreference.dark.storageValue,
+        'theme.family': AppThemeFamily.green.storageValue,
+      });
+
+      final container = ProviderContainer.test();
+      addTearDown(container.dispose);
+
+      await expectLater(
+        container.read(appThemeControllerProvider.future),
+        completion(
+          const AppThemePreference(
+            mode: AppThemeModePreference.dark,
+            family: AppThemeFamily.green,
+          ),
+        ),
+      );
+
+      await container
+          .read(appThemeControllerProvider.notifier)
+          .setMode(AppThemeModePreference.light);
+      await container
+          .read(appThemeControllerProvider.notifier)
+          .setFamily(AppThemeFamily.violet);
+
+      expect(
+        container.read(appThemeControllerProvider).requireValue,
+        const AppThemePreference(
+          mode: AppThemeModePreference.light,
+          family: AppThemeFamily.violet,
+        ),
+      );
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(preferences.getString('theme.mode'), 'light');
+      expect(preferences.getString('theme.family'), 'violet');
+    },
+  );
 }

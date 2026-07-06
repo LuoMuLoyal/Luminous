@@ -3,25 +3,19 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/theme/theme.dart';
 
 /// Forui-aware light theme used by tests.
-final FThemeData _foruiLight = FThemes.neutral.light.touch;
+final FThemeData _foruiLight = appThemeData(
+  appDefaultThemeFamily,
+  Brightness.light,
+);
 
 /// Forui-aware dark theme used by tests.
-final FThemeData _foruiDark = FThemes.neutral.dark.touch;
-
-ThemeData _materialTheme(FThemeData theme) {
-  final material = theme.toApproximateMaterialTheme();
-  return material.copyWith(
-    scaffoldBackgroundColor: theme.colors.background,
-    canvasColor: theme.colors.background,
-    cardColor: theme.colors.card,
-    dividerColor: theme.colors.border,
-    shadowColor: Colors.black.withValues(
-      alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
-    ),
-  );
-}
+final FThemeData _foruiDark = appThemeData(
+  appDefaultThemeFamily,
+  Brightness.dark,
+);
 
 /// A lightweight test app that wraps [child] with the same Forui theme
 /// bootstrap used by [LuminousApp].
@@ -42,8 +36,8 @@ class TestForuiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: _materialTheme(_foruiLight),
-      darkTheme: _materialTheme(_foruiDark),
+      theme: foruiMaterialTheme(_foruiLight),
+      darkTheme: foruiMaterialTheme(_foruiDark),
       themeMode: themeMode,
       locale: locale,
       debugShowCheckedModeBanner: false,
@@ -83,8 +77,8 @@ class TestForuiRouterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      theme: _materialTheme(_foruiLight),
-      darkTheme: _materialTheme(_foruiDark),
+      theme: foruiMaterialTheme(_foruiLight),
+      darkTheme: foruiMaterialTheme(_foruiDark),
       themeMode: themeMode,
       locale: locale,
       debugShowCheckedModeBanner: false,

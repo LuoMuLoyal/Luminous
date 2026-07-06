@@ -24,8 +24,8 @@
 
 ## 主题与通知
 
-- 主题设置现为模式-only：`system / light / dark`。
-- 旧调色板选择器和 `theme.palette` 持久化已作为 Forui 基础重置的一部分移除。
+- 主题设置现为双层选择：显示模式 `system / light / dark` + 颜色主题 `blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`。
+- 旧调色板选择器和 `theme.palette` 持久化仍已移除；当前只保留 `theme.mode` 与 `theme.family` 两个本地偏好。
 - 通知收件箱已真实化：
   - Today 与 Mine 铃铛图标上的未读红点由真实后端未读数驱动
   - 分组列表页（今天/昨天/更早）

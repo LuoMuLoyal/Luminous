@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -117,7 +118,12 @@ class _MobileBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return FBottomNavigationBar(
       index: currentIndex,
-      onChange: onSelectTab,
+      onChange: (index) {
+        if (index != currentIndex) {
+          HapticFeedback.selectionClick();
+        }
+        onSelectTab(index);
+      },
       safeAreaBottom: true,
       children: [
         for (final tab in ShellTab.values)

@@ -6,13 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/theme/styles/button_styles.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
 import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/theme/theme.dart';
 
 class LuminousApp extends ConsumerStatefulWidget {
   const LuminousApp({super.key, this.routerConfig});
@@ -24,22 +24,6 @@ class LuminousApp extends ConsumerStatefulWidget {
 }
 
 class _LuminousAppState extends ConsumerState<LuminousApp> {
-  static FThemeData _foruiLight() =>
-      _withButtonStyles(FThemes.neutral.light.touch);
-  static FThemeData _foruiDark() =>
-      _withButtonStyles(FThemes.neutral.dark.touch);
-
-  static FThemeData _withButtonStyles(FThemeData base) {
-    return base.copyWith(
-      buttonStyles: buttonStyles(
-        colors: base.colors,
-        typography: base.typography,
-        style: base.style,
-        touch: true,
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -81,26 +65,29 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       (_, _) {},
     );
 
-    final themeMode = ref
+    final themePreference = ref
         .watch(appThemeControllerProvider)
         .maybeWhen(
-          data: (preference) => preference.themeMode,
-          orElse: () => ThemeMode.system,
+          data: (preference) => preference,
+          orElse: () => const AppThemePreference(),
         );
+    final themeMode = themePreference.mode.themeMode;
+    final lightTheme = appThemeData(themePreference.family, Brightness.light);
+    final darkTheme = appThemeData(themePreference.family, Brightness.dark);
     final locale = ref.watch(appLocaleControllerProvider).asData?.value;
 
     return MaterialApp.router(
       onGenerateTitle: (context) =>
           AppLocalizations.of(context)?.appTitle ?? 'Luminous',
       debugShowCheckedModeBanner: false,
-      theme: _materialTheme(_foruiLight()),
-      darkTheme: _materialTheme(_foruiDark()),
+      theme: foruiMaterialTheme(lightTheme),
+      darkTheme: foruiMaterialTheme(darkTheme),
       themeMode: themeMode,
       locale: locale?.flutterLocale,
       builder: (context, child) => FTheme(
         data: Theme.of(context).brightness == Brightness.dark
-            ? _foruiDark()
-            : _foruiLight(),
+            ? darkTheme
+            : lightTheme,
         child: FToaster(child: child ?? const SizedBox.shrink()),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
@@ -134,18 +121,5 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         'App._syncLocaleFromHealthContext: locale backfill failed: $e',
       );
     }
-  }
-
-  ThemeData _materialTheme(FThemeData theme) {
-    final material = theme.toApproximateMaterialTheme();
-    return material.copyWith(
-      scaffoldBackgroundColor: theme.colors.background,
-      canvasColor: theme.colors.background,
-      cardColor: theme.colors.card,
-      dividerColor: theme.colors.border,
-      shadowColor: theme.colors.foreground.withValues(
-        alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
-      ),
-    );
   }
 }

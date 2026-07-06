@@ -4,9 +4,11 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/theme_preference_labels.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/theme/theme.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 
@@ -16,9 +18,9 @@ class ThemeSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final currentTheme =
+    final currentPreference =
         ref.watch(appThemeControllerProvider).asData?.value ??
-        AppThemeModePreference.system;
+        const AppThemePreference();
 
     return PageScaffold(
       title: l10n.mineSettingsThemeTitle,
@@ -29,7 +31,7 @@ class ThemeSettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _SectionLabel(label: l10n.settingsThemeAppearanceTitle),
+                _SectionLabel(label: l10n.settingsThemeModeSectionTitle),
                 const SizedBox(height: AppSpacingTokens.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -38,29 +40,56 @@ class ThemeSettingsPage extends ConsumerWidget {
                       key: const Key('theme-row-system'),
                       title: Text(l10n.mineThemeModeSystem),
                       suffix: SettingsSelectionIcon(
-                        selected: currentTheme == AppThemeModePreference.system,
+                        selected:
+                            currentPreference.mode ==
+                            AppThemeModePreference.system,
                       ),
-                      onPress: () =>
-                          _handleThemeTap(ref, AppThemeModePreference.system),
+                      onPress: () => _handleThemeModeTap(
+                        ref,
+                        AppThemeModePreference.system,
+                      ),
                     ),
                     FTile(
                       key: const Key('theme-row-light'),
                       title: Text(l10n.mineThemeModeLight),
                       suffix: SettingsSelectionIcon(
-                        selected: currentTheme == AppThemeModePreference.light,
+                        selected:
+                            currentPreference.mode ==
+                            AppThemeModePreference.light,
                       ),
-                      onPress: () =>
-                          _handleThemeTap(ref, AppThemeModePreference.light),
+                      onPress: () => _handleThemeModeTap(
+                        ref,
+                        AppThemeModePreference.light,
+                      ),
                     ),
                     FTile(
                       key: const Key('theme-row-dark'),
                       title: Text(l10n.mineThemeModeDark),
                       suffix: SettingsSelectionIcon(
-                        selected: currentTheme == AppThemeModePreference.dark,
+                        selected:
+                            currentPreference.mode ==
+                            AppThemeModePreference.dark,
                       ),
                       onPress: () =>
-                          _handleThemeTap(ref, AppThemeModePreference.dark),
+                          _handleThemeModeTap(ref, AppThemeModePreference.dark),
                     ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacingTokens.level5),
+                _SectionLabel(label: l10n.settingsThemeFamilySectionTitle),
+                const SizedBox(height: AppSpacingTokens.level3),
+                FTileGroup(
+                  style: settingsSubpageTileGroupStyle(context.theme),
+                  children: [
+                    for (final family in AppThemeFamily.values)
+                      FTile(
+                        key: Key('theme-family-row-${family.storageValue}'),
+                        title: Text(themeFamilyLabel(l10n, family)),
+                        suffix: SettingsSelectionIcon(
+                          selected: currentPreference.family == family,
+                        ),
+                        onPress: () => _handleThemeFamilyTap(ref, family),
+                      ),
                   ],
                 ),
               ],
@@ -72,11 +101,15 @@ class ThemeSettingsPage extends ConsumerWidget {
   }
 }
 
-Future<void> _handleThemeTap(
+Future<void> _handleThemeModeTap(
   WidgetRef ref,
   AppThemeModePreference preference,
 ) async {
   await ref.read(appThemeControllerProvider.notifier).setMode(preference);
+}
+
+Future<void> _handleThemeFamilyTap(WidgetRef ref, AppThemeFamily family) async {
+  await ref.read(appThemeControllerProvider.notifier).setFamily(family);
 }
 
 class _SectionLabel extends StatelessWidget {

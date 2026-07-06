@@ -22,7 +22,7 @@ class TodaySection extends StatelessWidget {
 
     final foreground = onAction == null
         ? colors.mutedForeground
-        : colors.foreground;
+        : colors.primary;
     final actionText = Text(
       actionLabel ?? '',
       style: TextStyle(

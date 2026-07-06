@@ -15,9 +15,11 @@ import 'package:luminous/features/settings/presentation/providers/user_settings_
 import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/app_state_views.dart';
 
 class TodayAiSummarySection extends ConsumerWidget {
   const TodayAiSummarySection({super.key, required this.dashboard});
@@ -57,6 +59,7 @@ class TodayAiSummarySection extends ConsumerWidget {
 
     return FCard.raw(
       key: const Key('today-ai-summary-card'),
+      style: todayCardStyle(context, tone: TodayCardTone.soft),
       child: Column(
         children: [
           Padding(
@@ -134,57 +137,96 @@ class TodayAiSummarySection extends ConsumerWidget {
                           }
                         },
                   size: FButtonSizeVariant.xs,
-                  variant: FButtonVariant.ghost,
+                  variant: FButtonVariant.secondary,
                   child: Text(actionLabel),
                 ),
               ],
             ),
           ),
           const AppDivider(),
-          if (content.summary != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacingTokens.level4,
-                AppSpacingTokens.level3,
-                AppSpacingTokens.level4,
-                AppSpacingTokens.level2,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  content.summary!,
-                  style: AppTypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700, letterSpacing: 0),
+          if (aiState.isLoading && !aiState.hasAnalysis)
+            const _AiSummaryLoadingState()
+          else ...[
+            if (content.summary != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacingTokens.level4,
+                  AppSpacingTokens.level3,
+                  AppSpacingTokens.level4,
+                  AppSpacingTokens.level2,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    content.summary!,
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0,
+                        ),
+                  ),
                 ),
               ),
-            ),
-          for (var index = 0; index < content.bullets.length; index += 1) ...[
-            _AiSummaryRow(item: content.bullets[index]),
-            if (index < content.bullets.length - 1)
-              AppDivider(color: colors.border.withValues(alpha: 0.62)),
+            for (var index = 0; index < content.bullets.length; index += 1) ...[
+              _AiSummaryRow(item: content.bullets[index]),
+              if (index < content.bullets.length - 1)
+                AppDivider(color: colors.border.withValues(alpha: 0.62)),
+            ],
+            if (content.footer != null)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacingTokens.level4,
+                  AppSpacingTokens.level2,
+                  AppSpacingTokens.level4,
+                  AppSpacingTokens.level3,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    content.footer!,
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(
+                          color: colors.mutedForeground,
+                          letterSpacing: 0,
+                        ),
+                  ),
+                ),
+              ),
           ],
-          if (content.footer != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacingTokens.level4,
-                AppSpacingTokens.level2,
-                AppSpacingTokens.level4,
-                AppSpacingTokens.level3,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  content.footer!,
-                  style: AppTypographyToken.level3
-                      .body(context)
-                      .copyWith(
-                        color: colors.mutedForeground,
-                        letterSpacing: 0,
-                      ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiSummaryLoadingState extends StatelessWidget {
+  const _AiSummaryLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacingTokens.level4,
+        AppSpacingTokens.level3,
+        AppSpacingTokens.level4,
+        AppSpacingTokens.level3,
+      ),
+      child: AppInlineSkeleton(
+        children: [
+          const AppInlineSkeletonBlock(height: 20, widthFactor: 0.72),
+          for (var index = 0; index < 3; index += 1)
+            const Row(
+              children: [
+                AppInlineSkeletonCircle(size: AppSpacingTokens.level5),
+                SizedBox(width: AppSpacingTokens.level4),
+                Expanded(
+                  child: AppInlineSkeletonBlock(height: 16, widthFactor: 0.92),
                 ),
-              ),
+              ],
             ),
+          const AppInlineSkeletonBlock(height: 14, widthFactor: 0.48),
         ],
       ),
     );

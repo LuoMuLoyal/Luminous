@@ -6,6 +6,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/app_divider.dart';
@@ -18,12 +19,12 @@ class TodayOverviewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     final items = buildOverviewItems(l10n, dashboard);
 
     return FCard.raw(
       key: const Key('today-health-summary-card'),
+      style: todayCardStyle(context, tone: TodayCardTone.emphasis),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacingTokens.level4,
@@ -58,22 +59,13 @@ class TodayOverviewSection extends StatelessWidget {
                   ),
                   child: Consumer(
                     builder: (context, ref, child) => FButton(
-                      variant: FButtonVariant.ghost,
+                      variant: FButtonVariant.secondary,
                       size: FButtonSizeVariant.xs,
                       onPress: () => ref.invalidate(todayDashboardProvider),
-                      prefix: Icon(
-                        FLucideIcons.refreshCw,
-                        size: 14,
-                        color: colors.primary,
-                      ),
+                      prefix: const Icon(FLucideIcons.refreshCw, size: 14),
                       child: Text(
                         l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-                        style: AppTypographyToken.level3
-                            .body(context)
-                            .copyWith(
-                              color: colors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),

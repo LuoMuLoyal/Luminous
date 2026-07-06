@@ -8,6 +8,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
 import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
@@ -30,6 +31,7 @@ class TodayRecommendationSection extends ConsumerWidget {
       onAction: () => _refresh(ref),
       child: FCard.raw(
         key: const Key('today-recommendation-card'),
+        style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: recommendationsAsync.when(
           data: (recommendations) {
             final rows = <Widget>[];
@@ -53,17 +55,11 @@ class TodayRecommendationSection extends ConsumerWidget {
             }
             return Column(children: rows);
           },
-          loading: () => const SizedBox(
-            height: 144,
-            child: Center(child: FCircularProgress()),
-          ),
-          error: (_, __) => AppStateErrorView(
+          loading: () => const _RecommendationLoadingState(),
+          error: (_, __) => _RecommendationErrorState(
             title: l10n.todayRecommendationErrorTitle,
-            description: l10n.todayRecommendationErrorDescription,
-            icon: FLucideIcons.circleAlert,
             actionLabel: l10n.todayRetryAction,
             onAction: () => _refresh(ref),
-            compact: true,
           ),
         ),
       ),
@@ -127,6 +123,87 @@ class TodayRecommendationSection extends ConsumerWidget {
         action: l10n.todayLearnMoreAction,
       ),
     };
+  }
+}
+
+class _RecommendationLoadingState extends StatelessWidget {
+  const _RecommendationLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      child: AppInlineSkeleton(
+        children: [
+          for (var index = 0; index < 3; index += 1) ...[
+            const Row(
+              children: [
+                AppInlineSkeletonCircle(size: AppSpacingTokens.level8),
+                SizedBox(width: AppSpacingTokens.level4),
+                Expanded(
+                  child: AppInlineSkeleton(
+                    spacing: AppSpacingTokens.level2,
+                    children: [
+                      AppInlineSkeletonBlock(height: 18, widthFactor: 0.72),
+                      AppInlineSkeletonBlock(height: 14, widthFactor: 0.9),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (index < 2) const AppDivider(),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _RecommendationErrorState extends StatelessWidget {
+  const _RecommendationErrorState({
+    required this.title,
+    required this.actionLabel,
+    required this.onAction,
+  });
+
+  final String title;
+  final String actionLabel;
+  final VoidCallback onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      child: Row(
+        children: [
+          TodayGlyphTile(
+            icon: FLucideIcons.circleAlert,
+            color: colors.primary,
+            size: AppSpacingTokens.level7,
+            radius: AppRadiusTokens.level3,
+            gradient: false,
+          ),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Text(
+              title,
+              style: AppTypographyToken.level4
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.level3),
+          FButton(
+            onPress: onAction,
+            variant: FButtonVariant.secondary,
+            size: FButtonSizeVariant.xs,
+            child: Text(actionLabel),
+          ),
+        ],
+      ),
+    );
   }
 }
 

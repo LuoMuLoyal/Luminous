@@ -19,14 +19,9 @@ class TodayPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardAsync = ref.watch(todayDashboardProvider);
     final colors = context.theme.colors;
-    final brightness = Theme.of(context).brightness;
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: brightness == Brightness.dark
-            ? colors.background
-            : colors.secondary.withValues(alpha: 0.32),
-      ),
+      decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
         child: LayoutBuilder(

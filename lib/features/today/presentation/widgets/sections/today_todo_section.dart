@@ -8,6 +8,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/shell/providers/shell_provider.dart';
 import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -38,6 +39,7 @@ class TodayTodoSection extends ConsumerWidget {
       title: l10n.todayTodoSectionTitle,
       child: FCard.raw(
         key: const Key('today-todo-card'),
+        style: todayCardStyle(context),
         child: Column(
           children: [
             for (var index = 0; index < items.length; index += 1) ...[
@@ -114,10 +116,10 @@ class _TodoRow extends StatelessWidget {
             const SizedBox(width: AppSpacingTokens.level3),
             DecoratedBox(
               decoration: BoxDecoration(
-                color: item.color.resolve(colors).withValues(alpha: 0.08),
+                color: colors.secondary.withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
                 border: Border.all(
-                  color: item.color.resolve(colors).withValues(alpha: 0.12),
+                  color: colors.border.withValues(alpha: 0.82),
                 ),
               ),
               child: Padding(
@@ -130,7 +132,7 @@ class _TodoRow extends StatelessWidget {
                   style: AppTypographyToken.level3
                       .body(context)
                       .copyWith(
-                        color: item.color.resolve(colors),
+                        color: colors.mutedForeground,
                         fontWeight: FontWeight.w700,
                       ),
                   maxLines: 1,

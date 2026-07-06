@@ -56,18 +56,27 @@ Last updated: 2026-07-06
   - `ResponsiveContentFrame` 支持 `padding` 覆盖。
   - `PageScaffold` 支持 `titleWidget` 与 `headerStyle`。
 - Phase 1 可见问题修复进行中：
+  - Today 页视觉层级重构完成：
+    - 根主题现改为直接使用 Forui 内置主题族：`theme.family` 持久化当前选择，`LuminousApp` 与测试主题统一从 `lib/theme/theme.dart` 的主题族目录映射到 stock `FThemes.*`；默认族为 `blue`，不再保留手写 sky-blue 定制色值。
+    - 移动端 Today 信息顺序调整为 `summary → priorities → AI summary → recommendations → todos`，优先事项不再被 AI 卡片压在首屏下方。
+    - Today 概览 / 优先事项 / AI summary / recommendation / todos 现在使用分层卡片语气（emphasis / soft / neutral），recommendation 的 loading 改为行骨架屏，失败态改为紧凑 inline retry。
+    - 根据视觉反馈，Today 条目卡片底色已统一收回纯白，只保留当前主题色边框和语义按钮，不再使用淡色填充。
+    - 顶部 `AI chat` 入口和通知按钮统一收敛到 Forui 语义按钮变体；优先事项详情移回主内容列，右侧仅保留行动按钮，降低拥挤感。
   - Report 页指标卡移动端 `BOTTOM OVERFLOWED BY 2.0 PIXELS` 已修复。
   - Today 页优先事项卡片右侧 action pill 文字颜色已修复，不再与背景融为一体；宽度改为 `IntrinsicWidth` 自然撑开，避免 “去服用” / “去喝水” 截断。
   - Today 页 AI 日总结 signed-out / disabled 空态 footer 已移除，只保留单条 bullet 提示，避免重复文案。
   - 登录提示弹窗（尚未登录 / 是否去登录）的取消/去登录按钮已改为横向布局，去登录位于右侧。
   - 通知页返回后若接口返回 401，`LucentDioClient` 现在会清理本地 session 并通过回调同步到 `authSessionProvider`，避免 UI 卡在“已登录但请求持续失败”的状态。
   - Today 页顶部标题从 36px 降到 30px，与其他 Tab 根页统一。
-  - 胶囊按钮统一收敛到 Forui 主题样式：使用 `dart run forui style create buttons` 生成
-    `lib/theme/styles/button_styles.dart`，将默认按钮圆角改为 `pill` 并接入 `FThemeData`。
+  - 胶囊按钮统一收敛到 Forui 按钮语义与圆角体系，不再依赖单独的 `button_styles.dart` 主题定制文件。
     - 删除 `AppPillButton` 中间层；Today/Record/Medicine/Report 顶部与操作行中的胶囊按钮
       全部改用标准 `FButton`，依靠主题默认获得一致的 pill 外观，仅在需要处保留内边距/最小宽度覆盖。
     - Today 页“AI 对话”、优先事项“去服用/去喝水”、Report 周期选择 pill、Record 日期选择 pill、
       Record 顶部 action chips、Medicine workspace header action chip 已统一。
+  - Mine / Settings 主题设置现为双层偏好：
+    - 显示模式仍保留 `system / light / dark`
+    - 新增 `theme.family`，可在 `blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc` 间切换
+    - 设置主页摘要显示为 `模式 · 主题族`，高级设置恢复默认值时会同时重置两项
     - 根据移动端截图反馈，将 touch 模式下 `md`/`sm`/`lg` 按钮的 `minHeight` 与垂直内边距各下调 4px，
       使胶囊按钮看起来更紧凑。
     - 扫描并继续统一了剩余自定义圆角的胶囊操作按钮：Medicine workspace quick actions、Search 源切换、
@@ -105,7 +114,7 @@ Last updated: 2026-07-06
   - **18 个 pre-existing 测试失败修复**：修复全部 18 个测试失败，包括路由常量迁移导致的不匹配（`app_back_button_test`）、provider 测试缺少 override（`today_dashboard_provider_test`、`auth_session_gate_test`）、shimmer 动画导致 `pumpAndSettle` 超时（`shell_page_test`、`today_ai_card_test`、`mine_page_test`、`medicine_page_test`）、真实 Dio 调用导致 pending timer（`today_ai_card_test`、`shell_page_test`、`medicine_page_test`、edit page tests）、signed-out 测试缺少 `mineRepositoryProvider` override（`mine_page_test`）、报告日期硬编码（`report_page_test`）。`flutter test` 896 passed, 0 failed。
   - **OpenAPI 客户端重新生成 + 调用方适配**：根据 Lucent 07-01 ~ 07-06 期间的 API 变更（Security PIN 替代 2FA、Daily Records 分页参数类型从 `String` 改为 `num?`/`DailyRecordKind?`、`UserSettingsDataDto` 新增必填 `securityPin` 字段），重新生成 `packages/lucent_openapi` 客户端并适配所有调用方。修复 `daily_record_remote_data_source.dart` 的参数类型映射，6 处测试文件补充 `securityPin` 必填参数。`flutter analyze` + `flutter test` 896 passed, 0 failed。
   - **Record 过滤器改用标准 FButton**：`_FilterChip` 从 `FButton.raw` + 自定义 `.delta(decoration: ...)` 改为标准 `FButton` + `variant: FButtonVariant.outline` + `selected: selected`，完全依赖 Forui 内置变体系统处理选中/未选中视觉差异；移除自定义 `AppColors` 参数，locked 标签改用 `suffix` 参数传入。
-  - **button_styles.dart 还原 Forui 默认**：还原 `button_styles.dart` 为 Forui CLI 生成原始代码，所有颜色引用恢复为 `colors.primary` / `colors.primaryForeground`，不再注入自定义品牌色。
+  - **Forui 主题定制文件已移除**：当前不再保留 `button_styles.dart` 或手写 colors/theme overrides，直接使用 Forui 内置主题族与标准按钮语义。
   - **Record 过滤器横向布局修复**：`FButton` 默认 `mainAxisSize: MainAxisSize.max` 导致在 `Wrap` 中撑满宽度，添加 `mainAxisSize: MainAxisSize.min` 恢复横向排列。
   - **primary FButton 黑底黑字修复**：Forui `FTypography` 的 `TextStyle` 携带 `color: colors.foreground`（近黑），当 `Text` 使用 `AppTypographyToken` style 时会覆盖 `FButton` 的 `DefaultTextStyle` 设置的 `colors.primaryForeground`（白）。修复 `RecordHeaderActionChip`、`MedicineHeaderActionChip` 中 `Text` 的 style，移除 `AppTypographyToken` 引用改为 `TextStyle(fontWeight: FontWeight.w700)`，让 `FButton` 的前景色正确传递。FAB 添加 `mainAxisSize: MainAxisSize.min`。
 

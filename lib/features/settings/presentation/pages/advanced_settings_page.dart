@@ -12,6 +12,7 @@ import 'package:luminous/features/settings/presentation/providers/settings_profi
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/theme/theme.dart';
 
 class AdvancedSettingsPage extends ConsumerWidget {
   const AdvancedSettingsPage({super.key});
@@ -55,6 +56,9 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         await ref
                             .read(appThemeControllerProvider.notifier)
                             .setMode(AppThemeModePreference.system);
+                        await ref
+                            .read(appThemeControllerProvider.notifier)
+                            .setFamily(appDefaultThemeFamily);
                         try {
                           await ref
                               .read(settingsProfileSyncProvider.notifier)

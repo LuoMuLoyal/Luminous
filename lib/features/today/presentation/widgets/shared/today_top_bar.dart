@@ -45,8 +45,6 @@ class _AssistantEntryButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
     final session = ref.watch(authSessionProvider);
 
     return FTooltip(
@@ -66,26 +64,12 @@ class _AssistantEntryButton extends ConsumerWidget {
             onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
           );
         },
-        variant: FButtonVariant.ghost,
+        variant: FButtonVariant.secondary,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        style: .delta(
-          decoration: .delta([
-            .all(
-              .shapeDelta(
-                color: colors.primary.withValues(alpha: 0.08),
-                shape: RoundedSuperellipseBorder(
-                  side: BorderSide(color: colors.border),
-                  borderRadius: context.theme.style.borderRadius.pill,
-                ),
-              ),
-            ),
-          ]),
-        ),
-        prefix: Icon(
+        prefix: const Icon(
           FLucideIcons.sparkles,
           size: AppSpacingTokens.level4,
-          color: colors.primary,
         ),
         child: Text(l10n.assistantEntryTitle),
       ),
@@ -110,7 +94,7 @@ class _NotificationButton extends ConsumerWidget {
         clipBehavior: Clip.none,
         children: [
           FButton(
-            variant: FButtonVariant.ghost,
+            variant: FButtonVariant.outline,
             size: FButtonSizeVariant.sm,
             onPress: () => context.push(AppRoutes.notifications),
             child: Icon(
