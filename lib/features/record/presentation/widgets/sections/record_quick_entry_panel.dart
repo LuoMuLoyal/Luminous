@@ -418,12 +418,7 @@ class _QuickRecordNoteButton extends StatelessWidget {
         isLocked ? FLucideIcons.lock : action.icon,
         color: action.accent.resolve(colors),
       ),
-      child: Text(
-        label,
-        style: AppTypographyToken.level5
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w700),
-      ),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
 }

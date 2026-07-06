@@ -6,6 +6,7 @@ import 'package:luminous/core/design/app_colors.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -210,12 +211,13 @@ class _TimelineCard extends StatelessWidget {
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
     return FTappable(
-      key: entry.recordId == null
-          ? null
-          : Key('record-timeline-entry-${entry.recordId}'),
+      key: Key('record-timeline-entry-index-$index'),
       onPress: entry.recordId != null
           ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
-          : null,
+          : () => pushAuthRequiredRoute(
+              context,
+              '/record/create?date=${formatRecordDate(DateTime.now())}',
+            ),
       child: FCard.raw(
         style: .delta(
           decoration: .shapeDelta(
@@ -268,15 +270,9 @@ class _TimelineCard extends StatelessWidget {
                           const SizedBox(width: AppSpacingTokens.level3),
                           FBadge.raw(
                             builder: (context, style) {
-                              final resolvedColor = entry.accent.resolve(
-                                colors,
-                              );
-                              final foreground = 0.12 > 0.5
-                                  ? colors.primaryForeground
-                                  : resolvedColor;
                               return DecoratedBox(
                                 decoration: ShapeDecoration(
-                                  color: resolvedColor.withValues(alpha: 0.12),
+                                  color: colors.secondary,
                                   shape: RoundedSuperellipseBorder(
                                     borderRadius: BorderRadius.circular(
                                       AppRadiusTokens.level2,
@@ -296,7 +292,7 @@ class _TimelineCard extends StatelessWidget {
                                         style: AppTypographyToken.level3
                                             .body(context)
                                             .copyWith(
-                                              color: foreground,
+                                              color: colors.foreground,
                                               fontWeight: FontWeight.w700,
                                               letterSpacing: 0,
                                             ),

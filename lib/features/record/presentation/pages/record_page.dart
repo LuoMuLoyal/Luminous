@@ -81,6 +81,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               isAuthLoading: isAuthLoading,
               selectedDate: selectedDate,
             ),
+            mainAxisSize: MainAxisSize.min,
             prefix: const Icon(FLucideIcons.sparkles),
             child: Text(l10n.recordNlpFabAction),
           )

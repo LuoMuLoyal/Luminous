@@ -6,6 +6,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
+import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -119,15 +120,16 @@ class _TimelineRow extends StatelessWidget {
               beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
               afterLineStyle: LineStyle(color: colors.border, thickness: 1),
               endChild: FTappable(
-                key: entry.recordId == null
-                    ? null
-                    : Key('record-timeline-entry-${entry.recordId}'),
+                key: Key('record-timeline-entry-index-$index'),
                 onPress: entry.recordId != null
                     ? () => pushAuthRequiredRoute(
                         context,
                         '/record/${entry.recordId}',
                       )
-                    : null,
+                    : () => pushAuthRequiredRoute(
+                        context,
+                        '/record/create?date=${formatRecordDate(DateTime.now())}',
+                      ),
                 child: Row(
                   children: [
                     Container(
@@ -191,13 +193,9 @@ class _TimelineRow extends StatelessWidget {
                         ),
                         child: FBadge.raw(
                           builder: (context, style) {
-                            final resolvedColor = entry.accent.resolve(colors);
-                            final foreground = 0.12 > 0.5
-                                ? colors.primaryForeground
-                                : resolvedColor;
                             return DecoratedBox(
                               decoration: ShapeDecoration(
-                                color: resolvedColor.withValues(alpha: 0.12),
+                                color: colors.secondary,
                                 shape: RoundedSuperellipseBorder(
                                   borderRadius: BorderRadius.circular(
                                     AppRadiusTokens.level2,
@@ -217,7 +215,7 @@ class _TimelineRow extends StatelessWidget {
                                       style: AppTypographyToken.level3
                                           .body(context)
                                           .copyWith(
-                                            color: foreground,
+                                            color: colors.foreground,
                                             fontWeight: FontWeight.w700,
                                             letterSpacing: 0,
                                           ),

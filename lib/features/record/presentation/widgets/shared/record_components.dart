@@ -53,12 +53,7 @@ class RecordHeaderActionChip extends StatelessWidget {
         prefix: Icon(icon, size: 18),
         child: iconOnly
             ? const SizedBox.shrink()
-            : Text(
-                label,
-                style: AppTypographyToken.level5
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
+            : Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
       ),
     );
   }

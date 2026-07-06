@@ -35,12 +35,7 @@ class MedicineHeaderActionChip extends StatelessWidget {
         ),
       ),
       prefix: Icon(icon, size: 18),
-      child: Text(
-        label,
-        style: AppTypographyToken.level5
-            .body(context)
-            .copyWith(fontWeight: FontWeight.w700),
-      ),
+      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
 }

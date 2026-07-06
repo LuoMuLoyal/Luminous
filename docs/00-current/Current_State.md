@@ -104,6 +104,10 @@ Last updated: 2026-07-06
   - **AppBreakpoints.assistantContent**：确认在 3 个文件中使用中，无需移除。
   - **18 个 pre-existing 测试失败修复**：修复全部 18 个测试失败，包括路由常量迁移导致的不匹配（`app_back_button_test`）、provider 测试缺少 override（`today_dashboard_provider_test`、`auth_session_gate_test`）、shimmer 动画导致 `pumpAndSettle` 超时（`shell_page_test`、`today_ai_card_test`、`mine_page_test`、`medicine_page_test`）、真实 Dio 调用导致 pending timer（`today_ai_card_test`、`shell_page_test`、`medicine_page_test`、edit page tests）、signed-out 测试缺少 `mineRepositoryProvider` override（`mine_page_test`）、报告日期硬编码（`report_page_test`）。`flutter test` 896 passed, 0 failed。
   - **OpenAPI 客户端重新生成 + 调用方适配**：根据 Lucent 07-01 ~ 07-06 期间的 API 变更（Security PIN 替代 2FA、Daily Records 分页参数类型从 `String` 改为 `num?`/`DailyRecordKind?`、`UserSettingsDataDto` 新增必填 `securityPin` 字段），重新生成 `packages/lucent_openapi` 客户端并适配所有调用方。修复 `daily_record_remote_data_source.dart` 的参数类型映射，6 处测试文件补充 `securityPin` 必填参数。`flutter analyze` + `flutter test` 896 passed, 0 failed。
+  - **Record 过滤器改用标准 FButton**：`_FilterChip` 从 `FButton.raw` + 自定义 `.delta(decoration: ...)` 改为标准 `FButton` + `variant: FButtonVariant.outline` + `selected: selected`，完全依赖 Forui 内置变体系统处理选中/未选中视觉差异；移除自定义 `AppColors` 参数，locked 标签改用 `suffix` 参数传入。
+  - **button_styles.dart 还原 Forui 默认**：还原 `button_styles.dart` 为 Forui CLI 生成原始代码，所有颜色引用恢复为 `colors.primary` / `colors.primaryForeground`，不再注入自定义品牌色。
+  - **Record 过滤器横向布局修复**：`FButton` 默认 `mainAxisSize: MainAxisSize.max` 导致在 `Wrap` 中撑满宽度，添加 `mainAxisSize: MainAxisSize.min` 恢复横向排列。
+  - **primary FButton 黑底黑字修复**：Forui `FTypography` 的 `TextStyle` 携带 `color: colors.foreground`（近黑），当 `Text` 使用 `AppTypographyToken` style 时会覆盖 `FButton` 的 `DefaultTextStyle` 设置的 `colors.primaryForeground`（白）。修复 `RecordHeaderActionChip`、`MedicineHeaderActionChip` 中 `Text` 的 style，移除 `AppTypographyToken` 引用改为 `TextStyle(fontWeight: FontWeight.w700)`，让 `FButton` 的前景色正确传递。FAB 添加 `mainAxisSize: MainAxisSize.min`。
 
 ## 相关文档
 
