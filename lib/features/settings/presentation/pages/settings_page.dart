@@ -10,6 +10,7 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -75,6 +76,10 @@ class SettingsPage extends ConsumerWidget {
 
                 // -- 通用 --
                 const _GeneralSection(),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 数据与存储 --
+                const _DataStorageSection(),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 通知 --
@@ -341,6 +346,13 @@ class _GeneralSection extends ConsumerWidget {
           onTap: () => context.push(AppRoutes.settingsMore),
         ),
         _SettingsNavigationTile(
+          tileKey: const Key('settings-row-health-profile'),
+          icon: FLucideIcons.heartPulse,
+          title: l10n.settingsHealthProfileTitle,
+          subtitle: l10n.settingsHealthProfileSubtitle,
+          onTap: () => pushAuthRequiredRoute(context, AppRoutes.mine),
+        ),
+        _SettingsNavigationTile(
           tileKey: const Key('settings-row-accessibility'),
           icon: FLucideIcons.accessibility,
           title: l10n.settingsAccessibilityTitle,
@@ -367,6 +379,44 @@ class _GeneralSection extends ConsumerWidget {
       AppLocale.system => l10n.settingsLanguageSystemLabel,
       AppLocale.en => l10n.settingsLanguageEnglishLabel,
       AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
+    };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Data & Storage section
+// ---------------------------------------------------------------------------
+
+class _DataStorageSection extends ConsumerWidget {
+  const _DataStorageSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final settingsAsync = ref.watch(dataStorageSettingsControllerProvider);
+    final settings =
+        settingsAsync.asData?.value ?? const DataStorageSettingsState();
+
+    return _SettingsGroup(
+      label: l10n.settingsDataStorageSectionTitle,
+      children: [
+        _SettingsNavigationTile(
+          tileKey: const Key('settings-row-data-storage'),
+          icon: FLucideIcons.database,
+          title: l10n.settingsDataStorageTitle,
+          subtitle: l10n.settingsDataStorageSubtitle,
+          value: _retentionLabel(l10n, settings.retentionPeriod),
+          onTap: () => context.push(AppRoutes.settingsDataStorage),
+        ),
+      ],
+    );
+  }
+
+  String _retentionLabel(AppLocalizations l10n, DataRetentionPeriod period) {
+    return switch (period) {
+      DataRetentionPeriod.thirtyDays => l10n.settingsDataStorageRetention30Days,
+      DataRetentionPeriod.ninetyDays => l10n.settingsDataStorageRetention90Days,
+      DataRetentionPeriod.forever => l10n.settingsDataStorageRetentionForever,
     };
   }
 }

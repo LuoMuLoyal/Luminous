@@ -58,6 +58,7 @@ class AppRoutes {
   static const settingsExport = '/settings/export';
   static const settingsHelp = '/settings/help';
   static const settingsAbout = '/settings/about';
+  static const settingsDataStorage = '/settings/data-storage';
   static const settingsSecurityPin = '/settings/security-pin';
 
   // -- Record --

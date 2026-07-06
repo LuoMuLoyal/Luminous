@@ -227,6 +227,10 @@ class _DesktopSidebar extends StatelessWidget {
                 onPress: () => context.push(AppRoutes.settingsExport),
               ),
               FSidebarItem(
+                label: Text(l10n?.settingsDataStorageTitle ?? '数据与存储'),
+                onPress: () => context.push(AppRoutes.settingsDataStorage),
+              ),
+              FSidebarItem(
                 label: Text(l10n?.sidebarSettingsSecurityPin ?? '安全锁'),
                 onPress: () => context.push(AppRoutes.settingsSecurityPin),
               ),

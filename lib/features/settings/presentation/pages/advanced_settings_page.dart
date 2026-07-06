@@ -8,6 +8,7 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/design/app_breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -80,6 +81,11 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         await ref
                             .read(
                               accessibilitySettingsControllerProvider.notifier,
+                            )
+                            .reset();
+                        await ref
+                            .read(
+                              dataStorageSettingsControllerProvider.notifier,
                             )
                             .reset();
                         if (!context.mounted) {

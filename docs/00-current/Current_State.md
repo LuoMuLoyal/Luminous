@@ -131,6 +131,13 @@ Last updated: 2026-07-06
   - 去边框化：侧边栏样式从自定义 `FSidebarStyle`（含 `Border.all` + `borderRadius.xl`）改为 `BoxDecoration(color: background)`，继承 Forui 极简主义美学。
   - 侧边栏新增 `FSidebarItem.children` 展开子项：记录、用药、我的、设置四个顶层项可展开显示子导航（共 15 个子项），Forui 原生箭头展开/收起。
   - 内容区新增 Forui `FBreadcrumb`：两级面包屑（App 名称 → 当前 Tab），替换原 `FCard.raw` 包裹。
+- 数据与存储设置：
+  - 新增 `DataStorageSettingsController`（纯前端 SharedPreferences）：`DataRetentionPeriod`（30 天 / 90 天 / 永久）、`ImageQualityPreference`（标准 / 省流）、`SyncPreference`（仅 Wi-Fi / Wi-Fi 与移动网络）。
+  - 新增 `DataStorageSettingsPage`：三段式选择列表（离线保留 → 图片质量 → 同步设置），复用 `SettingsSelectionIcon` + `settingsSubpageTileGroupStyle`。
+  - 设置主页新增「数据与存储」分组（通用与通知之间），摘要显示当前保留期；高级设置「恢复默认」同步重置数据存储偏好。
+  - 桌面侧边栏设置子项新增「数据与存储」入口。
+- 健康档案快捷入口：
+  - 设置页通用分组新增「健康档案」入口（`heartPulse` 图标），直达 mine 功能区的健康档案编辑页。
 
 ## 相关文档
 

@@ -5,6 +5,7 @@ import 'package:luminous/features/settings/presentation/pages/accessibility_sett
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_storage_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/dnd_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
@@ -84,6 +85,13 @@ final settingsRoutes = [
         path: 'about',
         pageBuilder: (context, state) =>
             slidePage(key: state.pageKey, child: const AboutSettingsPage()),
+      ),
+      GoRoute(
+        path: 'data-storage',
+        pageBuilder: (context, state) => slidePage(
+          key: state.pageKey,
+          child: const DataStorageSettingsPage(),
+        ),
       ),
       GoRoute(
         path: 'security-pin',
