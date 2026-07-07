@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MealAnalysisStatusBadge extends StatelessWidget {

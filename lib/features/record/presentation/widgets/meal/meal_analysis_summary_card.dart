@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/entities/candidates.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
+import 'package:luminous/features/record/presentation/pages/create.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../auth/test_helpers.dart';
+
+class _FakeRepo extends DailyRecordRepository {
+  @override
+  Future<DailyRecordItem> get(String id) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+      throw UnimplementedError();
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
+      throw UnimplementedError();
+  @override
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async => throw UnimplementedError();
+  @override
+  Future<void> delete(String id) async {}
+}
+
+void main() {
+  testWidgets('RecordCreatePage renders when authenticated', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(_FakeRepo()),
+        ],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(path: '/', builder: (_, __) => const RecordCreatePage()),
+              GoRoute(
+                path: '/home',
+                builder: (_, __) => const Scaffold(body: Text('Home')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(RecordCreatePage), findsOneWidget);
+  });
+}
