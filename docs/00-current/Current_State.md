@@ -172,6 +172,12 @@ Last updated: 2026-07-07
   - **alchemist** ^0.14.0 — Golden 测试框架（替代 discontinued 的 `golden_toolkit`），新建 `test/golden/` 目录，3 个 golden 测试 + 6 个基线图
   - **patrol** ^4.6.1 — 原生系统交互 E2E 框架，`patrol_cli` v4.4.0 全局安装，新建 `integration_test/patrol/` 目录 + `patrol.yaml` 配置
   - `flutter analyze` — No issues found! `flutter test` — 904 passed, 0 failed。
+- Mine 档案完整度提示完成（Brainstorm E 项）：
+  - 新增 `MineCompletenessNotice` 组件，从 `MineProfileSnapshot` 现有字段派生缺失项（基础信息 / 过敏史 / 当前用药），每项展示安全影响说明 + "去完善"操作按钮
+  - 档案完整时自动隐藏；未登录时不渲染
+  - 修复 Archive Section 状态 badge 颜色： "待补充" 从 `primary` 改为 `destructive`，"已完善" 从 `primary` 改为 `mutedForeground`
+  - 新增 10 个 ARB key（zh + en），3 个新测试
+  - `flutter analyze` — No issues found! `flutter test test/mine/page_test.dart` — 14 passed, 0 failed
 
 ## 相关文档
 

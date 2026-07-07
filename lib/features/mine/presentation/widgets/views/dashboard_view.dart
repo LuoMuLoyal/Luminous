@@ -60,6 +60,13 @@ class MineDashboardView extends StatelessWidget {
           key: const Key('mine-status-overview'),
           dashboard: dashboard,
         ),
+        if (dashboard.account.isAuthenticated) ...[
+          const SizedBox(height: AppSpacingTokens.level5),
+          MineCompletenessNotice(
+            key: const Key('mine-completeness-notice'),
+            profile: dashboard.profile,
+          ),
+        ],
         const SizedBox(height: AppSpacingTokens.level5),
         MineArchiveSection(
           key: const Key('mine-archive-section'),
@@ -91,6 +98,13 @@ class MineDashboardView extends StatelessWidget {
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
+              if (dashboard.account.isAuthenticated) ...[
+                const SizedBox(height: AppSpacingTokens.level5),
+                MineCompletenessNotice(
+                  key: const Key('mine-completeness-notice'),
+                  profile: dashboard.profile,
+                ),
+              ],
               const SizedBox(height: AppSpacingTokens.level5),
               MineArchiveSection(
                 key: const Key('mine-archive-section'),

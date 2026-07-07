@@ -15,6 +15,7 @@ import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/completeness_notice.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -276,7 +277,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final basicInfo = find.text(l10n.mineArchiveBasicTitle);
+    final basicInfo = find.descendant(
+      of: find.byKey(const Key('mine-archive-section')),
+      matching: find.text(l10n.mineArchiveBasicTitle),
+    );
     await tester.ensureVisible(basicInfo);
     await tester.tap(basicInfo);
     await tester.pumpAndSettle();
@@ -391,6 +395,119 @@ void main() {
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),
     );
+  });
+
+  testWidgets('Mine completeness notice shows gaps when profile incomplete', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await _pumpMinePage(tester);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    // _mockSnapshot has heightCm: null → basicInfoCompleted is false
+    expect(find.text(l10n.mineCompletenessGapTitle), findsOneWidget);
+    final notice = find.byType(MineCompletenessNotice);
+    expect(
+      find.descendant(
+        of: notice,
+        matching: find.text(l10n.mineCompletenessGapBasicInfo),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: notice,
+        matching: find.text(l10n.mineCompletenessGapBasicInfoDesc),
+      ),
+      findsOneWidget,
+    );
+    // Allergies and medicines are present in _mockSnapshot → no gaps for those
+    expect(
+      find.descendant(
+        of: notice,
+        matching: find.text(l10n.mineCompletenessGapAllergy),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: notice,
+        matching: find.text(l10n.mineCompletenessGapMedicine),
+      ),
+      findsNothing,
+    );
+  });
+
+  testWidgets('Mine completeness notice hidden when profile complete', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _EmailSignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_completeSnapshot),
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) => 0),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.mineCompletenessGapTitle), findsNothing);
+  });
+
+  testWidgets('Mine completeness notice hidden when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedOutAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => throw Exception('should not fetch when signed out'),
+          ),
+          mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text(l10n.mineCompletenessGapTitle), findsNothing);
   });
 
   testWidgets('Mine page does not render campus services section', (
@@ -545,6 +662,31 @@ final _mockSnapshot = const HealthContextSnapshot(
     birthDate: '1999-01-15',
     sexAtBirth: null,
     heightCm: null,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);
+
+final _completeSnapshot = const HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 27,
+    onboardingCompleted: true,
+    activeAllergyCount: 2,
+    conditionCount: 1,
+    currentMedicineCount: 3,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: '1999-01-15',
+    sexAtBirth: null,
+    heightCm: 170.0,
     bloodType: null,
     locale: null,
     timezone: null,

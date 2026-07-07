@@ -126,8 +126,8 @@ class _ArchiveRow extends StatelessWidget {
                       .body(context)
                       .copyWith(
                         color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                            ? context.theme.colors.primary
-                            : context.theme.colors.primary,
+                            ? context.theme.colors.destructive
+                            : context.theme.colors.mutedForeground,
                         fontWeight: FontWeight.w700,
                       ),
                 ),
