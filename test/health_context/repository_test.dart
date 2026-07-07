@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
 void main() {
   group('health-context write payloads', () {

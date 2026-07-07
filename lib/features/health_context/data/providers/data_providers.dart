@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
-import 'package:luminous/features/health_context/data/mappers/health_context_mapper.dart';
-import 'package:luminous/features/health_context/data/repositories/lucent_health_context_repository.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/health_context/data/mappers/mapper.dart';
+import 'package:luminous/features/health_context/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/repositories/repository.dart';
 
 final healthContextMapperProvider = Provider<HealthContextMapper>(
   (ref) => HealthContextMapper(),

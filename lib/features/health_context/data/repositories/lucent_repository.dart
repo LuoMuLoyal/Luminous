@@ -1,10 +1,10 @@
 // ignore_for_file: prefer_initializing_formals
 
-import 'package:luminous/features/health_context/data/datasources/health_context_remote_data_source.dart';
-import 'package:luminous/features/health_context/data/mappers/health_context_mapper.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
-import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
+import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/health_context/data/mappers/mapper.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/health_context/domain/repositories/repository.dart';
 
 /// Lucent-backed [HealthContextRepository] implementation.
 class LucentHealthContextRepository implements HealthContextRepository {

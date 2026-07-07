@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'health_context_snapshot.freezed.dart';
+part 'snapshot.freezed.dart';
 
 /// Aggregate health context snapshot fetched from GET /api/v1/user/health-context.
 @freezed

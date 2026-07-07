@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 
 /// Maps Lucent OpenAPI DTOs to domain entities.
 class HealthContextMapper {
