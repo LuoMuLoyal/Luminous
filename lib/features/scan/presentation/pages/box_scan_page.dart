@@ -7,13 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
-import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
-import 'package:luminous/features/scan/presentation/widgets/medicine_recognize_dialog.dart';
+import 'package:luminous/features/scan/domain/services/text_matcher.dart';
+import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 
 enum _ScanMethod { ocr, ai }
 

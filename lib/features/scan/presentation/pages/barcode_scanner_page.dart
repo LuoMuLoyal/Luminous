@@ -7,7 +7,7 @@ import 'package:luminous/app/router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';

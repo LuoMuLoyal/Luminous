@@ -1,9 +1,9 @@
-// ignore_for_file: use_of_void_result
+﻿// ignore_for_file: use_of_void_result
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/network/network_providers.dart';
 
 /// Helper to extract typed data from Dio Response.
 dynamic _extractData(Response<void> r) => r.data;

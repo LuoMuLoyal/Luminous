@@ -5,8 +5,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/scan/domain/services/medicine_text_matcher.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/scan/domain/services/text_matcher.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRecognizeDialog extends StatefulWidget {
