@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_result_code.dart';
+import 'package:luminous/core/network/result_code.dart';
 
 void main() {
   group('LucentResultCode', () {

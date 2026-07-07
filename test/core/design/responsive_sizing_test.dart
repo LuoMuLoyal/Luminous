@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/app_responsive_sizing.dart';
+import 'package:luminous/core/design/responsive_sizing.dart';
 
 /// A minimal BuildContext stand-in for responsive sizing tests.
 ///

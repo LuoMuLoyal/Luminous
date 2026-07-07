@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_session_store.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
 // ── Session Fakes ─────────────────────────────────────────────
 

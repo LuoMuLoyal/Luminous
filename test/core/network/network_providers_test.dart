@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_dio_client.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/core/network/lucent_session_store.dart';
+import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/session_store.dart';
 
 /// In-memory session store for testing.
 class _MemoryStore implements LucentSessionStore {

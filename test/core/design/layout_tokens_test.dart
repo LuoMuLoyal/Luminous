@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/app_layout_tokens.dart';
-import 'package:luminous/core/design/app_spacing_tokens.dart';
+import 'package:luminous/core/design/layout_tokens.dart';
+import 'package:luminous/core/design/spacing_tokens.dart';
 
 void main() {
   group('AppLayoutTokens.resolve', () {

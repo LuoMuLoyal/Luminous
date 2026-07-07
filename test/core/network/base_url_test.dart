@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
-import 'package:luminous/core/network/lucent_base_url.dart';
+import 'package:luminous/core/network/base_url.dart';
 
 void main() {
   group('LucentBaseUrl', () {

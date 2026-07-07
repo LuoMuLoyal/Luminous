@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 
 import '../../helpers/test_forui_app.dart';
 

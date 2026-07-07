@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_dio_client.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/network/lucent_session_store.dart';
+import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/session_store.dart';
 
 /// A session store that stores tokens in memory.
 class _MemorySessionStore implements LucentSessionStore {

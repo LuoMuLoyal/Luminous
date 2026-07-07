@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/app_radius_tokens.dart';
+import 'package:luminous/core/design/radius_tokens.dart';
 
 void main() {
   group('AppRadiusTokens', () {

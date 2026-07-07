@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/network/lucent_error_mapper.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 
 void main() {
   group('LucentErrorMapper', () {

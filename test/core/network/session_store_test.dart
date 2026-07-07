@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_session_store.dart';
+import 'package:luminous/core/network/session_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
