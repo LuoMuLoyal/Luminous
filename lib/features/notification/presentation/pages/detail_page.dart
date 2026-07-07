@@ -5,15 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class NotificationDetailPage extends ConsumerWidget {

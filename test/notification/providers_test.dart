@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import '../auth/auth_test_helpers.dart' as auth_helpers;
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
+import '../auth/test_helpers.dart' as auth_helpers;
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 
 // ── Fake NotificationsApi ───────────────────────────────────────────────────
 

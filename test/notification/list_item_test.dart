@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/notification/presentation/widgets/notification_list_item.dart';
+import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 
 import '../helpers/test_forui_app.dart';
 

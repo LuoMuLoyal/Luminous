@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/notification/presentation/pages/notification_detail_page.dart';
-import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
+import 'package:luminous/features/notification/presentation/pages/detail_page.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
