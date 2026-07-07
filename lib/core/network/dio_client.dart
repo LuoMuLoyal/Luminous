@@ -2,11 +2,11 @@
 
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
+import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/lucent_envelope.dart';
-import 'package:luminous/core/network/lucent_result_code.dart';
-import 'package:luminous/core/network/lucent_session_store.dart';
+import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/core/network/session_store.dart';
 
 /// Luminous 对 Lucent OpenAPI 客户端的统一封装入口。
 ///

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// 全页骨架屏，展示一组垂直排列的 shimmer 块。

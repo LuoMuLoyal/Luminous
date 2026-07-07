@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/network/api.dart';
 
 final lucentBaseUrlProvider = Provider<String>((ref) {
   // In release mode, always use the compile-time default.

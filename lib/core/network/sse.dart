@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
+import 'package:luminous/core/network/api_exception.dart';
 
 class LucentSseEvent {
   const LucentSseEvent({required this.event, required this.data});

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
+import 'package:luminous/core/network/api_exception.dart';
 
 abstract final class LucentErrorMapper {
   static LucentApiException fromObject(Object error) {

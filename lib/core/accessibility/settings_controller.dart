@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'accessibility_settings_controller.freezed.dart';
+part 'settings_controller.freezed.dart';
 
 enum FontSizePreference {
   small('small', 0.85),
