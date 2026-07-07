@@ -53,6 +53,7 @@ class MockReportRepository implements ReportRepository {
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
+    generatedAt: '2026-07-07T14:32:00.000Z',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,
@@ -161,6 +162,7 @@ class MockReportRepository implements ReportRepository {
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
+    generatedAt: '2026-07-07T14:32:00.000Z',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

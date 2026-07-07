@@ -6,6 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/readiness_section.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -31,6 +32,11 @@ class ReportDashboardView extends StatelessWidget {
     this.exportRequestInFlight = const DataExportRequestInFlightState(
       inFlight: false,
     ),
+    this.isPreview = false,
+    this.generatedAtLabel = '',
+    this.onSignIn,
+    this.onContinueRecord,
+    this.onSync,
   });
 
   final ReportDashboard dashboard;
@@ -47,6 +53,11 @@ class ReportDashboardView extends StatelessWidget {
   final ValueChanged<ReportDataKind>? onMetricSelected;
   final DataExportRequestDataDto? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
+  final bool isPreview;
+  final String generatedAtLabel;
+  final VoidCallback? onSignIn;
+  final VoidCallback? onContinueRecord;
+  final VoidCallback? onSync;
 
   @override
   Widget build(BuildContext context) {
@@ -80,31 +91,31 @@ class ReportDashboardView extends StatelessWidget {
   }
 
   Widget _buildMobileLayout({required AppLocalizations l10n}) {
-    final showInsufficientBanner = _shouldShowInsufficientBanner();
-    final insufficientMetricCount = _insufficientMetricCount();
+    final readinessStatus = _mobileReadinessStatus();
+    final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showInsufficientBanner) ...[
-          _DataInsufficientBanner(
-            l10n: l10n,
-            insufficientMetricCount: insufficientMetricCount,
-          ),
-          const SizedBox(height: AppSpacingTokens.level4),
-        ],
+        ReportReadinessSection(
+          status: readinessStatus,
+          generatedAtLabel: generatedAtLabel,
+          insufficientMetricCount: _mobileInsufficientMetricCount(),
+          l10n: l10n,
+          onSignIn: onSignIn,
+          onContinueRecord: onContinueRecord,
+          onGenerate: onGenerateAiSummary == null
+              ? null
+              : () {
+                  onGenerateAiSummary!();
+                },
+          onSync: onSync,
+        ),
+        const SizedBox(height: AppSpacingTokens.level4),
         ReportScoreHero(
           key: const Key('report-score-hero'),
           dashboard: dashboard,
           l10n: l10n,
-        ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        ReportMetricsGrid(
-          key: const Key('report-metrics-grid'),
-          dashboard: dashboard,
-          metrics: dashboard.metrics,
-          l10n: l10n,
-          onMetricSelected: onMetricSelected,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         ReportTrendSection(
@@ -113,6 +124,7 @@ class ReportDashboardView extends StatelessWidget {
           selectedQuery: dashboardQuery,
           onQueryChanged: onDashboardQueryChanged ?? (_) {},
           l10n: l10n,
+          showRangePill: false,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         ReportFindingsSection(
@@ -120,39 +132,43 @@ class ReportDashboardView extends StatelessWidget {
           findings: dashboard.findings,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        ReportAiSummarySection(
-          key: const Key('report-ai-summary-section'),
-          dashboard: dashboard,
-          canAccessProtectedData: canAccessProtectedData,
-          aiSummariesEnabled: aiSummariesEnabled,
-          aiState: aiSummaryState,
-          selectedRange: aiSummaryRange,
-          onRangeChanged: onAiSummaryRangeChanged,
-          onGenerate: onGenerateAiSummary,
-          l10n: l10n,
-        ),
-        const SizedBox(height: AppSpacingTokens.level5),
-        ReportExportSection(
-          key: const Key('report-export-section'),
-          actions: dashboard.exportActions,
-          latestRequest: latestExportRequest,
-          requestInFlight: exportRequestInFlight,
-          onActionTap: onExportActionTap,
-          l10n: l10n,
-          isDataInsufficient: _shouldShowInsufficientBanner(),
-        ),
-        const SizedBox(height: AppSpacingTokens.level5),
-        ReportPatternsSection(
-          key: const Key('report-patterns-section'),
-          patterns: dashboard.patterns,
-          l10n: l10n,
-        ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        ReportReferenceNotice(
-          key: const Key('report-reference-notice'),
-          l10n: l10n,
-        ),
+        if (!canShowFullReport) ...[
+          const SizedBox(height: AppSpacingTokens.level4),
+          _ReportLockedFeaturesHint(
+            message: readinessStatus == ReportReadinessStatus.signedOut
+                ? l10n.reportLockedFeaturesSignedOutHint
+                : l10n.reportLockedFeaturesInsufficientHint,
+          ),
+        ],
+        if (canShowFullReport) ...[
+          const SizedBox(height: AppSpacingTokens.level4),
+          ReportAiSummarySection(
+            key: const Key('report-ai-summary-section'),
+            dashboard: dashboard,
+            canAccessProtectedData: canAccessProtectedData,
+            aiSummariesEnabled: aiSummariesEnabled,
+            aiState: aiSummaryState,
+            selectedRange: aiSummaryRange,
+            onRangeChanged: onAiSummaryRangeChanged,
+            onGenerate: onGenerateAiSummary,
+            l10n: l10n,
+          ),
+          const SizedBox(height: AppSpacingTokens.level5),
+          ReportExportSection(
+            key: const Key('report-export-section'),
+            actions: dashboard.exportActions,
+            latestRequest: latestExportRequest,
+            requestInFlight: exportRequestInFlight,
+            onActionTap: onExportActionTap,
+            l10n: l10n,
+          ),
+          const SizedBox(height: AppSpacingTokens.level5),
+          ReportPatternsSection(
+            key: const Key('report-patterns-section'),
+            patterns: dashboard.patterns,
+            l10n: l10n,
+          ),
+        ],
       ],
     );
   }
@@ -267,6 +283,24 @@ class ReportDashboardView extends StatelessWidget {
         .where((m) => m.status == ReportStatus.insufficientData)
         .length;
   }
+
+  int _mobileInsufficientMetricCount() {
+    return dashboard.metrics
+        .where((metric) => metric.status == ReportStatus.insufficientData)
+        .length;
+  }
+
+  ReportReadinessStatus _mobileReadinessStatus() {
+    if (isPreview || !canAccessProtectedData) {
+      return ReportReadinessStatus.signedOut;
+    }
+    if (dashboard.metrics.isEmpty ||
+        dashboard.score.status == ReportStatus.insufficientData ||
+        _mobileInsufficientMetricCount() > 0) {
+      return ReportReadinessStatus.insufficient;
+    }
+    return ReportReadinessStatus.ready;
+  }
 }
 
 class _DataInsufficientBanner extends StatelessWidget {
@@ -324,6 +358,36 @@ class _DataInsufficientBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ReportLockedFeaturesHint extends StatelessWidget {
+  const _ReportLockedFeaturesHint({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return FCard.raw(
+      child: FTile(
+        prefix: FAvatar.raw(
+          child: Icon(
+            FLucideIcons.lock,
+            color: colors.primary,
+            size: AppSpacingTokens.level4,
+          ),
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.reportLockedFeaturesTitle,
+          style: AppTypographyToken.level4
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w800),
+        ),
+        subtitle: Text(message),
       ),
     );
   }

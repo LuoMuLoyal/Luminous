@@ -1547,9 +1547,35 @@
   "reportRangePickerTitle": "Select report period",
   "reportRangeCustom": "Custom",
   "reportGenerateAction": "Generate summary",
+  "reportContinueRecordAction": "Keep recording",
   "reportSyncAction": "Sync",
   "reportSnapshotStatus": "Showing the last report snapshot",
   "reportSnapshotHint": "Generate or sync to update",
+  "reportReadinessPreviewBadge": "Preview",
+  "reportReadinessInsufficientBadge": "Insufficient data",
+  "reportReadinessReadyBadge": "Ready",
+  "reportReadinessSignedOutTitle": "Full report is not unlocked yet",
+  "reportReadinessSignedOutDescription": "Sign in to view the real last 7 days report aggregation.",
+  "reportReadinessInsufficientTitle": "There is not enough data for a full report yet",
+  "reportReadinessInsufficientDescription": "Keep recording and the app will fill in trends, summaries, and exportable content.",
+  "reportReadinessReadyTitle": "Your last 7 days report is ready",
+  "reportReadinessReadyDescription": "You can now view the full report, generate a summary, and export it.",
+  "reportReadinessUpdatedAt": "Currently showing data updated at {time}",
+  "@reportReadinessUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReadinessMissingMetricsHint": "{count} metric(s) still need more data.",
+  "@reportReadinessMissingMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportScoreTitle": "Report preview score",
   "reportScoreOutOf": "preview / {max}",
   "@reportScoreOutOf": {
@@ -1633,6 +1659,9 @@
   "reportFindingsEmptyTitle": "No key findings yet",
   "reportFindingsEmptyBody": "Keep recording health data and the system will automatically discover notable changes and trends.",
   "reportExportInsufficientReason": "Export is unavailable with insufficient data. Please add more records first.",
+  "reportLockedFeaturesTitle": "Full report stays collapsed for now",
+  "reportLockedFeaturesSignedOutHint": "Sign in and add enough records to unlock summaries, PDF export, print preview, and deeper pattern analysis.",
+  "reportLockedFeaturesInsufficientHint": "Add more records to unlock summaries, PDF export, print preview, and deeper pattern analysis.",
   "reportErrorTitle": "Report did not load this time",
   "reportErrorDescription": "Report data did not load this time. Try syncing again.",
   "reportSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",

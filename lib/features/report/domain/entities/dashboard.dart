@@ -33,6 +33,7 @@ abstract class ReportDashboard with _$ReportDashboard {
     required ReportDashboardRange range,
     required String startDate,
     required String endDate,
+    required String generatedAt,
     required ReportHealthScore score,
     required List<ReportMetric> metrics,
     required List<ReportTrendSeries> trends,
@@ -47,6 +48,7 @@ abstract class ReportDashboard with _$ReportDashboard {
     range: ReportDashboardRange.last7Days,
     startDate: '----.--.--',
     endDate: '----.--.--',
+    generatedAt: '1970-01-01T00:00:00.000Z',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

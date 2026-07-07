@@ -31,6 +31,8 @@ Persisted preference keys:
    layers for assistant l10n.
 - Report AI summary state copy such as generate/loading/error/disabled hints is owned by the Report
    ARB entries, not by repository/domain fallback strings.
+- Report readiness state copy such as status badges, updated-at wording, locked-feature hints, and
+  keep-recording CTA labels is owned by the Report ARB entries.
 - Record natural-language intake strings such as bottom-sheet title, parse/save actions, candidate
    counts, selection hints, partial-save toasts, candidate failure hints, and per-kind candidate
    editor labels are owned by the Record ARB entries.

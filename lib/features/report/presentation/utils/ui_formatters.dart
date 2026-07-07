@@ -13,3 +13,17 @@ String reportDashboardDateRangeLabel(
   final formatter = DateFormat(pattern, locale);
   return '${formatter.format(start)} - ${formatter.format(end)}';
 }
+
+String reportDashboardGeneratedAtLabel(
+  BuildContext context,
+  String generatedAt,
+) {
+  final locale = Localizations.localeOf(context).toString();
+  final generated = DateTime.tryParse(generatedAt)?.toLocal();
+  if (generated == null) {
+    return '';
+  }
+
+  final pattern = locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm';
+  return DateFormat(pattern, locale).format(generated);
+}

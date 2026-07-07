@@ -23,7 +23,7 @@ import '../today/test_helpers.dart';
 
 void main() {
   testWidgets(
-    'Report page renders contract-backed sections for signed-in user',
+    'Report page renders readiness-first layout for signed-in ready mobile state',
     (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(390, 844);
@@ -38,7 +38,7 @@ void main() {
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reportRepositoryProvider.overrideWithValue(
-              const MockReportRepository(),
+              _FixedReportRepository(_readyDashboard),
             ),
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
@@ -59,28 +59,24 @@ void main() {
       ).format(now.subtract(const Duration(days: 7)));
       final endLabel = DateFormat('M月d日', 'zh').format(now);
       expect(find.text('$startLabel - $endLabel'), findsOneWidget);
-      expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
+      expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+      expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
       expect(
-        find.descendant(
-          of: find.byKey(const Key('report-snapshot-status')),
-          matching: find.text(l10n.reportSnapshotStatus),
-        ),
+        find.byKey(const Key('report-top-generate-action')),
         findsOneWidget,
       );
-      expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
-      expect(find.byKey(const Key('report-sync-action')), findsOneWidget);
+      expect(find.byKey(const Key('report-top-sync-action')), findsOneWidget);
       expect(find.text(l10n.reportScoreTitle), findsOneWidget);
 
       final scrollable = find.byType(Scrollable).first;
       final keys = <String>[
+        'report-readiness-card',
         'report-score-hero',
-        'report-metrics-grid',
         'report-trend-section',
         'report-findings-section',
         'report-ai-summary-section',
         'report-export-section',
         'report-patterns-section',
-        'report-reference-notice',
       ];
 
       for (final key in keys) {
@@ -90,7 +86,7 @@ void main() {
         expect(finder, findsOneWidget);
       }
 
-      expect(find.text(l10n.reportReferenceNotice), findsOneWidget);
+      expect(find.byKey(const Key('report-reference-notice')), findsNothing);
     },
   );
 
@@ -128,60 +124,82 @@ void main() {
     expect(find.byType(AppInlineSkeletonBlock), findsNothing);
   });
 
-  testWidgets('Report page renders signed-out placeholder with login notice', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  testWidgets(
+    'Report page renders signed-out mobile preview without full locked sections',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
-          userSettingsControllerProvider.overrideWith(
-            DisabledUserSettingsController.new,
-          ),
-        ],
-        child: const TestForuiApp(home: ReportPage()),
-      ),
-    );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+            userSettingsControllerProvider.overrideWith(
+              DisabledUserSettingsController.new,
+            ),
+          ],
+          child: const TestForuiApp(home: ReportPage()),
+        ),
+      );
 
-    await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
 
-    // Ensure metric cards and other sections fit within the viewport without overflow.
-    expect(tester.takeException(), isNull);
+      // Ensure metric cards and other sections fit within the viewport without overflow.
+      expect(tester.takeException(), isNull);
 
-    expect(find.byKey(const Key('report-signed-out-notice')), findsOneWidget);
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('report-signed-out-notice')),
-        matching: find.text(l10n.authNotSignedIn),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('report-signed-out-notice')),
-        matching: find.text(l10n.reportSignedOutInlineHint),
-      ),
-      findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: find.byKey(const Key('report-signed-out-notice')),
-        matching: find.text(l10n.authGoLogin),
-      ),
-      findsOneWidget,
-    );
-    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
-    expect(find.text(l10n.reportScoreTitle), findsOneWidget);
-    expect(find.byType(AppStateErrorView), findsNothing);
-  });
+      expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+      expect(find.byKey(const Key('report-signed-out-notice')), findsNothing);
+      expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
+      expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+      expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
+      expect(find.byKey(const Key('report-export-section')), findsNothing);
+      expect(find.byKey(const Key('report-patterns-section')), findsNothing);
+      expect(find.byType(AppStateErrorView), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'Report page renders signed-in insufficient mobile state without summary export and patterns',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reportRepositoryProvider.overrideWithValue(
+              _FixedReportRepository(MockReportRepository.previewDashboard),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
+          ],
+          child: const TestForuiApp(home: ReportPage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+      expect(find.byKey(const Key('report-score-hero')), findsOneWidget);
+      expect(find.byKey(const Key('report-trend-section')), findsOneWidget);
+      expect(find.byKey(const Key('report-findings-section')), findsOneWidget);
+      expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
+      expect(find.byKey(const Key('report-export-section')), findsNothing);
+      expect(find.byKey(const Key('report-patterns-section')), findsNothing);
+    },
+  );
 
   testWidgets('Report page supports pull-to-refresh on mobile', (tester) async {
     tester.view.devicePixelRatio = 1;
@@ -236,7 +254,7 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           reportRepositoryProvider.overrideWithValue(
-            const MockReportRepository(),
+            _FixedReportRepository(_readyDashboard),
           ),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -297,7 +315,7 @@ void main() {
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             reportRepositoryProvider.overrideWithValue(
-              const MockReportRepository(),
+              _FixedReportRepository(_readyDashboard),
             ),
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
@@ -352,9 +370,7 @@ void main() {
     await tester.pump();
     expect(repo.fetchCount, 1);
     expect(find.byType(ReportSkeletonView), findsOneWidget);
-
-    await tester.tap(find.byKey(const Key('report-generate-action')));
-    await tester.pump();
+    expect(find.byKey(const Key('report-top-generate-action')), findsNothing);
     expect(repo.fetchCount, 1);
 
     repo.complete(MockReportRepository.previewDashboard);
@@ -418,7 +434,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(tester.takeException(), isNull);
-    expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
+    expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+    expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
+    expect(find.byKey(const Key('report-export-section')), findsNothing);
+    expect(find.byKey(const Key('report-patterns-section')), findsNothing);
   });
 
   testWidgets('Sync action triggers dashboard refresh', (tester) async {
@@ -447,11 +466,34 @@ void main() {
     await tester.pumpAndSettle();
     expect(repo.fetchCount, 1);
 
-    await tester.tap(find.byKey(const Key('report-sync-action')));
+    await tester.tap(find.byKey(const Key('report-top-sync-action')));
     await tester.pumpAndSettle();
     expect(repo.fetchCount, 2);
   });
 }
+
+final _readyDashboard = MockReportRepository.previewDashboard.copyWith(
+  score: const ReportHealthScore(
+    value: 86,
+    maxValue: 100,
+    status: ReportStatus.good,
+    summary: '最近 7 天整体记录稳定，报告可以正常查看。',
+  ),
+  metrics: MockReportRepository.previewDashboard.metrics
+      .map(
+        (metric) => metric.copyWith(
+          status: ReportStatus.stable,
+          value: switch (metric.kind) {
+            ReportDataKind.medication => '92',
+            ReportDataKind.sleep => '7.6',
+            ReportDataKind.water => '1.8',
+            ReportDataKind.general => '78',
+          },
+          delta: '+0.2',
+        ),
+      )
+      .toList(growable: false),
+);
 
 class _PendingReportRepository implements ReportRepository {
   final _pending = Completer<ReportDashboard>();
@@ -665,6 +707,7 @@ class _EmptyReportRepository implements ReportRepository {
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
+    generatedAt: '2026-07-07T14:32:00.000Z',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,
@@ -678,4 +721,42 @@ class _EmptyReportRepository implements ReportRepository {
     patterns: [],
     aiSummaryEnabled: false,
   );
+}
+
+class _FixedReportRepository implements ReportRepository {
+  const _FixedReportRepository(this.dashboard);
+
+  final ReportDashboard dashboard;
+
+  @override
+  Future<ReportDashboard> fetchDashboard(ReportDashboardQuery query) async {
+    final now = DateTime.now();
+    final startDate =
+        query.startDate ??
+        switch (query.range) {
+          ReportDashboardRange.last30Days => now.subtract(
+            const Duration(days: 30),
+          ),
+          ReportDashboardRange.custom => now.subtract(const Duration(days: 7)),
+          ReportDashboardRange.last7Days => now.subtract(
+            const Duration(days: 7),
+          ),
+        };
+    final endDate = query.endDate ?? now;
+
+    return dashboard.copyWith(
+      range: query.range,
+      startDate: _dateOnly(startDate),
+      endDate: _dateOnly(endDate),
+    );
+  }
+
+  @override
+  Future<ReportDashboard> get signedOutDashboard =>
+      Future.value(ReportDashboard.signedOut());
+}
+
+String _dateOnly(DateTime date) {
+  final local = date.toLocal();
+  return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
 }

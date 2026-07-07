@@ -15,9 +15,7 @@ final reportDashboardProvider =
     ) async {
       final session = ref.watch(authSessionProvider);
       if (session.isConfirmedSignedOut) {
-        final base = await ref
-            .watch(reportRepositoryProvider)
-            .signedOutDashboard;
+        final base = await const MockReportRepository().signedOutDashboard;
         return base.copyWith(
           range: query.range,
           startDate: _dateOnly(

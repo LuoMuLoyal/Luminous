@@ -16,6 +16,8 @@ class ReportTopBar extends StatelessWidget {
     required this.onSync,
     this.isGenerating = false,
     this.isSyncing = false,
+    this.showSnapshotStatus = true,
+    this.showActionBar = true,
   });
 
   final String dateRangeLabel;
@@ -25,6 +27,8 @@ class ReportTopBar extends StatelessWidget {
   final VoidCallback onSync;
   final bool isGenerating;
   final bool isSyncing;
+  final bool showSnapshotStatus;
+  final bool showActionBar;
 
   @override
   Widget build(BuildContext context) {
@@ -39,50 +43,54 @@ class ReportTopBar extends StatelessWidget {
           onTap: () => _showRangePicker(context),
         ),
       ],
-      bottom: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const _ReportSnapshotStatus(),
-          const SizedBox(height: AppSpacingTokens.level3),
-          Row(
-            children: [
-              Expanded(
-                child: FButton(
-                  key: const Key('report-generate-action'),
-                  onPress: isGenerating ? null : onGenerate,
-                  prefix: Icon(
-                    isGenerating
-                        ? FLucideIcons.loaderCircle
-                        : FLucideIcons.sparkles,
-                    size: 16,
+      bottom: showSnapshotStatus || showActionBar
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showSnapshotStatus) const _ReportSnapshotStatus(),
+                if (showSnapshotStatus && showActionBar)
+                  const SizedBox(height: AppSpacingTokens.level3),
+                if (showActionBar)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FButton(
+                          key: const Key('report-top-generate-action'),
+                          onPress: isGenerating ? null : onGenerate,
+                          prefix: Icon(
+                            isGenerating
+                                ? FLucideIcons.loaderCircle
+                                : FLucideIcons.sparkles,
+                            size: 16,
+                          ),
+                          child: Text(
+                            l10n.reportGenerateAction,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacingTokens.level3),
+                      FTooltip(
+                        tipBuilder: (context, controller) =>
+                            Text(l10n.reportSyncAction),
+                        child: FButton(
+                          key: const Key('report-top-sync-action'),
+                          variant: FButtonVariant.secondary,
+                          onPress: isSyncing ? null : onSync,
+                          child: Icon(
+                            isSyncing
+                                ? FLucideIcons.loaderCircle
+                                : FLucideIcons.refreshCw,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    l10n.reportGenerateAction,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacingTokens.level3),
-              FTooltip(
-                tipBuilder: (context, controller) =>
-                    Text(l10n.reportSyncAction),
-                child: FButton(
-                  key: const Key('report-sync-action'),
-                  variant: FButtonVariant.secondary,
-                  onPress: isSyncing ? null : onSync,
-                  child: Icon(
-                    isSyncing
-                        ? FLucideIcons.loaderCircle
-                        : FLucideIcons.refreshCw,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            )
+          : null,
     );
   }
 

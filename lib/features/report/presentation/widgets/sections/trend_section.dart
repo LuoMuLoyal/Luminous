@@ -19,12 +19,14 @@ class ReportTrendSection extends StatelessWidget {
     required this.selectedQuery,
     required this.onQueryChanged,
     required this.l10n,
+    this.showRangePill = true,
   });
 
   final List<ReportTrendSeries> trends;
   final ReportDashboardQuery selectedQuery;
   final ValueChanged<ReportDashboardQuery> onQueryChanged;
   final AppLocalizations l10n;
+  final bool showRangePill;
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +46,11 @@ class ReportTrendSection extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w700),
               ),
             ),
-            ReportPeriodPill(
-              range: selectedQuery.range,
-              onTap: () => _showRangePicker(context),
-            ),
+            if (showRangePill)
+              ReportPeriodPill(
+                range: selectedQuery.range,
+                onTap: () => _showRangePicker(context),
+              ),
           ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),

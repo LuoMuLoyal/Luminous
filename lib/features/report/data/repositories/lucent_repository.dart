@@ -21,6 +21,7 @@ class LucentReportRepository implements ReportRepository {
       range: _mapRange(dto.range.value),
       startDate: dto.startDate,
       endDate: dto.endDate,
+      generatedAt: dto.generatedAt,
       score: score,
       metrics: dto.metrics.map(_mapMetric).toList(growable: false),
       trends: dto.trends.map(_mapTrend).toList(growable: false),

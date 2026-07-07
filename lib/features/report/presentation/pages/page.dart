@@ -212,7 +212,7 @@ class ReportPage extends ConsumerWidget {
     final pageState = resolvePageViewState<ReportDashboard>(
       session: session,
       data: dashboardAsync,
-      isInsufficient: (dashboard) => dashboard.metrics.isEmpty,
+      isInsufficient: (_) => false,
     );
 
     return ShellDeferredContent(
@@ -293,6 +293,8 @@ class ReportPage extends ConsumerWidget {
               onSync: () {},
               isGenerating: false,
               isSyncing: false,
+              showSnapshotStatus: true,
+              showActionBar: true,
             ),
             child: const ReportSkeletonView(),
           )
@@ -310,6 +312,8 @@ class ReportPage extends ConsumerWidget {
               onSync: () {},
               isGenerating: false,
               isSyncing: false,
+              showSnapshotStatus: false,
+              showActionBar: false,
             ),
             child: const ReportSkeletonView(),
           );
@@ -349,6 +353,10 @@ class ReportPage extends ConsumerWidget {
       dashboard.startDate,
       dashboard.endDate,
     );
+    final generatedAtLabel = reportDashboardGeneratedAtLabel(
+      context,
+      dashboard.generatedAt,
+    );
 
     final dashboardView = ReportDashboardView(
       dashboard: dashboard,
@@ -362,6 +370,11 @@ class ReportPage extends ConsumerWidget {
       aiSummaryRange: selectedAiSummaryRange,
       latestExportRequest: latestExportRequest,
       exportRequestInFlight: exportRequestInFlight,
+      isPreview: isPreview,
+      generatedAtLabel: generatedAtLabel,
+      onSignIn: onSignIn,
+      onContinueRecord: () => context.push('/record/create'),
+      onSync: () => _refreshDashboard(ref),
       onAiSummaryRangeChanged: (range) {
         ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
       },
@@ -377,10 +390,6 @@ class ReportPage extends ConsumerWidget {
       onExportActionTap: (kind) => _handleExportAction(context, ref, kind),
       onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
     );
-
-    final previewBanner = isPreview
-        ? SignInHintBanner(onSignIn: onSignIn)
-        : null;
 
     if (isDesktop) {
       return _ReportDesktopShell(
@@ -417,12 +426,14 @@ class ReportPage extends ConsumerWidget {
           onSync: () => _refreshDashboard(ref),
           isGenerating: aiSummaryState.isLoading,
           isSyncing: false,
+          showSnapshotStatus: true,
+          showActionBar: true,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (previewBanner != null) ...[
-              previewBanner,
+            if (isPreview) ...[
+              SignInHintBanner(onSignIn: onSignIn),
               const SizedBox(height: AppSpacingTokens.level4),
             ],
             dashboardView,
@@ -465,17 +476,10 @@ class ReportPage extends ConsumerWidget {
         onSync: () => _refreshDashboard(ref),
         isGenerating: aiSummaryState.isLoading,
         isSyncing: false,
+        showSnapshotStatus: false,
+        showActionBar: false,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (previewBanner != null) ...[
-            previewBanner,
-            const SizedBox(height: AppSpacingTokens.level4),
-          ],
-          dashboardView,
-        ],
-      ),
+      child: dashboardView,
     );
   }
 }

@@ -218,6 +218,12 @@ Last updated: 2026-07-07
   - Report 页移除 `_ReportSignedOutNotice` 内联组件，Medicine 页新增空药盒 CTA，Report 页新增数据不足空态
   - 裸占位文案替换：`mineProfileUnknownValue` 和 `todaySleepFallbackValue` 从 `'--'` 改为可理解文案；UI 层 `'--'` / `'--:--'` 替换为 `l10n.placeholderNoData` 或 `'—'`
   - 新增 14 个 l10n key（zh + en），`flutter analyze` — No issues found!
+- Report 移动端 readiness-first 重构完成（2026-07-07）：
+  - Report dashboard domain 已接入 Lucent `generatedAt`，移动端主卡改为显示“当前显示的数据更新于 …”，不再用模糊 snapshot 文案抢首屏。
+  - 移动端布局改为 `readiness 主卡 → 评分预览 → 趋势预览 → 重点发现`；`AI 总结 / 导出摘要 / 健康模式分析` 仅在 `已登录 + 数据足够` 时显示。
+  - 移除移动端首屏独立 snapshot 卡、独立数据不足横幅、趋势区重复周期 pill、首屏指标四宫格和完整报告锁卡堆叠。
+  - 未登录态现在返回前端预览 dashboard，而不是空白 `signedOut()` 占位。
+  - `flutter test test/report/` — 37 passed；`flutter analyze` — No issues found!
 
 ## 相关文档
 
