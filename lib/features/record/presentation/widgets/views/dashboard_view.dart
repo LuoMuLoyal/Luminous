@@ -17,6 +17,7 @@ class RecordDashboardView extends StatelessWidget {
   const RecordDashboardView({
     super.key,
     required this.dashboard,
+    this.isPreview = false,
     this.isLoading = false,
     this.onQuickAction,
     this.onAiInputTap,
@@ -28,6 +29,7 @@ class RecordDashboardView extends StatelessWidget {
   });
 
   final RecordDashboard dashboard;
+  final bool isPreview;
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
@@ -54,6 +56,7 @@ class RecordDashboardView extends StatelessWidget {
           )
         : _MobileRecordDashboard(
             dashboard: dashboard,
+            isPreview: isPreview,
             l10n: l10n,
             onQuickAction: onQuickAction,
             onAiInputTap: onAiInputTap,
@@ -70,6 +73,7 @@ class RecordDashboardView extends StatelessWidget {
 class _MobileRecordDashboard extends StatelessWidget {
   const _MobileRecordDashboard({
     required this.dashboard,
+    required this.isPreview,
     required this.l10n,
     this.onQuickAction,
     this.onAiInputTap,
@@ -80,6 +84,7 @@ class _MobileRecordDashboard extends StatelessWidget {
   });
 
   final RecordDashboard dashboard;
+  final bool isPreview;
   final AppLocalizations l10n;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onAiInputTap;
@@ -105,6 +110,7 @@ class _MobileRecordDashboard extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.level4),
         RecordAiInputBar(
           l10n: l10n,
+          isPreview: isPreview,
           onTap: onAiInputTap,
           onMicTap: onMicTap,
           onCameraTap: onCameraTap,

@@ -103,6 +103,10 @@ Last updated: 2026-07-07
       - `RecordQuickEntryPanel` 尺寸改为按屏幕短边连续计算（`(shortEdge - 600) / 280`，clamp 0~1），
         标题与卡片间距、格子垂直内边距、头像尺寸、备注按钮内边距和分隔线高度均随屏幕尺寸平滑缩放，
         避免在小屏设备上快速记录区占用过多空间。
+      - Record 页首屏 CTA 与默认顺序已继续收敛：
+        - Quick record 默认顺序调整为 `症状 → 用药 → 饮水 → 饮食 → 睡眠 → 情绪 → 备注`；保留用户自定义顺序和动态排序，仅修改无偏好时的初始默认优先级。
+        - 底部悬浮“自然语言”按钮从主强调语气降为较轻按钮变体，减少与右上角加号、输入框 AI、登录提示条的竞争。
+        - 输入框内 `AI` 标识收窄为更轻的辅助 badge，并在 preview 模式下进一步弱化，避免像独立主 CTA。
 - 裸 catch 修复完成（全项目，约 75 处）：所有 `catch (_)` 改为 `catch (e)` 并添加 `debugPrint` 日志；`flutter analyze` 通过。
   重复组件名提取已于三审修复中完成（7 类 24 处 → 共享文件），动画时长统一已于一审修复中完成。
 - 清除 `unnecessary_import` 警告（40 个文件）：删除 `app_design.dart` 已 re-export 的冗余 `app_breakpoints.dart` import 行；`flutter analyze` 通过。

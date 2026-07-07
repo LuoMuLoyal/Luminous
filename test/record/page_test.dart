@@ -129,6 +129,42 @@ void main() {
     );
   });
 
+  testWidgets(
+    'Record mobile quick actions default to symptom medication water first',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(480, 1200);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await _pumpRecordPage(tester);
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      final symptom = tester.getTopLeft(
+        find.byKey(const Key('record-quick-symptom')),
+      );
+      final medication = tester.getTopLeft(
+        find.byKey(const Key('record-quick-medication')),
+      );
+      final water = tester.getTopLeft(
+        find.byKey(const Key('record-quick-water')),
+      );
+      final meal = tester.getTopLeft(
+        find.byKey(const Key('record-quick-meal')),
+      );
+
+      expect(medication.dy, symptom.dy);
+      expect(water.dy, symptom.dy);
+      expect(medication.dx, greaterThan(symptom.dx));
+      expect(water.dx, greaterThan(medication.dx));
+      expect(meal.dy, greaterThan(water.dy));
+    },
+  );
+
   testWidgets('Record page opens natural-language sheet on mobile', (
     tester,
   ) async {

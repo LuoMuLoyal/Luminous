@@ -81,6 +81,9 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               selectedDate: selectedDate,
             ),
             mainAxisSize: MainAxisSize.min,
+            variant: canAccessProtectedData
+                ? FButtonVariant.secondary
+                : FButtonVariant.outline,
             prefix: const Icon(FLucideIcons.sparkles),
             child: Text(l10n.recordNlpFabAction),
           )
@@ -183,6 +186,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                       ],
                       RecordDashboardView(
                         dashboard: dashboard,
+                        isPreview: isPreview,
                         onFilterSelected: (type) => ref
                             .read(selectedRecordFilterProvider.notifier)
                             .setFilter(type),

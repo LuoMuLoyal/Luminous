@@ -10,12 +10,12 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// Default preferred order of quick-action types on mobile.
 const defaultQuickActionOrder = <RecordEntryType>[
   RecordEntryType.symptom,
-  RecordEntryType.meal,
   RecordEntryType.medication,
-  RecordEntryType.note,
   RecordEntryType.water,
+  RecordEntryType.meal,
   RecordEntryType.sleep,
   RecordEntryType.mood,
+  RecordEntryType.note,
 ];
 
 /// Sorts [actions] according to [preferences].

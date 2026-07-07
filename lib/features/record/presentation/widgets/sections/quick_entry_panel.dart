@@ -22,12 +22,14 @@ class RecordAiInputBar extends StatelessWidget {
   const RecordAiInputBar({
     super.key,
     required this.l10n,
+    this.isPreview = false,
     this.onTap,
     this.onMicTap,
     this.onCameraTap,
   });
 
   final AppLocalizations l10n;
+  final bool isPreview;
   final VoidCallback? onTap;
   final VoidCallback? onMicTap;
   final VoidCallback? onCameraTap;
@@ -42,7 +44,7 @@ class RecordAiInputBar extends StatelessWidget {
         decoration: .shapeDelta(
           color: colors.background,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.primary.withValues(alpha: 0.32)),
+            side: BorderSide(color: colors.primary.withValues(alpha: 0.22)),
             borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
@@ -79,29 +81,27 @@ class RecordAiInputBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level3),
-            FBadge.raw(
-              style: .delta(
-                decoration: .shapeDelta(
-                  color: colors.primary.withValues(alpha: 0.12),
-                  shape: RoundedSuperellipseBorder(
-                    borderRadius: context.theme.style.borderRadius.pill,
-                  ),
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacingTokens.level2,
+                vertical: AppSpacingTokens.level1,
               ),
-              builder: (context, style) => Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level3,
-                  vertical: AppSpacingTokens.level1,
-                ),
-                child: Text(
-                  l10n.recordAiBadge,
-                  style: AppTypographyToken.level3
-                      .body(context)
-                      .copyWith(
-                        color: colors.primary,
-                        fontWeight: FontWeight.w800,
-                      ),
-                ),
+              decoration: BoxDecoration(
+                color: isPreview
+                    ? colors.secondary.withValues(alpha: 0.12)
+                    : colors.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+              ),
+              child: Text(
+                l10n.recordAiBadge,
+                style: AppTypographyToken.level2
+                    .body(context)
+                    .copyWith(
+                      color: isPreview
+                          ? colors.mutedForeground
+                          : colors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level1),
