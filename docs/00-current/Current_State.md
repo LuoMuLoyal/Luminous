@@ -215,9 +215,14 @@ Last updated: 2026-07-07
   - 新增 `PageViewState<T>` sealed class + `resolvePageViewState()` + `PageStateSwitch<T>` 统一状态机，优先级为 fatal error > loading > empty/insufficient > ready
   - 未登录态不再拦截页面——provider 照常返回预览/mock 数据，`PageViewStateReady` 携带 `isPreview` 标记，页面在内容顶部展示轻量 `SignInHintBanner` 登录提示条（锁图标 + 简短文案 + 登录按钮），而非全屏登录引导
   - 五个 Tab 根页（Today / Report / Medicine / Record / Mine）全部接入新状态机，`skipLoadingOnReload` 避免刷新时闪烁骨架屏
-  - Report 页移除 `_ReportSignedOutNotice` 内联组件，Medicine 页新增空药盒 CTA，Report 页新增数据不足空态
+  - Report 页移除 `_ReportSignedOutNotice` 内联组件，Medicine 页保留空药盒 CTA 作为真正的“已登录但暂无药品”状态，Report 页新增数据不足空态
   - 裸占位文案替换：`mineProfileUnknownValue` 和 `todaySleepFallbackValue` 从 `'--'` 改为可理解文案；UI 层 `'--'` / `'--:--'` 替换为 `l10n.placeholderNoData` 或 `'—'`
   - 新增 14 个 l10n key（zh + en），`flutter analyze` — No issues found!
+- Medicine 未登录预览回退完成（2026-07-07）：
+  - `medicineWorkspaceProvider` 的未登录分支恢复返回 preview workspace，不再走 `signedOutWorkspace` 空计划数据。
+  - 用药页未登录时重新显示可预览的 mock 药盒、今日计划和快捷操作，同时保留顶部 `SignInHintBanner`。
+  - “添加你的第一个药品”现在只保留给真正的空数据状态，不再误伤未登录用户。
+  - `flutter test test/medicine/page_test.dart --plain-name "Medicine page keeps preview workspace when signed out"` — passed；`flutter test test/medicine/` — 150 passed；`flutter analyze` — No issues found!
 - Report 移动端 readiness-first 重构完成（2026-07-07）：
   - Report dashboard domain 已接入 Lucent `generatedAt`，移动端主卡改为显示“当前显示的数据更新于 …”，不再用模糊 snapshot 文案抢首屏。
   - 移动端布局改为 `readiness 主卡 → 评分预览 → 趋势预览 → 重点发现`；`AI 总结 / 导出摘要 / 健康模式分析` 仅在 `已登录 + 数据足够` 时显示。

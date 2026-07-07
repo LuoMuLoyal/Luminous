@@ -6,7 +6,7 @@ import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
   final session = ref.watch(authSessionProvider);
   if (session.isConfirmedSignedOut) {
-    return ref.watch(medicineWorkspaceRepositoryProvider).signedOutWorkspace;
+    return Future.value(MockMedicineWorkspaceRepository.previewWorkspace);
   }
   if (!session.canAccessProtectedData) {
     return pendingAuthSessionResolution();

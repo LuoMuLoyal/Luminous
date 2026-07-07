@@ -269,6 +269,40 @@ void main() {
     },
   );
 
+  testWidgets('Medicine page keeps preview workspace when signed out', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byType(SignInHintBanner), findsOneWidget);
+    expect(find.text(l10n.medicineEmptyAddFirstTitle), findsNothing);
+    expect(find.text('Metformin'), findsAtLeastNWidgets(1));
+    expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
+    expect(find.byKey(const Key('medicine-quick-actions')), findsOneWidget);
+  });
+
   testWidgets(
     'Medicine risk-check page renders red-flag banner without campus resource button',
     (tester) async {

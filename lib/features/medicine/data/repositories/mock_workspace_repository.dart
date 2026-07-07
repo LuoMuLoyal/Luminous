@@ -21,24 +21,12 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
-      Future.value(_signedOutWorkspace);
+      Future.value(previewWorkspace);
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     return previewWorkspace;
   }
-
-  static final _signedOutWorkspace = MedicineWorkspace(
-    hero: const MedicineHero(
-      metricDosesToday: '0',
-      metricAdherence: '--',
-      metricNextDose: '--',
-    ),
-    quickActions: previewWorkspace.quickActions,
-    plan: const MedicinePlanSurface(items: <MedicinePlanItem>[]),
-    alerts: previewWorkspace.alerts,
-    promisePoints: previewWorkspace.promisePoints,
-  );
 
   // Camera recognition and barcode scan are live on mobile devices.
   // Prescription import remains deferred pending OCR/contract work.

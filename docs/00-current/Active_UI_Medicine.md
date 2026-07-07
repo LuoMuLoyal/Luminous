@@ -1,6 +1,7 @@
 # Active UI — Medicine
 
 - 活跃当前用药药盒。
+- 未登录时保留 preview workspace，并在顶部显示轻量登录提示；不再误落入“添加你的第一个药品”空药盒 CTA。
 - 基于提醒的下一剂提示。
 - Lucent schedule-only 提醒详情/创建/编辑/删除 UI。
 - 可选起止日期窗口使用 Forui `FCalendar.grid`。
