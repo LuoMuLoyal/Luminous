@@ -8,6 +8,7 @@ import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog
 import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 class MineStatusOverview extends StatelessWidget {
   const MineStatusOverview({super.key, required this.dashboard});
@@ -71,7 +72,7 @@ class _StatusOverviewItem extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _SoftIcon(
+            SoftIcon(
               icon: entry.icon,
               color: entry.accent,
               size: 42,
@@ -124,36 +125,6 @@ String _routeForStatus(MineCopyKey titleKey) {
     MineCopyKey.alertMedicineTitle => AppRoutes.mineMedicineNew,
     MineCopyKey.alertPrivacyTitle || _ => AppRoutes.account,
   };
-}
-
-class _SoftIcon extends StatelessWidget {
-  const _SoftIcon({
-    required this.icon,
-    required this.color,
-    this.size = 44,
-    this.iconSize = 22,
-  });
-
-  final IconData icon;
-  final AppColors color;
-  final double size;
-  final double iconSize;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final resolvedColor = color.resolve(colors);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: resolvedColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-      ),
-      child: SizedBox.square(
-        dimension: size,
-        child: Icon(icon, color: resolvedColor, size: iconSize),
-      ),
-    );
-  }
 }
 
 class _TinyBadge extends StatelessWidget {

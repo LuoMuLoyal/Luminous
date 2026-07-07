@@ -85,14 +85,16 @@ class HelpSettingsPage extends ConsumerWidget {
     BuildContext context,
     SupportResourceDto resource,
   ) async {
+    final actionUrl = resource.actionUrl;
+    if (actionUrl == null || actionUrl.isEmpty) return;
     if (resource.actionType == SupportResourceActionType.url ||
         resource.actionType == SupportResourceActionType.phone) {
-      final uri = Uri.tryParse(resource.actionUrl!);
+      final uri = Uri.tryParse(actionUrl);
       if (uri != null) {
         await const ExternalUrlLauncher().open(uri);
       }
     } else {
-      unawaited(pushAuthRequiredRoute(context, resource.actionUrl!));
+      unawaited(pushAuthRequiredRoute(context, actionUrl));
     }
   }
 }

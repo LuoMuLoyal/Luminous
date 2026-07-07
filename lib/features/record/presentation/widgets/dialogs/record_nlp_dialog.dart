@@ -24,11 +24,11 @@ class RecordNlpDialog extends HookConsumerWidget {
     final controller = useTextEditingController(text: state.draft);
 
     ref.listen<RecordNlpState>(recordNlpControllerProvider, (previous, next) {
-      if (next.errorMessage == null ||
-          next.errorMessage == previous?.errorMessage) {
+      final msg = next.errorMessage;
+      if (msg == null || msg == previous?.errorMessage) {
         return;
       }
-      AppToast.show(context, next.errorMessage!);
+      AppToast.show(context, msg);
     });
 
     Future<void> handleGenerate() async {

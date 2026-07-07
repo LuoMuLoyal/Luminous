@@ -130,10 +130,12 @@ class TodayAiSummarySection extends ConsumerWidget {
                           if (!context.mounted) {
                             return;
                           }
+                          final errorMsg = result.errorMessage;
                           if (result.status ==
                                   TodayAiAnalysisCardStatus.error &&
-                              (result.errorMessage?.isNotEmpty ?? false)) {
-                            await AppToast.show(context, result.errorMessage!);
+                              errorMsg != null &&
+                              errorMsg.isNotEmpty) {
+                            await AppToast.show(context, errorMsg);
                           }
                         },
                   size: FButtonSizeVariant.xs,
@@ -147,7 +149,7 @@ class TodayAiSummarySection extends ConsumerWidget {
           if (aiState.isLoading && !aiState.hasAnalysis)
             const _AiSummaryLoadingState()
           else ...[
-            if (content.summary != null)
+            if (content.summary case final summary?)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacingTokens.level4,
@@ -158,7 +160,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    content.summary!,
+                    summary,
                     style: AppTypographyToken.level4
                         .body(context)
                         .copyWith(
@@ -173,7 +175,7 @@ class TodayAiSummarySection extends ConsumerWidget {
               if (index < content.bullets.length - 1)
                 AppDivider(color: colors.border.withValues(alpha: 0.62)),
             ],
-            if (content.footer != null)
+            if (content.footer case final footer?)
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacingTokens.level4,
@@ -184,7 +186,7 @@ class TodayAiSummarySection extends ConsumerWidget {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    content.footer!,
+                    footer,
                     style: AppTypographyToken.level3
                         .body(context)
                         .copyWith(

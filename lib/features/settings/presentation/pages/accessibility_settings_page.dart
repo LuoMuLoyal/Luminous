@@ -8,6 +8,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 class AccessibilitySettingsPage extends ConsumerWidget {
   const AccessibilitySettingsPage({super.key});
@@ -31,7 +32,9 @@ class AccessibilitySettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _SectionLabel(label: l10n.settingsAccessibilityFontSizeSection),
+                SettingsSectionLabel(
+                  label: l10n.settingsAccessibilityFontSizeSection,
+                ),
                 const SizedBox(height: AppSpacingTokens.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -48,7 +51,7 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.level5),
-                _SectionLabel(label: l10n.settingsGeneralSectionTitle),
+                SettingsSectionLabel(label: l10n.settingsGeneralSectionTitle),
                 const SizedBox(height: AppSpacingTokens.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -111,29 +114,5 @@ class AccessibilitySettingsPage extends ConsumerWidget {
       FontSizePreference.extraLarge =>
         l10n.settingsAccessibilityFontSizeExtraLarge,
     };
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
-      child: Text(
-        label,
-        style: AppTypographyToken.level3
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
-    );
   }
 }

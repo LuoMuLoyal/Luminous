@@ -9,6 +9,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 /// Shows a bottom sheet for voice input and returns the recognized text.
 ///
@@ -156,7 +157,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         height: 380,
         child: Column(
           children: [
-            const _SheetDragHandle(),
+            const SheetDragHandle(),
 
             // Title
             Padding(
@@ -308,29 +309,4 @@ Future<String?> _resolveSpeechLocaleId(
 ) async {
   final locales = await service.locales();
   return resolveSpeechLocaleId(locale, locales.map((entry) => entry.localeId));
-}
-
-class _SheetDragHandle extends StatelessWidget {
-  const _SheetDragHandle();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: AppSpacingTokens.level3),
-        Container(
-          width: 36,
-          height: 4,
-          decoration: BoxDecoration(
-            color: colors.border,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          ),
-        ),
-        const SizedBox(height: AppSpacingTokens.level4),
-      ],
-    );
-  }
 }

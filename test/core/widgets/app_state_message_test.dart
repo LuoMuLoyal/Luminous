@@ -176,7 +176,7 @@ void main() {
       );
 
       final iconWidget = tester.widget<Icon>(find.byType(Icon));
-      final theme = FThemes.neutral.light.touch;
+      final theme = tester.widget<FTheme>(find.byType(FTheme)).data;
       expect(iconWidget.color, theme.colors.primary);
     });
 
@@ -193,7 +193,7 @@ void main() {
       );
 
       final iconWidget = tester.widget<Icon>(find.byType(Icon));
-      final theme = FThemes.neutral.light.touch;
+      final theme = tester.widget<FTheme>(find.byType(FTheme)).data;
       expect(iconWidget.color, theme.colors.destructive);
     });
   });

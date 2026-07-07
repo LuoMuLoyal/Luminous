@@ -9,6 +9,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 /// Shows a bottom sheet for photo-based text recognition and returns the
 /// recognized text.
@@ -99,7 +100,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
         height: 420,
         child: Column(
           children: [
-            const _SheetDragHandle(),
+            const SheetDragHandle(),
 
             // Title
             Padding(
@@ -298,31 +299,6 @@ class _OptionCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _SheetDragHandle extends StatelessWidget {
-  const _SheetDragHandle();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: AppSpacingTokens.level3),
-        Container(
-          width: 36,
-          height: 4,
-          decoration: BoxDecoration(
-            color: colors.border,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
-          ),
-        ),
-        const SizedBox(height: AppSpacingTokens.level4),
-      ],
     );
   }
 }

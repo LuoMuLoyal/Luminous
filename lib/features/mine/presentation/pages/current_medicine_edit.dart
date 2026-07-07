@@ -16,6 +16,7 @@ import 'package:luminous/features/health_context/domain/entities/health_context_
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 class CurrentMedicineEditPage extends HookConsumerWidget {
   const CurrentMedicineEditPage({super.key, this.medicineId});
@@ -171,7 +172,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               session.isLoading
-                  ? const _MineEditFormLoading()
+                  ? const MineEditFormLoading()
                   : AuthRequiredDialogGate(
                       onLogin: () =>
                           context.push(loginRouteForCurrentLocation(context)),
@@ -214,7 +215,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [_MineEditFormLoading()],
+              children: [MineEditFormLoading()],
             ),
           ),
         );
@@ -322,24 +323,6 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     return PageScaffold(
       title: title,
       child: SingleChildScrollView(child: content),
-    );
-  }
-}
-
-class _MineEditFormLoading extends StatelessWidget {
-  const _MineEditFormLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
-      children: [
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 96),
-        AppInlineSkeletonBlock(height: 56),
-      ],
     );
   }
 }

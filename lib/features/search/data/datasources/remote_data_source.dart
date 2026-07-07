@@ -20,7 +20,11 @@ class MedicineSearchRemoteDataSource {
       page: page,
       pageSize: pageSize,
     );
-    return response.data!;
+    final data = response.data;
+    if (data == null) {
+      throw StateError('medicineSearchV1: response.data is null');
+    }
+    return data;
   }
 
   /// Calls GET /api/v1/medicines/:id?source=
@@ -32,6 +36,10 @@ class MedicineSearchRemoteDataSource {
       id: id,
       source_: source,
     );
-    return response.data!;
+    final data = response.data;
+    if (data == null) {
+      throw StateError('medicineGetDetailV1: response.data is null');
+    }
+    return data;
   }
 }

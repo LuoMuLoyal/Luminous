@@ -8,6 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
+import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
@@ -314,10 +315,11 @@ class _GeneralSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final currentTheme =
-        (ref.watch(appThemeControllerProvider).value ??
-                const AppThemePreference())
-            .mode;
+    final themePref =
+        ref.watch(appThemeControllerProvider).value ??
+        const AppThemePreference();
+    final currentTheme = themePref.mode;
+    final currentFamily = themePref.family;
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
@@ -329,7 +331,7 @@ class _GeneralSection extends ConsumerWidget {
           tileKey: const Key('settings-row-theme'),
           icon: FLucideIcons.palette,
           title: l10n.mineSettingsThemeTitle,
-          value: _themeModeLabel(l10n, currentTheme),
+          value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
           onTap: () => context.push(AppRoutes.settingsTheme),
         ),
         _SettingsNavigationTile(
@@ -372,6 +374,29 @@ class _GeneralSection extends ConsumerWidget {
       AppThemeModePreference.light => l10n.mineThemeModeLight,
       AppThemeModePreference.dark => l10n.mineThemeModeDark,
     };
+  }
+
+  String _themeFamilyLabel(AppLocalizations l10n, AppThemeFamily family) {
+    return switch (family) {
+      AppThemeFamily.blue => l10n.settingsThemeFamilyBlue,
+      AppThemeFamily.green => l10n.settingsThemeFamilyGreen,
+      AppThemeFamily.neutral => l10n.settingsThemeFamilyNeutral,
+      AppThemeFamily.orange => l10n.settingsThemeFamilyOrange,
+      AppThemeFamily.red => l10n.settingsThemeFamilyRed,
+      AppThemeFamily.rose => l10n.settingsThemeFamilyRose,
+      AppThemeFamily.slate => l10n.settingsThemeFamilySlate,
+      AppThemeFamily.violet => l10n.settingsThemeFamilyViolet,
+      AppThemeFamily.yellow => l10n.settingsThemeFamilyYellow,
+      AppThemeFamily.zinc => l10n.settingsThemeFamilyZinc,
+    };
+  }
+
+  String _themeSummaryLabel(
+    AppLocalizations l10n,
+    AppThemeModePreference mode,
+    AppThemeFamily family,
+  ) {
+    return '${_themeModeLabel(l10n, mode)} · ${_themeFamilyLabel(l10n, family)}';
   }
 
   String _languageLabel(AppLocalizations l10n, AppLocale locale) {
@@ -478,6 +503,7 @@ class _SignOutTile extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         FTile(
+          key: const Key('settings-footer-action'),
           title: Center(
             child: Text(
               signedIn ? l10n.authSignOut : l10n.authGoLogin,

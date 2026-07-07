@@ -91,7 +91,7 @@ Last updated: 2026-07-07
       `FLineCalendar` 默认 `ItemContent` 在不同屏幕下 overflow，使用自定义 `builder` 绘制紧凑日期项：
       字号调整为 weekday 11 / date 14，垂直间距 4 / 2，保留 today 指示点与选中/禁用装饰；
       自定义项用 `SizedBox.expand` 占满 `FLineCalendar` 的 item 宽度，使选中态背景接近正方形。
-      `RecordDateBar` 高度改为按屏幕高度连续计算（`height * 0.055`，clamp 40~52），不再使用固定档位。
+      `RecordDateBar` 高度改为固定 48px，避免 MediaQuery 在键盘/旋转时引发重建。
     - Record 页 UI 紧凑化与顶部按钮对齐：
       - `AppTopBar` 的 trailing 操作区改为与标题垂直居中对齐，解决右上角加号按钮偏高问题。
       - 移动端 Record 加号按钮（iconOnly + emphasized）圆角从 pill 改为 10px 圆角矩形，视觉更克制。
@@ -101,8 +101,7 @@ Last updated: 2026-07-07
         标题与卡片间距、格子垂直内边距、头像尺寸、备注按钮内边距和分隔线高度均随屏幕尺寸平滑缩放，
         避免在小屏设备上快速记录区占用过多空间。
 - 裸 catch 修复完成（全项目，约 75 处）：所有 `catch (_)` 改为 `catch (e)` 并添加 `debugPrint` 日志；`flutter analyze` 通过。
-  注：层间解耦（Provider→Mock 直接依赖）、重复组件名提取、maxWidth 提取 3 项曾被误标为完成，
-  经实查确认问题仍存在，暂列待办未完成。动画时长统一已于一审修复中完成。
+  重复组件名提取已于三审修复中完成（7 类 24 处 → 共享文件），动画时长统一已于一审修复中完成。
 - 清除 `unnecessary_import` 警告（40 个文件）：删除 `app_design.dart` 已 re-export 的冗余 `app_breakpoints.dart` import 行；`flutter analyze` 通过。
 - 应用图标规范化：图标源文件从 `assets/icons/Luminous-icon.png` 迁移到 `assets/icon/app_icon.png`，通过 `flutter_launcher_icons` 生成全平台图标；`pubspec.yaml` 和 `auth_branding.dart` 路径已同步更新。
 - 启动屏统一（flutter_native_splash）：通过 `flutter_native_splash` 自动生成全平台启动屏素材（Android/iOS/Web），亮色背景 `#FFFFFF` + 暗色背景 `#171717`，图标使用 `assets/icon/app_icon.png`。修复了暗色模式白屏问题（`values-night/colors.xml` 全部改为 `#171717`），统一了 `styles.xml` 引用，删除了旧的手写矢量 XML（`splash_wordmark_icon.xml`、`launch_screen.xml`）和 Web 端旧 HTML splash。
@@ -143,6 +142,14 @@ Last updated: 2026-07-07
   - **重复 badge 代码消除**：新增共享 `TintedStatusBadge` 组件，替换 `medicine_mobile_drugbox_section.dart`、`reminder_log_panels.dart` 中 3 处几乎相同的内联 `FBadge.raw` 代码（每处约 30 行），同时消除 `0.12 > 0.5` 死代码条件。
   - **ref.read() 误用修复**：`record_nlp_dialog.dart` 中 `ref.read(provider).draft` 改为使用已 watch 的 `state.draft`。
   - **硬编码睡眠时长配置化**：提取 `_sleepDurationOptions` 命名常量，switch 分支改为 for 循环，TODO 注释更新为正式文档注释。
+- 三审修复完成（2026-07-07）：
+  - **重复私有组件提取**：新建 `app_shared_widgets.dart` 共享文件，提取 6 个跨文件重复的私有组件（`VerificationCodeField` 4 文件、`MineEditFormLoading` 4 文件、`SettingsSectionLabel` 6 文件、`SheetDragHandle` 2 文件、`SoftIcon` 2 文件、`IconActionButton` 1 文件），共 27 处引用替换为共享组件。
+  - **Mock 死代码清理**：删除从未引用的 `MockMedicineSearchRepository`，测试 mock 移入测试文件私有类。
+  - **强制解引用清理**：清理 18+ 处最危险的 `!` 强制解引用，包括 `response.data!`（无 null check）、`data.nutritionEstimate!`（6 处重复）、`content.summary!/footer!`、`resource.actionUrl!`、`result.errorMessage!`、`sleepDeepMinutes.value!` 等，改用 Dart 3 `case final x?` 模式匹配或局部变量。
+  - **日历高度跳动修复**：`RecordDateBar` 高度从 `MediaQuery.sizeOf(context).height * 0.055` 改为固定常量 48.0，消除键盘弹出/旋转时的不必要重建。
+  - **硬编码日期范围文档化**：`_minDate`/`_maxDate` 添加文档注释。
+  - **测试全量修复**：修复 5 个测试失败（898 passed, 0 failed），包括测试主题引用错误（`FThemes.neutral` → 实际 app 主题）、设置页主题摘要显示"模式 · 主题族"组合标签、退出登录按钮缺少 test key。
+  - **审查文档清理**：删除三份已完成的审查报告，暂缓项写入 `TODO.md`。
 
 ## 相关文档
 

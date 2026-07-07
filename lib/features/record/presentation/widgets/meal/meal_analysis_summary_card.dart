@@ -38,10 +38,10 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (_nonEmpty(data.mealDescription) != null) ...[
+            if (_nonEmpty(data.mealDescription) case final mealDesc?) ...[
               const SizedBox(height: AppSpacingTokens.level3),
               Text(
-                data.mealDescription!,
+                mealDesc,
                 style: AppTypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
@@ -79,25 +79,25 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 ),
               ),
             ],
-            if (data.nutritionEstimate != null) ...[
+            if (data.nutritionEstimate case final nutrition?) ...[
               const SizedBox(height: AppSpacingTokens.level4),
               _SectionTitle(title: l10n.recordMealAnalysisNutritionEstimate),
               const SizedBox(height: AppSpacingTokens.level2),
-              if (data.nutritionEstimate!.energyKcal != null)
+              if (nutrition.energyKcal != null)
                 _BulletText(
                   text:
-                      '${l10n.recordMealAnalysisNutritionEnergy}: ${data.nutritionEstimate!.energyKcal}',
+                      '${l10n.recordMealAnalysisNutritionEnergy}: ${nutrition.energyKcal}',
                 ),
-              if (data.nutritionEstimate!.proteinG != null)
+              if (nutrition.proteinG != null)
                 _BulletText(
                   text:
-                      '${l10n.recordMealAnalysisNutritionProtein}: ${data.nutritionEstimate!.proteinG}g',
+                      '${l10n.recordMealAnalysisNutritionProtein}: ${nutrition.proteinG}g',
                 ),
             ],
-            if (_nonEmpty(data.mealCommentary) != null) ...[
+            if (_nonEmpty(data.mealCommentary) case final commentary?) ...[
               const SizedBox(height: AppSpacingTokens.level4),
               Text(
-                data.mealCommentary!,
+                commentary,
                 style: AppTypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),

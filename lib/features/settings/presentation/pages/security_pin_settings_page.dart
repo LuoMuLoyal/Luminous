@@ -8,6 +8,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 
@@ -101,7 +102,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
 
                 if (!pinEnabled) ...[
                   // -- Enable PIN --
-                  _SectionLabel(label: l10n.settingsSecurityPinEnableSection),
+                  SettingsSectionLabel(
+                    label: l10n.settingsSecurityPinEnableSection,
+                  ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   FCard.raw(
                     child: Padding(
@@ -147,7 +150,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                   ),
                 ] else ...[
                   // -- Change PIN --
-                  _SectionLabel(label: l10n.settingsSecurityPinChangeSection),
+                  SettingsSectionLabel(
+                    label: l10n.settingsSecurityPinChangeSection,
+                  ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   FCard.raw(
                     child: Padding(
@@ -217,7 +222,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                   const SizedBox(height: AppSpacingTokens.level5),
 
                   // -- Disable PIN --
-                  _SectionLabel(label: l10n.settingsSecurityPinDisableSection),
+                  SettingsSectionLabel(
+                    label: l10n.settingsSecurityPinDisableSection,
+                  ),
                   const SizedBox(height: AppSpacingTokens.level3),
                   FCard.raw(
                     child: Padding(
@@ -383,29 +390,5 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     } finally {
       isSubmitting.value = false;
     }
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
-      child: Text(
-        label,
-        style: AppTypographyToken.level3
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
-    );
   }
 }

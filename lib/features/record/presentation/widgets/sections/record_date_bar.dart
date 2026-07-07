@@ -19,13 +19,14 @@ class RecordDateBar extends StatelessWidget {
   final AppLocalizations l10n;
   final ValueChanged<DateTime>? onDateSelected;
 
+  /// 最早可选日期（2000-01-01）。
   static final DateTime _minDate = DateTime(2000);
+
+  /// 最晚可选日期（当前日期 + 365 天）。
   static final DateTime _maxDate = clock.now().add(const Duration(days: 365));
 
-  double _calendarHeight(BuildContext context) {
-    final height = MediaQuery.sizeOf(context).height;
-    return (height * 0.055).clamp(40.0, 52.0);
-  }
+  /// 日历行高固定值，避免 MediaQuery 在键盘弹出/屏幕旋转时引发重建。
+  static const double _calendarItemHeight = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class RecordDateBar extends StatelessWidget {
       children: [
         Expanded(
           child: SizedBox(
-            height: _calendarHeight(context),
+            height: _calendarItemHeight,
             child: FLineCalendar(
               control: FLineCalendarControl.lifted(
                 date: dashboard.selectedDate,

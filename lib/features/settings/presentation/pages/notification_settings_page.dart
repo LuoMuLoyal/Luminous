@@ -10,6 +10,7 @@ import 'package:luminous/features/settings/presentation/providers/notification_s
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 import 'package:luminous/core/design/app_design.dart';
 
@@ -49,7 +50,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                 },
               ),
             const SizedBox(height: AppSpacingTokens.level5),
-            _SectionLabel(label: l10n.settingsNotificationsGeneralGroup),
+            SettingsSectionLabel(label: l10n.settingsNotificationsGeneralGroup),
             const SizedBox(height: AppSpacingTokens.level3),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
@@ -124,7 +125,9 @@ class NotificationSettingsPage extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level5),
-            _SectionLabel(label: l10n.settingsNotificationsReminderGroup),
+            SettingsSectionLabel(
+              label: l10n.settingsNotificationsReminderGroup,
+            ),
             const SizedBox(height: AppSpacingTokens.level3),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
@@ -310,30 +313,6 @@ class _PermissionCard extends StatelessWidget {
           ? null
           : const Icon(FLucideIcons.chevronRight),
       onPress: state == NotificationPermissionState.granted ? null : onTap,
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
-      child: Text(
-        label,
-        style: AppTypographyToken.level3
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
     );
   }
 }

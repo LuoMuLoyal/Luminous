@@ -8,6 +8,7 @@ import 'package:luminous/core/widgets/common/app_divider.dart';
 import 'package:luminous/features/record/domain/entities/record_dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/record_copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 // ---------------------------------------------------------------------------
 // AI input bar
@@ -100,43 +101,18 @@ class RecordAiInputBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacingTokens.level1),
-            _IconActionButton(
+            IconActionButton(
               tooltip: l10n.recordVoiceInputTitle,
               icon: FLucideIcons.mic,
               onTap: onMicTap,
             ),
-            _IconActionButton(
+            IconActionButton(
               tooltip: l10n.recordOcrEntryTitle,
               icon: FLucideIcons.camera,
               onTap: onCameraTap,
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _IconActionButton extends StatelessWidget {
-  const _IconActionButton({
-    required this.tooltip,
-    required this.icon,
-    this.onTap,
-  });
-
-  final String tooltip;
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return FTooltip(
-      tipBuilder: (context, controller) => Text(tooltip),
-      child: FButton.icon(
-        onPress: onTap,
-        variant: FButtonVariant.ghost,
-        size: FButtonSizeVariant.sm,
-        child: Icon(icon, size: AppSpacingTokens.level5),
       ),
     );
   }

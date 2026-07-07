@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-07-03
+Last updated: 2026-07-07
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -13,6 +13,15 @@ Last updated: 2026-07-03
   - 新增依赖，当前 AppToast 校验模式工作正常
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
+
+## 审查暂缓项（2026-07-07 三审）
+
+以下项经三份审查报告确认后暂缓，有明确原因：
+
+- 超大页面拆分：`login_page.dart`（620+ 行）、`medicine_reminder_edit_page.dart`（400+ 行）— Phase Guide 明确"现在不要做"
+- Provider 一致性：`FutureProvider`（7 个）和 `AsyncNotifierProvider`（5 个）未统一 — 非 Phase 2 目标
+- Release 模式错误上报：`debugPrint` 仅 debug 生效，release 下静默 — 需上线前评估持久化日志/上报策略
+- 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 一、后端已就绪，前端缺失（优先级最高）
 

@@ -22,7 +22,7 @@ void main() {
       expect(divider.axis, Axis.horizontal);
 
       final container = tester.widget<Container>(find.byType(Container));
-      final theme = FThemes.neutral.light.touch;
+      final theme = tester.widget<FTheme>(find.byType(FTheme)).data;
       expect(container.color, theme.colors.border);
     });
 

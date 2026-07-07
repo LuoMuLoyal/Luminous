@@ -219,14 +219,17 @@ class RecordEditPage extends HookConsumerWidget {
         payload['endAt'] = wake.toUtc().toIso8601String();
       }
       if (sleepQuality.value != null) payload['quality'] = sleepQuality.value;
-      if (sleepDeepMinutes.value != null && sleepDeepMinutes.value! > 0) {
-        payload['deepMinutes'] = sleepDeepMinutes.value;
+      final deep = sleepDeepMinutes.value;
+      if (deep != null && deep > 0) {
+        payload['deepMinutes'] = deep;
       }
-      if (sleepLightMinutes.value != null && sleepLightMinutes.value! > 0) {
-        payload['lightMinutes'] = sleepLightMinutes.value;
+      final light = sleepLightMinutes.value;
+      if (light != null && light > 0) {
+        payload['lightMinutes'] = light;
       }
-      if (sleepRemMinutes.value != null && sleepRemMinutes.value! > 0) {
-        payload['remMinutes'] = sleepRemMinutes.value;
+      final rem = sleepRemMinutes.value;
+      if (rem != null && rem > 0) {
+        payload['remMinutes'] = rem;
       }
       return payload;
     }

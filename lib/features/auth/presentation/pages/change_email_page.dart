@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 import 'package:luminous/core/widgets/common/app_state_views.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -63,7 +64,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacingTokens.level4),
-                  _VerificationCodeField(
+                  VerificationCodeField(
                     controller: codeController,
                     label: l10n?.authCodeLabel ?? 'Verification code',
                     hint: l10n?.authCodeLabel ?? 'Verification code',
@@ -200,63 +201,6 @@ class _ChangeEmailLoading extends StatelessWidget {
         AppInlineSkeletonBlock(height: 56),
         AppInlineSkeletonBlock(height: 56),
         AppInlineSkeletonBlock(height: 56),
-      ],
-    );
-  }
-}
-
-class _VerificationCodeField extends StatelessWidget {
-  const _VerificationCodeField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    required this.validator,
-    required this.buttonLabel,
-    required this.isLoading,
-    required this.onSendCode,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final String buttonLabel;
-  final bool isLoading;
-  final FormFieldValidator<String>? validator;
-  final VoidCallback? onSendCode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: FTextFormField(
-            control: FTextFieldControl.managed(controller: controller),
-            label: Text(label),
-            hint: hint,
-            keyboardType: TextInputType.number,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: validator,
-          ),
-        ),
-        const SizedBox(width: AppSpacingTokens.level3),
-        SizedBox(
-          width: 148,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 26),
-            child: FButton(
-              variant: FButtonVariant.outline,
-              onPress: isLoading ? null : onSendCode,
-              child: isLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(buttonLabel),
-            ),
-          ),
-        ),
       ],
     );
   }

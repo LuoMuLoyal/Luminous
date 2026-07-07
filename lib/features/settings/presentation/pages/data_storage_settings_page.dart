@@ -8,6 +8,7 @@ import 'package:luminous/features/settings/presentation/providers/data_storage_s
 import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 
 class DataStorageSettingsPage extends ConsumerWidget {
   const DataStorageSettingsPage({super.key});
@@ -29,7 +30,9 @@ class DataStorageSettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _SectionLabel(label: l10n.settingsDataStorageRetentionSection),
+                SettingsSectionLabel(
+                  label: l10n.settingsDataStorageRetentionSection,
+                ),
                 const SizedBox(height: AppSpacingTokens.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -47,7 +50,7 @@ class DataStorageSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.level5),
-                _SectionLabel(
+                SettingsSectionLabel(
                   label: l10n.settingsDataStorageImageQualitySection,
                 ),
                 const SizedBox(height: AppSpacingTokens.level3),
@@ -67,7 +70,9 @@ class DataStorageSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacingTokens.level5),
-                _SectionLabel(label: l10n.settingsDataStorageSyncSection),
+                SettingsSectionLabel(
+                  label: l10n.settingsDataStorageSyncSection,
+                ),
                 const SizedBox(height: AppSpacingTokens.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -148,29 +153,5 @@ class DataStorageSettingsPage extends ConsumerWidget {
       SyncPreference.wifiAndMobile =>
         l10n.settingsDataStorageSyncWifiAndMobileSubtitle,
     };
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
-      child: Text(
-        label,
-        style: AppTypographyToken.level3
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
-    );
   }
 }

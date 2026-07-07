@@ -11,6 +11,7 @@ import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
 import 'package:luminous/core/widgets/common/app_back_button.dart';
+import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
 import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -367,7 +368,8 @@ class LoginPage extends HookConsumerWidget {
                 ),
               )
             else
-              _VerificationCodeField(
+              VerificationCodeField(
+                fieldKey: const ValueKey('auth-login-code-field'),
                 controller: codeController,
                 label: l10n?.authCodeLabel ?? 'Verification code',
                 hint: l10n?.authCodeLabel ?? 'Verification code',
@@ -643,69 +645,6 @@ class _QqOAuthPanel extends StatelessWidget {
             ),
           ),
         ],
-      ],
-    );
-  }
-}
-
-class _VerificationCodeField extends StatelessWidget {
-  const _VerificationCodeField({
-    required this.controller,
-    required this.label,
-    required this.hint,
-    required this.validator,
-    required this.buttonLabel,
-    required this.isLoading,
-    required this.onSendCode,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final String buttonLabel;
-  final bool isLoading;
-  final FormFieldValidator<String>? validator;
-  final VoidCallback onSendCode;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: FTextFormField(
-                key: const ValueKey('auth-login-code-field'),
-                control: FTextFieldControl.managed(controller: controller),
-                label: Text(label),
-                hint: hint,
-                keyboardType: TextInputType.number,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: validator,
-              ),
-            ),
-            const SizedBox(width: AppSpacingTokens.level3),
-            SizedBox(
-              width: 148,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 26),
-                child: FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: isLoading ? null : onSendCode,
-                  child: isLoading
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: FCircularProgress(),
-                        )
-                      : Text(buttonLabel),
-                ),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }

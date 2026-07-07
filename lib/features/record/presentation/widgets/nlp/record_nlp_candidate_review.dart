@@ -153,10 +153,10 @@ class _CandidateTile extends StatelessWidget {
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
-            if (item.lastErrorMessage != null) ...[
+            if (item.lastErrorMessage case final errMsg?) ...[
               const SizedBox(height: AppSpacingTokens.level2),
               Text(
-                l10n.recordNlpCandidateSaveFailedHint(item.lastErrorMessage!),
+                l10n.recordNlpCandidateSaveFailedHint(errMsg),
                 style: AppTypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.destructive),
