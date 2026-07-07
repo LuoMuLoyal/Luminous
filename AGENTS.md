@@ -44,6 +44,30 @@ flutter test
   - `domain/` — entities, repository interfaces, services
   - `presentation/` — pages, widgets, controllers, providers
 
+## File Naming Rules
+
+- **No directory-name prefix on files.** A file inside `lib/features/medicine/` must not start
+  with `medicine_`; the directory already provides that context. Example:
+  `lib/features/medicine/presentation/pages/medicine_page.dart` → `page.dart`.
+- **No `core/` sub-directory prefix on files.** Files in `lib/core/network/` must not start with
+  `lucent_`; files in `lib/core/design/` must not start with `app_`; files in
+  `lib/core/widgets/common/` must not start with `app_`; files in `lib/core/accessibility/` must
+  not start with `accessibility_`.
+- **No `router/` prefix on router files.** Files in `lib/app/router/` must not start with
+  `router_`.
+- **Class names are unaffected.** This rule covers file names only. Class names like
+  `AppSpacingTokens` or `LucentDioClient` retain their prefixes for clarity at the call site.
+- **Scattered files belong in subdirectories.** Do not place files directly in
+  `presentation/widgets/` or `presentation/` — use `shared/`, `sections/`, `dialogs/`, `views/`,
+  etc.
+- **Repository implementation naming.** The Lucent-backed implementation in each feature's
+  `data/repositories/` is named `lucent_repository.dart` (or `lucent_{sub-domain}_repository.dart`
+  when a feature has multiple backends). Mock implementations are `mock_repository.dart` (or
+  `mock_{sub-domain}_repository.dart`).
+- **Test files mirror source names.** `test/` paths and file names follow the corresponding
+  `lib/` file, with a `_test.dart` suffix. Example: `lib/core/network/dio_client.dart` →
+  `test/core/network/dio_client_test.dart`.
+
 ## State Management
 
 - Riverpod `Notifier` + `NotifierProvider` for mutable state
