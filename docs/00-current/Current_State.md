@@ -162,6 +162,10 @@ Last updated: 2026-07-07
   - **散文件归目录**：14 个直接放在 `presentation/widgets/` 或 `presentation/` 根目录的文件归入 `shared/`、`dialogs/`、`utils/` 子目录。
   - **测试文件同步重命名**：85 个测试文件跟随源文件重命名。
   - `flutter analyze` — No issues found! `flutter test` — 898 passed, 0 failed。
+- Medicine 安全检查三层展示 + Report 门控透明度完成（2026-07-07）：
+  - **Medicine 三层展示**：风险检查页从二态（有/无风险）重构为三层视觉语义：Tier 1 已确认风险（红色 `destructive`）、Tier 2 已确认安全（绿色 `primary`，附"不等于绝对安全"免责声明）、Tier 3 未覆盖/不确定（黄色 `secondary`）。严重度颜色从全部 `primary` 改为按 high/medium/info 分级。添加前风险检查弹窗新增检查范围区块（过敏交叉 / 相互作用 / 禁忌）。
+  - **Report 门控透明度**：数据不足时不再只显示 "--" 占位。新增 `_DataInsufficientBanner` 横幅（当评分或全部指标为 `insufficientData` 时显示），重点发现空态增加引导文案，导出区在数据不足时显示原因提示。
+  - `flutter analyze` — No issues found! `flutter test` — 898 passed, 0 failed。`dart run tool/run_daily_checks.dart` — exit code 0。
 
 ## 相关文档
 

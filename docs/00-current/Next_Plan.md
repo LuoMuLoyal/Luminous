@@ -1,24 +1,24 @@
 # Luminous Next Plan
 
-Last updated: 2026-07-01
+Last updated: 2026-07-07
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 
 ## 当前目标
 
-**Shipping Luminous 1.0.0**。A 类占位交互已接入；剩余 B/C 类项需要后端/API 工作或产品决策。
+**Shipping Luminous 1.0.0**。两个 P0 功能（Medicine 安全检查三层展示 + Report 门控透明度）已完成。剩余 P1 项和发布门待执行。
 
-长期阶段排序见 [[00-current/Work_Phase_Guide]]。当前进入 Forui 迁移落地收敛期：先稳定当前工作树与移动端可见 UI，再处理可靠性和架构债。
+长期阶段排序见 [[00-current/Work_Phase_Guide]]。当前进入发布前收敛期：完成 P1 体验优化后运行发布门。
 
 ## 立即下一步
 
-1. **完成 Forui 迁移落地收敛**
-   - 修复移动端已确认的可见 overflow、截断、空态/登录态层级问题
-   - 收口当前基础组件改动，避免继续扩大改动面
-   - 对被改 Tab 运行页面测试并做移动端可见性复核
+1. **P1 体验优化**
+   - Today 信息密度收窄（Brainstorm A 项）
+   - Record 快速入口动态排序（Brainstorm C 项）
+   - Mine 档案完整度提示（Brainstorm E 项）
 2. **运行完整 1.0.0 验证门**
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
-   - `dart run tool/run_fullstack_checks.dart`（Android 模拟器 + Lucent test runtime）
+   - 集成测试框架选型暂缓，待评估后引入
 3. **门通过后打 1.0.0 tag**
 4. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals
