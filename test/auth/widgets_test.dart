@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 
 import '../helpers/test_forui_app.dart';
 

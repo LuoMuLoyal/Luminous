@@ -4,16 +4,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_account_provider.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_shell.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/presentation/providers/session/account_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ChangeEmailPage extends HookConsumerWidget {

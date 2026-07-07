@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 
 void main() {
   group('loginRouteForReturnTo', () {

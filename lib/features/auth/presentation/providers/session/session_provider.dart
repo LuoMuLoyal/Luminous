@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 
-part 'auth_session_provider.freezed.dart';
+part 'session_provider.freezed.dart';
 
 @freezed
 abstract class AuthSessionState with _$AuthSessionState {

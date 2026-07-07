@@ -3,8 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 
 /// A mock adapter that returns canned JSON responses.
 class _MockAdapter implements HttpClientAdapter {

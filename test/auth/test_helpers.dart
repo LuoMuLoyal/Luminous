@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
 import '../helpers/test_forui_app.dart';
 

@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'auth_session.freezed.dart';
-part 'auth_session.g.dart';
+part 'session.freezed.dart';
+part 'session.g.dart';
 
 @freezed
 abstract class AuthUser with _$AuthUser {

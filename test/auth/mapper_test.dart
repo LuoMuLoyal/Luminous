@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/auth/data/mappers/auth_mapper.dart';
+import 'package:luminous/features/auth/data/mappers/mapper.dart';
 
 /// Helper to build a LoginResponseDto with minimal required fields.
 LoginResponseDto _loginResponse({

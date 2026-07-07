@@ -6,12 +6,12 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_listener.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_account_provider.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/presentation/providers/session/account_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
 
-import 'auth_test_helpers.dart';
+import 'test_helpers.dart';
 
 void main() {
   test('startWechatMobileLogin completes SDK callback login', () async {

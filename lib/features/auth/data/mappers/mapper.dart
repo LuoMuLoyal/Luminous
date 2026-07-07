@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 
 abstract final class AuthMapper {
   static AuthSession toSessionFromLogin(LoginResponseDto response) {

@@ -1,6 +1,6 @@
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/features/auth/data/mappers/auth_mapper.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/features/auth/data/mappers/mapper.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 
 enum AuthVerificationScene {
   register,

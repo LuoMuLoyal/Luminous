@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_listener.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_server.dart';
-import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
-part 'auth_account_provider.freezed.dart';
+part 'account_provider.freezed.dart';
 
 enum WechatIdentityLinkResult { completed, opened, unsupported }
 

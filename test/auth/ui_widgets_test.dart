@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_branding.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
 
 import '../helpers/test_forui_app.dart';
 

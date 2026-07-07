@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
-import 'package:luminous/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
-import 'auth_test_helpers.dart';
+import 'test_helpers.dart';
 
 void main() {
   testWidgets('Register page sends register verification code', (tester) async {

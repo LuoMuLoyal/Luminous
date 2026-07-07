@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
-export 'auth_branding.dart';
+export 'branding.dart';
 
 class AuthShell extends StatelessWidget {
   const AuthShell({
