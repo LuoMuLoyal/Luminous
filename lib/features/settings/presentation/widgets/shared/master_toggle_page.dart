@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 
 /// A reusable settings page template with a master toggle at the top and a
 /// list of child settings below.

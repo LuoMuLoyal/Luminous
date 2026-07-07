@@ -7,14 +7,14 @@ import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/app.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
-import 'package:luminous/features/settings/data/datasources/settings_profile_remote_data_source.dart';
+import 'package:luminous/features/settings/data/datasources/profile_remote_data_source.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
-import 'package:luminous/features/settings/data/providers/settings_profile_data_providers.dart';
+import 'package:luminous/features/settings/data/providers/profile_data_providers.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
@@ -24,7 +24,7 @@ import 'package:luminous/features/settings/presentation/pages/help_settings_page
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

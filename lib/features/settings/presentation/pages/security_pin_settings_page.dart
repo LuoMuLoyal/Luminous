@@ -3,14 +3,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/network/lucent_error_mapper.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
 class SecurityPinSettingsPage extends HookConsumerWidget {
   const SecurityPinSettingsPage({super.key});

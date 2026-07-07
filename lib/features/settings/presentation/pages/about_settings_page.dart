@@ -4,12 +4,12 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
+import 'package:luminous/features/support/data/providers/resources_providers.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
 class AboutSettingsPage extends ConsumerWidget {
   const AboutSettingsPage({super.key});

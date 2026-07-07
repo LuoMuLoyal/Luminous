@@ -4,14 +4,14 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/theme_preference_labels.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
+import 'package:luminous/features/settings/presentation/utils/theme_preference_labels.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/theme/theme.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
 class ThemeSettingsPage extends ConsumerWidget {
   const ThemeSettingsPage({super.key});

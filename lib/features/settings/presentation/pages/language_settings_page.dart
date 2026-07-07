@@ -4,13 +4,13 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/core/design/app_breakpoints.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/design/breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/providers/settings_profile_sync_provider.dart';
+import 'package:luminous/features/settings/presentation/providers/profile_sync_provider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_selection_icon.dart';
-import 'package:luminous/features/settings/presentation/widgets/settings_subpage_tile_group_style.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class LanguageSettingsPage extends ConsumerWidget {

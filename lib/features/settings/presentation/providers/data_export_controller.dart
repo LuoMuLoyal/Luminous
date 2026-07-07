@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/network/network_providers.dart';
 
 class DataExportRequestInFlightState {
   const DataExportRequestInFlightState({required this.inFlight, this.input});
