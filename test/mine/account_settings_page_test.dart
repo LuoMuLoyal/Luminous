@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/auth_data_providers.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
+import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import '../auth/auth_test_helpers.dart';
+import '../auth/test_helpers.dart';
 
 void main() {
   testWidgets('Account settings page renders auth account sections', (

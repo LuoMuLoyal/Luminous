@@ -4,19 +4,19 @@ import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 class AllergyEditPage extends HookConsumerWidget {
   const AllergyEditPage({super.key, this.allergyId});

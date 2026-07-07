@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
+import 'package:luminous/core/design/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'mine_dashboard.freezed.dart';
+part 'dashboard.freezed.dart';
 
 @freezed
 abstract class MineDashboard with _$MineDashboard {

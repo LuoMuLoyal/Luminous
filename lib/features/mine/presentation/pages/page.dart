@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
-import 'package:luminous/features/mine/presentation/widgets/views/mine_dashboard_view.dart';
-import 'package:luminous/features/mine/presentation/widgets/views/mine_skeleton_view.dart';
-import 'package:luminous/features/shell/presentation/shell_deferred_content.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_sections.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
+import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
+import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MinePage extends ConsumerWidget {

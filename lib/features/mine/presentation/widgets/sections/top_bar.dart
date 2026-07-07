@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/app_top_bar.dart';
+import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/notification/presentation/providers/notification_providers.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineTopBar extends ConsumerWidget {

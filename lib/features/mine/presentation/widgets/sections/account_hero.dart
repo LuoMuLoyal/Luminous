@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 
 import 'package:luminous/l10n/app_localizations.dart';
 

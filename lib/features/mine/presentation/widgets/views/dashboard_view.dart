@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/mine_sections.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 
 class MineDashboardView extends StatelessWidget {
   const MineDashboardView({

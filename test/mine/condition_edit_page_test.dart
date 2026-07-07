@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../auth/auth_test_helpers.dart';
+import '../auth/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
 
 class _SignedOut extends AuthSessionNotifier {

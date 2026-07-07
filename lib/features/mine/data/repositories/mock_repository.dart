@@ -1,9 +1,9 @@
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/features/mine/data/repositories/lucent_mine_repository.dart';
-import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/domain/repositories/mine_repository.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/domain/repositories/repository.dart';
 
 /// Demo-only mock implementation of [MineRepository] used for tests.
 ///

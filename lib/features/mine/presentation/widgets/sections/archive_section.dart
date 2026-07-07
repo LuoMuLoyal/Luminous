@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_components.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_copy.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/mine_shared.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/components.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
-import 'package:luminous/core/widgets/common/app_shared_widgets.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 class MineArchiveSection extends StatelessWidget {
   const MineArchiveSection({super.key, required this.dashboard});

@@ -1,4 +1,4 @@
-import 'package:luminous/features/mine/domain/entities/mine_dashboard.dart';
+import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String mineCopy(AppLocalizations l10n, MineCopyKey key) {

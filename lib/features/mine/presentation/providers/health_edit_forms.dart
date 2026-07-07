@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
-import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
-import 'package:luminous/features/mine/presentation/providers/mine_dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
 
 part 'health_edit_forms.freezed.dart';
 
