@@ -898,7 +898,7 @@
   "mineSettingAboutValue": "版本 1.2.0",
   "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
   "minePrivacyNoticeAction": "查看隐私政策",
-  "mineProfileUnknownValue": "--",
+  "mineProfileUnknownValue": "未设置",
   "mineProfileAgeYears": "{age}岁",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -1268,7 +1268,7 @@
   "todayVitalBloodPressureLabel": "血压",
   "todayVitalSleepLabel": "睡眠",
   "todayVitalSleepUnit": "小时",
-  "todaySleepFallbackValue": "--",
+  "todaySleepFallbackValue": "未记录",
   "todayVitalStatusNormal": "正常",
   "todayVitalStatusGood": "良好",
   "todayMealCardTitle": "今日饮食建议",
@@ -1887,5 +1887,19 @@
   "settingsFeatureFlagsBarcodeScanSubtitle": "扫描药品条码自动识别",
   "settingsFeatureFlagsReportSection": "报告",
   "settingsFeatureFlagsPdfExport": "PDF 导出",
-  "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件"
+  "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件",
+  "stateFatalErrorTitle": "加载失败",
+  "stateFatalErrorDescription": "页面数据未能加载，请重试。",
+  "stateNotSignedInTitle": "尚未登录",
+  "stateNotSignedInDescription": "登录后可查看你的个性化数据、提醒和报告。",
+  "statePreviewSignInHint": "登录后查看你的真实数据",
+  "stateEmptyDefaultTitle": "暂无数据",
+  "stateEmptyDefaultDescription": "添加记录后即可解锁个性化洞察和摘要。",
+  "placeholderNoData": "暂无数据",
+  "placeholderNotSet": "未设置",
+  "placeholderAddToUnlock": "记录后解锁",
+  "placeholderNoTime": "未设置时间",
+  "placeholderNoDuration": "未记录",
+  "medicineEmptyAddFirstTitle": "添加你的第一个药品",
+  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。"
 }

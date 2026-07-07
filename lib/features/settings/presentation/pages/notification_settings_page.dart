@@ -260,7 +260,7 @@ class NotificationSettingsPage extends ConsumerWidget {
   }
 
   String _formatTimeOfDay(TimeOfDay? time) {
-    if (time == null) return '--:--';
+    if (time == null) return '—';
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute';

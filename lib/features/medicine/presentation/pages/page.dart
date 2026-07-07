@@ -16,9 +16,11 @@ import 'package:luminous/features/medicine/presentation/widgets/views/mobile_das
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/common/top_bar.dart';
+import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicinePage extends ConsumerWidget {
@@ -26,38 +28,28 @@ class MedicinePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final workspaceAsync = ref.watch(medicineWorkspaceProvider);
+    final session = ref.watch(authSessionProvider);
+    final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
+    // Always watch the provider — when signed out it returns preview data.
+    final workspaceAsync = ref.watch(medicineWorkspaceProvider);
+
+    final pageState = resolvePageViewState<MedicineWorkspace>(
+      session: session,
+      data: workspaceAsync,
+      isInsufficient: (workspace) => workspace.plan.items.isEmpty,
+    );
+
     return ShellDeferredContent(
-      child: workspaceAsync.when(
-        data: (workspace) => isDesktop
-            ? _MedicineDesktopShell(
-                child: MedicineMobileDashboardView(
-                  workspace: workspace,
-                  onMarkDose: (currentMedicineId, action) =>
-                      _markDose(context, ref, currentMedicineId, action),
-                  onOpenReminder: (currentMedicineId) =>
-                      _openReminder(context, ref, currentMedicineId),
-                  onCreateReminder: () => _openReminder(context, ref, null),
-                ),
-              )
-            : _MedicineMobileShell(
-                child: MedicineMobileDashboardView(
-                  workspace: workspace,
-                  onMarkDose: (currentMedicineId, action) =>
-                      _markDose(context, ref, currentMedicineId, action),
-                  onOpenReminder: (currentMedicineId) =>
-                      _openReminder(context, ref, currentMedicineId),
-                  onCreateReminder: () => _openReminder(context, ref, null),
-                ),
-              ),
-        loading: () => isDesktop
+      child: PageStateSwitch<MedicineWorkspace>(
+        state: pageState,
+        loadingBuilder: () => isDesktop
             ? const _MedicineDesktopShell(child: MedicineSkeletonView())
             : const _MedicineMobileShell(child: MedicineSkeletonView()),
-        error: (_, __) => DecoratedBox(
+        fatalErrorBuilder: (error) => DecoratedBox(
           decoration: BoxDecoration(color: colors.background),
           child: SafeArea(
             bottom: false,
@@ -66,6 +58,65 @@ class MedicinePage extends ConsumerWidget {
             ),
           ),
         ),
+        emptyInsufficientBuilder: (empty) => isDesktop
+            ? _MedicineDesktopShell(
+                child: AppStateMessageView(
+                  title: l10n.medicineEmptyAddFirstTitle,
+                  description: l10n.medicineEmptyAddFirstDescription,
+                  icon: FLucideIcons.pillBottle,
+                  actionLabel: l10n.medicineQuickAddTitle,
+                  onAction: () =>
+                      pushAuthRequiredRoute(context, AppRoutes.medicineSearch),
+                ),
+              )
+            : _MedicineMobileShell(
+                child: AppStateMessageView(
+                  title: l10n.medicineEmptyAddFirstTitle,
+                  description: l10n.medicineEmptyAddFirstDescription,
+                  icon: FLucideIcons.pillBottle,
+                  actionLabel: l10n.medicineQuickAddTitle,
+                  onAction: () =>
+                      pushAuthRequiredRoute(context, AppRoutes.medicineSearch),
+                ),
+              ),
+        readyBuilder: (workspace, isPreview) {
+          final onSignIn = isPreview
+              ? () => context.push(loginRouteForCurrentLocation(context))
+              : null;
+          final content = MedicineMobileDashboardView(
+            workspace: workspace,
+            onMarkDose: (currentMedicineId, action) =>
+                _markDose(context, ref, currentMedicineId, action),
+            onOpenReminder: (currentMedicineId) =>
+                _openReminder(context, ref, currentMedicineId),
+            onCreateReminder: () => _openReminder(context, ref, null),
+          );
+          return isDesktop
+              ? _MedicineDesktopShell(
+                  child: isPreview
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SignInHintBanner(onSignIn: onSignIn),
+                            const SizedBox(height: AppSpacingTokens.level4),
+                            content,
+                          ],
+                        )
+                      : content,
+                )
+              : isPreview
+              ? _MedicineMobileShell(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SignInHintBanner(onSignIn: onSignIn),
+                      const SizedBox(height: AppSpacingTokens.level4),
+                      content,
+                    ],
+                  ),
+                )
+              : _MedicineMobileShell(child: content);
+        },
       ),
     );
   }

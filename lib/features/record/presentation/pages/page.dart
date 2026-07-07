@@ -54,15 +54,13 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final session = ref.watch(authSessionProvider);
+    final canAccessProtectedData = session.canAccessProtectedData;
+    final isAuthLoading = session.isLoading;
+    // Always watch the provider — when signed out it returns preview data.
     final dashboardAsync = ref.watch(recordDashboardProvider);
     final selectedDate = ref.watch(selectedRecordDateProvider);
     final l10n = AppLocalizations.of(context)!;
-    final canAccessProtectedData = ref.watch(
-      authSessionProvider.select((s) => s.canAccessProtectedData),
-    );
-    final isAuthLoading = ref.watch(
-      authSessionProvider.select((s) => s.isLoading),
-    );
     final size = MediaQuery.sizeOf(context);
     final width = size.width;
     final height = size.height;
@@ -158,53 +156,69 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                dashboardAsync.when(
-                  skipLoadingOnReload: true,
-                  data: (dashboard) => RecordDashboardView(
-                    dashboard: dashboard,
-                    onFilterSelected: (type) => ref
-                        .read(selectedRecordFilterProvider.notifier)
-                        .setFilter(type),
-                    onDateSelected: (date) => _setSelectedDate(date),
-                    onQuickAction: (action) {
-                      // Defer provider modification to avoid "modified while
-                      // widget tree was building" errors when the quick entry
-                      // panel rebuilds during tap handling.
-                      Future(
-                        () => ref
-                            .read(quickEntryPreferencesProvider.notifier)
-                            .recordTap(action.type),
-                      );
-                      _handleQuickAction(context, action);
-                    },
-                    onAiInputTap: () => _openNlpDialog(
-                      context,
-                      canAccessProtectedData: canAccessProtectedData,
-                      isAuthLoading: isAuthLoading,
-                      selectedDate: selectedDate,
-                    ),
-                    onMicTap: () => _openVoiceEntry(
-                      context,
-                      canAccessProtectedData: canAccessProtectedData,
-                      isAuthLoading: isAuthLoading,
-                      selectedDate: selectedDate,
-                    ),
-                    onCameraTap: () => _openOcrEntry(
-                      context,
-                      canAccessProtectedData: canAccessProtectedData,
-                      isAuthLoading: isAuthLoading,
-                      selectedDate: selectedDate,
-                    ),
-                    onNewEntry: () => _openRecordCreate(context),
+                PageStateSwitch<RecordDashboard>(
+                  state: resolvePageViewState(
+                    session: session,
+                    data: dashboardAsync,
                   ),
-                  loading: () => const RecordSkeletonView(),
-                  error: (_, __) => AppStateErrorView(
+                  loadingBuilder: () => const RecordSkeletonView(),
+                  fatalErrorBuilder: (error) => AppStateErrorView(
                     title: l10n.recordErrorTitle,
                     description: l10n.recordErrorDescription,
                     icon: FLucideIcons.notebookPen,
                     actionLabel: l10n.todayRetryAction,
                     onAction: () => ref.invalidate(recordDashboardProvider),
                     tone: AppStateTone.warning,
+                  ),
+                  readyBuilder: (dashboard, isPreview) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (isPreview) ...[
+                        SignInHintBanner(
+                          onSignIn: () => context.push(
+                            loginRouteForCurrentLocation(context),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacingTokens.level4),
+                      ],
+                      RecordDashboardView(
+                        dashboard: dashboard,
+                        onFilterSelected: (type) => ref
+                            .read(selectedRecordFilterProvider.notifier)
+                            .setFilter(type),
+                        onDateSelected: (date) => _setSelectedDate(date),
+                        onQuickAction: (action) {
+                          // Defer provider modification to avoid "modified while
+                          // widget tree was building" errors when the quick entry
+                          // panel rebuilds during tap handling.
+                          Future(
+                            () => ref
+                                .read(quickEntryPreferencesProvider.notifier)
+                                .recordTap(action.type),
+                          );
+                          _handleQuickAction(context, action);
+                        },
+                        onAiInputTap: () => _openNlpDialog(
+                          context,
+                          canAccessProtectedData: canAccessProtectedData,
+                          isAuthLoading: isAuthLoading,
+                          selectedDate: selectedDate,
+                        ),
+                        onMicTap: () => _openVoiceEntry(
+                          context,
+                          canAccessProtectedData: canAccessProtectedData,
+                          isAuthLoading: isAuthLoading,
+                          selectedDate: selectedDate,
+                        ),
+                        onCameraTap: () => _openOcrEntry(
+                          context,
+                          canAccessProtectedData: canAccessProtectedData,
+                          isAuthLoading: isAuthLoading,
+                          selectedDate: selectedDate,
+                        ),
+                        onNewEntry: () => _openRecordCreate(context),
+                      ),
+                    ],
                   ),
                 ),
               ],

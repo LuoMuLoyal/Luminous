@@ -7,7 +7,7 @@ String formatRecordDate(DateTime date) {
 String formatRecordTimeLabel(String? value) {
   final trimmed = value?.trim();
   if (trimmed == null || trimmed.isEmpty) {
-    return '--:--';
+    return '—';
   }
   return trimmed;
 }

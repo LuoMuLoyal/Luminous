@@ -283,6 +283,6 @@ String _doseSummary(AppLocalizations l10n, MedicinePlanItem item) {
 
 String _compactRouteOrSchedule(String value) {
   final trimmed = value.trim();
-  if (trimmed.isEmpty) return '--';
+  if (trimmed.isEmpty) return '—';
   return trimmed;
 }

@@ -891,7 +891,7 @@
   "mineSettingAboutValue": "Version 1.2.0",
   "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
   "minePrivacyNoticeAction": "View privacy policy",
-  "mineProfileUnknownValue": "--",
+  "mineProfileUnknownValue": "Not set",
   "mineProfileAgeYears": "{age}y",
   "@mineProfileAgeYears": {
     "placeholders": {
@@ -1261,7 +1261,7 @@
   "todayVitalBloodPressureLabel": "Blood pressure",
   "todayVitalSleepLabel": "Sleep",
   "todayVitalSleepUnit": "h",
-  "todaySleepFallbackValue": "--",
+  "todaySleepFallbackValue": "Not tracked",
   "todayVitalStatusNormal": "Normal",
   "todayVitalStatusGood": "Good",
   "todayMealCardTitle": "Today's meal suggestion",
@@ -1873,5 +1873,19 @@
   "settingsFeatureFlagsBarcodeScanSubtitle": "Scan medicine barcodes for auto-recognition",
   "settingsFeatureFlagsReportSection": "Report",
   "settingsFeatureFlagsPdfExport": "PDF Export",
-  "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files"
+  "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files",
+  "stateFatalErrorTitle": "Something went wrong",
+  "stateFatalErrorDescription": "We couldn't load this page. Please try again.",
+  "stateNotSignedInTitle": "Not signed in",
+  "stateNotSignedInDescription": "Sign in to access your personalized data, reminders, and reports.",
+  "statePreviewSignInHint": "Sign in to see your real data",
+  "stateEmptyDefaultTitle": "No data yet",
+  "stateEmptyDefaultDescription": "Add records to unlock personalized insights and summaries.",
+  "placeholderNoData": "No data yet",
+  "placeholderNotSet": "Not set",
+  "placeholderAddToUnlock": "Add records to unlock",
+  "placeholderNoTime": "No time set",
+  "placeholderNoDuration": "Not tracked",
+  "medicineEmptyAddFirstTitle": "Add your first medication",
+  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
 }

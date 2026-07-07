@@ -18,11 +18,15 @@ class TodayDashboardView extends StatelessWidget {
     super.key,
     required this.dashboard,
     this.isLoading = false,
+    this.isPreview = false,
+    this.onSignIn,
     required this.onRefresh,
   });
 
   final TodayDashboard dashboard;
   final bool isLoading;
+  final bool isPreview;
+  final VoidCallback? onSignIn;
   final Future<void> Function() onRefresh;
 
   @override
@@ -31,8 +35,18 @@ class TodayDashboardView extends StatelessWidget {
     final isDesktop = width >= AppBreakpoints.desktop;
 
     final content = isDesktop
-        ? _DesktopTodayDashboard(dashboard: dashboard, onRefresh: onRefresh)
-        : _MobileTodayDashboard(dashboard: dashboard, onRefresh: onRefresh);
+        ? _DesktopTodayDashboard(
+            dashboard: dashboard,
+            isPreview: isPreview,
+            onSignIn: onSignIn,
+            onRefresh: onRefresh,
+          )
+        : _MobileTodayDashboard(
+            dashboard: dashboard,
+            isPreview: isPreview,
+            onSignIn: onSignIn,
+            onRefresh: onRefresh,
+          );
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
   }
@@ -84,16 +98,24 @@ class TodayEmptyView extends StatelessWidget {
 class _MobileTodayDashboard extends StatelessWidget {
   const _MobileTodayDashboard({
     required this.dashboard,
+    required this.isPreview,
+    required this.onSignIn,
     required this.onRefresh,
   });
 
   final TodayDashboard dashboard;
+  final bool isPreview;
+  final VoidCallback? onSignIn;
   final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
     final sections = <Widget>[
       TodayTopBar(moment: dashboard.user.moment),
+      if (isPreview) ...[
+        SignInHintBanner(onSignIn: onSignIn),
+        const SizedBox(height: AppSpacingTokens.level4),
+      ],
       TodayOverviewSection(dashboard: dashboard),
       TodayPrioritySection(dashboard: dashboard),
       TodayAiSummarySection(dashboard: dashboard),
@@ -124,10 +146,14 @@ class _MobileTodayDashboard extends StatelessWidget {
 class _DesktopTodayDashboard extends StatelessWidget {
   const _DesktopTodayDashboard({
     required this.dashboard,
+    required this.isPreview,
+    required this.onSignIn,
     required this.onRefresh,
   });
 
   final TodayDashboard dashboard;
+  final bool isPreview;
+  final VoidCallback? onSignIn;
   final Future<void> Function() onRefresh;
 
   @override
@@ -145,6 +171,10 @@ class _DesktopTodayDashboard extends StatelessWidget {
         ),
         children: [
           TodayTopBar(moment: dashboard.user.moment),
+          if (isPreview) ...[
+            const SizedBox(height: AppSpacingTokens.level4),
+            SignInHintBanner(onSignIn: onSignIn),
+          ],
           const SizedBox(height: AppSpacingTokens.level6),
           TodayOverviewSection(dashboard: dashboard),
           const SizedBox(height: AppSpacingTokens.level6),

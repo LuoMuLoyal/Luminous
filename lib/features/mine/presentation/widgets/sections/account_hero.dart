@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -8,25 +7,6 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 
 import 'package:luminous/l10n/app_localizations.dart';
-
-class MineSignedOutNotice extends StatelessWidget {
-  const MineSignedOutNotice({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return AppStateMessageView(
-      title: mineCopy(l10n, MineCopyKey.signedOutNoticeTitle),
-      description: mineCopy(l10n, MineCopyKey.signedOutNoticeDescription),
-      icon: FLucideIcons.lock,
-      actionLabel: l10n.authGoLogin,
-      actionKey: const Key('mine-signed-out-login-action'),
-      onAction: () => context.push(loginRouteForCurrentLocation(context)),
-      tone: AppStateTone.warning,
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
-    );
-  }
-}
 
 class MineAccountHero extends StatelessWidget {
   const MineAccountHero({super.key, required this.dashboard});

@@ -7,5 +7,6 @@
 /// 建议新代码直接导入具体文件，避免依赖本 barrel。
 library;
 
+export 'page_state.dart';
 export 'state_message.dart';
 export 'skeleton.dart';

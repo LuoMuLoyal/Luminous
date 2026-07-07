@@ -204,6 +204,13 @@ Last updated: 2026-07-07
   - 登录页三个子项（提示文字 + 注册 + 忘记密码）作为 `Wrap` 直接子项，各自独立换行
   - 提示文字和按钮文字字号从 `level3`（14px）降为 `level2`（12px），符合标准 app 次要操作链接字号
   - `flutter analyze` — No issues found!
+- 根页统一状态机升级完成（2026-07-07）：
+  - 新增 `PageViewState<T>` sealed class + `resolvePageViewState()` + `PageStateSwitch<T>` 统一状态机，优先级为 fatal error > loading > empty/insufficient > ready
+  - 未登录态不再拦截页面——provider 照常返回预览/mock 数据，`PageViewStateReady` 携带 `isPreview` 标记，页面在内容顶部展示轻量 `SignInHintBanner` 登录提示条（锁图标 + 简短文案 + 登录按钮），而非全屏登录引导
+  - 五个 Tab 根页（Today / Report / Medicine / Record / Mine）全部接入新状态机，`skipLoadingOnReload` 避免刷新时闪烁骨架屏
+  - Report 页移除 `_ReportSignedOutNotice` 内联组件，Medicine 页新增空药盒 CTA，Report 页新增数据不足空态
+  - 裸占位文案替换：`mineProfileUnknownValue` 和 `todaySleepFallbackValue` 从 `'--'` 改为可理解文案；UI 层 `'--'` / `'--:--'` 替换为 `l10n.placeholderNoData` 或 `'—'`
+  - 新增 14 个 l10n key（zh + en），`flutter analyze` — No issues found!
 
 ## 相关文档
 

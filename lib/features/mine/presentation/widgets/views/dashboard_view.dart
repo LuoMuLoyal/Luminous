@@ -47,10 +47,6 @@ class MineDashboardView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (!dashboard.account.isAuthenticated) ...[
-          const MineSignedOutNotice(key: Key('mine-signed-out-notice')),
-          const SizedBox(height: AppSpacingTokens.level4),
-        ],
         MineAccountHero(
           key: const Key('mine-account-header'),
           dashboard: dashboard,
@@ -90,10 +86,6 @@ class MineDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!dashboard.account.isAuthenticated) ...[
-                const MineSignedOutNotice(key: Key('mine-signed-out-notice')),
-                const SizedBox(height: AppSpacingTokens.level5),
-              ],
               MineAccountHero(
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,

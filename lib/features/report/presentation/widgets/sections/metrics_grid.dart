@@ -71,7 +71,7 @@ class ReportMetricsGrid extends StatelessWidget {
 
   String _deriveOverallValue() {
     if (_allMetricValuesUnavailable && dashboard.score.value == 0) {
-      return '--';
+      return l10n.placeholderNoData;
     }
     return dashboard.score.value.toString();
   }
@@ -84,7 +84,9 @@ class ReportMetricsGrid extends StatelessWidget {
   }
 
   String _deriveOverallDelta() {
-    return _allMetricValuesUnavailable ? '--' : l10n.reportMetricOverallDelta;
+    return _allMetricValuesUnavailable
+        ? l10n.placeholderNoData
+        : l10n.reportMetricOverallDelta;
   }
 
   List<double> _deriveOverallSparkline() {

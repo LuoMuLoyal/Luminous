@@ -195,12 +195,135 @@ class ReportPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final canAccessProtectedData = ref.watch(
-      authSessionProvider.select((s) => s.canAccessProtectedData),
+    final session = ref.watch(authSessionProvider);
+    final canAccessProtectedData = session.canAccessProtectedData;
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    final selectedDashboardQuery = ref.watch(
+      reportDashboardSelectedQueryProvider,
     );
-    final isConfirmedSignedOut = ref.watch(
-      authSessionProvider.select((s) => s.isConfirmedSignedOut),
+
+    // Always watch the provider — when signed out it returns preview data.
+    final dashboardAsync = ref.watch(
+      reportDashboardProvider(selectedDashboardQuery),
     );
+
+    final pageState = resolvePageViewState<ReportDashboard>(
+      session: session,
+      data: dashboardAsync,
+      isInsufficient: (dashboard) => dashboard.metrics.isEmpty,
+    );
+
+    return ShellDeferredContent(
+      child: PageStateSwitch<ReportDashboard>(
+        state: pageState,
+        loadingBuilder: () => _buildLoadingShell(
+          context: context,
+          ref: ref,
+          selectedDashboardQuery: selectedDashboardQuery,
+        ),
+        fatalErrorBuilder: (error) => FScaffold(
+          header: const SafeArea(
+            bottom: false,
+            child: FHeader.nested(prefixes: [AppBackButton()]),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: AppStateErrorView(
+              title: l10n.reportErrorTitle,
+              description: l10n.reportErrorDescription,
+              icon: FLucideIcons.chartColumnBig,
+              actionLabel: l10n.todayRetryAction,
+              onAction: () => ref.invalidate(
+                reportDashboardProvider(selectedDashboardQuery),
+              ),
+              tone: AppStateTone.warning,
+            ),
+          ),
+        ),
+        emptyInsufficientBuilder: (empty) => DecoratedBox(
+          decoration: BoxDecoration(color: colors.background),
+          child: SafeArea(
+            bottom: false,
+            child: AppStateMessageView(
+              title: l10n.stateEmptyDefaultTitle,
+              description: l10n.stateEmptyDefaultDescription,
+              icon: FLucideIcons.chartColumnBig,
+              actionLabel: l10n.todayEmptyAction,
+              onAction: () => context.push('/record/create'),
+            ),
+          ),
+        ),
+        readyBuilder: (dashboard, isPreview) => _buildReadyContent(
+          context: context,
+          ref: ref,
+          dashboard: dashboard,
+          selectedDashboardQuery: selectedDashboardQuery,
+          canAccessProtectedData: canAccessProtectedData,
+          isPreview: isPreview,
+          onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingShell({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ReportDashboardQuery selectedDashboardQuery,
+  }) {
+    final l10n = AppLocalizations.of(context)!;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= AppBreakpoints.desktop;
+    final dateRangeLabel = l10n.placeholderNoData;
+
+    return isDesktop
+        ? _ReportDesktopShell(
+            isGenerating: false,
+            isSyncing: false,
+            onGenerate: () {},
+            onSync: () {},
+            onRefresh: () async {},
+            topBar: ReportTopBar(
+              dateRangeLabel: dateRangeLabel,
+              selectedQuery: selectedDashboardQuery,
+              onQueryChanged: (_) {},
+              onGenerate: () {},
+              onSync: () {},
+              isGenerating: false,
+              isSyncing: false,
+            ),
+            child: const ReportSkeletonView(),
+          )
+        : _ReportMobileShell(
+            isGenerating: false,
+            isSyncing: false,
+            onGenerate: () {},
+            onSync: () {},
+            onRefresh: () async {},
+            topBar: ReportTopBar(
+              dateRangeLabel: dateRangeLabel,
+              selectedQuery: selectedDashboardQuery,
+              onQueryChanged: (_) {},
+              onGenerate: () {},
+              onSync: () {},
+              isGenerating: false,
+              isSyncing: false,
+            ),
+            child: const ReportSkeletonView(),
+          );
+  }
+
+  Widget _buildReadyContent({
+    required BuildContext context,
+    required WidgetRef ref,
+    required ReportDashboard dashboard,
+    required ReportDashboardQuery selectedDashboardQuery,
+    required bool canAccessProtectedData,
+    required bool isPreview,
+    required VoidCallback onSignIn,
+  }) {
     final aiSummariesEnabled = canAccessProtectedData
         ? ref.watch(
             userSettingsControllerProvider.select(
@@ -208,12 +331,6 @@ class ReportPage extends ConsumerWidget {
             ),
           )
         : null;
-    final selectedDashboardQuery = ref.watch(
-      reportDashboardSelectedQueryProvider,
-    );
-    final dashboardAsync = ref.watch(
-      reportDashboardProvider(selectedDashboardQuery),
-    );
     final selectedAiSummaryRange = ref.watch(
       reportAiSummarySelectedRangeProvider,
     );
@@ -227,290 +344,136 @@ class ReportPage extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
 
-    final dateRangeLabel = dashboardAsync.when(
-      data: (dashboard) => reportDashboardDateRangeLabel(
-        context,
-        dashboard.startDate,
-        dashboard.endDate,
-      ),
-      loading: () => '--',
-      error: (_, __) => '--',
+    final dateRangeLabel = reportDashboardDateRangeLabel(
+      context,
+      dashboard.startDate,
+      dashboard.endDate,
     );
 
-    return ShellDeferredContent(
-      child: dashboardAsync.when(
-        data: (dashboard) => isDesktop
-            ? _ReportDesktopShell(
-                onGenerate: () {
-                  ref
-                      .read(
-                        reportAiSummaryControllerProvider(
-                          selectedAiSummaryRange,
-                        ).notifier,
-                      )
-                      .generate();
-                },
-                onSync: () => _refreshDashboard(ref),
-                onRefresh: () => _refreshDashboard(ref),
-                isGenerating: aiSummaryState.isLoading,
-                isSyncing: false,
-                topBar: ReportTopBar(
-                  dateRangeLabel: dateRangeLabel,
-                  selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  onGenerate: () {
-                    ref
-                        .read(
-                          reportAiSummaryControllerProvider(
-                            selectedAiSummaryRange,
-                          ).notifier,
-                        )
-                        .generate();
-                  },
-                  onSync: () => _refreshDashboard(ref),
-                  isGenerating: aiSummaryState.isLoading,
-                  isSyncing: false,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isConfirmedSignedOut) ...[
-                      _ReportSignedOutNotice(),
-                      const SizedBox(height: AppSpacingTokens.level4),
-                    ],
-                    ReportDashboardView(
-                      dashboard: dashboard,
-                      canAccessProtectedData: canAccessProtectedData,
-                      aiSummariesEnabled: aiSummariesEnabled,
-                      dashboardQuery: selectedDashboardQuery,
-                      onDashboardQueryChanged: (query) {
-                        ref
-                            .read(reportDashboardSelectedQueryProvider.notifier)
-                            .setQuery(query);
-                      },
-                      aiSummaryState: aiSummaryState,
-                      aiSummaryRange: selectedAiSummaryRange,
-                      latestExportRequest: latestExportRequest,
-                      exportRequestInFlight: exportRequestInFlight,
-                      onAiSummaryRangeChanged: (range) {
-                        ref
-                            .read(reportAiSummarySelectedRangeProvider.notifier)
-                            .setRange(range);
-                      },
-                      onGenerateAiSummary: () async {
-                        await ref
-                            .read(
-                              reportAiSummaryControllerProvider(
-                                selectedAiSummaryRange,
-                              ).notifier,
-                            )
-                            .generate();
-                      },
-                      onExportActionTap: (kind) =>
-                          _handleExportAction(context, ref, kind),
-                      onMetricSelected: (kind) =>
-                          _openRecordFilter(context, ref, kind),
-                    ),
-                  ],
-                ),
+    final dashboardView = ReportDashboardView(
+      dashboard: dashboard,
+      canAccessProtectedData: canAccessProtectedData,
+      aiSummariesEnabled: aiSummariesEnabled,
+      dashboardQuery: selectedDashboardQuery,
+      onDashboardQueryChanged: (query) {
+        ref.read(reportDashboardSelectedQueryProvider.notifier).setQuery(query);
+      },
+      aiSummaryState: aiSummaryState,
+      aiSummaryRange: selectedAiSummaryRange,
+      latestExportRequest: latestExportRequest,
+      exportRequestInFlight: exportRequestInFlight,
+      onAiSummaryRangeChanged: (range) {
+        ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
+      },
+      onGenerateAiSummary: () async {
+        await ref
+            .read(
+              reportAiSummaryControllerProvider(
+                selectedAiSummaryRange,
+              ).notifier,
+            )
+            .generate();
+      },
+      onExportActionTap: (kind) => _handleExportAction(context, ref, kind),
+      onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
+    );
+
+    final previewBanner = isPreview
+        ? SignInHintBanner(onSignIn: onSignIn)
+        : null;
+
+    if (isDesktop) {
+      return _ReportDesktopShell(
+        onGenerate: () {
+          ref
+              .read(
+                reportAiSummaryControllerProvider(
+                  selectedAiSummaryRange,
+                ).notifier,
               )
-            : _ReportMobileShell(
-                onGenerate: () {
-                  ref
-                      .read(
-                        reportAiSummaryControllerProvider(
-                          selectedAiSummaryRange,
-                        ).notifier,
-                      )
-                      .generate();
-                },
-                onSync: () => _refreshDashboard(ref),
-                onRefresh: () => _refreshDashboard(ref),
-                isGenerating: aiSummaryState.isLoading,
-                isSyncing: false,
-                topBar: ReportTopBar(
-                  dateRangeLabel: dateRangeLabel,
-                  selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (query) {
-                    ref
-                        .read(reportDashboardSelectedQueryProvider.notifier)
-                        .setQuery(query);
-                  },
-                  onGenerate: () {
-                    ref
-                        .read(
-                          reportAiSummaryControllerProvider(
-                            selectedAiSummaryRange,
-                          ).notifier,
-                        )
-                        .generate();
-                  },
-                  onSync: () => _refreshDashboard(ref),
-                  isGenerating: aiSummaryState.isLoading,
-                  isSyncing: false,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (isConfirmedSignedOut) ...[
-                      _ReportSignedOutNotice(),
-                      const SizedBox(height: AppSpacingTokens.level4),
-                    ],
-                    ReportDashboardView(
-                      dashboard: dashboard,
-                      canAccessProtectedData: canAccessProtectedData,
-                      aiSummariesEnabled: aiSummariesEnabled,
-                      dashboardQuery: selectedDashboardQuery,
-                      onDashboardQueryChanged: (query) {
-                        ref
-                            .read(reportDashboardSelectedQueryProvider.notifier)
-                            .setQuery(query);
-                      },
-                      aiSummaryState: aiSummaryState,
-                      aiSummaryRange: selectedAiSummaryRange,
-                      latestExportRequest: latestExportRequest,
-                      exportRequestInFlight: exportRequestInFlight,
-                      onAiSummaryRangeChanged: (range) {
-                        ref
-                            .read(reportAiSummarySelectedRangeProvider.notifier)
-                            .setRange(range);
-                      },
-                      onGenerateAiSummary: () async {
-                        await ref
-                            .read(
-                              reportAiSummaryControllerProvider(
-                                selectedAiSummaryRange,
-                              ).notifier,
-                            )
-                            .generate();
-                      },
-                      onExportActionTap: (kind) =>
-                          _handleExportAction(context, ref, kind),
-                      onMetricSelected: (kind) =>
-                          _openRecordFilter(context, ref, kind),
-                    ),
-                  ],
-                ),
-              ),
-        loading: () => isDesktop
-            ? _ReportDesktopShell(
-                isGenerating: false,
-                isSyncing: false,
-                onGenerate: () {},
-                onSync: () {},
-                onRefresh: () async {},
-                topBar: ReportTopBar(
-                  dateRangeLabel: dateRangeLabel,
-                  selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (_) {},
-                  onGenerate: () {},
-                  onSync: () {},
-                  isGenerating: false,
-                  isSyncing: false,
-                ),
-                child: const ReportSkeletonView(),
-              )
-            : _ReportMobileShell(
-                isGenerating: false,
-                isSyncing: false,
-                onGenerate: () {},
-                onSync: () {},
-                onRefresh: () async {},
-                topBar: ReportTopBar(
-                  dateRangeLabel: dateRangeLabel,
-                  selectedQuery: selectedDashboardQuery,
-                  onQueryChanged: (_) {},
-                  onGenerate: () {},
-                  onSync: () {},
-                  isGenerating: false,
-                  isSyncing: false,
-                ),
-                child: const ReportSkeletonView(),
-              ),
-        error: (error, _) {
-          final l10n = AppLocalizations.of(context)!;
-          return FScaffold(
-            header: const SafeArea(
-              bottom: false,
-              child: FHeader.nested(prefixes: [AppBackButton()]),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: AppStateErrorView(
-                title: l10n.reportErrorTitle,
-                description: l10n.reportErrorDescription,
-                icon: FLucideIcons.chartColumnBig,
-                actionLabel: l10n.todayRetryAction,
-                onAction: () => ref.invalidate(
-                  reportDashboardProvider(selectedDashboardQuery),
-                ),
-                tone: AppStateTone.warning,
-              ),
-            ),
-          );
+              .generate();
         },
-      ),
-    );
-  }
-}
+        onSync: () => _refreshDashboard(ref),
+        onRefresh: () => _refreshDashboard(ref),
+        isGenerating: aiSummaryState.isLoading,
+        isSyncing: false,
+        topBar: ReportTopBar(
+          dateRangeLabel: dateRangeLabel,
+          selectedQuery: selectedDashboardQuery,
+          onQueryChanged: (query) {
+            ref
+                .read(reportDashboardSelectedQueryProvider.notifier)
+                .setQuery(query);
+          },
+          onGenerate: () {
+            ref
+                .read(
+                  reportAiSummaryControllerProvider(
+                    selectedAiSummaryRange,
+                  ).notifier,
+                )
+                .generate();
+          },
+          onSync: () => _refreshDashboard(ref),
+          isGenerating: aiSummaryState.isLoading,
+          isSyncing: false,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (previewBanner != null) ...[
+              previewBanner,
+              const SizedBox(height: AppSpacingTokens.level4),
+            ],
+            dashboardView,
+          ],
+        ),
+      );
+    }
 
-class _ReportSignedOutNotice extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
-    return Container(
-      key: const Key('report-signed-out-notice'),
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(color: colors.border),
+    return _ReportMobileShell(
+      onGenerate: () {
+        ref
+            .read(
+              reportAiSummaryControllerProvider(
+                selectedAiSummaryRange,
+              ).notifier,
+            )
+            .generate();
+      },
+      onSync: () => _refreshDashboard(ref),
+      onRefresh: () => _refreshDashboard(ref),
+      isGenerating: aiSummaryState.isLoading,
+      isSyncing: false,
+      topBar: ReportTopBar(
+        dateRangeLabel: dateRangeLabel,
+        selectedQuery: selectedDashboardQuery,
+        onQueryChanged: (query) {
+          ref
+              .read(reportDashboardSelectedQueryProvider.notifier)
+              .setQuery(query);
+        },
+        onGenerate: () {
+          ref
+              .read(
+                reportAiSummaryControllerProvider(
+                  selectedAiSummaryRange,
+                ).notifier,
+              )
+              .generate();
+        },
+        onSync: () => _refreshDashboard(ref),
+        isGenerating: aiSummaryState.isLoading,
+        isSyncing: false,
       ),
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: colors.secondary.withValues(alpha: 0.14),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-            ),
-            child: Icon(FLucideIcons.lock, color: colors.primary),
-          ),
-          const SizedBox(width: AppSpacingTokens.level3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.authNotSignedIn,
-                  style: AppTypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: AppSpacingTokens.level1),
-                Text(
-                  l10n.reportSignedOutInlineHint,
-                  style: AppTypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: AppSpacingTokens.level3),
-          FButton(
-            variant: FButtonVariant.outline,
-            key: const Key('report-signed-out-login-action'),
-            onPress: () => pushAuthRequiredRoute(context, '/report'),
-            child: Text(l10n.authGoLogin),
-          ),
+          if (previewBanner != null) ...[
+            previewBanner,
+            const SizedBox(height: AppSpacingTokens.level4),
+          ],
+          dashboardView,
         ],
       ),
     );
