@@ -1,4 +1,4 @@
-import 'package:luminous/features/shell/presentation/shell_tab.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
 
 import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';

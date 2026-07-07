@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
-import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
-import 'package:luminous/features/record/presentation/providers/record_dashboard_provider.dart';
-import 'package:luminous/features/shell/presentation/shell_tab.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
 
 import 'e2e_test_helpers.dart';
 

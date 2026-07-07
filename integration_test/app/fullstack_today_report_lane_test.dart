@@ -1,9 +1,9 @@
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/report/domain/entities/report_ai_summary.dart';
-import 'package:luminous/features/report/presentation/providers/report_ai_summary_provider.dart';
-import 'package:luminous/features/shell/presentation/shell_tab.dart';
-import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
-import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/report/domain/entities/ai_summary.dart';
+import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/presentation/providers/ai_analysis_provider.dart';
 
 import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';
