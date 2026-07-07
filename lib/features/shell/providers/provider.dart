@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'shell_provider.freezed.dart';
+part 'provider.freezed.dart';
 
 @freezed
 abstract class ShellState with _$ShellState {

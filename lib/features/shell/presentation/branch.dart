@@ -1,4 +1,4 @@
-import 'package:luminous/features/shell/presentation/shell_tab.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
 
 /// Branch indices used by [StatefulShellRoute].
 ///
