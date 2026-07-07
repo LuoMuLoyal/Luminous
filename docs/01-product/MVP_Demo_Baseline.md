@@ -17,11 +17,13 @@ The baseline covers three things:
 2. which mobile flow must be rehearsed
 3. what the demo account/data should look like
 
-## Real MVP Path
+## Current Demo Path
 
 ```text
 record -> summarize -> bounded medicine safety check -> export
 ```
+
+This is the currently rehearsed demo lane, not the only source-of-truth definition of the product MVP.
 
 ## Demo Account Baseline
 

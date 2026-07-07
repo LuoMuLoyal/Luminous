@@ -14,6 +14,7 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 - [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
 - [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
+- [[01-product/Product_Tab_Component_Blueprint]] — 五个 Tab 的组件级蓝图
 - [[01-product/Product_Brainstorm_2026-07-07]] — 功能头脑风暴与调整建议
 - [[02-reference/architecture]] — 目录与模块结构总览
 - [[02-reference/state-management]] — Riverpod 状态管理

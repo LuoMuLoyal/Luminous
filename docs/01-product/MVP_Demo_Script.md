@@ -75,16 +75,16 @@ medical judgment.
   - AI summary generation
   - PDF export entry
 - Use one real export path during demo:
-  - `给校医院 / hospital + pdf + last_7_days`
+  - `给门诊 / hospital + pdf + last_7_days`
 - If showing `monthly` or `print`, describe them as existing real PDF flows, but keep the narrative
    focused on the already rehearsed export path.
 
 ### 6. Close on boundary, not hype
 
 - End with:
-  - Luminous is a proactive campus health assistant, not an AI doctor
+  - Luminous is a proactive personal health assistant, not an AI doctor
   - medication safety is the trusted entry, not the whole ceiling
-  - the current MVP proves: record -> summarize -> bounded safety check -> export/shareable artifact
+  - the current demo lane shows: record -> summarize -> bounded safety check -> export/shareable artifact
 
 ## Do Not Say
 
