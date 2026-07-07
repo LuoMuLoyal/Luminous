@@ -6,17 +6,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show UpdateAssistantContextSettingsDto, UpdateUserSettingsDto;
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/network/lucent_error_mapper.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
-import 'package:luminous/features/record/domain/entities/daily_record.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
-part 'assistant_controller.freezed.dart';
+part 'controller.freezed.dart';
 
 enum AssistantSendErrorType { server, streamInterrupted, emptyResult, unknown }
 

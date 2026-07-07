@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_proposal_card.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantMessageBubble extends StatelessWidget {

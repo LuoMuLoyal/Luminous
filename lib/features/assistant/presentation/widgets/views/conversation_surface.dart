@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
-import 'package:luminous/features/assistant/presentation/utils/assistant_ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_message_bubble.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/providers/controller.dart';
+import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/message_bubble.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class AssistantConversationSurface extends StatelessWidget {

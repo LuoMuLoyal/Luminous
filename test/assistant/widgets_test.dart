@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_chips.dart';
-import 'package:luminous/features/assistant/presentation/widgets/dialogs/assistant_conversation_drawer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/assistant/presentation/providers/controller.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 
 import '../helpers/test_forui_app.dart';
 

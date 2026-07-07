@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/assistant/presentation/providers/assistant_controller.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/providers/controller.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../auth/auth_test_helpers.dart';
+import '../auth/test_helpers.dart';
 
 /// A fake repository with canned responses.
 class _FakeAssistantRepository implements AssistantRepository {

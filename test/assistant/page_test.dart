@@ -12,20 +12,20 @@ import 'package:lucent_openapi/lucent_openapi.dart'
         UpdateAssistantContextSettingsDto,
         UpdateUserSettingsDto,
         UserSettingsDataDto;
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent_assistant_repository.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
 
 import '../helpers/test_forui_app.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
-import 'package:luminous/features/assistant/presentation/pages/assistant_page.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/assistant_loading_view.dart';
-import 'package:luminous/features/auth/domain/entities/auth_session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
-import 'package:luminous/features/record/domain/entities/daily_record.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
-import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/presentation/pages/page.dart';
+import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/entities/candidates.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,9 +1,9 @@
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/assistant/data/datasources/assistant_remote_data_source.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/assistant/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
 
 sealed class AssistantGenerationEvent {
   const AssistantGenerationEvent();

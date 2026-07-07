@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/assistant/domain/entities/assistant_models.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
 class AssistantControlsPanel extends StatelessWidget {
   const AssistantControlsPanel({

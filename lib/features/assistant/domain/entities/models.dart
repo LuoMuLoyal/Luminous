@@ -2,7 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'assistant_models.freezed.dart';
+part 'models.freezed.dart';
 
 @immutable
 class AssistantContextAccess {

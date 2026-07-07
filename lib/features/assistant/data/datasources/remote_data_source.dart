@@ -1,8 +1,8 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/network/lucent_sse.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/sse.dart';
 
 sealed class AssistantRemoteEvent {
   const AssistantRemoteEvent();
