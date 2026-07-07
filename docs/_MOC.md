@@ -32,6 +32,7 @@
 - [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
 - [[01-product/MVP_Demo_Baseline]] — 可重复的 MVP 演示基线
 - [[01-product/MVP_Demo_Script]] — 演示/答辩操作脚本
+- [[01-product/Product_Brainstorm_2026-07-07]] — 功能头脑风暴与调整建议
 
 ## 02-reference — 参考规范
 

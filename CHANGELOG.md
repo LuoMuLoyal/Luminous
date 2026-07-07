@@ -37,9 +37,13 @@ provides a release-level summary. Pre-2026-07 entries are archived under
 
 ---
 
-## [v4.0.0-dev] — 2026-07-04
+## [0.1.0-dev] — 2026-07-04
 
 First development milestone after full project reset and Forui migration.
+This is the initial development cycle — the project has not yet shipped a
+stable release. Per [Semantic Versioning](https://semver.org/), major version
+zero (0.y.z) is for initial development; the public API SHOULD NOT be
+considered stable.
 
 ### Added
 
@@ -94,10 +98,10 @@ First development milestone after full project reset and Forui migration.
 
 | Version       | Status      | Notes                                      |
 | ------------- | ----------- | ------------------------------------------ |
-| `v4.0.0-dev`  | Development | Forui migration, five-tab MVP, AI assistant |
-| `v4.0.0`      | Planned     | First stable mobile release                |
-| `v4.1.0`      | Planned     | Post-MVP polish, crash analytics, perf     |
-| `v4.2.0`      | Planned     | Medicine scan, GenUI, report drill-down    |
-| `v5.0.0`      | Planned     | Desktop, web, family profiles, wearable    |
+| `0.1.0-dev`   | Development | Forui migration, five-tab MVP, AI assistant |
+| `1.0.0`       | Planned     | First stable mobile release                |
+| `1.1.0`       | Planned     | Post-MVP polish, crash analytics, perf     |
+| `1.2.0`       | Planned     | Medicine scan, GenUI, report drill-down    |
+| `2.0.0`       | Planned     | Desktop, web, family profiles, wearable    |
 
 See [ROADMAP.md](ROADMAP.md) for the full roadmap.

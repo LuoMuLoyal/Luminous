@@ -5,7 +5,7 @@ It is a living document — directions shift as the product and community grow.
 
 ## Status
 
-Luminous is currently at `v4.0.0-dev`. The core mobile experience is functional
+Luminous is currently at `0.1.0-dev`. The core mobile experience is functional
 with all five tabs active, but the project has not yet shipped a stable release.
 
 **What works today**
@@ -29,7 +29,7 @@ with all five tabs active, but the project has not yet shipped a stable release.
 
 **What's missing**
 
-- Stable release (v4.0.0) — still in dev phase
+- Stable release (1.0.0) — still in dev phase
 - Real medicine barcode / OCR / prescription recognition flow
 - Push notification delivery (pending Lucent FCM/APNs)
 - Web report preview beyond competition demo
@@ -40,13 +40,18 @@ with all five tabs active, but the project has not yet shipped a stable release.
 
 ## Directions
 
-### MVP Release → `v4.0.0`
+### MVP Release → `1.0.0`
 
 Ship the first stable mobile release.
 
 - **Polish Pass** — unify visual hierarchy across all five tabs, eliminate
   overflow / truncation / black blocks, consistent loading / empty / error
   states
+- **Safety Transparency** — Medicine risk check three-tier display (confirmed
+  risk / confirmed safe / uncovered-uncertain), explicit coverage scope on
+  pre-check sheet
+- **Report Gating Clarity** — empty states explain why data is insufficient,
+  show recording progress toward threshold
 - **Reliability** — eliminate empty catch blocks, mock hardcoded dates, visible
   hardcoded strings, unstable route strings
 - **Test Coverage** — raise widget test coverage for all critical user journeys,
@@ -55,7 +60,7 @@ Ship the first stable mobile release.
   tool/run_daily_checks.dart` all green; migration logs and current state docs
   synced; no post-MVP features advertised as current
 
-### Post-MVP Polish → `v4.1.0`
+### Post-MVP Polish → `1.1.0`
 
 Harden the experience after stable release.
 
@@ -65,10 +70,18 @@ Harden the experience after stable release.
   tuning, list virtualization audit
 - **Accessibility** — full screen reader support, dynamic type scaling, touch
   target audit
+- **Record Adherence** — weekly recording streak heatmap, density-aware AI
+  summary gating, inline progress prompts
+- **Clinic Summary** — structured doctor/pharmacist handoff export with
+  field-level privacy redaction (PDF + plain text)
+- **Symptom-Medicine Timeline** — cross-type correlation view in Record,
+  clickable AI summary evidence expansion
+- **Quick-Entry Widget** — Android home screen + iOS Lock Screen widgets for
+  one-tap water logging and medication status
 - **Offline** — local-first record editing with sync-on-reconnect, conflict
   resolution UX
 
-### Feature Expansion → `v4.2.0`
+### Feature Expansion → `1.2.0`
 
 Extend product capabilities on a stable foundation.
 
@@ -83,8 +96,16 @@ Extend product capabilities on a stable foundation.
   flag)
 - **Assistant Enhancements** — conversation rename / delete / search, enhanced
   memory controls, new tool capabilities
+- **Embedded Assistant** — inline AI entry points in Today / Medicine / Report
+  instead of standalone-only access
+- **Red-Flag Rules** — fixed rule table for high-risk symptom patterns (fever,
+  allergic reaction, breathing difficulty) with static safety copy
+- **Smart Reminder Priority** — context-aware reminder scheduling based on
+  recording patterns and confirmation latency (requires Lucent rule extension)
+- **Health Bridge** — Apple Health / Health Connect read-only integration for
+  steps, sleep, water (reduces manual entry friction)
 
-### Scale & Platform → `v5.0.0`
+### Scale & Platform → `2.0.0`
 
 Broaden platform reach and prepare for larger scale.
 
@@ -102,14 +123,18 @@ Broaden platform reach and prepare for larger scale.
 
 | Version  | Theme                | Status      |
 | -------- | -------------------- | ----------- |
-| `v4.0.0` | MVP release          | In progress |
-| `v4.1.0` | Post-MVP polish      | Planned     |
-| `v4.2.0` | Feature expansion    | Planned     |
-| `v5.0.0` | Scale & platform     | Planned     |
+| `0.1.0-dev` | Initial development  | In progress |
+| `1.0.0`     | MVP release          | Planned     |
+| `1.1.0`     | Post-MVP polish      | Planned     |
+| `1.2.0`     | Feature expansion    | Planned     |
+| `2.0.0`     | Scale & platform     | Planned     |
 
 Releases follow [Semantic Versioning](https://semver.org/). Each release passes
 the full `flutter analyze` + `flutter test` + `dart run tool/run_daily_checks.dart`
 gate before publish.
+
+Detailed feature brainstorm and adjustment rationale: see
+[docs/01-product/Product_Brainstorm_2026-07-07.md](docs/01-product/Product_Brainstorm_2026-07-07.md).
 
 ## Contributing
 

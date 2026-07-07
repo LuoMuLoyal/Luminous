@@ -4,7 +4,7 @@
 
 Flutter 个人健康助手。以用药安全为入口，连接日常记录与 AI 驱动的主动提醒、总结和报告。
 
-Current version: **v4.0.0-dev**
+Current version: **0.1.0-dev**
 
 ## Community
 
