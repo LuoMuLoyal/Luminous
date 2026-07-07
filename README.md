@@ -6,6 +6,14 @@ Flutter 个人健康助手。以用药安全为入口，连接日常记录与 AI
 
 Current version: **v4.0.0-dev**
 
+## Community
+
+- [Roadmap](ROADMAP.md) — planned evolution and version milestones
+- [Changelog](CHANGELOG.md) — release-level change history
+- [Contributing](CONTRIBUTING.md) — development setup, conventions, and PR process
+- [Code of Conduct](.github/CODE_OF_CONDUCT.md) — community standards
+- [Issues](https://github.com/LuoMuLoyal/Luminous/issues) — bug reports and feature requests
+
 ## AI Workflow
 
 - Repo AI-development reference: `docs/02-reference/AI_Development_Workflow.md`

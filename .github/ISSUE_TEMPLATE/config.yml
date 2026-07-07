@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/LuoMuLoyal/Luminous/security/policy
+    about: Do not open public issues for security vulnerabilities. Report privately.
+  - name: Roadmap discussion
+    url: https://github.com/LuoMuLoyal/Luminous/blob/main/ROADMAP.md
+    about: Check the roadmap before suggesting large-scale changes.
+  - name: Lucent backend
+    url: https://github.com/LuoMuLoyal/Lucent
+    about: Backend issues belong in the Lucent repository.

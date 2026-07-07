@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-07-04
+Last updated: 2026-07-07
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-07-07](migration-log/2026-07-07.md) — 审查修复 + 开发者选项 + Talker 迁移 + 开源标准文档
 - [2026-07-04](migration-log/2026-07-04.md) — Doc coverage warning automation + phase guide
 - [2026-07-03](migration-log/2026-07-03.md) — Docs restructure + Forui debt closeout
 - [2026-07-02](migration-log/2026-07-02.md)
@@ -54,4 +55,4 @@ Major changes grouped by area:
 - **CI / Tooling** (melos, git hooks, GitHub Actions)
   - Key Dates: 06/05, 06/13, 06/30
 - **Docs / Governance** (migration log, guardrails, architecture)
-  - Key Dates: 06/07, 06/08, 06/30, 07/03
+  - Key Dates: 06/07, 06/08, 06/30, 07/03, 07/07

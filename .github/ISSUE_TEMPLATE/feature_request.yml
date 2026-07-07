@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest an idea for Luminous
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem does this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What would you like to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered any alternative solutions?
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Today
+        - Record
+        - Medicine
+        - Report
+        - Mine / Settings
+        - Auth / Security
+        - AI / Assistant
+        - Design / UI
+        - Infrastructure / CI
+        - Other
+    validations:
+      required: true

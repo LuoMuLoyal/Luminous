@@ -10,7 +10,7 @@ Last updated: 2026-07-07
   - 已通过移除测试树中的 `FToaster`、`AppToast.show` 加 try-catch 降级规避
   - 升级至 Forui 0.24+ 后恢复 toast 测试
 - `formz` 表单校验
-  - 新增依赖，当前 AppToast 校验模式工作正常
+  - 已尝试,发现该校验并不合适后回退
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
 
@@ -23,15 +23,15 @@ Last updated: 2026-07-07
 - Release 模式错误上报：`debugPrint` 仅 debug 生效，release 下静默 — 需上线前评估持久化日志/上报策略
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
-一、后端已就绪，前端缺失（优先级最高）
+## 实验性功能（稳定版后启动）
 
-二、合理的新增扩展（需后端配合或纯前端实现）
-
-
-3. 🌐 开发者选项（Advanced 扩展）
-   API 端点切换 — 开发/生产环境切换（仅 debug 模式可见）
-   日志级别 — verbose/info/warning/error
-   功能开关（Feature Flags） — 实验性功能灰度控制
+- GenUI（Generative UI）渲染引擎
+  - 现状：`proposedActions` 已是 GenUI 雏形（4 种固定类型 + 1 个固定卡片 `AssistantProposalCard`）
+  - 目标：扩展为开放式 UI 组件 JSON schema，LLM 返回结构化组件树，客户端 `GenUIRenderer` 递归渲染原生 Widget
+  - 路径：Phase 2 在 `proposedActions` 里新增 `type: "gen_ui"`，渐进式替代固定卡片
+  - 前置条件：稳定版发布后启动，Feature Flags `genUiEnabled` 已就绪
+  - 不需要 Firebase，纯客户端渲染 + Lucent 后端 LLM
+  - 预估工作量：15-23 个工作日（含 UI Schema 规范、后端 prompt 改造、渲染引擎、基础组件库、Action 回调、流式渲染、测试）
 
 ## Not MVP
 
