@@ -5,13 +5,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/accessibility/accessibility_settings_controller.dart';
+import 'package:luminous/core/accessibility/settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_notification_coordinator.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/theme/theme.dart';
 

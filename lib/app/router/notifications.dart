@@ -1,9 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/notification/presentation/pages/notification_detail_page.dart';
-import 'package:luminous/features/notification/presentation/pages/notification_list_page.dart';
+import 'package:luminous/features/notification/presentation/pages/detail_page.dart';
+import 'package:luminous/features/notification/presentation/pages/list_page.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final notificationsRoutes = [
   GoRoute(

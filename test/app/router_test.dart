@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/search/presentation/pages/search_page.dart';
-import 'package:luminous/features/search/presentation/providers/search_provider.dart';
+import 'package:luminous/features/search/presentation/pages/page.dart';
+import 'package:luminous/features/search/presentation/providers/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';

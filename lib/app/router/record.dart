@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/record/domain/entities/record_type_mapping.dart';
-import 'package:luminous/features/record/presentation/pages/record_create.dart';
-import 'package:luminous/features/record/presentation/pages/record_detail.dart';
-import 'package:luminous/features/record/presentation/pages/record_edit.dart';
-import 'package:luminous/features/record/presentation/utils/record_date_time_formatters.dart';
+import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/pages/create.dart';
+import 'package:luminous/features/record/presentation/pages/detail.dart';
+import 'package:luminous/features/record/presentation/pages/edit.dart';
+import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final recordRoutes = [
   GoRoute(

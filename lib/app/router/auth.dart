@@ -4,7 +4,7 @@ import 'package:luminous/features/auth/presentation/pages/forgot_password_page.d
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/auth/presentation/pages/register_page.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final authRoutes = [
   GoRoute(

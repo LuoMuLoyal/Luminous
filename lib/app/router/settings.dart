@@ -10,13 +10,13 @@ import 'package:luminous/features/settings/presentation/pages/dnd_settings_page.
 import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/feature_flags_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/security_pin_settings_page.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final settingsRoutes = [
   GoRoute(

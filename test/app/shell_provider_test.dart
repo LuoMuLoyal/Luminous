@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/shell/providers/shell_provider.dart';
+import 'package:luminous/features/shell/providers/provider.dart';
 
 void main() {
   test('initial currentIndex is 0', () {

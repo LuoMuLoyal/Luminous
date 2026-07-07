@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_risk_check_page.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_reminder_pages.dart';
-import 'package:luminous/features/search/presentation/pages/search_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/risk_check_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/reminder_pages.dart';
+import 'package:luminous/features/search/presentation/pages/page.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final medicineRoutes = [
   GoRoute(

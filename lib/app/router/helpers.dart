@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 
 CustomTransitionPage<T> fadePage<T>({
   required LocalKey key,

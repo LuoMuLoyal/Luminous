@@ -1,20 +1,20 @@
 import 'package:go_router/go_router.dart';
-import 'package:luminous/features/medicine/presentation/pages/medicine_page.dart';
-import 'package:luminous/features/mine/presentation/pages/mine_page.dart';
-import 'package:luminous/features/record/presentation/pages/record_page.dart';
-import 'package:luminous/features/report/presentation/pages/report_page.dart';
-import 'package:luminous/features/shell/presentation/shell_page.dart';
-import 'package:luminous/features/today/presentation/pages/today_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/page.dart';
+import 'package:luminous/features/mine/presentation/pages/page.dart';
+import 'package:luminous/features/record/presentation/pages/page.dart';
+import 'package:luminous/features/report/presentation/pages/page.dart';
+import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:luminous/features/today/presentation/pages/page.dart';
 
-import 'router/router_account.dart';
-import 'router/router_assistant.dart';
-import 'router/router_auth.dart';
-import 'router/router_medicine.dart';
-import 'router/router_mine.dart';
-import 'router/router_notifications.dart';
-import 'router/router_record.dart';
-import 'router/router_scan.dart';
-import 'router/router_settings.dart';
+import 'router/account.dart';
+import 'router/assistant.dart';
+import 'router/auth.dart';
+import 'router/medicine.dart';
+import 'router/mine.dart';
+import 'router/notifications.dart';
+import 'router/record.dart';
+import 'router/scan.dart';
+import 'router/settings.dart';
 
 /// Named route constants used throughout the codebase.
 ///

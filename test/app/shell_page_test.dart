@@ -3,21 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
-import 'package:luminous/features/record/data/repositories/mock_record_repository.dart';
-import 'package:luminous/features/report/data/repositories/mock_report_repository.dart';
-import 'package:luminous/features/support/data/providers/support_resources_providers.dart';
-import 'package:luminous/features/shell/presentation/shell_page.dart';
-import 'package:luminous/features/shell/presentation/shell_tab.dart';
-import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
-import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
-import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/record/data/repositories/mock_repository.dart';
+import 'package:luminous/features/report/data/repositories/mock_repository.dart';
+import 'package:luminous/features/support/data/providers/resources_providers.dart';
+import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:luminous/features/today/data/repositories/mock_repository.dart';
+import 'package:luminous/features/today/domain/entities/recommendation.dart';
+import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-import '../auth/auth_test_helpers.dart';
+import '../auth/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
 
 class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {

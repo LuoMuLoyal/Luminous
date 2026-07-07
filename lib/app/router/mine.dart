@@ -5,7 +5,7 @@ import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 
-import 'router_helpers.dart';
+import 'helpers.dart';
 
 final mineRoutes = [
   GoRoute(
