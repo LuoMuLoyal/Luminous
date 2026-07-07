@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/medicine/presentation/providers/medicine_reminder_providers.dart';
-import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class FrequencySegments extends StatelessWidget {

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_workspace_parts.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 
 class ReminderTodayLogPanel extends StatelessWidget {
   const ReminderTodayLogPanel({super.key, required this.logs});

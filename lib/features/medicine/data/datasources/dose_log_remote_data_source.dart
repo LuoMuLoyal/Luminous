@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' hide DoseLogStatus;
-import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/network/network_providers.dart';
 
 enum DoseLogStatus { taken, skipped, missed, planned }
 

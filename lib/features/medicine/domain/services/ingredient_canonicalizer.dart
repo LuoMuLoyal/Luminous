@@ -1,4 +1,4 @@
-import 'medicine_risk_checker_utils.dart';
+import 'risk_checker_utils.dart';
 
 /// Maps a canonical ingredient key to its known cross-language variants.
 ///

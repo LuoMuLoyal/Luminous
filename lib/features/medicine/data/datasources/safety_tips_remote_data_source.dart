@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_safety_tip.dart';
+import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 
 class SafetyTipsRemoteDataSource {
   const SafetyTipsRemoteDataSource({required this.api});

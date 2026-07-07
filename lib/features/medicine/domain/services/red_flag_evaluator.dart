@@ -1,5 +1,5 @@
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/allergy_severity_helper.dart';
 
 class RedFlagEvaluator {

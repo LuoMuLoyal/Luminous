@@ -1,4 +1,4 @@
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 
 const _anaphylaxisKeywords = {
   'anaphylaxis',

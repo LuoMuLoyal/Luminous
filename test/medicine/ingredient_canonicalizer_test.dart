@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
-import 'package:luminous/features/medicine/domain/services/medicine_risk_checker_utils.dart';
+import 'package:luminous/features/medicine/domain/services/risk_checker_utils.dart';
 
 void main() {
   group('canonicalIngredientKeysFor', () {
