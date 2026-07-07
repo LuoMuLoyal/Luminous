@@ -1,0 +1,123 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/report/data/repositories/lucent_ai_summary_repository.dart';
+import 'package:luminous/features/report/domain/entities/ai_summary.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+
+class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
+  static const String _defaultStreamingSummary = 'AI 正在整理本阶段的报告摘要...';
+
+  ReportAiSummaryController(this.range);
+
+  final ReportAiSummaryRange range;
+
+  @override
+  ReportAiSummaryCardState build() {
+    final session = ref.watch(authSessionProvider);
+    if (!session.canAccessProtectedData) {
+      return const ReportAiSummaryCardState.idle();
+    }
+
+    final settings = ref.watch(userSettingsControllerProvider).asData?.value;
+    if (settings?.aiSummariesEnabled == false) {
+      return const ReportAiSummaryCardState.disabled();
+    }
+
+    return const ReportAiSummaryCardState.idle();
+  }
+
+  Future<ReportAiSummaryCardState> generate() async {
+    final session = ref.read(authSessionProvider);
+    if (!session.canAccessProtectedData) {
+      return state;
+    }
+
+    final settings = ref.read(userSettingsControllerProvider).asData?.value;
+    if (settings?.aiSummariesEnabled == false) {
+      state = const ReportAiSummaryCardState.disabled();
+      return state;
+    }
+
+    final previousSummary = state.summary;
+    state = ReportAiSummaryCardState.loading(
+      previousSummary: previousSummary,
+      streamingSummary: _defaultStreamingSummary,
+    );
+
+    String? startDate;
+    String? endDate;
+    if (range == ReportAiSummaryRange.custom) {
+      final query = ref.read(reportDashboardSelectedQueryProvider);
+      if (query.isCustom) {
+        startDate = _formatDate(query.startDate);
+        endDate = _formatDate(query.endDate);
+      }
+    }
+
+    try {
+      await for (final event
+          in ref
+              .read(reportAiSummaryRepositoryProvider)
+              .generateStream(range, startDate: startDate, endDate: endDate)) {
+        switch (event) {
+          case ReportAiGenerationSummaryEvent():
+            state = ReportAiSummaryCardState.loading(
+              previousSummary: previousSummary,
+              streamingSummary: event.summary,
+            );
+          case ReportAiGenerationResultEvent():
+            state = ReportAiSummaryCardState.success(event.summary);
+            return state;
+        }
+      }
+
+      throw StateError('报告 AI 流式响应已结束，但没有返回最终结果。');
+    } catch (error) {
+      debugPrint('ReportAiSummaryController.generate: failed: $error');
+      final apiError = LucentErrorMapper.fromObject(error);
+      if (apiError.code == LucentResultCode.forbidden) {
+        state = const ReportAiSummaryCardState.disabled();
+        return state;
+      }
+
+      state = ReportAiSummaryCardState.error(
+        message: apiError.message,
+        previousSummary: previousSummary,
+      );
+      return state;
+    }
+  }
+
+  String? _formatDate(DateTime? date) {
+    if (date == null) return null;
+    final local = date.toLocal();
+    return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+  }
+}
+
+final reportAiSummaryControllerProvider =
+    NotifierProvider.family<
+      ReportAiSummaryController,
+      ReportAiSummaryCardState,
+      ReportAiSummaryRange
+    >((range) => ReportAiSummaryController(range));
+
+class ReportAiSummarySelectedRangeNotifier
+    extends Notifier<ReportAiSummaryRange> {
+  @override
+  ReportAiSummaryRange build() => ReportAiSummaryRange.last7Days;
+
+  void setRange(ReportAiSummaryRange range) {
+    state = range;
+  }
+}
+
+final reportAiSummarySelectedRangeProvider =
+    NotifierProvider<
+      ReportAiSummarySelectedRangeNotifier,
+      ReportAiSummaryRange
+    >(ReportAiSummarySelectedRangeNotifier.new);
