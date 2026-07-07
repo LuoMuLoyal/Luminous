@@ -92,6 +92,18 @@
   "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
   "recordImagePickFailedToast": "图片未选择",
   "recordQuickSectionTitle": "快速记录",
+  "recordQuickDynamicSortTooltip": "开启后，按使用频率自动排列快捷入口",
+  "recordQuickEditOrder": "自定义顺序",
+  "recordQuickSortDisableDynamicFirst": "请先关闭动态排序再编辑顺序",
+  "recordQuickReorderTitle": "拖拽排序",
+  "recordQuickReorderHint": "长按拖拽调整顺序",
+  "recordQuickReorderDone": "完成",
+  "recordQuickReorderCancel": "取消",
+  "settingsQuickEntrySection": "快速记录",
+  "settingsQuickEntryCollapseTitle": "默认收起快速入口",
+  "settingsQuickEntryCollapseSubtitle": "在记录页收起快速记录区域，仅显示标题",
+  "settingsQuickEntryDynamicSortTitle": "动态排序",
+  "settingsQuickEntryDynamicSortSubtitle": "按使用频率自动排列快捷入口",
   "recordFastEntryTitle": "快速记录{type}",
   "@recordFastEntryTitle": {
     "placeholders": {

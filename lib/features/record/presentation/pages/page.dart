@@ -13,6 +13,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
@@ -164,8 +165,12 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         .read(selectedRecordFilterProvider.notifier)
                         .setFilter(type),
                     onDateSelected: (date) => _setSelectedDate(date),
-                    onQuickAction: (action) =>
-                        _handleQuickAction(context, action),
+                    onQuickAction: (action) {
+                      ref
+                          .read(quickEntryPreferencesProvider.notifier)
+                          .recordTap(action.type);
+                      _handleQuickAction(context, action);
+                    },
                     onAiInputTap: () => _openNlpDialog(
                       context,
                       canAccessProtectedData: canAccessProtectedData,

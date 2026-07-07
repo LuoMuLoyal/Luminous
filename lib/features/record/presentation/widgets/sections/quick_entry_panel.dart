@@ -1,12 +1,16 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
@@ -122,7 +126,7 @@ class RecordAiInputBar extends StatelessWidget {
 // Quick record panel
 // ---------------------------------------------------------------------------
 
-class RecordQuickEntryPanel extends StatelessWidget {
+class RecordQuickEntryPanel extends ConsumerStatefulWidget {
   const RecordQuickEntryPanel({
     super.key,
     required this.actions,
@@ -135,52 +139,348 @@ class RecordQuickEntryPanel extends StatelessWidget {
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
+  ConsumerState<RecordQuickEntryPanel> createState() =>
+      _RecordQuickEntryPanelState();
+}
+
+class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
+  bool _reorderMode = false;
+  List<RecordQuickAction> _reorderActions = const [];
+
+  @override
   Widget build(BuildContext context) {
-    final noteAction = actions
+    final l10n = widget.l10n;
+    final prefs =
+        ref.watch(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
+    final metrics = _QuickRecordMetrics.resolve(context);
+
+    // When not in reorder mode, sort actions according to preferences.
+    final allActions = _reorderMode
+        ? _reorderActions
+        : _applyPreferences(widget.actions, prefs);
+
+    final noteAction = allActions
         .where((action) => action.type == RecordEntryType.note)
         .firstOrNull;
-    final gridActions = actions
+    final gridActions = allActions
         .where((action) => action.type != RecordEntryType.note)
         .take(6)
         .toList(growable: false);
-    final metrics = _QuickRecordMetrics.resolve(context);
 
     return Column(
       key: const Key('record-quick-actions'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.recordQuickSectionTitle,
-          style: AppTypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w800),
+        _PanelHeader(
+          l10n: l10n,
+          prefs: prefs,
+          reorderMode: _reorderMode,
+          onToggleDynamicSort: (value) {
+            ref
+                .read(quickEntryPreferencesProvider.notifier)
+                .setDynamicSortEnabled(value);
+          },
+          onEditTap: () {
+            if (prefs.dynamicSortEnabled) {
+              AppToast.show(context, l10n.recordQuickSortDisableDynamicFirst);
+              return;
+            }
+            setState(() {
+              _reorderMode = true;
+              _reorderActions = List.from(gridActions);
+            });
+          },
+          onReorderDone: () {
+            final order = _reorderActions
+                .where((a) => a.type != RecordEntryType.note)
+                .map((a) => a.type.name)
+                .toList();
+            ref
+                .read(quickEntryPreferencesProvider.notifier)
+                .setCustomOrder(order);
+            setState(() {
+              _reorderMode = false;
+              _reorderActions = const [];
+            });
+          },
+          onReorderCancel: () {
+            setState(() {
+              _reorderMode = false;
+              _reorderActions = const [];
+            });
+          },
         ),
         SizedBox(height: metrics.sectionGap),
-        FCard.raw(
-          child: Column(
-            children: [
-              _QuickRecordGrid(
-                actions: gridActions,
-                l10n: l10n,
-                metrics: metrics,
-                onTap: onQuickAction,
-              ),
-              if (noteAction != null) ...[
-                const AppDivider(),
-                _QuickRecordNoteButton(
-                  action: noteAction,
-                  l10n: l10n,
-                  metrics: metrics,
-                  onTap: onQuickAction,
-                ),
+        if (!prefs.collapsed || _reorderMode)
+          FCard.raw(
+            child: Column(
+              children: [
+                if (_reorderMode)
+                  _ReorderableGrid(
+                    actions: _reorderActions,
+                    l10n: l10n,
+                    metrics: metrics,
+                    onReordered: (reordered) {
+                      setState(() => _reorderActions = reordered);
+                    },
+                  )
+                else ...[
+                  _QuickRecordGrid(
+                    actions: gridActions,
+                    l10n: l10n,
+                    metrics: metrics,
+                    onTap: widget.onQuickAction,
+                  ),
+                  if (noteAction != null) ...[
+                    const AppDivider(),
+                    _QuickRecordNoteButton(
+                      action: noteAction,
+                      l10n: l10n,
+                      metrics: metrics,
+                      onTap: widget.onQuickAction,
+                    ),
+                  ],
+                ],
               ],
-            ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  List<RecordQuickAction> _applyPreferences(
+    List<RecordQuickAction> actions,
+    QuickEntryPreferences prefs,
+  ) {
+    return buildMobileQuickActions(actions, preferences: prefs);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Panel header — title + dynamic sort switch + edit button
+// ---------------------------------------------------------------------------
+
+class _PanelHeader extends StatelessWidget {
+  const _PanelHeader({
+    required this.l10n,
+    required this.prefs,
+    required this.reorderMode,
+    required this.onToggleDynamicSort,
+    required this.onEditTap,
+    required this.onReorderDone,
+    required this.onReorderCancel,
+  });
+
+  final AppLocalizations l10n;
+  final QuickEntryPreferences prefs;
+  final bool reorderMode;
+  final ValueChanged<bool> onToggleDynamicSort;
+  final VoidCallback onEditTap;
+  final VoidCallback onReorderDone;
+  final VoidCallback onReorderCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    if (reorderMode) {
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              l10n.recordQuickReorderTitle,
+              style: AppTypographyToken.level6
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+          FButton(
+            key: const Key('record-quick-reorder-cancel'),
+            variant: FButtonVariant.ghost,
+            onPress: onReorderCancel,
+            child: Text(l10n.recordQuickReorderCancel),
+          ),
+          const SizedBox(width: AppSpacingTokens.level2),
+          FButton(
+            key: const Key('record-quick-reorder-done'),
+            onPress: onReorderDone,
+            child: Text(l10n.recordQuickReorderDone),
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            l10n.recordQuickSectionTitle,
+            style: AppTypographyToken.level7
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
+          ),
+        ),
+        // Info tooltip for dynamic sort
+        FTooltip(
+          tipBuilder: (context, controller) =>
+              Text(l10n.recordQuickDynamicSortTooltip),
+          child: Icon(
+            FLucideIcons.circleHelp,
+            size: 16,
+            color: colors.mutedForeground,
+          ),
+        ),
+        const SizedBox(width: AppSpacingTokens.level2),
+        // Dynamic sort switch
+        FSwitch(
+          key: const Key('record-quick-dynamic-sort'),
+          value: prefs.dynamicSortEnabled,
+          onChange: onToggleDynamicSort,
+        ),
+        const SizedBox(width: AppSpacingTokens.level3),
+        // Edit button (greyed when dynamic sort is on, shows toast on tap)
+        Opacity(
+          opacity: prefs.dynamicSortEnabled ? 0.4 : 1,
+          child: IconActionButton(
+            tooltip: l10n.recordQuickEditOrder,
+            icon: FLucideIcons.pencil,
+            onTap: onEditTap,
           ),
         ),
       ],
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Reorderable grid for custom ordering
+// ---------------------------------------------------------------------------
+
+class _ReorderableGrid extends StatelessWidget {
+  const _ReorderableGrid({
+    required this.actions,
+    required this.l10n,
+    required this.metrics,
+    required this.onReordered,
+  });
+
+  final List<RecordQuickAction> actions;
+  final AppLocalizations l10n;
+  final _QuickRecordMetrics metrics;
+  final ValueChanged<List<RecordQuickAction>> onReordered;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacingTokens.level4,
+            vertical: AppSpacingTokens.level2,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                FLucideIcons.gripVertical,
+                size: 14,
+                color: colors.mutedForeground,
+              ),
+              const SizedBox(width: AppSpacingTokens.level2),
+              Text(
+                l10n.recordQuickReorderHint,
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+              ),
+            ],
+          ),
+        ),
+        ReorderableListView(
+          key: const Key('record-quick-reorder-list'),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          buildDefaultDragHandles: false,
+          onReorderItem: (oldIndex, newIndex) {
+            final items = List<RecordQuickAction>.from(actions);
+            final item = items.removeAt(oldIndex);
+            items.insert(newIndex, item);
+            onReordered(items);
+          },
+          children: [
+            for (var index = 0; index < actions.length; index++)
+              ReorderableDragStartListener(
+                key: ValueKey('reorder-${actions[index].type.name}'),
+                index: index,
+                child: _ReorderableTile(
+                  action: actions[index],
+                  l10n: l10n,
+                  metrics: metrics,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ReorderableTile extends StatelessWidget {
+  const _ReorderableTile({
+    required this.action,
+    required this.l10n,
+    required this.metrics,
+  });
+
+  final RecordQuickAction action;
+  final AppLocalizations l10n;
+  final _QuickRecordMetrics metrics;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final label = recordCopy(l10n, action.titleKey);
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacingTokens.level4,
+        vertical: metrics.tileVerticalPadding,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            FLucideIcons.gripVertical,
+            size: 20,
+            color: colors.mutedForeground,
+          ),
+          const SizedBox(width: AppSpacingTokens.level4),
+          FAvatar.raw(
+            size: metrics.avatarSize,
+            style: .delta(backgroundColor: action.softColor.resolve(colors)),
+            child: Icon(
+              action.icon,
+              color: action.accent.resolve(colors),
+              size: AppSpacingTokens.level4,
+            ),
+          ),
+          const SizedBox(width: AppSpacingTokens.level4),
+          Text(
+            label,
+            style: AppTypographyToken.level5
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Metrics
+// ---------------------------------------------------------------------------
 
 class _QuickRecordMetrics {
   const _QuickRecordMetrics({
@@ -232,6 +532,10 @@ class _QuickRecordMetrics {
 }
 
 double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
+
+// ---------------------------------------------------------------------------
+// Quick record grid (non-reorder mode)
+// ---------------------------------------------------------------------------
 
 class _QuickRecordGrid extends StatelessWidget {
   const _QuickRecordGrid({

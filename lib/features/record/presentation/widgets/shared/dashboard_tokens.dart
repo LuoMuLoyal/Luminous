@@ -1,4 +1,5 @@
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -6,27 +7,81 @@ import 'package:luminous/l10n/app_localizations.dart';
 // Helper functions
 // ---------------------------------------------------------------------------
 
+/// Default preferred order of quick-action types on mobile.
+const defaultQuickActionOrder = <RecordEntryType>[
+  RecordEntryType.symptom,
+  RecordEntryType.meal,
+  RecordEntryType.medication,
+  RecordEntryType.note,
+  RecordEntryType.water,
+  RecordEntryType.sleep,
+  RecordEntryType.mood,
+];
+
+/// Sorts [actions] according to [preferences].
+///
+/// - If `dynamicSortEnabled` is true, sorts by frequency (descending),
+///   falling back to the default order for zero-frequency items.
+/// - If a `customOrder` is set, uses it to order the actions.
+/// - Otherwise uses [defaultQuickActionOrder].
+///
+/// Actions not covered by the ordering are appended at the end.
 List<RecordQuickAction> buildMobileQuickActions(
-  List<RecordQuickAction> actions,
-) {
-  final preferredTypes = <RecordEntryType>[
-    RecordEntryType.symptom,
-    RecordEntryType.meal,
-    RecordEntryType.medication,
-    RecordEntryType.note,
-    RecordEntryType.water,
-    RecordEntryType.sleep,
-    RecordEntryType.mood,
-  ];
+  List<RecordQuickAction> actions, {
+  QuickEntryPreferences preferences = const QuickEntryPreferences(),
+}) {
   final byType = {for (final action in actions) action.type: action};
+
+  List<RecordEntryType> orderTypes;
+  if (preferences.dynamicSortEnabled && preferences.frequency.isNotEmpty) {
+    // Sort by frequency descending; zero-frequency items keep default order.
+    orderTypes = _sortByFrequency(
+      defaultQuickActionOrder,
+      preferences.frequency,
+    );
+  } else if (preferences.customOrder.isNotEmpty) {
+    orderTypes = _parseCustomOrder(preferences.customOrder);
+  } else {
+    orderTypes = defaultQuickActionOrder;
+  }
+
   final ordered = <RecordQuickAction>[
-    for (final type in preferredTypes)
+    for (final type in orderTypes)
       if (byType[type] != null) byType[type]!,
   ];
   for (final action in actions) {
     if (!ordered.contains(action)) ordered.add(action);
   }
   return ordered.toList(growable: false);
+}
+
+List<RecordEntryType> _sortByFrequency(
+  List<RecordEntryType> types,
+  Map<String, int> frequency,
+) {
+  final sorted = List<RecordEntryType>.from(types)
+    ..sort((a, b) {
+      final freqA = frequency[a.name] ?? 0;
+      final freqB = frequency[b.name] ?? 0;
+      if (freqA != freqB) return freqB.compareTo(freqA);
+      // Preserve original order for equal frequencies.
+      return types.indexOf(a).compareTo(types.indexOf(b));
+    });
+  return sorted;
+}
+
+List<RecordEntryType> _parseCustomOrder(List<String> names) {
+  return names
+      .map((name) => _tryParseRecordEntryType(name))
+      .whereType<RecordEntryType>()
+      .toList(growable: false);
+}
+
+RecordEntryType? _tryParseRecordEntryType(String name) {
+  for (final type in RecordEntryType.values) {
+    if (type.name == name) return type;
+  }
+  return null;
 }
 
 List<RecordFilter> buildMobileFilters(List<RecordFilter> filters) {

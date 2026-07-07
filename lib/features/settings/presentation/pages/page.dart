@@ -11,6 +11,7 @@ import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
@@ -77,6 +78,10 @@ class SettingsPage extends ConsumerWidget {
 
                 // -- 通用 --
                 const _GeneralSection(),
+                const SizedBox(height: _kGroupSpacing),
+
+                // -- 快速记录 --
+                const _QuickEntrySection(),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 数据与存储 --
@@ -443,6 +448,50 @@ class _DataStorageSection extends ConsumerWidget {
       DataRetentionPeriod.ninetyDays => l10n.settingsDataStorageRetention90Days,
       DataRetentionPeriod.forever => l10n.settingsDataStorageRetentionForever,
     };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Quick entry section (dynamic sort + collapse)
+// ---------------------------------------------------------------------------
+
+class _QuickEntrySection extends ConsumerWidget {
+  const _QuickEntrySection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final prefs =
+        ref.watch(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
+    final controller = ref.read(quickEntryPreferencesProvider.notifier);
+
+    return _SettingsGroup(
+      label: l10n.settingsQuickEntrySection,
+      children: [
+        FTile(
+          key: const Key('settings-row-quick-entry-dynamic-sort'),
+          title: Text(l10n.settingsQuickEntryDynamicSortTitle),
+          subtitle: Text(l10n.settingsQuickEntryDynamicSortSubtitle),
+          suffix: FSwitch(
+            value: prefs.dynamicSortEnabled,
+            onChange: (value) => controller.setDynamicSortEnabled(value),
+          ),
+          onPress: () =>
+              controller.setDynamicSortEnabled(!prefs.dynamicSortEnabled),
+        ),
+        FTile(
+          key: const Key('settings-row-quick-entry-collapse'),
+          title: Text(l10n.settingsQuickEntryCollapseTitle),
+          subtitle: Text(l10n.settingsQuickEntryCollapseSubtitle),
+          suffix: FSwitch(
+            value: prefs.collapsed,
+            onChange: (value) => controller.setCollapsed(value),
+          ),
+          onPress: () => controller.setCollapsed(!prefs.collapsed),
+        ),
+      ],
+    );
   }
 }
 

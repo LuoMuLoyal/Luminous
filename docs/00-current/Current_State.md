@@ -178,6 +178,14 @@ Last updated: 2026-07-07
   - 修复 Archive Section 状态 badge 颜色： "待补充" 从 `primary` 改为 `destructive`，"已完善" 从 `primary` 改为 `mutedForeground`
   - 新增 10 个 ARB key（zh + en），3 个新测试
   - `flutter analyze` — No issues found! `flutter test test/mine/page_test.dart` — 14 passed, 0 failed
+- Record 快速入口动态排序完成（Brainstorm C 项）：
+  - 新增 `QuickEntryPreferencesController`（AsyncNotifier + SharedPreferences）：频率追踪、动态排序开关、自定义顺序、收起状态
+  - `buildMobileQuickActions` 支持三种排序模式（动态频率 > 自定义顺序 > 默认）
+  - `RecordQuickEntryPanel` 重构为 `ConsumerStatefulWidget`：面板头部新增动态排序开关 + 信息提示 + 编辑按钮（动态排序开启时置灰 + toast）；排序模式使用 `ReorderableListView` 拖拽排序
+  - 设置页新增「快速记录」分组：动态排序开关 + 默认收起开关（展开/收起状态仅在设置页可切换）
+  - 频率追踪：每次点击快速入口时记录频率，超 50 次自动按比例衰减
+  - 新增 13 个 ARB key（zh + en），8 个新测试
+  - `flutter analyze` — No issues found! `flutter test test/record/` — 119 passed, 0 failed
 
 ## 相关文档
 

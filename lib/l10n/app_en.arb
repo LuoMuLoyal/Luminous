@@ -92,6 +92,18 @@
   "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
   "recordImagePickFailedToast": "Image was not selected.",
   "recordQuickSectionTitle": "Quick record",
+  "recordQuickDynamicSortTooltip": "When enabled, quick entries are automatically sorted by usage frequency",
+  "recordQuickEditOrder": "Custom order",
+  "recordQuickSortDisableDynamicFirst": "Please disable dynamic sorting before editing order",
+  "recordQuickReorderTitle": "Drag to reorder",
+  "recordQuickReorderHint": "Long press and drag to reorder",
+  "recordQuickReorderDone": "Done",
+  "recordQuickReorderCancel": "Cancel",
+  "settingsQuickEntrySection": "Quick record",
+  "settingsQuickEntryCollapseTitle": "Collapse quick entries by default",
+  "settingsQuickEntryCollapseSubtitle": "Collapse the quick record section on the record page, showing only the title",
+  "settingsQuickEntryDynamicSortTitle": "Dynamic sorting",
+  "settingsQuickEntryDynamicSortSubtitle": "Automatically sort quick entries by usage frequency",
   "recordFastEntryTitle": "Quick {type}",
   "@recordFastEntryTitle": {
     "placeholders": {
