@@ -41,8 +41,8 @@
 - Worker 填充的提醒投递历史；UI 可读 audit 行，但本地/push/SMS worker 尚未写入。
 - 轻量心情记录连线。
 - Today 或 Mine 的环境上下文连线。
-- 用药侧扫描/OCR/拍照/条码/处方识别。
-  - 底层 `MedicineWorkspace.quickActions` 与相关枚举/实体保留，但不在 UI 中暴露。
+- 用药侧拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
+- 处方导入/OCR 处方识别仍延后，底层枚举保留但仅 Toast 提示。
 - Mock repositories（`mock_*_repository.dart`）保留用于开发与测试预览。
 - Release 构建通过 `kDebugMode` 门控使用 domain `signedOut()` 工厂。
 - `MockMedicineSearchRepository` 仅用于测试。

@@ -33,7 +33,7 @@ class SectionTextAction extends StatelessWidget {
   }
 }
 
-// Deferred by Product_Vision MVP: scan/OCR/barcode/prescription quick actions are kept but not surfaced in the MVP UI.
+// Toast messages for scan/OCR/barcode/prescription quick actions.
 String quickActionResult(MedicineCopyKey key, AppLocalizations l10n) {
   return switch (key) {
     MedicineCopyKey.quickActionCameraTitle =>

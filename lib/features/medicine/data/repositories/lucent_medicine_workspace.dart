@@ -162,13 +162,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       accent: AppColors.primary,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
-      ...deferredScanQuickActions,
+      ..._mobileScanQuickActions,
   ];
 
-  // Deferred by Product_Vision MVP: keep scan/OCR quick-action shapes because
-  // they are useful later, but do not surface them until the matching camera,
-  // recognition, and prescription contract/product job is ready.
-  static final deferredScanQuickActions = <MedicineQuickAction>[
+  // Camera recognition and barcode scan are live on mobile devices.
+  // Prescription import remains deferred pending OCR/contract work.
+  static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
       icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
