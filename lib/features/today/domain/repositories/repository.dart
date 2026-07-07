@@ -1,4 +1,4 @@
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
 abstract interface class TodayRepository {
   Future<TodayDashboard> fetchDashboard();

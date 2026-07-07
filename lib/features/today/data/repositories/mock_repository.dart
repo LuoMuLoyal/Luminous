@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/today/data/repositories/lucent_today_repository.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/domain/repositories/today_repository.dart';
+import 'package:luminous/features/today/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/domain/repositories/repository.dart';
 
 /// Demo-only mock implementation of [TodayRepository] used for tests.
 ///

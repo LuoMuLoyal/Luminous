@@ -1,9 +1,9 @@
 import 'package:forui/forui.dart';
 
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------

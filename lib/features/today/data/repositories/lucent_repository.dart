@@ -2,13 +2,13 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
-import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/domain/repositories/today_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/domain/repositories/repository.dart';
 
 /// Lucent-backed [TodayRepository] that merges real health-context and
 /// daily-record signals with static mock sections for unsupported surfaces.

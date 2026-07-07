@@ -1,15 +1,15 @@
 import '../helpers/test_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/lucent_api_exception.dart';
-import 'package:luminous/core/network/lucent_result_code.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/features/today/data/repositories/lucent_today_ai_repository.dart';
-import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
-import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
+import 'package:luminous/features/today/data/repositories/lucent_ai_repository.dart';
+import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/presentation/providers/ai_analysis_provider.dart';
 
-import 'today_test_helpers.dart';
+import 'test_helpers.dart';
 
 void main() {
   test('Today AI provider stays idle when signed out', () async {

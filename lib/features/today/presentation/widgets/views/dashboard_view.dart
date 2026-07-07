@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/today_ai_summary_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/today_overview_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/today_priority_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/today_recommendation_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/today_todo_section.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_top_bar.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/ai_summary_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/overview_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/priority_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/recommendation_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/todo_section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayDashboardView extends StatelessWidget {

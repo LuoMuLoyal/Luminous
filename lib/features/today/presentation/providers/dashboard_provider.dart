@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/today/data/repositories/mock_repository.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
 const _todayDashboardTimeout = Duration(seconds: 5);
 

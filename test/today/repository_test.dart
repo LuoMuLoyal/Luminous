@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_medicine_workspace_repository.dart';
-import 'package:luminous/features/record/data/providers/daily_record_providers.dart';
-import 'package:luminous/features/record/domain/entities/daily_record.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_candidates.dart';
-import 'package:luminous/features/record/domain/entities/daily_record_inputs.dart';
-import 'package:luminous/features/record/domain/repositories/daily_record_repository.dart';
-import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/entities/candidates.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
+import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 
 void main() {
   test(

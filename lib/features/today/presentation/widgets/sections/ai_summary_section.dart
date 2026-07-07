@@ -1,25 +1,25 @@
 import 'dart:async';
 
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_components.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/providers/today_ai_analysis_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
+import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/ai_analysis_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 
 class TodayAiSummarySection extends ConsumerWidget {
   const TodayAiSummarySection({super.key, required this.dashboard});

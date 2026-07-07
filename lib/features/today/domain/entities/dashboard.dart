@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'today_dashboard.freezed.dart';
+part 'dashboard.freezed.dart';
 
 TodayDayMoment todayDayMomentFromHour(int hour) {
   if (hour < 12) return TodayDayMoment.morning;

@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/shell/providers/shell_provider.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_section.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/shell/providers/provider.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 
 class TodayTodoSection extends ConsumerWidget {
   const TodayTodoSection({super.key, required this.dashboard});

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/today/data/datasources/today_recommendations_remote_data_source.dart';
-import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/today/data/datasources/recommendations_remote_data_source.dart';
+import 'package:luminous/features/today/domain/entities/recommendation.dart';
 
 final todayRecommendationsRemoteDataSourceProvider =
     Provider<TodayRecommendationsRemoteDataSource>(

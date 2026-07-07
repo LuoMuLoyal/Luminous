@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
-import 'package:luminous/core/network/lucent_network_providers.dart';
-import 'package:luminous/features/today/data/datasources/today_ai_remote_data_source.dart';
-import 'package:luminous/features/today/domain/entities/today_ai_analysis.dart';
+import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/today/data/datasources/ai_remote_data_source.dart';
+import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 
 sealed class TodayAiGenerationEvent {
   const TodayAiGenerationEvent();

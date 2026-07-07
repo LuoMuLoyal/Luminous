@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'today_recommendation.freezed.dart';
+part 'recommendation.freezed.dart';
 
 @freezed
 abstract class TodayRecommendation with _$TodayRecommendation {

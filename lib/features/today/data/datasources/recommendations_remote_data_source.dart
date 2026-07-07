@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
+import 'package:luminous/features/today/domain/entities/recommendation.dart';
 
 class TodayRecommendationsRemoteDataSource {
   const TodayRecommendationsRemoteDataSource({required this.api});

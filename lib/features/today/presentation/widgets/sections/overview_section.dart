@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_card_style.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/today_view_models.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/app_divider.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 
 class TodayOverviewSection extends StatelessWidget {
   const TodayOverviewSection({super.key, required this.dashboard});

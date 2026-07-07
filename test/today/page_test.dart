@@ -8,22 +8,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:lucent_openapi/lucent_openapi.dart' show TodayAnalysisApi;
-import 'package:luminous/features/today/data/datasources/today_recommendations_remote_data_source.dart';
-import 'package:luminous/features/today/data/repositories/mock_today_repository.dart';
-import 'package:luminous/features/today/domain/entities/today_dashboard.dart';
-import 'package:luminous/features/today/domain/entities/today_recommendation.dart';
-import 'package:luminous/features/today/presentation/pages/today_page.dart';
-import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/today_recommendations_provider.dart';
-import 'package:luminous/features/today/presentation/widgets/views/today_dashboard_view.dart';
-import 'package:luminous/features/today/presentation/widgets/views/today_skeleton_view.dart';
+import 'package:luminous/features/today/data/datasources/recommendations_remote_data_source.dart';
+import 'package:luminous/features/today/data/repositories/mock_repository.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/domain/entities/recommendation.dart';
+import 'package:luminous/features/today/presentation/pages/page.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
+import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/theme/theme.dart';
 
-import 'today_test_helpers.dart';
+import 'test_helpers.dart';
 
 void main() {
   testWidgets('Today page prioritizes priorities above AI summary on mobile', (
