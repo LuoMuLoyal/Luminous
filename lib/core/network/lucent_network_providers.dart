@@ -1,9 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/network/lucent_api.dart';
 
 final lucentBaseUrlProvider = Provider<String>((ref) {
+  // In release mode, always use the compile-time default.
+  if (kReleaseMode) {
+    return LucentBaseUrl.value;
+  }
+
+  // In debug mode, allow runtime endpoint switching via developer settings.
+  final devSettings = ref
+      .watch(developerSettingsControllerProvider)
+      .asData
+      ?.value;
+  if (devSettings != null) {
+    return devSettings.resolvedBaseUrl;
+  }
   return LucentBaseUrl.value;
 });
 

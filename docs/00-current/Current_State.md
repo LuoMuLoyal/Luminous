@@ -150,6 +150,11 @@ Last updated: 2026-07-07
   - **硬编码日期范围文档化**：`_minDate`/`_maxDate` 添加文档注释。
   - **测试全量修复**：修复 5 个测试失败（898 passed, 0 failed），包括测试主题引用错误（`FThemes.neutral` → 实际 app 主题）、设置页主题摘要显示"模式 · 主题族"组合标签、退出登录按钮缺少 test key。
   - **审查文档清理**：删除三份已完成的审查报告，暂缓项写入 `TODO.md`。
+- 开发者选项扩展完成（2026-07-07）：
+  - **API 端点切换**：`DeveloperSettingsController` + `ApiEndpoint` 枚举（local / staging / production / custom），`lucentBaseUrlProvider` 改为响应运行时端点选择，切换后自动 logout。仅 debug 可见，release 强制 production。
+  - **日志级别**：引入 `talker_flutter` 替代原始 `AppLogger`，`talkerProvider` 提供全局 Talker 实例，Release 静默，Debug 按级别过滤。`applyLogLevelToTalker()` 运行时切换 TalkerLogger 过滤级别。
+  - **功能开关**：`FeatureFlagsController` + `FeatureFlagsSettingsPage`（6 个 flag：端侧 AI Runtime / AI Runtime 提供方 / GenUI 渲染 / 流式输出 / 条码扫描 / PDF 导出），从编译期 env 种子初始化，运行时可覆盖。路由 `/settings/more/feature-flags`。
+  - **高级设置页面**：追加「开发者选项」分组（`kDebugMode` 条件渲染），「恢复默认设置」同时重置 developer settings + feature flags。
 
 ## 相关文档
 

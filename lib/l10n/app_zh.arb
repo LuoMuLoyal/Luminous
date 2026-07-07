@@ -1788,5 +1788,46 @@
   "settingsDataStorageSyncWifiAndMobile": "Wi-Fi 与移动网络",
   "settingsDataStorageSyncWifiAndMobileSubtitle": "移动网络下也同步数据",
   "settingsHealthProfileTitle": "健康档案",
-  "settingsHealthProfileSubtitle": "过敏史、健康状况、用药档案"
+  "settingsHealthProfileSubtitle": "过敏史、健康状况、用药档案",
+  "settingsDeveloperSectionTitle": "开发者选项",
+  "settingsDevApiEndpoint": "API 端点",
+  "settingsDevApiEndpointLocal": "本地开发",
+  "settingsDevApiEndpointStaging": "预发布",
+  "settingsDevApiEndpointProduction": "生产",
+  "settingsDevApiEndpointCustom": "自定义",
+  "settingsDevApiEndpointCustomHint": "输入自定义 API 地址",
+  "settingsDevApiEndpointCustomUrl": "自定义 URL",
+  "settingsDevApiEndpointConfirm": "确认",
+  "settingsDevApiEndpointSwitched": "端点已切换，请重新登录",
+  "settingsDevLogLevel": "日志级别",
+  "settingsDevLogLevelVerbose": "详细",
+  "settingsDevLogLevelInfo": "信息",
+  "settingsDevLogLevelWarning": "警告",
+  "settingsDevLogLevelError": "错误",
+  "settingsDevLogLevelNone": "关闭",
+  "settingsFeatureFlagsTitle": "功能开关",
+  "settingsFeatureFlagsWarning": "以下为实验性功能，可能不稳定。",
+  "settingsFeatureFlagsSummary": "{count} 项已启用",
+  "@settingsFeatureFlagsSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFeatureFlagsAiSection": "AI 运行时",
+  "settingsFeatureFlagsAiRuntime": "端侧 AI Runtime",
+  "settingsFeatureFlagsAiRuntimeSubtitle": "启用本地 AI 推理运行时",
+  "settingsFeatureFlagsAiProvider": "AI Runtime 提供方",
+  "settingsFeatureFlagsGenUi": "GenUI 渲染",
+  "settingsFeatureFlagsGenUiSubtitle": "启用生成式 UI 渲染引擎",
+  "settingsFeatureFlagsAssistantSection": "助手",
+  "settingsFeatureFlagsStreamMode": "流式输出",
+  "settingsFeatureFlagsStreamModeSubtitle": "助手回复实时流式渲染",
+  "settingsFeatureFlagsMedicineSection": "药品",
+  "settingsFeatureFlagsBarcodeScan": "条码扫描",
+  "settingsFeatureFlagsBarcodeScanSubtitle": "扫描药品条码自动识别",
+  "settingsFeatureFlagsReportSection": "报告",
+  "settingsFeatureFlagsPdfExport": "PDF 导出",
+  "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件"
 }

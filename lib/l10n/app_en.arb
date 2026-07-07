@@ -1788,5 +1788,46 @@
   "settingsDataStorageSyncWifiAndMobile": "Wi-Fi & Mobile",
   "settingsDataStorageSyncWifiAndMobileSubtitle": "Sync on both Wi-Fi and mobile data",
   "settingsHealthProfileTitle": "Health Profile",
-  "settingsHealthProfileSubtitle": "Allergies, conditions, medications"
+  "settingsHealthProfileSubtitle": "Allergies, conditions, medications",
+  "settingsDeveloperSectionTitle": "Developer Options",
+  "settingsDevApiEndpoint": "API Endpoint",
+  "settingsDevApiEndpointLocal": "Local Development",
+  "settingsDevApiEndpointStaging": "Staging",
+  "settingsDevApiEndpointProduction": "Production",
+  "settingsDevApiEndpointCustom": "Custom",
+  "settingsDevApiEndpointCustomHint": "Enter a custom API URL",
+  "settingsDevApiEndpointCustomUrl": "Custom URL",
+  "settingsDevApiEndpointConfirm": "Confirm",
+  "settingsDevApiEndpointSwitched": "Endpoint switched, please sign in again",
+  "settingsDevLogLevel": "Log Level",
+  "settingsDevLogLevelVerbose": "Verbose",
+  "settingsDevLogLevelInfo": "Info",
+  "settingsDevLogLevelWarning": "Warning",
+  "settingsDevLogLevelError": "Error",
+  "settingsDevLogLevelNone": "Off",
+  "settingsFeatureFlagsTitle": "Feature Flags",
+  "settingsFeatureFlagsWarning": "These are experimental features and may be unstable.",
+  "settingsFeatureFlagsSummary": "{count} enabled",
+  "@settingsFeatureFlagsSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsFeatureFlagsAiSection": "AI Runtime",
+  "settingsFeatureFlagsAiRuntime": "On-device AI Runtime",
+  "settingsFeatureFlagsAiRuntimeSubtitle": "Enable local AI inference runtime",
+  "settingsFeatureFlagsAiProvider": "AI Runtime Provider",
+  "settingsFeatureFlagsGenUi": "GenUI Rendering",
+  "settingsFeatureFlagsGenUiSubtitle": "Enable generative UI rendering engine",
+  "settingsFeatureFlagsAssistantSection": "Assistant",
+  "settingsFeatureFlagsStreamMode": "Streaming Output",
+  "settingsFeatureFlagsStreamModeSubtitle": "Stream assistant responses in real time",
+  "settingsFeatureFlagsMedicineSection": "Medicine",
+  "settingsFeatureFlagsBarcodeScan": "Barcode Scan",
+  "settingsFeatureFlagsBarcodeScanSubtitle": "Scan medicine barcodes for auto-recognition",
+  "settingsFeatureFlagsReportSection": "Report",
+  "settingsFeatureFlagsPdfExport": "PDF Export",
+  "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files"
 }

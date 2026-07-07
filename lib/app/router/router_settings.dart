@@ -13,6 +13,7 @@ import 'package:luminous/features/settings/presentation/pages/notification_setti
 import 'package:luminous/features/settings/presentation/pages/settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/feature_flags_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/security_pin_settings_page.dart';
 
 import 'router_helpers.dart';
@@ -37,6 +38,15 @@ final settingsRoutes = [
         path: 'more',
         pageBuilder: (context, state) =>
             slidePage(key: state.pageKey, child: const AdvancedSettingsPage()),
+        routes: [
+          GoRoute(
+            path: 'feature-flags',
+            pageBuilder: (context, state) => slidePage(
+              key: state.pageKey,
+              child: const FeatureFlagsSettingsPage(),
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: 'notifications',
