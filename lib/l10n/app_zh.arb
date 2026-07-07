@@ -539,6 +539,19 @@
   "medicineRiskCheckSeverityHigh": "高风险",
   "medicineRiskCheckSeverityMedium": "需确认",
   "medicineRiskCheckSeverityInfo": "提示",
+  "medicineRiskCheckTierConfirmedRisk": "已确认风险",
+  "medicineRiskCheckTierConfirmedSafe": "已确认安全",
+  "medicineRiskCheckTierUncovered": "未覆盖 / 不确定",
+  "medicineRiskCheckTierSafeDisclaimer": "当前已检查的药物里没有发现明确风险提示，但这不等于绝对安全，仍需结合医生建议与说明书确认。",
+  "medicineRiskCheckTierUncoveredDisclaimer": "以下药品缺少可检查资料，无法自动确认安全性。建议线下核对说明书或咨询药师。",
+  "medicineRiskCheckTierSafeBody": "已检查 {checked} 种药品，未发现明确风险提示。",
+  "@medicineRiskCheckTierSafeBody": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      }
+    }
+  },
   "medicineRiskCheckContextPregnancy": "孕期",
   "medicineRiskCheckContextLactation": "哺乳期",
   "medicineRiskCheckContextPediatric": "儿童",
@@ -751,6 +764,10 @@
   "medicineSearchPrecheckDescription": "发现风险提示或资料不足，确认后仍可继续加入药箱。",
   "medicineSearchPrecheckConfirmAction": "仍然加入",
   "medicineSearchPrecheckFailedToast": "风险检查失败",
+  "medicineSearchPrecheckScopeTitle": "检查范围",
+  "medicineSearchPrecheckScopeAllergy": "过敏交叉检查",
+  "medicineSearchPrecheckScopeInteraction": "当前用药相互作用",
+  "medicineSearchPrecheckScopeContraindication": "说明书禁忌",
   "medicineSearchOpenDetailToast": "会打开药品详情页。",
   "medicineSearchPreviewTitle": "选中项预览",
   "medicineSearchSafetyLead": "你当前的过敏史 / 特殊用药条件 / 现用药可能影响此药使用",
@@ -1588,6 +1605,19 @@
   "reportPatternMedicationStatus": "表现优秀",
   "reportPatternMedicationBody": "按时服药有助于维持健康状态",
   "reportReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
+  "reportDataInsufficientTitle": "数据不足，暂无法生成完整报告",
+  "reportDataInsufficientMessage": "持续记录健康数据（饮水、睡眠、症状等），系统会自动生成趋势分析和 AI 总结。",
+  "reportDataInsufficientMetricsHint": "当前有 {count} 项指标数据不足，继续记录即可补齐。",
+  "@reportDataInsufficientMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportFindingsEmptyTitle": "暂无重点发现",
+  "reportFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势。",
+  "reportExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录。",
   "reportErrorTitle": "报告页暂时没有加载出来",
   "reportErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
   "reportSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",

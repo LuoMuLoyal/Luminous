@@ -144,8 +144,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : null;
     final coverageAlert = MedicineAlert(
       icon: FLucideIcons.info,
-      color: AppColors.primary,
-      softColor: AppColors.primary,
+      color: AppColors.secondary,
+      softColor: AppColors.secondary,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
       rawBody: l10n.medicineRiskCheckCoverageAlertBody(
         result.coverageIssues.length,
@@ -200,16 +200,16 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
 
 AppColors medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColors.primary,
-    MedicineRiskSeverity.medium => AppColors.primary,
+    MedicineRiskSeverity.high => AppColors.destructive,
+    MedicineRiskSeverity.medium => AppColors.secondary,
     MedicineRiskSeverity.info => AppColors.primary,
   };
 }
 
 AppColors medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColors.primary,
-    MedicineRiskSeverity.medium => AppColors.primary,
+    MedicineRiskSeverity.high => AppColors.destructive,
+    MedicineRiskSeverity.medium => AppColors.secondary,
     MedicineRiskSeverity.info => AppColors.primary,
   };
 }

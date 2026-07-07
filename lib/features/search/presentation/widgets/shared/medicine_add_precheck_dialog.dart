@@ -59,16 +59,38 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: AppSpacingTokens.level4),
+                  // Coverage scope section
+                  Text(
+                    l10n.medicineSearchPrecheckScopeTitle,
+                    style: AppTypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level3),
+                  _ScopeRow(
+                    icon: FLucideIcons.shieldAlert,
+                    label: l10n.medicineSearchPrecheckScopeAllergy,
+                  ),
+                  _ScopeRow(
+                    icon: FLucideIcons.gitCompare,
+                    label: l10n.medicineSearchPrecheckScopeInteraction,
+                  ),
+                  _ScopeRow(
+                    icon: FLucideIcons.fileText,
+                    label: l10n.medicineSearchPrecheckScopeContraindication,
+                  ),
                   if (result.coverageSummary.isNotEmpty) ...[
                     const SizedBox(height: AppSpacingTokens.level4),
                     Container(
                       padding: const EdgeInsets.all(AppSpacingTokens.level3),
                       decoration: BoxDecoration(
-                        color: context.theme.colors.primary.withValues(
-                          alpha: 0.42,
-                        ),
+                        color: colors.secondary.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(
                           AppRadiusTokens.level3,
+                        ),
+                        border: Border.all(
+                          color: colors.secondary.withValues(alpha: 0.18),
                         ),
                       ),
                       child: Row(
@@ -76,7 +98,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                         children: [
                           Icon(
                             FLucideIcons.circleAlert,
-                            color: context.theme.colors.primary,
+                            color: colors.secondary,
                             size: 18,
                           ),
                           const SizedBox(width: AppSpacingTokens.level3),
@@ -213,6 +235,36 @@ class _PrecheckFindingRow extends StatelessWidget {
   }
 }
 
+class _ScopeRow extends StatelessWidget {
+  const _ScopeRow({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacingTokens.level2),
+      child: Row(
+        children: [
+          Icon(icon, color: colors.mutedForeground, size: 16),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Text(
+              label,
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.foreground),
+            ),
+          ),
+          Icon(FLucideIcons.check, color: colors.primary, size: 16),
+        ],
+      ),
+    );
+  }
+}
+
 class _PrecheckCoverageRow extends StatelessWidget {
   const _PrecheckCoverageRow({required this.issue});
 
@@ -225,22 +277,16 @@ class _PrecheckCoverageRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.theme.colors.primary.withValues(alpha: 0.42),
+        color: colors.secondary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        border: Border.all(
-          color: context.theme.colors.primary.withValues(alpha: 0.18),
-        ),
+        border: Border.all(color: colors.secondary.withValues(alpha: 0.18)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level3),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              FLucideIcons.circleAlert,
-              color: context.theme.colors.primary,
-              size: 18,
-            ),
+            Icon(FLucideIcons.circleAlert, color: colors.secondary, size: 18),
             const SizedBox(width: AppSpacingTokens.level3),
             Expanded(
               child: Column(

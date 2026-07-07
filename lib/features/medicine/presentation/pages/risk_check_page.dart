@@ -97,6 +97,70 @@ class _RiskCheckSectionCard extends StatelessWidget {
   }
 }
 
+/// A tier header banner with colored accent, icon, title, and optional body.
+class _TierBanner extends StatelessWidget {
+  const _TierBanner({
+    required this.title,
+    required this.icon,
+    this.body,
+    this.tone = AppStateTone.neutral,
+  });
+
+  final String title;
+  final IconData icon;
+  final String? body;
+  final AppStateTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final accent = switch (tone) {
+      AppStateTone.neutral => colors.primary,
+      AppStateTone.success => colors.primary,
+      AppStateTone.warning => colors.destructive,
+      AppStateTone.danger => colors.destructive,
+    };
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        border: Border.all(color: accent.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: accent, size: AppSpacingTokens.level5),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800, color: accent),
+                ),
+                if (body != null) ...[
+                  const SizedBox(height: AppSpacingTokens.level1),
+                  Text(
+                    body!,
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _MedicineRiskCheckBody extends StatelessWidget {
   const _MedicineRiskCheckBody({
     required this.result,
@@ -109,17 +173,18 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // Red flag banner (always first if present)
           if (redFlagAlerts.isNotEmpty) ...[
             MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
             const SizedBox(height: AppSpacingTokens.level4),
           ],
+          // Summary metrics card
           _RiskCheckSectionCard(
             title: l10n.medicineRiskCheckSummaryTitle,
             child: Wrap(
@@ -145,20 +210,114 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: AppSpacingTokens.level4),
+          // Three-tier display
+          _buildThreeTierSection(context, l10n),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThreeTierSection(BuildContext context, AppLocalizations l10n) {
+    final hasFindings = result.hasFindings;
+    final hasCoverageGaps = result.hasCoverageGaps;
+
+    // Tier 1: Confirmed Risk (red) — findings exist
+    // Tier 2: Confirmed Safe (green) — no findings AND no coverage gaps
+    // Tier 3: Uncovered/Uncertain (yellow) — coverage gaps exist (with or without findings)
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Tier 1: Confirmed Risk
+        if (hasFindings) ...[
+          _TierBanner(
+            title: l10n.medicineRiskCheckTierConfirmedRisk,
+            icon: FLucideIcons.triangleAlert,
+            tone: AppStateTone.danger,
+          ),
+          const SizedBox(height: AppSpacingTokens.level3),
+          _RiskCheckSectionCard(
+            title: l10n.medicineRiskCheckFindingsTitle,
+            child: Column(
+              children: [
+                for (var index = 0; index < result.findings.length; index += 1)
+                  MedicineRiskFindingTile(
+                    finding: result.findings[index],
+                    isLast: index == result.findings.length - 1,
+                    l10n: l10n,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacingTokens.level4),
+        ],
+        // Tier 2: Confirmed Safe (only when no findings AND no coverage gaps)
+        if (!hasFindings && !hasCoverageGaps) ...[
+          _TierBanner(
+            title: l10n.medicineRiskCheckTierConfirmedSafe,
+            icon: FLucideIcons.badgeCheck,
+            body: l10n.medicineRiskCheckTierSafeBody(
+              result.checkedMedicineCount,
+            ),
+            tone: AppStateTone.success,
+          ),
+          const SizedBox(height: AppSpacingTokens.level3),
+          Container(
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            decoration: BoxDecoration(
+              color: context.theme.colors.primary.withValues(alpha: 0.06),
+              borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  FLucideIcons.info,
+                  color: context.theme.colors.primary,
+                  size: AppSpacingTokens.level5,
+                ),
+                const SizedBox(width: AppSpacingTokens.level3),
+                Expanded(
+                  child: Text(
+                    l10n.medicineRiskCheckTierSafeDisclaimer,
+                    style: AppTypographyToken.level3
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        // Tier 3: Uncovered/Uncertain (when coverage gaps exist)
+        if (hasCoverageGaps) ...[
+          if (!hasFindings) ...[
+            // When no findings but coverage gaps exist, show the safe-but disclaimer too
+            _TierBanner(
+              title: l10n.medicineRiskCheckTierUncovered,
+              icon: FLucideIcons.circleAlert,
+              body: l10n.medicineRiskCheckTierUncoveredDisclaimer,
+              tone: AppStateTone.warning,
+            ),
+            const SizedBox(height: AppSpacingTokens.level3),
+          ],
           if (result.coverageSummary.isNotEmpty) ...[
-            const SizedBox(height: AppSpacingTokens.level4),
             Container(
               padding: const EdgeInsets.all(AppSpacingTokens.level4),
               decoration: BoxDecoration(
-                color: context.theme.colors.primary.withValues(alpha: 0.42),
+                color: context.theme.colors.secondary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                border: Border.all(
+                  color: context.theme.colors.secondary.withValues(alpha: 0.18),
+                ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     FLucideIcons.circleAlert,
-                    color: context.theme.colors.primary,
+                    color: context.theme.colors.secondary,
                     size: AppSpacingTokens.level5,
                   ),
                   const SizedBox(width: AppSpacingTokens.level3),
@@ -167,61 +326,35 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                       result.coverageSummary,
                       style: AppTypographyToken.level3
                           .body(context)
-                          .copyWith(color: colors.mutedForeground),
+                          .copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: AppSpacingTokens.level3),
           ],
-          const SizedBox(height: AppSpacingTokens.level4),
-          if (result.findings.isEmpty)
-            AppStateMessageView(
-              title: l10n.medicineRiskCheckNoFindingsTitle,
-              description: l10n.medicineRiskCheckNoFindingsBody,
-              icon: FLucideIcons.badgeCheck,
-              tone: AppStateTone.success,
-              padding: const EdgeInsets.all(AppSpacingTokens.level5),
-            )
-          else
-            _RiskCheckSectionCard(
-              title: l10n.medicineRiskCheckFindingsTitle,
-              child: Column(
-                children: [
-                  for (
-                    var index = 0;
-                    index < result.findings.length;
-                    index += 1
-                  )
-                    MedicineRiskFindingTile(
-                      finding: result.findings[index],
-                      isLast: index == result.findings.length - 1,
-                      l10n: l10n,
-                    ),
-                ],
-              ),
+          _RiskCheckSectionCard(
+            title: l10n.medicineRiskCheckCoverageTitle,
+            child: Column(
+              children: [
+                for (
+                  var index = 0;
+                  index < result.coverageIssues.length;
+                  index += 1
+                )
+                  MedicineRiskCoverageIssueTile(
+                    issue: result.coverageIssues[index],
+                    isLast: index == result.coverageIssues.length - 1,
+                    l10n: l10n,
+                  ),
+              ],
             ),
-          const SizedBox(height: AppSpacingTokens.level4),
-          if (result.coverageIssues.isNotEmpty)
-            _RiskCheckSectionCard(
-              title: l10n.medicineRiskCheckCoverageTitle,
-              child: Column(
-                children: [
-                  for (
-                    var index = 0;
-                    index < result.coverageIssues.length;
-                    index += 1
-                  )
-                    MedicineRiskCoverageIssueTile(
-                      issue: result.coverageIssues[index],
-                      isLast: index == result.coverageIssues.length - 1,
-                      l10n: l10n,
-                    ),
-                ],
-              ),
-            ),
+          ),
         ],
-      ),
+      ],
     );
   }
 }
