@@ -8,18 +8,18 @@ import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/auth_required_dialog.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
-import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
-import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
-import 'package:luminous/features/search/presentation/providers/search_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/providers/provider.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
-import 'package:luminous/features/search/presentation/widgets/views/search_view.dart';
-import 'package:luminous/features/today/presentation/providers/today_dashboard_provider.dart';
+import 'package:luminous/features/search/presentation/widgets/views/view.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchPage extends ConsumerWidget {

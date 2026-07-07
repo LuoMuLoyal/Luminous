@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_colors.dart';
+import 'package:luminous/core/design/colors.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_state_views.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
-import 'package:luminous/features/search/presentation/providers/search_provider.dart';
-import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/search_result_widgets.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/providers/provider.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/header_widgets.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/result_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))

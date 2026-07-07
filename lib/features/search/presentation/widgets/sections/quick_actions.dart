@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/features/scan/presentation/pages/medicine_box_scan_page.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/scan/presentation/pages/box_scan_page.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickActions extends StatelessWidget {

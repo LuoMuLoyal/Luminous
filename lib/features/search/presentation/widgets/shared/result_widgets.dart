@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
-import 'package:luminous/features/search/presentation/providers/search_provider.dart';
-import 'package:luminous/features/search/presentation/widgets/search_header_widgets.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/presentation/providers/provider.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/header_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchResultTile extends StatelessWidget {

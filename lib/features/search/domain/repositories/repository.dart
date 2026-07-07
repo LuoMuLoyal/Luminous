@@ -1,4 +1,4 @@
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
 
 /// Repository for medicine search operations.
 abstract interface class MedicineSearchRepository {

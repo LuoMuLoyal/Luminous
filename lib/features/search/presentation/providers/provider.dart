@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
 
-part 'search_provider.freezed.dart';
+part 'provider.freezed.dart';
 
 /// State for the medicine search page.
 @freezed

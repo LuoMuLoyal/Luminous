@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
 
 /// Converts Lucent DTOs to Luminous Search entities.
 class MedicineSearchMapper {

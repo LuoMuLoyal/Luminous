@@ -1,5 +1,5 @@
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/core/network/lucent_api.dart';
+import 'package:luminous/core/network/api.dart';
 
 /// Remote data source that fetches medicine search/detail data from Lucent.
 class MedicineSearchRemoteDataSource {

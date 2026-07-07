@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/app_colors.dart';
+import 'package:luminous/core/design/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'search_entities.freezed.dart';
+part 'entities.freezed.dart';
 
 enum MedicineSearchSource { cn, drugbank }
 

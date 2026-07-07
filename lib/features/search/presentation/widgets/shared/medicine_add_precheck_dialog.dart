@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/app_colors.dart';
-import 'package:luminous/core/design/app_design.dart';
-import 'package:luminous/core/widgets/common/app_dialog_shell.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_copy.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 Future<bool?> showMedicineAddPrecheckDialog(

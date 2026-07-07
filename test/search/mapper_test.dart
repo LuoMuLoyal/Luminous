@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
-import 'package:luminous/features/search/data/mappers/search_mapper.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
+import 'package:luminous/features/search/data/mappers/mapper.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
 
 MedicineSearchItemDto _dto({
   required String id,

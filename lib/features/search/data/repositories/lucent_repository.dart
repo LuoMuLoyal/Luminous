@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/network/lucent_api.dart';
-import 'package:luminous/core/network/lucent_network_providers.dart';
+import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/search/data/mappers/search_mapper.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
-import 'package:luminous/features/search/domain/repositories/search_repository.dart';
+import 'package:luminous/features/search/data/mappers/mapper.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/domain/repositories/repository.dart';
 
 /// Lucent-backed medicine search repository.
 class LucentMedicineSearchRepository implements MedicineSearchRepository {

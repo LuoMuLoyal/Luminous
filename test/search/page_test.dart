@@ -5,23 +5,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/app_back_button.dart';
-import 'package:luminous/features/auth/presentation/providers/session/auth_session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/health_context_data_providers.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_snapshot.dart';
-import 'package:luminous/features/health_context/domain/entities/health_context_write_inputs.dart';
-import 'package:luminous/features/health_context/domain/repositories/health_context_repository.dart';
-import 'package:luminous/features/medicine/data/repositories/medicine_risk_check_repository.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/medicine_workspace.dart';
-import 'package:luminous/features/medicine/presentation/providers/medicine_workspace_provider.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
+import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
-import 'package:luminous/features/search/presentation/pages/search_page.dart';
-import 'package:luminous/features/search/presentation/widgets/views/search_view.dart';
-import 'package:luminous/features/search/domain/entities/search_entities.dart';
-import 'package:luminous/features/search/domain/repositories/search_repository.dart';
+import 'package:luminous/features/search/presentation/pages/page.dart';
+import 'package:luminous/features/search/presentation/widgets/views/view.dart';
+import 'package:luminous/features/search/domain/entities/entities.dart';
+import 'package:luminous/features/search/domain/repositories/repository.dart';
 
-import '../auth/auth_test_helpers.dart';
+import '../auth/test_helpers.dart';
 
 void main() {
   testWidgets('Medicine search page shows back button on mobile', (
