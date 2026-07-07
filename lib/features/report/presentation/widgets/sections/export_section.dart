@@ -16,6 +16,7 @@ class ReportExportSection extends StatelessWidget {
     required this.requestInFlight,
     required this.l10n,
     this.onActionTap,
+    this.isDataInsufficient = false,
   });
 
   final List<ReportExportAction> actions;
@@ -23,6 +24,7 @@ class ReportExportSection extends StatelessWidget {
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final Future<void> Function(ReportExportKind kind)? onActionTap;
+  final bool isDataInsufficient;
 
   double _exportCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -33,6 +35,8 @@ class ReportExportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,6 +46,15 @@ class ReportExportSection extends StatelessWidget {
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
+        if (isDataInsufficient) ...[
+          const SizedBox(height: AppSpacingTokens.level2),
+          Text(
+            l10n.reportExportInsufficientReason,
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
+          ),
+        ],
         const SizedBox(height: AppSpacingTokens.level3),
         GridView.builder(
           shrinkWrap: true,

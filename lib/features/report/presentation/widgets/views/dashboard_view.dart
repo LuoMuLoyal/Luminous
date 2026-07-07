@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:forui/forui.dart';
 import 'package:lucent_openapi/lucent_openapi.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -79,9 +80,19 @@ class ReportDashboardView extends StatelessWidget {
   }
 
   Widget _buildMobileLayout({required AppLocalizations l10n}) {
+    final showInsufficientBanner = _shouldShowInsufficientBanner();
+    final insufficientMetricCount = _insufficientMetricCount();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (showInsufficientBanner) ...[
+          _DataInsufficientBanner(
+            l10n: l10n,
+            insufficientMetricCount: insufficientMetricCount,
+          ),
+          const SizedBox(height: AppSpacingTokens.level4),
+        ],
         ReportScoreHero(
           key: const Key('report-score-hero'),
           dashboard: dashboard,
@@ -129,6 +140,7 @@ class ReportDashboardView extends StatelessWidget {
           requestInFlight: exportRequestInFlight,
           onActionTap: onExportActionTap,
           l10n: l10n,
+          isDataInsufficient: _shouldShowInsufficientBanner(),
         ),
         const SizedBox(height: AppSpacingTokens.level5),
         ReportPatternsSection(
@@ -146,6 +158,9 @@ class ReportDashboardView extends StatelessWidget {
   }
 
   Widget _buildDesktopLayout({required AppLocalizations l10n}) {
+    final showInsufficientBanner = _shouldShowInsufficientBanner();
+    final insufficientMetricCount = _insufficientMetricCount();
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -154,6 +169,13 @@ class ReportDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (showInsufficientBanner) ...[
+                _DataInsufficientBanner(
+                  l10n: l10n,
+                  insufficientMetricCount: insufficientMetricCount,
+                ),
+                const SizedBox(height: AppSpacingTokens.level5),
+              ],
               ReportScoreHero(
                 key: const Key('report-score-hero'),
                 dashboard: dashboard,
@@ -209,6 +231,7 @@ class ReportDashboardView extends StatelessWidget {
                 requestInFlight: exportRequestInFlight,
                 onActionTap: onExportActionTap,
                 l10n: l10n,
+                isDataInsufficient: _shouldShowInsufficientBanner(),
               ),
               const SizedBox(height: AppSpacingTokens.level5),
               ReportPatternsSection(
@@ -225,6 +248,83 @@ class ReportDashboardView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  /// Returns true when the overall score is insufficient or all metrics
+  /// lack data, signalling that a guidance banner should appear.
+  bool _shouldShowInsufficientBanner() {
+    if (dashboard.score.status == ReportStatus.insufficientData) return true;
+    if (dashboard.metrics.isEmpty) return true;
+    return dashboard.metrics.every(
+      (m) => m.status == ReportStatus.insufficientData,
+    );
+  }
+
+  /// Count of metrics with insufficient data status.
+  int _insufficientMetricCount() {
+    return dashboard.metrics
+        .where((m) => m.status == ReportStatus.insufficientData)
+        .length;
+  }
+}
+
+class _DataInsufficientBanner extends StatelessWidget {
+  const _DataInsufficientBanner({
+    required this.l10n,
+    required this.insufficientMetricCount,
+  });
+
+  final AppLocalizations l10n;
+  final int insufficientMetricCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Container(
+      key: const Key('report-data-insufficient-banner'),
+      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      decoration: BoxDecoration(
+        color: colors.secondary.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        border: Border.all(color: colors.secondary.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            FLucideIcons.circleAlert,
+            color: colors.secondary,
+            size: AppSpacingTokens.level5,
+          ),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.reportDataInsufficientTitle,
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: AppSpacingTokens.level1),
+                Text(
+                  insufficientMetricCount > 0
+                      ? l10n.reportDataInsufficientMetricsHint(
+                          insufficientMetricCount,
+                        )
+                      : l10n.reportDataInsufficientMessage,
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

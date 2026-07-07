@@ -32,22 +32,75 @@ class ReportFindingsSection extends StatelessWidget {
         const SizedBox(height: AppSpacingTokens.level3),
         const AppDivider(),
         const SizedBox(height: AppSpacingTokens.level4),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              for (var index = 0; index < findings.length; index += 1) ...[
-                SizedBox(
-                  width: AppResponsiveSizing.cardWidth(context),
-                  child: _FindingCard(finding: findings[index]),
-                ),
-                if (index != findings.length - 1)
-                  const SizedBox(width: AppSpacingTokens.level3),
+        if (findings.isEmpty)
+          _EmptyFindingsView(l10n: l10n)
+        else
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (var index = 0; index < findings.length; index += 1) ...[
+                  SizedBox(
+                    width: AppResponsiveSizing.cardWidth(context),
+                    child: _FindingCard(finding: findings[index]),
+                  ),
+                  if (index != findings.length - 1)
+                    const SizedBox(width: AppSpacingTokens.level3),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
       ],
+    );
+  }
+}
+
+class _EmptyFindingsView extends StatelessWidget {
+  const _EmptyFindingsView({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+      decoration: BoxDecoration(
+        color: colors.secondary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            FLucideIcons.lightbulb,
+            color: colors.secondary,
+            size: AppSpacingTokens.level5,
+          ),
+          const SizedBox(width: AppSpacingTokens.level3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.reportFindingsEmptyTitle,
+                  style: AppTypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: AppSpacingTokens.level1),
+                Text(
+                  l10n.reportFindingsEmptyBody,
+                  style: AppTypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
