@@ -155,6 +155,13 @@ Last updated: 2026-07-07
   - **日志级别**：引入 `talker_flutter` 替代原始 `AppLogger`，`talkerProvider` 提供全局 Talker 实例，Release 静默，Debug 按级别过滤。`applyLogLevelToTalker()` 运行时切换 TalkerLogger 过滤级别。
   - **功能开关**：`FeatureFlagsController` + `FeatureFlagsSettingsPage`（6 个 flag：端侧 AI Runtime / AI Runtime 提供方 / GenUI 渲染 / 流式输出 / 条码扫描 / PDF 导出），从编译期 env 种子初始化，运行时可覆盖。路由 `/settings/more/feature-flags`。
   - **高级设置页面**：追加「开发者选项」分组（`kDebugMode` 条件渲染），「恢复默认设置」同时重置 developer settings + feature flags。
+- 文件命名与结构大重构完成（2026-07-07）：
+  - **AGENTS.md 新增 File Naming Rules**：禁止文件名重复所在目录/feature 名称，散文件归子目录，Repository 实现统一命名，测试文件镜像源文件名。
+  - **全项目去前缀**：~370 个文件重命名，去除目录名/feature 名前缀（`lib/core/network/lucent_*` → `lucent_` 去除，`lib/core/design/app_*` → `app_` 去除，`lib/core/widgets/common/app_*` → `app_` 去除，`lib/app/router/router_*` → `router_` 去除，全部 14 个 feature 的 `{feature}_*` → 前缀去除）。
+  - **Repository 命名统一**：`lucent_{feature}_repository.dart` → `lucent_repository.dart`，`mock_{feature}_repository.dart` → `mock_repository.dart`，多后端 feature 保留子域名（`lucent_ai_repository.dart`、`lucent_ai_summary_repository.dart` 等）。
+  - **散文件归目录**：14 个直接放在 `presentation/widgets/` 或 `presentation/` 根目录的文件归入 `shared/`、`dialogs/`、`utils/` 子目录。
+  - **测试文件同步重命名**：85 个测试文件跟随源文件重命名。
+  - `flutter analyze` — No issues found! `flutter test` — 898 passed, 0 failed。
 
 ## 相关文档
 
