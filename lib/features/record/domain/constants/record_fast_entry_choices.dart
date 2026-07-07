@@ -4,9 +4,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 /// A single quick-entry option shown in the fast record dialog.
 ///
-/// TODO: load these from a remote configuration or local config file so that
-/// labels, default values, and supported units can be adjusted without a
-/// full app release.
+/// The quick-entry option lists (labels, default values, supported units) are
+/// currently hardcoded per [DailyRecordKind]. When a remote-configuration or
+/// local-config system becomes available, [recordFastEntryChoicesFor] should
+/// read from it so that options can be adjusted without a full app release.
 @immutable
 class RecordFastChoice {
   const RecordFastChoice({
@@ -27,6 +28,13 @@ class RecordFastChoice {
   final String? note;
   final Map<String, dynamic>? payload;
 }
+
+/// Default sleep-duration quick-entry options in minutes (6h, 7h, 8h, 9h).
+///
+/// Extracted as a named constant so that adjustments only need to happen in
+/// one place. When remote config is available, replace this with a dynamic
+/// list loaded at runtime.
+const _sleepDurationOptions = <int>[360, 420, 480, 540];
 
 /// Returns the quick-entry choices for the given record [kind].
 List<RecordFastChoice> recordFastEntryChoicesFor(
@@ -103,22 +111,11 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
       ),
     ],
     DailyRecordKind.sleep => [
-      const RecordFastChoice(
-        label: '6h',
-        payload: <String, dynamic>{'durationMinutes': 360},
-      ),
-      const RecordFastChoice(
-        label: '7h',
-        payload: <String, dynamic>{'durationMinutes': 420},
-      ),
-      const RecordFastChoice(
-        label: '8h',
-        payload: <String, dynamic>{'durationMinutes': 480},
-      ),
-      const RecordFastChoice(
-        label: '9h',
-        payload: <String, dynamic>{'durationMinutes': 540},
-      ),
+      for (final minutes in _sleepDurationOptions)
+        RecordFastChoice(
+          label: '${minutes ~/ 60}h',
+          payload: <String, dynamic>{'durationMinutes': minutes},
+        ),
     ],
     DailyRecordKind.mood => [
       RecordFastChoice(

@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-06
+Last updated: 2026-07-07
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 
@@ -138,6 +138,11 @@ Last updated: 2026-07-06
   - 桌面侧边栏设置子项新增「数据与存储」入口。
 - 健康档案快捷入口：
   - 设置页通用分组新增「健康档案」入口（`heartPulse` 图标），直达 mine 功能区的健康档案编辑页。
+- 二审修复完成（2026-07-07）：
+  - **超长 build 方法重构**：`_DrugBoxSection.build()` 拆分为 `_DrugBoxHeader`、`_DrugBoxSubtitle`、`_DrugBoxContent` 三个独立 Widget，消除 566 行超长方法。
+  - **重复 badge 代码消除**：新增共享 `TintedStatusBadge` 组件，替换 `medicine_mobile_drugbox_section.dart`、`reminder_log_panels.dart` 中 3 处几乎相同的内联 `FBadge.raw` 代码（每处约 30 行），同时消除 `0.12 > 0.5` 死代码条件。
+  - **ref.read() 误用修复**：`record_nlp_dialog.dart` 中 `ref.read(provider).draft` 改为使用已 watch 的 `state.draft`。
+  - **硬编码睡眠时长配置化**：提取 `_sleepDurationOptions` 命名常量，switch 分支改为 for 循环，TODO 注释更新为正式文档注释。
 
 ## 相关文档
 

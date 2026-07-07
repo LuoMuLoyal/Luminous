@@ -5,6 +5,7 @@ import 'package:luminous/core/design/app_design.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/medicine_reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/medicine_reminder_formatters.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/medicine_workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/app_divider.dart';
 
@@ -182,44 +183,9 @@ class _DeliveryLogRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level3),
-          FBadge.raw(
-            builder: (context, style) {
-              final resolvedColor = color.resolve(colors);
-              final foreground = 0.12 > 0.5
-                  ? colors.primaryForeground
-                  : resolvedColor;
-              return DecoratedBox(
-                decoration: ShapeDecoration(
-                  color: resolvedColor.withValues(alpha: 0.12),
-                  shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
-                    vertical: AppSpacingTokens.level1,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        deliveryStatusLabel(l10n, log.status),
-                        style: AppTypographyToken.level3
-                            .body(context)
-                            .copyWith(
-                              color: foreground,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+          TintedStatusBadge(
+            color: color,
+            label: deliveryStatusLabel(l10n, log.status),
           ),
         ],
       ),
@@ -270,45 +236,7 @@ class _TodayLogRow extends StatelessWidget {
                   .copyWith(color: colors.mutedForeground),
             ),
           ),
-          FBadge.raw(
-            builder: (context, style) {
-              final resolvedColor = color.resolve(colors);
-              final foreground = 0.12 > 0.5
-                  ? colors.primaryForeground
-                  : resolvedColor;
-              return DecoratedBox(
-                decoration: ShapeDecoration(
-                  color: resolvedColor.withValues(alpha: 0.12),
-                  shape: RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
-                    vertical: AppSpacingTokens.level1,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        label,
-                        style: AppTypographyToken.level3
-                            .body(context)
-                            .copyWith(
-                              color: foreground,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+          TintedStatusBadge(color: color, label: label),
         ],
       ),
     );

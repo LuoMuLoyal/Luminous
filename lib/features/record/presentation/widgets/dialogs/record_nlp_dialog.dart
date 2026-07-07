@@ -21,9 +21,7 @@ class RecordNlpDialog extends HookConsumerWidget {
     final colors = context.theme.colors;
 
     final state = ref.watch(recordNlpControllerProvider);
-    final controller = useTextEditingController(
-      text: ref.read(recordNlpControllerProvider).draft,
-    );
+    final controller = useTextEditingController(text: state.draft);
 
     ref.listen<RecordNlpState>(recordNlpControllerProvider, (previous, next) {
       if (next.errorMessage == null ||
