@@ -198,13 +198,49 @@ flutter test --name "test name pattern"         # by name
 
 - Mock repositories follow `Mock*Repository` naming.
 - Test helpers live in `test/helpers/`.
+  - `test_helpers.dart` — hand-written fakes (`MemorySessionStore`,
+    `CaptureAdapter`, `SignedInAuthSessionNotifier`, screen size helpers,
+    `mockNetworkImages`).
+  - `mocks.dart` — mocktail-based mocks for common repository interfaces
+    (`MockTodayRepository`, `MockReportRepository`, etc.). Use these when you
+    need interaction verification (`verify`) or fine-grained stub control.
+  - `test_forui_app.dart` — `TestForuiApp` / `TestForuiRouterApp` wrappers
+    that bootstrap Forui theme + i18n for widget tests.
 - Widget tests use `WidgetTester` with `ProviderScope` overrides.
+- `network_image_mock` — call `mockNetworkImages(() async { ... })` in widget
+  tests that render `CachedNetworkImage` to prevent real network calls.
+
+### Golden Tests
+
+```bash
+flutter test test/golden/                       # run golden tests
+flutter test --update-goldens test/golden/      # regenerate baselines
+```
+
+- Golden tests use `alchemist` with light/dark theme scenarios.
+- Baseline images are stored in `test/golden/goldens/`.
+- Run `--update-goldens` when visual changes are intentional.
 
 ### Integration Tests
 
 ```bash
 flutter test integration_test                           # all scenarios
 flutter test integration_test/settings_preferences_e2e_test.dart  # one scenario
+```
+
+### Patrol E2E Tests
+
+Patrol enables native system interaction (permission dialogs, notifications,
+WebView) beyond what plain `integration_test` supports.
+
+```bash
+# Install patrol_cli (one-time)
+dart pub global activate patrol_cli
+
+# Run a patrol test
+dart pub global run patrol_cli:main test \
+  --target integration_test/patrol/app_smoke_patrol_test.dart \
+  --device emulator-5554
 ```
 
 ### Full-Stack E2E

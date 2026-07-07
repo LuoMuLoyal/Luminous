@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:network_image_mock/network_image_mock.dart';
 
 // ── Session Fakes ─────────────────────────────────────────────
 
@@ -168,6 +169,24 @@ class CaptureAdapter implements HttpClientAdapter {
 
   @override
   void close({bool force = false}) {}
+}
+
+// ── Network Image Mock ─────────────────────────────────────────
+
+/// Wraps [tester.runAsync] with [mockNetworkImagesFor] to intercept
+/// all HTTP requests from `CachedNetworkImage` and return a 1×1
+/// transparent pixel. Call this in widget tests that render
+/// `CachedNetworkImage` to prevent real network calls.
+///
+/// Example:
+/// ```dart
+/// await mockNetworkImages(() async {
+///   await tester.pumpWidget(MyApp());
+///   await tester.pumpAndSettle();
+/// });
+/// ```
+Future<void> mockNetworkImages(Future<void> Function() testBody) {
+  return mockNetworkImagesFor(testBody);
 }
 
 // ── Screen Size Helpers ─────────────────────────────────────────

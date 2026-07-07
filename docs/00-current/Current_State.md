@@ -166,6 +166,12 @@ Last updated: 2026-07-07
   - **Medicine 三层展示**：风险检查页从二态（有/无风险）重构为三层视觉语义：Tier 1 已确认风险（红色 `destructive`）、Tier 2 已确认安全（绿色 `primary`，附"不等于绝对安全"免责声明）、Tier 3 未覆盖/不确定（黄色 `secondary`）。严重度颜色从全部 `primary` 改为按 high/medium/info 分级。添加前风险检查弹窗新增检查范围区块（过敏交叉 / 相互作用 / 禁忌）。
   - **Report 门控透明度**：数据不足时不再只显示 "--" 占位。新增 `_DataInsufficientBanner` 横幅（当评分或全部指标为 `insufficientData` 时显示），重点发现空态增加引导文案，导出区在数据不足时显示原因提示。
   - `flutter analyze` — No issues found! `flutter test` — 898 passed, 0 failed。`dart run tool/run_daily_checks.dart` — exit code 0。
+- 测试依赖引入完成（2026-07-07）：
+  - **mocktail** ^1.0.5 — 零代码生成 mock 库，新增 `test/helpers/mocks.dart` 提供 8 个常用接口的 mocktail 实现
+  - **network_image_mock** ^2.1.1 — `test/helpers/test_helpers.dart` 新增 `mockNetworkImages()` 包装函数
+  - **alchemist** ^0.14.0 — Golden 测试框架（替代 discontinued 的 `golden_toolkit`），新建 `test/golden/` 目录，3 个 golden 测试 + 6 个基线图
+  - **patrol** ^4.6.1 — 原生系统交互 E2E 框架，`patrol_cli` v4.4.0 全局安装，新建 `integration_test/patrol/` 目录 + `patrol.yaml` 配置
+  - `flutter analyze` — No issues found! `flutter test` — 904 passed, 0 failed。
 
 ## 相关文档
 

@@ -1,0 +1,16 @@
+# Patrol CLI configuration
+# https://patrol.leancode.co/v4.4.0/cli/configuration/
+project:
+  android:
+    package_name: com.luminous.app
+  ios:
+    bundle_id: com.luminous.app
+
+test:
+  exclude:
+    - test/**
+    - test_golden/**
+  concurrency: 1
+  flutter_test:
+    args:
+      - --dart-define-from-file=.env
