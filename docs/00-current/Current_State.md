@@ -229,6 +229,12 @@ Last updated: 2026-07-07
   - 移除移动端首屏独立 snapshot 卡、独立数据不足横幅、趋势区重复周期 pill、首屏指标四宫格和完整报告锁卡堆叠。
   - 未登录态现在返回前端预览 dashboard，而不是空白 `signedOut()` 占位。
   - `flutter test test/report/` — 37 passed；`flutter analyze` — No issues found!
+- Mine 移动端 readiness-hub 重构完成（2026-07-07）：
+  - Mine 页首屏已从“登录提示条 + 账户卡 + 三宫格 + 档案列表 + 隐私横幅”的并列结构收敛为 `单一档案状态主卡 → 健康档案分组 → 账户与隐私分组`。
+  - 独立 `SignInHintBanner` 已从 Mine 根页移除；未登录 preview、缺失关键信息和已基本就绪三种状态统一在主卡中表达。
+  - 移动端 `MineStatusOverview` 三宫格已下线；其信息改由主卡和分组入口承接，减少首屏竞争。
+  - 健康档案区改为 Forui `FTileGroup + FTile`，并为当前用药补齐显式状态文案；隐私横幅改为低优先级账户/隐私分组。
+  - 新增 11 个 Mine root-page ARB 文案键；`flutter test test/mine/page_test.dart` — 14 passed，`flutter test test/mine/` — 41 passed，`flutter analyze` — No issues found!
 
 ## 相关文档
 

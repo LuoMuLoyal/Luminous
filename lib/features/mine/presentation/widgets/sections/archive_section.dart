@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 class MineArchiveSection extends StatelessWidget {
   const MineArchiveSection({super.key, required this.dashboard});
@@ -27,49 +25,73 @@ class MineArchiveSection extends StatelessWidget {
       children: [
         MineSectionTitle(title: l10n.mineProfileTitle),
         const SizedBox(height: AppSpacingTokens.level3),
-        FCard.raw(
+        FTileGroup(
           key: const Key('mine-archive-section'),
-          child: Column(
-            children: [
-              for (
-                var index = 0;
-                index < dashboard.archiveEntries.length;
-                index++
-              )
-                _ArchiveRow(
-                  entry: dashboard.archiveEntries[index],
-                  subtitleOverride:
-                      dashboard.archiveEntries[index].titleKey ==
-                          MineCopyKey.archiveBasicTitle
-                      ? meta
-                      : null,
-                  showDivider: index != dashboard.archiveEntries.length - 1,
-                ),
-            ],
-          ),
+          divider: FItemDivider.full,
+          children: [
+            for (final entry in dashboard.archiveEntries)
+              _ArchiveRow(
+                entry: entry,
+                dashboard: dashboard,
+                subtitleOverride:
+                    entry.titleKey == MineCopyKey.archiveBasicTitle
+                    ? meta
+                    : null,
+              ),
+          ],
         ),
       ],
     );
   }
 }
 
-class _ArchiveRow extends StatelessWidget {
+class _ArchiveRow extends StatelessWidget with FTileMixin {
   const _ArchiveRow({
     required this.entry,
-    required this.showDivider,
+    required this.dashboard,
     this.subtitleOverride,
   });
 
   final MineArchiveEntry entry;
-  final bool showDivider;
+  final MineDashboard dashboard;
   final String? subtitleOverride;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final statusKey = entry.statusKey ?? _derivedStatusKey();
 
-    final row = FTappable(
+    return FTile(
+      prefix: SoftIcon(icon: entry.icon, color: entry.accent),
+      title: Text(
+        mineCopy(l10n, entry.titleKey),
+        style: AppTypographyToken.level5
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w700),
+      ),
+      subtitle: Text(
+        subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
+        style: AppTypographyToken.level3
+            .body(context)
+            .copyWith(color: colors.mutedForeground),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      details: statusKey == null
+          ? null
+          : Text(
+              mineCopy(l10n, statusKey),
+              style: AppTypographyToken.level3
+                  .body(context)
+                  .copyWith(
+                    color: statusKey == MineCopyKey.archiveNeedsFill
+                        ? colors.destructive
+                        : colors.mutedForeground,
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+      suffix: const Icon(FLucideIcons.chevronRight),
       onPress: () {
         final route = entry.route ?? _fallbackRouteFor(entry.titleKey);
         if (route == null) {
@@ -78,75 +100,17 @@ class _ArchiveRow extends StatelessWidget {
         }
         pushAuthRequiredRoute(context, route);
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level5,
-          vertical: AppSpacingTokens.level3,
-        ),
-        child: Row(
-          children: [
-            SoftIcon(icon: entry.icon, color: entry.accent),
-            const SizedBox(width: AppSpacingTokens.level4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mineCopy(l10n, entry.titleKey),
-                    style: AppTypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level1),
-                  AppSkeletonText(
-                    text: subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    widthFactor: 0.74,
-                  ),
-                ],
-              ),
-            ),
-            if (entry.statusKey != null) ...[
-              const SizedBox(width: AppSpacingTokens.level3),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
-                  height: 18,
-                  width: 46,
-                  radius: AppRadiusTokens.level2,
-                ),
-                child: Text(
-                  mineCopy(l10n, entry.statusKey!),
-                  style: AppTypographyToken.level3
-                      .body(context)
-                      .copyWith(
-                        color: entry.statusKey == MineCopyKey.archiveNeedsFill
-                            ? context.theme.colors.destructive
-                            : context.theme.colors.mutedForeground,
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-              ),
-            ],
-            const SizedBox(width: AppSpacingTokens.level2),
-            Icon(
-              FLucideIcons.chevronRight,
-              color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
-            ),
-          ],
-        ),
-      ),
     );
+  }
 
-    if (!showDivider) return row;
-
-    return Column(children: [row, const AppDivider()]);
+  MineCopyKey? _derivedStatusKey() {
+    return switch (entry.titleKey) {
+      MineCopyKey.archiveMedicineTitle =>
+        dashboard.profile.currentMedicineCount > 0
+            ? MineCopyKey.archiveCompleted
+            : MineCopyKey.archiveNeedsFill,
+      _ => null,
+    };
   }
 }
 

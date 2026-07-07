@@ -51,26 +51,15 @@ class MineDashboardView extends StatelessWidget {
           key: const Key('mine-account-header'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        MineStatusOverview(
-          key: const Key('mine-status-overview'),
-          dashboard: dashboard,
-        ),
-        if (dashboard.account.isAuthenticated) ...[
-          const SizedBox(height: AppSpacingTokens.level5),
-          MineCompletenessNotice(
-            key: const Key('mine-completeness-notice'),
-            profile: dashboard.profile,
-          ),
-        ],
         const SizedBox(height: AppSpacingTokens.level5),
         MineArchiveSection(
           key: const Key('mine-archive-section'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        MinePrivacyNoticeSection(
-          key: const Key('mine-privacy-notice'),
+        const SizedBox(height: AppSpacingTokens.level5),
+        MineAccountPrivacySection(
+          key: const Key('mine-account-privacy-section'),
+          account: dashboard.account,
           notice: dashboard.privacyNotice,
         ),
       ],
@@ -90,21 +79,15 @@ class MineDashboardView extends StatelessWidget {
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
-              if (dashboard.account.isAuthenticated) ...[
-                const SizedBox(height: AppSpacingTokens.level5),
-                MineCompletenessNotice(
-                  key: const Key('mine-completeness-notice'),
-                  profile: dashboard.profile,
-                ),
-              ],
               const SizedBox(height: AppSpacingTokens.level5),
               MineArchiveSection(
                 key: const Key('mine-archive-section'),
                 dashboard: dashboard,
               ),
               const SizedBox(height: AppSpacingTokens.level5),
-              MinePrivacyNoticeSection(
-                key: const Key('mine-privacy-notice'),
+              MineAccountPrivacySection(
+                key: const Key('mine-account-privacy-section'),
+                account: dashboard.account,
                 notice: dashboard.privacyNotice,
               ),
             ],

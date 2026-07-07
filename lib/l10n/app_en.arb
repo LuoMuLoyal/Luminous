@@ -928,6 +928,23 @@
   "mineSummaryMedicines": "Current meds",
   "mineSummaryMissingInfo": "Missing info: birth date, height, unit system",
   "mineSummaryCompleteAction": "Complete",
+  "mineReadinessPreviewTitle": "Your personal profile is still locked",
+  "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and current medications.",
+  "mineReadinessPreviewBadge": "Preview",
+  "mineReadinessSignedInBadge": "Signed in",
+  "mineReadinessIncompleteTitle": "{count} key items still missing",
+  "@mineReadinessIncompleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineReadinessIncompleteDescription": "Adding these details improves safety reminders, sharing controls, and summaries.",
+  "mineReadinessReadyTitle": "Your profile is mostly ready",
+  "mineReadinessReadyDescription": "Keep your health archive current and manage sharing or account access from here.",
+  "mineReadinessManageAction": "Manage profile",
+  "mineAccountPrivacySectionTitle": "Account and privacy",
   "mineProfileTitle": "Health profile",
   "mineProfileBasicInfoTitle": "Basic info",
   "mineProfileBasicInfoSubtitle": "Personal basics",

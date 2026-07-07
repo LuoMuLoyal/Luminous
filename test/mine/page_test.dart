@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -39,14 +38,13 @@ void main() {
     expect(find.text(l10n.tabMine), findsOneWidget);
     expect(find.text(l10n.mineAccountDisplayName), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
-    expect(find.text(l10n.mineAlertAllergyTitle), findsWidgets);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
 
     final keys = <String>[
       'mine-account-header',
-      'mine-status-overview',
       'mine-archive-section',
-      'mine-privacy-notice',
+      'mine-account-privacy-section',
     ];
 
     for (final key in keys) {
@@ -57,7 +55,7 @@ void main() {
     }
 
     expect(find.byKey(const Key('mine-campus-surface')), findsNothing);
-    expect(find.byType(IntrinsicHeight), findsNothing);
+    expect(find.byKey(const Key('mine-status-overview')), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
     expect(find.byKey(const Key('mine-settings-section')), findsNothing);
@@ -95,11 +93,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.text(l10n.mineSignedOutNoticeTitle), findsOneWidget);
+    expect(find.text(l10n.mineReadinessPreviewTitle), findsOneWidget);
     expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
     expect(find.text(l10n.authGoLogin), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.lock), findsOneWidget);
+    expect(find.byType(SignInHintBanner), findsNothing);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
+    expect(find.byKey(const Key('mine-status-overview')), findsNothing);
 
     final basicSubtitle = find.text(l10n.mineArchiveBasicSubtitle);
     await tester.ensureVisible(basicSubtitle);
@@ -338,7 +337,10 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final basicInfo = find.text(l10n.mineArchiveBasicTitle);
+    final basicInfo = find.descendant(
+      of: find.byKey(const Key('mine-archive-section')),
+      matching: find.text(l10n.mineArchiveBasicTitle),
+    );
     await tester.ensureVisible(basicInfo);
     await tester.tap(basicInfo);
     await tester.pump(const Duration(milliseconds: 500));
@@ -412,37 +414,14 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    // _mockSnapshot has heightCm: null → basicInfoCompleted is false
-    expect(find.text(l10n.mineCompletenessGapTitle), findsOneWidget);
-    final notice = find.byType(MineCompletenessNotice);
+    expect(find.byType(MineCompletenessNotice), findsNothing);
+    expect(find.text(l10n.mineCompletenessGapAction), findsOneWidget);
     expect(
       find.descendant(
-        of: notice,
+        of: find.byKey(const Key('mine-account-header')),
         matching: find.text(l10n.mineCompletenessGapBasicInfo),
       ),
       findsOneWidget,
-    );
-    expect(
-      find.descendant(
-        of: notice,
-        matching: find.text(l10n.mineCompletenessGapBasicInfoDesc),
-      ),
-      findsOneWidget,
-    );
-    // Allergies and medicines are present in _mockSnapshot → no gaps for those
-    expect(
-      find.descendant(
-        of: notice,
-        matching: find.text(l10n.mineCompletenessGapAllergy),
-      ),
-      findsNothing,
-    );
-    expect(
-      find.descendant(
-        of: notice,
-        matching: find.text(l10n.mineCompletenessGapMedicine),
-      ),
-      findsNothing,
     );
   });
 
@@ -476,6 +455,8 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text(l10n.mineCompletenessGapTitle), findsNothing);
+    expect(find.text(l10n.mineCompletenessGapAction), findsNothing);
+    expect(find.text(l10n.mineReadinessManageAction), findsOneWidget);
   });
 
   testWidgets('Mine completeness notice hidden when signed out', (
@@ -508,6 +489,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text(l10n.mineCompletenessGapTitle), findsNothing);
+    expect(find.byType(MineCompletenessNotice), findsNothing);
   });
 
   testWidgets('Mine page does not render campus services section', (

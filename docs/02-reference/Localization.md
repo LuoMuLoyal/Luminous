@@ -52,6 +52,9 @@ Persisted preference keys:
    sleep-stage labels are owned by the Record feature ARB entries.
 - Mine no longer owns any campus-service strings; support-resource copy is limited to settings
    help/about surfaces plus backend-provided titles when present.
+- Mine root-page readiness copy such as preview/signed-in badges, locked/incomplete/ready titles,
+  readiness descriptions, primary CTA labels, and the account/privacy section title is owned by
+  the Mine ARB entries.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings
   (`blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`), plus the
   section labels used by the theme settings subpage and the general-settings summary.

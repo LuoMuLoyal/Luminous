@@ -935,6 +935,23 @@
   "mineSummaryMedicines": "当前用药",
   "mineSummaryMissingInfo": "缺失信息：生日、身高、单位制",
   "mineSummaryCompleteAction": "去完善",
+  "mineReadinessPreviewTitle": "个人档案尚未解锁",
+  "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药。",
+  "mineReadinessPreviewBadge": "预览",
+  "mineReadinessSignedInBadge": "已登录",
+  "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
+  "@mineReadinessIncompleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineReadinessIncompleteDescription": "补充这些信息后，安全提醒、分享控制和摘要会更准确。",
+  "mineReadinessReadyTitle": "档案已基本就绪",
+  "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权。",
+  "mineReadinessManageAction": "管理档案",
+  "mineAccountPrivacySectionTitle": "账户与隐私",
   "mineProfileTitle": "健康档案",
   "mineProfileBasicInfoTitle": "基础资料",
   "mineProfileBasicInfoSubtitle": "个人基本信息",
