@@ -24,7 +24,7 @@ class TodayOverviewSection extends StatelessWidget {
 
     return FCard.raw(
       key: const Key('today-health-summary-card'),
-      style: todayCardStyle(context, tone: TodayCardTone.emphasis),
+      style: todayCardStyle(context, tone: TodayCardTone.soft),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacingTokens.level4,
@@ -59,7 +59,7 @@ class TodayOverviewSection extends StatelessWidget {
                   ),
                   child: Consumer(
                     builder: (context, ref, child) => FButton(
-                      variant: FButtonVariant.secondary,
+                      variant: FButtonVariant.outline,
                       size: FButtonSizeVariant.xs,
                       onPress: () => ref.invalidate(todayDashboardProvider),
                       prefix: const Icon(FLucideIcons.refreshCw, size: 14),

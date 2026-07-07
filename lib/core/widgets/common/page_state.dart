@@ -216,13 +216,13 @@ class SignInHintBanner extends StatelessWidget {
     return Container(
       key: const Key('sign-in-hint-banner'),
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.14),
+        color: colors.card,
         borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
-        border: Border.all(color: colors.border),
+        border: Border.all(color: colors.border.withValues(alpha: 0.88)),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
+        vertical: AppSpacingTokens.level2,
       ),
       child: Row(
         children: [
@@ -238,10 +238,10 @@ class SignInHintBanner extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacingTokens.level3),
           FButton(
-            variant: FButtonVariant.outline,
+            variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
             onPress: onSignIn,
-            child: Text(l10n.authGoLogin),
+            child: Text(l10n.statePreviewSignInAction),
           ),
         ],
       ),

@@ -10,7 +10,6 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -51,6 +50,7 @@ class TodayAiSummarySection extends ConsumerWidget {
     );
     final isSettingsDisabled =
         aiSummariesEnabled == false || aiState.isDisabled;
+    final isPreview = !canAccessProtectedData;
     final actionLabel = aiState.isLoading
         ? l10n.todayAiSummaryGeneratingAction
         : isSettingsDisabled
@@ -59,7 +59,7 @@ class TodayAiSummarySection extends ConsumerWidget {
 
     return FCard.raw(
       key: const Key('today-ai-summary-card'),
-      style: todayCardStyle(context, tone: TodayCardTone.soft),
+      style: todayCardStyle(context),
       child: Column(
         children: [
           Padding(
@@ -109,39 +109,38 @@ class TodayAiSummarySection extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
-                FButton(
-                  onPress: aiState.isLoading
-                      ? null
-                      : () async {
-                          if (!canAccessProtectedData) {
-                            await pushAuthRequiredRoute(context, '/today');
-                            return;
-                          }
+                if (!isPreview) ...[
+                  const SizedBox(width: AppSpacingTokens.level3),
+                  FButton(
+                    onPress: aiState.isLoading
+                        ? null
+                        : () async {
+                            if (aiSummariesEnabled == false) {
+                              unawaited(context.push(AppRoutes.settings));
+                              return;
+                            }
 
-                          if (aiSummariesEnabled == false) {
-                            unawaited(context.push(AppRoutes.settings));
-                            return;
-                          }
-
-                          final result = await ref
-                              .read(todayAiAnalysisControllerProvider.notifier)
-                              .generate();
-                          if (!context.mounted) {
-                            return;
-                          }
-                          final errorMsg = result.errorMessage;
-                          if (result.status ==
-                                  TodayAiAnalysisCardStatus.error &&
-                              errorMsg != null &&
-                              errorMsg.isNotEmpty) {
-                            await AppToast.show(context, errorMsg);
-                          }
-                        },
-                  size: FButtonSizeVariant.xs,
-                  variant: FButtonVariant.secondary,
-                  child: Text(actionLabel),
-                ),
+                            final result = await ref
+                                .read(
+                                  todayAiAnalysisControllerProvider.notifier,
+                                )
+                                .generate();
+                            if (!context.mounted) {
+                              return;
+                            }
+                            final errorMsg = result.errorMessage;
+                            if (result.status ==
+                                    TodayAiAnalysisCardStatus.error &&
+                                errorMsg != null &&
+                                errorMsg.isNotEmpty) {
+                              await AppToast.show(context, errorMsg);
+                            }
+                          },
+                    size: FButtonSizeVariant.xs,
+                    variant: FButtonVariant.secondary,
+                    child: Text(actionLabel),
+                  ),
+                ],
               ],
             ),
           ),

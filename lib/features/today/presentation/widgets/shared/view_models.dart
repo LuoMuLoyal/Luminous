@@ -328,11 +328,12 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: FLucideIcons.badgeAlert,
+          icon: FLucideIcons.sparkles,
           color: AppColors.primary,
-          text: l10n.todayAiSummarySignedOutHint,
+          text: l10n.todayAiSummaryPreviewHint,
         ),
       ],
+      footer: l10n.todayAiSummaryDefaultHint,
     );
   }
 

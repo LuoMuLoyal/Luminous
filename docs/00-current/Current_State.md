@@ -55,13 +55,16 @@ Last updated: 2026-07-07
   - `AssistantStateCard` 删除，合并到 `AppStateMessageView(maxWidth: 560)`。
   - `ResponsiveContentFrame` 支持 `padding` 覆盖。
   - `PageScaffold` 支持 `titleWidget` 与 `headerStyle`。
-- Phase 1 可见问题修复进行中：
-  - Today 页视觉层级重构完成：
-    - 根主题现改为直接使用 Forui 内置主题族：`theme.family` 持久化当前选择，`LuminousApp` 与测试主题统一从 `lib/theme/theme.dart` 的主题族目录映射到 stock `FThemes.*`；默认族为 `blue`，不再保留手写 sky-blue 定制色值。
-    - 移动端 Today 信息顺序调整为 `summary → priorities → AI summary → recommendations → todos`，优先事项不再被 AI 卡片压在首屏下方。
-    - Today 概览 / 优先事项 / AI summary / recommendation / todos 现在使用分层卡片语气（emphasis / soft / neutral），recommendation 的 loading 改为行骨架屏，失败态改为紧凑 inline retry。
-    - 根据视觉反馈，Today 条目卡片底色已统一收回纯白，只保留当前主题色边框和语义按钮，不再使用淡色填充。
-    - 顶部 `AI chat` 入口和通知按钮统一收敛到 Forui 语义按钮变体；优先事项详情移回主内容列，右侧仅保留行动按钮，降低拥挤感。
+  - Phase 1 可见问题修复进行中：
+    - Today 页视觉层级重构完成：
+      - 根主题现改为直接使用 Forui 内置主题族：`theme.family` 持久化当前选择，`LuminousApp` 与测试主题统一从 `lib/theme/theme.dart` 的主题族目录映射到 stock `FThemes.*`；默认族为 `blue`，不再保留手写 sky-blue 定制色值。
+      - 移动端 Today 信息顺序调整为 `summary → priorities → AI summary → recommendations → todos`，优先事项不再被 AI 卡片压在首屏下方。
+      - Today 概览 / 优先事项 / AI summary / recommendation / todos 现在使用分层卡片语气（emphasis / soft / neutral），recommendation 的 loading 改为行骨架屏，失败态改为紧凑 inline retry。
+      - 根据视觉反馈，Today 条目卡片底色已统一收回纯白，只保留当前主题色边框和语义按钮，不再使用淡色填充。
+      - 顶部 `AI chat` 入口和通知按钮统一收敛到 Forui 语义按钮变体；优先事项详情移回主内容列，右侧仅保留行动按钮，降低拥挤感。
+      - Today preview 登录提示已从较重的门控卡收敛为轻量提示条：底色改回 `card`、垂直内边距收紧、按钮从 `outline` 降为 `ghost`，文案改为“登录查看”，避免与首屏主任务争抢注意力。
+      - Today AI 日总结在 preview 模式下不再重复“登录后才可生成”的门控提示，也不再显示“生成”按钮；当前只保留能力说明型 hint，避免与顶部登录提示重复教育并减少首屏 CTA 数量。
+      - Today 概览卡已从一级卡降为二级卡：边框语气从 `emphasis` 降到 `soft`，右上角更新时间按钮从 `secondary` 降为 `outline`，首屏唯一一级任务卡保持为“今日优先事项”。
   - Report 页指标卡移动端 `BOTTOM OVERFLOWED BY 2.0 PIXELS` 已修复。
   - Today 页优先事项卡片右侧 action pill 文字颜色已修复，不再与背景融为一体；宽度改为 `IntrinsicWidth` 自然撑开，避免 “去服用” / “去喝水” 截断。
   - Today 页 AI 日总结 signed-out / disabled 空态 footer 已移除，只保留单条 bullet 提示，避免重复文案。

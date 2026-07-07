@@ -402,8 +402,39 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text(l10n.todayAiSummarySignedOutHint), findsOneWidget);
+    expect(find.text(l10n.todayAiSummarySignedOutHint), findsNothing);
+    expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
+    expect(find.text(l10n.todayAiSummaryGenerateAction), findsNothing);
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('Signed-out preview banner uses lighter login CTA copy', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
+    expect(find.text(l10n.statePreviewSignInHint), findsOneWidget);
+    expect(find.text(l10n.statePreviewSignInAction), findsOneWidget);
+    expect(find.text(l10n.authGoLogin), findsNothing);
   });
 
   testWidgets('Today priority action pills are not clipped', (tester) async {
