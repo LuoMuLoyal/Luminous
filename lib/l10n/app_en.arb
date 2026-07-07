@@ -237,6 +237,13 @@
   "recordFilterMobileTitle": "Record filter",
   "recordFilterAllAction": "All",
   "recordFilterSelectAll": "Select all",
+  "recordFilterActiveLabel": "Filtered: {label}",
+  "@recordFilterActiveLabel": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+  "recordFilterClearAction": "Clear",
   "recordAllTypesAction": "All types",
   "recordVoiceInputTitle": "Voice input",
   "recordGuideHint": "Tip: steady records help you understand your health better",

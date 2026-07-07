@@ -8,9 +8,9 @@ allprojects {
 subprojects {
     configurations.configureEach {
         resolutionStrategy.force(
-            "androidx.test:runner:1.2.0",
-            "androidx.test:rules:1.2.0",
-            "androidx.test.espresso:espresso-core:3.3.0",
+            "androidx.test:runner:1.6.1",
+            "androidx.test:rules:1.6.1",
+            "androidx.test.espresso:espresso-core:3.6.1",
         )
     }
 }

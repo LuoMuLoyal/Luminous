@@ -237,6 +237,13 @@
   "recordFilterMobileTitle": "记录筛选",
   "recordFilterAllAction": "全部",
   "recordFilterSelectAll": "全选",
+  "recordFilterActiveLabel": "已筛选：{label}",
+  "@recordFilterActiveLabel": {
+    "placeholders": {
+      "label": { "type": "String" }
+    }
+  },
+  "recordFilterClearAction": "清除",
   "recordAllTypesAction": "全部类型",
   "recordVoiceInputTitle": "语音输入",
   "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",

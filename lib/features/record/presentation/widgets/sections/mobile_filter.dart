@@ -20,42 +20,97 @@ class RecordMobileFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final allSelected = filters.every((filter) => filter.selected);
+    final activeFilter = filters.where((f) => f.selected && !f.locked).toList();
+
+    // Header: title or active-filter indicator.
+    final header = allSelected
+        ? Text(
+            l10n.recordFilterMobileTitle,
+            style: AppTypographyToken.level7
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w800),
+          )
+        : Row(
+            children: [
+              Text(
+                l10n.recordFilterActiveLabel(
+                  activeFilter
+                      .map((f) => mobileFilterLabel(l10n, f))
+                      .join(' · '),
+                ),
+                style: AppTypographyToken.level7
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const Spacer(),
+              if (onFilterSelected != null)
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.xs,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: () => onFilterSelected!(null),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        FLucideIcons.x,
+                        size: AppSpacingTokens.level4,
+                        color: context.theme.colors.mutedForeground,
+                      ),
+                      const SizedBox(width: AppSpacingTokens.level1),
+                      Text(
+                        l10n.recordFilterClearAction,
+                        style: TextStyle(
+                          color: context.theme.colors.mutedForeground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          );
 
     return Column(
       key: const Key('record-filter-chips'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.recordFilterMobileTitle,
-          style: AppTypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w800),
-        ),
+        header,
         const SizedBox(height: AppSpacingTokens.level3),
-        Wrap(
-          spacing: AppSpacingTokens.level2,
-          runSpacing: AppSpacingTokens.level2,
-          children: [
-            _FilterChip(
-              chipKey: const Key('record-filter-all'),
-              label: l10n.recordFilterAllAction,
-              selected: allSelected,
-              locked: false,
-              onTap: onFilterSelected == null
-                  ? null
-                  : () => onFilterSelected!(null),
-            ),
-            for (final filter in filters)
-              _FilterChip(
+        SizedBox(
+          height: 36,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.zero,
+            itemCount: filters.length + (allSelected ? 0 : 1),
+            separatorBuilder: (_, __) =>
+                const SizedBox(width: AppSpacingTokens.level2),
+            itemBuilder: (context, index) {
+              // When a filter is active, prepend a "全部" chip.
+              if (!allSelected && index == 0) {
+                return _FilterChip(
+                  chipKey: const Key('record-filter-all'),
+                  label: l10n.recordFilterAllAction,
+                  icon: null,
+                  selected: false,
+                  onTap: onFilterSelected == null
+                      ? null
+                      : () => onFilterSelected!(null),
+                );
+              }
+              final filterIndex = allSelected ? index : index - 1;
+              final filter = filters[filterIndex];
+              return _FilterChip(
                 chipKey: Key('record-filter-${filter.type.name}'),
                 label: mobileFilterLabel(l10n, filter),
+                icon: filter.icon,
                 selected: filter.selected,
-                locked: filter.locked,
                 onTap: filter.locked || onFilterSelected == null
                     ? null
                     : () => onFilterSelected!(filter.type),
-              ),
-          ],
+              );
+            },
+          ),
         ),
       ],
     );
@@ -66,48 +121,42 @@ class _FilterChip extends StatelessWidget {
   const _FilterChip({
     required this.chipKey,
     required this.label,
+    required this.icon,
     required this.selected,
-    required this.locked,
-    required this.onTap,
+    this.onTap,
   });
 
   final Key chipKey;
   final String label;
+  final IconData? icon;
   final bool selected;
-  final bool locked;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
+    final fontSize = context.theme.typography.body.xs.fontSize;
     return FButton(
       key: chipKey,
       onPress: onTap,
       variant: FButtonVariant.outline,
       selected: selected,
+      size: FButtonSizeVariant.xs,
       mainAxisSize: MainAxisSize.min,
-      suffix: locked
-          ? DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.theme.colors.secondary.withValues(alpha: 0.22),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level2,
-                  vertical: 2,
-                ),
-                child: Text(
-                  AppLocalizations.of(context)!.recordNotEnabledLabel,
-                  style: TextStyle(
-                    fontSize: context.theme.typography.body.xs.fontSize,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            )
-          : null,
-      child: Text(label),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: fontSize,
+              // Let FButton's IconTheme/DefaultTextStyle provide the correct
+              // contrast color based on the button's selected state.
+            ),
+            const SizedBox(width: AppSpacingTokens.level1),
+          ],
+          Text(label, style: TextStyle(fontSize: fontSize)),
+        ],
+      ),
     );
   }
 }

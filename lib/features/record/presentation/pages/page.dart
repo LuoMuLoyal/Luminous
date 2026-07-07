@@ -159,6 +159,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 dashboardAsync.when(
+                  skipLoadingOnReload: true,
                   data: (dashboard) => RecordDashboardView(
                     dashboard: dashboard,
                     onFilterSelected: (type) => ref
@@ -166,9 +167,14 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                         .setFilter(type),
                     onDateSelected: (date) => _setSelectedDate(date),
                     onQuickAction: (action) {
-                      ref
-                          .read(quickEntryPreferencesProvider.notifier)
-                          .recordTap(action.type);
+                      // Defer provider modification to avoid "modified while
+                      // widget tree was building" errors when the quick entry
+                      // panel rebuilds during tap handling.
+                      Future(
+                        () => ref
+                            .read(quickEntryPreferencesProvider.notifier)
+                            .recordTap(action.type),
+                      );
                       _handleQuickAction(context, action);
                     },
                     onAiInputTap: () => _openNlpDialog(

@@ -93,12 +93,14 @@ List<RecordFilter> buildMobileFilters(List<RecordFilter> filters) {
     RecordEntryType.medication,
     RecordEntryType.note,
   ];
-  final byType = {for (final filter in filters) filter.type: filter};
+  // Hide locked filters on mobile — they add visual noise without value.
+  final available = filters.where((f) => !f.locked).toList();
+  final byType = {for (final filter in available) filter.type: filter};
   final ordered = <RecordFilter>[
     for (final type in preferredTypes)
       if (byType[type] != null) byType[type]!,
   ];
-  for (final filter in filters) {
+  for (final filter in available) {
     if (!ordered.contains(filter)) ordered.add(filter);
   }
   return ordered.toList(growable: false);

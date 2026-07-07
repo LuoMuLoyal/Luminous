@@ -186,6 +186,24 @@ Last updated: 2026-07-07
   - 频率追踪：每次点击快速入口时记录频率，超 50 次自动按比例衰减
   - 新增 13 个 ARB key（zh + en），8 个新测试
   - `flutter analyze` — No issues found! `flutter test test/record/` — 119 passed, 0 failed
+- Android 构建修复 & KGP 插件版本排查完成（2026-07-07）：
+  - **patrol 构建失败修复**：根 `build.gradle.kts` 的 `resolutionStrategy.force` 将 `androidx.test:runner` 从 `1.2.0` 升级到 `1.6.1`（rules → `1.6.1`，espresso-core → `3.6.1`），解决 patrol 4.6.1 的 `PatrolJUnitRunner.shouldWaitForActivitiesToComplete()` `@Override` 编译失败
+  - **依赖升级**：`sign_in_with_apple` ^6.1.4 → ^8.1.0（SPM 支持 + Android 依赖现代化），`speech_to_text` ^7.3.0 → ^7.4.0（iOS 并发修复 + Windows 线程修复）
+  - **KGP 警告排查**：`fluwx` 6.0.0 反而迁移到 KGP（暂不升级），`mobile_scanner`/`patrol` 已是最新稳定版
+  - `flutter analyze` — No issues found! `flutter test` — 915 passed, 0 failed
+- Record 移动端过滤器优化完成（2026-07-07）：
+  - **横向滚动**：`Wrap` → 单行 `ListView.separated`，节省垂直空间
+  - **类型图标**：每个 chip 增加类型图标（pill/droplets/moon 等），提升视觉辨识度
+  - **隐藏 locked**：locked 类型不在移动端过滤器中显示
+  - **活跃过滤指示器**：选中类型时标题切换为"已筛选：{类型}" + "清除"快捷按钮
+  - **"全部" chip 行为优化**：无过滤时隐藏，有过滤时在行首显示作为清除入口
+  - 新增 2 个 ARB key（zh + en），`flutter analyze` + `flutter test` 915 passed
+- Auth 页面窄屏溢出修复完成（2026-07-07）：
+  - 登录、注册、忘记密码三个页面底部"提示文字 + 按钮"行在窄屏设备溢出
+  - 将 `Row` + `Expanded` 改为 `Wrap(alignment: WrapAlignment.spaceBetween)`，窄屏下按钮自动换行
+  - 登录页三个子项（提示文字 + 注册 + 忘记密码）作为 `Wrap` 直接子项，各自独立换行
+  - 提示文字和按钮文字字号从 `level3`（14px）降为 `level2`（12px），符合标准 app 次要操作链接字号
+  - `flutter analyze` — No issues found!
 
 ## 相关文档
 

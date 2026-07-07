@@ -239,22 +239,27 @@ class RegisterPage extends HookConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level3),
-            Row(
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacingTokens.level2,
+              runSpacing: AppSpacingTokens.level1,
               children: [
-                Expanded(
-                  child: Text(
-                    l10n?.authHaveAccountPrompt ?? 'Already have an account?',
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
-                  ),
+                Text(
+                  l10n?.authHaveAccountPrompt ?? 'Already have an account?',
+                  style: AppTypographyToken.level2
+                      .body(context)
+                      .copyWith(color: context.theme.colors.mutedForeground),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(AppRoutes.login),
-                  child: Text(l10n?.authSignIn ?? 'Sign in'),
+                  child: Text(
+                    l10n?.authSignIn ?? 'Sign in',
+                    style: AppTypographyToken.level2.body(context),
+                  ),
                 ),
               ],
             ),

@@ -450,22 +450,27 @@ class LoginPage extends HookConsumerWidget {
               ],
             ),
             const SizedBox(height: AppSpacingTokens.level4),
-            Row(
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: AppSpacingTokens.level2,
+              runSpacing: AppSpacingTokens.level1,
               children: [
-                Expanded(
-                  child: Text(
-                    l10n?.authNeedAccountPrompt ?? 'Need an account?',
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(color: context.theme.colors.mutedForeground),
-                  ),
+                Text(
+                  l10n?.authNeedAccountPrompt ?? 'Need an account?',
+                  style: AppTypographyToken.level2
+                      .body(context)
+                      .copyWith(color: context.theme.colors.mutedForeground),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(AppRoutes.register),
-                  child: Text(l10n?.authRegisterNowAction ?? 'Register now'),
+                  child: Text(
+                    l10n?.authRegisterNowAction ?? 'Register now',
+                    style: AppTypographyToken.level2.body(context),
+                  ),
                 ),
                 FButton(
                   variant: FButtonVariant.ghost,
@@ -474,6 +479,7 @@ class LoginPage extends HookConsumerWidget {
                   onPress: () => context.push(AppRoutes.forgotPassword),
                   child: Text(
                     l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
+                    style: AppTypographyToken.level2.body(context),
                   ),
                 ),
               ],
