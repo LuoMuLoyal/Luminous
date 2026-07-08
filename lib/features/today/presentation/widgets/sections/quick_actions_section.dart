@@ -2,34 +2,79 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayQuickActionsSection extends StatelessWidget {
-  const TodayQuickActionsSection({super.key});
+  const TodayQuickActionsSection({super.key, required this.dashboard});
+
+  final TodayDashboard dashboard;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final actions = buildQuickActionItems(l10n);
+    final colors = context.theme.colors;
+    final actions = buildQuickActionItems(l10n, dashboard);
+    // First 2 are primary, rest are secondary.
+    final primaryActions = actions.take(2).toList();
+    final secondaryActions = actions.skip(2).toList();
 
     return TodaySection(
       title: l10n.todayQuickActionSectionTitle,
-      child: FTileGroup(
-        key: const Key('today-quick-actions-card'),
-        divider: FItemDivider.full,
+      child: Column(
         children: [
-          for (final action in actions)
-            FTile(
-              prefix: Icon(action.icon, size: AppSpacingTokens.level5),
-              title: Text(action.title),
-              subtitle: Text(action.subtitle),
-              suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => action.usePush
-                  ? context.push(action.route)
-                  : context.go(action.route),
+          FTileGroup(
+            key: const Key('today-quick-actions-primary'),
+            divider: FItemDivider.full,
+            children: [
+              for (final action in primaryActions)
+                FTile(
+                  prefix: Icon(action.icon, size: AppSpacingTokens.level5),
+                  title: Text(action.title),
+                  subtitle: Text(action.subtitle),
+                  details: action.badge != null
+                      ? FBadge(
+                          variant: FBadgeVariant.outline,
+                          child: Text(action.badge!),
+                        )
+                      : null,
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => action.usePush
+                      ? context.push(action.route)
+                      : context.go(action.route),
+                ),
+            ],
+          ),
+          if (secondaryActions.isNotEmpty) ...[
+            const SizedBox(height: AppSpacingTokens.level3),
+            FTileGroup(
+              key: const Key('today-quick-actions-secondary'),
+              divider: FItemDivider.full,
+              children: [
+                for (final action in secondaryActions)
+                  FTile(
+                    prefix: Icon(
+                      action.icon,
+                      size: AppSpacingTokens.level5,
+                      color: colors.mutedForeground,
+                    ),
+                    title: Text(
+                      action.title,
+                      style: AppTypographyToken.level4
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                    subtitle: Text(action.subtitle),
+                    suffix: const Icon(FLucideIcons.chevronRight),
+                    onPress: () => action.usePush
+                        ? context.push(action.route)
+                        : context.go(action.route),
+                  ),
+              ],
             ),
+          ],
         ],
       ),
     );

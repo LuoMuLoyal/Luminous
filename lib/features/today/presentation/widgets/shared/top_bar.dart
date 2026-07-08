@@ -16,9 +16,9 @@ import 'package:luminous/features/today/presentation/widgets/shared/view_models.
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayTopBar extends StatelessWidget {
-  const TodayTopBar({super.key, required this.moment});
+  const TodayTopBar({super.key, required this.dashboard});
 
-  final TodayDayMoment moment;
+  final TodayDashboard dashboard;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class TodayTopBar extends StatelessWidget {
     return AppTopBar(
       title: l10n.todayHeroTitle,
       subtitle: AppSkeletonText(
-        text: greetingSubtitle(l10n, moment),
+        text: greetingSubtitle(l10n, dashboard),
         style: AppTypographyToken.level4
             .body(context)
             .copyWith(color: colors.mutedForeground),

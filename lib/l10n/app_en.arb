@@ -1286,7 +1286,7 @@
   },
   "todayMedicationNameAtorvastatin": "Atorvastatin",
   "todayMedicationNameVitaminBComplex": "Vitamin B complex",
-  "todayHealthSummaryCardTitle": "Today summary",
+  "todayHealthSummaryCardTitle": "Today at a glance",
   "todayVitalHeartRateLabel": "Heart rate",
   "todayVitalHeartRateUnit": "bpm",
   "todayVitalBloodPressureLabel": "Blood pressure",
@@ -1441,11 +1441,29 @@
   "todayPrimarySuggestionSectionTitle": "Do this first",
   "todayPrimarySuggestionBadge": "Highest priority",
   "todaySecondarySuggestionSectionTitle": "Worth handling next",
-  "todaySuggestionEvidenceLabel": "Evidence",
-  "todaySuggestionBoundaryLabel": "Boundary",
-  "todayMedicationSuggestionTitle": "Confirm the next medication dose",
+  "todaySuggestionEvidenceLabel": "Basis",
+  "todaySuggestionBoundaryLabel": "Note",
+  "todayMedicationSuggestionTitle": "Time to take your medicine",
   "todayMedicationSuggestionBoundary": "This helps you confirm the plan, not change the dose. Review the medicine page if something looks off.",
-  "todayWaterSuggestionTitle": "Catch up on hydration today",
+  "todayWaterSuggestionTitle": "{count} water check-ins left",
+  "@todayWaterSuggestionTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterSuggestionReason": "{done}/{target} done, small sips throughout the day",
+  "@todayWaterSuggestionReason": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "todayWaterSuggestionBoundary": "This is a general reminder. Follow your clinician's guidance if you are on a fluid restriction.",
   "todayAiSummaryTitle": "AI daily summary",
   "todayAiSummarySubtitle": "Generated from today's records",
@@ -1477,7 +1495,7 @@
   },
   "todayAiSummaryWaterDone": "Today's water check-ins are complete. Keep taking small amounts often",
   "todayAiSummarySleepPlaceholder": "Record sleep to include it in today's summary",
-  "todaySummaryFallbackNarrative": "Confirm the next dose first, then add one key record to keep today on track.",
+  "todaySummaryFallbackNarrative": "Handle today's items and you're all set.",
   "todayRecommendationSectionTitle": "Proactive advice",
   "todayRecommendationErrorTitle": "Recommendations failed to load",
   "todayRecommendationErrorDescription": "Please check your network and try again",
@@ -1520,29 +1538,74 @@
   },
   "todayTodoCustomTitle": "Custom todo",
   "todayTodoCustomSubtitle": "Add follow-up, rest, or custom reminders",
-  "todayObservationSectionTitle": "Observations",
+  "todayObservationSectionTitle": "Worth noting",
+  "todayObservationSubtitle": "For reference only, not action items",
   "todayObservationEmptyState": "No extra observations right now.",
   "todayObservationErrorTitle": "Observations are unavailable for the moment",
   "todayObservationSleepMissingTitle": "Recent sleep data is still missing",
   "todayObservationSleepMissingSubtitle": "Sleep trends are still unclear. Add one record and the picture will get sharper.",
-  "todayObservationLowConfidenceTag": "Low confidence",
-  "todayObservationReviewTag": "Review",
+  "todayObservationLowConfidenceTag": "FYI",
+  "todayObservationReviewTag": "Take a look",
   "todayObservationMedicineNote": "This is a lightweight hint. Open the medicine page for the actual risk and coverage boundary.",
   "todayObservationSleepNote": "Treat this as something to watch, not as a must-do task for today.",
   "todayObservationRecordNote": "If you log one more fact, later suggestions will line up better with reality.",
   "todayObservationReportNote": "This fits better in a retrospective report than in today's top action slot.",
   "todayQuickActionSectionTitle": "Quick actions",
-  "todayQuickActionConfirmTitle": "Confirm",
+  "todayQuickActionConfirmTitle": "Confirm meds",
   "todayQuickActionConfirmSubtitle": "Open the medicine page and verify today's plan",
-  "todayQuickActionRecordTitle": "Log",
-  "todayQuickActionRecordSubtitle": "Add water, sleep, or symptom details",
-  "todayQuickActionExplainTitle": "See why",
-  "todayQuickActionExplainSubtitle": "Review medicine safety and coverage limits",
-  "todayQuickActionReminderTitle": "Adjust reminders",
-  "todayQuickActionReminderSubtitle": "Create or tune today's reminders",
-  "todayQuickActionProfileTitle": "Complete profile",
-  "todayQuickActionProfileSubtitle": "Fill in allergies and medicine background",
+  "todayQuickActionConfirmDoneSubtitle": "All medications confirmed today",
+  "todayQuickActionConfirmPendingSubtitle": "{count} pending",
+  "@todayQuickActionConfirmPendingSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayQuickActionRecordTitle": "Quick log",
+  "todayQuickActionRecordSubtitle": "Water / Sleep / Symptom",
+  "todayQuickActionExplainTitle": "Medicine safety",
+  "todayQuickActionExplainSubtitle": "Risk explanation and coverage",
+  "todayQuickActionReminderTitle": "Reminders",
+  "todayQuickActionReminderSubtitle": "Medication reminder schedule",
+  "todayQuickActionProfileTitle": "Health profile",
+  "todayQuickActionProfileSubtitle": "Allergies, medicine background",
+  "todayQuickActionMoreTitle": "More",
   "todayPreviewBannerMessage": "Sign in to see today's data",
+  "todaySuggestionShowEvidence": "Show basis",
+  "todaySuggestionHideEvidence": "Hide",
+  "todaySuggestionLaterAction": "Later",
+  "todaySuggestionNotApplicableAction": "Not applicable",
+  "todayRecordHintTitle": "No records yet today",
+  "todayRecordHintBody": "Log water or a symptom to get more relevant suggestions",
+  "todayRecordHintAction": "Log now",
+  "todayGreetingMorningPending": "Good morning, {count} medication item(s) to confirm",
+  "@todayGreetingMorningPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingMorningClear": "Good morning, no medications scheduled today",
+  "todayGreetingAfternoonWaterShort": "Good afternoon, {count} water check-in(s) to go",
+  "@todayGreetingAfternoonWaterShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingAfternoonWaterDone": "Good afternoon, water goal reached",
+  "todayGreetingEveningPending": "Good evening, {count} medication item(s) still unconfirmed",
+  "@todayGreetingEveningPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingEveningAllDone": "Good evening, everything is handled today",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {

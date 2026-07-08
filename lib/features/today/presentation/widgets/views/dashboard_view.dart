@@ -7,6 +7,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation_section.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/record_hint_section.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/summary_section.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
@@ -110,17 +111,18 @@ class _MobileTodayDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = <Widget>[
-      TodayTopBar(moment: dashboard.user.moment),
+      TodayTopBar(dashboard: dashboard),
       if (isPreview)
         SignInHintBanner(
           onSignIn: onSignIn,
           message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
         ),
+      TodayRecordHintSection(dashboard: dashboard),
       TodayPrimarySuggestionSection(dashboard: dashboard),
       TodaySecondarySuggestionsSection(dashboard: dashboard),
       TodaySummarySection(dashboard: dashboard),
       TodayObservationSection(dashboard: dashboard),
-      const TodayQuickActionsSection(),
+      TodayQuickActionsSection(dashboard: dashboard),
     ];
 
     return RefreshIndicator(
@@ -170,7 +172,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
           AppSpacingTokens.level6,
         ),
         children: [
-          TodayTopBar(moment: dashboard.user.moment),
+          TodayTopBar(dashboard: dashboard),
           if (isPreview) ...[
             const SizedBox(height: AppSpacingTokens.level3),
             SignInHintBanner(
@@ -178,6 +180,8 @@ class _DesktopTodayDashboard extends StatelessWidget {
               message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
             ),
           ],
+          const SizedBox(height: AppSpacingTokens.level6),
+          TodayRecordHintSection(dashboard: dashboard),
           const SizedBox(height: AppSpacingTokens.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +210,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacingTokens.level6),
-          const TodayQuickActionsSection(),
+          TodayQuickActionsSection(dashboard: dashboard),
         ],
       ),
     );

@@ -7,11 +7,13 @@ class TodaySection extends StatelessWidget {
     super.key,
     required this.title,
     required this.child,
+    this.subtitle,
     this.actionLabel,
     this.onAction,
   });
 
   final String title;
+  final String? subtitle;
   final Widget child;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -40,13 +42,30 @@ class TodaySection extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
-                title,
-                style: AppTypographyToken.level7
-                    .display(context)
-                    .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTypographyToken.level7
+                        .display(context)
+                        .copyWith(
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (subtitle != null) ...[
+                    const SizedBox(height: AppSpacingTokens.level1),
+                    Text(
+                      subtitle!,
+                      style: AppTypographyToken.level2
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ],
+                ],
               ),
             ),
             if (actionLabel != null) ...[

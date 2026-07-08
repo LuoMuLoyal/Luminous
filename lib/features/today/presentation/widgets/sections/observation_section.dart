@@ -20,11 +20,13 @@ class TodayObservationSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
     final recommendationsAsync = ref.watch(todayRecommendationsProvider);
     final fallback = _fallbackObservations(context, l10n);
 
     return TodaySection(
       title: l10n.todayObservationSectionTitle,
+      subtitle: l10n.todayObservationSubtitle,
       child: FCard.raw(
         key: const Key('today-observation-card'),
         style: todayCardStyle(context),
@@ -44,24 +46,14 @@ class TodayObservationSection extends ConsumerWidget {
                   l10n.todayObservationEmptyState,
                   style: AppTypographyToken.level4
                       .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                      .copyWith(color: colors.mutedForeground),
                 ),
               );
             }
 
             return Column(
               children: [
-                for (final item in items)
-                  FTile(
-                    prefix: Icon(item.icon, size: AppSpacingTokens.level5),
-                    title: Text(item.title),
-                    subtitle: Text(item.subtitle),
-                    suffix: FBadge(
-                      variant: FBadgeVariant.outline,
-                      child: Text(item.tag),
-                    ),
-                    onPress: item.onPress,
-                  ),
+                for (final item in items) _ObservationTile(item: item),
               ],
             );
           },
@@ -131,6 +123,68 @@ class TodayObservationSection extends ConsumerWidget {
         onPress: () => context.go(AppRoutes.record),
       ),
     };
+  }
+}
+
+/// A de-emphasized tile for observations. Uses muted colors and no icon
+/// background to visually differentiate from actionable suggestions.
+class _ObservationTile extends StatelessWidget {
+  const _ObservationTile({required this.item});
+
+  final _ObservationItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return FTappable(
+      onPress: item.onPress,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacingTokens.level4,
+          vertical: AppSpacingTokens.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              item.icon,
+              size: AppSpacingTokens.level5,
+              color: colors.mutedForeground,
+            ),
+            const SizedBox(width: AppSpacingTokens.level3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.title,
+                    style: AppTypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: AppSpacingTokens.level1),
+                  Text(
+                    item.subtitle,
+                    style: AppTypographyToken.level2
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacingTokens.level2),
+            Text(
+              item.tag,
+              style: AppTypographyToken.level1
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

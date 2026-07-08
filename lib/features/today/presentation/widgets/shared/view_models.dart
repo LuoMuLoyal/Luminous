@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayOverviewItem {
@@ -44,6 +45,12 @@ class TodaySuggestionItem {
   final String boundary;
   final String action;
   final double? progress;
+
+  /// Resolve the [TodayCardTone] for this suggestion based on its type.
+  TodayCardTone get cardTone => switch (type) {
+    TodayPriorityItemType.medication => TodayCardTone.urgent,
+    TodayPriorityItemType.water => TodayCardTone.emphasis,
+  };
 }
 
 class TodayAiSummaryItem {
@@ -77,6 +84,7 @@ class TodayQuickActionItem {
     required this.subtitle,
     required this.route,
     this.usePush = false,
+    this.badge,
   });
 
   final IconData icon;
@@ -84,13 +92,29 @@ class TodayQuickActionItem {
   final String subtitle;
   final String route;
   final bool usePush;
+  final String? badge;
 }
 
-String greetingSubtitle(AppLocalizations l10n, TodayDayMoment moment) {
+String greetingSubtitle(AppLocalizations l10n, TodayDashboard dashboard) {
+  final moment = dashboard.user.moment;
+  final hasPendingMeds = dashboard.medication.pendingCount > 0;
+  final hasWaterRemaining = dashboard.water.remainingCount > 0;
+
   return switch (moment) {
-    TodayDayMoment.morning => l10n.todayGreetingSubtitleMorning,
-    TodayDayMoment.afternoon => l10n.todayGreetingSubtitleAfternoon,
-    TodayDayMoment.evening => l10n.todayGreetingSubtitleEvening,
+    TodayDayMoment.morning =>
+      hasPendingMeds
+          ? l10n.todayGreetingMorningPending(dashboard.medication.pendingCount)
+          : l10n.todayGreetingMorningClear,
+    TodayDayMoment.afternoon =>
+      hasWaterRemaining
+          ? l10n.todayGreetingAfternoonWaterShort(
+              dashboard.water.remainingCount,
+            )
+          : l10n.todayGreetingAfternoonWaterDone,
+    TodayDayMoment.evening =>
+      hasPendingMeds
+          ? l10n.todayGreetingEveningPending(dashboard.medication.pendingCount)
+          : l10n.todayGreetingEveningAllDone,
   };
 }
 
@@ -189,7 +213,7 @@ List<TodaySuggestionItem> buildSuggestionItems(
           key: const Key('today-medication-suggestion'),
           type: TodayPriorityItemType.medication,
           icon: FLucideIcons.pill,
-          color: AppColors.primary,
+          color: AppColors.destructive,
           title: l10n.todayMedicationSuggestionTitle,
           reason: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -206,16 +230,15 @@ List<TodaySuggestionItem> buildSuggestionItems(
           type: TodayPriorityItemType.water,
           icon: FLucideIcons.droplets,
           color: AppColors.primary,
-          title: l10n.todayWaterSuggestionTitle,
-          reason: l10n.todayWaterGoalCount(
-            item.targetCount ?? dashboard.water.targetCount,
+          title: l10n.todayWaterSuggestionTitle(dashboard.water.remainingCount),
+          reason: l10n.todayWaterSuggestionReason(
+            dashboard.water.completedCount,
+            dashboard.water.targetCount,
           ),
-          evidence: l10n.todayWaterCount(
-            item.count ?? dashboard.water.completedCount,
-          ),
+          evidence: l10n.todayWaterCount(dashboard.water.completedCount),
           boundary: l10n.todayWaterSuggestionBoundary,
           action: l10n.todayDrinkWaterAction,
-          progress: item.progress ?? dashboard.water.progress,
+          progress: dashboard.water.progress,
         ),
       },
   ];
@@ -362,13 +385,30 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   );
 }
 
-List<TodayQuickActionItem> buildQuickActionItems(AppLocalizations l10n) {
+/// Build quick action items. The first two items (confirm + record) are
+/// "primary" actions that show status-aware subtitles. The remaining items
+/// are "secondary" and should be displayed under a "more" toggle.
+List<TodayQuickActionItem> buildQuickActionItems(
+  AppLocalizations l10n,
+  TodayDashboard dashboard,
+) {
+  final hasPending = dashboard.medication.pendingCount > 0;
+  final confirmSubtitle = hasPending
+      ? l10n.todayQuickActionConfirmPendingSubtitle(
+          dashboard.medication.pendingCount,
+        )
+      : l10n.todayQuickActionConfirmDoneSubtitle;
+  final confirmBadge = hasPending
+      ? '${dashboard.medication.pendingCount}'
+      : null;
+
   return [
     TodayQuickActionItem(
       icon: FLucideIcons.badgeCheck,
       title: l10n.todayQuickActionConfirmTitle,
-      subtitle: l10n.todayQuickActionConfirmSubtitle,
+      subtitle: confirmSubtitle,
       route: AppRoutes.medicine,
+      badge: confirmBadge,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.filePenLine,
@@ -396,4 +436,12 @@ List<TodayQuickActionItem> buildQuickActionItems(AppLocalizations l10n) {
       route: AppRoutes.mine,
     ),
   ];
+}
+
+/// Determine whether the "no records" hint should be shown.
+bool shouldShowRecordHint(TodayDashboard dashboard) {
+  final hasWater = dashboard.water.completedCount > 0;
+  final hasMeds = dashboard.medication.medicineCount > 0;
+  final hasVitals = dashboard.vitals.isNotEmpty;
+  return !hasWater && !hasMeds && !hasVitals;
 }

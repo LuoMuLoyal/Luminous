@@ -18,13 +18,46 @@ import 'package:luminous/features/today/presentation/widgets/shared/section.dart
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodaySummarySection extends ConsumerWidget {
+class TodaySummarySection extends ConsumerStatefulWidget {
   const TodaySummarySection({super.key, required this.dashboard});
 
   final TodayDashboard dashboard;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TodaySummarySection> createState() =>
+      _TodaySummarySectionState();
+}
+
+class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final CurvedAnimation _animation;
+  bool _aiExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _animation.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleAi() {
+    setState(() => _aiExpanded = !_aiExpanded);
+    _controller.toggle();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final canAccessProtectedData = ref.watch(
@@ -40,18 +73,19 @@ class TodaySummarySection extends ConsumerWidget {
     final aiState = ref.watch(todayAiAnalysisControllerProvider);
     final content = buildAiCardContent(
       l10n: l10n,
-      dashboard: dashboard,
+      dashboard: widget.dashboard,
       canAccessProtectedData: canAccessProtectedData,
       aiSummariesEnabled: aiSummariesEnabled,
       aiState: aiState,
     );
-    final metrics = buildOverviewItems(l10n, dashboard);
+    final metrics = buildOverviewItems(l10n, widget.dashboard);
     final isPreview = !canAccessProtectedData;
     final actionLabel = aiState.isLoading
         ? l10n.todayAiSummaryGeneratingAction
         : aiSummariesEnabled == false || aiState.isDisabled
         ? l10n.todayAiSummaryOpenSettingsAction
         : l10n.todayAiSummaryGenerateAction;
+    final hasAiContent = content.summary != null || content.bullets.isNotEmpty;
 
     return TodaySection(
       title: l10n.todayHealthSummaryCardTitle,
@@ -63,36 +97,7 @@ class TodaySummarySection extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.todayUpdatedAt(dashboard.user.updatedAtLabel),
-                      style: AppTypographyToken.level3
-                          .body(context)
-                          .copyWith(
-                            color: colors.mutedForeground,
-                            fontWeight: FontWeight.w600,
-                          ),
-                    ),
-                  ),
-                  if (!isPreview)
-                    FButton(
-                      onPress: aiState.isLoading
-                          ? null
-                          : () => _handleSummaryAction(
-                              context,
-                              ref,
-                              aiSummariesEnabled,
-                            ),
-                      variant: FButtonVariant.ghost,
-                      size: FButtonSizeVariant.xs,
-                      mainAxisSize: MainAxisSize.min,
-                      child: Text(actionLabel),
-                    ),
-                ],
-              ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              // --- Metrics row (compact) ---
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -103,31 +108,95 @@ class TodaySummarySection extends ConsumerWidget {
                   ],
                 ],
               ),
+              // --- Divider ---
               const SizedBox(height: AppSpacingTokens.level4),
-              Text(
-                content.summary ?? l10n.todaySummaryFallbackNarrative,
-                style: AppTypographyToken.level4
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
+              const FDivider(),
+              const SizedBox(height: AppSpacingTokens.level4),
+              // --- AI narrative (collapsible) ---
+              if (content.summary != null) ...[
+                Text(
+                  content.summary!,
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
+                  maxLines: _aiExpanded ? null : 2,
+                  overflow: _aiExpanded
+                      ? TextOverflow.visible
+                      : TextOverflow.ellipsis,
+                ),
+              ] else if (!isPreview) ...[
+                Text(
+                  l10n.todaySummaryFallbackNarrative,
+                  style: AppTypographyToken.level4
+                      .body(context)
+                      .copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
+              if (hasAiContent && !_aiExpanded) ...[
+                const SizedBox(height: AppSpacingTokens.level2),
+                _AiExpandButton(onTap: _toggleAi, l10n: l10n),
+              ],
+              AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) =>
+                    FCollapsible(value: _animation.value, child: child!),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: AppSpacingTokens.level3),
+                    for (final bullet in content.bullets.take(3))
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacingTokens.level2,
+                        ),
+                        child: _SummaryBullet(item: bullet),
+                      ),
+                    if (content.footer case final footer?)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: AppSpacingTokens.level1,
+                        ),
+                        child: Text(
+                          footer,
+                          style: AppTypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
+                        ),
+                      ),
+                    if (_aiExpanded) ...[
+                      const SizedBox(height: AppSpacingTokens.level2),
+                      _AiExpandButton(
+                        onTap: _toggleAi,
+                        l10n: l10n,
+                        isCollapse: true,
+                      ),
+                    ],
+                  ],
+                ),
               ),
-              const SizedBox(height: AppSpacingTokens.level3),
-              for (final bullet in content.bullets.take(2))
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: AppSpacingTokens.level2,
+              // --- AI action button ---
+              if (!isPreview) ...[
+                const SizedBox(height: AppSpacingTokens.level3),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FButton(
+                    onPress: aiState.isLoading
+                        ? null
+                        : () => _handleSummaryAction(
+                            context,
+                            ref,
+                            aiSummariesEnabled,
+                          ),
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.xs,
+                    mainAxisSize: MainAxisSize.min,
+                    child: Text(actionLabel),
                   ),
-                  child: _SummaryBullet(item: bullet),
                 ),
-              if (content.footer case final footer?)
-                Padding(
-                  padding: const EdgeInsets.only(top: AppSpacingTokens.level1),
-                  child: Text(
-                    footer,
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
-                ),
+              ],
             ],
           ),
         ),
@@ -159,6 +228,50 @@ class TodaySummarySection extends ConsumerWidget {
         errorMessage.isNotEmpty) {
       await AppToast.show(context, errorMessage);
     }
+  }
+}
+
+class _AiExpandButton extends StatelessWidget {
+  const _AiExpandButton({
+    required this.onTap,
+    required this.l10n,
+    this.isCollapse = false,
+  });
+
+  final VoidCallback onTap;
+  final AppLocalizations l10n;
+  final bool isCollapse;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            isCollapse
+                ? l10n.todaySuggestionHideEvidence
+                : l10n.todaySuggestionShowEvidence,
+            style: AppTypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(width: AppSpacingTokens.level1),
+          AnimatedRotation(
+            turns: isCollapse ? 0.25 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: Icon(
+              FLucideIcons.chevronRight,
+              size: AppSpacingTokens.level4,
+              color: colors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

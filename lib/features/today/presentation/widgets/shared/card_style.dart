@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-enum TodayCardTone { emphasis, soft, neutral }
+enum TodayCardTone { emphasis, urgent, soft, neutral }
 
 FCardStyleDelta todayCardStyle(
   BuildContext context, {
@@ -9,15 +9,22 @@ FCardStyleDelta todayCardStyle(
 }) {
   final colors = context.theme.colors;
 
-  final border = switch (tone) {
-    TodayCardTone.emphasis => colors.primary.withValues(alpha: 0.18),
-    TodayCardTone.soft => colors.border.withValues(alpha: 0.86),
-    TodayCardTone.neutral => colors.border,
+  final (border, background) = switch (tone) {
+    TodayCardTone.urgent => (
+      colors.destructive.withValues(alpha: 0.3),
+      colors.destructive.withValues(alpha: 0.04),
+    ),
+    TodayCardTone.emphasis => (
+      colors.primary.withValues(alpha: 0.18),
+      colors.card,
+    ),
+    TodayCardTone.soft => (colors.border.withValues(alpha: 0.86), colors.card),
+    TodayCardTone.neutral => (colors.border, colors.card),
   };
 
   return .delta(
     decoration: .shapeDelta(
-      color: colors.card,
+      color: background,
       shape: RoundedSuperellipseBorder(
         side: BorderSide(color: border),
         borderRadius: context.theme.style.borderRadius.lg,
