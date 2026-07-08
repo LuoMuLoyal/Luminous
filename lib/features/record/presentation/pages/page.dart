@@ -71,23 +71,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       bottom: (height * 0.025).clamp(16.0, 28.0),
     );
 
-    final fab = isMobileLayout
-        ? FButton(
-            key: const Key('record-nlp-fab'),
-            onPress: () => _openNlpDialog(
-              context,
-              canAccessProtectedData: canAccessProtectedData,
-              isAuthLoading: isAuthLoading,
-              selectedDate: selectedDate,
-            ),
-            mainAxisSize: MainAxisSize.min,
-            variant: canAccessProtectedData
-                ? FButtonVariant.secondary
-                : FButtonVariant.outline,
-            prefix: const Icon(FLucideIcons.sparkles),
-            child: Text(l10n.recordNlpFabAction),
-          )
-        : null;
     final headerActions = isMobileLayout
         ? [
             RecordHeaderActionChip(
@@ -235,18 +218,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     return ShellDeferredContent(
       child: FScaffold(
         header: AppTopBar(title: l10n.tabRecord, trailing: headerActions),
-        child: fab == null
-            ? scaffoldBody
-            : Stack(
-                children: [
-                  Positioned.fill(child: scaffoldBody),
-                  Positioned(
-                    right: 24,
-                    bottom: 24 + MediaQuery.paddingOf(context).bottom,
-                    child: fab,
-                  ),
-                ],
-              ),
+        child: scaffoldBody,
       ),
     );
   }

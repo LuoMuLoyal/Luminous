@@ -96,7 +96,6 @@ class _MobileRecordDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final quickActions = buildMobileQuickActions(dashboard.quickActions);
-    final timeline = dashboard.timeline.take(7).toList(growable: false);
     final mobileFilters = buildMobileFilters(dashboard.filters);
 
     return Column(
@@ -129,12 +128,11 @@ class _MobileRecordDashboard extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         RecordMobileTimeline(
-          entries: timeline,
+          entries: dashboard.timeline,
           totalCount: dashboard.timeline.length,
           l10n: l10n,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
-        RecordGuideRow(l10n: l10n),
       ],
     );
   }

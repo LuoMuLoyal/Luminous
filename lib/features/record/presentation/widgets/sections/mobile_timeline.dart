@@ -10,40 +10,76 @@ import 'package:luminous/features/record/presentation/utils/date_time_formatters
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordMobileTimeline extends StatelessWidget {
+class RecordMobileTimeline extends StatefulWidget {
   const RecordMobileTimeline({
     super.key,
     required this.entries,
     required this.totalCount,
     required this.l10n,
+    this.initialVisibleCount = 7,
   });
 
   final List<RecordTimelineEntry> entries;
   final int totalCount;
   final AppLocalizations l10n;
+  final int initialVisibleCount;
+
+  @override
+  State<RecordMobileTimeline> createState() => _RecordMobileTimelineState();
+}
+
+class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
+    final hasOverflow = widget.entries.length > widget.initialVisibleCount;
+    final visibleEntries = _expanded || !hasOverflow
+        ? widget.entries
+        : widget.entries
+              .take(widget.initialVisibleCount)
+              .toList(growable: false);
+
     return Column(
       key: const Key('record-timeline'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n.recordTodayEntriesTitle(totalCount),
-          style: AppTypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w800),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                widget.l10n.recordTodayEntriesTitle(widget.totalCount),
+                style: AppTypographyToken.level7
+                    .display(context)
+                    .copyWith(fontWeight: FontWeight.w800),
+              ),
+            ),
+            if (hasOverflow)
+              FButton(
+                key: const Key('record-timeline-toggle'),
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: () => setState(() => _expanded = !_expanded),
+                child: Text(
+                  _expanded
+                      ? widget.l10n.recordTimelineCollapseAction
+                      : widget.l10n.recordTimelineViewAllAction,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacingTokens.level3),
         FCard.raw(
           child: Column(
             children: [
-              for (var index = 0; index < entries.length; index += 1)
+              for (var index = 0; index < visibleEntries.length; index += 1)
                 _TimelineRow(
                   index: index,
-                  entry: entries[index],
-                  l10n: l10n,
-                  isLast: index == entries.length - 1,
+                  entry: visibleEntries[index],
+                  l10n: widget.l10n,
+                  isLast: index == visibleEntries.length - 1,
                 ),
             ],
           ),

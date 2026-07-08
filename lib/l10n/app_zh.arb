@@ -231,6 +231,8 @@
   "recordSummarySectionTitle": "当天摘要",
   "recordSummaryDateLabel": "2025年5月15日（周四）",
   "recordTimelineSectionTitle": "时间线",
+  "recordTimelineViewAllAction": "查看全部记录",
+  "recordTimelineCollapseAction": "收起",
   "recordTrendsSectionTitle": "趋势查看",
   "recordNewEntrySectionTitle": "新建记录",
   "recordFilterSectionTitle": "记录类型",

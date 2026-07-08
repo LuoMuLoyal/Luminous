@@ -43,6 +43,8 @@ Persisted preference keys:
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate
    disclaimer, dish-editor helper text, and confirm-result action are owned by the Record ARB
    entries.
+- Record root-page CTA strings such as timeline continuation actions (`查看全部记录` / `收起`) are
+  owned by the Record ARB entries.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery
    history, and on-device notification title/body/channel labels are owned by the Medicine feature
    ARB entries.

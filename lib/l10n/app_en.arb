@@ -231,6 +231,8 @@
   "recordSummarySectionTitle": "Day summary",
   "recordSummaryDateLabel": "May 15, 2025 (Thu)",
   "recordTimelineSectionTitle": "Timeline",
+  "recordTimelineViewAllAction": "View all records",
+  "recordTimelineCollapseAction": "Collapse",
   "recordTrendsSectionTitle": "Trends",
   "recordNewEntrySectionTitle": "New record",
   "recordFilterSectionTitle": "Record types",

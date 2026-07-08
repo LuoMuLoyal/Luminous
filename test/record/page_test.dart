@@ -56,7 +56,6 @@ void main() {
       'record-ai-input',
       'record-timeline',
       'record-filter-chips',
-      'record-guide-row',
     ];
 
     for (final key in keys) {
@@ -85,6 +84,8 @@ void main() {
     expect(find.byKey(const Key('record-trends')), findsNothing);
     expect(find.byKey(const Key('record-health-bag')), findsNothing);
     expect(find.byKey(const Key('record-quick-operations')), findsNothing);
+    expect(find.byKey(const Key('record-guide-row')), findsNothing);
+    expect(find.byKey(const Key('record-nlp-fab')), findsNothing);
     expect(find.byKey(const Key('record-quick-sleep')), findsOneWidget);
     expect(find.byKey(const Key('record-quick-vitals')), findsNothing);
     expect(find.text(l10n.recordSummaryLatestVitalTitle), findsNothing);
@@ -187,6 +188,37 @@ void main() {
 
     expect(find.byKey(const Key('record-nlp-input-field')), findsOneWidget);
     expect(find.byKey(const Key('record-nlp-generate-action')), findsOneWidget);
+  });
+
+  testWidgets('Record mobile timeline exposes explicit view-all continuation', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(480, 1200);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpRecordPage(
+      tester,
+      recordRepository: _LongTimelineRecordRepository(),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final timeline = find.byKey(const Key('record-timeline'));
+    await _scrollDashboardTo(tester, timeline);
+
+    expect(find.text('查看全部记录'), findsOneWidget);
+    expect(find.text('记录 9'), findsNothing);
+
+    await tester.tap(find.text('查看全部记录'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('记录 9'), findsOneWidget);
+    expect(find.text('收起'), findsOneWidget);
   });
 
   testWidgets(
@@ -2196,6 +2228,55 @@ class _FakeRecordRepository implements RecordRepository {
     DateTime selectedDate, {
     RecordEntryType? filterType,
   }) => Future.value(RecordDashboard.signedOut(selectedDate));
+}
+
+class _LongTimelineRecordRepository implements RecordRepository {
+  @override
+  Future<RecordDashboard> fetchDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) async {
+    final mock = await const MockRecordRepository().fetchDashboard(
+      selectedDate,
+      filterType: filterType,
+    );
+    final timeline = List<RecordTimelineEntry>.generate(9, (index) {
+      final hour = 8 + (index * 2) ~/ 3;
+      final minute = (index % 3) * 15;
+      final time =
+          '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+      return RecordTimelineEntry(
+        time: time,
+        type: RecordEntryType.note,
+        icon: FLucideIcons.notebookPen,
+        accent: AppColors.primary,
+        softColor: AppColors.secondary,
+        titleKey: RecordCopyKey.typeNote,
+        rawTitle: '记录 ${index + 1}',
+        value: '第 ${index + 1} 条',
+        recordId: 'record-${index + 1}',
+      );
+    });
+    return RecordDashboard(
+      selectedDate: selectedDate,
+      selectedDay: selectedDate.day,
+      weekDays: mock.weekDays,
+      monthDays: mock.monthDays,
+      quickActions: mock.quickActions,
+      summary: mock.summary,
+      filters: mock.filters,
+      timeline: timeline,
+      trends: mock.trends,
+    );
+  }
+
+  @override
+  Future<RecordDashboard> signedOutDashboard(
+    DateTime selectedDate, {
+    RecordEntryType? filterType,
+  }) {
+    return Future.value(RecordDashboard.signedOut(selectedDate));
+  }
 }
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
