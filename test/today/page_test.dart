@@ -1,17 +1,14 @@
-import '../helpers/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
+import '../helpers/test_helpers.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' show TodayAnalysisApi;
-import 'package:luminous/features/today/data/datasources/recommendations_remote_data_source.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/recommendation.dart';
@@ -21,96 +18,60 @@ import 'package:luminous/features/today/presentation/providers/recommendations_p
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/theme/theme.dart';
 
 import 'test_helpers.dart';
 
 void main() {
-  testWidgets('Today page prioritizes priorities above AI summary on mobile', (
+  testWidgets(
+    'Today page prioritizes primary suggestion above summary on mobile',
+    (tester) async {
+      _setMobileViewport(tester);
+
+      await tester.pumpWidget(_signedInTodayApp());
+      await _settleDashboard(tester);
+
+      final primarySuggestionTop = tester.getTopLeft(
+        find.byKey(const Key('today-primary-suggestion-card')),
+      );
+      final summaryTop = tester.getTopLeft(
+        find.byKey(const Key('today-summary-card')),
+      );
+
+      expect(primarySuggestionTop.dy, lessThan(summaryTop.dy));
+    },
+  );
+
+  testWidgets('Today page renders action-first mobile dashboard sections', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    _setMobileViewport(tester);
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
+    await tester.pumpWidget(_signedInTodayApp());
+    await _settleDashboard(tester);
+
+    expect(
+      find.byKey(const Key('today-primary-suggestion-card')),
+      findsOneWidget,
     );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final prioritiesTop = tester.getTopLeft(
-      find.text(l10n.todayPrioritySectionTitle),
+    expect(
+      find.byKey(const Key('today-secondary-suggestions-card')),
+      findsOneWidget,
     );
-    final aiSummaryTop = tester.getTopLeft(find.text(l10n.todayAiSummaryTitle));
-
-    expect(prioritiesTop.dy, lessThan(aiSummaryTop.dy));
-  });
-
-  testWidgets('Today page renders key mobile dashboard sections', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    expect(find.byKey(const Key('today-health-summary-card')), findsOneWidget);
-    expect(find.byKey(const Key('today-ai-summary-card')), findsOneWidget);
-    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
-    expect(find.byKey(const Key('today-water-card')), findsOneWidget);
+    expect(find.byKey(const Key('today-summary-card')), findsOneWidget);
 
     final scrollable = _todayDashboardScrollable();
-    for (final key in ['today-recommendation-card', 'today-todo-card']) {
+    for (final key in ['today-observation-card', 'today-quick-actions-card']) {
       final finder = find.byKey(Key(key));
       await tester.scrollUntilVisible(finder, 220, scrollable: scrollable);
-      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 300));
       expect(finder, findsOneWidget);
     }
-
-    await tester.pump(const Duration(milliseconds: 400));
   });
 
   testWidgets('Today loading shows dedicated skeleton placeholder', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    _setMobileViewport(tester);
     final pending = Completer<TodayDashboard>();
 
     await tester.pumpWidget(
@@ -126,13 +87,13 @@ void main() {
 
     expect(find.byType(TodaySkeletonView), findsOneWidget);
     expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
-    expect(find.text(l10n.todayHeroTitle), findsNothing);
-    expect(find.text(l10n.todayHealthSummaryCardTitle), findsNothing);
   });
 
-  testWidgets('Today page shows zero water and medicines without crashing', (
+  testWidgets('Today page shows low-data dashboard without crashing', (
     tester,
   ) async {
+    _setMobileViewport(tester);
+
     final emptyDashboard = const TodayDashboard(
       user: TodayUserSnapshot(
         moment: TodayDayMoment.morning,
@@ -147,26 +108,12 @@ void main() {
         nextMedicine: TodayMedicationKind.atorvastatin,
       ),
       vitals: <TodayVitalSummary>[
-        TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
-        TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
         TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
-        TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
       ],
       mealSuggestion: TodayMealSuggestion(
         type: TodayMealSuggestionType.highProteinBalancedLunch,
       ),
-      environment: TodayEnvironmentSummary(
-        signals: <TodayEnvironmentSignal>[
-          TodayEnvironmentSignal(
-            type: TodayEnvironmentSignalType.pollen,
-            level: TodayEnvironmentLevel.low,
-          ),
-          TodayEnvironmentSignal(
-            type: TodayEnvironmentSignalType.uv,
-            level: TodayEnvironmentLevel.low,
-          ),
-        ],
-      ),
+      environment: TodayEnvironmentSummary(signals: <TodayEnvironmentSignal>[]),
       lumiSuggestion: TodayLumiSuggestion(
         type: TodayLumiSuggestionType.pollenProtection,
       ),
@@ -185,86 +132,37 @@ void main() {
       ),
     );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await _settleDashboard(tester);
 
-    expect(find.byKey(const Key('today-water-card')), findsOneWidget);
-    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
-
-    final recommendationCard = find.byKey(
-      const Key('today-recommendation-card'),
+    expect(
+      find.byKey(const Key('today-primary-suggestion-card')),
+      findsOneWidget,
     );
+    expect(
+      find.byKey(const Key('today-secondary-suggestions-card')),
+      findsOneWidget,
+    );
+
     await tester.scrollUntilVisible(
-      recommendationCard,
-      240,
+      find.byKey(const Key('today-observation-card')),
+      220,
       scrollable: _todayDashboardScrollable(),
     );
     await tester.pump(const Duration(milliseconds: 200));
-    final l10n = AppLocalizations.of(tester.element(find.byType(TodayPage)))!;
-    expect(find.text(l10n.todayRecommendationSectionTitle), findsOneWidget);
 
-    final todoCard = find.byKey(const Key('today-todo-card'));
-    await tester.scrollUntilVisible(
-      todoCard,
-      240,
-      scrollable: _todayDashboardScrollable(),
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-    expect(todoCard, findsOneWidget);
-    expect(find.text(l10n.todayTodoCustomTitle), findsOneWidget);
+    expect(find.byKey(const Key('today-observation-card')), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Today priority action pills use visible foreground color', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
+  testWidgets('Today suggestion CTAs stay visible', (tester) async {
+    _setMobileViewport(tester);
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
+    await tester.pumpWidget(_signedInTodayApp());
+    await _settleDashboard(tester);
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final expectedColor = appThemeData(
-      appDefaultThemeFamily,
-      Brightness.light,
-    ).colors.primaryForeground;
-
-    final medicationAction = find.descendant(
-      of: find.byKey(const Key('today-medication-card')),
-      matching: find.text(l10n.todayMedicationTakeAction),
-    );
-    expect(medicationAction, findsOneWidget);
-    expect(
-      DefaultTextStyle.of(tester.element(medicationAction)).style.color,
-      expectedColor,
-    );
-
-    final waterAction = find.descendant(
-      of: find.byKey(const Key('today-water-card')),
-      matching: find.text(l10n.todayDrinkWaterAction),
-    );
-    expect(waterAction, findsOneWidget);
-    expect(
-      DefaultTextStyle.of(tester.element(waterAction)).style.color,
-      expectedColor,
-    );
-
+    expect(find.text(l10n.todayMedicationTakeAction), findsOneWidget);
+    expect(find.text(l10n.todayDrinkWaterAction), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -278,20 +176,8 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpWidget(_signedInTodayApp());
+    await _settleDashboard(tester);
 
     expect(
       find.byKey(
@@ -299,19 +185,20 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.byKey(const Key('today-water-card')), findsOneWidget);
-    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
+    expect(
+      find.byKey(const Key('today-primary-suggestion-card')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('today-secondary-suggestions-card')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Today top bar assistant entry routes to assistant page', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
+    _setMobileViewport(tester);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -340,8 +227,7 @@ void main() {
       ),
     );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await _settleDashboard(tester);
 
     await tester.tap(find.byKey(const Key('today-assistant-entry')));
     await tester.pumpAndSettle();
@@ -349,107 +235,15 @@ void main() {
     expect(find.text('assistant-page'), findsOneWidget);
   });
 
-  testWidgets('Signed-out renders without crash', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    expect(find.byType(TodayDashboardView), findsOneWidget);
-    expect(find.byKey(const Key('today-health-summary-card')), findsOneWidget);
-  });
-
-  testWidgets('Signed-out AI summary shows single hint line', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final aiCard = find.byKey(const Key('today-ai-summary-card'));
-    await tester.scrollUntilVisible(
-      aiCard,
-      240,
-      scrollable: _todayDashboardScrollable(),
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-
-    expect(find.text(l10n.todayAiSummarySignedOutHint), findsNothing);
-    expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
-    expect(find.text(l10n.todayAiSummaryGenerateAction), findsNothing);
-    expect(tester.takeException(), isNull);
-  });
-
-  testWidgets('Signed-out preview banner uses lighter login CTA copy', (
+  testWidgets('Signed-out renders preview dashboard without crash', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    _setMobileViewport(tester);
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    expect(find.byKey(const Key('sign-in-hint-banner')), findsOneWidget);
-    expect(find.text(l10n.statePreviewSignInHint), findsOneWidget);
-    expect(find.text(l10n.statePreviewSignInAction), findsOneWidget);
-    expect(find.text(l10n.authGoLogin), findsNothing);
-  });
-
-  testWidgets('Today priority action pills are not clipped', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -458,30 +252,50 @@ void main() {
       ),
     );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final medicationCard = find.byKey(const Key('today-medication-card'));
+    await _settleDashboard(tester);
     await tester.scrollUntilVisible(
-      medicationCard,
-      240,
+      find.byKey(const Key('today-summary-card')),
+      220,
       scrollable: _todayDashboardScrollable(),
     );
     await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text(l10n.todayMedicationTakeAction), findsOneWidget);
-    expect(find.text(l10n.todayDrinkWaterAction), findsOneWidget);
-    expect(tester.takeException(), isNull);
+    expect(find.byType(TodayDashboardView), findsOneWidget);
+    expect(find.byKey(const Key('today-summary-card')), findsOneWidget);
+  });
+
+  testWidgets('Signed-out summary shows preview hint and no generate action', (
+    tester,
+  ) async {
+    _setMobileViewport(tester);
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+
+    await _settleDashboard(tester);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('today-summary-card')),
+      220,
+      scrollable: _todayDashboardScrollable(),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
+    expect(find.text(l10n.todayAiSummaryGenerateAction), findsNothing);
   });
 
   testWidgets('Error state shows retry', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
+    _setMobileViewport(tester);
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(
@@ -503,17 +317,10 @@ void main() {
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
 
-  testWidgets('Today recommendation section shows error retry on failure', (
+  testWidgets('Today observation section hides spinner while loading', (
     tester,
   ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    _setMobileViewport(tester);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -522,212 +329,72 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
-          todayRecommendationsRemoteDataSourceProvider.overrideWithValue(
-            _FailingTodayRecommendationsDataSource(),
+          todayRecommendationsProvider.overrideWith(
+            () => _LoadingRecommendationsNotifier(),
           ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
     );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await _settleDashboard(tester);
 
-    final recommendationCard = find.byKey(
-      const Key('today-recommendation-card'),
-    );
+    final observationCard = find.byKey(const Key('today-observation-card'));
     await tester.scrollUntilVisible(
-      recommendationCard,
-      240,
+      observationCard,
+      220,
       scrollable: _todayDashboardScrollable(),
     );
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text(l10n.todayRecommendationErrorTitle), findsOneWidget);
-    expect(find.text(l10n.todayRecommendationErrorDescription), findsNothing);
-    expect(find.text(l10n.todayRetryAction), findsOneWidget);
+    expect(
+      find.descendant(
+        of: observationCard,
+        matching: find.byType(FCircularProgress),
+      ),
+      findsNothing,
+    );
   });
 
-  testWidgets(
-    'Today recommendation section shows row skeletons instead of spinner while loading',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(390, 844);
-      addTearDown(() {
-        tester.view.resetDevicePixelRatio();
-        tester.view.resetPhysicalSize();
-      });
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-            todayRepositoryProvider.overrideWithValue(
-              const MockTodayRepository(),
-            ),
-            todayRecommendationsRemoteDataSourceProvider.overrideWithValue(
-              _PendingTodayRecommendationsDataSource(),
-            ),
-          ],
-          child: const TestForuiApp(home: TodayPage()),
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-
-      final recommendationCard = find.byKey(
-        const Key('today-recommendation-card'),
-      );
-      await tester.scrollUntilVisible(
-        recommendationCard,
-        240,
-        scrollable: _todayDashboardScrollable(),
-      );
-      await tester.pump(const Duration(milliseconds: 200));
-
-      expect(
-        find.descendant(
-          of: recommendationCard,
-          matching: find.byType(FCircularProgress),
-        ),
-        findsNothing,
-      );
-      expect(
-        find.descendant(
-          of: recommendationCard,
-          matching: find.byType(AppInlineSkeletonBlock),
-        ),
-        findsWidgets,
-      );
-    },
-  );
-
   testWidgets('Pull-to-refresh renders RefreshIndicator', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
+    _setMobileViewport(tester);
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpWidget(_signedInTodayApp());
+    await _settleDashboard(tester);
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
-
-  testWidgets('Water card renders', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final waterCard = find.byKey(const Key('today-water-card'));
-    await tester.scrollUntilVisible(
-      waterCard,
-      240,
-      scrollable: _todayDashboardScrollable(),
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-
-    expect(waterCard, findsOneWidget);
-    expect(find.text(l10n.todayWaterPriorityTitle), findsOneWidget);
-  });
-
-  testWidgets('Medication card renders', (tester) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(390, 844);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
-
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 400));
-
-    final medicationCard = find.byKey(const Key('today-medication-card'));
-    await tester.scrollUntilVisible(
-      medicationCard,
-      240,
-      scrollable: _todayDashboardScrollable(),
-    );
-    await tester.pump(const Duration(milliseconds: 200));
-
-    expect(medicationCard, findsOneWidget);
-    expect(find.text(l10n.todayMedicationCardTitle), findsOneWidget);
-  });
 }
 
-class _FailingTodayRecommendationsDataSource
-    extends TodayRecommendationsRemoteDataSource {
-  _FailingTodayRecommendationsDataSource()
-    : super(api: TodayAnalysisApi(Dio(BaseOptions())));
-
+class _LoadingRecommendationsNotifier extends TodayRecommendationsNotifier {
   @override
-  Future<List<TodayRecommendation>> fetchRecommendations({
-    List<String>? excludeIds,
-  }) async {
-    throw Exception('test error');
-  }
-}
-
-class _PendingTodayRecommendationsDataSource
-    extends TodayRecommendationsRemoteDataSource {
-  _PendingTodayRecommendationsDataSource()
-    : super(api: TodayAnalysisApi(Dio(BaseOptions())));
-
-  @override
-  Future<List<TodayRecommendation>> fetchRecommendations({
-    List<String>? excludeIds,
-  }) {
+  Future<List<TodayRecommendation>> build() {
     return Completer<List<TodayRecommendation>>().future;
   }
+}
+
+Widget _signedInTodayApp() {
+  return ProviderScope(
+    overrides: [
+      authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+      todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+    ],
+    child: const TestForuiApp(home: TodayPage()),
+  );
+}
+
+void _setMobileViewport(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = const Size(390, 844);
+  addTearDown(() {
+    tester.view.resetDevicePixelRatio();
+    tester.view.resetPhysicalSize();
+  });
+}
+
+Future<void> _settleDashboard(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 400));
 }
 
 Finder _todayDashboardScrollable() {

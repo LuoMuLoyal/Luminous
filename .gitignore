@@ -32,6 +32,10 @@ migrate_working_dir/
 !.env.*.example
 
 # Flutter/Dart/Pub related
+# Intentionally tracked generated sources:
+# - build_runner outputs: *.g.dart / *.freezed.dart
+# - l10n outputs: lib/l10n/app_localizations*.dart
+# - local path OpenAPI client: packages/lucent_openapi/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 **/ios/Flutter/Wechat.xcconfig
@@ -76,4 +80,3 @@ nul
 
 reference
 goldens
-

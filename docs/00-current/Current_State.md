@@ -19,6 +19,15 @@ Last updated: 2026-07-08
 ## 已完成基线
 
 - 历史 completed baselines 与 audit remediation 已归档：[[04-archive/current-state-archive]]
+- Today 根页主动建议重构完成：
+  - 移动端和桌面端 Today 已从 `概览 / 优先事项 / AI 总结 / recommendation / todo` 平铺结构收口为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作`。
+  - 旧 recommendation/todo 语义已从 Today 根页移除；低置信度内容只在 `观察项` 中以轻量提示出现，不再伪装成必须完成的待办。
+  - `今日摘要` 现在合并了承载概览指标与 AI 解释，AI 入口仍在，但已降级为解释层而不是首屏主角。
+- 仓库生成物边界现已明确：
+  - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物与 `packages/lucent_openapi/`
+    继续提交到版本库；
+  - `.gitattributes` 已将这些路径标记为 generated，减少 review 噪音；
+  - `.gitignore` 不用于屏蔽上述前端生成源。
 - Report / Mine 蓝图收尾完成：
   - Mine 根页已从旧的 `账户与隐私` 混合区拆成 `AI 与隐私`、`通知与提醒`、`账号与安全` 三个职责明确的边界分组；桌面端旧 `MineStatusOverview` 残留已移除。
   - Report 根页已补齐 `历史建议回顾`，当前以真实通知流中的 `ai_proactive_suggestion` 为数据源回看最近建议；桌面端同步移除旧 snapshot 状态块，首屏改为 readiness-first 回顾布局。

@@ -122,6 +122,10 @@ Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules,
 ## Noise Boundary
 
 - `packages/lucent_openapi/` stays committed because it is a local path dependency used by the app.
+- Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
+  `lib/l10n/app_localizations*.dart`) also stay committed because `flutter pub get` does not run
+  `build_runner`, and the repo does not require every consumer or CI lane to regenerate them
+  before analysis or tests.
 - Generated Dart client code under `lib/` stays tracked.
 - Generated Markdown docs under `packages/lucent_openapi/doc/` and generated package stub tests
    under `packages/lucent_openapi/test/` are now intentionally disabled and cleaned by the wrapper

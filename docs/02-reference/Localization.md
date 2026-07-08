@@ -45,6 +45,8 @@ Persisted preference keys:
    entries.
 - Record root-page CTA strings such as timeline continuation actions (`查看全部记录` / `收起`) are
   owned by the Record ARB entries.
+- Today root-page action-panel copy such as primary-suggestion titles, evidence/boundary labels,
+  observation wording, and quick-action labels is owned by the Today ARB entries.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery
    history, and on-device notification title/body/channel labels are owned by the Medicine feature
    ARB entries.

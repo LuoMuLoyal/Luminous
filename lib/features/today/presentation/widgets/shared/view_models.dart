@@ -1,14 +1,10 @@
-import 'package:forui/forui.dart';
-
+import 'package:luminous/app/router.dart';
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-// ---------------------------------------------------------------------------
-// Data model classes
-// ---------------------------------------------------------------------------
 
 class TodayOverviewItem {
   const TodayOverviewItem({
@@ -24,15 +20,16 @@ class TodayOverviewItem {
   final AppColors color;
 }
 
-class TodayViewPriorityItem {
-  const TodayViewPriorityItem({
+class TodaySuggestionItem {
+  const TodaySuggestionItem({
     required this.key,
     required this.type,
     required this.icon,
     required this.color,
     required this.title,
-    required this.subtitle,
-    required this.detail,
+    required this.reason,
+    required this.evidence,
+    required this.boundary,
     required this.action,
     this.progress,
   });
@@ -42,26 +39,11 @@ class TodayViewPriorityItem {
   final IconData icon;
   final AppColors color;
   final String title;
-  final String subtitle;
-  final String detail;
+  final String reason;
+  final String evidence;
+  final String boundary;
   final String action;
   final double? progress;
-}
-
-class TodayRecommendationItem {
-  const TodayRecommendationItem({
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.subtitle,
-    required this.action,
-  });
-
-  final IconData icon;
-  final AppColors color;
-  final String title;
-  final String subtitle;
-  final String action;
 }
 
 class TodayAiSummaryItem {
@@ -88,35 +70,21 @@ class TodayAiSummaryCardContent {
   final String? footer;
 }
 
-enum TodayTodoType { medication, water, custom }
-
-class TodayTodoItem {
-  const TodayTodoItem({
-    required this.type,
+class TodayQuickActionItem {
+  const TodayQuickActionItem({
+    required this.icon,
     required this.title,
     required this.subtitle,
-    required this.source,
-    required this.action,
-    required this.color,
-    required this.completed,
-    required this.statusIsDynamic,
-    required this.subtitleIsDynamic,
+    required this.route,
+    this.usePush = false,
   });
 
-  final TodayTodoType type;
+  final IconData icon;
   final String title;
   final String subtitle;
-  final String source;
-  final String action;
-  final AppColors color;
-  final bool completed;
-  final bool statusIsDynamic;
-  final bool subtitleIsDynamic;
+  final String route;
+  final bool usePush;
 }
-
-// ---------------------------------------------------------------------------
-// Helper functions
-// ---------------------------------------------------------------------------
 
 String greetingSubtitle(AppLocalizations l10n, TodayDayMoment moment) {
   return switch (moment) {
@@ -142,10 +110,26 @@ String vitalValue(
   for (final vital in vitals) {
     if (vital.type == type) {
       final value = vital.valueLabel.trim();
-      if (value.isNotEmpty && value != '--') return value;
+      if (value.isNotEmpty && value != '--') {
+        return value;
+      }
     }
   }
   return fallback;
+}
+
+bool hasMeaningfulVitalValue(
+  List<TodayVitalSummary> vitals,
+  TodayVitalType type,
+) {
+  for (final vital in vitals) {
+    if (vital.type != type) {
+      continue;
+    }
+    final value = vital.valueLabel.trim();
+    return value.isNotEmpty && value != '--';
+  }
+  return false;
 }
 
 List<TodayOverviewItem> buildOverviewItems(
@@ -187,7 +171,7 @@ List<TodayOverviewItem> buildOverviewItems(
   ];
 }
 
-List<TodayViewPriorityItem> buildPriorityItems(
+List<TodaySuggestionItem> buildSuggestionItems(
   AppLocalizations l10n,
   TodayDashboard dashboard,
 ) {
@@ -201,33 +185,35 @@ List<TodayViewPriorityItem> buildPriorityItems(
   return [
     for (final item in sourceItems)
       switch (item.type) {
-        TodayPriorityItemType.medication => TodayViewPriorityItem(
-          key: const Key('today-medication-card'),
+        TodayPriorityItemType.medication => TodaySuggestionItem(
+          key: const Key('today-medication-suggestion'),
           type: TodayPriorityItemType.medication,
           icon: FLucideIcons.pill,
           color: AppColors.primary,
-          title: l10n.todayMedicationCardTitle,
-          subtitle: l10n.todayMedicationPrioritySubtitle(
+          title: l10n.todayMedicationSuggestionTitle,
+          reason: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
           ),
-          detail: l10n.todayMedicationPriorityDetail(
+          evidence: l10n.todayMedicationPriorityDetail(
             item.timeLabel ?? dashboard.medication.nextDoseTimeLabel,
             item.medicineName ?? nextMedicineName,
           ),
+          boundary: l10n.todayMedicationSuggestionBoundary,
           action: l10n.todayMedicationTakeAction,
         ),
-        TodayPriorityItemType.water => TodayViewPriorityItem(
-          key: const Key('today-water-card'),
+        TodayPriorityItemType.water => TodaySuggestionItem(
+          key: const Key('today-water-suggestion'),
           type: TodayPriorityItemType.water,
           icon: FLucideIcons.droplets,
           color: AppColors.primary,
-          title: l10n.todayWaterPriorityTitle,
-          subtitle: l10n.todayWaterGoalCount(
+          title: l10n.todayWaterSuggestionTitle,
+          reason: l10n.todayWaterGoalCount(
             item.targetCount ?? dashboard.water.targetCount,
           ),
-          detail: l10n.todayWaterCount(
+          evidence: l10n.todayWaterCount(
             item.count ?? dashboard.water.completedCount,
           ),
+          boundary: l10n.todayWaterSuggestionBoundary,
           action: l10n.todayDrinkWaterAction,
           progress: item.progress ?? dashboard.water.progress,
         ),
@@ -254,37 +240,6 @@ List<TodayPriorityItem> _fallbackPriorityItems(TodayDashboard dashboard) {
   ];
 }
 
-List<TodayRecommendationItem> buildRecommendationItems(
-  AppLocalizations l10n,
-  TodayDashboard dashboard,
-) {
-  return [
-    TodayRecommendationItem(
-      icon: FLucideIcons.shieldPlus,
-      color: AppColors.primary,
-      title: l10n.todayRecommendationMedicineSafetyTitle,
-      subtitle: l10n.todayRecommendationMedicineSafetyBody,
-      action: l10n.todayLearnMoreAction,
-    ),
-    TodayRecommendationItem(
-      icon: FLucideIcons.moonStar,
-      color: AppColors.primary,
-      title: l10n.todayRecommendationSleepTitle,
-      subtitle: l10n.todayRecommendationSleepBody,
-      action: l10n.todayLearnMoreAction,
-    ),
-    TodayRecommendationItem(
-      icon: FLucideIcons.droplets,
-      color: AppColors.primary,
-      title: l10n.todayRecommendationWaterTitle,
-      subtitle: l10n.todayRecommendationWaterBody,
-      action: dashboard.water.progress >= 1
-          ? l10n.todayStatusCompleted
-          : l10n.todayCompleteAction,
-    ),
-  ];
-}
-
 List<TodayAiSummaryItem> buildAiSummaryBullets(
   AppLocalizations l10n,
   TodayDashboard dashboard,
@@ -304,7 +259,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
     ),
     TodayAiSummaryItem(
       icon: FLucideIcons.cupSoda,
-      color: waterRemaining == 0 ? AppColors.primary : AppColors.primary,
+      color: AppColors.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
@@ -401,65 +356,45 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
     TodayAiAnalysisBulletKind.general => FLucideIcons.lightbulb,
   };
 
-  final color = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => AppColors.primary,
-    TodayAiAnalysisBulletKind.hydration => AppColors.primary,
-    TodayAiAnalysisBulletKind.sleep => AppColors.primary,
-    TodayAiAnalysisBulletKind.general => AppColors.primary,
-  };
-
-  return TodayAiSummaryItem(icon: icon, color: color, text: bullet.text);
+  return TodayAiSummaryItem(
+    icon: icon,
+    color: AppColors.primary,
+    text: bullet.text,
+  );
 }
 
-List<TodayTodoItem> buildTodoItems(
-  AppLocalizations l10n,
-  TodayDashboard dashboard,
-) {
-  final nextMedicineName =
-      dashboard.medication.nextMedicineName ??
-      medicationName(l10n, dashboard.medication.nextMedicine);
-  final waterProgressPercent = (dashboard.water.progress * 100).round();
-
+List<TodayQuickActionItem> buildQuickActionItems(AppLocalizations l10n) {
   return [
-    TodayTodoItem(
-      type: TodayTodoType.medication,
-      title: l10n.todayTodoMedicationTitle,
-      subtitle: l10n.todayTodoMedicationSubtitle(
-        dashboard.medication.nextDoseTimeLabel,
-        nextMedicineName,
-      ),
-      source: l10n.todayTodoSourceSystem,
-      action: dashboard.medication.pendingCount == 0
-          ? l10n.todayStatusCompleted
-          : l10n.todayMedicationTakeAction,
-      color: AppColors.primary,
-      completed: dashboard.medication.pendingCount == 0,
-      statusIsDynamic: true,
-      subtitleIsDynamic: true,
+    TodayQuickActionItem(
+      icon: FLucideIcons.badgeCheck,
+      title: l10n.todayQuickActionConfirmTitle,
+      subtitle: l10n.todayQuickActionConfirmSubtitle,
+      route: AppRoutes.medicine,
     ),
-    TodayTodoItem(
-      type: TodayTodoType.water,
-      title: l10n.todayTodoWaterTitle,
-      subtitle: l10n.todayTodoWaterSubtitle(waterProgressPercent),
-      source: l10n.todayTodoSourceSystem,
-      action: dashboard.water.progress >= 1
-          ? l10n.todayStatusCompleted
-          : l10n.todayDrinkWaterAction,
-      color: AppColors.primary,
-      completed: dashboard.water.progress >= 1,
-      statusIsDynamic: true,
-      subtitleIsDynamic: true,
+    TodayQuickActionItem(
+      icon: FLucideIcons.filePenLine,
+      title: l10n.todayQuickActionRecordTitle,
+      subtitle: l10n.todayQuickActionRecordSubtitle,
+      route: '${AppRoutes.recordCreate}?kind=water',
+      usePush: true,
     ),
-    TodayTodoItem(
-      type: TodayTodoType.custom,
-      title: l10n.todayTodoCustomTitle,
-      subtitle: l10n.todayTodoCustomSubtitle,
-      source: l10n.todayTodoSourceUser,
-      action: l10n.todayTodoAddAction,
-      color: AppColors.primary,
-      completed: false,
-      statusIsDynamic: false,
-      subtitleIsDynamic: false,
+    TodayQuickActionItem(
+      icon: FLucideIcons.shieldPlus,
+      title: l10n.todayQuickActionExplainTitle,
+      subtitle: l10n.todayQuickActionExplainSubtitle,
+      route: AppRoutes.medicine,
+    ),
+    TodayQuickActionItem(
+      icon: FLucideIcons.alarmClockCheck,
+      title: l10n.todayQuickActionReminderTitle,
+      subtitle: l10n.todayQuickActionReminderSubtitle,
+      route: AppRoutes.medicine,
+    ),
+    TodayQuickActionItem(
+      icon: FLucideIcons.userRound,
+      title: l10n.todayQuickActionProfileTitle,
+      subtitle: l10n.todayQuickActionProfileSubtitle,
+      route: AppRoutes.mine,
     ),
   ];
 }

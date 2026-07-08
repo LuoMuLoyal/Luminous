@@ -5,11 +5,10 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/ai_summary_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/overview_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/priority_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/recommendation_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/todo_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/observation_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/quick_actions_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/summary_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/suggestion_section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -116,11 +115,11 @@ class _MobileTodayDashboard extends StatelessWidget {
         SignInHintBanner(onSignIn: onSignIn),
         const SizedBox(height: AppSpacingTokens.level4),
       ],
-      TodayOverviewSection(dashboard: dashboard),
-      TodayPrioritySection(dashboard: dashboard),
-      TodayAiSummarySection(dashboard: dashboard),
-      const TodayRecommendationSection(),
-      TodayTodoSection(dashboard: dashboard),
+      TodayPrimarySuggestionSection(dashboard: dashboard),
+      TodaySecondarySuggestionsSection(dashboard: dashboard),
+      TodaySummarySection(dashboard: dashboard),
+      TodayObservationSection(dashboard: dashboard),
+      const TodayQuickActionsSection(),
     ];
 
     return RefreshIndicator(
@@ -176,8 +175,6 @@ class _DesktopTodayDashboard extends StatelessWidget {
             SignInHintBanner(onSignIn: onSignIn),
           ],
           const SizedBox(height: AppSpacingTokens.level6),
-          TodayOverviewSection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -185,9 +182,9 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 7,
                 child: Column(
                   children: [
-                    TodayPrioritySection(dashboard: dashboard),
+                    TodayPrimarySuggestionSection(dashboard: dashboard),
                     const SizedBox(height: AppSpacingTokens.level6),
-                    TodayAiSummarySection(dashboard: dashboard),
+                    TodaySummarySection(dashboard: dashboard),
                   ],
                 ),
               ),
@@ -196,14 +193,16 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 5,
                 child: Column(
                   children: [
-                    const TodayRecommendationSection(compact: true),
+                    TodaySecondarySuggestionsSection(dashboard: dashboard),
                     const SizedBox(height: AppSpacingTokens.level6),
-                    TodayTodoSection(dashboard: dashboard),
+                    TodayObservationSection(dashboard: dashboard),
                   ],
                 ),
               ),
             ],
           ),
+          const SizedBox(height: AppSpacingTokens.level6),
+          const TodayQuickActionsSection(),
         ],
       ),
     );

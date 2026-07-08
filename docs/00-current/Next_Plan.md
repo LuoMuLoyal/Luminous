@@ -1,6 +1,6 @@
 # Luminous Next Plan
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 
@@ -12,18 +12,14 @@ Last updated: 2026-07-07
 
 ## 立即下一步
 
-1. **P1 体验优化**
-   - Today 信息密度收窄（Brainstorm A 项）
-   - Record 快速入口动态排序（Brainstorm C 项）
-   - Mine 档案完整度提示（Brainstorm E 项）
-2. **运行完整 1.0.0 验证门**
+1. **运行完整 1.0.0 验证门**
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
    - 集成测试框架选型暂缓，待评估后引入
-3. **门通过后打 1.0.0 tag**
-4. **助手演进限定在 concrete 场景**
+2. **门通过后打 1.0.0 tag**
+3. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals
    - Memory 保持可选、显式、用户控制
-5. **Web 作为 deliberate 决策保留**
+4. **Web 作为 deliberate 决策保留**
    - `Luminous-site` 是竞赛/营销表面，不是签入式产品壳
    - 如后续需要认证 Web 报告预览，另开专用计划
 

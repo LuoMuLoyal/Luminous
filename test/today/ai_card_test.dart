@@ -1,5 +1,6 @@
-import '../helpers/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
+import '../helpers/test_helpers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,40 +24,39 @@ class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
 }
 
 void main() {
-  testWidgets('Today AI card shows signed-out hint and keeps generate action', (
-    tester,
-  ) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+  testWidgets(
+    'Today summary shows preview hint and hides generate action when signed out',
+    (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
-          todayRepositoryProvider.overrideWithValue(
-            const MockTodayRepository(),
-          ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
-          ),
-        ],
-        child: const TestForuiApp(home: TodayPage()),
-      ),
-    );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
+            todayRepositoryProvider.overrideWithValue(
+              const MockTodayRepository(),
+            ),
+            todayRecommendationsProvider.overrideWith(
+              () => _EmptyRecommendationsNotifier(),
+            ),
+          ],
+          child: const TestForuiApp(home: TodayPage()),
+        ),
+      );
 
-    await tester.pump(const Duration(milliseconds: 500));
+      await tester.pump(const Duration(milliseconds: 500));
+      await _scrollToSummaryCard(tester);
 
-    expect(
-      find.text(l10n.todayAiSummarySignedOutHint),
-      findsAtLeastNWidgets(1),
-    );
-    expect(
-      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
-      findsOneWidget,
-    );
-  });
+      expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
+      expect(
+        find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
+        findsNothing,
+      );
+    },
+  );
 
   testWidgets(
-    'Today AI card shows settings action when AI summaries are disabled',
+    'Today summary shows settings action when AI summaries are disabled',
     (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
@@ -81,11 +81,9 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
+      await _scrollToSummaryCard(tester);
 
-      expect(
-        find.text(l10n.todayAiSummaryDisabledHint),
-        findsAtLeastNWidgets(1),
-      );
+      expect(find.text(l10n.todayAiSummaryDisabledHint), findsOneWidget);
       expect(
         find.widgetWithText(FButton, l10n.todayAiSummaryOpenSettingsAction),
         findsOneWidget,
@@ -93,7 +91,7 @@ void main() {
     },
   );
 
-  testWidgets('Today AI card renders generated summary after manual action', (
+  testWidgets('Today summary renders generated summary after manual action', (
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
@@ -120,11 +118,7 @@ void main() {
     );
 
     await tester.pump(const Duration(milliseconds: 500));
-
-    expect(
-      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
-      findsOneWidget,
-    );
+    await _scrollToSummaryCard(tester);
 
     await tester.tap(
       find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
@@ -162,9 +156,21 @@ void main() {
     expect(find.text('还有 1 项今日用药待确认，先核对是否已经服用。'), findsOneWidget);
     expect(find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'), findsOneWidget);
     expect(find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'), findsOneWidget);
-    expect(
-      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
-      findsOneWidget,
-    );
   });
+}
+
+Future<void> _scrollToSummaryCard(WidgetTester tester) async {
+  await tester.scrollUntilVisible(
+    find.byKey(const Key('today-summary-card')),
+    220,
+    scrollable: find
+        .descendant(
+          of: find.byKey(
+            const PageStorageKey<String>('today-dashboard-scroll'),
+          ),
+          matching: find.byType(Scrollable),
+        )
+        .first,
+  );
+  await tester.pump(const Duration(milliseconds: 200));
 }

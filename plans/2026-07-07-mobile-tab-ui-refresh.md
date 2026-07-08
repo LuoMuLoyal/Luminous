@@ -66,35 +66,6 @@
 
 ## 页面方案
 
-## Today
-
-### 问题
-
-- 首屏同时有 `Today summary`、`Today's priorities`、`AI daily summary`、`Proactive advice`，主线分散。
-- AI 和 recommendation 在数据不全时仍占据可见版面，抢走“今天该做什么”的焦点。
-- `Today's todos` 当前有明显视觉和实现 bug，标题重叠必须先修。
-
-### 改法
-
-- 把首屏收敛成三段：
-  1. `Next action` 主卡：下一次最该做的动作，只保留一个主要行动按钮
-  2. `Today progress` 次卡：Medication / Water / Sleep 三项进度
-  3. `Today queue`：剩余 todo 列表
-- `AI daily summary` 和 `Proactive advice` 整体下沉到第二屏；只有在可用时显示，不可用时不占主版位。
-- `AI chat` 顶部入口降权，保留但不再与主任务争抢第一视线。
-- recommendation 失败态改为 section 内联轻量提示，不再单独占一张大卡。
-
-### 预期可观察结果
-
-- 用户进入 `Today` 后 3 秒内能明确知道“现在最该做的一件事”。
-- 首屏主要按钮不超过 2 个。
-- AI 不可用时，不影响今天的日常行动流。
-
-### 验证
-
-- Widget test：已登录 / 未登录 / 无数据 / recommendation 失败 4 条状态快照。
-- 真机或模拟器人工检查：首屏无需滚动即可看清主任务和今日进度。
-
 ## Record
 
 ### 问题

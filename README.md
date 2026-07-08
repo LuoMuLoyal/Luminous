@@ -59,6 +59,18 @@ dart run melos run fullstack
 dart run melos run fullstack-today-report
 ```
 
+## Generated Sources Policy
+
+- `flutter pub get` only installs dependencies. It does not run `build_runner`, so generated
+  sources required by runtime and tests stay committed in this repo:
+  - `*.g.dart`
+  - `*.freezed.dart`
+  - `lib/l10n/app_localizations*.dart`
+- `packages/lucent_openapi/` also stays committed because it is a local path dependency consumed by
+  the app and is regenerated only when the Lucent contract changes.
+- `.gitattributes` marks those tracked generated paths as generated to reduce review noise; they
+  are intentionally not ignored by `.gitignore`.
+
 If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in the
 `E2E_*` entries, and run the Melos entries above. `tool/run_fullstack_checks.dart`
 now prefers `.env` when present and otherwise falls back to its built-in default
