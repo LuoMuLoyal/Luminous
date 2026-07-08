@@ -9,8 +9,7 @@ String reportDashboardDateRangeLabel(
   final locale = Localizations.localeOf(context).toString();
   final start = DateTime.parse(startDate);
   final end = DateTime.parse(endDate);
-  final pattern = locale.startsWith('zh') ? 'M月d日' : 'MMM d';
-  final formatter = DateFormat(pattern, locale);
+  final formatter = DateFormat.MMMd(locale);
   return '${formatter.format(start)} - ${formatter.format(end)}';
 }
 
@@ -24,6 +23,5 @@ String reportDashboardGeneratedAtLabel(
     return '';
   }
 
-  final pattern = locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm';
-  return DateFormat(pattern, locale).format(generated);
+  return DateFormat.MMMd(locale).add_Hm().format(generated);
 }

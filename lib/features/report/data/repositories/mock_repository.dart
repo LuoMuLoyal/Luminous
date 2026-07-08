@@ -1,3 +1,4 @@
+// ignore_for_file: prefer_const_constructors
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/colors.dart';
@@ -49,11 +50,11 @@ class MockReportRepository implements ReportRepository {
     return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
   }
 
-  static final previewDashboard = const ReportDashboard(
+  static final previewDashboard = ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
-    generatedAt: '2026-07-07T14:32:00.000Z',
+    generatedAt: clock.now().toIso8601String(),
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,
@@ -158,11 +159,11 @@ class MockReportRepository implements ReportRepository {
     aiSummaryEnabled: false,
   );
 
-  static final _signedOutDashboard = const ReportDashboard(
+  static final _signedOutDashboard = ReportDashboard(
     range: ReportDashboardRange.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
-    generatedAt: '2026-07-07T14:32:00.000Z',
+    generatedAt: clock.now().toIso8601String(),
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

@@ -136,7 +136,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       state = state.copyWith(isSubmitting: false);
       return session;
     } catch (error) {
-      debugPrint('LoginFormNotifier.submit: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSubmitting: false,
@@ -164,7 +163,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       );
       return true;
     } catch (error) {
-      debugPrint('LoginFormNotifier.sendCode: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSendingCode: false,
@@ -189,9 +187,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       );
       return result;
     } catch (error) {
-      debugPrint(
-        'LoginFormNotifier.createWechatWebAuthorizeUrl: failed: $error',
-      );
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isStartingWechatLogin: false,
@@ -247,9 +242,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       state = state.copyWith(isCompletingWechatLogin: false);
       return session;
     } catch (error) {
-      debugPrint(
-        'LoginFormNotifier.startWechatDesktopWebLogin: failed: $error',
-      );
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isStartingWechatLogin: false,
@@ -282,7 +274,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       state = state.copyWith(isCompletingWechatLogin: false);
       return session;
     } catch (error) {
-      debugPrint('LoginFormNotifier.startWechatMobileLogin: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isStartingWechatLogin: false,
@@ -309,7 +300,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       this.state = this.state.copyWith(isCompletingWechatLogin: false);
       return session;
     } catch (error) {
-      debugPrint('LoginFormNotifier.completeWechatWebLogin: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       this.state = this.state.copyWith(
         isCompletingWechatLogin: false,
@@ -338,7 +328,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       );
       return result;
     } catch (error) {
-      debugPrint('LoginFormNotifier.createQqAuthorizeUrl: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isStartingQqLogin: false,
@@ -364,7 +353,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       this.state = this.state.copyWith(isCompletingQqLogin: false);
       return session;
     } catch (error) {
-      debugPrint('LoginFormNotifier.completeQqLogin: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       this.state = this.state.copyWith(
         isCompletingQqLogin: false,
@@ -394,7 +382,6 @@ class LoginFormNotifier extends Notifier<LoginFormState>
       state = state.copyWith(isStartingAppleLogin: false);
       return session;
     } catch (error) {
-      debugPrint('LoginFormNotifier.loginWithApple: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isStartingAppleLogin: false,

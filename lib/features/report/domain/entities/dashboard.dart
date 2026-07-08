@@ -48,7 +48,7 @@ abstract class ReportDashboard with _$ReportDashboard {
     range: ReportDashboardRange.last7Days,
     startDate: '----.--.--',
     endDate: '----.--.--',
-    generatedAt: '1970-01-01T00:00:00.000Z',
+    generatedAt: '',
     score: ReportHealthScore(
       value: 0,
       maxValue: 100,

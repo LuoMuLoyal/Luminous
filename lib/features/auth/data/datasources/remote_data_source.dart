@@ -26,6 +26,14 @@ class AuthRemoteDataSource {
 
   final LucentDioClient _client;
 
+  /// Throws [LucentApiException] if [body] is null, otherwise returns it.
+  T _requireBody<T>(T? body, String message) {
+    if (body == null) {
+      throw LucentApiException(message: message);
+    }
+    return body;
+  }
+
   Future<AuthSession> login({
     required String email,
     String? password,
@@ -42,10 +50,7 @@ class AuthRemoteDataSource {
         code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(message: 'Login response is empty.');
-    }
+    final body = _requireBody(response.data, 'Login response is empty.');
     final session = AuthMapper.toSessionFromLogin(body);
     await _client.writeSession(
       LucentSessionTokens(
@@ -67,12 +72,10 @@ class AuthRemoteDataSource {
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
               : null,
         );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat authorize response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'WeChat authorize response is empty.',
+    );
     return body.data;
   }
 
@@ -88,12 +91,10 @@ class AuthRemoteDataSource {
               ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
               : null,
         );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat identity link authorize response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'WeChat identity link authorize response is empty.',
+    );
     return body.data;
   }
 
@@ -107,12 +108,7 @@ class AuthRemoteDataSource {
         state: state.trim(),
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat login response is empty.',
-      );
-    }
+    final body = _requireBody(response.data, 'WeChat login response is empty.');
     final session = AuthMapper.toSessionFromLogin(body);
     await _client.writeSession(
       LucentSessionTokens(
@@ -128,12 +124,10 @@ class AuthRemoteDataSource {
         .authControllerLoginWithWechatMobileV1(
           oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
         );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat mobile login response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'WeChat mobile login response is empty.',
+    );
     final session = AuthMapper.toSessionFromLogin(body);
     await _client.writeSession(
       LucentSessionTokens(
@@ -158,10 +152,7 @@ class AuthRemoteDataSource {
         familyName: familyName,
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(message: 'Apple login response is empty.');
-    }
+    final body = _requireBody(response.data, 'Apple login response is empty.');
     final session = AuthMapper.toSessionFromLogin(body);
     await _client.writeSession(
       LucentSessionTokens(
@@ -182,12 +173,7 @@ class AuthRemoteDataSource {
           ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
           : null,
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'QQ authorize response is empty.',
-      );
-    }
+    final body = _requireBody(response.data, 'QQ authorize response is empty.');
     return body.data;
   }
 
@@ -201,10 +187,7 @@ class AuthRemoteDataSource {
         state: state.trim(),
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(message: 'QQ login response is empty.');
-    }
+    final body = _requireBody(response.data, 'QQ login response is empty.');
     final session = AuthMapper.toSessionFromLogin(body);
     await _client.writeSession(
       LucentSessionTokens(
@@ -226,12 +209,10 @@ class AuthRemoteDataSource {
             state: state.trim(),
           ),
         );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat identity link response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'WeChat identity link response is empty.',
+    );
     return _authUserFromAccount(body.data);
   }
 
@@ -240,12 +221,10 @@ class AuthRemoteDataSource {
         .accountControllerLinkWechatMobileIdentityV1(
           oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
         );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'WeChat mobile identity link response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'WeChat mobile identity link response is empty.',
+    );
     return _authUserFromAccount(body.data);
   }
 
@@ -266,10 +245,7 @@ class AuthRemoteDataSource {
             : trimmedNickname,
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(message: 'Register response is empty.');
-    }
+    final body = _requireBody(response.data, 'Register response is empty.');
     return AuthMapper.toSessionFromRegister(body);
   }
 
@@ -288,10 +264,7 @@ class AuthRemoteDataSource {
 
   Future<AuthUser> fetchAccount() async {
     final response = await _client.accountApi.accountControllerGetAccountV1();
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(message: 'Account response is empty.');
-    }
+    final body = _requireBody(response.data, 'Account response is empty.');
     final user = body.data;
     return _authUserFromAccount(user);
   }
@@ -306,12 +279,10 @@ class AuthRemoteDataSource {
         scene: scene.toDtoScene(),
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'Send verification code response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'Send verification code response is empty.',
+    );
     return body.data;
   }
 
@@ -333,12 +304,10 @@ class AuthRemoteDataSource {
     final response = await _client.authApi.authControllerForgotPasswordV1(
       forgotPasswordDto: ForgotPasswordDto(email: email.trim()),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'Forgot password response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'Forgot password response is empty.',
+    );
     return body.data;
   }
 
@@ -361,12 +330,10 @@ class AuthRemoteDataSource {
         avatar: avatar?.trim(),
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'Update profile response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'Update profile response is empty.',
+    );
     return _authUserFromAccount(body.data);
   }
 
@@ -394,12 +361,7 @@ class AuthRemoteDataSource {
         code: code.trim(),
       ),
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'Change email response is empty.',
-      );
-    }
+    final body = _requireBody(response.data, 'Change email response is empty.');
     return currentUser.copyWith(
       email: body.data.email,
       emailVerifiedAt: DateTime.parse(body.data.emailVerifiedAt),
@@ -417,12 +379,10 @@ class AuthRemoteDataSource {
     final response = await _client.accountApi.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
-    final body = response.data;
-    if (body == null) {
-      throw const LucentApiException(
-        message: 'Unlink identity response is empty.',
-      );
-    }
+    final body = _requireBody(
+      response.data,
+      'Unlink identity response is empty.',
+    );
     return _authUserFromAccount(body.data);
   }
 

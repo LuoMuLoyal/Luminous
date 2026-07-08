@@ -149,8 +149,8 @@ class LucentReportRepository implements ReportRepository {
   AppColors _metricColor(ReportDataKind kind) {
     return switch (kind) {
       ReportDataKind.medication => AppColors.primary,
-      ReportDataKind.water => AppColors.primary,
-      ReportDataKind.sleep => AppColors.primary,
+      ReportDataKind.water => AppColors.muted,
+      ReportDataKind.sleep => AppColors.foreground,
       ReportDataKind.general => AppColors.primary,
     };
   }
@@ -167,8 +167,8 @@ class LucentReportRepository implements ReportRepository {
   AppColors _insightColor(ReportInsightKind kind) {
     return switch (kind) {
       ReportInsightKind.medication => AppColors.primary,
-      ReportInsightKind.hydration => AppColors.primary,
-      ReportInsightKind.sleep => AppColors.primary,
+      ReportInsightKind.hydration => AppColors.muted,
+      ReportInsightKind.sleep => AppColors.foreground,
       ReportInsightKind.general => AppColors.primary,
     };
   }
