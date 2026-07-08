@@ -23,6 +23,7 @@ Last updated: 2026-07-08
   - 移动端和桌面端 Today 已从 `概览 / 优先事项 / AI 总结 / recommendation / todo` 平铺结构收口为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作`。
   - 旧 recommendation/todo 语义已从 Today 根页移除；低置信度内容只在 `观察项` 中以轻量提示出现，不再伪装成必须完成的待办。
   - `今日摘要` 现在合并了承载概览指标与 AI 解释，AI 入口仍在，但已降级为解释层而不是首屏主角。
+  - 根据移动端截图反馈，Today preview 登录提示与主卡区之间的留白已收紧；`接下来可处理` 与 `轻动作` 已统一改回更稳定的 Forui `FTileGroup` 组织方式；首屏文案已去掉偏系统内部的“真实数据 / 低风险总结”措辞。
 - 仓库生成物边界现已明确：
   - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物与 `packages/lucent_openapi/`
     继续提交到版本库；

@@ -127,6 +127,9 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             StaticTodayRepository(emptyDashboard),
           ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
@@ -162,7 +165,10 @@ void main() {
     await _settleDashboard(tester);
 
     expect(find.text(l10n.todayMedicationTakeAction), findsOneWidget);
-    expect(find.text(l10n.todayDrinkWaterAction), findsOneWidget);
+    expect(
+      find.byKey(const Key('today-secondary-suggestions-card')),
+      findsOneWidget,
+    );
     expect(tester.takeException(), isNull);
   });
 
@@ -207,6 +213,9 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
         ],
         child: TestForuiRouterApp(
           routerConfig: GoRouter(
@@ -247,6 +256,9 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
@@ -276,6 +288,9 @@ void main() {
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
+          ),
+          todayRecommendationsProvider.overrideWith(
+            () => _EmptyRecommendationsNotifier(),
           ),
         ],
         child: const TestForuiApp(home: TodayPage()),
@@ -373,11 +388,19 @@ class _LoadingRecommendationsNotifier extends TodayRecommendationsNotifier {
   }
 }
 
+class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
+  @override
+  Future<List<TodayRecommendation>> build() async => const [];
+}
+
 Widget _signedInTodayApp() {
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
+      todayRecommendationsProvider.overrideWith(
+        () => _EmptyRecommendationsNotifier(),
+      ),
     ],
     child: const TestForuiApp(home: TodayPage()),
   );

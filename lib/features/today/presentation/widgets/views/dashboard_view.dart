@@ -111,10 +111,11 @@ class _MobileTodayDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final sections = <Widget>[
       TodayTopBar(moment: dashboard.user.moment),
-      if (isPreview) ...[
-        SignInHintBanner(onSignIn: onSignIn),
-        const SizedBox(height: AppSpacingTokens.level4),
-      ],
+      if (isPreview)
+        SignInHintBanner(
+          onSignIn: onSignIn,
+          message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
+        ),
       TodayPrimarySuggestionSection(dashboard: dashboard),
       TodaySecondarySuggestionsSection(dashboard: dashboard),
       TodaySummarySection(dashboard: dashboard),
@@ -171,8 +172,11 @@ class _DesktopTodayDashboard extends StatelessWidget {
         children: [
           TodayTopBar(moment: dashboard.user.moment),
           if (isPreview) ...[
-            const SizedBox(height: AppSpacingTokens.level4),
-            SignInHintBanner(onSignIn: onSignIn),
+            const SizedBox(height: AppSpacingTokens.level3),
+            SignInHintBanner(
+              onSignIn: onSignIn,
+              message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
+            ),
           ],
           const SizedBox(height: AppSpacingTokens.level6),
           Row(

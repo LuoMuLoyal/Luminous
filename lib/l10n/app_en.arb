@@ -1452,8 +1452,8 @@
   "todayAiSummaryGenerateAction": "Generate",
   "todayAiSummaryGeneratingAction": "Generating",
   "todayAiSummaryOpenSettingsAction": "Settings",
-  "todayAiSummaryDefaultHint": "Generate a low-risk summary from today's real records.",
-  "todayAiSummaryPreviewHint": "Generate a short summary and suggestions from today's records.",
+  "todayAiSummaryDefaultHint": "Generate a short recap and a couple of reminders from today's records.",
+  "todayAiSummaryPreviewHint": "Sign in to see today's recap and reminders.",
   "todayAiSummaryGeneratingHint": "We are organizing today's records now. Please wait a moment.",
   "todayAiSummaryErrorHint": "This generation did not complete. Try again.",
   "todayAiSummaryDisabledHint": "AI summaries are turned off in settings. Enable them before generating.",
@@ -1477,7 +1477,7 @@
   },
   "todayAiSummaryWaterDone": "Today's water check-ins are complete. Keep taking small amounts often",
   "todayAiSummarySleepPlaceholder": "Record sleep to include it in today's summary",
-  "todaySummaryFallbackNarrative": "Today's action line still centers on medication confirmation and filling obvious record gaps.",
+  "todaySummaryFallbackNarrative": "Confirm the next dose first, then add one key record to keep today on track.",
   "todayRecommendationSectionTitle": "Proactive advice",
   "todayRecommendationErrorTitle": "Recommendations failed to load",
   "todayRecommendationErrorDescription": "Please check your network and try again",
@@ -1542,6 +1542,7 @@
   "todayQuickActionReminderSubtitle": "Create or tune today's reminders",
   "todayQuickActionProfileTitle": "Complete profile",
   "todayQuickActionProfileSubtitle": "Fill in allergies and medicine background",
+  "todayPreviewBannerMessage": "Sign in to see today's data",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {

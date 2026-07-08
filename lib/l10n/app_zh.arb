@@ -1459,8 +1459,8 @@
   "todayAiSummaryGenerateAction": "生成",
   "todayAiSummaryGeneratingAction": "生成中",
   "todayAiSummaryOpenSettingsAction": "设置",
-  "todayAiSummaryDefaultHint": "点击生成后，会基于今日真实记录产出低风险总结。",
-  "todayAiSummaryPreviewHint": "基于今日记录生成简短总结和建议。",
+  "todayAiSummaryDefaultHint": "生成后会用今天的记录整理出一句总结和两条提醒。",
+  "todayAiSummaryPreviewHint": "登录后可看到今天的总结和提醒。",
   "todayAiSummaryGeneratingHint": "正在整理今天的记录，请稍等一下。",
   "todayAiSummaryErrorHint": "这次生成没有成功，可以再试一次。",
   "todayAiSummaryDisabledHint": "AI 总结已在设置中关闭，开启后才会生成。",
@@ -1484,7 +1484,7 @@
   },
   "todayAiSummaryWaterDone": "今日饮水次数已达标，继续保持少量多次",
   "todayAiSummarySleepPlaceholder": "记录睡眠后会纳入今日总结",
-  "todaySummaryFallbackNarrative": "今天的行动主线仍然集中在用药确认和基础记录补齐。",
+  "todaySummaryFallbackNarrative": "先确认下一次服药，再补一条关键记录，今天就更稳了。",
   "todayRecommendationSectionTitle": "主动建议",
   "todayRecommendationErrorTitle": "推荐加载失败",
   "todayRecommendationErrorDescription": "请检查网络后重试",
@@ -1549,6 +1549,7 @@
   "todayQuickActionReminderSubtitle": "新增或调整今日提醒",
   "todayQuickActionProfileTitle": "完善档案",
   "todayQuickActionProfileSubtitle": "补齐过敏史和用药背景",
+  "todayPreviewBannerMessage": "登录后查看你的今日数据",
   "placeholderSoon": "{label} · 即将上线",
   "@placeholderSoon": {
     "placeholders": {

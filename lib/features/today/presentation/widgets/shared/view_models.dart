@@ -288,7 +288,6 @@ TodayAiSummaryCardContent buildAiCardContent({
           text: l10n.todayAiSummaryPreviewHint,
         ),
       ],
-      footer: l10n.todayAiSummaryDefaultHint,
     );
   }
 

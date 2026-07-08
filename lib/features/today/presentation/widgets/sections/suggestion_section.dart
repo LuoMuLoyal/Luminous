@@ -124,41 +124,27 @@ class TodaySecondarySuggestionsSection extends StatelessWidget {
 
     return TodaySection(
       title: l10n.todaySecondarySuggestionSectionTitle,
-      child: FCard.raw(
+      child: FTileGroup(
         key: const Key('today-secondary-suggestions-card'),
-        style: todayCardStyle(context, tone: TodayCardTone.soft),
-        child: Column(
-          children: [
-            for (var index = 0; index < items.length; index += 1) ...[
-              FTile(
-                prefix: TodayGlyphTile(
-                  icon: items[index].icon,
-                  color: items[index].color.resolve(colors),
-                  size: AppSpacingTokens.level7,
-                  radius: AppRadiusTokens.level3,
-                  gradient: false,
-                ),
-                title: Text(items[index].title),
-                subtitle: Text(items[index].evidence),
-                suffix: FBadge(
-                  variant: FBadgeVariant.secondary,
-                  child: Text(items[index].action),
-                ),
-                onPress: () => _openSuggestion(context, items[index]),
+        divider: FItemDivider.full,
+        children: [
+          for (var index = 0; index < items.length; index += 1)
+            FTile(
+              prefix: TodayGlyphTile(
+                icon: items[index].icon,
+                color: items[index].color.resolve(colors),
+                size: AppSpacingTokens.level7,
+                radius: AppRadiusTokens.level3,
+                gradient: false,
               ),
-              if (items[index].progress case final progress?)
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacingTokens.level4,
-                    0,
-                    AppSpacingTokens.level4,
-                    AppSpacingTokens.level3,
-                  ),
-                  child: FDeterminateProgress(value: progress),
-                ),
-            ],
-          ],
-        ),
+              title: Text(items[index].title),
+              subtitle: Text(
+                '${items[index].reason} · ${items[index].evidence}',
+              ),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () => _openSuggestion(context, items[index]),
+            ),
+        ],
       ),
     );
   }
