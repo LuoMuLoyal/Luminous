@@ -37,9 +37,14 @@ After cloning, install the shared git hooks once:
 dart run tool/install_git_hooks.dart
 ```
 
-This sets `core.hooksPath` to `.githooks/`. The `pre-commit` hook runs
-`flutter gen-l10n`, `dart format` check, and `flutter analyze`. The `pre-push`
-hook runs `dart run tool/run_daily_checks.dart`.
+This sets `core.hooksPath` to `.githooks/`. The hooks are kept lightweight to
+avoid slowing down your workflow:
+
+- **`commit-msg`**: validates Conventional Commits format (type, scope, subject).
+- **`pre-commit`**: runs `dart format` on staged `.dart` files and `flutter analyze`.
+- **`pre-push`**: no-op (full validation runs in CI).
+
+For a full local check, run `dart run tool/run_daily_checks.dart`.
 
 ---
 
@@ -92,16 +97,19 @@ incompatible with prior versions. For normal commits, keep a single-line summary
 - Local IDE files: `.idea/`, personal `.vscode/*` (except shared workspace files)
 - Build artifacts: `build/`, `android/build/`, `*.apk`, `*.ipa`
 - Local dependencies: `.dart_tool/`, `.packages`
-- Generated files: local-only outputs under `generated/lucent_api/lib/api/`, `*.g.dart`,
-  `*.freezed.dart`, and `lib/l10n/app_localizations*.dart` (regenerate, don't hand-edit)
+- Local generated app outputs: `*.g.dart`, `*.freezed.dart`, and
+  `lib/l10n/app_localizations*.dart` (regenerate, don't hand-edit)
+- Local generated OpenAPI implementation files: `generated/lucent_api/lib/api/**/*.g.dart`
+- Local lockfile noise: `generated/lucent_api/pubspec.lock`
 - Environment files with real credentials: `.env`, `key.properties`
 - Presentation exports: `outputs/`, `Roadshow/`
 
 ### Before Push
 
+The `pre-push` hook is a no-op — full validation (analyze, format check,
+tests, OpenAPI sync) runs in CI. For a local full check:
+
 ```bash
-flutter analyze
-flutter test
 dart run tool/run_daily_checks.dart
 ```
 
@@ -292,7 +300,8 @@ The API contract source of truth is **Lucent controller/DTO code plus a freshly 
 2. In `Luminous`: `dart run tool/bootstrap_generated_sources.dart`
 
 Never hand-edit `generated/lucent_api/`. The generator handles enum defaults and
-nullable map entries natively.
+nullable map entries natively. Commit the regenerated non-`.g.dart`
+`generated/lucent_api/lib/api/**` diff when the contract change is intentional.
 
 Verify contract sync:
 

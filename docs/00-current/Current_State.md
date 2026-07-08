@@ -33,12 +33,11 @@ Last updated: 2026-07-08
   - 主卡底部新增 `稍后处理` / `不适用` 反馈按钮（前端状态，后续接入后端反馈链路）。
   - 顶栏问候语改为根据 dashboard 数据动态生成（早上看用药待确认、下午看饮水剩余、晚上看整体完成情况）。
   - 文字表述全面优化：`证据`→`依据`、`边界`→`注意`、`观察项`→`留意事项`、`低置信度`→`仅供参考` 等。
-- 仓库生成物边界现已明确：
-  - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物、以及
-    `generated/lucent_api/lib/api/**` 现已改为本地生成并保持 ignore；
-  - 版本库只保留生成器输入与包脚手架；新 clone/CI 统一通过
-    `dart run tool/bootstrap_generated_sources.dart` 补齐这些产物；
-  - `.gitignore` 不用于屏蔽上述前端生成源。
+- 仓库生成物边界现为混合策略：
+  - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物继续本地生成并保持 ignore；
+  - `generated/lucent_api/lib/api/**` 已恢复为“仅非 `.g.dart` 文件追踪”，保留核心合同可读层；
+  - `generated/lucent_api/pubspec.lock` 继续忽略；新 clone/CI 仍通过
+    `dart run tool/bootstrap_generated_sources.dart` 补齐和校验生成物。
 - Report / Mine 蓝图收尾完成：
   - Mine 根页已从旧的 `账户与隐私` 混合区拆成 `AI 与隐私`、`通知与提醒`、`账号与安全` 三个职责明确的边界分组；桌面端旧 `MineStatusOverview` 残留已移除。
   - Report 根页已补齐 `历史建议回顾`，当前以真实通知流中的 `ai_proactive_suggestion` 为数据源回看最近建议；桌面端同步移除旧 snapshot 状态块，首屏改为 readiness-first 回顾布局。

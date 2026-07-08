@@ -100,8 +100,9 @@ the generated client layout exists, so it can run safely before commit inside a 
 
 ## Noise Boundary
 
-- `generated/lucent_api/` keeps only package config and generator inputs tracked; generated
-  `lib/api/**` output is local-only and ignored.
+- `generated/lucent_api/lib/api/**` is tracked for contract review, but its nested `**/*.g.dart`
+  stays local-only and ignored.
+- `generated/lucent_api/pubspec.lock` stays local-only and ignored.
 - Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
   `lib/l10n/app_localizations*.dart`) are also local-only and ignored.
 - CI and local validation now regenerate these artifacts before analyze/test via

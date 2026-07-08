@@ -120,7 +120,8 @@ flutter test
 - Source: local export `Lucent/docs/openapi.json`
 - Regenerate: run `pnpm export:openapi` in `Lucent`, then
   `dart run tool/bootstrap_generated_sources.dart` in `Luminous`
-- Tracked scaffold: `generated/lucent_api/`
+- Tracked generated client boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`
+- Ignored local-only file: `generated/lucent_api/pubspec.lock`
 
 ## Forui Reference
 

@@ -5,20 +5,29 @@ import 'tooling_workflows.dart';
 
 Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
-  if (args.length != 1) {
-    stderr.writeln('Usage: dart run tool/git_hook.dart <pre-commit|pre-push>');
+  if (args.isEmpty) {
+    stderr.writeln(
+      'Usage: dart run tool/git_hook.dart <pre-commit|commit-msg> [args]',
+    );
     exitCode = 64;
     return;
   }
 
   try {
-    switch (args.single) {
+    switch (args.first) {
       case 'pre-commit':
         await runPreCommitChecks(context);
-      case 'pre-push':
-        await runDailyChecks(context);
+      case 'commit-msg':
+        if (args.length < 2) {
+          stderr.writeln(
+            'commit-msg hook requires a commit message file path argument.',
+          );
+          exitCode = 64;
+          return;
+        }
+        validateCommitMessage(args[1]);
       default:
-        stderr.writeln('Unsupported git hook: ${args.single}');
+        stderr.writeln('Unsupported git hook: ${args.first}');
         exitCode = 64;
     }
   } on ProcessException catch (error) {

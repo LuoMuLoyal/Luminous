@@ -52,17 +52,6 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
-  await runLoggedCommand(
-    'dart',
-    ['run', 'tool/check_doc_coverage.dart', '--staged'],
-    workingDirectory: context.repoRoot,
-    stepName: 'dart run tool/check_doc_coverage.dart --staged',
-  );
-  stdout.writeln('');
-
-  await bootstrapGeneratedSources(context, skipClient: true);
-  stdout.writeln('');
-
   final stagedDartFiles = await _listStagedDartFiles(context);
   if (stagedDartFiles.isNotEmpty) {
     // Batch files to avoid hitting Windows command-line length limits.
@@ -98,6 +87,107 @@ Future<void> runPreCommitChecks(ToolContext context) async {
     workingDirectory: context.repoRoot,
     stepName: 'flutter analyze',
   );
+}
+
+const _validCommitTypes = [
+  'feat',
+  'fix',
+  'docs',
+  'style',
+  'refactor',
+  'perf',
+  'test',
+  'build',
+  'ci',
+  'chore',
+  'revert',
+];
+
+void validateCommitMessage(String commitMsgPath) {
+  final file = File(commitMsgPath);
+  if (!file.existsSync()) {
+    stderr.writeln('Commit message file not found: $commitMsgPath');
+    exitCode = 1;
+    return;
+  }
+
+  final raw = file.readAsStringSync();
+  final lines = raw.split('\n');
+
+  // First non-comment, non-empty line is the header.
+  final header = lines
+      .where((line) => !line.startsWith('#') && line.trim().isNotEmpty)
+      .firstOrNull;
+
+  if (header == null || header.trim().isEmpty) {
+    stderr.writeln('Commit message is empty.');
+    exitCode = 1;
+    return;
+  }
+
+  final trimmedHeader = header.trim();
+
+  // Parse: type(scope)!: subject  or  type: subject
+  final match = RegExp(
+    r'^([a-z]+)(\(([^)]+)\))?!?: (.+)$',
+  ).firstMatch(trimmedHeader);
+
+  if (match == null) {
+    stderr.writeln('Invalid commit message format.');
+    stderr.writeln('  Expected: type(scope): subject');
+    stderr.writeln('  Got:      $trimmedHeader');
+    stderr.writeln('');
+    stderr.writeln('Valid types: ${_validCommitTypes.join(', ')}');
+    exitCode = 1;
+    return;
+  }
+
+  final type = match.group(1)!;
+  final subject = match.group(4)!;
+  final errors = <String>[];
+
+  // type-enum
+  if (!_validCommitTypes.contains(type)) {
+    errors.add(
+      'Invalid commit type: "$type". '
+      'Valid types: ${_validCommitTypes.join(', ')}',
+    );
+  }
+
+  // subject-empty
+  if (subject.trim().isEmpty) {
+    errors.add('Commit subject must not be empty.');
+  }
+
+  // subject-full-stop
+  if (subject.trimRight().endsWith('.')) {
+    errors.add('Commit subject must not end with "."');
+  }
+
+  // subject-max-length
+  if (subject.length > 100) {
+    errors.add(
+      'Commit subject exceeds 100 characters (current: ${subject.length}).',
+    );
+  }
+
+  // header-max-length
+  if (trimmedHeader.length > 200) {
+    errors.add(
+      'Commit header exceeds 200 characters (current: ${trimmedHeader.length}).',
+    );
+  }
+
+  if (errors.isNotEmpty) {
+    stderr.writeln('Commit message validation failed:');
+    for (final error in errors) {
+      stderr.writeln('  - $error');
+    }
+    exitCode = 1;
+    return;
+  }
+
+  stdout.writeln('✓ $trimmedHeader');
 }
 
 class FullstackOptions {

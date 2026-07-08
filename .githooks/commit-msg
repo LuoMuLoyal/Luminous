@@ -1,0 +1,2 @@
+#!/bin/sh
+exec dart run "$(dirname "$0")/../tool/git_hook.dart" commit-msg "$1"

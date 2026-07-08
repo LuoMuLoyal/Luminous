@@ -61,13 +61,14 @@ dart run melos run fullstack-today-report
 
 ## Generated Sources Policy
 
-- This repo now tracks generator inputs/config only. Generated runtime sources stay local and are
+- App-side generated runtime sources stay local and are
   ignored:
   - `*.g.dart`
   - `*.freezed.dart`
   - `lib/l10n/app_localizations*.dart`
-- `generated/lucent_api/` stays as a tracked package scaffold, but its generated `lib/api/**`
-  output and `pubspec.lock` are ignored.
+- `generated/lucent_api/lib/api/**` is tracked again for day-to-day contract review, but its
+  nested `**/*.g.dart` stays ignored.
+- `generated/lucent_api/pubspec.lock` stays ignored.
 - After clone, and whenever ARB files, Freezed/JSON models, or the Lucent contract changes, run:
 
 ```bash
@@ -102,8 +103,7 @@ test account values.
   `dart run melos run fullstack-today-report`
 - `tool/run_fullstack_checks.dart` starts Lucent test runtime through `pnpm --dir ../Lucent test:runtime:start`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the five Android-emulator lanes sequentially.
 - `tool/run_fullstack_checks.dart` now prefers `.env` via `--dart-define-from-file` when that file exists, and still falls back to `.env.fullstack-e2e` for older local setups.
-- Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
-- Current hook scope: `pre-commit` bootstraps app-side generated sources, formats staged Dart files, and runs `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
+- Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hooks are kept lightweight: `commit-msg` validates Conventional Commits format; `pre-commit` formats staged Dart files and runs `flutter analyze`; `pre-push` is a no-op (full validation runs in CI).
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
 - OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, first run `pnpm export:openapi` in `../Lucent` to materialize `Lucent/docs/openapi.json`, then run `dart run tool/bootstrap_generated_sources.dart` in `Luminous`. `dart run tool/verify_lucent_openapi_sync.dart` remains the lightweight gate for verifying the target OpenAPI path and generated-client layout.
 - Hosted CI now enforces that gate by checking out `Lucent`, exporting its OpenAPI locally, then running `tool/bootstrap_generated_sources.dart` before analyze/test.

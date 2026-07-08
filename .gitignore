@@ -49,7 +49,8 @@ lib/l10n/app_localizations_*.dart
 **/*.freezed.dart
 **/*.g.dart
 packages/
-generated/lucent_api/lib/api/
+!generated/lucent_api/lib/api/**
+generated/lucent_api/lib/api/**/*.g.dart
 generated/lucent_api/pubspec.lock
 
 # Symbolication related
