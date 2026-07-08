@@ -52,12 +52,14 @@ void main() {
 
     test('default order uses defaultQuickActionOrder', () {
       final ordered = buildMobileQuickActions(actions);
-      // symptom should be first per defaultQuickActionOrder
+      // defaultQuickActionOrder: symptom, medication, water, meal, sleep, mood, note
+      // actions only has: meal, water, symptom, note, sleep
+      // So filtered order: symptom, water, meal, sleep, note
       expect(ordered.first.type, RecordEntryType.symptom);
-      expect(ordered[1].type, RecordEntryType.meal);
-      expect(ordered[2].type, RecordEntryType.note);
-      expect(ordered[3].type, RecordEntryType.water);
-      expect(ordered[4].type, RecordEntryType.sleep);
+      expect(ordered[1].type, RecordEntryType.water);
+      expect(ordered[2].type, RecordEntryType.meal);
+      expect(ordered[3].type, RecordEntryType.sleep);
+      expect(ordered[4].type, RecordEntryType.note);
     });
 
     test('dynamic sort enabled orders by frequency descending', () {
@@ -67,12 +69,12 @@ void main() {
       );
       final ordered = buildMobileQuickActions(actions, preferences: prefs);
       // water (10) > meal (5) > symptom/note/sleep (0, default order)
+      // Zero-frequency items follow defaultQuickActionOrder: symptom, sleep, note
       expect(ordered[0].type, RecordEntryType.water);
       expect(ordered[1].type, RecordEntryType.meal);
-      // Remaining items keep default relative order: symptom, note, sleep
       expect(ordered[2].type, RecordEntryType.symptom);
-      expect(ordered[3].type, RecordEntryType.note);
-      expect(ordered[4].type, RecordEntryType.sleep);
+      expect(ordered[3].type, RecordEntryType.sleep);
+      expect(ordered[4].type, RecordEntryType.note);
     });
 
     test('custom order overrides default order when dynamic sort is off', () {

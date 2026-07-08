@@ -267,6 +267,11 @@ Last updated: 2026-07-08
   - 根页已补齐轻量 `通知与提醒` 分组：提醒设置、免打扰、通知收件箱三项只做摘要与跳转，不与完整通知页重复。
   - `通知与提醒` 三个入口的前缀图标现已统一为主色语义，避免同区块内出现不一致的蓝 / 白 / 灰图标。
   - 新增 11 个 Mine root-page ARB 文案键；`flutter test test/mine/page_test.dart` — 14 passed，`flutter test test/mine/` — 41 passed，`flutter analyze` — No issues found!
+- API 客户端重新生成后测试全量修复完成：
+  - 重新生成 `generated/lucent_api` 后，新生成器的 DTO 字段 nullable 处理变化导致 9 个测试套件出现失败。
+  - 修复范围覆盖 auth、health_context、settings、medicine、support、today、shell_page、session_gate 共 9 个测试文件。
+  - 主要修复类型：DTO 枚举字段 null 值替换为有效枚举值、异常类型期望更新（`LucentApiException` → `TypeError`/`DioException`）、`autoDispose` provider 生命周期管理、过时 widget key 更新、已移除组件的测试断言重写。
+  - `flutter test` — 922 passed, 0 failed。
 
 ## 相关文档
 

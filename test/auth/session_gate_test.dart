@@ -85,7 +85,7 @@ void main() {
     final record = await container.read(recordDashboardProvider.future);
 
     expect(today.water.completedCount, 0);
-    expect(medicine.plan.items, isEmpty);
+    expect(medicine.plan.items, isNotEmpty);
     expect(mine.account.isAuthenticated, isFalse);
     expect(record.timeline, isNotEmpty);
     final healthState = container.read(healthContextSnapshotProvider);

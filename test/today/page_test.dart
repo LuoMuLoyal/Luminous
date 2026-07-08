@@ -59,12 +59,17 @@ void main() {
     );
     expect(find.byKey(const Key('today-summary-card')), findsOneWidget);
 
-    final scrollable = _todayDashboardScrollable();
-    for (final key in ['today-observation-card', 'today-quick-actions-card']) {
-      final finder = find.byKey(Key(key));
-      await tester.scrollUntilVisible(finder, 220, scrollable: scrollable);
-      await tester.pump(const Duration(milliseconds: 300));
-      expect(finder, findsOneWidget);
+    for (final key in [
+      'today-observation-card',
+      'today-quick-actions-primary',
+    ]) {
+      await tester.scrollUntilVisible(
+        find.byKey(Key(key)),
+        220,
+        scrollable: _todayDashboardScrollable(),
+      );
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byKey(Key(key)), findsOneWidget);
     }
   });
 
@@ -422,9 +427,6 @@ Future<void> _settleDashboard(WidgetTester tester) async {
 
 Finder _todayDashboardScrollable() {
   return find
-      .descendant(
-        of: find.byKey(const PageStorageKey<String>('today-dashboard-scroll')),
-        matching: find.byType(Scrollable),
-      )
+      .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
       .first;
 }

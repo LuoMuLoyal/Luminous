@@ -15,12 +15,12 @@ void main() {
   });
 
   group('formatRecordTimeLabel', () {
-    test('returns --:-- for null', () {
-      expect(formatRecordTimeLabel(null), '--:--');
+    test('returns em dash for null', () {
+      expect(formatRecordTimeLabel(null), '—');
     });
-    test('returns --:-- for empty or whitespace', () {
-      expect(formatRecordTimeLabel(''), '--:--');
-      expect(formatRecordTimeLabel('   '), '--:--');
+    test('returns em dash for empty or whitespace', () {
+      expect(formatRecordTimeLabel(''), '—');
+      expect(formatRecordTimeLabel('   '), '—');
     });
     test('returns trimmed value', () {
       expect(formatRecordTimeLabel('09:45'), '09:45');

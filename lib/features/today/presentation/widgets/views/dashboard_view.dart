@@ -119,7 +119,10 @@ class _MobileTodayDashboard extends StatelessWidget {
         ),
       TodayRecordHintSection(dashboard: dashboard),
       TodayPrimarySuggestionSection(dashboard: dashboard),
-      TodaySecondarySuggestionsSection(dashboard: dashboard),
+      TodaySecondarySuggestionsSection(
+        key: const Key('today-secondary-suggestions-card'),
+        dashboard: dashboard,
+      ),
       TodaySummarySection(dashboard: dashboard),
       TodayObservationSection(dashboard: dashboard),
       TodayQuickActionsSection(dashboard: dashboard),
@@ -201,7 +204,10 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 5,
                 child: Column(
                   children: [
-                    TodaySecondarySuggestionsSection(dashboard: dashboard),
+                    TodaySecondarySuggestionsSection(
+                      key: const Key('today-secondary-suggestions-card'),
+                      dashboard: dashboard,
+                    ),
                     const SizedBox(height: AppSpacingTokens.level6),
                     TodayObservationSection(dashboard: dashboard),
                   ],

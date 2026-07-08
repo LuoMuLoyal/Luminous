@@ -89,10 +89,16 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      expect(
-        container.read(supportResourcesProvider('about').future),
-        throwsA(isA<DioException>()),
+      // Keep the autoDispose provider alive during the async operation.
+      final sub = container.listen(
+        supportResourcesProvider('about'),
+        (_, __) {},
       );
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final state = sub.read();
+      expect(state.hasError, isTrue);
+      expect(state.error, isA<DioException>());
     });
 
     test('passes the scope parameter to the API', () async {
@@ -157,10 +163,13 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      expect(
-        container.read(appInfoProvider.future),
-        throwsA(isA<DioException>()),
-      );
+      // Keep the autoDispose provider alive during the async operation.
+      final sub = container.listen(appInfoProvider, (_, __) {});
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final state = sub.read();
+      expect(state.hasError, isTrue);
+      expect(state.error, isA<DioException>());
     });
   });
 }

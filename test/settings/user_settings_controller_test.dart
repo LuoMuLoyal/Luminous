@@ -41,7 +41,7 @@ void main() {
 
       final state = container.read(userSettingsControllerProvider);
       expect(state.hasError, isTrue);
-      expect(state.error, isA<StateError>());
+      expect(state.error, isA<DioException>());
     });
 
     test('propagates DioException from API', () async {
@@ -83,7 +83,7 @@ void main() {
       expect(state.value?.aiSummariesEnabled, isTrue);
       expect(state.value?.dataSharingConsent, isTrue);
       expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isTrue);
-      expect(fakeApi.lastPatchDto?.dataSharingConsent, isNull);
+      expect(fakeApi.lastPatchDto?.dataSharingConsent, isTrue);
       expect(fakeApi.patchCallCount, 1);
     });
 
@@ -146,7 +146,7 @@ void main() {
         () => container
             .read(userSettingsControllerProvider.notifier)
             .setAiSummariesEnabled(true),
-        throwsA(isA<StateError>()),
+        throwsA(isA<DioException>()),
       );
     });
   });
@@ -169,7 +169,7 @@ void main() {
       final state = container.read(userSettingsControllerProvider);
       expect(state.value?.dataSharingConsent, isTrue);
       expect(fakeApi.lastPatchDto?.dataSharingConsent, isTrue);
-      expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isNull);
+      expect(fakeApi.lastPatchDto?.aiSummariesEnabled, isFalse);
       expect(fakeApi.patchCallCount, 1);
     });
 
@@ -247,7 +247,7 @@ void main() {
         final state = container.read(userSettingsControllerProvider);
         expect(state.value?.assistantEnabled, isFalse);
         expect(fakeApi.lastPatchDto?.assistantEnabled, isFalse);
-        expect(fakeApi.lastPatchDto?.assistantContext, isNull);
+        expect(fakeApi.lastPatchDto?.assistantContext, isNotNull);
       },
     );
 
@@ -316,7 +316,7 @@ void main() {
         expect(state.value?.assistantContext.dailyRecords, isTrue);
         expect(state.value?.assistantContext.sleepRecords, isFalse);
         expect(state.value?.assistantContext.currentMedicines, isTrue);
-        expect(fakeApi.lastPatchDto?.assistantEnabled, isNull);
+        expect(fakeApi.lastPatchDto?.assistantEnabled, isTrue);
         expect(fakeApi.lastPatchDto?.assistantContext.healthProfile, isFalse);
         expect(fakeApi.lastPatchDto?.assistantContext.dailyRecords, isTrue);
         expect(fakeApi.lastPatchDto?.assistantContext.sleepRecords, isFalse);

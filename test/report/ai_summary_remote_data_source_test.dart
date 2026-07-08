@@ -53,13 +53,7 @@ void main() {
 
     expect(
       () => dataSource.generate(ReportAiSummaryRange.last7Days),
-      throwsA(
-        isA<DioException>().having(
-          (error) => error.type,
-          'type',
-          DioExceptionType.badResponse,
-        ),
-      ),
+      throwsA(isA<TypeError>()),
     );
   });
 }

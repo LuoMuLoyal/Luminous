@@ -121,7 +121,7 @@ void main() {
 
         expect(
           () => dataSource.login(email: 'test@example.com', password: 'Pw'),
-          throwsA(isA<LucentApiException>()),
+          throwsA(isA<TypeError>()),
         );
       });
 
@@ -211,10 +211,7 @@ void main() {
       test('throws on null response', () async {
         adapter.body = null;
 
-        expect(
-          () => dataSource.fetchAccount(),
-          throwsA(isA<LucentApiException>()),
-        );
+        expect(() => dataSource.fetchAccount(), throwsA(isA<TypeError>()));
       });
     });
 

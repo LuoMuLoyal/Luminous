@@ -8,6 +8,8 @@ import 'package:luminous/features/health_context/data/providers/data_providers.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/record/data/repositories/mock_repository.dart';
+import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
+import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/support/data/providers/resources_providers.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
@@ -127,12 +129,16 @@ void main() {
     expect(find.text(l10n.desktopSidebarHelp), findsOneWidget);
 
     await tester.tap(find.text(l10n.tabReport).first);
-    await tester.pumpAndSettle();
-    expect(find.byKey(const Key('report-snapshot-status')), findsOneWidget);
-    expect(find.byKey(const Key('report-generate-action')), findsOneWidget);
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+    expect(find.byKey(const Key('report-top-generate-action')), findsOneWidget);
 
     await tester.tap(find.text(l10n.tabMine).first);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
   });
@@ -282,7 +288,9 @@ void main() {
     expect(find.text(l10n.appTitle), findsNWidgets(2));
   });
 
-  testWidgets('Mine page shows status badges', (tester) async {
+  testWidgets('Mine page shows readiness state and account info', (
+    tester,
+  ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
     final mockSnapshot = const HealthContextSnapshot(
       summary: HealthSummary(
@@ -335,6 +343,7 @@ void main() {
           reportRepositoryProvider.overrideWithValue(
             const MockReportRepository(),
           ),
+          mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
           supportResourcesProvider(
             'campus',
           ).overrideWith((ref) async => const []),
@@ -348,14 +357,31 @@ void main() {
 
     // Navigate to Mine tab
     await tester.tap(find.text(l10n.tabMine).first);
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
-    // Allergy badge
-    expect(find.text(l10n.mineAlertAllergyBadge), findsOneWidget);
-    // Medicine badge
-    expect(find.text(l10n.mineAlertMedicineBadge), findsOneWidget);
-    // Privacy badge
-    expect(find.text(l10n.mineAlertPrivacyBadge), findsOneWidget);
+    // Signed-in badge (account is authenticated in MockMineRepository.fetchDashboard)
+    expect(
+      find.text(l10n.mineReadinessSignedInBadge, skipOffstage: false),
+      findsOneWidget,
+    );
+    // Ready title (no readiness gaps — allergyCount=2, medicineCount=2, basicInfoCompleted=true)
+    expect(
+      find.text(l10n.mineReadinessReadyTitle, skipOffstage: false),
+      findsOneWidget,
+    );
+    // Manage action button
+    expect(
+      find.text(l10n.mineReadinessManageAction, skipOffstage: false),
+      findsOneWidget,
+    );
+    // Completion label
+    expect(
+      find.text(l10n.mineCompletionTitle, skipOffstage: false),
+      findsOneWidget,
+    );
   });
 }
 

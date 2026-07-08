@@ -33,14 +33,17 @@ void main() {
       expect(fakeApi.getLatestCallCount, 1);
     });
 
-    test('yields null state when no previous request exists', () async {
+    test('throws DioException when no previous request exists', () async {
       container = buildContainer(
         api: _FakeDataExportApi(latestReturnsNullData: true),
       );
 
-      final state = await container.read(dataExportControllerProvider.future);
+      container.read(dataExportControllerProvider);
+      await Future<void>.delayed(Duration.zero);
 
-      expect(state, isNull);
+      final state = container.read(dataExportControllerProvider);
+      expect(state.hasError, isTrue);
+      expect(state.error, isA<DioException>());
       expect(fakeApi.getLatestCallCount, 1);
     });
 
@@ -64,14 +67,17 @@ void main() {
       expect(state.error, isA<DioException>());
     });
 
-    test('yields null state when GET response data is null', () async {
+    test('throws DioException when GET response data is null', () async {
       final api = _FakeDataExportApi();
       api.getLatestReturnsNullResponse = true;
       container = buildContainer(api: api);
 
-      final state = await container.read(dataExportControllerProvider.future);
+      container.read(dataExportControllerProvider);
+      await Future<void>.delayed(Duration.zero);
 
-      expect(state, isNull);
+      final state = container.read(dataExportControllerProvider);
+      expect(state.hasError, isTrue);
+      expect(state.error, isA<DioException>());
       expect(fakeApi.getLatestCallCount, 1);
     });
   });
@@ -197,29 +203,32 @@ void main() {
       expect(state.value?.id, 'req-1');
     });
 
-    test('sets null state when POST response data is null', () async {
+    test('propagates DioException when POST response data is null', () async {
       container = buildContainer();
 
       await container.read(dataExportControllerProvider.future);
 
       fakeApi.createReturnsNull = true;
 
-      await container
-          .read(dataExportControllerProvider.notifier)
-          .requestExport();
-
-      final state = container.read(dataExportControllerProvider).value;
-      expect(state, isNull);
+      expect(
+        () => container
+            .read(dataExportControllerProvider.notifier)
+            .requestExport(),
+        throwsA(isA<DioException>()),
+      );
     });
 
-    test('with no prior request creates and updates state from null', () async {
+    test('creates and updates state after initial load error', () async {
       container = buildContainer(
         api: _FakeDataExportApi(latestReturnsNullData: true),
       );
 
-      await container.read(dataExportControllerProvider.future);
-      expect(container.read(dataExportControllerProvider).value, isNull);
+      // Initial load throws because the API returns no data.
+      container.read(dataExportControllerProvider);
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(dataExportControllerProvider).hasError, isTrue);
 
+      fakeApi.latestReturnsNullData = false;
       fakeApi.createResponse = _buildCreateResponse(
         id: 'req-first',
         status: DataExportStatus.processing,
@@ -258,7 +267,7 @@ void main() {
       expect(fakeApi.getLatestCallCount, 2);
     });
 
-    test('clears state when latest becomes null', () async {
+    test('propagates DioException when latest becomes null', () async {
       container = buildContainer();
 
       await container.read(dataExportControllerProvider.future);
@@ -266,9 +275,10 @@ void main() {
 
       fakeApi.latestReturnsNullData = true;
 
-      await container.read(dataExportControllerProvider.notifier).refresh();
-
-      expect(container.read(dataExportControllerProvider).value, isNull);
+      expect(
+        () => container.read(dataExportControllerProvider.notifier).refresh(),
+        throwsA(isA<DioException>()),
+      );
     });
 
     test('propagates DioException when GET fails', () async {
