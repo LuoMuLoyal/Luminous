@@ -57,6 +57,8 @@ class MineDashboardView extends StatelessWidget {
           dashboard: dashboard,
         ),
         const SizedBox(height: AppSpacingTokens.level5),
+        const MineNotificationsReminderSection(),
+        const SizedBox(height: AppSpacingTokens.level5),
         MineAccountPrivacySection(
           key: const Key('mine-account-privacy-section'),
           account: dashboard.account,
@@ -84,6 +86,8 @@ class MineDashboardView extends StatelessWidget {
                 key: const Key('mine-archive-section'),
                 dashboard: dashboard,
               ),
+              const SizedBox(height: AppSpacingTokens.level5),
+              const MineNotificationsReminderSection(),
               const SizedBox(height: AppSpacingTokens.level5),
               MineAccountPrivacySection(
                 key: const Key('mine-account-privacy-section'),

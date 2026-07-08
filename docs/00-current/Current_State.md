@@ -242,6 +242,8 @@ Last updated: 2026-07-08
   - 独立 `SignInHintBanner` 已从 Mine 根页移除；未登录 preview、缺失关键信息和已基本就绪三种状态统一在主卡中表达。
   - 移动端 `MineStatusOverview` 三宫格已下线；其信息改由主卡和分组入口承接，减少首屏竞争。
   - 健康档案区改为 Forui `FTileGroup + FTile`，并为当前用药补齐显式状态文案；隐私横幅改为低优先级账户/隐私分组。
+  - 根页已补齐轻量 `通知与提醒` 分组：提醒设置、免打扰、通知收件箱三项只做摘要与跳转，不与完整通知页重复。
+  - `通知与提醒` 三个入口的前缀图标现已统一为主色语义，避免同区块内出现不一致的蓝 / 白 / 灰图标。
   - 新增 11 个 Mine root-page ARB 文案键；`flutter test test/mine/page_test.dart` — 14 passed，`flutter test test/mine/` — 41 passed，`flutter analyze` — No issues found!
 
 ## 相关文档

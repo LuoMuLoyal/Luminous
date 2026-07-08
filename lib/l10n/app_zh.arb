@@ -877,6 +877,17 @@
   "mineReminderSleepTitle": "睡眠提醒",
   "mineReminderLocalOnly": "仅本地",
   "mineReminderEnabled": "已开启",
+  "mineNotificationReminderSectionTitle": "通知与提醒",
+  "mineNotificationInboxTitle": "通知收件箱",
+  "mineNotificationInboxUnreadSummary": "{count} 条未读",
+  "@mineNotificationInboxUnreadSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxSignedOutSummary": "登录后查看",
   "mineReminderSleepOff": "未开启",
   "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
   "@mineReminderSleepSummary": {

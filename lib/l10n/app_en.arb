@@ -870,6 +870,17 @@
   "mineReminderSleepTitle": "Sleep",
   "mineReminderLocalOnly": "Local only",
   "mineReminderEnabled": "Enabled",
+  "mineNotificationReminderSectionTitle": "Notifications & reminders",
+  "mineNotificationInboxTitle": "Notification inbox",
+  "mineNotificationInboxUnreadSummary": "{count} unread",
+  "@mineNotificationInboxUnreadSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxSignedOutSummary": "Sign in to view",
   "mineReminderSleepOff": "Off",
   "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
   "@mineReminderSleepSummary": {

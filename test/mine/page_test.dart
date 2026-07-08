@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -17,6 +20,7 @@ import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/completeness_notice.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/notification/presentation/providers/providers.dart';
+import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -40,10 +44,15 @@ void main() {
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
+    expect(
+      find.text(l10n.mineNotificationReminderSectionTitle),
+      findsOneWidget,
+    );
 
     final keys = <String>[
       'mine-account-header',
       'mine-archive-section',
+      'mine-notifications-reminder-section',
       'mine-account-privacy-section',
     ];
 
@@ -57,11 +66,188 @@ void main() {
     expect(find.byKey(const Key('mine-campus-surface')), findsNothing);
     expect(find.byKey(const Key('mine-status-overview')), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
-    expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
     expect(find.byKey(const Key('mine-settings-section')), findsNothing);
     expect(find.text(l10n.minePrivacyReportTitle), findsNothing);
-    expect(find.text(l10n.mineReminderSectionTitle), findsNothing);
     expect(find.text(l10n.mineAccountSettingsTitle), findsNothing);
+  });
+
+  testWidgets('Mine page shows notification and reminder summaries', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(
+            () => _SignedInAuthSessionNotifier(),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) => Future.value(_mockSnapshot),
+          ),
+          notificationUnreadCountProvider.overrideWith((ref) => 3),
+          notificationSettingsControllerProvider.overrideWith(
+            () => _NotificationSettingsNotifier(
+              const NotificationSettingsState(
+                medicationReminders: true,
+                waterReminders: true,
+                sleepReminderEnabled: true,
+                sleepBedtime: TimeOfDay(hour: 23, minute: 0),
+                sleepWakeTime: TimeOfDay(hour: 7, minute: 0),
+                dndEnabled: true,
+                dndStartTime: TimeOfDay(hour: 22, minute: 0),
+                dndEndTime: TimeOfDay(hour: 7, minute: 0),
+                reminderAdvanceMinutes: 10,
+              ),
+            ),
+          ),
+        ],
+        child: const TestForuiApp(home: MinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(
+      find.text(l10n.mineNotificationReminderSectionTitle),
+      findsOneWidget,
+    );
+    expect(find.text(l10n.mineReminderSectionTitle), findsOneWidget);
+    expect(find.text('已开启 3 项 · 提前 10 分钟'), findsOneWidget);
+    expect(find.text(l10n.settingsNotificationsDndTitle), findsOneWidget);
+    expect(find.text('22:00 - 07:00'), findsOneWidget);
+    expect(find.text(l10n.mineNotificationInboxTitle), findsOneWidget);
+    expect(
+      find.text(l10n.mineNotificationInboxUnreadSummary(3)),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('Mine notifications section uses a unified icon tone', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await _pumpMinePage(tester);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final icons = tester
+        .widgetList<SoftIcon>(
+          find.descendant(
+            of: find.byKey(const Key('mine-notifications-reminder-section')),
+            matching: find.byType(SoftIcon),
+          ),
+        )
+        .toList();
+
+    expect(icons, hasLength(3));
+    for (final icon in icons) {
+      expect(icon.color, AppColors.primary);
+    }
+  });
+
+  testWidgets('Mine notifications section routes to settings, dnd, and inbox', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(393, 852);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final container = ProviderContainer(
+      overrides: [
+        authSessionProvider.overrideWith(
+          () => _EmailSignedInAuthSessionNotifier(),
+        ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_mockSnapshot),
+        ),
+        notificationUnreadCountProvider.overrideWith((ref) => 0),
+        notificationSettingsControllerProvider.overrideWith(
+          () =>
+              _NotificationSettingsNotifier(const NotificationSettingsState()),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final testRouter = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(path: '/', builder: (context, state) => const MinePage()),
+        GoRoute(
+          path: '/settings/notifications',
+          builder: (context, state) =>
+              const Scaffold(body: Text('notification-settings-page')),
+        ),
+        GoRoute(
+          path: '/settings/notifications/dnd',
+          builder: (context, state) =>
+              const Scaffold(body: Text('notification-dnd-page')),
+        ),
+        GoRoute(
+          path: '/notifications',
+          builder: (context, state) =>
+              const Scaffold(body: Text('notification-inbox-page')),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: TestForuiRouterApp(routerConfig: testRouter),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final mobileScroll = find.byType(Scrollable).first;
+    final notificationSettingsTile = find.byKey(
+      const Key('mine-notification-settings-tile'),
+    );
+    await tester.scrollUntilVisible(
+      notificationSettingsTile,
+      200,
+      scrollable: mobileScroll,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(notificationSettingsTile.hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text('notification-settings-page'), findsOneWidget);
+
+    testRouter.pop();
+    await tester.pumpAndSettle();
+    final dndTile = find.byKey(const Key('mine-dnd-settings-tile'));
+    await tester.scrollUntilVisible(dndTile, 120, scrollable: mobileScroll);
+    await tester.pumpAndSettle();
+    await tester.tap(dndTile.hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text('notification-dnd-page'), findsOneWidget);
+
+    testRouter.pop();
+    await tester.pumpAndSettle();
+    final inboxTile = find.byKey(const Key('mine-notification-inbox-tile'));
+    await tester.scrollUntilVisible(inboxTile, 120, scrollable: mobileScroll);
+    await tester.pumpAndSettle();
+    await tester.tap(inboxTile.hitTestable());
+    await tester.pumpAndSettle();
+    expect(find.text('notification-inbox-page'), findsOneWidget);
   });
 
   testWidgets('Mine page renders signed-out static view without loading', (
@@ -341,8 +527,16 @@ void main() {
       of: find.byKey(const Key('mine-archive-section')),
       matching: find.text(l10n.mineArchiveBasicTitle),
     );
-    await tester.ensureVisible(basicInfo);
-    await tester.tap(basicInfo);
+    final basicTile = find.ancestor(
+      of: basicInfo,
+      matching: find.byType(FTile),
+    );
+    await tester.scrollUntilVisible(
+      basicTile,
+      120,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(basicTile.hitTestable());
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(MinePage), findsOneWidget);
@@ -629,6 +823,15 @@ class _EmailSignedInAuthSessionNotifier extends AuthSessionNotifier {
       ),
     );
   }
+}
+
+class _NotificationSettingsNotifier extends NotificationSettingsController {
+  _NotificationSettingsNotifier(this.fixedState);
+
+  final NotificationSettingsState fixedState;
+
+  @override
+  Future<NotificationSettingsState> build() async => fixedState;
 }
 
 final _mockSnapshot = const HealthContextSnapshot(
