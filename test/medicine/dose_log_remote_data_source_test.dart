@@ -21,72 +21,63 @@ void main() {
       );
     });
 
-    test('markForDate updates existing log for the same medicine', () async {
-      adapter.listItems = [
-        _doseJson(
-          id: 'dose-1',
-          currentMedicineId: 'med-1',
-          status: 'taken',
-          scheduledFor: '2026-06-08',
-        ),
-      ];
-
-      final result = await dataSource.markForDate(
-        'med-1',
-        'skipped',
-        '2026-06-08',
-      );
-
-      final listRequest = adapter.requestAt(
-        'GET',
-        '/api/v1/user/medicine-dose-logs',
-      );
-      expect(listRequest.queryParameters, containsPair('date', '2026-06-08'));
-
-      final updateRequest = adapter.requestAt(
-        'PATCH',
-        '/api/v1/user/medicine-dose-logs/dose-1',
-      );
-      expect(updateRequest.jsonBody, containsPair('status', 'skipped'));
-      expect(
-        adapter.requests.where((request) => request.method == 'POST'),
-        isEmpty,
-      );
-      expect(result.status, DoseLogStatus.skipped);
-    });
-
     test(
-      'markForDate creates a log when none exists for the medicine',
+      'mark posts slot-aware reminder identity to the mark endpoint',
       () async {
-        adapter.listItems = [
-          _doseJson(
-            id: 'dose-1',
-            currentMedicineId: 'other-med',
-            status: 'taken',
-            scheduledFor: '2026-06-08',
-          ),
-        ];
-
-        final result = await dataSource.markForDate(
-          'med-1',
-          'taken',
-          '2026-06-08',
+        final result = await dataSource.mark(
+          currentMedicineId: 'med-1',
+          reminderId: 'reminder-1',
+          scheduledTime: '07:45',
+          status: 'taken',
+          date: '2026-06-08',
         );
 
-        final createRequest = adapter.requestAt(
+        final request = adapter.requestAt(
           'POST',
-          '/api/v1/user/medicine-dose-logs',
+          '/api/v1/user/medicine-dose-logs/mark',
         );
-        expect(createRequest.jsonBody, {
+        expect(request.jsonBody, {
           'currentMedicineId': 'med-1',
+          'reminderId': 'reminder-1',
           'status': 'taken',
           'scheduledFor': '2026-06-08',
+          'scheduledTime': '07:45',
         });
         expect(
-          adapter.requests.where((request) => request.method == 'PATCH'),
+          adapter.requests.where(
+            (captured) =>
+                captured.path == '/api/v1/user/medicine-dose-logs' ||
+                captured.path == '/api/v1/user/medicine-dose-logs/dose-1',
+          ),
           isEmpty,
         );
+        expect(result.reminderId, 'reminder-1');
+        expect(result.scheduledTime, '07:45');
         expect(result.status, DoseLogStatus.taken);
+      },
+    );
+
+    test(
+      'mark omits slot identity when the plan has no reminder slot',
+      () async {
+        final result = await dataSource.mark(
+          currentMedicineId: 'med-1',
+          status: 'skipped',
+          date: '2026-06-08',
+        );
+
+        final request = adapter.requestAt(
+          'POST',
+          '/api/v1/user/medicine-dose-logs/mark',
+        );
+        expect(request.jsonBody, {
+          'currentMedicineId': 'med-1',
+          'status': 'skipped',
+          'scheduledFor': '2026-06-08',
+        });
+        expect(result.reminderId, isNull);
+        expect(result.scheduledTime, isNull);
+        expect(result.status, DoseLogStatus.skipped);
       },
     );
   });
@@ -142,8 +133,10 @@ class _FakeDoseLogAdapter implements HttpClientAdapter {
       'data': _doseJson(
         id: options.method == 'PATCH' ? 'dose-1' : 'dose-new',
         currentMedicineId: currentMedicineId,
+        reminderId: payload['reminderId'] as String?,
         status: payload['status'] as String,
         scheduledFor: payload['scheduledFor'] as String? ?? '2026-06-08',
+        scheduledTime: payload['scheduledTime'] as String?,
       ),
     });
   }
@@ -184,16 +177,21 @@ class _CapturedDoseLogRequest {
 Map<String, Object?> _doseJson({
   required String id,
   required String? currentMedicineId,
+  String? reminderId,
   required String status,
   required String scheduledFor,
+  String? scheduledTime,
 }) {
   return <String, Object?>{
     'id': id,
     'currentMedicineId': currentMedicineId,
+    'reminderId': reminderId,
     'status': status,
     'scheduledFor': scheduledFor,
+    'scheduledTime': scheduledTime,
     'doseText': null,
     'note': null,
     'createdAt': '2026-06-08T08:00:00.000Z',
+    'updatedAt': '2026-06-08T08:00:00.000Z',
   };
 }

@@ -8,19 +8,25 @@ enum DoseLogStatus { taken, skipped, missed, planned }
 class DoseLogItem {
   final String id;
   final String? currentMedicineId;
+  final String? reminderId;
   final DoseLogStatus status;
   final String scheduledFor;
+  final String? scheduledTime;
   final String? doseText;
   final String? note;
   final String createdAt;
+  final String updatedAt;
   const DoseLogItem({
     required this.id,
     this.currentMedicineId,
+    this.reminderId,
     required this.status,
     required this.scheduledFor,
+    this.scheduledTime,
     this.doseText,
     this.note,
     required this.createdAt,
+    required this.updatedAt,
   });
 }
 
@@ -37,17 +43,7 @@ class DoseLogRemoteDataSource {
     final body = _coerce(response.data);
     final data = body!['data'] as Map<String, dynamic>;
     return (data['items'] as List)
-        .map<DoseLogItem>(
-          (d) => DoseLogItem(
-            id: (d as Map<String, dynamic>)['id'] as String,
-            currentMedicineId: d['currentMedicineId'] as String?,
-            status: _parseStatus(d['status'] as String),
-            scheduledFor: d['scheduledFor'] as String,
-            doseText: d['doseText'] as String?,
-            note: d['note'] as String?,
-            createdAt: d['createdAt'] as String,
-          ),
-        )
+        .map<DoseLogItem>((d) => _fromJson(d as Map<String, dynamic>))
         .toList();
   }
 
@@ -67,16 +63,7 @@ class DoseLogRemoteDataSource {
       options: Options(method: 'POST', contentType: Headers.jsonContentType),
     );
     final body = _coerce(response.data);
-    final d = body!['data'] as Map<String, dynamic>;
-    return DoseLogItem(
-      id: d['id'] as String,
-      currentMedicineId: d['currentMedicineId'] as String?,
-      status: _parseStatus(d['status'] as String),
-      scheduledFor: d['scheduledFor'] as String,
-      doseText: d['doseText'] as String?,
-      note: d['note'] as String?,
-      createdAt: d['createdAt'] as String,
-    );
+    return _fromJson(body!['data'] as Map<String, dynamic>);
   }
 
   Future<DoseLogItem> update(String doseLogId, String status) async {
@@ -86,40 +73,62 @@ class DoseLogRemoteDataSource {
       options: Options(method: 'PATCH', contentType: Headers.jsonContentType),
     );
     final body = _coerce(response.data);
-    final d = body!['data'] as Map<String, dynamic>;
-    return DoseLogItem(
-      id: d['id'] as String,
-      currentMedicineId: d['currentMedicineId'] as String?,
-      status: _parseStatus(d['status'] as String),
-      scheduledFor: d['scheduledFor'] as String,
-      doseText: d['doseText'] as String?,
-      note: d['note'] as String?,
-      createdAt: d['createdAt'] as String,
-    );
+    return _fromJson(body!['data'] as Map<String, dynamic>);
   }
 
-  Future<DoseLogItem> markForDate(
-    String currentMedicineId,
-    String status,
-    String date,
-  ) async {
-    final existingLogs = await fetchForDate(date);
-    for (final log in existingLogs) {
-      if (log.currentMedicineId == currentMedicineId) {
-        return update(log.id, status);
-      }
-    }
-    return create(currentMedicineId, status, date);
+  Future<DoseLogItem> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  }) async {
+    final payload = <String, dynamic>{
+      'currentMedicineId': currentMedicineId,
+      if (_hasText(reminderId)) 'reminderId': reminderId,
+      'status': status,
+      'scheduledFor': date,
+      if (_hasText(scheduledTime)) 'scheduledTime': scheduledTime,
+    };
+    final response = await dio.request<Object>(
+      '/api/v1/user/medicine-dose-logs/mark',
+      data: payload,
+      options: Options(method: 'POST', contentType: Headers.jsonContentType),
+    );
+    final body = _coerce(response.data);
+    return _fromJson(body!['data'] as Map<String, dynamic>);
   }
 
   DoseLogStatus _parseStatus(String s) =>
       DoseLogStatus.values.firstWhere((e) => e.name == s);
+
+  DoseLogItem _fromJson(Map<String, dynamic> json) {
+    return DoseLogItem(
+      id: json['id'] as String,
+      currentMedicineId: _optionalString(json['currentMedicineId']),
+      reminderId: _optionalString(json['reminderId']),
+      status: _parseStatus(json['status'] as String),
+      scheduledFor: json['scheduledFor'] as String,
+      scheduledTime: _optionalString(json['scheduledTime']),
+      doseText: _optionalString(json['doseText']),
+      note: _optionalString(json['note']),
+      createdAt: json['createdAt'] as String,
+      updatedAt: json['updatedAt'] as String? ?? json['createdAt'] as String,
+    );
+  }
 
   Map<String, dynamic>? _coerce(Object? v) {
     if (v is Map<String, dynamic>) return v;
     if (v is Map) return v.map((k, val) => MapEntry(k.toString(), val));
     return null;
   }
+
+  String? _optionalString(Object? value) {
+    final text = value?.toString().trim();
+    return text == null || text.isEmpty ? null : text;
+  }
+
+  bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 }
 
 final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((

@@ -19,6 +19,12 @@ Last updated: 2026-07-08
 ## 已完成基线
 
 - 历史 completed baselines 与 audit remediation 已归档：[[04-archive/current-state-archive]]
+- Medicine 首页 Phase 1 重构完成：
+  - 根页已按产品蓝图收敛为四块首屏结构：当前用药盒、今日服用计划、用药安全摘要、用药操作。
+  - 首页已移除 `Reference notice / Safety tips / 用药记录伪时间线` 这类不再符合 Tab 职责的主视图区块。
+  - 根页今日打卡已接入 Lucent Phase 2 slot-aware 合同：按 `reminderId` / `scheduledTime` 幂等确认单个提醒槽位，不再把同一种药当天多次提醒混成一条 day-level 打卡。
+  - 用药 hero 指标与下一剂提示现在按 reminder slot 计算；同一种药早晚两次提醒时，已完成一剂不会把后续待服槽位一起吞掉。
+  - 根据移动端 UI 反馈，Medicine 首页已修正 `今日服用计划 / 用药安全` 中低对比度 badge / pill 前景色，恢复 `未覆盖 / 不确定` 图标可读性，并把顶部搜索框改为固定更高的触控高度。
 - 文档治理现在带有 warning-only 的路径映射检查：`docs/doc-map.yaml` + `tool/check_doc_coverage.dart`
   会在 `pre-commit` 与 `tool/run_daily_checks.dart` 中提醒本次代码改动需要复核哪些文档。
 - AI 开发工作流增强已接入仓库级入口：

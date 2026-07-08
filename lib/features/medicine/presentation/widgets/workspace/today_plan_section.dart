@@ -18,8 +18,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
 
   final MedicineWorkspace workspace;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
+  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +56,7 @@ class _MedicationPlanTile extends StatelessWidget {
 
   final MedicinePlanItem item;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
+  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +67,14 @@ class _MedicationPlanTile extends StatelessWidget {
     final scheduleText =
         item.rawSchedule ?? medicineCopy(l10n, item.scheduleKey);
     final stateText = item.rawState ?? medicineCopy(l10n, item.stateKey);
-    final currentMedicineId = item.currentMedicineId;
+    final takenRequest = buildMedicineDoseMarkRequest(
+      item: item,
+      action: MedicineDoseAction.taken,
+    );
+    final skippedRequest = buildMedicineDoseMarkRequest(
+      item: item,
+      action: MedicineDoseAction.skipped,
+    );
 
     return FTappable(
       onPress: () =>
@@ -155,17 +160,16 @@ class _MedicationPlanTile extends StatelessWidget {
                   ),
                 ],
               ),
-              if (currentMedicineId != null && onMarkDose != null) ...[
+              if (takenRequest != null &&
+                  skippedRequest != null &&
+                  onMarkDose != null) ...[
                 const SizedBox(height: AppSpacingTokens.level3),
                 Row(
                   children: [
                     Expanded(
                       child: FButton(
                         variant: FButtonVariant.outline,
-                        onPress: () => onMarkDose!(
-                          currentMedicineId,
-                          MedicineDoseAction.taken,
-                        ),
+                        onPress: () => onMarkDose!(takenRequest),
                         prefix: const Icon(FLucideIcons.check, size: 16),
                         child: Text(l10n.medicineDoseActionTaken),
                       ),
@@ -174,10 +178,7 @@ class _MedicationPlanTile extends StatelessWidget {
                     Expanded(
                       child: FButton(
                         variant: FButtonVariant.outline,
-                        onPress: () => onMarkDose!(
-                          currentMedicineId,
-                          MedicineDoseAction.skipped,
-                        ),
+                        onPress: () => onMarkDose!(skippedRequest),
                         prefix: const Icon(FLucideIcons.ban, size: 16),
                         child: Text(l10n.medicineDoseActionSkipped),
                       ),

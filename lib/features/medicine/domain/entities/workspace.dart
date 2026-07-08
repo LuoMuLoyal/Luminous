@@ -89,6 +89,8 @@ abstract class MedicinePlanItem with _$MedicinePlanItem {
 @freezed
 abstract class MedicineDoseSlot with _$MedicineDoseSlot {
   const factory MedicineDoseSlot({
+    String? reminderId,
+    String? scheduledTime,
     MedicineCopyKey? timeKey,
     String? rawTime,
     required MedicineCopyKey statusKey,

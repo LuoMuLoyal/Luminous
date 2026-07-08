@@ -61,12 +61,10 @@ void main() {
 
     final scrollable = _medicineMobileScrollable();
     final keys = <String>[
-      'medicine-hero',
-      'medicine-next-reminder',
-      'medicine-safety-panel',
-      'medicine-quick-actions',
+      'medicine-current-medications',
       'medicine-today-plan',
-      'medicine-safety-tips',
+      'medicine-safety-summary',
+      'medicine-action-hub',
     ];
 
     for (final key in keys) {
@@ -74,23 +72,28 @@ void main() {
       await tester.scrollUntilVisible(finder, 240, scrollable: scrollable);
       await tester.pump(const Duration(milliseconds: 300));
       expect(finder, findsOneWidget);
-      if (key == 'medicine-quick-actions') {
+      if (key == 'medicine-action-hub') {
         expect(find.text(l10n.medicineQuickSafetyCheckTitle), findsOneWidget);
         expect(find.text('用药报告'), findsNothing);
       }
     }
 
     for (final key in <String>[
-      'medicine-safety-panel',
-      'medicine-quick-actions',
-      'medicine-safety-tips',
+      'medicine-current-medications',
+      'medicine-today-plan',
+      'medicine-safety-summary',
+      'medicine-action-hub',
     ]) {
       expect(
         find.descendant(of: find.byKey(Key(key)), matching: find.byType(FCard)),
         findsAtLeastNWidgets(1),
       );
     }
-    expect(find.text(l10n.medicineSafetyTipsTitle), findsOneWidget);
+    expect(find.text(l10n.medicineTodayPlanTitle), findsOneWidget);
+    expect(find.text(l10n.medicineSafetyPanelTitle), findsOneWidget);
+    expect(find.text(l10n.medicineSafetyPanelSubtitle), findsOneWidget);
+    expect(find.byKey(const Key('medicine-reference-notice')), findsNothing);
+    expect(find.byKey(const Key('medicine-safety-tips')), findsNothing);
   });
 
   testWidgets('Medicine loading shows dedicated skeleton placeholder', (
@@ -123,6 +126,37 @@ void main() {
     expect(find.text(l10n.medicineDrugboxTitle), findsNothing);
   });
 
+  testWidgets('Medicine search bar keeps a taller mobile touch target', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final size = tester.getSize(
+      find.byKey(const Key('medicine-home-search-bar')),
+    );
+    expect(size.height, greaterThanOrEqualTo(56));
+  });
+
   testWidgets('Medicine completed doses hide today dose action buttons', (
     tester,
   ) async {
@@ -151,8 +185,22 @@ void main() {
 
     expect(find.text(l10n.medicineNoPendingDose), findsOneWidget);
     expect(find.text(l10n.medicineNoPendingDoseDetail), findsOneWidget);
-    expect(find.text(l10n.medicineDoseActionTaken), findsNothing);
-    expect(find.text(l10n.medicineDoseActionSkipped), findsNothing);
+    expect(
+      find.byKey(const Key('medicine-next-dose-action-taken')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('medicine-next-dose-action-skipped')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('medicine-plan-dose-action-taken')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('medicine-plan-dose-action-skipped')),
+      findsNothing,
+    );
     expect(find.text(l10n.medicineDoseStatusSkipped), findsAtLeastNWidgets(1));
   });
 
@@ -300,7 +348,39 @@ void main() {
     expect(find.text(l10n.medicineEmptyAddFirstTitle), findsNothing);
     expect(find.text('Metformin'), findsAtLeastNWidgets(1));
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
-    expect(find.byKey(const Key('medicine-quick-actions')), findsOneWidget);
+    expect(find.byKey(const Key('medicine-action-hub')), findsOneWidget);
+  });
+
+  testWidgets('Medicine uncovered safety summary uses readable icon color', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const _StaticMedicineWorkspaceRepository(_coverageGapWorkspace),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final icon = tester.widget<Icon>(
+      find.byKey(const Key('medicine-safety-summary-icon')),
+    );
+    final context = tester.element(find.byType(MedicinePage));
+    expect(icon.color, context.theme.colors.mutedForeground);
   });
 
   testWidgets(
@@ -537,6 +617,54 @@ final _completedWorkspace = const MedicineWorkspace(
   ),
   alerts: <MedicineAlert>[],
   promisePoints: <MedicinePromisePoint>[],
+);
+
+const _coverageGapWorkspace = MedicineWorkspace(
+  hero: MedicineHero(
+    metricDosesToday: '3',
+    metricAdherence: '--',
+    metricNextDose: '20:00',
+  ),
+  quickActions: <MedicineQuickAction>[],
+  plan: MedicinePlanSurface(
+    items: <MedicinePlanItem>[
+      MedicinePlanItem(
+        color: AppColors.primary,
+        nameKey: MedicineCopyKey.genericName,
+        dosageKey: MedicineCopyKey.genericDosage,
+        scheduleKey: MedicineCopyKey.genericSchedule,
+        rawName: 'Metformin',
+        rawDosage: '0.5 g',
+        rawSchedule: 'Twice daily',
+        slots: <MedicineDoseSlot>[
+          MedicineDoseSlot(
+            rawTime: '08:00',
+            scheduledTime: '08:00',
+            statusKey: MedicineCopyKey.doseStatusPending,
+            status: MedicineDoseStatus.pending,
+          ),
+        ],
+        stateKey: MedicineCopyKey.doseStatusPending,
+        stateColor: AppColors.primary,
+        todayStatus: MedicineDoseStatus.pending,
+        currentMedicineId: 'med-1',
+      ),
+    ],
+  ),
+  alerts: <MedicineAlert>[],
+  promisePoints: <MedicinePromisePoint>[],
+  riskCheckResult: MedicineRiskCheckResult(
+    currentMedicineCount: 1,
+    checkedMedicineCount: 0,
+    findings: <MedicineRiskFinding>[],
+    coverageIssues: <MedicineRiskCoverageIssue>[
+      MedicineRiskCoverageIssue(
+        medicineName: 'Metformin',
+        reason: MedicineRiskCoverageReason.manualEntry,
+      ),
+    ],
+    coverageSummary: '以下药品缺少可检查资料，无法自动确认安全性。',
+  ),
 );
 
 const _riskResult = MedicineRiskCheckResult(

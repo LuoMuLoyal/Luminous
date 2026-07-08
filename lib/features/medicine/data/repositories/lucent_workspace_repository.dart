@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/health_context/domain/repositories/repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
-    show DoseLogRemoteDataSource, DoseLogStatus;
+    show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -42,17 +42,21 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
     final doseStatusByMedicine = <String, DoseLogStatus>{};
+    final doseStatusBySlot = <String, DoseLogStatus>{};
     try {
       final logs = await doseLogDs.fetchForDate(dateStr);
       for (final log in logs) {
         final medicineId = log.currentMedicineId;
-        if (medicineId == null ||
-            doseStatusByMedicine.containsKey(medicineId)) {
-          continue;
-        }
         if (log.status == DoseLogStatus.taken ||
             log.status == DoseLogStatus.skipped) {
-          doseStatusByMedicine[medicineId] = log.status;
+          final slotKey = _doseLogSlotKey(log);
+          if (slotKey != null) {
+            doseStatusBySlot[slotKey] = log.status;
+          }
+          if (medicineId != null &&
+              !doseStatusByMedicine.containsKey(medicineId)) {
+            doseStatusByMedicine[medicineId] = log.status;
+          }
         }
       }
     } catch (e) {
@@ -79,22 +83,37 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     }
 
     final planItems = medicines.map((m) {
-      final doseStatus = doseStatusByMedicine[m.id];
-      final todayStatus = switch (doseStatus) {
-        DoseLogStatus.taken => MedicineDoseStatus.taken,
-        DoseLogStatus.skipped => MedicineDoseStatus.skipped,
-        _ => MedicineDoseStatus.pending,
-      };
-      final stateKey = switch (doseStatus) {
-        DoseLogStatus.taken => MedicineCopyKey.doseStatusTaken,
-        DoseLogStatus.skipped => MedicineCopyKey.doseStatusSkipped,
-        _ => MedicineCopyKey.doseStatusPending,
-      };
-      final stateColor = switch (doseStatus) {
-        DoseLogStatus.taken => AppColors.primary,
-        DoseLogStatus.skipped => AppColors.primary,
-        _ => AppColors.primary,
-      };
+      final reminders =
+          remindersByMedicine[m.id] ?? const <MedicineReminderItem>[];
+      final fallbackStatus = doseStatusByMedicine[m.id];
+      final slots = reminders
+          .map(
+            (reminder) => MedicineDoseSlot(
+              reminderId: reminder.id,
+              scheduledTime: reminder.timeLabel,
+              rawTime: reminder.timeLabel,
+              statusKey: _slotStateKey(
+                _slotStatusForReminder(
+                  reminder: reminder,
+                  reminderCount: reminders.length,
+                  doseStatusBySlot: doseStatusBySlot,
+                  fallbackStatus: fallbackStatus,
+                ),
+              ),
+              status: _slotStatusForReminder(
+                reminder: reminder,
+                reminderCount: reminders.length,
+                doseStatusBySlot: doseStatusBySlot,
+                fallbackStatus: fallbackStatus,
+              ),
+            ),
+          )
+          .toList(growable: false);
+      final todayStatus = slots.isEmpty
+          ? _medicineStatusFromDoseLog(fallbackStatus)
+          : _aggregateSlotStatuses(slots);
+      final stateKey = _slotStateKey(todayStatus);
+      final stateColor = _stateColor(todayStatus);
       return MedicinePlanItem(
         color: AppColors.primary,
         nameKey: MedicineCopyKey.genericName,
@@ -102,15 +121,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         scheduleKey: MedicineCopyKey.genericSchedule,
         stateKey: stateKey,
         stateColor: stateColor,
-        slots: (remindersByMedicine[m.id] ?? const <MedicineReminderItem>[])
-            .map(
-              (reminder) => MedicineDoseSlot(
-                rawTime: reminder.timeLabel,
-                statusKey: stateKey,
-                status: todayStatus,
-              ),
-            )
-            .toList(growable: false),
+        slots: slots,
         todayStatus: todayStatus,
         rawName: m.displayName,
         rawDosage: m.strengthText ?? '',
@@ -119,16 +130,20 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       );
     }).toList();
 
-    final pendingItems = planItems
-        .where((item) => item.todayStatus == MedicineDoseStatus.pending)
-        .toList(growable: false);
-    final completedCount = planItems.length - pendingItems.length;
+    final totalDoseCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _plannedDoseCount(item),
+    );
+    final completedCount = planItems.fold<int>(
+      0,
+      (sum, item) => sum + _completedDoseCount(item),
+    );
 
     return MedicineWorkspace(
       hero: MedicineHero(
-        metricDosesToday: '${planItems.length}',
-        metricAdherence: _formatAdherence(completedCount, planItems.length),
-        metricNextDose: _nextPendingSlotTime(pendingItems) ?? '--',
+        metricDosesToday: '$totalDoseCount',
+        metricAdherence: _formatAdherence(completedCount, totalDoseCount),
+        metricNextDose: _nextPendingSlotTime(planItems) ?? '--',
       ),
       quickActions: _defaultQuickActions(),
       plan: MedicinePlanSurface(items: planItems),
@@ -143,8 +158,8 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     return '${((completedCount / totalCount) * 100).round()}%';
   }
 
-  static String? _nextPendingSlotTime(List<MedicinePlanItem> pendingItems) {
-    for (final item in pendingItems) {
+  static String? _nextPendingSlotTime(List<MedicinePlanItem> items) {
+    for (final item in items) {
       for (final slot in item.slots) {
         if (slot.status == MedicineDoseStatus.pending) {
           return slot.rawTime;
@@ -198,4 +213,90 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
       Future.value(MedicineWorkspace.signedOut());
+}
+
+String? _doseLogSlotKey(DoseLogItem log) {
+  final scheduledTime = log.scheduledTime?.trim();
+  final reminderId = log.reminderId?.trim();
+  if (reminderId != null && reminderId.isNotEmpty && scheduledTime != null) {
+    return '$reminderId|$scheduledTime';
+  }
+
+  final medicineId = log.currentMedicineId?.trim();
+  if (medicineId != null && medicineId.isNotEmpty && scheduledTime != null) {
+    return '$medicineId|$scheduledTime';
+  }
+  return null;
+}
+
+String _reminderSlotKey(MedicineReminderItem reminder) {
+  return '${reminder.id}|${reminder.timeLabel}';
+}
+
+MedicineDoseStatus _slotStatusForReminder({
+  required MedicineReminderItem reminder,
+  required int reminderCount,
+  required Map<String, DoseLogStatus> doseStatusBySlot,
+  required DoseLogStatus? fallbackStatus,
+}) {
+  final slotStatus = doseStatusBySlot[_reminderSlotKey(reminder)];
+  if (slotStatus != null) {
+    return _medicineStatusFromDoseLog(slotStatus);
+  }
+
+  if (reminderCount == 1 && fallbackStatus != null) {
+    return _medicineStatusFromDoseLog(fallbackStatus);
+  }
+
+  return MedicineDoseStatus.pending;
+}
+
+MedicineDoseStatus _medicineStatusFromDoseLog(DoseLogStatus? status) {
+  return switch (status) {
+    DoseLogStatus.taken => MedicineDoseStatus.taken,
+    DoseLogStatus.skipped => MedicineDoseStatus.skipped,
+    _ => MedicineDoseStatus.pending,
+  };
+}
+
+MedicineDoseStatus _aggregateSlotStatuses(List<MedicineDoseSlot> slots) {
+  if (slots.any((slot) => slot.status == MedicineDoseStatus.pending)) {
+    return MedicineDoseStatus.pending;
+  }
+  if (slots.every((slot) => slot.status == MedicineDoseStatus.taken)) {
+    return MedicineDoseStatus.taken;
+  }
+  return MedicineDoseStatus.skipped;
+}
+
+MedicineCopyKey _slotStateKey(MedicineDoseStatus status) {
+  return switch (status) {
+    MedicineDoseStatus.taken => MedicineCopyKey.doseStatusTaken,
+    MedicineDoseStatus.skipped => MedicineCopyKey.doseStatusSkipped,
+    MedicineDoseStatus.pending => MedicineCopyKey.doseStatusPending,
+  };
+}
+
+AppColors _stateColor(MedicineDoseStatus status) {
+  return switch (status) {
+    MedicineDoseStatus.taken => AppColors.primary,
+    MedicineDoseStatus.skipped => AppColors.primary,
+    MedicineDoseStatus.pending => AppColors.primary,
+  };
+}
+
+int _plannedDoseCount(MedicinePlanItem item) {
+  if (item.slots.isNotEmpty) {
+    return item.slots.length;
+  }
+  return 1;
+}
+
+int _completedDoseCount(MedicinePlanItem item) {
+  if (item.slots.isNotEmpty) {
+    return item.slots
+        .where((slot) => slot.status != MedicineDoseStatus.pending)
+        .length;
+  }
+  return item.todayStatus == MedicineDoseStatus.pending ? 0 : 1;
 }

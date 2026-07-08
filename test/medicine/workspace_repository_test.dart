@@ -58,6 +58,7 @@ void main() {
             status: DoseLogStatus.skipped,
             scheduledFor: '2026-06-04',
             createdAt: '2026-06-04T08:00:00.000Z',
+            updatedAt: '2026-06-04T08:00:00.000Z',
           ),
         ]),
         reminderDs: _FakeReminderDataSource([
@@ -98,6 +99,59 @@ void main() {
       expect(workspace.plan.items.single.slots, isEmpty);
       expect(
         workspace.plan.items.single.todayStatus,
+        MedicineDoseStatus.pending,
+      );
+    },
+  );
+
+  test(
+    'Lucent medicine workspace keeps later reminder slots pending after an earlier slot is marked',
+    () async {
+      final repository = LucentMedicineWorkspaceRepository(
+        healthRepo: _FakeHealthContextRepository(),
+        doseLogDs: _FakeDoseLogDataSource([
+          const DoseLogItem(
+            id: 'dose-1',
+            currentMedicineId: 'med-1',
+            reminderId: 'reminder-1',
+            status: DoseLogStatus.taken,
+            scheduledFor: '2026-06-04',
+            scheduledTime: '07:45',
+            createdAt: '2026-06-04T08:00:00.000Z',
+            updatedAt: '2026-06-04T08:00:00.000Z',
+          ),
+        ]),
+        reminderDs: _FakeReminderDataSource([
+          _reminder(id: 'reminder-1', currentMedicineId: 'med-1'),
+          _reminder(
+            id: 'reminder-2',
+            currentMedicineId: 'med-1',
+            scheduledHour: 19,
+            scheduledMinute: 0,
+          ),
+        ]),
+        riskCheckRepository: _FakeRiskCheckRepository(),
+      );
+
+      final workspace = await repository.fetchWorkspace();
+
+      expect(workspace.hero.metricDosesToday, '2');
+      expect(workspace.hero.metricAdherence, '50%');
+      expect(workspace.hero.metricNextDose, '19:00');
+      expect(workspace.plan.items, hasLength(1));
+      expect(workspace.plan.items[0].todayStatus, MedicineDoseStatus.pending);
+      expect(
+        workspace.plan.items[0].stateKey,
+        MedicineCopyKey.doseStatusPending,
+      );
+      expect(workspace.plan.items[0].slots, hasLength(2));
+      expect(workspace.plan.items[0].slots[0].reminderId, 'reminder-1');
+      expect(workspace.plan.items[0].slots[0].scheduledTime, '07:45');
+      expect(workspace.plan.items[0].slots[0].status, MedicineDoseStatus.taken);
+      expect(workspace.plan.items[0].slots[1].reminderId, 'reminder-2');
+      expect(workspace.plan.items[0].slots[1].scheduledTime, '19:00');
+      expect(
+        workspace.plan.items[0].slots[1].status,
         MedicineDoseStatus.pending,
       );
     },

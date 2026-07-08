@@ -872,7 +872,6 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
   String? createStatus;
   String? createDate;
 
-  @override
   Future<DoseLogItem> markForDate(
     String currentMedicineId,
     String status,
@@ -896,6 +895,7 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
       status: DoseLogStatus.values.firstWhere((item) => item.name == status),
       scheduledFor: date,
       createdAt: '${date}T08:00:00.000Z',
+      updatedAt: '',
     );
   }
 }

@@ -17,14 +17,14 @@ class _QuickOperationSection extends StatelessWidget {
         color: AppColors.primary,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
-        onTap: () => context.push(AppRoutes.medicineSearch),
+        onTap: () => pushAuthRequiredRoute(context, AppRoutes.mineMedicineNew),
       ),
       _QuickOperation(
-        icon: FLucideIcons.clipboardCheck,
+        icon: FLucideIcons.search,
         color: AppColors.primary,
-        title: l10n.medicineQuickRecordTitle,
-        subtitle: l10n.medicineQuickRecordSubtitle,
-        onTap: () => context.push(AppRoutes.recordCreate),
+        title: l10n.medicineQuickActionSearchTitle,
+        subtitle: l10n.medicineQuickActionSearchSubtitle,
+        onTap: () => context.push(AppRoutes.medicineSearch),
       ),
       _QuickOperation(
         icon: FLucideIcons.bell,
@@ -40,12 +40,13 @@ class _QuickOperationSection extends StatelessWidget {
         color: AppColors.primary,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
-        onTap: () => pushAuthRequiredRoute(context, '/medicine/risk-check'),
+        onTap: () =>
+            pushAuthRequiredRoute(context, AppRoutes.medicineRiskCheck),
       ),
     ];
 
     return Column(
-      key: const Key('medicine-quick-actions'),
+      key: const Key('medicine-action-hub'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(

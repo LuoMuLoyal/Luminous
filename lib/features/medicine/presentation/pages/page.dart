@@ -85,8 +85,7 @@ class MedicinePage extends ConsumerWidget {
               : null;
           final content = MedicineMobileDashboardView(
             workspace: workspace,
-            onMarkDose: (currentMedicineId, action) =>
-                _markDose(context, ref, currentMedicineId, action),
+            onMarkDose: (request) => _markDose(context, ref, request),
             onOpenReminder: (currentMedicineId) =>
                 _openReminder(context, ref, currentMedicineId),
             onCreateReminder: () => _openReminder(context, ref, null),
@@ -125,8 +124,7 @@ class MedicinePage extends ConsumerWidget {
 Future<void> _markDose(
   BuildContext context,
   WidgetRef ref,
-  String currentMedicineId,
-  MedicineDoseAction action,
+  MedicineDoseMarkRequest request,
 ) async {
   final session = ref.read(authSessionProvider);
   if (!session.canAccessProtectedData) {
@@ -150,7 +148,13 @@ Future<void> _markDose(
   try {
     await ref
         .read(doseLogRemoteDataSourceProvider)
-        .markForDate(currentMedicineId, action.name, dateStr);
+        .mark(
+          currentMedicineId: request.currentMedicineId,
+          reminderId: request.reminderId,
+          scheduledTime: request.scheduledTime,
+          status: request.action.name,
+          date: dateStr,
+        );
     ref.invalidate(medicineWorkspaceProvider);
     ref.invalidate(todayDashboardProvider);
     if (context.mounted) {
@@ -353,49 +357,50 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return FButton.raw(
-      onPress: () => context.push(AppRoutes.medicineSearch),
-      variant: FButtonVariant.ghost,
-      style: .delta(
-        decoration: .delta([
-          .all(
-            .shapeDelta(
-              color: colors.background,
-              shape: RoundedSuperellipseBorder(
-                side: BorderSide(color: colors.border),
-                borderRadius: context.theme.style.borderRadius.lg,
+    return SizedBox(
+      key: const Key('medicine-home-search-bar'),
+      height: 56,
+      child: FButton.raw(
+        onPress: () => context.push(AppRoutes.medicineSearch),
+        variant: FButtonVariant.ghost,
+        style: .delta(
+          decoration: .delta([
+            .all(
+              .shapeDelta(
+                color: colors.background,
+                shape: RoundedSuperellipseBorder(
+                  side: BorderSide(color: colors.border),
+                  borderRadius: context.theme.style.borderRadius.lg,
+                ),
               ),
             ),
-          ),
-        ]),
-        contentStyle: const .delta(
-          padding: .value(
-            EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level3,
+          ]),
+          contentStyle: const .delta(
+            padding: .value(
+              EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
             ),
           ),
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            FLucideIcons.search,
-            color: colors.mutedForeground,
-            size: AppSpacingTokens.level5,
-          ),
-          const SizedBox(width: AppSpacingTokens.level3),
-          Expanded(
-            child: Text(
-              l10n.medicineHomeSearchHint,
-              style: AppTypographyToken.level4
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+        child: Row(
+          children: [
+            Icon(
+              FLucideIcons.search,
+              color: colors.mutedForeground,
+              size: AppSpacingTokens.level5,
             ),
-          ),
-        ],
+            const SizedBox(width: AppSpacingTokens.level3),
+            Expanded(
+              child: Text(
+                l10n.medicineHomeSearchHint,
+                style: AppTypographyToken.level4
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

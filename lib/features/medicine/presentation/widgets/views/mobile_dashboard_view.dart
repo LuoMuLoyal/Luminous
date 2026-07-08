@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/design/colors.dart';
@@ -10,9 +8,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
-import 'package:luminous/features/medicine/presentation/providers/safety_tips_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -20,7 +17,6 @@ import 'package:luminous/l10n/app_localizations.dart';
 part '../sections/mobile_drugbox_section.dart';
 part '../sections/mobile_quick_operations_section.dart';
 part '../sections/mobile_records_section.dart';
-part '../sections/mobile_reference_section.dart';
 part '../sections/mobile_safety_section.dart';
 part '../shared/mobile_shared.dart';
 
@@ -35,8 +31,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
   });
 
   final MedicineWorkspace workspace;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
+  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
   final void Function(String currentMedicineId)? onOpenReminder;
   final VoidCallback? onCreateReminder;
   final bool isLoading;
@@ -66,28 +61,24 @@ class MedicineMobileDashboardView extends StatelessWidget {
       children: [
         _DrugBoxSection(
           workspace: workspace,
-          nextDose: nextDose,
           l10n: l10n,
-          onMarkDose: onMarkDose,
           onOpenReminder: onOpenReminder,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
+        _MedicineRecordsSection(
+          workspace: workspace,
+          nextDose: nextDose,
+          l10n: l10n,
+          onMarkDose: onMarkDose,
+        ),
+        const SizedBox(height: AppSpacingTokens.level4),
         _SafetyEngineSection(
+          result: workspace.riskCheckResult,
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
         ),
         const SizedBox(height: AppSpacingTokens.level4),
         _QuickOperationSection(l10n: l10n, onCreateReminder: onCreateReminder),
-        const SizedBox(height: AppSpacingTokens.level4),
-        _MedicineRecordsSection(
-          items: workspace.plan.items,
-          l10n: l10n,
-          onMarkDose: onMarkDose,
-        ),
-        const SizedBox(height: AppSpacingTokens.level4),
-        _ReferenceNotice(l10n: l10n),
-        const SizedBox(height: AppSpacingTokens.level4),
-        _SafetyTipsSection(l10n: l10n),
       ],
     );
   }
@@ -107,21 +98,21 @@ class MedicineMobileDashboardView extends StatelessWidget {
             children: [
               _DrugBoxSection(
                 workspace: workspace,
-                nextDose: nextDose,
                 l10n: l10n,
-                onMarkDose: onMarkDose,
                 onOpenReminder: onOpenReminder,
               ),
               const SizedBox(height: AppSpacingTokens.level5),
-              _SafetyEngineSection(
-                alerts: alerts.take(4).toList(growable: false),
-                l10n: l10n,
-              ),
-              const SizedBox(height: AppSpacingTokens.level5),
               _MedicineRecordsSection(
-                items: workspace.plan.items,
+                workspace: workspace,
+                nextDose: nextDose,
                 l10n: l10n,
                 onMarkDose: onMarkDose,
+              ),
+              const SizedBox(height: AppSpacingTokens.level5),
+              _SafetyEngineSection(
+                result: workspace.riskCheckResult,
+                alerts: alerts.take(4).toList(growable: false),
+                l10n: l10n,
               ),
             ],
           ),
@@ -132,14 +123,11 @@ class MedicineMobileDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _ReferenceNotice(l10n: l10n),
-              const SizedBox(height: AppSpacingTokens.level5),
               _QuickOperationSection(
                 l10n: l10n,
                 onCreateReminder: onCreateReminder,
               ),
               const SizedBox(height: AppSpacingTokens.level5),
-              _SafetyTipsSection(l10n: l10n),
             ],
           ),
         ),

@@ -65,6 +65,7 @@ void main() {
             status: DoseLogStatus.taken,
             scheduledFor: '2026-06-09T08:00:00.000Z',
             createdAt: '2026-06-09T08:01:00.000Z',
+            updatedAt: '2026-06-09T08:01:00.000Z',
           ),
         ]),
       ),

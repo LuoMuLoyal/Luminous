@@ -3,67 +3,78 @@ part of '../views/mobile_dashboard_view.dart';
 class _DrugBoxSection extends StatelessWidget {
   const _DrugBoxSection({
     required this.workspace,
-    required this.nextDose,
     required this.l10n,
-    required this.onMarkDose,
     required this.onOpenReminder,
   });
 
   final MedicineWorkspace workspace;
-  final _NextDose? nextDose;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
   final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
     final items = workspace.plan.items
         .where((item) => item.currentMedicineId != null)
-        .take(2)
         .toList(growable: false);
 
-    return FCard.raw(
-      key: const Key('medicine-hero'),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _DrugBoxHeader(l10n: l10n),
-            const SizedBox(height: AppSpacingTokens.level1),
-            _DrugBoxSubtitle(l10n: l10n),
-            const SizedBox(height: AppSpacingTokens.level4),
-            if (items.isEmpty)
-              _DrugBoxEmpty(l10n: l10n)
-            else
-              _DrugBoxContent(
-                items: items,
-                totalCount: workspace.plan.items.length,
-                l10n: l10n,
-                onOpenReminder: onOpenReminder,
-              ),
-            const SizedBox(height: AppSpacingTokens.level3),
-            const AppDivider(),
-            const SizedBox(height: AppSpacingTokens.level3),
-            _DrugBoxReminderStrip(
-              key: const Key('medicine-next-reminder'),
-              workspace: workspace,
-              nextDose: nextDose,
-              l10n: l10n,
-              onMarkDose: onMarkDose,
-            ),
-          ],
+    return Column(
+      key: const Key('medicine-current-medications'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.medicineDrugboxTitle,
+          style: AppTypographyToken.level7
+              .display(context)
+              .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
         ),
-      ),
+        const SizedBox(height: AppSpacingTokens.level1),
+        Text(
+          l10n.medicineDrugboxSubtitle,
+          style: AppTypographyToken.level3
+              .body(context)
+              .copyWith(color: context.theme.colors.mutedForeground),
+        ),
+        const SizedBox(height: AppSpacingTokens.level3),
+        FCard.raw(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _DrugBoxHeader(
+                  l10n: l10n,
+                  hasMedicines: items.isNotEmpty,
+                  count: workspace.plan.items.length,
+                ),
+                const SizedBox(height: AppSpacingTokens.level4),
+                if (items.isEmpty)
+                  _DrugBoxEmpty(l10n: l10n)
+                else
+                  _DrugBoxContent(
+                    items: items.take(3).toList(growable: false),
+                    totalCount: workspace.plan.items.length,
+                    l10n: l10n,
+                    onOpenReminder: onOpenReminder,
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _DrugBoxHeader extends StatelessWidget {
-  const _DrugBoxHeader({required this.l10n});
+  const _DrugBoxHeader({
+    required this.l10n,
+    required this.hasMedicines,
+    required this.count,
+  });
 
   final AppLocalizations l10n;
+  final bool hasMedicines;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
@@ -88,13 +99,25 @@ class _DrugBoxHeader extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacingTokens.level2),
         Expanded(
-          child: Text(
-            l10n.medicineDrugboxTitle,
-            style: AppTypographyToken.level5
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.medicineDrugboxTotal(count),
+                style: AppTypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: AppSpacingTokens.level1),
+              Text(
+                l10n.medicineDrugboxTotalPrefix,
+                style: AppTypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+              ),
+            ],
           ),
         ),
         const SizedBox(width: AppSpacingTokens.level3),
@@ -102,12 +125,17 @@ class _DrugBoxHeader extends StatelessWidget {
           variant: FButtonVariant.ghost,
           size: FButtonSizeVariant.xs,
           mainAxisSize: MainAxisSize.min,
-          onPress: () => pushAuthRequiredRoute(context, '/mine/medicine/new'),
+          onPress: () => pushAuthRequiredRoute(
+            context,
+            hasMedicines ? AppRoutes.mineMedicineNew : AppRoutes.medicineSearch,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                l10n.medicineManageMedicinesAction,
+                hasMedicines
+                    ? l10n.medicineManageMedicinesAction
+                    : l10n.medicineQuickAddTitle,
                 style: TextStyle(
                   color: colors.foreground,
                   fontWeight: FontWeight.w600,
@@ -126,24 +154,6 @@ class _DrugBoxHeader extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _DrugBoxSubtitle extends StatelessWidget {
-  const _DrugBoxSubtitle({required this.l10n});
-
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Text(
-      l10n.medicineDrugboxSubtitle,
-      style: AppTypographyToken.level3
-          .body(context)
-          .copyWith(color: colors.mutedForeground),
     );
   }
 }
@@ -243,8 +253,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
   final MedicineWorkspace workspace;
   final _NextDose? nextDose;
   final AppLocalizations l10n;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
+  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -264,11 +273,22 @@ class _DrugBoxReminderStrip extends StatelessWidget {
               ? l10n.medicineNoPendingDoseDetail
               : l10n.medicineNoMedicineBody)
         : _doseSummary(l10n, item);
-    final currentMedicineId = item?.currentMedicineId;
+    final takenRequest = item == null
+        ? null
+        : buildMedicineDoseMarkRequest(
+            item: item,
+            slot: slot,
+            action: MedicineDoseAction.taken,
+          );
+    final skippedRequest = item == null
+        ? null
+        : buildMedicineDoseMarkRequest(
+            item: item,
+            slot: slot,
+            action: MedicineDoseAction.skipped,
+          );
     final canMark =
-        currentMedicineId != null &&
-        onMarkDose != null &&
-        item?.todayStatus == MedicineDoseStatus.pending;
+        onMarkDose != null && takenRequest != null && skippedRequest != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,8 +327,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 icon: FLucideIcons.check,
                 color: AppColors.primary,
                 filled: true,
-                onTap: () =>
-                    onMarkDose!(currentMedicineId, MedicineDoseAction.taken),
+                onTap: () => onMarkDose!(takenRequest),
               ),
               const SizedBox(width: AppSpacingTokens.level3),
               _DoseActionButton(
@@ -316,8 +335,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 label: l10n.medicineDoseActionSkipped,
                 icon: FLucideIcons.ban,
                 color: AppColors.primary,
-                onTap: () =>
-                    onMarkDose!(currentMedicineId, MedicineDoseAction.skipped),
+                onTap: () => onMarkDose!(skippedRequest),
               ),
             ],
           ),

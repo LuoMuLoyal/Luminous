@@ -15,8 +15,7 @@ class MedicineWorkspaceView extends StatelessWidget {
   });
 
   final MedicineWorkspace workspace;
-  final void Function(String currentMedicineId, MedicineDoseAction action)?
-  onMarkDose;
+  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
   Widget build(BuildContext context) {

@@ -57,35 +57,6 @@ class _DoseActionButton extends StatelessWidget {
   }
 }
 
-class _FilterText extends StatelessWidget {
-  const _FilterText({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: AppTypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.foreground),
-        ),
-        const SizedBox(width: AppSpacingTokens.level1),
-        Icon(
-          FLucideIcons.chevronDown,
-          color: colors.foreground,
-          size: AppSpacingTokens.level4,
-        ),
-      ],
-    );
-  }
-}
-
 class _NextDose {
   const _NextDose({required this.item, this.slot});
 
@@ -109,40 +80,6 @@ class _QuickOperation {
   final VoidCallback onTap;
 }
 
-class _RecordRow {
-  const _RecordRow({
-    required this.item,
-    required this.name,
-    required this.detail,
-    required this.date,
-    required this.time,
-    required this.statusLabel,
-    required this.statusColor,
-    required this.statusIcon,
-  });
-
-  final MedicinePlanItem item;
-  final String name;
-  final String detail;
-  final String date;
-  final String time;
-  final String statusLabel;
-  final AppColors statusColor;
-  final IconData statusIcon;
-}
-
-class _SafetyTip {
-  const _SafetyTip({
-    required this.icon,
-    required this.color,
-    required this.text,
-  });
-
-  final IconData icon;
-  final AppColors color;
-  final String text;
-}
-
 _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
   for (final item in workspace.plan.items) {
     for (final slot in item.slots) {
@@ -157,82 +94,6 @@ _NextDose? _nextDoseFor(MedicineWorkspace workspace) {
     }
   }
   return null;
-}
-
-List<_RecordRow> _recordRowsFor(
-  AppLocalizations l10n,
-  List<MedicinePlanItem> items,
-) {
-  final rows = <_RecordRow>[];
-  for (final item in items) {
-    if (item.slots.isEmpty) {
-      rows.add(
-        _rowFromItem(
-          l10n,
-          item,
-          null,
-          rows.length,
-          l10n.medicineRecordScheduledStatus,
-        ),
-      );
-      continue;
-    }
-
-    for (final slot in item.slots) {
-      rows.add(_rowFromItem(l10n, item, slot, rows.length, null));
-    }
-  }
-  return rows;
-}
-
-_RecordRow _rowFromItem(
-  AppLocalizations l10n,
-  MedicinePlanItem item,
-  MedicineDoseSlot? slot,
-  int index,
-  String? fallbackStatus,
-) {
-  final status = slot?.status ?? MedicineDoseStatus.pending;
-  final statusColor = switch (status) {
-    MedicineDoseStatus.taken => AppColors.primary,
-    MedicineDoseStatus.skipped => AppColors.primary,
-    MedicineDoseStatus.pending => AppColors.primary,
-  };
-  final statusIcon = switch (status) {
-    MedicineDoseStatus.taken => FLucideIcons.check,
-    MedicineDoseStatus.skipped => FLucideIcons.ban,
-    MedicineDoseStatus.pending => FLucideIcons.clock3,
-  };
-  final statusLabel =
-      fallbackStatus ??
-      switch (status) {
-        MedicineDoseStatus.taken => l10n.medicineRecordOnTimeStatus,
-        MedicineDoseStatus.skipped => l10n.medicineDoseStatusSkipped,
-        MedicineDoseStatus.pending => l10n.medicineRecordScheduledStatus,
-      };
-  final detail = [
-    _itemDosage(l10n, item),
-    _compactRouteOrSchedule(_itemSchedule(l10n, item)),
-  ].where((value) => value.trim().isNotEmpty).join(' · ');
-
-  return _RecordRow(
-    item: item,
-    name: _itemName(l10n, item),
-    detail: detail,
-    date: _recordDateLabel(l10n, index),
-    time: slot == null
-        ? l10n.medicineScheduleNotSet
-        : _slotTimeLabel(l10n, slot),
-    statusLabel: statusLabel,
-    statusColor: statusColor,
-    statusIcon: statusIcon,
-  );
-}
-
-String _recordDateLabel(AppLocalizations l10n, int index) {
-  if (index < 2) return l10n.medicineRecordTodayLabel;
-  if (index == 2) return l10n.medicineRecordPreviousDate;
-  return l10n.medicineRecordOlderDate;
 }
 
 String _slotTimeLabel(AppLocalizations l10n, MedicineDoseSlot slot) {

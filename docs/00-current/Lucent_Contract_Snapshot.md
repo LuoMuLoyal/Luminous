@@ -17,4 +17,9 @@
   - support resources
   - app info
   - data export requests
+- 用药打卡合同已具备 slot-aware 基础：
+  - `POST /api/v1/user/medicine-dose-logs/mark` 用于按提醒槽位幂等确认一次服药。
+  - `CreateDoseLogDto` / `DoseLogItemDto` 新增 `reminderId` 与 `scheduledTime` 字段，可把同一天内不同提醒槽位区分开。
+- Luminous Medicine 根页当前已消费这套合同：
+  - 今日计划按钮优先确认当前 pending slot，而不是对整种药写 day-level 打卡。
 - 用户业务数据在 `/api/v1/user/*` 下；账户资料/安全操作在 `/api/v1/account/*` 下。
