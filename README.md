@@ -50,7 +50,7 @@ flutter run
 flutter analyze
 flutter test
 flutter test integration_test
-cd generated/lucent_api && dart run build_runner build && cd ../..
+dart run tool/bootstrap_generated_sources.dart
 dart run tool/run_daily_checks.dart
 dart run tool/run_fullstack_checks.dart
 dart run tool/install_git_hooks.dart
@@ -61,15 +61,18 @@ dart run melos run fullstack-today-report
 
 ## Generated Sources Policy
 
-- `flutter pub get` only installs dependencies. It does not run `build_runner`, so generated
-  sources required by runtime and tests stay committed in this repo:
+- This repo now tracks generator inputs/config only. Generated runtime sources stay local and are
+  ignored:
   - `*.g.dart`
   - `*.freezed.dart`
   - `lib/l10n/app_localizations*.dart`
-- `generated/lucent_api/` also stays committed because it is a local path dependency consumed by
-the app and is regenerated only when the Lucent contract changes.
-- `.gitattributes` marks those tracked generated paths as generated to reduce review noise; they
-  are intentionally not ignored by `.gitignore`.
+- `generated/lucent_api/` stays as a tracked package scaffold, but its generated `lib/api/**`
+  output and `pubspec.lock` are ignored.
+- After clone, and whenever ARB files, Freezed/JSON models, or the Lucent contract changes, run:
+
+```bash
+dart run tool/bootstrap_generated_sources.dart
+```
 
 If you want shorter full-stack commands, copy `.env.example` to `.env`, fill in the
 `E2E_*` entries, and run the Melos entries above. `tool/run_fullstack_checks.dart`
@@ -79,7 +82,7 @@ test account values.
 ## CI
 
 - GitHub Actions workflow: `.github/workflows/flutter-ci.yml`
-- Current CI scope: `flutter pub get`, `flutter gen-l10n`, `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`, hosted Lucent OpenAPI contract-sync verification, and `flutter build apk --release`
+- Current CI scope: Lucent OpenAPI export, generated-source bootstrap, `flutter analyze`, `dart format --set-exit-if-changed`, `flutter test`, hosted Lucent OpenAPI contract-sync verification, and `flutter build apk --release`
 - Current CI is validation-only. It does not build or publish Android, iOS, desktop, or web artifacts.
 - `integration_test/` currently contains two different lanes:
   - offline/mock-driven integration flows that exercise the real app shell and feature pages without a Lucent runtime
@@ -100,10 +103,10 @@ test account values.
 - `tool/run_fullstack_checks.dart` starts Lucent test runtime through `pnpm --dir ../Lucent test:runtime:start`, checks `GET http://127.0.0.1:3000/api/v1/health`, then runs the five Android-emulator lanes sequentially.
 - `tool/run_fullstack_checks.dart` now prefers `.env` via `--dart-define-from-file` when that file exists, and still falls back to `.env.fullstack-e2e` for older local setups.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
-- Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
+- Current hook scope: `pre-commit` bootstraps app-side generated sources, formats staged Dart files, and runs `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
-- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run build_runner build` in `generated/lucent_api/` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate for verifying the target OpenAPI path and generated-client layout without requiring a clean git working tree.
-- Hosted CI now also enforces that gate by checking out `Lucent`, pointing `tool/verify_lucent_openapi_sync.dart` at the checked-out `docs/openapi.json`, and failing when regeneration would change `generated/lucent_api/`.
+- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, first run `pnpm export:openapi` in `../Lucent` to materialize `Lucent/docs/openapi.json`, then run `dart run tool/bootstrap_generated_sources.dart` in `Luminous`. `dart run tool/verify_lucent_openapi_sync.dart` remains the lightweight gate for verifying the target OpenAPI path and generated-client layout.
+- Hosted CI now enforces that gate by checking out `Lucent`, exporting its OpenAPI locally, then running `tool/bootstrap_generated_sources.dart` before analyze/test.
 
 ## Docs
 

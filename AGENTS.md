@@ -112,13 +112,15 @@ flutter test
 
 - ARB files: `lib/l10n/app_en.arb`, `app_zh.arb`
 - Generated: `lib/l10n/app_localizations*.dart`
-- Run `flutter gen-l10n` after changing ARB files
+- Generated files stay ignored; run `dart run tool/bootstrap_generated_sources.dart` after
+  changing ARB files or before analyze/test on a fresh clone
 
 ## OpenAPI Client
 
-- Source: `Lucent/docs/openapi.json`
-- Regenerate: run `dart run build_runner build` in `generated/lucent_api/`
-- Generated output: `generated/lucent_api/`
+- Source: local export `Lucent/docs/openapi.json`
+- Regenerate: run `pnpm export:openapi` in `Lucent`, then
+  `dart run tool/bootstrap_generated_sources.dart` in `Luminous`
+- Tracked scaffold: `generated/lucent_api/`
 
 ## Forui Reference
 

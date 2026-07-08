@@ -92,7 +92,8 @@ incompatible with prior versions. For normal commits, keep a single-line summary
 - Local IDE files: `.idea/`, personal `.vscode/*` (except shared workspace files)
 - Build artifacts: `build/`, `android/build/`, `*.apk`, `*.ipa`
 - Local dependencies: `.dart_tool/`, `.packages`
-- Generated files: `generated/lucent_api/` (regenerate via build_runner, don't hand-edit)
+- Generated files: local-only outputs under `generated/lucent_api/lib/api/`, `*.g.dart`,
+  `*.freezed.dart`, and `lib/l10n/app_localizations*.dart` (regenerate, don't hand-edit)
 - Environment files with real credentials: `.env`, `key.properties`
 - Presentation exports: `outputs/`, `Roadshow/`
 
@@ -117,7 +118,7 @@ If Lucent API code changed (cross-repo):
 pnpm export:openapi
 
 # In Luminous:
-cd generated/lucent_api && dart run build_runner build && cd ../..
+dart run tool/bootstrap_generated_sources.dart
 ```
 
 ---
@@ -284,11 +285,11 @@ Rules:
 
 ## OpenAPI Client
 
-The API contract source of truth is **Lucent controller/DTO code +
+The API contract source of truth is **Lucent controller/DTO code plus a freshly exported local
 `Lucent/docs/openapi.json`**. When the backend API changes:
 
 1. In `Lucent`: `pnpm export:openapi`
-2. In `Luminous`: `cd generated/lucent_api && dart run build_runner build`
+2. In `Luminous`: `dart run tool/bootstrap_generated_sources.dart`
 
 Never hand-edit `generated/lucent_api/`. The generator handles enum defaults and
 nullable map entries natively.

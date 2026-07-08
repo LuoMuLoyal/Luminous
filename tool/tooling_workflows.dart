@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'bootstrap_generated_sources.dart';
 import 'tooling_support.dart';
 
 Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
@@ -11,20 +12,7 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
-  await runLoggedCommand(
-    'flutter',
-    ['pub', 'get'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter pub get',
-  );
-  stdout.writeln('');
-
-  await runLoggedCommand(
-    'flutter',
-    ['gen-l10n'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter gen-l10n',
-  );
+  await bootstrapGeneratedSources(context, openApiPath: openApiPath);
   stdout.writeln('');
 
   await runLoggedCommand(
@@ -72,12 +60,7 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   );
   stdout.writeln('');
 
-  await runLoggedCommand(
-    'flutter',
-    ['gen-l10n'],
-    workingDirectory: context.repoRoot,
-    stepName: 'flutter gen-l10n',
-  );
+  await bootstrapGeneratedSources(context, skipClient: true);
   stdout.writeln('');
 
   final stagedDartFiles = await _listStagedDartFiles(context);

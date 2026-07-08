@@ -3,12 +3,12 @@
 Last updated: 2026-07-08
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
-code plus generated `../Lucent/docs/openapi.json`, not from prose.
+code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
 
 ## Files
 
-- Generated OpenAPI source from the `Luminous` repo root: `../Lucent/docs/openapi.json`
-- Generated Dart package: `generated/lucent_api/`
+- Generated OpenAPI source from the `Luminous` repo root: local export `../Lucent/docs/openapi.json`
+- Generated Dart package scaffold: `generated/lucent_api/`
 - Network wrapper: `lib/core/network/dio_client.dart`
 - Public Flutter API exports: `lib/core/network/api.dart`
 - Contract drift verifier: `tool/verify_lucent_openapi_sync.dart`
@@ -35,9 +35,9 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
 - Generated DTOs stay in data-layer response mapping.
 - Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an
    existing generated read API with handwritten Dio GET parsing unless
-   `../Lucent/docs/openapi.json` has been verified, `dart run build_runner build` in
-   `generated/lucent_api/` has been attempted, and the exported contract still lacks the required
-   fields.
+   `../Lucent/docs/openapi.json` has been freshly exported,
+   `dart run tool/bootstrap_generated_sources.dart` has been attempted, and the exported contract
+   still lacks the required fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps
    instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek:
@@ -67,9 +67,7 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
 From `Luminous`:
 
 ```bash
-cd generated/lucent_api
-dart run build_runner build
-cd ../..
+dart run tool/bootstrap_generated_sources.dart
 ```
 
 Hosted CI can also point the workflow at an explicitly checked-out Lucent contract file:
@@ -100,16 +98,13 @@ dart run tool/verify_lucent_openapi_sync.dart \
 `verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON and that
 the generated client layout exists, so it can run safely before commit inside a dirty working tree.
 
-Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff
---check` will not block on generated trailing spaces there.
-
 ## Noise Boundary
 
-- `generated/lucent_api/` stays committed because it is a local path dependency used by the app.
+- `generated/lucent_api/` keeps only package config and generator inputs tracked; generated
+  `lib/api/**` output is local-only and ignored.
 - Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
-  `lib/l10n/app_localizations*.dart`) also stay committed because `flutter pub get` does not run
-  `build_runner`, and the repo does not require every consumer or CI lane to regenerate them
-  before analysis or tests.
-- Generated Dart client code under `lib/` stays tracked.
+  `lib/l10n/app_localizations*.dart`) are also local-only and ignored.
+- CI and local validation now regenerate these artifacts before analyze/test via
+  `dart run tool/bootstrap_generated_sources.dart`.
 - The new generator does not produce Markdown doc stubs or package test stubs, so there is no
   noise from those paths.

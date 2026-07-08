@@ -38,7 +38,7 @@ Future<void> main(List<String> args) async {
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     stderr.writeln(
-      'OpenAPI/client verification command failed. Run `dart run build_runner build` in `generated/lucent_api` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
+      'OpenAPI/client verification command failed. Run `dart run tool/bootstrap_generated_sources.dart` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
     );
     exitCode = error.errorCode;
   } on FormatException catch (error) {

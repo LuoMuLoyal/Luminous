@@ -31,6 +31,19 @@ jobs:
           repository: LuoMuLoyal/Lucent
           path: Lucent
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: Lucent/pnpm-lock.yaml
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -38,11 +51,14 @@ jobs:
           flutter-version: 3.44.0
           cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Install Lucent dependencies
+        run: pnpm --dir Lucent install --frozen-lockfile
 
-      - name: Generate l10n
-        run: flutter gen-l10n
+      - name: Export Lucent OpenAPI
+        run: pnpm --dir Lucent export:openapi
+
+      - name: Bootstrap generated sources
+        run: dart run tool/bootstrap_generated_sources.dart --openapi "$GITHUB_WORKSPACE/Lucent/docs/openapi.json"
 
       - name: Analyze
         run: flutter analyze
