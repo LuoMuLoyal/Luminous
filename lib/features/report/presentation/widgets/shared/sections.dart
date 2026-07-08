@@ -6,5 +6,6 @@ export '../sections/patterns_section.dart';
 export '../shared/reference_notice.dart';
 export '../sections/score_hero.dart';
 export '../shared/section_models.dart';
+export '../sections/suggestion_history_section.dart';
 export '../shared/top_bar.dart';
 export '../sections/trend_section.dart';

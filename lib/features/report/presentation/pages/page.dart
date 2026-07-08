@@ -14,6 +14,7 @@ import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -293,7 +294,6 @@ class ReportPage extends ConsumerWidget {
               onSync: () {},
               isGenerating: false,
               isSyncing: false,
-              showSnapshotStatus: true,
               showActionBar: true,
             ),
             child: const ReportSkeletonView(),
@@ -312,7 +312,6 @@ class ReportPage extends ConsumerWidget {
               onSync: () {},
               isGenerating: false,
               isSyncing: false,
-              showSnapshotStatus: false,
               showActionBar: false,
             ),
             child: const ReportSkeletonView(),
@@ -345,8 +344,19 @@ class ReportPage extends ConsumerWidget {
       dataExportControllerProvider.select((s) => s.asData?.value),
     );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
+    final notificationListAsync = canAccessProtectedData
+        ? ref.watch(notificationListPageProvider)
+        : null;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= AppBreakpoints.desktop;
+    final proactiveSuggestions =
+        notificationListAsync?.asData?.value.items
+            .where(
+              (item) => item.type == UserNotificationType.aiProactiveSuggestion,
+            )
+            .take(3)
+            .toList(growable: false) ??
+        const <NotificationListItemDto>[];
 
     final dateRangeLabel = reportDashboardDateRangeLabel(
       context,
@@ -375,6 +385,9 @@ class ReportPage extends ConsumerWidget {
       onSignIn: onSignIn,
       onContinueRecord: () => context.push('/record/create'),
       onSync: () => _refreshDashboard(ref),
+      proactiveSuggestions: proactiveSuggestions,
+      isSuggestionHistoryLoading: notificationListAsync?.isLoading ?? false,
+      onSuggestionTap: (item) => context.push('/notifications/${item.id}'),
       onAiSummaryRangeChanged: (range) {
         ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
       },
@@ -426,19 +439,9 @@ class ReportPage extends ConsumerWidget {
           onSync: () => _refreshDashboard(ref),
           isGenerating: aiSummaryState.isLoading,
           isSyncing: false,
-          showSnapshotStatus: true,
           showActionBar: true,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isPreview) ...[
-              SignInHintBanner(onSignIn: onSignIn),
-              const SizedBox(height: AppSpacingTokens.level4),
-            ],
-            dashboardView,
-          ],
-        ),
+        child: dashboardView,
       );
     }
 
@@ -476,7 +479,6 @@ class ReportPage extends ConsumerWidget {
         onSync: () => _refreshDashboard(ref),
         isGenerating: aiSummaryState.isLoading,
         isSyncing: false,
-        showSnapshotStatus: false,
         showActionBar: false,
       ),
       child: dashboardView,

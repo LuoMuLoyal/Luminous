@@ -43,7 +43,9 @@ void main() {
     expect(find.text(l10n.mineAccountDisplayName), findsOneWidget);
     expect(find.text(l10n.mineCompletionTitle), findsOneWidget);
     expect(find.text(l10n.mineProfileTitle), findsOneWidget);
-    expect(find.text(l10n.mineSettingsAccountTitle), findsOneWidget);
+    expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
+    expect(find.text(l10n.settingsAiTitle), findsOneWidget);
+    expect(find.text(l10n.settingsSecurityPinTitle), findsOneWidget);
     expect(
       find.text(l10n.mineNotificationReminderSectionTitle),
       findsOneWidget,
@@ -52,8 +54,9 @@ void main() {
     final keys = <String>[
       'mine-account-header',
       'mine-archive-section',
+      'mine-ai-privacy-section',
       'mine-notifications-reminder-section',
-      'mine-account-privacy-section',
+      'mine-account-security-section',
     ];
 
     for (final key in keys) {
@@ -67,7 +70,6 @@ void main() {
     expect(find.byKey(const Key('mine-status-overview')), findsNothing);
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-settings-section')), findsNothing);
-    expect(find.text(l10n.minePrivacyReportTitle), findsNothing);
     expect(find.text(l10n.mineAccountSettingsTitle), findsNothing);
   });
 
@@ -763,6 +765,12 @@ void main() {
     );
     // Core sections still visible on desktop
     expect(find.text(l10n.mineAccountDisplayName), findsOneWidget);
+    expect(find.byKey(const Key('mine-status-overview')), findsNothing);
+    expect(find.byKey(const Key('mine-ai-privacy-section')), findsOneWidget);
+    expect(
+      find.byKey(const Key('mine-account-security-section')),
+      findsOneWidget,
+    );
   });
 }
 

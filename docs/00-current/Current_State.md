@@ -19,6 +19,9 @@ Last updated: 2026-07-08
 ## 已完成基线
 
 - 历史 completed baselines 与 audit remediation 已归档：[[04-archive/current-state-archive]]
+- Report / Mine 蓝图收尾完成：
+  - Mine 根页已从旧的 `账户与隐私` 混合区拆成 `AI 与隐私`、`通知与提醒`、`账号与安全` 三个职责明确的边界分组；桌面端旧 `MineStatusOverview` 残留已移除。
+  - Report 根页已补齐 `历史建议回顾`，当前以真实通知流中的 `ai_proactive_suggestion` 为数据源回看最近建议；桌面端同步移除旧 snapshot 状态块，首屏改为 readiness-first 回顾布局。
 - Medicine 首页 Phase 1 重构完成：
   - 根页已按产品蓝图收敛为四块首屏结构：当前用药盒、今日服用计划、用药安全摘要、用药操作。
   - 首页已移除 `Reference notice / Safety tips / 用药记录伪时间线` 这类不再符合 Tab 职责的主视图区块。

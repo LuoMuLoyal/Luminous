@@ -57,8 +57,12 @@ Persisted preference keys:
 - Mine root-page readiness copy such as preview/signed-in badges, locked/incomplete/ready titles,
   readiness descriptions, primary CTA labels, and the account/privacy section title is owned by
   the Mine ARB entries.
+- Mine root-page boundary-section copy such as `AI 与隐私` section title and the `AI 设置 / 报告分享`
+  entry labels shown on the root page is owned by the Mine ARB entries.
 - Mine root-page lightweight notification/reminder summary copy such as section title, inbox label,
   unread-count wording, and signed-out inbox hint is owned by the Mine ARB entries.
+- Report root-page suggestion-history copy such as section title, empty state, and `已读 / 未读`
+  badges is owned by the Report ARB entries.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings
   (`blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`), plus the
   section labels used by the theme settings subpage and the general-settings summary.

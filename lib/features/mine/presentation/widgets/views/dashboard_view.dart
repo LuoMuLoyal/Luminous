@@ -57,13 +57,11 @@ class MineDashboardView extends StatelessWidget {
           dashboard: dashboard,
         ),
         const SizedBox(height: AppSpacingTokens.level5),
+        const MineAiPrivacySection(),
+        const SizedBox(height: AppSpacingTokens.level5),
         const MineNotificationsReminderSection(),
         const SizedBox(height: AppSpacingTokens.level5),
-        MineAccountPrivacySection(
-          key: const Key('mine-account-privacy-section'),
-          account: dashboard.account,
-          notice: dashboard.privacyNotice,
-        ),
+        MineAccountSecuritySection(account: dashboard.account),
       ],
     );
   }
@@ -88,12 +86,6 @@ class MineDashboardView extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacingTokens.level5),
               const MineNotificationsReminderSection(),
-              const SizedBox(height: AppSpacingTokens.level5),
-              MineAccountPrivacySection(
-                key: const Key('mine-account-privacy-section'),
-                account: dashboard.account,
-                notice: dashboard.privacyNotice,
-              ),
             ],
           ),
         ),
@@ -103,10 +95,9 @@ class MineDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MineStatusOverview(
-                key: const Key('mine-status-overview'),
-                dashboard: dashboard,
-              ),
+              const MineAiPrivacySection(),
+              const SizedBox(height: AppSpacingTokens.level5),
+              MineAccountSecuritySection(account: dashboard.account),
             ],
           ),
         ),

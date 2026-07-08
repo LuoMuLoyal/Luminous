@@ -37,6 +37,9 @@ class ReportDashboardView extends StatelessWidget {
     this.onSignIn,
     this.onContinueRecord,
     this.onSync,
+    this.proactiveSuggestions = const [],
+    this.isSuggestionHistoryLoading = false,
+    this.onSuggestionTap,
   });
 
   final ReportDashboard dashboard;
@@ -58,6 +61,9 @@ class ReportDashboardView extends StatelessWidget {
   final VoidCallback? onSignIn;
   final VoidCallback? onContinueRecord;
   final VoidCallback? onSync;
+  final List<NotificationListItemDto> proactiveSuggestions;
+  final bool isSuggestionHistoryLoading;
+  final ValueChanged<NotificationListItemDto>? onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +97,7 @@ class ReportDashboardView extends StatelessWidget {
   }
 
   Widget _buildMobileLayout({required AppLocalizations l10n}) {
-    final readinessStatus = _mobileReadinessStatus();
+    final readinessStatus = _readinessStatus();
     final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
 
     return Column(
@@ -100,7 +106,7 @@ class ReportDashboardView extends StatelessWidget {
         ReportReadinessSection(
           status: readinessStatus,
           generatedAtLabel: generatedAtLabel,
-          insufficientMetricCount: _mobileInsufficientMetricCount(),
+          insufficientMetricCount: _insufficientMetricCount(),
           l10n: l10n,
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
@@ -132,6 +138,15 @@ class ReportDashboardView extends StatelessWidget {
           findings: dashboard.findings,
           l10n: l10n,
         ),
+        if (canAccessProtectedData) ...[
+          const SizedBox(height: AppSpacingTokens.level4),
+          ReportSuggestionHistorySection(
+            suggestions: proactiveSuggestions,
+            isLoading: isSuggestionHistoryLoading,
+            onSuggestionTap: onSuggestionTap,
+            l10n: l10n,
+          ),
+        ],
         if (!canShowFullReport) ...[
           const SizedBox(height: AppSpacingTokens.level4),
           _ReportLockedFeaturesHint(
@@ -174,8 +189,7 @@ class ReportDashboardView extends StatelessWidget {
   }
 
   Widget _buildDesktopLayout({required AppLocalizations l10n}) {
-    final showInsufficientBanner = _shouldShowInsufficientBanner();
-    final insufficientMetricCount = _insufficientMetricCount();
+    final readinessStatus = _readinessStatus();
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,13 +199,21 @@ class ReportDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (showInsufficientBanner) ...[
-                _DataInsufficientBanner(
-                  l10n: l10n,
-                  insufficientMetricCount: insufficientMetricCount,
-                ),
-                const SizedBox(height: AppSpacingTokens.level5),
-              ],
+              ReportReadinessSection(
+                status: readinessStatus,
+                generatedAtLabel: generatedAtLabel,
+                insufficientMetricCount: _insufficientMetricCount(),
+                l10n: l10n,
+                onSignIn: onSignIn,
+                onContinueRecord: onContinueRecord,
+                onGenerate: onGenerateAiSummary == null
+                    ? null
+                    : () {
+                        onGenerateAiSummary!();
+                      },
+                onSync: onSync,
+              ),
+              const SizedBox(height: AppSpacingTokens.level5),
               ReportScoreHero(
                 key: const Key('report-score-hero'),
                 dashboard: dashboard,
@@ -211,18 +233,15 @@ class ReportDashboardView extends StatelessWidget {
                 findings: dashboard.findings,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
-              ReportAiSummarySection(
-                key: const Key('report-ai-summary-section'),
-                dashboard: dashboard,
-                canAccessProtectedData: canAccessProtectedData,
-                aiSummariesEnabled: aiSummariesEnabled,
-                aiState: aiSummaryState,
-                selectedRange: aiSummaryRange,
-                onRangeChanged: onAiSummaryRangeChanged,
-                onGenerate: onGenerateAiSummary,
-                l10n: l10n,
-              ),
+              if (canAccessProtectedData) ...[
+                const SizedBox(height: AppSpacingTokens.level5),
+                ReportSuggestionHistorySection(
+                  suggestions: proactiveSuggestions,
+                  isLoading: isSuggestionHistoryLoading,
+                  onSuggestionTap: onSuggestionTap,
+                  l10n: l10n,
+                ),
+              ],
             ],
           ),
         ),
@@ -247,7 +266,20 @@ class ReportDashboardView extends StatelessWidget {
                 requestInFlight: exportRequestInFlight,
                 onActionTap: onExportActionTap,
                 l10n: l10n,
-                isDataInsufficient: _shouldShowInsufficientBanner(),
+                isDataInsufficient:
+                    readinessStatus == ReportReadinessStatus.insufficient,
+              ),
+              const SizedBox(height: AppSpacingTokens.level5),
+              ReportAiSummarySection(
+                key: const Key('report-ai-summary-section'),
+                dashboard: dashboard,
+                canAccessProtectedData: canAccessProtectedData,
+                aiSummariesEnabled: aiSummariesEnabled,
+                aiState: aiSummaryState,
+                selectedRange: aiSummaryRange,
+                onRangeChanged: onAiSummaryRangeChanged,
+                onGenerate: onGenerateAiSummary,
+                l10n: l10n,
               ),
               const SizedBox(height: AppSpacingTokens.level5),
               ReportPatternsSection(
@@ -267,99 +299,22 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
-  /// Returns true when the overall score is insufficient or all metrics
-  /// lack data, signalling that a guidance banner should appear.
-  bool _shouldShowInsufficientBanner() {
-    if (dashboard.score.status == ReportStatus.insufficientData) return true;
-    if (dashboard.metrics.isEmpty) return true;
-    return dashboard.metrics.every(
-      (m) => m.status == ReportStatus.insufficientData,
-    );
-  }
-
-  /// Count of metrics with insufficient data status.
   int _insufficientMetricCount() {
-    return dashboard.metrics
-        .where((m) => m.status == ReportStatus.insufficientData)
-        .length;
-  }
-
-  int _mobileInsufficientMetricCount() {
     return dashboard.metrics
         .where((metric) => metric.status == ReportStatus.insufficientData)
         .length;
   }
 
-  ReportReadinessStatus _mobileReadinessStatus() {
+  ReportReadinessStatus _readinessStatus() {
     if (isPreview || !canAccessProtectedData) {
       return ReportReadinessStatus.signedOut;
     }
     if (dashboard.metrics.isEmpty ||
         dashboard.score.status == ReportStatus.insufficientData ||
-        _mobileInsufficientMetricCount() > 0) {
+        _insufficientMetricCount() > 0) {
       return ReportReadinessStatus.insufficient;
     }
     return ReportReadinessStatus.ready;
-  }
-}
-
-class _DataInsufficientBanner extends StatelessWidget {
-  const _DataInsufficientBanner({
-    required this.l10n,
-    required this.insufficientMetricCount,
-  });
-
-  final AppLocalizations l10n;
-  final int insufficientMetricCount;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Container(
-      key: const Key('report-data-insufficient-banner'),
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
-      decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        border: Border.all(color: colors.secondary.withValues(alpha: 0.18)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            FLucideIcons.circleAlert,
-            color: colors.secondary,
-            size: AppSpacingTokens.level5,
-          ),
-          const SizedBox(width: AppSpacingTokens.level3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.reportDataInsufficientTitle,
-                  style: AppTypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: AppSpacingTokens.level1),
-                Text(
-                  insufficientMetricCount > 0
-                      ? l10n.reportDataInsufficientMetricsHint(
-                          insufficientMetricCount,
-                        )
-                      : l10n.reportDataInsufficientMessage,
-                  style: AppTypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

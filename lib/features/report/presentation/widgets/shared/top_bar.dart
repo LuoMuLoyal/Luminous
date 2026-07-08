@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -16,7 +16,6 @@ class ReportTopBar extends StatelessWidget {
     required this.onSync,
     this.isGenerating = false,
     this.isSyncing = false,
-    this.showSnapshotStatus = true,
     this.showActionBar = true,
   });
 
@@ -27,7 +26,6 @@ class ReportTopBar extends StatelessWidget {
   final VoidCallback onSync;
   final bool isGenerating;
   final bool isSyncing;
-  final bool showSnapshotStatus;
   final bool showActionBar;
 
   @override
@@ -43,51 +41,42 @@ class ReportTopBar extends StatelessWidget {
           onTap: () => _showRangePicker(context),
         ),
       ],
-      bottom: showSnapshotStatus || showActionBar
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      bottom: showActionBar
+          ? Row(
               children: [
-                if (showSnapshotStatus) const _ReportSnapshotStatus(),
-                if (showSnapshotStatus && showActionBar)
-                  const SizedBox(height: AppSpacingTokens.level3),
-                if (showActionBar)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FButton(
-                          key: const Key('report-top-generate-action'),
-                          onPress: isGenerating ? null : onGenerate,
-                          prefix: Icon(
-                            isGenerating
-                                ? FLucideIcons.loaderCircle
-                                : FLucideIcons.sparkles,
-                            size: 16,
-                          ),
-                          child: Text(
-                            l10n.reportGenerateAction,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacingTokens.level3),
-                      FTooltip(
-                        tipBuilder: (context, controller) =>
-                            Text(l10n.reportSyncAction),
-                        child: FButton(
-                          key: const Key('report-top-sync-action'),
-                          variant: FButtonVariant.secondary,
-                          onPress: isSyncing ? null : onSync,
-                          child: Icon(
-                            isSyncing
-                                ? FLucideIcons.loaderCircle
-                                : FLucideIcons.refreshCw,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+                Expanded(
+                  child: FButton(
+                    key: const Key('report-top-generate-action'),
+                    onPress: isGenerating ? null : onGenerate,
+                    prefix: Icon(
+                      isGenerating
+                          ? FLucideIcons.loaderCircle
+                          : FLucideIcons.sparkles,
+                      size: 16,
+                    ),
+                    child: Text(
+                      l10n.reportGenerateAction,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
+                ),
+                const SizedBox(width: AppSpacingTokens.level3),
+                FTooltip(
+                  tipBuilder: (context, controller) =>
+                      Text(l10n.reportSyncAction),
+                  child: FButton(
+                    key: const Key('report-top-sync-action'),
+                    variant: FButtonVariant.secondary,
+                    onPress: isSyncing ? null : onSync,
+                    child: Icon(
+                      isSyncing
+                          ? FLucideIcons.loaderCircle
+                          : FLucideIcons.refreshCw,
+                      size: 16,
+                    ),
+                  ),
+                ),
               ],
             )
           : null,
@@ -102,65 +91,6 @@ class ReportTopBar extends StatelessWidget {
     if (selected != null && selected != selectedQuery) {
       onQueryChanged(selected);
     }
-  }
-}
-
-class _ReportSnapshotStatus extends StatelessWidget {
-  const _ReportSnapshotStatus();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
-
-    return FCard.raw(
-      key: const Key('report-snapshot-status'),
-      style: .delta(
-        decoration: .shapeDelta(
-          color: colors.secondary.withValues(alpha: 0.08),
-          shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.border),
-            borderRadius: context.theme.style.borderRadius.lg,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
-        ),
-        child: Row(
-          children: [
-            Icon(FLucideIcons.history, color: colors.primary, size: 18),
-            const SizedBox(width: AppSpacingTokens.level3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.reportSnapshotStatus,
-                    style: AppTypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w800),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: AppSpacingTokens.level1),
-                  Text(
-                    l10n.reportSnapshotHint,
-                    style: AppTypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 

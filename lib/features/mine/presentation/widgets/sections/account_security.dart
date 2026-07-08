@@ -8,15 +8,10 @@ import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MineAccountPrivacySection extends StatelessWidget {
-  const MineAccountPrivacySection({
-    super.key,
-    required this.account,
-    required this.notice,
-  });
+class MineAccountSecuritySection extends StatelessWidget {
+  const MineAccountSecuritySection({super.key, required this.account});
 
   final MineAccount account;
-  final MinePrivacyNotice notice;
 
   @override
   Widget build(BuildContext context) {
@@ -29,60 +24,46 @@ class MineAccountPrivacySection extends StatelessWidget {
         : l10n.mineAccountSignedOutMeta;
 
     return Column(
+      key: const Key('mine-account-security-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MineSectionTitle(title: l10n.mineAccountPrivacySectionTitle),
+        MineSectionTitle(title: l10n.settingsAccountSecuritySectionTitle),
         const SizedBox(height: AppSpacingTokens.level3),
         FTileGroup(
-          key: const Key('mine-account-privacy-section'),
           divider: FItemDivider.full,
           children: [
             FTile(
+              key: const Key('mine-account-settings-tile'),
               prefix: Icon(
                 FLucideIcons.userCheck,
-                color: colors.primary,
-                size: AppSpacingTokens.level5,
-              ),
-              title: Text(mineCopy(l10n, MineCopyKey.alertPrivacyTitle)),
-              subtitle: Text(mineCopy(l10n, MineCopyKey.alertPrivacySubtitle)),
-              suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
-            ),
-            FTile(
-              prefix: Icon(
-                notice.icon,
-                color: colors.primary,
-                size: AppSpacingTokens.level5,
-              ),
-              title: Text(mineCopy(l10n, notice.actionKey)),
-              subtitle: Text(
-                mineCopy(l10n, notice.titleKey),
-                style: AppTypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
-            ),
-            FTile(
-              prefix: Icon(
-                FLucideIcons.shieldCheck,
                 color: colors.primary,
                 size: AppSpacingTokens.level5,
               ),
               title: Text(l10n.mineSettingsAccountTitle),
               subtitle: Text(
                 accountSubtitle,
-                style: AppTypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => pushAuthRequiredRoute(context, AppRoutes.settings),
+              onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
+            ),
+            FTile(
+              key: const Key('mine-security-pin-tile'),
+              prefix: Icon(
+                FLucideIcons.lockKeyhole,
+                color: colors.primary,
+                size: AppSpacingTokens.level5,
+              ),
+              title: Text(l10n.settingsSecurityPinTitle),
+              subtitle: Text(
+                l10n.settingsSecurityPinSubtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              suffix: const Icon(FLucideIcons.chevronRight),
+              onPress: () =>
+                  pushAuthRequiredRoute(context, AppRoutes.settingsSecurityPin),
             ),
           ],
         ),

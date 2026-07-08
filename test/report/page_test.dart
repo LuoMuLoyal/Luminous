@@ -11,6 +11,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/repository.dart';
@@ -37,6 +38,9 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationListPageProvider.overrideWith(
+              (ref) => Future.value(_suggestionNotificationResponse),
+            ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(_readyDashboard),
             ),
@@ -74,6 +78,7 @@ void main() {
         'report-score-hero',
         'report-trend-section',
         'report-findings-section',
+        'report-suggestion-history-section',
         'report-ai-summary-section',
         'report-export-section',
         'report-patterns-section',
@@ -105,6 +110,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -159,6 +167,10 @@ void main() {
       expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
       expect(find.byKey(const Key('report-patterns-section')), findsNothing);
+      expect(
+        find.byKey(const Key('report-suggestion-history-section')),
+        findsNothing,
+      );
       expect(find.byType(AppStateErrorView), findsNothing);
     },
   );
@@ -177,6 +189,9 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationListPageProvider.overrideWith(
+              (ref) => Future.value(_suggestionNotificationResponse),
+            ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(MockReportRepository.previewDashboard),
             ),
@@ -195,6 +210,10 @@ void main() {
       expect(find.byKey(const Key('report-score-hero')), findsOneWidget);
       expect(find.byKey(const Key('report-trend-section')), findsOneWidget);
       expect(find.byKey(const Key('report-findings-section')), findsOneWidget);
+      expect(
+        find.byKey(const Key('report-suggestion-history-section')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
       expect(find.byKey(const Key('report-patterns-section')), findsNothing);
@@ -214,6 +233,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -253,6 +275,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(
             _FixedReportRepository(_readyDashboard),
           ),
@@ -314,6 +339,9 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationListPageProvider.overrideWith(
+              (ref) => Future.value(_suggestionNotificationResponse),
+            ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(_readyDashboard),
             ),
@@ -358,6 +386,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -392,6 +423,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -421,6 +455,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -454,6 +491,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationListPageProvider.overrideWith(
+            (ref) => Future.value(_suggestionNotificationResponse),
+          ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
@@ -470,7 +510,83 @@ void main() {
     await tester.pumpAndSettle();
     expect(repo.fetchCount, 2);
   });
+
+  testWidgets(
+    'Report desktop keeps readiness and suggestion history but hides snapshot status',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(1440, 1000);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationListPageProvider.overrideWith(
+              (ref) => Future.value(_suggestionNotificationResponse),
+            ),
+            reportRepositoryProvider.overrideWithValue(
+              _FixedReportRepository(_readyDashboard),
+            ),
+            userSettingsControllerProvider.overrideWith(
+              EnabledUserSettingsController.new,
+            ),
+          ],
+          child: const TestForuiApp(home: ReportPage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(
+        find.byKey(const PageStorageKey<String>('report-desktop-scroll')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+      expect(
+        find.byKey(const Key('report-suggestion-history-section')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
+    },
+  );
 }
+
+final _suggestionNotificationResponse = NotificationListResponseDto(
+  code: 0,
+  message: 'ok',
+  total: 3,
+  items: [
+    NotificationListItemDto(
+      id: 'suggestion-1',
+      type: UserNotificationType.aiProactiveSuggestion,
+      title: '建议减少晚间咖啡因',
+      content: '最近 3 天睡前 6 小时内摄入咖啡因，建议提前调整。',
+      isRead: false,
+      createdAt: '2026-07-07T08:00:00.000Z',
+    ),
+    NotificationListItemDto(
+      id: 'suggestion-2',
+      type: UserNotificationType.aiProactiveSuggestion,
+      title: '补充今天的饮水记录',
+      content: '当前饮水记录偏少，建议补录以完善趋势判断。',
+      isRead: true,
+      createdAt: '2026-07-06T08:00:00.000Z',
+    ),
+    NotificationListItemDto(
+      id: 'report-generated-1',
+      type: UserNotificationType.reportGenerated,
+      title: '周报已生成',
+      content: '你的周报已经可以查看。',
+      isRead: true,
+      createdAt: '2026-07-05T08:00:00.000Z',
+    ),
+  ],
+);
 
 final _readyDashboard = MockReportRepository.previewDashboard.copyWith(
   score: const ReportHealthScore(
