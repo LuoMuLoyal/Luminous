@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -115,8 +115,8 @@ class ReportPage extends ConsumerWidget {
       final response = await reportsApi.reportsControllerShareClinicSummaryV1();
       if (!context.mounted) return;
 
-      final shareUrl = response.data?.shareUrl;
-      if (shareUrl == null || shareUrl.isEmpty) {
+      final shareUrl = response.shareUrl;
+      if (shareUrl.isEmpty) {
         await AppToast.show(context, l10n.reportExportFailedToast);
         return;
       }

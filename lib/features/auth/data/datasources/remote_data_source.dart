@@ -8,15 +8,15 @@ enum AuthVerificationScene {
   resetPassword,
   changeEmail;
 
-  SendVerificationCodeDtoSceneEnum toDtoScene() {
+  SendVerificationCodeDtoSceneScene toDtoScene() {
     return switch (this) {
       AuthVerificationScene.register =>
-        SendVerificationCodeDtoSceneEnum.register,
-      AuthVerificationScene.login => SendVerificationCodeDtoSceneEnum.login,
+        SendVerificationCodeDtoSceneScene.register,
+      AuthVerificationScene.login => SendVerificationCodeDtoSceneScene.login,
       AuthVerificationScene.resetPassword =>
-        SendVerificationCodeDtoSceneEnum.resetPassword,
+        SendVerificationCodeDtoSceneScene.resetPassword,
       AuthVerificationScene.changeEmail =>
-        SendVerificationCodeDtoSceneEnum.changeEmail,
+        SendVerificationCodeDtoSceneScene.changeEmail,
     };
   }
 }
@@ -26,14 +26,6 @@ class AuthRemoteDataSource {
 
   final LucentDioClient _client;
 
-  /// Throws [LucentApiException] if [body] is null, otherwise returns it.
-  T _requireBody<T>(T? body, String message) {
-    if (body == null) {
-      throw LucentApiException(message: message);
-    }
-    return body;
-  }
-
   Future<AuthSession> login({
     required String email,
     String? password,
@@ -42,7 +34,7 @@ class AuthRemoteDataSource {
     final trimmedPassword = password?.trim();
     final trimmedCode = code?.trim();
     final response = await _client.authApi.authControllerLoginV1(
-      loginDto: LoginDto(
+      body: LoginDto(
         email: email.trim(),
         password: trimmedPassword == null || trimmedPassword.isEmpty
             ? null
@@ -50,8 +42,7 @@ class AuthRemoteDataSource {
         code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
       ),
     );
-    final body = _requireBody(response.data, 'Login response is empty.');
-    final session = AuthMapper.toSessionFromLogin(body);
+    final session = AuthMapper.toSessionFromLogin(response);
     await _client.writeSession(
       LucentSessionTokens(
         accessToken: session.accessToken,
@@ -67,16 +58,11 @@ class AuthRemoteDataSource {
     final trimmedCallbackUri = callbackUri?.trim();
     final response = await _client.authApi
         .authControllerCreateWechatWebAuthorizeUrlV1(
-          oAuthAuthorizeDto:
-              trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
+          body: trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
               : null,
         );
-    final body = _requireBody(
-      response.data,
-      'WeChat authorize response is empty.',
-    );
-    return body.data;
+    return response.data;
   }
 
   Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
@@ -85,17 +71,13 @@ class AuthRemoteDataSource {
     final trimmedIdentityCallbackUri = callbackUri?.trim();
     final response = await _client.accountApi
         .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
-          oAuthAuthorizeDto:
+          body:
               trimmedIdentityCallbackUri != null &&
                   trimmedIdentityCallbackUri.isNotEmpty
               ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
               : null,
         );
-    final body = _requireBody(
-      response.data,
-      'WeChat identity link authorize response is empty.',
-    );
-    return body.data;
+    return response.data;
   }
 
   Future<AuthSession> loginWithWechatWeb({
@@ -103,13 +85,9 @@ class AuthRemoteDataSource {
     required String state,
   }) async {
     final response = await _client.authApi.authControllerLoginWithWechatWebV1(
-      oAuthCallbackDto: OAuthCallbackDto(
-        code: code.trim(),
-        state: state.trim(),
-      ),
+      body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
-    final body = _requireBody(response.data, 'WeChat login response is empty.');
-    final session = AuthMapper.toSessionFromLogin(body);
+    final session = AuthMapper.toSessionFromLogin(response);
     await _client.writeSession(
       LucentSessionTokens(
         accessToken: session.accessToken,
@@ -122,13 +100,9 @@ class AuthRemoteDataSource {
   Future<AuthSession> loginWithWechatMobile({required String code}) async {
     final response = await _client.authApi
         .authControllerLoginWithWechatMobileV1(
-          oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
+          body: OAuthCodeCallbackDto(code: code.trim()),
         );
-    final body = _requireBody(
-      response.data,
-      'WeChat mobile login response is empty.',
-    );
-    final session = AuthMapper.toSessionFromLogin(body);
+    final session = AuthMapper.toSessionFromLogin(response);
     await _client.writeSession(
       LucentSessionTokens(
         accessToken: session.accessToken,
@@ -145,15 +119,14 @@ class AuthRemoteDataSource {
     String? familyName,
   }) async {
     final response = await _client.authApi.authControllerLoginWithAppleV1(
-      appleOAuthCallbackDto: AppleOAuthCallbackDto(
+      body: AppleOAuthCallbackDto(
         identityToken: identityToken,
         authorizationCode: authorizationCode,
         givenName: givenName,
         familyName: familyName,
       ),
     );
-    final body = _requireBody(response.data, 'Apple login response is empty.');
-    final session = AuthMapper.toSessionFromLogin(body);
+    final session = AuthMapper.toSessionFromLogin(response);
     await _client.writeSession(
       LucentSessionTokens(
         accessToken: session.accessToken,
@@ -168,13 +141,11 @@ class AuthRemoteDataSource {
   }) async {
     final trimmedQqCallbackUri = callbackUri?.trim();
     final response = await _client.authApi.authControllerCreateQqAuthorizeUrlV1(
-      qqOAuthAuthorizeDto:
-          trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
+      body: trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
           ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
           : null,
     );
-    final body = _requireBody(response.data, 'QQ authorize response is empty.');
-    return body.data;
+    return response.data;
   }
 
   Future<AuthSession> loginWithQq({
@@ -182,13 +153,9 @@ class AuthRemoteDataSource {
     required String state,
   }) async {
     final response = await _client.authApi.authControllerLoginWithQqV1(
-      qqOAuthCallbackDto: QqOAuthCallbackDto(
-        code: code.trim(),
-        state: state.trim(),
-      ),
+      body: QqOAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
-    final body = _requireBody(response.data, 'QQ login response is empty.');
-    final session = AuthMapper.toSessionFromLogin(body);
+    final session = AuthMapper.toSessionFromLogin(response);
     await _client.writeSession(
       LucentSessionTokens(
         accessToken: session.accessToken,
@@ -204,28 +171,17 @@ class AuthRemoteDataSource {
   }) async {
     final response = await _client.accountApi
         .accountControllerLinkWechatWebIdentityV1(
-          oAuthCallbackDto: OAuthCallbackDto(
-            code: code.trim(),
-            state: state.trim(),
-          ),
+          body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
         );
-    final body = _requireBody(
-      response.data,
-      'WeChat identity link response is empty.',
-    );
-    return _authUserFromAccount(body.data);
+    return _authUserFromAccount(response.data);
   }
 
   Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
     final response = await _client.accountApi
         .accountControllerLinkWechatMobileIdentityV1(
-          oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
+          body: OAuthCodeCallbackDto(code: code.trim()),
         );
-    final body = _requireBody(
-      response.data,
-      'WeChat mobile identity link response is empty.',
-    );
-    return _authUserFromAccount(body.data);
+    return _authUserFromAccount(response.data);
   }
 
   Future<AuthSession> register({
@@ -236,7 +192,7 @@ class AuthRemoteDataSource {
   }) async {
     final trimmedNickname = nickname?.trim();
     final response = await _client.authApi.authControllerRegisterV1(
-      registerDto: RegisterDto(
+      body: RegisterDto(
         email: email.trim(),
         password: password.trim(),
         code: code.trim(),
@@ -245,8 +201,7 @@ class AuthRemoteDataSource {
             : trimmedNickname,
       ),
     );
-    final body = _requireBody(response.data, 'Register response is empty.');
-    return AuthMapper.toSessionFromRegister(body);
+    return AuthMapper.toSessionFromRegister(response);
   }
 
   Future<void> logout() async {
@@ -257,16 +212,14 @@ class AuthRemoteDataSource {
     }
 
     await _client.authApi.authControllerLogoutV1(
-      logoutDto: LogoutDto(refreshToken: refreshToken),
+      body: LogoutDto(refreshToken: refreshToken),
     );
     await _client.clearSession();
   }
 
   Future<AuthUser> fetchAccount() async {
     final response = await _client.accountApi.accountControllerGetAccountV1();
-    final body = _requireBody(response.data, 'Account response is empty.');
-    final user = body.data;
-    return _authUserFromAccount(user);
+    return _authUserFromAccount(response.data);
   }
 
   Future<CooldownMessageDto> sendVerificationCode({
@@ -274,16 +227,12 @@ class AuthRemoteDataSource {
     required AuthVerificationScene scene,
   }) async {
     final response = await _client.authApi.authControllerSendVerificationCodeV1(
-      sendVerificationCodeDto: SendVerificationCodeDto(
+      body: SendVerificationCodeDto(
         email: email.trim(),
         scene: scene.toDtoScene(),
       ),
     );
-    final body = _requireBody(
-      response.data,
-      'Send verification code response is empty.',
-    );
-    return body.data;
+    return response.data;
   }
 
   Future<void> resetPassword({
@@ -292,7 +241,7 @@ class AuthRemoteDataSource {
     required String password,
   }) async {
     await _client.authApi.authControllerResetPasswordV1(
-      resetPasswordDto: ResetPasswordDto(
+      body: ResetPasswordDto(
         email: email.trim(),
         code: code.trim(),
         password: password.trim(),
@@ -302,13 +251,9 @@ class AuthRemoteDataSource {
 
   Future<CooldownMessageDto> forgotPassword({required String email}) async {
     final response = await _client.authApi.authControllerForgotPasswordV1(
-      forgotPasswordDto: ForgotPasswordDto(email: email.trim()),
+      body: ForgotPasswordDto(email: email.trim()),
     );
-    final body = _requireBody(
-      response.data,
-      'Forgot password response is empty.',
-    );
-    return body.data;
+    return response.data;
   }
 
   Future<void> verifyEmail({
@@ -316,7 +261,7 @@ class AuthRemoteDataSource {
     required String code,
   }) async {
     await _client.authApi.authControllerVerifyEmailV1(
-      verifyEmailDto: VerifyEmailDto(email: email.trim(), code: code.trim()),
+      body: VerifyEmailDto(email: email.trim(), code: code.trim()),
     );
   }
 
@@ -325,16 +270,12 @@ class AuthRemoteDataSource {
     String? avatar,
   }) async {
     final response = await _client.accountApi.accountControllerUpdateAccountV1(
-      updateAccountDto: UpdateAccountDto(
+      body: UpdateAccountDto(
         nickname: nickname?.trim(),
         avatar: avatar?.trim(),
       ),
     );
-    final body = _requireBody(
-      response.data,
-      'Update profile response is empty.',
-    );
-    return _authUserFromAccount(body.data);
+    return _authUserFromAccount(response.data);
   }
 
   Future<void> changePassword({
@@ -342,7 +283,7 @@ class AuthRemoteDataSource {
     required String newPassword,
   }) async {
     await _client.accountApi.accountControllerChangePasswordV1(
-      changePasswordDto: ChangePasswordDto(
+      body: ChangePasswordDto(
         oldPassword: oldPassword.trim(),
         newPassword: newPassword.trim(),
       ),
@@ -356,21 +297,17 @@ class AuthRemoteDataSource {
     required AuthUser currentUser,
   }) async {
     final response = await _client.accountApi.accountControllerChangeEmailV1(
-      changeEmailDto: ChangeEmailDto(
-        newEmail: newEmail.trim(),
-        code: code.trim(),
-      ),
+      body: ChangeEmailDto(newEmail: newEmail.trim(), code: code.trim()),
     );
-    final body = _requireBody(response.data, 'Change email response is empty.');
     return currentUser.copyWith(
-      email: body.data.email,
-      emailVerifiedAt: DateTime.parse(body.data.emailVerifiedAt),
+      email: response.data.email,
+      emailVerifiedAt: DateTime.parse(response.data.emailVerifiedAt),
     );
   }
 
   Future<void> deleteAccount({required String password}) async {
     await _client.accountApi.accountControllerDeleteAccountV1(
-      deleteAccountDto: DeleteAccountDto(password: password.trim()),
+      body: DeleteAccountDto(password: password.trim()),
     );
     await _client.clearSession();
   }
@@ -379,11 +316,7 @@ class AuthRemoteDataSource {
     final response = await _client.accountApi.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
-    final body = _requireBody(
-      response.data,
-      'Unlink identity response is empty.',
-    );
-    return _authUserFromAccount(body.data);
+    return _authUserFromAccount(response.data);
   }
 
   AuthUser _authUserFromAccount(AccountDto user) {

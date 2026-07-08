@@ -12,7 +12,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -595,7 +595,7 @@ class _FakeUserSettingsController extends UserSettingsController {
 
   @override
   Future<UserSettingsDataDto> build() async {
-    return UserSettingsDataDto(
+    return const UserSettingsDataDto(
       aiSummariesEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: false,
@@ -620,14 +620,14 @@ class _FakeUserSettingsController extends UserSettingsController {
         dataSharingConsent: consent,
         assistantEnabled: false,
         assistantMemoryEnabled: false,
-        assistantContext: AssistantContextSettingsDto(
+        assistantContext: const AssistantContextSettingsDto(
           healthProfile: false,
           dailyRecords: false,
           sleepRecords: false,
           currentMedicines: false,
         ),
         updatedAt: '2026-06-28T00:00:00Z',
-        securityPin: SecurityPinSettingsDto(
+        securityPin: const SecurityPinSettingsDto(
           enabled: false,
           lastChangedAt: null,
         ),

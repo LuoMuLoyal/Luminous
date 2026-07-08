@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';

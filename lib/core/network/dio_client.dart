@@ -1,18 +1,18 @@
 // ignore_for_file: prefer_initializing_formals
 
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/core/network/session_store.dart';
 
-/// Luminous 对 Lucent OpenAPI 客户端的统一封装入口。
+/// Luminous 对 Lucent API 客户端的统一封装入口。
 ///
 /// 约定：
-/// - 生成代码放在 `packages/lucent_openapi`
-/// - 业务层不要直接 new 生成器里的 `LucentOpenapi`
+/// - 生成代码放在 `generated/lucent_api`
+/// - 业务层不要直接 new 生成器里的 `LucentClient`
 /// - 统一通过这里注入 baseUrl、token 和通用 Dio 行为
 class LucentDioClient {
   static const String medicinesBypassCacheHeader = 'x-bypass-cache';
@@ -28,26 +28,24 @@ class LucentDioClient {
     Duration connectTimeout = _defaultConnectTimeout,
     Duration receiveTimeout = _defaultReceiveTimeout,
     Duration sendTimeout = _defaultSendTimeout,
-  }) : _openapi = LucentOpenapi(
-         dio:
-             dio ??
-             Dio(
-               _createBaseOptions(
-                 baseUrl: baseUrl,
-                 connectTimeout: connectTimeout,
-                 receiveTimeout: receiveTimeout,
-                 sendTimeout: sendTimeout,
-               ),
+  }) : _dio =
+           dio ??
+           Dio(
+             _createBaseOptions(
+               baseUrl: baseUrl,
+               connectTimeout: connectTimeout,
+               receiveTimeout: receiveTimeout,
+               sendTimeout: sendTimeout,
              ),
-         interceptors: <Interceptor>[],
-       ),
+           ),
        _sessionStore = sessionStore,
        _baseUrl = baseUrl,
        _localeResolver = localeResolver,
        _onSessionExpired = onSessionExpired {
     if (httpClientAdapter != null) {
-      _openapi.dio.httpClientAdapter = httpClientAdapter;
+      _dio.httpClientAdapter = httpClientAdapter;
     }
+    _client = LucentClient(_dio, baseUrl: baseUrl);
     _refreshDio = Dio(
       _createBaseOptions(
         baseUrl: _baseUrl,
@@ -60,7 +58,7 @@ class LucentDioClient {
     if (httpClientAdapter != null) {
       _refreshDio.httpClientAdapter = httpClientAdapter;
     }
-    _openapi.dio.interceptors.addAll(<Interceptor>[
+    _dio.interceptors.addAll(<Interceptor>[
       ...interceptors,
       ..._buildInterceptors(),
     ]);
@@ -70,7 +68,8 @@ class LucentDioClient {
   static const Duration _defaultReceiveTimeout = Duration(seconds: 10);
   static const Duration _defaultSendTimeout = Duration(seconds: 10);
 
-  final LucentOpenapi _openapi;
+  final Dio _dio;
+  late final LucentClient _client;
   final LucentSessionStore _sessionStore;
   final String _baseUrl;
   final String Function()? _localeResolver;
@@ -149,34 +148,30 @@ class LucentDioClient {
     ];
   }
 
-  Dio get dio => _openapi.dio;
+  Dio get dio => _dio;
 
-  AppApi get appApi => _openapi.getAppApi();
+  LucentClient get client => _client;
 
-  AccountApi get accountApi => _openapi.getAccountApi();
+  HealthApi get healthApi => _client.health;
 
-  AuthApi get authApi => _openapi.getAuthApi();
+  AccountApi get accountApi => _client.account;
 
-  MedicinesApi get medicinesApi => _openapi.getMedicinesApi();
-  EnvironmentApi get environmentApi => _openapi.getEnvironmentApi();
-  UserHealthContextApi get userHealthContextApi =>
-      _openapi.getUserHealthContextApi();
-  DailyRecordsApi get dailyRecordsApi => _openapi.getDailyRecordsApi();
-  MedicineDoseLogsApi get medicineDoseLogsApi =>
-      _openapi.getMedicineDoseLogsApi();
-  MedicineRemindersApi get medicineRemindersApi =>
-      _openapi.getMedicineRemindersApi();
-  SupportResourcesApi get supportResourcesApi =>
-      _openapi.getSupportResourcesApi();
-  UserSettingsApi get userSettingsApi => _openapi.getUserSettingsApi();
-  DataExportApi get dataExportApi => _openapi.getDataExportApi();
-  ReportsApi get reportsApi => _openapi.getReportsApi();
-  TodayAnalysisApi get todayAnalysisApi => _openapi.getTodayAnalysisApi();
-  AssistantApi get assistantApi => _openapi.getAssistantApi();
+  AuthApi get authApi => _client.auth;
 
-  NotificationsApi get notificationsApi => _openapi.getNotificationsApi();
-
-  FilesApi get filesApi => _openapi.getFilesApi();
+  MedicinesApi get medicinesApi => _client.medicines;
+  EnvironmentApi get environmentApi => _client.environment;
+  UserHealthContextApi get userHealthContextApi => _client.userHealthContext;
+  DailyRecordsApi get dailyRecordsApi => _client.dailyRecords;
+  MedicineDoseLogsApi get medicineDoseLogsApi => _client.medicineDoseLogs;
+  MedicineRemindersApi get medicineRemindersApi => _client.medicineReminders;
+  SupportResourcesApi get supportResourcesApi => _client.supportResources;
+  UserSettingsApi get userSettingsApi => _client.userSettings;
+  DataExportApi get dataExportApi => _client.dataExport;
+  ReportsApi get reportsApi => _client.reports;
+  TodayAnalysisApi get todayAnalysisApi => _client.todayAnalysis;
+  AssistantApi get assistantApi => _client.assistant;
+  NotificationsApi get notificationsApi => _client.notifications;
+  FilesApi get filesApi => _client.files;
 
   Map<String, String> medicinesHeaders({bool bypassCache = false}) {
     if (!bypassCache) {
@@ -214,7 +209,7 @@ class LucentDioClient {
   }
 
   void dispose() {
-    _openapi.dio.close(force: true);
+    _dio.close(force: true);
     _refreshDio.close(force: true);
   }
 
@@ -321,7 +316,7 @@ class LucentDioClient {
     final nextExtra = Map<String, dynamic>.from(requestOptions.extra);
     nextExtra['hasRetriedAfterRefresh'] = true;
 
-    return _openapi.dio.fetch<dynamic>(
+    return _dio.fetch<dynamic>(
       requestOptions.copyWith(headers: nextHeaders, extra: nextExtra),
     );
   }

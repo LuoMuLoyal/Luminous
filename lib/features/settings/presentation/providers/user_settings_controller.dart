@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 
 /// Remote-backed controller for the authenticated user's privacy/AI settings.
@@ -12,33 +12,74 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   Future<UserSettingsDataDto> build() async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerGetSettingsV1();
-    final data = response.data?.data;
-    if (data == null) {
-      throw StateError('User settings response data is null.');
-    }
-    return data;
+    return response.data;
   }
 
   Future<void> setAiSummariesEnabled(bool enabled) async {
-    await _patch(UpdateUserSettingsDto(aiSummariesEnabled: enabled));
+    final current = state.value!;
+    await _patch(
+      UpdateUserSettingsDto(
+        aiSummariesEnabled: enabled,
+        dataSharingConsent: current.dataSharingConsent,
+        assistantEnabled: current.assistantEnabled,
+        assistantMemoryEnabled: current.assistantMemoryEnabled,
+        assistantContext: _contextToUpdate(current.assistantContext),
+      ),
+    );
   }
 
   Future<void> setAssistantEnabled(bool enabled) async {
-    await _patch(UpdateUserSettingsDto(assistantEnabled: enabled));
+    final current = state.value!;
+    await _patch(
+      UpdateUserSettingsDto(
+        aiSummariesEnabled: current.aiSummariesEnabled,
+        dataSharingConsent: current.dataSharingConsent,
+        assistantEnabled: enabled,
+        assistantMemoryEnabled: current.assistantMemoryEnabled,
+        assistantContext: _contextToUpdate(current.assistantContext),
+      ),
+    );
   }
 
   Future<void> setAssistantMemoryEnabled(bool enabled) async {
-    await _patch(UpdateUserSettingsDto(assistantMemoryEnabled: enabled));
+    final current = state.value!;
+    await _patch(
+      UpdateUserSettingsDto(
+        aiSummariesEnabled: current.aiSummariesEnabled,
+        dataSharingConsent: current.dataSharingConsent,
+        assistantEnabled: current.assistantEnabled,
+        assistantMemoryEnabled: enabled,
+        assistantContext: _contextToUpdate(current.assistantContext),
+      ),
+    );
   }
 
   Future<void> setAssistantContext(
     UpdateAssistantContextSettingsDto contextSettings,
   ) async {
-    await _patch(UpdateUserSettingsDto(assistantContext: contextSettings));
+    final current = state.value!;
+    await _patch(
+      UpdateUserSettingsDto(
+        aiSummariesEnabled: current.aiSummariesEnabled,
+        dataSharingConsent: current.dataSharingConsent,
+        assistantEnabled: current.assistantEnabled,
+        assistantMemoryEnabled: current.assistantMemoryEnabled,
+        assistantContext: contextSettings,
+      ),
+    );
   }
 
   Future<void> setDataSharingConsent(bool consent) async {
-    await _patch(UpdateUserSettingsDto(dataSharingConsent: consent));
+    final current = state.value!;
+    await _patch(
+      UpdateUserSettingsDto(
+        aiSummariesEnabled: current.aiSummariesEnabled,
+        dataSharingConsent: consent,
+        assistantEnabled: current.assistantEnabled,
+        assistantMemoryEnabled: current.assistantMemoryEnabled,
+        assistantContext: _contextToUpdate(current.assistantContext),
+      ),
+    );
   }
 
   Future<void> applySettingsPatch(UpdateUserSettingsDto dto) async {
@@ -50,52 +91,44 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   Future<void> enableSecurityPin(String pin) async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerEnableSecurityPinV1(
-      enableSecurityPinDto: EnableSecurityPinDto(pin: pin),
+      body: EnableSecurityPinDto(pin: pin),
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw StateError('Enable security PIN response data is null.');
-    }
-    state = AsyncData(data);
+    state = AsyncData(response.data);
   }
 
   Future<void> changeSecurityPin(String oldPin, String newPin) async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerChangeSecurityPinV1(
-      changeSecurityPinDto: ChangeSecurityPinDto(
-        oldPin: oldPin,
-        newPin: newPin,
-      ),
+      body: ChangeSecurityPinDto(oldPin: oldPin, newPin: newPin),
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw StateError('Change security PIN response data is null.');
-    }
-    state = AsyncData(data);
+    state = AsyncData(response.data);
   }
 
   Future<void> disableSecurityPin(String pin) async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerDisableSecurityPinV1(
-      disableSecurityPinDto: DisableSecurityPinDto(pin: pin),
+      body: DisableSecurityPinDto(pin: pin),
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw StateError('Disable security PIN response data is null.');
-    }
-    state = AsyncData(data);
+    state = AsyncData(response.data);
+  }
+
+  UpdateAssistantContextSettingsDto _contextToUpdate(
+    AssistantContextSettingsDto ctx,
+  ) {
+    return UpdateAssistantContextSettingsDto(
+      healthProfile: ctx.healthProfile,
+      dailyRecords: ctx.dailyRecords,
+      sleepRecords: ctx.sleepRecords,
+      currentMedicines: ctx.currentMedicines,
+    );
   }
 
   Future<void> _patch(UpdateUserSettingsDto dto) async {
     final api = ref.read(lucentUserSettingsApiProvider);
     final response = await api.userSettingsControllerUpdateSettingsV1(
-      updateUserSettingsDto: dto,
+      body: dto,
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw StateError('User settings patch response data is null.');
-    }
-    state = AsyncData(data);
+    state = AsyncData(response.data);
   }
 }
 

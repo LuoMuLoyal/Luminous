@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote_data_source.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -78,7 +78,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
 
   TodayAiAnalysisBullet _mapBullet(lucent.TodayAnalysisBulletDto dto) {
     return TodayAiAnalysisBullet(
-      kind: switch (dto.kind.value) {
+      kind: switch (dto.kind.json) {
         'medication' => TodayAiAnalysisBulletKind.medication,
         'hydration' => TodayAiAnalysisBulletKind.hydration,
         'sleep' => TodayAiAnalysisBulletKind.sleep,

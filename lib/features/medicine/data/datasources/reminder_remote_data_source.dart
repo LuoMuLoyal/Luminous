@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 
 class MedicineReminderWriteInput {
   const MedicineReminderWriteInput({

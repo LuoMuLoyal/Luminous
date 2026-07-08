@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/sse.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -33,30 +33,21 @@ class ReportAiSummaryRemoteDataSource {
   }) async {
     final dtoRange = switch (range) {
       ReportAiSummaryRange.last7Days =>
-        lucent.GenerateReportSummaryDtoRangeEnum.last7Days,
+        lucent.GenerateReportSummaryDtoRangeRange.last7Days,
       ReportAiSummaryRange.last30Days =>
-        lucent.GenerateReportSummaryDtoRangeEnum.last30Days,
+        lucent.GenerateReportSummaryDtoRangeRange.last30Days,
       ReportAiSummaryRange.custom =>
-        lucent.GenerateReportSummaryDtoRangeEnum.custom,
+        lucent.GenerateReportSummaryDtoRangeRange.custom,
     };
 
     final response = await api.reportsControllerGenerateSummaryV1(
-      generateReportSummaryDto: lucent.GenerateReportSummaryDto(
+      body: lucent.GenerateReportSummaryDto(
         range: dtoRange,
         startDate: startDate,
         endDate: endDate,
       ),
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        error: '报告 AI 摘要响应为空，请稍后再试。',
-      );
-    }
-    return data;
+    return response.data;
   }
 
   Stream<ReportAiRemoteEvent> generateStream(

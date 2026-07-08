@@ -1,12 +1,10 @@
-﻿// ignore_for_file: use_of_void_result
+// ignore_for_file: use_of_void_result
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/network_providers.dart';
-
-/// Helper to extract typed data from Dio Response.
-dynamic _extractData(Response<void> r) => r.data;
 
 class ScanRepository {
   const ScanRepository({
@@ -21,14 +19,12 @@ class ScanRepository {
 
   Future<List<MedicineSearchItemDto>> search(String query) async {
     final response = await api.medicinesControllerSearchV1(
-      source_: 'cn',
+      source: Source.cn,
       q: query,
       page: 1,
       pageSize: 20,
     );
-    final data = response.data;
-    if (data == null) throw Exception('Search response is empty.');
-    return data.data;
+    return response.data;
   }
 
   Future<String> uploadImage({
@@ -37,18 +33,22 @@ class ScanRepository {
     int? sizeBytes,
     String? fileName,
   }) async {
-    final presignResponse = await filesApi.filesControllerCreateUploadV1(
-      createFileUploadDto: CreateFileUploadDto(
-        contentType: contentType,
-        sizeBytes: (sizeBytes ?? bytes.length) as num,
-        fileName: fileName,
-      ),
+    final presignResponse = await dio.post<Object>(
+      '/api/v1/user/files/upload',
+      data: <String, Object?>{
+        'contentType': contentType,
+        'sizeBytes': sizeBytes ?? bytes.length,
+        if (fileName != null) 'fileName': fileName,
+      },
     );
-    final envelope = _extractData(presignResponse) as Map<String, dynamic>;
-    final uploadData = envelope['data'] as Map<String, dynamic>;
-    final uploadUrl = uploadData['uploadUrl'] as String;
-    final headers = uploadData['headers'] as Map<String, dynamic>? ?? {};
-    final publicUrl = uploadData['publicUrl'] as String?;
+    final envelope = coerceToStringMap(presignResponse.data);
+    if (envelope == null) {
+      throw Exception('File upload presign response is empty.');
+    }
+    final uploadData = coerceToStringMap(envelope['data']) ?? const {};
+    final uploadUrl = uploadData['uploadUrl']?.toString() ?? '';
+    final headers = coerceToStringMap(uploadData['headers']) ?? const {};
+    final publicUrl = uploadData['publicUrl']?.toString();
 
     await dio.put(
       uploadUrl,
@@ -69,10 +69,14 @@ class ScanRepository {
   }
 
   Future<Map<String, dynamic>> recognizeMedicine(String imageUrl) async {
-    final response = await api.medicinesControllerRecognizeV1(
-      recognizeMedicineDto: RecognizeMedicineDto(imageUrl: imageUrl),
+    final response = await dio.post<Object>(
+      '/api/v1/medicines/recognize',
+      data: <String, Object?>{'imageUrl': imageUrl},
     );
-    final envelope = _extractData(response) as Map<String, dynamic>;
+    final envelope = coerceToStringMap(response.data);
+    if (envelope == null) {
+      throw Exception('Recognize medicine response is empty.');
+    }
     return Map<String, dynamic>.from(envelope['data'] as Map);
   }
 }

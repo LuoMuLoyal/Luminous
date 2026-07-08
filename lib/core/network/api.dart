@@ -1,4 +1,4 @@
-export 'package:lucent_openapi/lucent_openapi.dart';
+export 'package:lucent_api/api/export.dart';
 export 'api_exception.dart';
 export 'base_url.dart';
 export 'dio_client.dart';

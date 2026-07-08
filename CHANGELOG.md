@@ -73,7 +73,7 @@ considered stable.
   Design), design tokens (color / type / spacing / radius / breakpoints /
   animation), shimmer skeletons, AppStateErrorView, AppToast feedback.
 - **Infrastructure** — Riverpod 3 state management, GoRouter 17 navigation,
-  generated OpenAPI client (`packages/lucent_openapi`), `EnvReader` for
+  generated OpenAPI client (`generated/lucent_api`), `EnvReader` for
   compile-time env variables, `LucentDioClient` with session management and
   locale injection, SSE client for streaming.
 - **i18n** — full zh / en ARB localization via `flutter gen-l10n`, 800+ strings.

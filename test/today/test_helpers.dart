@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai_repository.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -65,14 +65,17 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
     dataSharingConsent: false,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
-    assistantContext: AssistantContextSettingsDto(
+    assistantContext: const AssistantContextSettingsDto(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,
       currentMedicines: true,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
-    securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+    securityPin: const SecurityPinSettingsDto(
+      enabled: false,
+      lastChangedAt: null,
+    ),
   );
 }
 

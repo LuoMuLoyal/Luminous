@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 
 /// Cross-feature data adapter for public support resources and app metadata.
@@ -15,9 +15,9 @@ final supportResourcesProvider = FutureProvider.autoDispose
     .family<List<SupportResourceDto>, String>((ref, scope) async {
       final api = ref.read(lucentSupportResourcesApiProvider);
       final response = await api.supportResourcesControllerGetResourcesV1(
-        scope: scope,
+        scope: Scope.fromJson(scope),
       );
-      return response.data?.data.items ?? const <SupportResourceDto>[];
+      return response.data.items;
     });
 
 /// Fetches application metadata from `GET /api/v1/public/app-info`.
@@ -26,5 +26,5 @@ final appInfoProvider = FutureProvider.autoDispose<AppInfoDataDto?>((
 ) async {
   final api = ref.read(lucentSupportResourcesApiProvider);
   final response = await api.supportResourcesControllerGetAppInfoV1();
-  return response.data?.data;
+  return response.data;
 });

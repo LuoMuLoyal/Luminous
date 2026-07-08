@@ -43,7 +43,7 @@
 
 ## 生成客户端
 
-- 包位置：`packages/lucent_openapi`。
+- 包位置：`generated/lucent_api`。
 
 ## 认证与会话
 

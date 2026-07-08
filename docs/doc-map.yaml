@@ -81,7 +81,6 @@ rules:
       - lib/core/i18n/**
       - lib/core/notifications/**
       - lib/core/feedback/**
-      - tool/regenerate_lucent_openapi.dart
       - tool/verify_lucent_openapi_sync.dart
     docs_required:
       - docs/00-current/Current_State.md

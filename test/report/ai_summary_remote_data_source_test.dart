@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 

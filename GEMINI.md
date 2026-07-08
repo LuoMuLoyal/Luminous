@@ -10,7 +10,7 @@ Read these files before editing:
 Project boundaries:
 
 - Keep to Riverpod, GoRouter, and Forui patterns already used in the repo.
-- Treat `packages/lucent_openapi/` and generated l10n files as generated.
+- Treat `generated/lucent_api/` and generated l10n files as generated.
 - Keep app-side AI experimentation inside `lib/core/ai/` unless the task
   explicitly changes product architecture.
 - After code changes, update the required `docs/` files and the daily migration

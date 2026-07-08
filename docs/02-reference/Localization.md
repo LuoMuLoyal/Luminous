@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-02
+Last updated: 2026-07-08
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -111,6 +111,8 @@ flutter test
 - `LuminousApp` reads `appLocaleControllerProvider` and passes the resolved locale into
    `MaterialApp.router.locale`.
 - Lucent network requests reuse the same preference for `Accept-Language`.
+- 网络层已迁移到 `generated/lucent_api`（`openapi_retrofit_generator` 生成的 Retrofit 客户端），
+  `LucentDioClient` 仍然在拦截器中注入 `Accept-Language` header，行为不变。
 - Signed-in language changes currently sync to Lucent profile fields through `locale / timezone /
    unitSystem`.
 - Choosing `system` clears the backend locale preference.

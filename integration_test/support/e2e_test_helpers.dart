@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart'
+import 'package:lucent_api/api/export.dart'
     show CooldownMessageDto, MedicineDoseLogsApi;
 import 'package:luminous/app/app.dart';
 import 'package:luminous/app/router.dart' show router;
@@ -441,13 +441,13 @@ class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
   }) async {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const CooldownMessageDto(message: 'sent', cooldown: 60);
   }
 
   @override
   Future<CooldownMessageDto> forgotPassword({required String email}) async {
     forgotPasswordEmail = email;
-    return CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const CooldownMessageDto(message: 'sent', cooldown: 60);
   }
 
   @override

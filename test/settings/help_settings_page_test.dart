@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
 import 'package:luminous/features/support/data/providers/resources_providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -19,7 +19,7 @@ void main() {
         overrides: [
           supportResourcesProvider('help').overrideWith(
             (ref) async => [
-              SupportResourceDto(
+              const SupportResourceDto(
                 id: 'enabled-url',
                 scope: SupportResourceScope.help,
                 title: 'Enabled URL',
@@ -27,7 +27,7 @@ void main() {
                 actionType: SupportResourceActionType.url,
                 available: true,
               ),
-              SupportResourceDto(
+              const SupportResourceDto(
                 id: 'disabled-url',
                 scope: SupportResourceScope.help,
                 title: 'Disabled URL',
@@ -35,7 +35,7 @@ void main() {
                 actionType: SupportResourceActionType.url,
                 available: false,
               ),
-              SupportResourceDto(
+              const SupportResourceDto(
                 id: 'no-url',
                 scope: SupportResourceScope.help,
                 title: 'No URL',
@@ -43,7 +43,7 @@ void main() {
                 actionType: SupportResourceActionType.url,
                 available: true,
               ),
-              SupportResourceDto(
+              const SupportResourceDto(
                 id: 'no-type',
                 scope: SupportResourceScope.help,
                 title: 'No Type',

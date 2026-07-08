@@ -12,4 +12,4 @@ linter:
 
 analyzer:
   exclude:
-    - packages/lucent_openapi/**
+    - generated/lucent_api/**

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/support/data/providers/resources_providers.dart';
 
@@ -13,35 +13,26 @@ class FakeSupportResourcesApi implements SupportResourcesApi {
   final AppInfoResponseDto? appInfoResponse;
 
   @override
-  Future<Response<SupportResourceListResponseDto>>
-  supportResourcesControllerGetResourcesV1({
-    String? scope,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return Response<SupportResourceListResponseDto>(
-      data: resourcesResponse,
-      requestOptions: RequestOptions(path: '/api/v1/public/support-resources'),
-    );
+  Future<SupportResourceListResponseDto>
+  supportResourcesControllerGetResourcesV1({Scope? scope}) async {
+    if (resourcesResponse == null) {
+      throw DioException(
+        requestOptions: RequestOptions(
+          path: '/api/v1/public/support-resources',
+        ),
+      );
+    }
+    return resourcesResponse!;
   }
 
   @override
-  Future<Response<AppInfoResponseDto>> supportResourcesControllerGetAppInfoV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return Response<AppInfoResponseDto>(
-      data: appInfoResponse,
-      requestOptions: RequestOptions(path: '/api/v1/public/app-info'),
-    );
+  Future<AppInfoResponseDto> supportResourcesControllerGetAppInfoV1() async {
+    if (appInfoResponse == null) {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/api/v1/public/app-info'),
+      );
+    }
+    return appInfoResponse!;
   }
 }
 
@@ -49,7 +40,7 @@ void main() {
   group('supportResourcesProvider', () {
     test('returns resources filtered by scope', () async {
       final fakeApi = FakeSupportResourcesApi(
-        resourcesResponse: SupportResourceListResponseDto(
+        resourcesResponse: const SupportResourceListResponseDto(
           code: 0,
           message: '',
           data: SupportResourceListDataDto(
@@ -88,7 +79,7 @@ void main() {
       expect(result[1].title, equals('Contact Us'));
     });
 
-    test('returns empty list when response data is null', () async {
+    test('throws when response data is null', () async {
       final fakeApi = FakeSupportResourcesApi(resourcesResponse: null);
 
       final container = ProviderContainer(
@@ -98,17 +89,16 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final result = await container.read(
-        supportResourcesProvider('about').future,
+      expect(
+        container.read(supportResourcesProvider('about').future),
+        throwsA(isA<DioException>()),
       );
-
-      expect(result, isEmpty);
     });
 
     test('passes the scope parameter to the API', () async {
-      String? capturedScope;
+      Scope? capturedScope;
       final capturingApi = _CapturingSupportResourcesApi(
-        onGetResources: (String? scope) {
+        onGetResources: (Scope? scope) {
           capturedScope = scope;
         },
       );
@@ -122,14 +112,14 @@ void main() {
 
       await container.read(supportResourcesProvider('help').future);
 
-      expect(capturedScope, equals('help'));
+      expect(capturedScope, equals(Scope.help));
     });
   });
 
   group('appInfoProvider', () {
     test('returns app info data DTO', () async {
       final fakeApi = FakeSupportResourcesApi(
-        appInfoResponse: AppInfoResponseDto(
+        appInfoResponse: const AppInfoResponseDto(
           code: 0,
           message: '',
           data: AppInfoDataDto(
@@ -157,7 +147,7 @@ void main() {
       expect(result.supportEmail, equals('support@lumos.app'));
     });
 
-    test('returns null when response data is null', () async {
+    test('throws when response data is null', () async {
       final fakeApi = FakeSupportResourcesApi(appInfoResponse: null);
 
       final container = ProviderContainer(
@@ -167,9 +157,10 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      final result = await container.read(appInfoProvider.future);
-
-      expect(result, isNull);
+      expect(
+        container.read(appInfoProvider.future),
+        throwsA(isA<DioException>()),
+      );
     });
   });
 }
@@ -178,44 +169,25 @@ void main() {
 class _CapturingSupportResourcesApi implements SupportResourcesApi {
   _CapturingSupportResourcesApi({this.onGetResources});
 
-  final void Function(String? scope)? onGetResources;
+  final void Function(Scope? scope)? onGetResources;
 
   @override
-  Future<Response<SupportResourceListResponseDto>>
-  supportResourcesControllerGetResourcesV1({
-    String? scope,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
+  Future<SupportResourceListResponseDto>
+  supportResourcesControllerGetResourcesV1({Scope? scope}) async {
     onGetResources?.call(scope);
-    return Response<SupportResourceListResponseDto>(
-      data: SupportResourceListResponseDto(
-        code: 0,
-        message: '',
-        data: SupportResourceListDataDto(
-          items: <SupportResourceDto>[],
-          updatedAt: '2026-06-01T00:00:00.000Z',
-        ),
+    return const SupportResourceListResponseDto(
+      code: 0,
+      message: '',
+      data: SupportResourceListDataDto(
+        items: <SupportResourceDto>[],
+        updatedAt: '2026-06-01T00:00:00.000Z',
       ),
-      requestOptions: RequestOptions(path: '/api/v1/public/support-resources'),
     );
   }
 
   @override
-  Future<Response<AppInfoResponseDto>> supportResourcesControllerGetAppInfoV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    return Response<AppInfoResponseDto>(
-      data: null,
+  Future<AppInfoResponseDto> supportResourcesControllerGetAppInfoV1() async {
+    throw DioException(
       requestOptions: RequestOptions(path: '/api/v1/public/app-info'),
     );
   }

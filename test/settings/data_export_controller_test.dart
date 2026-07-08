@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 
@@ -98,15 +98,15 @@ void main() {
       expect(fakeApi.createCallCount, 1);
       expect(
         fakeApi.lastCreateRequest?.kind,
-        CreateDataExportRequestDtoKindEnum.hospital,
+        CreateDataExportRequestDtoKindKind.hospital,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        CreateDataExportRequestDtoFormatEnum.pdf,
+        CreateDataExportRequestDtoFormatFormat.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        CreateDataExportRequestDtoRangeEnum.last7Days,
+        CreateDataExportRequestDtoRangeRange.last7Days,
       );
       expect(
         container.read(dataExportRequestInFlightProvider).inFlight,
@@ -123,23 +123,23 @@ void main() {
           .read(dataExportControllerProvider.notifier)
           .requestExport(
             const DataExportRequestInput(
-              kind: CreateDataExportRequestDtoKindEnum.monthly,
-              format: CreateDataExportRequestDtoFormatEnum.pdf,
-              range: CreateDataExportRequestDtoRangeEnum.last30Days,
+              kind: CreateDataExportRequestDtoKindKind.monthly,
+              format: CreateDataExportRequestDtoFormatFormat.pdf,
+              range: CreateDataExportRequestDtoRangeRange.last30Days,
             ),
           );
 
       expect(
         fakeApi.lastCreateRequest?.kind,
-        CreateDataExportRequestDtoKindEnum.monthly,
+        CreateDataExportRequestDtoKindKind.monthly,
       );
       expect(
         fakeApi.lastCreateRequest?.format,
-        CreateDataExportRequestDtoFormatEnum.pdf,
+        CreateDataExportRequestDtoFormatFormat.pdf,
       );
       expect(
         fakeApi.lastCreateRequest?.range,
-        CreateDataExportRequestDtoRangeEnum.last30Days,
+        CreateDataExportRequestDtoRangeRange.last30Days,
       );
     });
 
@@ -346,7 +346,7 @@ void main() {
     test(
       'maps completed request without download url to completedLinkMissing',
       () {
-        final request = DataExportRequestDataDto(
+        final request = const DataExportRequestDataDto(
           id: 'req-link-missing',
           kind: DataExportKind.hospital,
           format: DataExportFormat.pdf,
@@ -417,12 +417,12 @@ DataExportLatestResponseDto _buildLatestResponse({
 // Fake API
 // ---------------------------------------------------------------------------
 
-class _FakeDataExportApi extends DataExportApi {
+class _FakeDataExportApi implements DataExportApi {
   _FakeDataExportApi({
     this.latestReturnsNullData = false,
     this.getLatestException,
     this.createDelay = Duration.zero,
-  }) : super(Dio());
+  });
 
   // GET latest state.
   int getLatestCallCount = 0;
@@ -440,67 +440,53 @@ class _FakeDataExportApi extends DataExportApi {
   Duration createDelay;
 
   @override
-  Future<Response<DataExportLatestResponseDto>>
-  dataExportControllerGetLatestRequestV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
+  Future<DataExportLatestResponseDto>
+  dataExportControllerGetLatestRequestV1() async {
     getLatestCallCount++;
     if (getLatestException != null) {
       throw getLatestException!;
     }
     if (getLatestReturnsNullResponse) {
-      return Response<DataExportLatestResponseDto>(
-        data: null,
+      throw DioException(
         requestOptions: RequestOptions(
           path: '/api/v1/user/data-export-requests/latest',
         ),
-        statusCode: 200,
       );
     }
-    return Response<DataExportLatestResponseDto>(
-      data: latestReturnsNullData
-          ? null
-          : (latestResponse ??
-                DataExportLatestResponseDto(
-                  code: 0,
-                  message: 'ok',
-                  data: _buildRequestData(),
-                )),
-      requestOptions: RequestOptions(
-        path: '/api/v1/user/data-export-requests/latest',
-      ),
-      statusCode: 200,
-    );
+    if (latestReturnsNullData) {
+      throw DioException(
+        requestOptions: RequestOptions(
+          path: '/api/v1/user/data-export-requests/latest',
+        ),
+      );
+    }
+    return latestResponse ??
+        DataExportLatestResponseDto(
+          code: 0,
+          message: 'ok',
+          data: _buildRequestData(),
+        );
   }
 
   @override
-  Future<Response<DataExportRequestResponseDto>>
-  dataExportControllerCreateRequestV1({
-    required CreateDataExportRequestDto createDataExportRequestDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
+  Future<DataExportRequestResponseDto> dataExportControllerCreateRequestV1({
+    required CreateDataExportRequestDto body,
   }) async {
     createCallCount++;
-    lastCreateRequest = createDataExportRequestDto;
+    lastCreateRequest = body;
     if (createException != null) {
       throw createException!;
     }
     if (createDelay > Duration.zero) {
       await Future<void>.delayed(createDelay);
     }
-    return Response<DataExportRequestResponseDto>(
-      data: createReturnsNull ? null : createResponse,
-      requestOptions: RequestOptions(path: '/api/v1/user/data-export-requests'),
-      statusCode: 200,
-    );
+    if (createReturnsNull) {
+      throw DioException(
+        requestOptions: RequestOptions(
+          path: '/api/v1/user/data-export-requests',
+        ),
+      );
+    }
+    return createResponse;
   }
 }

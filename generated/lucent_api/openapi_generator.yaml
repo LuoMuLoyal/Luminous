@@ -1,0 +1,24 @@
+openapi_generator:
+  # Input: Lucent OpenAPI spec (exported via `pnpm export:openapi` in Lucent)
+  schema_path: ../../../Lucent/docs/openapi.json
+
+  # Output: generate into lib/api
+  output_directory: lib/api
+
+  # Serializer
+  json_serializer: json_serializable
+
+  # Root client
+  root_client: true
+  root_client_name: LucentClient
+
+  # Client naming
+  client_postfix: Api
+
+  # Code organization
+  merge_clients: false
+  put_clients_in_folder: true
+  export_file: true
+
+  # Enum handling
+  unknown_enum_value: true

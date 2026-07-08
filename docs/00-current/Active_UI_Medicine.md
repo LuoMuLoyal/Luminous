@@ -55,3 +55,11 @@
   - `severeAllergy`：立即拨打急救电话
   - `informationGap`：尽快线下核实
 - 测试：39 个 domain unit 覆盖核心匹配逻辑。
+
+## 数据层
+
+- 用药相关远程数据源（`DoseLogRemoteDataSource`、`ReminderRemoteDataSource`、`SafetyTipsRemoteDataSource`）通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
+- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
+- OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
+- `POST /user/medicine-dose-logs/mark` 的具名 DTO `MarkDoseLogDto` 直接作为 `@Body()` 参数传递。

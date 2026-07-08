@@ -34,7 +34,7 @@ Last updated: 2026-07-08
   - 顶栏问候语改为根据 dashboard 数据动态生成（早上看用药待确认、下午看饮水剩余、晚上看整体完成情况）。
   - 文字表述全面优化：`证据`→`依据`、`边界`→`注意`、`观察项`→`留意事项`、`低置信度`→`仅供参考` 等。
 - 仓库生成物边界现已明确：
-  - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物与 `packages/lucent_openapi/`
+  - Flutter 主仓运行必需的 `build_runner` / `gen-l10n` 产物与 `generated/lucent_api/`
     继续提交到版本库；
   - `.gitattributes` 已将这些路径标记为 generated，减少 review 噪音；
   - `.gitignore` 不用于屏蔽上述前端生成源。

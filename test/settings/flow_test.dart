@@ -4,7 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
@@ -364,26 +364,28 @@ class _FakeSettingsProfileRemoteDataSource
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
     return HealthContextDataDto(
-      summary: UserHealthSummaryDto(
+      summary: const UserHealthSummaryDto(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
         conditionCount: 0,
         currentMedicineCount: 0,
-        missingCoreProfileFields: const [],
+        missingCoreProfileFields: [],
       ),
       profile: UserHealthProfileDto(
         birthDate: null,
-        sexAtBirth: null,
+        sexAtBirth: SexAtBirth.$unknown,
         heightCm: null,
         bloodType: null,
-        locale: identical(locale, settingsProfileNoChange) ? null : locale,
+        locale: identical(locale, settingsProfileNoChange)
+            ? null
+            : locale as String?,
         timezone: identical(timezone, settingsProfileNoChange)
             ? null
-            : timezone,
+            : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? null
-            : unitSystem as UnitSystem?,
+            ? UnitSystem.$unknown
+            : (unitSystem as UnitSystem?) ?? UnitSystem.$unknown,
         onboardingCompletedAt: null,
         extras: const <String, Object>{},
       ),

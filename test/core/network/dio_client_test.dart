@@ -642,7 +642,7 @@ void main() {
         httpClientAdapter: adapter,
       );
 
-      expect(client.appApi, isNotNull);
+      expect(client.healthApi, isNotNull);
       expect(client.authApi, isNotNull);
       expect(client.medicinesApi, isNotNull);
       expect(client.environmentApi, isNotNull);

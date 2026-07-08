@@ -45,3 +45,11 @@
 - 移动端在未登录或数据不足时不再渲染整组导出卡，只显示轻量锁定说明。
 - Mine/Settings 仍使用同一真实数据导出请求流。
 - 隐私设置由 Mine/Settings 持有。
+
+## 数据层
+
+- 报告相关远程数据源（`ReportRemoteDataSource`、`AiSummaryRemoteDataSource`）通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
+- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
+- AI 摘要增量流 `/api/v1/user/reports/summary/generate/stream` 通过 `LucentSseClient` + Dio 直接消费 SSE，不经过 Retrofit 客户端。
+- OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，`generatedAt` 等字段在生成客户端中为强类型 `String?` 而非 `dynamic`。

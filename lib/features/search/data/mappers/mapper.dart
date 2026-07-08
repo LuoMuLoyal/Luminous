@@ -1,4 +1,4 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 
 /// Converts Lucent DTOs to Luminous Search entities.
@@ -6,7 +6,7 @@ class MedicineSearchMapper {
   MedicineSearchResult dtoToResult(MedicineSearchItemDto dto) {
     return MedicineSearchResult(
       id: dto.id,
-      source: _toSource(dto.source_),
+      source: _toSource(dto.source),
       name: dto.name,
       subtitle: dto.subtitle?.toString() ?? '',
       summary: dto.summary?.toString() ?? '',
@@ -15,12 +15,12 @@ class MedicineSearchMapper {
     );
   }
 
-  MedicineSearchSource _toSource(MedicineSearchItemDtoSource_Enum source) {
+  MedicineSearchSource _toSource(MedicineSearchItemDtoSourceSource source) {
     return switch (source) {
-      MedicineSearchItemDtoSource_Enum.cn => MedicineSearchSource.cn,
-      MedicineSearchItemDtoSource_Enum.drugbank =>
+      MedicineSearchItemDtoSourceSource.cn => MedicineSearchSource.cn,
+      MedicineSearchItemDtoSourceSource.drugbank =>
         MedicineSearchSource.drugbank,
-      MedicineSearchItemDtoSource_Enum.unknownDefaultOpenApi =>
+      MedicineSearchItemDtoSourceSource.$unknown =>
         MedicineSearchSource.drugbank,
     };
   }

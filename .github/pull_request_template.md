@@ -19,7 +19,7 @@
 - [ ] `flutter test` passes
 - [ ] `dart run tool/run_daily_checks.dart` passes (if applicable)
 - [ ] ARB files changed → ran `flutter gen-l10n`
-- [ ] Lucent API changed → ran `dart run tool/regenerate_lucent_openapi.dart`
+- [ ] Lucent API changed → ran `cd generated/lucent_api && dart run build_runner build`
 - [ ] No hardcoded user-visible strings (all text through ARB / l10n)
 - [ ] Proper loading / empty / error states (shimmer skeletons, `AppStateErrorView`)
 - [ ] New code only under `lib/features/`, `lib/core/`, or `lib/shared/`

@@ -1,4 +1,4 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/api.dart';
 
 /// Remote data source that fetches medicine search/detail data from Lucent.
@@ -14,17 +14,12 @@ class MedicineSearchRemoteDataSource {
     int page = 1,
     int pageSize = 20,
   }) async {
-    final response = await _api.medicinesControllerSearchV1(
-      source_: source,
+    return _api.medicinesControllerSearchV1(
+      source: Source.fromJson(source),
       q: query,
       page: page,
       pageSize: pageSize,
     );
-    final data = response.data;
-    if (data == null) {
-      throw StateError('medicineSearchV1: response.data is null');
-    }
-    return data;
   }
 
   /// Calls GET /api/v1/medicines/:id?source=
@@ -32,14 +27,9 @@ class MedicineSearchRemoteDataSource {
     required String id,
     required String source,
   }) async {
-    final response = await _api.medicinesControllerGetDetailV1(
+    return _api.medicinesControllerGetDetailV1(
       id: id,
-      source_: source,
+      source: Source.fromJson(source),
     );
-    final data = response.data;
-    if (data == null) {
-      throw StateError('medicineGetDetailV1: response.data is null');
-    }
-    return data;
   }
 }

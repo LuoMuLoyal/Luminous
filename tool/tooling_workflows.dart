@@ -83,7 +83,9 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   final stagedDartFiles = await _listStagedDartFiles(context);
   if (stagedDartFiles.isNotEmpty) {
     // Batch files to avoid hitting Windows command-line length limits.
-    const batchSize = 40;
+    // Both `dart format` and `git add` receive the file list as CLI args,
+    // so we re-stage each batch right after formatting it.
+    const batchSize = 20;
     for (var i = 0; i < stagedDartFiles.length; i += batchSize) {
       final batch = stagedDartFiles.skip(i).take(batchSize).toList();
       await runLoggedCommand(
@@ -93,16 +95,16 @@ Future<void> runPreCommitChecks(ToolContext context) async {
         stepName:
             'dart format <staged dart files> (batch ${i ~/ batchSize + 1})',
       );
-    }
-    // Re-stage the formatted files so the commit includes the changes.
-    final gitResult = await Process.run('git', [
-      'add',
-      ...stagedDartFiles,
-    ], workingDirectory: context.repoRoot.path);
-    if (gitResult.exitCode != 0) {
-      stderr.writeln(gitResult.stderr);
-      exitCode = gitResult.exitCode;
-      return;
+      // Re-stage the formatted files so the commit includes the changes.
+      final gitResult = await Process.run('git', [
+        'add',
+        ...batch,
+      ], workingDirectory: context.repoRoot.path);
+      if (gitResult.exitCode != 0) {
+        stderr.writeln(gitResult.stderr);
+        exitCode = gitResult.exitCode;
+        return;
+      }
     }
     stdout.writeln('');
   }

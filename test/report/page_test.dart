@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -322,7 +321,7 @@ void main() {
       });
 
       final exportApi = _FakeReportDataExportApi()
-        ..latestResponse = DataExportLatestResponseDto(
+        ..latestResponse = const DataExportLatestResponseDto(
           code: 0,
           message: 'ok',
           data: DataExportRequestDataDto(
@@ -556,7 +555,7 @@ void main() {
   );
 }
 
-final _suggestionNotificationResponse = NotificationListResponseDto(
+final _suggestionNotificationResponse = const NotificationListResponseDto(
   code: 0,
   message: 'ok',
   total: 3,
@@ -698,84 +697,59 @@ class _FakeExternalUrlLauncher extends ExternalUrlLauncher {
   }
 }
 
-class _FakeReportDataExportApi extends DataExportApi {
-  _FakeReportDataExportApi() : super(Dio());
+class _FakeReportDataExportApi implements DataExportApi {
+  _FakeReportDataExportApi();
 
   int createCallCount = 0;
   int getLatestCallCount = 0;
   DataExportLatestResponseDto? latestResponse;
 
   @override
-  Future<Response<DataExportRequestResponseDto>>
-  dataExportControllerCreateRequestV1({
-    required CreateDataExportRequestDto createDataExportRequestDto,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
+  Future<DataExportRequestResponseDto> dataExportControllerCreateRequestV1({
+    required CreateDataExportRequestDto body,
   }) async {
     createCallCount += 1;
-    return Response<DataExportRequestResponseDto>(
-      data: DataExportRequestResponseDto(
-        code: 0,
-        message: 'ok',
-        data: DataExportRequestDataDto(
-          id: 'req-report',
-          kind: DataExportKind.hospital,
-          format: DataExportFormat.pdf,
-          range: DataExportRange.last7Days,
-          status: DataExportStatus.completed,
-          requestedAt: '2026-06-15T08:00:00.000Z',
-          completedAt: '2026-06-15T08:01:00.000Z',
-          downloadUrl: null,
-          fileName: 'report.pdf',
-          fileSizeBytes: 1024,
-          errorMessage: null,
-        ),
+    return const DataExportRequestResponseDto(
+      code: 0,
+      message: 'ok',
+      data: DataExportRequestDataDto(
+        id: 'req-report',
+        kind: DataExportKind.hospital,
+        format: DataExportFormat.pdf,
+        range: DataExportRange.last7Days,
+        status: DataExportStatus.completed,
+        requestedAt: '2026-06-15T08:00:00.000Z',
+        completedAt: '2026-06-15T08:01:00.000Z',
+        downloadUrl: null,
+        fileName: 'report.pdf',
+        fileSizeBytes: 1024,
+        errorMessage: null,
       ),
-      requestOptions: RequestOptions(path: '/api/v1/user/data-export-requests'),
-      statusCode: 200,
     );
   }
 
   @override
-  Future<Response<DataExportLatestResponseDto>>
-  dataExportControllerGetLatestRequestV1({
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
+  Future<DataExportLatestResponseDto>
+  dataExportControllerGetLatestRequestV1() async {
     getLatestCallCount += 1;
-    return Response<DataExportLatestResponseDto>(
-      data:
-          latestResponse ??
-          DataExportLatestResponseDto(
-            code: 0,
-            message: 'ok',
-            data: DataExportRequestDataDto(
-              id: 'req-report',
-              kind: DataExportKind.hospital,
-              format: DataExportFormat.pdf,
-              range: DataExportRange.last7Days,
-              status: DataExportStatus.completed,
-              requestedAt: '2026-06-15T08:00:00.000Z',
-              completedAt: '2026-06-15T08:01:00.000Z',
-              downloadUrl: 'https://example.com/export-ready.pdf',
-              fileName: 'report.pdf',
-              fileSizeBytes: 1024,
-              errorMessage: null,
-            ),
+    return latestResponse ??
+        const DataExportLatestResponseDto(
+          code: 0,
+          message: 'ok',
+          data: DataExportRequestDataDto(
+            id: 'req-report',
+            kind: DataExportKind.hospital,
+            format: DataExportFormat.pdf,
+            range: DataExportRange.last7Days,
+            status: DataExportStatus.completed,
+            requestedAt: '2026-06-15T08:00:00.000Z',
+            completedAt: '2026-06-15T08:01:00.000Z',
+            downloadUrl: 'https://example.com/export-ready.pdf',
+            fileName: 'report.pdf',
+            fileSizeBytes: 1024,
+            errorMessage: null,
           ),
-      requestOptions: RequestOptions(
-        path: '/api/v1/user/data-export-requests/latest',
-      ),
-      statusCode: 200,
-    );
+        );
   }
 }
 

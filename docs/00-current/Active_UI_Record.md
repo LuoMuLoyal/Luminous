@@ -54,3 +54,9 @@
   - meal / symptom：更具体的字段标签
   - note：强调正文而非通用 remark 字段
 - 睡眠时间线行的紧凑时长标签从 payload 派生。
+
+## 数据层
+
+- 远程数据源 `RecordRemoteDataSource` 通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
+- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。

@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-07-02
+Last updated: 2026-07-08
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus generated `../Lucent/docs/openapi.json`, not from prose.
@@ -8,10 +8,9 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
 ## Files
 
 - Generated OpenAPI source from the `Luminous` repo root: `../Lucent/docs/openapi.json`
-- Generated Dart package: `packages/lucent_openapi/`
-- Network wrapper: `lib/core/network/lucent_dio_client.dart`
-- Public Flutter API exports: `lib/core/network/lucent_api.dart`
-- Regeneration wrapper: `tool/regenerate_lucent_openapi.dart`
+- Generated Dart package: `generated/lucent_api/`
+- Network wrapper: `lib/core/network/dio_client.dart`
+- Public Flutter API exports: `lib/core/network/api.dart`
 - Contract drift verifier: `tool/verify_lucent_openapi_sync.dart`
 
 ## Current Generated Baseline
@@ -36,8 +35,9 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
 - Generated DTOs stay in data-layer response mapping.
 - Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an
    existing generated read API with handwritten Dio GET parsing unless
-   `../Lucent/docs/openapi.json` has been verified, `dart run tool/regenerate_lucent_openapi.dart`
-   has been attempted, and the exported contract still lacks the required fields.
+   `../Lucent/docs/openapi.json` has been verified, `dart run build_runner build` in
+   `generated/lucent_api/` has been attempted, and the exported contract still lacks the required
+   fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps
    instead of generated write DTOs.
 - Medicine reminder create/update writes use a local write input plus raw Dio JSON so `daysOfWeek:
@@ -47,7 +47,7 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
    fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain
    code should still depend on the feature repository boundary.
 - Today AI analysis, Report AI summary, and assistant streaming all use manual Dio + SSE parsing in
-   `lib/core/network/lucent_sse.dart`, not generated OpenAPI transport methods. Assistant
+   `lib/core/network/sse.dart`, not generated OpenAPI transport methods. Assistant
    capability/latest/clear plus recent-conversation list/open reads still use the generated REST
    methods, and generated DTOs remain the contract source for capability/result payload shapes.
    Assistant streamed `proposedActions` now also carry `target`, `constraints`, and `expiresAt`,
@@ -59,24 +59,17 @@ code plus generated `../Lucent/docs/openapi.json`, not from prose.
 - Dio errors are unwrapped through `LucentErrorMapper`.
 - Use `LucentDioClient.medicinesHeaders(bypassCache: true)` for one-off medicine reads that must
    bypass Lucent read cache.
-- If the generator drops a top-level API export or `LucentOpenapi` getter while the underlying
-   `src/api/*.dart` file still exists, fix that in the generated package and in
-   `tool/regenerate_lucent_openapi.dart` so the next regeneration stays stable.
-- If the generator emits broken enum defaults for generated request models, patch the wrapper
-   instead of hand-fixing generated files. The current wrapper now normalizes both constructor enum
-   defaults in `*.dart` and enum decode fallback values in `*.g.dart` for
-   `CreateDataExportRequestDto`.
-- If a Swagger enum array causes the Dart generator chain to emit invalid `unknownEnumValue` code
-   for `List<Enum>`, prefer expressing that field as `List<String>` in the generated contract and
-   keep the allowed values in description/examples. The current assistant `requiredContextSources`
-   field uses this compatibility rule.
+- The new generator (`openapi_retrofit_generator`) handles enum defaults and nullable map entries
+   natively, so no post-generation patching is needed.
 
 ## Regenerate
 
 From `Luminous`:
 
 ```bash
-dart run tool/regenerate_lucent_openapi.dart
+cd generated/lucent_api
+dart run build_runner build
+cd ../..
 ```
 
 Hosted CI can also point the workflow at an explicitly checked-out Lucent contract file:
@@ -85,16 +78,9 @@ Hosted CI can also point the workflow at an explicitly checked-out Lucent contra
 dart run tool/verify_lucent_openapi_sync.dart --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 
-The wrapper exports Lucent OpenAPI, deletes stale legacy assistant generated files (`ai_chat_*`,
-`stream_ai_chat_*`, `update_ai_chat_*`) before regeneration, regenerates the Dart client, disables
-generated Markdown doc stubs and generated package test stubs, restores the generated package
-constraints, patches broken enum defaults before serializer build, rebuilds serializers, patches
-post-build enum decode fallback bugs plus known nullable-map generator output, restores missing
-generated API exports/getters when the generator drops them, formats generated model files,
-analyzes the generated package, and refreshes root Flutter dependencies.
-
-Do not run ad-hoc `npx @openapitools/openapi-generator-cli generate` or manual `build_runner` steps
-for normal work.
+The generator (`openapi_retrofit_generator`) reads the OpenAPI spec, generates Retrofit API clients
+and JSON-serializable models, then `build_runner` produces the `.g.dart` files. No post-generation
+patching is needed — the new generator handles enum defaults and nullable maps correctly.
 
 After regeneration, run:
 
@@ -111,25 +97,19 @@ dart run tool/verify_lucent_openapi_sync.dart \
   --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 
-`verify_lucent_openapi_sync.dart` no longer checks whether `docs/openapi.json` or
-`packages/lucent_openapi/` are already committed/clean in git. It only verifies that the target
-OpenAPI file is readable JSON and that the generated client layout exists, so it can run safely
-before commit inside a dirty working tree.
+`verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON and that
+the generated client layout exists, so it can run safely before commit inside a dirty working tree.
 
 Generated OpenAPI client paths are covered by `.gitattributes` whitespace rules, so `git diff
 --check` will not block on generated trailing spaces there.
 
 ## Noise Boundary
 
-- `packages/lucent_openapi/` stays committed because it is a local path dependency used by the app.
+- `generated/lucent_api/` stays committed because it is a local path dependency used by the app.
 - Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
   `lib/l10n/app_localizations*.dart`) also stay committed because `flutter pub get` does not run
   `build_runner`, and the repo does not require every consumer or CI lane to regenerate them
   before analysis or tests.
 - Generated Dart client code under `lib/` stays tracked.
-- Generated Markdown docs under `packages/lucent_openapi/doc/` and generated package stub tests
-   under `packages/lucent_openapi/test/` are now intentionally disabled and cleaned by the wrapper
-   because they add large diff noise without participating in app runtime or verification.
-- Current known example: `AppApi` may still be generated under `src/api/app_api.dart` while the
-   generator forgets to export it from `lib/lucent_openapi.dart` and `lib/src/api.dart`. The
-   wrapper now repairs that gap automatically.
+- The new generator does not produce Markdown doc stubs or package test stubs, so there is no
+  noise from those paths.

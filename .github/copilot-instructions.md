@@ -8,7 +8,7 @@ You are working in `Luminous`, a Flutter client in the Lumos workspace.
 - Riverpod, not GetX
 - GoRouter, not ad-hoc `Navigator.push(MaterialPageRoute(...))`
 - Forui-first UI
-- Lucent-backed APIs through `packages/lucent_openapi/`
+- Lucent-backed APIs through `generated/lucent_api/`
 
 ## Read First
 
@@ -25,7 +25,7 @@ You are working in `Luminous`, a Flutter client in the Lumos workspace.
 - Keep shared runtime/design/router code under `lib/core/` and `lib/app/`.
 - Do not hand-edit generated files:
   - `lib/l10n/app_localizations*.dart`
-  - `packages/lucent_openapi/**`
+  - `generated/lucent_api/**`
 - Do not switch state management patterns away from Riverpod.
 
 ## UI Rules

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/sse.dart';
 
@@ -27,18 +27,9 @@ class TodayAiRemoteDataSource {
 
   Future<lucent.TodayAnalysisDataDto> generate({String? date}) async {
     final response = await api.todayAnalysisControllerGenerateV1(
-      generateTodayAnalysisDto: lucent.GenerateTodayAnalysisDto(date: date),
+      body: lucent.GenerateTodayAnalysisDto(date: date),
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        error: '今日 AI 摘要响应为空，请稍后再试。',
-      );
-    }
-    return data;
+    return response.data;
   }
 
   Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {

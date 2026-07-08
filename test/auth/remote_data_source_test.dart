@@ -240,19 +240,19 @@ void main() {
       test('maps all scenes correctly', () {
         expect(
           AuthVerificationScene.register.toDtoScene(),
-          SendVerificationCodeDtoSceneEnum.register,
+          SendVerificationCodeDtoSceneScene.register,
         );
         expect(
           AuthVerificationScene.login.toDtoScene(),
-          SendVerificationCodeDtoSceneEnum.login,
+          SendVerificationCodeDtoSceneScene.login,
         );
         expect(
           AuthVerificationScene.resetPassword.toDtoScene(),
-          SendVerificationCodeDtoSceneEnum.resetPassword,
+          SendVerificationCodeDtoSceneScene.resetPassword,
         );
         expect(
           AuthVerificationScene.changeEmail.toDtoScene(),
-          SendVerificationCodeDtoSceneEnum.changeEmail,
+          SendVerificationCodeDtoSceneScene.changeEmail,
         );
       });
     });

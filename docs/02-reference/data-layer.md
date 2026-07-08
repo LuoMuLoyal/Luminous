@@ -27,11 +27,11 @@ Widget
 
 ### Generated API Client
 
-`packages/lucent_openapi/` is auto-generated from `../Lucent/docs/openapi.json` via OpenAPI
-Generator (Dart Dio client). Regenerate with:
+`generated/lucent_api/` is auto-generated from `../Lucent/docs/openapi.json` via
+`openapi_retrofit_generator` (Retrofit + json_serializable). Regenerate with:
 
 ```bash
-dart run tool/regenerate_lucent_openapi.dart
+cd generated/lucent_api && dart run build_runner build
 ```
 
 This script normalizes generated pubspec constraints and fixes broken nullable `*.g.dart` entries.

@@ -29,6 +29,17 @@
 - `lib/core/ai/` 已新增 app-side AI runtime 实验 seam，但默认关闭；当前不接入助手或
   Report 的 shipping 流程。
 
+## 网络层与生成客户端
+
+- API 客户端已从旧的 `packages/lucent_openapi/`（`dart-dio` 生成器）迁移到 `generated/lucent_api/`（`openapi_retrofit_generator`）。
+- 旧的 700+ 行后处理脚本 `tool/regenerate_lucent_openapi.dart` 已删除；新生成器原生处理 enum 默认值、nullable map 和 API 导出，无需后处理。
+- 重新生成客户端的流程：
+  1. 在 `Lucent` 中运行 `pnpm export:openapi` 重新导出 `docs/openapi.json`。
+  2. 在 `Luminous` 中运行 `cd generated/lucent_api && dart run openapi_retrofit_generator` 重新生成 `.dart` 文件。
+  3. 再运行 `dart run build_runner build` 生成 `.g.dart` 序列化代码。
+- `tool/verify_lucent_openapi_sync.dart` 已更新为验证 `generated/lucent_api/` 与 `Lucent/docs/openapi.json` 的同步状态。
+- OpenAPI 合同修复后，所有 `nullable: true` 的 DTO 字段已补充显式 `type`，生成客户端中 `dynamic` 字段从 129 个降至 7 个（剩余均为合理泛型/对象类型）。
+
 ## 导出生命周期
 
 - 导出生命周期 polish 仍刻意轻量：

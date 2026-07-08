@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/notification/presentation/pages/list_page.dart';
 import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/l10n/app_localizations.dart';

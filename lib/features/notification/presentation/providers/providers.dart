@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
@@ -17,11 +17,10 @@ final notificationUnreadCountProvider = FutureProvider<int>((ref) async {
 
   final api = ref.watch(lucentNotificationsApiProvider);
   final response = await api.notificationsControllerGetUnreadCountV1();
-  final data = response.data;
-  if (data == null || data.code != 0) {
-    throw StateError(data?.message ?? 'Failed to fetch unread count.');
+  if (response.code != 0) {
+    throw StateError(response.message);
   }
-  return data.count.toInt();
+  return response.count.toInt();
 });
 
 // ── Notification list ──────────────────────────────────────────────────────
@@ -38,11 +37,10 @@ final notificationListPageProvider =
         page: 1,
         pageSize: _notificationPageSize,
       );
-      final data = response.data;
-      if (data == null || data.code != 0) {
-        throw StateError(data?.message ?? 'Failed to fetch notifications.');
+      if (response.code != 0) {
+        throw StateError(response.message);
       }
-      return data;
+      return response;
     });
 
 // ── Loading-more flag ──────────────────────────────────────────────────────
@@ -68,13 +66,10 @@ final notificationDetailProvider =
 
       final api = ref.watch(lucentNotificationsApiProvider);
       final response = await api.notificationsControllerFindOneV1(id: id);
-      final data = response.data;
-      if (data == null || data.code != 0) {
-        throw StateError(
-          data?.message ?? 'Failed to fetch notification detail.',
-        );
+      if (response.code != 0) {
+        throw StateError(response.message);
       }
-      return data.data;
+      return response.data;
     });
 
 // ── Mutations ────────────────────────────────────────────────────────────────
@@ -97,11 +92,10 @@ class NotificationListController
       page: 1,
       pageSize: _notificationPageSize,
     );
-    final data = response.data;
-    if (data == null || data.code != 0) {
-      throw StateError(data?.message ?? 'Failed to fetch notifications.');
+    if (response.code != 0) {
+      throw StateError(response.message);
     }
-    return data;
+    return response;
   }
 
   Future<void> loadMore() async {
@@ -116,17 +110,16 @@ class NotificationListController
         page: nextPage,
         pageSize: _notificationPageSize,
       );
-      final data = response.data;
-      if (data == null || data.code != 0) {
-        throw StateError(data?.message ?? 'Failed to fetch notifications.');
+      if (response.code != 0) {
+        throw StateError(response.message);
       }
       _currentPage = nextPage;
       state = AsyncValue.data(
         NotificationListResponseDto(
-          code: data.code,
-          message: data.message,
-          items: [...current.items, ...data.items],
-          total: data.total,
+          code: response.code,
+          message: response.message,
+          items: [...current.items, ...response.items],
+          total: response.total,
         ),
       );
     } catch (e, st) {
@@ -146,11 +139,10 @@ class NotificationListController
         page: 1,
         pageSize: _notificationPageSize,
       );
-      final data = response.data;
-      if (data == null || data.code != 0) {
-        throw StateError(data?.message ?? 'Failed to fetch notifications.');
+      if (response.code != 0) {
+        throw StateError(response.message);
       }
-      return data;
+      return response;
     });
   }
 
@@ -164,11 +156,10 @@ class NotificationListController
         page: 1,
         pageSize: _notificationPageSize,
       );
-      final data = response.data;
-      if (data == null || data.code != 0) {
-        throw StateError(data?.message ?? 'Failed to fetch notifications.');
+      if (response.code != 0) {
+        throw StateError(response.message);
       }
-      return data;
+      return response;
     });
   }
 }

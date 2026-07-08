@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/network/network_providers.dart';
@@ -179,10 +179,7 @@ class _TypeChip extends StatelessWidget {
       UserNotificationType.medicineMissedDose => ('用药', colors.destructive),
       UserNotificationType.medicineReminder => ('提醒', colors.primary),
       UserNotificationType.systemAnnouncement => ('系统', colors.primary),
-      UserNotificationType.unknownDefaultOpenApi => (
-        '通知',
-        colors.mutedForeground,
-      ),
+      UserNotificationType.$unknown => ('通知', colors.mutedForeground),
     };
 
     return DecoratedBox(

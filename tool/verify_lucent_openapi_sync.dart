@@ -19,8 +19,8 @@ Future<void> main(List<String> args) async {
       repoRoot: context.repoRoot,
     );
     final generatedClientRoot = Directory(
-      '${context.repoRoot.path}${Platform.pathSeparator}packages'
-      '${Platform.pathSeparator}lucent_openapi',
+      '${context.repoRoot.path}${Platform.pathSeparator}generated'
+      '${Platform.pathSeparator}lucent_api',
     );
 
     if (!generatedClientRoot.existsSync()) {
@@ -38,7 +38,7 @@ Future<void> main(List<String> args) async {
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     stderr.writeln(
-      'OpenAPI/client verification command failed. Run `dart run tool/regenerate_lucent_openapi.dart` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
+      'OpenAPI/client verification command failed. Run `dart run build_runner build` in `generated/lucent_api` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
     );
     exitCode = error.errorCode;
   } on FormatException catch (error) {
@@ -101,11 +101,7 @@ void _verifyOpenApiJson(File openApiFile) {
 }
 
 void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
-  final requiredPaths = <String>[
-    'pubspec.yaml',
-    'lib/lucent_openapi.dart',
-    'lib/src/api.dart',
-  ];
+  final requiredPaths = <String>['pubspec.yaml', 'lib/api/export.dart'];
 
   for (final relativePath in requiredPaths) {
     final file = File(

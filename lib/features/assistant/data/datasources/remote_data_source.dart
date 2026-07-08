@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/sse.dart';
 
@@ -38,23 +38,18 @@ class AssistantRemoteDataSource {
 
   Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
     final response = await api.assistantControllerGetCapabilitiesV1();
-    final data = response.data?.data;
-    if (data == null) {
-      throw const LucentApiException(message: 'AI 对话能力响应为空，请稍后再试。');
-    }
-    return data;
+    return response.data;
   }
 
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
     final response = await api.assistantControllerGetLatestConversationV1();
-    return response.data?.data;
+    return response.data;
   }
 
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return response.data?.data ??
-        const <lucent.AssistantConversationSummaryDto>[];
+    return response.data;
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(
@@ -63,16 +58,12 @@ class AssistantRemoteDataSource {
     final response = await api.assistantControllerOpenConversationV1(
       conversationId: conversationId,
     );
-    final data = response.data?.data;
-    if (data == null) {
-      throw const LucentApiException(message: '会话详情响应为空，请稍后再试。');
-    }
-    return data;
+    return response.data;
   }
 
   Future<bool> clearLatestConversation() async {
     final response = await api.assistantControllerClearLatestConversationV1();
-    return response.data?.data?.cleared ?? false;
+    return response.data.cleared;
   }
 
   Stream<AssistantRemoteEvent> streamMessages({

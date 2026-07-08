@@ -72,12 +72,12 @@ class MedicineRiskChecker {
     if (activeAllergies.isEmpty) return const [];
 
     final ingredientTokens = medicine.allSourceIngredientTokens;
-    final detail = medicine.detail.detail;
+    final detail = medicine.detail.detail.toJson();
     final haystacks = <String>[
       medicine.displayName,
-      asNonEmptyString(detail.ingredients) ?? '',
-      asNonEmptyString(detail.contraindications) ?? '',
-      asNonEmptyString(detail.precautions) ?? '',
+      asNonEmptyString(detail['ingredients']) ?? '',
+      asNonEmptyString(detail['contraindications']) ?? '',
+      asNonEmptyString(detail['precautions']) ?? '',
       ...medicine.drugbankSynonymTokens,
     ];
     final normalizedHaystack = normalizeToken(haystacks.join(' '));
@@ -107,9 +107,9 @@ class MedicineRiskChecker {
           primaryMedicineName: medicine.displayName,
           relatedLabel: rawLabel,
           evidence: firstNonEmpty(
-            asNonEmptyString(detail.contraindications),
-            asNonEmptyString(detail.ingredients),
-            asNonEmptyString(detail.precautions),
+            asNonEmptyString(detail['contraindications']),
+            asNonEmptyString(detail['ingredients']),
+            asNonEmptyString(detail['precautions']),
           ),
         ),
       );
@@ -137,7 +137,10 @@ class MedicineRiskChecker {
     MedicineRiskMedicineDetail medicine,
   ) {
     final findings = <MedicineRiskFinding>[];
-    for (final interaction in medicine.detail.detail.foodInteractions) {
+    for (final interaction
+        in (medicine.detail.detail.toJson()['foodInteractions']
+                as List<dynamic>? ??
+            const <dynamic>[])) {
       final normalized = normalizeToken(interaction);
       if (normalized.contains('alcohol') || normalized.contains('酒')) {
         findings.add(
@@ -185,7 +188,7 @@ class MedicineRiskChecker {
         primaryMedicineName: current.displayName,
         secondaryMedicineName: other.displayName,
         evidence: _interactionEvidenceFor(
-          current.detail.detail.drugInteractions,
+          current.detail.detail.toJson()['drugInteractions'],
           targetId,
         ),
       );
@@ -203,7 +206,7 @@ class MedicineRiskChecker {
         primaryMedicineName: other.displayName,
         secondaryMedicineName: current.displayName,
         evidence: _interactionEvidenceFor(
-          other.detail.detail.drugInteractions,
+          other.detail.detail.toJson()['drugInteractions'],
           targetId,
         ),
       );

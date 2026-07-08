@@ -4,7 +4,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lucent_openapi/lucent_openapi.dart'
+import 'package:lucent_api/api/export.dart'
     show UpdateAssistantContextSettingsDto, UpdateUserSettingsDto;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -469,12 +469,21 @@ class AssistantController extends Notifier<AssistantState> {
         final payload =
             proposal.payload as AssistantUpdateUserSettingsProposalPayload;
         final ctx = payload.draft.assistantContext;
+        final current = ref.read(userSettingsControllerProvider).value;
         await ref
             .read(userSettingsControllerProvider.notifier)
             .applySettingsPatch(
               UpdateUserSettingsDto(
-                assistantEnabled: payload.draft.assistantEnabled,
-                assistantMemoryEnabled: payload.draft.assistantMemoryEnabled,
+                aiSummariesEnabled: current?.aiSummariesEnabled ?? false,
+                dataSharingConsent: current?.dataSharingConsent ?? false,
+                assistantEnabled:
+                    payload.draft.assistantEnabled ??
+                    current?.assistantEnabled ??
+                    false,
+                assistantMemoryEnabled:
+                    payload.draft.assistantMemoryEnabled ??
+                    current?.assistantMemoryEnabled ??
+                    false,
                 assistantContext: ctx != null
                     ? UpdateAssistantContextSettingsDto(
                         healthProfile: ctx.healthProfile,
@@ -482,7 +491,13 @@ class AssistantController extends Notifier<AssistantState> {
                         sleepRecords: ctx.sleepRecords,
                         currentMedicines: ctx.currentMedicines,
                       )
-                    : null,
+                    : UpdateAssistantContextSettingsDto(
+                        healthProfile: current?.assistantContext.healthProfile,
+                        dailyRecords: current?.assistantContext.dailyRecords,
+                        sleepRecords: current?.assistantContext.sleepRecords,
+                        currentMedicines:
+                            current?.assistantContext.currentMedicines,
+                      ),
               ),
             );
         await loadCapabilities();

@@ -35,7 +35,7 @@ migrate_working_dir/
 # Intentionally tracked generated sources:
 # - build_runner outputs: *.g.dart / *.freezed.dart
 # - l10n outputs: lib/l10n/app_localizations*.dart
-# - local path OpenAPI client: packages/lucent_openapi/
+# - local path OpenAPI client: generated/lucent_api/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 **/ios/Flutter/Wechat.xcconfig

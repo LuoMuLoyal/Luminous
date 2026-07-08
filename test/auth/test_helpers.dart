@@ -157,13 +157,13 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   }) async {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const CooldownMessageDto(message: 'sent', cooldown: 60);
   }
 
   @override
   Future<CooldownMessageDto> forgotPassword({required String email}) async {
     forgotPasswordEmail = email;
-    return CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const CooldownMessageDto(message: 'sent', cooldown: 60);
   }
 
   @override

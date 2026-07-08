@@ -26,3 +26,12 @@ AI 应该被放在“理解、总结、解释、提醒文案”层，而不是�
 - **漏服后自动改服药时间** → `直接计算“下一次几点吃、晚上延后到几点”。` — 不做
 - **自动处方** → `给出具体处方或替代医生开药。` — 不做
 
+## 实现层约定
+
+- 助手相关远程数据源 `AssistantRemoteDataSource` 通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- SSE 流式助手请求通过 `LucentSseClient` + Dio 直接消费 `text/event-stream`，不经过 Retrofit 客户端。
+- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
+- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
+- `AssistantClearResultResponseDto` 等具名响应 DTO 在生成客户端中为强类型，`clearLatestConversation()` 直接访问 `response.data.cleared` 而非手动解析 `Map`。
+- OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
+

@@ -67,3 +67,11 @@
 - 恢复最新持久化对话。
 - 右上角 add 动作可开始新对话。
 - 发送真实 SSE 流式助手请求，Markdown 渲染。
+
+## 数据层
+
+- 设置相关远程数据源 `SettingsProfileRemoteDataSource` 通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- `updatePreferences` 接受 `Object?` 类型的 `locale` / `timezone` / `unitSystem` 参数（使用 sentinel `settingsProfileNoChange` 区分"不修改"与"设为 null"），最终组装为 DTO 传递给后端。
+- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
+- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
+- OpenAPI 合同修复后，`UserHealthProfileDto` 的 `locale` / `timezone` 等字段在生成客户端中为强类型 `String?` 而非 `dynamic`。

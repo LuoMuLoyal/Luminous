@@ -1,4 +1,4 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker_utils.dart';
@@ -9,12 +9,14 @@ class MedicineRiskMedicineDetail {
   final CurrentMedicineItem item;
   final MedicineDetailDataDto detail;
 
+  Map<String, dynamic> get _detailJson => detail.detail.toJson();
+
   String get displayName =>
       item.displayName.trim().isNotEmpty ? item.displayName : detail.name;
 
   Set<String> get normalizedIngredientTokens {
     if (item.source == 'cn') {
-      final ingredients = asNonEmptyString(detail.detail.ingredients);
+      final ingredients = asNonEmptyString(_detailJson['ingredients']);
       if (ingredients == null) return const {};
       return extractIngredientTokens(ingredients);
     }
@@ -42,7 +44,8 @@ class MedicineRiskMedicineDetail {
     if (item.source != 'drugbank') return const {};
     final names = detail.name.trim();
     final result = <String>{if (names.isNotEmpty) normalizeToken(names)};
-    for (final synonym in detail.detail.synonyms) {
+    for (final synonym
+        in (_detailJson['synonyms'] as List<dynamic>? ?? const <dynamic>[])) {
       final token = normalizeToken(synonym);
       if (token.isNotEmpty) result.add(token);
     }
@@ -58,10 +61,10 @@ class MedicineRiskMedicineDetail {
       return id == null || id.isEmpty ? const {} : {id};
     }
     if (item.source == 'cn') {
-      final value = detail.detail.drugbankIds;
+      final value = _detailJson['drugbankIds'] as List<dynamic>?;
       if (value != null) {
         return value
-            .map((entry) => entry.trim())
+            .map((entry) => (entry as String).trim())
             .where((entry) => entry.isNotEmpty)
             .toSet();
       }
@@ -71,7 +74,7 @@ class MedicineRiskMedicineDetail {
 
   Set<String> get drugbankInteractionTargets {
     if (item.source != 'drugbank') return const {};
-    final value = detail.detail.drugInteractions;
+    final value = _detailJson['drugInteractions'];
     if (value is! List) return const {};
     return value
         .whereType<Map>()

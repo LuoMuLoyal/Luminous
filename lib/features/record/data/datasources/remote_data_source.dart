@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -24,21 +24,14 @@ class DailyRecordRemoteDataSource {
       date: date,
       kind: kind != null
           ? lucent.DailyRecordKind.values.firstWhere(
-              (k) => k.value == kind,
-              orElse: () => lucent.DailyRecordKind.unknownDefaultOpenApi,
+              (k) => k.json == kind,
+              orElse: () => lucent.DailyRecordKind.$unknown,
             )
           : null,
       page: page,
       pageSize: pageSize,
     );
-    final dto = response.data?.data;
-    if (dto == null) {
-      throw _emptyResponse(
-        response.requestOptions,
-        response,
-        'Daily record list response is empty.',
-      );
-    }
+    final dto = response.data;
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
@@ -47,19 +40,12 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = response.data?.data;
-    if (dto == null) {
-      throw _emptyResponse(
-        response.requestOptions,
-        response,
-        'Daily record summary response is empty.',
-      );
-    }
+    final dto = response.data;
     return DailyRecordSummaryData(
       summaries: dto.summaries
           .mapIndexed(
             (_, s) => DailyRecordSummary(
-              kind: _parseKind(s.kind.value),
+              kind: _parseKind(s.kind.json ?? ''),
               count: s.count,
               latest: s.latest != null ? _toItem(s.latest!) : null,
             ),
@@ -70,36 +56,20 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    final dto = response.data?.data;
-    if (dto == null) {
-      throw _emptyResponse(
-        response.requestOptions,
-        response,
-        'Daily record detail response is empty.',
-      );
-    }
-    return _toItem(dto);
+    return _toItem(response.data);
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   ) async {
     final presignResponse = await api.dailyRecordsControllerCreateImageUploadV1(
-      createDailyRecordImageUploadDto: lucent.CreateDailyRecordImageUploadDto(
+      body: lucent.CreateDailyRecordImageUploadDto(
         contentType: input.contentType,
         sizeBytes: input.sizeBytes,
         fileName: input.fileName,
       ),
     );
-    final presignData = presignResponse.data;
-    if (presignData == null) {
-      throw _emptyResponse(
-        presignResponse.requestOptions,
-        presignResponse,
-        'Image upload presign response is empty.',
-      );
-    }
-    final upload = presignData.data;
+    final upload = presignResponse.data;
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -134,20 +104,12 @@ class DailyRecordRemoteDataSource {
     required String occurredAt,
   }) async {
     final response = await api.dailyRecordsControllerGenerateCandidatesV1(
-      generateDailyRecordCandidatesDto: lucent.GenerateDailyRecordCandidatesDto(
+      body: lucent.GenerateDailyRecordCandidatesDto(
         text: text,
         occurredAt: occurredAt,
       ),
     );
-    final genData = response.data;
-    if (genData == null) {
-      throw _emptyResponse(
-        response.requestOptions,
-        response,
-        'Generate candidates response is empty.',
-      );
-    }
-    final dto = genData.data;
+    final dto = response.data;
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,
@@ -276,14 +238,14 @@ class DailyRecordRemoteDataSource {
   DailyRecordItem _toItem(lucent.DailyRecordItemDto item) {
     return DailyRecordItem(
       id: item.id,
-      kind: _parseKind(item.kind.value),
+      kind: _parseKind(item.kind.json ?? ''),
       occurredAt: item.occurredAt,
       occurredTime: _asStringOrNull(item.occurredTime),
-      title: item.title as String?,
-      value: item.value as String?,
-      unit: item.unit as String?,
-      note: item.note as String?,
-      source: item.source_ as String?,
+      title: item.title,
+      value: item.value,
+      unit: item.unit,
+      note: item.note,
+      source: item.source,
       payload: _parsePayload(item.payload),
       mealAnalysisStatus: _asStringOrNull(item.mealAnalysisStatus),
       mealAnalysisCoverage: _asStringOrNull(item.mealAnalysisCoverage),
@@ -302,7 +264,7 @@ class DailyRecordRemoteDataSource {
   DailyRecordAttachment _toAttachment(lucent.DailyRecordAttachmentDto item) {
     return DailyRecordAttachment(
       id: item.id,
-      kind: _parseAttachmentKind(item.kind.value),
+      kind: _parseAttachmentKind(item.kind.json ?? ''),
       objectKey: item.objectKey,
       bucket: _asStringOrNull(item.bucket),
       provider: _asStringOrNull(item.provider),
@@ -320,7 +282,7 @@ class DailyRecordRemoteDataSource {
     lucent.DailyRecordCandidateItemDto item,
   ) {
     return DailyRecordCandidateItem(
-      kind: _parseKind(item.kind.value),
+      kind: _parseKind(item.kind.json ?? ''),
       occurredAt: item.occurredAt,
       title: _asStringOrNull(item.title),
       value: _asStringOrNull(item.value),
@@ -395,18 +357,5 @@ class DailyRecordRemoteDataSource {
     if (value is int) return value;
     if (value is num) return value.toInt();
     return int.tryParse(value?.toString() ?? '');
-  }
-
-  DioException _emptyResponse(
-    RequestOptions requestOptions,
-    Response response,
-    String message,
-  ) {
-    return DioException(
-      requestOptions: requestOptions,
-      response: response,
-      type: DioExceptionType.badResponse,
-      error: message,
-    );
   }
 }

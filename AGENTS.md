@@ -105,7 +105,7 @@ flutter test
 ## Data Layer
 
 - Repository pattern: `domain/repositories/` defines interfaces, `data/repositories/` implements
-- Generated API client: `packages/lucent_openapi/`
+- Generated API client: `generated/lucent_api/`
 - Mock repositories for development/demo: suffix `Mock*Repository`
 
 ## L10n
@@ -117,8 +117,8 @@ flutter test
 ## OpenAPI Client
 
 - Source: `Lucent/docs/openapi.json`
-- Regenerate: `dart run tool/regenerate_lucent_openapi.dart`
-- Generated output: `packages/lucent_openapi/`
+- Regenerate: run `dart run build_runner build` in `generated/lucent_api/`
+- Generated output: `generated/lucent_api/`
 
 ## Forui Reference
 

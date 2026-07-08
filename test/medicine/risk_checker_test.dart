@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
@@ -872,21 +872,21 @@ MedicineDetailDataDto _detail({
 }) {
   return MedicineDetailDataDto(
     id: id,
-    source_: id.startsWith('DB')
-        ? MedicineDetailDataDtoSource_Enum.drugbank
-        : MedicineDetailDataDtoSource_Enum.cn,
+    source: id.startsWith('DB')
+        ? MedicineDetailDataDtoSourceSource.drugbank
+        : MedicineDetailDataDtoSourceSource.cn,
     name: name,
     subtitle: null,
-    detail: MedicineDetailDataDtoDetail(
-      kind: 'generic',
-      groups: const [],
-      categories: const [],
-      atcCodes: const [],
-      synonyms: synonyms,
-      foodInteractions: foodInteractions,
-      drugInteractions: drugInteractions,
-      drugbankIds: drugbankIds,
-      ingredients: ingredients,
-    ),
+    detail: MedicineDetailDataDtoDetailDetail({
+      'kind': 'generic',
+      'groups': const [],
+      'categories': const [],
+      'atcCodes': const [],
+      'synonyms': synonyms,
+      'foodInteractions': foodInteractions,
+      'drugInteractions': drugInteractions,
+      'drugbankIds': drugbankIds,
+      'ingredients': ingredients,
+    }),
   );
 }

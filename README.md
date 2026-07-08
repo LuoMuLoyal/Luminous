@@ -30,7 +30,7 @@ Current version: **0.1.0-dev**
 - Tabs: `today / record / medicine / report / mine`
 - Design tokens: color / type / spacing / radius / breakpoints / animation
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
-- API client: `packages/lucent_openapi`
+- API client: `generated/lucent_api`
 - Network layer: `lib/core/network/`
 - i18n: Flutter `gen-l10n`
 - WeChat OAuth: Android/iOS uses the WeChat SDK through `fluwx` to obtain an auth code and then calls Lucent's mobile callback endpoint. Desktop login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, verifies the returned `state`, and completes login automatically when Lucent redirects back with `code` and `state`. Web login passes `/login/oauth/wechat` as the callback path. Manual callback paste remains as a fallback.
@@ -50,7 +50,7 @@ flutter run
 flutter analyze
 flutter test
 flutter test integration_test
-dart run tool/regenerate_lucent_openapi.dart
+cd generated/lucent_api && dart run build_runner build && cd ../..
 dart run tool/run_daily_checks.dart
 dart run tool/run_fullstack_checks.dart
 dart run tool/install_git_hooks.dart
@@ -66,8 +66,8 @@ dart run melos run fullstack-today-report
   - `*.g.dart`
   - `*.freezed.dart`
   - `lib/l10n/app_localizations*.dart`
-- `packages/lucent_openapi/` also stays committed because it is a local path dependency consumed by
-  the app and is regenerated only when the Lucent contract changes.
+- `generated/lucent_api/` also stays committed because it is a local path dependency consumed by
+the app and is regenerated only when the Lucent contract changes.
 - `.gitattributes` marks those tracked generated paths as generated to reduce review noise; they
   are intentionally not ignored by `.gitignore`.
 
@@ -102,8 +102,8 @@ test account values.
 - Shared repo hooks live in `.githooks/`. After cloning, run `dart run tool/install_git_hooks.dart` once to point `core.hooksPath` at that folder. Hook entrypoints now call Dart directly instead of delegating through PowerShell wrappers.
 - Current hook scope: `pre-commit` runs `flutter gen-l10n`, `dart format --output=none --set-exit-if-changed` on staged Dart files, and `flutter analyze`; `pre-push` runs `tool/run_daily_checks.dart`.
 - Current GitHub Actions still does not cover the full-stack emulator gate. That lane depends on a local Android emulator plus a Lucent test runtime started from `../Lucent`, including test database state and cross-repo orchestration.
-- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run tool/regenerate_lucent_openapi.dart` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate for verifying the target OpenAPI path and generated-client layout without requiring a clean git working tree.
-- Hosted CI now also enforces that gate by checking out `Lucent`, pointing `tool/verify_lucent_openapi_sync.dart` at the checked-out `docs/openapi.json`, and failing when regeneration would change `packages/lucent_openapi/`.
+- OpenAPI/client contract sync is an explicit local maintenance step today: when Lucent API code changes, regenerate `Lucent/docs/openapi.json` first, then run `dart run build_runner build` in `generated/lucent_api/` in Luminous before merging. `dart run tool/verify_lucent_openapi_sync.dart` is the lightweight gate for verifying the target OpenAPI path and generated-client layout without requiring a clean git working tree.
+- Hosted CI now also enforces that gate by checking out `Lucent`, pointing `tool/verify_lucent_openapi_sync.dart` at the checked-out `docs/openapi.json`, and failing when regeneration would change `generated/lucent_api/`.
 
 ## Docs
 

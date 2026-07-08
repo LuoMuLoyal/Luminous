@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 
 UserHealthSummaryDto _s({
@@ -10,7 +10,7 @@ UserHealthSummaryDto _s({
   num mc = 0,
 }) {
   return UserHealthSummaryDto(
-    age: age,
+    age: age is num ? age : null,
     onboardingCompleted: ob,
     activeAllergyCount: ac,
     conditionCount: cc,
@@ -19,15 +19,19 @@ UserHealthSummaryDto _s({
   );
 }
 
-UserHealthProfileDto _p({Object? h, Object? bd, SexAtBirth? sx}) {
+UserHealthProfileDto _p({
+  Object? h,
+  Object? bd,
+  SexAtBirth sx = SexAtBirth.male,
+}) {
   return UserHealthProfileDto(
-    heightCm: h,
-    birthDate: bd,
+    heightCm: h as num?,
+    birthDate: bd as String?,
     sexAtBirth: sx,
     bloodType: null,
     locale: null,
     timezone: null,
-    unitSystem: null,
+    unitSystem: UnitSystem.metric,
     onboardingCompletedAt: null,
     extras: null,
   );
@@ -53,7 +57,7 @@ void main() {
     });
     test('non-int age → null', () {
       final dto = HealthContextDataDto(
-        summary: _s(age: 'abc'),
+        summary: _s(age: 30.5),
         profile: _p(),
         allergies: const [],
         conditions: const [],
@@ -97,12 +101,12 @@ void main() {
         summary: _s(),
         profile: _p(),
         allergies: [
-          UserAllergyItemDto(
+          const UserAllergyItemDto(
             id: 'a1',
             kind: UserAllergyKind.drug,
             label: 'Penicillin',
             reaction: null,
-            severity: null,
+            severity: UserAllergySeverity.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -136,12 +140,12 @@ void main() {
         summary: _s(age: 42),
         profile: _p(h: 165, sx: SexAtBirth.female),
         allergies: [
-          UserAllergyItemDto(
+          const UserAllergyItemDto(
             id: 'a1',
             kind: UserAllergyKind.drug,
             label: 'P',
             reaction: null,
-            severity: null,
+            severity: UserAllergySeverity.mild,
             isActive: true,
             note: null,
             extras: null,
@@ -151,7 +155,7 @@ void main() {
           ),
         ],
         conditions: [
-          UserConditionItemDto(
+          const UserConditionItemDto(
             id: 'c1',
             label: 'H',
             status: UserConditionStatus.active,
@@ -164,9 +168,9 @@ void main() {
           ),
         ],
         currentMedicines: [
-          UserCurrentMedicineItemDto(
+          const UserCurrentMedicineItemDto(
             id: 'm1',
-            source_: MedicineSource.manual,
+            source: MedicineSource.manual,
             sourceRefId: null,
             displayName: 'Aspirin',
             strengthText: null,

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
@@ -36,14 +36,14 @@ void main() {
         expect(request.queryParameters, containsPair('range', 'last_7_days'));
         expect(
           dashboard.range,
-          lucent.ReportDashboardDataDtoRangeEnum.last7Days,
+          lucent.ReportDashboardDataDtoRangeRange.last7Days,
         );
         expect(dashboard.startDate, '2026-06-06');
         expect(dashboard.endDate, '2026-06-12');
         expect(dashboard.aiSummaryEnabled, isTrue);
         expect(
           dashboard.metrics.single.kind,
-          lucent.ReportMetricDtoKindEnum.water,
+          lucent.ReportMetricDtoKindKind.water,
         );
         expect(dashboard.trends.single.currentValue, '1.8L');
         expect(dashboard.findings.single.title, '饮水改善');

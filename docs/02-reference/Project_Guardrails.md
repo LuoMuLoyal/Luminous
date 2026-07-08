@@ -29,8 +29,8 @@ This replaces the long historical error audit as the current quick-read checklis
 
 - Do not hand-maintain API prose. Lucent controller/DTO code plus `Lucent/docs/openapi.json` is the
    contract.
-- After Lucent API changes, run `pnpm export:openapi`, then regenerate Luminous with `dart run
-   tool/regenerate_lucent_openapi.dart`.
+- After Lucent API changes, run `pnpm export:openapi`, then regenerate Luminous with
+`cd generated/lucent_api && dart run build_runner build`.
 - Do not run ad-hoc OpenAPI generator commands for normal work.
 - Do not pass generated write DTOs into Flutter domain/presentation code when nullable clearing
    matters; use local write inputs or raw maps.

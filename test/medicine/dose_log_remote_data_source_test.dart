@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' show MedicineDoseLogsApi;
+import 'package:lucent_api/api/export.dart' show MedicineDoseLogsApi;
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 
 void main() {

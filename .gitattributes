@@ -21,11 +21,11 @@
 *.g.dart linguist-generated
 *.freezed.dart linguist-generated
 lib/l10n/app_localizations*.dart linguist-generated
-packages/lucent_openapi/** linguist-generated
+generated/lucent_api/** linguist-generated
 
 # Generated OpenAPI client may contain trailing spaces in comments/docs.
 # Ignore those whitespace-only warnings in git diff --check for this path.
-packages/lucent_openapi/** whitespace=-blank-at-eol,-blank-at-eof
+generated/lucent_api/** whitespace=-blank-at-eol,-blank-at-eof
 
 *.png binary
 *.jpg binary

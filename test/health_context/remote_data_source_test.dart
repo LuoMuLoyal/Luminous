@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' show UserHealthContextApi;
+import 'package:lucent_api/api/export.dart' show UserHealthContextApi;
 import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
@@ -16,7 +16,7 @@ void main() {
     final dio = Dio(BaseOptions(baseUrl: 'https://api.example.test'));
     dio.httpClientAdapter = adapter;
     dataSource = HealthContextRemoteDataSource(
-      api: _NoopUserHealthContextApi(),
+      api: UserHealthContextApi(Dio()),
       dio: dio,
     );
   });
@@ -482,10 +482,4 @@ class _CapturedRequest {
     if (bodyBytes.isEmpty) return const <String, dynamic>{};
     return jsonDecode(utf8.decode(bodyBytes)) as Map<String, dynamic>;
   }
-}
-
-/// Minimal no-op stub for [UserHealthContextApi] – the data source only uses
-/// the raw `Dio` instance for writes, so the generated API is unused here.
-class _NoopUserHealthContextApi extends UserHealthContextApi {
-  _NoopUserHealthContextApi() : super(Dio());
 }

@@ -43,8 +43,8 @@ final lucentAuthApiProvider = Provider<AuthApi>((ref) {
   return ref.watch(lucentDioClientProvider).authApi;
 });
 
-final lucentAppApiProvider = Provider<AppApi>((ref) {
-  return ref.watch(lucentDioClientProvider).appApi;
+final lucentHealthApiProvider = Provider<HealthApi>((ref) {
+  return ref.watch(lucentDioClientProvider).healthApi;
 });
 
 final lucentMedicinesApiProvider = Provider<MedicinesApi>((ref) {

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_openapi/lucent_openapi.dart'
+import 'package:lucent_api/api/export.dart'
     show
         AssistantContextSettingsDto,
         SecurityPinSettingsDto,
@@ -633,7 +633,7 @@ Widget _buildTestApp({
 class _ReadyUserSettingsController extends UserSettingsController {
   @override
   Future<UserSettingsDataDto> build() async {
-    return UserSettingsDataDto(
+    return const UserSettingsDataDto(
       aiSummariesEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: true,

@@ -92,7 +92,7 @@ incompatible with prior versions. For normal commits, keep a single-line summary
 - Local IDE files: `.idea/`, personal `.vscode/*` (except shared workspace files)
 - Build artifacts: `build/`, `android/build/`, `*.apk`, `*.ipa`
 - Local dependencies: `.dart_tool/`, `.packages`
-- Generated files: `packages/lucent_openapi/` (regenerate via tool, don't hand-edit)
+- Generated files: `generated/lucent_api/` (regenerate via build_runner, don't hand-edit)
 - Environment files with real credentials: `.env`, `key.properties`
 - Presentation exports: `outputs/`, `Roadshow/`
 
@@ -117,7 +117,7 @@ If Lucent API code changed (cross-repo):
 pnpm export:openapi
 
 # In Luminous:
-dart run tool/regenerate_lucent_openapi.dart
+cd generated/lucent_api && dart run build_runner build && cd ../..
 ```
 
 ---
@@ -288,10 +288,10 @@ The API contract source of truth is **Lucent controller/DTO code +
 `Lucent/docs/openapi.json`**. When the backend API changes:
 
 1. In `Lucent`: `pnpm export:openapi`
-2. In `Luminous`: `dart run tool/regenerate_lucent_openapi.dart`
+2. In `Luminous`: `cd generated/lucent_api && dart run build_runner build`
 
-Never hand-edit `packages/lucent_openapi/`. The regeneration script normalizes
-generated pubspec constraints and fixes broken nullable `*.g.dart` map entries.
+Never hand-edit `generated/lucent_api/`. The generator handles enum defaults and
+nullable map entries natively.
 
 Verify contract sync:
 

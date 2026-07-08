@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_openapi/lucent_openapi.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -107,18 +107,18 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     );
   }
 
-  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
+  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeRange range) {
     return switch (range) {
-      lucent.ReportSummaryDataDtoRangeEnum.last30Days =>
+      lucent.ReportSummaryDataDtoRangeRange.last30Days =>
         ReportAiSummaryRange.last30Days,
-      lucent.ReportSummaryDataDtoRangeEnum.custom =>
+      lucent.ReportSummaryDataDtoRangeRange.custom =>
         ReportAiSummaryRange.custom,
       _ => ReportAiSummaryRange.last7Days,
     };
   }
 
   ReportAiSummaryBullet _mapBullet(lucent.ReportSummaryBulletDto dto) {
-    final kind = switch (dto.kind.value) {
+    final kind = switch (dto.kind.json ?? '') {
       'medication' => ReportAiSummaryBulletKind.medication,
       'hydration' => ReportAiSummaryBulletKind.hydration,
       'sleep' => ReportAiSummaryBulletKind.sleep,

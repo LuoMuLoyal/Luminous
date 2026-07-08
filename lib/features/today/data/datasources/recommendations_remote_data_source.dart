@@ -1,4 +1,4 @@
-import 'package:lucent_openapi/lucent_openapi.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/today/domain/entities/recommendation.dart';
 
 class TodayRecommendationsRemoteDataSource {
@@ -12,7 +12,7 @@ class TodayRecommendationsRemoteDataSource {
     final response = await api.todayAnalysisControllerGetRecommendationsV1(
       exclude: excludeIds,
     );
-    final dtos = response.data ?? const [];
+    final dtos = response;
     return dtos
         .map(
           (dto) => TodayRecommendation(

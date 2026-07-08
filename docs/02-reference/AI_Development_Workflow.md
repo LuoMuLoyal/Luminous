@@ -34,7 +34,7 @@ It complements:
    - `dart run tool/run_daily_checks.dart`
 3. Respect generated and contract-owned files:
    - do not hand-edit `lib/l10n/app_localizations*.dart`
-   - do not hand-edit `packages/lucent_openapi/`
+   - do not hand-edit `generated/lucent_api/`
 4. Keep app-side AI experiments isolated from Lucent-backed product flows unless
    an explicit task says otherwise.
 
