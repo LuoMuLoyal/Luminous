@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:lucent_api/api/export.dart';
@@ -185,7 +186,9 @@ class DataExportPage extends ConsumerWidget {
           await AppToast.show(context, l10n.mineExportStatusFailed);
       }
     } catch (error) {
-      debugPrint('DataExportPage._requestExport: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('DataExportPage._requestExport: failed: $error');
       if (!context.mounted) {
         return;
       }

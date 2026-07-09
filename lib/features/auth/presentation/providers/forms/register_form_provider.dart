@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
@@ -142,7 +143,9 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       );
       return true;
     } catch (error) {
-      debugPrint('RegisterFormNotifier.sendCode: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('RegisterFormNotifier.sendCode: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSendingCode: false,
@@ -171,7 +174,9 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       state = state.copyWith(isSubmitting: false, successMessage: '');
       return true;
     } catch (error) {
-      debugPrint('RegisterFormNotifier.submit: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('RegisterFormNotifier.submit: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       state = state.copyWith(
         isSubmitting: false,

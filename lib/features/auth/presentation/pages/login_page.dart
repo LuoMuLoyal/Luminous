@@ -8,6 +8,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
@@ -282,7 +283,7 @@ class LoginPage extends HookConsumerWidget {
         if (session == null || !context.mounted) return;
         goAfterLogin(fallbackHome: true);
       } catch (e) {
-        debugPrint('LoginPage.startAppleLogin: failed: $e');
+        ref.read(talkerProvider).error('LoginPage.startAppleLogin: failed: $e');
         if (context.mounted) await AppToast.show(context, failMessage);
       }
     }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/record/data/providers/providers.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -130,7 +131,9 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       );
       Navigator.of(context).pop();
     } catch (e) {
-      debugPrint('RecordFastEntryDialog._saveChoice: failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('RecordFastEntryDialog._saveChoice: failed: $e');
       if (!mounted) return;
       unawaited(
         AppToast.show(

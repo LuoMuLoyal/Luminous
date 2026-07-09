@@ -8,6 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
@@ -141,9 +142,11 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
       await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
     } catch (e) {
-      debugPrint(
-        'App._syncLocaleFromHealthContext: locale backfill failed: $e',
-      );
+      ref
+          .read(talkerProvider)
+          .error(
+            'App._syncLocaleFromHealthContext: locale backfill failed: $e',
+          );
     }
   }
 }

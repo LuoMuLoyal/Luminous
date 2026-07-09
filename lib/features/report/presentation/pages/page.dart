@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
@@ -96,7 +97,9 @@ class ReportPage extends ConsumerWidget {
         request: request,
       );
     } catch (error) {
-      debugPrint('ReportPage._handleExportAction: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('ReportPage._handleExportAction: failed: $error');
       if (!context.mounted) {
         return;
       }
@@ -125,7 +128,9 @@ class ReportPage extends ConsumerWidget {
         ShareParams(text: shareUrl, subject: l10n.reportExportClinicShareTitle),
       );
     } catch (error) {
-      debugPrint('ReportPage._handleClinicShare: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('ReportPage._handleClinicShare: failed: $error');
       if (!context.mounted) return;
       final message = LucentErrorMapper.fromObject(error).message;
       await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');

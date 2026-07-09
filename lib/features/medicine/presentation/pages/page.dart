@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -161,7 +162,7 @@ Future<void> _markDose(
       unawaited(AppToast.show(context, l10n.medicineDoseActionSavedToast));
     }
   } catch (error) {
-    debugPrint('_markDose: failed: $error');
+    ref.read(talkerProvider).error('_markDose: failed: $error');
     if (context.mounted) {
       unawaited(AppToast.show(context, l10n.medicineDoseActionFailedToast));
     }

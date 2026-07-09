@@ -26,7 +26,29 @@ enum LogLevel {
   }
 }
 
-/// Global [talker.Talker] instance provider.
+/// Singleton [talker.Talker] instance shared by [talkerProvider] and
+/// [appTalker].
+///
+/// Using a single backing instance ensures that runtime log-level changes
+/// applied via [applyLogLevelToTalker] take effect everywhere, regardless
+/// of whether the call site accesses the Talker through Riverpod or the
+/// global getter.
+final _globalTalker = talker.Talker(
+  settings: talker.TalkerSettings(
+    enabled: !kReleaseMode,
+    useConsoleLogs: kDebugMode,
+  ),
+);
+
+/// Global [talker.Talker] accessor for contexts that do not have a Riverpod
+/// [Ref] (e.g. static utility classes, plain repository objects).
+///
+/// ```dart
+/// appTalker.error('Something failed: $e');
+/// ```
+talker.Talker get appTalker => _globalTalker;
+
+/// Riverpod provider that returns the same [_globalTalker] singleton.
 ///
 /// Usage in widgets/providers:
 /// ```dart
@@ -36,14 +58,7 @@ enum LogLevel {
 /// ```
 ///
 /// In release builds, logging is disabled via [talker.TalkerSettings.enabled].
-final talkerProvider = Provider<talker.Talker>((ref) {
-  return talker.Talker(
-    settings: talker.TalkerSettings(
-      enabled: !kReleaseMode,
-      useConsoleLogs: kDebugMode,
-    ),
-  );
-});
+final talkerProvider = Provider<talker.Talker>((ref) => _globalTalker);
 
 /// Applies a [LogLevel] to the given [talker.Talker] instance at runtime.
 ///

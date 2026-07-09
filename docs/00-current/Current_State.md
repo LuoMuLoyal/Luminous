@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 
@@ -272,6 +272,11 @@ Last updated: 2026-07-08
   - 修复范围覆盖 auth、health_context、settings、medicine、support、today、shell_page、session_gate 共 9 个测试文件。
   - 主要修复类型：DTO 枚举字段 null 值替换为有效枚举值、异常类型期望更新（`LucentApiException` → `TypeError`/`DioException`）、`autoDispose` provider 生命周期管理、过时 widget key 更新、已移除组件的测试断言重写。
   - `flutter test` — 922 passed, 0 failed。
+- debugPrint → Talker 日志系统迁移完成（2026-07-09）：
+  - 全库 68 处 `debugPrint` 统一迁移到 `talker_flutter` 日志基础设施。
+  - `app_logger.dart` 新增全局 `appTalker` 单例访问器，`talkerProvider` 改为返回同一实例，修复原先日志级别过滤不全局生效的问题。
+  - 有 `Ref`/`WidgetRef` 的类使用 `ref.read(talkerProvider).error(...)`，无 `Ref` 的类（静态工具、纯 Repository）使用 `appTalker.error(...)`。
+  - `flutter analyze` — No issues found! `flutter test` — 922 passed, 0 failed。
 
 ## 相关文档
 

@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -151,7 +152,7 @@ class RecordEditPage extends HookConsumerWidget {
         loaded.value = true;
         loadingRecord.value = false;
       } catch (e) {
-        debugPrint('RecordEditPage.loadRecord: failed: $e');
+        ref.read(talkerProvider).error('RecordEditPage.loadRecord: failed: $e');
         if (context.mounted) {
           unawaited(AppToast.show(context, l10n.recordCreateFailedToast));
           context.pop();
@@ -335,7 +336,7 @@ class RecordEditPage extends HookConsumerWidget {
           context.pop();
         }
       } catch (e) {
-        debugPrint('RecordEditPage.onSave: failed: $e');
+        ref.read(talkerProvider).error('RecordEditPage.onSave: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordCreateFailedToast);
         }
@@ -377,7 +378,7 @@ class RecordEditPage extends HookConsumerWidget {
           context.pop();
         }
       } catch (e) {
-        debugPrint('RecordEditPage.onDelete: failed: $e');
+        ref.read(talkerProvider).error('RecordEditPage.onDelete: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordCreateFailedToast);
         }
@@ -409,7 +410,9 @@ class RecordEditPage extends HookConsumerWidget {
         );
         attachmentsChanged.value = true;
       } catch (e) {
-        debugPrint('RecordEditPage.onPickImage: failed: $e');
+        ref
+            .read(talkerProvider)
+            .error('RecordEditPage.onPickImage: failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordImagePickFailedToast);
         }

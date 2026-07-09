@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -390,7 +391,7 @@ class _RecordDetailBody extends ConsumerWidget {
       await AppToast.show(context, l10n.mineEditDeletedToast);
       if (context.mounted) context.pop();
     } catch (e) {
-      debugPrint('RecordDetailPage.onDelete: failed: $e');
+      ref.read(talkerProvider).error('RecordDetailPage.onDelete: failed: $e');
       if (context.mounted) {
         await AppToast.show(context, l10n.recordCreateFailedToast);
       }

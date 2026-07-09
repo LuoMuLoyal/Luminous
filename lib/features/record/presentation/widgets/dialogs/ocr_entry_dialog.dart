@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -75,7 +76,9 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
         final text = await recognizeText(photo, locale);
         recognizedText.value = text;
       } catch (e) {
-        debugPrint('RecordOcrEntryDialog: recognizeText failed: $e');
+        ref
+            .read(talkerProvider)
+            .error('RecordOcrEntryDialog: recognizeText failed: $e');
         if (context.mounted) {
           await AppToast.show(context, l10n.recordOcrRecognitionFailed);
         }

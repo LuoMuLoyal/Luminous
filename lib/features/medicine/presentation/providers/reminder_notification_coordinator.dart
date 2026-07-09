@@ -1,9 +1,9 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
@@ -194,7 +194,9 @@ final medicineReminderNotificationSyncProvider = FutureProvider<void>((
       soundEnabled: settings.notificationSoundEnabled,
     );
   } catch (e) {
-    debugPrint('MedicineReminderNotificationCoordinator: resync failed: $e');
+    ref
+        .read(talkerProvider)
+        .error('MedicineReminderNotificationCoordinator: resync failed: $e');
     return;
   }
 });

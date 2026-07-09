@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -108,7 +109,9 @@ class SearchPage extends ConsumerWidget {
         unawaited(AppToast.show(context, l10n.mineEditSavedToast));
       }
     } catch (e) {
-      debugPrint('SearchPage._addToCurrentMedicines: failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('SearchPage._addToCurrentMedicines: failed: $e');
       if (context.mounted) {
         unawaited(
           AppToast.show(

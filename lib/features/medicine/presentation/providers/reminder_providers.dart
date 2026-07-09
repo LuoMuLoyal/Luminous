@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -241,7 +242,9 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
       state = const MedicineReminderFormState(saved: true);
       return true;
     } catch (error) {
-      debugPrint('MedicineReminderFormNotifier.saveGroup: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('MedicineReminderFormNotifier.saveGroup: failed: $error');
       state = MedicineReminderFormState(errorMessage: error.toString());
       return false;
     }
@@ -259,7 +262,9 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
       state = const MedicineReminderFormState(saved: true, deleted: true);
       return true;
     } catch (error) {
-      debugPrint('MedicineReminderFormNotifier.deleteGroup: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('MedicineReminderFormNotifier.deleteGroup: failed: $error');
       state = MedicineReminderFormState(errorMessage: error.toString());
       return false;
     }

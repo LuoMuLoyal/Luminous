@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
@@ -32,7 +32,9 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
       );
       _refreshDerivedState();
     } catch (error) {
-      debugPrint('SettingsProfileSyncNotifier.syncPreferences: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('SettingsProfileSyncNotifier.syncPreferences: failed: $error');
       if (hasLocaleChange) {
         await ref
             .read(appLocaleControllerProvider.notifier)

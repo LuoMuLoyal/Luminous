@@ -1,7 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
@@ -44,7 +44,9 @@ class LucentTodayRepository implements TodayRepository {
         }
       }
     } catch (e) {
-      debugPrint('LucentTodayRepository: fetchSummary failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('LucentTodayRepository: fetchSummary failed: $e');
     }
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
@@ -62,7 +64,9 @@ class LucentTodayRepository implements TodayRepository {
         }
       }
     } catch (e) {
-      debugPrint('LucentTodayRepository: dose logs failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('LucentTodayRepository: dose logs failed: $e');
     }
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
@@ -188,7 +192,9 @@ class LucentTodayRepository implements TodayRepository {
             ..sort(_compareReminderTime);
       return todayReminders.firstOrNull;
     } catch (e) {
-      debugPrint('LucentTodayRepository._nextReminderFor: failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('LucentTodayRepository._nextReminderFor: failed: $e');
       return null;
     }
   }

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
@@ -44,7 +44,9 @@ class MedicineRiskCheckRepository {
           MedicineRiskMedicineDetail(item: item, detail: response.data),
         );
       } catch (e) {
-        debugPrint('MedicineRiskCheckRepository: risk detail fetch failed: $e');
+        appTalker.error(
+          'MedicineRiskCheckRepository: risk detail fetch failed: $e',
+        );
       }
     }
 

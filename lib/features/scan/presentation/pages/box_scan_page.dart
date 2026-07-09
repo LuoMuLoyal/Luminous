@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
@@ -81,7 +82,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
       ),
     );
   } catch (e) {
-    debugPrint('showMedicineBoxScanSheet: failed: $e');
+    appTalker.error('showMedicineBoxScanSheet: failed: $e');
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).pop();
       unawaited(AppToast.show(context, '识别失败: $e'));

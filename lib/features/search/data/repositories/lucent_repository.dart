@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
@@ -60,7 +60,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
         checklist: const [],
       );
     } catch (e) {
-      debugPrint(
+      appTalker.error(
         'LucentMedicineSearchRepository.fetchSafetyPreview: failed: $e',
       );
       return null;

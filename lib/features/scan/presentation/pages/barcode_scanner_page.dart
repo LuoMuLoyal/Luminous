@@ -9,6 +9,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
@@ -78,7 +79,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
         _showCandidatePicker(items);
       }
     } catch (e) {
-      debugPrint('BarcodeScannerPage._handleDetect: failed: $e');
+      ref
+          .read(talkerProvider)
+          .error('BarcodeScannerPage._handleDetect: failed: $e');
       if (mounted) {
         unawaited(
           AppToast.show(

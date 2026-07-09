@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/design/breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -85,7 +86,7 @@ Future<void> _handleLocaleTap(
   try {
     await ref.read(settingsProfileSyncProvider.notifier).setLocale(locale);
   } catch (error) {
-    debugPrint('_handleLocaleTap: failed: $error');
+    ref.read(talkerProvider).error('_handleLocaleTap: failed: $error');
     if (!context.mounted) {
       return;
     }

@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/result_code.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -77,7 +77,9 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
 
       throw StateError('报告 AI 流式响应已结束，但没有返回最终结果。');
     } catch (error) {
-      debugPrint('ReportAiSummaryController.generate: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('ReportAiSummaryController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       if (apiError.code == LucentResultCode.forbidden) {
         state = const ReportAiSummaryCardState.disabled();

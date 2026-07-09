@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -92,7 +93,9 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
           final perm = await service.hasPermission;
           hasPermission.value = perm;
         } catch (e) {
-          debugPrint('RecordVoiceEntryDialog.init: hasPermission failed: $e');
+          ref
+              .read(talkerProvider)
+              .error('RecordVoiceEntryDialog.init: hasPermission failed: $e');
           hasPermission.value = false;
         }
       }

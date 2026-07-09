@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 
 class AppToast {
   const AppToast._();
@@ -50,7 +51,7 @@ class AppToast {
         },
       );
     } catch (e) {
-      debugPrint('AppToast.show: FToaster unavailable: $e');
+      appTalker.error('AppToast.show: FToaster unavailable: $e');
       _reset();
       return false;
     }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -69,7 +70,9 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         isAuthenticated: true,
       );
     } catch (error) {
-      debugPrint('AuthSessionNotifier.restore: failed: $error');
+      ref
+          .read(talkerProvider)
+          .error('AuthSessionNotifier.restore: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
       await ref.read(lucentDioClientProvider).clearSession();
       state = AuthSessionState(

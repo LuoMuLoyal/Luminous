@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -81,7 +82,9 @@ class AssistantPage extends HookConsumerWidget {
             .setAssistantEnabled(nextValue);
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
-        debugPrint('AssistantPage.toggleAssistantEnabled: failed: $error');
+        ref
+            .read(talkerProvider)
+            .error('AssistantPage.toggleAssistantEnabled: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -97,9 +100,11 @@ class AssistantPage extends HookConsumerWidget {
             .setAssistantMemoryEnabled(nextValue);
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
-        debugPrint(
-          'AssistantPage.toggleAssistantMemoryEnabled: failed: $error',
-        );
+        ref
+            .read(talkerProvider)
+            .error(
+              'AssistantPage.toggleAssistantMemoryEnabled: failed: $error',
+            );
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -133,7 +138,9 @@ class AssistantPage extends HookConsumerWidget {
               .read(assistantControllerProvider.notifier)
               .loadCapabilities();
         } catch (error) {
-          debugPrint('AssistantPage.toggleContextSetting: failed: $error');
+          ref
+              .read(talkerProvider)
+              .error('AssistantPage.toggleContextSetting: failed: $error');
           if (!ctx.mounted) return;
           await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
         }
@@ -152,7 +159,9 @@ class AssistantPage extends HookConsumerWidget {
             );
         await ref.read(assistantControllerProvider.notifier).loadCapabilities();
       } catch (error) {
-        debugPrint('AssistantPage.toggleContextSetting: failed: $error');
+        ref
+            .read(talkerProvider)
+            .error('AssistantPage.toggleContextSetting: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }
@@ -186,7 +195,9 @@ class AssistantPage extends HookConsumerWidget {
         if (!ctx.mounted) return;
         await AppToast.show(ctx, l.assistantProposalConfirmedToast);
       } catch (error) {
-        debugPrint('AssistantPage.handleConfirmProposal: failed: $error');
+        ref
+            .read(talkerProvider)
+            .error('AssistantPage.handleConfirmProposal: failed: $error');
         if (!ctx.mounted) return;
         await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
       }

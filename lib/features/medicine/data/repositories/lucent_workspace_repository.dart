@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/design/colors.dart';
+import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/repositories/repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
@@ -60,7 +61,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         }
       }
     } catch (e) {
-      debugPrint(
+      appTalker.error(
         'LucentMedicineWorkspace.fetchWorkspace: dose logs failed: $e',
       );
     }
@@ -77,7 +78,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         reminders.sort(compareReminderTime);
       }
     } catch (e) {
-      debugPrint(
+      appTalker.error(
         'LucentMedicineWorkspace.fetchWorkspace: reminders failed: $e',
       );
     }
