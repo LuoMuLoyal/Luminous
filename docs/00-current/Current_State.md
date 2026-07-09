@@ -30,6 +30,7 @@ Last updated: 2026-07-09
 - Medicine 根页已接入 Lucent Phase 2 slot-aware dose-log 合同。
 - Forui-first 编码统一性优化完成：Material 组件全面迁移、颜色/排版 token 化。
 - `lib/core/design/` 目录架构升级完成：全部 token 类名移除 `App` 前缀，统一为 `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `Breakpoints` / `ResponsiveSizing` / `LayoutScale` + `LayoutScaleResolver`，通过 barrel `design.dart` 统一导出。
+- Mine 账号与安全区已包含退出登录 tile（`ConsumerWidget` + `authSessionProvider`）；Report 趋势区已替换为 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。
 - `debugPrint` 已全量迁移到 `talker_flutter` 日志基础设施（922 tests passed）。
 - 文档治理带有 warning-only 的路径映射检查（`docs/doc-map.yaml` + `tool/check_doc_coverage.dart`）。
 

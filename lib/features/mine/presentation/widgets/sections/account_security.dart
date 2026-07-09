@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MineAccountSecuritySection extends StatelessWidget {
+class MineAccountSecuritySection extends ConsumerWidget {
   const MineAccountSecuritySection({super.key, required this.account});
 
   final MineAccount account;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final session = ref.watch(authSessionProvider);
+    final signedIn = session.canAccessProtectedData;
     final accountSubtitle = account.isAuthenticated
         ? (account.email.isNotEmpty
               ? account.email
@@ -64,6 +69,32 @@ class MineAccountSecuritySection extends StatelessWidget {
               suffix: const Icon(FLucideIcons.chevronRight),
               onPress: () =>
                   pushAuthRequiredRoute(context, AppRoutes.settingsSecurityPin),
+            ),
+            FTile(
+              key: const Key('mine-sign-out-tile'),
+              prefix: Icon(
+                FLucideIcons.logOut,
+                color: colors.error,
+                size: Spacing.level5,
+              ),
+              title: Text(
+                signedIn ? l10n.authSignOut : l10n.authGoLogin,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(color: colors.error),
+              ),
+              enabled: !session.isLoading,
+              onPress: session.isLoading
+                  ? null
+                  : () async {
+                      if (!signedIn) {
+                        context.go(loginRouteForCurrentLocation(context));
+                        return;
+                      }
+                      await ref.read(authSessionProvider.notifier).logout();
+                      if (!context.mounted) return;
+                      context.go(AppRoutes.login);
+                    },
             ),
           ],
         ),

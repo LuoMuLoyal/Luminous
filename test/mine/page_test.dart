@@ -283,7 +283,8 @@ void main() {
 
     expect(find.text(l10n.mineReadinessPreviewTitle), findsOneWidget);
     expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
-    expect(find.text(l10n.authGoLogin), findsOneWidget);
+    // authGoLogin appears in both the hero CTA and the sign-out tile.
+    expect(find.text(l10n.authGoLogin), findsNWidgets(2));
     expect(find.byType(SignInHintBanner), findsNothing);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
     expect(find.byKey(const Key('mine-status-overview')), findsNothing);
@@ -555,7 +556,9 @@ void main() {
     expect(find.byType(MinePage), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);
 
-    await tester.tap(basicInfo);
+    await tester.ensureVisible(basicInfo);
+    await tester.pump(const Duration(milliseconds: 200));
+    await tester.tap(basicTile.hitTestable());
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     await tester.tap(find.byKey(const Key('auth-required-login-action')));

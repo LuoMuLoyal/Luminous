@@ -84,28 +84,25 @@ Last updated: 2026-07-09
   - 目标：后端按 `Product_Tab_Component_Blueprint` 支持「明确风险 / 疑似漏服 / 恶化趋势 / 行为建议」四类卡片
   - 规划：`plans/2026-07-09-today-suggestion-engine-backend.md`
 
-## 当前tab缺失
+## 蓝图差距盘点（2026-07-09）
 
-- 建议类型模型偏窄 TodayPriorityItemType 目前只有 medication 和 water 两种（view_models.dart）。蓝图要求支持：明确风险卡、疑似漏服/计划未处理卡、明显恶化趋势卡、低风险行为建议卡。根本原因：后端尚无统一建议裁决引擎，priorityItems 由前端 `LucentTodayRepository` 硬编码组装。解决路径见 `plans/2026-07-09-today-suggestion-engine-backend.md`。
-  主卡区未显式区分“风险/漏服/恶化/行为建议” 当前 UI 把 medication 统一渲染为“待服药”，water 统一渲染为“饮水”，没有按蓝图细分场景。 在领域层补充类型字段，UI 层根据类型调整文案、颜色和动作。
-  TodayRecordHintSection 不在蓝图清单中 这是一个轻量空状态提示，对首屏职责影响不大。 可保留，但建议记录为“非蓝图必做但合理增强”。
-- 无明显偏差。快速记录面板中的“语音录入 / OCR 录入”可视为自然语言入口的延伸，符合蓝图“自然语言入口”的扩展语义。
-- 当前用药盒最多展示 3 条、今日计划最多 4 条，属于“工作台概览”而非完整列表，符合蓝图“首屏”定位。
-  “用药日志”深层分析在蓝图中列为“可延后组件”，当前未做是合理的。
-- Score Hero 不在蓝图清单中 ReportScoreHero 出现在 Report 首屏，蓝图中未明确列出。它不是“最高优先行动卡”，更像总分概览。 可保留，但建议与产品确认是否属于 1.0 必做；若否，可标记为增强项。
-  趋势区目前是占位图 \_TrendPlaceholder 使用骨架线而非真实图表。蓝图要求“趋势概览区”， placeholder 可视为 1.0 阶段实现，但需后续接入真实图表。 记录为技术债，不影响职责边界判定。
-- 账号与安全区缺少“退出登录”入口 蓝图要求该区域包含“登录状态、安全设置、退出登录”。当前 MineAccountSecuritySection 只有两个 tile：账号设置、安全锁；退出登录被放在 SettingsPage（lib/features/settings/presentation/pages/page.dart:115）。 在 MineAccountSecuritySection 增加一个“退出登录”tile，或调整蓝图将“退出登录”职责明确划归 Settings。
-  Mine 顶部有设置/通知入口 蓝图未禁止，属于合理快捷入口。 无需改动。
+对照 `Product_Tab_Component_Blueprint` 逐 tab 核查。Today 延后至后端建议引擎就绪后再做，先收口其他四个 tab。
 
-## 结论与优先级:
+### Record — ✅ 无差距
 
-高优先级：扩展 Today 的建议类型模型
+蓝图 1.0 必做组件全部完成：快速记录区、自然语言候选确认、时间线。
 
-TodayPriorityItemType 仅支持 medication / water，无法表达蓝图要求的“风险/漏服/恶化/行为建议”。这是 Today 与蓝图差异最大的地方。
-中优先级：在 Mine 的账号与安全区增加退出登录入口
+### Medicine — ✅ 无差距
 
-当前退出登录藏在 Settings 页，与蓝图对 Mine 的要求不一致。
-低优先级 / 记录即可
+蓝图 1.0 必做组件全部完成：当前用药盒、今日用药区、安全检查摘要。
 
-ReportScoreHero 和 TodayRecordHintSection 是蓝图未列出的增强组件，建议保留并在产品文档中标注。
-Report 趋势区当前为占位图，属于实现进度问题，不影响 Tab 职责边界判定。
+- **Score Hero 增强项**：`ReportScoreHero` 不在蓝图清单中，作为增强保留，无需改动。
+
+
+### Today — 延后
+
+- 建议类型模型偏窄、主卡区未细分场景 — 均依赖后端统一建议裁决引擎，延后至后端能力就绪后再做。
+- 规划文档：`plans/2026-07-09-today-suggestion-engine-backend.md`
+- `TodayRecordHintSection` 作为非蓝图增强保留。
+
+

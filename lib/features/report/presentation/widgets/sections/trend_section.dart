@@ -1,10 +1,9 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
-import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -17,6 +16,7 @@ class ReportTrendSection extends StatelessWidget {
     required this.selectedQuery,
     required this.onQueryChanged,
     required this.l10n,
+    required this.startDate,
     this.showRangePill = true,
   });
 
@@ -24,12 +24,11 @@ class ReportTrendSection extends StatelessWidget {
   final ReportDashboardQuery selectedQuery;
   final ValueChanged<ReportDashboardQuery> onQueryChanged;
   final AppLocalizations l10n;
+  final String startDate;
   final bool showRangePill;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,17 +65,7 @@ class ReportTrendSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: Spacing.level4),
-        _TrendPlaceholder(trends: trends, l10n: l10n),
-        const SizedBox(height: Spacing.level3),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Text(
-            l10n.reportViewDetailsAction,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
-          ),
-        ),
+        _TrendChart(trends: trends, startDate: startDate),
       ],
     );
   }
@@ -92,20 +81,71 @@ class ReportTrendSection extends StatelessWidget {
   }
 }
 
-class _TrendPlaceholder extends StatelessWidget {
-  const _TrendPlaceholder({required this.trends, required this.l10n});
+// ---------------------------------------------------------------------------
+
+class _TrendChart extends StatelessWidget {
+  const _TrendChart({required this.trends, required this.startDate});
 
   final List<ReportTrendSeries> trends;
-  final AppLocalizations l10n;
+  final String startDate;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
+    // All series share the same x-axis length.
+    final dayCount = trends.isEmpty || trends.first.values.isEmpty
+        ? 7
+        : trends.first.values.length;
+
+    // Compute global Y bounds across all series for a shared scale.
+    final allValues = trends.expand((s) => s.values).toList();
+    final minY = allValues.isEmpty
+        ? 0.0
+        : allValues.reduce((a, b) => a < b ? a : b);
+    final maxY = allValues.isEmpty
+        ? 1.0
+        : allValues.reduce((a, b) => a > b ? a : b);
+    final span = (maxY - minY).abs() < 1 ? 1.0 : (maxY - minY);
+
+    // Build one LineChartBarData per trend series.
+    final bars = <LineChartBarData>[];
+    for (final series in trends) {
+      final resolvedColor = series.color.resolve(colors);
+      final spots = series.values.isEmpty
+          ? const <FlSpot>[]
+          : series.values
+                .asMap()
+                .entries
+                .map((e) => FlSpot(e.key.toDouble(), e.value))
+                .toList();
+      bars.add(
+        LineChartBarData(
+          spots: spots,
+          color: resolvedColor,
+          barWidth: 2,
+          dotData: FlDotData(
+            show: dayCount <= 10,
+            getDotPainter: (spot, percent, bar, index) =>
+                FlDotCirclePainter(radius: 3, color: resolvedColor),
+          ),
+          belowBarData: BarAreaData(show: false),
+          isCurved: dayCount > 10,
+          curveSmoothness: 0.3,
+        ),
+      );
+    }
+
+    // Generate x-axis labels from startDate.
+    final labels = _generateDateLabels(dayCount);
+
+    // For 30-day range, only show every Nth label to avoid crowding.
+    final labelInterval = dayCount <= 7 ? 1.0 : (dayCount / 6).ceilToDouble();
+
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: colors.secondary.withValues(alpha: 0.08),
+          color: colors.secondary.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(RadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
@@ -119,94 +159,86 @@ class _TrendPlaceholder extends StatelessWidget {
                 minValue: 144,
                 maxValue: 200,
               ),
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for (var index = 0; index < 5; index += 1)
-                        const AppDivider(),
-                    ],
+              child: LineChart(
+                LineChartData(
+                  minY: minY - span * 0.1,
+                  maxY: maxY + span * 0.1,
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    getDrawingHorizontalLine: (_) =>
+                        FlLine(color: colors.border, strokeWidth: 0.5),
+                    horizontalInterval: span / 4,
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        for (final series in trends)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: Spacing.level2,
-                            ),
-                            child: AppSkeletonSlot(
-                              skeleton: const AppInlineSkeletonBlock(
-                                height: 22,
-                                width: 46,
-                                radius: RadiusTokens.level2,
-                              ),
-                              child: _TrendValuePill(
-                                label: series.currentValue,
-                                color: series.color,
-                              ),
-                            ),
-                          ),
-                      ],
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      right: ResponsiveSizing.scaleByWidth(
-                        context,
-                        fraction: 0.14,
-                        minValue: 48,
-                        maxValue: 72,
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 28,
+                        interval: labelInterval,
+                        getTitlesWidget: (value, meta) {
+                          final index = value.round();
+                          if (index < 0 || index >= labels.length) {
+                            return const SizedBox.shrink();
+                          }
+                          // Skip labels that don't fall on the interval.
+                          if (labelInterval > 1 &&
+                              index % labelInterval.round() != 0 &&
+                              index != labels.length - 1) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: Spacing.level2),
+                            child: Text(
+                              labels[index],
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.mutedForeground),
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        for (final series in trends)
-                          AppSkeletonSlot(
-                            skeleton: const AppInlineSkeletonBlock(
-                              height: 30,
-                              radius: RadiusTokens.level2,
-                            ),
-                            child: ReportMetricTrack(
-                              values: series.values,
-                              color: series.color,
-                              height: 30,
-                            ),
-                          ),
-                      ],
-                    ),
                   ),
-                ],
+                  lineTouchData: const LineTouchData(enabled: false),
+                  lineBarsData: bars,
+                ),
               ),
-            ),
-            const SizedBox(height: Spacing.level3),
-            Row(
-              children: [
-                for (final label in l10n.reportTrendDateLabels.split('|'))
-                  Expanded(
-                    child: Text(
-                      label,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                    ),
-                  ),
-              ],
             ),
           ],
         ),
       ),
     );
   }
+
+  /// Generates short M/D date labels starting from [startDate].
+  List<String> _generateDateLabels(int count) {
+    final parsed = DateTime.tryParse(startDate);
+    if (parsed == null) {
+      // Fallback: use day offsets (1, 2, 3, ...).
+      return List.generate(count, (i) => '${i + 1}');
+    }
+    return List.generate(count, (i) {
+      final date = parsed.add(Duration(days: i));
+      return '${date.month}/${date.day}';
+    });
+  }
 }
+
+// ---------------------------------------------------------------------------
 
 class _LegendDot extends StatelessWidget {
   const _LegendDot({required this.color, required this.label});
@@ -236,40 +268,6 @@ class _LegendDot extends StatelessWidget {
               .copyWith(color: colors.mutedForeground),
         ),
       ],
-    );
-  }
-}
-
-class _TrendValuePill extends StatelessWidget {
-  const _TrendValuePill({required this.label, required this.color});
-
-  final String label;
-  final SemanticColor color;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: color.resolve(colors).withValues(alpha: 0.92),
-        borderRadius: BorderRadius.circular(RadiusTokens.level2),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level2,
-          vertical: Spacing.level1,
-        ),
-        child: Text(
-          label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: context.theme.colors.primaryForeground,
-                fontWeight: FontWeight.w800,
-              ),
-        ),
-      ),
     );
   }
 }

@@ -130,6 +130,7 @@ class ReportDashboardView extends StatelessWidget {
           selectedQuery: dashboardQuery,
           onQueryChanged: onDashboardQueryChanged ?? (_) {},
           l10n: l10n,
+          startDate: dashboard.startDate,
           showRangePill: false,
         ),
         const SizedBox(height: Spacing.level4),
@@ -226,6 +227,7 @@ class ReportDashboardView extends StatelessWidget {
                 selectedQuery: dashboardQuery,
                 onQueryChanged: onDashboardQueryChanged ?? (_) {},
                 l10n: l10n,
+                startDate: dashboard.startDate,
               ),
               const SizedBox(height: Spacing.level5),
               ReportFindingsSection(
