@@ -16,6 +16,7 @@ class UserSettingsDataDto {
     required this.dataSharingConsent,
     required this.assistantEnabled,
     required this.assistantMemoryEnabled,
+    required this.waterTargetCount,
     required this.assistantContext,
     required this.updatedAt,
     required this.securityPin,
@@ -35,6 +36,9 @@ class UserSettingsDataDto {
 
   /// Allow the assistant to reuse persisted conversation history as cross-conversation memory.
   final bool assistantMemoryEnabled;
+
+  /// Daily water intake target (number of glasses).
+  final num waterTargetCount;
 
   /// Fine-grained assistant context permissions.
   final AssistantContextSettingsDto assistantContext;

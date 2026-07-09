@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayPrimarySuggestionSection extends StatefulWidget {
-  const TodayPrimarySuggestionSection({super.key, required this.dashboard});
+  const TodayPrimarySuggestionSection({super.key, required this.suggestion});
 
-  final TodayDashboard dashboard;
+  final TodaySuggestionCard? suggestion;
 
   @override
   State<TodayPrimarySuggestionSection> createState() =>
@@ -52,15 +50,20 @@ class _TodayPrimarySuggestionSectionState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = buildSuggestionItems(l10n, widget.dashboard);
-    final primary = items.first;
+    final card = widget.suggestion;
+
+    if (card == null) {
+      return const SizedBox.shrink();
+    }
+
     final colors = context.theme.colors;
+    final cardTone = _mapTone(card.cardTone);
 
     return TodaySection(
       title: l10n.todayPrimarySuggestionSectionTitle,
       child: FCard.raw(
         key: const Key('today-primary-suggestion-card'),
-        style: todayCardStyle(context, tone: primary.cardTone),
+        style: todayCardStyle(context, tone: cardTone),
         child: Padding(
           padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
@@ -70,27 +73,28 @@ class _TodayPrimarySuggestionSectionState
               Row(
                 children: [
                   TodayGlyphTile(
-                    icon: primary.icon,
-                    color: primary.color.resolve(colors),
+                    icon: _iconFor(card.icon),
+                    color: _colorFor(card.cardTone).resolve(colors),
                     size: Spacing.level8,
                     radius: RadiusTokens.level3,
                     gradient: true,
                   ),
                   const Spacer(),
                   FButton(
-                    onPress: () => _openSuggestion(context, primary),
-                    variant: primary.type == TodayPriorityItemType.medication
+                    onPress: () =>
+                        _openRoute(context, card.primaryAction.route),
+                    variant: _isUrgent(card.cardTone)
                         ? FButtonVariant.primary
                         : FButtonVariant.secondary,
                     size: FButtonSizeVariant.sm,
-                    child: Text(primary.action),
+                    child: Text(card.primaryAction.label),
                   ),
                 ],
               ),
               const SizedBox(height: Spacing.level4),
               // Title
               Text(
-                primary.title,
+                card.title,
                 style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w700),
@@ -98,7 +102,7 @@ class _TodayPrimarySuggestionSectionState
               const SizedBox(height: Spacing.level2),
               // Reason
               Text(
-                primary.reason,
+                card.reason,
                 style: TypographyToken.level4
                     .body(context)
                     .copyWith(
@@ -106,11 +110,6 @@ class _TodayPrimarySuggestionSectionState
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              // Progress bar (water)
-              if (primary.progress case final progress?) ...[
-                const SizedBox(height: Spacing.level3),
-                FDeterminateProgress(value: progress),
-              ],
               // Collapsible evidence/boundary
               const SizedBox(height: Spacing.level3),
               _EvidenceToggleButton(
@@ -128,12 +127,14 @@ class _TodayPrimarySuggestionSectionState
                     const SizedBox(height: Spacing.level3),
                     _SuggestionMetaBlock(
                       label: l10n.todaySuggestionEvidenceLabel,
-                      value: primary.evidence,
+                      value: card.evidence
+                          .map((e) => '${e.label}: ${e.value}')
+                          .join('\n'),
                     ),
                     const SizedBox(height: Spacing.level3),
                     _SuggestionMetaBlock(
                       label: l10n.todaySuggestionBoundaryLabel,
-                      value: primary.boundary,
+                      value: card.boundary,
                     ),
                   ],
                 ),
@@ -146,15 +147,6 @@ class _TodayPrimarySuggestionSectionState
         ),
       ),
     );
-  }
-
-  void _openSuggestion(BuildContext context, TodaySuggestionItem item) {
-    switch (item.type) {
-      case TodayPriorityItemType.medication:
-        context.go(AppRoutes.medicine);
-      case TodayPriorityItemType.water:
-        context.push('${AppRoutes.recordCreate}?kind=water');
-    }
   }
 }
 
@@ -237,22 +229,22 @@ class _SuggestionFeedbackRow extends StatelessWidget {
 }
 
 class TodaySecondarySuggestionsSection extends StatelessWidget {
-  const TodaySecondarySuggestionsSection({super.key, required this.dashboard});
+  const TodaySecondarySuggestionsSection({
+    super.key,
+    required this.suggestions,
+  });
 
-  final TodayDashboard dashboard;
+  final List<TodaySuggestionCard> suggestions;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final items = buildSuggestionItems(
-      l10n,
-      dashboard,
-    ).skip(1).take(2).toList();
 
-    if (items.isEmpty) {
+    if (suggestions.isEmpty) {
       return const SizedBox.shrink();
     }
 
+    final items = suggestions.take(2).toList();
     final colors = context.theme.colors;
 
     return TodaySection(
@@ -265,14 +257,15 @@ class TodaySecondarySuggestionsSection extends StatelessWidget {
               key: Key('today-secondary-suggestion-$index'),
               style: todayCardStyle(context, tone: TodayCardTone.soft),
               child: FTappable(
-                onPress: () => _openSuggestion(context, items[index]),
+                onPress: () =>
+                    _openRoute(context, items[index].primaryAction.route),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.level4),
                   child: Row(
                     children: [
                       TodayGlyphTile(
-                        icon: items[index].icon,
-                        color: items[index].color.resolve(colors),
+                        icon: _iconFor(items[index].icon),
+                        color: _colorFor(items[index].cardTone).resolve(colors),
                         size: Spacing.level7,
                         radius: RadiusTokens.level3,
                         gradient: false,
@@ -316,15 +309,6 @@ class TodaySecondarySuggestionsSection extends StatelessWidget {
       ),
     );
   }
-
-  void _openSuggestion(BuildContext context, TodaySuggestionItem item) {
-    switch (item.type) {
-      case TodayPriorityItemType.medication:
-        context.go(AppRoutes.medicine);
-      case TodayPriorityItemType.water:
-        context.push('${AppRoutes.recordCreate}?kind=water');
-    }
-  }
 }
 
 class _SuggestionMetaBlock extends StatelessWidget {
@@ -354,4 +338,56 @@ class _SuggestionMetaBlock extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+
+void _openRoute(BuildContext context, String route) {
+  if (route.startsWith('/')) {
+    context.go(route);
+  } else {
+    context.push(route);
+  }
+}
+
+TodayCardTone _mapTone(TodaySuggestionCardTone tone) {
+  return switch (tone) {
+    TodaySuggestionCardTone.urgent => TodayCardTone.urgent,
+    TodaySuggestionCardTone.warning => TodayCardTone.warning,
+    TodaySuggestionCardTone.emphasis => TodayCardTone.emphasis,
+    TodaySuggestionCardTone.soft => TodayCardTone.soft,
+    TodaySuggestionCardTone.neutral => TodayCardTone.neutral,
+  };
+}
+
+bool _isUrgent(TodaySuggestionCardTone tone) {
+  return tone == TodaySuggestionCardTone.urgent ||
+      tone == TodaySuggestionCardTone.warning;
+}
+
+SemanticColor _colorFor(TodaySuggestionCardTone tone) {
+  return switch (tone) {
+    TodaySuggestionCardTone.urgent => SemanticColor.destructive,
+    TodaySuggestionCardTone.warning => SemanticColor.warning,
+    TodaySuggestionCardTone.emphasis => SemanticColor.primary,
+    TodaySuggestionCardTone.soft => SemanticColor.primary,
+    TodaySuggestionCardTone.neutral => SemanticColor.neutral,
+  };
+}
+
+IconData _iconFor(String icon) {
+  return switch (icon) {
+    'droplets' => FLucideIcons.droplets,
+    'moon' => FLucideIcons.moon,
+    'activity' => FLucideIcons.activity,
+    'coffee' => FLucideIcons.coffee,
+    'user' => FLucideIcons.userRound,
+    'clipboard' => FLucideIcons.clipboardList,
+    'alert-triangle' => FLucideIcons.triangleAlert,
+    'pill' => FLucideIcons.pill,
+    'trending-up' => FLucideIcons.trendingUp,
+    'lightbulb' => FLucideIcons.lightbulb,
+    'info' => FLucideIcons.info,
+    _ => FLucideIcons.sparkles,
+  };
 }

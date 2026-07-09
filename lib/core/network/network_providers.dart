@@ -95,6 +95,10 @@ final lucentTodayAnalysisApiProvider = Provider<TodayAnalysisApi>((ref) {
   return ref.watch(lucentDioClientProvider).todayAnalysisApi;
 });
 
+final lucentTodaySuggestionApiProvider = Provider<TodaySuggestionApi>((ref) {
+  return ref.watch(lucentDioClientProvider).todaySuggestionApi;
+});
+
 final lucentAssistantApiProvider = Provider<AssistantApi>((ref) {
   return ref.watch(lucentDioClientProvider).assistantApi;
 });

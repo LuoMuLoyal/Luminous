@@ -600,6 +600,7 @@ class _FakeUserSettingsController extends UserSettingsController {
       dataSharingConsent: false,
       assistantEnabled: false,
       assistantMemoryEnabled: false,
+      waterTargetCount: 8,
       assistantContext: AssistantContextSettingsDto(
         healthProfile: false,
         dailyRecords: false,
@@ -620,6 +621,7 @@ class _FakeUserSettingsController extends UserSettingsController {
         dataSharingConsent: consent,
         assistantEnabled: false,
         assistantMemoryEnabled: false,
+        waterTargetCount: 8,
         assistantContext: const AssistantContextSettingsDto(
           healthProfile: false,
           dailyRecords: false,

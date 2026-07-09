@@ -169,6 +169,7 @@ class LucentDioClient {
   DataExportApi get dataExportApi => _client.dataExport;
   ReportsApi get reportsApi => _client.reports;
   TodayAnalysisApi get todayAnalysisApi => _client.todayAnalysis;
+  TodaySuggestionApi get todaySuggestionApi => _client.todaySuggestion;
   AssistantApi get assistantApi => _client.assistant;
   NotificationsApi get notificationsApi => _client.notifications;
   FilesApi get filesApi => _client.files;

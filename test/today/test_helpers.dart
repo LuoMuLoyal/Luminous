@@ -65,6 +65,7 @@ UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
     dataSharingConsent: false,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
+    waterTargetCount: 8,
     assistantContext: const AssistantContextSettingsDto(
       healthProfile: true,
       dailyRecords: true,

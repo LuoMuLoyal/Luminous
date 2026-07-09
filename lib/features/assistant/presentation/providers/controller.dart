@@ -499,6 +499,7 @@ class AssistantController extends Notifier<AssistantState> {
                     payload.draft.assistantMemoryEnabled ??
                     current?.assistantMemoryEnabled ??
                     false,
+                waterTargetCount: current?.waterTargetCount ?? 8,
                 assistantContext: ctx != null
                     ? UpdateAssistantContextSettingsDto(
                         healthProfile: ctx.healthProfile,

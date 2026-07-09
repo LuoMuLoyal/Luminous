@@ -19,6 +19,7 @@ import 'clients/reports_api.dart';
 import 'clients/assistant_api.dart';
 import 'clients/user_settings_api.dart';
 import 'clients/today_analysis_api.dart';
+import 'clients/today_suggestion_api.dart';
 import 'clients/support_resources_api.dart';
 import 'clients/data_export_api.dart';
 import 'clients/files_api.dart';
@@ -49,6 +50,7 @@ class LucentClient {
   AssistantApi? _assistant;
   UserSettingsApi? _userSettings;
   TodayAnalysisApi? _todayAnalysis;
+  TodaySuggestionApi? _todaySuggestion;
   SupportResourcesApi? _supportResources;
   DataExportApi? _dataExport;
   FilesApi? _files;
@@ -93,6 +95,9 @@ class LucentClient {
 
   TodayAnalysisApi get todayAnalysis =>
       _todayAnalysis ??= TodayAnalysisApi(_dio, baseUrl: _baseUrl);
+
+  TodaySuggestionApi get todaySuggestion =>
+      _todaySuggestion ??= TodaySuggestionApi(_dio, baseUrl: _baseUrl);
 
   SupportResourcesApi get supportResources =>
       _supportResources ??= SupportResourcesApi(_dio, baseUrl: _baseUrl);

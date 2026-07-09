@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayOverviewItem {
@@ -19,38 +18,6 @@ class TodayOverviewItem {
   final String label;
   final String value;
   final SemanticColor color;
-}
-
-class TodaySuggestionItem {
-  const TodaySuggestionItem({
-    required this.key,
-    required this.type,
-    required this.icon,
-    required this.color,
-    required this.title,
-    required this.reason,
-    required this.evidence,
-    required this.boundary,
-    required this.action,
-    this.progress,
-  });
-
-  final Key key;
-  final TodayPriorityItemType type;
-  final IconData icon;
-  final SemanticColor color;
-  final String title;
-  final String reason;
-  final String evidence;
-  final String boundary;
-  final String action;
-  final double? progress;
-
-  /// Resolve the [TodayCardTone] for this suggestion based on its type.
-  TodayCardTone get cardTone => switch (type) {
-    TodayPriorityItemType.medication => TodayCardTone.urgent,
-    TodayPriorityItemType.water => TodayCardTone.emphasis,
-  };
 }
 
 class TodayAiSummaryItem {
@@ -191,74 +158,6 @@ List<TodayOverviewItem> buildOverviewItems(
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
       color: SemanticColor.primary,
-    ),
-  ];
-}
-
-List<TodaySuggestionItem> buildSuggestionItems(
-  AppLocalizations l10n,
-  TodayDashboard dashboard,
-) {
-  final nextMedicineName =
-      dashboard.medication.nextMedicineName ??
-      medicationName(l10n, dashboard.medication.nextMedicine);
-  final sourceItems = dashboard.priorityItems.isEmpty
-      ? _fallbackPriorityItems(dashboard)
-      : dashboard.priorityItems;
-
-  return [
-    for (final item in sourceItems)
-      switch (item.type) {
-        TodayPriorityItemType.medication => TodaySuggestionItem(
-          key: const Key('today-medication-suggestion'),
-          type: TodayPriorityItemType.medication,
-          icon: FLucideIcons.pill,
-          color: SemanticColor.destructive,
-          title: l10n.todayMedicationSuggestionTitle,
-          reason: l10n.todayMedicationPrioritySubtitle(
-            item.count ?? dashboard.medication.pendingCount,
-          ),
-          evidence: l10n.todayMedicationPriorityDetail(
-            item.timeLabel ?? dashboard.medication.nextDoseTimeLabel,
-            item.medicineName ?? nextMedicineName,
-          ),
-          boundary: l10n.todayMedicationSuggestionBoundary,
-          action: l10n.todayMedicationTakeAction,
-        ),
-        TodayPriorityItemType.water => TodaySuggestionItem(
-          key: const Key('today-water-suggestion'),
-          type: TodayPriorityItemType.water,
-          icon: FLucideIcons.droplets,
-          color: SemanticColor.primary,
-          title: l10n.todayWaterSuggestionTitle(dashboard.water.remainingCount),
-          reason: l10n.todayWaterSuggestionReason(
-            dashboard.water.completedCount,
-            dashboard.water.targetCount,
-          ),
-          evidence: l10n.todayWaterCount(dashboard.water.completedCount),
-          boundary: l10n.todayWaterSuggestionBoundary,
-          action: l10n.todayDrinkWaterAction,
-          progress: dashboard.water.progress,
-        ),
-      },
-  ];
-}
-
-List<TodayPriorityItem> _fallbackPriorityItems(TodayDashboard dashboard) {
-  return [
-    TodayPriorityItem(
-      id: 'medication',
-      type: TodayPriorityItemType.medication,
-      count: dashboard.medication.pendingCount,
-      timeLabel: dashboard.medication.nextDoseTimeLabel,
-      medicineName: dashboard.medication.nextMedicineName,
-    ),
-    TodayPriorityItem(
-      id: 'water',
-      type: TodayPriorityItemType.water,
-      count: dashboard.water.completedCount,
-      targetCount: dashboard.water.targetCount,
-      progress: dashboard.water.progress,
     ),
   ];
 }

@@ -25,8 +25,6 @@ enum TodayEnvironmentLevel { low, medium, high }
 
 enum TodayLumiSuggestionType { pollenProtection }
 
-enum TodayPriorityItemType { medication, water }
-
 @freezed
 abstract class TodayDashboard with _$TodayDashboard {
   const factory TodayDashboard({
@@ -40,7 +38,6 @@ abstract class TodayDashboard with _$TodayDashboard {
     // Today or Mine product job is ready.
     required TodayEnvironmentSummary environment,
     required TodayLumiSuggestion lumiSuggestion,
-    required List<TodayPriorityItem> priorityItems,
   }) = _TodayDashboard;
 
   /// A minimal dashboard for signed-out users with no real or mock data.
@@ -65,7 +62,6 @@ abstract class TodayDashboard with _$TodayDashboard {
     lumiSuggestion: TodayLumiSuggestion(
       type: TodayLumiSuggestionType.pollenProtection,
     ),
-    priorityItems: <TodayPriorityItem>[],
   );
 }
 
@@ -142,17 +138,4 @@ abstract class TodayEnvironmentSignal with _$TodayEnvironmentSignal {
 abstract class TodayLumiSuggestion with _$TodayLumiSuggestion {
   const factory TodayLumiSuggestion({required TodayLumiSuggestionType type}) =
       _TodayLumiSuggestion;
-}
-
-@freezed
-abstract class TodayPriorityItem with _$TodayPriorityItem {
-  const factory TodayPriorityItem({
-    required String id,
-    required TodayPriorityItemType type,
-    int? count,
-    int? targetCount,
-    String? timeLabel,
-    String? medicineName,
-    double? progress,
-  }) = _TodayPriorityItem;
 }

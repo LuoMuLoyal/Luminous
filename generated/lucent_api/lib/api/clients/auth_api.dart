@@ -39,7 +39,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/register')
-  Future<RegisterResponseDto> authControllerRegisterV1({
+  Future<RegisterResponseDto> localControllerRegisterV1({
     @Body() required RegisterDto body,
   });
 
@@ -47,8 +47,41 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/login')
-  Future<LoginResponseDto> authControllerLoginV1({
+  Future<LoginResponseDto> localControllerLoginV1({
     @Body() required LoginDto body,
+  });
+
+  /// 发送邮箱验证码.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/auth/send-verification-code')
+  Future<SendVerificationCodeResponseDto>
+  localControllerSendVerificationCodeV1({
+    @Body() required SendVerificationCodeDto body,
+  });
+
+  /// 验证邮箱.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/auth/verify-email')
+  Future<VerifyEmailResponseDto> localControllerVerifyEmailV1({
+    @Body() required VerifyEmailDto body,
+  });
+
+  /// 忘记密码.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/auth/forgot-password')
+  Future<ForgotPasswordResponseDto> localControllerForgotPasswordV1({
+    @Body() required ForgotPasswordDto body,
+  });
+
+  /// 重置密码.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/auth/reset-password')
+  Future<SuccessResponseDto> localControllerResetPasswordV1({
+    @Body() required ResetPasswordDto body,
   });
 
   /// 创建微信网页登录授权地址.
@@ -56,7 +89,7 @@ abstract class AuthApi {
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-web/authorize')
   Future<OAuthAuthorizeResponseDto>
-  authControllerCreateWechatWebAuthorizeUrlV1({
+  oAuthControllerCreateWechatWebAuthorizeUrlV1({
     @Body() OAuthAuthorizeDto? body,
   });
 
@@ -64,7 +97,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-web/callback')
-  Future<LoginResponseDto> authControllerLoginWithWechatWebV1({
+  Future<LoginResponseDto> oAuthControllerLoginWithWechatWebV1({
     @Body() required OAuthCallbackDto body,
   });
 
@@ -74,7 +107,7 @@ abstract class AuthApi {
   ///
   /// [state] - 授权时生成的 state.
   @GET('/api/v1/auth/oauth/wechat-web/callback')
-  Future<void> authControllerRedirectWechatWebCallbackV1({
+  Future<void> oAuthControllerRedirectWechatWebCallbackV1({
     @Query('code') required String code,
     @Query('state') required String state,
   });
@@ -83,7 +116,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-mobile/callback')
-  Future<LoginResponseDto> authControllerLoginWithWechatMobileV1({
+  Future<LoginResponseDto> oAuthControllerLoginWithWechatMobileV1({
     @Body() required OAuthCodeCallbackDto body,
   });
 
@@ -91,7 +124,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/apple/callback')
-  Future<LoginResponseDto> authControllerLoginWithAppleV1({
+  Future<LoginResponseDto> oAuthControllerLoginWithAppleV1({
     @Body() required AppleOAuthCallbackDto body,
   });
 
@@ -99,7 +132,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/qq/authorize')
-  Future<OAuthAuthorizeResponseDto> authControllerCreateQqAuthorizeUrlV1({
+  Future<OAuthAuthorizeResponseDto> oAuthControllerCreateQqAuthorizeUrlV1({
     @Body() QqOAuthAuthorizeDto? body,
   });
 
@@ -107,7 +140,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/qq/callback')
-  Future<LoginResponseDto> authControllerLoginWithQqV1({
+  Future<LoginResponseDto> oAuthControllerLoginWithQqV1({
     @Body() required QqOAuthCallbackDto body,
   });
 
@@ -115,17 +148,17 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/logout')
-  Future<SuccessResponseDto> authControllerLogoutV1({
+  Future<SuccessResponseDto> sessionControllerLogoutV1({
     @Body() required LogoutDto body,
   });
 
   /// 列出当前用户的活跃会话
   @GET('/api/v1/auth/sessions')
-  Future<void> authControllerListSessionsV1();
+  Future<void> sessionControllerListSessionsV1();
 
   /// 撤销指定会话
   @DELETE('/api/v1/auth/sessions/{sessionId}')
-  Future<void> authControllerRevokeSessionV1({
+  Future<void> sessionControllerRevokeSessionV1({
     @Path('sessionId') required String sessionId,
   });
 
@@ -133,39 +166,7 @@ abstract class AuthApi {
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/refresh')
-  Future<RefreshResponseDto> authControllerRefreshV1({
+  Future<RefreshResponseDto> sessionControllerRefreshV1({
     @Body() required RefreshDto body,
-  });
-
-  /// 发送邮箱验证码.
-  ///
-  /// [body] - Name not received - field will be skipped.
-  @POST('/api/v1/auth/send-verification-code')
-  Future<SendVerificationCodeResponseDto> authControllerSendVerificationCodeV1({
-    @Body() required SendVerificationCodeDto body,
-  });
-
-  /// 验证邮箱.
-  ///
-  /// [body] - Name not received - field will be skipped.
-  @POST('/api/v1/auth/verify-email')
-  Future<VerifyEmailResponseDto> authControllerVerifyEmailV1({
-    @Body() required VerifyEmailDto body,
-  });
-
-  /// 忘记密码.
-  ///
-  /// [body] - Name not received - field will be skipped.
-  @POST('/api/v1/auth/forgot-password')
-  Future<ForgotPasswordResponseDto> authControllerForgotPasswordV1({
-    @Body() required ForgotPasswordDto body,
-  });
-
-  /// 重置密码.
-  ///
-  /// [body] - Name not received - field will be skipped.
-  @POST('/api/v1/auth/reset-password')
-  Future<SuccessResponseDto> authControllerResetPasswordV1({
-    @Body() required ResetPasswordDto body,
   });
 }

@@ -638,6 +638,7 @@ class _ReadyUserSettingsController extends UserSettingsController {
       dataSharingConsent: false,
       assistantEnabled: true,
       assistantMemoryEnabled: false,
+      waterTargetCount: 8,
       assistantContext: AssistantContextSettingsDto(
         healthProfile: true,
         dailyRecords: true,

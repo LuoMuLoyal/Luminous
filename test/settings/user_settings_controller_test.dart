@@ -437,6 +437,7 @@ UserSettingsResponseDto _buildResponse({
       dataSharingConsent: dataSharingConsent,
       assistantEnabled: assistantEnabled,
       assistantMemoryEnabled: assistantMemoryEnabled,
+      waterTargetCount: 8,
       assistantContext:
           assistantContext ??
           const AssistantContextSettingsDto(
@@ -473,6 +474,7 @@ class _FakeUserSettingsApi implements UserSettingsApi {
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantMemoryEnabled: false,
+          waterTargetCount: 8,
           assistantContext: AssistantContextSettingsDto(
             healthProfile: true,
             dailyRecords: true,

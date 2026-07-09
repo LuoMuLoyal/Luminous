@@ -125,25 +125,6 @@ class LucentTodayRepository implements TodayRepository {
       mealSuggestion: _staticMealSuggestion,
       environment: _staticEnvironment,
       lumiSuggestion: _staticLumiSuggestion,
-      priorityItems: [
-        TodayPriorityItem(
-          id: 'medication',
-          type: TodayPriorityItemType.medication,
-          count: pendingMedicines.length,
-          timeLabel: nextReminder?.timeLabel ?? '--',
-          medicineName: nextMedicineName,
-        ),
-        TodayPriorityItem(
-          id: 'water',
-          type: TodayPriorityItemType.water,
-          count: waterCount,
-          targetCount: 8,
-          progress: TodayWaterSummary(
-            completedCount: waterCount,
-            targetCount: 8,
-          ).progress,
-        ),
-      ],
     );
   }
 

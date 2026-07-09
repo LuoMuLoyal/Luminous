@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-enum TodayCardTone { emphasis, urgent, soft, neutral }
+enum TodayCardTone { emphasis, urgent, warning, soft, neutral }
 
 FCardStyleDelta todayCardStyle(
   BuildContext context, {
@@ -13,6 +13,10 @@ FCardStyleDelta todayCardStyle(
     TodayCardTone.urgent => (
       colors.destructive.withValues(alpha: 0.3),
       colors.destructive.withValues(alpha: 0.04),
+    ),
+    TodayCardTone.warning => (
+      const Color(0xFFF59E0B).withValues(alpha: 0.3),
+      const Color(0xFFF59E0B).withValues(alpha: 0.04),
     ),
     TodayCardTone.emphasis => (
       colors.primary.withValues(alpha: 0.18),

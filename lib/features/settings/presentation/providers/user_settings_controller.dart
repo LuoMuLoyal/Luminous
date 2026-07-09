@@ -23,6 +23,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
         dataSharingConsent: current.dataSharingConsent,
         assistantEnabled: current.assistantEnabled,
         assistantMemoryEnabled: current.assistantMemoryEnabled,
+        waterTargetCount: current.waterTargetCount,
         assistantContext: _contextToUpdate(current.assistantContext),
       ),
     );
@@ -36,6 +37,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
         dataSharingConsent: current.dataSharingConsent,
         assistantEnabled: enabled,
         assistantMemoryEnabled: current.assistantMemoryEnabled,
+        waterTargetCount: current.waterTargetCount,
         assistantContext: _contextToUpdate(current.assistantContext),
       ),
     );
@@ -49,6 +51,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
         dataSharingConsent: current.dataSharingConsent,
         assistantEnabled: current.assistantEnabled,
         assistantMemoryEnabled: enabled,
+        waterTargetCount: current.waterTargetCount,
         assistantContext: _contextToUpdate(current.assistantContext),
       ),
     );
@@ -64,6 +67,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
         dataSharingConsent: current.dataSharingConsent,
         assistantEnabled: current.assistantEnabled,
         assistantMemoryEnabled: current.assistantMemoryEnabled,
+        waterTargetCount: current.waterTargetCount,
         assistantContext: contextSettings,
       ),
     );
@@ -77,6 +81,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
         dataSharingConsent: consent,
         assistantEnabled: current.assistantEnabled,
         assistantMemoryEnabled: current.assistantMemoryEnabled,
+        waterTargetCount: current.waterTargetCount,
         assistantContext: _contextToUpdate(current.assistantContext),
       ),
     );

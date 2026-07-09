@@ -55,21 +55,6 @@ class MockTodayRepository implements TodayRepository {
     lumiSuggestion: TodayLumiSuggestion(
       type: TodayLumiSuggestionType.pollenProtection,
     ),
-    priorityItems: <TodayPriorityItem>[
-      TodayPriorityItem(
-        id: 'medication',
-        type: TodayPriorityItemType.medication,
-        count: 0,
-        timeLabel: '--:--',
-      ),
-      TodayPriorityItem(
-        id: 'water',
-        type: TodayPriorityItemType.water,
-        count: 0,
-        targetCount: 8,
-        progress: 0,
-      ),
-    ],
   );
 
   static const previewDashboard = TodayDashboard(
@@ -113,21 +98,6 @@ class MockTodayRepository implements TodayRepository {
     lumiSuggestion: TodayLumiSuggestion(
       type: TodayLumiSuggestionType.pollenProtection,
     ),
-    priorityItems: <TodayPriorityItem>[
-      TodayPriorityItem(
-        id: 'medication',
-        type: TodayPriorityItemType.medication,
-        count: 0,
-        timeLabel: '--:--',
-      ),
-      TodayPriorityItem(
-        id: 'water',
-        type: TodayPriorityItemType.water,
-        count: 0,
-        targetCount: 8,
-        progress: 0,
-      ),
-    ],
   );
 
   @override

@@ -122,7 +122,6 @@ void main() {
       lumiSuggestion: TodayLumiSuggestion(
         type: TodayLumiSuggestionType.pollenProtection,
       ),
-      priorityItems: <TodayPriorityItem>[],
     );
 
     await tester.pumpWidget(
