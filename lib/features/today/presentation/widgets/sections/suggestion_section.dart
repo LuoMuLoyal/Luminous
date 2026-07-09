@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
@@ -15,7 +16,11 @@ import 'package:luminous/features/today/presentation/widgets/shared/section.dart
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayPrimarySuggestionSection extends ConsumerWidget {
-  const TodayPrimarySuggestionSection({super.key});
+  const TodayPrimarySuggestionSection({super.key, this.dashboard});
+
+  /// Used for the water progress bar when the primary card's
+  /// `subtype == 'water'`.
+  final TodayDashboard? dashboard;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,7 +35,7 @@ class TodayPrimarySuggestionSection extends ConsumerWidget {
           if (card == null) {
             return _SuggestionEmptyState(l10n: l10n);
           }
-          return _PrimarySuggestionCard(card: card);
+          return _PrimarySuggestionCard(card: card, dashboard: dashboard);
         },
         loading: () => const _SuggestionSkeleton(),
         error: (_, __) => _SuggestionErrorState(
@@ -43,9 +48,10 @@ class TodayPrimarySuggestionSection extends ConsumerWidget {
 }
 
 class _PrimarySuggestionCard extends ConsumerStatefulWidget {
-  const _PrimarySuggestionCard({required this.card});
+  const _PrimarySuggestionCard({required this.card, this.dashboard});
 
   final TodaySuggestionCard card;
+  final TodayDashboard? dashboard;
 
   @override
   ConsumerState<_PrimarySuggestionCard> createState() =>
@@ -137,6 +143,10 @@ class _PrimarySuggestionCardState extends ConsumerState<_PrimarySuggestionCard>
                       fontWeight: FontWeight.w600,
                     ),
               ),
+              if (card.subtype == 'water' && widget.dashboard != null) ...[
+                const SizedBox(height: Spacing.level3),
+                _WaterProgressBar(progress: widget.dashboard!.water.progress),
+              ],
               const SizedBox(height: Spacing.level3),
               _EvidenceToggleButton(
                 expanded: _evidenceExpanded,
@@ -152,11 +162,9 @@ class _PrimarySuggestionCardState extends ConsumerState<_PrimarySuggestionCard>
                   children: [
                     const SizedBox(height: Spacing.level3),
                     if (card.evidence.isNotEmpty) ...[
-                      _SuggestionMetaBlock(
+                      _EvidenceList(
                         label: l10n.todaySuggestionEvidenceLabel,
-                        value: card.evidence
-                            .map((e) => '${e.label}: ${e.value}')
-                            .join('\n'),
+                        evidence: card.evidence,
                       ),
                       const SizedBox(height: Spacing.level3),
                     ],
@@ -357,16 +365,40 @@ String _labelFor(AppLocalizations l10n, TodaySuggestionFeedback feedback) {
   };
 }
 
-class _SuggestionAiExplainButton extends ConsumerWidget {
+class _SuggestionAiExplainButton extends ConsumerStatefulWidget {
   const _SuggestionAiExplainButton({required this.suggestionId});
 
   final String suggestionId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_SuggestionAiExplainButton> createState() =>
+      _SuggestionAiExplainButtonState();
+}
+
+class _SuggestionAiExplainButtonState
+    extends ConsumerState<_SuggestionAiExplainButton> {
+  bool _isRequested = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final params = (suggestionId: suggestionId, language: locale);
+    final params = (suggestionId: widget.suggestionId, language: locale);
+
+    if (!_isRequested) {
+      return FButton(
+        onPress: () {
+          setState(() => _isRequested = true);
+          // Trigger the provider.
+          ref.read(suggestionExplanationProvider(params).future);
+        },
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.xs,
+        mainAxisSize: MainAxisSize.min,
+        child: Text(l10n.todaySuggestionAiExplainAction),
+      );
+    }
+
     final explanationAsync = ref.watch(suggestionExplanationProvider(params));
 
     return explanationAsync.when(
@@ -636,6 +668,108 @@ class _SuggestionMetaBlock extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.level1),
         Text(value, style: TypographyToken.level4.body(context)),
+      ],
+    );
+  }
+}
+
+class _EvidenceList extends StatelessWidget {
+  const _EvidenceList({required this.label, required this.evidence});
+
+  final String label;
+  final List<TodaySuggestionEvidence> evidence;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(
+                color: colors.mutedForeground,
+                fontWeight: FontWeight.w700,
+              ),
+        ),
+        const SizedBox(height: Spacing.level2),
+        for (var i = 0; i < evidence.length; i++) ...[
+          if (i > 0) const SizedBox(height: Spacing.level1),
+          _EvidenceItemRow(label: evidence[i].label, value: evidence[i].value),
+        ],
+      ],
+    );
+  }
+}
+
+class _EvidenceItemRow extends StatelessWidget {
+  const _EvidenceItemRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 5,
+          child: Text(
+            label,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
+          ),
+        ),
+        const SizedBox(width: Spacing.level3),
+        Expanded(
+          flex: 7,
+          child: Text(
+            value,
+            style: TypographyToken.level4
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w600),
+            textAlign: TextAlign.end,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WaterProgressBar extends StatelessWidget {
+  const _WaterProgressBar({required this.progress});
+
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Row(
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+            child: FDeterminateProgress(value: progress),
+          ),
+        ),
+        const SizedBox(width: Spacing.level2),
+        Text(
+          '${(progress * 100).round()}%',
+          style: TypographyToken.level2
+              .body(context)
+              .copyWith(
+                color: colors.mutedForeground,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
       ],
     );
   }

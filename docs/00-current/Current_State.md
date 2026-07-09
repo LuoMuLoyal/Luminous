@@ -26,7 +26,7 @@ Last updated: 2026-07-09
 
 - 五 Tab 根页（Today / Record / Medicine / Report / Mine）均已接入 `PageViewState` 统一状态机，
   未登录态使用 `SignInHintBanner` 轻量提示条而非全屏门控。
-- Today 根页已收口为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作` 结构。建议引擎前端接入 Phase 1-3 已完成：API 客户端生成、Domain 实体层、Remote Data Source 就绪；`todaySuggestionProvider` 升级为 `AsyncNotifier`（含 submitFeedback/dismiss/refresh），主卡/次卡区从 provider 直接取数据；反馈按钮接入 `POST /today/suggestions/:id/feedback`，AI 解释按需加载 `POST /today/suggestions/:id/explain`；页面刷新同时 invalidate dashboard + suggestions；废弃的 `priorityItems` / `TodayPriorityItem` / `TodayPriorityItemType` 已彻底删除。
+- Today 根页已收口为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作` 结构。建议引擎前端接入 Phase 1-4 已完成：API 客户端生成、Domain 实体层、Remote Data Source 就绪；`todaySuggestionProvider` 升级为 `AsyncNotifier`（含 submitFeedback/dismiss/refresh），主卡/次卡区从 provider 直接取数据；反馈按钮接入 `POST /today/suggestions/:id/feedback`，AI 解释按需加载 `POST /today/suggestions/:id/explain`；主卡证据区改为结构化逐条展示（`_EvidenceList` + `_EvidenceItemRow`），`subtype == 'water'` 建议卡显示 `FDeterminateProgress` 饮水进度条；页面刷新同时 invalidate dashboard + suggestions；废弃的 `priorityItems` / `TodayPriorityItem` / `TodayPriorityItemType` 已彻底删除。
 - Medicine 根页已接入 Lucent Phase 2 slot-aware dose-log 合同。
 - Forui-first 编码统一性优化完成：Material 组件全面迁移、颜色/排版 token 化。
 - `lib/core/design/` 目录架构升级完成：全部 token 类名移除 `App` 前缀，统一为 `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `Breakpoints` / `ResponsiveSizing` / `LayoutScale` + `LayoutScaleResolver`，通过 barrel `design.dart` 统一导出。

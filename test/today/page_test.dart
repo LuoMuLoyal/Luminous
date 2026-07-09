@@ -15,6 +15,7 @@ import 'package:luminous/features/today/domain/entities/recommendation.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -134,6 +135,9 @@ void main() {
           todayRecommendationsProvider.overrideWith(
             () => _EmptyRecommendationsNotifier(),
           ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
@@ -163,12 +167,12 @@ void main() {
 
   testWidgets('Today suggestion CTAs stay visible', (tester) async {
     _setMobileViewport(tester);
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await tester.pumpWidget(_signedInTodayApp());
     await _settleDashboard(tester);
 
-    expect(find.text(l10n.todayMedicationTakeAction), findsOneWidget);
+    // The primary card's action label comes from the backend.
+    expect(find.text('去确认'), findsOneWidget);
     expect(
       find.byKey(const Key('today-secondary-suggestions-card')),
       findsOneWidget,
@@ -220,6 +224,9 @@ void main() {
           todayRecommendationsProvider.overrideWith(
             () => _EmptyRecommendationsNotifier(),
           ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
+          ),
         ],
         child: TestForuiRouterApp(
           routerConfig: GoRouter(
@@ -263,6 +270,9 @@ void main() {
           todayRecommendationsProvider.overrideWith(
             () => _EmptyRecommendationsNotifier(),
           ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
@@ -295,6 +305,9 @@ void main() {
           ),
           todayRecommendationsProvider.overrideWith(
             () => _EmptyRecommendationsNotifier(),
+          ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
           ),
         ],
         child: const TestForuiApp(home: TodayPage()),
@@ -351,6 +364,9 @@ void main() {
           todayRecommendationsProvider.overrideWith(
             () => _LoadingRecommendationsNotifier(),
           ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
+          ),
         ],
         child: const TestForuiApp(home: TodayPage()),
       ),
@@ -405,6 +421,7 @@ Widget _signedInTodayApp() {
       todayRecommendationsProvider.overrideWith(
         () => _EmptyRecommendationsNotifier(),
       ),
+      todaySuggestionProvider.overrideWith(StaticTodaySuggestionNotifier.new),
     ],
     child: const TestForuiApp(home: TodayPage()),
   );

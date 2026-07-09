@@ -119,7 +119,7 @@ class _MobileTodayDashboard extends StatelessWidget {
           message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
         ),
       TodayRecordHintSection(dashboard: dashboard),
-      const TodayPrimarySuggestionSection(),
+      TodayPrimarySuggestionSection(dashboard: dashboard),
       const TodaySecondarySuggestionsSection(
         key: Key('today-secondary-suggestions-card'),
       ),
@@ -193,7 +193,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 7,
                 child: Column(
                   children: [
-                    const TodayPrimarySuggestionSection(),
+                    TodayPrimarySuggestionSection(dashboard: dashboard),
                     const SizedBox(height: Spacing.level6),
                     TodaySummarySection(dashboard: dashboard),
                   ],
