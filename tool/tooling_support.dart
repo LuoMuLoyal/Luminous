@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 class ToolContext {
@@ -176,4 +177,19 @@ Future<List<String>> captureCommandLines(
       .map((line) => line.trim())
       .where((line) => line.isNotEmpty)
       .toList(growable: false);
+}
+
+/// Verifies that [openApiFile] is a valid OpenAPI JSON document with a
+/// top-level `openapi` key. Throws [StateError] if validation fails.
+void verifyOpenApiJson(File openApiFile) {
+  final raw = openApiFile.readAsStringSync();
+  final decoded = jsonDecode(raw);
+  if (decoded is! Map<String, dynamic>) {
+    throw StateError('Lucent OpenAPI file is not a JSON object.');
+  }
+  if (decoded['openapi'] is! String) {
+    throw StateError(
+      'Lucent OpenAPI file is missing the top-level openapi key.',
+    );
+  }
 }

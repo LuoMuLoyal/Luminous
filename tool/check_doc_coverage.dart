@@ -3,6 +3,13 @@ import 'dart:io';
 import 'doc_coverage.dart';
 import 'tooling_support.dart';
 
+/// Documentation coverage check for Luminous.
+///
+/// By default this script **blocks** (exit 1) when code files are staged/changed
+/// but no `docs/` files are included. Use `--warning-only` for a non-blocking
+/// report (e.g. in daily checks).
+///
+/// Bypass with `SKIP_DOC_CHECK=1` or `git commit --no-verify`.
 Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
 
@@ -12,6 +19,13 @@ Future<void> main(List<String> args) async {
       stdout.writeln(_usage);
       return;
     }
+
+    // Bypass (only meaningful in blocking mode).
+    if (!options.warningOnly && Platform.environment['SKIP_DOC_CHECK'] == '1') {
+      stdout.writeln('[doc-check] Skipped (SKIP_DOC_CHECK=1)');
+      return;
+    }
+
     final configFile = resolveExistingFile(
       options.configPath ?? defaultDocCoverageConfigPath(context.repoRoot),
       repoRoot: context.repoRoot,
@@ -38,6 +52,26 @@ Future<void> main(List<String> args) async {
       documentedFiles: documentedFiles,
     );
     stdout.writeln(renderDocCoverageReport(report));
+
+    // Default: block the commit if code files are staged/changed but NO
+    // documentation files are included. Per-rule warnings about specific
+    // missing docs are printed above but do not independently block.
+    //
+    // --warning-only: skip the blocking check, just print the report.
+    if (!options.warningOnly && report.matchedRules.isNotEmpty) {
+      final hasCodeChanges = report.matchedRules.any(
+        (m) => m.touchedCodeFiles.isNotEmpty,
+      );
+      if (hasCodeChanges && documentedFiles.isEmpty) {
+        stderr.writeln('');
+        stderr.writeln(
+          'Documentation check failed: code files are staged/changed but no '
+          'documentation files (docs/) are included.\n'
+          'Bypass with SKIP_DOC_CHECK=1 or --no-verify.',
+        );
+        exitCode = 1;
+      }
+    }
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     exitCode = error.errorCode;
@@ -54,6 +88,7 @@ Future<void> main(List<String> args) async {
 
 _ParsedArgs _parseArgs(List<String> args) {
   var stagedOnly = false;
+  var warningOnly = false;
   String? configPath;
   var showHelp = false;
 
@@ -61,6 +96,10 @@ _ParsedArgs _parseArgs(List<String> args) {
     final argument = args[index];
     if (argument == '--staged') {
       stagedOnly = true;
+      continue;
+    }
+    if (argument == '--warning-only') {
+      warningOnly = true;
       continue;
     }
     if (argument == '--help' || argument == '-h') {
@@ -88,6 +127,7 @@ _ParsedArgs _parseArgs(List<String> args) {
 
   return _ParsedArgs(
     stagedOnly: stagedOnly,
+    warningOnly: warningOnly,
     configPath: configPath,
     showHelp: showHelp,
   );
@@ -96,11 +136,13 @@ _ParsedArgs _parseArgs(List<String> args) {
 class _ParsedArgs {
   const _ParsedArgs({
     required this.stagedOnly,
+    required this.warningOnly,
     required this.configPath,
     required this.showHelp,
   });
 
   final bool stagedOnly;
+  final bool warningOnly;
   final String? configPath;
   final bool showHelp;
 }
@@ -108,8 +150,15 @@ class _ParsedArgs {
 const _usage = '''
 Usage: dart run tool/check_doc_coverage.dart [options]
 
+By default this script blocks (exit 1) when code files are staged/changed
+but no docs/ files are included.
+
 Options:
   --staged            Read staged changes instead of the working tree.
+  --warning-only      Do not block; just print the per-rule report.
   --config <path>     Use an explicit doc coverage config path.
   --help              Show this help text.
+
+Environment:
+  SKIP_DOC_CHECK=1    Bypass the blocking check (ignored with --warning-only).
 ''';

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'tooling_support.dart';
@@ -57,7 +56,7 @@ Future<void> bootstrapGeneratedSources(
       defaultLucentRoot: context.lucentRoot,
       repoRoot: context.repoRoot,
     );
-    _verifyOpenApiJson(openApiFile);
+    verifyOpenApiJson(openApiFile);
 
     final generatedClientRoot = Directory(
       '${context.repoRoot.path}${Platform.pathSeparator}generated'
@@ -106,19 +105,6 @@ Future<void> bootstrapGeneratedSources(
     workingDirectory: context.repoRoot,
     stepName: 'dart run build_runner build --delete-conflicting-outputs',
   );
-}
-
-void _verifyOpenApiJson(File openApiFile) {
-  final raw = openApiFile.readAsStringSync();
-  final decoded = jsonDecode(raw);
-  if (decoded is! Map<String, dynamic>) {
-    throw StateError('Lucent OpenAPI file is not a JSON object.');
-  }
-  if (decoded['openapi'] is! String) {
-    throw StateError(
-      'Lucent OpenAPI file is missing the top-level openapi key.',
-    );
-  }
 }
 
 _ParsedArgs _parseArgs(List<String> args) {

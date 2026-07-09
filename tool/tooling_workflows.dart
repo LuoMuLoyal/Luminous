@@ -6,9 +6,9 @@ import 'tooling_support.dart';
 Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   await runLoggedCommand(
     'dart',
-    ['run', 'tool/check_doc_coverage.dart'],
+    ['run', 'tool/check_doc_coverage.dart', '--warning-only'],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run tool/check_doc_coverage.dart',
+    stepName: 'dart run tool/check_doc_coverage.dart --warning-only',
   );
   stdout.writeln('');
 
@@ -71,6 +71,20 @@ Future<void> runPrePushChecks(ToolContext context) async {
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
+  // ── Documentation check ──────────────────────────────────────
+  // Run before format/analyze so the commit fails fast if docs are
+  // missing. check_doc_coverage.dart blocks by default when code files
+  // are staged but no docs/ files are included.
+  // Bypass via SKIP_DOC_CHECK=1 or --no-verify.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'tool/check_doc_coverage.dart', '--staged'],
+    workingDirectory: context.repoRoot,
+    stepName: 'doc-check',
+  );
+  stdout.writeln('');
+
+  // ── Format & analyze staged Dart files ────────────────────────
   final stagedDartFiles = await _listStagedDartFiles(context);
   if (stagedDartFiles.isNotEmpty) {
     // Batch files to avoid hitting Windows command-line length limits.

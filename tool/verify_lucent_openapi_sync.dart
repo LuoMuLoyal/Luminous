@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'tooling_support.dart';
@@ -29,7 +28,7 @@ Future<void> main(List<String> args) async {
       );
     }
 
-    _verifyOpenApiJson(lucentOpenApi);
+    verifyOpenApiJson(lucentOpenApi);
     stdout.writeln('Lucent OpenAPI file resolved: ${lucentOpenApi.path}');
     stdout.writeln(
       'Generated client directory resolved: ${generatedClientRoot.path}',
@@ -85,19 +84,6 @@ _ParsedArgs _parseNamedArgs(List<String> args) {
   }
 
   return _ParsedArgs(openApiPath: openApiPath, showHelp: showHelp);
-}
-
-void _verifyOpenApiJson(File openApiFile) {
-  final raw = openApiFile.readAsStringSync();
-  final decoded = jsonDecode(raw);
-  if (decoded is! Map<String, dynamic>) {
-    throw StateError('Lucent OpenAPI file is not a JSON object.');
-  }
-  if (decoded['openapi'] is! String) {
-    throw StateError(
-      'Lucent OpenAPI file is missing the top-level openapi key.',
-    );
-  }
 }
 
 void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
