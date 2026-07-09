@@ -11,17 +11,11 @@ import 'package:luminous/features/settings/presentation/providers/user_settings_
 import 'package:luminous/features/today/data/repositories/lucent_ai_repository.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
-import 'package:luminous/features/today/domain/entities/recommendation.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
-import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'test_helpers.dart';
-
-class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
-  @override
-  Future<List<TodayRecommendation>> build() async => const [];
-}
 
 void main() {
   testWidgets(
@@ -36,8 +30,8 @@ void main() {
             todayRepositoryProvider.overrideWithValue(
               const MockTodayRepository(),
             ),
-            todayRecommendationsProvider.overrideWith(
-              () => _EmptyRecommendationsNotifier(),
+            todaySuggestionProvider.overrideWith(
+              EmptyTodaySuggestionNotifier.new,
             ),
           ],
           child: const TestForuiApp(home: TodayPage()),
@@ -70,8 +64,8 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               DisabledUserSettingsController.new,
             ),
-            todayRecommendationsProvider.overrideWith(
-              () => _EmptyRecommendationsNotifier(),
+            todaySuggestionProvider.overrideWith(
+              EmptyTodaySuggestionNotifier.new,
             ),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
           ],
@@ -108,8 +102,8 @@ void main() {
             EnabledUserSettingsController.new,
           ),
           todayAiRepositoryProvider.overrideWithValue(repository),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
           ),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
         ],

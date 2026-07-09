@@ -15,17 +15,12 @@ import 'package:luminous/features/support/data/providers/resources_providers.dar
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
-import 'package:luminous/features/today/domain/entities/recommendation.dart';
-import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
-
-class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
-  @override
-  Future<List<TodayRecommendation>> build() async => const [];
-}
+import '../today/test_helpers.dart';
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   @override
@@ -191,8 +186,8 @@ void main() {
           authSessionProvider.overrideWith(
             () => _SignedOutAuthSessionNotifier(),
           ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
+          todaySuggestionProvider.overrideWith(
+            EmptyTodaySuggestionNotifier.new,
           ),
         ],
         child: const TestForuiApp(home: ShellPage()),

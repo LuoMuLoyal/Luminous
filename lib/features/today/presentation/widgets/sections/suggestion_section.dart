@@ -418,7 +418,11 @@ class _SuggestionAiExplainButtonState
       },
       loading: () => Row(
         children: [
-          const SizedBox(width: 16, height: 16, child: FProgress()),
+          const SizedBox(
+            width: Spacing.level4,
+            height: Spacing.level4,
+            child: FCircularProgress.loader(),
+          ),
           const SizedBox(width: Spacing.level2),
           Text(
             l10n.todaySuggestionAiExplainLoading,
@@ -448,6 +452,7 @@ class _AiExplainContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
     return Container(
@@ -469,7 +474,7 @@ class _AiExplainContent extends StatelessWidget {
               ),
               const SizedBox(width: Spacing.level1),
               Text(
-                'AI',
+                l10n.todaySuggestionAiLabel,
                 style: TypographyToken.level3
                     .body(context)
                     .copyWith(

@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/domain/entities/recommendation.dart';
-import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
@@ -21,7 +20,7 @@ class TodayObservationSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    final recommendationsAsync = ref.watch(todayRecommendationsProvider);
+    final suggestionAsync = ref.watch(todaySuggestionProvider);
     final fallback = _fallbackObservations(context, l10n);
 
     return TodaySection(
@@ -30,13 +29,14 @@ class TodayObservationSection extends ConsumerWidget {
       child: FCard.raw(
         key: const Key('today-observation-card'),
         style: todayCardStyle(context),
-        child: recommendationsAsync.when(
-          data: (recommendations) {
+        child: suggestionAsync.when(
+          data: (bundle) {
+            final observations = bundle?.observations ?? const [];
             final items = [
               ...fallback,
-              ...recommendations
-                  .take(2)
-                  .map((item) => _mapObservation(context, l10n, item)),
+              ...observations
+                  .take(3)
+                  .map((card) => _mapObservation(context, l10n, card)),
             ];
 
             if (items.isEmpty) {
@@ -59,8 +59,7 @@ class TodayObservationSection extends ConsumerWidget {
           },
           loading: () => const _ObservationLoadingState(),
           error: (_, __) => _ObservationErrorState(
-            onRetry: () =>
-                ref.read(todayRecommendationsProvider.notifier).refresh(),
+            onRetry: () => ref.invalidate(todaySuggestionProvider),
           ),
         ),
       ),
@@ -78,7 +77,7 @@ class TodayObservationSection extends ConsumerWidget {
           title: l10n.todayObservationSleepMissingTitle,
           subtitle: l10n.todayObservationSleepMissingSubtitle,
           tag: l10n.todayObservationLowConfidenceTag,
-          onPress: () => context.push('${AppRoutes.recordCreate}?kind=sleep'),
+          onPress: () => _openRoute(context, '/record/create?kind=sleep'),
         ),
       ];
     }
@@ -89,40 +88,15 @@ class TodayObservationSection extends ConsumerWidget {
   _ObservationItem _mapObservation(
     BuildContext context,
     AppLocalizations l10n,
-    TodayRecommendation recommendation,
+    TodaySuggestionCard card,
   ) {
-    final category = recommendation.category ?? 'habit';
-
-    return switch (category) {
-      'medicine' => _ObservationItem(
-        icon: FLucideIcons.shieldPlus,
-        title: recommendation.text,
-        subtitle: l10n.todayObservationMedicineNote,
-        tag: l10n.todayObservationReviewTag,
-        onPress: () => context.go(AppRoutes.medicine),
-      ),
-      'sleep' => _ObservationItem(
-        icon: FLucideIcons.moonStar,
-        title: recommendation.text,
-        subtitle: l10n.todayObservationSleepNote,
-        tag: l10n.todayObservationLowConfidenceTag,
-        onPress: () => context.push('${AppRoutes.recordCreate}?kind=sleep'),
-      ),
-      'report' => _ObservationItem(
-        icon: FLucideIcons.chartColumnBig,
-        title: recommendation.text,
-        subtitle: l10n.todayObservationReportNote,
-        tag: l10n.todayObservationReviewTag,
-        onPress: () => context.go(AppRoutes.report),
-      ),
-      _ => _ObservationItem(
-        icon: FLucideIcons.filePenLine,
-        title: recommendation.text,
-        subtitle: l10n.todayObservationRecordNote,
-        tag: l10n.todayObservationLowConfidenceTag,
-        onPress: () => context.go(AppRoutes.record),
-      ),
-    };
+    return _ObservationItem(
+      icon: _iconFor(card.icon),
+      title: card.title,
+      subtitle: card.reason,
+      tag: _tagForConfidence(l10n, card.confidence),
+      onPress: () => _openRoute(context, card.primaryAction.route),
+    );
   }
 }
 
@@ -298,4 +272,42 @@ class _ObservationItem {
   final String subtitle;
   final String tag;
   final VoidCallback? onPress;
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+
+void _openRoute(BuildContext context, String route) {
+  if (route.contains('?')) {
+    context.push(route);
+  } else {
+    context.go(route);
+  }
+}
+
+String _tagForConfidence(
+  AppLocalizations l10n,
+  TodaySuggestionConfidence confidence,
+) {
+  return switch (confidence) {
+    TodaySuggestionConfidence.high => l10n.todayObservationReviewTag,
+    TodaySuggestionConfidence.medium => l10n.todayObservationLowConfidenceTag,
+    TodaySuggestionConfidence.low => l10n.todayObservationLowConfidenceTag,
+  };
+}
+
+IconData _iconFor(String icon) {
+  return switch (icon) {
+    'droplets' => FLucideIcons.droplets,
+    'moon' => FLucideIcons.moon,
+    'activity' => FLucideIcons.activity,
+    'coffee' => FLucideIcons.coffee,
+    'user' => FLucideIcons.userRound,
+    'clipboard' => FLucideIcons.clipboardList,
+    'alert-triangle' => FLucideIcons.triangleAlert,
+    'pill' => FLucideIcons.pill,
+    'trending-up' => FLucideIcons.trendingUp,
+    'lightbulb' => FLucideIcons.lightbulb,
+    'info' => FLucideIcons.info,
+    _ => FLucideIcons.sparkles,
+  };
 }

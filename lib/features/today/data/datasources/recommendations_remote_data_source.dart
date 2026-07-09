@@ -1,6 +1,9 @@
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/today/domain/entities/recommendation.dart';
 
+@Deprecated(
+  'Use TodaySuggestionRemoteDataSource from suggestion_remote_data_source.dart instead',
+)
 class TodayRecommendationsRemoteDataSource {
   const TodayRecommendationsRemoteDataSource({required this.api});
 

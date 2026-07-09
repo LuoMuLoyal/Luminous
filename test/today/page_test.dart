@@ -11,10 +11,8 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/domain/entities/recommendation.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/recommendations_provider.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
@@ -132,9 +130,6 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             StaticTodayRepository(emptyDashboard),
           ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
-          ),
           todaySuggestionProvider.overrideWith(
             StaticTodaySuggestionNotifier.new,
           ),
@@ -221,9 +216,6 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
-          ),
           todaySuggestionProvider.overrideWith(
             StaticTodaySuggestionNotifier.new,
           ),
@@ -267,9 +259,6 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
-          ),
           todaySuggestionProvider.overrideWith(
             StaticTodaySuggestionNotifier.new,
           ),
@@ -302,9 +291,6 @@ void main() {
           authSessionProvider.overrideWith(SignedOutAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
-          ),
-          todayRecommendationsProvider.overrideWith(
-            () => _EmptyRecommendationsNotifier(),
           ),
           todaySuggestionProvider.overrideWith(
             StaticTodaySuggestionNotifier.new,
@@ -361,11 +347,8 @@ void main() {
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
-          todayRecommendationsProvider.overrideWith(
-            () => _LoadingRecommendationsNotifier(),
-          ),
           todaySuggestionProvider.overrideWith(
-            StaticTodaySuggestionNotifier.new,
+            LoadingTodaySuggestionNotifier.new,
           ),
         ],
         child: const TestForuiApp(home: TodayPage()),
@@ -401,26 +384,11 @@ void main() {
   });
 }
 
-class _LoadingRecommendationsNotifier extends TodayRecommendationsNotifier {
-  @override
-  Future<List<TodayRecommendation>> build() {
-    return Completer<List<TodayRecommendation>>().future;
-  }
-}
-
-class _EmptyRecommendationsNotifier extends TodayRecommendationsNotifier {
-  @override
-  Future<List<TodayRecommendation>> build() async => const [];
-}
-
 Widget _signedInTodayApp() {
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
-      todayRecommendationsProvider.overrideWith(
-        () => _EmptyRecommendationsNotifier(),
-      ),
       todaySuggestionProvider.overrideWith(StaticTodaySuggestionNotifier.new),
     ],
     child: const TestForuiApp(home: TodayPage()),

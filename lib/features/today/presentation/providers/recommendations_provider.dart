@@ -3,6 +3,7 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/today/data/datasources/recommendations_remote_data_source.dart';
 import 'package:luminous/features/today/domain/entities/recommendation.dart';
 
+@Deprecated('Use todaySuggestionProvider from suggestion_provider.dart instead')
 final todayRecommendationsRemoteDataSourceProvider =
     Provider<TodayRecommendationsRemoteDataSource>(
       (ref) => TodayRecommendationsRemoteDataSource(
@@ -12,12 +13,18 @@ final todayRecommendationsRemoteDataSourceProvider =
 
 /// Current visible Today recommendations, managed as an [AsyncNotifier] so that
 /// the "refresh" action can pass the previous ids to the backend for exclusion.
+///
+/// @deprecated Use [todaySuggestionProvider] from `suggestion_provider.dart`
+/// instead. The suggestion engine provides `observations` via
+/// `GET /today/suggestions`.
+@Deprecated('Use todaySuggestionProvider from suggestion_provider.dart instead')
 final todayRecommendationsProvider =
     AsyncNotifierProvider<
       TodayRecommendationsNotifier,
       List<TodayRecommendation>
     >(TodayRecommendationsNotifier.new);
 
+@Deprecated('Use TodaySuggestionNotifier from suggestion_provider.dart instead')
 class TodayRecommendationsNotifier
     extends AsyncNotifier<List<TodayRecommendation>> {
   @override

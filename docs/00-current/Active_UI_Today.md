@@ -10,7 +10,10 @@
   - 用药类建议使用 `TodayCardTone.urgent`（destructive 边框 + 淡红底色），饮水类使用 `AppColors.primary`。
   - 主卡图标使用 `gradient: true`，用药红色渐变、饮水蓝色渐变。
   - 主卡首屏只保留图标+标题+原因+进度条+主按钮，证据和边界收入 `FCollapsible` 折叠区。
-  - 主卡底部有 `稍后处理` 和 `不适用` 两个 ghost 按钮（前端状态，后续接入后端反馈链路）。
+  - 主卡底部有 `已采纳 / 稍后处理 / 不适用 / 不再看到` 四个 ghost 按钮，根据后端 `feedbackOptions` 动态渲染，接入 `POST /today/suggestions/:id/feedback`。
+  - 主卡证据折叠区内新增「AI 解释」按钮，按需加载 `POST /today/suggestions/:id/explain`。
+  - 证据区改为结构化逐条展示（`_EvidenceList` + `_EvidenceItemRow`），`subtype == 'water'` 建议卡显示 `FDeterminateProgress` 饮水进度条。
+  - 主卡 `lifecycleState == fading` 时 `Opacity(0.6)` 视觉降级。
 - 次建议区使用 `FCard.raw` + `FTappable`，`TodayCardTone.soft` 与主卡形成层级差。
 - 今日摘要把概览指标和 AI 解释收拢到同一张低权重卡，不再和主建议抢主位。
   - 摘要卡内用 `FDivider` 将指标行和 AI 叙述分隔。
@@ -18,6 +21,9 @@
   - 生成按钮移至卡片右下角，减少首屏视觉噪音。
   - 移除了 `更新于 {time}` 文案。
 - 观察项从 `FTile` 改为自定义 `_ObservationTile`，使用 muted 图标色、无背景色。
+  - 观察项数据源从旧 `todayRecommendationsProvider`（`GET /today-analysis/recommendations`）切换到 `todaySuggestionProvider.observations`（`GET /today/suggestions` 的 `observations[]`）。
+  - 置信度 tag 从后端 `confidence` 映射：`high → 去看看`、`medium/low → 仅供参考`。
+  - fallback 睡眠缺失提示保留，与后端观察项合并展示。
   - 右侧 tag 从 `FBadge` 改为更小的灰色文字。
   - section subtitle `以下内容仅供参考，不构成待办`。
 - 轻动作区改为 `FTileGroup` 分组入口，承接 `确认用药 / 快速记录 / 用药安全 / 提醒设置 / 健康档案`。
@@ -35,7 +41,8 @@
 
 ## 数据层
 
-- Today 相关远程数据源（`TodayAiRemoteDataSource`、`RecommendationsRemoteDataSource`）通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- Today 相关远程数据源（`TodayAiRemoteDataSource`、`TodaySuggestionRemoteDataSource`）通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
+- `todaySuggestionProvider`（`AsyncNotifier`）管理建议卡生命周期：拉取、反馈、dismiss、自动刷新。
 - DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
 - AI 摘要增量流通过 `LucentSseClient` + Dio 直接消费 SSE，不经过 Retrofit 客户端。

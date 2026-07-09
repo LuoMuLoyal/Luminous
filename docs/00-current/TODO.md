@@ -79,14 +79,10 @@ Last updated: 2026-07-09
 - 超越竞赛/营销首页的真实认证 Web 报告预览
 - 环境驱动的 Today/Mine 建议
 - Agent 辅助就医发现
-- Today 主动建议卡片后端统一裁决引擎
-  - 现状：Today 主/次建议卡由前端硬编码组装，仅支持用药/饮水两类
-  - 目标：后端按 `Product_Tab_Component_Blueprint` 支持「明确风险 / 疑似漏服 / 恶化趋势 / 行为建议」四类卡片
-  - 规划：`plans/2026-07-09-today-suggestion-engine-backend.md`
 
 ## 蓝图差距盘点（2026-07-09）
 
-对照 `Product_Tab_Component_Blueprint` 逐 tab 核查。Today 延后至后端建议引擎就绪后再做，先收口其他四个 tab。
+对照 `Product_Tab_Component_Blueprint` 逐 tab 核查。Today 建议引擎已完成后端实现 + 前端接入，收口其他四个 tab。
 
 ### Record — ✅ 无差距
 
@@ -99,10 +95,7 @@ Last updated: 2026-07-09
 - **Score Hero 增强项**：`ReportScoreHero` 不在蓝图清单中，作为增强保留，无需改动。
 
 
-### Today — 延后
+### Today — ✅ 无差距
 
-- 建议类型模型偏窄、主卡区未细分场景 — 均依赖后端统一建议裁决引擎，延后至后端能力就绪后再做。
-- 规划文档：`plans/2026-07-09-today-suggestion-engine-backend.md`
+- 建议引擎前后端已全部完成：5 类卡片类型、5 种 cardTone、反馈闭环、AI 解释、观察项区接入 `todaySuggestionProvider.observations`。
 - `TodayRecordHintSection` 作为非蓝图增强保留。
-
-
