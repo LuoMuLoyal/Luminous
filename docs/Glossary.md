@@ -23,3 +23,13 @@
 - **AppSpacingTokens** — 项目间距 token，`level1`–`level12`。
 - **AppRadiusTokens** — 项目圆角 token，`level0`–`level9` 与 `levelFull`。
 - **AppTypographyTokens** — 字体层级 token，`level1`–`level10` 映射到 Forui `FTypeface`。
+- **NestJS** — Lucent 后端框架。
+- **Prisma** — Lucent ORM 与 schema 工具。
+- **AI Pipeline** — Lucent 三层 AI 架构：Context / Generation / Policy & Persistence。
+- **Meal Analysis** — 餐食图片异步写入时分析管道。
+- **Data Export** — 报告/摘要 PDF 导出请求，支持 BullMQ 异步与内联 fallback。
+- **AdminJS** — Lucent `/admin` 管理面板，基于 Prisma schema 自动生成资源。
+- **BullMQ** — Lucent 任务队列，用于邮件发送、报告导出等异步任务。
+- **Talker** — `talker_flutter` 日志基础设施，替代 `debugPrint`，支持运行时级别过滤与 Release 静默。
+- **Slot-aware Dose Log** — 用药打卡槽位合同：单条 dose log 携带 `reminderId` + `scheduledTime`，
+  幂等 `POST /mark` 按提醒槽位标记，区分同一天内多个提醒。

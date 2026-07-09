@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-07-07
+Last updated: 2026-07-09
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,8 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-07-09](migration-log/2026-07-09.md) — debugPrint → Talker 日志系统全量迁移
+- [2026-07-08](migration-log/2026-07-08.md) — OpenAPI 生成器迁移 + Today 重构 + 7.8 审查修复 + Medicine Phase 1 + slot-aware 打卡 + Record/Mine 收尾 + 生成物边界治理 + Git 钩子轻量化
 - [2026-07-07](migration-log/2026-07-07.md) — 审查修复 + 开发者选项 + Talker 迁移 + 开源标准文档
 - [2026-07-04](migration-log/2026-07-04.md) — Doc coverage warning automation + phase guide
 - [2026-07-03](migration-log/2026-07-03.md) — Docs restructure + Forui debt closeout
@@ -37,13 +39,13 @@ Major changes grouped by area:
 - **UI / Routing** (GoRouter, StatefulShellRoute, back button unification)
   - Key Dates: 06/04, 06/05, 06/07, 06/11, 06/26, 06/27, 06/28, 06/30
 - **API / OpenAPI Client** (regeneration, contracts, network layer)
-  - Key Dates: 06/01, 06/03, 06/06, 06/12, 06/13, 06/30
+  - Key Dates: 06/01, 06/03, 06/06, 06/12, 06/13, 06/30, 07/08
 - **Medicine** (search, dose logs, reminders, workspace)
-  - Key Dates: 06/02, 06/04, 06/06, 06/09, 06/23, 06/25, 06/28
+  - Key Dates: 06/02, 06/04, 06/06, 06/09, 06/23, 06/25, 06/28, 07/08
 - **Report** (dashboard, generation, export)
   - Key Dates: 06/06, 06/09, 06/19, 06/22
 - **Today Dashboard** (analysis, recommendations, empty states)
-  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28
+  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28, 07/08
 - **Daily Records** (fast entry, candidate generation)
   - Key Dates: 06/09, 06/10, 06/12, 06/16, 06/20
 - **Settings / Mine** (profile, health context, preferences)
@@ -51,8 +53,8 @@ Major changes grouped by area:
 - **Assistant** (AI chat, tool integration)
   - Key Dates: 06/15, 06/18, 06/30
 - **Tests** (unit, widget, integration, full-stack E2E)
-  - Key Dates: 06/06, 06/07, 06/11, 06/13, 06/30
+  - Key Dates: 06/06, 06/07, 06/11, 06/13, 06/30, 07/08, 07/09
 - **CI / Tooling** (melos, git hooks, GitHub Actions)
-  - Key Dates: 06/05, 06/13, 06/30
+  - Key Dates: 06/05, 06/13, 06/30, 07/08
 - **Docs / Governance** (migration log, guardrails, architecture)
-  - Key Dates: 06/07, 06/08, 06/30, 07/03, 07/07
+  - Key Dates: 06/07, 06/08, 06/30, 07/03, 07/07, 07/08, 07/09

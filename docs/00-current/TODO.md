@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-07-07
+Last updated: 2026-07-09
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -20,7 +20,6 @@ Last updated: 2026-07-07
 
 - 超大页面拆分：`login_page.dart`（620+ 行）、`medicine_reminder_edit_page.dart`（400+ 行）— Phase Guide 明确"现在不要做"
 - Provider 一致性：`FutureProvider`（7 个）和 `AsyncNotifierProvider`（5 个）未统一 — 非 Phase 2 目标
-- Release 模式错误上报：`debugPrint` 仅 debug 生效，release 下静默 — 需上线前评估持久化日志/上报策略
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 ## 实验性功能（稳定版后启动）

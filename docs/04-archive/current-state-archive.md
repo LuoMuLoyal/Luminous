@@ -224,3 +224,111 @@ migrated to `flutter_hooks`:
 - Dio error mapping tests covering all 8 `DioExceptionType` fallback messages + envelope extraction
    (10 new)
 - Total: 910 passing tests
+
+## 2026-07-06 ~ 07-09 Completed Baselines
+
+以下条目从 `[[00-current/Current_State]]` 移出，保留历史细节供考古。
+
+### Today 根页主动建议重构
+
+- 移动端和桌面端 Today 已从 `概览 / 优先事项 / AI 总结 / recommendation / todo` 平铺结构收口为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作`。
+- 旧 recommendation/todo 语义已从 Today 根页移除；低置信度内容只在 `观察项` 中以轻量提示出现。
+- `今日摘要` 现在合并了承载概览指标与 AI 解释，AI 入口仍在，但已降级为解释层。
+- 主卡按建议类型分级配色：用药类 `TodayCardTone.urgent`（红色），饮水类 `TodayCardTone.emphasis`（蓝色）。
+- 次卡从 `FTileGroup` 改为 `FCard.raw` + `FTappable`，使用 `TodayCardTone.soft`。
+- 摘要区用 `FDivider` 拆分指标行和 AI 叙述；AI 叙述默认折叠，展开显示完整 bullets。
+- 观察项使用自定义 `_ObservationTile`（muted 色图标+灰色文字标签）。
+- 轻动作确认用药副标题根据 `pendingCount` 动态生成。
+- 新增记录密度提示条（`FAlert`），无任何记录时引导用户先记一条。
+- 主卡底部新增 `稍后处理` / `不适用` 反馈按钮（前端状态）。
+- 顶栏问候语改为根据 dashboard 数据动态生成。
+- 文字表述全面优化：`证据`→`依据`、`边界`→`注意`、`观察项`→`留意事项`、`低置信度`→`仅供参考`。
+
+### 仓库生成物边界（混合策略）
+
+- Flutter 主仓 `build_runner` / `gen-l10n` 产物继续本地生成并保持 ignore。
+- `generated/lucent_api/lib/api/**` 恢复为"仅非 `.g.dart` 文件追踪"。
+- `generated/lucent_api/pubspec.lock` 继续忽略。
+
+### Report / Mine 蓝图收尾
+
+- Mine 根页拆成 `AI 与隐私`、`通知与提醒`、`账号与安全` 三个分组。
+- Report 根页补齐 `历史建议回顾`，以 `ai_proactive_suggestion` 为数据源。
+- 桌面端同步移除旧 snapshot 状态块。
+
+### Medicine 首页 Phase 1 重构
+
+- 根页收敛为四块首屏：当前用药盒、今日服用计划、用药安全摘要、用药操作。
+- 首页移除 `Reference notice / Safety tips / 用药记录伪时间线`。
+- 根页今日打卡接入 Lucent Phase 2 slot-aware 合同。
+- 用药 hero 指标与下一剂提示按 reminder slot 计算。
+
+### Forui-first 编码统一性优化
+
+- 页面骨架统一：`PageScaffold`（26 子页）+ `AppTopBar`（5 Tab 根页）+ `AuthShell`（5 Auth 页）。
+- Material 组件全面迁移：按钮、进度、InkWell、图标、对话框、输入、选择、列表、卡片、Chip、导航、Tab、Drawer 等。
+- 颜色系统：`Color(0xFF...)` 和 `Theme.of(context).colorScheme.*` → `context.theme.colors.*` / `AppColors`。
+- 排版系统：`textTheme.*` → `AppTypographyToken`。
+- `Theme.of(context).brightness` → `MediaQuery.platformBrightnessOf(context)`。
+- 合理遗留：`RefreshIndicator`。
+- 已迁移：`Tooltip` → `FTooltip`、`SegmentedButton` → `FSelectGroup`、`FloatingActionButton.extended` → `FButton`、`showDatePicker` → `FDateField.calendar`、`showTimePicker` → `FTimeField.picker`。
+- 手写组件替换：Record 时间轴 → `timeline_tile`、通知列表滑动删除 → `flutter_slidable`。
+
+### 基础组件优化
+
+- `AppDivider` 支持 `width` 参数。
+- `AppStateViews` 拆分为 `app_state_message.dart` + `app_skeleton.dart`。
+- `AssistantStateCard` 删除，合并到 `AppStateMessageView`。
+- `ResponsiveContentFrame` 支持 `padding` 覆盖。
+- `PageScaffold` 支持 `titleWidget` 与 `headerStyle`。
+
+### 一审 / 二审 / 三审修复（2026-07-06 ~ 07-07）
+
+- **一审**：AppRoutes 全覆盖、动画时长统一、Formz 用法统一、18 个测试失败修复、OpenAPI 客户端重新生成、Record 过滤器改用 FButton、通知增强（DND / 声音振动 / 提前量）、无障碍设置。
+- **二审**：超长 build 方法拆分、重复 badge 代码消除、ref.read() 误用修复、硬编码睡眠时长配置化。
+- **三审**：重复私有组件提取（6 个共享组件 27 处替换）、Mock 死代码清理、强制解引用清理 18+ 处、日历高度跳动修复、测试全量修复（898 passed）。
+
+### 开发者选项扩展
+
+- API 端点切换（local / staging / production / custom）。
+- 日志级别：`talker_flutter` 替代原始 `AppLogger`，运行时切换级别。
+- 功能开关：6 个 flag（端侧 AI / GenUI / 流式 / 条码 / PDF 导出）。
+
+### 文件命名与结构大重构
+
+- AGENTS.md 新增 File Naming Rules。
+- ~370 个文件重命名，去除目录名/feature 名前缀。
+- Repository 命名统一：`lucent_{feature}_repository.dart` → `lucent_repository.dart`。
+- 散文件归目录、测试文件同步重命名。
+
+### 根页统一状态机升级
+
+- 新增 `PageViewState<T>` sealed class + `resolvePageViewState()` + `PageStateSwitch<T>`。
+- 五个 Tab 根页全部接入新状态机。
+- 未登录态不再拦截页面，改为轻量 `SignInHintBanner` 登录提示条。
+
+### 桌面侧边栏重构
+
+- 移除自定义折叠/展开机制，改为纯 Forui `FSidebar`。
+- 侧边栏新增 `FSidebarItem.children` 展开子项。
+- 内容区新增 Forui `FBreadcrumb`。
+
+### 数据与存储设置
+
+- 新增 `DataStorageSettingsController`：保留期 / 图片质量 / 同步设置。
+- 新增 `DataStorageSettingsPage`。
+
+### 测试依赖引入
+
+- `mocktail` ^1.0.5、`network_image_mock` ^2.1.1、`alchemist` ^0.14.0、`patrol` ^4.6.1。
+
+### Android 构建修复
+
+- patrol 构建失败修复（`androidx.test:runner` 升级到 1.6.1）。
+- 依赖升级：`sign_in_with_apple` → ^8.1.0、`speech_to_text` → ^7.4.0。
+
+### debugPrint → Talker 日志系统迁移（2026-07-09）
+
+- 全库 68 处 `debugPrint` 统一迁移到 `talker_flutter`。
+- `app_logger.dart` 新增全局 `appTalker` 单例访问器。
+- `flutter analyze` 零错误，`flutter test` 922 passed。
