@@ -36,15 +36,10 @@ class SettingsProfileRemoteDataSource {
       options: Options(contentType: Headers.jsonContentType),
     );
 
-    final body = coerceToStringMap(response.data);
-    if (body == null) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        error: 'Lucent health-context profile response is empty.',
-      );
-    }
+    final body = requireBody(
+      response,
+      message: 'Lucent health-context profile response is empty.',
+    );
 
     return HealthContextResponseDto.fromJson(body).data;
   }

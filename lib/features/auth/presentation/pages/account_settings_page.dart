@@ -328,7 +328,7 @@ Future<bool> _confirmUnlinkIdentity(
 ) async {
   final result = await showAppDialog<bool>(
     context: context,
-    maxWidth: 420,
+    maxWidth: AppLayoutTokens.wideDialogMaxWidth,
     scrollable: false,
     builder: (context) => Column(
       mainAxisSize: MainAxisSize.min,

@@ -224,7 +224,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   // Pulse animation ring (visible when listening)
                   if (isListening.value)
                     AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
+                      duration: AppAnimationDurations.widgetStandard,
                       width: 72 + soundLevel.value * 40,
                       height: 72 + soundLevel.value * 40,
                       decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   GestureDetector(
                     onTap: toggleListening,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
+                      duration: AppAnimationDurations.widgetQuick,
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(

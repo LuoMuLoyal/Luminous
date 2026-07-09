@@ -159,7 +159,7 @@ class _CalendarPickerButton extends StatelessWidget {
     final picked = await showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(
-        maxWidth: 360,
+        maxWidth: AppLayoutTokens.dialogMaxWidth,
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         builder: (_) => SizedBox(
           height: 400,

@@ -511,8 +511,9 @@ class RecordEditPage extends HookConsumerWidget {
                           time.hour,
                           time.minute,
                         );
-                        recordOccurredTime.value = formatRecordTimeValue(
-                          DateTime(2000, 1, 1, time.hour, time.minute),
+                        recordOccurredTime.value = formatHourMinute(
+                          time.hour,
+                          time.minute,
                         );
                       },
                     ),

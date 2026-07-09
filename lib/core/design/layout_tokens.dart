@@ -30,6 +30,12 @@ class AppLayoutScale {
 }
 
 abstract final class AppLayoutTokens {
+  /// Standard dialog max width (calendar pickers, form dialogs).
+  static const double dialogMaxWidth = 360;
+
+  /// Wider dialog max width (confirmations, account settings).
+  static const double wideDialogMaxWidth = 420;
+
   static AppLayoutScale resolve(double width) {
     if (width < AppBreakpoints.mobile) {
       return const AppLayoutScale(

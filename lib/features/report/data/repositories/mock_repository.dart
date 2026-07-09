@@ -52,8 +52,8 @@ class MockReportRepository implements ReportRepository {
 
   static final previewDashboard = ReportDashboard(
     range: ReportDashboardRange.last7Days,
-    startDate: '2026-06-06',
-    endDate: '2026-06-12',
+    startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
+    endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
     score: ReportHealthScore(
       value: 0,
@@ -161,8 +161,8 @@ class MockReportRepository implements ReportRepository {
 
   static final _signedOutDashboard = ReportDashboard(
     range: ReportDashboardRange.last7Days,
-    startDate: '2026-06-06',
-    endDate: '2026-06-12',
+    startDate: _dateOnly(clock.now().subtract(const Duration(days: 7))),
+    endDate: _dateOnly(clock.now()),
     generatedAt: clock.now().toIso8601String(),
     score: ReportHealthScore(
       value: 0,

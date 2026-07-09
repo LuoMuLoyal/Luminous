@@ -334,9 +334,7 @@ class RecordCreatePage extends HookConsumerWidget {
                       ),
                       onTimeChanged: (time) => recordTime.value = time == null
                           ? null
-                          : formatRecordTimeValue(
-                              DateTime(2000, 1, 1, time.hour, time.minute),
-                            ),
+                          : formatHourMinute(time.hour, time.minute),
                     ),
                     const SizedBox(height: AppSpacingTokens.level3),
                     DailyRecordFormFields(

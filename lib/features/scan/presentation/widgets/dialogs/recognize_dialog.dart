@@ -51,7 +51,9 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
     return FDialog(
       title: Text(AppLocalizations.of(context)!.scanResultTitle),
       body: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
+        constraints: const BoxConstraints(
+          maxWidth: AppLayoutTokens.dialogMaxWidth,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

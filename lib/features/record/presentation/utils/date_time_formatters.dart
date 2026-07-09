@@ -34,8 +34,13 @@ String formatRecordDateTimeLabel(String occurredAt, {String? occurredTime}) {
 }
 
 String formatRecordTimeValue(DateTime value) {
-  return '${value.hour.toString().padLeft(2, '0')}:'
-      '${value.minute.toString().padLeft(2, '0')}';
+  return formatHourMinute(value.hour, value.minute);
+}
+
+/// Formats an hour/minute pair as "HH:mm" without needing a full [DateTime].
+String formatHourMinute(int hour, int minute) {
+  return '${hour.toString().padLeft(2, '0')}:'
+      '${minute.toString().padLeft(2, '0')}';
 }
 
 DateTime? parseRecordDate(String? value) {

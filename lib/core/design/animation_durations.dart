@@ -26,4 +26,16 @@ class AppAnimationDurations {
 
   /// Sidebar slide animation.
   static const sidebarSlide = Duration(milliseconds: 200);
+
+  /// Fade-in for flutter_animate effects (FadeEffect, SlideEffect).
+  static const widgetFadeIn = Duration(milliseconds: 220);
+
+  /// Expand/collapse AnimationController duration.
+  static const widgetExpand = Duration(milliseconds: 250);
+
+  /// Quick implicit animation (AnimatedRotation, AnimatedContainer).
+  static const widgetQuick = Duration(milliseconds: 200);
+
+  /// Standard implicit animation for larger containers.
+  static const widgetStandard = Duration(milliseconds: 300);
 }

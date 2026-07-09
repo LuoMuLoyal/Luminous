@@ -179,7 +179,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-final _green = AppColors.primary;
-final _pink = AppColors.primary;
-final _red = AppColors.primary;
+final _green = AppColors.secondary;
+final _pink = AppColors.secondary;
+final _red = AppColors.destructive;
 final _blue = AppColors.primary;

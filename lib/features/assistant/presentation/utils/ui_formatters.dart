@@ -128,6 +128,5 @@ String conversationTimestampLabel(
   final locale = Localizations.localeOf(context).toString();
   final value = summary.lastMessageAt ?? summary.updatedAt;
   final local = value.toLocal();
-  final pattern = locale.startsWith('zh') ? 'M月d日 HH:mm' : 'MMM d, HH:mm';
-  return intl.DateFormat(pattern, locale).format(local);
+  return intl.DateFormat.MMMd(locale).add_Hm().format(local);
 }

@@ -151,7 +151,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     }) => showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(
-        maxWidth: 360,
+        maxWidth: AppLayoutTokens.dialogMaxWidth,
         padding: const EdgeInsets.all(AppSpacingTokens.level4),
         builder: (_) => SizedBox(
           height: 360,

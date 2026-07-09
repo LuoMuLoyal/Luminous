@@ -55,7 +55,7 @@ class AssistantPage extends HookConsumerWidget {
       if (!scrollController.hasClients) return;
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 180),
+        duration: AppAnimationDurations.widgetQuick,
         curve: Curves.easeOut,
       );
     }

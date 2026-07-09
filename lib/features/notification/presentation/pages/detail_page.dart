@@ -264,7 +264,7 @@ class _ActionBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     showAppDialog<void>(
       context: context,
-      maxWidth: 420,
+      maxWidth: AppLayoutTokens.wideDialogMaxWidth,
       scrollable: false,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,

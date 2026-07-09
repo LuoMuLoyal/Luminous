@@ -32,11 +32,11 @@ class MineDashboardView extends StatelessWidget {
 
     return Animate(
       effects: const [
-        FadeEffect(duration: Duration(milliseconds: 220)),
+        FadeEffect(duration: AppAnimationDurations.widgetFadeIn),
         SlideEffect(
           begin: Offset(0, 0.02),
           end: Offset.zero,
-          duration: Duration(milliseconds: 220),
+          duration: AppAnimationDurations.widgetFadeIn,
         ),
       ],
       child: scopedContent,

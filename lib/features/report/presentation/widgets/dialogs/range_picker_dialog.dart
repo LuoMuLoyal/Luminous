@@ -54,7 +54,7 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                   context: dialogContext,
                   builder: (calendarContext, style, animation) =>
                       AppDialogShell(
-                        maxWidth: 360,
+                        maxWidth: AppLayoutTokens.dialogMaxWidth,
                         padding: const EdgeInsets.all(AppSpacingTokens.level4),
                         builder: (_) => Column(
                           mainAxisSize: MainAxisSize.min,

@@ -222,15 +222,10 @@ class DailyRecordRemoteDataSource {
       options: Options(method: method, contentType: Headers.jsonContentType),
     );
 
-    final body = coerceToStringMap(response.data);
-    if (body == null) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        error: 'Daily record response is empty.',
-      );
-    }
+    final body = requireBody(
+      response,
+      message: 'Daily record response is empty.',
+    );
 
     return lucent.DailyRecordResponseDto.fromJson(body).data;
   }

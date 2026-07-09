@@ -38,7 +38,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: AppAnimationDurations.widgetExpand,
       vsync: this,
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
@@ -262,7 +262,7 @@ class _AiExpandButton extends StatelessWidget {
           const SizedBox(width: AppSpacingTokens.level1),
           AnimatedRotation(
             turns: isCollapse ? 0.25 : 0,
-            duration: const Duration(milliseconds: 200),
+            duration: AppAnimationDurations.widgetQuick,
             child: Icon(
               FLucideIcons.chevronRight,
               size: AppSpacingTokens.level4,
