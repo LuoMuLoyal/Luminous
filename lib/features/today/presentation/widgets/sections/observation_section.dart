@@ -41,10 +41,10 @@ class TodayObservationSection extends ConsumerWidget {
 
             if (items.isEmpty) {
               return Padding(
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                padding: const EdgeInsets.all(Spacing.level4),
                 child: Text(
                   l10n.todayObservationEmptyState,
-                  style: AppTypographyToken.level4
+                  style: TypographyToken.level4
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
@@ -141,31 +141,31 @@ class _ObservationTile extends StatelessWidget {
       onPress: item.onPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
         ),
         child: Row(
           children: [
             Icon(
               item.icon,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
               color: colors.mutedForeground,
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     item.title,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     item.subtitle,
-                    style: AppTypographyToken.level2
+                    style: TypographyToken.level2
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                     maxLines: 2,
@@ -174,10 +174,10 @@ class _ObservationTile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level2),
+            const SizedBox(width: Spacing.level2),
             Text(
               item.tag,
-              style: AppTypographyToken.level1
+              style: TypographyToken.level1
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
@@ -194,11 +194,11 @@ class _ObservationLoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.all(AppSpacingTokens.level4),
+      padding: EdgeInsets.all(Spacing.level4),
       child: Column(
         children: [
           _ObservationSkeletonRow(),
-          SizedBox(height: AppSpacingTokens.level3),
+          SizedBox(height: Spacing.level3),
           _ObservationSkeletonRow(),
         ],
       ),
@@ -218,11 +218,11 @@ class _ObservationSkeletonRow extends StatelessWidget {
         DecoratedBox(
           decoration: BoxDecoration(
             color: colors.secondary,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
           ),
-          child: const SizedBox.square(dimension: AppSpacingTokens.level6),
+          child: const SizedBox.square(dimension: Spacing.level6),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         Expanded(
           child: Column(
             children: [
@@ -230,15 +230,15 @@ class _ObservationSkeletonRow extends StatelessWidget {
                 height: 14,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Container(
                 height: 12,
                 decoration: BoxDecoration(
                   color: colors.secondary,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
                 ),
               ),
             ],
@@ -259,15 +259,15 @@ class _ObservationErrorState extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      padding: const EdgeInsets.all(Spacing.level4),
       child: Row(
         children: [
           const Icon(FLucideIcons.circleAlert),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
               l10n.todayObservationErrorTitle,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),

@@ -31,7 +31,7 @@ class _TodayPrimarySuggestionSectionState
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: AppAnimationDurations.widgetExpand,
+      duration: DurationTokens.widgetExpand,
       vsync: this,
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
@@ -62,7 +62,7 @@ class _TodayPrimarySuggestionSectionState
         key: const Key('today-primary-suggestion-card'),
         style: todayCardStyle(context, tone: primary.cardTone),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -72,8 +72,8 @@ class _TodayPrimarySuggestionSectionState
                   TodayGlyphTile(
                     icon: primary.icon,
                     color: primary.color.resolve(colors),
-                    size: AppSpacingTokens.level8,
-                    radius: AppRadiusTokens.level3,
+                    size: Spacing.level8,
+                    radius: RadiusTokens.level3,
                     gradient: true,
                   ),
                   const Spacer(),
@@ -87,19 +87,19 @@ class _TodayPrimarySuggestionSectionState
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               // Title
               Text(
                 primary.title,
-                style: AppTypographyToken.level7
+                style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               // Reason
               Text(
                 primary.reason,
-                style: AppTypographyToken.level4
+                style: TypographyToken.level4
                     .body(context)
                     .copyWith(
                       color: colors.mutedForeground,
@@ -108,11 +108,11 @@ class _TodayPrimarySuggestionSectionState
               ),
               // Progress bar (water)
               if (primary.progress case final progress?) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FDeterminateProgress(value: progress),
               ],
               // Collapsible evidence/boundary
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               _EvidenceToggleButton(
                 expanded: _evidenceExpanded,
                 onTap: _toggleEvidence,
@@ -125,12 +125,12 @@ class _TodayPrimarySuggestionSectionState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     _SuggestionMetaBlock(
                       label: l10n.todaySuggestionEvidenceLabel,
                       value: primary.evidence,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     _SuggestionMetaBlock(
                       label: l10n.todaySuggestionBoundaryLabel,
                       value: primary.boundary,
@@ -139,7 +139,7 @@ class _TodayPrimarySuggestionSectionState
                 ),
               ),
               // Feedback actions
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               _SuggestionFeedbackRow(l10n: l10n),
             ],
           ),
@@ -182,17 +182,17 @@ class _EvidenceToggleButton extends StatelessWidget {
             expanded
                 ? l10n.todaySuggestionHideEvidence
                 : l10n.todaySuggestionShowEvidence,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(width: AppSpacingTokens.level1),
+          const SizedBox(width: Spacing.level1),
           AnimatedRotation(
             turns: expanded ? 0.25 : 0,
-            duration: AppAnimationDurations.widgetQuick,
+            duration: DurationTokens.widgetQuick,
             child: Icon(
               FLucideIcons.chevronRight,
-              size: AppSpacingTokens.level4,
+              size: Spacing.level4,
               color: colors.primary,
             ),
           ),
@@ -220,7 +220,7 @@ class _SuggestionFeedbackRow extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           child: Text(l10n.todaySuggestionLaterAction),
         ),
-        const SizedBox(width: AppSpacingTokens.level2),
+        const SizedBox(width: Spacing.level2),
         FButton(
           onPress: () {},
           variant: FButtonVariant.ghost,
@@ -260,38 +260,38 @@ class TodaySecondarySuggestionsSection extends StatelessWidget {
       child: Column(
         children: [
           for (var index = 0; index < items.length; index += 1) ...[
-            if (index > 0) const SizedBox(height: AppSpacingTokens.level3),
+            if (index > 0) const SizedBox(height: Spacing.level3),
             FCard.raw(
               key: Key('today-secondary-suggestion-$index'),
               style: todayCardStyle(context, tone: TodayCardTone.soft),
               child: FTappable(
                 onPress: () => _openSuggestion(context, items[index]),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Row(
                     children: [
                       TodayGlyphTile(
                         icon: items[index].icon,
                         color: items[index].color.resolve(colors),
-                        size: AppSpacingTokens.level7,
-                        radius: AppRadiusTokens.level3,
+                        size: Spacing.level7,
+                        radius: RadiusTokens.level3,
                         gradient: false,
                       ),
-                      const SizedBox(width: AppSpacingTokens.level3),
+                      const SizedBox(width: Spacing.level3),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               items[index].title,
-                              style: AppTypographyToken.level5
+                              style: TypographyToken.level5
                                   .body(context)
                                   .copyWith(fontWeight: FontWeight.w700),
                             ),
-                            const SizedBox(height: AppSpacingTokens.level1),
+                            const SizedBox(height: Spacing.level1),
                             Text(
                               items[index].reason,
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.mutedForeground),
                               maxLines: 1,
@@ -300,10 +300,10 @@ class TodaySecondarySuggestionsSection extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: AppSpacingTokens.level2),
+                      const SizedBox(width: Spacing.level2),
                       Icon(
                         FLucideIcons.chevronRight,
-                        size: AppSpacingTokens.level5,
+                        size: Spacing.level5,
                         color: colors.mutedForeground,
                       ),
                     ],
@@ -342,15 +342,15 @@ class _SuggestionMetaBlock extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(
                 color: colors.mutedForeground,
                 fontWeight: FontWeight.w700,
               ),
         ),
-        const SizedBox(height: AppSpacingTokens.level1),
-        Text(value, style: AppTypographyToken.level4.body(context)),
+        const SizedBox(height: Spacing.level1),
+        Text(value, style: TypographyToken.level4.body(context)),
       ],
     );
   }

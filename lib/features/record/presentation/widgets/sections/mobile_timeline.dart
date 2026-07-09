@@ -48,7 +48,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
             Expanded(
               child: Text(
                 widget.l10n.recordTodayEntriesTitle(widget.totalCount),
-                style: AppTypographyToken.level7
+                style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w800),
               ),
@@ -69,7 +69,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
               ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -123,17 +123,17 @@ class _TimelineRow extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
+        horizontal: Spacing.level4,
+        vertical: Spacing.level3,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: AppSpacingTokens.level8,
+            width: Spacing.level8,
             child: AppSkeletonText(
               text: entry.time,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
               widthFactor: 0.68,
@@ -146,10 +146,10 @@ class _TimelineRow extends StatelessWidget {
               isFirst: index == 0,
               isLast: isLast,
               indicatorStyle: IndicatorStyle(
-                width: AppSpacingTokens.level3,
-                height: AppSpacingTokens.level3,
+                width: Spacing.level3,
+                height: Spacing.level3,
                 indicator: _TimelineDot(entry: entry),
-                padding: const EdgeInsets.only(right: AppSpacingTokens.level3),
+                padding: const EdgeInsets.only(right: Spacing.level3),
                 indicatorXY: 0.0,
               ),
               beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
@@ -168,30 +168,30 @@ class _TimelineRow extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: AppSpacingTokens.level8,
-                      height: AppSpacingTokens.level8,
+                      width: Spacing.level8,
+                      height: Spacing.level8,
                       decoration: BoxDecoration(
                         color: entry.softColor.resolve(colors),
                         borderRadius: BorderRadius.circular(
-                          AppRadiusTokens.level4,
+                          RadiusTokens.level4,
                         ),
                       ),
                       child: Center(
                         child: Icon(
                           entry.icon,
                           color: entry.accent.resolve(colors),
-                          size: AppSpacingTokens.level5,
+                          size: Spacing.level5,
                         ),
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.level4),
+                    const SizedBox(width: Spacing.level4),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppSkeletonText(
                             text: label,
-                            style: AppTypographyToken.level4
+                            style: TypographyToken.level4
                                 .body(context)
                                 .copyWith(fontWeight: FontWeight.w700),
                             maxLines: 1,
@@ -199,10 +199,10 @@ class _TimelineRow extends StatelessWidget {
                             widthFactor: 0.64,
                           ),
                           if (subtitle.isNotEmpty) ...[
-                            const SizedBox(height: AppSpacingTokens.level1),
+                            const SizedBox(height: Spacing.level1),
                             AppSkeletonText(
                               text: subtitle,
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.mutedForeground),
                               maxLines: 1,
@@ -214,17 +214,15 @@ class _TimelineRow extends StatelessWidget {
                       ),
                     ),
                     if (entry.badgeKey != null) ...[
-                      const SizedBox(width: AppSpacingTokens.level2),
+                      const SizedBox(width: Spacing.level2),
                       AppSkeletonSlot(
                         skeleton: AppInlineSkeletonBlock(
                           height:
-                              (AppTypographyToken.level3
-                                      .body(context)
-                                      .fontSize ??
+                              (TypographyToken.level3.body(context).fontSize ??
                                   14) +
                               8,
                           widthFactor: 0.16,
-                          radius: AppRadiusTokens.level2,
+                          radius: RadiusTokens.level2,
                         ),
                         child: FBadge.raw(
                           builder: (context, style) {
@@ -233,21 +231,21 @@ class _TimelineRow extends StatelessWidget {
                                 color: colors.secondary,
                                 shape: RoundedSuperellipseBorder(
                                   borderRadius: BorderRadius.circular(
-                                    AppRadiusTokens.level2,
+                                    RadiusTokens.level2,
                                   ),
                                 ),
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacingTokens.level2,
-                                  vertical: AppSpacingTokens.level1,
+                                  horizontal: Spacing.level2,
+                                  vertical: Spacing.level1,
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
                                       recordCopy(l10n, entry.badgeKey!),
-                                      style: AppTypographyToken.level3
+                                      style: TypographyToken.level3
                                           .body(context)
                                           .copyWith(
                                             color: colors.foreground,
@@ -265,11 +263,11 @@ class _TimelineRow extends StatelessWidget {
                         ),
                       ),
                     ],
-                    const SizedBox(width: AppSpacingTokens.level2),
+                    const SizedBox(width: Spacing.level2),
                     Icon(
                       FLucideIcons.chevronRight,
                       color: colors.mutedForeground,
-                      size: AppSpacingTokens.level5,
+                      size: Spacing.level5,
                     ),
                   ],
                 ),
@@ -294,12 +292,9 @@ class _TimelineDot extends StatelessWidget {
       decoration: BoxDecoration(
         color: entry.accent.resolve(colors),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: colors.background,
-          width: AppSpacingTokens.level1,
-        ),
+        border: Border.all(color: colors.background, width: Spacing.level1),
       ),
-      child: const SizedBox.square(dimension: AppSpacingTokens.level3),
+      child: const SizedBox.square(dimension: Spacing.level3),
     );
   }
 }

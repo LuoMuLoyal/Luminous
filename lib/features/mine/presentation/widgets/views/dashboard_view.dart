@@ -18,7 +18,7 @@ class MineDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop ? _buildDesktopLayout() : _buildMobileLayout();
 
@@ -32,11 +32,11 @@ class MineDashboardView extends StatelessWidget {
 
     return Animate(
       effects: const [
-        FadeEffect(duration: AppAnimationDurations.widgetFadeIn),
+        FadeEffect(duration: DurationTokens.widgetFadeIn),
         SlideEffect(
           begin: Offset(0, 0.02),
           end: Offset.zero,
-          duration: AppAnimationDurations.widgetFadeIn,
+          duration: DurationTokens.widgetFadeIn,
         ),
       ],
       child: scopedContent,
@@ -51,16 +51,16 @@ class MineDashboardView extends StatelessWidget {
           key: const Key('mine-account-header'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.level5),
+        const SizedBox(height: Spacing.level5),
         MineArchiveSection(
           key: const Key('mine-archive-section'),
           dashboard: dashboard,
         ),
-        const SizedBox(height: AppSpacingTokens.level5),
+        const SizedBox(height: Spacing.level5),
         const MineAiPrivacySection(),
-        const SizedBox(height: AppSpacingTokens.level5),
+        const SizedBox(height: Spacing.level5),
         const MineNotificationsReminderSection(),
-        const SizedBox(height: AppSpacingTokens.level5),
+        const SizedBox(height: Spacing.level5),
         MineAccountSecuritySection(account: dashboard.account),
       ],
     );
@@ -79,24 +79,24 @@ class MineDashboardView extends StatelessWidget {
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               MineArchiveSection(
                 key: const Key('mine-archive-section'),
                 dashboard: dashboard,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               const MineNotificationsReminderSection(),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         Expanded(
           flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const MineAiPrivacySection(),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               MineAccountSecuritySection(account: dashboard.account),
             ],
           ),

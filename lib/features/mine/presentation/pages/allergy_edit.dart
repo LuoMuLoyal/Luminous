@@ -131,7 +131,7 @@ class AllergyEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +157,7 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,7 +178,7 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,13 +193,13 @@ class AllergyEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -209,7 +209,7 @@ class AllergyEditPage extends HookConsumerWidget {
                         values: HealthAllergyKind.values,
                         onChanged: (v) => kind.value = v,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         key: const Key('allergy-label-field'),
                         control: FTextFieldControl.managed(
@@ -217,14 +217,14 @@ class AllergyEditPage extends HookConsumerWidget {
                         ),
                         label: Text(l10n.mineEditFieldLabel),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: reactionController,
                         ),
                         label: Text(l10n.mineEditFieldReaction),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FSelect<HealthAllergySeverity>.rich(
                         label: Text(l10n.mineEditFieldSeverity),
                         hint: l10n.mineEditFieldSeverity,
@@ -244,7 +244,7 @@ class AllergyEditPage extends HookConsumerWidget {
                             )
                             .toList(),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: noteController,
@@ -252,14 +252,14 @@ class AllergyEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldNote),
                         maxLines: 3,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level5),
+                      const SizedBox(height: Spacing.level5),
                       FButton(
                         key: const Key('allergy-save-button'),
                         onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                       if (!isNew) ...[
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FButton(
                           key: const Key('allergy-delete-button'),
                           variant: FButtonVariant.destructive,

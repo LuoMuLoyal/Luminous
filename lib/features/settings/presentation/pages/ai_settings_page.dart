@@ -131,19 +131,19 @@ class AiSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(label: l10n.settingsAiContextSectionTitle),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 if (!assistantEnabled)
                   Padding(
                     padding: const EdgeInsets.only(
-                      left: AppSpacingTokens.level2,
-                      right: AppSpacingTokens.level2,
-                      bottom: AppSpacingTokens.level3,
+                      left: Spacing.level2,
+                      right: Spacing.level2,
+                      bottom: Spacing.level3,
                     ),
                     child: Text(
                       l10n.settingsAiContextDisabledHint,
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(
                             color: context.theme.colors.mutedForeground,

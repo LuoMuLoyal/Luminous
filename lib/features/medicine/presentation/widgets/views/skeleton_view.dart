@@ -13,7 +13,7 @@ class MedicineSkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     return AppSkeletonShimmer(
       child: isDesktop
@@ -32,15 +32,15 @@ class _MobileMedicineSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DrugBoxPlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _SafetyEnginePlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _QuickOperationsPlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _RecordsPlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _ReferenceNoticePlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _SafetyTipsPlaceholder(),
       ],
     );
@@ -61,23 +61,23 @@ class _DesktopMedicineSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _DrugBoxPlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _SafetyEnginePlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _RecordsPlaceholder(),
             ],
           ),
         ),
-        SizedBox(width: AppSpacingTokens.level5),
+        SizedBox(width: Spacing.level5),
         Expanded(
           flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _ReferenceNoticePlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _QuickOperationsPlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _SafetyTipsPlaceholder(),
             ],
           ),
@@ -97,51 +97,51 @@ class _DrugBoxPlaceholder extends StatelessWidget {
         const Row(
           children: [
             AppInlineSkeletonCircle(size: 40),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             Expanded(
               child: AppInlineSkeletonBlock(height: 18, widthFactor: 0.45),
             ),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             AppInlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level2),
+        const SizedBox(height: Spacing.level2),
         const AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const AppInlineSkeletonBlock(height: 64, width: 64),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Container(width: 1, height: 64, color: context.theme.colors.border),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
-                  SizedBox(height: AppSpacingTokens.level2),
+                  SizedBox(height: Spacing.level2),
                   AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
-                  SizedBox(height: AppSpacingTokens.level3),
+                  SizedBox(height: Spacing.level3),
                   AppInlineSkeletonBlock(height: 14, widthFactor: 0.7),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         const AppDivider(),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         const Row(
           children: [
             AppInlineSkeletonCircle(size: 32),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppInlineSkeletonBlock(height: 14, widthFactor: 0.6),
-                  SizedBox(height: AppSpacingTokens.level2),
+                  SizedBox(height: Spacing.level2),
                   AppInlineSkeletonBlock(height: 12, widthFactor: 0.45),
                 ],
               ),
@@ -149,7 +149,7 @@ class _DrugBoxPlaceholder extends StatelessWidget {
             AppInlineSkeletonBlock(
               height: 32,
               width: 72,
-              radius: AppRadiusTokens.levelFull,
+              radius: RadiusTokens.levelFull,
             ),
           ],
         ),
@@ -172,19 +172,19 @@ class _SafetyEnginePlaceholder extends StatelessWidget {
             AppInlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
               AppInlineSkeletonCircle(size: 40),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppInlineSkeletonBlock(height: 16, widthFactor: 0.72),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
                   ],
                 ),
@@ -205,11 +205,11 @@ class _QuickOperationsPlaceholder extends StatelessWidget {
     return Row(
       children: [
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(width: AppSpacingTokens.level3),
+          if (i > 0) const SizedBox(width: Spacing.level3),
           const Expanded(
             child: AppInlineSkeletonBlock(
               height: 80,
-              radius: AppRadiusTokens.level4,
+              radius: RadiusTokens.level4,
             ),
           ),
         ],
@@ -232,28 +232,28 @@ class _RecordsPlaceholder extends StatelessWidget {
             AppInlineSkeletonBlock(height: 14, width: 120),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
               AppInlineSkeletonCircle(size: 40),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppInlineSkeletonBlock(height: 16, widthFactor: 0.65),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               AppInlineSkeletonBlock(
                 height: 28,
                 width: 56,
-                radius: AppRadiusTokens.levelFull,
+                radius: RadiusTokens.levelFull,
               ),
             ],
           ),
@@ -271,7 +271,7 @@ class _ReferenceNoticePlaceholder extends StatelessWidget {
     return const AppInlineSkeletonSection(
       children: [
         AppInlineSkeletonBlock(height: 14, widthFactor: 0.92),
-        SizedBox(height: AppSpacingTokens.level2),
+        SizedBox(height: Spacing.level2),
         AppInlineSkeletonBlock(height: 14, widthFactor: 0.78),
       ],
     );
@@ -286,20 +286,20 @@ class _SafetyTipsPlaceholder extends StatelessWidget {
     return AppInlineSkeletonSection(
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.45),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 2; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppInlineSkeletonCircle(size: 24),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.65),
                   ],
                 ),

@@ -30,21 +30,21 @@ class AuthShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final layout = AppLayoutTokens.resolve(width);
+    final layout = LayoutScaleResolver.resolve(width);
 
     return FScaffold(
       child: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
             horizontal: layout.pageHorizontalPadding,
-            vertical: width < AppBreakpoints.mobile
-                ? AppSpacingTokens.level5
-                : AppSpacingTokens.level6,
+            vertical: width < Breakpoints.mobile
+                ? Spacing.level5
+                : Spacing.level6,
           ),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: AppBreakpoints.assistantContent,
+                maxWidth: Breakpoints.assistantContent,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -57,10 +57,10 @@ class AuthShell extends StatelessWidget {
                     subtitle: subtitle,
                   ),
                   if (formModeSelector != null) ...[
-                    const SizedBox(height: AppSpacingTokens.level6),
+                    const SizedBox(height: Spacing.level6),
                     formModeSelector!,
                   ],
-                  const SizedBox(height: AppSpacingTokens.level6),
+                  const SizedBox(height: Spacing.level6),
                   _AuthFormPanel(
                     form: form,
                     enableAnimation: enableFormAnimation,
@@ -98,7 +98,7 @@ class _AuthPageHeader extends StatelessWidget {
       return Row(
         children: [
           SizedBox(
-            width: AppSpacingTokens.level8,
+            width: Spacing.level8,
             child: leading == null
                 ? null
                 : Align(alignment: Alignment.centerLeft, child: leading),
@@ -107,12 +107,12 @@ class _AuthPageHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: centerTitle ? TextAlign.center : TextAlign.left,
-              style: AppTypographyToken.level7
+              style: TypographyToken.level7
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level8),
+          const SizedBox(width: Spacing.level8),
         ],
       );
     }
@@ -124,17 +124,17 @@ class _AuthPageHeader extends StatelessWidget {
           Align(alignment: Alignment.centerLeft, child: leading),
         if (logo != null) ...[
           Center(child: logo),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
         ],
         Text(
           title,
           textAlign: TextAlign.center,
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
         if (subtitle != null) ...[
-          const SizedBox(height: AppSpacingTokens.level2),
+          const SizedBox(height: Spacing.level2),
           Text(
             subtitle!,
             textAlign: TextAlign.center,
@@ -158,7 +158,7 @@ class _AuthFormPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final panel = FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level6),
+        padding: const EdgeInsets.all(Spacing.level6),
         child: form,
       ),
     );
@@ -170,13 +170,13 @@ class _AuthFormPanel extends StatelessWidget {
     return panel
         .animate()
         .fadeIn(
-          duration: AppAnimationDurations.authContentFadeIn,
+          duration: DurationTokens.authContentFadeIn,
           curve: Curves.easeOut,
         )
         .slideY(
           begin: 0.03,
           end: 0,
-          duration: AppAnimationDurations.authContentFadeIn,
+          duration: DurationTokens.authContentFadeIn,
           curve: Curves.easeOutCubic,
         );
   }

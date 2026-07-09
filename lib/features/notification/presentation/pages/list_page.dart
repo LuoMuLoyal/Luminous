@@ -63,7 +63,7 @@ class NotificationListPage extends ConsumerWidget {
                   children: [
                     for (final entry in groups.entries) ...[
                       _SectionHeader(title: entry.key),
-                      const SizedBox(height: AppSpacingTokens.level2),
+                      const SizedBox(height: Spacing.level2),
                       Column(
                         children: [
                           for (
@@ -94,14 +94,14 @@ class NotificationListPage extends ConsumerWidget {
                               },
                             ),
                             if (index < entry.value.length - 1)
-                              const SizedBox(height: AppSpacingTokens.level3),
+                              const SizedBox(height: Spacing.level3),
                           ],
                         ],
                       ),
-                      const SizedBox(height: AppSpacingTokens.level4),
+                      const SizedBox(height: Spacing.level4),
                     ],
                     if (hasMore) ...[
-                      const SizedBox(height: AppSpacingTokens.level4),
+                      const SizedBox(height: Spacing.level4),
                       Center(
                         child: isLoadingMore
                             ? const SizedBox(
@@ -121,20 +121,20 @@ class NotificationListPage extends ConsumerWidget {
               },
               loading: () => const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacingTokens.level10),
+                  padding: EdgeInsets.all(Spacing.level10),
                   child: AppSkeletonShimmer(
                     child: Column(
                       children: [
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: AppSpacingTokens.level4),
+                        SizedBox(height: Spacing.level4),
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: AppSpacingTokens.level4),
+                        SizedBox(height: Spacing.level4),
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: AppSpacingTokens.level4),
+                        SizedBox(height: Spacing.level4),
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: AppSpacingTokens.level4),
+                        SizedBox(height: Spacing.level4),
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: AppSpacingTokens.level4),
+                        SizedBox(height: Spacing.level4),
                         AppInlineSkeletonBlock(height: 64, widthFactor: 1),
                       ],
                     ),
@@ -219,13 +219,10 @@ class _SectionHeader extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: AppSpacingTokens.level3,
-        top: AppSpacingTokens.level3,
-      ),
+      padding: const EdgeInsets.only(left: Spacing.level3, top: Spacing.level3),
       child: Text(
         title,
-        style: AppTypographyToken.level4
+        style: TypographyToken.level4
             .body(context)
             .copyWith(
               color: colors.mutedForeground,
@@ -243,7 +240,7 @@ class _EmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.only(top: AppSpacingTokens.level10),
+      padding: const EdgeInsets.only(top: Spacing.level10),
       child: AppStateMessageView(
         title: l10n.notificationEmptyTitle,
         description: l10n.notificationEmptyDescription,

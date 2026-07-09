@@ -2,9 +2,7 @@
 ///
 /// All animation durations — route transitions and in-widget effects —
 /// live here so they can be audited and tuned in one place.
-class AppAnimationDurations {
-  const AppAnimationDurations._();
-
+abstract final class DurationTokens {
   // -- Route transitions (GoRouter page builders) --
 
   /// Auth page route transition (fade in).

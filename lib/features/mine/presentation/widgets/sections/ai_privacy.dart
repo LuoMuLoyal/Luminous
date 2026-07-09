@@ -19,7 +19,7 @@ class MineAiPrivacySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineAiPrivacySectionTitle),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FTileGroup(
           divider: FItemDivider.full,
           children: [
@@ -28,7 +28,7 @@ class MineAiPrivacySection extends StatelessWidget {
               prefix: Icon(
                 FLucideIcons.sparkles,
                 color: colors.primary,
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
               title: Text(l10n.settingsAiTitle),
               subtitle: Text(
@@ -45,7 +45,7 @@ class MineAiPrivacySection extends StatelessWidget {
               prefix: Icon(
                 FLucideIcons.share2,
                 color: colors.primary,
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
               title: Text(l10n.minePrivacyReportTitle),
               subtitle: Text(

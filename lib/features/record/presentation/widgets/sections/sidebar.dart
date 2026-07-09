@@ -44,7 +44,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-calendar-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           children: [
             Row(
@@ -52,7 +52,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordMonthLabel,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),
                   ),
@@ -69,7 +69,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Row(
               children: weekdayKeys
                   .map(
@@ -77,7 +77,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                       child: Text(
                         recordCopy(l10n, key),
                         textAlign: TextAlign.center,
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
@@ -85,15 +85,15 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                   )
                   .toList(),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 childAspectRatio: 0.86,
-                mainAxisSpacing: AppSpacingTokens.level2,
-                crossAxisSpacing: AppSpacingTokens.level2,
+                mainAxisSpacing: Spacing.level2,
+                crossAxisSpacing: Spacing.level2,
               ),
               itemCount: days.length,
               itemBuilder: (context, index) => _MonthDayCell(
@@ -128,7 +128,7 @@ class RecordFilterPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-filter-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -137,7 +137,7 @@ class RecordFilterPanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordFilterSectionTitle,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),
                   ),
@@ -161,10 +161,10 @@ class RecordFilterPanel extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: AppSpacingTokens.level1),
+                        const SizedBox(width: Spacing.level1),
                         Icon(
                           FLucideIcons.chevronRight,
-                          size: AppSpacingTokens.level4,
+                          size: Spacing.level4,
                           color: colors.foreground,
                         ),
                       ],
@@ -172,14 +172,12 @@ class RecordFilterPanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Column(
               children: filters
                   .map(
                     (filter) => Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.level3,
-                      ),
+                      padding: const EdgeInsets.only(bottom: Spacing.level3),
                       child: _FilterRow(
                         filter: filter,
                         l10n: l10n,
@@ -237,7 +235,7 @@ class _MonthDayCell extends StatelessWidget {
               child: Center(
                 child: Text(
                   '${day.day}',
-                  style: AppTypographyToken.level4
+                  style: TypographyToken.level4
                       .body(context)
                       .copyWith(
                         color: day.selected ? colors.background : color,
@@ -295,7 +293,7 @@ class _FilterRow extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
         child: Row(
           children: [
             Icon(
@@ -307,13 +305,13 @@ class _FilterRow extends StatelessWidget {
                   : colors.mutedForeground,
               size: 18,
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Icon(filter.icon, color: filter.accent.resolve(colors), size: 18),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
                 label,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
@@ -326,12 +324,12 @@ class _FilterRow extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level3,
-                    vertical: AppSpacingTokens.level2,
+                    horizontal: Spacing.level3,
+                    vertical: Spacing.level2,
                   ),
                   child: Text(
                     l10n.recordNotEnabledLabel,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.foreground),
                   ),

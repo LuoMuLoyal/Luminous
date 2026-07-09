@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/design/breakpoints.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync_provider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -28,7 +28,7 @@ class LanguageSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

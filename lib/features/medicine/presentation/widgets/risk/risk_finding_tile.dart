@@ -26,7 +26,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
     final contextLabel = medicineRiskContextLabel(l10n, finding.context);
 
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,43 +38,43 @@ class MedicineRiskFindingTile extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
-              dimension: AppSpacingTokens.level9,
+              dimension: Spacing.level9,
               child: Icon(
                 medicineRiskFindingIcon(finding),
                 color: color.resolve(colors),
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   medicineRiskFindingTitle(l10n, finding),
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w800),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingBody(l10n, finding),
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskFindingEvidence(l10n, finding),
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -89,21 +89,21 @@ class MedicineRiskFindingTile extends StatelessWidget {
                       color: resolvedColor.withValues(alpha: 0.08),
                       shape: RoundedSuperellipseBorder(
                         borderRadius: BorderRadius.circular(
-                          AppRadiusTokens.levelFull,
+                          RadiusTokens.levelFull,
                         ),
                       ),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacingTokens.level2,
-                        vertical: AppSpacingTokens.level1,
+                        horizontal: Spacing.level2,
+                        vertical: Spacing.level1,
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             medicineRiskSeverityLabel(l10n, finding.severity),
-                            style: AppTypographyToken.level3
+                            style: TypographyToken.level3
                                 .body(context)
                                 .copyWith(
                                   color: foreground,
@@ -120,7 +120,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 },
               ),
               if (contextLabel.isNotEmpty) ...[
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 FBadge.raw(
                   builder: (context, style) {
                     final resolvedColor = SemanticColor.neutral.resolve(colors);
@@ -132,21 +132,21 @@ class MedicineRiskFindingTile extends StatelessWidget {
                         color: resolvedColor.withValues(alpha: 0.08),
                         shape: RoundedSuperellipseBorder(
                           borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.levelFull,
+                            RadiusTokens.levelFull,
                           ),
                         ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.level2,
-                          vertical: AppSpacingTokens.level1,
+                          horizontal: Spacing.level2,
+                          vertical: Spacing.level1,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               contextLabel,
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(
                                     color: foreground,

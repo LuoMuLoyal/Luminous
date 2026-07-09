@@ -41,7 +41,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
     final nextDose = _nextDoseFor(workspace);
     final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
         ? _buildDesktopLayout(l10n: l10n, nextDose: nextDose, alerts: alerts)
@@ -63,20 +63,20 @@ class MedicineMobileDashboardView extends StatelessWidget {
           l10n: l10n,
           onOpenReminder: onOpenReminder,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         _MedicineRecordsSection(
           workspace: workspace,
           nextDose: nextDose,
           l10n: l10n,
           onMarkDose: onMarkDose,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         _SafetyEngineSection(
           result: workspace.riskCheckResult,
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         _QuickOperationSection(l10n: l10n, onCreateReminder: onCreateReminder),
       ],
     );
@@ -100,14 +100,14 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onOpenReminder: onOpenReminder,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               _MedicineRecordsSection(
                 workspace: workspace,
                 nextDose: nextDose,
                 l10n: l10n,
                 onMarkDose: onMarkDose,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               _SafetyEngineSection(
                 result: workspace.riskCheckResult,
                 alerts: alerts.take(4).toList(growable: false),
@@ -116,7 +116,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         Expanded(
           flex: 5,
           child: Column(
@@ -126,7 +126,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onCreateReminder: onCreateReminder,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
             ],
           ),
         ),

@@ -34,40 +34,40 @@ class ReportReadinessSection extends StatelessWidget {
     return FCard.raw(
       key: const Key('report-readiness-card'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 FAvatar.raw(
-                  size: AppSpacingTokens.level8,
+                  size: Spacing.level8,
                   child: Icon(
                     _statusIcon,
                     color: colors.primary,
-                    size: AppSpacingTokens.level5,
+                    size: Spacing.level5,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 _StatusBadge(label: _badgeLabel),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Text(
               _title,
-              style: AppTypographyToken.level6
+              style: TypographyToken.level6
                   .display(context)
                   .copyWith(fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             Text(
               _description,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
             if (generatedAtLabel.isNotEmpty) ...[
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               Row(
                 children: [
                   Icon(
@@ -75,11 +75,11 @@ class ReportReadinessSection extends StatelessWidget {
                     color: colors.mutedForeground,
                     size: 16,
                   ),
-                  const SizedBox(width: AppSpacingTokens.level2),
+                  const SizedBox(width: Spacing.level2),
                   Expanded(
                     child: Text(
                       l10n.reportReadinessUpdatedAt(generatedAtLabel),
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                     ),
@@ -89,22 +89,22 @@ class ReportReadinessSection extends StatelessWidget {
             ],
             if (status == ReportReadinessStatus.insufficient &&
                 insufficientMetricCount > 0) ...[
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               Text(
                 l10n.reportReadinessMissingMetricsHint(insufficientMetricCount),
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Row(
               children: [
                 Expanded(
                   child: _PrimaryAction(status: status, section: this),
                 ),
                 if (_showSecondaryAction) ...[
-                  const SizedBox(width: AppSpacingTokens.level3),
+                  const SizedBox(width: Spacing.level3),
                   Expanded(
                     child: FButton(
                       key: const Key('report-top-sync-action'),
@@ -202,12 +202,12 @@ class _StatusBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.secondary, fontWeight: FontWeight.w800),
         ),

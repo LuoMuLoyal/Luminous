@@ -21,10 +21,10 @@ class SectionTextAction extends StatelessWidget {
     return FTappable(
       onPress: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level1),
+        padding: const EdgeInsets.all(Spacing.level1),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: context.theme.colors.primary),
         ),

@@ -22,8 +22,8 @@ class RecordWeekStrip extends StatelessWidget {
     return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level4,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level4,
         ),
         child: Row(
           children: days
@@ -59,16 +59,16 @@ class _WeekDayCell extends StatelessWidget {
     return FTappable(
       onPress: onTap == null ? null : () => onTap!(day.date),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
         child: Column(
           children: [
             Text(
               recordCopy(l10n, day.weekdayKey),
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             DecoratedBox(
               decoration: BoxDecoration(
                 color: day.selected ? colors.foreground : Colors.transparent,
@@ -79,7 +79,7 @@ class _WeekDayCell extends StatelessWidget {
                 child: Center(
                   child: Text(
                     '${day.day}',
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(
                           color: foreground,
@@ -89,7 +89,7 @@ class _WeekDayCell extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             _MarkerDots(markers: day.markers, hasAlert: day.hasAlert),
           ],
         ),

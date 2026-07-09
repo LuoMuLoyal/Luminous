@@ -26,23 +26,23 @@ class RecentSearches extends StatelessWidget {
           children: [
             Text(
               l10n.medicineSearchRecentTitle,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),
             const Spacer(),
             Text(
               l10n.medicineSearchClearAction,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(color: colors.primary, fontWeight: FontWeight.w700),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         Wrap(
-          spacing: AppSpacingTokens.level3,
-          runSpacing: AppSpacingTokens.level3,
+          spacing: Spacing.level3,
+          runSpacing: Spacing.level3,
           children: keywords
               .map(
                 (keyword) => FButton(

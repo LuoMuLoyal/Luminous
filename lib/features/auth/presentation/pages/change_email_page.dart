@@ -63,7 +63,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                           'Please enter a valid email address.',
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level4),
+                  const SizedBox(height: Spacing.level4),
                   VerificationCodeField(
                     controller: codeController,
                     label: l10n?.authCodeLabel ?? 'Verification code',
@@ -104,7 +104,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                   ),
                   if ((accountState.errorMessage?.isNotEmpty ?? false) ||
                       success != null) ...[
-                    const SizedBox(height: AppSpacingTokens.level4),
+                    const SizedBox(height: Spacing.level4),
                     FToast(
                       variant: accountState.errorMessage?.isNotEmpty == true
                           ? FToastVariant.destructive
@@ -116,7 +116,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: AppSpacingTokens.level6),
+                  const SizedBox(height: Spacing.level6),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -154,7 +154,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   Row(
                     children: [
                       Expanded(
@@ -162,7 +162,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                           !isSignedIn
                               ? l10n?.authNotSignedIn ?? 'Not signed in yet.'
                               : l10n?.authBackHomePrompt ?? 'Back to home?',
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(
                                 color: context.theme.colors.mutedForeground,

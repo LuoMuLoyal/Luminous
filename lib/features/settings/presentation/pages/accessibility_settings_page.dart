@@ -35,7 +35,7 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                 SettingsSectionLabel(
                   label: l10n.settingsAccessibilityFontSizeSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -50,9 +50,9 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(label: l10n.settingsGeneralSectionTitle),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

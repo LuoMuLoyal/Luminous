@@ -9,9 +9,9 @@ import 'package:luminous/core/design/design.dart';
 /// 顶部使用，因此自带水平内边距与 [SafeArea]。
 ///
 /// 视觉规范：
-/// - 标题使用 [AppTypographyToken.level8] display + [FontWeight.w800]。
-/// - 可选副标题使用 [AppTypographyToken.level4] body + muted foreground。
-/// - trailing 操作按钮横向排列，与标题之间保持 [AppSpacingTokens.level4]。
+/// - 标题使用 [TypographyToken.level8] display + [FontWeight.w800]。
+/// - 可选副标题使用 [TypographyToken.level4] body + muted foreground。
+/// - trailing 操作按钮横向排列，与标题之间保持 [Spacing.level4]。
 /// - header 与 body 共享同一背景，不额外添加底部分割线或背景色。
 class AppTopBar extends StatelessWidget {
   const AppTopBar({
@@ -37,7 +37,9 @@ class AppTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final layout = AppLayoutTokens.resolve(MediaQuery.sizeOf(context).width);
+    final layout = LayoutScaleResolver.resolve(
+      MediaQuery.sizeOf(context).width,
+    );
 
     return SafeArea(
       bottom: false,
@@ -57,14 +59,14 @@ class AppTopBar extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: AppTypographyToken.level8
+                        style: TypographyToken.level8
                             .display(context)
                             .copyWith(fontWeight: FontWeight.w800),
                       ),
                       if (subtitle != null) ...[
-                        const SizedBox(height: AppSpacingTokens.level1),
+                        const SizedBox(height: Spacing.level1),
                         DefaultTextStyle.merge(
-                          style: AppTypographyToken.level4
+                          style: TypographyToken.level4
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                           child: subtitle!,
@@ -74,7 +76,7 @@ class AppTopBar extends StatelessWidget {
                   ),
                 ),
                 if (trailing.isNotEmpty) ...[
-                  const SizedBox(width: AppSpacingTokens.level4),
+                  const SizedBox(width: Spacing.level4),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: _spacedTrailing(),
@@ -83,7 +85,7 @@ class AppTopBar extends StatelessWidget {
               ],
             ),
             if (bottom != null) ...[
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               bottom!,
             ],
           ],
@@ -98,7 +100,7 @@ class AppTopBar extends StatelessWidget {
     final result = <Widget>[trailing.first];
     for (var i = 1; i < trailing.length; i++) {
       result
-        ..add(const SizedBox(width: AppSpacingTokens.level2))
+        ..add(const SizedBox(width: Spacing.level2))
         ..add(trailing[i]);
     }
     return result;

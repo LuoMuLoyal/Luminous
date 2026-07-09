@@ -75,8 +75,8 @@ class _IconActionButton extends StatelessWidget {
           ),
           if (showBadge)
             Positioned(
-              right: AppSpacingTokens.level2,
-              top: AppSpacingTokens.level2,
+              right: Spacing.level2,
+              top: Spacing.level2,
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
@@ -87,7 +87,7 @@ class _IconActionButton extends StatelessWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    const SizedBox.square(dimension: AppSpacingTokens.level3),
+                    const SizedBox.square(dimension: Spacing.level3),
               ),
             ),
         ],

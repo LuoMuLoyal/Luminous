@@ -47,7 +47,7 @@ class TodaySection extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTypographyToken.level7
+                    style: TypographyToken.level7
                         .display(context)
                         .copyWith(
                           fontWeight: FontWeight.w600,
@@ -57,10 +57,10 @@ class TodaySection extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (subtitle != null) ...[
-                    const SizedBox(height: AppSpacingTokens.level1),
+                    const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle!,
-                      style: AppTypographyToken.level2
+                      style: TypographyToken.level2
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                     ),
@@ -69,7 +69,7 @@ class TodaySection extends StatelessWidget {
               ),
             ),
             if (actionLabel != null) ...[
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               FButton(
                 variant: FButtonVariant.ghost,
                 size: FButtonSizeVariant.xs,
@@ -79,10 +79,10 @@ class TodaySection extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     actionText,
-                    const SizedBox(width: AppSpacingTokens.level1),
+                    const SizedBox(width: Spacing.level1),
                     Icon(
                       FLucideIcons.chevronRight,
-                      size: AppSpacingTokens.level4,
+                      size: Spacing.level4,
                       color: foreground,
                     ),
                   ],
@@ -91,7 +91,7 @@ class TodaySection extends StatelessWidget {
             ],
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         child,
       ],
     );

@@ -32,12 +32,12 @@ class MineCompletenessNotice extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineCompletenessGapTitle),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level4,
+              horizontal: Spacing.level4,
+              vertical: Spacing.level4,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,18 +49,18 @@ class MineCompletenessNotice extends StatelessWidget {
                       size: 16,
                       color: colors.destructive,
                     ),
-                    const SizedBox(width: AppSpacingTokens.level2),
+                    const SizedBox(width: Spacing.level2),
                     Expanded(
                       child: Text(
                         l10n.mineCompletenessGapSubtitle,
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 for (var i = 0; i < gaps.length; i++) ...[
                   if (i > 0) const AppDivider(),
                   _GapRow(gap: gaps[i]),
@@ -135,27 +135,27 @@ class _GapRow extends StatelessWidget {
     return FTappable(
       onPress: () => pushAuthRequiredRoute(context, gap.route),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
         child: Row(
           children: [
             SoftIcon(icon: icon, color: SemanticColor.destructive),
-            const SizedBox(width: AppSpacingTokens.level4),
+            const SizedBox(width: Spacing.level4),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     desc,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                     maxLines: 2,
@@ -164,25 +164,25 @@ class _GapRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             AppSkeletonSlot(
               skeleton: const AppInlineSkeletonBlock(
                 height: 28,
                 width: 56,
-                radius: AppRadiusTokens.level2,
+                radius: RadiusTokens.level2,
               ),
               child: Container(
                 decoration: BoxDecoration(
                   color: colors.destructive.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level3,
-                  vertical: AppSpacingTokens.level1,
+                  horizontal: Spacing.level3,
+                  vertical: Spacing.level1,
                 ),
                 child: Text(
                   l10n.mineCompletenessGapAction,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(
                         color: colors.destructive,

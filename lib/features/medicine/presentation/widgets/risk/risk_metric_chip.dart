@@ -29,8 +29,8 @@ class MedicineRiskMetricChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +40,7 @@ class MedicineRiskMetricChip extends StatelessWidget {
               label,
               style: typography.body.sm.copyWith(color: colors.mutedForeground),
             ),
-            const SizedBox(height: AppSpacingTokens.level1),
+            const SizedBox(height: Spacing.level1),
             Text(
               value,
               style: typography.body.xl.copyWith(fontWeight: FontWeight.w800),

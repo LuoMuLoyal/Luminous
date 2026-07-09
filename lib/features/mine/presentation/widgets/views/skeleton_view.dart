@@ -12,7 +12,7 @@ class MineSkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
     final content = isDesktop
         ? const _DesktopMineSkeleton()
         : const _MobileMineSkeleton();
@@ -30,13 +30,13 @@ class _MobileMineSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _AccountHeroPlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _StatusOverviewPlaceholder(),
-        SizedBox(height: AppSpacingTokens.level5),
+        SizedBox(height: Spacing.level5),
         _ArchivePlaceholder(),
-        SizedBox(height: AppSpacingTokens.level5),
+        SizedBox(height: Spacing.level5),
         _CampusServicePlaceholder(),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         _PrivacyNoticePlaceholder(),
       ],
     );
@@ -57,21 +57,21 @@ class _DesktopMineSkeleton extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _AccountHeroPlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _ArchivePlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _PrivacyNoticePlaceholder(),
             ],
           ),
         ),
-        SizedBox(width: AppSpacingTokens.level5),
+        SizedBox(width: Spacing.level5),
         Expanded(
           flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _StatusOverviewPlaceholder(),
-              SizedBox(height: AppSpacingTokens.level5),
+              SizedBox(height: Spacing.level5),
               _CampusServicePlaceholder(),
             ],
           ),
@@ -91,7 +91,7 @@ class _AccountHeroPlaceholder extends StatelessWidget {
         Row(
           children: [
             AppInlineSkeletonCircle(size: 64),
-            SizedBox(width: AppSpacingTokens.level5),
+            SizedBox(width: Spacing.level5),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,22 +99,22 @@ class _AccountHeroPlaceholder extends StatelessWidget {
                   Row(
                     children: [
                       AppInlineSkeletonBlock(height: 28, widthFactor: 0.45),
-                      SizedBox(width: AppSpacingTokens.level3),
+                      SizedBox(width: Spacing.level3),
                       AppInlineSkeletonBlock(
                         height: 18,
                         width: 56,
-                        radius: AppRadiusTokens.levelFull,
+                        radius: RadiusTokens.levelFull,
                       ),
                     ],
                   ),
-                  SizedBox(height: AppSpacingTokens.level2),
+                  SizedBox(height: Spacing.level2),
                   AppInlineSkeletonBlock(height: 14, widthFactor: 0.65),
                 ],
               ),
             ),
           ],
         ),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
       ],
     );
@@ -137,7 +137,7 @@ class _StatusOverviewPlaceholder extends StatelessWidget {
                   width: 1,
                   height: 58,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
+                    horizontal: Spacing.level2,
                   ),
                   color: colors.border,
                 ),
@@ -146,9 +146,9 @@ class _StatusOverviewPlaceholder extends StatelessWidget {
                 child: Column(
                   children: [
                     AppInlineSkeletonCircle(size: 42),
-                    SizedBox(height: AppSpacingTokens.level3),
+                    SizedBox(height: Spacing.level3),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.85),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 18, width: 44),
                   ],
                 ),
@@ -170,21 +170,21 @@ class _ArchivePlaceholder extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         AppInlineSkeletonSection(
           children: [
             for (var i = 0; i < 4; i += 1) ...[
-              if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+              if (i > 0) const SizedBox(height: Spacing.level4),
               const Row(
                 children: [
                   AppInlineSkeletonCircle(size: 40),
-                  SizedBox(width: AppSpacingTokens.level4),
+                  SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppInlineSkeletonBlock(height: 16, widthFactor: 0.55),
-                        SizedBox(height: AppSpacingTokens.level2),
+                        SizedBox(height: Spacing.level2),
                         AppInlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
@@ -192,7 +192,7 @@ class _ArchivePlaceholder extends StatelessWidget {
                   Icon(
                     FLucideIcons.chevronRight,
                     color: Colors.transparent,
-                    size: AppSpacingTokens.level5,
+                    size: Spacing.level5,
                   ),
                 ],
               ),
@@ -213,21 +213,21 @@ class _CampusServicePlaceholder extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         AppInlineSkeletonSection(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+              if (i > 0) const SizedBox(height: Spacing.level4),
               const Row(
                 children: [
                   AppInlineSkeletonCircle(size: 40),
-                  SizedBox(width: AppSpacingTokens.level4),
+                  SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AppInlineSkeletonBlock(height: 16, widthFactor: 0.5),
-                        SizedBox(height: AppSpacingTokens.level2),
+                        SizedBox(height: Spacing.level2),
                         AppInlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
@@ -235,7 +235,7 @@ class _CampusServicePlaceholder extends StatelessWidget {
                   Icon(
                     FLucideIcons.chevronRight,
                     color: Colors.transparent,
-                    size: AppSpacingTokens.level5,
+                    size: Spacing.level5,
                   ),
                 ],
               ),
@@ -257,22 +257,22 @@ class _PrivacyNoticePlaceholder extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+        borderRadius: BorderRadius.circular(RadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
       child: const Padding(
-        padding: EdgeInsets.all(AppSpacingTokens.level4),
+        padding: EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
             AppInlineSkeletonCircle(size: 24),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             Expanded(child: AppInlineSkeletonBlock(height: 14)),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             AppInlineSkeletonBlock(height: 14, width: 56),
             Icon(
               FLucideIcons.chevronRight,
               color: Colors.transparent,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ],
         ),

@@ -52,7 +52,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
       title: Text(AppLocalizations.of(context)!.scanResultTitle),
       body: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: AppLayoutTokens.dialogMaxWidth,
+          maxWidth: LayoutScaleResolver.dialogMaxWidth,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -62,7 +62,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
             Row(
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
                   child: Image.file(
                     File(widget.imagePath),
                     width: 60,
@@ -70,7 +70,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level4),
+                const SizedBox(width: Spacing.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,16 +90,16 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
 
             if (top != null) ...[
               // Top result card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                padding: const EdgeInsets.all(Spacing.level4),
                 decoration: BoxDecoration(
                   color: colors.background,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level3),
                   border: Border.all(color: colors.border),
                 ),
                 child: Column(
@@ -108,7 +108,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                     _infoRow('药品', top.name),
                     if (top.approvalNumber != null)
                       _infoRow('批准文号', top.approvalNumber!),
-                    const SizedBox(height: AppSpacingTokens.level2),
+                    const SizedBox(height: Spacing.level2),
                     Text(
                       '置信度: ${(top.confidence * 100).toInt()}%',
                       style: typography.body.sm.copyWith(color: colors.primary),
@@ -123,7 +123,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
               ),
             ],
 
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
 
             // Candidate list expander
             if (sorted.length > 1)
@@ -131,9 +131,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                 onPress: () =>
                     setState(() => _showCandidateList = !_showCandidateList),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacingTokens.level3,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
                   child: Row(
                     children: [
                       Icon(
@@ -167,7 +165,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       onPress: () => setState(() => _selectedIndex = i),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacingTokens.level2,
+                          vertical: Spacing.level2,
                         ),
                         child: Row(
                           children: [
@@ -178,7 +176,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                               color: colors.primary,
                               size: 20,
                             ),
-                            const SizedBox(width: AppSpacingTokens.level3),
+                            const SizedBox(width: Spacing.level3),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

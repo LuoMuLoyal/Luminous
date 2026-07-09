@@ -28,7 +28,7 @@ class DataExportPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,16 +39,16 @@ class DataExportPage extends ConsumerWidget {
                 children: [
                   Text(
                     l10n.settingsExportDescription,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(color: colors.foreground),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level5),
+                  const SizedBox(height: Spacing.level5),
                   _StatusRow(
                     label: l10n.mineSettingExportValue,
                     value: _statusLabel(l10n, export),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level5),
+                  const SizedBox(height: Spacing.level5),
                   _buildActionButton(context, ref, export, l10n),
                 ],
               ),
@@ -95,7 +95,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(FLucideIcons.chevronDown, size: 18),
-              const SizedBox(width: AppSpacingTokens.level2),
+              const SizedBox(width: Spacing.level2),
               Text(l10n.mineExportDownloadButton),
             ],
           ),
@@ -114,7 +114,7 @@ class DataExportPage extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(FLucideIcons.chevronsUpDown, size: 18),
-              const SizedBox(width: AppSpacingTokens.level2),
+              const SizedBox(width: Spacing.level2),
               Text(l10n.mineExportRegenerateButton),
             ],
           ),
@@ -212,14 +212,14 @@ class _StatusRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(color: colors.foreground),
         ),
         const Spacer(),
         Text(
           value,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
         ),

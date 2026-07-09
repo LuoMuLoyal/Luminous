@@ -22,8 +22,8 @@ class MineStatusOverview extends StatelessWidget {
       key: const Key('mine-status-overview'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level4,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level4,
         ),
         child: Row(
           children: [
@@ -40,7 +40,7 @@ class MineStatusOverview extends StatelessWidget {
                   width: 1,
                   height: 58,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
+                    horizontal: Spacing.level2,
                   ),
                   color: colors.border,
                 ),
@@ -66,9 +66,7 @@ class _StatusOverviewItem extends StatelessWidget {
       onPress: () =>
           pushAuthRequiredRoute(context, _routeForStatus(entry.titleKey)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level1,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
         child: Column(
           children: [
             SoftIcon(
@@ -77,20 +75,20 @@ class _StatusOverviewItem extends StatelessWidget {
               size: 42,
               iconSize: 23,
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Text(
               mineCopy(l10n, entry.titleKey),
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w800),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacingTokens.level1),
+            const SizedBox(height: Spacing.level1),
             AppSkeletonText(
               text: mineCopy(l10n, entry.subtitleKey),
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
               maxLines: 1,
@@ -99,12 +97,12 @@ class _StatusOverviewItem extends StatelessWidget {
               height: 14,
               widthFactor: 0.72,
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             AppSkeletonSlot(
               skeleton: const AppInlineSkeletonBlock(
                 height: 20,
                 width: 44,
-                radius: AppRadiusTokens.level2,
+                radius: RadiusTokens.level2,
               ),
               child: _TinyBadge(
                 label: mineCopy(l10n, entry.badgeKey),
@@ -140,16 +138,16 @@ class _TinyBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: resolvedColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level2,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
           maxLines: 1,

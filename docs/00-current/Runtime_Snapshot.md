@@ -27,9 +27,16 @@
 
 ## Token 现状
 
-- `AppSpacingTokens` 仅暴露 `level1..level12` 数字刻度。
-- `AppRadiusTokens` 仅暴露 `level0..level5` 与 `levelFull`。
-- 旧的语义别名已移除，所有调用点已迁移。
+所有 token 位于 `lib/core/design/`，通过 barrel `design.dart` 统一导出。
+
+- `Spacing` — `level1..level12` 数字刻度（4 / 6 / 10 / 14 / 20 / 28 / 36 / 44 / 56 / 72 / 96 / 128）。
+- `RadiusTokens` — `level0..level9` + `levelFull`，映射 Forui `FBorderRadius` 九级 + pill。
+- `TypographyToken` — `level1..level10` 枚举，映射 Forui `FTypeface` 十级。
+- `DurationTokens` — 路由过渡 + widget 动画时长常量。
+- `Breakpoints` — `mobile` / `tablet` / `desktop` / `wide` / `assistantContent`。
+- `ResponsiveSizing` — 卡宽 / sidebar 宽 / grid 列数 / 可缩放尺寸 helper。
+- `LayoutScale` + `LayoutScaleResolver` — 响应式布局刻度（page padding / section gap / card padding / max content width）+ 对话框固定宽度。
+- 旧的 `App*` 前缀类型名已全部移除。
 
 ## 页面脚手架
 

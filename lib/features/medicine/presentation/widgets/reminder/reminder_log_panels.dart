@@ -26,31 +26,31 @@ class ReminderTodayLogPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
+          padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderTodayLogsTitle,
-            style: AppTypographyToken.level4
+            style: TypographyToken.level4
                 .body(context)
                 .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Row(
                     children: [
                       Icon(
                         FLucideIcons.clipboardList,
                         color: colors.mutedForeground,
-                        size: AppSpacingTokens.level5,
+                        size: Spacing.level5,
                       ),
-                      const SizedBox(width: AppSpacingTokens.level3),
+                      const SizedBox(width: Spacing.level3),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoTodayLogs,
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
@@ -89,31 +89,31 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacingTokens.level2),
+          padding: const EdgeInsets.only(left: Spacing.level2),
           child: Text(
             l10n.medicineReminderDeliveryLogsTitle,
-            style: AppTypographyToken.level4
+            style: TypographyToken.level4
                 .body(context)
                 .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: visibleLogs.isEmpty
               ? Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Row(
                     children: [
                       Icon(
                         FLucideIcons.receiptText,
                         color: colors.mutedForeground,
-                        size: AppSpacingTokens.level5,
+                        size: Spacing.level5,
                       ),
-                      const SizedBox(width: AppSpacingTokens.level3),
+                      const SizedBox(width: Spacing.level3),
                       Expanded(
                         child: Text(
                           l10n.medicineReminderNoDeliveryLogs,
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
@@ -150,8 +150,8 @@ class _DeliveryLogRow extends StatelessWidget {
     final color = _deliveryStatusColor(log.status);
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
+        horizontal: Spacing.level4,
+        vertical: Spacing.level3,
       ),
       child: Row(
         children: [
@@ -160,28 +160,28 @@ class _DeliveryLogRow extends StatelessWidget {
             color: color.resolve(colors),
             size: 18,
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   dateTimeShortLabel(l10n, log.scheduledFor),
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   deliveryChannelLabel(l10n, log.channel),
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           TintedStatusBadge(
             color: color,
             label: deliveryStatusLabel(l10n, log.status),
@@ -220,17 +220,17 @@ class _TodayLogRow extends StatelessWidget {
 
     final row = Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
-        vertical: AppSpacingTokens.level3,
+        horizontal: Spacing.level4,
+        vertical: Spacing.level3,
       ),
       child: Row(
         children: [
           Icon(FLucideIcons.badgeCheck, color: color.resolve(colors), size: 18),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
               dateTimeTimeLabel(log.scheduledFor),
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),

@@ -42,10 +42,8 @@ class RecordHeaderActionChip extends StatelessWidget {
           contentStyle: FButtonContentStyleDelta.delta(
             padding: .value(
               EdgeInsets.symmetric(
-                horizontal: iconOnly
-                    ? AppSpacingTokens.level3
-                    : AppSpacingTokens.level4,
-                vertical: AppSpacingTokens.level3,
+                horizontal: iconOnly ? Spacing.level3 : Spacing.level4,
+                vertical: Spacing.level3,
               ),
             ),
           ),
@@ -198,7 +196,7 @@ class RecordBarChart extends StatelessWidget {
                   color: color.withValues(alpha: 0.7),
                   width: 12,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(AppRadiusTokens.level1),
+                    top: Radius.circular(RadiusTokens.level1),
                   ),
                 ),
               ],

@@ -19,10 +19,14 @@
   的待办或主卡区域。
 - **Clinic Summary** — 后端脱敏的医生分享摘要，含 Redis 24h 分享链接与 PDF。
 - **Security PIN** — Lucent 6 位应用内安全码，替代旧 TOTP 2FA。
-- **AppColors** — 语义颜色枚举，数据/领域层使用，widget 处解析。
-- **AppSpacingTokens** — 项目间距 token，`level1`–`level12`。
-- **AppRadiusTokens** — 项目圆角 token，`level0`–`level9` 与 `levelFull`。
-- **AppTypographyTokens** — 字体层级 token，`level1`–`level10` 映射到 Forui `FTypeface`。
+- **SemanticColor** — 二维语义颜色枚举（6 色 × 5 tone），数据/领域层使用，widget 处解析。
+- **Spacing** — 项目间距 token，`level1`–`level12`。
+- **RadiusTokens** — 项目圆角 token，`level0`–`level9` 与 `levelFull`。
+- **TypographyToken** — 字体层级 token，`level1`–`level10` 映射到 Forui `FTypeface`。
+- **DurationTokens** — 动画时长 token，路由过渡 + widget 动画。
+- **Breakpoints** — 响应式布局断点。
+- **ResponsiveSizing** — 响应式尺寸 helper（卡宽 / sidebar 宽 / grid 列数）。
+- **LayoutScale** / **LayoutScaleResolver** — 响应式布局刻度值对象 + 解析器。
 - **NestJS** — Lucent 后端框架。
 - **Prisma** — Lucent ORM 与 schema 工具。
 - **AI Pipeline** — Lucent 三层 AI 架构：Context / Generation / Policy & Persistence。

@@ -22,11 +22,11 @@ class MedicineWorkspaceView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Animate(
       effects: const [
-        FadeEffect(duration: AppAnimationDurations.widgetFadeIn),
+        FadeEffect(duration: DurationTokens.widgetFadeIn),
         SlideEffect(
           begin: Offset(0, 0.025),
           end: Offset.zero,
-          duration: AppAnimationDurations.widgetFadeIn,
+          duration: DurationTokens.widgetFadeIn,
         ),
       ],
       child: MedicineMobileDashboardView(

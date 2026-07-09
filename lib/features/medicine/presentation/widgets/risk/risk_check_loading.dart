@@ -7,7 +7,7 @@ class MedicineRiskCheckLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
+      padding: EdgeInsets.symmetric(horizontal: Spacing.level4),
       child: AppInlineSkeletonSection(
         children: [
           AppInlineSkeletonBlock(height: 96),

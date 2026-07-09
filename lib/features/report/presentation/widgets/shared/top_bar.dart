@@ -61,7 +61,7 @@ class ReportTopBar extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 FTooltip(
                   tipBuilder: (context, controller) =>
                       Text(l10n.reportSyncAction),
@@ -119,8 +119,8 @@ class ReportPeriodPill extends StatelessWidget {
         contentStyle: .delta(
           padding: .value(
             EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level3,
+              horizontal: Spacing.level4,
+              vertical: Spacing.level3,
             ),
           ),
         ),
@@ -130,11 +130,11 @@ class ReportPeriodPill extends StatelessWidget {
         children: [
           Text(
             _label(l10n),
-            style: AppTypographyToken.level4
+            style: TypographyToken.level4
                 .body(context)
                 .copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(width: AppSpacingTokens.level1),
+          const SizedBox(width: Spacing.level1),
           Icon(
             FLucideIcons.chevronDown,
             size: 16,

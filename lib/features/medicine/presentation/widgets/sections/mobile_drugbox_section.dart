@@ -23,21 +23,21 @@ class _DrugBoxSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineDrugboxTitle,
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .display(context)
               .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
         ),
-        const SizedBox(height: AppSpacingTokens.level1),
+        const SizedBox(height: Spacing.level1),
         Text(
           l10n.medicineDrugboxSubtitle,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: context.theme.colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -46,7 +46,7 @@ class _DrugBoxSection extends StatelessWidget {
                   hasMedicines: items.isNotEmpty,
                   count: workspace.plan.items.length,
                 ),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
                   _DrugBoxEmpty(l10n: l10n)
                 else
@@ -83,46 +83,46 @@ class _DrugBoxHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: AppSpacingTokens.level7,
-          height: AppSpacingTokens.level7,
+          width: Spacing.level7,
+          height: Spacing.level7,
           decoration: BoxDecoration(
             color: SemanticColor.primary
                 .resolve(colors)
                 .withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+            borderRadius: BorderRadius.circular(RadiusTokens.level4),
           ),
           child: Center(
             child: Icon(
               FLucideIcons.briefcaseMedical,
               color: SemanticColor.primary.resolve(colors),
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level2),
+        const SizedBox(width: Spacing.level2),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 l10n.medicineDrugboxTotal(count),
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w800, letterSpacing: 0),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: AppSpacingTokens.level1),
+              const SizedBox(height: Spacing.level1),
               Text(
                 l10n.medicineDrugboxTotalPrefix,
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
               ),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         FButton(
           variant: FButtonVariant.ghost,
           size: FButtonSizeVariant.xs,
@@ -146,10 +146,10 @@ class _DrugBoxHeader extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(width: AppSpacingTokens.level1),
+              const SizedBox(width: Spacing.level1),
               Icon(
                 FLucideIcons.chevronRight,
-                size: AppSpacingTokens.level4,
+                size: Spacing.level4,
                 color: colors.foreground,
               ),
             ],
@@ -179,12 +179,12 @@ class _DrugBoxContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _DrugBoxCountSummary(count: totalCount, l10n: l10n),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         const SizedBox(
-          height: AppSpacingTokens.level10,
+          height: Spacing.level10,
           child: AppDivider(axis: Axis.vertical),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         Expanded(
           child: Column(
             children: [
@@ -215,23 +215,23 @@ class _DrugBoxCountSummary extends StatelessWidget {
     final colors = context.theme.colors;
 
     return SizedBox(
-      width: AppSpacingTokens.level9,
+      width: Spacing.level9,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AppSkeletonText(
             text: l10n.medicineDrugboxTotal(count),
-            style: AppTypographyToken.level8
+            style: TypographyToken.level8
                 .display(context)
                 .copyWith(fontWeight: FontWeight.w800),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.72,
           ),
-          const SizedBox(height: AppSpacingTokens.level1),
+          const SizedBox(height: Spacing.level1),
           Text(
             l10n.medicineDrugboxTotalPrefix,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
             maxLines: 2,
@@ -320,7 +320,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
           ],
         ),
         if (canMark) ...[
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Row(
             children: [
               _DoseActionButton(
@@ -331,7 +331,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 filled: true,
                 onTap: () => onMarkDose!(takenRequest),
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               _DoseActionButton(
                 key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
@@ -367,7 +367,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level1),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -378,11 +378,11 @@ class _DrugBoxMetricItem extends StatelessWidget {
                 color: color.resolve(colors).withValues(alpha: 0.78),
                 size: 16,
               ),
-              const SizedBox(width: AppSpacingTokens.level1),
+              const SizedBox(width: Spacing.level1),
               Expanded(
                 child: Text(
                   label,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                   maxLines: 1,
@@ -391,10 +391,10 @@ class _DrugBoxMetricItem extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.level1),
+          const SizedBox(height: Spacing.level1),
           AppSkeletonText(
             text: value,
-            style: AppTypographyToken.level5
+            style: TypographyToken.level5
                 .body(context)
                 .copyWith(
                   color: color.resolve(colors).withValues(alpha: 0.92),
@@ -404,10 +404,10 @@ class _DrugBoxMetricItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             widthFactor: 0.76,
           ),
-          const SizedBox(height: AppSpacingTokens.level1),
+          const SizedBox(height: Spacing.level1),
           AppSkeletonText(
             text: detail,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
             maxLines: 1,
@@ -426,7 +426,7 @@ class _MetricDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: AppSpacingTokens.level9,
+      height: Spacing.level9,
       child: AppDivider(axis: Axis.vertical),
     );
   }
@@ -442,32 +442,32 @@ class _DrugBoxEmpty extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
       child: Row(
         children: [
           FAvatar.raw(
-            size: AppSpacingTokens.level8,
+            size: Spacing.level8,
             child: Icon(
               FLucideIcons.pillBottle,
               color: SemanticColor.primary.resolve(colors),
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level4),
+          const SizedBox(width: Spacing.level4),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   l10n.medicineNoMedicineTitle,
-                  style: AppTypographyToken.level4
+                  style: TypographyToken.level4
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.medicineNoMedicineBody,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
@@ -517,35 +517,35 @@ class _DrugBoxMedicationRow extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level2,
+          vertical: Spacing.level3,
         ),
         child: Row(
           children: [
-            _MedicationAvatar(item: item, size: AppSpacingTokens.level7),
-            const SizedBox(width: AppSpacingTokens.level3),
+            _MedicationAvatar(item: item, size: Spacing.level7),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppSkeletonText(
                     text: name,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     widthFactor: 0.72,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Wrap(
-                    spacing: AppSpacingTokens.level2,
-                    runSpacing: AppSpacingTokens.level1,
+                    spacing: Spacing.level2,
+                    runSpacing: Spacing.level1,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppSkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                         maxLines: 1,
@@ -556,7 +556,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                         skeleton: const AppInlineSkeletonBlock(
                           height: 22,
                           width: 54,
-                          radius: AppRadiusTokens.levelFull,
+                          radius: RadiusTokens.levelFull,
                         ),
                         child: TintedStatusBadge(
                           color: item.stateColor,
@@ -568,11 +568,11 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level2),
+            const SizedBox(width: Spacing.level2),
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ],
         ),

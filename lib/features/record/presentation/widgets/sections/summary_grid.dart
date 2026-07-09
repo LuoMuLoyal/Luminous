@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -23,11 +22,11 @@ class RecordSummaryGrid extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-summary'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: LayoutBuilder(
           builder: (context, constraints) {
             const minTileWidth = 140.0;
-            const spacing = AppSpacingTokens.level3;
+            const spacing = Spacing.level3;
             final maxColumns =
                 ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
                     .floor()
@@ -88,20 +87,20 @@ class _SummaryTile extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    width: AppResponsiveSizing.scaleByWidth(
+                    width: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.072,
                       minValue: 24,
                       maxValue: 32,
                     ),
-                    height: AppResponsiveSizing.scaleByWidth(
+                    height: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.072,
                       minValue: 24,
@@ -109,15 +108,13 @@ class _SummaryTile extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: item.softColor.resolve(colors),
-                      borderRadius: BorderRadius.circular(
-                        AppRadiusTokens.level4,
-                      ),
+                      borderRadius: BorderRadius.circular(RadiusTokens.level4),
                     ),
                     child: Center(
                       child: Icon(
                         item.icon,
                         color: item.accent.resolve(colors),
-                        size: AppResponsiveSizing.scaleByWidth(
+                        size: ResponsiveSizing.scaleByWidth(
                           context,
                           fraction: 0.042,
                           minValue: 14,
@@ -126,11 +123,11 @@ class _SummaryTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.level3),
+                  const SizedBox(width: Spacing.level3),
                   Expanded(
                     child: Text(
                       recordCopy(l10n, item.titleKey),
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                       maxLines: 2,
@@ -140,11 +137,11 @@ class _SummaryTile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
-                    style: AppTypographyToken.level7
+                    style: TypographyToken.level7
                         .display(context)
                         .copyWith(
                           color: colors.foreground,
@@ -155,7 +152,7 @@ class _SummaryTile extends StatelessWidget {
                       if (unit != null)
                         TextSpan(
                           text: ' $unit',
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
@@ -165,15 +162,15 @@ class _SummaryTile extends StatelessWidget {
               else
                 Text(
                   detail ?? '',
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
               if (detail != null && item.value.isNotEmpty) ...[
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   detail,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: item.accent.resolve(colors)),
                   maxLines: 2,

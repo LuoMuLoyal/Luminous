@@ -149,7 +149,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             enabled: enabled,
             label: Text(titleLabel(l10n, kind)),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         if (shouldShowValueOrUnit(kind)) ...[
           Row(
@@ -168,7 +168,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                   ),
                 ),
               if (shouldShowValue(kind) && shouldShowUnit(kind))
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
               if (shouldShowUnit(kind))
                 Expanded(
                   child: _WaterUnitField(
@@ -180,7 +180,7 @@ class RecordNlpCandidateEditor extends HookWidget {
                 ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         if (kind == DailyRecordKind.sleep) ...[
           _SleepCandidateFields(
@@ -189,7 +189,7 @@ class RecordNlpCandidateEditor extends HookWidget {
             enabled: enabled,
             onChanged: onChanged,
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         FTextField(
           key: Key('record-nlp-candidate-note-$index'),
@@ -303,7 +303,7 @@ class _SleepCandidateFields extends StatelessWidget {
           label: Text(l10n.recordSleepDurationLabel),
           keyboardType: TextInputType.number,
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FSelect<String>.rich(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
           label: Text(l10n.recordSleepQualityLabel),

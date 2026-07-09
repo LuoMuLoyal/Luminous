@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/date_bar.dart';
@@ -43,7 +42,7 @@ class RecordDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
         ? _DesktopRecordDashboard(
@@ -106,7 +105,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           l10n: l10n,
           onDateSelected: onDateSelected,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         RecordAiInputBar(
           l10n: l10n,
           isPreview: isPreview,
@@ -114,25 +113,25 @@ class _MobileRecordDashboard extends StatelessWidget {
           onMicTap: onMicTap,
           onCameraTap: onCameraTap,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         RecordQuickEntryPanel(
           actions: quickActions,
           l10n: l10n,
           onQuickAction: onQuickAction,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         RecordMobileFilter(
           filters: mobileFilters,
           l10n: l10n,
           onFilterSelected: onFilterSelected,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         RecordMobileTimeline(
           entries: dashboard.timeline,
           totalCount: dashboard.timeline.length,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
       ],
     );
   }
@@ -161,7 +160,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: AppResponsiveSizing.sidebarWidth(context),
+          width: ResponsiveSizing.sidebarWidth(context),
           child: Column(
             children: [
               RecordMonthCalendarPanel(
@@ -171,7 +170,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 onDateSelected: onDateSelected,
                 onMonthChanged: onDateSelected,
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               RecordFilterPanel(
                 filters: dashboard.filters,
                 l10n: l10n,
@@ -180,7 +179,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         Expanded(
           flex: 6,
           child: Column(
@@ -190,7 +189,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 onTypeSelected: onFilterSelected,
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               RecordTimelinePanel(
                 entries: dashboard.timeline,
                 l10n: l10n,
@@ -199,9 +198,9 @@ class _DesktopRecordDashboard extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         SizedBox(
-          width: AppResponsiveSizing.sidebarWidth(context),
+          width: ResponsiveSizing.sidebarWidth(context),
           child: Column(
             children: [
               RecordNewEntryPanel(

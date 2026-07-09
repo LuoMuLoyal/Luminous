@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
+import 'package:luminous/core/design/design.dart';
 
 /// A minimal BuildContext stand-in for responsive sizing tests.
 ///
@@ -21,10 +21,10 @@ Widget _pump(double width, Widget Function(BuildContext) builder) {
 }
 
 void main() {
-  group('AppResponsiveSizing.cardWidth', () {
+  group('ResponsiveSizing.cardWidth', () {
     test('clamps to minWidth on very small screen', () {
       final widget = _pump(200, (ctx) {
-        final w = AppResponsiveSizing.cardWidth(ctx);
+        final w = ResponsiveSizing.cardWidth(ctx);
         return Text('width=$w');
       });
       expect(widget, isA<Widget>());
@@ -34,7 +34,7 @@ void main() {
       var captured = 0.0;
       await tester.pumpWidget(
         _pump(375, (ctx) {
-          captured = AppResponsiveSizing.cardWidth(ctx);
+          captured = ResponsiveSizing.cardWidth(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -48,7 +48,7 @@ void main() {
       var captured = 0.0;
       await tester.pumpWidget(
         _pump(500, (ctx) {
-          captured = AppResponsiveSizing.cardWidth(ctx);
+          captured = ResponsiveSizing.cardWidth(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -57,12 +57,12 @@ void main() {
     });
   });
 
-  group('AppResponsiveSizing.gridCrossAxisCount', () {
+  group('ResponsiveSizing.gridCrossAxisCount', () {
     testWidgets('returns mobile count below 600', (tester) async {
       var count = 0;
       await tester.pumpWidget(
         _pump(375, (ctx) {
-          count = AppResponsiveSizing.gridCrossAxisCount(ctx);
+          count = ResponsiveSizing.gridCrossAxisCount(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -73,7 +73,7 @@ void main() {
       var count = 0;
       await tester.pumpWidget(
         _pump(960, (ctx) {
-          count = AppResponsiveSizing.gridCrossAxisCount(ctx);
+          count = ResponsiveSizing.gridCrossAxisCount(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -84,7 +84,7 @@ void main() {
       var count = 0;
       await tester.pumpWidget(
         _pump(1200, (ctx) {
-          count = AppResponsiveSizing.gridCrossAxisCount(ctx);
+          count = ResponsiveSizing.gridCrossAxisCount(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -95,7 +95,7 @@ void main() {
       var count = 0;
       await tester.pumpWidget(
         _pump(375, (ctx) {
-          count = AppResponsiveSizing.gridCrossAxisCount(
+          count = ResponsiveSizing.gridCrossAxisCount(
             ctx,
             mobile: 1,
             tablet: 2,
@@ -108,12 +108,12 @@ void main() {
     });
   });
 
-  group('AppResponsiveSizing.scaleByWidth', () {
+  group('ResponsiveSizing.scaleByWidth', () {
     testWidgets('clamps to minValue on narrow screen', (tester) async {
       var value = 0.0;
       await tester.pumpWidget(
         _pump(200, (ctx) {
-          value = AppResponsiveSizing.scaleByWidth(
+          value = ResponsiveSizing.scaleByWidth(
             ctx,
             fraction: 0.1,
             minValue: 30,
@@ -129,7 +129,7 @@ void main() {
       var value = 0.0;
       await tester.pumpWidget(
         _pump(500, (ctx) {
-          value = AppResponsiveSizing.scaleByWidth(
+          value = ResponsiveSizing.scaleByWidth(
             ctx,
             fraction: 0.1,
             minValue: 30,
@@ -143,12 +143,12 @@ void main() {
     });
   });
 
-  group('AppResponsiveSizing.sidebarWidth', () {
+  group('ResponsiveSizing.sidebarWidth', () {
     testWidgets('clamps to minWidth on narrow screen', (tester) async {
       var value = 0.0;
       await tester.pumpWidget(
         _pump(800, (ctx) {
-          value = AppResponsiveSizing.sidebarWidth(ctx);
+          value = ResponsiveSizing.sidebarWidth(ctx);
           return const SizedBox.shrink();
         }),
       );
@@ -160,7 +160,7 @@ void main() {
       var value = 0.0;
       await tester.pumpWidget(
         _pump(1440, (ctx) {
-          value = AppResponsiveSizing.sidebarWidth(ctx);
+          value = ResponsiveSizing.sidebarWidth(ctx);
           return const SizedBox.shrink();
         }),
       );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -24,13 +23,13 @@ class ReportFindingsSection extends StatelessWidget {
       children: [
         Text(
           l10n.reportFindingsSectionTitle,
-          style: AppTypographyToken.level5
+          style: TypographyToken.level5
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         const AppDivider(),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         if (findings.isEmpty)
           _EmptyFindingsView(l10n: l10n)
         else
@@ -40,11 +39,11 @@ class ReportFindingsSection extends StatelessWidget {
               children: [
                 for (var index = 0; index < findings.length; index += 1) ...[
                   SizedBox(
-                    width: AppResponsiveSizing.cardWidth(context),
+                    width: ResponsiveSizing.cardWidth(context),
                     child: _FindingCard(finding: findings[index]),
                   ),
                   if (index != findings.length - 1)
-                    const SizedBox(width: AppSpacingTokens.level3),
+                    const SizedBox(width: Spacing.level3),
                 ],
               ],
             ),
@@ -64,10 +63,10 @@ class _EmptyFindingsView extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+      padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
         color: colors.secondary.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,23 +74,23 @@ class _EmptyFindingsView extends StatelessWidget {
           Icon(
             FLucideIcons.lightbulb,
             color: colors.secondary,
-            size: AppSpacingTokens.level5,
+            size: Spacing.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   l10n.reportFindingsEmptyTitle,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w800),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reportFindingsEmptyBody,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
@@ -126,14 +125,14 @@ class _FindingCard extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 FAvatar.raw(
-                  size: AppResponsiveSizing.scaleByWidth(
+                  size: ResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.1,
                     minValue: 36,
@@ -142,7 +141,7 @@ class _FindingCard extends StatelessWidget {
                   child: Icon(
                     finding.icon,
                     color: palette.solid,
-                    size: AppResponsiveSizing.scaleByWidth(
+                    size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.052,
                       minValue: 18,
@@ -152,7 +151,7 @@ class _FindingCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 FAvatar.raw(
-                  size: AppResponsiveSizing.scaleByWidth(
+                  size: ResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.068,
                     minValue: 24,
@@ -161,7 +160,7 @@ class _FindingCard extends StatelessWidget {
                   child: Icon(
                     FLucideIcons.chevronRight,
                     color: SemanticColor.neutral.resolve(colors),
-                    size: AppResponsiveSizing.scaleByWidth(
+                    size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.042,
                       minValue: 16,
@@ -171,18 +170,18 @@ class _FindingCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             AppSkeletonText(
               text: finding.title,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w800),
               widthFactor: 0.7,
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             AppSkeletonText(
               text: finding.body,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
               maxLines: 3,

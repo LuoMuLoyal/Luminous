@@ -57,7 +57,7 @@ class DailyRecordFormFields extends StatelessWidget {
                 )
                 .toList(),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         if (rules.showValue) ...[
           FTextField(
@@ -65,7 +65,7 @@ class DailyRecordFormFields extends StatelessWidget {
             control: FTextFieldControl.managed(controller: valueController),
             label: Text(dailyRecordValueLabel(l10n, kind)),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         if (rules.showUnit) ...[
           if (kind == DailyRecordKind.water)
@@ -105,7 +105,7 @@ class DailyRecordFormFields extends StatelessWidget {
               control: FTextFieldControl.managed(controller: unitController),
               label: Text(l10n.recordCreateFieldUnit),
             ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         if (rules.showTitle) ...[
           FTextField(
@@ -113,7 +113,7 @@ class DailyRecordFormFields extends StatelessWidget {
             control: FTextFieldControl.managed(controller: titleController),
             label: Text(l10n.recordCreateFieldTitleOptional),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
         ],
         FTextField(
           key: const Key('daily-record-note-field'),

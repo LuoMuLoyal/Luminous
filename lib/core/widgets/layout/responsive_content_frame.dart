@@ -3,9 +3,9 @@ import 'package:luminous/core/design/design.dart';
 
 /// 响应式内容容器。
 ///
-/// - 在桌面端（宽度 >= [AppBreakpoints.desktop]）限制内容最大宽度为
-///   [AppLayoutTokens.maxContentWidth]。
-/// - 默认应用水平方向页面内边距 [AppLayoutTokens.pageHorizontalPadding]。
+/// - 在桌面端（宽度 >= [Breakpoints.desktop]）限制内容最大宽度为
+///   [LayoutScaleResolver.maxContentWidth]。
+/// - 默认应用水平方向页面内边距 [LayoutScaleResolver.pageHorizontalPadding]。
 /// - 通过 [padding] 可完全覆盖默认内边距；通过 [expand] 可让内容撑满可用空间。
 class ResponsiveContentFrame extends StatelessWidget {
   const ResponsiveContentFrame({
@@ -26,12 +26,12 @@ class ResponsiveContentFrame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final layout = AppLayoutTokens.resolve(width);
+    final layout = LayoutScaleResolver.resolve(width);
 
     final content = Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: width >= AppBreakpoints.desktop
+          maxWidth: width >= Breakpoints.desktop
               ? layout.maxContentWidth
               : double.infinity,
         ),

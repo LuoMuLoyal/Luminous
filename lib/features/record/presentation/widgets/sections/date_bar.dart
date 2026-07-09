@@ -51,7 +51,7 @@ class RecordDateBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level2),
+        const SizedBox(width: Spacing.level2),
         _CalendarPickerButton(
           selectedDate: dashboard.selectedDate,
           onDateSelected: onDateSelected,
@@ -159,8 +159,8 @@ class _CalendarPickerButton extends StatelessWidget {
     final picked = await showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(
-        maxWidth: AppLayoutTokens.dialogMaxWidth,
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        maxWidth: LayoutScaleResolver.dialogMaxWidth,
+        padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(
           height: 400,
           child: FCalendar.splitGrid(

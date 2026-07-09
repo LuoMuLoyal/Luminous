@@ -31,29 +31,29 @@ class MealAnalysisStatusBadge extends StatelessWidget {
         decoration: ShapeDecoration(
           color: palette.muted,
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+            borderRadius: BorderRadius.circular(RadiusTokens.level2),
           ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level2,
-            vertical: AppSpacingTokens.level1,
+            horizontal: Spacing.level2,
+            vertical: Spacing.level1,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: foreground, size: AppSpacingTokens.level3),
-              const SizedBox(width: AppSpacingTokens.level1),
+              Icon(icon, color: foreground, size: Spacing.level3),
+              const SizedBox(width: Spacing.level1),
               Text(
                 text,
                 style: large
-                    ? AppTypographyToken.level4
+                    ? TypographyToken.level4
                           .body(context)
                           .copyWith(
                             color: foreground,
                             fontWeight: FontWeight.w600,
                           )
-                    : AppTypographyToken.level3
+                    : TypographyToken.level3
                           .body(context)
                           .copyWith(
                             color: foreground,

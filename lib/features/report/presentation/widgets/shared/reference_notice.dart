@@ -14,24 +14,24 @@ class ReportReferenceNotice extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: context.theme.colors.primary.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+          borderRadius: BorderRadius.circular(RadiusTokens.level4),
           border: Border.all(
             color: context.theme.colors.primary.withValues(alpha: 0.16),
           ),
         ),
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
             Icon(
               FLucideIcons.triangleAlert,
               color: context.theme.colors.primary,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
                 l10n.reportReferenceNotice,
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(
                       color: context.theme.colors.primary,

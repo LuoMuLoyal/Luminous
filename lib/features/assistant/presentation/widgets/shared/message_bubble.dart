@@ -50,23 +50,23 @@ class AssistantMessageBubble extends StatelessWidget {
       alignment: align,
       child: ConstrainedBox(
         constraints: const BoxConstraints(
-          maxWidth: AppBreakpoints.assistantContent,
+          maxWidth: Breakpoints.assistantContent,
         ),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: background,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+            borderRadius: BorderRadius.circular(RadiusTokens.level4),
             border: Border.all(color: colors.border),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isUser)
                   Text(
                     content,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(color: foreground),
                   )
@@ -76,28 +76,28 @@ class AssistantMessageBubble extends StatelessWidget {
                     selectable: true,
                     styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
                         .copyWith(
-                          p: AppTypographyToken.level4
+                          p: TypographyToken.level4
                               .body(context)
                               .copyWith(color: foreground),
-                          blockquote: AppTypographyToken.level3
+                          blockquote: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
                   ),
                 if (isStreaming) ...[
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   Text(
                     AppLocalizations.of(context)!.assistantStreamingLabel,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
                 ],
                 if (!isStreaming && usedTools.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   Wrap(
-                    spacing: AppSpacingTokens.level2,
-                    runSpacing: AppSpacingTokens.level2,
+                    spacing: Spacing.level2,
+                    runSpacing: Spacing.level2,
                     children: [
                       for (final tool in usedTools)
                         AssistantToolChip(
@@ -109,14 +109,12 @@ class AssistantMessageBubble extends StatelessWidget {
                 if (!isStreaming &&
                     !isUser &&
                     proposedActions.any((proposal) => proposal.isVisible)) ...[
-                  const SizedBox(height: AppSpacingTokens.level4),
+                  const SizedBox(height: Spacing.level4),
                   for (final proposal in proposedActions.where(
                     (proposal) => proposal.isVisible,
                   ))
                     Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.level3,
-                      ),
+                      padding: const EdgeInsets.only(bottom: Spacing.level3),
                       child: AssistantProposalCard(
                         messageId: messageId,
                         proposal: proposal,

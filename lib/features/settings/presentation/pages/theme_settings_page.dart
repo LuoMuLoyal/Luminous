@@ -33,7 +33,7 @@ class ThemeSettingsPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SettingsSectionLabel(label: l10n.settingsThemeModeSectionTitle),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -76,11 +76,11 @@ class ThemeSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsThemeFamilySectionTitle,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

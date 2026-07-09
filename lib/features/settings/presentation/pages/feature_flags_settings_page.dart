@@ -31,9 +31,9 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
-                    left: AppSpacingTokens.level2,
-                    right: AppSpacingTokens.level2,
-                    bottom: AppSpacingTokens.level4,
+                    left: Spacing.level2,
+                    right: Spacing.level2,
+                    bottom: Spacing.level4,
                   ),
                   child: Row(
                     children: [
@@ -46,7 +46,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                       Expanded(
                         child: Text(
                           l10n.settingsFeatureFlagsWarning,
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(
                                 color: context.theme.colors.mutedForeground,
@@ -57,7 +57,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   ),
                 ),
                 SettingsSectionLabel(label: l10n.settingsFeatureFlagsAiSection),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -96,11 +96,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsAssistantSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -119,11 +119,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsMedicineSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -142,11 +142,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsFeatureFlagsReportSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -202,16 +202,16 @@ class _ProviderSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsFeatureFlagsAiProvider,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
               ),

@@ -39,7 +39,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +63,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +138,7 @@ class _ReminderDetailBody extends ConsumerWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -146,30 +146,30 @@ class _ReminderDetailBody extends ConsumerWidget {
             child: Row(
               children: [
                 FAvatar.raw(
-                  size: AppSpacingTokens.level9,
+                  size: Spacing.level9,
                   child: Icon(
                     FLucideIcons.pillBottle,
                     color: SemanticColor.primary.resolve(colors),
-                    size: AppSpacingTokens.level6,
+                    size: Spacing.level6,
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level4),
+                const SizedBox(width: Spacing.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         data.medicine.displayName,
-                        style: AppTypographyToken.level5
+                        style: TypographyToken.level5
                             .body(context)
                             .copyWith(fontWeight: FontWeight.w800),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level1),
+                      const SizedBox(height: Spacing.level1),
                       Text(
                         medicineDoseText(l10n, data.medicine),
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                         maxLines: 1,
@@ -178,7 +178,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 FBadge.raw(
                   builder: (context, style) {
                     final pillColor = isActive
@@ -193,14 +193,14 @@ class _ReminderDetailBody extends ConsumerWidget {
                         color: resolvedColor.withValues(alpha: 0.12),
                         shape: RoundedSuperellipseBorder(
                           borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.level2,
+                            RadiusTokens.level2,
                           ),
                         ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.level2,
-                          vertical: AppSpacingTokens.level1,
+                          horizontal: Spacing.level2,
+                          vertical: Spacing.level1,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -209,7 +209,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                               isActive
                                   ? l10n.medicineReminderEnabledStatus
                                   : l10n.medicineReminderDisabledStatus,
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(
                                     color: foreground,
@@ -228,7 +228,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           FCard.raw(
             child: Column(
               children: [
@@ -286,12 +286,12 @@ class _ReminderDetailBody extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           ReminderTodayLogPanel(logs: data.todayLogs),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           ReminderDeliveryLogPanel(logs: data.deliveryLogs),
           if (reminders.isNotEmpty) ...[
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             FButton(
               key: const Key('medicine-reminder-delete-button'),
               variant: FButtonVariant.destructive,

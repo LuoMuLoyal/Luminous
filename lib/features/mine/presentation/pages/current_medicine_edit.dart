@@ -166,7 +166,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +190,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,7 +211,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,13 +224,13 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -240,14 +240,14 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                         values: HealthMedicineSource.values,
                         onChanged: (v) => source.value = v,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: sourceRefIdController,
                         ),
                         label: Text(l10n.mineEditFieldSourceRefId),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         key: const Key('medicine-displayname-field'),
                         control: FTextFieldControl.managed(
@@ -255,35 +255,35 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                         ),
                         label: Text(l10n.mineEditFieldDisplayName),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: strengthTextController,
                         ),
                         label: Text(l10n.mineEditFieldStrengthText),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: doseTextController,
                         ),
                         label: Text(l10n.mineEditFieldDoseText),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: routeController,
                         ),
                         label: Text(l10n.mineEditFieldRoute),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: startedAtController,
                         ),
                         label: Text(l10n.mineEditFieldStartedAt),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: noteController,
@@ -291,14 +291,14 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldNote),
                         maxLines: 3,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level5),
+                      const SizedBox(height: Spacing.level5),
                       FButton(
                         key: const Key('medicine-save-button'),
                         onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                       if (!isNew) ...[
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FButton(
                           key: const Key('medicine-delete-button'),
                           variant: FButtonVariant.destructive,

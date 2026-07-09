@@ -4,7 +4,7 @@
 /// thresholds where the page structure (columns, sidebars, max content width)
 /// changes; color, spacing, radius, and typography values should come from
 /// the current Forui theme or the dedicated token files instead.
-abstract final class AppBreakpoints {
+abstract final class Breakpoints {
   static const double mobile = 600;
   static const double tablet = 960;
   static const double desktop = 1200;

@@ -22,29 +22,29 @@ class _SafetyEngineSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineSafetyPanelTitle,
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .display(context)
               .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
         ),
-        const SizedBox(height: AppSpacingTokens.level1),
+        const SizedBox(height: Spacing.level1),
         Text(
           l10n.medicineSafetyPanelSubtitle,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: context.theme.colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _SafetySummaryBanner(summary: summary),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 Wrap(
-                  spacing: AppSpacingTokens.level2,
-                  runSpacing: AppSpacingTokens.level2,
+                  spacing: Spacing.level2,
+                  runSpacing: Spacing.level2,
                   children: [
                     _SafetyMetricBadge(
                       label: l10n.medicineRiskCheckCurrentMedicinesLabel,
@@ -61,9 +61,9 @@ class _SafetyEngineSection extends StatelessWidget {
                   ],
                 ),
                 if (visibleAlerts.isNotEmpty) ...[
-                  const SizedBox(height: AppSpacingTokens.level4),
+                  const SizedBox(height: Spacing.level4),
                   const AppDivider(),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   Column(
                     children: [
                       for (
@@ -117,17 +117,17 @@ class _SafetySummaryBanner extends StatelessWidget {
       decoration: ShapeDecoration(
         color: accent.withValues(alpha: 0.08),
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+          borderRadius: BorderRadius.circular(RadiusTokens.level3),
           side: BorderSide(color: accent.withValues(alpha: 0.18)),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FAvatar.raw(
-              size: AppSpacingTokens.level8,
+              size: Spacing.level8,
               style: .delta(backgroundColor: iconBackgroundColor),
               child: Icon(
                 summary.icon,
@@ -136,31 +136,31 @@ class _SafetySummaryBanner extends StatelessWidget {
                 size: 18,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     summary.title,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(
                           fontWeight: FontWeight.w800,
                           color: titleColor,
                         ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     summary.body,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             FButton(
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
@@ -191,14 +191,14 @@ class _SafetyMetricBadge extends StatelessWidget {
         decoration: .shapeDelta(
           color: colors.secondary.withValues(alpha: 0.08),
           shape: RoundedSuperellipseBorder(
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+            borderRadius: BorderRadius.circular(RadiusTokens.level2),
             side: BorderSide(color: colors.border),
           ),
         ),
       ),
       child: Text(
         '$label  $value',
-        style: AppTypographyToken.level3
+        style: TypographyToken.level3
             .body(context)
             .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
       ),
@@ -219,12 +219,12 @@ class _SafetyAlertRow extends StatelessWidget {
     return FTappable(
       onPress: () => context.push(AppRoutes.medicineRiskCheck),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FAvatar.raw(
-              size: AppSpacingTokens.level8,
+              size: Spacing.level8,
               style: .delta(
                 backgroundColor: alert.color
                     .resolve(colors)
@@ -233,35 +233,35 @@ class _SafetyAlertRow extends StatelessWidget {
               child: Icon(
                 alert.icon,
                 color: alert.color.resolve(colors),
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     medicineAlertTitle(l10n, alert),
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w800),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     medicineAlertBody(l10n, alert),
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ],
         ),

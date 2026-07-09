@@ -38,17 +38,17 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               l10n.recordImageSectionTitle,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Row(
               children: [
                 _AttachmentPreview(
@@ -56,7 +56,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                   existingAttachment: existingAttachment,
                   label: l10n.recordImageAttachedLabel,
                 ),
-                const SizedBox(width: AppSpacingTokens.level4),
+                const SizedBox(width: Spacing.level4),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,25 +65,25 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                         hasAttachment
                             ? l10n.recordImageAttachedLabel
                             : l10n.recordImageEmptyLabel,
-                        style: AppTypographyToken.level5
+                        style: TypographyToken.level5
                             .body(context)
                             .copyWith(fontWeight: FontWeight.w700),
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (fileName != null && fileName.trim().isNotEmpty) ...[
-                        const SizedBox(height: AppSpacingTokens.level1),
+                        const SizedBox(height: Spacing.level1),
                         Text(
                           fileName,
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       Wrap(
-                        spacing: AppSpacingTokens.level3,
-                        runSpacing: AppSpacingTokens.level2,
+                        spacing: Spacing.level3,
+                        runSpacing: Spacing.level2,
                         children: [
                           FButton(
                             variant: FButtonVariant.outline,
@@ -136,7 +136,7 @@ class _AttachmentPreview extends StatelessWidget {
     final imageUrl = existingAttachment?.displayUrl;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+      borderRadius: BorderRadius.circular(RadiusTokens.level3),
       child: SizedBox(
         width: width,
         height: height,

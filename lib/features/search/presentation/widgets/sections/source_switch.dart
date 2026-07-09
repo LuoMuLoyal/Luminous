@@ -28,7 +28,7 @@ class SourceSwitch extends StatelessWidget {
                 padding: EdgeInsets.only(
                   right: source == MedicineSearchSource.values.last
                       ? 0
-                      : AppSpacingTokens.level3,
+                      : Spacing.level3,
                 ),
                 child: FButton.raw(
                   onPress: () => onChanged(source),
@@ -53,8 +53,8 @@ class SourceSwitch extends StatelessWidget {
                     contentStyle: const .delta(
                       padding: .value(
                         EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.level4,
-                          vertical: AppSpacingTokens.level3,
+                          horizontal: Spacing.level4,
+                          vertical: Spacing.level3,
                         ),
                       ),
                     ),
@@ -62,7 +62,7 @@ class SourceSwitch extends StatelessWidget {
                   child: Text(
                     sourceLabel(l10n, source),
                     textAlign: TextAlign.center,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(
                           color: source == selectedSource

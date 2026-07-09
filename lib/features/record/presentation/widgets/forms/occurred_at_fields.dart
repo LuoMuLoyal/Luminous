@@ -37,7 +37,7 @@ class RecordOccurredAtFields extends StatelessWidget {
             },
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FTimeField.picker(
           key: const Key('record-time-field'),
           label: Text(l10n.recordCreateFieldTime),

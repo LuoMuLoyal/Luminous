@@ -26,20 +26,20 @@ class RecordNewEntryPanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-new-entry-panel'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               l10n.recordNewEntrySectionTitle,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Wrap(
-              spacing: AppSpacingTokens.level3,
-              runSpacing: AppSpacingTokens.level3,
+              spacing: Spacing.level3,
+              runSpacing: Spacing.level3,
               children: actions
                   .take(7)
                   .map(
@@ -51,7 +51,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                   )
                   .toList(),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FButton(
               onPress: onNewEntry,
               variant: FButtonVariant.ghost,
@@ -70,7 +70,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                   ),
                 ]),
                 contentStyle: const .delta(
-                  padding: .value(EdgeInsets.all(AppSpacingTokens.level4)),
+                  padding: .value(EdgeInsets.all(Spacing.level4)),
                 ),
               ),
               prefix: Icon(
@@ -81,7 +81,7 @@ class RecordNewEntryPanel extends StatelessWidget {
               child: Flexible(
                 child: Text(
                   l10n.recordVoiceAction,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(
                         color: context.theme.colors.primary,
@@ -125,8 +125,8 @@ class _NewEntryChip extends StatelessWidget {
         contentStyle: const .delta(
           padding: .value(
             EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level3,
-              vertical: AppSpacingTokens.level3,
+              horizontal: Spacing.level3,
+              vertical: Spacing.level3,
             ),
           ),
         ),
@@ -135,10 +135,10 @@ class _NewEntryChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(action.icon, color: action.accent.resolve(colors), size: 16),
-          const SizedBox(width: AppSpacingTokens.level2),
+          const SizedBox(width: Spacing.level2),
           Text(
             label,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(
                   color: action.accent.resolve(colors),

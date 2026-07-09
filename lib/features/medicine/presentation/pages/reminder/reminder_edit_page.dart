@@ -151,8 +151,8 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     }) => showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(
-        maxWidth: AppLayoutTokens.dialogMaxWidth,
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        maxWidth: LayoutScaleResolver.dialogMaxWidth,
+        padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(
           height: 360,
           child: FCalendar.grid(
@@ -206,7 +206,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         side: FLayout.btt,
         builder: (sheetContext) => SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -218,7 +218,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 FButton(
                   onPress: () =>
                       Navigator.of(sheetContext).pop(timeController.value),
@@ -329,7 +329,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,7 +362,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -496,16 +496,16 @@ class _MedicineSelectorPrompt extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               l10n.medicineReminderSelectMedicineHint,
-              style: AppTypographyToken.level4.body(context),
+              style: TypographyToken.level4.body(context),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FButton(
               onPress: onSelect,
               child: Text(l10n.medicineReminderSelectMedicineAction),

@@ -38,9 +38,11 @@ class TodayPage extends ConsumerWidget {
         bottom: false,
         child: LayoutBuilder(
           builder: (context, constraints) {
-            final isDesktop = constraints.maxWidth >= AppBreakpoints.desktop;
+            final isDesktop = constraints.maxWidth >= Breakpoints.desktop;
             final maxWidth = isDesktop
-                ? AppLayoutTokens.resolve(constraints.maxWidth).maxContentWidth
+                ? LayoutScaleResolver.resolve(
+                    constraints.maxWidth,
+                  ).maxContentWidth
                 : constraints.maxWidth;
 
             return Center(

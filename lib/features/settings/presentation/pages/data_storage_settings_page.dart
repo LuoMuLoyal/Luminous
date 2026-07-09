@@ -33,7 +33,7 @@ class DataStorageSettingsPage extends ConsumerWidget {
                 SettingsSectionLabel(
                   label: l10n.settingsDataStorageRetentionSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -49,11 +49,11 @@ class DataStorageSettingsPage extends ConsumerWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsDataStorageImageQualitySection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
@@ -69,11 +69,11 @@ class DataStorageSettingsPage extends ConsumerWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 SettingsSectionLabel(
                   label: l10n.settingsDataStorageSyncSection,
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

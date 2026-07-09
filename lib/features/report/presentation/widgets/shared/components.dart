@@ -7,7 +7,7 @@ class ReportMetricTrack extends StatelessWidget {
     super.key,
     required this.values,
     required this.color,
-    this.height = AppSpacingTokens.level7,
+    this.height = Spacing.level7,
   });
 
   final List<double> values;
@@ -41,17 +41,17 @@ class ReportMetricTrack extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: resolvedColor.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(
-                          AppRadiusTokens.levelFull,
+                          RadiusTokens.levelFull,
                         ),
                         border: Border.all(color: context.theme.colors.border),
                       ),
-                      child: const SizedBox(width: AppSpacingTokens.level1),
+                      child: const SizedBox(width: Spacing.level1),
                     ),
                   ),
                 ),
               ),
               if (index != visibleValues.length - 1)
-                const SizedBox(width: AppSpacingTokens.level1),
+                const SizedBox(width: Spacing.level1),
             ],
           ],
         ),

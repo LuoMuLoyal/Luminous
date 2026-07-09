@@ -37,7 +37,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: AppAnimationDurations.widgetExpand,
+      duration: DurationTokens.widgetExpand,
       vsync: this,
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
@@ -92,7 +92,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
         key: const Key('today-summary-card'),
         style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -103,19 +103,19 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                   for (var index = 0; index < metrics.length; index += 1) ...[
                     Expanded(child: _SummaryMetric(item: metrics[index])),
                     if (index < metrics.length - 1)
-                      const SizedBox(width: AppSpacingTokens.level3),
+                      const SizedBox(width: Spacing.level3),
                   ],
                 ],
               ),
               // --- Divider ---
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               const FDivider(),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               // --- AI narrative (collapsible) ---
               if (content.summary != null) ...[
                 Text(
                   content.summary!,
-                  style: AppTypographyToken.level4
+                  style: TypographyToken.level4
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                   maxLines: _aiExpanded ? null : 2,
@@ -126,7 +126,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ] else if (!isPreview) ...[
                 Text(
                   l10n.todaySummaryFallbackNarrative,
-                  style: AppTypographyToken.level4
+                  style: TypographyToken.level4
                       .body(context)
                       .copyWith(
                         color: colors.mutedForeground,
@@ -135,7 +135,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 ),
               ],
               if (hasAiContent && !_aiExpanded) ...[
-                const SizedBox(height: AppSpacingTokens.level2),
+                const SizedBox(height: Spacing.level2),
                 _AiExpandButton(onTap: _toggleAi, l10n: l10n),
               ],
               AnimatedBuilder(
@@ -145,28 +145,24 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     for (final bullet in content.bullets.take(3))
                       Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: AppSpacingTokens.level2,
-                        ),
+                        padding: const EdgeInsets.only(bottom: Spacing.level2),
                         child: _SummaryBullet(item: bullet),
                       ),
                     if (content.footer case final footer?)
                       Padding(
-                        padding: const EdgeInsets.only(
-                          top: AppSpacingTokens.level1,
-                        ),
+                        padding: const EdgeInsets.only(top: Spacing.level1),
                         child: Text(
                           footer,
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
                       ),
                     if (_aiExpanded) ...[
-                      const SizedBox(height: AppSpacingTokens.level2),
+                      const SizedBox(height: Spacing.level2),
                       _AiExpandButton(
                         onTap: _toggleAi,
                         l10n: l10n,
@@ -178,7 +174,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ),
               // --- AI action button ---
               if (!isPreview) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 Align(
                   alignment: Alignment.centerRight,
                   child: FButton(
@@ -254,17 +250,17 @@ class _AiExpandButton extends StatelessWidget {
             isCollapse
                 ? l10n.todaySuggestionHideEvidence
                 : l10n.todaySuggestionShowEvidence,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
           ),
-          const SizedBox(width: AppSpacingTokens.level1),
+          const SizedBox(width: Spacing.level1),
           AnimatedRotation(
             turns: isCollapse ? 0.25 : 0,
-            duration: AppAnimationDurations.widgetQuick,
+            duration: DurationTokens.widgetQuick,
             child: Icon(
               FLucideIcons.chevronRight,
-              size: AppSpacingTokens.level4,
+              size: Spacing.level4,
               color: colors.primary,
             ),
           ),
@@ -286,12 +282,12 @@ class _SummaryMetric extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level3,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,19 +295,19 @@ class _SummaryMetric extends StatelessWidget {
             Icon(
               item.icon,
               color: item.color.resolve(colors),
-              size: AppSpacingTokens.level4,
+              size: Spacing.level4,
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             Text(
               item.label,
-              style: AppTypographyToken.level2
+              style: TypographyToken.level2
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
-            const SizedBox(height: AppSpacingTokens.level1),
+            const SizedBox(height: Spacing.level1),
             Text(
               item.value,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w800),
             ),
@@ -335,18 +331,18 @@ class _SummaryBullet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: AppSpacingTokens.level1),
+          padding: const EdgeInsets.only(top: Spacing.level1),
           child: Icon(
             item.icon,
             color: item.color.resolve(colors),
-            size: AppSpacingTokens.level4,
+            size: Spacing.level4,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         Expanded(
           child: Text(
             item.text,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
           ),

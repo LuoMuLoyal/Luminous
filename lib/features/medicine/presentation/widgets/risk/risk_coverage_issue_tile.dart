@@ -23,30 +23,30 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
     final colors = context.theme.colors;
 
     final tile = Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             FLucideIcons.circleAlert,
             color: context.theme.colors.primary,
-            size: AppSpacingTokens.level5,
+            size: Spacing.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   issue.medicineName,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w800),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),

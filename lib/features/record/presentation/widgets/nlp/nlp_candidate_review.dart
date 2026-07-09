@@ -35,25 +35,25 @@ class RecordNlpCandidateReview extends StatelessWidget {
       children: [
         Text(
           l10n.recordNlpCandidatesTitle(state.candidates.length),
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .display(context)
               .copyWith(fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: AppSpacingTokens.level2),
+        const SizedBox(height: Spacing.level2),
         Text(
           meta.confirmationHint,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.foreground),
         ),
-        const SizedBox(height: AppSpacingTokens.level2),
+        const SizedBox(height: Spacing.level2),
         Text(
           l10n.recordNlpSelectedCountHint(state.selectedCount),
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var index = 0; index < state.candidates.length; index += 1) ...[
           _CandidateTile(
             index: index,
@@ -64,7 +64,7 @@ class RecordNlpCandidateReview extends StatelessWidget {
             onRemove: () => onRemove(index),
           ),
           if (index < state.candidates.length - 1)
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
         ],
       ],
     );
@@ -95,7 +95,7 @@ class _CandidateTile extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -108,24 +108,24 @@ class _CandidateTile extends StatelessWidget {
                   enabled: enabled,
                   onChange: enabled ? onToggleSelected : null,
                 ),
-                const SizedBox(width: AppSpacingTokens.level2),
+                const SizedBox(width: Spacing.level2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         _kindLabel(l10n, item.kind),
-                        style: AppTypographyToken.level5
+                        style: TypographyToken.level5
                             .body(context)
                             .copyWith(
                               color: context.theme.colors.primary,
                               fontWeight: FontWeight.w800,
                             ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level1),
+                      const SizedBox(height: Spacing.level1),
                       Text(
                         _candidateTitle(l10n, item),
-                        style: AppTypographyToken.level4
+                        style: TypographyToken.level4
                             .body(context)
                             .copyWith(fontWeight: FontWeight.w700),
                       ),
@@ -139,25 +139,25 @@ class _CandidateTile extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             RecordNlpCandidateEditor(
               index: index,
               item: item,
               enabled: enabled,
               onChanged: onUpdate,
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             Text(
               item.rationale,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
             if (item.lastErrorMessage case final errMsg?) ...[
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Text(
                 l10n.recordNlpCandidateSaveFailedHint(errMsg),
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.destructive),
               ),

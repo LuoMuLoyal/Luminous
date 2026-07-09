@@ -7,8 +7,8 @@ class TodayGlyphTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = AppSpacingTokens.level8 + AppSpacingTokens.level2,
-    this.radius = AppRadiusTokens.level3,
+    this.size = Spacing.level8 + Spacing.level2,
+    this.radius = RadiusTokens.level3,
     this.gradient = true,
   });
 
@@ -53,7 +53,7 @@ class TodayMiniTrendChart extends StatelessWidget {
     super.key,
     required this.points,
     required this.color,
-    this.height = AppSpacingTokens.level9,
+    this.height = Spacing.level9,
   });
 
   final List<double> points;
@@ -67,14 +67,14 @@ class TodayMiniTrendChart extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: SizedBox(
         height: height,
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level2,
-            vertical: AppSpacingTokens.level2,
+            horizontal: Spacing.level2,
+            vertical: Spacing.level2,
           ),
           child: Column(
             children: [
@@ -83,7 +83,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                   child: Icon(
                     FLucideIcons.chartLine,
                     color: color.withValues(alpha: 0.74),
-                    size: AppSpacingTokens.level5,
+                    size: Spacing.level5,
                   ),
                 ),
               ),
@@ -97,14 +97,14 @@ class TodayMiniTrendChart extends StatelessWidget {
                               ? color
                               : context.theme.colors.primary,
                           borderRadius: BorderRadius.circular(
-                            AppRadiusTokens.levelFull,
+                            RadiusTokens.levelFull,
                           ),
                         ),
-                        child: const SizedBox(height: AppSpacingTokens.level1),
+                        child: const SizedBox(height: Spacing.level1),
                       ),
                     ),
                     if (index < tickCount - 1)
-                      const SizedBox(width: AppSpacingTokens.level1),
+                      const SizedBox(width: Spacing.level1),
                   ],
                 ],
               ),

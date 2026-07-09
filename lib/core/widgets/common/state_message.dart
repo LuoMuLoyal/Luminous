@@ -26,7 +26,7 @@ class AppStateMessageView extends StatelessWidget {
     this.onAction,
     this.actionKey,
     this.tone = AppStateTone.neutral,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.level5),
+    this.padding = const EdgeInsets.all(Spacing.level5),
     this.maxWidth,
   });
 
@@ -60,28 +60,28 @@ class AppStateMessageView extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Icon(icon, color: accent, size: 28),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Text(
                 title,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Text(
                 description,
-                style: AppTypographyToken.level4
+                style: TypographyToken.level4
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 FButton(
                   key: actionKey,
                   onPress: onAction,
@@ -150,8 +150,8 @@ class AppStateErrorView extends StatelessWidget {
       onAction: onAction,
       tone: tone,
       padding: compact
-          ? const EdgeInsets.all(AppSpacingTokens.level4)
-          : const EdgeInsets.all(AppSpacingTokens.level5),
+          ? const EdgeInsets.all(Spacing.level4)
+          : const EdgeInsets.all(Spacing.level5),
     );
 
     if (compact) {
@@ -170,9 +170,7 @@ class AppStateErrorView extends StatelessWidget {
           height: height,
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: message,

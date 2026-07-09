@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/spacing_tokens.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
@@ -55,7 +55,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 IgnorePointer(
                   ignoring: !settings.sleepReminderEnabled,
                   child: Opacity(
@@ -75,7 +75,7 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FTimeField.picker(
                           label: Text(l10n.settingsNotificationsSleepWakeTime),
                           enabled: settings.sleepReminderEnabled,

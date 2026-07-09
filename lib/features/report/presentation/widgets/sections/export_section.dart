@@ -27,8 +27,8 @@ class ReportExportSection extends StatelessWidget {
 
   double _exportCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    if (width >= AppBreakpoints.desktop) return 124;
-    if (width >= AppBreakpoints.tablet) return 112;
+    if (width >= Breakpoints.desktop) return 124;
+    if (width >= Breakpoints.tablet) return 112;
     return 104;
   }
 
@@ -41,28 +41,28 @@ class ReportExportSection extends StatelessWidget {
       children: [
         Text(
           l10n.reportExportSectionTitle,
-          style: AppTypographyToken.level5
+          style: TypographyToken.level5
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
         if (isDataInsufficient) ...[
-          const SizedBox(height: AppSpacingTokens.level2),
+          const SizedBox(height: Spacing.level2),
           Text(
             l10n.reportExportInsufficientReason,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
           ),
         ],
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: actions.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: AppSpacingTokens.level3,
-            mainAxisSpacing: AppSpacingTokens.level3,
+            crossAxisSpacing: Spacing.level3,
+            mainAxisSpacing: Spacing.level3,
             mainAxisExtent: _exportCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -123,18 +123,18 @@ class _ExportCard extends StatelessWidget {
       ),
       child: FCard.raw(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Row(
             children: [
               FAvatar.raw(
-                size: AppSpacingTokens.level8,
+                size: Spacing.level8,
                 child: Icon(
                   action.icon,
                   color: action.color.resolve(colors),
-                  size: AppSpacingTokens.level5,
+                  size: Spacing.level5,
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level4),
+              const SizedBox(width: Spacing.level4),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -142,16 +142,16 @@ class _ExportCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: AppTypographyToken.level5
+                      style: TypographyToken.level5
                           .body(context)
                           .copyWith(fontWeight: FontWeight.w700),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level1),
+                    const SizedBox(height: Spacing.level1),
                     Text(
                       subtitle,
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                       maxLines: 1,

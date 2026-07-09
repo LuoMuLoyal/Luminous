@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
@@ -31,8 +30,8 @@ class ReportMetricsGrid extends StatelessWidget {
       itemCount: displayMetrics.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: AppSpacingTokens.level3,
-        mainAxisSpacing: AppSpacingTokens.level3,
+        crossAxisSpacing: Spacing.level3,
+        mainAxisSpacing: Spacing.level3,
         mainAxisExtent: _metricCardHeight(context),
       ),
       itemBuilder: (context, index) {
@@ -116,8 +115,8 @@ class ReportMetricsGrid extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     // Values account for: FCard internal padding + button padding + Column content
     // (title row ~36 + value row ~32 + status row ~22 + track 22 + gaps 18 + safety 20)
-    if (width >= AppBreakpoints.desktop) return 230;
-    if (width >= AppBreakpoints.tablet) return 234;
+    if (width >= Breakpoints.desktop) return 230;
+    if (width >= Breakpoints.tablet) return 234;
     return 234;
   }
 
@@ -155,14 +154,14 @@ class _MetricCard extends StatelessWidget {
       ),
       child: FCard.raw(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   FAvatar.raw(
-                    size: AppResponsiveSizing.scaleByWidth(
+                    size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.084,
                       minValue: 28,
@@ -171,7 +170,7 @@ class _MetricCard extends StatelessWidget {
                     child: Icon(
                       metric.icon,
                       color: metric.color.resolve(colors),
-                      size: AppResponsiveSizing.scaleByWidth(
+                      size: ResponsiveSizing.scaleByWidth(
                         context,
                         fraction: 0.046,
                         minValue: 16,
@@ -179,11 +178,11 @@ class _MetricCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.level2),
+                  const SizedBox(width: Spacing.level2),
                   Expanded(
                     child: Text(
                       title,
-                      style: AppTypographyToken.level5
+                      style: TypographyToken.level5
                           .body(context)
                           .copyWith(fontWeight: FontWeight.w700),
                       maxLines: 1,
@@ -192,14 +191,14 @@ class _MetricCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level3),
+              const SizedBox(height: Spacing.level3),
               Wrap(
-                spacing: AppSpacingTokens.level1,
+                spacing: Spacing.level1,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
                   AppSkeletonText(
                     text: metric.value,
-                    style: AppTypographyToken.level8
+                    style: TypographyToken.level8
                         .display(context)
                         .copyWith(
                           color: metric.color.resolve(colors),
@@ -209,39 +208,37 @@ class _MetricCard extends StatelessWidget {
                   ),
                   if (metric.unit.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.level1,
-                      ),
+                      padding: const EdgeInsets.only(bottom: Spacing.level1),
                       child: Text(
                         metric.unit,
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level1),
+              const SizedBox(height: Spacing.level1),
               Row(
                 children: [
                   AppSkeletonSlot(
                     skeleton: const AppInlineSkeletonBlock(
                       height: 20,
                       widthFactor: 0.36,
-                      radius: AppRadiusTokens.level2,
+                      radius: RadiusTokens.level2,
                     ),
                     child: _MetricBadge(
                       label: reportStatusLabel(l10n, metric.status),
                       color: reportStatusColor(metric.status),
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.level2),
+                  const SizedBox(width: Spacing.level2),
                   Icon(directionIcon, size: 14, color: directionColor),
-                  const SizedBox(width: AppSpacingTokens.level1),
+                  const SizedBox(width: Spacing.level1),
                   Expanded(
                     child: AppSkeletonText(
                       text: metric.delta,
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                       maxLines: 1,
@@ -255,7 +252,7 @@ class _MetricCard extends StatelessWidget {
               AppSkeletonSlot(
                 skeleton: const AppInlineSkeletonBlock(
                   height: 22,
-                  radius: AppRadiusTokens.level2,
+                  radius: RadiusTokens.level2,
                 ),
                 child: ReportMetricTrack(
                   values: metric.sparkline,
@@ -292,12 +289,12 @@ class _MetricBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level2,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: palette.solid, fontWeight: FontWeight.w800),
           maxLines: 1,

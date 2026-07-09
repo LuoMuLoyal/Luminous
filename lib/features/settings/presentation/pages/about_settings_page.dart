@@ -28,7 +28,7 @@ class AboutSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,34 +45,34 @@ class AboutSettingsPage extends ConsumerWidget {
                       color: colors.primary,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level4),
+                  const SizedBox(height: Spacing.level4),
                   Text(
                     infoAsync.asData?.value?.name ?? 'Luminous',
-                    style: AppTypographyToken.level6
+                    style: TypographyToken.level6
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level2),
+                  const SizedBox(height: Spacing.level2),
                   Text(
                     '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
                   if (buildDate != null && buildDate.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacingTokens.level1),
+                    const SizedBox(height: Spacing.level1),
                     Text(
                       l10n.settingsAboutBuildNumberLabel(buildDate),
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                     ),
                   ],
                   if (description != null && description.isNotEmpty) ...[
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     Text(
                       description,
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.foreground),
                       textAlign: TextAlign.center,
@@ -81,7 +81,7 @@ class AboutSettingsPage extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [

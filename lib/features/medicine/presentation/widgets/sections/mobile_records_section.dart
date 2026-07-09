@@ -23,14 +23,14 @@ class _MedicineRecordsSection extends StatelessWidget {
       children: [
         Text(
           l10n.medicineTodayPlanTitle,
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .display(context)
               .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -41,9 +41,9 @@ class _MedicineRecordsSection extends StatelessWidget {
                   l10n: l10n,
                   onMarkDose: onMarkDose,
                 ),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 const AppDivider(),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
                   _DrugBoxEmpty(l10n: l10n)
                 else
@@ -94,38 +94,38 @@ class _TodayPlanRow extends StatelessWidget {
         onMarkDose != null && takenRequest != null && skippedRequest != null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _MedicationAvatar(item: item, size: AppSpacingTokens.level8),
-              const SizedBox(width: AppSpacingTokens.level3),
+              _MedicationAvatar(item: item, size: Spacing.level8),
+              const SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       _itemName(l10n, item),
-                      style: AppTypographyToken.level4
+                      style: TypographyToken.level4
                           .body(context)
                           .copyWith(fontWeight: FontWeight.w800),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level1),
+                    const SizedBox(height: Spacing.level1),
                     Text(
                       _itemPlanDetail(),
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                     ),
-                    const SizedBox(height: AppSpacingTokens.level2),
+                    const SizedBox(height: Spacing.level2),
                     Wrap(
-                      spacing: AppSpacingTokens.level2,
-                      runSpacing: AppSpacingTokens.level2,
+                      spacing: Spacing.level2,
+                      runSpacing: Spacing.level2,
                       children: [
                         TintedStatusBadge(
                           color: item.stateColor,
@@ -138,7 +138,7 @@ class _TodayPlanRow extends StatelessWidget {
                                 color: colors.secondary.withValues(alpha: 0.08),
                                 shape: RoundedSuperellipseBorder(
                                   borderRadius: BorderRadius.circular(
-                                    AppRadiusTokens.level2,
+                                    RadiusTokens.level2,
                                   ),
                                   side: BorderSide(color: colors.border),
                                 ),
@@ -146,7 +146,7 @@ class _TodayPlanRow extends StatelessWidget {
                             ),
                             child: Text(
                               _slotSummary(),
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(
                                     color: colors.foreground,
@@ -162,7 +162,7 @@ class _TodayPlanRow extends StatelessWidget {
             ],
           ),
           if (canMark) ...[
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Row(
               children: [
                 Expanded(
@@ -174,7 +174,7 @@ class _TodayPlanRow extends StatelessWidget {
                     onTap: () => onMarkDose!(takenRequest),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 Expanded(
                   child: _DoseActionButton(
                     key: const Key('medicine-plan-dose-action-skipped'),

@@ -71,7 +71,7 @@ class SleepStructuredFields extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level4),
+            const SizedBox(width: Spacing.level4),
             Expanded(
               child: FTimeField.picker(
                 key: const Key('sleep-waketime-picker'),
@@ -85,15 +85,15 @@ class SleepStructuredFields extends StatelessWidget {
           ],
         ),
         if (durationMinutes != null) ...[
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Text(
             '${l10n.recordSleepDurationLabel}: ${_formatDuration(durationMinutes, l10n)}',
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: context.theme.colors.mutedForeground),
           ),
         ],
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FSelect<String>.rich(
           key: const Key('sleep-quality-field'),
           label: Text(l10n.recordSleepQualityLabel),
@@ -113,7 +113,7 @@ class SleepStructuredFields extends StatelessWidget {
               )
               .toList(),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         Row(
           children: [
             Expanded(
@@ -124,7 +124,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onDeepMinutesChanged,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-light-minutes-field'),
@@ -133,7 +133,7 @@ class SleepStructuredFields extends StatelessWidget {
                 onChanged: onLightMinutesChanged,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: _NumberField(
                 key: const Key('sleep-rem-minutes-field'),

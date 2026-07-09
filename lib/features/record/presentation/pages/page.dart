@@ -64,8 +64,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final size = MediaQuery.sizeOf(context);
     final width = size.width;
     final height = size.height;
-    final isCompact = width < AppBreakpoints.mobile;
-    final isMobileLayout = width < AppBreakpoints.desktop;
+    final isCompact = width < Breakpoints.mobile;
+    final isMobileLayout = width < Breakpoints.desktop;
     final contentVerticalPadding = EdgeInsets.only(
       top: (height * 0.012).clamp(10.0, 16.0),
       bottom: (height * 0.025).clamp(16.0, 28.0),
@@ -165,7 +165,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
                             loginRouteForCurrentLocation(context),
                           ),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level4),
+                        const SizedBox(height: Spacing.level4),
                       ],
                       RecordDashboardView(
                         dashboard: dashboard,
@@ -291,8 +291,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final picked = await showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => AppDialogShell(
-        maxWidth: AppLayoutTokens.dialogMaxWidth,
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        maxWidth: LayoutScaleResolver.dialogMaxWidth,
+        padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(
           height: 400,
           child: FCalendar.splitGrid(

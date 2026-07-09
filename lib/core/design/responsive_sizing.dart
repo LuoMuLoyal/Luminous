@@ -8,7 +8,7 @@ import 'package:luminous/core/design/breakpoints.dart';
 /// fractions and min/max clamps to adapt structural dimensions to the current
 /// screen size; color, spacing, radius, and typography values should come from
 /// the current Forui theme or the dedicated token files instead.
-abstract final class AppResponsiveSizing {
+abstract final class ResponsiveSizing {
   /// Returns a card width that occupies a fraction of the screen on small
   /// devices while staying within a comfortable min/max range.
   ///
@@ -44,8 +44,8 @@ abstract final class AppResponsiveSizing {
     int desktop = 4,
   }) {
     final width = MediaQuery.sizeOf(context).width;
-    if (width >= AppBreakpoints.desktop) return desktop;
-    if (width >= AppBreakpoints.tablet) return tablet;
+    if (width >= Breakpoints.desktop) return desktop;
+    if (width >= Breakpoints.tablet) return tablet;
     return mobile;
   }
 

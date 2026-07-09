@@ -18,10 +18,10 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
         color: context.theme.colors.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
         border: Border.all(
           color: context.theme.colors.primary.withValues(alpha: 0.22),
         ),
@@ -36,10 +36,10 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
                 color: context.theme.colors.primary,
                 size: 20,
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               Text(
                 redFlagBannerTitle(l10n),
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(
                       color: context.theme.colors.primary,
@@ -48,9 +48,9 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           for (var i = 0; i < alerts.length; i += 1) ...[
-            if (i > 0) const SizedBox(height: AppSpacingTokens.level3),
+            if (i > 0) const SizedBox(height: Spacing.level3),
             MedicineRiskRedFlagAlertRow(alert: alerts[i], l10n: l10n),
           ],
         ],
@@ -74,10 +74,10 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacingTokens.level3),
+      padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
         color: colors.background.withValues(alpha: 0.84),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,11 +88,11 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
               children: [
                 Text(
                   redFlagAlertCopy(l10n, alert),
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.foreground),
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -101,11 +101,11 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                       color: context.theme.colors.primary,
                       size: 16,
                     ),
-                    const SizedBox(width: AppSpacingTokens.level2),
+                    const SizedBox(width: Spacing.level2),
                     Expanded(
                       child: Text(
                         redFlagActionCopy(l10n, alert),
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(
                               color: context.theme.colors.primary,

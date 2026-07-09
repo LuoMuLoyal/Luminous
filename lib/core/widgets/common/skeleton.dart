@@ -8,7 +8,7 @@ class AppStateSkeletonView extends StatelessWidget {
   const AppStateSkeletonView({
     super.key,
     required this.blocks,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.level4),
+    this.padding = const EdgeInsets.all(Spacing.level4),
   });
 
   final List<AppStateSkeletonBlock> blocks;
@@ -26,7 +26,7 @@ class AppStateSkeletonView extends StatelessWidget {
         padding: padding,
         itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
         separatorBuilder: (context, index) =>
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
         itemCount: blocks.length,
       ),
     );
@@ -38,7 +38,7 @@ class AppInlineSkeleton extends StatelessWidget {
   const AppInlineSkeleton({
     super.key,
     required this.children,
-    this.spacing = AppSpacingTokens.level3,
+    this.spacing = Spacing.level3,
   });
 
   final List<Widget> children;
@@ -120,7 +120,7 @@ class AppSkeletonText extends StatelessWidget {
     this.width,
     this.widthFactor = 0.72,
     this.height,
-    this.radius = AppRadiusTokens.level1,
+    this.radius = RadiusTokens.level1,
     this.isLoading,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 
@@ -189,7 +189,7 @@ class AppInlineSkeletonBlock extends StatelessWidget {
     required this.height,
     this.width,
     this.widthFactor = 1,
-    this.radius = AppRadiusTokens.level4,
+    this.radius = RadiusTokens.level4,
     this.fallbackWidth = 96,
   }) : assert(widthFactor > 0 && widthFactor <= 1),
        assert(fallbackWidth > 0);
@@ -275,11 +275,11 @@ class AppInlineSkeletonSection extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.background,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+        borderRadius: BorderRadius.circular(RadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: SizedBox(
           height: height,
           child: AppInlineSkeleton(children: children),
@@ -293,7 +293,7 @@ class AppInlineSkeletonSection extends StatelessWidget {
 class AppStateSkeletonBlock {
   const AppStateSkeletonBlock({
     required this.height,
-    this.radius = AppRadiusTokens.level5,
+    this.radius = RadiusTokens.level5,
     this.widthFactor = 1,
   }) : assert(widthFactor > 0 && widthFactor <= 1);
 

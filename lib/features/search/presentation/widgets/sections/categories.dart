@@ -22,11 +22,11 @@ class Categories extends StatelessWidget {
       children: [
         Text(
           l10n.medicineSearchCategoryTitle,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         Row(
           children: categories
               .map(
@@ -61,9 +61,7 @@ class _CategoryItem extends StatelessWidget {
       variant: FButtonVariant.ghost,
       style: const .delta(
         contentStyle: .delta(
-          padding: .value(
-            EdgeInsets.symmetric(vertical: AppSpacingTokens.level2),
-          ),
+          padding: .value(EdgeInsets.symmetric(vertical: Spacing.level2)),
         ),
       ),
       child: Column(
@@ -77,10 +75,10 @@ class _CategoryItem extends StatelessWidget {
             ),
             child: Icon(category.icon, color: category.accent.resolve(colors)),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Text(
             categoryLabel(l10n, category.type),
-            style: AppTypographyToken.level3.body(context),
+            style: TypographyToken.level3.body(context),
             textAlign: TextAlign.center,
           ),
         ],

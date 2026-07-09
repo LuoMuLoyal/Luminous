@@ -29,7 +29,7 @@ class TodayTopBar extends StatelessWidget {
       title: l10n.todayHeroTitle,
       subtitle: AppSkeletonText(
         text: greetingSubtitle(l10n, dashboard),
-        style: AppTypographyToken.level4
+        style: TypographyToken.level4
             .body(context)
             .copyWith(color: colors.mutedForeground),
         widthFactor: 0.64,
@@ -67,10 +67,7 @@ class _AssistantEntryButton extends ConsumerWidget {
         variant: FButtonVariant.secondary,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        prefix: const Icon(
-          FLucideIcons.sparkles,
-          size: AppSpacingTokens.level4,
-        ),
+        prefix: const Icon(FLucideIcons.sparkles, size: Spacing.level4),
         child: Text(l10n.assistantEntryTitle),
       ),
     );
@@ -99,14 +96,14 @@ class _NotificationButton extends ConsumerWidget {
             onPress: () => context.push(AppRoutes.notifications),
             child: Icon(
               FLucideIcons.bell,
-              size: AppSpacingTokens.level5 + AppSpacingTokens.level1,
+              size: Spacing.level5 + Spacing.level1,
               color: colors.foreground,
             ),
           ),
           if (hasUnread)
             Positioned(
-              right: AppSpacingTokens.level3,
-              top: AppSpacingTokens.level2,
+              right: Spacing.level3,
+              top: Spacing.level2,
               child: FBadge.raw(
                 style: .delta(
                   decoration: .shapeDelta(
@@ -115,7 +112,7 @@ class _NotificationButton extends ConsumerWidget {
                   ),
                 ),
                 builder: (context, style) =>
-                    const SizedBox.square(dimension: AppSpacingTokens.level2),
+                    const SizedBox.square(dimension: Spacing.level2),
               ),
             ),
         ],

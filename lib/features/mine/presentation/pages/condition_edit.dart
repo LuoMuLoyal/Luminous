@@ -126,7 +126,7 @@ class ConditionEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +152,7 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,7 +173,7 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,13 +188,13 @@ class ConditionEditPage extends HookConsumerWidget {
         content = ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                  padding: const EdgeInsets.all(Spacing.level4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -205,21 +205,21 @@ class ConditionEditPage extends HookConsumerWidget {
                         ),
                         label: Text(l10n.mineEditFieldLabel),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       _enumDropdown<HealthConditionStatus>(
                         label: l10n.mineEditFieldStatus,
                         value: status.value,
                         values: HealthConditionStatus.values,
                         onChanged: (v) => status.value = v,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: diagnosedAtController,
                         ),
                         label: Text(l10n.mineEditFieldDiagnosedAt),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       FTextField(
                         control: FTextFieldControl.managed(
                           controller: noteController,
@@ -227,14 +227,14 @@ class ConditionEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldNote),
                         maxLines: 3,
                       ),
-                      const SizedBox(height: AppSpacingTokens.level5),
+                      const SizedBox(height: Spacing.level5),
                       FButton(
                         key: const Key('condition-save-button'),
                         onPress: onSave,
                         child: Text(l10n.mineEditSaveAction),
                       ),
                       if (!isNew) ...[
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FButton(
                           key: const Key('condition-delete-button'),
                           variant: FButtonVariant.destructive,

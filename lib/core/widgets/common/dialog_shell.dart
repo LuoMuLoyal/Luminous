@@ -10,7 +10,7 @@ class AppDialogShell extends StatelessWidget {
     this.animation,
     this.maxWidth = 560,
     this.maxHeight,
-    this.padding = const EdgeInsets.all(AppSpacingTokens.level5),
+    this.padding = const EdgeInsets.all(Spacing.level5),
     this.scrollable = true,
   });
 
@@ -55,7 +55,7 @@ Future<T?> showAppDialog<T>({
   required WidgetBuilder builder,
   double maxWidth = 560,
   double? maxHeight,
-  EdgeInsets padding = const EdgeInsets.all(AppSpacingTokens.level5),
+  EdgeInsets padding = const EdgeInsets.all(Spacing.level5),
   bool scrollable = true,
 }) {
   return showFDialog<T>(

@@ -37,7 +37,7 @@ class AssistantConversationDrawer extends StatelessWidget {
       width: width,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          padding: const EdgeInsets.all(Spacing.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,7 +46,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                   Expanded(
                     child: Text(
                       title,
-                      style: AppTypographyToken.level7.display(context),
+                      style: TypographyToken.level7.display(context),
                     ),
                   ),
                   FButton.icon(
@@ -56,7 +56,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Expanded(
                 child: Builder(
                   builder: (context) {
@@ -120,9 +120,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(
-                                AppSpacingTokens.level4,
-                              ),
+                              padding: const EdgeInsets.all(Spacing.level4),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -130,13 +128,11 @@ class AssistantConversationDrawer extends StatelessWidget {
                                     conversationTitle(context, item),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppTypographyToken.level5
+                                    style: TypographyToken.level5
                                         .body(context)
                                         .copyWith(fontWeight: FontWeight.w600),
                                   ),
-                                  const SizedBox(
-                                    height: AppSpacingTokens.level2,
-                                  ),
+                                  const SizedBox(height: Spacing.level2),
                                   Row(
                                     children: [
                                       Expanded(
@@ -145,7 +141,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                                             context,
                                             item,
                                           ),
-                                          style: AppTypographyToken.level3
+                                          style: TypographyToken.level3
                                               .body(context)
                                               .copyWith(
                                                 color: colors.mutedForeground,
@@ -157,7 +153,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                                           AppLocalizations.of(
                                             context,
                                           )!.assistantRecentConversationCurrentLabel,
-                                          style: AppTypographyToken.level4
+                                          style: TypographyToken.level4
                                               .body(context)
                                               .copyWith(
                                                 color: colors.primary,
@@ -173,7 +169,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                         );
                       },
                       separatorBuilder: (_, __) =>
-                          const SizedBox(height: AppSpacingTokens.level3),
+                          const SizedBox(height: Spacing.level3),
                     );
                   },
                 ),

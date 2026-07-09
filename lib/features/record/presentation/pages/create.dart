@@ -292,7 +292,7 @@ class RecordCreatePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,13 +314,13 @@ class RecordCreatePage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                padding: const EdgeInsets.all(Spacing.level4),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -336,7 +336,7 @@ class RecordCreatePage extends HookConsumerWidget {
                           ? null
                           : formatHourMinute(time.hour, time.minute),
                     ),
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     DailyRecordFormFields(
                       kind: kind.value,
                       onKindChanged: onKindChanged,
@@ -346,7 +346,7 @@ class RecordCreatePage extends HookConsumerWidget {
                       noteController: noteController,
                     ),
                     if (kind.value == DailyRecordKind.sleep) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       SleepStructuredFields(
                         l10n: l10n,
                         bedtime: sleepBedtime.value,
@@ -364,7 +364,7 @@ class RecordCreatePage extends HookConsumerWidget {
                         onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
                       ),
                     ],
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     DailyRecordImageAttachmentField(
                       l10n: l10n,
                       selectedBytes: selectedImage.value?.bytes,
@@ -374,7 +374,7 @@ class RecordCreatePage extends HookConsumerWidget {
                       onRemove: onRemoveImage,
                       enabled: !saving.value,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level5),
+                    const SizedBox(height: Spacing.level5),
                     FButton(
                       key: const Key('record-create-save-action'),
                       onPress: saving.value ? null : () => onSave(dateStr),

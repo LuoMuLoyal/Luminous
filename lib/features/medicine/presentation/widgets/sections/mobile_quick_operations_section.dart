@@ -54,7 +54,7 @@ class _QuickOperationSection extends StatelessWidget {
             Expanded(
               child: Text(
                 l10n.medicineQuickOperationTitle,
-                style: AppTypographyToken.level7
+                style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
                 maxLines: 1,
@@ -63,7 +63,7 @@ class _QuickOperationSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FCard.raw(
           child: Column(
             children: [
@@ -92,36 +92,36 @@ class _QuickOperationRow extends StatelessWidget {
       onPress: operation.onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
         ),
         child: Row(
           children: [
             FAvatar.raw(
-              size: AppSpacingTokens.level8,
+              size: Spacing.level8,
               child: Icon(
                 operation.icon,
                 color: operation.color.resolve(colors),
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     operation.title,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     operation.subtitle,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
@@ -133,7 +133,7 @@ class _QuickOperationRow extends StatelessWidget {
             Icon(
               FLucideIcons.chevronRight,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ],
         ),

@@ -66,7 +66,7 @@ class ProfileEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +95,7 @@ class ProfileEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class ProfileEditPage extends HookConsumerWidget {
                 data: (ctx) {
                   initFromSnapshot(ctx.profile);
                   return Padding(
-                    padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                    padding: const EdgeInsets.all(Spacing.level4),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -114,7 +114,7 @@ class ProfileEditPage extends HookConsumerWidget {
                           ),
                           label: Text(l10n.mineEditFieldBirthDate),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FTextField(
                           control: FTextFieldControl.managed(
                             controller: heightCmController,
@@ -122,27 +122,27 @@ class ProfileEditPage extends HookConsumerWidget {
                           label: Text(l10n.mineEditFieldHeightCm),
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FTextField(
                           control: FTextFieldControl.managed(
                             controller: bloodTypeController,
                           ),
                           label: Text(l10n.mineEditFieldBloodType),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         _enumDropdown<HealthUnitSystem>(
                           label: l10n.mineEditFieldUnitSystem,
                           value: unitSystem.value,
                           values: HealthUnitSystem.values,
                           onChanged: (v) => unitSystem.value = v,
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         FSwitch(
                           label: Text(l10n.mineEditFieldOnboardingCompleted),
                           value: onboardingCompleted.value ?? false,
                           onChange: (v) => onboardingCompleted.value = v,
                         ),
-                        const SizedBox(height: AppSpacingTokens.level5),
+                        const SizedBox(height: Spacing.level5),
                         FButton(
                           onPress: onSave,
                           child: Text(l10n.mineEditSaveAction),

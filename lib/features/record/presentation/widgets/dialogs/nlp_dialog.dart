@@ -130,7 +130,7 @@ class RecordNlpDialog extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   l10n.recordNlpSheetTitle,
-                  style: AppTypographyToken.level6
+                  style: TypographyToken.level6
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                 ),
@@ -142,14 +142,14 @@ class RecordNlpDialog extends HookConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.level2),
+          const SizedBox(height: Spacing.level2),
           Text(
             l10n.recordNlpSheetSubtitle,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           FTextField(
             key: const Key('record-nlp-input-field'),
             control: FTextFieldControl.managed(
@@ -163,7 +163,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             enabled: !state.isGenerating && !state.isSaving,
             hint: l10n.recordNlpInputHint,
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           Row(
             children: [
               Expanded(
@@ -176,7 +176,7 @@ class RecordNlpDialog extends HookConsumerWidget {
                   child: Text(l10n.recordNlpResetAction),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               Expanded(
                 child: FButton(
                   key: const Key('record-nlp-generate-action'),
@@ -193,7 +193,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             ],
           ),
           if (state.hasResult) ...[
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             RecordNlpCandidateReview(
               state: state,
               onToggleSelected: (index, selected) => ref
@@ -207,14 +207,14 @@ class RecordNlpDialog extends HookConsumerWidget {
                   .removeCandidateAt(index),
             ),
             if (state.hasFailedCandidates) ...[
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               RecordNlpRetryPanel(
                 failedCount: state.failedCount,
                 enabled: !state.isSaving,
                 onRetry: handleRetryFailed,
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -228,7 +228,7 @@ class RecordNlpDialog extends HookConsumerWidget {
               ),
             ),
           ] else if (state.status == RecordNlpStatus.generating) ...[
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             const FProgress(),
           ],
         ],

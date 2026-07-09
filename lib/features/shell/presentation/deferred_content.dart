@@ -59,32 +59,32 @@ class _DefaultTabPlaceholder extends StatelessWidget {
       child: const SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.all(AppSpacingTokens.level5),
+          padding: EdgeInsets.all(Spacing.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppInlineSkeletonBlock(
-                height: AppSpacingTokens.level7,
+                height: Spacing.level7,
                 widthFactor: 0.45,
-                radius: AppRadiusTokens.level4,
+                radius: RadiusTokens.level4,
               ),
-              SizedBox(height: AppSpacingTokens.level4),
+              SizedBox(height: Spacing.level4),
               AppInlineSkeletonBlock(
-                height: AppSpacingTokens.level9,
+                height: Spacing.level9,
                 widthFactor: 1,
-                radius: AppRadiusTokens.level4,
+                radius: RadiusTokens.level4,
               ),
-              SizedBox(height: AppSpacingTokens.level4),
+              SizedBox(height: Spacing.level4),
               AppInlineSkeletonBlock(
-                height: AppSpacingTokens.level9,
+                height: Spacing.level9,
                 widthFactor: 1,
-                radius: AppRadiusTokens.level4,
+                radius: RadiusTokens.level4,
               ),
-              SizedBox(height: AppSpacingTokens.level4),
+              SizedBox(height: Spacing.level4),
               AppInlineSkeletonBlock(
-                height: AppSpacingTokens.level9,
+                height: Spacing.level9,
                 widthFactor: 0.72,
-                radius: AppRadiusTokens.level4,
+                radius: RadiusTokens.level4,
               ),
             ],
           ),

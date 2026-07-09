@@ -24,7 +24,7 @@ class MineArchiveSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineProfileTitle),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FTileGroup(
           key: const Key('mine-archive-section'),
           divider: FItemDivider.full,
@@ -66,13 +66,13 @@ class _ArchiveRow extends StatelessWidget with FTileMixin {
       prefix: SoftIcon(icon: entry.icon, color: entry.accent),
       title: Text(
         mineCopy(l10n, entry.titleKey),
-        style: AppTypographyToken.level5
+        style: TypographyToken.level5
             .body(context)
             .copyWith(fontWeight: FontWeight.w700),
       ),
       subtitle: Text(
         subtitleOverride ?? mineCopy(l10n, entry.subtitleKey),
-        style: AppTypographyToken.level3
+        style: TypographyToken.level3
             .body(context)
             .copyWith(color: colors.mutedForeground),
         maxLines: 2,
@@ -82,7 +82,7 @@ class _ArchiveRow extends StatelessWidget with FTileMixin {
           ? null
           : Text(
               mineCopy(l10n, statusKey),
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(
                     color: statusKey == MineCopyKey.archiveNeedsFill

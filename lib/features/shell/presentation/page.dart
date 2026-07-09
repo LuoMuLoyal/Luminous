@@ -39,7 +39,7 @@ class ShellPage extends ConsumerWidget {
     final currentIndex = navigationShell?.currentIndex ?? legacyIndex;
     final width = MediaQuery.sizeOf(context).width;
     final l10n = AppLocalizations.of(context);
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
     final content = navigationShell ?? _pages[currentIndex];
 
     void onSelectTab(int index) {

@@ -27,11 +27,11 @@ class AssistantHero extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [colors.primary.withValues(alpha: 0.16), colors.background],
         ),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level5),
+        borderRadius: BorderRadius.circular(RadiusTokens.level5),
         border: Border.all(color: colors.border),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -40,35 +40,35 @@ class AssistantHero extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: colors.primary.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.all(AppSpacingTokens.level3),
+                    padding: EdgeInsets.all(Spacing.level3),
                     child: Icon(FLucideIcons.bot, size: 20),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 Expanded(
                   child: Text(
                     l10n.assistantPageTitle,
-                    style: AppTypographyToken.level7
+                    style: TypographyToken.level7
                         .display(context)
                         .copyWith(fontWeight: FontWeight.w700),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Text(
               statusSummary,
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Wrap(
-              spacing: AppSpacingTokens.level3,
-              runSpacing: AppSpacingTokens.level3,
+              spacing: Spacing.level3,
+              runSpacing: Spacing.level3,
               children: [
                 _StatusChip(
                   label:
@@ -112,7 +112,7 @@ class _StatusChip extends StatelessWidget {
         color: enabled
             ? colors.primary.withValues(alpha: 0.12)
             : colors.secondary,
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
         border: Border.all(
           color: enabled
               ? colors.primary.withValues(alpha: 0.24)
@@ -121,12 +121,12 @@ class _StatusChip extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level2,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level2,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(
                 color: enabled ? colors.primary : colors.mutedForeground,

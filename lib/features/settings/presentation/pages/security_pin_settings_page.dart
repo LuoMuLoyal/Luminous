@@ -39,7 +39,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                 // -- Status card --
                 FCard.raw(
                   child: Padding(
-                    padding: const EdgeInsets.all(AppSpacingTokens.level5),
+                    padding: const EdgeInsets.all(Spacing.level5),
                     child: Row(
                       children: [
                         Icon(
@@ -59,7 +59,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               ? colors.primary
                               : colors.mutedForeground,
                         ),
-                        const SizedBox(width: AppSpacingTokens.level4),
+                        const SizedBox(width: Spacing.level4),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,14 +68,14 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                                 pinEnabled
                                     ? l10n.settingsSecurityPinStatusEnabled
                                     : l10n.settingsSecurityPinStatusDisabled,
-                                style: AppTypographyToken.level5
+                                style: TypographyToken.level5
                                     .body(context)
                                     .copyWith(fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(height: AppSpacingTokens.level1),
+                              const SizedBox(height: Spacing.level1),
                               Text(
                                 _lastChangedLabel(l10n, lastChangedAt),
-                                style: AppTypographyToken.level3
+                                style: TypographyToken.level3
                                     .body(context)
                                     .copyWith(color: colors.mutedForeground),
                               ),
@@ -86,29 +86,29 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacingTokens.level2,
+                    horizontal: Spacing.level2,
                   ),
                   child: Text(
                     l10n.settingsSecurityPinDescription,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
 
                 if (!pinEnabled) ...[
                   // -- Enable PIN --
                   SettingsSectionLabel(
                     label: l10n.settingsSecurityPinEnableSection,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   FCard.raw(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+                      padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -122,7 +122,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             maxLength: 6,
                             obscureText: true,
                           ),
-                          const SizedBox(height: AppSpacingTokens.level4),
+                          const SizedBox(height: Spacing.level4),
                           SizedBox(
                             width: double.infinity,
                             child: FButton(
@@ -153,10 +153,10 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                   SettingsSectionLabel(
                     label: l10n.settingsSecurityPinChangeSection,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   FCard.raw(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+                      padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -171,7 +171,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             maxLength: 6,
                             obscureText: true,
                           ),
-                          const SizedBox(height: AppSpacingTokens.level4),
+                          const SizedBox(height: Spacing.level4),
                           FTextField(
                             control: FTextFieldControl.managed(
                               controller: newPinController,
@@ -181,7 +181,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             maxLength: 6,
                             obscureText: true,
                           ),
-                          const SizedBox(height: AppSpacingTokens.level4),
+                          const SizedBox(height: Spacing.level4),
                           FTextField(
                             control: FTextFieldControl.managed(
                               controller: confirmPinController,
@@ -191,7 +191,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             maxLength: 6,
                             obscureText: true,
                           ),
-                          const SizedBox(height: AppSpacingTokens.level4),
+                          const SizedBox(height: Spacing.level4),
                           SizedBox(
                             width: double.infinity,
                             child: FButton(
@@ -219,16 +219,16 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level5),
+                  const SizedBox(height: Spacing.level5),
 
                   // -- Disable PIN --
                   SettingsSectionLabel(
                     label: l10n.settingsSecurityPinDisableSection,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   FCard.raw(
                     child: Padding(
-                      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+                      padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -243,7 +243,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             maxLength: 6,
                             obscureText: true,
                           ),
-                          const SizedBox(height: AppSpacingTokens.level4),
+                          const SizedBox(height: Spacing.level4),
                           SizedBox(
                             width: double.infinity,
                             child: FButton(

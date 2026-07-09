@@ -42,16 +42,16 @@ class AssistantConversationSurface extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (state.isOpeningConversation) ...[
               Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+                padding: const EdgeInsets.only(bottom: Spacing.level3),
                 child: Text(
                   l10n.assistantOpeningConversationLabel,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
@@ -67,7 +67,7 @@ class AssistantConversationSurface extends StatelessWidget {
               ),
             ),
             if (state.sendError != null) ...[
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               AppStateMessageView(
                 title: l10n.assistantSendErrorTitle,
                 description: sendErrorDescription(
@@ -80,10 +80,10 @@ class AssistantConversationSurface extends StatelessWidget {
                 actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
                 onAction: onRetry,
                 actionKey: const Key('assistant-retry-action'),
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                padding: const EdgeInsets.all(Spacing.level4),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             _InputComposer(
               controller: controller,
               canSend: capabilities.canSendMessages && !state.isSending,
@@ -172,8 +172,7 @@ class _ConversationView extends StatelessWidget {
           onDismissProposal: onDismissProposal,
         );
       },
-      separatorBuilder: (_, __) =>
-          const SizedBox(height: AppSpacingTokens.level4),
+      separatorBuilder: (_, __) => const SizedBox(height: Spacing.level4),
       itemCount: items.length,
     );
   }
@@ -234,7 +233,7 @@ class _InputComposer extends StatelessWidget {
             hint: l10n.assistantInputHint,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         FButton(
           key: const Key('assistant-send-action'),
           onPress: canSend ? onSend : null,

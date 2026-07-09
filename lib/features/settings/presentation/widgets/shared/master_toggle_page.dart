@@ -35,7 +35,7 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,9 +49,9 @@ class AppSettingsMasterTogglePage extends StatelessWidget {
               }(),
               suffix: FSwitch(value: masterValue, onChange: onMasterChanged),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             const AppDivider(),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             _DisabledScope(
               disabled: !masterValue,
               child: Column(

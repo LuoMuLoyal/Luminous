@@ -12,13 +12,9 @@ class TodaySkeletonView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
-    final horizontalPadding = isDesktop
-        ? AppSpacingTokens.level6
-        : AppSpacingTokens.level4;
-    final verticalPadding = isDesktop
-        ? AppSpacingTokens.level6
-        : AppSpacingTokens.level4;
+    final isDesktop = width >= Breakpoints.desktop;
+    final horizontalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
+    final verticalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
 
     return AppSkeletonShimmer(
       child: ListView(
@@ -28,39 +24,19 @@ class TodaySkeletonView extends StatelessWidget {
           horizontalPadding,
           verticalPadding,
           horizontalPadding,
-          AppSpacingTokens.level10 + AppSpacingTokens.level2,
+          Spacing.level10 + Spacing.level2,
         ),
         children: [
           _TopBarPlaceholder(isDesktop: isDesktop),
-          SizedBox(
-            height: isDesktop
-                ? AppSpacingTokens.level6
-                : AppSpacingTokens.level5,
-          ),
+          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
           _OverviewPlaceholder(isDesktop: isDesktop),
-          SizedBox(
-            height: isDesktop
-                ? AppSpacingTokens.level6
-                : AppSpacingTokens.level5,
-          ),
+          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
           _AiSummaryPlaceholder(),
-          SizedBox(
-            height: isDesktop
-                ? AppSpacingTokens.level6
-                : AppSpacingTokens.level5,
-          ),
+          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
           _PriorityPlaceholder(),
-          SizedBox(
-            height: isDesktop
-                ? AppSpacingTokens.level6
-                : AppSpacingTokens.level5,
-          ),
+          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
           _RecommendationPlaceholder(),
-          SizedBox(
-            height: isDesktop
-                ? AppSpacingTokens.level6
-                : AppSpacingTokens.level5,
-          ),
+          SizedBox(height: isDesktop ? Spacing.level6 : Spacing.level5),
           _TodoPlaceholder(),
         ],
       ),
@@ -86,14 +62,14 @@ class _TopBarPlaceholder extends StatelessWidget {
                 height: isDesktop ? 48 : 40,
                 widthFactor: 0.55,
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               const AppInlineSkeletonBlock(height: 18, widthFactor: 0.64),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level4),
+        const SizedBox(width: Spacing.level4),
         AppInlineSkeletonCircle(size: isDesktop ? 44 : 40),
-        const SizedBox(width: AppSpacingTokens.level2),
+        const SizedBox(width: Spacing.level2),
         AppInlineSkeletonCircle(size: isDesktop ? 44 : 40),
       ],
     );
@@ -110,11 +86,11 @@ class _OverviewPlaceholder extends StatelessWidget {
     return AppInlineSkeletonSection(
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         Row(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) const SizedBox(width: AppSpacingTokens.level3),
+              if (i > 0) const SizedBox(width: Spacing.level3),
               const Expanded(child: AppInlineSkeletonBlock(height: 48)),
             ],
           ],
@@ -132,17 +108,17 @@ class _AiSummaryPlaceholder extends StatelessWidget {
         Row(
           children: [
             AppInlineSkeletonCircle(size: 40),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             Expanded(child: AppInlineSkeletonBlock(height: 18)),
-            SizedBox(width: AppSpacingTokens.level3),
+            SizedBox(width: Spacing.level3),
             AppInlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
-        SizedBox(height: AppSpacingTokens.level4),
+        SizedBox(height: Spacing.level4),
         AppInlineSkeletonBlock(height: 16, widthFactor: 0.92),
-        SizedBox(height: AppSpacingTokens.level2),
+        SizedBox(height: Spacing.level2),
         AppInlineSkeletonBlock(height: 16, widthFactor: 0.78),
-        SizedBox(height: AppSpacingTokens.level2),
+        SizedBox(height: Spacing.level2),
         AppInlineSkeletonBlock(height: 16, widthFactor: 0.84),
       ],
     );
@@ -155,19 +131,19 @@ class _PriorityPlaceholder extends StatelessWidget {
     return AppInlineSkeletonSection(
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           Row(
             children: [
               const AppInlineSkeletonCircle(size: 40),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const AppInlineSkeletonBlock(height: 16, widthFactor: 0.6),
-                    const SizedBox(height: AppSpacingTokens.level2),
+                    const SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(
                       height: 14,
                       widthFactor: i == 2 ? 0.5 : 0.8,
@@ -175,7 +151,7 @@ class _PriorityPlaceholder extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               const AppInlineSkeletonBlock(height: 14, width: 64),
             ],
           ),
@@ -197,19 +173,19 @@ class _RecommendationPlaceholder extends StatelessWidget {
             AppInlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 3; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
               AppInlineSkeletonCircle(size: 32),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppInlineSkeletonBlock(height: 16, widthFactor: 0.7),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
@@ -228,24 +204,24 @@ class _TodoPlaceholder extends StatelessWidget {
     return AppInlineSkeletonSection(
       children: [
         const AppInlineSkeletonBlock(height: 18, widthFactor: 0.3),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 4; i += 1) ...[
-          if (i > 0) const SizedBox(height: AppSpacingTokens.level4),
+          if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
               AppInlineSkeletonCircle(size: 32),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppInlineSkeletonBlock(height: 16, widthFactor: 0.65),
-                    SizedBox(height: AppSpacingTokens.level2),
+                    SizedBox(height: Spacing.level2),
                     AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
-              SizedBox(width: AppSpacingTokens.level3),
+              SizedBox(width: Spacing.level3),
               AppInlineSkeletonBlock(height: 24, width: 56),
             ],
           ),

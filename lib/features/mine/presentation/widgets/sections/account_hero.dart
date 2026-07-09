@@ -49,7 +49,7 @@ class MineAccountHero extends StatelessWidget {
       onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
       child: FCard.raw(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -57,22 +57,22 @@ class MineAccountHero extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const _AvatarPlaceholder(),
-                  const SizedBox(width: AppSpacingTokens.level4),
+                  const SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           name,
-                          style: AppTypographyToken.level7
+                          style: TypographyToken.level7
                               .display(context)
                               .copyWith(fontWeight: FontWeight.w800),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: AppSpacingTokens.level2),
+                        const SizedBox(height: Spacing.level2),
                         Wrap(
-                          spacing: AppSpacingTokens.level2,
-                          runSpacing: AppSpacingTokens.level2,
+                          spacing: Spacing.level2,
+                          runSpacing: Spacing.level2,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
                             _StateBadge(
@@ -83,7 +83,7 @@ class MineAccountHero extends StatelessWidget {
                             ),
                             Text(
                               mineCopy(l10n, account.roleKey),
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.mutedForeground),
                             ),
@@ -94,39 +94,39 @@ class MineAccountHero extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Text(
                 title,
-                style: AppTypographyToken.level6
+                style: TypographyToken.level6
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Text(
                 description,
-                style: AppTypographyToken.level4
+                style: TypographyToken.level4
                     .body(context)
                     .copyWith(color: colors.mutedForeground, height: 1.45),
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Row(
                 children: [
                   Text(
                     mineCopy(l10n, dashboard.completion.titleKey),
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
-                  const SizedBox(width: AppSpacingTokens.level2),
+                  const SizedBox(width: Spacing.level2),
                   AppSkeletonSlot(
                     skeleton: const AppInlineSkeletonBlock(
                       height: 22,
                       width: 42,
-                      radius: AppRadiusTokens.level2,
+                      radius: RadiusTokens.level2,
                     ),
                     child: Text(
                       dashboard.completion.percentLabel,
-                      style: AppTypographyToken.level5
+                      style: TypographyToken.level5
                           .body(context)
                           .copyWith(
                             color: colors.primary,
@@ -136,26 +136,24 @@ class MineAccountHero extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               AppSkeletonSlot(
                 skeleton: const AppInlineSkeletonBlock(
                   height: 8,
-                  radius: AppRadiusTokens.levelFull,
+                  radius: RadiusTokens.levelFull,
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    AppRadiusTokens.levelFull,
-                  ),
+                  borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
                   child: FDeterminateProgress(
                     value: dashboard.completion.progress,
                   ),
                 ),
               ),
               if (gaps.isNotEmpty) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 Wrap(
-                  spacing: AppSpacingTokens.level2,
-                  runSpacing: AppSpacingTokens.level2,
+                  spacing: Spacing.level2,
+                  runSpacing: Spacing.level2,
                   children: [
                     for (final gap in gaps.take(2))
                       FBadge(
@@ -165,7 +163,7 @@ class MineAccountHero extends StatelessWidget {
                   ],
                 ),
               ],
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               SizedBox(
                 width: double.infinity,
                 child: FButton(
@@ -236,7 +234,7 @@ class _StateBadge extends StatelessWidget {
       variant: preview ? FBadgeVariant.secondary : FBadgeVariant.primary,
       child: Text(
         label,
-        style: AppTypographyToken.level3
+        style: TypographyToken.level3
             .body(context)
             .copyWith(fontWeight: FontWeight.w700),
       ),

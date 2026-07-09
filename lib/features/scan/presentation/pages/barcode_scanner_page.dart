@@ -107,7 +107,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
       builder: (ctx) => ListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.only(
-          bottom: MediaQuery.paddingOf(ctx).bottom + AppSpacingTokens.level4,
+          bottom: MediaQuery.paddingOf(ctx).bottom + Spacing.level4,
         ),
         itemCount: items.length,
         itemBuilder: (_, i) {
@@ -121,8 +121,8 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level5,
-                vertical: AppSpacingTokens.level4,
+                horizontal: Spacing.level5,
+                vertical: Spacing.level4,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -280,12 +280,12 @@ class _PrivacySection extends ConsumerWidget {
             children: [
               Text(
                 l10n.settingsDataSharingConfirmTitle,
-                style: AppTypographyToken.level6.body(context),
+                style: TypographyToken.level6.body(context),
               ),
               const SizedBox(height: 12),
               Text(
                 l10n.settingsDataSharingConfirmDescription,
-                style: AppTypographyToken.level4.body(context),
+                style: TypographyToken.level4.body(context),
               ),
               const SizedBox(height: 20),
               Row(
@@ -556,7 +556,7 @@ class _SignOutTile extends StatelessWidget {
           title: Center(
             child: Text(
               signedIn ? l10n.authSignOut : l10n.authGoLogin,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(color: colors.error),
             ),
@@ -590,7 +590,7 @@ class _SettingsGroup extends StatelessWidget {
           padding: const EdgeInsets.only(left: 4, bottom: 8),
           child: Text(
             label,
-            style: AppTypographyToken.level4
+            style: TypographyToken.level4
                 .body(context)
                 .copyWith(
                   color: colors.mutedForeground,
@@ -681,7 +681,7 @@ class _SettingsSwitchTile extends ConsumerWidget with FTileMixin {
               children: [
                 Text(
                   title,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(color: colors.foreground),
                 ),
@@ -689,7 +689,7 @@ class _SettingsSwitchTile extends ConsumerWidget with FTileMixin {
                   const SizedBox(height: 4),
                   Text(
                     subtitle ?? '',
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),

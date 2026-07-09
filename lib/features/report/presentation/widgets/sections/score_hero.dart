@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
@@ -24,7 +23,7 @@ class ReportScoreHero extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -37,7 +36,7 @@ class ReportScoreHero extends StatelessWidget {
                       Expanded(
                         child: Text(
                           l10n.reportScoreTitle,
-                          style: AppTypographyToken.level7
+                          style: TypographyToken.level7
                               .display(context)
                               .copyWith(fontWeight: FontWeight.w800),
                         ),
@@ -49,24 +48,24 @@ class ReportScoreHero extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.level4),
+                  const SizedBox(height: Spacing.level4),
                   Wrap(
-                    spacing: AppSpacingTokens.level3,
+                    spacing: Spacing.level3,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppSkeletonSlot(
                         skeleton: const AppInlineSkeletonBlock(
                           height: 58,
                           width: 76,
-                          radius: AppRadiusTokens.level3,
+                          radius: RadiusTokens.level3,
                         ),
                         child: Text(
                           score.value.toString(),
-                          style: AppTypographyToken.level9
+                          style: TypographyToken.level9
                               .display(context)
                               .copyWith(
                                 color: context.theme.colors.primary,
-                                fontSize: AppResponsiveSizing.scaleByWidth(
+                                fontSize: ResponsiveSizing.scaleByWidth(
                                   context,
                                   fraction: 0.128,
                                   minValue: 40,
@@ -79,7 +78,7 @@ class ReportScoreHero extends StatelessWidget {
                       ),
                       Text(
                         l10n.reportScoreOutOf(score.maxValue),
-                        style: AppTypographyToken.level5
+                        style: TypographyToken.level5
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
@@ -87,7 +86,7 @@ class ReportScoreHero extends StatelessWidget {
                         skeleton: const AppInlineSkeletonBlock(
                           height: 22,
                           width: 64,
-                          radius: AppRadiusTokens.level2,
+                          radius: RadiusTokens.level2,
                         ),
                         child: _StatusBadge(
                           label: reportStatusLabel(l10n, score.status),
@@ -96,10 +95,10 @@ class ReportScoreHero extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacingTokens.level5),
+                  const SizedBox(height: Spacing.level5),
                   AppSkeletonText(
                     text: score.summary,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w600),
                     widthFactor: 0.88,
@@ -107,9 +106,9 @@ class ReportScoreHero extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level4),
+            const SizedBox(width: Spacing.level4),
             FAvatar.raw(
-              size: AppResponsiveSizing.scaleByWidth(
+              size: ResponsiveSizing.scaleByWidth(
                 context,
                 fraction: 0.26,
                 minValue: 80,
@@ -119,7 +118,7 @@ class ReportScoreHero extends StatelessWidget {
               child: Icon(
                 FLucideIcons.badgeCheck,
                 color: colors.primaryForeground,
-                size: AppResponsiveSizing.scaleByWidth(
+                size: ResponsiveSizing.scaleByWidth(
                   context,
                   fraction: 0.16,
                   minValue: 48,
@@ -157,12 +156,12 @@ class _StatusBadge extends StatelessWidget {
       ),
       builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
         ),

@@ -1,4 +1,9 @@
-abstract final class AppSpacingTokens {
+/// Spacing token scale.
+///
+/// 12 levels mapped to the Forui design system's spacing values.
+/// Use [level1] (4px) through [level12] (128px) for all padding,
+/// margins, gaps, and structural dimensions.
+abstract final class Spacing {
   static const double level1 = 4;
   static const double level2 = 6;
   static const double level3 = 10;

@@ -17,7 +17,7 @@ Widget _appShell({required double width, required Widget child}) {
 void main() {
   group('ResponsiveContentFrame', () {
     testWidgets('applies default horizontal padding', (tester) async {
-      const width = AppBreakpoints.mobile - 100;
+      const width = Breakpoints.mobile - 100;
       await tester.pumpWidget(
         _appShell(
           width: width,
@@ -28,7 +28,7 @@ void main() {
       final padding = tester.widget<Padding>(
         find.ancestor(of: find.byType(Center), matching: find.byType(Padding)),
       );
-      final layout = AppLayoutTokens.resolve(width);
+      final layout = LayoutScaleResolver.resolve(width);
       expect(
         padding.padding,
         EdgeInsets.symmetric(horizontal: layout.pageHorizontalPadding),
@@ -36,7 +36,7 @@ void main() {
     });
 
     testWidgets('limits max width on desktop', (tester) async {
-      const width = AppBreakpoints.desktop + 100.0;
+      const width = Breakpoints.desktop + 100.0;
       await tester.pumpWidget(
         _appShell(
           width: width,
@@ -50,14 +50,14 @@ void main() {
           matching: find.byType(ConstrainedBox),
         ),
       );
-      final layout = AppLayoutTokens.resolve(width);
+      final layout = LayoutScaleResolver.resolve(width);
       expect(constrainedBox.constraints.maxWidth, layout.maxContentWidth);
     });
 
     testWidgets('does not limit max width below desktop breakpoint', (
       tester,
     ) async {
-      final width = AppBreakpoints.mobile.toDouble();
+      final width = Breakpoints.mobile.toDouble();
       await tester.pumpWidget(
         _appShell(
           width: width,

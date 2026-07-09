@@ -42,7 +42,7 @@ class VerificationCodeField extends StatelessWidget {
             validator: validator,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         SizedBox(
           width: 148,
           child: Padding(
@@ -95,10 +95,10 @@ class SettingsSectionLabel extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level2),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
       child: Text(
         label,
-        style: AppTypographyToken.level3
+        style: TypographyToken.level3
             .body(context)
             .copyWith(
               color: colors.mutedForeground,
@@ -120,16 +120,16 @@ class SheetDragHandle extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         Container(
           width: 36,
           height: 4,
           decoration: BoxDecoration(
             color: colors.border,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
       ],
     );
   }
@@ -157,7 +157,7 @@ class SoftIcon extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: resolvedColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+        borderRadius: BorderRadius.circular(RadiusTokens.level4),
       ),
       child: SizedBox.square(
         dimension: size,
@@ -188,7 +188,7 @@ class IconActionButton extends StatelessWidget {
         onPress: onTap,
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
-        child: Icon(icon, size: AppSpacingTokens.level5),
+        child: Icon(icon, size: Spacing.level5),
       ),
     );
   }

@@ -32,7 +32,7 @@ class NotificationListItemWidget extends StatelessWidget {
             backgroundColor: colors.destructive,
             foregroundColor: colors.destructiveForeground,
             icon: FLucideIcons.trash2,
-            borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+            borderRadius: BorderRadius.circular(RadiusTokens.level3),
           ),
         ],
       ),
@@ -54,7 +54,7 @@ class NotificationListItemWidget extends StatelessWidget {
         child: FTappable(
           onPress: onTap,
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,7 +68,7 @@ class NotificationListItemWidget extends StatelessWidget {
                           Expanded(
                             child: Text(
                               item.title,
-                              style: AppTypographyToken.level5
+                              style: TypographyToken.level5
                                   .body(context)
                                   .copyWith(
                                     fontWeight: item.isRead
@@ -79,19 +79,19 @@ class NotificationListItemWidget extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const SizedBox(width: AppSpacingTokens.level2),
+                          const SizedBox(width: Spacing.level2),
                           Text(
                             _formatTime(item.createdAt),
-                            style: AppTypographyToken.level3
+                            style: TypographyToken.level3
                                 .body(context)
                                 .copyWith(color: colors.mutedForeground),
                           ),
                         ],
                       ),
-                      const SizedBox(height: AppSpacingTokens.level1),
+                      const SizedBox(height: Spacing.level1),
                       Text(
                         item.content,
-                        style: AppTypographyToken.level4
+                        style: TypographyToken.level4
                             .body(context)
                             .copyWith(
                               color: colors.mutedForeground,
@@ -104,7 +104,7 @@ class NotificationListItemWidget extends StatelessWidget {
                   ),
                 ),
                 if (!item.isRead) ...[
-                  const SizedBox(width: AppSpacingTokens.level3),
+                  const SizedBox(width: Spacing.level3),
                   FAvatar.raw(
                     size: 8,
                     style: .delta(backgroundColor: colors.primary),

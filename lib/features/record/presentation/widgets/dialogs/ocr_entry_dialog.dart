@@ -107,9 +107,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
 
             // Title
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
               child: Row(
                 children: [
                   Expanded(
@@ -128,19 +126,17 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
 
             // Content area
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
                 child: Column(
                   children: [
                     // Image source picker (shown when no image yet)
                     if (imagePath.value == null) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       Row(
                         children: [
                           Expanded(
@@ -150,7 +146,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                               onTap: () => pickAndRecognize(ImageSource.camera),
                             ),
                           ),
-                          const SizedBox(width: AppSpacingTokens.level4),
+                          const SizedBox(width: Spacing.level4),
                           Expanded(
                             child: _OptionCard(
                               icon: FLucideIcons.images,
@@ -165,11 +161,11 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
 
                     // Image preview + result
                     if (imagePath.value != null) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       // Image thumbnail
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
-                          AppRadiusTokens.level4,
+                          RadiusTokens.level4,
                         ),
                         child: Image.file(
                           File(imagePath.value!),
@@ -178,17 +174,17 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level4),
+                      const SizedBox(height: Spacing.level4),
 
                       // Recognizing indicator
                       if (isRecognizing.value) ...[
-                        const SizedBox(height: AppSpacingTokens.level5),
+                        const SizedBox(height: Spacing.level5),
                         const SizedBox(
                           width: 24,
                           height: 24,
                           child: FCircularProgress(),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         Text(
                           l10n.recordOcrRecognizingHint,
                           style: typography.body.sm.copyWith(
@@ -202,13 +198,11 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           !isRecognizing.value) ...[
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.all(
-                            AppSpacingTokens.level4,
-                          ),
+                          padding: const EdgeInsets.all(Spacing.level4),
                           decoration: BoxDecoration(
                             color: colors.background,
                             borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.level4,
+                              RadiusTokens.level4,
                             ),
                             border: Border.all(color: colors.border),
                           ),
@@ -233,9 +227,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
             // Use text button
             if (recognizedText.value != null && !isRecognizing.value) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level5,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
                 child: SizedBox(
                   width: double.infinity,
                   child: FButton(
@@ -246,7 +238,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
             ],
           ],
         ),
@@ -286,15 +278,13 @@ class _OptionCard extends StatelessWidget {
           ),
         ]),
         contentStyle: const .delta(
-          padding: .value(
-            EdgeInsets.symmetric(vertical: AppSpacingTokens.level6),
-          ),
+          padding: .value(EdgeInsets.symmetric(vertical: Spacing.level6)),
         ),
       ),
       child: Column(
         children: [
           Icon(icon, size: 36, color: colors.primary),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Text(
             label,
             style: typography.body.sm.copyWith(color: colors.foreground),

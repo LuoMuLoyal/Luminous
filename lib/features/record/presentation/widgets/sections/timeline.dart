@@ -29,7 +29,7 @@ class RecordTimelinePanel extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-timeline'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,7 +38,7 @@ class RecordTimelinePanel extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.recordTimelineSectionTitle,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),
                   ),
@@ -62,10 +62,10 @@ class RecordTimelinePanel extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: AppSpacingTokens.level1),
+                        const SizedBox(width: Spacing.level1),
                         Icon(
                           FLucideIcons.chevronDown,
-                          size: AppSpacingTokens.level4,
+                          size: Spacing.level4,
                           color: colors.foreground,
                         ),
                       ],
@@ -73,7 +73,7 @@ class RecordTimelinePanel extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Column(
               children: [
                 for (var index = 0; index < entries.length; index += 1)
@@ -119,7 +119,7 @@ class _TimelineEntryRow extends StatelessWidget {
           width: dense ? 44 : 56,
           child: Text(
             entry.time,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
           ),
@@ -133,15 +133,13 @@ class _TimelineEntryRow extends StatelessWidget {
               width: 10,
               height: 10,
               indicator: _TimelineDot(entry: entry, size: 10, borderWidth: 3),
-              padding: const EdgeInsets.only(right: AppSpacingTokens.level3),
+              padding: const EdgeInsets.only(right: Spacing.level3),
               indicatorXY: 0.25,
             ),
             beforeLineStyle: LineStyle(color: colors.border, thickness: 1),
             afterLineStyle: LineStyle(color: colors.border, thickness: 1),
             endChild: Padding(
-              padding: EdgeInsets.only(
-                bottom: isLast ? 0 : AppSpacingTokens.level4,
-              ),
+              padding: EdgeInsets.only(bottom: isLast ? 0 : Spacing.level4),
               child: _TimelineCard(
                 entry: entry,
                 index: index,
@@ -228,9 +226,7 @@ class _TimelineCard extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(
-            dense ? AppSpacingTokens.level4 : AppSpacingTokens.level5,
-          ),
+          padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -239,7 +235,7 @@ class _TimelineCard extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: entry.softColor.resolve(colors),
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level4),
                 ),
                 child: Center(
                   child: Icon(
@@ -249,7 +245,7 @@ class _TimelineCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level4),
+              const SizedBox(width: Spacing.level4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,14 +255,14 @@ class _TimelineCard extends StatelessWidget {
                         Flexible(
                           child: Text(
                             label,
-                            style: AppTypographyToken.level3
+                            style: TypographyToken.level3
                                 .body(context)
                                 .copyWith(color: colors.mutedForeground),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         if (entry.badgeKey != null) ...[
-                          const SizedBox(width: AppSpacingTokens.level3),
+                          const SizedBox(width: Spacing.level3),
                           FBadge.raw(
                             builder: (context, style) {
                               return DecoratedBox(
@@ -274,21 +270,21 @@ class _TimelineCard extends StatelessWidget {
                                   color: colors.secondary,
                                   shape: RoundedSuperellipseBorder(
                                     borderRadius: BorderRadius.circular(
-                                      AppRadiusTokens.level2,
+                                      RadiusTokens.level2,
                                     ),
                                   ),
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: AppSpacingTokens.level2,
-                                    vertical: AppSpacingTokens.level1,
+                                    horizontal: Spacing.level2,
+                                    vertical: Spacing.level1,
                                   ),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
                                         recordCopy(l10n, entry.badgeKey!),
-                                        style: AppTypographyToken.level3
+                                        style: TypographyToken.level3
                                             .body(context)
                                             .copyWith(
                                               color: colors.foreground,
@@ -308,10 +304,10 @@ class _TimelineCard extends StatelessWidget {
                       ],
                     ),
                     if (value != null && value.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacingTokens.level2),
+                      const SizedBox(height: Spacing.level2),
                       Text.rich(
                         TextSpan(
-                          style: AppTypographyToken.level4
+                          style: TypographyToken.level4
                               .body(context)
                               .copyWith(
                                 color: colors.foreground,
@@ -322,7 +318,7 @@ class _TimelineCard extends StatelessWidget {
                             if (unit != null)
                               TextSpan(
                                 text: ' $unit',
-                                style: AppTypographyToken.level3
+                                style: TypographyToken.level3
                                     .body(context)
                                     .copyWith(color: colors.mutedForeground),
                               ),
@@ -331,10 +327,10 @@ class _TimelineCard extends StatelessWidget {
                       ),
                     ],
                     if (detail != null) ...[
-                      const SizedBox(height: AppSpacingTokens.level2),
+                      const SizedBox(height: Spacing.level2),
                       Text(
                         detail,
-                        style: AppTypographyToken.level3
+                        style: TypographyToken.level3
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
@@ -343,13 +339,13 @@ class _TimelineCard extends StatelessWidget {
                 ),
               ),
               if (entry.imageUrl != null && !dense) ...[
-                const SizedBox(width: AppSpacingTokens.level4),
+                const SizedBox(width: Spacing.level4),
                 _TimelineImageThumbnail(
                   imageUrl: entry.imageUrl!,
                   label: label,
                 ),
               ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-                const SizedBox(width: AppSpacingTokens.level4),
+                const SizedBox(width: Spacing.level4),
                 FCard.raw(
                   child: SizedBox(
                     width: 96,
@@ -357,8 +353,8 @@ class _TimelineCard extends StatelessWidget {
                     child: Center(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacingTokens.level3,
-                          vertical: AppSpacingTokens.level2,
+                          horizontal: Spacing.level3,
+                          vertical: Spacing.level2,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -368,10 +364,10 @@ class _TimelineCard extends StatelessWidget {
                               size: 22,
                               color: colors.mutedForeground,
                             ),
-                            const SizedBox(height: AppSpacingTokens.level1),
+                            const SizedBox(height: Spacing.level1),
                             Text(
                               recordCopy(l10n, entry.imagePlaceholderKey!),
-                              style: AppTypographyToken.level3
+                              style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.foreground),
                               textAlign: TextAlign.center,
@@ -385,7 +381,7 @@ class _TimelineCard extends StatelessWidget {
                   ),
                 ),
               ],
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
             ],
           ),
@@ -422,7 +418,7 @@ class _TimelineImageThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+      borderRadius: BorderRadius.circular(RadiusTokens.level3),
       child: SizedBox(
         width: 96,
         height: 72,

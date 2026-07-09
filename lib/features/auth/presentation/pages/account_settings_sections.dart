@@ -174,25 +174,25 @@ class _LinkedIdentityTile extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
             Icon(FLucideIcons.link, color: colors.primary, size: 20),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     identityProviderLabel(identity.provider, l10n),
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     [
                       identity.email ?? l10n.authLinkedIdentityEmailMissing,
@@ -200,7 +200,7 @@ class _LinkedIdentityTile extends StatelessWidget {
                         formatDate(identity.linkedAt),
                       ),
                     ].join(' · '),
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
@@ -345,15 +345,14 @@ class _SectionColumn extends StatelessWidget {
     children: [
       Text(
         title,
-        style: AppTypographyToken.level5
+        style: TypographyToken.level5
             .body(context)
             .copyWith(fontWeight: FontWeight.w600),
       ),
-      const SizedBox(height: AppSpacingTokens.level5),
+      const SizedBox(height: Spacing.level5),
       for (final child in children) ...[
         child,
-        if (child != children.last)
-          const SizedBox(height: AppSpacingTokens.level4),
+        if (child != children.last) const SizedBox(height: Spacing.level4),
       ],
     ],
   );
@@ -377,22 +376,22 @@ class _InfoRow extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 18, color: colors.mutedForeground),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         Expanded(
           child: Text(
             label,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.mutedForeground),
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level4),
+        const SizedBox(width: Spacing.level4),
         Flexible(
           child: Text(
             value,
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: colors.foreground),
           ),
@@ -412,7 +411,7 @@ class _MutedText extends StatelessWidget {
     final colors = context.theme.colors;
     return Text(
       text,
-      style: AppTypographyToken.level3
+      style: TypographyToken.level3
           .body(context)
           .copyWith(color: colors.mutedForeground),
     );

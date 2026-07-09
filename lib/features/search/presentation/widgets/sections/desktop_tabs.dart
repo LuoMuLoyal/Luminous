@@ -18,7 +18,7 @@ class DesktopTabs extends StatelessWidget {
         Row(
           children: [
             Icon(FLucideIcons.heartPulse, color: colors.primary, size: 18),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Text(
               l10n.medicineSearchAssistantTitle,
               style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
@@ -32,8 +32,8 @@ class DesktopTabs extends StatelessWidget {
             contentStyle: .delta(
               padding: .value(
                 EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level4,
-                  vertical: AppSpacingTokens.level2,
+                  horizontal: Spacing.level4,
+                  vertical: Spacing.level2,
                 ),
               ),
             ),
@@ -49,7 +49,7 @@ class DesktopTabs extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Container(width: 42, height: 2, color: colors.primary),
             ],
           ),
@@ -60,8 +60,8 @@ class DesktopTabs extends StatelessWidget {
             contentStyle: .delta(
               padding: .value(
                 EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level4,
-                  vertical: AppSpacingTokens.level2,
+                  horizontal: Spacing.level4,
+                  vertical: Spacing.level2,
                 ),
               ),
             ),
@@ -77,12 +77,12 @@ class DesktopTabs extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Container(width: 42, height: 2, color: Colors.transparent),
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         DecoratedBox(
           decoration: BoxDecoration(
             color: colors.primary.withValues(alpha: 0.1),

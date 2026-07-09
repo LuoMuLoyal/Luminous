@@ -30,7 +30,7 @@ class NotificationDetailPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,7 +49,7 @@ class NotificationDetailPage extends ConsumerWidget {
               },
               loading: () => const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(AppSpacingTokens.level10),
+                  padding: EdgeInsets.all(Spacing.level10),
                   child: AppSkeletonShimmer(
                     child: AppInlineSkeletonBlock(height: 120, widthFactor: 1),
                   ),
@@ -91,33 +91,31 @@ class _DetailBody extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _TypeChip(type: detail.type),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         Text(
           detail.title,
-          style: AppTypographyToken.level7
+          style: TypographyToken.level7
               .display(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         Text(
           _formatTime(detail.createdAt),
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.mutedForeground),
         ),
-        const SizedBox(height: AppSpacingTokens.level5),
+        const SizedBox(height: Spacing.level5),
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
               detail.content,
-              style: AppTypographyToken.level5
-                  .body(context)
-                  .copyWith(height: 1.6),
+              style: TypographyToken.level5.body(context).copyWith(height: 1.6),
             ),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level7),
+        const SizedBox(height: Spacing.level7),
         _ActionBar(
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
@@ -185,16 +183,16 @@ class _TypeChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(color: color, fontWeight: FontWeight.w600),
         ),
@@ -230,7 +228,7 @@ class _ActionBar extends StatelessWidget {
           ),
         ),
       if (detail.action?.isNotEmpty ?? false)
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
       Expanded(
         child: FButton(
           variant: FButtonVariant.outline,
@@ -246,7 +244,7 @@ class _ActionBar extends StatelessWidget {
           ),
         ),
       ),
-      const SizedBox(width: AppSpacingTokens.level3),
+      const SizedBox(width: Spacing.level3),
       Expanded(
         child: FButton(
           variant: FButtonVariant.destructive,
@@ -264,7 +262,7 @@ class _ActionBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     showAppDialog<void>(
       context: context,
-      maxWidth: AppLayoutTokens.wideDialogMaxWidth,
+      maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
       scrollable: false,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -272,14 +270,14 @@ class _ActionBar extends StatelessWidget {
         children: [
           Text(
             l10n.notificationDeleteConfirmTitle,
-            style: AppTypographyToken.level6.body(context),
+            style: TypographyToken.level6.body(context),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Text(
             l10n.notificationDeleteConfirmDescription,
-            style: AppTypographyToken.level4.body(context),
+            style: TypographyToken.level4.body(context),
           ),
-          const SizedBox(height: AppSpacingTokens.level5),
+          const SizedBox(height: Spacing.level5),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -288,7 +286,7 @@ class _ActionBar extends StatelessWidget {
                 onPress: () => Navigator.of(context).pop(),
                 child: Text(l10n.notificationDeleteConfirmCancel),
               ),
-              const SizedBox(width: AppSpacingTokens.level3),
+              const SizedBox(width: Spacing.level3),
               FButton(
                 variant: FButtonVariant.destructive,
                 onPress: () {

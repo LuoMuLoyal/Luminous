@@ -115,7 +115,7 @@ class _AuthShellPreview extends StatelessWidget {
         size: _previewSize,
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level6),
+            padding: const EdgeInsets.all(Spacing.level6),
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 400),
@@ -130,7 +130,7 @@ class _AuthShellPreview extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(height: AppSpacingTokens.level2),
+                    const SizedBox(height: Spacing.level2),
                     Text(
                       'Sign in to continue',
                       textAlign: TextAlign.center,
@@ -138,10 +138,10 @@ class _AuthShellPreview extends StatelessWidget {
                         color: context.theme.colors.mutedForeground,
                       ),
                     ),
-                    const SizedBox(height: AppSpacingTokens.level6),
+                    const SizedBox(height: Spacing.level6),
                     FCard.raw(
                       child: Padding(
-                        padding: const EdgeInsets.all(AppSpacingTokens.level6),
+                        padding: const EdgeInsets.all(Spacing.level6),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
@@ -149,9 +149,9 @@ class _AuthShellPreview extends StatelessWidget {
                               label: Text('Email'),
                               hint: 'name@example.com',
                             ),
-                            const SizedBox(height: AppSpacingTokens.level4),
+                            const SizedBox(height: Spacing.level4),
                             FTextField.password(label: const Text('Password')),
-                            const SizedBox(height: AppSpacingTokens.level4),
+                            const SizedBox(height: Spacing.level4),
                             FButton(
                               onPress: () {},
                               child: const Text('Sign in'),
@@ -184,7 +184,7 @@ class _ButtonPreview extends StatelessWidget {
         size: _buttonPreviewSize,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: FButton(
               variant: variant,
               onPress: () {},
@@ -215,7 +215,7 @@ class _TextFieldPreview extends StatelessWidget {
         size: _textFieldPreviewSize,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 300),
               child: password

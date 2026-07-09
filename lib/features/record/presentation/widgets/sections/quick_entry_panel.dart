@@ -50,27 +50,25 @@ class RecordAiInputBar extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
         ),
         child: Row(
           children: [
             Icon(
               FLucideIcons.sparkles,
               color: colors.primary,
-              size: AppSpacingTokens.level6,
+              size: Spacing.level6,
             ),
-            const SizedBox(width: AppSpacingTokens.level4),
+            const SizedBox(width: Spacing.level4),
             Expanded(
               child: FTappable(
                 onPress: onTap,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacingTokens.level1,
-                  ),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
                   child: Text(
                     l10n.recordAiInputHint,
-                    style: AppTypographyToken.level4
+                    style: TypographyToken.level4
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                     maxLines: 1,
@@ -79,21 +77,21 @@ class RecordAiInputBar extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level2,
-                vertical: AppSpacingTokens.level1,
+                horizontal: Spacing.level2,
+                vertical: Spacing.level1,
               ),
               decoration: BoxDecoration(
                 color: isPreview
                     ? colors.secondary.withValues(alpha: 0.12)
                     : colors.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+                borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
               ),
               child: Text(
                 l10n.recordAiBadge,
-                style: AppTypographyToken.level2
+                style: TypographyToken.level2
                     .body(context)
                     .copyWith(
                       color: isPreview
@@ -103,7 +101,7 @@ class RecordAiInputBar extends StatelessWidget {
                     ),
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level1),
+            const SizedBox(width: Spacing.level1),
             IconActionButton(
               tooltip: l10n.recordVoiceInputTitle,
               icon: FLucideIcons.mic,
@@ -289,7 +287,7 @@ class _PanelHeader extends StatelessWidget {
           Expanded(
             child: Text(
               l10n.recordQuickReorderTitle,
-              style: AppTypographyToken.level6
+              style: TypographyToken.level6
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w600),
             ),
@@ -300,7 +298,7 @@ class _PanelHeader extends StatelessWidget {
             onPress: onReorderCancel,
             child: Text(l10n.recordQuickReorderCancel),
           ),
-          const SizedBox(width: AppSpacingTokens.level2),
+          const SizedBox(width: Spacing.level2),
           FButton(
             key: const Key('record-quick-reorder-done'),
             onPress: onReorderDone,
@@ -315,7 +313,7 @@ class _PanelHeader extends StatelessWidget {
         Expanded(
           child: Text(
             l10n.recordQuickSectionTitle,
-            style: AppTypographyToken.level7
+            style: TypographyToken.level7
                 .display(context)
                 .copyWith(fontWeight: FontWeight.w800),
           ),
@@ -330,14 +328,14 @@ class _PanelHeader extends StatelessWidget {
             color: colors.mutedForeground,
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level2),
+        const SizedBox(width: Spacing.level2),
         // Dynamic sort switch
         FSwitch(
           key: const Key('record-quick-dynamic-sort'),
           value: prefs.dynamicSortEnabled,
           onChange: onToggleDynamicSort,
         ),
-        const SizedBox(width: AppSpacingTokens.level3),
+        const SizedBox(width: Spacing.level3),
         // Edit button (greyed when dynamic sort is on, shows toast on tap)
         Opacity(
           opacity: prefs.dynamicSortEnabled ? 0.4 : 1,
@@ -377,8 +375,8 @@ class _ReorderableGrid extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacingTokens.level4,
-            vertical: AppSpacingTokens.level2,
+            horizontal: Spacing.level4,
+            vertical: Spacing.level2,
           ),
           child: Row(
             children: [
@@ -387,10 +385,10 @@ class _ReorderableGrid extends StatelessWidget {
                 size: 14,
                 color: colors.mutedForeground,
               ),
-              const SizedBox(width: AppSpacingTokens.level2),
+              const SizedBox(width: Spacing.level2),
               Text(
                 l10n.recordQuickReorderHint,
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
               ),
@@ -444,7 +442,7 @@ class _ReorderableTile extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: AppSpacingTokens.level4,
+        horizontal: Spacing.level4,
         vertical: metrics.tileVerticalPadding,
       ),
       child: Row(
@@ -454,20 +452,20 @@ class _ReorderableTile extends StatelessWidget {
             size: 20,
             color: colors.mutedForeground,
           ),
-          const SizedBox(width: AppSpacingTokens.level4),
+          const SizedBox(width: Spacing.level4),
           FAvatar.raw(
             size: metrics.avatarSize,
             style: .delta(backgroundColor: action.softColor.resolve(colors)),
             child: Icon(
               action.icon,
               color: action.accent.resolve(colors),
-              size: AppSpacingTokens.level4,
+              size: Spacing.level4,
             ),
           ),
-          const SizedBox(width: AppSpacingTokens.level4),
+          const SizedBox(width: Spacing.level4),
           Text(
             label,
-            style: AppTypographyToken.level5
+            style: TypographyToken.level5
                 .body(context)
                 .copyWith(fontWeight: FontWeight.w700),
           ),
@@ -495,31 +493,11 @@ class _QuickRecordMetrics {
     final shortEdge = math.min(size.width, size.height);
     final scale = ((shortEdge - 600) / 280).clamp(0.0, 1.0);
     return _QuickRecordMetrics(
-      sectionGap: _lerpDouble(
-        AppSpacingTokens.level2,
-        AppSpacingTokens.level3,
-        scale,
-      ),
-      tileVerticalPadding: _lerpDouble(
-        AppSpacingTokens.level2,
-        AppSpacingTokens.level4,
-        scale,
-      ),
-      avatarSize: _lerpDouble(
-        AppSpacingTokens.level5,
-        AppSpacingTokens.level6,
-        scale,
-      ),
-      notePadding: _lerpDouble(
-        AppSpacingTokens.level2,
-        AppSpacingTokens.level4,
-        scale,
-      ),
-      dividerHeight: _lerpDouble(
-        AppSpacingTokens.level6,
-        AppSpacingTokens.level8,
-        scale,
-      ),
+      sectionGap: _lerpDouble(Spacing.level2, Spacing.level3, scale),
+      tileVerticalPadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
+      avatarSize: _lerpDouble(Spacing.level5, Spacing.level6, scale),
+      notePadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
+      dividerHeight: _lerpDouble(Spacing.level6, Spacing.level8, scale),
     );
   }
 
@@ -639,13 +617,13 @@ class _QuickRecordTile extends StatelessWidget {
                   child: Icon(
                     isLocked ? FLucideIcons.lock : action.icon,
                     color: action.accent.resolve(colors),
-                    size: AppSpacingTokens.level4,
+                    size: Spacing.level4,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level2),
+                const SizedBox(height: Spacing.level2),
                 Text(
                   displayLabel,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
                   textAlign: TextAlign.center,
@@ -719,31 +697,31 @@ class RecordGuideRow extends StatelessWidget {
       key: const Key('record-guide-row'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level4,
-          vertical: AppSpacingTokens.level3,
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
         ),
         child: Row(
           children: [
             Icon(
               FLucideIcons.lightbulb,
               color: context.theme.colors.primary,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
                 l10n.recordGuideHint,
-                style: AppTypographyToken.level3
+                style: TypographyToken.level3
                     .body(context)
                     .copyWith(color: colors.foreground),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Text(
               l10n.recordGuideAction,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(
                     color: context.theme.colors.primary,
@@ -753,7 +731,7 @@ class RecordGuideRow extends StatelessWidget {
             Icon(
               FLucideIcons.chevronRight,
               color: context.theme.colors.primary,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
           ],
         ),

@@ -38,7 +38,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,11 +128,11 @@ class AdvancedSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 if (kDebugMode) ...[
-                  const SizedBox(height: AppSpacingTokens.level5),
+                  const SizedBox(height: Spacing.level5),
                   SettingsSectionLabel(
                     label: l10n.settingsDeveloperSectionTitle,
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   _DeveloperOptionsGroup(),
                 ],
               ],
@@ -291,16 +291,16 @@ class _EndpointSheetState extends State<_EndpointSheet> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 widget.l10n.settingsDevApiEndpoint,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
               ),
@@ -333,7 +333,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
               ],
             ),
             if (_selected == ApiEndpoint.custom) ...[
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               FTextField(
                 control: FTextFieldControl.managed(
                   controller: _customController,
@@ -342,7 +342,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                 hint: 'https://...',
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             SizedBox(
               width: double.infinity,
               child: FButton(
@@ -385,16 +385,16 @@ class _LogLevelSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsDevLogLevel,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
               ),

@@ -32,7 +32,7 @@ class TodayDashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
         ? _DesktopTodayDashboard(
@@ -134,14 +134,14 @@ class _MobileTodayDashboard extends StatelessWidget {
         key: const PageStorageKey<String>('today-dashboard-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.fromLTRB(
-          AppSpacingTokens.level4,
-          AppSpacingTokens.level4,
-          AppSpacingTokens.level4,
-          AppSpacingTokens.level10 + MediaQuery.paddingOf(context).bottom,
+          Spacing.level4,
+          Spacing.level4,
+          Spacing.level4,
+          Spacing.level10 + MediaQuery.paddingOf(context).bottom,
         ),
         itemBuilder: (context, index) => sections[index],
         separatorBuilder: (context, index) =>
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
         itemCount: sections.length,
       ),
     );
@@ -169,23 +169,23 @@ class _DesktopTodayDashboard extends StatelessWidget {
         key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
-          AppSpacingTokens.level6,
-          AppSpacingTokens.level6,
-          AppSpacingTokens.level6,
-          AppSpacingTokens.level6,
+          Spacing.level6,
+          Spacing.level6,
+          Spacing.level6,
+          Spacing.level6,
         ),
         children: [
           TodayTopBar(dashboard: dashboard),
           if (isPreview) ...[
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             SignInHintBanner(
               onSignIn: onSignIn,
               message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
             ),
           ],
-          const SizedBox(height: AppSpacingTokens.level6),
+          const SizedBox(height: Spacing.level6),
           TodayRecordHintSection(dashboard: dashboard),
-          const SizedBox(height: AppSpacingTokens.level6),
+          const SizedBox(height: Spacing.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -194,12 +194,12 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 child: Column(
                   children: [
                     TodayPrimarySuggestionSection(dashboard: dashboard),
-                    const SizedBox(height: AppSpacingTokens.level6),
+                    const SizedBox(height: Spacing.level6),
                     TodaySummarySection(dashboard: dashboard),
                   ],
                 ),
               ),
-              const SizedBox(width: AppSpacingTokens.level6),
+              const SizedBox(width: Spacing.level6),
               Expanded(
                 flex: 5,
                 child: Column(
@@ -208,14 +208,14 @@ class _DesktopTodayDashboard extends StatelessWidget {
                       key: const Key('today-secondary-suggestions-card'),
                       dashboard: dashboard,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level6),
+                    const SizedBox(height: Spacing.level6),
                     TodayObservationSection(dashboard: dashboard),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: AppSpacingTokens.level6),
+          const SizedBox(height: Spacing.level6),
           TodayQuickActionsSection(dashboard: dashboard),
         ],
       ),

@@ -27,7 +27,7 @@ class HelpSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,10 +109,10 @@ class _EmptyState extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+      padding: const EdgeInsets.all(Spacing.level5),
       child: Text(
         message,
-        style: AppTypographyToken.level4
+        style: TypographyToken.level4
             .body(context)
             .copyWith(color: colors.mutedForeground),
         textAlign: TextAlign.center,

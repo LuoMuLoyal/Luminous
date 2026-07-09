@@ -58,7 +58,7 @@ class RegisterPage extends HookConsumerWidget {
                     'Please enter a valid email address.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             VerificationCodeField(
               controller: codeController,
               label: l10n?.authCodeLabel ?? 'Verification code',
@@ -100,7 +100,7 @@ class RegisterPage extends HookConsumerWidget {
                 await notifier.sendCode();
               },
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: passwordController,
@@ -116,7 +116,7 @@ class RegisterPage extends HookConsumerWidget {
                     'Please enter your password.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
@@ -142,7 +142,7 @@ class RegisterPage extends HookConsumerWidget {
                 return null;
               },
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FTextFormField(
               control: FTextFieldControl.managed(
                 controller: nicknameController,
@@ -151,7 +151,7 @@ class RegisterPage extends HookConsumerWidget {
               hint: l10n?.authNicknameHint ?? 'Optional',
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FCheckbox(
               value: acceptedTerms.value,
               onChange: (value) => acceptedTerms.value = value,
@@ -183,7 +183,7 @@ class RegisterPage extends HookConsumerWidget {
             ),
             if ((state.errorMessage?.isNotEmpty ?? false) ||
                 (state.successMessage?.isNotEmpty ?? false)) ...[
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               FToast(
                 variant: state.errorMessage?.isNotEmpty == true
                     ? FToastVariant.destructive
@@ -195,7 +195,7 @@ class RegisterPage extends HookConsumerWidget {
                 ),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level6),
+            const SizedBox(height: Spacing.level6),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -238,16 +238,16 @@ class RegisterPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: AppSpacingTokens.level2,
-              runSpacing: AppSpacingTokens.level1,
+              spacing: Spacing.level2,
+              runSpacing: Spacing.level1,
               children: [
                 Text(
                   l10n?.authHaveAccountPrompt ?? 'Already have an account?',
-                  style: AppTypographyToken.level2
+                  style: TypographyToken.level2
                       .body(context)
                       .copyWith(color: context.theme.colors.mutedForeground),
                 ),
@@ -258,7 +258,7 @@ class RegisterPage extends HookConsumerWidget {
                   onPress: () => context.push(AppRoutes.login),
                   child: Text(
                     l10n?.authSignIn ?? 'Sign in',
-                    style: AppTypographyToken.level2.body(context),
+                    style: TypographyToken.level2.body(context),
                   ),
                 ),
               ],
@@ -293,13 +293,13 @@ class _TermsLinks extends StatelessWidget {
     final colors = context.theme.colors;
 
     final l10n = AppLocalizations.of(context)!;
-    final linkStyle = AppTypographyToken.level3
+    final linkStyle = TypographyToken.level3
         .body(context)
         .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
 
     return Wrap(
-      spacing: AppSpacingTokens.level2,
-      runSpacing: AppSpacingTokens.level1,
+      spacing: Spacing.level2,
+      runSpacing: Spacing.level1,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         FButton(
@@ -311,7 +311,7 @@ class _TermsLinks extends StatelessWidget {
         ),
         Text(
           '/',
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.mutedForeground),
         ),

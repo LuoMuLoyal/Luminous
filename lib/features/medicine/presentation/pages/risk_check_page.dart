@@ -60,7 +60,7 @@ class MedicineRiskCheckPage extends ConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < AppBreakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile ? 24 : 32,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _RiskCheckSectionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: AppTypographyToken.level6.body(context)),
+            Text(title, style: TypographyToken.level6.body(context)),
             const SizedBox(height: 20),
             child,
           ],
@@ -122,32 +122,32 @@ class _TierBanner extends StatelessWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacingTokens.level4),
+      padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
         color: accent.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
         border: Border.all(color: accent.withValues(alpha: 0.18)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: accent, size: AppSpacingTokens.level5),
-          const SizedBox(width: AppSpacingTokens.level3),
+          Icon(icon, color: accent, size: Spacing.level5),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w800, color: accent),
                 ),
                 if (body != null) ...[
-                  const SizedBox(height: AppSpacingTokens.level1),
+                  const SizedBox(height: Spacing.level1),
                   Text(
                     body!,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),
@@ -175,21 +175,21 @@ class _MedicineRiskCheckBody extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Red flag banner (always first if present)
           if (redFlagAlerts.isNotEmpty) ...[
             MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
           ],
           // Summary metrics card
           _RiskCheckSectionCard(
             title: l10n.medicineRiskCheckSummaryTitle,
             child: Wrap(
-              spacing: AppSpacingTokens.level3,
-              runSpacing: AppSpacingTokens.level3,
+              spacing: Spacing.level3,
+              runSpacing: Spacing.level3,
               children: [
                 MedicineRiskMetricChip(
                   label: l10n.medicineRiskCheckCurrentMedicinesLabel,
@@ -210,7 +210,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           // Three-tier display
           _buildThreeTierSection(context, l10n),
         ],
@@ -236,7 +236,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             icon: FLucideIcons.triangleAlert,
             tone: AppStateTone.danger,
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           _RiskCheckSectionCard(
             title: l10n.medicineRiskCheckFindingsTitle,
             child: Column(
@@ -250,7 +250,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
         ],
         // Tier 2: Confirmed Safe (only when no findings AND no coverage gaps)
         if (!hasFindings && !hasCoverageGaps) ...[
@@ -262,12 +262,12 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             ),
             tone: AppStateTone.success,
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Container(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             decoration: BoxDecoration(
               color: context.theme.colors.primary.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+              borderRadius: BorderRadius.circular(RadiusTokens.level3),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,13 +275,13 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                 Icon(
                   FLucideIcons.info,
                   color: context.theme.colors.primary,
-                  size: AppSpacingTokens.level5,
+                  size: Spacing.level5,
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 Expanded(
                   child: Text(
                     l10n.medicineRiskCheckTierSafeDisclaimer,
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: context.theme.colors.mutedForeground),
                   ),
@@ -300,14 +300,14 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               body: l10n.medicineRiskCheckTierUncoveredDisclaimer,
               tone: AppStateTone.warning,
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
           ],
           if (result.coverageSummary.isNotEmpty) ...[
             Container(
-              padding: const EdgeInsets.all(AppSpacingTokens.level4),
+              padding: const EdgeInsets.all(Spacing.level4),
               decoration: BoxDecoration(
                 color: context.theme.colors.secondary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+                borderRadius: BorderRadius.circular(RadiusTokens.level3),
                 border: Border.all(
                   color: context.theme.colors.secondary.withValues(alpha: 0.18),
                 ),
@@ -318,13 +318,13 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                   Icon(
                     FLucideIcons.circleAlert,
                     color: context.theme.colors.secondary,
-                    size: AppSpacingTokens.level5,
+                    size: Spacing.level5,
                   ),
-                  const SizedBox(width: AppSpacingTokens.level3),
+                  const SizedBox(width: Spacing.level3),
                   Expanded(
                     child: Text(
                       result.coverageSummary,
-                      style: AppTypographyToken.level3
+                      style: TypographyToken.level3
                           .body(context)
                           .copyWith(
                             color: context.theme.colors.mutedForeground,
@@ -334,7 +334,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
           ],
           _RiskCheckSectionCard(
             title: l10n.medicineRiskCheckCoverageTitle,

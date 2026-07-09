@@ -444,7 +444,7 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +464,7 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -477,13 +477,13 @@ class RecordEditPage extends HookConsumerWidget {
       content = ResponsiveContentFrame(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: width < AppBreakpoints.mobile ? 24 : 32,
+            vertical: width < Breakpoints.mobile ? 24 : 32,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                padding: const EdgeInsets.all(Spacing.level4),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -517,7 +517,7 @@ class RecordEditPage extends HookConsumerWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     DailyRecordFormFields(
                       kind: kind.value,
                       onKindChanged: onKindChanged,
@@ -527,7 +527,7 @@ class RecordEditPage extends HookConsumerWidget {
                       noteController: noteController,
                     ),
                     if (kind.value == DailyRecordKind.sleep) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       SleepStructuredFields(
                         l10n: l10n,
                         bedtime: sleepBedtime.value,
@@ -546,7 +546,7 @@ class RecordEditPage extends HookConsumerWidget {
                       ),
                     ],
                     if (kind.value == DailyRecordKind.meal) ...[
-                      const SizedBox(height: AppSpacingTokens.level3),
+                      const SizedBox(height: Spacing.level3),
                       MealDishEditorSection(
                         dishNames: mealDishNames.value,
                         enabled: !saving.value && !deleting.value,
@@ -567,7 +567,7 @@ class RecordEditPage extends HookConsumerWidget {
                         },
                       ),
                       if (canConfirmMealAnalysis.value) ...[
-                        const SizedBox(height: AppSpacingTokens.level3),
+                        const SizedBox(height: Spacing.level3),
                         Align(
                           alignment: Alignment.centerLeft,
                           child: FButton(
@@ -583,7 +583,7 @@ class RecordEditPage extends HookConsumerWidget {
                         ),
                       ],
                     ],
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     DailyRecordImageAttachmentField(
                       l10n: l10n,
                       selectedBytes: selectedImage.value?.bytes,
@@ -595,13 +595,13 @@ class RecordEditPage extends HookConsumerWidget {
                       onRemove: onRemoveImage,
                       enabled: !saving.value && !deleting.value,
                     ),
-                    const SizedBox(height: AppSpacingTokens.level5),
+                    const SizedBox(height: Spacing.level5),
                     FButton(
                       key: const Key('record-edit-save-action'),
                       onPress: saving.value ? null : onSave,
                       child: Text(l10n.mineEditSaveAction),
                     ),
-                    const SizedBox(height: AppSpacingTokens.level3),
+                    const SizedBox(height: Spacing.level3),
                     FButton(
                       key: const Key('record-edit-delete-action'),
                       variant: FButtonVariant.destructive,

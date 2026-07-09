@@ -24,29 +24,29 @@ class RecordQuickActions extends StatelessWidget {
     return FCard.raw(
       key: const Key('record-quick-actions'),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               l10n.recordQuickSectionTitle,
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             LayoutBuilder(
               builder: (context, constraints) {
                 final columns = compact || constraints.maxWidth < 520 ? 4 : 7;
                 return Wrap(
-                  spacing: AppSpacingTokens.level3,
-                  runSpacing: AppSpacingTokens.level3,
+                  spacing: Spacing.level3,
+                  runSpacing: Spacing.level3,
                   children: actions
                       .map(
                         (action) => SizedBox(
                           width:
                               (constraints.maxWidth -
-                                  AppSpacingTokens.level3 * (columns - 1)) /
+                                  Spacing.level3 * (columns - 1)) /
                               columns,
                           child: _QuickActionTile(
                             action: action,
@@ -91,8 +91,8 @@ class _QuickActionTile extends StatelessWidget {
         contentStyle: const .delta(
           padding: .value(
             EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level2,
-              vertical: AppSpacingTokens.level4,
+              horizontal: Spacing.level2,
+              vertical: Spacing.level4,
             ),
           ),
         ),
@@ -109,10 +109,10 @@ class _QuickActionTile extends StatelessWidget {
               size: 20,
             ),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           Text(
             label,
-            style: AppTypographyToken.level3
+            style: TypographyToken.level3
                 .body(context)
                 .copyWith(fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,

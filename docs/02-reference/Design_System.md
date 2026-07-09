@@ -32,8 +32,14 @@
 - `AppShadowTokens` 也已删除且未替换：
   - 其 level1/level2 值先内联，后从 `app_toast.dart`、`app_state_views.dart`、`today_components.dart` 完全移除，
      以匹配更平的 Forui-first 视觉方向。
-- `AppSpacingTokens` 与 `AppRadiusTokens` 仍作为兼容名存在，主命名为 `level*`，但实际值在 2026-07-02 被积极重置以跟踪当前
-   Forui-led 基础。
+- 所有 `App*` 前缀已移除（2026-07-09）：
+  - `AppSpacingTokens` → `Spacing`
+  - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突）
+  - `AppTypographyToken` → `TypographyToken`
+  - `AppAnimationDurations` → `DurationTokens`（`abstract final class`，避免与 Flutter `Durations` 冲突）
+  - `AppBreakpoints` → `Breakpoints`
+  - `AppResponsiveSizing` → `ResponsiveSizing`
+  - `AppLayoutScale` → `LayoutScale`（值对象）+ `AppLayoutTokens` → `LayoutScaleResolver`（静态工具）
 - `lib/core/design/semantic_color.dart` 中 `SemanticColor` enum：
   - 6 个语义色：`primary`、`success`、`warning`、`info`、`destructive`、`neutral`
   - 每个 `SemanticColor` 解析为 `SemanticColorPalette`（5 个预计算 tone：`solid`/`foreground`/`muted`/`subtle`/`border`）
@@ -42,7 +48,9 @@
 
 ## 命名
 
-- `AppSpacingTokens` 与 `AppRadiusTokens` 暴露 `level*` 主命名（`level1`、`level2` …）。
+- 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
+- `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- `DurationTokens` 为 `abstract final class`（非 `class + const _()`）。
 - 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名在所有调用点迁移后被移除。
 
 ## 主题偏好
@@ -53,15 +61,15 @@
 ## 颜色
 
 - `RecordTypeColors`（`lib/features/record/domain/entities/record_type_colors.dart`）已删除。
-- 每种记录类型的颜色对现在表示为 `AppColors` token，在 widget build 时解析。
+- 每种记录类型的颜色对现在表示为 `SemanticColor` token，在 widget build 时解析。
 
 ## 间距与布局
 
-- 间距使用 retuned `AppSpacingTokens` bridge（xxs=4, xs=6, sm=10, md=14, lg=20, xl=28, x2l=36, x3l=44,
-   x4l=56, x5l=72, x6l=96, section=128）。
+- 间距使用 `Spacing` token（level1=4, level2=6, level3=10, level4=14, level5=20, level6=28, level7=36, level8=44,
+   level9=56, level10=72, level11=96, level12=128）。
 - 硬编码像素值正被项目范围地替换为 token 引用，即使这些 token 值本身在向 Forui 靠拢。
-- 断点引用 `AppBreakpoints` 常量；不出现硬编码 `600`。
-- 响应式尺寸 helper 位于 `lib/core/design/app_responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
+- 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
+- 响应式尺寸 helper 位于 `lib/core/design/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
    尺寸。
 
 

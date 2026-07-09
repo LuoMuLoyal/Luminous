@@ -14,7 +14,7 @@ class MineSectionTitle extends StatelessWidget {
 
     return Text(
       title,
-      style: AppTypographyToken.level6
+      style: TypographyToken.level6
           .body(context)
           .copyWith(color: colors.foreground, fontWeight: FontWeight.w600),
     );

@@ -26,15 +26,13 @@ class MedicineSafetyPanel extends StatelessWidget {
       children: [
         FCard.raw(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacingTokens.level4),
+            padding: const EdgeInsets.all(Spacing.level4),
             child: Column(
               children: [
                 for (var index = 0; index < alerts.length; index += 1)
                   Padding(
                     padding: EdgeInsets.only(
-                      bottom: index == alerts.length - 1
-                          ? 0
-                          : AppSpacingTokens.level4,
+                      bottom: index == alerts.length - 1 ? 0 : Spacing.level4,
                     ),
                     child: _AlertTile(alert: alerts[index], l10n: l10n),
                   ),
@@ -42,7 +40,7 @@ class MedicineSafetyPanel extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         _PromisePanel(workspace: workspace, l10n: l10n),
       ],
     );
@@ -71,29 +69,29 @@ class _AlertTile extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               medicineAlertTitle(l10n, alert),
-              style: AppTypographyToken.level5
+              style: TypographyToken.level5
                   .body(context)
                   .copyWith(color: palette.solid, fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Text(
               medicineAlertBody(l10n, alert),
-              style: AppTypographyToken.level4.body(context),
+              style: TypographyToken.level4.body(context),
             ),
-            const SizedBox(height: AppSpacingTokens.level2),
+            const SizedBox(height: Spacing.level2),
             Text(
               medicineAlertDetail(l10n, alert),
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: context.theme.colors.mutedForeground),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Align(
               alignment: Alignment.centerLeft,
               child: FButton(
@@ -136,28 +134,26 @@ class _PromisePanel extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          padding: const EdgeInsets.all(Spacing.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 l10n.medicinePromiseTitle,
-                style: AppTypographyToken.level4
+                style: TypographyToken.level4
                     .body(context)
                     .copyWith(
                       color: context.theme.colors.primary,
                       fontWeight: FontWeight.w700,
                     ),
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               ...workspace.promisePoints.map(
                 (point) => Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: AppSpacingTokens.level4,
-                  ),
+                  padding: const EdgeInsets.only(bottom: Spacing.level4),
                   child: Text(
                     medicineCopy(l10n, point.copyKey),
-                    style: AppTypographyToken.level3
+                    style: TypographyToken.level3
                         .body(context)
                         .copyWith(color: colors.mutedForeground),
                   ),

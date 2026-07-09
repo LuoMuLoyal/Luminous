@@ -26,7 +26,7 @@ class RecordMobileFilter extends StatelessWidget {
     final header = allSelected
         ? Text(
             l10n.recordFilterMobileTitle,
-            style: AppTypographyToken.level7
+            style: TypographyToken.level7
                 .display(context)
                 .copyWith(fontWeight: FontWeight.w800),
           )
@@ -38,7 +38,7 @@ class RecordMobileFilter extends StatelessWidget {
                       .map((f) => mobileFilterLabel(l10n, f))
                       .join(' · '),
                 ),
-                style: AppTypographyToken.level7
+                style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w700),
               ),
@@ -54,10 +54,10 @@ class RecordMobileFilter extends StatelessWidget {
                     children: [
                       Icon(
                         FLucideIcons.x,
-                        size: AppSpacingTokens.level4,
+                        size: Spacing.level4,
                         color: context.theme.colors.mutedForeground,
                       ),
-                      const SizedBox(width: AppSpacingTokens.level1),
+                      const SizedBox(width: Spacing.level1),
                       Text(
                         l10n.recordFilterClearAction,
                         style: TextStyle(
@@ -76,15 +76,14 @@ class RecordMobileFilter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         header,
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         SizedBox(
           height: 36,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.zero,
             itemCount: filters.length + (allSelected ? 0 : 1),
-            separatorBuilder: (_, __) =>
-                const SizedBox(width: AppSpacingTokens.level2),
+            separatorBuilder: (_, __) => const SizedBox(width: Spacing.level2),
             itemBuilder: (context, index) {
               // When a filter is active, prepend a "全部" chip.
               if (!allSelected && index == 0) {
@@ -152,7 +151,7 @@ class _FilterChip extends StatelessWidget {
               // Let FButton's IconTheme/DefaultTextStyle provide the correct
               // contrast color based on the button's selected state.
             ),
-            const SizedBox(width: AppSpacingTokens.level1),
+            const SizedBox(width: Spacing.level1),
           ],
           Text(label, style: TextStyle(fontSize: fontSize)),
         ],

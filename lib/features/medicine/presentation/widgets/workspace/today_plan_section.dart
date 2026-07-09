@@ -23,7 +23,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           children: [
             for (var index = 0; index < workspace.plan.items.length; index += 1)
@@ -31,7 +31,7 @@ class MedicineTodayPlanSection extends StatelessWidget {
                 padding: EdgeInsets.only(
                   bottom: index == workspace.plan.items.length - 1
                       ? 0
-                      : AppSpacingTokens.level4,
+                      : Spacing.level4,
                 ),
                 child: _MedicationPlanTile(
                   item: workspace.plan.items[index],
@@ -89,7 +89,7 @@ class _MedicationPlanTile extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level4),
+          padding: const EdgeInsets.all(Spacing.level4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -102,21 +102,21 @@ class _MedicationPlanTile extends StatelessWidget {
                       children: [
                         Text(
                           nameText,
-                          style: AppTypographyToken.level4
+                          style: TypographyToken.level4
                               .body(context)
                               .copyWith(fontWeight: FontWeight.w700),
                         ),
-                        const SizedBox(height: AppSpacingTokens.level2),
+                        const SizedBox(height: Spacing.level2),
                         Text(
                           '$dosageText · $scheduleText',
-                          style: AppTypographyToken.level3
+                          style: TypographyToken.level3
                               .body(context)
                               .copyWith(color: colors.mutedForeground),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: AppSpacingTokens.level3),
+                  const SizedBox(width: Spacing.level3),
                   FBadge.raw(
                     builder: (context, style) {
                       final resolvedColor = item.stateColor.resolve(colors);
@@ -128,21 +128,21 @@ class _MedicationPlanTile extends StatelessWidget {
                           color: resolvedColor.withValues(alpha: 0.12),
                           shape: RoundedSuperellipseBorder(
                             borderRadius: BorderRadius.circular(
-                              AppRadiusTokens.levelFull,
+                              RadiusTokens.levelFull,
                             ),
                           ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacingTokens.level2,
-                            vertical: AppSpacingTokens.level1,
+                            horizontal: Spacing.level2,
+                            vertical: Spacing.level1,
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 stateText,
-                                style: AppTypographyToken.level4
+                                style: TypographyToken.level4
                                     .body(context)
                                     .copyWith(
                                       color: foreground,
@@ -162,7 +162,7 @@ class _MedicationPlanTile extends StatelessWidget {
               if (takenRequest != null &&
                   skippedRequest != null &&
                   onMarkDose != null) ...[
-                const SizedBox(height: AppSpacingTokens.level3),
+                const SizedBox(height: Spacing.level3),
                 Row(
                   children: [
                     Expanded(
@@ -173,7 +173,7 @@ class _MedicationPlanTile extends StatelessWidget {
                         child: Text(l10n.medicineDoseActionTaken),
                       ),
                     ),
-                    const SizedBox(width: AppSpacingTokens.level3),
+                    const SizedBox(width: Spacing.level3),
                     Expanded(
                       child: FButton(
                         variant: FButtonVariant.outline,

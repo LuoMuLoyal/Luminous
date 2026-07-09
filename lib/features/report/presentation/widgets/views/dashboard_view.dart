@@ -69,7 +69,7 @@ class ReportDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
         ? _buildDesktopLayout(l10n: l10n)
@@ -85,11 +85,11 @@ class ReportDashboardView extends StatelessWidget {
 
     return Animate(
       effects: const [
-        FadeEffect(duration: AppAnimationDurations.widgetFadeIn),
+        FadeEffect(duration: DurationTokens.widgetFadeIn),
         SlideEffect(
           begin: Offset(0, 0.02),
           end: Offset.zero,
-          duration: AppAnimationDurations.widgetFadeIn,
+          duration: DurationTokens.widgetFadeIn,
         ),
       ],
       child: scopedContent,
@@ -117,13 +117,13 @@ class ReportDashboardView extends StatelessWidget {
                 },
           onSync: onSync,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         ReportScoreHero(
           key: const Key('report-score-hero'),
           dashboard: dashboard,
           l10n: l10n,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         ReportTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,
@@ -132,14 +132,14 @@ class ReportDashboardView extends StatelessWidget {
           l10n: l10n,
           showRangePill: false,
         ),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         ReportFindingsSection(
           key: const Key('report-findings-section'),
           findings: dashboard.findings,
           l10n: l10n,
         ),
         if (canAccessProtectedData) ...[
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           ReportSuggestionHistorySection(
             suggestions: proactiveSuggestions,
             isLoading: isSuggestionHistoryLoading,
@@ -148,7 +148,7 @@ class ReportDashboardView extends StatelessWidget {
           ),
         ],
         if (!canShowFullReport) ...[
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           _ReportLockedFeaturesHint(
             message: readinessStatus == ReportReadinessStatus.signedOut
                 ? l10n.reportLockedFeaturesSignedOutHint
@@ -156,7 +156,7 @@ class ReportDashboardView extends StatelessWidget {
           ),
         ],
         if (canShowFullReport) ...[
-          const SizedBox(height: AppSpacingTokens.level4),
+          const SizedBox(height: Spacing.level4),
           ReportAiSummarySection(
             key: const Key('report-ai-summary-section'),
             dashboard: dashboard,
@@ -168,7 +168,7 @@ class ReportDashboardView extends StatelessWidget {
             onGenerate: onGenerateAiSummary,
             l10n: l10n,
           ),
-          const SizedBox(height: AppSpacingTokens.level5),
+          const SizedBox(height: Spacing.level5),
           ReportExportSection(
             key: const Key('report-export-section'),
             actions: dashboard.exportActions,
@@ -177,7 +177,7 @@ class ReportDashboardView extends StatelessWidget {
             onActionTap: onExportActionTap,
             l10n: l10n,
           ),
-          const SizedBox(height: AppSpacingTokens.level5),
+          const SizedBox(height: Spacing.level5),
           ReportPatternsSection(
             key: const Key('report-patterns-section'),
             patterns: dashboard.patterns,
@@ -213,13 +213,13 @@ class ReportDashboardView extends StatelessWidget {
                       },
                 onSync: onSync,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportScoreHero(
                 key: const Key('report-score-hero'),
                 dashboard: dashboard,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportTrendSection(
                 key: const Key('report-trend-section'),
                 trends: dashboard.trends,
@@ -227,14 +227,14 @@ class ReportDashboardView extends StatelessWidget {
                 onQueryChanged: onDashboardQueryChanged ?? (_) {},
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportFindingsSection(
                 key: const Key('report-findings-section'),
                 findings: dashboard.findings,
                 l10n: l10n,
               ),
               if (canAccessProtectedData) ...[
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 ReportSuggestionHistorySection(
                   suggestions: proactiveSuggestions,
                   isLoading: isSuggestionHistoryLoading,
@@ -245,7 +245,7 @@ class ReportDashboardView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: AppSpacingTokens.level5),
+        const SizedBox(width: Spacing.level5),
         Expanded(
           flex: 5,
           child: Column(
@@ -258,7 +258,7 @@ class ReportDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onMetricSelected: onMetricSelected,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportExportSection(
                 key: const Key('report-export-section'),
                 actions: dashboard.exportActions,
@@ -269,7 +269,7 @@ class ReportDashboardView extends StatelessWidget {
                 isDataInsufficient:
                     readinessStatus == ReportReadinessStatus.insufficient,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportAiSummarySection(
                 key: const Key('report-ai-summary-section'),
                 dashboard: dashboard,
@@ -281,13 +281,13 @@ class ReportDashboardView extends StatelessWidget {
                 onGenerate: onGenerateAiSummary,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportPatternsSection(
                 key: const Key('report-patterns-section'),
                 patterns: dashboard.patterns,
                 l10n: l10n,
               ),
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               ReportReferenceNotice(
                 key: const Key('report-reference-notice'),
                 l10n: l10n,
@@ -333,12 +333,12 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
           child: Icon(
             FLucideIcons.lock,
             color: colors.primary,
-            size: AppSpacingTokens.level4,
+            size: Spacing.level4,
           ),
         ),
         title: Text(
           AppLocalizations.of(context)!.reportLockedFeaturesTitle,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(fontWeight: FontWeight.w800),
         ),

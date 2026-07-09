@@ -80,18 +80,18 @@ class TintedStatusBadge extends StatelessWidget {
       decoration: ShapeDecoration(
         color: backgroundColor,
         shape: RoundedSuperellipseBorder(
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+          borderRadius: BorderRadius.circular(RadiusTokens.level2),
           side: BorderSide(color: resolvedColor.withValues(alpha: 0.16)),
         ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level2,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(
                 color: resolvedColor,
@@ -130,8 +130,8 @@ class MedicineHeaderActionChip extends StatelessWidget {
         contentStyle: .delta(
           padding: .value(
             EdgeInsets.symmetric(
-              horizontal: AppSpacingTokens.level4,
-              vertical: AppSpacingTokens.level3,
+              horizontal: Spacing.level4,
+              vertical: Spacing.level3,
             ),
           ),
         ),

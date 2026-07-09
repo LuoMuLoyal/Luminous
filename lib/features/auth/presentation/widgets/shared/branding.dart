@@ -42,7 +42,7 @@ class AuthTermsNotice extends StatelessWidget {
 
     final l10n = AppLocalizations.of(context);
 
-    final linkStyle = AppTypographyToken.level3
+    final linkStyle = TypographyToken.level3
         .body(context)
         .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
     final String leadText =
@@ -61,9 +61,7 @@ class AuthTermsNotice extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level2,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.level2),
         child: Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -71,7 +69,7 @@ class AuthTermsNotice extends StatelessWidget {
           children: [
             Text(
               trimmedLead,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
@@ -82,7 +80,7 @@ class AuthTermsNotice extends StatelessWidget {
             ),
             Text(
               connector,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),

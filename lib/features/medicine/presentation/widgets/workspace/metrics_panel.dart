@@ -21,8 +21,8 @@ class MedicineMetricsPanel extends StatelessWidget {
     return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level5,
-          vertical: AppSpacingTokens.level4,
+          horizontal: Spacing.level5,
+          vertical: Spacing.level4,
         ),
         child: Row(
           children: [
@@ -70,28 +70,26 @@ class _MetricBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacingTokens.level3),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.level3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: AppTypographyToken.level3
-                .body(context)
-                .copyWith(color: muted),
+            style: TypographyToken.level3.body(context).copyWith(color: muted),
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: AppSpacingTokens.level2),
+          const SizedBox(height: Spacing.level2),
           RichText(
             text: TextSpan(
-              style: AppTypographyToken.level8
+              style: TypographyToken.level8
                   .display(context)
                   .copyWith(color: accent, fontWeight: FontWeight.w700),
               children: [
                 TextSpan(text: value),
                 TextSpan(
                   text: suffix,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(color: accent, fontWeight: FontWeight.w700),
                 ),

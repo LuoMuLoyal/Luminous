@@ -31,7 +31,7 @@ class SearchResultTile extends StatelessWidget {
       onPress: onTap,
       child: FCard.raw(
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacingTokens.level5),
+          padding: const EdgeInsets.all(Spacing.level5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -49,31 +49,31 @@ class SearchResultTile extends StatelessWidget {
                   _SourceBadge(source: result.source, l10n: l10n),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level2),
+              const SizedBox(height: Spacing.level2),
               Text(
                 result.subtitle,
                 style: typography.body.sm.copyWith(
                   color: colors.mutedForeground,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level1),
+              const SizedBox(height: Spacing.level1),
               Text(
                 sourceRefLabel(l10n, result.source, result.id),
                 style: typography.body.xs.copyWith(
                   color: colors.mutedForeground,
                 ),
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Text(
                 result.summary,
                 style: typography.body.md.copyWith(color: colors.foreground),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Wrap(
-                spacing: AppSpacingTokens.level3,
-                runSpacing: AppSpacingTokens.level3,
+                spacing: Spacing.level3,
+                runSpacing: Spacing.level3,
                 children: [
                   ...result.tags.map((tag) => _TagPill(label: tag)),
                   _TagPill(
@@ -82,7 +82,7 @@ class SearchResultTile extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               Align(
                 alignment: expandedAction
                     ? Alignment.center
@@ -115,7 +115,7 @@ class _SourceBadge extends StatelessWidget {
       variant: FBadgeVariant.primary,
       style: .delta(
         decoration: .boxDelta(
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+          borderRadius: BorderRadius.circular(RadiusTokens.level2),
         ),
       ),
       child: Text(sourceLabel(l10n, source)),
@@ -137,7 +137,7 @@ class _TagPill extends StatelessWidget {
       style: .delta(
         decoration: .boxDelta(
           color: colors.primary.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
+          borderRadius: BorderRadius.circular(RadiusTokens.level2),
         ),
         contentStyle: .delta(labelTextStyle: .delta(color: colors.primary)),
       ),
@@ -160,7 +160,7 @@ class PreviewPanel extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level6),
+        padding: const EdgeInsets.all(Spacing.level6),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,14 +170,14 @@ class PreviewPanel extends StatelessWidget {
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
               if (preview != null) ...[
-                const SizedBox(height: AppSpacingTokens.level5),
+                const SizedBox(height: Spacing.level5),
                 Text(
                   preview.title,
                   style: typography.body.md.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 if (preview.conditions.isNotEmpty) ...[
                   Text(
                     l10n.medicineSearchPreviewClinical,
@@ -186,12 +186,10 @@ class PreviewPanel extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   ...preview.conditions.map(
                     (c) => Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.level1,
-                      ),
+                      padding: const EdgeInsets.only(bottom: Spacing.level1),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -199,7 +197,7 @@ class PreviewPanel extends StatelessWidget {
                             padding: EdgeInsets.only(top: 6),
                             child: Icon(FLucideIcons.dot, size: 12),
                           ),
-                          const SizedBox(width: AppSpacingTokens.level3),
+                          const SizedBox(width: Spacing.level3),
                           Expanded(
                             child: Text(
                               c,
@@ -213,7 +211,7 @@ class PreviewPanel extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: AppSpacingTokens.level4),
+                const SizedBox(height: Spacing.level4),
                 if (preview.checklist.isNotEmpty) ...[
                   Text(
                     l10n.medicineSearchPreviewSafety,
@@ -222,12 +220,10 @@ class PreviewPanel extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: AppSpacingTokens.level3),
+                  const SizedBox(height: Spacing.level3),
                   ...preview.checklist.map(
                     (item) => Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: AppSpacingTokens.level1,
-                      ),
+                      padding: const EdgeInsets.only(bottom: Spacing.level1),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -236,7 +232,7 @@ class PreviewPanel extends StatelessWidget {
                             size: 16,
                             color: colors.primary,
                           ),
-                          const SizedBox(width: AppSpacingTokens.level3),
+                          const SizedBox(width: Spacing.level3),
                           Expanded(
                             child: Text(item, style: typography.body.md),
                           ),
@@ -248,7 +244,7 @@ class PreviewPanel extends StatelessWidget {
               ],
               if (preview == null)
                 Padding(
-                  padding: const EdgeInsets.only(top: AppSpacingTokens.level5),
+                  padding: const EdgeInsets.only(top: Spacing.level5),
                   child: Text(
                     l10n.medicineSearchPreviewEmpty,
                     style: typography.body.md.copyWith(
@@ -279,14 +275,14 @@ class NoResultTools extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level5),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           children: [
             Text(
               l10n.medicineSearchNoResultTitle,
               style: typography.body.md.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Row(
               children: actions
                   .map(
@@ -315,11 +311,11 @@ class _NoResultAction extends StatelessWidget {
     final typography = context.theme.typography;
 
     return Padding(
-      padding: const EdgeInsets.all(AppSpacingTokens.level3),
+      padding: const EdgeInsets.all(Spacing.level3),
       child: Column(
         children: [
           Icon(icon, color: colors.primary),
-          const SizedBox(height: AppSpacingTokens.level2),
+          const SizedBox(height: Spacing.level2),
           Text(label, textAlign: TextAlign.center, style: typography.body.xs),
         ],
       ),

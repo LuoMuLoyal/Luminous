@@ -57,7 +57,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                     'Please enter a valid email address.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             VerificationCodeField(
               controller: codeController,
               label: l10n?.authCodeLabel ?? 'Verification code',
@@ -99,7 +99,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 await notifier.sendResetCode();
               },
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: passwordController,
@@ -115,7 +115,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                     'Please enter your password.',
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
@@ -143,7 +143,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
             ),
             if ((state.errorMessage?.isNotEmpty ?? false) ||
                 success != null) ...[
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               FToast(
                 variant: state.errorMessage?.isNotEmpty == true
                     ? FToastVariant.destructive
@@ -155,7 +155,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 ),
               ),
             ],
-            const SizedBox(height: AppSpacingTokens.level6),
+            const SizedBox(height: Spacing.level6),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -193,16 +193,16 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             Wrap(
               alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: AppSpacingTokens.level2,
-              runSpacing: AppSpacingTokens.level1,
+              spacing: Spacing.level2,
+              runSpacing: Spacing.level1,
               children: [
                 Text(
                   l10n?.authRememberPasswordPrompt ?? 'Remember your password?',
-                  style: AppTypographyToken.level2
+                  style: TypographyToken.level2
                       .body(context)
                       .copyWith(color: context.theme.colors.mutedForeground),
                 ),
@@ -213,7 +213,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   onPress: () => context.push(AppRoutes.login),
                   child: Text(
                     l10n?.authSignIn ?? 'Sign in',
-                    style: AppTypographyToken.level2.body(context),
+                    style: TypographyToken.level2.body(context),
                   ),
                 ),
               ],

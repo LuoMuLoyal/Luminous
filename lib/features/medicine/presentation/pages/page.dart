@@ -33,7 +33,7 @@ class MedicinePage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     // Always watch the provider — when signed out it returns preview data.
     final workspaceAsync = ref.watch(medicineWorkspaceProvider);
@@ -98,7 +98,7 @@ class MedicinePage extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SignInHintBanner(onSignIn: onSignIn),
-                            const SizedBox(height: AppSpacingTokens.level4),
+                            const SizedBox(height: Spacing.level4),
                             content,
                           ],
                         )
@@ -110,7 +110,7 @@ class MedicinePage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SignInHintBanner(onSignIn: onSignIn),
-                      const SizedBox(height: AppSpacingTokens.level4),
+                      const SizedBox(height: Spacing.level4),
                       content,
                     ],
                   ),
@@ -217,10 +217,10 @@ class _MedicineMobileShell extends StatelessWidget {
         child: ListView(
           key: const PageStorageKey<String>('medicine-mobile-scroll'),
           padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.level4,
-            AppSpacingTokens.level4,
-            AppSpacingTokens.level4,
-            AppSpacingTokens.level10,
+            Spacing.level4,
+            Spacing.level4,
+            Spacing.level4,
+            Spacing.level10,
           ),
           children: [
             AppTopBar(
@@ -230,9 +230,9 @@ class _MedicineMobileShell extends StatelessWidget {
                 _MedicineNotificationButton(),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             const _MedicineMobileSearchBar(),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             child,
           ],
         ),
@@ -257,10 +257,10 @@ class _MedicineDesktopShell extends StatelessWidget {
         child: ListView(
           key: const PageStorageKey<String>('medicine-desktop-scroll'),
           padding: const EdgeInsets.fromLTRB(
-            AppSpacingTokens.level6,
-            AppSpacingTokens.level6,
-            AppSpacingTokens.level6,
-            AppSpacingTokens.level6,
+            Spacing.level6,
+            Spacing.level6,
+            Spacing.level6,
+            Spacing.level6,
           ),
           children: [child],
         ),
@@ -287,21 +287,21 @@ class _MedicineSafeGuardPill extends StatelessWidget {
           contentStyle: .delta(
             padding: .value(
               EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level2,
-                vertical: AppSpacingTokens.level2,
+                horizontal: Spacing.level2,
+                vertical: Spacing.level2,
               ),
             ),
-            spacing: AppSpacingTokens.level2,
+            spacing: Spacing.level2,
           ),
         ),
         prefix: Icon(
           FLucideIcons.shieldCheck,
           color: colors.primary,
-          size: AppSpacingTokens.level5,
+          size: Spacing.level5,
         ),
         child: Text(
           l10n.medicineSafetyGuardLabel,
-          style: AppTypographyToken.level4
+          style: TypographyToken.level4
               .body(context)
               .copyWith(color: colors.foreground, fontWeight: FontWeight.w700),
         ),
@@ -331,8 +331,8 @@ class _MedicineNotificationButton extends StatelessWidget {
             child: Icon(FLucideIcons.bell, color: colors.foreground),
           ),
           Positioned(
-            right: AppSpacingTokens.level3,
-            top: AppSpacingTokens.level2,
+            right: Spacing.level3,
+            top: Spacing.level2,
             child: FBadge.raw(
               style: .delta(
                 decoration: .shapeDelta(
@@ -341,7 +341,7 @@ class _MedicineNotificationButton extends StatelessWidget {
                 ),
               ),
               builder: (context, style) =>
-                  const SizedBox.square(dimension: AppSpacingTokens.level2),
+                  const SizedBox.square(dimension: Spacing.level2),
             ),
           ),
         ],
@@ -377,9 +377,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             ),
           ]),
           contentStyle: const .delta(
-            padding: .value(
-              EdgeInsets.symmetric(horizontal: AppSpacingTokens.level4),
-            ),
+            padding: .value(EdgeInsets.symmetric(horizontal: Spacing.level4)),
           ),
         ),
         child: Row(
@@ -387,13 +385,13 @@ class _MedicineMobileSearchBar extends StatelessWidget {
             Icon(
               FLucideIcons.search,
               color: colors.mutedForeground,
-              size: AppSpacingTokens.level5,
+              size: Spacing.level5,
             ),
-            const SizedBox(width: AppSpacingTokens.level3),
+            const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(
                 l10n.medicineHomeSearchHint,
-                style: AppTypographyToken.level4
+                style: TypographyToken.level4
                     .body(context)
                     .copyWith(color: colors.mutedForeground),
                 maxLines: 1,

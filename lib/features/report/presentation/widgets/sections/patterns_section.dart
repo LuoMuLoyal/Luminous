@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
@@ -20,8 +19,8 @@ class ReportPatternsSection extends StatelessWidget {
 
   double _patternCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    if (width >= AppBreakpoints.desktop) return 196;
-    if (width >= AppBreakpoints.tablet) return 188;
+    if (width >= Breakpoints.desktop) return 196;
+    if (width >= Breakpoints.tablet) return 188;
     return 176;
   }
 
@@ -32,19 +31,19 @@ class ReportPatternsSection extends StatelessWidget {
       children: [
         Text(
           l10n.reportPatternSectionTitle,
-          style: AppTypographyToken.level5
+          style: TypographyToken.level5
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: patterns.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: AppSpacingTokens.level3,
-            mainAxisSpacing: AppSpacingTokens.level3,
+            crossAxisSpacing: Spacing.level3,
+            mainAxisSpacing: Spacing.level3,
             mainAxisExtent: _patternCardHeight(context),
           ),
           itemBuilder: (context, index) {
@@ -68,14 +67,14 @@ class _PatternCard extends StatelessWidget {
 
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 FAvatar.raw(
-                  size: AppResponsiveSizing.scaleByWidth(
+                  size: ResponsiveSizing.scaleByWidth(
                     context,
                     fraction: 0.088,
                     minValue: 30,
@@ -84,7 +83,7 @@ class _PatternCard extends StatelessWidget {
                   child: Icon(
                     pattern.icon,
                     color: pattern.color.resolve(colors),
-                    size: AppResponsiveSizing.scaleByWidth(
+                    size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.048,
                       minValue: 16,
@@ -92,11 +91,11 @@ class _PatternCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level2),
+                const SizedBox(width: Spacing.level2),
                 Expanded(
                   child: Text(
                     pattern.title,
-                    style: AppTypographyToken.level5
+                    style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w800),
                     maxLines: 1,
@@ -105,20 +104,20 @@ class _PatternCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             AppSkeletonText(
               text: reportStatusLabel(l10n, pattern.status),
-              style: AppTypographyToken.level4
+              style: TypographyToken.level4
                   .body(context)
                   .copyWith(fontWeight: FontWeight.w800),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               widthFactor: 0.74,
             ),
-            const SizedBox(height: AppSpacingTokens.level1),
+            const SizedBox(height: Spacing.level1),
             AppSkeletonText(
               text: pattern.body,
-              style: AppTypographyToken.level3
+              style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
               maxLines: 2,
@@ -132,12 +131,12 @@ class _PatternCard extends StatelessWidget {
                   child: AppSkeletonSlot(
                     skeleton: const AppInlineSkeletonBlock(
                       height: 22,
-                      radius: AppRadiusTokens.level2,
+                      radius: RadiusTokens.level2,
                     ),
                     child: ReportMetricTrack(
                       values: pattern.sparkline,
                       color: pattern.color,
-                      height: AppResponsiveSizing.scaleByHeight(
+                      height: ResponsiveSizing.scaleByHeight(
                         context,
                         fraction: 0.034,
                         minValue: 22,
@@ -146,7 +145,7 @@ class _PatternCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacingTokens.level3),
+                const SizedBox(width: Spacing.level3),
                 Icon(
                   FLucideIcons.chevronRight,
                   color: colors.mutedForeground,

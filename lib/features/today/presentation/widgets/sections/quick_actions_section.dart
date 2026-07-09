@@ -31,7 +31,7 @@ class TodayQuickActionsSection extends StatelessWidget {
             children: [
               for (final action in primaryActions)
                 FTile(
-                  prefix: Icon(action.icon, size: AppSpacingTokens.level5),
+                  prefix: Icon(action.icon, size: Spacing.level5),
                   title: Text(action.title),
                   subtitle: Text(action.subtitle),
                   details: action.badge != null
@@ -48,7 +48,7 @@ class TodayQuickActionsSection extends StatelessWidget {
             ],
           ),
           if (secondaryActions.isNotEmpty) ...[
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             FTileGroup(
               key: const Key('today-quick-actions-secondary'),
               divider: FItemDivider.full,
@@ -57,12 +57,12 @@ class TodayQuickActionsSection extends StatelessWidget {
                   FTile(
                     prefix: Icon(
                       action.icon,
-                      size: AppSpacingTokens.level5,
+                      size: Spacing.level5,
                       color: colors.mutedForeground,
                     ),
                     title: Text(
                       action.title,
-                      style: AppTypographyToken.level4
+                      style: TypographyToken.level4
                           .body(context)
                           .copyWith(color: colors.mutedForeground),
                     ),

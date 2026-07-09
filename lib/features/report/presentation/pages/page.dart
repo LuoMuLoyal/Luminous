@@ -281,7 +281,7 @@ class ReportPage extends ConsumerWidget {
   }) {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
     final dateRangeLabel = l10n.placeholderNoData;
 
     return isDesktop
@@ -353,7 +353,7 @@ class ReportPage extends ConsumerWidget {
         ? ref.watch(notificationListPageProvider)
         : null;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
     final proactiveSuggestions =
         notificationListAsync?.asData?.value.items
             .where(
@@ -524,14 +524,14 @@ class _ReportDesktopShell extends StatelessWidget {
             key: const PageStorageKey<String>('report-desktop-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
+              Spacing.level6,
+              Spacing.level6,
+              Spacing.level6,
+              Spacing.level6,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               child,
             ],
           ),
@@ -574,14 +574,14 @@ class _ReportMobileShell extends StatelessWidget {
             key: const PageStorageKey<String>('report-mobile-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.level4,
-              AppSpacingTokens.level4,
-              AppSpacingTokens.level4,
-              AppSpacingTokens.level10,
+              Spacing.level4,
+              Spacing.level4,
+              Spacing.level4,
+              Spacing.level10,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.level4),
+              const SizedBox(height: Spacing.level4),
               child,
             ],
           ),

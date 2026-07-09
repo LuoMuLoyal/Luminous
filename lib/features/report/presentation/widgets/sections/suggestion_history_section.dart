@@ -29,13 +29,13 @@ class ReportSuggestionHistorySection extends StatelessWidget {
       children: [
         Text(
           l10n.reportSuggestionHistorySectionTitle,
-          style: AppTypographyToken.level5
+          style: TypographyToken.level5
               .body(context)
               .copyWith(fontWeight: FontWeight.w700),
         ),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         const AppDivider(),
-        const SizedBox(height: AppSpacingTokens.level4),
+        const SizedBox(height: Spacing.level4),
         if (isLoading)
           const _LoadingList()
         else if (suggestions.isEmpty)
@@ -102,16 +102,16 @@ class _SuggestionBadge extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.levelFull),
+        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacingTokens.level3,
-          vertical: AppSpacingTokens.level1,
+          horizontal: Spacing.level3,
+          vertical: Spacing.level1,
         ),
         child: Text(
           label,
-          style: AppTypographyToken.level3
+          style: TypographyToken.level3
               .body(context)
               .copyWith(color: color, fontWeight: FontWeight.w700),
         ),
@@ -130,10 +130,10 @@ class _EmptyView extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacingTokens.level5),
+      padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
         color: colors.secondary.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,23 +141,23 @@ class _EmptyView extends StatelessWidget {
           Icon(
             FLucideIcons.history,
             color: colors.secondary,
-            size: AppSpacingTokens.level5,
+            size: Spacing.level5,
           ),
-          const SizedBox(width: AppSpacingTokens.level3),
+          const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   l10n.reportSuggestionHistoryEmptyTitle,
-                  style: AppTypographyToken.level5
+                  style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w800),
                 ),
-                const SizedBox(height: AppSpacingTokens.level1),
+                const SizedBox(height: Spacing.level1),
                 Text(
                   l10n.reportSuggestionHistoryEmptyBody,
-                  style: AppTypographyToken.level3
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(color: colors.mutedForeground),
                 ),
@@ -179,9 +179,9 @@ class _LoadingList extends StatelessWidget {
       child: Column(
         children: [
           AppInlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: AppSpacingTokens.level3),
+          SizedBox(height: Spacing.level3),
           AppInlineSkeletonBlock(height: 72, widthFactor: 1),
-          SizedBox(height: AppSpacingTokens.level3),
+          SizedBox(height: Spacing.level3),
           AppInlineSkeletonBlock(height: 72, widthFactor: 1),
         ],
       ),

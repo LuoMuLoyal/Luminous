@@ -28,7 +28,7 @@ class MineAccountSecuritySection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.settingsAccountSecuritySectionTitle),
-        const SizedBox(height: AppSpacingTokens.level3),
+        const SizedBox(height: Spacing.level3),
         FTileGroup(
           divider: FItemDivider.full,
           children: [
@@ -37,7 +37,7 @@ class MineAccountSecuritySection extends StatelessWidget {
               prefix: Icon(
                 FLucideIcons.userCheck,
                 color: colors.primary,
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
               title: Text(l10n.mineSettingsAccountTitle),
               subtitle: Text(
@@ -53,7 +53,7 @@ class MineAccountSecuritySection extends StatelessWidget {
               prefix: Icon(
                 FLucideIcons.lockKeyhole,
                 color: colors.primary,
-                size: AppSpacingTokens.level5,
+                size: Spacing.level5,
               ),
               title: Text(l10n.settingsSecurityPinTitle),
               subtitle: Text(

@@ -11,8 +11,8 @@ CustomTransitionPage<T> fadePage<T>({
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) =>
         FadeTransition(opacity: animation, child: child),
-    transitionDuration: AppAnimationDurations.authPageTransitionIn,
-    reverseTransitionDuration: AppAnimationDurations.authPageTransitionOut,
+    transitionDuration: DurationTokens.authPageTransitionIn,
+    reverseTransitionDuration: DurationTokens.authPageTransitionOut,
   );
 }
 
@@ -34,7 +34,7 @@ CustomTransitionPage<T> slidePage<T>({
             child: child,
           ),
         ),
-    transitionDuration: AppAnimationDurations.crudPageTransitionIn,
-    reverseTransitionDuration: AppAnimationDurations.crudPageTransitionOut,
+    transitionDuration: DurationTokens.crudPageTransitionIn,
+    reverseTransitionDuration: DurationTokens.crudPageTransitionOut,
   );
 }

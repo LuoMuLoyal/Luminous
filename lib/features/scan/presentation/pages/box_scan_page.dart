@@ -35,7 +35,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
             subtitle: '设备端识别，快速离线',
             onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
           ),
-          const SizedBox(height: AppSpacingTokens.level3),
+          const SizedBox(height: Spacing.level3),
           _MethodTile(
             icon: FLucideIcons.sparkles,
             title: 'AI 智能识别',
@@ -102,7 +102,7 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
           mainAxisSize: MainAxisSize.min,
           children: [
             const FCircularProgress(),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
             Text(method == _ScanMethod.ocr ? '正在 OCR 识别...' : '正在 AI 识别...'),
           ],
         ),

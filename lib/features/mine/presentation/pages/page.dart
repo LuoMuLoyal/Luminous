@@ -27,7 +27,7 @@ class MinePage extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
-    final isDesktop = width >= AppBreakpoints.desktop;
+    final isDesktop = width >= Breakpoints.desktop;
 
     // Always watch the provider — when signed out it returns preview data.
     final dashboardAsync = ref.watch(mineDashboardProvider);
@@ -68,10 +68,10 @@ class MinePage extends ConsumerWidget {
                     key: const PageStorageKey<String>('mine-mobile-scroll'),
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacingTokens.level4,
-                      AppSpacingTokens.level4,
-                      AppSpacingTokens.level4,
-                      AppSpacingTokens.level10,
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level10,
                     ),
                     children: [
                       MineTopBar(
@@ -79,7 +79,7 @@ class MinePage extends ConsumerWidget {
                             context.push(AppRoutes.notifications),
                         onSettingsTap: () => context.push(AppRoutes.settings),
                       ),
-                      const SizedBox(height: AppSpacingTokens.level4),
+                      const SizedBox(height: Spacing.level4),
                       body,
                     ],
                   ),
@@ -137,14 +137,14 @@ class _MineDesktopShell extends StatelessWidget {
             key: const PageStorageKey<String>('mine-desktop-scroll'),
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
-              AppSpacingTokens.level6,
+              Spacing.level6,
+              Spacing.level6,
+              Spacing.level6,
+              Spacing.level6,
             ),
             children: [
               topBar,
-              const SizedBox(height: AppSpacingTokens.level5),
+              const SizedBox(height: Spacing.level5),
               child,
             ],
           ),

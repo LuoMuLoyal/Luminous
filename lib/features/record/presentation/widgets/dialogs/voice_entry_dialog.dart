@@ -164,9 +164,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
 
             // Title
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
               child: Row(
                 children: [
                   Expanded(
@@ -185,18 +183,16 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
 
             // Recognized text display
             Expanded(
               child: Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: AppSpacingTokens.level5,
-                ),
-                padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                margin: const EdgeInsets.symmetric(horizontal: Spacing.level5),
+                padding: const EdgeInsets.all(Spacing.level4),
                 decoration: BoxDecoration(
                   color: colors.background,
-                  borderRadius: BorderRadius.circular(AppRadiusTokens.level4),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level4),
                   border: Border.all(color: colors.border),
                 ),
                 child: SingleChildScrollView(
@@ -213,7 +209,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level4),
+            const SizedBox(height: Spacing.level4),
 
             // Sound level indicator + mic button
             SizedBox(
@@ -224,7 +220,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   // Pulse animation ring (visible when listening)
                   if (isListening.value)
                     AnimatedContainer(
-                      duration: AppAnimationDurations.widgetStandard,
+                      duration: DurationTokens.widgetStandard,
                       width: 72 + soundLevel.value * 40,
                       height: 72 + soundLevel.value * 40,
                       decoration: BoxDecoration(
@@ -237,7 +233,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   GestureDetector(
                     onTap: toggleListening,
                     child: AnimatedContainer(
-                      duration: AppAnimationDurations.widgetQuick,
+                      duration: DurationTokens.widgetQuick,
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
@@ -281,13 +277,11 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
 
             // Use text button
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacingTokens.level5,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
               child: SizedBox(
                 width: double.infinity,
                 child: FButton(
@@ -298,7 +292,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
           ],
         ),
       ),

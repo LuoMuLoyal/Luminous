@@ -36,7 +36,7 @@ class MineHeaderActionChip extends StatelessWidget {
             ),
           ]),
           contentStyle: const .delta(
-            padding: .value(EdgeInsets.all(AppSpacingTokens.level3)),
+            padding: .value(EdgeInsets.all(Spacing.level3)),
           ),
         ),
         child: Icon(

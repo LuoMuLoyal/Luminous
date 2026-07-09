@@ -31,7 +31,7 @@ class NotificationSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < AppBreakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile ? 24 : 32,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,9 +49,9 @@ class NotificationSettingsPage extends ConsumerWidget {
                   await controller.requestPermission();
                 },
               ),
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             SettingsSectionLabel(label: l10n.settingsNotificationsGeneralGroup),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [
@@ -124,11 +124,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacingTokens.level5),
+            const SizedBox(height: Spacing.level5),
             SettingsSectionLabel(
               label: l10n.settingsNotificationsReminderGroup,
             ),
-            const SizedBox(height: AppSpacingTokens.level3),
+            const SizedBox(height: Spacing.level3),
             FTileGroup(
               style: settingsSubpageTileGroupStyle(context.theme),
               children: [
@@ -304,7 +304,7 @@ class _PermissionCard extends StatelessWidget {
       prefix: Icon(icon, color: color),
       title: Text(
         title,
-        style: AppTypographyToken.level4
+        style: TypographyToken.level4
             .body(context)
             .copyWith(color: color, fontWeight: FontWeight.w600),
       ),
@@ -334,16 +334,16 @@ class _AdvancePickerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+        padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacingTokens.level3),
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
               child: Text(
                 l10n.settingsNotificationsAdvance,
-                style: AppTypographyToken.level5
+                style: TypographyToken.level5
                     .body(context)
                     .copyWith(fontWeight: FontWeight.w600),
               ),

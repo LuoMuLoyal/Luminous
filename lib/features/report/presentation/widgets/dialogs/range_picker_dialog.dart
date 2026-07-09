@@ -54,8 +54,8 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                   context: dialogContext,
                   builder: (calendarContext, style, animation) =>
                       AppDialogShell(
-                        maxWidth: AppLayoutTokens.dialogMaxWidth,
-                        padding: const EdgeInsets.all(AppSpacingTokens.level4),
+                        maxWidth: LayoutScaleResolver.dialogMaxWidth,
+                        padding: const EdgeInsets.all(Spacing.level4),
                         builder: (_) => Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -72,7 +72,7 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                                     ),
                               ),
                             ),
-                            const SizedBox(height: AppSpacingTokens.level4),
+                            const SizedBox(height: Spacing.level4),
                             FButton(
                               onPress: () => Navigator.of(
                                 calendarContext,
