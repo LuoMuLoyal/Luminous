@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
 
@@ -147,7 +146,7 @@ class SoftIcon extends StatelessWidget {
   });
 
   final IconData icon;
-  final AppColors color;
+  final SemanticColor color;
   final double size;
   final double iconSize;
 

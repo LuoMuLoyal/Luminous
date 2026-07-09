@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
@@ -124,7 +123,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 const SizedBox(height: AppSpacingTokens.level1),
                 FBadge.raw(
                   builder: (context, style) {
-                    final resolvedColor = AppColors.muted.resolve(colors);
+                    final resolvedColor = SemanticColor.neutral.resolve(colors);
                     final foreground = 0.08 > 0.5
                         ? colors.primaryForeground
                         : resolvedColor;

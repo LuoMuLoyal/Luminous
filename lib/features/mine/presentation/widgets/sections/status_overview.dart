@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -131,7 +130,7 @@ class _TinyBadge extends StatelessWidget {
   const _TinyBadge({required this.label, required this.color});
 
   final String label;
-  final AppColors color;
+  final SemanticColor color;
 
   @override
   Widget build(BuildContext context) {

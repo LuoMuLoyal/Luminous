@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -150,7 +149,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   size: AppSpacingTokens.level9,
                   child: Icon(
                     FLucideIcons.pillBottle,
-                    color: AppColors.primary.resolve(colors),
+                    color: SemanticColor.primary.resolve(colors),
                     size: AppSpacingTokens.level6,
                   ),
                 ),
@@ -183,8 +182,8 @@ class _ReminderDetailBody extends ConsumerWidget {
                 FBadge.raw(
                   builder: (context, style) {
                     final pillColor = isActive
-                        ? AppColors.primary
-                        : AppColors.muted;
+                        ? SemanticColor.primary
+                        : SemanticColor.neutral;
                     final resolvedColor = pillColor.resolve(colors);
                     final foreground = 0.12 > 0.5
                         ? colors.primaryForeground

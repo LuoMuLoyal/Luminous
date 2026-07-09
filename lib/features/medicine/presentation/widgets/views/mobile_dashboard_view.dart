@@ -3,7 +3,6 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';

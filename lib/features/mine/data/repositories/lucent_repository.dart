@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
@@ -179,7 +179,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-final _green = AppColors.secondary;
-final _pink = AppColors.secondary;
-final _red = AppColors.destructive;
-final _blue = AppColors.primary;
+final _green = SemanticColor.neutral;
+final _pink = SemanticColor.neutral;
+final _red = SemanticColor.destructive;
+final _blue = SemanticColor.primary;

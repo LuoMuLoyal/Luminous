@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/repository.dart';
@@ -86,21 +86,21 @@ class MockMineRepository implements MineRepository {
   static final _mockAlerts = [
     const MineStatusCard(
       icon: FLucideIcons.triangleAlert,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     const MineStatusCard(
       icon: FLucideIcons.pill,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
       badgeKey: MineCopyKey.alertMedicineBadge,
     ),
     const MineStatusCard(
       icon: FLucideIcons.userCheck,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
       badgeKey: MineCopyKey.alertPrivacyBadge,
@@ -110,7 +110,7 @@ class MockMineRepository implements MineRepository {
   static final _mockArchiveEntries = [
     const MineArchiveEntry(
       icon: FLucideIcons.badge,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
       statusKey: MineCopyKey.archiveCompleted,
@@ -118,7 +118,7 @@ class MockMineRepository implements MineRepository {
     ),
     const MineArchiveEntry(
       icon: FLucideIcons.droplets,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
       statusKey: MineCopyKey.archiveCompleted,
@@ -126,14 +126,14 @@ class MockMineRepository implements MineRepository {
     ),
     const MineArchiveEntry(
       icon: FLucideIcons.pill,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: AppRoutes.mineMedicineNew,
     ),
     const MineArchiveEntry(
       icon: FLucideIcons.contact,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveEmergencyTitle,
       subtitleKey: MineCopyKey.archiveEmergencySubtitle,
       statusKey: MineCopyKey.archiveNeedsFill,

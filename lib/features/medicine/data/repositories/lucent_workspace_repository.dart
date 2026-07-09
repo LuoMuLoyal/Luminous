@@ -1,9 +1,9 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/repositories/repository.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
@@ -116,7 +116,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       final stateKey = _slotStateKey(todayStatus);
       final stateColor = _stateColor(todayStatus);
       return MedicinePlanItem(
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -175,7 +175,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: FLucideIcons.search,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
       ..._mobileScanQuickActions,
@@ -188,19 +188,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
       icon: FLucideIcons.scanLine,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
       icon: FLucideIcons.receiptText,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
   ];
 
@@ -278,11 +278,11 @@ MedicineCopyKey _slotStateKey(MedicineDoseStatus status) {
   };
 }
 
-AppColors _stateColor(MedicineDoseStatus status) {
+SemanticColor _stateColor(MedicineDoseStatus status) {
   return switch (status) {
-    MedicineDoseStatus.taken => AppColors.primary,
-    MedicineDoseStatus.skipped => AppColors.primary,
-    MedicineDoseStatus.pending => AppColors.primary,
+    MedicineDoseStatus.taken => SemanticColor.primary,
+    MedicineDoseStatus.skipped => SemanticColor.primary,
+    MedicineDoseStatus.pending => SemanticColor.primary,
   };
 }
 

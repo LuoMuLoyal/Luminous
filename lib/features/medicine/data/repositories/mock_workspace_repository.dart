@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:luminous/core/network/network_providers.dart';
@@ -35,19 +35,19 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       icon: FLucideIcons.camera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
       icon: FLucideIcons.scanLine,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
       icon: FLucideIcons.receiptText,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
     ),
   ];
 
@@ -62,7 +62,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         icon: FLucideIcons.search,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: AppColors.primary,
+        accent: SemanticColor.primary,
       ),
       if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
         ..._mobileScanQuickActions,
@@ -70,7 +70,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     plan: const MedicinePlanSurface(
       items: <MedicinePlanItem>[
         MedicinePlanItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -90,10 +90,10 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.statusStable,
-          stateColor: AppColors.primary,
+          stateColor: SemanticColor.primary,
         ),
         MedicinePlanItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -108,10 +108,10 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.statusNeedsCheckin,
-          stateColor: AppColors.primary,
+          stateColor: SemanticColor.primary,
         ),
         MedicinePlanItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           nameKey: MedicineCopyKey.genericName,
           dosageKey: MedicineCopyKey.genericDosage,
           scheduleKey: MedicineCopyKey.genericSchedule,
@@ -126,7 +126,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
             ),
           ],
           stateKey: MedicineCopyKey.doseStatusPending,
-          stateColor: AppColors.primary,
+          stateColor: SemanticColor.primary,
         ),
       ],
     ),
@@ -137,8 +137,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
         detailKey: MedicineCopyKey.alertAlcoholRiskDetail,
         actionKey: MedicineCopyKey.alertAlcoholRiskStatus,
-        color: AppColors.primary,
-        softColor: AppColors.primary,
+        color: SemanticColor.primary,
+        softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
         icon: FLucideIcons.coffee,
@@ -146,8 +146,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
         detailKey: MedicineCopyKey.alertCoffeeReminderDetail,
         actionKey: MedicineCopyKey.alertCoffeeReminderStatus,
-        color: AppColors.primary,
-        softColor: AppColors.primary,
+        color: SemanticColor.primary,
+        softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
         icon: FLucideIcons.copy,
@@ -155,8 +155,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
         detailKey: MedicineCopyKey.alertDuplicateCheckDetail,
         actionKey: MedicineCopyKey.alertDuplicateCheckStatus,
-        color: AppColors.primary,
-        softColor: AppColors.primary,
+        color: SemanticColor.primary,
+        softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
         icon: FLucideIcons.droplets,
@@ -164,8 +164,8 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
         detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,
         actionKey: MedicineCopyKey.alertSpecialGroupSafetyStatus,
-        color: AppColors.primary,
-        softColor: AppColors.primary,
+        color: SemanticColor.primary,
+        softColor: SemanticColor.primary,
       ),
     ],
     promisePoints: <MedicinePromisePoint>[

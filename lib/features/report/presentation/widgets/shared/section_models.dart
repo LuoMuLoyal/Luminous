@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
@@ -42,7 +42,7 @@ class ReportAiSummaryContent {
 class ReportAiSummaryItem {
   const ReportAiSummaryItem({required this.color, required this.text});
 
-  final AppColors color;
+  final SemanticColor color;
   final String text;
 }
 
@@ -60,13 +60,13 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
   };
 }
 
-AppColors reportStatusColor(ReportStatus status) {
+SemanticColor reportStatusColor(ReportStatus status) {
   return switch (status) {
-    ReportStatus.good => AppColors.primary,
-    ReportStatus.stable => AppColors.primary,
-    ReportStatus.needsAttention => AppColors.primary,
-    ReportStatus.insufficientData => AppColors.primary,
-    ReportStatus.unknown => AppColors.primary,
+    ReportStatus.good => SemanticColor.success,
+    ReportStatus.stable => SemanticColor.info,
+    ReportStatus.needsAttention => SemanticColor.warning,
+    ReportStatus.insufficientData => SemanticColor.warning,
+    ReportStatus.unknown => SemanticColor.neutral,
   };
 }
 
@@ -139,7 +139,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.authLoginRequiredPrompt,
         ),
       ],
@@ -152,7 +152,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: l10n.reportSnapshotHint,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.reportAiSummaryDisabledHint,
         ),
       ],
@@ -180,7 +180,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       subtitle: reportAiSummarySubtitle(l10n, selectedRange),
       bullets: [
         ReportAiSummaryItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: aiState.errorMessage ?? l10n.reportAiSummaryErrorHint,
         ),
         ...reportAiSummaryFallbackBullets(dashboard),
@@ -196,7 +196,7 @@ ReportAiSummaryContent buildReportAiSummaryContent({
       summaryText: aiState.streamingSummary,
       bullets: [
         ReportAiSummaryItem(
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: reportAiSummaryGeneratingLabel(l10n, selectedRange),
         ),
         ...reportAiSummaryFallbackBullets(dashboard),

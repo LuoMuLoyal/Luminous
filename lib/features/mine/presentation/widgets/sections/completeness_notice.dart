@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -139,7 +138,7 @@ class _GapRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacingTokens.level3),
         child: Row(
           children: [
-            SoftIcon(icon: icon, color: AppColors.destructive),
+            SoftIcon(icon: icon, color: SemanticColor.destructive),
             const SizedBox(width: AppSpacingTokens.level4),
             Expanded(
               child: Column(

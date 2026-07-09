@@ -1,3 +1,4 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -594,7 +594,7 @@ final _completedWorkspace = const MedicineWorkspace(
   plan: MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -609,7 +609,7 @@ final _completedWorkspace = const MedicineWorkspace(
           ),
         ],
         stateKey: MedicineCopyKey.doseStatusSkipped,
-        stateColor: AppColors.primary,
+        stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.skipped,
         currentMedicineId: 'med-1',
       ),
@@ -629,7 +629,7 @@ const _coverageGapWorkspace = MedicineWorkspace(
   plan: MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         nameKey: MedicineCopyKey.genericName,
         dosageKey: MedicineCopyKey.genericDosage,
         scheduleKey: MedicineCopyKey.genericSchedule,
@@ -645,7 +645,7 @@ const _coverageGapWorkspace = MedicineWorkspace(
           ),
         ],
         stateKey: MedicineCopyKey.doseStatusPending,
-        stateColor: AppColors.primary,
+        stateColor: SemanticColor.primary,
         todayStatus: MedicineDoseStatus.pending,
         currentMedicineId: 'med-1',
       ),

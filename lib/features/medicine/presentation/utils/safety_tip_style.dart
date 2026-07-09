@@ -1,5 +1,5 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:forui/forui.dart';
 
 IconData medicineSafetyTipIcon(String category) {
@@ -16,16 +16,16 @@ IconData medicineSafetyTipIcon(String category) {
   };
 }
 
-AppColors medicineSafetyTipColor(String category, FColors colors) {
+SemanticColor medicineSafetyTipColor(String category, FColors colors) {
   return switch (category) {
-    'alcohol' => AppColors.primary,
-    'caffeine' => AppColors.primary,
-    'timing' => AppColors.primary,
-    'storage' => AppColors.primary,
-    'food' => AppColors.primary,
-    'pregnancy' => AppColors.primary,
-    'allergy' => AppColors.destructive,
-    'driving' => AppColors.primary,
-    _ => AppColors.primary,
+    'alcohol' => SemanticColor.primary,
+    'caffeine' => SemanticColor.primary,
+    'timing' => SemanticColor.primary,
+    'storage' => SemanticColor.primary,
+    'food' => SemanticColor.primary,
+    'pregnancy' => SemanticColor.primary,
+    'allergy' => SemanticColor.destructive,
+    'driving' => SemanticColor.primary,
+    _ => SemanticColor.primary,
   };
 }

@@ -14,21 +14,21 @@ class _QuickOperationSection extends StatelessWidget {
     final operations = [
       _QuickOperation(
         icon: FLucideIcons.plus,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
         onTap: () => pushAuthRequiredRoute(context, AppRoutes.mineMedicineNew),
       ),
       _QuickOperation(
         icon: FLucideIcons.search,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: l10n.medicineQuickActionSearchTitle,
         subtitle: l10n.medicineQuickActionSearchSubtitle,
         onTap: () => context.push(AppRoutes.medicineSearch),
       ),
       _QuickOperation(
         icon: FLucideIcons.bell,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
         onTap:
@@ -37,7 +37,7 @@ class _QuickOperationSection extends StatelessWidget {
       ),
       _QuickOperation(
         icon: FLucideIcons.shieldAlert,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
         onTap: () =>

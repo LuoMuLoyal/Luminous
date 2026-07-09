@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -40,7 +39,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               key: const Key('mine-notification-settings-tile'),
               prefix: const SoftIcon(
                 icon: FLucideIcons.bellRing,
-                color: AppColors.primary,
+                color: SemanticColor.primary,
               ),
               title: Text(l10n.mineReminderSectionTitle),
               subtitle: Text(
@@ -55,7 +54,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               key: const Key('mine-dnd-settings-tile'),
               prefix: const SoftIcon(
                 icon: FLucideIcons.moonStar,
-                color: AppColors.primary,
+                color: SemanticColor.primary,
               ),
               title: Text(l10n.settingsNotificationsDndTitle),
               subtitle: Text(
@@ -70,7 +69,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               key: const Key('mine-notification-inbox-tile'),
               prefix: const SoftIcon(
                 icon: FLucideIcons.mail,
-                color: AppColors.primary,
+                color: SemanticColor.primary,
               ),
               title: Text(l10n.mineNotificationInboxTitle),
               subtitle: Text(

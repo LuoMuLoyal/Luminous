@@ -20,8 +20,10 @@
 - `MaterialApp.router` 从 Forui 派生 light/dark `ThemeData`。
 - 整棵树包裹 `FTheme`。
 - 运行时 `lib/` 不再保留旧的 `AppThemeSurface` bridge。
-- 语义颜色枚举 `AppColors` 位于 `lib/core/design/app_colors.dart`。
-- 数据/领域层使用 `AppColors`；widget 通过当前 Forui 主题解析。
+- 语义颜色枚举 `SemanticColor` 位于 `lib/core/design/semantic_color.dart`。
+- 二维 token 系统：`SemanticColor`（6 个语义色）× `SemanticColorPalette`（5 个预计算 tone：solid/foreground/muted/subtle/border）。
+- `SemanticColors` 通过 `FColors.extensions` 注入 Forui 主题，暗色模式 alpha 自动补偿。
+- 数据/领域层使用 `SemanticColor`；widget 通过 `palette(context)` 或便捷方法 `solid/muted/subtle/border(context)` 解析。
 
 ## Token 现状
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
@@ -207,10 +206,10 @@ class _TodayLogRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     final color = switch (log.status) {
-      DoseLogStatus.taken => AppColors.primary,
-      DoseLogStatus.skipped => AppColors.primary,
-      DoseLogStatus.missed => AppColors.destructive,
-      DoseLogStatus.planned => AppColors.primary,
+      DoseLogStatus.taken => SemanticColor.primary,
+      DoseLogStatus.skipped => SemanticColor.primary,
+      DoseLogStatus.missed => SemanticColor.destructive,
+      DoseLogStatus.planned => SemanticColor.primary,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
@@ -245,11 +244,11 @@ class _TodayLogRow extends StatelessWidget {
   }
 }
 
-AppColors _deliveryStatusColor(String value) {
+SemanticColor _deliveryStatusColor(String value) {
   return switch (value) {
-    'delivered' => AppColors.primary,
-    'failed' => AppColors.destructive,
-    'scheduled' => AppColors.primary,
-    _ => AppColors.muted,
+    'delivered' => SemanticColor.primary,
+    'failed' => SemanticColor.destructive,
+    'scheduled' => SemanticColor.primary,
+    _ => SemanticColor.neutral,
   };
 }

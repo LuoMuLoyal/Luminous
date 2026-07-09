@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
@@ -62,8 +61,6 @@ class _QuickActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FButton.raw(
       onPress: () {
         if (action.titleKey == MedicineCopyKey.quickActionCameraTitle ||
@@ -84,11 +81,9 @@ class _QuickActionTile extends StatelessWidget {
         decoration: .delta([
           .all(
             .shapeDelta(
-              color: action.accent.resolve(colors).withValues(alpha: 0.11),
+              color: action.accent.muted(context),
               shape: RoundedSuperellipseBorder(
-                side: BorderSide(
-                  color: action.accent.resolve(colors).withValues(alpha: 0.12),
-                ),
+                side: BorderSide(color: action.accent.border(context)),
               ),
             ),
           ),
@@ -101,7 +96,7 @@ class _QuickActionTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(action.icon, color: action.accent.resolve(colors), size: 32),
+          Icon(action.icon, color: action.accent.solid(context), size: 32),
           const SizedBox(height: AppSpacingTokens.level3),
           Text(
             medicineCopy(l10n, action.titleKey),

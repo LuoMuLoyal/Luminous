@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
@@ -13,40 +13,40 @@ void main() {
         icon: FLucideIcons.utensils,
         titleKey: RecordCopyKey.typeMeal,
         subtitleKey: RecordCopyKey.summaryTimesUnit,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
       ),
       const RecordQuickAction(
         type: RecordEntryType.water,
         icon: FLucideIcons.cupSoda,
         titleKey: RecordCopyKey.typeWater,
         subtitleKey: RecordCopyKey.summaryCupsUnit,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
       ),
       const RecordQuickAction(
         type: RecordEntryType.symptom,
         icon: FLucideIcons.cross,
         titleKey: RecordCopyKey.typeSymptom,
         subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
       ),
       const RecordQuickAction(
         type: RecordEntryType.note,
         icon: FLucideIcons.notebookPen,
         titleKey: RecordCopyKey.typeNote,
         subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
       ),
       const RecordQuickAction(
         type: RecordEntryType.sleep,
         icon: FLucideIcons.moon,
         titleKey: RecordCopyKey.typeSleep,
         subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
       ),
     ];
 
@@ -118,8 +118,8 @@ void main() {
           icon: FLucideIcons.smile,
           titleKey: RecordCopyKey.typeMood,
           subtitleKey: RecordCopyKey.summaryRecorded,
-          accent: AppColors.primary,
-          softColor: AppColors.secondary,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
         ),
       ];
       final ordered = buildMobileQuickActions(extraActions);

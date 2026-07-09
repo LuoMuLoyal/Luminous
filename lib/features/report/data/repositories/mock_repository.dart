@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
@@ -65,7 +65,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.medication,
         icon: FLucideIcons.pill,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: '%',
         status: ReportStatus.stable,
@@ -76,7 +76,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.sleep,
         icon: FLucideIcons.moon,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: 'h',
         status: ReportStatus.insufficientData,
@@ -87,7 +87,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.water,
         icon: FLucideIcons.droplets,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: 'L',
         status: ReportStatus.stable,
@@ -99,21 +99,21 @@ class MockReportRepository implements ReportRepository {
     trends: <ReportTrendSeries>[
       ReportTrendSeries(
         kind: ReportDataKind.sleep,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: 'h',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
       ReportTrendSeries(
         kind: ReportDataKind.water,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: 'L',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
       ReportTrendSeries(
         kind: ReportDataKind.medication,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: '%',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
@@ -123,7 +123,7 @@ class MockReportRepository implements ReportRepository {
       ReportFinding(
         kind: ReportInsightKind.general,
         icon: FLucideIcons.chartLine,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: 'Preparing report',
         body: 'The latest contract-backed report is loading.',
       ),
@@ -132,24 +132,24 @@ class MockReportRepository implements ReportRepository {
       ReportExportAction(
         kind: ReportExportKind.hospital,
         icon: FLucideIcons.hospital,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.monthly,
         icon: FLucideIcons.barChart,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
         icon: FLucideIcons.printer,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
         icon: FLucideIcons.chartLine,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: 'Preparing report',
         status: ReportStatus.stable,
         body: 'Pattern cards will appear after the latest report loads.',
@@ -174,7 +174,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.medication,
         icon: FLucideIcons.pill,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: '%',
         status: ReportStatus.insufficientData,
@@ -185,7 +185,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.sleep,
         icon: FLucideIcons.moon,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: 'h',
         status: ReportStatus.insufficientData,
@@ -196,7 +196,7 @@ class MockReportRepository implements ReportRepository {
       ReportMetric(
         kind: ReportDataKind.water,
         icon: FLucideIcons.droplets,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         value: '--',
         unit: 'L',
         status: ReportStatus.insufficientData,
@@ -208,21 +208,21 @@ class MockReportRepository implements ReportRepository {
     trends: <ReportTrendSeries>[
       ReportTrendSeries(
         kind: ReportDataKind.sleep,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: 'h',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
       ReportTrendSeries(
         kind: ReportDataKind.water,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: 'L',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
       ),
       ReportTrendSeries(
         kind: ReportDataKind.medication,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         unit: '%',
         values: <double>[0, 0, 0, 0, 0, 0, 0],
         currentValue: '--',
@@ -232,7 +232,7 @@ class MockReportRepository implements ReportRepository {
       ReportFinding(
         kind: ReportInsightKind.general,
         icon: FLucideIcons.lock,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: '登录后解锁报告',
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
       ),
@@ -241,24 +241,24 @@ class MockReportRepository implements ReportRepository {
       ReportExportAction(
         kind: ReportExportKind.hospital,
         icon: FLucideIcons.hospital,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.monthly,
         icon: FLucideIcons.barChart,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
         icon: FLucideIcons.printer,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
         icon: FLucideIcons.lock,
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         title: '等待登录',
         status: ReportStatus.insufficientData,
         body: '登录后显示真实模式卡片。',

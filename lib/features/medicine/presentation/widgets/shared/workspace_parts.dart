@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 
@@ -65,7 +64,7 @@ class TintedStatusBadge extends StatelessWidget {
     required this.label,
   });
 
-  final AppColors color;
+  final SemanticColor color;
   final String label;
 
   @override

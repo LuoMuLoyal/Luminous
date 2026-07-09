@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 
 class ReportMetricTrack extends StatelessWidget {
@@ -12,7 +11,7 @@ class ReportMetricTrack extends StatelessWidget {
   });
 
   final List<double> values;
-  final AppColors color;
+  final SemanticColor color;
   final double height;
 
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -139,7 +138,7 @@ class _StatusBadge extends StatelessWidget {
   const _StatusBadge({required this.label, required this.color});
 
   final String label;
-  final AppColors color;
+  final SemanticColor color;
 
   @override
   Widget build(BuildContext context) {

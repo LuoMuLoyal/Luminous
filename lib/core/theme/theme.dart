@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
+import 'package:luminous/core/design/semantic_color_palette.dart';
+import 'package:luminous/core/design/semantic_colors.dart';
+
 const AppThemeFamily appDefaultThemeFamily = AppThemeFamily.blue;
 
 enum AppThemeFamily {
@@ -29,7 +32,9 @@ enum AppThemeFamily {
   }
 }
 
-FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
+/// Returns the base [FThemeData] for a given family and brightness, before
+/// semantic color extensions are injected.
+FThemeData _baseThemeData(AppThemeFamily family, Brightness brightness) {
   return switch ((family, brightness)) {
     (AppThemeFamily.blue, Brightness.light) => FThemes.blue.light.touch,
     (AppThemeFamily.blue, Brightness.dark) => FThemes.blue.dark.touch,
@@ -53,6 +58,91 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
     (AppThemeFamily.zinc, Brightness.dark) => FThemes.zinc.dark.touch,
   };
 }
+
+/// Creates the [FThemeData] for the app, with [SemanticColors] injected as an
+/// [FColors] extension.
+///
+/// Preset Forui themes derive all widget styles from [FColors] via `.inherit()`,
+/// so constructing a new [FThemeData] with modified colors is equivalent to the
+/// preset — no custom styles are lost.
+FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
+  final base = _baseThemeData(family, brightness);
+  final colors = base.colors.copyWith(
+    extensions: [_semanticColorsFor(brightness, base.colors)],
+  );
+  return FThemeData(touch: true, debugLabel: base.debugLabel, colors: colors);
+}
+
+/// Builds the [SemanticColors] extension for a given brightness.
+///
+/// - [SemanticColor.primary] and [SemanticColor.destructive] derive from the
+///   theme family's [FColors].
+/// - [SemanticColor.success], [SemanticColor.warning], and [SemanticColor.info]
+///   are fixed across all families — a medical-health requirement.
+SemanticColors _semanticColorsFor(Brightness brightness, FColors fColors) {
+  final isDark = brightness == Brightness.dark;
+
+  return SemanticColors(
+    primary: _paletteFromFColor(
+      fColors.primary,
+      fColors.primaryForeground,
+      isDark,
+    ),
+    destructive: _paletteFromFColor(
+      fColors.destructive,
+      fColors.destructiveForeground,
+      isDark,
+    ),
+    neutral: SemanticColorPalette(
+      solid: fColors.mutedForeground,
+      foreground: fColors.background,
+      muted: fColors.secondary,
+      subtle: fColors.secondary,
+      border: fColors.border,
+    ),
+    success: _fixedPalette(
+      solid: isDark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A),
+      foreground: isDark ? const Color(0xFF052E16) : const Color(0xFFFFFFFF),
+      isDark: isDark,
+    ),
+    warning: _fixedPalette(
+      solid: isDark ? const Color(0xFFFBBF24) : const Color(0xFFD97706),
+      foreground: isDark ? const Color(0xFF451A03) : const Color(0xFFFFFFFF),
+      isDark: isDark,
+    ),
+    info: _fixedPalette(
+      solid: isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB),
+      foreground: isDark ? const Color(0xFF0C1E3E) : const Color(0xFFFFFFFF),
+      isDark: isDark,
+    ),
+  );
+}
+
+/// Derives a [SemanticColorPalette] from a Forui color pair, with dark-mode
+/// alpha compensation baked in.
+SemanticColorPalette _paletteFromFColor(
+  Color solid,
+  Color foreground,
+  bool isDark,
+) => _fixedPalette(solid: solid, foreground: foreground, isDark: isDark);
+
+/// Creates a [SemanticColorPalette] with standardized alpha tones.
+///
+/// Alpha scale (light → dark):
+/// - subtle:  0.05 → 0.08
+/// - muted:   0.10 → 0.18
+/// - border:  0.20 → 0.35
+SemanticColorPalette _fixedPalette({
+  required Color solid,
+  required Color foreground,
+  required bool isDark,
+}) => SemanticColorPalette(
+  solid: solid,
+  foreground: foreground,
+  subtle: solid.withValues(alpha: isDark ? 0.08 : 0.05),
+  muted: solid.withValues(alpha: isDark ? 0.18 : 0.10),
+  border: solid.withValues(alpha: isDark ? 0.35 : 0.20),
+);
 
 ThemeData foruiMaterialTheme(FThemeData theme) {
   final material = theme.toApproximateMaterialTheme();

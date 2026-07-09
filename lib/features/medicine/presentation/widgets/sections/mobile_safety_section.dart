@@ -100,15 +100,15 @@ class _SafetySummaryBanner extends StatelessWidget {
     final colors = context.theme.colors;
     final accent = summary.color.resolve(colors);
     final iconColor = switch (summary.color) {
-      AppColors.secondary => colors.mutedForeground,
+      SemanticColor.neutral => colors.mutedForeground,
       _ => accent,
     };
     final iconBackgroundColor = switch (summary.color) {
-      AppColors.secondary => colors.secondary.withValues(alpha: 0.08),
+      SemanticColor.neutral => colors.secondary.withValues(alpha: 0.08),
       _ => accent.withValues(alpha: 0.12),
     };
     final titleColor = switch (summary.color) {
-      AppColors.destructive => accent,
+      SemanticColor.destructive => accent,
       _ => colors.foreground,
     };
     final l10n = AppLocalizations.of(context)!;
@@ -281,7 +281,7 @@ class _SafetySummary {
   final String title;
   final String body;
   final IconData icon;
-  final AppColors color;
+  final SemanticColor color;
 
   static _SafetySummary fromResult(
     AppLocalizations l10n,
@@ -292,7 +292,7 @@ class _SafetySummary {
         title: l10n.medicineRiskCheckTierUncovered,
         body: l10n.medicineRiskCheckTierUncoveredDisclaimer,
         icon: FLucideIcons.circleAlert,
-        color: AppColors.secondary,
+        color: SemanticColor.neutral,
       );
     }
 
@@ -301,7 +301,7 @@ class _SafetySummary {
         title: l10n.medicineRiskCheckTierConfirmedRisk,
         body: l10n.medicineRiskCheckFindingsTitle,
         icon: FLucideIcons.triangleAlert,
-        color: AppColors.destructive,
+        color: SemanticColor.destructive,
       );
     }
 
@@ -312,7 +312,7 @@ class _SafetySummary {
             ? result.coverageSummary
             : l10n.medicineRiskCheckTierUncoveredDisclaimer,
         icon: FLucideIcons.circleAlert,
-        color: AppColors.secondary,
+        color: SemanticColor.neutral,
       );
     }
 
@@ -320,7 +320,7 @@ class _SafetySummary {
       title: l10n.medicineRiskCheckTierConfirmedSafe,
       body: l10n.medicineRiskCheckTierSafeDisclaimer,
       icon: FLucideIcons.badgeCheck,
-      color: AppColors.primary,
+      color: SemanticColor.primary,
     );
   }
 }

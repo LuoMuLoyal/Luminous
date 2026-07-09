@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
@@ -58,16 +57,15 @@ class _AlertTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
+    final palette = alert.color.palette(context);
+    final softPalette = alert.softColor.palette(context);
 
     return FCard.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: alert.softColor.resolve(colors).withValues(alpha: 0.42),
+          color: softPalette.muted,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(
-              color: alert.color.resolve(colors).withValues(alpha: 0.18),
-            ),
+            side: BorderSide(color: palette.border),
             borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
@@ -81,10 +79,7 @@ class _AlertTile extends StatelessWidget {
               medicineAlertTitle(l10n, alert),
               style: AppTypographyToken.level5
                   .body(context)
-                  .copyWith(
-                    color: alert.color.resolve(colors),
-                    fontWeight: FontWeight.w700,
-                  ),
+                  .copyWith(color: palette.solid, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppSpacingTokens.level3),
             Text(
@@ -96,7 +91,7 @@ class _AlertTile extends StatelessWidget {
               medicineAlertDetail(l10n, alert),
               style: AppTypographyToken.level3
                   .body(context)
-                  .copyWith(color: colors.mutedForeground),
+                  .copyWith(color: context.theme.colors.mutedForeground),
             ),
             const SizedBox(height: AppSpacingTokens.level4),
             Align(

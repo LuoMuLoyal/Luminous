@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
@@ -8,15 +8,18 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   group('reportStatusColor', () {
-    test('all statuses map to primary', () {
-      expect(reportStatusColor(ReportStatus.good), AppColors.primary);
-      expect(reportStatusColor(ReportStatus.stable), AppColors.primary);
-      expect(reportStatusColor(ReportStatus.needsAttention), AppColors.primary);
+    test('statuses map to correct semantic colors', () {
+      expect(reportStatusColor(ReportStatus.good), SemanticColor.success);
+      expect(reportStatusColor(ReportStatus.stable), SemanticColor.info);
+      expect(
+        reportStatusColor(ReportStatus.needsAttention),
+        SemanticColor.warning,
+      );
       expect(
         reportStatusColor(ReportStatus.insufficientData),
-        AppColors.primary,
+        SemanticColor.warning,
       );
-      expect(reportStatusColor(ReportStatus.unknown), AppColors.primary);
+      expect(reportStatusColor(ReportStatus.unknown), SemanticColor.neutral);
     });
   });
 

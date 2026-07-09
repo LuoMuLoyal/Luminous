@@ -24,14 +24,14 @@ class _DoseActionButton extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.onTap,
-    this.color = AppColors.primary,
+    this.color = SemanticColor.primary,
     this.filled = false,
   });
 
   final String label;
   final IconData icon;
   final VoidCallback onTap;
-  final AppColors color;
+  final SemanticColor color;
   final bool filled;
 
   @override
@@ -74,7 +74,7 @@ class _QuickOperation {
   });
 
   final IconData icon;
-  final AppColors color;
+  final SemanticColor color;
   final String title;
   final String subtitle;
   final VoidCallback onTap;

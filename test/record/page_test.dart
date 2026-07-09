@@ -1,3 +1,4 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -2201,8 +2201,8 @@ class _FakeRecordRepository implements RecordRepository {
               time: '09:45',
               type: RecordEntryType.vitals,
               icon: Icons.favorite_rounded,
-              accent: AppColors.primary,
-              softColor: AppColors.secondary,
+              accent: SemanticColor.primary,
+              softColor: SemanticColor.neutral,
               titleKey: RecordCopyKey.typeVitals,
               rawTitle: 'Blood pressure',
               value: '118/76 mmHg',
@@ -2249,8 +2249,8 @@ class _LongTimelineRecordRepository implements RecordRepository {
         time: time,
         type: RecordEntryType.note,
         icon: FLucideIcons.notebookPen,
-        accent: AppColors.primary,
-        softColor: AppColors.secondary,
+        accent: SemanticColor.primary,
+        softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeNote,
         rawTitle: '记录 ${index + 1}',
         value: '第 ${index + 1} 条',

@@ -1,5 +1,5 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:collection/collection.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -76,8 +76,8 @@ class LucentRecordRepository implements RecordRepository {
     final kind = record.kind;
     final timeStr = formatRecordTimeLabel(record.occurredTime);
 
-    final accent = AppColors.primary;
-    final soft = AppColors.secondary;
+    final accent = SemanticColor.primary;
+    final soft = SemanticColor.neutral;
 
     final icon = switch (kind) {
       DailyRecordKind.water => FLucideIcons.droplets,
@@ -222,7 +222,7 @@ class LucentRecordRepository implements RecordRepository {
         day: day.day,
         weekdayKey: _weekdayKey(day.weekday),
         selected: _isSameDay(day, today),
-        markers: day.day == today.day ? [AppColors.primary] : [],
+        markers: day.day == today.day ? [SemanticColor.primary] : [],
       );
     });
   }
@@ -248,7 +248,7 @@ class LucentRecordRepository implements RecordRepository {
           day: d,
           inMonth: true,
           selected: d == today.day,
-          markers: d == today.day ? [AppColors.primary] : [],
+          markers: d == today.day ? [SemanticColor.primary] : [],
         ),
       );
     }
@@ -277,16 +277,16 @@ class LucentRecordRepository implements RecordRepository {
       icon: FLucideIcons.briefcaseMedical,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.medication,
       icon: FLucideIcons.pill,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     // Lightweight mood self-check-in quick action.
     const RecordQuickAction(
@@ -294,48 +294,48 @@ class LucentRecordRepository implements RecordRepository {
       icon: FLucideIcons.smile,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.meal,
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
       icon: FLucideIcons.droplets,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.vitals,
       icon: FLucideIcons.heart,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.primary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.primary,
     ),
   ];
 
@@ -352,56 +352,56 @@ class LucentRecordRepository implements RecordRepository {
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
       icon: FLucideIcons.pill,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: FLucideIcons.briefcaseMedical,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
       icon: FLucideIcons.smile,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: FLucideIcons.droplets,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: FLucideIcons.utensils,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
       icon: FLucideIcons.heart,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: FLucideIcons.moon,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: FLucideIcons.notebookPen,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: true,
     ),
   ];
@@ -430,7 +430,7 @@ class LucentRecordRepository implements RecordRepository {
       kind: RecordTrendKind.bloodSugar,
       titleKey: RecordCopyKey.trendBloodSugarTitle,
       rangeKey: RecordCopyKey.range7Days,
-      color: AppColors.primary,
+      color: SemanticColor.primary,
       points: [5.1, 5.8, 5.4, 6.2, 5.6, 6.5, 5.9],
       legendKey: RecordCopyKey.trendBloodSugarLegend,
     ),

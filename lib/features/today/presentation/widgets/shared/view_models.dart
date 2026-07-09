@@ -1,7 +1,7 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
@@ -18,7 +18,7 @@ class TodayOverviewItem {
   final IconData icon;
   final String label;
   final String value;
-  final AppColors color;
+  final SemanticColor color;
 }
 
 class TodaySuggestionItem {
@@ -38,7 +38,7 @@ class TodaySuggestionItem {
   final Key key;
   final TodayPriorityItemType type;
   final IconData icon;
-  final AppColors color;
+  final SemanticColor color;
   final String title;
   final String reason;
   final String evidence;
@@ -61,7 +61,7 @@ class TodayAiSummaryItem {
   });
 
   final IconData icon;
-  final AppColors color;
+  final SemanticColor color;
   final String text;
 }
 
@@ -175,7 +175,7 @@ List<TodayOverviewItem> buildOverviewItems(
       icon: FLucideIcons.pill,
       label: l10n.todayMedicationOverviewLabel,
       value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
-      color: AppColors.primary,
+      color: SemanticColor.primary,
     ),
     TodayOverviewItem(
       icon: FLucideIcons.droplets,
@@ -184,13 +184,13 @@ List<TodayOverviewItem> buildOverviewItems(
         dashboard.water.completedCount,
         dashboard.water.targetCount,
       ),
-      color: AppColors.primary,
+      color: SemanticColor.primary,
     ),
     TodayOverviewItem(
       icon: FLucideIcons.moonStar,
       label: l10n.todayVitalSleepLabel,
       value: '$sleep ${l10n.todayVitalSleepUnit}',
-      color: AppColors.primary,
+      color: SemanticColor.primary,
     ),
   ];
 }
@@ -213,7 +213,7 @@ List<TodaySuggestionItem> buildSuggestionItems(
           key: const Key('today-medication-suggestion'),
           type: TodayPriorityItemType.medication,
           icon: FLucideIcons.pill,
-          color: AppColors.destructive,
+          color: SemanticColor.destructive,
           title: l10n.todayMedicationSuggestionTitle,
           reason: l10n.todayMedicationPrioritySubtitle(
             item.count ?? dashboard.medication.pendingCount,
@@ -229,7 +229,7 @@ List<TodaySuggestionItem> buildSuggestionItems(
           key: const Key('today-water-suggestion'),
           type: TodayPriorityItemType.water,
           icon: FLucideIcons.droplets,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           title: l10n.todayWaterSuggestionTitle(dashboard.water.remainingCount),
           reason: l10n.todayWaterSuggestionReason(
             dashboard.water.completedCount,
@@ -273,7 +273,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
   return [
     TodayAiSummaryItem(
       icon: FLucideIcons.pill,
-      color: AppColors.primary,
+      color: SemanticColor.primary,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
               dashboard.medication.pendingCount,
@@ -282,14 +282,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
     ),
     TodayAiSummaryItem(
       icon: FLucideIcons.cupSoda,
-      color: AppColors.primary,
+      color: SemanticColor.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
       icon: FLucideIcons.bed,
-      color: AppColors.primary,
+      color: SemanticColor.primary,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
   ];
@@ -307,7 +307,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.sparkles,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.todayAiSummaryPreviewHint,
         ),
       ],
@@ -319,7 +319,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.brain,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.todayAiSummaryDisabledHint,
         ),
       ],
@@ -340,7 +340,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.badgeAlert,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.todayAiSummaryErrorHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -355,7 +355,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       bullets: [
         TodayAiSummaryItem(
           icon: FLucideIcons.refreshCw,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           text: l10n.todayAiSummaryGeneratingHint,
         ),
         ...buildAiSummaryBullets(l10n, dashboard),
@@ -380,7 +380,7 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
 
   return TodayAiSummaryItem(
     icon: icon,
-    color: AppColors.primary,
+    color: SemanticColor.primary,
     text: bullet.text,
   );
 }

@@ -34,10 +34,11 @@
      以匹配更平的 Forui-first 视觉方向。
 - `AppSpacingTokens` 与 `AppRadiusTokens` 仍作为兼容名存在，主命名为 `level*`，但实际值在 2026-07-02 被积极重置以跟踪当前
    Forui-led 基础。
-- `lib/core/design/app_colors.dart` 中新增 `AppColors` enum：
-  - 最小语义颜色 token：`primary`、`secondary`、`destructive`、`muted`、`background`、`border`、`foreground`
-  - 数据/领域层使用
-  - widget 通过 `context.theme.colors` 解析，自动切换 light/dark
+- `lib/core/design/semantic_color.dart` 中 `SemanticColor` enum：
+  - 6 个语义色：`primary`、`success`、`warning`、`info`、`destructive`、`neutral`
+  - 每个 `SemanticColor` 解析为 `SemanticColorPalette`（5 个预计算 tone：`solid`/`foreground`/`muted`/`subtle`/`border`）
+  - `SemanticColors` 通过 `FColors.extensions` 注入，暗色模式 alpha 自动补偿
+  - 数据/领域层使用 `SemanticColor`；widget 通过 `palette(context)` 或 `solid/muted/subtle/border(context)` 解析
 
 ## 命名
 

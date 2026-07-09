@@ -1,3 +1,4 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -157,7 +157,7 @@ void main() {
 
     expect(icons, hasLength(3));
     for (final icon in icons) {
-      expect(icon.color, AppColors.primary);
+      expect(icon.color, SemanticColor.primary);
     }
   });
 

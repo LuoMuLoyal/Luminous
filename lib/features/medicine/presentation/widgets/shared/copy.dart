@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -144,8 +144,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : null;
     final coverageAlert = MedicineAlert(
       icon: FLucideIcons.info,
-      color: AppColors.secondary,
-      softColor: AppColors.secondary,
+      color: SemanticColor.neutral,
+      softColor: SemanticColor.neutral,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
       rawBody: l10n.medicineRiskCheckCoverageAlertBody(
         result.coverageIssues.length,
@@ -178,8 +178,8 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
   return [
     MedicineAlert(
       icon: FLucideIcons.badgeCheck,
-      color: AppColors.primary,
-      softColor: AppColors.primary,
+      color: SemanticColor.primary,
+      softColor: SemanticColor.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
       rawBody: l10n.medicineRiskCheckAllClearAlertBody,
       rawDetail: l10n.medicineRiskCheckAllClearAlertDetail,
@@ -198,19 +198,19 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
   };
 }
 
-AppColors medicineRiskSeverityColor(MedicineRiskSeverity severity) {
+SemanticColor medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColors.destructive,
-    MedicineRiskSeverity.medium => AppColors.secondary,
-    MedicineRiskSeverity.info => AppColors.primary,
+    MedicineRiskSeverity.high => SemanticColor.destructive,
+    MedicineRiskSeverity.medium => SemanticColor.neutral,
+    MedicineRiskSeverity.info => SemanticColor.primary,
   };
 }
 
-AppColors medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
+SemanticColor medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => AppColors.destructive,
-    MedicineRiskSeverity.medium => AppColors.secondary,
-    MedicineRiskSeverity.info => AppColors.primary,
+    MedicineRiskSeverity.high => SemanticColor.destructive,
+    MedicineRiskSeverity.medium => SemanticColor.neutral,
+    MedicineRiskSeverity.info => SemanticColor.primary,
   };
 }
 

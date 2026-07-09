@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'dashboard.freezed.dart';
@@ -61,7 +61,7 @@ abstract class RecordDashboard with _$RecordDashboard {
             day.day == date.day &&
             day.month == date.month &&
             day.year == date.year,
-        markers: const <AppColors>[],
+        markers: const <SemanticColor>[],
       );
     });
   }
@@ -72,40 +72,40 @@ abstract class RecordDashboard with _$RecordDashboard {
       icon: FLucideIcons.utensils,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: AppColors.primary,
-      softColor: AppColors.secondary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
       icon: FLucideIcons.cupSoda,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: AppColors.primary,
-      softColor: AppColors.secondary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.symptom,
       icon: FLucideIcons.cross,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.secondary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
       icon: FLucideIcons.notebookPen,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.secondary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
       icon: FLucideIcons.moon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: AppColors.primary,
-      softColor: AppColors.secondary,
+      accent: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
   ];
 
@@ -114,35 +114,35 @@ abstract class RecordDashboard with _$RecordDashboard {
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
       icon: FLucideIcons.cupSoda,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
       icon: FLucideIcons.utensils,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
       icon: FLucideIcons.cross,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
       icon: FLucideIcons.moon,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
       icon: FLucideIcons.notebookPen,
-      accent: AppColors.primary,
+      accent: SemanticColor.primary,
       selected: false,
     ),
   ];
@@ -155,7 +155,7 @@ abstract class RecordWeekDay with _$RecordWeekDay {
     required int day,
     required RecordCopyKey weekdayKey,
     required bool selected,
-    required List<AppColors> markers,
+    required List<SemanticColor> markers,
     @Default(false) bool hasAlert,
   }) = _RecordWeekDay;
 }
@@ -166,7 +166,7 @@ abstract class RecordCalendarDay with _$RecordCalendarDay {
     required int day,
     required bool inMonth,
     required bool selected,
-    required List<AppColors> markers,
+    required List<SemanticColor> markers,
     @Default(false) bool hasAlert,
   }) = _RecordCalendarDay;
 }
@@ -178,8 +178,8 @@ abstract class RecordQuickAction with _$RecordQuickAction {
     required IconData icon,
     required RecordCopyKey titleKey,
     required RecordCopyKey subtitleKey,
-    required AppColors accent,
-    required AppColors softColor,
+    required SemanticColor accent,
+    required SemanticColor softColor,
     @Default(false) bool locked,
   }) = _RecordQuickAction;
 }
@@ -199,8 +199,8 @@ abstract class RecordSummaryItem with _$RecordSummaryItem {
     required String value,
     RecordCopyKey? unitKey,
     RecordCopyKey? detailKey,
-    required AppColors accent,
-    required AppColors softColor,
+    required SemanticColor accent,
+    required SemanticColor softColor,
   }) = _RecordSummaryItem;
 }
 
@@ -210,7 +210,7 @@ abstract class RecordFilter with _$RecordFilter {
     required RecordEntryType type,
     required RecordCopyKey titleKey,
     required IconData icon,
-    required AppColors accent,
+    required SemanticColor accent,
     required bool selected,
     @Default(false) bool locked,
   }) = _RecordFilter;
@@ -222,8 +222,8 @@ abstract class RecordTimelineEntry with _$RecordTimelineEntry {
     required String time,
     required RecordEntryType type,
     required IconData icon,
-    required AppColors accent,
-    required AppColors softColor,
+    required SemanticColor accent,
+    required SemanticColor softColor,
     required RecordCopyKey titleKey,
     String? value,
     RecordCopyKey? valueKey,
@@ -251,9 +251,9 @@ abstract class RecordTrend with _$RecordTrend {
     required RecordTrendKind kind,
     required RecordCopyKey titleKey,
     required RecordCopyKey rangeKey,
-    required AppColors color,
+    required SemanticColor color,
     required List<double> points,
-    AppColors? secondaryColor,
+    SemanticColor? secondaryColor,
     @Default([]) List<double> secondaryPoints,
     @Default([]) List<double> bars,
     RecordCopyKey? legendKey,

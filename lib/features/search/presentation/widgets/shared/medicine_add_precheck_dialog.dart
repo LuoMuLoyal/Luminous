@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
@@ -191,11 +190,9 @@ class _PrecheckFindingRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.resolve(colors).withValues(alpha: 0.08),
+        color: color.muted(context),
         borderRadius: BorderRadius.circular(AppRadiusTokens.level3),
-        border: Border.all(
-          color: color.resolve(colors).withValues(alpha: 0.18),
-        ),
+        border: Border.all(color: color.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacingTokens.level3),
@@ -204,7 +201,7 @@ class _PrecheckFindingRow extends StatelessWidget {
           children: [
             Icon(
               medicineRiskFindingIcon(finding),
-              color: color.resolve(colors),
+              color: color.solid(context),
               size: 18,
             ),
             const SizedBox(width: AppSpacingTokens.level3),

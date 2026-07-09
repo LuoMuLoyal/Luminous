@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -114,14 +113,14 @@ class _FindingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final resolvedColor = finding.color.resolve(colors);
+    final palette = finding.color.palette(context);
 
     return FCard.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: resolvedColor.withValues(alpha: 0.08),
+          color: palette.muted,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: resolvedColor.withValues(alpha: 0.18)),
+            side: BorderSide(color: palette.border),
             borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
@@ -142,7 +141,7 @@ class _FindingCard extends StatelessWidget {
                   ),
                   child: Icon(
                     finding.icon,
-                    color: resolvedColor,
+                    color: palette.solid,
                     size: AppResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.052,
@@ -161,7 +160,7 @@ class _FindingCard extends StatelessWidget {
                   ),
                   child: Icon(
                     FLucideIcons.chevronRight,
-                    color: AppColors.muted.resolve(colors),
+                    color: SemanticColor.neutral.resolve(colors),
                     size: AppResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.042,

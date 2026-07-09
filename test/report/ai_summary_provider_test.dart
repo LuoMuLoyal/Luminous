@@ -1,7 +1,7 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import '../helpers/test_helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/api_exception.dart';
@@ -419,7 +419,7 @@ ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
       ReportAiSummaryBullet(
         kind: ReportAiSummaryBulletKind.medication,
         text: '用药记录良好。',
-        color: AppColors.primary,
+        color: SemanticColor.primary,
         icon: Icons.medication,
       ),
     ],

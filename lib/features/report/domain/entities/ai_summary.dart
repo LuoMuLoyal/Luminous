@@ -1,5 +1,5 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/colors.dart';
 
 enum ReportAiSummaryRange {
   last7Days('last_7_days'),
@@ -45,7 +45,7 @@ class ReportAiSummaryBullet {
 
   final ReportAiSummaryBulletKind kind;
   final String text;
-  final AppColors color;
+  final SemanticColor color;
   final IconData icon;
 }
 

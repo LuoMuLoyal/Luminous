@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'dashboard.freezed.dart';
@@ -89,7 +89,7 @@ abstract class MineCompletion with _$MineCompletion {
 abstract class MineStatusCard with _$MineStatusCard {
   const factory MineStatusCard({
     required IconData icon,
-    required AppColors accent,
+    required SemanticColor accent,
     required MineCopyKey titleKey,
     required MineCopyKey subtitleKey,
     required MineCopyKey badgeKey,
@@ -100,7 +100,7 @@ abstract class MineStatusCard with _$MineStatusCard {
 abstract class MineArchiveEntry with _$MineArchiveEntry {
   const factory MineArchiveEntry({
     required IconData icon,
-    required AppColors accent,
+    required SemanticColor accent,
     required MineCopyKey titleKey,
     required MineCopyKey subtitleKey,
     MineCopyKey? statusKey,

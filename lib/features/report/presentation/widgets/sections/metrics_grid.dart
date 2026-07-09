@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/design/responsive_sizing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -56,7 +55,7 @@ class ReportMetricsGrid extends StatelessWidget {
         ReportMetric(
           kind: ReportDataKind.general,
           icon: FLucideIcons.heartPulse,
-          color: AppColors.primary,
+          color: SemanticColor.primary,
           value: _deriveOverallValue(),
           unit: _deriveOverallUnit(),
           status: dashboard.score.status,
@@ -276,18 +275,16 @@ class _MetricBadge extends StatelessWidget {
   const _MetricBadge({required this.label, required this.color});
 
   final String label;
-  final AppColors color;
+  final SemanticColor color;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    final resolvedColor = color.resolve(colors);
+    final palette = color.palette(context);
 
     return FBadge.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: resolvedColor.withValues(alpha: 0.12),
+          color: palette.muted,
           shape: RoundedSuperellipseBorder(
             borderRadius: context.theme.style.borderRadius.sm,
           ),
@@ -302,7 +299,7 @@ class _MetricBadge extends StatelessWidget {
           label,
           style: AppTypographyToken.level3
               .body(context)
-              .copyWith(color: resolvedColor, fontWeight: FontWeight.w800),
+              .copyWith(color: palette.solid, fontWeight: FontWeight.w800),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

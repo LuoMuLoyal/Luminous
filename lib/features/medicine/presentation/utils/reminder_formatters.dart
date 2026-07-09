@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:forui/forui.dart';
 
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -116,12 +116,12 @@ IconData deliveryStatusIcon(String value) {
   };
 }
 
-AppColors deliveryStatusColor(String value, FColors colors) {
+SemanticColor deliveryStatusColor(String value, FColors colors) {
   return switch (value) {
-    'delivered' => AppColors.primary,
-    'failed' => AppColors.destructive,
-    'scheduled' => AppColors.primary,
-    _ => AppColors.muted,
+    'delivered' => SemanticColor.primary,
+    'failed' => SemanticColor.destructive,
+    'scheduled' => SemanticColor.primary,
+    _ => SemanticColor.neutral,
   };
 }
 

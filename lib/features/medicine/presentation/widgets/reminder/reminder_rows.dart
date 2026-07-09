@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
@@ -299,7 +298,7 @@ class SelectedMedicineRow extends StatelessWidget {
           FAvatar.raw(
             child: Icon(
               FLucideIcons.pill,
-              color: AppColors.primary.resolve(colors),
+              color: SemanticColor.primary.resolve(colors),
             ),
           ),
           const SizedBox(width: AppSpacingTokens.level4),

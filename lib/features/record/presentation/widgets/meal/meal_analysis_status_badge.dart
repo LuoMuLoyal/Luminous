@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -20,18 +19,17 @@ class MealAnalysisStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
     final (label, color, icon) = _statusSpec(context, l10n, status);
     final coverageLabel = _coverageLabel(l10n, coverage);
     final text = coverageLabel == null ? label : '$label · $coverageLabel';
-    final resolvedColor = color.resolve(colors);
-    final foreground = 0.12 > 0.5 ? colors.primaryForeground : resolvedColor;
+    final palette = color.palette(context);
+    final foreground = palette.solid;
 
     return FBadge.raw(
       builder: (context, style) => DecoratedBox(
         decoration: ShapeDecoration(
-          color: resolvedColor.withValues(alpha: 0.12),
+          color: palette.muted,
           shape: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(AppRadiusTokens.level2),
           ),
@@ -72,7 +70,7 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     );
   }
 
-  (String, AppColors, IconData) _statusSpec(
+  (String, SemanticColor, IconData) _statusSpec(
     BuildContext context,
     AppLocalizations l10n,
     String? currentStatus,
@@ -80,22 +78,22 @@ class MealAnalysisStatusBadge extends StatelessWidget {
     return switch (currentStatus) {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
-        AppColors.primary,
+        SemanticColor.primary,
         FLucideIcons.clock3,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
-        AppColors.primary,
+        SemanticColor.primary,
         FLucideIcons.badgeCheck,
       ),
       'analysis_failed' => (
         l10n.recordMealAnalysisStatusFailed,
-        AppColors.destructive,
+        SemanticColor.destructive,
         FLucideIcons.circleAlert,
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
-        AppColors.primary,
+        SemanticColor.primary,
         FLucideIcons.badgeHelp,
       ),
     };

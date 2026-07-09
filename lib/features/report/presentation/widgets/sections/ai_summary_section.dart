@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -62,7 +61,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   size: AppSpacingTokens.level8,
                   child: Icon(
                     FLucideIcons.sparkles,
-                    color: AppColors.primary.resolve(colors),
+                    color: SemanticColor.primary.resolve(colors),
                     size: AppSpacingTokens.level5,
                   ),
                 ),

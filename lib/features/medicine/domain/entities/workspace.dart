@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 
@@ -29,7 +29,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
         icon: FLucideIcons.search,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
-        accent: AppColors.primary,
+        accent: SemanticColor.primary,
       ),
     ],
     plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
@@ -53,7 +53,7 @@ abstract class MedicineQuickAction with _$MedicineQuickAction {
     required IconData icon,
     required MedicineCopyKey titleKey,
     required MedicineCopyKey subtitleKey,
-    required AppColors accent,
+    required SemanticColor accent,
   }) = _MedicineQuickAction;
 }
 
@@ -66,13 +66,13 @@ abstract class MedicinePlanSurface with _$MedicinePlanSurface {
 @freezed
 abstract class MedicinePlanItem with _$MedicinePlanItem {
   const factory MedicinePlanItem({
-    required AppColors color,
+    required SemanticColor color,
     required MedicineCopyKey nameKey,
     required MedicineCopyKey dosageKey,
     required MedicineCopyKey scheduleKey,
     required List<MedicineDoseSlot> slots,
     required MedicineCopyKey stateKey,
-    required AppColors stateColor,
+    required SemanticColor stateColor,
     MedicineDoseStatus? todayStatus,
 
     /// When non-null, the view should use these raw strings instead of
@@ -108,8 +108,8 @@ abstract class MedicineAlert with _$MedicineAlert {
     MedicineCopyKey? bodyKey,
     MedicineCopyKey? detailKey,
     MedicineCopyKey? actionKey,
-    required AppColors color,
-    required AppColors softColor,
+    required SemanticColor color,
+    required SemanticColor softColor,
     String? rawTitle,
     String? rawBody,
     String? rawDetail,

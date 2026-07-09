@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';

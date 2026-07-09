@@ -18,7 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
-- [2026-07-09](migration-log/2026-07-09.md) — debugPrint → Talker 迁移 + 文档治理 + pre-push 钩子 + CI 简化 + 审查报告快速修复
+- [2026-07-09](migration-log/2026-07-09.md) — debugPrint → Talker 迁移 + 文档治理 + pre-push 钩子 + CI 简化 + 审查报告快速修复 + Today 建议引擎后端架构规划
 - [2026-07-08](migration-log/2026-07-08.md) — OpenAPI 生成器迁移 + Today 重构 + 7.8 审查修复 + Medicine Phase 1 + slot-aware 打卡 + Record/Mine 收尾 + 生成物边界治理 + Git 钩子轻量化
 - [2026-07-07](migration-log/2026-07-07.md) — 审查修复 + 开发者选项 + Talker 迁移 + 开源标准文档
 - [2026-07-04](migration-log/2026-07-04.md) — Doc coverage warning automation + phase guide
@@ -44,8 +44,8 @@ Major changes grouped by area:
   - Key Dates: 06/02, 06/04, 06/06, 06/09, 06/23, 06/25, 06/28, 07/08
 - **Report** (dashboard, generation, export)
   - Key Dates: 06/06, 06/09, 06/19, 06/22
-- **Today Dashboard** (analysis, recommendations, empty states)
-  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28, 07/08
+- **Today Dashboard** (analysis, recommendations, empty states, suggestion engine planning)
+  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28, 07/08, 07/09
 - **Daily Records** (fast entry, candidate generation)
   - Key Dates: 06/09, 06/10, 06/12, 06/16, 06/20
 - **Settings / Mine** (profile, health context, preferences)

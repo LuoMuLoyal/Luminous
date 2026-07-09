@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
@@ -133,7 +133,8 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     );
   }
 
-  AppColors _bulletColor(ReportAiSummaryBulletKind kind) => AppColors.primary;
+  SemanticColor _bulletColor(ReportAiSummaryBulletKind kind) =>
+      SemanticColor.primary;
 
   IconData _bulletIcon(ReportAiSummaryBulletKind kind) {
     return switch (kind) {

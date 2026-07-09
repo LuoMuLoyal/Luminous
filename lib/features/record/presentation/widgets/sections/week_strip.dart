@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
@@ -102,7 +101,7 @@ class _WeekDayCell extends StatelessWidget {
 class _MarkerDots extends StatelessWidget {
   const _MarkerDots({required this.markers, required this.hasAlert});
 
-  final List<AppColors> markers;
+  final List<SemanticColor> markers;
   final bool hasAlert;
 
   @override

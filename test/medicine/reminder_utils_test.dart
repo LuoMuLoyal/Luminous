@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
@@ -30,13 +30,13 @@ void main() {
   group('deliveryStatusColor', () {
     final colors = FThemes.neutral.light.touch.colors;
     test('delivered returns primary', () {
-      expect(deliveryStatusColor('delivered', colors), AppColors.primary);
+      expect(deliveryStatusColor('delivered', colors), SemanticColor.primary);
     });
     test('failed returns destructive', () {
-      expect(deliveryStatusColor('failed', colors), AppColors.destructive);
+      expect(deliveryStatusColor('failed', colors), SemanticColor.destructive);
     });
     test('default returns muted', () {
-      expect(deliveryStatusColor('unknown', colors), AppColors.muted);
+      expect(deliveryStatusColor('unknown', colors), SemanticColor.neutral);
     });
   });
 

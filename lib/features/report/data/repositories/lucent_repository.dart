@@ -1,6 +1,6 @@
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/colors.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
@@ -146,12 +146,12 @@ class LucentReportRepository implements ReportRepository {
     };
   }
 
-  AppColors _metricColor(ReportDataKind kind) {
+  SemanticColor _metricColor(ReportDataKind kind) {
     return switch (kind) {
-      ReportDataKind.medication => AppColors.primary,
-      ReportDataKind.water => AppColors.muted,
-      ReportDataKind.sleep => AppColors.foreground,
-      ReportDataKind.general => AppColors.primary,
+      ReportDataKind.medication => SemanticColor.primary,
+      ReportDataKind.water => SemanticColor.info,
+      ReportDataKind.sleep => SemanticColor.info,
+      ReportDataKind.general => SemanticColor.primary,
     };
   }
 
@@ -164,12 +164,12 @@ class LucentReportRepository implements ReportRepository {
     };
   }
 
-  AppColors _insightColor(ReportInsightKind kind) {
+  SemanticColor _insightColor(ReportInsightKind kind) {
     return switch (kind) {
-      ReportInsightKind.medication => AppColors.primary,
-      ReportInsightKind.hydration => AppColors.muted,
-      ReportInsightKind.sleep => AppColors.foreground,
-      ReportInsightKind.general => AppColors.primary,
+      ReportInsightKind.medication => SemanticColor.primary,
+      ReportInsightKind.hydration => SemanticColor.info,
+      ReportInsightKind.sleep => SemanticColor.info,
+      ReportInsightKind.general => SemanticColor.primary,
     };
   }
 
@@ -182,21 +182,21 @@ final _exportActions = <ReportExportAction>[
   const ReportExportAction(
     kind: ReportExportKind.hospital,
     icon: FLucideIcons.hospital,
-    color: AppColors.primary,
+    color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.monthly,
     icon: FLucideIcons.barChart,
-    color: AppColors.primary,
+    color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.print,
     icon: FLucideIcons.printer,
-    color: AppColors.primary,
+    color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.clinicShare,
     icon: FLucideIcons.share2,
-    color: AppColors.primary,
+    color: SemanticColor.primary,
   ),
 ];
