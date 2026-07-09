@@ -1,25 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:async';
+
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class TodayPrimarySuggestionSection extends StatefulWidget {
-  const TodayPrimarySuggestionSection({super.key, required this.suggestion});
-
-  final TodaySuggestionCard? suggestion;
+class TodayPrimarySuggestionSection extends ConsumerWidget {
+  const TodayPrimarySuggestionSection({super.key});
 
   @override
-  State<TodayPrimarySuggestionSection> createState() =>
-      _TodayPrimarySuggestionSectionState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final suggestionAsync = ref.watch(todaySuggestionProvider);
+
+    return TodaySection(
+      title: l10n.todayPrimarySuggestionSectionTitle,
+      child: suggestionAsync.when(
+        data: (bundle) {
+          final card = bundle?.primary;
+          if (card == null) {
+            return _SuggestionEmptyState(l10n: l10n);
+          }
+          return _PrimarySuggestionCard(card: card);
+        },
+        loading: () => const _SuggestionSkeleton(),
+        error: (_, __) => _SuggestionErrorState(
+          l10n: l10n,
+          onRetry: () => ref.invalidate(todaySuggestionProvider),
+        ),
+      ),
+    );
+  }
 }
 
-class _TodayPrimarySuggestionSectionState
-    extends State<TodayPrimarySuggestionSection>
+class _PrimarySuggestionCard extends ConsumerStatefulWidget {
+  const _PrimarySuggestionCard({required this.card});
+
+  final TodaySuggestionCard card;
+
+  @override
+  ConsumerState<_PrimarySuggestionCard> createState() =>
+      _PrimarySuggestionCardState();
+}
+
+class _PrimarySuggestionCardState extends ConsumerState<_PrimarySuggestionCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final CurvedAnimation _animation;
@@ -50,17 +83,14 @@ class _TodayPrimarySuggestionSectionState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final card = widget.suggestion;
-
-    if (card == null) {
-      return const SizedBox.shrink();
-    }
-
+    final card = widget.card;
     final colors = context.theme.colors;
     final cardTone = _mapTone(card.cardTone);
+    final isFading =
+        card.lifecycleState == TodaySuggestionLifecycleState.fading;
 
-    return TodaySection(
-      title: l10n.todayPrimarySuggestionSectionTitle,
+    return Opacity(
+      opacity: isFading ? 0.6 : 1.0,
       child: FCard.raw(
         key: const Key('today-primary-suggestion-card'),
         style: todayCardStyle(context, tone: cardTone),
@@ -69,7 +99,6 @@ class _TodayPrimarySuggestionSectionState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icon + action button row
               Row(
                 children: [
                   TodayGlyphTile(
@@ -92,7 +121,6 @@ class _TodayPrimarySuggestionSectionState
                 ],
               ),
               const SizedBox(height: Spacing.level4),
-              // Title
               Text(
                 card.title,
                 style: TypographyToken.level7
@@ -100,7 +128,6 @@ class _TodayPrimarySuggestionSectionState
                     .copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: Spacing.level2),
-              // Reason
               Text(
                 card.reason,
                 style: TypographyToken.level4
@@ -110,7 +137,6 @@ class _TodayPrimarySuggestionSectionState
                       fontWeight: FontWeight.w600,
                     ),
               ),
-              // Collapsible evidence/boundary
               const SizedBox(height: Spacing.level3),
               _EvidenceToggleButton(
                 expanded: _evidenceExpanded,
@@ -125,25 +151,417 @@ class _TodayPrimarySuggestionSectionState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: Spacing.level3),
-                    _SuggestionMetaBlock(
-                      label: l10n.todaySuggestionEvidenceLabel,
-                      value: card.evidence
-                          .map((e) => '${e.label}: ${e.value}')
-                          .join('\n'),
-                    ),
-                    const SizedBox(height: Spacing.level3),
+                    if (card.evidence.isNotEmpty) ...[
+                      _SuggestionMetaBlock(
+                        label: l10n.todaySuggestionEvidenceLabel,
+                        value: card.evidence
+                            .map((e) => '${e.label}: ${e.value}')
+                            .join('\n'),
+                      ),
+                      const SizedBox(height: Spacing.level3),
+                    ],
                     _SuggestionMetaBlock(
                       label: l10n.todaySuggestionBoundaryLabel,
                       value: card.boundary,
                     ),
+                    const SizedBox(height: Spacing.level3),
+                    _SuggestionAiExplainButton(suggestionId: card.id),
                   ],
                 ),
               ),
-              // Feedback actions
-              const SizedBox(height: Spacing.level4),
-              _SuggestionFeedbackRow(l10n: l10n),
+              if (card.feedbackOptions != null &&
+                  card.feedbackOptions!.isNotEmpty) ...[
+                const SizedBox(height: Spacing.level4),
+                _SuggestionFeedbackRow(
+                  suggestionId: card.id,
+                  feedbackOptions: card.feedbackOptions!,
+                ),
+              ],
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class TodaySecondarySuggestionsSection extends ConsumerWidget {
+  const TodaySecondarySuggestionsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final suggestionAsync = ref.watch(todaySuggestionProvider);
+
+    return suggestionAsync.when(
+      data: (bundle) {
+        final items = bundle?.secondary ?? const [];
+        if (items.isEmpty) return const SizedBox.shrink();
+
+        final visible = items.take(2).toList();
+        final colors = context.theme.colors;
+
+        return TodaySection(
+          title: l10n.todaySecondarySuggestionSectionTitle,
+          child: Column(
+            children: [
+              for (var index = 0; index < visible.length; index += 1) ...[
+                if (index > 0) const SizedBox(height: Spacing.level3),
+                FCard.raw(
+                  key: Key('today-secondary-suggestion-$index'),
+                  style: todayCardStyle(context, tone: TodayCardTone.soft),
+                  child: FTappable(
+                    onPress: () =>
+                        _openRoute(context, visible[index].primaryAction.route),
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.level4),
+                      child: Row(
+                        children: [
+                          TodayGlyphTile(
+                            icon: _iconFor(visible[index].icon),
+                            color: _colorFor(
+                              visible[index].cardTone,
+                            ).resolve(colors),
+                            size: Spacing.level7,
+                            radius: RadiusTokens.level3,
+                            gradient: false,
+                          ),
+                          const SizedBox(width: Spacing.level3),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  visible[index].title,
+                                  style: TypographyToken.level5
+                                      .body(context)
+                                      .copyWith(fontWeight: FontWeight.w700),
+                                ),
+                                const SizedBox(height: Spacing.level1),
+                                Text(
+                                  visible[index].reason,
+                                  style: TypographyToken.level3
+                                      .body(context)
+                                      .copyWith(color: colors.mutedForeground),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: Spacing.level2),
+                          Icon(
+                            FLucideIcons.chevronRight,
+                            size: Spacing.level5,
+                            color: colors.mutedForeground,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _SuggestionFeedbackRow extends ConsumerStatefulWidget {
+  const _SuggestionFeedbackRow({
+    required this.suggestionId,
+    required this.feedbackOptions,
+  });
+
+  final String suggestionId;
+  final List<TodaySuggestionFeedback> feedbackOptions;
+
+  @override
+  ConsumerState<_SuggestionFeedbackRow> createState() =>
+      _SuggestionFeedbackRowState();
+}
+
+class _SuggestionFeedbackRowState
+    extends ConsumerState<_SuggestionFeedbackRow> {
+  bool _isSubmitting = false;
+
+  Future<void> _submit(TodaySuggestionFeedback feedback) async {
+    setState(() => _isSubmitting = true);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await ref
+          .read(todaySuggestionProvider.notifier)
+          .submitFeedback(
+            suggestionId: widget.suggestionId,
+            feedback: feedback,
+          );
+      if (mounted) {
+        unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackSuccess));
+      }
+    } catch (_) {
+      if (mounted) {
+        unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackError));
+      }
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    final ordered = [
+      TodaySuggestionFeedback.accepted,
+      TodaySuggestionFeedback.later,
+      TodaySuggestionFeedback.notApplicable,
+      TodaySuggestionFeedback.suppress,
+    ].where((f) => widget.feedbackOptions.contains(f)).toList();
+
+    return Wrap(
+      spacing: Spacing.level2,
+      runSpacing: Spacing.level2,
+      children: [
+        for (final option in ordered)
+          FButton(
+            onPress: _isSubmitting ? null : () => _submit(option),
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.xs,
+            mainAxisSize: MainAxisSize.min,
+            child: Text(
+              _labelFor(l10n, option),
+              style:
+                  option == TodaySuggestionFeedback.notApplicable ||
+                      option == TodaySuggestionFeedback.suppress
+                  ? TextStyle(color: colors.mutedForeground)
+                  : null,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+String _labelFor(AppLocalizations l10n, TodaySuggestionFeedback feedback) {
+  return switch (feedback) {
+    TodaySuggestionFeedback.accepted => l10n.todaySuggestionAcceptedAction,
+    TodaySuggestionFeedback.later => l10n.todaySuggestionLaterAction,
+    TodaySuggestionFeedback.notApplicable =>
+      l10n.todaySuggestionNotApplicableAction,
+    TodaySuggestionFeedback.suppress => l10n.todaySuggestionSuppressAction,
+  };
+}
+
+class _SuggestionAiExplainButton extends ConsumerWidget {
+  const _SuggestionAiExplainButton({required this.suggestionId});
+
+  final String suggestionId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final params = (suggestionId: suggestionId, language: locale);
+    final explanationAsync = ref.watch(suggestionExplanationProvider(params));
+
+    return explanationAsync.when(
+      data: (explanation) {
+        if (explanation == null || !explanation.aiGenerated) {
+          return FButton(
+            onPress: () => unawaited(
+              ref.refresh(suggestionExplanationProvider(params).future),
+            ),
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.xs,
+            mainAxisSize: MainAxisSize.min,
+            child: Text(l10n.todaySuggestionAiExplainAction),
+          );
+        }
+        return _AiExplainContent(explanation: explanation);
+      },
+      loading: () => Row(
+        children: [
+          const SizedBox(width: 16, height: 16, child: FProgress()),
+          const SizedBox(width: Spacing.level2),
+          Text(
+            l10n.todaySuggestionAiExplainLoading,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: context.theme.colors.mutedForeground),
+          ),
+        ],
+      ),
+      error: (_, __) => FButton(
+        onPress: () => unawaited(
+          ref.refresh(suggestionExplanationProvider(params).future),
+        ),
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.xs,
+        mainAxisSize: MainAxisSize.min,
+        child: Text(l10n.todaySuggestionAiExplainRetry),
+      ),
+    );
+  }
+}
+
+class _AiExplainContent extends StatelessWidget {
+  const _AiExplainContent({required this.explanation});
+
+  final TodaySuggestionExplanation explanation;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Container(
+      padding: const EdgeInsets.all(Spacing.level3),
+      decoration: BoxDecoration(
+        color: colors.primary.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                FLucideIcons.sparkles,
+                size: Spacing.level4,
+                color: colors.primary,
+              ),
+              const SizedBox(width: Spacing.level1),
+              Text(
+                'AI',
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(
+                      color: colors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.level2),
+          Text(explanation.reason, style: TypographyToken.level4.body(context)),
+          if (explanation.boundary.isNotEmpty) ...[
+            const SizedBox(height: Spacing.level2),
+            Text(
+              explanation.boundary,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SuggestionEmptyState extends StatelessWidget {
+  const _SuggestionEmptyState({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.level4,
+        vertical: Spacing.level6,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              FLucideIcons.sparkles,
+              size: Spacing.level8,
+              color: context.theme.colors.mutedForeground,
+            ),
+            const SizedBox(height: Spacing.level3),
+            Text(
+              l10n.todaySuggestionEmptyTitle,
+              style: TypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: Spacing.level1),
+            Text(
+              l10n.todaySuggestionEmptySubtitle,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: context.theme.colors.mutedForeground),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SuggestionSkeleton extends StatelessWidget {
+  const _SuggestionSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppSkeletonShimmer(
+      child: Container(
+        height: 180,
+        decoration: BoxDecoration(
+          color: context.theme.colors.card,
+          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          border: Border.all(color: context.theme.colors.border),
+        ),
+      ),
+    );
+  }
+}
+
+class _SuggestionErrorState extends StatelessWidget {
+  const _SuggestionErrorState({required this.l10n, required this.onRetry});
+
+  final AppLocalizations l10n;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.level4,
+        vertical: Spacing.level6,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              FLucideIcons.circleAlert,
+              size: Spacing.level8,
+              color: context.theme.colors.mutedForeground,
+            ),
+            const SizedBox(height: Spacing.level3),
+            Text(
+              l10n.todaySuggestionErrorHint,
+              style: TypographyToken.level4
+                  .body(context)
+                  .copyWith(color: context.theme.colors.mutedForeground),
+            ),
+            const SizedBox(height: Spacing.level3),
+            FButton(
+              onPress: onRetry,
+              variant: FButtonVariant.secondary,
+              size: FButtonSizeVariant.sm,
+              child: Text(l10n.todaySuggestionRetryAction),
+            ),
+          ],
         ),
       ),
     );
@@ -194,123 +612,6 @@ class _EvidenceToggleButton extends StatelessWidget {
   }
 }
 
-class _SuggestionFeedbackRow extends StatelessWidget {
-  const _SuggestionFeedbackRow({required this.l10n});
-
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Row(
-      children: [
-        FButton(
-          onPress: () {},
-          variant: FButtonVariant.ghost,
-          size: FButtonSizeVariant.xs,
-          mainAxisSize: MainAxisSize.min,
-          child: Text(l10n.todaySuggestionLaterAction),
-        ),
-        const SizedBox(width: Spacing.level2),
-        FButton(
-          onPress: () {},
-          variant: FButtonVariant.ghost,
-          size: FButtonSizeVariant.xs,
-          mainAxisSize: MainAxisSize.min,
-          child: Text(
-            l10n.todaySuggestionNotApplicableAction,
-            style: TextStyle(color: colors.mutedForeground),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class TodaySecondarySuggestionsSection extends StatelessWidget {
-  const TodaySecondarySuggestionsSection({
-    super.key,
-    required this.suggestions,
-  });
-
-  final List<TodaySuggestionCard> suggestions;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    if (suggestions.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final items = suggestions.take(2).toList();
-    final colors = context.theme.colors;
-
-    return TodaySection(
-      title: l10n.todaySecondarySuggestionSectionTitle,
-      child: Column(
-        children: [
-          for (var index = 0; index < items.length; index += 1) ...[
-            if (index > 0) const SizedBox(height: Spacing.level3),
-            FCard.raw(
-              key: Key('today-secondary-suggestion-$index'),
-              style: todayCardStyle(context, tone: TodayCardTone.soft),
-              child: FTappable(
-                onPress: () =>
-                    _openRoute(context, items[index].primaryAction.route),
-                child: Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
-                  child: Row(
-                    children: [
-                      TodayGlyphTile(
-                        icon: _iconFor(items[index].icon),
-                        color: _colorFor(items[index].cardTone).resolve(colors),
-                        size: Spacing.level7,
-                        radius: RadiusTokens.level3,
-                        gradient: false,
-                      ),
-                      const SizedBox(width: Spacing.level3),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              items[index].title,
-                              style: TypographyToken.level5
-                                  .body(context)
-                                  .copyWith(fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: Spacing.level1),
-                            Text(
-                              items[index].reason,
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: Spacing.level2),
-                      Icon(
-                        FLucideIcons.chevronRight,
-                        size: Spacing.level5,
-                        color: colors.mutedForeground,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
 class _SuggestionMetaBlock extends StatelessWidget {
   const _SuggestionMetaBlock({required this.label, required this.value});
 
@@ -340,13 +641,11 @@ class _SuggestionMetaBlock extends StatelessWidget {
   }
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────
-
 void _openRoute(BuildContext context, String route) {
-  if (route.startsWith('/')) {
-    context.go(route);
-  } else {
+  if (route.contains('?')) {
     context.push(route);
+  } else {
+    context.go(route);
   }
 }
 

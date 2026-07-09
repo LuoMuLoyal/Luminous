@@ -6,8 +6,6 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation_section.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions_section.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/record_hint_section.dart';
@@ -37,30 +35,18 @@ class TodayDashboardView extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    final suggestionAsync = ref.watch(todaySuggestionProvider);
-    final suggestion = suggestionAsync.maybeWhen(
-      data: (bundle) => bundle,
-      orElse: () => null,
-    );
-    final primary = suggestion?.primary;
-    final secondary = suggestion?.secondary ?? const [];
-
     final content = isDesktop
         ? _DesktopTodayDashboard(
             dashboard: dashboard,
             isPreview: isPreview,
             onSignIn: onSignIn,
             onRefresh: onRefresh,
-            primary: primary,
-            secondary: secondary,
           )
         : _MobileTodayDashboard(
             dashboard: dashboard,
             isPreview: isPreview,
             onSignIn: onSignIn,
             onRefresh: onRefresh,
-            primary: primary,
-            secondary: secondary,
           );
 
     return AppSkeletonScope(isLoading: isLoading, child: content);
@@ -116,16 +102,12 @@ class _MobileTodayDashboard extends StatelessWidget {
     required this.isPreview,
     required this.onSignIn,
     required this.onRefresh,
-    required this.primary,
-    required this.secondary,
   });
 
   final TodayDashboard dashboard;
   final bool isPreview;
   final VoidCallback? onSignIn;
   final Future<void> Function() onRefresh;
-  final TodaySuggestionCard? primary;
-  final List<TodaySuggestionCard> secondary;
 
   @override
   Widget build(BuildContext context) {
@@ -137,10 +119,9 @@ class _MobileTodayDashboard extends StatelessWidget {
           message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
         ),
       TodayRecordHintSection(dashboard: dashboard),
-      TodayPrimarySuggestionSection(suggestion: primary),
-      TodaySecondarySuggestionsSection(
-        key: const Key('today-secondary-suggestions-card'),
-        suggestions: secondary,
+      const TodayPrimarySuggestionSection(),
+      const TodaySecondarySuggestionsSection(
+        key: Key('today-secondary-suggestions-card'),
       ),
       TodaySummarySection(dashboard: dashboard),
       TodayObservationSection(dashboard: dashboard),
@@ -173,16 +154,12 @@ class _DesktopTodayDashboard extends StatelessWidget {
     required this.isPreview,
     required this.onSignIn,
     required this.onRefresh,
-    required this.primary,
-    required this.secondary,
   });
 
   final TodayDashboard dashboard;
   final bool isPreview;
   final VoidCallback? onSignIn;
   final Future<void> Function() onRefresh;
-  final TodaySuggestionCard? primary;
-  final List<TodaySuggestionCard> secondary;
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +193,7 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 7,
                 child: Column(
                   children: [
-                    TodayPrimarySuggestionSection(suggestion: primary),
+                    const TodayPrimarySuggestionSection(),
                     const SizedBox(height: Spacing.level6),
                     TodaySummarySection(dashboard: dashboard),
                   ],
@@ -227,9 +204,8 @@ class _DesktopTodayDashboard extends StatelessWidget {
                 flex: 5,
                 child: Column(
                   children: [
-                    TodaySecondarySuggestionsSection(
-                      key: const Key('today-secondary-suggestions-card'),
-                      suggestions: secondary,
+                    const TodaySecondarySuggestionsSection(
+                      key: Key('today-secondary-suggestions-card'),
                     ),
                     const SizedBox(height: Spacing.level6),
                     TodayObservationSection(dashboard: dashboard),

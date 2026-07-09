@@ -7,6 +7,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 
@@ -14,9 +15,13 @@ import 'package:luminous/features/today/presentation/widgets/views/skeleton_view
 class TodayPage extends ConsumerWidget {
   const TodayPage({super.key});
 
-  Future<void> _refreshDashboard(WidgetRef ref) async {
+  Future<void> _refreshAll(WidgetRef ref) async {
     ref.invalidate(todayDashboardProvider);
-    await ref.read(todayDashboardProvider.future);
+    ref.invalidate(todaySuggestionProvider);
+    await Future.wait([
+      ref.read(todayDashboardProvider.future),
+      ref.read(todaySuggestionProvider.future),
+    ]);
   }
 
   @override
@@ -62,7 +67,7 @@ class TodayPage extends ConsumerWidget {
                             loginRouteForCurrentLocation(context),
                           )
                         : null,
-                    onRefresh: () => _refreshDashboard(ref),
+                    onRefresh: () => _refreshAll(ref),
                   ),
                 ),
               ),
