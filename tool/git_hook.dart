@@ -7,7 +7,7 @@ Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
   if (args.isEmpty) {
     stderr.writeln(
-      'Usage: dart run tool/git_hook.dart <pre-commit|commit-msg> [args]',
+      'Usage: dart run tool/git_hook.dart <pre-commit|commit-msg|pre-push> [args]',
     );
     exitCode = 64;
     return;
@@ -17,6 +17,8 @@ Future<void> main(List<String> args) async {
     switch (args.first) {
       case 'pre-commit':
         await runPreCommitChecks(context);
+      case 'pre-push':
+        await runPrePushChecks(context);
       case 'commit-msg':
         if (args.length < 2) {
           stderr.writeln(

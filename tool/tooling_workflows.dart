@@ -51,6 +51,25 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
 }
 
+Future<void> runPrePushChecks(ToolContext context) async {
+  stdout.writeln('==> flutter analyze');
+  await runLoggedCommand(
+    'flutter',
+    ['analyze'],
+    workingDirectory: context.repoRoot,
+    stepName: 'flutter analyze',
+  );
+  stdout.writeln('');
+
+  stdout.writeln('==> dart format --set-exit-if-changed');
+  await runLoggedCommand(
+    'dart',
+    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'tool/'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart format --set-exit-if-changed',
+  );
+}
+
 Future<void> runPreCommitChecks(ToolContext context) async {
   final stagedDartFiles = await _listStagedDartFiles(context);
   if (stagedDartFiles.isNotEmpty) {

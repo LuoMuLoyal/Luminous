@@ -1,3 +1,2 @@
 #!/bin/sh
-# Full validation (analyze, format check, tests, OpenAPI sync) runs in CI.
-# For local validation, run: dart run tool/run_daily_checks.dart
+exec dart run "$(dirname "$0")/../tool/git_hook.dart" pre-push
