@@ -33,6 +33,7 @@ Last updated: 2026-07-10
 - Mine 账号与安全区已包含退出登录 tile（`ConsumerWidget` + `authSessionProvider`）；Report 趋势区已替换为 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。
 - `debugPrint` 已全量迁移到 `talker_flutter` 日志基础设施（922 tests passed）。
 - 文档治理使用 `docs/doc-map.yaml` + `tool/check_doc_coverage.dart`：默认阻断模式——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于日常检查（per-rule 报告缺少的具体文档但不阻断）；`SKIP_DOC_CHECK=1` 可旁路。
+- Auth 模块架构重构完成：`LoginFormState` 从 18 字段降至 11（移除全部 OAuth 字段），`LoginFormNotifier` 从 393 行降至 ~170 行（移除 7 个 OAuth 方法）；新增 `OAuthLoginController` + `OAuthLoginState` 统管 WeChat/QQ/Apple 三方登录；新增 `WechatOAuthService` 封装 mobile→desktop→web 三路平台检测，同时服务登录和身份绑定；新增 `AuthActionRunner`（`runAuthAction<T>()`）统一 try-catch+LucentErrorMapper 模式；新增 `OAuthCallbackParser` 提取回调 URL 解析；`AuthRemoteDataSource` 5 处 `writeSession` 重复提取为 `_persistSession`；`LoginPage` 从 700 行降至 ~370 行，OAuth 面板提取为独立 widget；45 个 auth 测试 + 8 个 mine 测试全部通过。
 
 ## 相关文档
 

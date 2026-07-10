@@ -26,6 +26,20 @@ class AuthRemoteDataSource {
 
   final LucentDioClient _client;
 
+  /// Persists [session] tokens to the local session store.
+  ///
+  /// Extracted to eliminate the 5× `writeSession` duplication across all
+  /// login methods ([login], [loginWithWechatWeb], [loginWithWechatMobile],
+  /// [loginWithApple], [loginWithQq]).
+  Future<void> _persistSession(AuthSession session) async {
+    await _client.writeSession(
+      LucentSessionTokens(
+        accessToken: session.accessToken,
+        refreshToken: session.refreshToken,
+      ),
+    );
+  }
+
   Future<AuthSession> login({
     required String email,
     String? password,
@@ -43,12 +57,7 @@ class AuthRemoteDataSource {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(response);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
+    await _persistSession(session);
     return session;
   }
 
@@ -88,12 +97,7 @@ class AuthRemoteDataSource {
       body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
     final session = AuthMapper.toSessionFromLogin(response);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
+    await _persistSession(session);
     return session;
   }
 
@@ -103,12 +107,7 @@ class AuthRemoteDataSource {
           body: OAuthCodeCallbackDto(code: code.trim()),
         );
     final session = AuthMapper.toSessionFromLogin(response);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
+    await _persistSession(session);
     return session;
   }
 
@@ -127,12 +126,7 @@ class AuthRemoteDataSource {
       ),
     );
     final session = AuthMapper.toSessionFromLogin(response);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
+    await _persistSession(session);
     return session;
   }
 
@@ -157,12 +151,7 @@ class AuthRemoteDataSource {
       body: QqOAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
     final session = AuthMapper.toSessionFromLogin(response);
-    await _client.writeSession(
-      LucentSessionTokens(
-        accessToken: session.accessToken,
-        refreshToken: session.refreshToken,
-      ),
-    );
+    await _persistSession(session);
     return session;
   }
 

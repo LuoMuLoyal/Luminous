@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/auth_action_runner.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -117,28 +116,31 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    try {
-      final result = await ref
+    final (:value, :error) = await runAuthAction(
+      ref: ref,
+      tag: 'PasswordResetNotifier.sendResetCode',
+      action: () => ref
           .read(authRemoteDataSourceProvider)
-          .forgotPassword(email: state.email);
-      final cooldown = result.cooldown.toInt();
+          .forgotPassword(email: state.email),
+    );
+    if (error != null) {
       state = state.copyWith(
+        isSubmitting: false,
         isSendingCode: false,
-        successMessage: result.message,
+        errorMessage: error,
+        successMessage: null,
       );
-      startCooldown(
-        cooldown,
-        getCooldownSeconds: () => state.cooldownSeconds,
-        setCooldownSeconds: (value) =>
-            state = state.copyWith(cooldownSeconds: value),
-      );
-      return true;
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('PasswordResetNotifier.sendResetCode: failed: $error');
-      return _fail(error);
+      return false;
     }
+    final cooldown = value!.cooldown.toInt();
+    state = state.copyWith(isSendingCode: false, successMessage: value.message);
+    startCooldown(
+      cooldown,
+      getCooldownSeconds: () => state.cooldownSeconds,
+      setCooldownSeconds: (value) =>
+          state = state.copyWith(cooldownSeconds: value),
+    );
+    return true;
   }
 
   Future<bool> resetPassword() async {
@@ -147,33 +149,28 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    try {
-      await ref
+    final actionResult = await runAuthAction(
+      ref: ref,
+      tag: 'PasswordResetNotifier.resetPassword',
+      action: () => ref
           .read(authRemoteDataSourceProvider)
           .resetPassword(
             email: state.email,
             code: state.code,
             password: state.password,
-          );
-      state = state.copyWith(isSubmitting: false, successMessage: '');
-      return true;
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('PasswordResetNotifier.resetPassword: failed: $error');
-      return _fail(error);
-    }
-  }
-
-  bool _fail(Object error) {
-    final apiError = LucentErrorMapper.fromObject(error);
-    state = state.copyWith(
-      isSubmitting: false,
-      isSendingCode: false,
-      errorMessage: apiError.message,
-      successMessage: null,
+          ),
     );
-    return false;
+    if (actionResult.error != null) {
+      state = state.copyWith(
+        isSubmitting: false,
+        isSendingCode: false,
+        errorMessage: actionResult.error,
+        successMessage: null,
+      );
+      return false;
+    }
+    state = state.copyWith(isSubmitting: false, successMessage: '');
+    return true;
   }
 }
 

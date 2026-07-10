@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/auth_action_runner.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -123,37 +122,33 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    try {
-      final result = await ref
+    final (:value, :error) = await runAuthAction(
+      ref: ref,
+      tag: 'RegisterFormNotifier.sendCode',
+      action: () => ref
           .read(authRemoteDataSourceProvider)
           .sendVerificationCode(
             email: state.email,
             scene: AuthVerificationScene.register,
-          );
-      final cooldown = result.cooldown.toInt();
+          ),
+    );
+    if (error != null) {
       state = state.copyWith(
         isSendingCode: false,
-        successMessage: result.message,
-      );
-      startCooldown(
-        cooldown,
-        getCooldownSeconds: () => state.cooldownSeconds,
-        setCooldownSeconds: (value) =>
-            state = state.copyWith(cooldownSeconds: value),
-      );
-      return true;
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('RegisterFormNotifier.sendCode: failed: $error');
-      final apiError = LucentErrorMapper.fromObject(error);
-      state = state.copyWith(
-        isSendingCode: false,
-        errorMessage: apiError.message,
+        errorMessage: error,
         successMessage: null,
       );
       return false;
     }
+    final cooldown = value!.cooldown.toInt();
+    state = state.copyWith(isSendingCode: false, successMessage: value.message);
+    startCooldown(
+      cooldown,
+      getCooldownSeconds: () => state.cooldownSeconds,
+      setCooldownSeconds: (value) =>
+          state = state.copyWith(cooldownSeconds: value),
+    );
+    return true;
   }
 
   Future<bool> submit() async {
@@ -162,28 +157,27 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    try {
-      await ref
+    final actionResult = await runAuthAction(
+      ref: ref,
+      tag: 'RegisterFormNotifier.submit',
+      action: () => ref
           .read(authRemoteDataSourceProvider)
           .register(
             email: state.email,
             password: state.password,
             code: state.code,
             nickname: state.nickname,
-          );
-      state = state.copyWith(isSubmitting: false, successMessage: '');
-      return true;
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('RegisterFormNotifier.submit: failed: $error');
-      final apiError = LucentErrorMapper.fromObject(error);
+          ),
+    );
+    if (actionResult.error != null) {
       state = state.copyWith(
         isSubmitting: false,
-        errorMessage: apiError.message,
+        errorMessage: actionResult.error,
       );
       return false;
     }
+    state = state.copyWith(isSubmitting: false, successMessage: '');
+    return true;
   }
 }
 

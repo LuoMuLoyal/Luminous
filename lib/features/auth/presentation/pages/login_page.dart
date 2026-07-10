@@ -8,11 +8,13 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth_login_provider.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/oauth_callback_parser.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -44,9 +46,11 @@ class LoginPage extends HookConsumerWidget {
 
     final state = ref.watch(loginFormProvider);
     final notifier = ref.read(loginFormProvider.notifier);
+    final oauthState = ref.watch(oauthLoginProvider);
+    final oauthController = ref.read(oauthLoginProvider.notifier);
     final l10n = AppLocalizations.of(context);
 
-    // ---- helper functions (formerly class methods) ----
+    // ---- navigation helpers ----
 
     String? safeReturnTo(String? value) {
       final trimmed = value?.trim();
@@ -95,175 +99,108 @@ class LoginPage extends HookConsumerWidget {
       ).toString();
     }
 
-    _WechatCallback? parseWechatCallback(String raw, String? fallbackState) {
-      final input = raw.trim();
-      if (input.isEmpty) return null;
+    // ---- OAuth action handlers ----
 
-      final uri = Uri.tryParse(input);
-      final uriCode = uri?.queryParameters['code']?.trim();
-      final uriState = uri?.queryParameters['state']?.trim();
-      if (uriCode?.isNotEmpty == true &&
-          (uriState?.isNotEmpty == true || fallbackState?.isNotEmpty == true)) {
-        return _WechatCallback(
-          code: uriCode!,
-          state: uriState?.isNotEmpty == true ? uriState! : fallbackState!,
-        );
-      }
+    Future<void> startWechatLogin() async {
+      final attempt = await oauthController.startWechatLogin(
+        webCallbackUri: webWechatCallbackUri(),
+      );
+      if (!context.mounted) return;
 
-      final query = input.startsWith('?') ? input.substring(1) : input;
-      if (query.contains('=')) {
-        try {
-          final values = Uri.splitQueryString(query);
-          final code = values['code']?.trim();
-          final state = values['state']?.trim();
-          if (code?.isNotEmpty == true &&
-              (state?.isNotEmpty == true ||
-                  fallbackState?.isNotEmpty == true)) {
-            return _WechatCallback(
-              code: code!,
-              state: state?.isNotEmpty == true ? state! : fallbackState!,
+      switch (attempt) {
+        case WechatLoginCompleted():
+          goAfterLogin(fallbackHome: true);
+        case WechatLoginWebFallback(:final authorizeUrl):
+          final opened = await ref
+              .read(externalUrlLauncherProvider)
+              .open(Uri.parse(authorizeUrl));
+          if (!context.mounted) return;
+          if (!opened) {
+            await AppToast.show(
+              context,
+              l10n?.authWechatBrowserOpenFailed ??
+                  'Could not open the WeChat authorization page.',
             );
+            return;
           }
-        } on FormatException {
-          return null;
-        }
+          await AppToast.show(
+            context,
+            l10n?.authWechatAuthorizeOpened ??
+                'WeChat authorization opened in your browser.',
+          );
+        case WechatLoginFailed():
+          // Error is in oauthState.errorMessage — toast is shown via state
+          break;
       }
-
-      if (!input.contains(RegExp(r'\s')) && fallbackState?.isNotEmpty == true) {
-        return _WechatCallback(code: input, state: fallbackState!);
-      }
-      return null;
     }
 
-    Future<void> completeWechatLogin(String code, String state) async {
-      final session = await ref
-          .read(loginFormProvider.notifier)
-          .completeWechatWebLogin(code: code, state: state);
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> completeQqLogin(String code, String state) async {
-      final session = await ref
-          .read(loginFormProvider.notifier)
-          .completeQqLogin(code: code, state: state);
-      if (session == null || !context.mounted) return;
-      goAfterLogin(fallbackHome: true);
-    }
-
-    Future<void> startWechatLogin(BuildContext ctx, AppLocalizations? l) async {
-      final n = ref.read(loginFormProvider.notifier);
-      final mobileSession = await n.startWechatMobileLogin();
-      if (mobileSession != null) {
-        if (ctx.mounted) goAfterLogin(fallbackHome: true);
-        return;
-      }
-      final afterMobileAttempt = ref.read(loginFormProvider);
-      if (afterMobileAttempt.errorMessage?.isNotEmpty == true) return;
-
-      final desktopSession = await n.startWechatDesktopWebLogin();
-      if (desktopSession != null) {
-        if (ctx.mounted) goAfterLogin(fallbackHome: true);
-        return;
-      }
-      final afterDesktopAttempt = ref.read(loginFormProvider);
-      if (afterDesktopAttempt.errorMessage?.isNotEmpty == true) return;
-
-      final authorize = await n.createWechatWebAuthorizeUrl(
-        callbackUri: webWechatCallbackUri(),
-      );
-      if (authorize == null || !ctx.mounted) return;
-
-      final opened = await ref
-          .read(externalUrlLauncherProvider)
-          .open(Uri.parse(authorize.authorizeUrl));
-      if (!ctx.mounted) return;
-      if (!opened) {
-        await AppToast.show(
-          ctx,
-          l?.authWechatBrowserOpenFailed ??
-              'Could not open the WeChat authorization page.',
-        );
-        return;
-      }
-      await AppToast.show(
-        ctx,
-        l?.authWechatAuthorizeOpened ??
-            'WeChat authorization opened in your browser.',
-      );
-    }
-
-    Future<void> completeWechatLoginFromInput(
-      BuildContext ctx,
-      AppLocalizations? l,
-    ) async {
-      final n = ref.read(loginFormProvider.notifier);
-      n.updateWechatCallbackInput(wechatCallbackController.text);
-      final st = ref.read(loginFormProvider);
-      final callback = parseWechatCallback(
+    Future<void> completeWechatLoginFromInput() async {
+      final callback = OAuthCallbackParser.parse(
         wechatCallbackController.text,
-        st.wechatState,
+        oauthState.wechatState,
       );
       if (callback == null) {
         final message = wechatCallbackController.text.trim().isEmpty
-            ? l?.authWechatCallbackRequiredToast ??
+            ? l10n?.authWechatCallbackRequiredToast ??
                   'Paste the WeChat callback link first.'
-            : l?.authWechatCallbackInvalidToast ??
+            : l10n?.authWechatCallbackInvalidToast ??
                   'The WeChat callback link is missing code or state.';
-        await AppToast.show(ctx, message);
+        await AppToast.show(context, message);
         return;
       }
-      await completeWechatLogin(callback.code, callback.state);
+      final session = await oauthController.completeWechatLogin(
+        code: callback.code,
+        state: callback.state,
+      );
+      if (session == null || !context.mounted) return;
+      goAfterLogin(fallbackHome: true);
     }
 
-    Future<void> startQqLogin(BuildContext ctx, AppLocalizations? l) async {
-      final n = ref.read(loginFormProvider.notifier);
-      final authorize = await n.createQqAuthorizeUrl(
-        callbackUri: webQqCallbackUri(),
+    Future<void> startQqLogin() async {
+      final authorizeUrl = await oauthController.startQqLogin(
+        webCallbackUri: webQqCallbackUri(),
       );
-      if (authorize == null || !ctx.mounted) return;
+      if (authorizeUrl == null || !context.mounted) return;
 
       final opened = await ref
           .read(externalUrlLauncherProvider)
-          .open(Uri.parse(authorize.authorizeUrl));
-      if (!ctx.mounted) return;
+          .open(Uri.parse(authorizeUrl));
+      if (!context.mounted) return;
       if (!opened) {
         await AppToast.show(
-          ctx,
-          l?.authWechatBrowserOpenFailed ??
+          context,
+          l10n?.authWechatBrowserOpenFailed ??
               'Could not open the QQ authorization page.',
         );
         return;
       }
-      await AppToast.show(ctx, 'QQ authorization opened in your browser.');
+      await AppToast.show(context, 'QQ authorization opened in your browser.');
     }
 
-    Future<void> completeQqLoginFromInput(
-      BuildContext ctx,
-      AppLocalizations? l,
-    ) async {
-      final n = ref.read(loginFormProvider.notifier);
-      n.updateQqCallbackInput(qqCallbackController.text);
-      final st = ref.read(loginFormProvider);
-      final callback = parseWechatCallback(
+    Future<void> completeQqLoginFromInput() async {
+      final callback = OAuthCallbackParser.parse(
         qqCallbackController.text,
-        st.qqState,
+        oauthState.qqState,
       );
       if (callback == null) {
         final message = qqCallbackController.text.trim().isEmpty
             ? 'Please paste the QQ callback link first.'
             : 'The QQ callback link is missing code or state.';
-        await AppToast.show(ctx, message);
+        await AppToast.show(context, message);
         return;
       }
-      await completeQqLogin(callback.code, callback.state);
+      final session = await oauthController.completeQqLogin(
+        code: callback.code,
+        state: callback.state,
+      );
+      if (session == null || !context.mounted) return;
+      goAfterLogin(fallbackHome: true);
     }
 
     Future<void> startAppleLogin() async {
       if (!context.mounted) return;
-      final l = AppLocalizations.of(context);
       final failMessage =
-          l?.authWechatBrowserOpenFailed ?? 'Apple Sign In failed.';
+          l10n?.authWechatBrowserOpenFailed ?? 'Apple Sign In failed.';
       try {
         final credential = await SignInWithApple.getAppleIDCredential(
           scopes: [
@@ -272,33 +209,42 @@ class LoginPage extends HookConsumerWidget {
           ],
         );
         if (!context.mounted) return;
-        final session = await ref
-            .read(loginFormProvider.notifier)
-            .loginWithApple(
-              identityToken: credential.identityToken ?? '',
-              authorizationCode: credential.authorizationCode,
-              givenName: credential.givenName,
-              familyName: credential.familyName,
-            );
+        final session = await oauthController.loginWithApple(
+          identityToken: credential.identityToken ?? '',
+          authorizationCode: credential.authorizationCode,
+          givenName: credential.givenName,
+          familyName: credential.familyName,
+        );
         if (session == null || !context.mounted) return;
         goAfterLogin(fallbackHome: true);
       } catch (e) {
-        ref.read(talkerProvider).error('LoginPage.startAppleLogin: failed: $e');
         if (context.mounted) await AppToast.show(context, failMessage);
       }
     }
 
-    // Handle OAuth callbacks on first build (initState equivalent)
+    // Handle OAuth callbacks on first build (deep-link from browser redirect)
     useEffect(() {
       if ((wechatCode?.isNotEmpty ?? false) &&
           (wechatState?.isNotEmpty ?? false)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          completeWechatLogin(wechatCode!, wechatState!);
+          oauthController
+              .completeWechatLogin(code: wechatCode!, state: wechatState!)
+              .then((s) {
+                if (s != null && context.mounted) {
+                  goAfterLogin(fallbackHome: true);
+                }
+              });
         });
       }
       if ((qqCode?.isNotEmpty ?? false) && (qqState?.isNotEmpty ?? false)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          completeQqLogin(qqCode!, qqState!);
+          oauthController.completeQqLogin(code: qqCode!, state: qqState!).then((
+            s,
+          ) {
+            if (s != null && context.mounted) {
+              goAfterLogin(fallbackHome: true);
+            }
+          });
         });
       }
       return null;
@@ -411,11 +357,16 @@ class LoginPage extends HookConsumerWidget {
                   await notifier.sendCode();
                 },
               ),
-            if (state.errorMessage?.isNotEmpty ?? false) ...[
+            if ((state.errorMessage?.isNotEmpty ?? false) ||
+                (oauthState.errorMessage?.isNotEmpty ?? false)) ...[
               const SizedBox(height: Spacing.level4),
               FToast(
                 variant: FToastVariant.destructive,
-                title: Text(state.errorMessage!),
+                title: Text(
+                  state.errorMessage?.isNotEmpty == true
+                      ? state.errorMessage!
+                      : oauthState.errorMessage!,
+                ),
               ),
             ],
             const SizedBox(height: Spacing.level6),
@@ -486,214 +437,28 @@ class LoginPage extends HookConsumerWidget {
               ],
             ),
             const SizedBox(height: Spacing.level5),
-            _WechatOAuthPanel(
+            WechatOAuthPanel(
               callbackController: wechatCallbackController,
-              isStarting: state.isStartingWechatLogin,
-              isCompleting: state.isCompletingWechatLogin,
-              authorizeUrl: state.wechatAuthorizeUrl,
-              onStart: () => startWechatLogin(context, l10n),
-              onComplete: () => completeWechatLoginFromInput(context, l10n),
+              isStarting: oauthState.isStartingWechat,
+              isCompleting: oauthState.isCompletingWechat,
+              authorizeUrl: oauthState.wechatAuthorizeUrl,
+              onStart: startWechatLogin,
+              onComplete: completeWechatLoginFromInput,
             ),
-            _QqOAuthPanel(
+            QqOAuthPanel(
               callbackController: qqCallbackController,
-              isStarting: state.isStartingQqLogin,
-              isCompleting: state.isCompletingQqLogin,
-              authorizeUrl: state.qqAuthorizeUrl,
-              onStart: () => startQqLogin(context, l10n),
-              onComplete: () => completeQqLoginFromInput(context, l10n),
+              isStarting: oauthState.isStartingQq,
+              isCompleting: oauthState.isCompletingQq,
+              authorizeUrl: oauthState.qqAuthorizeUrl,
+              onStart: startQqLogin,
+              onComplete: completeQqLoginFromInput,
             ),
-            _AppleOAuthPanel(
-              isLoading: state.isStartingAppleLogin,
+            AppleOAuthPanel(
+              isLoading: oauthState.isStartingApple,
               onSignIn: startAppleLogin,
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _WechatOAuthPanel extends StatelessWidget {
-  const _WechatOAuthPanel({
-    required this.callbackController,
-    required this.isStarting,
-    required this.isCompleting,
-    required this.authorizeUrl,
-    required this.onStart,
-    required this.onComplete,
-  });
-
-  final TextEditingController callbackController;
-  final bool isStarting;
-  final bool isCompleting;
-  final String? authorizeUrl;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FButton(
-          key: const Key('wechat-login-start-button'),
-          variant: FButtonVariant.outline,
-          onPress: isStarting || isCompleting ? null : onStart,
-          child: isStarting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: FCircularProgress(),
-                )
-              : Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
-        ),
-        if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
-          FTextField(
-            key: const Key('wechat-callback-input'),
-            control: FTextFieldControl.managed(controller: callbackController),
-            label: Text(
-              l10n?.authWechatCallbackLabel ?? 'WeChat callback link / code',
-            ),
-            hint:
-                l10n?.authWechatCallbackHint ??
-                'Paste the callback URL after scanning',
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: Spacing.level4),
-          SizedBox(
-            width: double.infinity,
-            child: FButton(
-              onPress: isCompleting ? null : onComplete,
-              child: isCompleting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(
-                      l10n?.authWechatCompleteAction ??
-                          'Complete WeChat sign-in',
-                    ),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _WechatCallback {
-  const _WechatCallback({required this.code, required this.state});
-
-  final String code;
-  final String state;
-}
-
-class _QqOAuthPanel extends StatelessWidget {
-  const _QqOAuthPanel({
-    required this.callbackController,
-    required this.isStarting,
-    required this.isCompleting,
-    required this.authorizeUrl,
-    required this.onStart,
-    required this.onComplete,
-  });
-
-  final TextEditingController callbackController;
-  final bool isStarting;
-  final bool isCompleting;
-  final String? authorizeUrl;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: Spacing.level4),
-        FButton(
-          key: const Key('qq-login-start-button'),
-          variant: FButtonVariant.outline,
-          onPress: isStarting || isCompleting ? null : onStart,
-          child: isStarting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: FCircularProgress(),
-                )
-              : Text(l10n.authQqSignIn),
-        ),
-        if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
-          FTextField(
-            key: const Key('qq-callback-input'),
-            control: FTextFieldControl.managed(controller: callbackController),
-            label: Text(l10n.authQqCallbackLabel),
-            hint: 'Paste the callback URL after authorization',
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: Spacing.level4),
-          SizedBox(
-            width: double.infinity,
-            child: FButton(
-              onPress: isCompleting ? null : onComplete,
-              child: isCompleting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(l10n.authQqCompleteAction),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _AppleOAuthPanel extends StatefulWidget {
-  const _AppleOAuthPanel({required this.isLoading, required this.onSignIn});
-
-  final bool isLoading;
-  final VoidCallback onSignIn;
-
-  @override
-  State<_AppleOAuthPanel> createState() => _AppleOAuthPanelState();
-}
-
-class _AppleOAuthPanelState extends State<_AppleOAuthPanel> {
-  bool _isAvailable = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkAvailability();
-  }
-
-  Future<void> _checkAvailability() async {
-    final available = await SignInWithApple.isAvailable();
-    if (mounted) {
-      setState(() => _isAvailable = available);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_isAvailable) {
-      return const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level4),
-      child: AbsorbPointer(
-        absorbing: widget.isLoading,
-        child: SignInWithAppleButton(onPressed: widget.onSignIn),
       ),
     );
   }
