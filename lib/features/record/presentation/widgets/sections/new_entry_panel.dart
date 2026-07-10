@@ -61,7 +61,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                 decoration: .delta([
                   .all(
                     .shapeDelta(
-                      color: colors.secondary.withValues(alpha: 0.18),
+                      color: SemanticColor.neutral.subtle(context),
                       shape: RoundedSuperellipseBorder(
                         side: BorderSide(color: colors.border),
                         borderRadius: context.theme.style.borderRadius.sm,

@@ -225,7 +225,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                       height: 72 + soundLevel.value * 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: primaryColor.withValues(alpha: 0.12),
+                        color: SemanticColor.primary.muted(context),
                       ),
                     ),
 

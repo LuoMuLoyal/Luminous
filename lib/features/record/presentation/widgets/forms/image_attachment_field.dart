@@ -131,7 +131,6 @@ class _AttachmentPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     const width = 96.0;
     const height = 72.0;
-    final colors = context.theme.colors;
     final bytes = selectedBytes;
     final imageUrl = existingAttachment?.displayUrl;
 
@@ -142,7 +141,7 @@ class _AttachmentPreview extends StatelessWidget {
         height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: colors.secondary.withValues(alpha: 0.2),
+            color: SemanticColor.neutral.subtle(context),
           ),
           child: switch ((bytes, imageUrl)) {
             (final Uint8List data, _) => Image.memory(

@@ -320,7 +320,7 @@ class _FilterRow extends StatelessWidget {
             if (filter.locked)
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: colors.secondary.withValues(alpha: 0.22),
+                  color: SemanticColor.neutral.subtle(context),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

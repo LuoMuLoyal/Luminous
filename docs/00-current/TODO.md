@@ -25,8 +25,6 @@ Last updated: 2026-07-09
 
 二维 `SemanticColor` / `SemanticColorPalette` / `SemanticColors` 基础设施已就位，6 个核心 widget 文件已完成 alpha→palette 迁移。剩余约 20 处 `colors.X.withValues(alpha: Y)` 模式（直接 `FColors` 属性访问，非通过 `SemanticColor`）可按 feature 分批迁移：
 
-- `today/` — `components.dart`（3 处 alpha）、`card_style.dart`（4 处 alpha）
-- `record/` — `quick_entry_panel.dart`（3 处）、`timeline.dart`（1 处）、`sidebar.dart`（1 处）、`new_entry_panel.dart`（2 处）、`voice_entry_dialog.dart`（3 处）、`image_attachment_field.dart`（1 处）
 - `report/` — `findings_section.dart`（1 处剩余）、`metrics_grid.dart`（1 处剩余）
 - `search/` — `view.dart`（1 处）、`desktop_tabs.dart`（1 处）、`categories.dart`（1 处）、`source_switch.dart`（1 处）
 - `shell/` — `deferred_content.dart`（1 处）

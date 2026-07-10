@@ -110,7 +110,7 @@ class _PrimarySuggestionCardState extends ConsumerState<_PrimarySuggestionCard>
                 children: [
                   TodayGlyphTile(
                     icon: SuggestionIconMapping.resolve(card.icon),
-                    color: _colorFor(card.cardTone).resolve(colors),
+                    color: _colorFor(card.cardTone),
                     size: Spacing.level8,
                     radius: RadiusTokens.level3,
                     gradient: true,
@@ -230,9 +230,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                             icon: SuggestionIconMapping.resolve(
                               visible[index].icon,
                             ),
-                            color: _colorFor(
-                              visible[index].cardTone,
-                            ).resolve(colors),
+                            color: _colorFor(visible[index].cardTone),
                             size: Spacing.level7,
                             radius: RadiusTokens.level3,
                             gradient: false,
@@ -551,9 +549,9 @@ class _AiExplainContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
-        color: colors.primary.withValues(alpha: 0.04),
+        color: SemanticColor.primary.subtle(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: colors.primary.withValues(alpha: 0.12)),
+        border: Border.all(color: SemanticColor.primary.muted(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

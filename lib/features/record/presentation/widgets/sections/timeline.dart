@@ -450,7 +450,7 @@ class _TimelineImageFallback extends StatelessWidget {
     final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.2),
+        color: SemanticColor.neutral.subtle(context),
         border: Border.all(color: colors.border),
       ),
       child: Center(child: Icon(icon, color: colors.mutedForeground, size: 22)),

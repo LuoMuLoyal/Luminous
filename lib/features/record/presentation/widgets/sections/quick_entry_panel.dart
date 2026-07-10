@@ -43,7 +43,7 @@ class RecordAiInputBar extends StatelessWidget {
         decoration: .shapeDelta(
           color: colors.background,
           shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.primary.withValues(alpha: 0.22)),
+            side: BorderSide(color: SemanticColor.primary.border(context)),
             borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
@@ -85,8 +85,8 @@ class RecordAiInputBar extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isPreview
-                    ? colors.secondary.withValues(alpha: 0.12)
-                    : colors.primary.withValues(alpha: 0.08),
+                    ? SemanticColor.neutral.muted(context)
+                    : SemanticColor.primary.muted(context),
                 borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
               ),
               child: Text(
@@ -665,7 +665,7 @@ class _QuickRecordNoteButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       style: .delta(
         decoration: .delta([
-          .all(.shapeDelta(color: colors.secondary.withValues(alpha: 0.18))),
+          .all(.shapeDelta(color: SemanticColor.neutral.border(context))),
         ]),
         contentStyle: .delta(
           padding: .value(EdgeInsets.all(metrics.notePadding)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 
 enum TodayCardTone { emphasis, urgent, warning, soft, neutral }
 
@@ -11,15 +12,15 @@ FCardStyleDelta todayCardStyle(
 
   final (border, background) = switch (tone) {
     TodayCardTone.urgent => (
-      colors.destructive.withValues(alpha: 0.3),
-      colors.destructive.withValues(alpha: 0.04),
+      SemanticColor.destructive.border(context),
+      SemanticColor.destructive.subtle(context),
     ),
     TodayCardTone.warning => (
-      const Color(0xFFF59E0B).withValues(alpha: 0.3),
-      const Color(0xFFF59E0B).withValues(alpha: 0.04),
+      SemanticColor.warning.border(context),
+      SemanticColor.warning.subtle(context),
     ),
     TodayCardTone.emphasis => (
-      colors.primary.withValues(alpha: 0.18),
+      SemanticColor.primary.border(context),
       colors.card,
     ),
     TodayCardTone.soft => (colors.border.withValues(alpha: 0.86), colors.card),

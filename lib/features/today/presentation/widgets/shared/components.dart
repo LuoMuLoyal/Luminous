@@ -13,24 +13,25 @@ class TodayGlyphTile extends StatelessWidget {
   });
 
   final IconData icon;
-  final Color color;
+  final SemanticColor color;
   final double size;
   final double radius;
   final bool gradient;
 
   @override
   Widget build(BuildContext context) {
+    final palette = color.palette(context);
     final decoration = gradient
         ? BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [color.withValues(alpha: 0.92), color],
+              colors: [palette.solid.withValues(alpha: 0.92), palette.solid],
             ),
             borderRadius: BorderRadius.circular(radius),
           )
         : BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: palette.muted,
             borderRadius: BorderRadius.circular(radius),
           );
 
@@ -40,7 +41,7 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          color: gradient ? context.theme.colors.primary : color,
+          color: gradient ? context.theme.colors.primary : palette.solid,
           size: size * 0.5,
         ),
       ),
@@ -57,16 +58,17 @@ class TodayMiniTrendChart extends StatelessWidget {
   });
 
   final List<double> points;
-  final Color color;
+  final SemanticColor color;
   final double height;
 
   @override
   Widget build(BuildContext context) {
+    final palette = color.palette(context);
     final tickCount = points.isEmpty ? 7 : points.length;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
+        color: palette.subtle,
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: SizedBox(
@@ -82,7 +84,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                 child: Center(
                   child: Icon(
                     FLucideIcons.chartLine,
-                    color: color.withValues(alpha: 0.74),
+                    color: palette.solid.withValues(alpha: 0.74),
                     size: Spacing.level5,
                   ),
                 ),
@@ -94,7 +96,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: index == 3
-                              ? color
+                              ? palette.solid
                               : context.theme.colors.primary,
                           borderRadius: BorderRadius.circular(
                             RadiusTokens.levelFull,
