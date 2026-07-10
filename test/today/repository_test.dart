@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/core/database/app_database.dart';
+import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/record/data/providers/providers.dart';
@@ -19,24 +22,30 @@ void main() {
   test(
     'Lucent today repository uses earliest pending medicine reminder',
     () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
       final container = ProviderContainer(
         overrides: [
           healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
           dailyRecordRepositoryProvider.overrideWithValue(
             _FakeDailyRecordRepository(),
           ),
-          doseLogRemoteDataSourceProvider.overrideWithValue(
-            _FakeDoseLogDataSource([
-              const DoseLogItem(
-                id: 'dose-1',
-                currentMedicineId: 'med-1',
-                status: DoseLogStatus.taken,
-                scheduledFor: '2026-06-08',
-                createdAt: '2026-06-08T07:00:00.000Z',
-                updatedAt: '2026-06-08T07:00:00.000Z',
-              ),
-            ]),
-          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _FakeDoseLogDataSource([
+                const DoseLogItem(
+                  id: 'dose-1',
+                  currentMedicineId: 'med-1',
+                  status: DoseLogStatus.taken,
+                  scheduledFor: '2026-06-08',
+                  createdAt: '2026-06-08T07:00:00.000Z',
+                  updatedAt: '2026-06-08T07:00:00.000Z',
+                ),
+              ]),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
           medicineReminderRemoteDataSourceProvider.overrideWithValue(
             _FakeReminderDataSource([
               _reminder(
@@ -71,15 +80,21 @@ void main() {
   test(
     'Lucent today repository falls back when reminders are unavailable',
     () async {
+      final db = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(db.close);
       final container = ProviderContainer(
         overrides: [
           healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
           dailyRecordRepositoryProvider.overrideWithValue(
             _FakeDailyRecordRepository(),
           ),
-          doseLogRemoteDataSourceProvider.overrideWithValue(
-            _FakeDoseLogDataSource(),
-          ),
+          appDatabaseProvider.overrideWithValue(db),
+          cachedDoseLogDataSourceProvider.overrideWith((ref) {
+            return CachedDoseLogDataSource(
+              remote: _FakeDoseLogDataSource(),
+              dao: db.medicineDoseLogDao,
+            );
+          }),
           medicineReminderRemoteDataSourceProvider.overrideWithValue(
             _ThrowingReminderDataSource(),
           ),

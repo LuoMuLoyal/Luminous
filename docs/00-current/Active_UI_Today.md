@@ -47,3 +47,10 @@
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
 - AI 摘要增量流通过 `LucentSseClient` + Dio 直接消费 SSE，不经过 Retrofit 客户端。
 - OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
+- **ADR-0009 cache-first**: 建议卡数据已接入本地缓存：
+  - `_fetch()` 网络成功后持久化 `TodaySuggestionBundle` 到 `TodaySuggestionDao`（单行 snapshot 模式）。
+  - 网络失败时尝试缓存兜底（stale-while-error），缓存也空则 rethrow。
+  - `submitFeedback` / `dismiss` / `refresh` 后的 re-fetch 自动更新缓存。
+  - `TodaySuggestionJsonCodec`（`lib/features/today/data/utils/suggestion_json_codec.dart`）手动序列化 `TodaySuggestionBundle`，覆盖 `TodaySuggestionCard` / `TodaySuggestionEvidence` / `TodaySuggestionAction` + 枚举映射。
+  - AI 解释（`suggestionExplanationProvider`）不缓存，始终走网络按需加载。
+- **ADR-0009 cache-first**: Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取服药日志（cache-first），而非直接调用 `doseLogRemoteDataSourceProvider`。

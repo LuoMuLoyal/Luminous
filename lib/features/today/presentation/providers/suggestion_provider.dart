@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote_data_source.dart';
+import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,9 +20,12 @@ TodaySuggestionRemoteDataSource todaySuggestionRemoteDataSource(Ref ref) {
 
 /// Manages the lifecycle of Today suggestion cards: fetch, dismiss, feedback.
 ///
+/// Cache-first: on build, returns cached bundle immediately (if available),
+/// then fetches fresh data from the network in the background.
+/// After [submitFeedback] or [dismiss], the provider re-fetches and updates
+/// the cache.
+///
 /// Returns `null` when the user is not authenticated (signed-out / preview).
-/// After [submitFeedback] or [dismiss], the provider automatically re-fetches
-/// so the UI stays in sync with the backend arbitration engine.
 final todaySuggestionProvider =
     AsyncNotifierProvider<TodaySuggestionNotifier, TodaySuggestionBundle?>(
       TodaySuggestionNotifier.new,
@@ -39,9 +46,23 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
 
   Future<TodaySuggestionBundle?> _fetch() async {
     final ds = ref.read(todaySuggestionRemoteDataSourceProvider);
-    return ds.fetchSuggestions(
-      excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
-    );
+    final dao = ref.read(todaySuggestionDaoProvider);
+
+    try {
+      final bundle = await ds.fetchSuggestions(
+        excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
+      );
+      // Persist to cache
+      await dao.replace(TodaySuggestionJsonCodec.bundleToJson(bundle));
+      return bundle;
+    } catch (e) {
+      // Network failed — try cache as fallback (stale-while-error)
+      final cached = await dao.fetch();
+      if (cached != null) {
+        return TodaySuggestionJsonCodec.bundleFromJson(cached);
+      }
+      rethrow;
+    }
   }
 
   /// Submit user feedback for a suggestion card, then refresh.

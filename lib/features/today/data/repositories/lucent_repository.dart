@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/record/data/providers/providers.dart';
@@ -53,7 +53,7 @@ class LucentTodayRepository implements TodayRepository {
     final completedMedicineIds = <String>{};
     try {
       final doseLogs = await ref
-          .read(doseLogRemoteDataSourceProvider)
+          .read(cachedDoseLogDataSourceProvider)
           .fetchForDate(dateStr);
       for (final log in doseLogs) {
         final medicineId = log.currentMedicineId;

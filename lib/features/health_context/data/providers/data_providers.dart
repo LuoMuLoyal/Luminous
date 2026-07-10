@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
@@ -28,7 +29,12 @@ HealthContextRemoteDataSource healthContextRemoteDataSource(Ref ref) {
 HealthContextRepository healthContextRepository(Ref ref) {
   final dataSource = ref.watch(healthContextRemoteDataSourceProvider);
   final mapper = ref.watch(healthContextMapperProvider);
-  return LucentHealthContextRepository(dataSource: dataSource, mapper: mapper);
+  final dao = ref.watch(healthContextDaoProvider);
+  return LucentHealthContextRepository(
+    dataSource: dataSource,
+    mapper: mapper,
+    dao: dao,
+  );
 }
 
 final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>((

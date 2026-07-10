@@ -128,8 +128,10 @@ void main() {
       await dao.replaceByDate(date, jsonItems: [syncedJson]);
       await dao.insertOptimistic(date, pendingJson);
 
-      // Cleanup rows older than now (all rows)
-      final deleted = await dao.cleanup(DateTime.now());
+      // Cleanup rows older than a future timestamp (all rows)
+      final deleted = await dao.cleanup(
+        DateTime.now().add(const Duration(hours: 1)),
+      );
       expect(deleted, 1); // Only the synced row should be deleted
 
       // The pending row should still exist

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings_controller.dart';
+import 'package:luminous/core/database/cache_cleanup_provider.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/logger/app_logger.dart';
@@ -34,6 +35,8 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         return;
       }
       ref.read(authSessionProvider.notifier).restore();
+      // Trigger cache cleanup based on data retention setting
+      ref.read(cacheCleanupProvider);
     });
   }
 

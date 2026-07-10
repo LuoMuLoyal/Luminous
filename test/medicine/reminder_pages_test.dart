@@ -1,17 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/api/export.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/core/database/app_database.dart';
+import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 
 import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder_pages.dart';
@@ -220,6 +223,7 @@ Widget _testApp({
   required _FakeDoseLogDataSource doseLogDataSource,
   List overrides = const [],
 }) {
+  final db = AppDatabase.forTesting(NativeDatabase.memory());
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
@@ -227,7 +231,13 @@ Widget _testApp({
       medicineReminderRemoteDataSourceProvider.overrideWithValue(
         reminderDataSource,
       ),
-      doseLogRemoteDataSourceProvider.overrideWithValue(doseLogDataSource),
+      appDatabaseProvider.overrideWithValue(db),
+      cachedDoseLogDataSourceProvider.overrideWith((ref) {
+        return CachedDoseLogDataSource(
+          remote: doseLogDataSource,
+          dao: db.medicineDoseLogDao,
+        );
+      }),
       medicineWorkspaceProvider.overrideWith(
         (ref) async => MockMedicineWorkspaceRepository.previewWorkspace,
       ),

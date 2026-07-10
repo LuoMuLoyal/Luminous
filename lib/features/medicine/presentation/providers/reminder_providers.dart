@@ -6,7 +6,7 @@ import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
@@ -120,7 +120,7 @@ final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
       final today = clock.now();
       final date =
           '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-      return ref.watch(doseLogRemoteDataSourceProvider).fetchForDate(date);
+      return ref.watch(cachedDoseLogDataSourceProvider).fetchForDate(date);
     },
   );
 });

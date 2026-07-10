@@ -63,3 +63,10 @@
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
 - OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
 - `POST /user/medicine-dose-logs/mark` 的具名 DTO `MarkDoseLogDto` 直接作为 `@Body()` 参数传递。
+- **ADR-0009 cache-first**: 服药日志读取已迁移为 cache-first 模式：
+  - 新增 `CachedDoseLogDataSource` 包装 `DoseLogRemoteDataSource`，提供 cache-first 的 `fetchForDate` / `create` / `update` / `mark`。
+  - `fetchForDate`: 先读本地 Drift 缓存（有则返回 + 后台刷新节流 60s），缓存空则走网络 + 写缓存。
+  - `create` / `mark`: 远程成功后刷新该日期缓存。
+  - `cachedDoseLogDataSourceProvider`（`@riverpod`）注入 `doseLogRemoteDataSourceProvider` + `medicineDoseLogDaoProvider`。
+  - 消费方已全部迁移：`reminder_providers.dart`（`medicineTodayDoseLogsProvider`）、`medicine/presentation/pages/page.dart`（打卡操作）、`today/data/repositories/lucent_repository.dart`（Dashboard 用药统计）。
+  - `cached_dose_log_data_source.dart` 通过 `export` 重新导出 `dose_log_remote_data_source.dart`，保持 `DoseLogStatus` / `DoseLogItem` 类型可从单一 import 访问。

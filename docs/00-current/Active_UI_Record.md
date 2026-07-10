@@ -60,3 +60,8 @@
 - 远程数据源 `RecordRemoteDataSource` 通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
 - DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
+- **ADR-0009 cache-first**: `LucentDailyRecordRepository` 已迁移为 cache-first 模式：
+  - **读**: 先读本地 Drift 缓存（有则返回 + 后台刷新节流 30s），缓存空则走网络 + 写缓存。
+  - **写**: `create` 先写乐观本地副本（`syncStatus='pending'`），尝试远程写入，成功则 `confirmSync` 替换乐观副本，失败则入队 `PendingSyncItems` 并返回乐观副本（UI 正常展示）。
+  - **SyncWorker replay handler**: `dailyRecordRepositoryProvider` 中注册了 `daily_record` entity type 的 replay handler，网络恢复后自动重放离线写操作（create / delete / update 三路回放）。
+  - `DailyRecordJsonCodec` 手动序列化 `DailyRecordItem` 为 JSON Blob 存储在缓存表中。

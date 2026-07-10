@@ -34,4 +34,8 @@ AI 应该被放在“理解、总结、解释、提醒文案”层，而不是�
 - Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
 - `AssistantClearResultResponseDto` 等具名响应 DTO 在生成客户端中为强类型，`clearLatestConversation()` 直接访问 `response.data.cleared` 而非手动解析 `Map`。
 - OpenAPI 合同修复后，`nullable: true` 的 DTO 字段已全部补充显式 `type`，生成客户端不再出现 `dynamic` 字段。
+- **ADR-0009 缓存策略对 AI 数据的影响**:
+  - **建议卡（Today Suggestions）**: 建议卡数据接入 cache-first 模式。网络成功后持久化到本地 Drift 缓存，网络失败时使用缓存兜底（stale-while-error）。这意味着用户在离线状态下仍能看到上一次获取的建议卡内容，但建议的时效性受限于缓存快照时间。AI 解释（`POST /today/suggestions/:id/explain`）不缓存，始终走网络按需加载。
+  - **AI 摘要（Today Analysis）**: AI 摘要增量流（`/api/v1/user/today-analysis/generate/stream`）不缓存，每次生成都是实时 AI 调用。
+  - **自然语言候选解析**: 候选解析（`POST /daily-records/candidates`）不缓存，每次提交都是实时 AI 调用。
 
