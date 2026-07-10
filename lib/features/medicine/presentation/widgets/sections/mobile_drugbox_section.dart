@@ -86,15 +86,13 @@ class _DrugBoxHeader extends StatelessWidget {
           width: Spacing.level7,
           height: Spacing.level7,
           decoration: BoxDecoration(
-            color: SemanticColor.primary
-                .resolve(colors)
-                .withValues(alpha: 0.12),
+            color: SemanticColor.primary.muted(context),
             borderRadius: BorderRadius.circular(RadiusTokens.level4),
           ),
           child: Center(
             child: Icon(
               FLucideIcons.briefcaseMedical,
-              color: SemanticColor.primary.resolve(colors),
+              color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),
           ),
@@ -375,7 +373,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: color.resolve(colors).withValues(alpha: 0.78),
+                color: color.solid(context).withValues(alpha: 0.78),
                 size: 16,
               ),
               const SizedBox(width: Spacing.level1),
@@ -397,7 +395,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             style: TypographyToken.level5
                 .body(context)
                 .copyWith(
-                  color: color.resolve(colors).withValues(alpha: 0.92),
+                  color: color.solid(context).withValues(alpha: 0.92),
                   fontWeight: FontWeight.w800,
                 ),
             maxLines: 1,
@@ -449,7 +447,7 @@ class _DrugBoxEmpty extends StatelessWidget {
             size: Spacing.level8,
             child: Icon(
               FLucideIcons.pillBottle,
-              color: SemanticColor.primary.resolve(colors),
+              color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),
           ),

@@ -218,7 +218,9 @@ class SignInHintBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.card,
         borderRadius: BorderRadius.circular(RadiusTokens.level4),
-        border: Border.all(color: colors.border.withValues(alpha: 0.88)),
+        border: Border.all(
+          color: SemanticColor.neutral.border(context).withValues(alpha: 0.88),
+        ),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.level4,

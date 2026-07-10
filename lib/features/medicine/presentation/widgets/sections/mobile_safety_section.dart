@@ -98,7 +98,7 @@ class _SafetySummaryBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final accent = summary.color.resolve(colors);
+    final accent = summary.color.solid(context);
     final iconColor = switch (summary.color) {
       SemanticColor.neutral => colors.mutedForeground,
       _ => accent,
@@ -115,10 +115,10 @@ class _SafetySummaryBanner extends StatelessWidget {
 
     return DecoratedBox(
       decoration: ShapeDecoration(
-        color: accent.withValues(alpha: 0.08),
+        color: summary.color.muted(context),
         shape: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(RadiusTokens.level3),
-          side: BorderSide(color: accent.withValues(alpha: 0.18)),
+          side: BorderSide(color: summary.color.border(context)),
         ),
       ),
       child: Padding(
@@ -225,14 +225,10 @@ class _SafetyAlertRow extends StatelessWidget {
           children: [
             FAvatar.raw(
               size: Spacing.level8,
-              style: .delta(
-                backgroundColor: alert.color
-                    .resolve(colors)
-                    .withValues(alpha: 0.1),
-              ),
+              style: .delta(backgroundColor: alert.color.muted(context)),
               child: Icon(
                 alert.icon,
-                color: alert.color.resolve(colors),
+                color: alert.color.solid(context),
                 size: Spacing.level5,
               ),
             ),

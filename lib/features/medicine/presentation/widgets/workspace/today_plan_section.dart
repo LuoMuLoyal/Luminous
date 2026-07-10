@@ -119,13 +119,13 @@ class _MedicationPlanTile extends StatelessWidget {
                   const SizedBox(width: Spacing.level3),
                   FBadge.raw(
                     builder: (context, style) {
-                      final resolvedColor = item.stateColor.resolve(colors);
+                      final resolvedColor = item.stateColor.solid(context);
                       final foreground = 0.12 > 0.5
                           ? colors.primaryForeground
                           : resolvedColor;
                       return DecoratedBox(
                         decoration: ShapeDecoration(
-                          color: resolvedColor.withValues(alpha: 0.12),
+                          color: item.stateColor.muted(context),
                           shape: RoundedSuperellipseBorder(
                             borderRadius: BorderRadius.circular(
                               RadiusTokens.levelFull,

@@ -168,21 +168,26 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final (label, color) = switch (type) {
-      UserNotificationType.aiTodaySummary => ('AI 总结', colors.primary),
-      UserNotificationType.reportGenerated => ('报告', colors.primary),
-      UserNotificationType.passwordChanged => ('安全', colors.destructive),
-      UserNotificationType.aiProactiveSuggestion => ('AI 建议', colors.primary),
-      UserNotificationType.medicineMissedDose => ('用药', colors.destructive),
-      UserNotificationType.medicineReminder => ('提醒', colors.primary),
-      UserNotificationType.systemAnnouncement => ('系统', colors.primary),
-      UserNotificationType.$unknown => ('通知', colors.mutedForeground),
+      UserNotificationType.aiTodaySummary => ('AI 总结', SemanticColor.primary),
+      UserNotificationType.reportGenerated => ('报告', SemanticColor.primary),
+      UserNotificationType.passwordChanged => ('安全', SemanticColor.destructive),
+      UserNotificationType.aiProactiveSuggestion => (
+        'AI 建议',
+        SemanticColor.primary,
+      ),
+      UserNotificationType.medicineMissedDose => (
+        '用药',
+        SemanticColor.destructive,
+      ),
+      UserNotificationType.medicineReminder => ('提醒', SemanticColor.primary),
+      UserNotificationType.systemAnnouncement => ('系统', SemanticColor.primary),
+      UserNotificationType.$unknown => ('通知', SemanticColor.neutral),
     };
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Padding(
@@ -194,7 +199,10 @@ class _TypeChip extends StatelessWidget {
           label,
           style: TypographyToken.level4
               .body(context)
-              .copyWith(color: color, fontWeight: FontWeight.w600),
+              .copyWith(
+                color: color.solid(context),
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ),
     );

@@ -69,19 +69,14 @@ class TintedStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final resolvedColor = color.resolve(colors);
-    final backgroundColor = Color.alphaBlend(
-      resolvedColor.withValues(alpha: 0.14),
-      colors.background,
-    );
+    final resolvedColor = color.solid(context);
 
     return DecoratedBox(
       decoration: ShapeDecoration(
-        color: backgroundColor,
+        color: color.muted(context),
         shape: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(RadiusTokens.level2),
-          side: BorderSide(color: resolvedColor.withValues(alpha: 0.16)),
+          side: BorderSide(color: color.border(context)),
         ),
       ),
       child: Padding(

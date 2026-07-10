@@ -23,7 +23,10 @@ FCardStyleDelta todayCardStyle(
       SemanticColor.primary.border(context),
       colors.card,
     ),
-    TodayCardTone.soft => (colors.border.withValues(alpha: 0.86), colors.card),
+    TodayCardTone.soft => (
+      SemanticColor.neutral.border(context).withValues(alpha: 0.86),
+      colors.card,
+    ),
     TodayCardTone.neutral => (colors.border, colors.card),
   };
 

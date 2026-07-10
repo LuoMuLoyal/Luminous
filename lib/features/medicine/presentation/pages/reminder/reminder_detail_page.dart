@@ -185,13 +185,13 @@ class _ReminderDetailBody extends ConsumerWidget {
                     final pillColor = isActive
                         ? SemanticColor.primary
                         : SemanticColor.neutral;
-                    final resolvedColor = pillColor.resolve(colors);
+                    final resolvedColor = pillColor.solid(context);
                     final foreground = 0.12 > 0.5
                         ? colors.primaryForeground
                         : resolvedColor;
                     return DecoratedBox(
                       decoration: ShapeDecoration(
-                        color: resolvedColor.withValues(alpha: 0.12),
+                        color: pillColor.muted(context),
                         shape: RoundedSuperellipseBorder(
                           borderRadius: BorderRadius.circular(
                             RadiusTokens.level2,

@@ -34,14 +34,14 @@ class MedicineRiskFindingTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: medicineRiskSeveritySoftColor(
                 finding.severity,
-              ).resolve(colors).withValues(alpha: 0.56),
+              ).solid(context).withValues(alpha: 0.56),
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(
               dimension: Spacing.level9,
               child: Icon(
                 medicineRiskFindingIcon(finding),
-                color: color.resolve(colors),
+                color: color.solid(context),
                 size: Spacing.level5,
               ),
             ),
@@ -80,13 +80,13 @@ class MedicineRiskFindingTile extends StatelessWidget {
             children: [
               FBadge.raw(
                 builder: (context, style) {
-                  final resolvedColor = color.resolve(colors);
+                  final resolvedColor = color.solid(context);
                   final foreground = 0.08 > 0.5
                       ? colors.primaryForeground
                       : resolvedColor;
                   return DecoratedBox(
                     decoration: ShapeDecoration(
-                      color: resolvedColor.withValues(alpha: 0.08),
+                      color: color.muted(context),
                       shape: RoundedSuperellipseBorder(
                         borderRadius: BorderRadius.circular(
                           RadiusTokens.levelFull,
@@ -123,13 +123,13 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 const SizedBox(height: Spacing.level1),
                 FBadge.raw(
                   builder: (context, style) {
-                    final resolvedColor = SemanticColor.neutral.resolve(colors);
+                    final resolvedColor = SemanticColor.neutral.solid(context);
                     final foreground = 0.08 > 0.5
                         ? colors.primaryForeground
                         : resolvedColor;
                     return DecoratedBox(
                       decoration: ShapeDecoration(
-                        color: resolvedColor.withValues(alpha: 0.08),
+                        color: SemanticColor.neutral.muted(context),
                         shape: RoundedSuperellipseBorder(
                           borderRadius: BorderRadius.circular(
                             RadiusTokens.levelFull,

@@ -527,7 +527,7 @@ class _RecordDetailImage extends StatelessWidget {
         aspectRatio: 16 / 9,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: colors.secondary.withValues(alpha: 0.2),
+            color: SemanticColor.neutral.subtle(context),
           ),
           child: imageUrl == null
               ? Center(

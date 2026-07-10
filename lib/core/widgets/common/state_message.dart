@@ -44,8 +44,12 @@ class AppStateMessageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final accent = _accentFor(colors);
+    final accent = switch (tone) {
+      AppStateTone.neutral => SemanticColor.primary,
+      AppStateTone.success => SemanticColor.primary,
+      AppStateTone.warning => SemanticColor.destructive,
+      AppStateTone.danger => SemanticColor.destructive,
+    };
 
     Widget message = FCard.raw(
       child: Padding(
@@ -56,12 +60,12 @@ class AppStateMessageView extends StatelessWidget {
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
+                  color: accent.muted(context),
                   shape: BoxShape.circle,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.level4),
-                  child: Icon(icon, color: accent, size: 28),
+                  child: Icon(icon, color: accent.solid(context), size: 28),
                 ),
               ),
               const SizedBox(height: Spacing.level4),
@@ -77,7 +81,7 @@ class AppStateMessageView extends StatelessWidget {
                 description,
                 style: TypographyToken.level4
                     .body(context)
-                    .copyWith(color: colors.mutedForeground),
+                    .copyWith(color: SemanticColor.neutral.solid(context)),
                 textAlign: TextAlign.center,
               ),
               if (actionLabel != null && onAction != null) ...[
@@ -105,15 +109,6 @@ class AppStateMessageView extends StatelessWidget {
     }
 
     return message;
-  }
-
-  Color _accentFor(FColors colors) {
-    return switch (tone) {
-      AppStateTone.neutral => colors.primary,
-      AppStateTone.success => colors.primary,
-      AppStateTone.warning => colors.destructive,
-      AppStateTone.danger => colors.destructive,
-    };
   }
 }
 

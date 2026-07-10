@@ -132,12 +132,10 @@ class _TinyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    final resolvedColor = color.resolve(colors);
+    final resolvedColor = color.solid(context);
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: resolvedColor.withValues(alpha: 0.1),
+        color: color.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Padding(

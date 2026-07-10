@@ -113,25 +113,24 @@ class _TierBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final accent = switch (tone) {
-      AppStateTone.neutral => colors.primary,
-      AppStateTone.success => colors.primary,
-      AppStateTone.warning => colors.destructive,
-      AppStateTone.danger => colors.destructive,
+      AppStateTone.neutral => SemanticColor.primary,
+      AppStateTone.success => SemanticColor.primary,
+      AppStateTone.warning => SemanticColor.destructive,
+      AppStateTone.danger => SemanticColor.destructive,
     };
 
     return Container(
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
-        color: accent.withValues(alpha: 0.08),
+        color: accent.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: accent.withValues(alpha: 0.18)),
+        border: Border.all(color: accent.border(context)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: accent, size: Spacing.level5),
+          Icon(icon, color: accent.solid(context), size: Spacing.level5),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Column(
@@ -141,7 +140,10 @@ class _TierBanner extends StatelessWidget {
                   title,
                   style: TypographyToken.level5
                       .body(context)
-                      .copyWith(fontWeight: FontWeight.w800, color: accent),
+                      .copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: accent.solid(context),
+                      ),
                 ),
                 if (body != null) ...[
                   const SizedBox(height: Spacing.level1),
@@ -149,7 +151,7 @@ class _TierBanner extends StatelessWidget {
                     body!,
                     style: TypographyToken.level3
                         .body(context)
-                        .copyWith(color: colors.mutedForeground),
+                        .copyWith(color: SemanticColor.neutral.solid(context)),
                   ),
                 ],
               ],

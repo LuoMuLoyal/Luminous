@@ -8,11 +8,10 @@ class _MedicationAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final color = item.color.resolve(colors);
+    final color = item.color.solid(context);
     return FAvatar.raw(
       size: size,
-      style: .delta(backgroundColor: color.withValues(alpha: 0.1)),
+      style: .delta(backgroundColor: item.color.muted(context)),
       child: Icon(FLucideIcons.pillBottle, color: color, size: size * 0.52),
     );
   }

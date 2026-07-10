@@ -150,7 +150,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
     final primaryColor = colors.primary;
     final micColor = isListening.value
         ? primaryColor
-        : colors.mutedForeground.withValues(alpha: 0.55);
+        : SemanticColor.neutral.solid(context).withValues(alpha: 0.55);
 
     return Padding(
       padding: EdgeInsets.only(

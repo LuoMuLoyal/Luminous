@@ -117,7 +117,7 @@ class _NewEntryChip extends StatelessWidget {
         decoration: .delta([
           .all(
             .shapeDelta(
-              color: action.softColor.resolve(colors).withValues(alpha: 0.68),
+              color: action.softColor.solid(context).withValues(alpha: 0.68),
               shape: const RoundedSuperellipseBorder(),
             ),
           ),
