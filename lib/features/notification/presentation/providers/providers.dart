@@ -14,7 +14,7 @@ final notificationUnreadCountProvider = FutureProvider<int>((ref) async {
   return authGuarded(
     ref: ref,
     fetch: () async {
-      final api = ref.watch(lucentNotificationsApiProvider);
+      final api = ref.watch(lucentClientProvider).notifications;
       final response = await api.notificationsControllerGetUnreadCountV1();
       if (response.code != 0) {
         throw StateError(response.message);
@@ -32,7 +32,7 @@ final notificationListPageProvider =
       return authGuarded(
         ref: ref,
         fetch: () async {
-          final api = ref.watch(lucentNotificationsApiProvider);
+          final api = ref.watch(lucentClientProvider).notifications;
           final response = await api.notificationsControllerFindAllV1(
             page: 1,
             pageSize: _notificationPageSize,
@@ -65,7 +65,7 @@ final notificationDetailProvider =
       return authGuarded(
         ref: ref,
         fetch: () async {
-          final api = ref.watch(lucentNotificationsApiProvider);
+          final api = ref.watch(lucentClientProvider).notifications;
           final response = await api.notificationsControllerFindOneV1(id: id);
           if (response.code != 0) {
             throw StateError(response.message);
@@ -91,7 +91,7 @@ class NotificationListController
   @override
   Future<NotificationListResponseDto> build() async {
     _currentPage = 1;
-    final api = ref.read(lucentNotificationsApiProvider);
+    final api = ref.read(lucentClientProvider).notifications;
     final response = await api.notificationsControllerFindAllV1(
       page: 1,
       pageSize: _notificationPageSize,
@@ -108,7 +108,7 @@ class NotificationListController
 
     ref.read(notificationListLoadingMoreProvider.notifier).setLoading(true);
     try {
-      final api = ref.read(lucentNotificationsApiProvider);
+      final api = ref.read(lucentClientProvider).notifications;
       final nextPage = _currentPage + 1;
       final response = await api.notificationsControllerFindAllV1(
         page: nextPage,
@@ -134,7 +134,7 @@ class NotificationListController
   }
 
   Future<void> markAllAsRead() async {
-    final api = ref.read(lucentNotificationsApiProvider);
+    final api = ref.read(lucentClientProvider).notifications;
     await api.notificationsControllerMarkAllAsReadV1();
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;
@@ -151,7 +151,7 @@ class NotificationListController
   }
 
   Future<void> deleteNotification(String id) async {
-    final api = ref.read(lucentNotificationsApiProvider);
+    final api = ref.read(lucentClientProvider).notifications;
     await api.notificationsControllerRemoveV1(id: id);
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;

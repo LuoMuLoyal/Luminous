@@ -1,4 +1,5 @@
-import 'package:luminous/core/network/api.dart';
+import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/mappers/mapper.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
@@ -22,9 +23,10 @@ enum AuthVerificationScene {
 }
 
 class AuthRemoteDataSource {
-  const AuthRemoteDataSource(this._client);
+  const AuthRemoteDataSource(this._client, this._sessionStore);
 
-  final LucentDioClient _client;
+  final LucentClient _client;
+  final LucentSessionStore _sessionStore;
 
   /// Persists [session] tokens to the local session store.
   ///
@@ -32,7 +34,7 @@ class AuthRemoteDataSource {
   /// login methods ([login], [loginWithWechatWeb], [loginWithWechatMobile],
   /// [loginWithApple], [loginWithQq]).
   Future<void> _persistSession(AuthSession session) async {
-    await _client.writeSession(
+    await _sessionStore.write(
       LucentSessionTokens(
         accessToken: session.accessToken,
         refreshToken: session.refreshToken,
@@ -47,7 +49,7 @@ class AuthRemoteDataSource {
   }) async {
     final trimmedPassword = password?.trim();
     final trimmedCode = code?.trim();
-    final response = await _client.authApi.localControllerLoginV1(
+    final response = await _client.auth.localControllerLoginV1(
       body: LoginDto(
         email: email.trim(),
         password: trimmedPassword == null || trimmedPassword.isEmpty
@@ -65,7 +67,7 @@ class AuthRemoteDataSource {
     String? callbackUri,
   }) async {
     final trimmedCallbackUri = callbackUri?.trim();
-    final response = await _client.authApi
+    final response = await _client.auth
         .oAuthControllerCreateWechatWebAuthorizeUrlV1(
           body: trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
@@ -78,7 +80,7 @@ class AuthRemoteDataSource {
     String? callbackUri,
   }) async {
     final trimmedIdentityCallbackUri = callbackUri?.trim();
-    final response = await _client.accountApi
+    final response = await _client.account
         .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
           body:
               trimmedIdentityCallbackUri != null &&
@@ -93,7 +95,7 @@ class AuthRemoteDataSource {
     required String code,
     required String state,
   }) async {
-    final response = await _client.authApi.oAuthControllerLoginWithWechatWebV1(
+    final response = await _client.auth.oAuthControllerLoginWithWechatWebV1(
       body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
     final session = AuthMapper.toSessionFromLogin(response);
@@ -102,10 +104,9 @@ class AuthRemoteDataSource {
   }
 
   Future<AuthSession> loginWithWechatMobile({required String code}) async {
-    final response = await _client.authApi
-        .oAuthControllerLoginWithWechatMobileV1(
-          body: OAuthCodeCallbackDto(code: code.trim()),
-        );
+    final response = await _client.auth.oAuthControllerLoginWithWechatMobileV1(
+      body: OAuthCodeCallbackDto(code: code.trim()),
+    );
     final session = AuthMapper.toSessionFromLogin(response);
     await _persistSession(session);
     return session;
@@ -117,7 +118,7 @@ class AuthRemoteDataSource {
     String? givenName,
     String? familyName,
   }) async {
-    final response = await _client.authApi.oAuthControllerLoginWithAppleV1(
+    final response = await _client.auth.oAuthControllerLoginWithAppleV1(
       body: AppleOAuthCallbackDto(
         identityToken: identityToken,
         authorizationCode: authorizationCode,
@@ -134,12 +135,11 @@ class AuthRemoteDataSource {
     String? callbackUri,
   }) async {
     final trimmedQqCallbackUri = callbackUri?.trim();
-    final response = await _client.authApi
-        .oAuthControllerCreateQqAuthorizeUrlV1(
-          body: trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
-              ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
-              : null,
-        );
+    final response = await _client.auth.oAuthControllerCreateQqAuthorizeUrlV1(
+      body: trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
+          ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
+          : null,
+    );
     return response.data;
   }
 
@@ -147,7 +147,7 @@ class AuthRemoteDataSource {
     required String code,
     required String state,
   }) async {
-    final response = await _client.authApi.oAuthControllerLoginWithQqV1(
+    final response = await _client.auth.oAuthControllerLoginWithQqV1(
       body: QqOAuthCallbackDto(code: code.trim(), state: state.trim()),
     );
     final session = AuthMapper.toSessionFromLogin(response);
@@ -159,7 +159,7 @@ class AuthRemoteDataSource {
     required String code,
     required String state,
   }) async {
-    final response = await _client.accountApi
+    final response = await _client.account
         .accountControllerLinkWechatWebIdentityV1(
           body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
         );
@@ -167,7 +167,7 @@ class AuthRemoteDataSource {
   }
 
   Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
-    final response = await _client.accountApi
+    final response = await _client.account
         .accountControllerLinkWechatMobileIdentityV1(
           body: OAuthCodeCallbackDto(code: code.trim()),
         );
@@ -181,7 +181,7 @@ class AuthRemoteDataSource {
     String? nickname,
   }) async {
     final trimmedNickname = nickname?.trim();
-    final response = await _client.authApi.localControllerRegisterV1(
+    final response = await _client.auth.localControllerRegisterV1(
       body: RegisterDto(
         email: email.trim(),
         password: password.trim(),
@@ -195,20 +195,20 @@ class AuthRemoteDataSource {
   }
 
   Future<void> logout() async {
-    final refreshToken = await _client.readRefreshToken();
+    final refreshToken = await _sessionStore.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
-      await _client.clearSession();
+      await _sessionStore.clear();
       return;
     }
 
-    await _client.authApi.sessionControllerLogoutV1(
+    await _client.auth.sessionControllerLogoutV1(
       body: LogoutDto(refreshToken: refreshToken),
     );
-    await _client.clearSession();
+    await _sessionStore.clear();
   }
 
   Future<AuthUser> fetchAccount() async {
-    final response = await _client.accountApi.accountControllerGetAccountV1();
+    final response = await _client.account.accountControllerGetAccountV1();
     return _authUserFromAccount(response.data);
   }
 
@@ -216,13 +216,12 @@ class AuthRemoteDataSource {
     required String email,
     required AuthVerificationScene scene,
   }) async {
-    final response = await _client.authApi
-        .localControllerSendVerificationCodeV1(
-          body: SendVerificationCodeDto(
-            email: email.trim(),
-            scene: scene.toDtoScene(),
-          ),
-        );
+    final response = await _client.auth.localControllerSendVerificationCodeV1(
+      body: SendVerificationCodeDto(
+        email: email.trim(),
+        scene: scene.toDtoScene(),
+      ),
+    );
     return response.data;
   }
 
@@ -231,7 +230,7 @@ class AuthRemoteDataSource {
     required String code,
     required String password,
   }) async {
-    await _client.authApi.localControllerResetPasswordV1(
+    await _client.auth.localControllerResetPasswordV1(
       body: ResetPasswordDto(
         email: email.trim(),
         code: code.trim(),
@@ -241,7 +240,7 @@ class AuthRemoteDataSource {
   }
 
   Future<CooldownMessageDto> forgotPassword({required String email}) async {
-    final response = await _client.authApi.localControllerForgotPasswordV1(
+    final response = await _client.auth.localControllerForgotPasswordV1(
       body: ForgotPasswordDto(email: email.trim()),
     );
     return response.data;
@@ -251,7 +250,7 @@ class AuthRemoteDataSource {
     required String email,
     required String code,
   }) async {
-    await _client.authApi.localControllerVerifyEmailV1(
+    await _client.auth.localControllerVerifyEmailV1(
       body: VerifyEmailDto(email: email.trim(), code: code.trim()),
     );
   }
@@ -260,7 +259,7 @@ class AuthRemoteDataSource {
     String? nickname,
     String? avatar,
   }) async {
-    final response = await _client.accountApi.accountControllerUpdateAccountV1(
+    final response = await _client.account.accountControllerUpdateAccountV1(
       body: UpdateAccountDto(
         nickname: nickname?.trim(),
         avatar: avatar?.trim(),
@@ -273,13 +272,13 @@ class AuthRemoteDataSource {
     required String oldPassword,
     required String newPassword,
   }) async {
-    await _client.accountApi.accountControllerChangePasswordV1(
+    await _client.account.accountControllerChangePasswordV1(
       body: ChangePasswordDto(
         oldPassword: oldPassword.trim(),
         newPassword: newPassword.trim(),
       ),
     );
-    await _client.clearSession();
+    await _sessionStore.clear();
   }
 
   Future<AuthUser> changeEmail({
@@ -287,7 +286,7 @@ class AuthRemoteDataSource {
     required String code,
     required AuthUser currentUser,
   }) async {
-    final response = await _client.accountApi.accountControllerChangeEmailV1(
+    final response = await _client.account.accountControllerChangeEmailV1(
       body: ChangeEmailDto(newEmail: newEmail.trim(), code: code.trim()),
     );
     return currentUser.copyWith(
@@ -297,14 +296,14 @@ class AuthRemoteDataSource {
   }
 
   Future<void> deleteAccount({required String password}) async {
-    await _client.accountApi.accountControllerDeleteAccountV1(
+    await _client.account.accountControllerDeleteAccountV1(
       body: DeleteAccountDto(password: password.trim()),
     );
-    await _client.clearSession();
+    await _sessionStore.clear();
   }
 
   Future<AuthUser> unlinkIdentity({required String identityId}) async {
-    final response = await _client.accountApi.accountControllerUnlinkIdentityV1(
+    final response = await _client.account.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
     return _authUserFromAccount(response.data);

@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart'
-    show CooldownMessageDto, MedicineDoseLogsApi;
+    show CooldownMessageDto, LucentClient, MedicineDoseLogsApi;
 import 'package:luminous/app/app.dart';
 import 'package:luminous/app/router.dart' show router;
-import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
 import 'package:luminous/core/network/session_store.dart';
@@ -351,10 +350,8 @@ class SignedInWithWechatIdentityAuthSessionNotifier
 class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
   E2eAuthRemoteDataSource()
     : super(
-        LucentDioClient(
-          baseUrl: 'http://localhost',
-          sessionStore: _MemorySessionStore(),
-        ),
+        LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        _MemorySessionStore(),
       );
 
   String? loginEmail;

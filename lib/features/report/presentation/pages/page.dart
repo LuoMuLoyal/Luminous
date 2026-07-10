@@ -114,7 +114,7 @@ class ReportPage extends ConsumerWidget {
     AppLocalizations l10n,
   ) async {
     try {
-      final reportsApi = ref.read(lucentReportsApiProvider);
+      final reportsApi = ref.read(lucentClientProvider).reports;
       final response = await reportsApi.reportsControllerShareClinicSummaryV1();
       if (!context.mounted) return;
 

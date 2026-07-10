@@ -86,8 +86,8 @@ class ScanRepository {
 @riverpod
 ScanRepository scanRepository(Ref ref) {
   return ScanRepository(
-    api: ref.watch(lucentMedicinesApiProvider),
+    api: ref.watch(lucentClientProvider).medicines,
     dio: ref.watch(lucentDioClientProvider).dio,
-    filesApi: ref.watch(lucentFilesApiProvider),
+    filesApi: ref.watch(lucentClientProvider).files,
   );
 }

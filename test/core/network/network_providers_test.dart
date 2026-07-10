@@ -36,53 +36,28 @@ void main() {
       );
     });
 
-    test('lucentAuthApiProvider returns AuthApi', () {
+    test('lucentClientProvider returns LucentClient', () {
       final container = ProviderContainer(
         overrides: [lucentDioClientProvider.overrideWithValue(dioClient)],
       );
       addTearDown(container.dispose);
 
-      final api = container.read(lucentAuthApiProvider);
-      expect(api, isA<AuthApi>());
+      final client = container.read(lucentClientProvider);
+      expect(client, isA<LucentClient>());
     });
 
-    test('lucentMedicinesApiProvider returns MedicinesApi', () {
+    test('lucentClientProvider exposes API instances', () {
       final container = ProviderContainer(
         overrides: [lucentDioClientProvider.overrideWithValue(dioClient)],
       );
       addTearDown(container.dispose);
 
-      expect(container.read(lucentMedicinesApiProvider), isA<MedicinesApi>());
-    });
-
-    test('lucentNotificationsApiProvider returns NotificationsApi', () {
-      final container = ProviderContainer(
-        overrides: [lucentDioClientProvider.overrideWithValue(dioClient)],
-      );
-      addTearDown(container.dispose);
-
-      expect(
-        container.read(lucentNotificationsApiProvider),
-        isA<NotificationsApi>(),
-      );
-    });
-
-    test('lucentReportsApiProvider returns ReportsApi', () {
-      final container = ProviderContainer(
-        overrides: [lucentDioClientProvider.overrideWithValue(dioClient)],
-      );
-      addTearDown(container.dispose);
-
-      expect(container.read(lucentReportsApiProvider), isA<ReportsApi>());
-    });
-
-    test('lucentAssistantApiProvider returns AssistantApi', () {
-      final container = ProviderContainer(
-        overrides: [lucentDioClientProvider.overrideWithValue(dioClient)],
-      );
-      addTearDown(container.dispose);
-
-      expect(container.read(lucentAssistantApiProvider), isA<AssistantApi>());
+      final client = container.read(lucentClientProvider);
+      expect(client.auth, isA<AuthApi>());
+      expect(client.medicines, isA<MedicinesApi>());
+      expect(client.notifications, isA<NotificationsApi>());
+      expect(client.reports, isA<ReportsApi>());
+      expect(client.assistant, isA<AssistantApi>());
     });
   });
 }

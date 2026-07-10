@@ -135,7 +135,7 @@ class DoseLogRemoteDataSource {
 
 @riverpod
 DoseLogRemoteDataSource doseLogRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentMedicineDoseLogsApiProvider);
+  final api = ref.watch(lucentClientProvider).medicineDoseLogs;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return DoseLogRemoteDataSource(api: api, dio: dio);
 }

@@ -13,7 +13,7 @@ part 'mock_repository.g.dart';
 
 @riverpod
 ReportRemoteDataSource reportRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentReportsApiProvider);
+  final api = ref.watch(lucentClientProvider).reports;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return ReportRemoteDataSource(api: api, dio: dio);
 }

@@ -19,7 +19,7 @@ HealthContextMapper healthContextMapper(Ref ref) {
 
 @riverpod
 HealthContextRemoteDataSource healthContextRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentUserHealthContextApiProvider);
+  final api = ref.watch(lucentClientProvider).userHealthContext;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return HealthContextRemoteDataSource(api: api, dio: dio);
 }

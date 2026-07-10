@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/network/api.dart';
+import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
@@ -21,10 +23,8 @@ class TestAuthApp extends StatelessWidget {
 class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   FakeAuthRemoteDataSource()
     : super(
-        LucentDioClient(
-          baseUrl: 'http://localhost',
-          sessionStore: _MemorySessionStore(),
-        ),
+        LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        _MemorySessionStore(),
       );
 
   String? loginEmail;

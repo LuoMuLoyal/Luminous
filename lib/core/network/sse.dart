@@ -5,6 +5,8 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api_exception.dart';
 
+// ignore_for_file: prefer_initializing_formals
+
 class LucentSseEvent {
   const LucentSseEvent({required this.event, required this.data});
 
@@ -13,14 +15,63 @@ class LucentSseEvent {
 }
 
 class LucentSseClient {
-  LucentSseClient({required this._dio});
+  LucentSseClient({
+    required Dio dio,
+    this.reconnect = false,
+    this.maxReconnects = 3,
+  }) : _dio = dio;
 
   final Dio _dio;
+
+  /// When `true`, automatically re-requests the stream if it closes due
+  /// to a network error. Has no effect on normal stream completion.
+  final bool reconnect;
+
+  /// Maximum number of reconnection attempts when [reconnect] is enabled.
+  final int maxReconnects;
 
   Stream<LucentSseEvent> postJson(
     String path, {
     required Map<String, Object?> body,
   }) async* {
+    var reconnectAttempts = 0;
+
+    while (true) {
+      try {
+        await for (final event in _postAndDecode(path, body)) {
+          yield event;
+        }
+        return;
+      } on DioException catch (e) {
+        if (!reconnect ||
+            reconnectAttempts >= maxReconnects ||
+            !_isReconnectable(e)) {
+          rethrow;
+        }
+        reconnectAttempts++;
+        // Exponential backoff: 1s, 2s, 4s, ...
+        await Future<void>.delayed(
+          Duration(seconds: 1 << (reconnectAttempts - 1)),
+        );
+        // Loop and retry.
+        continue;
+      }
+    }
+  }
+
+  bool _isReconnectable(DioException error) {
+    return error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.sendTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.connectionError ||
+        (error.response?.statusCode != null &&
+            error.response!.statusCode! >= 500);
+  }
+
+  Stream<LucentSseEvent> _postAndDecode(
+    String path,
+    Map<String, Object?> body,
+  ) async* {
     final headers = <String, Object?>{
       'Accept': 'text/event-stream',
       'Cache-Control': 'no-cache',

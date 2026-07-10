@@ -40,7 +40,7 @@ abstract interface class ReportAiSummaryRepository {
 
 @riverpod
 ReportAiSummaryRemoteDataSource reportAiSummaryRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentReportsApiProvider);
+  final api = ref.watch(lucentClientProvider).reports;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return ReportAiSummaryRemoteDataSource(api: api, dio: dio);
 }

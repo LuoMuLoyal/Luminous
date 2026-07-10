@@ -10,7 +10,9 @@ part 'safety_tips_provider.g.dart';
 
 @riverpod
 SafetyTipsRemoteDataSource safetyTipsRemoteDataSource(Ref ref) {
-  return SafetyTipsRemoteDataSource(api: ref.watch(lucentMedicinesApiProvider));
+  return SafetyTipsRemoteDataSource(
+    api: ref.watch(lucentClientProvider).medicines,
+  );
 }
 
 /// Current visible safety tips, managed as an [AsyncNotifier] so that the

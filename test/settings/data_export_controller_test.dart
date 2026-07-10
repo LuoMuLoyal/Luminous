@@ -13,7 +13,11 @@ void main() {
     final fake = api ?? _FakeDataExportApi();
     fakeApi = fake;
     final c = ProviderContainer(
-      overrides: [lucentDataExportApiProvider.overrideWithValue(fake)],
+      overrides: [
+        lucentClientProvider.overrideWithValue(
+          _FakeLucentClient(dataExportApi: fake),
+        ),
+      ],
     );
     addTearDown(c.dispose);
     container = c;
@@ -499,4 +503,14 @@ class _FakeDataExportApi implements DataExportApi {
     }
     return createResponse;
   }
+}
+
+/// A [LucentClient] subclass that returns a fake [DataExportApi].
+class _FakeLucentClient extends LucentClient {
+  _FakeLucentClient({required this.dataExportApi}) : super(Dio());
+
+  final DataExportApi dataExportApi;
+
+  @override
+  DataExportApi get dataExport => dataExportApi;
 }

@@ -145,7 +145,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
 
     ref.read(dataExportRequestInFlightProvider.notifier).state =
         DataExportRequestInFlightState(inFlight: true, input: input);
-    final api = ref.read(lucentDataExportApiProvider);
+    final api = ref.read(lucentClientProvider).dataExport;
     try {
       final response = await api.dataExportControllerCreateRequestV1(
         body: input.toDto(),
@@ -166,7 +166,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   }
 
   Future<DataExportRequestDataDto?> _fetchLatest() async {
-    final api = ref.read(lucentDataExportApiProvider);
+    final api = ref.read(lucentClientProvider).dataExport;
     final response = await api.dataExportControllerGetLatestRequestV1();
     return response.data;
   }

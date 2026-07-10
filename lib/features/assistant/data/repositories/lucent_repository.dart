@@ -45,7 +45,7 @@ abstract interface class AssistantRepository {
 
 @riverpod
 AssistantRemoteDataSource assistantRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentAssistantApiProvider);
+  final api = ref.watch(lucentClientProvider).assistant;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return AssistantRemoteDataSource(api: api, dio: dio);
 }

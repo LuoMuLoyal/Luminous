@@ -57,6 +57,10 @@
 ## 认证与会话
 
 - 认证/会话状态分为：恢复中、确认已登出、已登录。
+- 网络层拦截器链：`AuthInterceptor`（token 注入 + 401 刷新） → `RetryInterceptor`（5xx/超时重试） → `ErrorInterceptor`（错误映射）。
+- `LucentDioClient` 仅负责 Dio 实例配置 + interceptor 注册，不包含业务逻辑。
+- `lucentClientProvider`（keepAlive）是全部 feature 代码的统一 API 访问入口；旧 `lucent*ApiProvider` 已标记 `@Deprecated`。
+- `LucentSseClient` 支持 `reconnect` 参数自动重连。
 
 ## 测试与验证
 

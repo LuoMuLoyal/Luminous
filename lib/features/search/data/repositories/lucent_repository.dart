@@ -87,6 +87,6 @@ MedicineSearchRepository medicineSearchRepository(Ref ref) {
 
 @riverpod
 MedicineSearchRemoteDataSource medicineSearchRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentMedicinesApiProvider);
+  final api = ref.watch(lucentClientProvider).medicines;
   return MedicineSearchRemoteDataSource(api: api);
 }

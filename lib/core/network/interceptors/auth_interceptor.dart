@@ -1,0 +1,219 @@
+// ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
+
+import 'package:dio/dio.dart';
+import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/core/network/result_code.dart';
+import 'package:luminous/core/network/session_store.dart';
+
+/// Auth interceptor: token injection + 401 refresh + retry + session clear.
+///
+/// Extracted from the original `LucentDioClient._buildInterceptors()` +
+/// `_shouldRefresh()` + `_refreshTokens()` + `_doRefresh()` + `_retry()`.
+class AuthInterceptor extends Interceptor {
+  AuthInterceptor({
+    required Dio dio,
+    required LucentSessionStore sessionStore,
+    required Dio refreshDio,
+    String Function()? localeResolver,
+    Future<void> Function()? onSessionExpired,
+  }) : _dio = dio,
+       _sessionStore = sessionStore,
+       _refreshDio = refreshDio,
+       _localeResolver = localeResolver,
+       _onSessionExpired = onSessionExpired;
+
+  /// Main Dio instance — used for retrying requests after a successful
+  /// token refresh so the retried request goes through the full
+  /// interceptor chain.
+  final Dio _dio;
+
+  final LucentSessionStore _sessionStore;
+
+  /// Separate Dio instance for the refresh endpoint call, avoiding
+  /// interceptor recursion.
+  final Dio _refreshDio;
+
+  final String Function()? _localeResolver;
+  Future<void> Function()? _onSessionExpired;
+
+  /// Callback invoked when the session can no longer be refreshed (or any 401
+  /// response is received without a refreshable token). Set by the auth layer
+  /// so the UI can transition to a signed-out state.
+  set onSessionExpired(Future<void> Function()? callback) {
+    _onSessionExpired = callback;
+  }
+
+  Future<LucentSessionTokens?>? _refreshFuture;
+
+  @override
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    options.headers.putIfAbsent('Accept', () => 'application/json');
+    final acceptLanguage = _localeResolver?.call().trim() ?? '';
+    if (acceptLanguage.isNotEmpty) {
+      options.headers['Accept-Language'] = acceptLanguage;
+    }
+
+    final skipAuthorization = options.extra['skipAuthorization'] == true;
+    final alreadyHasAuthorization = options.headers.containsKey(
+      'Authorization',
+    );
+
+    if (!skipAuthorization && !alreadyHasAuthorization) {
+      final token = await _sessionStore.readAccessToken();
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
+    }
+
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    final shouldRefresh = await _shouldRefresh(err);
+    if (shouldRefresh) {
+      final refreshedTokens = await _refreshTokens();
+      if (refreshedTokens != null && refreshedTokens.hasAccessToken) {
+        try {
+          final retryResponse = await _retry(
+            err.requestOptions,
+            refreshedTokens,
+          );
+          handler.resolve(retryResponse);
+          return;
+        } on DioException catch (e) {
+          // Retry failed — fall through to session-clear / error mapping.
+          err = e;
+        }
+      }
+    }
+
+    if (shouldRefresh || _isAuthFailure(err)) {
+      await _sessionStore.clear();
+      final onSessionExpired = _onSessionExpired;
+      if (onSessionExpired != null) {
+        await onSessionExpired();
+      }
+    }
+
+    handler.next(err);
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────────────
+
+  bool _isAuthFailure(DioException error) {
+    return error.response?.statusCode == 401;
+  }
+
+  Future<bool> _shouldRefresh(DioException error) async {
+    final requestOptions = error.requestOptions;
+    if (requestOptions.extra['skipAuthRefresh'] == true) {
+      return false;
+    }
+
+    if (requestOptions.extra['hasRetriedAfterRefresh'] == true) {
+      return false;
+    }
+
+    final statusCode = error.response?.statusCode;
+    if (statusCode != 401) {
+      return false;
+    }
+
+    final data = error.response?.data;
+    final json = coerceToStringMap(data);
+    final envelope = json == null
+        ? null
+        : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
+    final code = envelope?.code;
+
+    if (code == LucentResultCode.tokenExpired) {
+      final refreshToken = await _sessionStore.readRefreshToken();
+      return refreshToken != null && refreshToken.isNotEmpty;
+    }
+
+    return false;
+  }
+
+  Future<LucentSessionTokens?> _refreshTokens() {
+    final pending = _refreshFuture;
+    if (pending != null) {
+      return pending;
+    }
+
+    final future = _doRefresh();
+    _refreshFuture = future;
+    future.whenComplete(() => _refreshFuture = null);
+    return future;
+  }
+
+  Future<LucentSessionTokens?> _doRefresh() async {
+    final refreshToken = await _sessionStore.readRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      return null;
+    }
+
+    try {
+      final response = await _refreshDio.post<Object>(
+        '/api/v1/auth/refresh',
+        data: <String, String>{'refreshToken': refreshToken},
+        options: Options(
+          headers: _localeResolver == null
+              ? null
+              : <String, String>{'Accept-Language': _localeResolver.call()},
+          extra: const <String, Object?>{
+            'skipAuthorization': true,
+            'skipAuthRefresh': true,
+          },
+        ),
+      );
+
+      final json = coerceToStringMap(response.data);
+      if (json == null) {
+        return null;
+      }
+
+      final envelope = LucentEnvelope<LucentSessionTokens>.fromJson(
+        json,
+        dataDecoder: (raw) {
+          final dataMap = coerceToStringMap(raw) ?? const <String, dynamic>{};
+          final accessToken = dataMap['accessToken']?.toString().trim() ?? '';
+          final nextRefreshToken =
+              dataMap['refreshToken']?.toString().trim() ?? '';
+          return LucentSessionTokens(
+            accessToken: accessToken,
+            refreshToken: nextRefreshToken,
+          );
+        },
+      );
+
+      if (!envelope.isSuccess || envelope.data == null) {
+        return null;
+      }
+
+      await _sessionStore.write(envelope.data!);
+      return envelope.data;
+    } on DioException {
+      return null;
+    }
+  }
+
+  Future<Response<dynamic>> _retry(
+    RequestOptions requestOptions,
+    LucentSessionTokens tokens,
+  ) {
+    final nextHeaders = Map<String, dynamic>.from(requestOptions.headers);
+    nextHeaders['Authorization'] = 'Bearer ${tokens.accessToken}';
+
+    final nextExtra = Map<String, dynamic>.from(requestOptions.extra);
+    nextExtra['hasRetriedAfterRefresh'] = true;
+
+    return _dio.fetch<dynamic>(
+      requestOptions.copyWith(headers: nextHeaders, extra: nextExtra),
+    );
+  }
+}

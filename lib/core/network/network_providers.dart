@@ -45,7 +45,7 @@ LucentSessionStore lucentSessionStore(Ref ref) {
 /// Provides the [LucentDioClient] singleton — the root HTTP client for all
 /// Lucent API communication.
 ///
-/// Wires up auth interceptors, token refresh, and locale resolution.
+/// Wires up auth interceptors, token refresh, retry, and locale resolution.
 /// Disposes the underlying Dio instances when the provider is destroyed.
 @Riverpod(keepAlive: true)
 LucentDioClient lucentDioClient(Ref ref) {
@@ -61,93 +61,118 @@ LucentDioClient lucentDioClient(Ref ref) {
   return client;
 }
 
+/// Provides the generated [LucentClient] — the single entry point for
+/// all API access in feature code.
+///
+/// Features should use `ref.watch(lucentClientProvider).medicines` etc.
+/// instead of the deprecated `lucent*ApiProvider` variants.
+@Riverpod(keepAlive: true)
+LucentClient lucentClient(Ref ref) {
+  return ref.watch(lucentDioClientProvider).client;
+}
+
 // ---------------------------------------------------------------------------
-// Generated API accessors — each delegates to the LucentDioClient singleton.
-// These are autoDispose: they are cheap one-line getters and the underlying
-// LucentClient is owned by the keepAlive [lucentDioClientProvider].
+// Deprecated per-API providers — use [lucentClientProvider] instead.
 // ---------------------------------------------------------------------------
 
+@Deprecated('Use ref.watch(lucentClientProvider).auth instead')
 @riverpod
 AuthApi lucentAuthApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).authApi;
+  return ref.watch(lucentClientProvider).auth;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).health instead')
 @riverpod
 HealthApi lucentHealthApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).healthApi;
+  return ref.watch(lucentClientProvider).health;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).medicines instead')
 @riverpod
 MedicinesApi lucentMedicinesApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).medicinesApi;
+  return ref.watch(lucentClientProvider).medicines;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).environment instead')
 @riverpod
 EnvironmentApi lucentEnvironmentApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).environmentApi;
+  return ref.watch(lucentClientProvider).environment;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).userHealthContext instead')
 @riverpod
 UserHealthContextApi lucentUserHealthContextApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).userHealthContextApi;
+  return ref.watch(lucentClientProvider).userHealthContext;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).dailyRecords instead')
 @riverpod
 DailyRecordsApi lucentDailyRecordsApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).dailyRecordsApi;
+  return ref.watch(lucentClientProvider).dailyRecords;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).medicineDoseLogs instead')
 @riverpod
 MedicineDoseLogsApi lucentMedicineDoseLogsApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).medicineDoseLogsApi;
+  return ref.watch(lucentClientProvider).medicineDoseLogs;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).medicineReminders instead')
 @riverpod
 MedicineRemindersApi lucentMedicineRemindersApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).medicineRemindersApi;
+  return ref.watch(lucentClientProvider).medicineReminders;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).supportResources instead')
 @riverpod
 SupportResourcesApi lucentSupportResourcesApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).supportResourcesApi;
+  return ref.watch(lucentClientProvider).supportResources;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).userSettings instead')
 @riverpod
 UserSettingsApi lucentUserSettingsApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).userSettingsApi;
+  return ref.watch(lucentClientProvider).userSettings;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).dataExport instead')
 @riverpod
 DataExportApi lucentDataExportApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).dataExportApi;
+  return ref.watch(lucentClientProvider).dataExport;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).reports instead')
 @riverpod
 ReportsApi lucentReportsApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).reportsApi;
+  return ref.watch(lucentClientProvider).reports;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).todayAnalysis instead')
 @riverpod
 TodayAnalysisApi lucentTodayAnalysisApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).todayAnalysisApi;
+  return ref.watch(lucentClientProvider).todayAnalysis;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).todaySuggestion instead')
 @riverpod
 TodaySuggestionApi lucentTodaySuggestionApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).todaySuggestionApi;
+  return ref.watch(lucentClientProvider).todaySuggestion;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).assistant instead')
 @riverpod
 AssistantApi lucentAssistantApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).assistantApi;
+  return ref.watch(lucentClientProvider).assistant;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).notifications instead')
 @riverpod
 NotificationsApi lucentNotificationsApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).notificationsApi;
+  return ref.watch(lucentClientProvider).notifications;
 }
 
+@Deprecated('Use ref.watch(lucentClientProvider).files instead')
 @riverpod
 FilesApi lucentFilesApi(Ref ref) {
-  return ref.watch(lucentDioClientProvider).filesApi;
+  return ref.watch(lucentClientProvider).files;
 }

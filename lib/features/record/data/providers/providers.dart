@@ -11,7 +11,7 @@ part 'providers.g.dart';
 
 @riverpod
 DailyRecordRemoteDataSource dailyRecordRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentDailyRecordsApiProvider);
+  final api = ref.watch(lucentClientProvider).dailyRecords;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return DailyRecordRemoteDataSource(api: api, dio: dio);
 }

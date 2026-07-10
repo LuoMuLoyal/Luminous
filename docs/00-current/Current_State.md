@@ -37,6 +37,7 @@ Last updated: 2026-07-10
 - ADR-0006 实施第一批：`riverpod_generator` 引入完成。`riverpod_annotation 4.0.3` + `riverpod_generator 4.0.4` 加入依赖；`network_providers.dart` 全部 20 个 provider 迁移为 `@riverpod` / `@Riverpod(keepAlive: true)` 注解形式；新增 `authGuarded` helper 函数（`lib/core/providers/auth_guarded.dart`）封装 auth session 检查模式；947 tests passed。
 - ADR-0006 实施第二批：Feature 数据 provider 全部接入 `authGuarded`。14 处重复 auth guard 模式消除，覆盖 mine/record/today/medicine/health_context/notification/report 7 个 feature。`authGuarded` 修正为非 `async` 以保持同步 error 传播。`todaySuggestionProvider` 在 session restoring 期间行为改进（pending 代替 null）。947 tests passed。
 - ADR-0006 实施第三批：Feature datasource/repository provider 全部迁移为 `@riverpod` 注解。覆盖 auth/settings/scan/today/record/medicine/health_context/report/assistant/search/mine 共 11 个 feature 模块 + core 层（logger/notifications/router/ai），约 40 个手写 `Provider<T>` 声明改为 `@riverpod` 函数注解。947 tests passed。
+- ADR-0007 实施完成：网络层职责分离。`LucentDioClient` God Class（~367 行）拆分为 `AuthInterceptor`（token 注入 + 401 刷新 + session 清理）、`ErrorInterceptor`（DioException → LucentApiException 映射）、`RetryInterceptor`（5xx/超时指数退避重试）三个独立拦截器；`LucentDioClient` 精简至 ~100 行纯配置 + interceptor 注册；新增 `lucentClientProvider` 统一 API 访问入口，17 个旧 `lucent*ApiProvider` 标记 `@Deprecated`；`LucentSseClient` 新增 `reconnect` 自动重连；19 个 feature 文件迁移到新 provider；`AuthRemoteDataSource` 从依赖 `LucentDioClient` 改为 `LucentClient` + `LucentSessionStore`；940 tests passed。
 
 ## 相关文档
 

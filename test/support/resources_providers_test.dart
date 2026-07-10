@@ -65,7 +65,9 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          lucentSupportResourcesApiProvider.overrideWithValue(fakeApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(supportResourcesApi: fakeApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -84,7 +86,9 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          lucentSupportResourcesApiProvider.overrideWithValue(fakeApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(supportResourcesApi: fakeApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -111,7 +115,9 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          lucentSupportResourcesApiProvider.overrideWithValue(capturingApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(supportResourcesApi: capturingApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -140,7 +146,9 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          lucentSupportResourcesApiProvider.overrideWithValue(fakeApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(supportResourcesApi: fakeApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -158,7 +166,9 @@ void main() {
 
       final container = ProviderContainer(
         overrides: [
-          lucentSupportResourcesApiProvider.overrideWithValue(fakeApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(supportResourcesApi: fakeApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -172,6 +182,16 @@ void main() {
       expect(state.error, isA<DioException>());
     });
   });
+}
+
+/// A [LucentClient] subclass that returns a fake [SupportResourcesApi].
+class _FakeLucentClient extends LucentClient {
+  _FakeLucentClient({required this.supportResourcesApi}) : super(Dio());
+
+  final SupportResourcesApi supportResourcesApi;
+
+  @override
+  SupportResourcesApi get supportResources => supportResourcesApi;
 }
 
 /// A fake that captures method calls without constructing canned response DTOs.

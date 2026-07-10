@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_listener.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
@@ -8,7 +8,10 @@ part 'data_providers.g.dart';
 
 @riverpod
 AuthRemoteDataSource authRemoteDataSource(Ref ref) {
-  return AuthRemoteDataSource(ref.watch(lucentDioClientProvider));
+  return AuthRemoteDataSource(
+    ref.watch(lucentClientProvider),
+    ref.watch(lucentSessionStoreProvider),
+  );
 }
 
 @riverpod

@@ -29,7 +29,7 @@ abstract interface class TodayAiRepository {
 
 @riverpod
 TodayAiRemoteDataSource todayAiRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentTodayAnalysisApiProvider);
+  final api = ref.watch(lucentClientProvider).todayAnalysis;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return TodayAiRemoteDataSource(api: api, dio: dio);
 }

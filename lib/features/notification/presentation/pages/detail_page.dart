@@ -120,7 +120,7 @@ class _DetailBody extends ConsumerWidget {
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
           onMarkUnread: () async {
-            final api = ref.read(lucentNotificationsApiProvider);
+            final api = ref.read(lucentClientProvider).notifications;
             await api.notificationsControllerMarkAsUnreadV1(id: detail.id);
             ref.invalidate(notificationUnreadCountProvider);
             ref.invalidate(notificationListControllerProvider);

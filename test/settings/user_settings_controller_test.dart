@@ -13,7 +13,11 @@ void main() {
     final fake = api ?? _FakeUserSettingsApi();
     fakeApi = fake;
     final c = ProviderContainer(
-      overrides: [lucentUserSettingsApiProvider.overrideWithValue(fake)],
+      overrides: [
+        lucentClientProvider.overrideWithValue(
+          _FakeLucentClient(userSettingsApi: fake),
+        ),
+      ],
     );
     addTearDown(c.dispose);
     return c;
@@ -556,4 +560,14 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   Future<UserSettingsResponseDto> userSettingsControllerDisableSecurityPinV1({
     required DisableSecurityPinDto body,
   }) async => _defaultResponse();
+}
+
+/// A [LucentClient] subclass that returns a fake [UserSettingsApi].
+class _FakeLucentClient extends LucentClient {
+  _FakeLucentClient({required this.userSettingsApi}) : super(Dio());
+
+  final UserSettingsApi userSettingsApi;
+
+  @override
+  UserSettingsApi get userSettings => userSettingsApi;
 }

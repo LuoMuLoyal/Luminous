@@ -10,7 +10,7 @@ import 'package:luminous/core/network/network_providers.dart';
 class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   @override
   Future<UserSettingsDataDto> build() async {
-    final api = ref.read(lucentUserSettingsApiProvider);
+    final api = ref.read(lucentClientProvider).userSettings;
     final response = await api.userSettingsControllerGetSettingsV1();
     return response.data;
   }
@@ -94,7 +94,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   // -- Security PIN --
 
   Future<void> enableSecurityPin(String pin) async {
-    final api = ref.read(lucentUserSettingsApiProvider);
+    final api = ref.read(lucentClientProvider).userSettings;
     final response = await api.userSettingsControllerEnableSecurityPinV1(
       body: EnableSecurityPinDto(pin: pin),
     );
@@ -102,7 +102,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   }
 
   Future<void> changeSecurityPin(String oldPin, String newPin) async {
-    final api = ref.read(lucentUserSettingsApiProvider);
+    final api = ref.read(lucentClientProvider).userSettings;
     final response = await api.userSettingsControllerChangeSecurityPinV1(
       body: ChangeSecurityPinDto(oldPin: oldPin, newPin: newPin),
     );
@@ -110,7 +110,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   }
 
   Future<void> disableSecurityPin(String pin) async {
-    final api = ref.read(lucentUserSettingsApiProvider);
+    final api = ref.read(lucentClientProvider).userSettings;
     final response = await api.userSettingsControllerDisableSecurityPinV1(
       body: DisableSecurityPinDto(pin: pin),
     );
@@ -129,7 +129,7 @@ class UserSettingsController extends AsyncNotifier<UserSettingsDataDto> {
   }
 
   Future<void> _patch(UpdateUserSettingsDto dto) async {
-    final api = ref.read(lucentUserSettingsApiProvider);
+    final api = ref.read(lucentClientProvider).userSettings;
     final response = await api.userSettingsControllerUpdateSettingsV1(
       body: dto,
     );

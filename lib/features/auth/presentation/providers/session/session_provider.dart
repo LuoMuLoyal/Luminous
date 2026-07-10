@@ -57,7 +57,9 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   Future<void> restore() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final token = await ref.read(lucentDioClientProvider).readAccessToken();
+      final token = await ref
+          .read(lucentSessionStoreProvider)
+          .readAccessToken();
       if (token == null || token.isEmpty) {
         state = const AuthSessionState();
         return;
@@ -74,7 +76,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
           .read(talkerProvider)
           .error('AuthSessionNotifier.restore: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
-      await ref.read(lucentDioClientProvider).clearSession();
+      await ref.read(lucentSessionStoreProvider).clear();
       state = AuthSessionState(
         isAuthenticated: false,
         errorMessage: apiError.message,

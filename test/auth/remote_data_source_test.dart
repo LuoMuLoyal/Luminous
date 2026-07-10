@@ -3,7 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/network/api.dart';
+import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 
 /// A mock adapter that returns canned JSON responses.
@@ -84,18 +85,16 @@ void main() {
   group('AuthRemoteDataSource', () {
     late _MockAdapter adapter;
     late _MemStore store;
-    late LucentDioClient client;
+    late LucentClient client;
     late AuthRemoteDataSource dataSource;
 
     setUp(() {
       adapter = _MockAdapter();
       store = _MemStore();
-      client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        dio: Dio()..httpClientAdapter = adapter,
-      );
-      dataSource = AuthRemoteDataSource(client);
+      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+        ..httpClientAdapter = adapter;
+      client = LucentClient(dio, baseUrl: 'http://localhost:3000');
+      dataSource = AuthRemoteDataSource(client, store);
     });
 
     group('login', () {

@@ -13,7 +13,7 @@ import 'package:luminous/core/network/network_providers.dart';
 /// Backed by `GET /api/v1/public/support-resources?scope={scope}`.
 final supportResourcesProvider = FutureProvider.autoDispose
     .family<List<SupportResourceDto>, String>((ref, scope) async {
-      final api = ref.read(lucentSupportResourcesApiProvider);
+      final api = ref.read(lucentClientProvider).supportResources;
       final response = await api.supportResourcesControllerGetResourcesV1(
         scope: Scope.fromJson(scope),
       );
@@ -24,7 +24,7 @@ final supportResourcesProvider = FutureProvider.autoDispose
 final appInfoProvider = FutureProvider.autoDispose<AppInfoDataDto?>((
   ref,
 ) async {
-  final api = ref.read(lucentSupportResourcesApiProvider);
+  final api = ref.read(lucentClientProvider).supportResources;
   final response = await api.supportResourcesControllerGetAppInfoV1();
   return response.data;
 });

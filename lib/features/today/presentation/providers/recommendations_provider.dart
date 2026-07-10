@@ -12,7 +12,7 @@ TodayRecommendationsRemoteDataSource todayRecommendationsRemoteDataSource(
   Ref ref,
 ) {
   return TodayRecommendationsRemoteDataSource(
-    api: ref.watch(lucentTodayAnalysisApiProvider),
+    api: ref.watch(lucentClientProvider).todayAnalysis,
   );
 }
 

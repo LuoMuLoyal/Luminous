@@ -136,6 +136,16 @@ class FakeNotificationsApi implements NotificationsApi {
 
 // ── Error-returning API for throws test ──────────────────────────────────────
 
+/// A [LucentClient] subclass that returns a fake [NotificationsApi].
+class _FakeLucentClient extends LucentClient {
+  _FakeLucentClient({required this.notificationsApi}) : super(Dio());
+
+  final NotificationsApi notificationsApi;
+
+  @override
+  NotificationsApi get notifications => notificationsApi;
+}
+
 class _ErrorUnreadCountApi extends FakeNotificationsApi {
   _ErrorUnreadCountApi() : super(unreadCount: 0);
 
@@ -181,7 +191,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -197,7 +209,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(errorApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: errorApi),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -220,7 +234,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -247,7 +263,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -268,7 +286,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -285,7 +305,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -302,7 +324,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -321,7 +345,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -342,7 +368,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => signedInSession),
-          lucentNotificationsApiProvider.overrideWithValue(api),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(notificationsApi: api),
+          ),
         ],
       );
       addTearDown(container.dispose);

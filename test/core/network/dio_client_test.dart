@@ -209,73 +209,6 @@ void main() {
     });
   });
 
-  group('LucentDioClient session operations', () {
-    test('writeSession delegates to session store', () async {
-      final store = _MemorySessionStore();
-      final adapter = _CaptureAdapter(responseData: _successBody);
-
-      final client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        httpClientAdapter: adapter,
-      );
-
-      await client.writeSession(
-        const LucentSessionTokens(
-          accessToken: 'new-token',
-          refreshToken: 'new-refresh',
-        ),
-      );
-
-      final tokens = await store.read();
-      expect(tokens?.accessToken, equals('new-token'));
-      expect(tokens?.refreshToken, equals('new-refresh'));
-    });
-
-    test('readAccessToken returns from store', () async {
-      final store = _MemorySessionStore();
-      await store.write(
-        const LucentSessionTokens(
-          accessToken: 'existing-token',
-          refreshToken: 'existing-refresh',
-        ),
-      );
-
-      final adapter = _CaptureAdapter(responseData: _successBody);
-
-      final client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        httpClientAdapter: adapter,
-      );
-
-      final token = await client.readAccessToken();
-      expect(token, equals('existing-token'));
-    });
-
-    test('clearSession delegates to store', () async {
-      final store = _MemorySessionStore();
-      await store.write(
-        const LucentSessionTokens(
-          accessToken: 'temp',
-          refreshToken: 'temp-ref',
-        ),
-      );
-
-      final adapter = _CaptureAdapter(responseData: _successBody);
-
-      final client = LucentDioClient(
-        baseUrl: 'http://localhost:3000',
-        sessionStore: store,
-        httpClientAdapter: adapter,
-      );
-
-      await client.clearSession();
-      final tokens = await store.read();
-      expect(tokens, isNull);
-    });
-  });
-
   group('LucentDioClient token refresh (onError)', () {
     // ── Successful refresh + retry ──
 
@@ -388,7 +321,10 @@ void main() {
       );
 
       try {
-        await client.dio.get('/api/v1/test');
+        await client.dio.get(
+          '/api/v1/test',
+          options: Options(extra: <String, Object?>{'retryEnabled': false}),
+        );
       } on DioException {
         // Expected
       }
@@ -631,10 +567,13 @@ void main() {
     });
   });
 
-  group('LucentDioClient API getters', () {
-    test('provides access to all API instances', () async {
+  group('LucentDioClient error mapping (ErrorInterceptor)', () {
+    Future<void> expectFallbackMessage(
+      DioExceptionType type,
+      String expectedMessage,
+    ) async {
       final store = _MemorySessionStore();
-      final adapter = _CaptureAdapter(responseData: _successBody);
+      final adapter = _FailingAdapter(exceptionType: type);
 
       final client = LucentDioClient(
         baseUrl: 'http://localhost:3000',
@@ -642,26 +581,80 @@ void main() {
         httpClientAdapter: adapter,
       );
 
-      expect(client.healthApi, isNotNull);
-      expect(client.authApi, isNotNull);
-      expect(client.medicinesApi, isNotNull);
-      expect(client.environmentApi, isNotNull);
-      expect(client.notificationsApi, isNotNull);
-      expect(client.userSettingsApi, isNotNull);
-      expect(client.reportsApi, isNotNull);
-      expect(client.assistantApi, isNotNull);
-    });
-  });
+      try {
+        await client.dio.get(
+          '/api/v1/test',
+          options: Options(extra: <String, Object?>{'retryEnabled': false}),
+        );
+        fail('Expected DioException');
+      } catch (error) {
+        expect(error, isA<DioException>());
+        final mapped = (error as DioException).error;
+        expect(mapped, isA<LucentApiException>());
+        expect((mapped as LucentApiException).message, expectedMessage);
+      }
+    }
 
-  group(
-    'LucentDioClient error mapping (_mapToApiException / _fallbackMessage)',
-    () {
-      Future<void> expectFallbackMessage(
-        DioExceptionType type,
-        String expectedMessage,
-      ) async {
+    test('maps connectionTimeout to Chinese message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.connectionTimeout,
+        '连接超时，请稍后再试。',
+      );
+    });
+
+    test('maps sendTimeout to Chinese message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.sendTimeout,
+        '请求发送超时，请稍后再试。',
+      );
+    });
+
+    test('maps receiveTimeout to Chinese message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.receiveTimeout,
+        '响应接收超时，请稍后再试。',
+      );
+    });
+
+    test('maps badCertificate to Chinese message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.badCertificate,
+        '服务器证书校验失败。',
+      );
+    });
+
+    test('maps connectionError to Chinese message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.connectionError,
+        '网络请求失败，请检查当前连接。',
+      );
+    });
+
+    test('maps cancel to Chinese message', () async {
+      await expectFallbackMessage(DioExceptionType.cancel, '请求已取消。');
+    });
+
+    test('maps badResponse to Chinese message', () async {
+      await expectFallbackMessage(DioExceptionType.badResponse, '请求失败，请稍后再试。');
+    });
+
+    test('maps unknown to Chinese message', () async {
+      await expectFallbackMessage(DioExceptionType.unknown, '发生了未预期的网络错误。');
+    });
+
+    test(
+      'uses envelope message when response body has valid Lucent envelope',
+      () async {
         final store = _MemorySessionStore();
-        final adapter = _FailingAdapter(exceptionType: type);
+        final responseData = <String, dynamic>{
+          'code': 500001,
+          'message': 'custom-server-error',
+          'data': null,
+        };
+        final adapter = _FailingAdapter(
+          exceptionType: DioExceptionType.badResponse,
+          responseData: responseData,
+        );
 
         final client = LucentDioClient(
           baseUrl: 'http://localhost:3000',
@@ -670,122 +663,46 @@ void main() {
         );
 
         try {
-          await client.dio.get('/api/v1/test');
+          await client.dio.get(
+            '/api/v1/test',
+            options: Options(extra: <String, Object?>{'retryEnabled': false}),
+          );
           fail('Expected DioException');
         } catch (error) {
           expect(error, isA<DioException>());
           final mapped = (error as DioException).error;
           expect(mapped, isA<LucentApiException>());
-          expect((mapped as LucentApiException).message, expectedMessage);
+          final apiEx = mapped as LucentApiException;
+          expect(apiEx.message, 'custom-server-error');
+          expect(apiEx.code, 500001);
         }
-      }
+      },
+    );
 
-      test('maps connectionTimeout to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.connectionTimeout,
-          '连接超时，请稍后再试。',
-        );
-      });
-
-      test('maps sendTimeout to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.sendTimeout,
-          '请求发送超时，请稍后再试。',
-        );
-      });
-
-      test('maps receiveTimeout to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.receiveTimeout,
-          '响应接收超时，请稍后再试。',
-        );
-      });
-
-      test('maps badCertificate to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.badCertificate,
-          '服务器证书校验失败。',
-        );
-      });
-
-      test('maps connectionError to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.connectionError,
-          '网络请求失败，请检查当前连接。',
-        );
-      });
-
-      test('maps cancel to Chinese message', () async {
-        await expectFallbackMessage(DioExceptionType.cancel, '请求已取消。');
-      });
-
-      test('maps badResponse to Chinese message', () async {
-        await expectFallbackMessage(
-          DioExceptionType.badResponse,
-          '请求失败，请稍后再试。',
-        );
-      });
-
-      test('maps unknown to Chinese message', () async {
-        await expectFallbackMessage(DioExceptionType.unknown, '发生了未预期的网络错误。');
-      });
-
-      test(
-        'uses envelope message when response body has valid Lucent envelope',
-        () async {
-          final store = _MemorySessionStore();
-          final responseData = <String, dynamic>{
-            'code': 500001,
-            'message': 'custom-server-error',
-            'data': null,
-          };
-          final adapter = _FailingAdapter(
-            exceptionType: DioExceptionType.badResponse,
-            responseData: responseData,
-          );
-
-          final client = LucentDioClient(
-            baseUrl: 'http://localhost:3000',
-            sessionStore: store,
-            httpClientAdapter: adapter,
-          );
-
-          try {
-            await client.dio.get('/api/v1/test');
-            fail('Expected DioException');
-          } catch (error) {
-            expect(error, isA<DioException>());
-            final mapped = (error as DioException).error;
-            expect(mapped, isA<LucentApiException>());
-            final apiEx = mapped as LucentApiException;
-            expect(apiEx.message, 'custom-server-error');
-            expect(apiEx.code, 500001);
-          }
-        },
+    test('maps error without response data gracefully', () async {
+      final store = _MemorySessionStore();
+      final adapter = _FailingAdapter(
+        exceptionType: DioExceptionType.connectionError,
       );
 
-      test('maps error without response data gracefully', () async {
-        final store = _MemorySessionStore();
-        final adapter = _FailingAdapter(
-          exceptionType: DioExceptionType.connectionError,
-        );
+      final client = LucentDioClient(
+        baseUrl: 'http://localhost:3000',
+        sessionStore: store,
+        httpClientAdapter: adapter,
+      );
 
-        final client = LucentDioClient(
-          baseUrl: 'http://localhost:3000',
-          sessionStore: store,
-          httpClientAdapter: adapter,
+      try {
+        await client.dio.get(
+          '/api/v1/test',
+          options: Options(extra: <String, Object?>{'retryEnabled': false}),
         );
-
-        try {
-          await client.dio.get('/api/v1/test');
-          fail('Expected DioException');
-        } catch (error) {
-          expect(error, isA<DioException>());
-          final mapped = (error as DioException).error;
-          expect(mapped, isA<LucentApiException>());
-          expect((mapped as LucentApiException).message, '网络请求失败，请检查当前连接。');
-        }
-      });
-    },
-  );
+        fail('Expected DioException');
+      } catch (error) {
+        expect(error, isA<DioException>());
+        final mapped = (error as DioException).error;
+        expect(mapped, isA<LucentApiException>());
+        expect((mapped as LucentApiException).message, '网络请求失败，请检查当前连接。');
+      }
+    });
+  });
 }

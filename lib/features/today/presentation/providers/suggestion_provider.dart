@@ -10,7 +10,7 @@ part 'suggestion_provider.g.dart';
 @riverpod
 TodaySuggestionRemoteDataSource todaySuggestionRemoteDataSource(Ref ref) {
   return TodaySuggestionRemoteDataSource(
-    api: ref.watch(lucentTodaySuggestionApiProvider),
+    api: ref.watch(lucentClientProvider).todaySuggestion,
   );
 }
 

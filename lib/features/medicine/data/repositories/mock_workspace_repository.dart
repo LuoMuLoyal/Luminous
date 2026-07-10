@@ -185,7 +185,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
 @riverpod
 MedicineReminderRemoteDataSource medicineReminderRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentMedicineRemindersApiProvider);
+  final api = ref.watch(lucentClientProvider).medicineReminders;
   final dio = ref.watch(lucentDioClientProvider).dio;
   return MedicineReminderRemoteDataSource(api: api, dio: dio);
 }

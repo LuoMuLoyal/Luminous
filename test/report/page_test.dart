@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -283,7 +284,9 @@ void main() {
           userSettingsControllerProvider.overrideWith(
             EnabledUserSettingsController.new,
           ),
-          lucentDataExportApiProvider.overrideWithValue(exportApi),
+          lucentClientProvider.overrideWithValue(
+            _FakeLucentClient(dataExportApi: exportApi),
+          ),
           externalUrlLauncherProvider.overrideWithValue(launcher),
         ],
         child: const TestForuiApp(home: ReportPage()),
@@ -347,7 +350,9 @@ void main() {
             userSettingsControllerProvider.overrideWith(
               EnabledUserSettingsController.new,
             ),
-            lucentDataExportApiProvider.overrideWithValue(exportApi),
+            lucentClientProvider.overrideWithValue(
+              _FakeLucentClient(dataExportApi: exportApi),
+            ),
           ],
           child: const TestForuiApp(home: ReportPage()),
         ),
@@ -849,4 +854,14 @@ class _FixedReportRepository implements ReportRepository {
 String _dateOnly(DateTime date) {
   final local = date.toLocal();
   return '${local.year.toString().padLeft(4, '0')}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')}';
+}
+
+/// A [LucentClient] subclass that returns a fake [DataExportApi].
+class _FakeLucentClient extends LucentClient {
+  _FakeLucentClient({required this.dataExportApi}) : super(Dio());
+
+  final DataExportApi dataExportApi;
+
+  @override
+  DataExportApi get dataExport => dataExportApi;
 }
