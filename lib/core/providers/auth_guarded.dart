@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
-/// Auth-guard helper for use inside `@riverpod` annotated provider functions.
+/// Auth-guard helper for use inside provider functions.
 ///
 /// Encapsulates the auth session check pattern that was previously duplicated
 /// across `mineDashboardProvider`, `reportDashboardProvider`,
@@ -16,22 +16,26 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 ///   throws [AuthRequiredException].
 /// - Authenticated → calls [fetch] and returns its result.
 ///
-/// Usage inside a `@riverpod` function:
+/// This function is intentionally **not** `async` so that the
+/// [AuthRequiredException] throw is synchronous when called from a
+/// non-async `FutureProvider` callback. This preserves Riverpod's
+/// synchronous error-state propagation.
+///
+/// Usage inside a provider:
 /// ```dart
-/// @riverpod
-/// Future<MineDashboard> mineDashboard(Ref ref) {
+/// final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
 ///   return authGuarded(
 ///     ref: ref,
 ///     fetch: () => ref.watch(mineRepositoryProvider).fetchDashboard(),
 ///     signedOutFallback: () => ref.watch(mineRepositoryProvider).signedOutDashboard,
 ///   );
-/// }
+/// });
 /// ```
 Future<T> authGuarded<T>({
   required Ref ref,
   required Future<T> Function() fetch,
   Future<T> Function()? signedOutFallback,
-}) async {
+}) {
   final session = ref.watch(authSessionProvider);
   if (session.isRestoring) {
     return pendingAuthSessionResolution<T>();

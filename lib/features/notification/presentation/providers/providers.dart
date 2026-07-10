@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
 const _notificationPageSize = 20;
@@ -10,37 +11,39 @@ const _notificationPageSize = 20;
 // ── Unread count ─────────────────────────────────────────────────────────────
 
 final notificationUnreadCountProvider = FutureProvider<int>((ref) async {
-  final authSession = ref.watch(authSessionProvider);
-  if (!authSession.canAccessProtectedData) {
-    return pendingAuthSessionResolution<int>();
-  }
-
-  final api = ref.watch(lucentNotificationsApiProvider);
-  final response = await api.notificationsControllerGetUnreadCountV1();
-  if (response.code != 0) {
-    throw StateError(response.message);
-  }
-  return response.count.toInt();
+  return authGuarded(
+    ref: ref,
+    fetch: () async {
+      final api = ref.watch(lucentNotificationsApiProvider);
+      final response = await api.notificationsControllerGetUnreadCountV1();
+      if (response.code != 0) {
+        throw StateError(response.message);
+      }
+      return response.count.toInt();
+    },
+    signedOutFallback: () => pendingAuthSessionResolution(),
+  );
 });
 
 // ── Notification list ──────────────────────────────────────────────────────
 
 final notificationListPageProvider =
     FutureProvider<NotificationListResponseDto>((ref) async {
-      final authSession = ref.watch(authSessionProvider);
-      if (!authSession.canAccessProtectedData) {
-        return pendingAuthSessionResolution<NotificationListResponseDto>();
-      }
-
-      final api = ref.watch(lucentNotificationsApiProvider);
-      final response = await api.notificationsControllerFindAllV1(
-        page: 1,
-        pageSize: _notificationPageSize,
+      return authGuarded(
+        ref: ref,
+        fetch: () async {
+          final api = ref.watch(lucentNotificationsApiProvider);
+          final response = await api.notificationsControllerFindAllV1(
+            page: 1,
+            pageSize: _notificationPageSize,
+          );
+          if (response.code != 0) {
+            throw StateError(response.message);
+          }
+          return response;
+        },
+        signedOutFallback: () => pendingAuthSessionResolution(),
       );
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
-      return response;
     });
 
 // ── Loading-more flag ──────────────────────────────────────────────────────
@@ -59,17 +62,18 @@ final notificationListLoadingMoreProvider =
 
 final notificationDetailProvider =
     FutureProvider.family<NotificationDetailDto?, String>((ref, id) async {
-      final authSession = ref.watch(authSessionProvider);
-      if (!authSession.canAccessProtectedData) {
-        return pendingAuthSessionResolution<NotificationDetailDto?>();
-      }
-
-      final api = ref.watch(lucentNotificationsApiProvider);
-      final response = await api.notificationsControllerFindOneV1(id: id);
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
-      return response.data;
+      return authGuarded(
+        ref: ref,
+        fetch: () async {
+          final api = ref.watch(lucentNotificationsApiProvider);
+          final response = await api.notificationsControllerFindOneV1(id: id);
+          if (response.code != 0) {
+            throw StateError(response.message);
+          }
+          return response.data;
+        },
+        signedOutFallback: () => pendingAuthSessionResolution(),
+      );
     });
 
 // ── Mutations ────────────────────────────────────────────────────────────────

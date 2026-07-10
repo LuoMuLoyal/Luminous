@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote_data_source.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
@@ -27,11 +27,11 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
 
   @override
   Future<TodaySuggestionBundle?> build() async {
-    final session = ref.watch(authSessionProvider);
-    if (!session.canAccessProtectedData) {
-      return null;
-    }
-    return _fetch();
+    return authGuarded(
+      ref: ref,
+      fetch: _fetch,
+      signedOutFallback: () async => null,
+    );
   }
 
   Future<TodaySuggestionBundle?> _fetch() async {
@@ -80,13 +80,15 @@ final suggestionExplanationProvider = FutureProvider.autoDispose
       TodaySuggestionExplanation?,
       ({String suggestionId, String language})
     >((ref, params) async {
-      final session = ref.watch(authSessionProvider);
-      if (!session.canAccessProtectedData) {
-        return null;
-      }
-      final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      return ds.explainSuggestion(
-        id: params.suggestionId,
-        language: params.language,
+      return authGuarded(
+        ref: ref,
+        fetch: () {
+          final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
+          return ds.explainSuggestion(
+            id: params.suggestionId,
+            language: params.language,
+          );
+        },
+        signedOutFallback: () async => null,
       );
     });

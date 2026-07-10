@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
@@ -13,31 +13,27 @@ final reportDashboardProvider =
       ref,
       query,
     ) async {
-      final session = ref.watch(authSessionProvider);
-      if (session.isConfirmedSignedOut) {
-        final base = await const MockReportRepository().signedOutDashboard;
-        return base.copyWith(
-          range: query.range,
-          startDate: _dateOnly(
-            query.startDate ?? clock.now().subtract(const Duration(days: 7)),
-          ),
-          endDate: _dateOnly(query.endDate ?? clock.now()),
-        );
-      }
-      if (session.isLoading) {
-        return pendingAuthSessionResolution<ReportDashboard>();
-      }
-      if (!session.canAccessProtectedData) {
-        return pendingAuthSessionResolution<ReportDashboard>();
-      }
-
-      return ref
-          .watch(reportRepositoryProvider)
-          .fetchDashboard(query)
-          .timeout(
-            _reportDashboardTimeout,
-            onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
+      return authGuarded(
+        ref: ref,
+        fetch: () => ref
+            .watch(reportRepositoryProvider)
+            .fetchDashboard(query)
+            .timeout(
+              _reportDashboardTimeout,
+              onTimeout: () =>
+                  throw TimeoutException('report_dashboard_timeout'),
+            ),
+        signedOutFallback: () async {
+          final base = await const MockReportRepository().signedOutDashboard;
+          return base.copyWith(
+            range: query.range,
+            startDate: _dateOnly(
+              query.startDate ?? clock.now().subtract(const Duration(days: 7)),
+            ),
+            endDate: _dateOnly(query.endDate ?? clock.now()),
           );
+        },
+      );
     });
 
 String _dateOnly(DateTime date) {

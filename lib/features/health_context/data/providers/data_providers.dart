@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent_repository.dart';
@@ -31,17 +31,14 @@ final healthContextRepositoryProvider = Provider<HealthContextRepository>((
 final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>((
   ref,
 ) {
-  final session = ref.watch(authSessionProvider);
-  if (session.isLoading) {
-    return pendingAuthSessionResolution();
-  }
-  if (!session.canAccessProtectedData) {
-    throw const AuthRequiredException();
-  }
-
-  final repository = ref.watch(healthContextRepositoryProvider);
-  return repository.fetchHealthContext().timeout(
-    const Duration(seconds: 5),
-    onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+  return authGuarded(
+    ref: ref,
+    fetch: () => ref
+        .watch(healthContextRepositoryProvider)
+        .fetchHealthContext()
+        .timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+        ),
   );
 });

@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
@@ -105,45 +105,34 @@ class MedicineReminderFormState {
 
 final medicineReminderListProvider = FutureProvider<List<MedicineReminderItem>>(
   (ref) {
-    final session = ref.watch(authSessionProvider);
-    if (session.isLoading) {
-      return pendingAuthSessionResolution();
-    }
-    if (!session.canAccessProtectedData) {
-      throw const AuthRequiredException();
-    }
-    return ref.watch(medicineReminderRemoteDataSourceProvider).fetchAll();
+    return authGuarded(
+      ref: ref,
+      fetch: () =>
+          ref.watch(medicineReminderRemoteDataSourceProvider).fetchAll(),
+    );
   },
 );
 
 final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
-  final session = ref.watch(authSessionProvider);
-  if (session.isLoading) {
-    return pendingAuthSessionResolution();
-  }
-  if (!session.canAccessProtectedData) {
-    throw const AuthRequiredException();
-  }
-
-  final today = clock.now();
-  final date =
-      '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
-  return ref.watch(doseLogRemoteDataSourceProvider).fetchForDate(date);
+  return authGuarded(
+    ref: ref,
+    fetch: () {
+      final today = clock.now();
+      final date =
+          '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      return ref.watch(doseLogRemoteDataSourceProvider).fetchForDate(date);
+    },
+  );
 });
 
 final medicineReminderDeliveryLogProvider =
     FutureProvider<List<ReminderDeliveryItem>>((ref) {
-      final session = ref.watch(authSessionProvider);
-      if (session.isLoading) {
-        return pendingAuthSessionResolution();
-      }
-      if (!session.canAccessProtectedData) {
-        throw const AuthRequiredException();
-      }
-
-      return ref
-          .watch(medicineReminderRemoteDataSourceProvider)
-          .fetchDeliveries(limit: 20);
+      return authGuarded(
+        ref: ref,
+        fetch: () => ref
+            .watch(medicineReminderRemoteDataSourceProvider)
+            .fetchDeliveries(limit: 20),
+      );
     });
 
 final medicineReminderDetailProvider =
