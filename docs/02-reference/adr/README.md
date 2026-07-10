@@ -75,3 +75,23 @@ What becomes easier or harder as a result of this decision?
   - Title: Melos Monorepo Management
   - Status: accepted
   - Date: 2026-06-05
+- [0006](0006-riverpod-generator-and-auth-guard.md)
+  - Title: riverpod_generator 与 Auth-Guarded Provider 工厂
+  - Status: accepted
+  - Date: 2026-07-10
+- [0007](0007-network-layer-separation.md)
+  - Title: 网络层职责分离 — LucentDioClient 拆分
+  - Status: proposed
+  - Date: 2026-07-10
+- [0008](0008-result-type-and-error-handling.md)
+  - Title: Result 类型与统一错误处理
+  - Status: proposed
+  - Date: 2026-07-10
+- [0009](0009-local-persistence-drift.md)
+  - Title: 本地持久化与离线策略 — Drift
+  - Status: proposed
+  - Date: 2026-07-10
+- [0010](0010-type-safe-routing-go-router-builder.md)
+  - Title: 类型安全路由 — go_router_builder
+  - Status: proposed
+  - Date: 2026-07-10

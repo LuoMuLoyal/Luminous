@@ -78,6 +78,7 @@ dependencies:
   flutter_slidable: ^4.0.3
   clock: ^1.1.2
   talker_flutter: ^5.1.17
+  riverpod_annotation: ^4.0.3
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ dev_dependencies:
   network_image_mock: ^2.1.1
   alchemist: ^0.14.0
   patrol: ^4.6.1
+  riverpod_generator: ^4.0.4
 flutter_launcher_icons:
   android: true
   ios: true

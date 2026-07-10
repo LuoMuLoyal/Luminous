@@ -1,17 +1,31 @@
+// ignore_for_file: prefer_final_locals, prefer_const_constructors
+
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/base_url.dart';
+import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/session_store.dart';
+import 'package:lucent_api/api/export.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final lucentBaseUrlProvider = Provider<String>((ref) {
-  // In release mode, always use the compile-time default.
+part 'network_providers.g.dart';
+
+// ---------------------------------------------------------------------------
+// Core infrastructure providers (keepAlive — singleton-like services)
+// ---------------------------------------------------------------------------
+
+/// Resolves the Lucent API base URL.
+///
+/// In release mode, always uses the compile-time default. In debug mode,
+/// allows runtime switching via developer settings.
+@Riverpod(keepAlive: true)
+String lucentBaseUrl(Ref ref) {
   if (kReleaseMode) {
     return LucentBaseUrl.value;
   }
 
-  // In debug mode, allow runtime endpoint switching via developer settings.
   final devSettings = ref
       .watch(developerSettingsControllerProvider)
       .asData
@@ -20,13 +34,21 @@ final lucentBaseUrlProvider = Provider<String>((ref) {
     return devSettings.resolvedBaseUrl;
   }
   return LucentBaseUrl.value;
-});
+}
 
-final lucentSessionStoreProvider = Provider<LucentSessionStore>((ref) {
+/// Provides the [LucentSessionStore] for token persistence.
+@Riverpod(keepAlive: true)
+LucentSessionStore lucentSessionStore(Ref ref) {
   return const SecureLucentSessionStore();
-});
+}
 
-final lucentDioClientProvider = Provider<LucentDioClient>((ref) {
+/// Provides the [LucentDioClient] singleton — the root HTTP client for all
+/// Lucent API communication.
+///
+/// Wires up auth interceptors, token refresh, and locale resolution.
+/// Disposes the underlying Dio instances when the provider is destroyed.
+@Riverpod(keepAlive: true)
+LucentDioClient lucentDioClient(Ref ref) {
   final client = LucentDioClient(
     baseUrl: ref.watch(lucentBaseUrlProvider),
     sessionStore: ref.watch(lucentSessionStoreProvider),
@@ -37,76 +59,95 @@ final lucentDioClientProvider = Provider<LucentDioClient>((ref) {
   );
   ref.onDispose(client.dispose);
   return client;
-});
+}
 
-final lucentAuthApiProvider = Provider<AuthApi>((ref) {
+// ---------------------------------------------------------------------------
+// Generated API accessors — each delegates to the LucentDioClient singleton.
+// These are autoDispose: they are cheap one-line getters and the underlying
+// LucentClient is owned by the keepAlive [lucentDioClientProvider].
+// ---------------------------------------------------------------------------
+
+@riverpod
+AuthApi lucentAuthApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).authApi;
-});
+}
 
-final lucentHealthApiProvider = Provider<HealthApi>((ref) {
+@riverpod
+HealthApi lucentHealthApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).healthApi;
-});
+}
 
-final lucentMedicinesApiProvider = Provider<MedicinesApi>((ref) {
+@riverpod
+MedicinesApi lucentMedicinesApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).medicinesApi;
-});
+}
 
-final lucentEnvironmentApiProvider = Provider<EnvironmentApi>((ref) {
+@riverpod
+EnvironmentApi lucentEnvironmentApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).environmentApi;
-});
+}
 
-final lucentUserHealthContextApiProvider = Provider<UserHealthContextApi>((
-  ref,
-) {
+@riverpod
+UserHealthContextApi lucentUserHealthContextApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).userHealthContextApi;
-});
+}
 
-final lucentDailyRecordsApiProvider = Provider<DailyRecordsApi>((ref) {
+@riverpod
+DailyRecordsApi lucentDailyRecordsApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).dailyRecordsApi;
-});
+}
 
-final lucentMedicineDoseLogsApiProvider = Provider<MedicineDoseLogsApi>((ref) {
+@riverpod
+MedicineDoseLogsApi lucentMedicineDoseLogsApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).medicineDoseLogsApi;
-});
+}
 
-final lucentMedicineRemindersApiProvider = Provider<MedicineRemindersApi>((
-  ref,
-) {
+@riverpod
+MedicineRemindersApi lucentMedicineRemindersApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).medicineRemindersApi;
-});
+}
 
-final lucentSupportResourcesApiProvider = Provider<SupportResourcesApi>((ref) {
+@riverpod
+SupportResourcesApi lucentSupportResourcesApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).supportResourcesApi;
-});
+}
 
-final lucentUserSettingsApiProvider = Provider<UserSettingsApi>((ref) {
+@riverpod
+UserSettingsApi lucentUserSettingsApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).userSettingsApi;
-});
+}
 
-final lucentDataExportApiProvider = Provider<DataExportApi>((ref) {
+@riverpod
+DataExportApi lucentDataExportApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).dataExportApi;
-});
+}
 
-final lucentReportsApiProvider = Provider<ReportsApi>((ref) {
+@riverpod
+ReportsApi lucentReportsApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).reportsApi;
-});
+}
 
-final lucentTodayAnalysisApiProvider = Provider<TodayAnalysisApi>((ref) {
+@riverpod
+TodayAnalysisApi lucentTodayAnalysisApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).todayAnalysisApi;
-});
+}
 
-final lucentTodaySuggestionApiProvider = Provider<TodaySuggestionApi>((ref) {
+@riverpod
+TodaySuggestionApi lucentTodaySuggestionApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).todaySuggestionApi;
-});
+}
 
-final lucentAssistantApiProvider = Provider<AssistantApi>((ref) {
+@riverpod
+AssistantApi lucentAssistantApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).assistantApi;
-});
+}
 
-final lucentNotificationsApiProvider = Provider<NotificationsApi>((ref) {
+@riverpod
+NotificationsApi lucentNotificationsApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).notificationsApi;
-});
+}
 
-final lucentFilesApiProvider = Provider<FilesApi>((ref) {
+@riverpod
+FilesApi lucentFilesApi(Ref ref) {
   return ref.watch(lucentDioClientProvider).filesApi;
-});
+}
