@@ -13,6 +13,7 @@ import 'package:luminous/features/today/presentation/providers/suggestion_provid
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayPrimarySuggestionSection extends ConsumerWidget {
@@ -108,7 +109,7 @@ class _PrimarySuggestionCardState extends ConsumerState<_PrimarySuggestionCard>
               Row(
                 children: [
                   TodayGlyphTile(
-                    icon: _iconFor(card.icon),
+                    icon: SuggestionIconMapping.resolve(card.icon),
                     color: _colorFor(card.cardTone).resolve(colors),
                     size: Spacing.level8,
                     radius: RadiusTokens.level3,
@@ -226,7 +227,9 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                       child: Row(
                         children: [
                           TodayGlyphTile(
-                            icon: _iconFor(visible[index].icon),
+                            icon: SuggestionIconMapping.resolve(
+                              visible[index].icon,
+                            ),
                             color: _colorFor(
                               visible[index].cardTone,
                             ).resolve(colors),
@@ -274,7 +277,56 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
         );
       },
       loading: () => const SizedBox.shrink(),
-      error: (_, __) => const SizedBox.shrink(),
+      error: (_, __) => _SecondarySuggestionErrorState(
+        onRetry: () => ref.invalidate(todaySuggestionProvider),
+      ),
+    );
+  }
+}
+
+class _SecondarySuggestionErrorState extends StatelessWidget {
+  const _SecondarySuggestionErrorState({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return TodaySection(
+      title: l10n.todaySecondarySuggestionSectionTitle,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level4,
+          vertical: Spacing.level5,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                FLucideIcons.circleAlert,
+                size: Spacing.level6,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const SizedBox(height: Spacing.level2),
+              Text(
+                l10n.todaySuggestionSecondaryErrorHint,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+              ),
+              const SizedBox(height: Spacing.level2),
+              FButton(
+                onPress: onRetry,
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.xs,
+                child: Text(l10n.todaySuggestionRetryAction),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -297,6 +349,12 @@ class _SuggestionFeedbackRowState
     extends ConsumerState<_SuggestionFeedbackRow> {
   bool _isSubmitting = false;
 
+  /// The feedback option the user submitted, if any.
+  ///
+  /// Once set, the row switches to a read-only "submitted" state so the user
+  /// gets immediate visual confirmation even before the provider re-fetches.
+  TodaySuggestionFeedback? _submittedFeedback;
+
   Future<void> _submit(TodaySuggestionFeedback feedback) async {
     setState(() => _isSubmitting = true);
     final l10n = AppLocalizations.of(context)!;
@@ -308,6 +366,7 @@ class _SuggestionFeedbackRowState
             feedback: feedback,
           );
       if (mounted) {
+        setState(() => _submittedFeedback = feedback);
         unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackSuccess));
       }
     } catch (_) {
@@ -330,6 +389,24 @@ class _SuggestionFeedbackRowState
       TodaySuggestionFeedback.notApplicable,
       TodaySuggestionFeedback.suppress,
     ].where((f) => widget.feedbackOptions.contains(f)).toList();
+
+    // Once feedback is submitted, show a compact "submitted" indicator
+    // instead of the interactive buttons.
+    if (_submittedFeedback != null) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(FLucideIcons.check, size: Spacing.level4, color: colors.primary),
+          const SizedBox(width: Spacing.level1),
+          Text(
+            l10n.todaySuggestionFeedbackSubmitted,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
+          ),
+        ],
+      );
+    }
 
     return Wrap(
       spacing: Spacing.level2,
@@ -378,6 +455,8 @@ class _SuggestionAiExplainButton extends ConsumerStatefulWidget {
 class _SuggestionAiExplainButtonState
     extends ConsumerState<_SuggestionAiExplainButton> {
   bool _isRequested = false;
+  int _retryCount = 0;
+  static const int _maxRetries = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -404,10 +483,16 @@ class _SuggestionAiExplainButtonState
     return explanationAsync.when(
       data: (explanation) {
         if (explanation == null || !explanation.aiGenerated) {
+          if (_retryCount >= _maxRetries) {
+            return _AiExplainUnavailable(l10n: l10n);
+          }
           return FButton(
-            onPress: () => unawaited(
-              ref.refresh(suggestionExplanationProvider(params).future),
-            ),
+            onPress: () {
+              setState(() => _retryCount += 1);
+              unawaited(
+                ref.refresh(suggestionExplanationProvider(params).future),
+              );
+            },
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.xs,
             mainAxisSize: MainAxisSize.min,
@@ -432,15 +517,23 @@ class _SuggestionAiExplainButtonState
           ),
         ],
       ),
-      error: (_, __) => FButton(
-        onPress: () => unawaited(
-          ref.refresh(suggestionExplanationProvider(params).future),
-        ),
-        variant: FButtonVariant.ghost,
-        size: FButtonSizeVariant.xs,
-        mainAxisSize: MainAxisSize.min,
-        child: Text(l10n.todaySuggestionAiExplainRetry),
-      ),
+      error: (_, __) {
+        if (_retryCount >= _maxRetries) {
+          return _AiExplainUnavailable(l10n: l10n);
+        }
+        return FButton(
+          onPress: () {
+            setState(() => _retryCount += 1);
+            unawaited(
+              ref.refresh(suggestionExplanationProvider(params).future),
+            );
+          },
+          variant: FButtonVariant.ghost,
+          size: FButtonSizeVariant.xs,
+          mainAxisSize: MainAxisSize.min,
+          child: Text(l10n.todaySuggestionAiExplainRetry),
+        );
+      },
     );
   }
 }
@@ -495,6 +588,40 @@ class _AiExplainContent extends StatelessWidget {
                   .copyWith(color: colors.mutedForeground),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AiExplainUnavailable extends StatelessWidget {
+  const _AiExplainUnavailable({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            FLucideIcons.info,
+            size: Spacing.level4,
+            color: colors.mutedForeground,
+          ),
+          const SizedBox(width: Spacing.level1),
+          Flexible(
+            child: Text(
+              l10n.todaySuggestionAiExplainMaxRetry,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ),
         ],
       ),
     );
@@ -810,22 +937,5 @@ SemanticColor _colorFor(TodaySuggestionCardTone tone) {
     TodaySuggestionCardTone.emphasis => SemanticColor.primary,
     TodaySuggestionCardTone.soft => SemanticColor.primary,
     TodaySuggestionCardTone.neutral => SemanticColor.neutral,
-  };
-}
-
-IconData _iconFor(String icon) {
-  return switch (icon) {
-    'droplets' => FLucideIcons.droplets,
-    'moon' => FLucideIcons.moon,
-    'activity' => FLucideIcons.activity,
-    'coffee' => FLucideIcons.coffee,
-    'user' => FLucideIcons.userRound,
-    'clipboard' => FLucideIcons.clipboardList,
-    'alert-triangle' => FLucideIcons.triangleAlert,
-    'pill' => FLucideIcons.pill,
-    'trending-up' => FLucideIcons.trendingUp,
-    'lightbulb' => FLucideIcons.lightbulb,
-    'info' => FLucideIcons.info,
-    _ => FLucideIcons.sparkles,
   };
 }
