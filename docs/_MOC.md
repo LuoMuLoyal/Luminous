@@ -49,6 +49,7 @@
 - [[02-reference/Design_System_Components]] — 组件规范与实践
 - [[02-reference/Design_System_Migration]] — 迁移与使用原则
 - [[02-reference/adr/README]] — 架构决策记录
+- [[02-reference/how-to/README]] — 操作指南
 
 ## 03-logs — 变更日志
 

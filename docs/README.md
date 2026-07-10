@@ -21,6 +21,7 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 - [[02-reference/routing]] — GoRouter 路由
 - [[02-reference/data-layer]] — 数据层与 API 客户端
 - [[02-reference/adr/README]] — 架构决策记录
+- [[02-reference/how-to/README]] — 操作指南
 - [[02-reference/AI_Development_Workflow]] — AI 开发工作流、MCP 与 app-side AI seam
 - [[03-logs/MigrationLog]] — 变更日志索引
 - [[04-archive/current-state-archive]] — 已归档历史

@@ -59,7 +59,7 @@ Last updated: 2026-07-08
 
 ## 合同引用
 
-- `Lucent/docs/public/reminder-contract.md` — 提醒边界
-- `Lucent/docs/public/environment-contract.md` — 环境快照边界
-- `Lucent/docs/public/data-sources.md` — 药品数据源/导入策略
-- `Lucent/docs/public/mine-settings-contract.md` — 导出/状态/支持资源边界
+- `Lucent/docs/01-reference/contracts/reminder-contract.md` — 提醒边界
+- `Lucent/docs/01-reference/contracts/environment-contract.md` — 环境快照边界
+- `Lucent/docs/01-reference/contracts/data-sources.md` — 药品数据源/导入策略
+- `Lucent/docs/01-reference/contracts/mine-settings-contract.md` — 导出/状态/支持资源边界

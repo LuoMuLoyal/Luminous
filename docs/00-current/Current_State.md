@@ -42,6 +42,7 @@ Last updated: 2026-07-10
 - 阶段总纲：[[00-current/Work_Phase_Guide]]
 - 下一步工作：[[00-current/Next_Plan]]
 - 避错清单：[[02-reference/Project_Guardrails]]
+- 操作指南：[[02-reference/how-to/README]]
 - 延后项：[[00-current/TODO]]
 - 变更日志：[[03-logs/MigrationLog]]
 - 历史归档：[[04-archive/current-state-archive]]

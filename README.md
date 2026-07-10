@@ -112,23 +112,23 @@ test account values.
 
 Start with [docs/README.md](docs/README.md).
 
-Key shared backend contract docs live in `../Lucent/docs/public/`:
+Key shared backend contract docs live in `../Lucent/docs/01-reference/contracts/`:
 
-- [reminder-contract](../Lucent/docs/public/reminder-contract.md)
-- [environment-contract](../Lucent/docs/public/environment-contract.md)
-- [data-sources](../Lucent/docs/public/data-sources.md)
-- [data-sources-cn-products](../Lucent/docs/public/data-sources-cn-products.md)
-- [data-sources-drugbank](../Lucent/docs/public/data-sources-drugbank.md)
-- [data-sources-medical-qa](../Lucent/docs/public/data-sources-medical-qa.md)
-- [data-sources-food-composition](../Lucent/docs/public/data-sources-food-composition.md)
-- [assistant-contract](../Lucent/docs/public/assistant-contract.md)
-- [assistant-capabilities](../Lucent/docs/public/assistant-capabilities.md)
-- [assistant-rollout](../Lucent/docs/public/assistant-rollout.md)
-- [assistant-safety](../Lucent/docs/public/assistant-safety.md)
-- [mine-settings-contract](../Lucent/docs/public/mine-settings-contract.md)
-- [support-resources-contract](../Lucent/docs/public/support-resources-contract.md)
-- [app-info-contract](../Lucent/docs/public/app-info-contract.md)
-- [data-export-contract](../Lucent/docs/public/data-export-contract.md)
+- [reminder-contract](../Lucent/docs/01-reference/contracts/reminder-contract.md)
+- [environment-contract](../Lucent/docs/01-reference/contracts/environment-contract.md)
+- [data-sources](../Lucent/docs/01-reference/contracts/data-sources.md)
+- [data-sources-cn-products](../Lucent/docs/01-reference/contracts/data-sources-cn-products.md)
+- [data-sources-drugbank](../Lucent/docs/01-reference/contracts/data-sources-drugbank.md)
+- [data-sources-medical-qa](../Lucent/docs/01-reference/contracts/data-sources-medical-qa.md)
+- [data-sources-food-composition](../Lucent/docs/01-reference/contracts/data-sources-food-composition.md)
+- [assistant-contract](../Lucent/docs/01-reference/contracts/assistant-contract.md)
+- [assistant-capabilities](../Lucent/docs/01-reference/contracts/assistant-capabilities.md)
+- [assistant-rollout](../Lucent/docs/01-reference/contracts/assistant-rollout.md)
+- [assistant-safety](../Lucent/docs/01-reference/contracts/assistant-safety.md)
+- [mine-settings-contract](../Lucent/docs/01-reference/contracts/mine-settings-contract.md)
+- [support-resources-contract](../Lucent/docs/01-reference/contracts/support-resources-contract.md)
+- [app-info-contract](../Lucent/docs/01-reference/contracts/app-info-contract.md)
+- [data-export-contract](../Lucent/docs/01-reference/contracts/data-export-contract.md)
 
 Key frontend docs:
 
