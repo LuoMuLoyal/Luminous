@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/design.dart';
@@ -83,28 +83,26 @@ class ReportPage extends ConsumerWidget {
     final controller = ref.read(dataExportControllerProvider.notifier);
     final launcher = ref.read(externalUrlLauncherProvider);
 
-    try {
-      final request = await controller.requestExport(
-        _exportInputForKind(kind)!,
-      );
-      if (!context.mounted) {
-        return;
-      }
-      await _handleExportResult(
-        context: context,
-        ref: ref,
-        launcher: launcher,
-        request: request,
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('ReportPage._handleExportAction: failed: $error');
-      if (!context.mounted) {
-        return;
-      }
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'ReportPage._handleExportAction',
+      action: () => controller.requestExport(_exportInputForKind(kind)!),
+    );
+    switch (result) {
+      case Success(:final value):
+        if (!context.mounted) return;
+        await _handleExportResult(
+          context: context,
+          ref: ref,
+          launcher: launcher,
+          request: value,
+        );
+      case Failure(:final error):
+        if (!context.mounted) return;
+        await AppToast.show(
+          context,
+          '${l10n.reportExportFailedToast}: ${error.message}',
+        );
     }
   }
 
@@ -113,27 +111,39 @@ class ReportPage extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) async {
-    try {
-      final reportsApi = ref.read(lucentClientProvider).reports;
-      final response = await reportsApi.reportsControllerShareClinicSummaryV1();
-      if (!context.mounted) return;
-
-      final shareUrl = response.shareUrl;
-      if (shareUrl.isEmpty) {
-        await AppToast.show(context, l10n.reportExportFailedToast);
-        return;
-      }
-
-      await SharePlus.instance.share(
-        ShareParams(text: shareUrl, subject: l10n.reportExportClinicShareTitle),
-      );
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('ReportPage._handleClinicShare: failed: $error');
-      if (!context.mounted) return;
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(context, '${l10n.reportExportFailedToast}: $message');
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'ReportPage._handleClinicShare',
+      action: () async {
+        final reportsApi = ref.read(lucentClientProvider).reports;
+        final response = await reportsApi
+            .reportsControllerShareClinicSummaryV1();
+        final shareUrl = response.shareUrl;
+        if (shareUrl.isEmpty) {
+          if (context.mounted) {
+            await AppToast.show(context, l10n.reportExportFailedToast);
+          }
+          return false;
+        }
+        await SharePlus.instance.share(
+          ShareParams(
+            text: shareUrl,
+            subject: l10n.reportExportClinicShareTitle,
+          ),
+        );
+        return true;
+      },
+    );
+    switch (result) {
+      case Success():
+        // Toast already shown inside action if URL was empty.
+        break;
+      case Failure(:final error):
+        if (!context.mounted) return;
+        await AppToast.show(
+          context,
+          '${l10n.reportExportFailedToast}: ${error.message}',
+        );
     }
   }
 

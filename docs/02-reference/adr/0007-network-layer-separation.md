@@ -1,6 +1,6 @@
 # ADR-0007: 网络层职责分离 — LucentDioClient 拆分与 API 访问简化
 
-- **Status**: proposed
+- **Status**: accepted
 - **Date**: 2026-07-10
 - **Deciders**: LuoMuLoyal
 

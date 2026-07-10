@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
@@ -308,22 +309,24 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    try {
-      await ref
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'SecurityPinSettings._enablePin',
+      action: () => ref
           .read(userSettingsControllerProvider.notifier)
-          .enableSecurityPin(pin);
-      if (!context.mounted) return;
-      await AppToast.show(context, l10n.settingsSecurityPinEnableSuccess);
-    } catch (error) {
-      if (!context.mounted) return;
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(
-        context,
-        message.isNotEmpty ? message : l10n.settingsSyncFailed,
-      );
-    } finally {
-      isSubmitting.value = false;
+          .enableSecurityPin(pin),
+    );
+    if (!context.mounted) return;
+    switch (result) {
+      case Success():
+        await AppToast.show(context, l10n.settingsSecurityPinEnableSuccess);
+      case Failure(:final error):
+        await AppToast.show(
+          context,
+          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
+        );
     }
+    isSubmitting.value = false;
   }
 
   Future<void> _changePin(
@@ -344,22 +347,24 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    try {
-      await ref
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'SecurityPinSettings._changePin',
+      action: () => ref
           .read(userSettingsControllerProvider.notifier)
-          .changeSecurityPin(oldPin, newPin);
-      if (!context.mounted) return;
-      await AppToast.show(context, l10n.settingsSecurityPinChangeSuccess);
-    } catch (error) {
-      if (!context.mounted) return;
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(
-        context,
-        message.isNotEmpty ? message : l10n.settingsSyncFailed,
-      );
-    } finally {
-      isSubmitting.value = false;
+          .changeSecurityPin(oldPin, newPin),
+    );
+    if (!context.mounted) return;
+    switch (result) {
+      case Success():
+        await AppToast.show(context, l10n.settingsSecurityPinChangeSuccess);
+      case Failure(:final error):
+        await AppToast.show(
+          context,
+          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
+        );
     }
+    isSubmitting.value = false;
   }
 
   Future<void> _disablePin(
@@ -374,21 +379,23 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
       return;
     }
     isSubmitting.value = true;
-    try {
-      await ref
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'SecurityPinSettings._disablePin',
+      action: () => ref
           .read(userSettingsControllerProvider.notifier)
-          .disableSecurityPin(pin);
-      if (!context.mounted) return;
-      await AppToast.show(context, l10n.settingsSecurityPinDisableSuccess);
-    } catch (error) {
-      if (!context.mounted) return;
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(
-        context,
-        message.isNotEmpty ? message : l10n.settingsSyncFailed,
-      );
-    } finally {
-      isSubmitting.value = false;
+          .disableSecurityPin(pin),
+    );
+    if (!context.mounted) return;
+    switch (result) {
+      case Success():
+        await AppToast.show(context, l10n.settingsSecurityPinDisableSuccess);
+      case Failure(:final error):
+        await AppToast.show(
+          context,
+          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
+        );
     }
+    isSubmitting.value = false;
   }
 }

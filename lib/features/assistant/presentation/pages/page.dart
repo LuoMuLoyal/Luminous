@@ -7,9 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -76,17 +76,21 @@ class AssistantPage extends HookConsumerWidget {
       BuildContext ctx,
       bool nextValue,
     ) async {
-      try {
-        await ref
-            .read(userSettingsControllerProvider.notifier)
-            .setAssistantEnabled(nextValue);
-        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-      } catch (error) {
-        ref
-            .read(talkerProvider)
-            .error('AssistantPage.toggleAssistantEnabled: failed: $error');
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.toggleAssistantEnabled',
+        action: () async {
+          await ref
+              .read(userSettingsControllerProvider.notifier)
+              .setAssistantEnabled(nextValue);
+          await ref
+              .read(assistantControllerProvider.notifier)
+              .loadCapabilities();
+        },
+      );
+      if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+        await AppToast.show(ctx, error.message);
       }
     }
 
@@ -94,19 +98,21 @@ class AssistantPage extends HookConsumerWidget {
       BuildContext ctx,
       bool nextValue,
     ) async {
-      try {
-        await ref
-            .read(userSettingsControllerProvider.notifier)
-            .setAssistantMemoryEnabled(nextValue);
-        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-      } catch (error) {
-        ref
-            .read(talkerProvider)
-            .error(
-              'AssistantPage.toggleAssistantMemoryEnabled: failed: $error',
-            );
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.toggleAssistantMemoryEnabled',
+        action: () async {
+          await ref
+              .read(userSettingsControllerProvider.notifier)
+              .setAssistantMemoryEnabled(nextValue);
+          await ref
+              .read(assistantControllerProvider.notifier)
+              .loadCapabilities();
+        },
+      );
+      if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+        await AppToast.show(ctx, error.message);
       }
     }
 
@@ -122,48 +128,56 @@ class AssistantPage extends HookConsumerWidget {
       final current = settings?.assistantContext;
       if (current == null) {
         if (fallbackContext == null) return;
-        try {
+        final result = await runGuarded(
+          ref: ref,
+          tag: 'AssistantPage.toggleContextSetting',
+          action: () async {
+            await ref
+                .read(userSettingsControllerProvider.notifier)
+                .setAssistantContext(
+                  UpdateAssistantContextSettingsDto(
+                    healthProfile:
+                        healthProfile ?? fallbackContext.healthProfile,
+                    dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
+                    sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
+                    currentMedicines:
+                        currentMedicines ?? fallbackContext.currentMedicines,
+                  ),
+                );
+            await ref
+                .read(assistantControllerProvider.notifier)
+                .loadCapabilities();
+          },
+        );
+        if (result case Failure(:final error)) {
+          if (!ctx.mounted) return;
+          await AppToast.show(ctx, error.message);
+        }
+        return;
+      }
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.toggleContextSetting',
+        action: () async {
           await ref
               .read(userSettingsControllerProvider.notifier)
               .setAssistantContext(
                 UpdateAssistantContextSettingsDto(
-                  healthProfile: healthProfile ?? fallbackContext.healthProfile,
-                  dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
-                  sleepRecords: sleepRecords ?? fallbackContext.sleepRecords,
+                  healthProfile: healthProfile ?? current.healthProfile,
+                  dailyRecords: dailyRecords ?? current.dailyRecords,
+                  sleepRecords: sleepRecords ?? current.sleepRecords,
                   currentMedicines:
-                      currentMedicines ?? fallbackContext.currentMedicines,
+                      currentMedicines ?? current.currentMedicines,
                 ),
               );
           await ref
               .read(assistantControllerProvider.notifier)
               .loadCapabilities();
-        } catch (error) {
-          ref
-              .read(talkerProvider)
-              .error('AssistantPage.toggleContextSetting: failed: $error');
-          if (!ctx.mounted) return;
-          await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
-        }
-        return;
-      }
-      try {
-        await ref
-            .read(userSettingsControllerProvider.notifier)
-            .setAssistantContext(
-              UpdateAssistantContextSettingsDto(
-                healthProfile: healthProfile ?? current.healthProfile,
-                dailyRecords: dailyRecords ?? current.dailyRecords,
-                sleepRecords: sleepRecords ?? current.sleepRecords,
-                currentMedicines: currentMedicines ?? current.currentMedicines,
-              ),
-            );
-        await ref.read(assistantControllerProvider.notifier).loadCapabilities();
-      } catch (error) {
-        ref
-            .read(talkerProvider)
-            .error('AssistantPage.toggleContextSetting: failed: $error');
+        },
+      );
+      if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+        await AppToast.show(ctx, error.message);
       }
     }
 
@@ -185,21 +199,23 @@ class AssistantPage extends HookConsumerWidget {
       required String proposalId,
     }) async {
       final l = AppLocalizations.of(ctx)!;
-      try {
-        await ref
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'AssistantPage.handleConfirmProposal',
+        action: () => ref
             .read(assistantControllerProvider.notifier)
             .confirmProposedAction(
               messageId: messageId,
               proposalId: proposalId,
-            );
-        if (!ctx.mounted) return;
-        await AppToast.show(ctx, l.assistantProposalConfirmedToast);
-      } catch (error) {
-        ref
-            .read(talkerProvider)
-            .error('AssistantPage.handleConfirmProposal: failed: $error');
-        if (!ctx.mounted) return;
-        await AppToast.show(ctx, LucentErrorMapper.fromObject(error).message);
+            ),
+      );
+      switch (result) {
+        case Success():
+          if (!ctx.mounted) return;
+          await AppToast.show(ctx, l.assistantProposalConfirmedToast);
+        case Failure(:final error):
+          if (!ctx.mounted) return;
+          await AppToast.show(ctx, error.message);
       }
     }
 

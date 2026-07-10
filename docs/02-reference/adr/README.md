@@ -80,12 +80,12 @@ What becomes easier or harder as a result of this decision?
   - Status: accepted
   - Date: 2026-07-10
 - [0007](0007-network-layer-separation.md)
-  - Title: 网络层职责分离 — LucentDioClient 拆分
-  - Status: proposed
+  - Title: 网络层职责分离 — LucentDioClient 拆分与 API 访问简化
+  - Status: accepted
   - Date: 2026-07-10
 - [0008](0008-result-type-and-error-handling.md)
   - Title: Result 类型与统一错误处理
-  - Status: proposed
+  - Status: accepted
   - Date: 2026-07-10
 - [0009](0009-local-persistence-drift.md)
   - Title: 本地持久化与离线策略 — Drift

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -154,46 +154,43 @@ class DataExportPage extends ConsumerWidget {
 
   Future<void> _requestExport(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
-    try {
-      final request = await ref
-          .read(dataExportControllerProvider.notifier)
-          .requestExport();
-      if (!context.mounted) {
-        return;
-      }
-
-      switch (dataExportUiStatusForRequest(request)) {
-        case DataExportUiStatus.completed:
-          await AppToast.show(context, l10n.mineExportStatusCompleted);
-        case DataExportUiStatus.completedLinkMissing:
-          await AppToast.show(context, l10n.reportExportLinkMissingToast);
-        case DataExportUiStatus.failed:
-        case DataExportUiStatus.unavailable:
-          await AppToast.show(
-            context,
-            request?.errorMessage?.isNotEmpty == true
-                ? request?.errorMessage ?? ''
-                : dataExportUiStatusForRequest(request) ==
-                      DataExportUiStatus.unavailable
-                ? l10n.mineExportStatusUnavailable
-                : l10n.mineExportStatusFailed,
-          );
-        case DataExportUiStatus.requested:
-          await AppToast.show(context, l10n.mineExportRequested);
-        case DataExportUiStatus.processing:
-          await AppToast.show(context, l10n.mineExportStatusPending);
-        case DataExportUiStatus.idle:
-          await AppToast.show(context, l10n.mineExportStatusFailed);
-      }
-    } catch (error) {
-      ref
-          .read(talkerProvider)
-          .error('DataExportPage._requestExport: failed: $error');
-      if (!context.mounted) {
-        return;
-      }
-      final message = LucentErrorMapper.fromObject(error).message;
-      await AppToast.show(context, '${l10n.mineExportStatusFailed}: $message');
+    final result = await runGuarded(
+      ref: ref,
+      tag: 'DataExportPage._requestExport',
+      action: () =>
+          ref.read(dataExportControllerProvider.notifier).requestExport(),
+    );
+    if (!context.mounted) return;
+    switch (result) {
+      case Success(:final value):
+        switch (dataExportUiStatusForRequest(value)) {
+          case DataExportUiStatus.completed:
+            await AppToast.show(context, l10n.mineExportStatusCompleted);
+          case DataExportUiStatus.completedLinkMissing:
+            await AppToast.show(context, l10n.reportExportLinkMissingToast);
+          case DataExportUiStatus.failed:
+          case DataExportUiStatus.unavailable:
+            await AppToast.show(
+              context,
+              value?.errorMessage?.isNotEmpty == true
+                  ? value?.errorMessage ?? ''
+                  : dataExportUiStatusForRequest(value) ==
+                        DataExportUiStatus.unavailable
+                  ? l10n.mineExportStatusUnavailable
+                  : l10n.mineExportStatusFailed,
+            );
+          case DataExportUiStatus.requested:
+            await AppToast.show(context, l10n.mineExportRequested);
+          case DataExportUiStatus.processing:
+            await AppToast.show(context, l10n.mineExportStatusPending);
+          case DataExportUiStatus.idle:
+            await AppToast.show(context, l10n.mineExportStatusFailed);
+        }
+      case Failure(:final error):
+        await AppToast.show(
+          context,
+          '${l10n.mineExportStatusFailed}: ${error.message}',
+        );
     }
   }
 }

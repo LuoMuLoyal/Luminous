@@ -1,6 +1,6 @@
 # ADR-0008: Result 类型与统一错误处理
 
-- **Status**: proposed
+- **Status**: accepted
 - **Date**: 2026-07-10
 - **Deciders**: LuoMuLoyal
 
@@ -135,8 +135,10 @@ Future<Result<ReportDashboard>> fetchDashboard(query) async {
 }
 ```
 
-**注意**：网络层的 `AuthInterceptor` 内部的 401 refresh 逻辑仍然抛异常（它需要在拦截器
-层面工作），不使用 Result。Result 只在 repository → provider → UI 边界使用。
+**注意**：网络层的 `AuthInterceptor`（ADR-0007 已实现）内部的 401 refresh 逻辑仍然抛
+异常（它需要在拦截器层面工作），不使用 Result。`ErrorInterceptor`（ADR-0007）已在
+拦截器链末端将 `DioException` 映射为 `LucentApiException`，`LucentErrorMapper.toAppError()`
+在此映射基础上进一步转换为 `AppError`。Result 只在 repository → provider → UI 边界使用。
 
 ### 8.3 泛化 `runGuarded` helper
 
@@ -144,14 +146,14 @@ Future<Result<ReportDashboard>> fetchDashboard(query) async {
 
 ```dart
 Future<Result<T>> runGuarded<T>({
+  required Ref ref,
   required String tag,
   required Future<T> Function() action,
-  Talker? talker,
 }) async {
   try {
     return Result.success(await action());
   } catch (e) {
-    talker?.error('$tag: failed: $e');
+    ref.read(talkerProvider).error('$tag: failed: $e');
     return Result.failure(LucentErrorMapper.toAppError(e));
   }
 }

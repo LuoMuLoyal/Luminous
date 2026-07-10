@@ -72,6 +72,9 @@ lib/core/database/
 
 ### 9.3 Cache-First Repository 模式
 
+> **依赖**：本节的 `Result<T>` 类型和 `LucentErrorMapper.toAppError()` 方法由
+> ADR-0008 定义。实施顺序应为 ADR-0008 → ADR-0009。
+
 Repository 层从纯远程调用改为 cache-first 模式：
 
 ```dart
@@ -165,7 +168,7 @@ class PendingSyncItems extends Table {
 
 ```dart
 @Riverpod(keepAlive: true)
-AppDatabase appDatabase(AppDatabaseRef ref) {
+AppDatabase appDatabase(Ref ref) {
   final db = AppDatabase();
   ref.onDispose(db.close);
   return db;
@@ -174,7 +177,7 @@ AppDatabase appDatabase(AppDatabaseRef ref) {
 // 响应式查询：DAO 返回 Stream，Provider 暴露为 StreamProvider
 @riverpod
 Stream<List<DailyRecordItem>> watchDailyRecords(
-  WatchDailyRecordsRef ref,
+  Ref ref,
   RecordFilter filter,
 ) {
   return ref.watch(dailyRecordDaoProvider).watchByFilter(filter);

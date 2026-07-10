@@ -28,6 +28,7 @@ context.push('/mine/allergy/$allergyId/edit');
 
 - 带参数的路由只能定义 base path（如 `recordDetail = '/record'`），实际使用时仍需拼接
 - 15 个路由文件各自导出 `List<RouteBase>` 常量，`router.dart` 用 spread 合并
+  （去前缀化后文件名为 `auth.dart`、`record.dart` 等，不带 `router_` 前缀）
 - 查询参数（如 `?kind=sleep`）完全没有类型安全
 - `GoRoute` 的 `pageBuilder` 与路由定义绑定，无法复用页面构建逻辑
 
@@ -149,8 +150,9 @@ final router = GoRouter(
 ## Consequences
 
 - 新增 `go_router_builder` 到 `dev_dependencies`（`build_runner` 已存在）。
-- `lib/app/router/` 下的 10 个路由文件（`router_auth.dart`、`router_record.dart` 等）
-  逐步改为 `@TypedGoRoute` 注解形式。每个 feature 在自己的 `presentation/routes.dart`
+- `lib/app/router/` 下的 10 个路由文件（`auth.dart`、`record.dart`、`medicine.dart`
+  等，去前缀化前为 `router_auth.dart`、`router_record.dart`）逐步改为
+  `@TypedGoRoute` 注解形式。每个 feature 在自己的 `presentation/routes.dart`
   中声明路由类，不再集中到 `lib/app/router/`。
 - `router.dart` 简化：`routes: [StatefulShellRoute(...), ...$appRoutes]`。
 - `AppRoutes` 常量精简为 5 个 tab 路径 + 非导航用途的路径引用。
