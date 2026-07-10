@@ -89,7 +89,7 @@ What becomes easier or harder as a result of this decision?
   - Date: 2026-07-10
 - [0009](0009-local-persistence-drift.md)
   - Title: 本地持久化与离线策略 — Drift
-  - Status: proposed
+  - Status: accepted
   - Date: 2026-07-10
 - [0010](0010-type-safe-routing-go-router-builder.md)
   - Title: 类型安全路由 — go_router_builder
