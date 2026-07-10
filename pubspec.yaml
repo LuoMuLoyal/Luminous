@@ -100,6 +100,7 @@ dev_dependencies:
   patrol: ^4.6.1
   riverpod_generator: ^4.0.4
   drift_dev: ^2.20.0
+  go_router_builder: ^4.3.0
 flutter_launcher_icons:
   android: true
   ios: true

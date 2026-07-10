@@ -15,6 +15,7 @@ import 'package:luminous/features/record/data/providers/providers.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_status_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/meal_analysis_summary_card.dart';
@@ -91,8 +92,10 @@ class RecordDetailPage extends ConsumerWidget {
       if (session.canAccessProtectedData)
         FButton.icon(
           variant: FButtonVariant.ghost,
-          onPress: () =>
-              pushAuthRequiredRoute(context, '/record/$recordId/edit'),
+          onPress: () => pushAuthRequiredRoute(
+            context,
+            RecordEditRoute(id: recordId).location,
+          ),
           child: const Icon(FLucideIcons.pencil),
         ),
     ];

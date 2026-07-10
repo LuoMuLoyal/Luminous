@@ -48,6 +48,7 @@ lib/l10n/app_localizations.dart
 lib/l10n/app_localizations_*.dart
 **/*.freezed.dart
 **/*.g.dart
+**/*.drift.dart
 packages/
 !generated/lucent_api/lib/api/**
 generated/lucent_api/lib/api/**/*.g.dart

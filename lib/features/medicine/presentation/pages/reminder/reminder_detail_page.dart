@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_loading.dart';
@@ -100,9 +101,9 @@ class MedicineReminderDetailPage extends ConsumerWidget {
       if (session.canAccessProtectedData)
         FButton(
           variant: FButtonVariant.ghost,
-          onPress: () => context.push(
-            '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}/edit',
-          ),
+          onPress: () => MedicineReminderEditRoute(
+            medicineId: currentMedicineId,
+          ).push(context),
           child: Text(l10n.recordEditAction),
         ),
     ];

@@ -16,6 +16,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/notification/presentation/providers/providers.dart';
+import 'package:luminous/features/notification/presentation/routes.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -402,7 +403,8 @@ class ReportPage extends ConsumerWidget {
       onSync: () => _refreshDashboard(ref),
       proactiveSuggestions: proactiveSuggestions,
       isSuggestionHistoryLoading: notificationListAsync?.isLoading ?? false,
-      onSuggestionTap: (item) => context.push('/notifications/${item.id}'),
+      onSuggestionTap: (item) =>
+          NotificationDetailRoute(id: item.id).push(context),
       onAiSummaryRangeChanged: (range) {
         ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
       },

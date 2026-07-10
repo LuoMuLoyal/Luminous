@@ -12,6 +12,7 @@ import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
@@ -190,13 +191,11 @@ Future<void> _openReminder(
 
   if (!context.mounted) return;
   if (currentMedicineId == null) {
-    unawaited(context.push(AppRoutes.medicineRemindersNew));
+    unawaited(const MedicineRemindersNewRoute().push(context));
     return;
   }
   unawaited(
-    context.push(
-      '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
-    ),
+    MedicineReminderDetailRoute(medicineId: currentMedicineId).push(context),
   );
 }
 

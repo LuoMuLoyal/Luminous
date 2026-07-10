@@ -65,12 +65,12 @@ void main() {
         container: container,
         child: TestAuthApp(
           router: GoRouter(
-            initialLocation: '/login?returnTo=/settings',
+            initialLocation: '/login?return-to=/settings',
             routes: [
               GoRoute(
                 path: '/login',
                 builder: (context, state) =>
-                    LoginPage(returnTo: state.uri.queryParameters['returnTo']),
+                    LoginPage(returnTo: state.uri.queryParameters['return-to']),
               ),
               GoRoute(
                 path: '/settings',

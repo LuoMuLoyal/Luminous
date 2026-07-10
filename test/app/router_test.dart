@@ -3,6 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/features/auth/presentation/routes.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
+import 'package:luminous/features/notification/presentation/routes.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -201,6 +206,85 @@ void main() {
 
       expect(find.byType(NavigationBar), findsNothing);
       expect(find.byType(SearchPage), findsOneWidget);
+    });
+  });
+
+  group('typed route .location generates correct URL', () {
+    test('RecordDetailRoute with id', () {
+      expect(
+        const RecordDetailRoute(id: 'abc-123').location,
+        '/record/abc-123',
+      );
+    });
+
+    test('RecordDetailRoute URL-encodes path parameter', () {
+      expect(
+        const RecordDetailRoute(id: 'a b/c').location,
+        '/record/a%20b%2Fc',
+      );
+    });
+
+    test('RecordEditRoute with id', () {
+      expect(const RecordEditRoute(id: 'xyz').location, '/record/xyz/edit');
+    });
+
+    test('RecordCreateRoute with enum query param', () {
+      expect(
+        const RecordCreateRoute(kind: DailyRecordKind.sleep).location,
+        '/record/create?kind=sleep',
+      );
+    });
+
+    test('RecordCreateRoute with no params', () {
+      expect(const RecordCreateRoute().location, '/record/create');
+    });
+
+    test('RecordCreateRoute with all params', () {
+      final loc = const RecordCreateRoute(
+        kind: DailyRecordKind.water,
+        date: '2026-07-10',
+        time: '08:30',
+      ).location;
+      expect(loc, contains('kind=water'));
+      expect(loc, contains('date=2026-07-10'));
+      expect(loc, contains('time=08%3A30'));
+    });
+
+    test('LoginRoute with returnTo', () {
+      final loc = const LoginRoute(returnTo: '/record/123').location;
+      expect(loc, startsWith('/login'));
+      expect(loc, contains('return-to=%2Frecord%2F123'));
+    });
+
+    test('LoginOauthWechatRoute with code and state', () {
+      final loc = const LoginOauthWechatRoute(
+        code: 'wx-code',
+        state: 'wx-state',
+      ).location;
+      expect(loc, startsWith('/login/oauth/wechat'));
+      expect(loc, contains('code=wx-code'));
+      expect(loc, contains('state=wx-state'));
+    });
+
+    test('MedicineReminderDetailRoute with medicineId', () {
+      expect(
+        const MedicineReminderDetailRoute(medicineId: 'med-001').location,
+        '/medicine/reminders/med-001',
+      );
+    });
+
+    test('MedicineReminderEditRoute with medicineId', () {
+      expect(
+        const MedicineReminderEditRoute(medicineId: 'med-001').location,
+        '/medicine/reminders/med-001/edit',
+      );
+    });
+
+    test('NotificationDetailRoute with id (nested route)', () {
+      expect(
+        const NotificationDetailRoute(id: 'notif-1').location,
+        '/notifications/notif-1',
+      );
     });
   });
 }

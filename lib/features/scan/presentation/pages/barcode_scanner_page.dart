@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -73,7 +72,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
 
       if (items.length == 1) {
         final item = items.first;
-        unawaited(context.push('${AppRoutes.medicineReminders}/${item.id}'));
+        unawaited(
+          MedicineReminderDetailRoute(medicineId: item.id).push(context),
+        );
       } else {
         // Multiple results — show list for user to pick
         _showCandidatePicker(items);
@@ -116,7 +117,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
             onPress: () {
               Navigator.pop(ctx);
               unawaited(
-                context.push('${AppRoutes.medicineReminders}/${item.id}'),
+                MedicineReminderDetailRoute(medicineId: item.id).push(context),
               );
             },
             child: Padding(

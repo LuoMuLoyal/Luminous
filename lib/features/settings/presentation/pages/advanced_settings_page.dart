@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:luminous/core/accessibility/settings_controller.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/config/feature_flags_controller.dart';
@@ -16,6 +16,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync_provider.dart';
+import 'package:luminous/features/settings/presentation/routes.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -175,7 +176,7 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
           title: Text(l10n.settingsFeatureFlagsTitle),
           subtitle: Text(l10n.settingsFeatureFlagsSummary(flags.enabledCount)),
           suffix: const Icon(FLucideIcons.chevronRight),
-          onPress: () => context.push('/settings/more/feature-flags'),
+          onPress: () => const SettingsFeatureFlagsRoute().push(context),
         ),
       ],
     );

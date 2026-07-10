@@ -6,26 +6,29 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 void main() {
   group('loginRouteForReturnTo', () {
     test('encodes simple tab paths', () {
-      expect(loginRouteForReturnTo('/today'), '/login?returnTo=%2Ftoday');
-      expect(loginRouteForReturnTo('/record'), '/login?returnTo=%2Frecord');
-      expect(loginRouteForReturnTo('/medicine'), '/login?returnTo=%2Fmedicine');
+      expect(loginRouteForReturnTo('/today'), '/login?return-to=%2Ftoday');
+      expect(loginRouteForReturnTo('/record'), '/login?return-to=%2Frecord');
+      expect(
+        loginRouteForReturnTo('/medicine'),
+        '/login?return-to=%2Fmedicine',
+      );
     });
 
     test('encodes nested create paths', () {
       expect(
         loginRouteForReturnTo('/record/create'),
-        '/login?returnTo=%2Frecord%2Fcreate',
+        '/login?return-to=%2Frecord%2Fcreate',
       );
       expect(
         loginRouteForReturnTo('/medicine/search'),
-        '/login?returnTo=%2Fmedicine%2Fsearch',
+        '/login?return-to=%2Fmedicine%2Fsearch',
       );
     });
 
     test('encodes paths with existing query parameters', () {
       expect(
         loginRouteForReturnTo('/record/create?kind=water'),
-        '/login?returnTo=%2Frecord%2Fcreate%3Fkind%3Dwater',
+        '/login?return-to=%2Frecord%2Fcreate%3Fkind%3Dwater',
       );
     });
 
@@ -33,7 +36,7 @@ void main() {
       final route = loginRouteForReturnTo('/record/create?kind=water');
       final uri = Uri.parse(route);
       expect(uri.path, '/login');
-      expect(uri.queryParameters['returnTo'], '/record/create?kind=water');
+      expect(uri.queryParameters['return-to'], '/record/create?kind=water');
     });
   });
 
@@ -57,7 +60,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(route, '/login?returnTo=%2Frecord%2Fcreate%3Fkind%3Dwater');
+      expect(route, '/login?return-to=%2Frecord%2Fcreate%3Fkind%3Dwater');
     });
 
     testWidgets('falls back to root for empty location', (tester) async {
@@ -79,7 +82,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(route, '/login?returnTo=%2F');
+      expect(route, '/login?return-to=%2F');
     });
   });
 }

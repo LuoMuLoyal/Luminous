@@ -1930,7 +1930,7 @@ GoRouter _buildRecordTestRouter(String initialLocation) {
       GoRoute(
         path: '/login',
         builder: (context, state) => Scaffold(
-          body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+          body: Text("login-page:${state.uri.queryParameters['return-to']}"),
         ),
       ),
     ],
@@ -1958,7 +1958,7 @@ GoRouter _buildEditTestRouter({
       GoRoute(
         path: '/login',
         builder: (context, state) => Scaffold(
-          body: Text("login-page:${state.uri.queryParameters['returnTo']}"),
+          body: Text("login-page:${state.uri.queryParameters['return-to']}"),
         ),
       ),
     ],

@@ -511,9 +511,9 @@ class _DrugBoxMedicationRow extends StatelessWidget {
           onOpenReminder!(currentMedicineId);
           return;
         }
-        context.push(
-          '/medicine/reminders/${Uri.encodeComponent(currentMedicineId)}',
-        );
+        MedicineReminderDetailRoute(
+          medicineId: currentMedicineId,
+        ).push(context);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
