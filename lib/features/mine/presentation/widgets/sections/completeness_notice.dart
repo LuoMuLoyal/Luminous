@@ -173,7 +173,7 @@ class _GapRow extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: colors.destructive.withValues(alpha: 0.1),
+                  color: SemanticColor.destructive.muted(context),
                   borderRadius: BorderRadius.circular(RadiusTokens.level2),
                 ),
                 padding: const EdgeInsets.symmetric(

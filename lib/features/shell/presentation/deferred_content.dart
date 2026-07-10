@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 
@@ -52,10 +51,8 @@ class _DefaultTabPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return ColoredBox(
-      color: colors.secondary.withValues(alpha: 0.32),
+      color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
       child: const SafeArea(
         bottom: false,
         child: Padding(

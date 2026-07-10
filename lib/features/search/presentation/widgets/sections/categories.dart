@@ -70,7 +70,7 @@ class _CategoryItem extends StatelessWidget {
             size: 48,
             style: .delta(
               backgroundColor: category.softColor
-                  .resolve(colors)
+                  .solid(context)
                   .withValues(alpha: 0.74),
             ),
             child: Icon(category.icon, color: category.accent.resolve(colors)),

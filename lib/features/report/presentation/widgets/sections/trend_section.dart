@@ -145,7 +145,7 @@ class _TrendChart extends StatelessWidget {
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: colors.secondary.withValues(alpha: 0.04),
+          color: SemanticColor.neutral.subtle(context),
           borderRadius: BorderRadius.circular(RadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),

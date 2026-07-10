@@ -65,7 +65,7 @@ class _EmptyFindingsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.06),
+        color: SemanticColor.neutral.subtle(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Row(

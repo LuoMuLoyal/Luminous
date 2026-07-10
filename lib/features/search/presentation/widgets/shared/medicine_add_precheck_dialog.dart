@@ -84,12 +84,12 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(Spacing.level3),
                       decoration: BoxDecoration(
-                        color: colors.secondary.withValues(alpha: 0.08),
+                        color: SemanticColor.neutral.muted(context),
                         borderRadius: BorderRadius.circular(
                           RadiusTokens.level3,
                         ),
                         border: Border.all(
-                          color: colors.secondary.withValues(alpha: 0.18),
+                          color: SemanticColor.neutral.border(context),
                         ),
                       ),
                       child: Row(
@@ -274,9 +274,9 @@ class _PrecheckCoverageRow extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.08),
+        color: SemanticColor.neutral.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: colors.secondary.withValues(alpha: 0.18)),
+        border: Border.all(color: SemanticColor.neutral.border(context)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level3),

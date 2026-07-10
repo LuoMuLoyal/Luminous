@@ -135,7 +135,7 @@ class _TodayPlanRow extends StatelessWidget {
                           FBadge(
                             style: .delta(
                               decoration: .shapeDelta(
-                                color: colors.secondary.withValues(alpha: 0.08),
+                                color: SemanticColor.neutral.muted(context),
                                 shape: RoundedSuperellipseBorder(
                                   borderRadius: BorderRadius.circular(
                                     RadiusTokens.level2,

@@ -136,7 +136,7 @@ class _TagPill extends StatelessWidget {
       variant: FBadgeVariant.primary,
       style: .delta(
         decoration: .boxDelta(
-          color: colors.primary.withValues(alpha: 0.08),
+          color: SemanticColor.primary.muted(context),
           borderRadius: BorderRadius.circular(RadiusTokens.level2),
         ),
         contentStyle: .delta(labelTextStyle: .delta(color: colors.primary)),

@@ -93,15 +93,17 @@ class _SuggestionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final color = isRead ? colors.mutedForeground : colors.primary;
+    final semanticColor = isRead
+        ? SemanticColor.neutral
+        : SemanticColor.primary;
+    final color = semanticColor.solid(context);
     final label = isRead
         ? l10n.reportSuggestionHistoryReadBadge
         : l10n.reportSuggestionHistoryUnreadBadge;
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: semanticColor.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
       ),
       child: Padding(
@@ -132,7 +134,7 @@ class _EmptyView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level5),
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.06),
+        color: SemanticColor.neutral.subtle(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Row(

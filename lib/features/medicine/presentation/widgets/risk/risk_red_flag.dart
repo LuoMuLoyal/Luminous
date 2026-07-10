@@ -20,11 +20,9 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
-        color: context.theme.colors.primary.withValues(alpha: 0.08),
+        color: SemanticColor.primary.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(
-          color: context.theme.colors.primary.withValues(alpha: 0.22),
-        ),
+        border: Border.all(color: SemanticColor.primary.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -23,13 +23,9 @@ Last updated: 2026-07-09
 
 ## 语义颜色系统增量清理 (LUM-2026-0709-07 后续)
 
-二维 `SemanticColor` / `SemanticColorPalette` / `SemanticColors` 基础设施已就位，6 个核心 widget 文件已完成 alpha→palette 迁移。剩余约 20 处 `colors.X.withValues(alpha: Y)` 模式（直接 `FColors` 属性访问，非通过 `SemanticColor`）可按 feature 分批迁移：
+二维 `SemanticColor` / `SemanticColorPalette` / `SemanticColors` 基础设施已就位，全部 feature 的 `colors.X.withValues(alpha: Y)` 模式迁移已完成。剩余少量范围外 alpha 值（0.32、0.35、0.74 等）已改为基于 `SemanticColor` palette 的 `withValues(alpha:)`，不再直接访问 `FColors` 属性。
 
-- `report/` — `findings_section.dart`（1 处剩余）、`metrics_grid.dart`（1 处剩余）
-- `search/` — `view.dart`（1 处）、`desktop_tabs.dart`（1 处）、`categories.dart`（1 处）、`source_switch.dart`（1 处）
-- `shell/` — `deferred_content.dart`（1 处）
-
-每批独立可测，不阻塞功能。迁移时按映射表替换：`0.04~0.06 → palette.subtle`、`0.08~0.12 → palette.muted`、`0.18~0.25 → palette.border`、无 alpha → palette.solid。
+迁移映射表：`0.04~0.06 → palette.subtle`、`0.08~0.12 → palette.muted`、`0.18~0.25 → palette.border`、无 alpha → palette.solid`。范围外 alpha 值使用 `SemanticColor.X.solid(context).withValues(alpha: Y)` 或 `SemanticColor.X.muted(context).withValues(alpha: Y)`。
 
 ## 实验性功能（稳定版后启动）
 

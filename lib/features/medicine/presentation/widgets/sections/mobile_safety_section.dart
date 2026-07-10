@@ -104,8 +104,8 @@ class _SafetySummaryBanner extends StatelessWidget {
       _ => accent,
     };
     final iconBackgroundColor = switch (summary.color) {
-      SemanticColor.neutral => colors.secondary.withValues(alpha: 0.08),
-      _ => accent.withValues(alpha: 0.12),
+      SemanticColor.neutral => SemanticColor.neutral.muted(context),
+      _ => summary.color.muted(context),
     };
     final titleColor = switch (summary.color) {
       SemanticColor.destructive => accent,
@@ -189,7 +189,7 @@ class _SafetyMetricBadge extends StatelessWidget {
       variant: FBadgeVariant.secondary,
       style: .delta(
         decoration: .shapeDelta(
-          color: colors.secondary.withValues(alpha: 0.08),
+          color: SemanticColor.neutral.muted(context),
           shape: RoundedSuperellipseBorder(
             borderRadius: BorderRadius.circular(RadiusTokens.level2),
             side: BorderSide(color: colors.border),

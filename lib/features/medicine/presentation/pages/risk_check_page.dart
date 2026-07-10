@@ -266,7 +266,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(Spacing.level4),
             decoration: BoxDecoration(
-              color: context.theme.colors.primary.withValues(alpha: 0.06),
+              color: SemanticColor.primary.subtle(context),
               borderRadius: BorderRadius.circular(RadiusTokens.level3),
             ),
             child: Row(
@@ -306,10 +306,10 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(Spacing.level4),
               decoration: BoxDecoration(
-                color: context.theme.colors.secondary.withValues(alpha: 0.08),
+                color: SemanticColor.neutral.muted(context),
                 borderRadius: BorderRadius.circular(RadiusTokens.level3),
                 border: Border.all(
-                  color: context.theme.colors.secondary.withValues(alpha: 0.18),
+                  color: SemanticColor.neutral.border(context),
                 ),
               ),
               child: Row(

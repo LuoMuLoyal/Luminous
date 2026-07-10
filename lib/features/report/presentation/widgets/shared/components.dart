@@ -16,8 +16,6 @@ class ReportMetricTrack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    final resolvedColor = color.resolve(colors);
     final visibleValues = values.isEmpty ? const <double>[0, 0] : values;
     final minValue = visibleValues.reduce((a, b) => a < b ? a : b);
     final maxValue = visibleValues.reduce((a, b) => a > b ? a : b);
@@ -39,7 +37,7 @@ class ReportMetricTrack extends StatelessWidget {
                         ((visibleValues[index] - minValue) / span * 0.62),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: resolvedColor.withValues(alpha: 0.18),
+                        color: color.border(context),
                         borderRadius: BorderRadius.circular(
                           RadiusTokens.levelFull,
                         ),

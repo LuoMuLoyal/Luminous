@@ -100,7 +100,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                             ? colors.primary
                             : colors.border;
                         final backgroundColor = selected
-                            ? colors.primary.withValues(alpha: 0.1)
+                            ? SemanticColor.primary.muted(context)
                             : colors.background;
 
                         return FTappable(

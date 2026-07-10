@@ -194,7 +194,7 @@ class _StatusBadge extends StatelessWidget {
     return FBadge.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: colors.secondary.withValues(alpha: 0.12),
+          color: SemanticColor.neutral.muted(context),
           shape: RoundedSuperellipseBorder(
             borderRadius: context.theme.style.borderRadius.pill,
           ),

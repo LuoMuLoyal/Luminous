@@ -85,7 +85,7 @@ class DesktopTabs extends StatelessWidget {
         const SizedBox(width: Spacing.level5),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: colors.primary.withValues(alpha: 0.1),
+            color: SemanticColor.primary.muted(context),
             shape: BoxShape.circle,
           ),
           child: SizedBox(

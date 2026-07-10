@@ -41,7 +41,7 @@ class NotificationListItemWidget extends StatelessWidget {
           decoration: .shapeDelta(
             color: item.isRead
                 ? colors.background
-                : colors.primary.withValues(alpha: 0.06),
+                : SemanticColor.primary.subtle(context),
             shape: RoundedSuperellipseBorder(
               side: BorderSide(
                 color: item.isRead ? colors.border : colors.primary,

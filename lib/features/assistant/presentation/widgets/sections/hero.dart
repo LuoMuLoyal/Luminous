@@ -25,7 +25,7 @@ class AssistantHero extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [colors.primary.withValues(alpha: 0.16), colors.background],
+          colors: [SemanticColor.primary.border(context), colors.background],
         ),
         borderRadius: BorderRadius.circular(RadiusTokens.level5),
         border: Border.all(color: colors.border),
@@ -39,7 +39,7 @@ class AssistantHero extends StatelessWidget {
               children: [
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    color: colors.primary.withValues(alpha: 0.12),
+                    color: SemanticColor.primary.muted(context),
                     borderRadius: BorderRadius.circular(RadiusTokens.level3),
                   ),
                   child: const Padding(
@@ -110,12 +110,12 @@ class _StatusChip extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: enabled
-            ? colors.primary.withValues(alpha: 0.12)
+            ? SemanticColor.primary.muted(context)
             : colors.secondary,
         borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
         border: Border.all(
           color: enabled
-              ? colors.primary.withValues(alpha: 0.24)
+              ? SemanticColor.primary.solid(context).withValues(alpha: 0.24)
               : colors.border,
         ),
       ),

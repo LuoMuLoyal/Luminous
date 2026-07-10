@@ -20,7 +20,7 @@ class MedicineRiskMetricChip extends StatelessWidget {
     return FCard.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: colors.secondary.withValues(alpha: 0.08),
+          color: SemanticColor.neutral.muted(context),
           shape: RoundedSuperellipseBorder(
             side: BorderSide(color: colors.border),
             borderRadius: context.theme.style.borderRadius.lg,

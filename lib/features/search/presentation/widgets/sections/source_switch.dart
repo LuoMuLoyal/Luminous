@@ -38,7 +38,7 @@ class SourceSwitch extends StatelessWidget {
                       .all(
                         .shapeDelta(
                           color: source == selectedSource
-                              ? colors.primary.withValues(alpha: 0.1)
+                              ? SemanticColor.primary.muted(context)
                               : colors.background,
                           shape: RoundedSuperellipseBorder(
                             side: BorderSide(

@@ -25,7 +25,6 @@ class MinePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
-    final colors = context.theme.colors;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
@@ -58,7 +57,9 @@ class MinePage extends ConsumerWidget {
             )
           : DecoratedBox(
               decoration: BoxDecoration(
-                color: colors.secondary.withValues(alpha: 0.32),
+                color: SemanticColor.neutral
+                    .muted(context)
+                    .withValues(alpha: 0.32),
               ),
               child: SafeArea(
                 bottom: false,
@@ -123,11 +124,9 @@ class _MineDesktopShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: colors.secondary.withValues(alpha: 0.32),
+        color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
       ),
       child: SafeArea(
         bottom: false,

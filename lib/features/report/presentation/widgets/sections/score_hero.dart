@@ -141,14 +141,12 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    final resolvedColor = color.resolve(colors);
+    final resolvedColor = color.solid(context);
 
     return FBadge.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: resolvedColor.withValues(alpha: 0.12),
+          color: color.muted(context),
           shape: RoundedSuperellipseBorder(
             borderRadius: context.theme.style.borderRadius.pill,
           ),

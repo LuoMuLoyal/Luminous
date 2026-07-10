@@ -43,7 +43,7 @@ class MineHeaderActionChip extends StatelessWidget {
           icon,
           size: 18,
           color: onTap == null
-              ? colors.mutedForeground.withValues(alpha: 0.5)
+              ? SemanticColor.neutral.solid(context).withValues(alpha: 0.5)
               : colors.foreground,
         ),
       ),

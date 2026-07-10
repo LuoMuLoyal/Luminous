@@ -128,7 +128,7 @@ class _PromisePanel extends StatelessWidget {
           decoration: .shapeDelta(
             color: colors.primary,
             shape: RoundedSuperellipseBorder(
-              side: BorderSide(color: colors.primary.withValues(alpha: 0.2)),
+              side: BorderSide(color: SemanticColor.primary.border(context)),
               borderRadius: context.theme.style.borderRadius.lg,
             ),
           ),

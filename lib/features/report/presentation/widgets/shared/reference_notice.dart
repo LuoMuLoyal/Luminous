@@ -13,11 +13,9 @@ class ReportReferenceNotice extends StatelessWidget {
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: context.theme.colors.primary.withValues(alpha: 0.08),
+          color: SemanticColor.primary.muted(context),
           borderRadius: BorderRadius.circular(RadiusTokens.level4),
-          border: Border.all(
-            color: context.theme.colors.primary.withValues(alpha: 0.16),
-          ),
+          border: Border.all(color: SemanticColor.primary.border(context)),
         ),
         padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
