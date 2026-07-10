@@ -1,10 +1,12 @@
 // ignore_for_file: use_of_void_result
 
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'scan_repository.g.dart';
 
 class ScanRepository {
   const ScanRepository({
@@ -81,10 +83,11 @@ class ScanRepository {
   }
 }
 
-final scanRepositoryProvider = Provider<ScanRepository>((ref) {
+@riverpod
+ScanRepository scanRepository(Ref ref) {
   return ScanRepository(
     api: ref.watch(lucentMedicinesApiProvider),
     dio: ref.watch(lucentDioClientProvider).dio,
     filesApi: ref.watch(lucentFilesApiProvider),
   );
-});
+}

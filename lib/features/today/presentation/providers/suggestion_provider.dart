@@ -3,13 +3,16 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote_data_source.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final todaySuggestionRemoteDataSourceProvider =
-    Provider<TodaySuggestionRemoteDataSource>((ref) {
-      return TodaySuggestionRemoteDataSource(
-        api: ref.watch(lucentTodaySuggestionApiProvider),
-      );
-    });
+part 'suggestion_provider.g.dart';
+
+@riverpod
+TodaySuggestionRemoteDataSource todaySuggestionRemoteDataSource(Ref ref) {
+  return TodaySuggestionRemoteDataSource(
+    api: ref.watch(lucentTodaySuggestionApiProvider),
+  );
+}
 
 /// Manages the lifecycle of Today suggestion cards: fetch, dismiss, feedback.
 ///

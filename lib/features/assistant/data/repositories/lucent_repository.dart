@@ -1,9 +1,11 @@
 import 'package:clock/clock.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/assistant/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'lucent_repository.g.dart';
 
 sealed class AssistantGenerationEvent {
   const AssistantGenerationEvent();
@@ -41,18 +43,18 @@ abstract interface class AssistantRepository {
   );
 }
 
-final assistantRemoteDataSourceProvider = Provider<AssistantRemoteDataSource>((
-  ref,
-) {
+@riverpod
+AssistantRemoteDataSource assistantRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentAssistantApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return AssistantRemoteDataSource(api: api, dio: dio);
-});
+}
 
-final assistantRepositoryProvider = Provider<AssistantRepository>((ref) {
+@riverpod
+AssistantRepository assistantRepository(Ref ref) {
   final dataSource = ref.watch(assistantRemoteDataSourceProvider);
   return LucentAssistantRepository(dataSource: dataSource);
-});
+}
 
 class LucentAssistantRepository implements AssistantRepository {
   LucentAssistantRepository({required this.dataSource});

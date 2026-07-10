@@ -1,11 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/ai/ai_runtime_config.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final aiRuntimeEnvironmentProvider = Provider<AiRuntimeEnvironment>((ref) {
+part 'ai_runtime_providers.g.dart';
+
+@riverpod
+AiRuntimeEnvironment aiRuntimeEnvironment(Ref ref) {
   return AiRuntimeEnvironment.fromPlatform();
-});
+}
 
-final aiRuntimeConfigProvider = Provider<AiRuntimeConfig>((ref) {
+@riverpod
+AiRuntimeConfig aiRuntimeConfig(Ref ref) {
   final environment = ref.watch(aiRuntimeEnvironmentProvider);
   return AiRuntimeConfig.fromEnvironment(environment);
-});
+}

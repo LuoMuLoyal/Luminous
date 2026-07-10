@@ -1,6 +1,9 @@
 import 'package:clock/clock.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final currentRecordDateTimeProvider = Provider<DateTime>((ref) {
+part 'time_provider.g.dart';
+
+@riverpod
+DateTime currentRecordDateTime(Ref ref) {
   return clock.now();
-});
+}

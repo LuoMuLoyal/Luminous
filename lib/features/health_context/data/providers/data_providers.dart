@@ -8,25 +8,28 @@ import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final healthContextMapperProvider = Provider<HealthContextMapper>(
-  (ref) => HealthContextMapper(),
-);
+part 'data_providers.g.dart';
 
-final healthContextRemoteDataSourceProvider =
-    Provider<HealthContextRemoteDataSource>((ref) {
-      final api = ref.watch(lucentUserHealthContextApiProvider);
-      final dio = ref.watch(lucentDioClientProvider).dio;
-      return HealthContextRemoteDataSource(api: api, dio: dio);
-    });
+@riverpod
+HealthContextMapper healthContextMapper(Ref ref) {
+  return HealthContextMapper();
+}
 
-final healthContextRepositoryProvider = Provider<HealthContextRepository>((
-  ref,
-) {
+@riverpod
+HealthContextRemoteDataSource healthContextRemoteDataSource(Ref ref) {
+  final api = ref.watch(lucentUserHealthContextApiProvider);
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return HealthContextRemoteDataSource(api: api, dio: dio);
+}
+
+@riverpod
+HealthContextRepository healthContextRepository(Ref ref) {
   final dataSource = ref.watch(healthContextRemoteDataSourceProvider);
   final mapper = ref.watch(healthContextMapperProvider);
   return LucentHealthContextRepository(dataSource: dataSource, mapper: mapper);
-});
+}
 
 final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>((
   ref,

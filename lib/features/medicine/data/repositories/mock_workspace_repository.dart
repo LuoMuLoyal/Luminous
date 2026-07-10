@@ -1,7 +1,6 @@
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
@@ -11,6 +10,9 @@ import 'package:luminous/features/medicine/data/repositories/lucent_workspace_re
 import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'mock_workspace_repository.g.dart';
 
 /// Demo-only mock implementation of [MedicineWorkspaceRepository] used for tests.
 ///
@@ -181,25 +183,23 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   );
 }
 
-final medicineReminderRemoteDataSourceProvider =
-    Provider<MedicineReminderRemoteDataSource>((ref) {
-      final api = ref.watch(lucentMedicineRemindersApiProvider);
-      final dio = ref.watch(lucentDioClientProvider).dio;
-      return MedicineReminderRemoteDataSource(api: api, dio: dio);
-    });
+@riverpod
+MedicineReminderRemoteDataSource medicineReminderRemoteDataSource(Ref ref) {
+  final api = ref.watch(lucentMedicineRemindersApiProvider);
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return MedicineReminderRemoteDataSource(api: api, dio: dio);
+}
 
-final medicineWorkspaceRepositoryProvider =
-    Provider<MedicineWorkspaceRepository>((ref) {
-      final healthRepo = ref.watch(healthContextRepositoryProvider);
-      final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
-      final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
-      final riskCheckRepository = ref.watch(
-        medicineRiskCheckRepositoryProvider,
-      );
-      return LucentMedicineWorkspaceRepository(
-        healthRepo: healthRepo,
-        doseLogDs: doseLogDs,
-        reminderDs: reminderDs,
-        riskCheckRepository: riskCheckRepository,
-      );
-    });
+@riverpod
+MedicineWorkspaceRepository medicineWorkspaceRepository(Ref ref) {
+  final healthRepo = ref.watch(healthContextRepositoryProvider);
+  final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
+  final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
+  final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
+  return LucentMedicineWorkspaceRepository(
+    healthRepo: healthRepo,
+    doseLogDs: doseLogDs,
+    reminderDs: reminderDs,
+    riskCheckRepository: riskCheckRepository,
+  );
+}

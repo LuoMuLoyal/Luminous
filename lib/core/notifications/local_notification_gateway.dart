@@ -2,9 +2,11 @@ import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
+
+part 'local_notification_gateway.g.dart';
 
 class LocalNotificationGateway {
   LocalNotificationGateway({FlutterLocalNotificationsPlugin? plugin})
@@ -210,8 +212,7 @@ class LocalNotificationGateway {
   }
 }
 
-final localNotificationGatewayProvider = Provider<LocalNotificationGateway>((
-  ref,
-) {
+@riverpod
+LocalNotificationGateway localNotificationGateway(Ref ref) {
   return LocalNotificationGateway();
-});
+}

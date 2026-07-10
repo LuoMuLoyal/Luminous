@@ -1,10 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'risk_check_repository.g.dart';
 
 class MedicineRiskCheckRepository {
   MedicineRiskCheckRepository({
@@ -54,10 +56,8 @@ class MedicineRiskCheckRepository {
   }
 }
 
-final medicineRiskCheckRepositoryProvider =
-    Provider<MedicineRiskCheckRepository>((ref) {
-      final remoteDataSource = ref.watch(
-        medicineSearchRemoteDataSourceProvider,
-      );
-      return MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
-    });
+@riverpod
+MedicineRiskCheckRepository medicineRiskCheckRepository(Ref ref) {
+  final remoteDataSource = ref.watch(medicineSearchRemoteDataSourceProvider);
+  return MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
+}

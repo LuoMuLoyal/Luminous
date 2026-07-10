@@ -2,23 +2,27 @@
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/report/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final reportRemoteDataSourceProvider = Provider<ReportRemoteDataSource>((ref) {
+part 'mock_repository.g.dart';
+
+@riverpod
+ReportRemoteDataSource reportRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentReportsApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return ReportRemoteDataSource(api: api, dio: dio);
-});
+}
 
-final reportRepositoryProvider = Provider<ReportRepository>((ref) {
+@riverpod
+ReportRepository reportRepository(Ref ref) {
   final dataSource = ref.watch(reportRemoteDataSourceProvider);
   return LucentReportRepository(dataSource: dataSource);
-});
+}
 
 class MockReportRepository implements ReportRepository {
   const MockReportRepository();

@@ -1,5 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+part 'external_url_launcher.g.dart';
 
 class ExternalUrlLauncher {
   const ExternalUrlLauncher();
@@ -9,6 +11,7 @@ class ExternalUrlLauncher {
   }
 }
 
-final externalUrlLauncherProvider = Provider<ExternalUrlLauncher>((ref) {
+@riverpod
+ExternalUrlLauncher externalUrlLauncher(Ref ref) {
   return const ExternalUrlLauncher();
-});
+}

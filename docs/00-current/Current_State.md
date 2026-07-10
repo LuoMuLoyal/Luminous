@@ -36,6 +36,7 @@ Last updated: 2026-07-10
 - Auth 模块架构重构完成：`LoginFormState` 从 18 字段降至 11（移除全部 OAuth 字段），`LoginFormNotifier` 从 393 行降至 ~170 行（移除 7 个 OAuth 方法）；新增 `OAuthLoginController` + `OAuthLoginState` 统管 WeChat/QQ/Apple 三方登录；新增 `WechatOAuthService` 封装 mobile→desktop→web 三路平台检测，同时服务登录和身份绑定；新增 `AuthActionRunner`（`runAuthAction<T>()`）统一 try-catch+LucentErrorMapper 模式；新增 `OAuthCallbackParser` 提取回调 URL 解析；`AuthRemoteDataSource` 5 处 `writeSession` 重复提取为 `_persistSession`；`LoginPage` 从 700 行降至 ~370 行，OAuth 面板提取为独立 widget；45 个 auth 测试 + 8 个 mine 测试全部通过。
 - ADR-0006 实施第一批：`riverpod_generator` 引入完成。`riverpod_annotation 4.0.3` + `riverpod_generator 4.0.4` 加入依赖；`network_providers.dart` 全部 20 个 provider 迁移为 `@riverpod` / `@Riverpod(keepAlive: true)` 注解形式；新增 `authGuarded` helper 函数（`lib/core/providers/auth_guarded.dart`）封装 auth session 检查模式；947 tests passed。
 - ADR-0006 实施第二批：Feature 数据 provider 全部接入 `authGuarded`。14 处重复 auth guard 模式消除，覆盖 mine/record/today/medicine/health_context/notification/report 7 个 feature。`authGuarded` 修正为非 `async` 以保持同步 error 传播。`todaySuggestionProvider` 在 session restoring 期间行为改进（pending 代替 null）。947 tests passed。
+- ADR-0006 实施第三批：Feature datasource/repository provider 全部迁移为 `@riverpod` 注解。覆盖 auth/settings/scan/today/record/medicine/health_context/report/assistant/search/mine 共 11 个 feature 模块 + core 层（logger/notifications/router/ai），约 40 个手写 `Provider<T>` 声明改为 `@riverpod` 函数注解。947 tests passed。
 
 ## 相关文档
 

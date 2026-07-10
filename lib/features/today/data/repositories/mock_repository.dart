@@ -1,7 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/today/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'mock_repository.g.dart';
 
 /// Demo-only mock implementation of [TodayRepository] used for tests.
 ///
@@ -106,6 +108,7 @@ class MockTodayRepository implements TodayRepository {
   }
 }
 
-final todayRepositoryProvider = Provider<TodayRepository>((ref) {
+@riverpod
+TodayRepository todayRepository(Ref ref) {
   return LucentTodayRepository(ref: ref);
-});
+}

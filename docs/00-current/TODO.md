@@ -19,7 +19,6 @@ Last updated: 2026-07-09
 以下项经三份审查报告确认后暂缓，有明确原因：
 
 - 超大页面拆分：`login_page.dart`（620+ 行）、`medicine_reminder_edit_page.dart`（400+ 行）— Phase Guide 明确"现在不要做"
-- Provider 一致性：ADR-0006 已 accepted，`network_providers.dart` 已迁移为 `@riverpod` 注解；各 feature provider 逐步迁移中
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 ## 语义颜色系统增量清理 (LUM-2026-0709-07 后续)

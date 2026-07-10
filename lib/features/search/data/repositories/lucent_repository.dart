@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/network_providers.dart';
@@ -6,6 +5,9 @@ import 'package:luminous/features/search/data/datasources/remote_data_source.dar
 import 'package:luminous/features/search/data/mappers/mapper.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'lucent_repository.g.dart';
 
 /// Lucent-backed medicine search repository.
 class LucentMedicineSearchRepository implements MedicineSearchRepository {
@@ -69,23 +71,22 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
 }
 
 /// Provider for LucentMedicineSearchRepository.
-final lucentMedicineSearchRepositoryProvider =
-    Provider<LucentMedicineSearchRepository>((ref) {
-      return LucentMedicineSearchRepository(
-        dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
-        mapper: MedicineSearchMapper(),
-      );
-    });
+@riverpod
+LucentMedicineSearchRepository lucentMedicineSearchRepository(Ref ref) {
+  return LucentMedicineSearchRepository(
+    dataSource: ref.watch(medicineSearchRemoteDataSourceProvider),
+    mapper: MedicineSearchMapper(),
+  );
+}
 
 /// Provider that exposes the repository through the interface.
-final medicineSearchRepositoryProvider = Provider<MedicineSearchRepository>((
-  ref,
-) {
+@riverpod
+MedicineSearchRepository medicineSearchRepository(Ref ref) {
   return ref.watch(lucentMedicineSearchRepositoryProvider);
-});
+}
 
-final medicineSearchRemoteDataSourceProvider =
-    Provider<MedicineSearchRemoteDataSource>((ref) {
-      final api = ref.watch(lucentMedicinesApiProvider);
-      return MedicineSearchRemoteDataSource(api: api);
-    });
+@riverpod
+MedicineSearchRemoteDataSource medicineSearchRemoteDataSource(Ref ref) {
+  final api = ref.watch(lucentMedicinesApiProvider);
+  return MedicineSearchRemoteDataSource(api: api);
+}

@@ -12,7 +12,10 @@ import 'package:luminous/features/medicine/presentation/providers/reminder_provi
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+part 'reminder_notification_coordinator.g.dart';
 
 const medicineReminderScheduledNotificationIdsStorageKey =
     'medicine.reminder.scheduledNotificationIds';
@@ -105,24 +108,27 @@ class MedicineReminderNotificationCoordinator {
   }
 }
 
-final medicineReminderNotificationPlannerProvider =
-    Provider<MedicineReminderNotificationPlanner>((ref) {
-      return const MedicineReminderNotificationPlanner();
-    });
-
-final medicineReminderNotificationCoordinatorProvider =
-    Provider<MedicineReminderNotificationCoordinator>((ref) {
-      return MedicineReminderNotificationCoordinator(
-        gateway: ref.watch(localNotificationGatewayProvider),
-        planner: ref.watch(medicineReminderNotificationPlannerProvider),
-      );
-    });
-
-final medicineReminderNotificationNowProvider = Provider<DateTime Function()>((
-  ref,
+@riverpod
+MedicineReminderNotificationPlanner medicineReminderNotificationPlanner(
+  Ref ref,
 ) {
+  return const MedicineReminderNotificationPlanner();
+}
+
+@riverpod
+MedicineReminderNotificationCoordinator medicineReminderNotificationCoordinator(
+  Ref ref,
+) {
+  return MedicineReminderNotificationCoordinator(
+    gateway: ref.watch(localNotificationGatewayProvider),
+    planner: ref.watch(medicineReminderNotificationPlannerProvider),
+  );
+}
+
+@riverpod
+DateTime Function() medicineReminderNotificationNow(Ref ref) {
   return DateTime.now;
-});
+}
 
 final medicineReminderNotificationSyncProvider = FutureProvider<void>((
   ref,

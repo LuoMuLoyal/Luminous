@@ -1,8 +1,10 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote_data_source.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'lucent_ai_repository.g.dart';
 
 sealed class TodayAiGenerationEvent {
   const TodayAiGenerationEvent();
@@ -25,18 +27,18 @@ abstract interface class TodayAiRepository {
   Stream<TodayAiGenerationEvent> generateStream({String? date});
 }
 
-final todayAiRemoteDataSourceProvider = Provider<TodayAiRemoteDataSource>((
-  ref,
-) {
+@riverpod
+TodayAiRemoteDataSource todayAiRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentTodayAnalysisApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return TodayAiRemoteDataSource(api: api, dio: dio);
-});
+}
 
-final todayAiRepositoryProvider = Provider<TodayAiRepository>((ref) {
+@riverpod
+TodayAiRepository todayAiRepository(Ref ref) {
   final dataSource = ref.watch(todayAiRemoteDataSourceProvider);
   return LucentTodayAiRepository(dataSource: dataSource);
-});
+}
 
 class LucentTodayAiRepository implements TodayAiRepository {
   LucentTodayAiRepository({required this.dataSource});

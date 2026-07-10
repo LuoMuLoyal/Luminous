@@ -3,10 +3,14 @@ import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final mineRepositoryProvider = Provider<MineRepository>((ref) {
+part 'dashboard_provider.g.dart';
+
+@riverpod
+MineRepository mineRepository(Ref ref) {
   return LucentMineRepository(ref);
-});
+}
 
 final mineDashboardProvider = FutureProvider<MineDashboard>((ref) {
   return authGuarded(

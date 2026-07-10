@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'dose_log_remote_data_source.g.dart';
 
 enum DoseLogStatus { taken, skipped, missed, planned }
 
@@ -131,10 +133,9 @@ class DoseLogRemoteDataSource {
   bool _hasText(String? value) => value != null && value.trim().isNotEmpty;
 }
 
-final doseLogRemoteDataSourceProvider = Provider<DoseLogRemoteDataSource>((
-  ref,
-) {
+@riverpod
+DoseLogRemoteDataSource doseLogRemoteDataSource(Ref ref) {
   final api = ref.watch(lucentMedicineDoseLogsApiProvider);
   final dio = ref.watch(lucentDioClientProvider).dio;
   return DoseLogRemoteDataSource(api: api, dio: dio);
-});
+}

@@ -1,7 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'wechat_oauth_service.g.dart';
 
 /// A code+state pair returned from a completed OAuth callback.
 typedef OAuthCodeState = ({String code, String state});
@@ -95,6 +97,7 @@ class WechatOAuthService {
 }
 
 /// Provider for [WechatOAuthService].
-final wechatOAuthServiceProvider = Provider<WechatOAuthService>((ref) {
+@riverpod
+WechatOAuthService wechatOAuthService(Ref ref) {
   return WechatOAuthService(ref);
-});
+}

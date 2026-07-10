@@ -2,13 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/safety_tips_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 export 'package:luminous/features/medicine/presentation/utils/safety_tip_style.dart';
 
-final safetyTipsRemoteDataSourceProvider = Provider<SafetyTipsRemoteDataSource>(
-  (ref) =>
-      SafetyTipsRemoteDataSource(api: ref.watch(lucentMedicinesApiProvider)),
-);
+part 'safety_tips_provider.g.dart';
+
+@riverpod
+SafetyTipsRemoteDataSource safetyTipsRemoteDataSource(Ref ref) {
+  return SafetyTipsRemoteDataSource(api: ref.watch(lucentMedicinesApiProvider));
+}
 
 /// Current visible safety tips, managed as an [AsyncNotifier] so that the
 /// "refresh" action can pass the previous tip ids to the backend for exclusion.

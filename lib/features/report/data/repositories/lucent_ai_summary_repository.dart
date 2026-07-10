@@ -1,11 +1,13 @@
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'lucent_ai_summary_repository.g.dart';
 
 sealed class ReportAiGenerationEvent {
   const ReportAiGenerationEvent();
@@ -36,19 +38,18 @@ abstract interface class ReportAiSummaryRepository {
   });
 }
 
-final reportAiSummaryRemoteDataSourceProvider =
-    Provider<ReportAiSummaryRemoteDataSource>((ref) {
-      final api = ref.watch(lucentReportsApiProvider);
-      final dio = ref.watch(lucentDioClientProvider).dio;
-      return ReportAiSummaryRemoteDataSource(api: api, dio: dio);
-    });
+@riverpod
+ReportAiSummaryRemoteDataSource reportAiSummaryRemoteDataSource(Ref ref) {
+  final api = ref.watch(lucentReportsApiProvider);
+  final dio = ref.watch(lucentDioClientProvider).dio;
+  return ReportAiSummaryRemoteDataSource(api: api, dio: dio);
+}
 
-final reportAiSummaryRepositoryProvider = Provider<ReportAiSummaryRepository>((
-  ref,
-) {
+@riverpod
+ReportAiSummaryRepository reportAiSummaryRepository(Ref ref) {
   final dataSource = ref.watch(reportAiSummaryRemoteDataSourceProvider);
   return LucentReportAiSummaryRepository(dataSource: dataSource);
-});
+}
 
 class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
   LucentReportAiSummaryRepository({required this.dataSource});
