@@ -1,0 +1,977 @@
+import 'package:clock/clock.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/features/assistant/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/assistant/domain/entities/models.dart';
+
+// ── Fake data source ───────────────────────────────────────────
+
+class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
+  _FakeAssistantRemoteDataSource({
+    lucent.AssistantCapabilitiesDataDto? capabilities,
+    lucent.AssistantConversationDataDto? latestConversation,
+    List<lucent.AssistantConversationSummaryDto>? recentConversations,
+    lucent.AssistantConversationDataDto? openedConversation,
+    bool? clearResult,
+    Stream<AssistantRemoteEvent>? stream,
+  })  : _capabilities = capabilities,
+        _latestConversation = latestConversation,
+        _recentConversations = recentConversations,
+        _openedConversation = openedConversation,
+        _clearResult = clearResult,
+        _stream = stream,
+        super(
+          api: lucent.AssistantApi(Dio(BaseOptions())),
+          dio: Dio(BaseOptions()),
+        );
+
+  final lucent.AssistantCapabilitiesDataDto? _capabilities;
+  final lucent.AssistantConversationDataDto? _latestConversation;
+  final List<lucent.AssistantConversationSummaryDto>? _recentConversations;
+  final lucent.AssistantConversationDataDto? _openedConversation;
+  final bool? _clearResult;
+  final Stream<AssistantRemoteEvent>? _stream;
+
+  String? lastOpenedConversationId;
+
+  @override
+  Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
+    if (_capabilities == null) {
+      throw const LucentApiException(message: 'not configured');
+    }
+    return _capabilities!;
+  }
+
+  @override
+  Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
+    return _latestConversation;
+  }
+
+  @override
+  Future<List<lucent.AssistantConversationSummaryDto>>
+  listRecentConversations() async {
+    return _recentConversations ?? const [];
+  }
+
+  @override
+  Future<lucent.AssistantConversationDataDto> openConversation(
+    String conversationId,
+  ) async {
+    lastOpenedConversationId = conversationId;
+    if (_openedConversation == null) {
+      throw const LucentApiException(message: 'not found');
+    }
+    return _openedConversation!;
+  }
+
+  @override
+  Future<bool> clearLatestConversation() async {
+    return _clearResult ?? true;
+  }
+
+  @override
+  Stream<AssistantRemoteEvent> streamMessages({
+    required List<lucent.AssistantInputMessageDto> messages,
+  }) {
+    return _stream ?? const Stream.empty();
+  }
+}
+
+// ── DTO factories ──────────────────────────────────────────────
+
+lucent.AssistantContextSettingsDto _context({
+  bool health = true,
+  bool daily = true,
+  bool sleep = false,
+  bool meds = true,
+}) {
+  return lucent.AssistantContextSettingsDto(
+    healthProfile: health,
+    dailyRecords: daily,
+    sleepRecords: sleep,
+    currentMedicines: meds,
+  );
+}
+
+lucent.AssistantToolCapabilityDto _tool({
+  lucent.AssistantToolCapabilityDtoNameName? name,
+  bool enabled = true,
+  bool implemented = true,
+  bool permitted = true,
+  List<String>? required,
+  lucent.AssistantToolCapabilityDtoDisabledReasonDisabledReason? disabledReason,
+}) {
+  return lucent.AssistantToolCapabilityDto(
+    name: name ?? lucent.AssistantToolCapabilityDtoNameName.getTodayRecords,
+    requiredContextSources: required ?? const ['health_profile'],
+    permittedByUser: permitted,
+    enabled: enabled,
+    implemented: implemented,
+    disabledReason: disabledReason,
+  );
+}
+
+lucent.AssistantCapabilitiesDataDto _capabilitiesDto({
+  String phase = 'preview',
+  bool enabled = true,
+  bool memory = false,
+  bool chatModel = true,
+  bool chatReady = true,
+  bool langGraph = true,
+  bool streaming = true,
+  String transport = 'sse',
+  bool markdown = true,
+  bool rag = false,
+  List<lucent.AssistantToolCapabilityDto>? tools,
+  String? updatedAt,
+}) {
+  return lucent.AssistantCapabilitiesDataDto(
+    phase: phase,
+    assistantEnabled: enabled,
+    assistantMemoryEnabled: memory,
+    assistantContext: _context(),
+    chatModelConfigured: chatModel,
+    interactiveChatReady: chatReady,
+    langGraphReady: langGraph,
+    streamingSupported: streaming,
+    streamingTransport: transport,
+    markdownRenderingRecommended: markdown,
+    ragEnabled: rag,
+    tools: tools ?? [_tool()],
+    updatedAt: updatedAt,
+  );
+}
+
+lucent.AssistantConversationMessageDto _messageDto({
+  lucent.AssistantConversationMessageDtoRoleRole? role,
+  String content = 'hello',
+  List<String>? usedTools,
+  String? createdAt,
+}) {
+  return lucent.AssistantConversationMessageDto(
+    role: role ?? lucent.AssistantConversationMessageDtoRoleRole.user,
+    content: content,
+    usedTools: usedTools ?? const [],
+    createdAt: createdAt ?? '2026-07-01T10:00:00Z',
+  );
+}
+
+lucent.AssistantConversationDataDto _conversationDto({
+  String id = 'conv-1',
+  String? title = 'Test Conversation',
+  lucent.AssistantConversationDataDtoStatusStatus? status,
+  List<lucent.AssistantConversationMessageDto>? messages,
+  String? lastMessageAt,
+  String? createdAt,
+  String? updatedAt,
+}) {
+  return lucent.AssistantConversationDataDto(
+    id: id,
+    title: title,
+    status: status ?? lucent.AssistantConversationDataDtoStatusStatus.active,
+    messages: messages ?? [_messageDto()],
+    lastMessageAt: lastMessageAt ?? '2026-07-01T10:30:00Z',
+    createdAt: createdAt ?? '2026-07-01T10:00:00Z',
+    updatedAt: updatedAt ?? '2026-07-01T10:30:00Z',
+  );
+}
+
+lucent.AssistantConversationSummaryDto _summaryDto({
+  String id = 'conv-1',
+  String? title = 'Summary',
+  lucent.AssistantConversationSummaryDtoStatusStatus? status,
+  String? lastMessageAt,
+  String? createdAt,
+  String? updatedAt,
+}) {
+  return lucent.AssistantConversationSummaryDto(
+    id: id,
+    title: title,
+    status: status ?? lucent.AssistantConversationSummaryDtoStatusStatus.active,
+    lastMessageAt: lastMessageAt,
+    createdAt: createdAt ?? '2026-07-01T10:00:00Z',
+    updatedAt: updatedAt ?? '2026-07-01T10:30:00Z',
+  );
+}
+
+// ── Tests ──────────────────────────────────────────────────────
+
+void main() {
+  group('LucentAssistantRepository.getCapabilities', () {
+    test('maps all fields correctly', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(
+            phase: 'ga',
+            enabled: true,
+            memory: true,
+            chatModel: true,
+            chatReady: true,
+            streaming: true,
+            transport: 'sse',
+            markdown: true,
+            rag: true,
+            tools: [
+              _tool(
+                name: lucent.AssistantToolCapabilityDtoNameName.getUserProfile,
+                enabled: true,
+                implemented: true,
+                required: const ['health_profile'],
+              ),
+              _tool(
+                name: lucent.AssistantToolCapabilityDtoNameName.getCurrentMedicines,
+                enabled: false,
+                implemented: false,
+                permitted: false,
+                disabledReason: lucent.AssistantToolCapabilityDtoDisabledReasonDisabledReason
+                    .notImplemented,
+              ),
+            ],
+            updatedAt: '2026-07-01T00:00:00Z',
+          ),
+        ),
+      );
+
+      final caps = await repo.getCapabilities();
+
+      expect(caps.phase, 'ga');
+      expect(caps.assistantEnabled, isTrue);
+      expect(caps.assistantMemoryEnabled, isTrue);
+      expect(caps.chatModelConfigured, isTrue);
+      expect(caps.interactiveChatReady, isTrue);
+      expect(caps.langGraphReady, isTrue);
+      expect(caps.streamingSupported, isTrue);
+      expect(caps.streamingTransport, 'sse');
+      expect(caps.markdownRenderingRecommended, isTrue);
+      expect(caps.ragEnabled, isTrue);
+      expect(caps.updatedAt, DateTime.parse('2026-07-01T00:00:00Z'));
+      expect(caps.tools, hasLength(2));
+      expect(caps.tools[0].id, 'get_user_profile');
+      expect(caps.tools[0].enabled, isTrue);
+      expect(caps.tools[1].id, 'get_current_medicines');
+      expect(caps.tools[1].enabled, isFalse);
+      expect(caps.tools[1].disabledReason, 'not_implemented');
+      expect(caps.canSendMessages, isTrue);
+      expect(caps.enabledToolCount, 1);
+    });
+
+    test('canSendMessages is false when assistantEnabled is false', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(enabled: false),
+        ),
+      );
+      final caps = await repo.getCapabilities();
+      expect(caps.canSendMessages, isFalse);
+    });
+
+    test('canSendMessages is false when streamingSupported is false', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(streaming: false),
+        ),
+      );
+      final caps = await repo.getCapabilities();
+      expect(caps.canSendMessages, isFalse);
+    });
+
+    test('updatedAt is null when DTO field is null', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(updatedAt: null),
+        ),
+      );
+      final caps = await repo.getCapabilities();
+      expect(caps.updatedAt, isNull);
+    });
+
+    test('updatedAt is null when DTO field is invalid date', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(updatedAt: 'not-a-date'),
+        ),
+      );
+      final caps = await repo.getCapabilities();
+      expect(caps.updatedAt, isNull);
+    });
+
+    test('tool id falls back to empty string for unknown name', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          capabilities: _capabilitiesDto(
+            tools: [_tool(name: lucent.AssistantToolCapabilityDtoNameName.$unknown)],
+          ),
+        ),
+      );
+      final caps = await repo.getCapabilities();
+      expect(caps.tools.single.id, '');
+    });
+  });
+
+  group('LucentAssistantRepository.getLatestConversation', () {
+    test('returns null when data source returns null', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(latestConversation: null),
+      );
+      expect(await repo.getLatestConversation(), isNull);
+    });
+
+    test('maps conversation with messages', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          latestConversation: _conversationDto(
+            id: 'conv-99',
+            title: 'Chat About Meds',
+            messages: [
+              _messageDto(
+                role: lucent.AssistantConversationMessageDtoRoleRole.user,
+                content: 'What is atorvastatin?',
+                createdAt: '2026-07-01T10:00:00Z',
+              ),
+              _messageDto(
+                role: lucent.AssistantConversationMessageDtoRoleRole.assistant,
+                content: 'It is a statin.',
+                usedTools: const ['get_current_medicines'],
+                createdAt: '2026-07-01T10:00:05Z',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final conv = await repo.getLatestConversation();
+
+      expect(conv, isNotNull);
+      expect(conv!.id, 'conv-99');
+      expect(conv.title, 'Chat About Meds');
+      expect(conv.status, 'active');
+      expect(conv.messages, hasLength(2));
+      expect(conv.messages[0].role, AssistantMessageRole.user);
+      expect(conv.messages[0].content, 'What is atorvastatin?');
+      expect(conv.messages[1].role, AssistantMessageRole.assistant);
+      expect(conv.messages[1].content, 'It is a statin.');
+      expect(conv.messages[1].usedTools, ['get_current_medicines']);
+      expect(conv.lastMessageAt, DateTime.parse('2026-07-01T10:30:00Z'));
+    });
+
+    test('falls back to clock.now when createdAt is null/invalid', () async {
+      final fixedTime = DateTime(2026, 7, 1, 12, 0, 0);
+      await withClock(Clock.fixed(fixedTime), () async {
+        final repo = LucentAssistantRepository(
+          dataSource: _FakeAssistantRemoteDataSource(
+            latestConversation: _conversationDto(
+              createdAt: 'not-a-date',
+              updatedAt: 'also-bad',
+            ),
+          ),
+        );
+        final conv = await repo.getLatestConversation();
+        expect(conv!.createdAt, fixedTime);
+        expect(conv.updatedAt, fixedTime);
+      });
+    });
+
+    test('maps unknown role to assistant', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          latestConversation: _conversationDto(
+            messages: [
+              _messageDto(
+                role: lucent.AssistantConversationMessageDtoRoleRole.$unknown,
+              ),
+            ],
+          ),
+        ),
+      );
+      final conv = await repo.getLatestConversation();
+      expect(conv!.messages.single.role, AssistantMessageRole.assistant);
+    });
+  });
+
+  group('LucentAssistantRepository.listRecentConversations', () {
+    test('maps list of summaries', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          recentConversations: [
+            _summaryDto(id: 'c1', title: 'First'),
+            _summaryDto(id: 'c2', title: 'Second', status: lucent.AssistantConversationSummaryDtoStatusStatus.archived),
+            _summaryDto(id: 'c3', title: null, lastMessageAt: null),
+          ],
+        ),
+      );
+
+      final list = await repo.listRecentConversations();
+
+      expect(list, hasLength(3));
+      expect(list[0].id, 'c1');
+      expect(list[0].title, 'First');
+      expect(list[0].status, 'active');
+      expect(list[1].id, 'c2');
+      expect(list[1].status, 'archived');
+      expect(list[2].id, 'c3');
+      expect(list[2].title, isNull);
+      expect(list[2].lastMessageAt, isNull);
+    });
+
+    test('returns empty list when data source returns empty', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(recentConversations: []),
+      );
+      expect(await repo.listRecentConversations(), isEmpty);
+    });
+  });
+
+  group('LucentAssistantRepository.openConversation', () {
+    test('passes conversationId to data source', () async {
+      final fake = _FakeAssistantRemoteDataSource(
+        openedConversation: _conversationDto(id: 'conv-open'),
+      );
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      await repo.openConversation('conv-open');
+
+      expect(fake.lastOpenedConversationId, 'conv-open');
+    });
+
+    test('returns mapped conversation', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          openedConversation: _conversationDto(id: 'conv-x', title: 'Opened'),
+        ),
+      );
+
+      final conv = await repo.openConversation('conv-x');
+
+      expect(conv.id, 'conv-x');
+      expect(conv.title, 'Opened');
+    });
+  });
+
+  group('LucentAssistantRepository.clearLatestConversation', () {
+    test('delegates to data source', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(clearResult: true),
+      );
+      expect(await repo.clearLatestConversation(), isTrue);
+    });
+
+    test('returns false when data source returns false', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(clearResult: false),
+      );
+      expect(await repo.clearLatestConversation(), isFalse);
+    });
+  });
+
+  group('LucentAssistantRepository.streamMessages', () {
+    test('emits chunk events with content', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            const AssistantRemoteChunkEvent('Hello '),
+            const AssistantRemoteChunkEvent('world!'),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'hi',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      expect(events, hasLength(2));
+      expect(events[0], isA<AssistantGenerationChunkEvent>());
+      expect((events[0] as AssistantGenerationChunkEvent).content, 'Hello ');
+      expect(events[1], isA<AssistantGenerationChunkEvent>());
+      expect((events[1] as AssistantGenerationChunkEvent).content, 'world!');
+    });
+
+    test('emits result event with assistant message', () async {
+      final fixedTime = DateTime(2026, 7, 1, 10, 0, 0);
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'conv-stream',
+              content: 'Done!',
+              usedTools: const ['tool_a'],
+              generatedAt: fixedTime,
+              proposedActions: const [],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'go',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      expect(events, hasLength(1));
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.conversationId, 'conv-stream');
+      expect(result.message.role, AssistantMessageRole.assistant);
+      expect(result.message.content, 'Done!');
+      expect(result.message.usedTools, ['tool_a']);
+      expect(result.message.createdAt, fixedTime);
+      expect(result.message.proposedActions, isEmpty);
+    });
+
+    test('maps create_daily_record proposed action', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'creating record',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-1',
+                  'type': 'create_daily_record',
+                  'title': 'Record blood pressure',
+                  'summary': 'Create a BP record',
+                  'reason': 'User asked',
+                  'previewFields': [
+                    {'label': 'Value', 'value': '120/80'},
+                  ],
+                  'target': {
+                    'kind': 'daily_record',
+                    'label': 'Blood Pressure',
+                  },
+                  'constraints': ['requires_confirmation'],
+                  'expiresAt': '2026-07-02T00:00:00Z',
+                  'payloadVersion': 2,
+                  'payload': {
+                    'draft': {
+                      'kind': 'blood_pressure',
+                      'occurredAt': '2026-07-01T10:00:00Z',
+                      'title': 'Morning BP',
+                      'value': '120/80',
+                      'unit': 'mmHg',
+                      'note': 'after breakfast',
+                    },
+                  },
+                  'confirmationRequired': true,
+                  'status': 'proposed',
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'record bp',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final action = result.message.proposedActions.single;
+
+      expect(action.id, 'pa-1');
+      expect(action.type, AssistantProposedActionType.createDailyRecord);
+      expect(action.title, 'Record blood pressure');
+      expect(action.summary, 'Create a BP record');
+      expect(action.reason, 'User asked');
+      expect(action.previewFields, hasLength(1));
+      expect(action.previewFields.first.label, 'Value');
+      expect(action.previewFields.first.value, '120/80');
+      expect(action.target.kind, 'daily_record');
+      expect(action.target.label, 'Blood Pressure');
+      expect(action.constraints, ['requires_confirmation']);
+      expect(action.expiresAt, DateTime.parse('2026-07-02T00:00:00Z'));
+      expect(action.payloadVersion, 2);
+      expect(action.confirmationRequired, isTrue);
+      expect(action.backendStatus, 'proposed');
+
+      final payload = action.payload as AssistantCreateDailyRecordProposalPayload;
+      expect(payload.draft.kind, 'blood_pressure');
+      expect(payload.draft.occurredAt, '2026-07-01T10:00:00Z');
+      expect(payload.draft.title, 'Morning BP');
+      expect(payload.draft.value, '120/80');
+      expect(payload.draft.unit, 'mmHg');
+      expect(payload.draft.note, 'after breakfast');
+    });
+
+    test('maps update_daily_record proposed action', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'updating',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-2',
+                  'type': 'update_daily_record',
+                  'title': 'Update weight',
+                  'summary': 'Update today weight',
+                  'target': {'kind': 'daily_record', 'recordId': 'rec-1'},
+                  'payload': {
+                    'recordId': 'rec-1',
+                    'draft': {'value': '70', 'unit': 'kg'},
+                  },
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'update',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final action = result.message.proposedActions.single;
+
+      expect(action.type, AssistantProposedActionType.updateDailyRecord);
+      final payload = action.payload as AssistantUpdateDailyRecordProposalPayload;
+      expect(payload.recordId, 'rec-1');
+      expect(payload.draft['value'], '70');
+      expect(payload.draft['unit'], 'kg');
+      expect(action.target.recordId, 'rec-1');
+    });
+
+    test('maps delete_daily_record proposed action', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'deleting',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-3',
+                  'type': 'delete_daily_record',
+                  'title': 'Delete record',
+                  'summary': 'Remove old record',
+                  'target': {'kind': 'daily_record', 'recordId': 'rec-2'},
+                  'payload': {'recordId': 'rec-2'},
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'delete',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final action = result.message.proposedActions.single;
+
+      expect(action.type, AssistantProposedActionType.deleteDailyRecord);
+      final payload = action.payload as AssistantDeleteDailyRecordProposalPayload;
+      expect(payload.recordId, 'rec-2');
+    });
+
+    test('maps update_user_settings proposed action', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'updating settings',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-4',
+                  'type': 'update_user_settings',
+                  'title': 'Enable memory',
+                  'summary': 'Turn on assistant memory',
+                  'target': {'kind': 'user_settings', 'settingKeys': ['assistantMemoryEnabled']},
+                  'payload': {
+                    'draft': {
+                      'assistantEnabled': true,
+                      'assistantMemoryEnabled': true,
+                      'assistantContext': {
+                        'healthProfile': true,
+                        'dailyRecords': true,
+                        'sleepRecords': false,
+                        'currentMedicines': true,
+                      },
+                    },
+                  },
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'settings',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      final action = result.message.proposedActions.single;
+
+      expect(action.type, AssistantProposedActionType.updateUserSettings);
+      final payload = action.payload as AssistantUpdateUserSettingsProposalPayload;
+      expect(payload.draft.assistantEnabled, isTrue);
+      expect(payload.draft.assistantMemoryEnabled, isTrue);
+      expect(payload.draft.assistantContext!.healthProfile, isTrue);
+      expect(payload.draft.assistantContext!.dailyRecords, isTrue);
+      expect(payload.draft.assistantContext!.sleepRecords, isFalse);
+      expect(payload.draft.assistantContext!.currentMedicines, isTrue);
+      expect(action.target.settingKeys, ['assistantMemoryEnabled']);
+    });
+
+    test('filters out actions with unknown type', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'mixed',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-good',
+                  'type': 'delete_daily_record',
+                  'title': 'Valid',
+                  'summary': 'ok',
+                  'target': {'kind': 'daily_record'},
+                  'payload': {'recordId': 'r1'},
+                },
+                {
+                  'id': 'pa-bad',
+                  'type': 'unknown_type',
+                  'title': 'Invalid',
+                  'summary': 'bad',
+                  'target': {'kind': 'unknown'},
+                  'payload': {},
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'mixed',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.message.proposedActions, hasLength(1));
+      expect(result.message.proposedActions.single.id, 'pa-good');
+    });
+
+    test('filters out actions with null payload', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'test',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-1',
+                  'type': 'delete_daily_record',
+                  'title': 'No payload',
+                  'summary': 'missing',
+                  'target': {'kind': 'daily_record'},
+                  'payload': null,
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'test',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.message.proposedActions, isEmpty);
+    });
+
+    test('confirmationRequired defaults to true when absent', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'test',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-1',
+                  'type': 'delete_daily_record',
+                  'title': 'T',
+                  'summary': 'S',
+                  'target': {'kind': 'daily_record'},
+                  'payload': {'recordId': 'r1'},
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'x',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.message.proposedActions.single.confirmationRequired, isTrue);
+    });
+
+    test('confirmationRequired is false when explicitly set to false', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'test',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-1',
+                  'type': 'delete_daily_record',
+                  'title': 'T',
+                  'summary': 'S',
+                  'target': {'kind': 'daily_record'},
+                  'payload': {'recordId': 'r1'},
+                  'confirmationRequired': false,
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'x',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.message.proposedActions.single.confirmationRequired, isFalse);
+    });
+
+    test('payloadVersion defaults to 1 when absent', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'test',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: [
+                {
+                  'id': 'pa-1',
+                  'type': 'delete_daily_record',
+                  'title': 'T',
+                  'summary': 'S',
+                  'target': {'kind': 'daily_record'},
+                  'payload': {'recordId': 'r1'},
+                },
+              ],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'x',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      final result = events[0] as AssistantGenerationResultEvent;
+      expect(result.message.proposedActions.single.payloadVersion, 1);
+    });
+
+    test('emits both chunk and result events in order', () async {
+      final repo = LucentAssistantRepository(
+        dataSource: _FakeAssistantRemoteDataSource(
+          stream: Stream.fromIterable([
+            const AssistantRemoteChunkEvent('partial 1'),
+            const AssistantRemoteChunkEvent('partial 2'),
+            AssistantRemoteResultEvent(
+              conversationId: 'c1',
+              content: 'final',
+              usedTools: const [],
+              generatedAt: DateTime(2026, 7, 1),
+              proposedActions: const [],
+            ),
+          ]),
+        ),
+      );
+
+      final events = await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'x',
+          createdAt: dummyDateTime,
+        ),
+      ]).toList();
+
+      expect(events, hasLength(3));
+      expect(events[0], isA<AssistantGenerationChunkEvent>());
+      expect(events[1], isA<AssistantGenerationChunkEvent>());
+      expect(events[2], isA<AssistantGenerationResultEvent>());
+    });
+  });
+}
+
+// Used by AssistantMessage in tests
+final dummyDateTime = DateTime(2026, 1, 1);
