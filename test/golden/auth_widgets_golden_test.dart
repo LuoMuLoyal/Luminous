@@ -1,4 +1,6 @@
 @Tags(['golden'])
+library;
+
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';

@@ -406,17 +406,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.authPasswordUnsetManagementHint), findsOneWidget);
-    expect(
-      find.text(l10n.authDeleteAccountPasswordRequiredHint),
-      findsOneWidget,
-    );
+    expect(find.text(l10n.authDeleteAccountCodeHint), findsOneWidget);
     expect(
       find.widgetWithText(FButton, l10n.authChangePasswordAction),
       findsNothing,
     );
     expect(
       find.widgetWithText(FButton, l10n.authDeleteAccountAction),
-      findsNothing,
+      findsOneWidget,
     );
   });
 }

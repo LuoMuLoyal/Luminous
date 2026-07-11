@@ -509,7 +509,7 @@ class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
   }
 
   @override
-  Future<void> deleteAccount({required String password}) async {
+  Future<void> deleteAccount({String? password, String? code}) async {
     deleteAccountPassword = password;
   }
 

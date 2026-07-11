@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -288,24 +289,39 @@ class DeleteAccountSection extends StatelessWidget {
     super.key,
     required this.user,
     required this.deletePasswordController,
+    required this.deleteCodeController,
     required this.isSubmitting,
+    required this.isSendingCode,
+    required this.cooldownSeconds,
     required this.onDelete,
+    required this.onSendCode,
   });
 
   final AuthUser user;
   final TextEditingController deletePasswordController;
+  final TextEditingController deleteCodeController;
   final bool isSubmitting;
+  final bool isSendingCode;
+  final int? cooldownSeconds;
   final Future<void> Function() onDelete;
+  final Future<void> Function() onSendCode;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    // OAuth-only user with no verified email — cannot delete from here.
+    if (!user.hasPassword && !user.emailVerified) {
+      return _SectionColumn(
+        title: l10n.authDeleteAccountSectionTitle,
+        children: [_MutedText(l10n.authDeleteAccountEmailRequiredHint)],
+      );
+    }
+
     return _SectionColumn(
       title: l10n.authDeleteAccountSectionTitle,
       children: [
-        if (!user.hasPassword)
-          _MutedText(l10n.authDeleteAccountPasswordRequiredHint)
-        else ...[
+        if (user.hasPassword) ...[
           FTextField.password(
             control: FTextFieldControl.managed(
               controller: deletePasswordController,
@@ -313,21 +329,38 @@ class DeleteAccountSection extends StatelessWidget {
             label: Text(l10n.authCurrentPasswordLabel),
             hint: l10n.authDeleteAccountHint,
           ),
-          SizedBox(
-            width: double.infinity,
-            child: FButton(
-              variant: FButtonVariant.destructive,
-              onPress: isSubmitting ? null : () => onDelete(),
-              child: isSubmitting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(l10n.authDeleteAccountAction),
-            ),
+        ] else ...[
+          _MutedText(l10n.authDeleteAccountCodeHint),
+          VerificationCodeField(
+            controller: deleteCodeController,
+            label: l10n.authCodeLabel,
+            hint: l10n.authCodeLabel,
+            validator: (value) => value == null || value.trim().isEmpty
+                ? l10n.authCodeRequiredError
+                : null,
+            buttonLabel: cooldownSeconds == null
+                ? l10n.authSendCode
+                : l10n.authSendCodeAgain(cooldownSeconds!),
+            isLoading: isSendingCode,
+            onSendCode: isSendingCode || cooldownSeconds != null
+                ? null
+                : () => onSendCode(),
           ),
         ],
+        SizedBox(
+          width: double.infinity,
+          child: FButton(
+            variant: FButtonVariant.destructive,
+            onPress: isSubmitting ? null : () => onDelete(),
+            child: isSubmitting
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authDeleteAccountAction),
+          ),
+        ),
       ],
     );
   }

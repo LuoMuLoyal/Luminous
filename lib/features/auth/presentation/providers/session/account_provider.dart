@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -7,6 +9,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 import 'package:luminous/features/auth/presentation/services/wechat_oauth_service.dart';
 
 part 'account_provider.freezed.dart';
@@ -24,9 +27,13 @@ abstract class AuthAccountState with _$AuthAccountState {
   }) = _AuthAccountState;
 }
 
-class AuthAccountNotifier extends Notifier<AuthAccountState> {
+class AuthAccountNotifier extends Notifier<AuthAccountState>
+    with CooldownTimerMixin<AuthAccountState> {
   @override
-  AuthAccountState build() => const AuthAccountState();
+  AuthAccountState build() {
+    ref.onDispose(disposeCooldown);
+    return const AuthAccountState();
+  }
 
   Future<bool> sendVerificationCode({
     required String email,
@@ -45,7 +52,12 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
       state = state.copyWith(
         isSendingCode: false,
         successMessage: result.message,
-        lastCooldownSeconds: result.cooldown.toInt(),
+      );
+      startCooldown(
+        result.cooldown.toInt(),
+        getCooldownSeconds: () => state.lastCooldownSeconds,
+        setCooldownSeconds: (value) =>
+            state = state.copyWith(lastCooldownSeconds: value),
       );
       return true;
     } catch (error) {
@@ -121,11 +133,11 @@ class AuthAccountNotifier extends Notifier<AuthAccountState> {
     });
   }
 
-  Future<bool> deleteAccount({required String password}) async {
+  Future<bool> deleteAccount({String? password, String? code}) async {
     return _run(() async {
       await ref
           .read(authRemoteDataSourceProvider)
-          .deleteAccount(password: password);
+          .deleteAccount(password: password, code: code);
       ref.read(authSessionProvider.notifier).clearLocalSession();
     });
   }

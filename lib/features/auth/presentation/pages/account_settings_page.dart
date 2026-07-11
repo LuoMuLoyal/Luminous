@@ -10,6 +10,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/session/account_provider.dart';
@@ -50,6 +51,7 @@ class AccountSettingsPage extends HookConsumerWidget {
     final oldPasswordController = useTextEditingController();
     final newPasswordController = useTextEditingController();
     final deletePasswordController = useTextEditingController();
+    final deleteCodeController = useTextEditingController();
     final formUserId = useRef<String?>(null);
     final wechatIdentityLinkStarted = useRef(false);
 
@@ -239,28 +241,64 @@ class AccountSettingsPage extends HookConsumerWidget {
                           DeleteAccountSection(
                             user: user,
                             deletePasswordController: deletePasswordController,
+                            deleteCodeController: deleteCodeController,
                             isSubmitting: accountState.isSubmitting,
-                            onDelete: () async {
-                              final ctx = context;
-                              final router = GoRouter.of(ctx);
-                              if (deletePasswordController.text
-                                  .trim()
-                                  .isEmpty) {
+                            isSendingCode: accountState.isSendingCode,
+                            cooldownSeconds: accountState.lastCooldownSeconds,
+                            onSendCode: () async {
+                              if (user.email == null ||
+                                  user.email!.trim().isEmpty) {
                                 await AppToast.show(
-                                  ctx,
-                                  l10n.authCurrentPasswordRequiredToast,
+                                  context,
+                                  l10n.authDeleteAccountEmailRequiredHint,
                                 );
                                 return;
                               }
-                              final ok = await accountNotifier.deleteAccount(
-                                password: deletePasswordController.text,
+                              await accountNotifier.sendVerificationCode(
+                                email: user.email!,
+                                scene: AuthVerificationScene.deleteAccount,
                               );
-                              if (!ok || !ctx.mounted) return;
-                              await AppToast.show(
-                                ctx,
-                                l10n.authDeleteAccountSuccess,
-                              );
-                              if (ctx.mounted) router.go(AppRoutes.login);
+                            },
+                            onDelete: () async {
+                              final ctx = context;
+                              final router = GoRouter.of(ctx);
+                              if (user.hasPassword) {
+                                if (deletePasswordController.text
+                                    .trim()
+                                    .isEmpty) {
+                                  await AppToast.show(
+                                    ctx,
+                                    l10n.authCurrentPasswordRequiredToast,
+                                  );
+                                  return;
+                                }
+                                final ok = await accountNotifier.deleteAccount(
+                                  password: deletePasswordController.text,
+                                );
+                                if (!ok || !ctx.mounted) return;
+                                await AppToast.show(
+                                  ctx,
+                                  l10n.authDeleteAccountSuccess,
+                                );
+                                if (ctx.mounted) router.go(AppRoutes.login);
+                              } else {
+                                if (deleteCodeController.text.trim().isEmpty) {
+                                  await AppToast.show(
+                                    ctx,
+                                    l10n.authCodeRequiredToast,
+                                  );
+                                  return;
+                                }
+                                final ok = await accountNotifier.deleteAccount(
+                                  code: deleteCodeController.text,
+                                );
+                                if (!ok || !ctx.mounted) return;
+                                await AppToast.show(
+                                  ctx,
+                                  l10n.authDeleteAccountSuccess,
+                                );
+                                if (ctx.mounted) router.go(AppRoutes.login);
+                              }
                             },
                           ),
                         ],

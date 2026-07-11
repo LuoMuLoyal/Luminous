@@ -7,7 +7,8 @@ enum AuthVerificationScene {
   register,
   login,
   resetPassword,
-  changeEmail;
+  changeEmail,
+  deleteAccount;
 
   SendVerificationCodeDtoSceneScene toDtoScene() {
     return switch (this) {
@@ -18,6 +19,8 @@ enum AuthVerificationScene {
         SendVerificationCodeDtoSceneScene.resetPassword,
       AuthVerificationScene.changeEmail =>
         SendVerificationCodeDtoSceneScene.changeEmail,
+      AuthVerificationScene.deleteAccount =>
+        SendVerificationCodeDtoSceneScene.deleteAccount,
     };
   }
 }
@@ -295,9 +298,16 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<void> deleteAccount({required String password}) async {
+  Future<void> deleteAccount({String? password, String? code}) async {
+    final trimmedPassword = password?.trim();
+    final trimmedCode = code?.trim();
     await _client.account.accountControllerDeleteAccountV1(
-      body: DeleteAccountDto(password: password.trim()),
+      body: DeleteAccountDto(
+        password: trimmedPassword == null || trimmedPassword.isEmpty
+            ? null
+            : trimmedPassword,
+        code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
+      ),
     );
     await _sessionStore.clear();
   }
