@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
@@ -140,12 +141,15 @@ class ReportAiSummarySection extends StatelessWidget {
                   top: Spacing.level3,
                   bottom: Spacing.level3,
                 ),
-                child: AppSkeletonText(
-                  text: content.summaryText!,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
-                  widthFactor: 0.94,
+                child: MarkdownBody(
+                  data: content.summaryText!,
+                  selectable: true,
+                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                      .copyWith(
+                        p: TypographyToken.level4
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
                 ),
               ),
               const AppDivider(),

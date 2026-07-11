@@ -65,6 +65,8 @@ abstract final class EnvReader {
         return const String.fromEnvironment('LUMINOUS_AI_RUNTIME_PROVIDER');
       case EnvKey.luminousEnableGenUi:
         return const String.fromEnvironment('LUMINOUS_ENABLE_GEN_UI');
+      case EnvKey.sentryDsn:
+        return const String.fromEnvironment('SENTRY_DSN');
     }
   }
 }

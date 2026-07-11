@@ -250,16 +250,19 @@ class SoundPreferenceRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.level3),
-          FSelect<MedicineReminderSoundPreference>(
-            items: {
-              for (final item in MedicineReminderSoundPreference.values)
-                soundPreferenceLabel(l10n, item): item,
-            },
-            control: FSelectControl.lifted(
-              value: value,
-              onChange: (next) {
-                if (next != null) onChanged(next);
+          SizedBox(
+            width: 140,
+            child: FSelect<MedicineReminderSoundPreference>(
+              items: {
+                for (final item in MedicineReminderSoundPreference.values)
+                  soundPreferenceLabel(l10n, item): item,
               },
+              control: FSelectControl.lifted(
+                value: value,
+                onChange: (next) {
+                  if (next != null) onChanged(next);
+                },
+              ),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -262,7 +263,59 @@ void main() {
     });
   });
 
-  // SoundPreferenceRow uses FSelect which has a known FollowerLayer
-  // unbounded width assertion in widget tests. Skipped until forui
-  // provides a test-friendly FSelect or the widget is refactored.
+  group('SoundPreferenceRow', () {
+    testWidgets('renders label and FSelect with current value', (tester) async {
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: Scaffold(
+            body: SoundPreferenceRow(
+              value: MedicineReminderSoundPreference.defaultTone,
+              onChanged: (_) {},
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final l10n = _getL10n(tester);
+      expect(find.text(l10n.medicineReminderSoundLabel), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is FSelect<MedicineReminderSoundPreference>,
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('calls onChanged when a different sound is selected', (
+      tester,
+    ) async {
+      MedicineReminderSoundPreference? selected;
+      await tester.pumpWidget(
+        TestForuiApp(
+          home: Scaffold(
+            body: SoundPreferenceRow(
+              value: MedicineReminderSoundPreference.defaultTone,
+              onChanged: (v) => selected = v,
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final selectFinder = find.byWidgetPredicate(
+        (w) => w is FSelect<MedicineReminderSoundPreference>,
+      );
+      // Tap the FSelect to open the popover.
+      await tester.tap(selectFinder);
+      await tester.pumpAndSettle();
+
+      final l10n = _getL10n(tester);
+      // Tap the "silent" option.
+      await tester.tap(find.text(l10n.medicineReminderSoundSilent));
+      await tester.pumpAndSettle();
+
+      expect(selected, MedicineReminderSoundPreference.silent);
+    });
+  });
 }

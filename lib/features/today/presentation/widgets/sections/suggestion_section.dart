@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -576,14 +577,24 @@ class _AiExplainContent extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Spacing.level2),
-          Text(explanation.reason, style: TypographyToken.level4.body(context)),
+          MarkdownBody(
+            data: explanation.reason,
+            selectable: true,
+            styleSheet: MarkdownStyleSheet.fromTheme(
+              Theme.of(context),
+            ).copyWith(p: TypographyToken.level4.body(context)),
+          ),
           if (explanation.boundary.isNotEmpty) ...[
             const SizedBox(height: Spacing.level2),
-            Text(
-              explanation.boundary,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
+            MarkdownBody(
+              data: explanation.boundary,
+              selectable: true,
+              styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                  .copyWith(
+                    p: TypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                  ),
             ),
           ],
         ],

@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
+import 'package:luminous/core/logger/sentry_talker_observer.dart';
+
 part 'app_logger.g.dart';
 
 /// Application log severity levels.
@@ -35,11 +37,16 @@ enum LogLevel {
 /// applied via [applyLogLevelToTalker] take effect everywhere, regardless
 /// of whether the call site accesses the Talker through Riverpod or the
 /// global getter.
+///
+/// In release builds, Talker remains enabled (for in-memory history and
+/// Sentry forwarding via [SentryTalkerObserver]) but console output is
+/// suppressed.
 final _globalTalker = talker_pkg.Talker(
   settings: talker_pkg.TalkerSettings(
-    enabled: !kReleaseMode,
+    enabled: true,
     useConsoleLogs: kDebugMode,
   ),
+  observer: SentryTalkerObserver(),
 );
 
 /// Global [talker_pkg.Talker] accessor for contexts that do not have a Riverpod
@@ -59,7 +66,9 @@ talker_pkg.Talker get appTalker => _globalTalker;
 /// talker.error('Failed to fetch data: $e');
 /// ```
 ///
-/// In release builds, logging is disabled via [talker_pkg.TalkerSettings.enabled].
+///
+/// In release builds, console output is suppressed but error/exception
+/// events are forwarded to Sentry via [SentryTalkerObserver].
 @riverpod
 talker_pkg.Talker talker(Ref ref) => _globalTalker;
 

@@ -9,7 +9,8 @@ enum EnvKey {
   e2eTestNickname('E2E_TEST_NICKNAME'),
   luminousExperimentalAiRuntime('LUMINOUS_EXPERIMENTAL_AI_RUNTIME'),
   luminousAiRuntimeProvider('LUMINOUS_AI_RUNTIME_PROVIDER'),
-  luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI');
+  luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI'),
+  sentryDsn('SENTRY_DSN');
 
   const EnvKey(this.wireName);
 

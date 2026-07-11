@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -113,15 +114,15 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               const SizedBox(height: Spacing.level4),
               // --- AI narrative (collapsible) ---
               if (content.summary != null) ...[
-                Text(
-                  content.summary!,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
-                  maxLines: _aiExpanded ? null : 2,
-                  overflow: _aiExpanded
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
+                MarkdownBody(
+                  data: content.summary!,
+                  selectable: true,
+                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                      .copyWith(
+                        p: TypographyToken.level4
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
                 ),
               ] else if (!isPreview) ...[
                 Text(

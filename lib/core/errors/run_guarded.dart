@@ -12,7 +12,8 @@ import 'package:talker_flutter/talker_flutter.dart';
 /// should use this helper instead of writing ad-hoc try-catch blocks.
 ///
 /// On success, returns [Result.success] with the action's return value.
-/// On any thrown exception, logs to [talker] with [tag] and returns
+/// On any thrown exception, logs to [talker] with [tag] (which also
+/// forwards to Sentry via [SentryTalkerObserver]) and returns
 /// [Result.failure] with an [AppError] derived via [LucentErrorMapper.toAppError].
 ///
 /// **Usage from a provider/notifier** (has `Ref`):
@@ -52,8 +53,8 @@ Future<Result<T>> runGuarded<T>({
   }
   try {
     return Result.success(await action());
-  } catch (e) {
-    talker.error('$tag: failed: $e');
+  } catch (e, st) {
+    talker.handle(e, st, '$tag: failed');
     return Result.failure(LucentErrorMapper.toAppError(e));
   }
 }

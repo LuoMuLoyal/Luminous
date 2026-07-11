@@ -100,13 +100,6 @@ Widget _buildForm({
   );
 }
 
-/// Pump the form, tolerating FSelect overlay rendering exceptions
-/// that don't affect the main widget tree.
-///
-/// The [FSelect] widget's popover creates a [FollowerLayer] that receives
-/// unbounded width in the test environment. This causes rendering exceptions
-/// from the internal search [TextField]. We capture and ignore these
-/// exceptions since they don't affect the main widget tree layout.
 Future<void> _pumpForm(WidgetTester tester, Widget form) async {
   await tester.pumpWidget(
     TestForuiRouterApp(
@@ -131,11 +124,7 @@ Future<void> _pumpForm(WidgetTester tester, Widget form) async {
       ),
     ),
   );
-  await tester.pump();
-  // Clear any FSelect overlay rendering exceptions.
-  final exceptions = tester.takeException();
-  // Exceptions from the FSelect popover's FollowerLayer are expected in tests.
-  debugPrint('Ignored FSelect overlay exception: $exceptions');
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -329,7 +318,7 @@ void main() {
         _buildForm(snapshot: _buildSnapshot(), onSave: () => saveCalled = true),
       );
 
-      // Call onPress directly to avoid FSelect overlay re-layout from tap.
+      // Call onPress directly since the button may be off-screen in tests.
       final button = tester.widget<FButton>(
         find.byKey(const Key('medicine-reminder-save-button')),
       );
