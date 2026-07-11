@@ -1,0 +1,431 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:drift/native.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
+import 'package:luminous/core/database/app_database.dart';
+import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart';
+
+class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
+  _FakeDoseLogRemote()
+      : super(
+          api: MedicineDoseLogsApi(Dio()),
+          dio: Dio(),
+        );
+
+  List<DoseLogItem> fetchResult = [];
+  Object? fetchError;
+  DoseLogItem? createResult;
+  DoseLogItem? updateResult;
+  DoseLogItem? markResult;
+  String? lastFetchDate;
+  String? lastCreateDate;
+  String? lastCreateStatus;
+  String? lastUpdateId;
+  String? lastUpdateStatus;
+  String? lastMarkMedicineId;
+  String? lastMarkStatus;
+  String? lastMarkDate;
+  String? lastMarkReminderId;
+  String? lastMarkScheduledTime;
+  int fetchCallCount = 0;
+
+  @override
+  Future<List<DoseLogItem>> fetchForDate(String date) async {
+    lastFetchDate = date;
+    fetchCallCount++;
+    if (fetchError != null) throw fetchError!;
+    return fetchResult;
+  }
+
+  @override
+  Future<DoseLogItem> create(
+    String currentMedicineId,
+    String status,
+    String date,
+  ) async {
+    lastCreateDate = date;
+    lastCreateStatus = status;
+    return createResult ??
+        DoseLogItem(
+          id: 'created-1',
+          currentMedicineId: currentMedicineId,
+          status: DoseLogStatus.taken,
+          scheduledFor: date,
+          createdAt: '2026-07-10T00:00:00.000Z',
+          updatedAt: '2026-07-10T00:00:00.000Z',
+        );
+  }
+
+  @override
+  Future<DoseLogItem> update(String doseLogId, String status) async {
+    lastUpdateId = doseLogId;
+    lastUpdateStatus = status;
+    return updateResult ??
+        DoseLogItem(
+          id: doseLogId,
+          status: DoseLogStatus.taken,
+          scheduledFor: '2026-07-10',
+          createdAt: '2026-07-10T00:00:00.000Z',
+          updatedAt: '2026-07-10T00:00:00.000Z',
+        );
+  }
+
+  @override
+  Future<DoseLogItem> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  }) async {
+    lastMarkMedicineId = currentMedicineId;
+    lastMarkStatus = status;
+    lastMarkDate = date;
+    lastMarkReminderId = reminderId;
+    lastMarkScheduledTime = scheduledTime;
+    return markResult ??
+        DoseLogItem(
+          id: 'marked-1',
+          currentMedicineId: currentMedicineId,
+          reminderId: reminderId,
+          status: DoseLogStatus.taken,
+          scheduledFor: date,
+          scheduledTime: scheduledTime,
+          createdAt: '2026-07-10T00:00:00.000Z',
+          updatedAt: '2026-07-10T00:00:00.000Z',
+        );
+  }
+}
+
+DoseLogItem _buildItem({
+  String id = 'log-1',
+  String? currentMedicineId = 'med-1',
+  String? reminderId,
+  DoseLogStatus status = DoseLogStatus.taken,
+  String scheduledFor = '2026-07-10',
+  String? scheduledTime = '08:00',
+  String? doseText = '1片',
+  String? note,
+  String createdAt = '2026-07-10T00:00:00.000Z',
+  String updatedAt = '2026-07-10T00:00:00.000Z',
+}) {
+  return DoseLogItem(
+    id: id,
+    currentMedicineId: currentMedicineId,
+    reminderId: reminderId,
+    status: status,
+    scheduledFor: scheduledFor,
+    scheduledTime: scheduledTime,
+    doseText: doseText,
+    note: note,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
+}
+
+void main() {
+  group('CachedDoseLogDataSource', () {
+    late _FakeDoseLogRemote remote;
+    late AppDatabase db;
+    late CachedDoseLogDataSource dataSource;
+
+    setUp(() {
+      remote = _FakeDoseLogRemote();
+      db = AppDatabase.forTesting(NativeDatabase.memory());
+      dataSource = CachedDoseLogDataSource(
+        remote: remote,
+        dao: db.medicineDoseLogDao,
+      );
+    });
+
+    tearDown(() => db.close());
+
+    // ─── fetchForDate ────────────────────────────────────────────────
+    group('fetchForDate', () {
+      test('fetches from network when cache is empty', () async {
+        remote.fetchResult = [_buildItem()];
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result, hasLength(1));
+        expect(result.first.id, 'log-1');
+        expect(remote.lastFetchDate, '2026-07-10');
+        expect(remote.fetchCallCount, 1);
+      });
+
+      test('returns cached items when cache is populated', () async {
+        // Seed cache by fetching once
+        remote.fetchResult = [_buildItem()];
+        await dataSource.fetchForDate('2026-07-10');
+
+        // Reset fetch result to different items to verify cache is used
+        remote.fetchResult = [_buildItem(id: 'log-2')];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        // Should return cached items, not new ones
+        expect(result, hasLength(1));
+        expect(result.first.id, 'log-1');
+        // Background refresh should have been triggered, but we can't
+        // deterministically test it here without waiting. The important
+        // thing is that the immediate return is from cache.
+      });
+
+      test('round-trips all DoseLogItem fields through cache', () async {
+        final item = _buildItem(
+          id: 'full-item',
+          currentMedicineId: 'med-full',
+          reminderId: 'rem-1',
+          status: DoseLogStatus.skipped,
+          scheduledFor: '2026-07-11',
+          scheduledTime: '14:30',
+          doseText: '2片',
+          note: '饭后服用',
+          createdAt: '2026-07-11T00:00:00.000Z',
+          updatedAt: '2026-07-11T01:00:00.000Z',
+        );
+
+        remote.fetchResult = [item];
+        await dataSource.fetchForDate('2026-07-11');
+
+        // Reset to verify cache content
+        remote.fetchResult = [];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-11');
+
+        expect(result, hasLength(1));
+        final cached = result.first;
+        expect(cached.id, 'full-item');
+        expect(cached.currentMedicineId, 'med-full');
+        expect(cached.reminderId, 'rem-1');
+        expect(cached.status, DoseLogStatus.skipped);
+        expect(cached.scheduledFor, '2026-07-11');
+        expect(cached.scheduledTime, '14:30');
+        expect(cached.doseText, '2片');
+        expect(cached.note, '饭后服用');
+        expect(cached.createdAt, '2026-07-11T00:00:00.000Z');
+        expect(cached.updatedAt, '2026-07-11T01:00:00.000Z');
+      });
+
+      test('handles multiple items in cache', () async {
+        remote.fetchResult = [
+          _buildItem(id: 'log-1'),
+          _buildItem(id: 'log-2', status: DoseLogStatus.skipped),
+          _buildItem(id: 'log-3', status: DoseLogStatus.missed),
+        ];
+
+        await dataSource.fetchForDate('2026-07-10');
+
+        remote.fetchResult = [];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result, hasLength(3));
+        expect(result[0].id, 'log-1');
+        expect(result[0].status, DoseLogStatus.taken);
+        expect(result[1].id, 'log-2');
+        expect(result[1].status, DoseLogStatus.skipped);
+        expect(result[2].id, 'log-3');
+        expect(result[2].status, DoseLogStatus.missed);
+      });
+
+      test('handles null currentMedicineId', () async {
+        remote.fetchResult = [
+          _buildItem(currentMedicineId: null),
+        ];
+
+        await dataSource.fetchForDate('2026-07-10');
+
+        remote.fetchResult = [];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result, hasLength(1));
+        expect(result.first.currentMedicineId, isNull);
+      });
+
+      test('handles null optional fields', () async {
+        remote.fetchResult = [
+          _buildItem(
+            reminderId: null,
+            scheduledTime: null,
+            doseText: null,
+            note: null,
+          ),
+        ];
+
+        await dataSource.fetchForDate('2026-07-10');
+
+        remote.fetchResult = [];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result, hasLength(1));
+        expect(result.first.reminderId, isNull);
+        expect(result.first.scheduledTime, isNull);
+        expect(result.first.doseText, isNull);
+        expect(result.first.note, isNull);
+      });
+
+      test('handles planned status', () async {
+        remote.fetchResult = [
+          _buildItem(status: DoseLogStatus.planned),
+        ];
+
+        await dataSource.fetchForDate('2026-07-10');
+
+        remote.fetchResult = [];
+        remote.fetchCallCount = 0;
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result.first.status, DoseLogStatus.planned);
+      });
+
+      test('returns empty list when remote returns empty', () async {
+        remote.fetchResult = [];
+
+        final result = await dataSource.fetchForDate('2026-07-10');
+
+        expect(result, isEmpty);
+      });
+
+      test('propagates remote fetch errors when cache is empty', () async {
+        remote.fetchError = Exception('Network error');
+
+        expect(
+          () => dataSource.fetchForDate('2026-07-10'),
+          throwsException,
+        );
+      });
+    });
+
+    // ─── create ──────────────────────────────────────────────────────
+    group('create', () {
+      test('returns created item from remote', () async {
+        final created = _buildItem(id: 'new-log');
+        remote.createResult = created;
+
+        final result = await dataSource.create('med-1', 'taken', '2026-07-10');
+
+        expect(result.id, 'new-log');
+        expect(remote.lastCreateDate, '2026-07-10');
+        expect(remote.lastCreateStatus, 'taken');
+      });
+
+      test('refreshes cache after create', () async {
+        await dataSource.create('med-1', 'taken', '2026-07-10');
+
+        // create calls _refreshCache which calls fetchForDate
+        expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
+        expect(remote.lastFetchDate, '2026-07-10');
+      });
+    });
+
+    // ─── update ──────────────────────────────────────────────────────
+    group('update', () {
+      test('returns updated item from remote', () async {
+        final updated = _buildItem(id: 'log-1', status: DoseLogStatus.skipped);
+        remote.updateResult = updated;
+
+        final result = await dataSource.update('log-1', 'skipped');
+
+        expect(result.id, 'log-1');
+        expect(result.status, DoseLogStatus.skipped);
+        expect(remote.lastUpdateId, 'log-1');
+        expect(remote.lastUpdateStatus, 'skipped');
+      });
+
+      test('does not refresh cache after update (no date info)', () async {
+        await dataSource.update('log-1', 'skipped');
+
+        // update should NOT call fetchForDate (no date to target)
+        expect(remote.fetchCallCount, 0);
+      });
+    });
+
+    // ─── mark ────────────────────────────────────────────────────────
+    group('mark', () {
+      test('returns marked item from remote', () async {
+        final marked = _buildItem(id: 'marked-1');
+        remote.markResult = marked;
+
+        final result = await dataSource.mark(
+          currentMedicineId: 'med-1',
+          status: 'taken',
+          date: '2026-07-10',
+        );
+
+        expect(result.id, 'marked-1');
+        expect(remote.lastMarkMedicineId, 'med-1');
+        expect(remote.lastMarkStatus, 'taken');
+        expect(remote.lastMarkDate, '2026-07-10');
+      });
+
+      test('passes reminderId and scheduledTime', () async {
+        await dataSource.mark(
+          currentMedicineId: 'med-1',
+          status: 'taken',
+          date: '2026-07-10',
+          reminderId: 'rem-1',
+          scheduledTime: '08:00',
+        );
+
+        expect(remote.lastMarkReminderId, 'rem-1');
+        expect(remote.lastMarkScheduledTime, '08:00');
+      });
+
+      test('passes null reminderId and scheduledTime when not provided',
+          () async {
+        await dataSource.mark(
+          currentMedicineId: 'med-1',
+          status: 'taken',
+          date: '2026-07-10',
+        );
+
+        expect(remote.lastMarkReminderId, isNull);
+        expect(remote.lastMarkScheduledTime, isNull);
+      });
+
+      test('refreshes cache after mark', () async {
+        await dataSource.mark(
+          currentMedicineId: 'med-1',
+          status: 'taken',
+          date: '2026-07-10',
+        );
+
+        expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
+        expect(remote.lastFetchDate, '2026-07-10');
+      });
+    });
+
+    // ─── JSON serialization round-trip ───────────────────────────────
+    group('JSON serialization round-trip', () {
+      test('handles all DoseLogStatus values', () async {
+        for (final status in DoseLogStatus.values) {
+          // Use a unique date per status to avoid cache collision
+          final date = '2026-07-${(status.index + 1).toString().padLeft(2, '0')}';
+          remote.fetchResult = [_buildItem(status: status, scheduledFor: date)];
+
+          await dataSource.fetchForDate(date);
+
+          remote.fetchResult = [];
+          remote.fetchCallCount = 0;
+
+          final result = await dataSource.fetchForDate(date);
+
+          expect(result.first.status, status,
+              reason: 'Failed for status: $status');
+        }
+      });
+    });
+  });
+}
