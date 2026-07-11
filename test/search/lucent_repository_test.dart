@@ -46,7 +46,7 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 }
 
-MedicineSearchMetaDto _defaultMeta() => MedicineSearchMetaDto(
+MedicineSearchMetaDto _defaultMeta() => const MedicineSearchMetaDto(
       pagination: MedicinePaginationDto(
         page: 1,
         pageSize: 20,
@@ -103,25 +103,25 @@ void main() {
     group('search', () {
       test('returns mapped results on success', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchItemDto(
+          const MedicineSearchItemDto(
             id: 'med-1',
             source: MedicineSearchItemDtoSourceSource.cn,
             name: 'Aspirin',
             subtitle: 'Pain reliever',
             summary: 'NSAID',
-            tags: const ['pain', 'fever'],
+            tags: ['pain', 'fever'],
             imageUrl: null,
-            matchedBy: const ['name'],
+            matchedBy: ['name'],
           ),
-          MedicineSearchItemDto(
+          const MedicineSearchItemDto(
             id: 'med-2',
             source: MedicineSearchItemDtoSourceSource.drugbank,
             name: 'Ibuprofen',
             subtitle: 'NSAID',
             summary: 'Anti-inflammatory',
-            tags: const [],
+            tags: [],
             imageUrl: null,
-            matchedBy: const ['ingredient'],
+            matchedBy: ['ingredient'],
           ),
         ]);
 
@@ -246,15 +246,15 @@ void main() {
 
       test('maps subtitle to empty string when null', () async {
         dataSource.searchResponse = _okSearchResponse([
-          MedicineSearchItemDto(
+          const MedicineSearchItemDto(
             id: 'med-1',
             source: MedicineSearchItemDtoSourceSource.cn,
             name: 'Test',
             subtitle: null,
             summary: null,
-            tags: const [],
+            tags: [],
             imageUrl: null,
-            matchedBy: const [],
+            matchedBy: [],
           ),
         ]);
 
@@ -290,7 +290,7 @@ void main() {
       });
 
       test('returns null on non-zero business code', () async {
-        dataSource.detailResponse = MedicineDetailResponseDto(
+        dataSource.detailResponse = const MedicineDetailResponseDto(
           code: 1002,
           message: 'Not found',
           data: MedicineDetailDataDto(
@@ -298,7 +298,7 @@ void main() {
             source: MedicineDetailDataDtoSourceSource.cn,
             name: '',
             subtitle: null,
-            detail: const MedicineDetailDataDtoDetailDetail({}),
+            detail: MedicineDetailDataDtoDetailDetail({}),
           ),
         );
 

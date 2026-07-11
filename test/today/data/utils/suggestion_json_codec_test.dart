@@ -6,7 +6,7 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 void main() {
   group('TodaySuggestionJsonCodec', () {
-    TodaySuggestionCard _createCard({
+    TodaySuggestionCard createCard({
       String id = 'card-001',
       TodaySuggestionType type = TodaySuggestionType.confirmedRisk,
       TodaySuggestionCardTone cardTone = TodaySuggestionCardTone.urgent,
@@ -33,7 +33,7 @@ void main() {
         title: title,
         reason: reason,
         evidence: [
-          TodaySuggestionEvidence(
+          const TodaySuggestionEvidence(
             kind: TodaySuggestionEvidenceKind.record,
             label: '最近血压',
             value: '150/95 mmHg',
@@ -42,7 +42,7 @@ void main() {
           ),
         ],
         boundary: boundary,
-        primaryAction: TodaySuggestionAction(
+        primaryAction: const TodaySuggestionAction(
           actionId: 'act-001',
           label: '查看详情',
           route: '/record/rec-001',
@@ -64,7 +64,7 @@ void main() {
       test('round-trips a bundle with primary card only', () {
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T08:00:00Z',
-          primary: _createCard(),
+          primary: createCard(),
         );
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
@@ -80,13 +80,13 @@ void main() {
       test('round-trips a bundle with all sections populated', () {
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T08:00:00Z',
-          primary: _createCard(id: 'primary-001'),
+          primary: createCard(id: 'primary-001'),
           secondary: [
-            _createCard(id: 'secondary-001', title: '次要建议'),
-            _createCard(id: 'secondary-002', title: '另一条建议'),
+            createCard(id: 'secondary-001', title: '次要建议'),
+            createCard(id: 'secondary-002', title: '另一条建议'),
           ],
           observations: [
-            _createCard(
+            createCard(
               id: 'obs-001',
               type: TodaySuggestionType.trend,
               title: '趋势观察',
@@ -111,7 +111,7 @@ void main() {
       });
 
       test('round-trips a bundle with null primary and empty lists', () {
-        final bundle = TodaySuggestionBundle(
+        final bundle = const TodaySuggestionBundle(
           generatedAt: '2026-07-10T08:00:00Z',
           primary: null,
           secondary: [],
@@ -130,7 +130,7 @@ void main() {
 
     group('card serialization', () {
       test('round-trips all card fields correctly', () {
-        final card = _createCard(
+        final card = createCard(
           id: 'full-card',
           type: TodaySuggestionType.compliance,
           cardTone: TodaySuggestionCardTone.warning,
@@ -146,7 +146,7 @@ void main() {
           notificationEligible: false,
           subtype: 'medication',
           secondaryActions: [
-            TodaySuggestionAction(
+            const TodaySuggestionAction(
               actionId: 'act-002',
               label: '稍后提醒',
               route: '/snooze',
@@ -204,7 +204,7 @@ void main() {
       });
 
       test('round-trips evidence with all optional fields', () {
-        final card = TodaySuggestionCard(
+        final card = const TodaySuggestionCard(
           id: 'evidence-card',
           type: TodaySuggestionType.behaviorAdvice,
           cardTone: TodaySuggestionCardTone.soft,
@@ -261,14 +261,14 @@ void main() {
       });
 
       test('round-trips card with null optional fields', () {
-        final card = TodaySuggestionCard(
+        final card = const TodaySuggestionCard(
           id: 'minimal',
           type: TodaySuggestionType.coverage,
           cardTone: TodaySuggestionCardTone.neutral,
           icon: 'info',
           title: 'title',
           reason: 'reason',
-          evidence: const [],
+          evidence: [],
           boundary: 'boundary',
           primaryAction: TodaySuggestionAction(
             actionId: 'act',
@@ -305,7 +305,7 @@ void main() {
 
     group('enum serialization fallbacks', () {
       test('unknown confidence string falls back to medium', () {
-        final card = _createCard();
+        final card = createCard();
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
           primary: card,
@@ -313,7 +313,7 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        jsonMap['primary']!['confidence'] = 'unknown_value';
+        (jsonMap['primary']! as Map<String, dynamic>)['confidence'] = 'unknown_value';
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored =
@@ -326,7 +326,7 @@ void main() {
       });
 
       test('unknown trigger type string falls back to timer', () {
-        final card = _createCard();
+        final card = createCard();
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
           primary: card,
@@ -334,7 +334,7 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        jsonMap['primary']!['triggerType'] = 'unknown_trigger';
+        (jsonMap['primary']! as Map<String, dynamic>)['triggerType'] = 'unknown_trigger';
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored =
@@ -347,7 +347,7 @@ void main() {
       });
 
       test('unknown feedback string falls back to later', () {
-        final card = _createCard(
+        final card = createCard(
           feedbackOptions: [TodaySuggestionFeedback.accepted],
         );
         final bundle = TodaySuggestionBundle(
@@ -357,7 +357,7 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        (jsonMap['primary']!['feedbackOptions'] as List)[0] = 'mystery';
+        ((jsonMap['primary']! as Map<String, dynamic>)['feedbackOptions'] as List)[0] = 'mystery';
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored =
@@ -372,7 +372,7 @@ void main() {
 
     group('JSON structure verification', () {
       test('produces valid JSON with expected top-level keys', () {
-        final bundle = TodaySuggestionBundle(
+        final bundle = const TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
         );
 
@@ -386,7 +386,7 @@ void main() {
       });
 
       test('card JSON includes all expected keys', () {
-        final card = _createCard();
+        final card = createCard();
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
           primary: card,

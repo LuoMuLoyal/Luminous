@@ -82,7 +82,7 @@ void main() {
 
     group('itemToJson / itemFromJson round-trip', () {
       test('round-trips a minimal item with only required fields', () {
-        final item = DailyRecordItem(
+        final item = const DailyRecordItem(
           id: 'rec-minimal',
           kind: DailyRecordKind.note,
           occurredAt: '2026-07-10',
@@ -252,7 +252,7 @@ void main() {
       });
 
       test('round-trips a minimal attachment with only required fields', () {
-        final attachment = DailyRecordAttachment(
+        final attachment = const DailyRecordAttachment(
           id: 'att-min',
           kind: DailyRecordAttachmentKind.image,
           objectKey: 'img/key',
@@ -311,7 +311,7 @@ void main() {
 
         final json = DailyRecordJsonCodec.itemToJson(item);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        (jsonMap['attachments'] as List)[0]['kind'] = 'unknown_kind';
+        ((jsonMap['attachments'] as List)[0] as Map<String, dynamic>)['kind'] = 'unknown_kind';
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);

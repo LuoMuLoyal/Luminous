@@ -34,22 +34,22 @@ void main() {
   group('ScanRepository.search', () {
     test('returns response data from API', () async {
       final items = [
-        MedicineSearchItemDto(
+        const MedicineSearchItemDto(
           id: 'med-1',
           source: MedicineSearchItemDtoSourceSource.cn,
           name: '阿莫西林胶囊',
           subtitle: '抗生素',
           summary: '用于敏感菌所致感染',
-          tags: const ['抗生素'],
+          tags: ['抗生素'],
           imageUrl: null,
-          matchedBy: const ['name'],
+          matchedBy: ['name'],
         ),
       ];
       final searchResponse = MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
         data: items,
-        meta: MedicineSearchMetaDto(
+        meta: const MedicineSearchMetaDto(
           pagination: MedicinePaginationDto(
             page: 1,
             pageSize: 20,
@@ -81,10 +81,10 @@ void main() {
     });
 
     test('returns empty list when API returns empty data', () async {
-      final emptyResponse = MedicineSearchResponseDto(
+      final emptyResponse = const MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
-        data: const [],
+        data: [],
         meta: MedicineSearchMetaDto(
           pagination: MedicinePaginationDto(
             page: 1,

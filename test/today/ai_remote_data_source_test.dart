@@ -42,7 +42,7 @@ class _SseAdapter implements HttpClientAdapter {
 
 /// Adapter that returns a regular JSON response.
 class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter({this.responseBody, this.statusCode = 200});
+  _JsonAdapter({this.responseBody}) : statusCode = 200;
 
   Map<String, dynamic>? responseBody;
   int statusCode;

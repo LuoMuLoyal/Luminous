@@ -8,7 +8,7 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// Adapter that returns a JSON response with configurable body.
 class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter({this.responseBody, this.statusCode = 200});
+  _JsonAdapter({this.responseBody}) : statusCode = 200;
 
   Map<String, dynamic>? responseBody;
   int statusCode;
@@ -97,7 +97,7 @@ void main() {
         TodaySuggestionLifecycleState.active,
       );
       expect(result.primary!.primaryAction, isNotNull);
-      expect(result.primary!.primaryAction!.actionId, 'a1');
+      expect(result.primary!.primaryAction.actionId, 'a1');
       expect(result.primary!.feedbackOptions, [
         TodaySuggestionFeedback.accepted,
         TodaySuggestionFeedback.later,

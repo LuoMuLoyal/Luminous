@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
@@ -6,7 +5,6 @@ import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/features/health_context/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent_repository.dart';
-import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -107,7 +105,7 @@ HealthContextDataDto _buildDto({
       currentMedicineCount: currentMedicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: UserHealthProfileDto(
+    profile: const UserHealthProfileDto(
       birthDate: null,
       sexAtBirth: SexAtBirth.unknown,
       heightCm: null,
@@ -210,7 +208,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.updateProfileResult = _buildDto(age: 25);
 
-      final input = HealthProfileUpdateInput();
+      final input = const HealthProfileUpdateInput();
       final result = await repo.updateProfile(input);
 
       expect(result.summary.age, 25);
@@ -222,7 +220,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.createAllergyResult = _buildDto(activeAllergyCount: 1);
 
-      final input = HealthAllergyWriteInput(
+      final input = const HealthAllergyWriteInput(
         kind: HealthAllergyKind.food,
         label: 'Peanuts',
       );
@@ -237,7 +235,7 @@ void main() {
     test('calls dataSource with id and caches result', () async {
       dataSource.updateAllergyResult = _buildDto(activeAllergyCount: 1);
 
-      final input = HealthAllergyUpdateInput();
+      final input = const HealthAllergyUpdateInput();
       final result = await repo.updateAllergy('allergy-1', input);
 
       expect(result.summary.activeAllergyCount, 1);
@@ -260,7 +258,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.createConditionResult = _buildDto(conditionCount: 1);
 
-      final input = HealthConditionWriteInput(label: 'Hypertension');
+      final input = const HealthConditionWriteInput(label: 'Hypertension');
       final result = await repo.createCondition(input);
 
       expect(result.summary.conditionCount, 1);
@@ -272,7 +270,7 @@ void main() {
     test('calls dataSource with id and caches result', () async {
       dataSource.updateConditionResult = _buildDto(conditionCount: 1);
 
-      final input = HealthConditionUpdateInput();
+      final input = const HealthConditionUpdateInput();
       final result = await repo.updateCondition('cond-1', input);
 
       expect(result.summary.conditionCount, 1);
@@ -296,7 +294,7 @@ void main() {
       dataSource.createCurrentMedicineResult =
           _buildDto(currentMedicineCount: 1);
 
-      final input = CurrentMedicineWriteInput(
+      final input = const CurrentMedicineWriteInput(
         source: HealthMedicineSource.cn,
         displayName: 'Aspirin',
       );
@@ -312,7 +310,7 @@ void main() {
       dataSource.updateCurrentMedicineResult =
           _buildDto(currentMedicineCount: 1);
 
-      final input = CurrentMedicineUpdateInput();
+      final input = const CurrentMedicineUpdateInput();
       final result = await repo.updateCurrentMedicine('med-1', input);
 
       expect(result.summary.currentMedicineCount, 1);
@@ -334,7 +332,7 @@ void main() {
 
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
-      dataSource.createAllergyResult = HealthContextDataDto(
+      dataSource.createAllergyResult = const HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: 30,
           onboardingCompleted: true,
@@ -373,7 +371,7 @@ void main() {
         currentMedicines: [],
       );
 
-      await repo.createAllergy(HealthAllergyWriteInput(
+      await repo.createAllergy(const HealthAllergyWriteInput(
         kind: HealthAllergyKind.food,
         label: 'Peanuts',
       ));
@@ -390,7 +388,7 @@ void main() {
     });
 
     test('snapshot with conditions survives cache round-trip', () async {
-      dataSource.createConditionResult = HealthContextDataDto(
+      dataSource.createConditionResult = const HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -427,7 +425,7 @@ void main() {
         currentMedicines: [],
       );
 
-      await repo.createCondition(HealthConditionWriteInput(label: 'Hypertension'));
+      await repo.createCondition(const HealthConditionWriteInput(label: 'Hypertension'));
 
       dataSource.fetchCallCount = 0;
       final result = await repo.fetchHealthContext();
@@ -440,7 +438,7 @@ void main() {
     });
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
-      dataSource.createCurrentMedicineResult = HealthContextDataDto(
+      dataSource.createCurrentMedicineResult = const HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -482,7 +480,7 @@ void main() {
         ],
       );
 
-      await repo.createCurrentMedicine(CurrentMedicineWriteInput(
+      await repo.createCurrentMedicine(const CurrentMedicineWriteInput(
         source: HealthMedicineSource.cn,
         displayName: 'Aspirin',
       ));
@@ -498,7 +496,7 @@ void main() {
     });
 
     test('snapshot with profile extras survives cache round-trip', () async {
-      dataSource.updateProfileResult = HealthContextDataDto(
+      dataSource.updateProfileResult = const HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: 35,
           onboardingCompleted: true,
@@ -523,7 +521,7 @@ void main() {
         currentMedicines: [],
       );
 
-      await repo.updateProfile(HealthProfileUpdateInput());
+      await repo.updateProfile(const HealthProfileUpdateInput());
 
       dataSource.fetchCallCount = 0;
       final result = await repo.fetchHealthContext();

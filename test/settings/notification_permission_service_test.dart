@@ -119,7 +119,7 @@ void main() {
                 IOSFlutterLocalNotificationsPlugin>())
             .thenReturn(mockIOS);
         when(() => mockIOS.checkPermissions())
-            .thenAnswer((_) async => NotificationsEnabledOptions(
+            .thenAnswer((_) async => const NotificationsEnabledOptions(
                   isEnabled: true,
                   isAlertEnabled: true,
                   isBadgeEnabled: true,
@@ -145,7 +145,7 @@ void main() {
                 IOSFlutterLocalNotificationsPlugin>())
             .thenReturn(mockIOS);
         when(() => mockIOS.checkPermissions())
-            .thenAnswer((_) async => NotificationsEnabledOptions(
+            .thenAnswer((_) async => const NotificationsEnabledOptions(
                   isEnabled: false,
                   isAlertEnabled: false,
                   isBadgeEnabled: false,

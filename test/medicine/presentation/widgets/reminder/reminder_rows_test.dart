@@ -39,7 +39,7 @@ void main() {
   group('ReminderInfoRow', () {
     testWidgets('renders icon, label and value', (tester) async {
       await tester.pumpWidget(
-        TestForuiApp(
+        const TestForuiApp(
           home: Scaffold(
             body: ReminderInfoRow(
               icon: FLucideIcons.clock,
@@ -58,7 +58,7 @@ void main() {
 
     testWidgets('renders divider when showDivider is true', (tester) async {
       await tester.pumpWidget(
-        TestForuiApp(
+        const TestForuiApp(
           home: Scaffold(
             body: ReminderInfoRow(
               icon: FLucideIcons.pill,
@@ -77,7 +77,7 @@ void main() {
     testWidgets('does not render divider when showDivider is false',
         (tester) async {
       await tester.pumpWidget(
-        TestForuiApp(
+        const TestForuiApp(
           home: Scaffold(
             body: ReminderInfoRow(
               icon: FLucideIcons.pill,
@@ -208,7 +208,7 @@ void main() {
   group('UnavailableMethodRow', () {
     testWidgets('renders title, subtitle and status badge', (tester) async {
       await tester.pumpWidget(
-        TestForuiApp(
+        const TestForuiApp(
           home: Scaffold(
             body: UnavailableMethodRow(
               icon: FLucideIcons.phone,

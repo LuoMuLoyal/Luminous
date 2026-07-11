@@ -144,12 +144,6 @@ const _unauthorizedBody = {
   'data': null,
 };
 
-const _successBody = {
-  'code': 0,
-  'message': '',
-  'data': null,
-};
-
 void main() {
   group('AuthInterceptor.onRequest', () {
     test('injects Bearer token from session store', () async {

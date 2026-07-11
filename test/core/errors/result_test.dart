@@ -28,7 +28,7 @@ void main() {
     });
 
     test('works with list value', () {
-      final result = Result<List<int>>.success([1, 2, 3]);
+      final result = const Result<List<int>>.success([1, 2, 3]);
       expect(result.valueOrNull, [1, 2, 3]);
     });
   });
@@ -36,7 +36,7 @@ void main() {
   group('Result.failure', () {
     test('wraps error', () {
       const error = AppError(message: 'fail', kind: AppErrorKind.server);
-      final result = Result<String>.failure(error);
+      final result = const Result<String>.failure(error);
 
       expect(result.errorOrNull, error);
       expect(result.valueOrNull, isNull);
@@ -46,7 +46,7 @@ void main() {
 
     test('fold calls onFailure', () {
       const error = AppError(message: 'fail');
-      final result = Result<int>.failure(error);
+      final result = const Result<int>.failure(error);
 
       final output = result.fold(
         onSuccess: (v) => 'got: $v',
@@ -68,7 +68,7 @@ void main() {
 
     test('switch on Failure', () {
       const error = AppError(message: 'bad');
-      final result = Result<int>.failure(error);
+      final result = const Result<int>.failure(error);
       final message = switch (result) {
         Success(:final value) => 'ok: $value',
         Failure(:final error) => 'err: ${error.message}',
@@ -91,7 +91,7 @@ void main() {
         statusCode: 503,
         cause: 'connection refused',
       );
-      final result = Result<String>.failure(error);
+      final result = const Result<String>.failure(error);
       final err = result.errorOrNull!;
       expect(err.cause, 'connection refused');
       expect(err.kind, AppErrorKind.network);

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_form_fields.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
 
 import '../../../../helpers/test_forui_app.dart';
 
@@ -307,7 +305,7 @@ void main() {
   group('remindersFor', () {
     test('filters by medicine id and sorts by time', () {
       final reminders = [
-        MedicineReminderItem(
+        const MedicineReminderItem(
           id: 'r1',
           currentMedicineId: 'med-1',
           scheduledHour: 20,
@@ -316,7 +314,7 @@ void main() {
           createdAt: '2026-07-01T00:00:00Z',
           updatedAt: '2026-07-01T00:00:00Z',
         ),
-        MedicineReminderItem(
+        const MedicineReminderItem(
           id: 'r2',
           currentMedicineId: 'med-2',
           scheduledHour: 8,
@@ -325,7 +323,7 @@ void main() {
           createdAt: '2026-07-01T00:00:00Z',
           updatedAt: '2026-07-01T00:00:00Z',
         ),
-        MedicineReminderItem(
+        const MedicineReminderItem(
           id: 'r3',
           currentMedicineId: 'med-1',
           scheduledHour: 8,
@@ -345,7 +343,7 @@ void main() {
 
     test('returns empty list for no matches', () {
       final reminders = [
-        MedicineReminderItem(
+        const MedicineReminderItem(
           id: 'r1',
           currentMedicineId: 'med-1',
           scheduledHour: 8,

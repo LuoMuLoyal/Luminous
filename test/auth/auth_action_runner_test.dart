@@ -56,7 +56,7 @@ void main() {
         final result = await runAuthAction<String>(
           ref: container.read(provider),
           tag: 'test',
-          action: () async => throw AppError(
+          action: () async => throw const AppError(
             message: 'auth failed',
             kind: AppErrorKind.auth,
           ),

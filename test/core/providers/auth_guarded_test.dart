@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
 void main() {
@@ -67,7 +70,7 @@ void main() {
       final future = container.read(_testFetchProvider.future);
 
       bool completed = false;
-      future.whenComplete(() => completed = true);
+      unawaited(future.whenComplete(() => completed = true));
 
       await Future.delayed(const Duration(milliseconds: 100));
 
@@ -263,10 +266,10 @@ class _FakeSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 
   @override
-  Future<void> applySession(session) async {}
+  Future<void> applySession(AuthSession session) async {}
 
   @override
-  void applyUser(user) {}
+  void applyUser(AuthUser user) {}
 
   @override
   void clearLocalSession() {}

@@ -65,8 +65,6 @@ MineDashboard _buildDashboard({List<MineStatusCard>? alerts}) {
 
 void main() {
   testWidgets('renders card with key mine-status-overview', (tester) async {
-    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(

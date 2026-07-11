@@ -3,7 +3,6 @@ import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
@@ -332,7 +331,7 @@ void main() {
       test(
         'returns coverage issue when API returns non-zero code',
         () async {
-        remoteDataSource.detailResponses['cn-1'] = MedicineDetailResponseDto(
+        remoteDataSource.detailResponses['cn-1'] = const MedicineDetailResponseDto(
           code: 1001,
           message: 'Not found',
           data: MedicineDetailDataDto(
@@ -340,7 +339,7 @@ void main() {
             source: lucent.MedicineDetailDataDtoSourceSource.cn,
             name: '',
             subtitle: null,
-            detail: const lucent.MedicineDetailDataDtoDetailDetail({}),
+            detail: lucent.MedicineDetailDataDtoDetailDetail({}),
           ),
         );
 
@@ -415,7 +414,7 @@ void main() {
         // returns a default response with code 0, so it will succeed but
         // with the "Unknown" name).
         // Let's make cn-2 return a non-zero code to simulate failure.
-        remoteDataSource.detailResponses['cn-2'] = MedicineDetailResponseDto(
+        remoteDataSource.detailResponses['cn-2'] = const MedicineDetailResponseDto(
           code: 1001,
           message: 'Not found',
           data: MedicineDetailDataDto(
@@ -423,7 +422,7 @@ void main() {
             source: lucent.MedicineDetailDataDtoSourceSource.cn,
             name: '',
             subtitle: null,
-            detail: const lucent.MedicineDetailDataDtoDetailDetail({}),
+            detail: lucent.MedicineDetailDataDtoDetailDetail({}),
           ),
         );
 
@@ -535,11 +534,11 @@ class _NoOpRiskChecker implements MedicineRiskChecker {
     required List<MedicineRiskMedicineDetail> medicines,
   }) {
     evaluateCalled = true;
-    return MedicineRiskCheckResult(
+    return const MedicineRiskCheckResult(
       currentMedicineCount: 0,
       checkedMedicineCount: 0,
-      findings: const [],
-      coverageIssues: const [],
+      findings: [],
+      coverageIssues: [],
     );
   }
 }

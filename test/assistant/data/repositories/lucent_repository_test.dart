@@ -11,19 +11,13 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 
 class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   _FakeAssistantRemoteDataSource({
-    lucent.AssistantCapabilitiesDataDto? capabilities,
-    lucent.AssistantConversationDataDto? latestConversation,
-    List<lucent.AssistantConversationSummaryDto>? recentConversations,
-    lucent.AssistantConversationDataDto? openedConversation,
-    bool? clearResult,
-    Stream<AssistantRemoteEvent>? stream,
-  })  : _capabilities = capabilities,
-        _latestConversation = latestConversation,
-        _recentConversations = recentConversations,
-        _openedConversation = openedConversation,
-        _clearResult = clearResult,
-        _stream = stream,
-        super(
+    this._capabilities,
+    this._latestConversation,
+    this._recentConversations,
+    this._openedConversation,
+    this._clearResult,
+    this._stream,
+  })  : super(
           api: lucent.AssistantApi(Dio(BaseOptions())),
           dio: Dio(BaseOptions()),
         );
@@ -42,7 +36,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     if (_capabilities == null) {
       throw const LucentApiException(message: 'not configured');
     }
-    return _capabilities!;
+    return _capabilities;
   }
 
   @override
@@ -64,7 +58,7 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     if (_openedConversation == null) {
       throw const LucentApiException(message: 'not found');
     }
-    return _openedConversation!;
+    return _openedConversation;
   }
 
   @override
