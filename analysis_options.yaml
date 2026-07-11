@@ -2,14 +2,46 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
+    # --- 已有的 ---
     - unawaited_futures
     - prefer_single_quotes
     - avoid_dynamic_calls
     - require_trailing_commas
-    - avoid_print
     - prefer_const_constructors
     - type_annotate_public_apis
 
+    # --- Bug 预防 ---
+    # - always_declare_return_types
+    # - avoid_void_async
+    # - cancel_subscriptions
+    # - close_sinks
+    # - discarded_futures
+    # - only_throw_errors
+    # - parameter_assignments
+
+    # --- 空安全 ---
+    # - cast_nullable_to_non_nullable
+    # - prefer_null_aware_method_calls
+
+    # --- Flutter 最佳实践 ---
+    # - use_decorated_box
+    # - sized_box_shrink_expand
+
+    # --- 风格 / 可读性 ---
+    # - avoid_multiple_declarations_per_line
+    # - avoid_positional_boolean_parameters
+    # - avoid_redundant_argument_values
+    # - directives_ordering
+    # - eol_at_end_of_file
+    # - prefer_const_declarations
+    # - prefer_const_literals_to_create_immutables
+    # - prefer_final_in_for_each
+    # - prefer_final_locals
+    # - sort_constructors_first
+
+    # --- 文档 ---
+    # - flutter_style_todos
+    # - deprecated_consistency
 analyzer:
   exclude:
     - generated/lucent_api/**
