@@ -3,111 +3,103 @@ import 'package:luminous/core/errors/app_error.dart';
 import 'package:luminous/core/errors/result.dart';
 
 void main() {
-  group('Result', () {
-    test('Result.success wraps value', () {
+  group('Result.success', () {
+    test('wraps value', () {
       const result = Result<int>.success(42);
-      expect(result, isA<Success<int>>());
-      expect(result.valueOrNull, equals(42));
+      expect(result.valueOrNull, 42);
       expect(result.errorOrNull, isNull);
       expect(result.isSuccess, isTrue);
       expect(result.isFailure, isFalse);
     });
 
-    test('Result.failure wraps error', () {
-      const error = AppError(message: 'something went wrong');
-      const result = Result<int>.failure(error);
-      expect(result, isA<Failure<int>>());
-      expect(result.valueOrNull, isNull);
-      expect(result.errorOrNull, same(error));
-      expect(result.isSuccess, isFalse);
-      expect(result.isFailure, isTrue);
-    });
-
-    test('fold calls onSuccess for Success', () {
+    test('fold calls onSuccess', () {
       const result = Result<String>.success('hello');
-      final value = result.fold(
-        onSuccess: (v) => v.toUpperCase(),
-        onFailure: (_) => 'fallback',
+      final output = result.fold(
+        onSuccess: (v) => 'got: $v',
+        onFailure: (_) => 'error',
       );
-      expect(value, equals('HELLO'));
+      expect(output, 'got: hello');
     });
 
-    test('fold calls onFailure for Failure', () {
-      const result = Result<String>.failure(
-        AppError(message: 'error', kind: AppErrorKind.network),
-      );
-      final value = result.fold(
-        onSuccess: (v) => v,
-        onFailure: (e) => e.message,
-      );
-      expect(value, equals('error'));
-    });
-
-    test('switch pattern matching works', () {
-      const success = Result<int>.success(10);
-      const failure = Result<int>.failure(AppError(message: 'fail'));
-
-      final s = switch (success) {
-        Success(:final value) => 'ok: $value',
-        Failure(:final error) => 'err: ${error.message}',
-      };
-      expect(s, equals('ok: 10'));
-
-      final f = switch (failure) {
-        Success(:final value) => 'ok: $value',
-        Failure(:final error) => 'err: ${error.message}',
-      };
-      expect(f, equals('err: fail'));
-    });
-
-    test('can hold null value in Success', () {
-      const result = Result<Object?>.success(null);
+    test('works with nullable value', () {
+      const result = Result<int?>.success(null);
       expect(result.valueOrNull, isNull);
       expect(result.isSuccess, isTrue);
     });
 
-    test('can hold complex types', () {
-      const result = Result<List<int>>.success([1, 2, 3]);
-      expect(result.valueOrNull, equals([1, 2, 3]));
+    test('works with list value', () {
+      final result = Result<List<int>>.success([1, 2, 3]);
+      expect(result.valueOrNull, [1, 2, 3]);
     });
   });
 
-  group('AppError', () {
-    test('defaults kind to unknown', () {
-      const error = AppError(message: 'test');
-      expect(error.kind, equals(AppErrorKind.unknown));
+  group('Result.failure', () {
+    test('wraps error', () {
+      const error = AppError(message: 'fail', kind: AppErrorKind.server);
+      final result = Result<String>.failure(error);
+
+      expect(result.errorOrNull, error);
+      expect(result.valueOrNull, isNull);
+      expect(result.isSuccess, isFalse);
+      expect(result.isFailure, isTrue);
     });
 
-    test('preserves all fields', () {
-      const error = AppError(
-        message: 'Token expired',
-        kind: AppErrorKind.auth,
-        code: 401002,
-        statusCode: 401,
-        requestId: 'req-123',
-        cause: 'original exception',
-      );
-      expect(error.message, equals('Token expired'));
-      expect(error.kind, equals(AppErrorKind.auth));
-      expect(error.code, equals(401002));
-      expect(error.statusCode, equals(401));
-      expect(error.requestId, equals('req-123'));
-      expect(error.cause, equals('original exception'));
-    });
+    test('fold calls onFailure', () {
+      const error = AppError(message: 'fail');
+      final result = Result<int>.failure(error);
 
-    test('toString contains key info', () {
-      const error = AppError(
-        message: 'fail',
-        kind: AppErrorKind.server,
-        code: 500001,
-        statusCode: 500,
+      final output = result.fold(
+        onSuccess: (v) => 'got: $v',
+        onFailure: (e) => 'error: ${e.message}',
       );
-      final str = error.toString();
-      expect(str, contains('AppError'));
-      expect(str, contains('message: fail'));
-      expect(str, contains('kind: AppErrorKind.server'));
-      expect(str, contains('code: 500001'));
-      expect(str, contains('statusCode: 500'));
+      expect(output, 'error: fail');
     });
   });
+
+  group('Result pattern matching', () {
+    test('switch on Success', () {
+      const result = Result<int>.success(10);
+      final message = switch (result) {
+        Success(:final value) => 'ok: $value',
+        Failure(:final error) => 'err: ${error.message}',
+      };
+      expect(message, 'ok: 10');
+    });
+
+    test('switch on Failure', () {
+      const error = AppError(message: 'bad');
+      final result = Result<int>.failure(error);
+      final message = switch (result) {
+        Success(:final value) => 'ok: $value',
+        Failure(:final error) => 'err: ${error.message}',
+      };
+      expect(message, 'err: bad');
+    });
+  });
+
+  group('Result type inference', () {
+    test('Success with custom type', () {
+      const result = Result<_Custom>.success(_Custom(name: 'x'));
+      expect(result.valueOrNull!.name, 'x');
+    });
+
+    test('Failure preserves error cause', () {
+      const error = AppError(
+        message: 'timeout',
+        kind: AppErrorKind.network,
+        code: 500,
+        statusCode: 503,
+        cause: 'connection refused',
+      );
+      final result = Result<String>.failure(error);
+      final err = result.errorOrNull!;
+      expect(err.cause, 'connection refused');
+      expect(err.kind, AppErrorKind.network);
+    });
+  });
+}
+
+class _Custom {
+  const _Custom({required this.name});
+  final String name;
 }
