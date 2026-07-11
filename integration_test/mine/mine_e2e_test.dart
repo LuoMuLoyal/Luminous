@@ -3,48 +3,44 @@ import 'dart:async';
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  patrolTest('mine signed-out notice routes to login', ($) async {
+    await pumpOfflineApp($);
 
-  testWidgets('mine signed-out notice routes to login', (tester) async {
-    await pumpOfflineApp(tester);
+    await openTab($, '我的');
 
-    await openTab(tester, '我的');
+    expect($('当前未登录').exists, true);
 
-    expect(find.text('当前未登录'), findsOneWidget);
+    await $.tester.tap(find.widgetWithText(OutlinedButton, '去登录'));
+    await settleE2e($);
 
-    await tester.tap(find.widgetWithText(OutlinedButton, '去登录'));
-    await settleE2e(tester);
-
-    expect(find.text('邮箱'), findsOneWidget);
+    expect($('邮箱').exists, true);
     expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
   });
 
-  testWidgets('mine profile edit saves health context and returns', (
-    tester,
-  ) async {
+  patrolTest('mine profile edit saves health context and returns', ($) async {
     final healthContextRepository = E2eHealthContextRepository();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
-    await openTab(tester, '我的');
+    await openTab($, '我的');
     expect(find.byKey(const Key('mine-archive-section')), findsOneWidget);
 
     final basicInfo = find.text('基础信息');
-    await tapVisible(tester, basicInfo);
+    await tapVisible($, basicInfo);
 
-    expect(find.text('编辑档案'), findsOneWidget);
+    expect($('编辑档案').exists, true);
 
     final fields = find.byType(TextField);
-    await tester.enterText(fields.at(0), '1998-06-07');
-    await tester.enterText(fields.at(1), '171');
-    await tester.enterText(fields.at(2), 'AB');
+    await $.tester.enterText(fields.at(0), '1998-06-07');
+    await $.tester.enterText(fields.at(1), '171');
+    await $.tester.enterText(fields.at(2), 'AB');
 
     final saveButton = find.text('保存');
-    await tapVisible(tester, saveButton);
+    await tapVisible($, saveButton);
 
     final input = healthContextRepository.profileUpdate;
     expect(input, isNotNull);
@@ -54,27 +50,25 @@ void main() {
     expect(find.byKey(const Key('mine-archive-section')), findsOneWidget);
   });
 
-  testWidgets('mine allergy create saves health context and returns', (
-    tester,
-  ) async {
+  patrolTest('mine allergy create saves health context and returns', ($) async {
     final healthContextRepository = E2eHealthContextRepository();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
-    await openMineProfileEntry(tester, '过敏史');
+    await openMineProfileEntry($, '过敏史');
 
-    expect(find.text('新增过敏'), findsOneWidget);
+    expect($('新增过敏').exists, true);
 
-    await tester.enterText(
+    await $.tester.enterText(
       find.byKey(const Key('allergy-label-field')),
       'E2E penicillin',
     );
-    await tester.tap(find.byKey(const Key('allergy-save-button')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('allergy-save-button')));
+    await settleE2e($);
 
     final input = healthContextRepository.allergyCreate;
     expect(input, isNotNull);
@@ -83,59 +77,59 @@ void main() {
     expect(find.byKey(const Key('mine-archive-section')), findsOneWidget);
   });
 
-  testWidgets('mine condition create saves health context and returns', (
-    tester,
+  patrolTest('mine condition create saves health context and returns', (
+    $,
   ) async {
     final healthContextRepository = E2eHealthContextRepository();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
-    await openTab(tester, '我的');
+    await openTab($, '我的');
     unawaited(router.push('/mine/condition/new'));
-    await settleE2e(tester);
+    await settleE2e($);
 
-    expect(find.text('新增疾病'), findsOneWidget);
+    expect($('新增疾病').exists, true);
 
-    await tester.enterText(
+    await $.tester.enterText(
       find.byKey(const Key('condition-label-field')),
       'E2E asthma',
     );
-    await tester.tap(find.byKey(const Key('condition-save-button')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('condition-save-button')));
+    await settleE2e($);
 
     final input = healthContextRepository.conditionCreate;
     expect(input, isNotNull);
     expect(input!.label, 'E2E asthma');
     expect(input.status, HealthConditionStatus.active);
-    await openTab(tester, '我的');
+    await openTab($, '我的');
     expect(find.byKey(const Key('mine-archive-section')), findsOneWidget);
   });
 
-  testWidgets('mine current medicine create saves health context and returns', (
-    tester,
+  patrolTest('mine current medicine create saves health context and returns', (
+    $,
   ) async {
     final healthContextRepository = E2eHealthContextRepository();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
-    await openMineProfileEntry(tester, '当前用药');
+    await openMineProfileEntry($, '当前用药');
 
-    expect(find.text('新增用药'), findsOneWidget);
+    expect($('新增用药').exists, true);
 
-    await tester.enterText(
+    await $.tester.enterText(
       find.byKey(const Key('medicine-displayname-field')),
       'E2E ibuprofen',
     );
     final saveButton = find.byKey(const Key('medicine-save-button'));
-    await tapVisible(tester, saveButton);
+    await tapVisible($, saveButton);
 
     final input = healthContextRepository.medicineCreate;
     expect(input, isNotNull);

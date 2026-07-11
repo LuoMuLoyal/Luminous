@@ -1,22 +1,17 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-
+import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  testWidgets('full-stack auth can sign in against Lucent test runtime', (
-    tester,
+  patrolTest('full-stack auth can sign in against Lucent test runtime', (
+    $,
   ) async {
     final config = FullstackE2eConfig.fromEnvironment();
 
     await prepareFullstackRecordLane(config);
-    final container = await pumpFullstackApp(tester, config: config);
+    final container = await pumpFullstackApp($, config: config);
 
-    await signInThroughUi(tester, config: config);
-    await waitForAuthenticatedSession(tester, container);
+    await signInThroughUi($, config: config);
+    await waitForAuthenticatedSession($, container);
 
     final state = container.read(authSessionProvider);
     expect(state.isAuthenticated, isTrue);

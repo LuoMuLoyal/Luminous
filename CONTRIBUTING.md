@@ -230,27 +230,29 @@ flutter test --update-goldens test/golden/      # regenerate baselines
 - Baseline images are stored in `test/golden/goldens/`.
 - Run `--update-goldens` when visual changes are intentional.
 
-### Integration Tests
+### Integration Tests (Patrol)
 
-```bash
-flutter test integration_test                           # all scenarios
-flutter test integration_test/settings_preferences_e2e_test.dart  # one scenario
-```
-
-### Patrol E2E Tests
-
-Patrol enables native system interaction (permission dialogs, notifications,
-WebView) beyond what plain `integration_test` supports.
+All integration tests use Patrol (`patrolTest`). Patrol replaces the
+built-in `integration_test` package — there is only one E2E writing
+style in this project.
 
 ```bash
 # Install patrol_cli (one-time)
 dart pub global activate patrol_cli
 
-# Run a patrol test
+# Run all integration tests
 dart pub global run patrol_cli:main test \
-  --target integration_test/patrol/app_smoke_patrol_test.dart \
+  --target integration_test/ \
+  --device emulator-5554
+
+# Run a single test
+dart pub global run patrol_cli:main test \
+  --target integration_test/settings/settings_preferences_e2e_test.dart \
   --device emulator-5554
 ```
+
+Patrol also enables native system interaction (permission dialogs,
+notifications, WebView) via `$.native`.
 
 ### Full-Stack E2E
 

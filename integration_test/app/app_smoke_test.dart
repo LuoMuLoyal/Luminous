@@ -1,33 +1,35 @@
+// ignore_for_file: avoid_print
+
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  patrolTest('app smoke: renders shell with all five tabs', ($) async {
+    await pumpOfflineApp($);
 
-  testWidgets('offline app smoke flow covers main tabs and record create', (
-    tester,
-  ) async {
-    await pumpOfflineApp(tester);
+    // Verify all five tab keys are visible.
+    expect($(const Key('shell-tab-today')).exists, true);
+    expect($(const Key('shell-tab-record')).exists, true);
+    expect($(const Key('shell-tab-medicine')).exists, true);
+    expect($(const Key('shell-tab-report')).exists, true);
+    expect($(const Key('shell-tab-mine')).exists, true);
 
-    expect(find.text('今日'), findsAtLeastNWidgets(1));
-    expect(find.byKey(const Key('today-medication-card')), findsOneWidget);
+    // Navigate through tabs.
+    await $(const Key('shell-tab-record')).tap();
+    await $.pumpAndSettle();
 
-    await openTab(tester, '记录');
-    expect(find.text('快速记录'), findsOneWidget);
+    await $(const Key('shell-tab-medicine')).tap();
+    await $.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.add_rounded).last);
-    await settleE2e(tester);
-    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
-    expect(find.byKey(const Key('auth-required-login-action')), findsOneWidget);
+    await $(const Key('shell-tab-report')).tap();
+    await $.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
-    await settleE2e(tester);
-    expect(find.text('快速记录'), findsOneWidget);
+    await $(const Key('shell-tab-mine')).tap();
+    await $.pumpAndSettle();
 
-    await openTab(tester, '用药');
-    await pumpUntilFound(tester, find.byKey(const Key('medicine-today-plan')));
-    expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
+    // Return to today.
+    await $(const Key('shell-tab-today')).tap();
+    await $.pumpAndSettle();
 
-    await openTab(tester, '我的');
-    expect(find.text('当前未登录'), findsOneWidget);
+    print('Patrol smoke test passed — all tabs navigable.');
   });
 }

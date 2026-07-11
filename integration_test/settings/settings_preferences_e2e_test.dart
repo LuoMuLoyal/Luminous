@@ -1,131 +1,125 @@
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  testWidgets('settings theme flow uses system back button and persists mode', (
-    tester,
+  patrolTest('settings theme flow uses system back button and persists mode', (
+    $,
   ) async {
-    await pumpOfflineApp(tester);
+    await pumpOfflineApp($);
 
-    await openTab(tester, '我的');
-    await tester.tap(find.byKey(const Key('mine-settings-action')));
-    await settleE2e(tester);
+    await openTab($, '我的');
+    await $.tester.tap(find.byKey(const Key('mine-settings-action')));
+    await settleE2e($);
 
     expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('settings-row-theme')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('settings-row-theme')));
+    await settleE2e($);
 
-    expect(find.text('主题模式'), findsOneWidget);
+    expect($('主题模式').exists, true);
     expect(find.byType(BackButton), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('theme-row-dark')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('theme-row-dark')));
+    await settleE2e($);
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('theme.mode'), 'dark');
 
-    await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await $.tester.tap(find.byType(BackButton).first);
+    await settleE2e($);
 
     expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
-    expect(find.text('深色 · 默认'), findsOneWidget);
+    expect($('深色 · 默认').exists, true);
 
-    await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await $.tester.tap(find.byType(BackButton).first);
+    await settleE2e($);
 
-    await pumpUntilFound(tester, find.byType(NavigationBar));
-    await openTab(tester, '我的');
-    await pumpUntilFound(tester, find.text('当前未登录'));
-    expect(find.text('当前未登录'), findsOneWidget);
+    await pumpUntilFound($, find.byType(NavigationBar));
+    await openTab($, '我的');
+    await pumpUntilFound($, find.text('当前未登录'));
+    expect($('当前未登录').exists, true);
   });
 
-  testWidgets('settings language flow persists selected locale', (
-    tester,
-  ) async {
-    await pumpOfflineApp(tester);
+  patrolTest('settings language flow persists selected locale', ($) async {
+    await pumpOfflineApp($);
 
-    await openSettings(tester);
+    await openSettings($);
 
-    await tester.tap(find.byKey(const Key('settings-row-language')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('settings-row-language')));
+    await settleE2e($);
 
-    expect(find.text('语言'), findsOneWidget);
+    expect($('语言').exists, true);
     expect(find.byKey(const Key('language-row-en')), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('language-row-en')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('language-row-en')));
+    await settleE2e($);
 
     final preferences = await SharedPreferences.getInstance();
     expect(preferences.getString('app.locale'), 'en');
 
-    await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await $.tester.tap(find.byType(BackButton).first);
+    await settleE2e($);
 
-    expect(find.text('Settings'), findsOneWidget);
+    expect($('Settings').exists, true);
   });
 
-  testWidgets('settings footer login action routes signed-out user to login', (
-    tester,
+  patrolTest('settings footer login action routes signed-out user to login', (
+    $,
   ) async {
-    await pumpOfflineApp(tester);
+    await pumpOfflineApp($);
 
-    await openSettings(tester);
+    await openSettings($);
 
-    await tapSettingsFooterAction(tester);
+    await tapSettingsFooterAction($);
 
-    expect(find.text('邮箱'), findsOneWidget);
+    expect($('邮箱').exists, true);
     expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
   });
 
-  testWidgets('settings footer sign out clears session and routes to login', (
-    tester,
+  patrolTest('settings footer sign out clears session and routes to login', (
+    $,
   ) async {
     final remote = E2eAuthRemoteDataSource();
     final container = await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       authRemoteDataSource: remote,
     );
 
-    await openSettings(tester);
+    await openSettings($);
 
-    await tapSettingsFooterAction(tester);
+    await tapSettingsFooterAction($);
 
     expect(remote.logoutCalled, isTrue);
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
-    expect(find.text('邮箱'), findsOneWidget);
+    expect($('邮箱').exists, true);
     expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
   });
 
-  testWidgets('settings notification toggle persists preference', (
-    tester,
-  ) async {
+  patrolTest('settings notification toggle persists preference', ($) async {
     await pumpOfflineApp(
-      tester,
+      $,
       notificationPermissionService: E2eNotificationPermissionService(
         state: NotificationPermissionState.granted,
       ),
     );
 
-    await openSettings(tester);
+    await openSettings($);
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await settleE2e($);
 
-    expect(find.text('通知设置'), findsOneWidget);
-    expect(find.text('系统通知已开启'), findsOneWidget);
+    expect($('通知设置').exists, true);
+    expect($('系统通知已开启').exists, true);
 
     final medicationSwitch = find.byKey(
       const Key('notification-switch-medication'),
     );
-    final before = readSwitchValue(tester, switchIn(medicationSwitch));
+    final before = readSwitchValue($, switchIn(medicationSwitch));
 
-    await tester.tap(medicationSwitch);
-    await settleE2e(tester);
+    await $.tester.tap(medicationSwitch);
+    await settleE2e($);
 
-    final after = readSwitchValue(tester, switchIn(medicationSwitch));
+    final after = readSwitchValue($, switchIn(medicationSwitch));
     expect(after, isNot(before));
 
     final preferences = await SharedPreferences.getInstance();
@@ -134,37 +128,34 @@ void main() {
       after,
     );
 
-    await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await $.tester.tap(find.byType(BackButton).first);
+    await settleE2e($);
 
-    expect(find.text('设置'), findsOneWidget);
+    expect($('设置').exists, true);
   });
 
-  testWidgets('settings notification permission row requests permission', (
-    tester,
+  patrolTest('settings notification permission row requests permission', (
+    $,
   ) async {
     final permissionService = E2eNotificationPermissionService(
       state: NotificationPermissionState.denied,
     );
 
-    await pumpOfflineApp(
-      tester,
-      notificationPermissionService: permissionService,
-    );
+    await pumpOfflineApp($, notificationPermissionService: permissionService);
 
-    await openSettings(tester);
+    await openSettings($);
 
-    await tester.tap(find.byKey(const Key('settings-row-notifications')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('settings-row-notifications')));
+    await settleE2e($);
 
-    expect(find.text('通知设置'), findsOneWidget);
-    expect(find.text('系统通知未开启'), findsOneWidget);
+    expect($('通知设置').exists, true);
+    expect($('系统通知未开启').exists, true);
     expect(permissionService.requestCount, 0);
 
-    await tester.tap(find.byKey(const Key('notification-permission-card')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('notification-permission-card')));
+    await settleE2e($);
 
     expect(permissionService.requestCount, 1);
-    expect(find.text('系统通知未开启'), findsOneWidget);
+    expect($('系统通知未开启').exists, true);
   });
 }

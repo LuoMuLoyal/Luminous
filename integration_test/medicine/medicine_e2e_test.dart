@@ -1,111 +1,100 @@
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  patrolTest('medicine search route works with offline search data', ($) async {
+    await pumpOfflineApp($);
 
-  testWidgets('medicine search route works with offline search data', (
-    tester,
-  ) async {
-    await pumpOfflineApp(tester);
-
-    await openTab(tester, '用药');
+    await openTab($, '用药');
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await settleE2e(tester);
+    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await settleE2e($);
 
-    expect(find.text('搜索药品'), findsOneWidget);
-    await tester.enterText(find.byType(TextField), '布洛芬');
-    await tester.pump(const Duration(seconds: 1));
+    expect($('搜索药品').exists, true);
+    await $.tester.enterText(find.byType(TextField), '布洛芬');
+    await $.pump(const Duration(seconds: 1));
 
-    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+    expect($('布洛芬片').exists, true);
 
-    await tester.tap(find.byType(BackButton).first);
-    await settleE2e(tester);
+    await $.tester.tap(find.byType(BackButton).first);
+    await settleE2e($);
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
 
-  testWidgets('medicine search add writes signed-in current medicine', (
-    tester,
+  patrolTest('medicine search add writes signed-in current medicine', (
+    $,
   ) async {
     final healthContextRepository = E2eHealthContextRepository();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
-    await openTab(tester, '用药');
-    await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await settleE2e(tester);
+    await openTab($, '用药');
+    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await settleE2e($);
 
-    await tester.enterText(find.byType(TextField), '布洛芬');
-    await tester.pump(const Duration(seconds: 1));
+    await $.tester.enterText(find.byType(TextField), '布洛芬');
+    await $.pump(const Duration(seconds: 1));
 
-    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+    expect($('布洛芬片').exists, true);
 
     final addButton = find.text('加入药箱').first;
-    await tester.scrollUntilVisible(
+    await $.tester.scrollUntilVisible(
       addButton,
       240,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(addButton);
-    await settleE2e(tester);
+    await $.tester.tap(addButton);
+    await settleE2e($);
 
     final input = healthContextRepository.medicineCreate;
     expect(input, isNotNull);
     expect(input!.source, HealthMedicineSource.cn);
     expect(input.sourceRefId, '__mock_cn_ibuprofen__');
     expect(input.displayName, '[DEMO] 布洛芬片');
-    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+    expect($('布洛芬片').exists, true);
   });
 
-  testWidgets('medicine search add routes signed-out user to login', (
-    tester,
-  ) async {
+  patrolTest('medicine search add routes signed-out user to login', ($) async {
     final healthContextRepository = E2eHealthContextRepository();
 
-    await pumpOfflineApp(
-      tester,
-      healthContextRepository: healthContextRepository,
-    );
+    await pumpOfflineApp($, healthContextRepository: healthContextRepository);
 
-    await openTab(tester, '用药');
-    await tester.tap(find.byIcon(Icons.search_rounded).last);
-    await settleE2e(tester);
+    await openTab($, '用药');
+    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await settleE2e($);
 
-    await tester.enterText(find.byType(TextField), '布洛芬');
-    await tester.pump(const Duration(seconds: 1));
+    await $.tester.enterText(find.byType(TextField), '布洛芬');
+    await $.pump(const Duration(seconds: 1));
 
-    expect(find.text('[DEMO] 布洛芬片'), findsOneWidget);
+    expect($('布洛芬片').exists, true);
 
     final addButton = find.text('加入药箱').first;
-    await tester.scrollUntilVisible(
+    await $.tester.scrollUntilVisible(
       addButton,
       240,
       scrollable: find.byType(Scrollable).first,
     );
-    await tester.tap(addButton);
-    await settleE2e(tester);
+    await $.tester.tap(addButton);
+    await settleE2e($);
 
     expect(healthContextRepository.medicineCreate, isNull);
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('auth-required-login-action')));
-    await settleE2e(tester);
+    await $.tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await settleE2e($);
     expect(find.byType(EditableText), findsWidgets);
   });
 
-  testWidgets('medicine dose action routes signed-out user to login', (
-    tester,
-  ) async {
+  patrolTest('medicine dose action routes signed-out user to login', ($) async {
     await pumpOfflineApp(
-      tester,
+      $,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
-    await openTab(tester, '用药');
+    await openTab($, '用药');
 
     expect(
       find.byKey(const Key('medicine-next-dose-action-taken')),
@@ -117,19 +106,19 @@ void main() {
     );
   });
 
-  testWidgets('medicine dose action saves signed-in dose log', (tester) async {
+  patrolTest('medicine dose action saves signed-in dose log', ($) async {
     final doseLogRemoteDataSource = E2eDoseLogRemoteDataSource();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
       doseLogRemoteDataSource: doseLogRemoteDataSource,
     );
 
-    await openTab(tester, '用药');
+    await openTab($, '用药');
 
-    await tapMedicineDoseAction(tester, '已服用');
+    await tapMedicineDoseAction($, '已服用');
 
     expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
     expect(doseLogRemoteDataSource.createStatus, 'taken');
@@ -137,21 +126,21 @@ void main() {
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
 
-  testWidgets('medicine skipped dose action saves signed-in dose log', (
-    tester,
+  patrolTest('medicine skipped dose action saves signed-in dose log', (
+    $,
   ) async {
     final doseLogRemoteDataSource = E2eDoseLogRemoteDataSource();
 
     await pumpOfflineApp(
-      tester,
+      $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
       doseLogRemoteDataSource: doseLogRemoteDataSource,
     );
 
-    await openTab(tester, '用药');
+    await openTab($, '用药');
 
-    await tapMedicineDoseAction(tester, '跳过');
+    await tapMedicineDoseAction($, '跳过');
 
     expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
     expect(doseLogRemoteDataSource.createStatus, 'skipped');
