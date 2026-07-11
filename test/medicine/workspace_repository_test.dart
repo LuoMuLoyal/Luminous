@@ -55,8 +55,10 @@ void main() {
           const DoseLogItem(
             id: 'dose-1',
             currentMedicineId: 'med-1',
+            reminderId: 'reminder-1',
             status: DoseLogStatus.skipped,
             scheduledFor: '2026-06-04',
+            scheduledTime: '07:45',
             createdAt: '2026-06-04T08:00:00.000Z',
             updatedAt: '2026-06-04T08:00:00.000Z',
           ),

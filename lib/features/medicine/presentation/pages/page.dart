@@ -359,7 +359,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
 
     return ConstrainedBox(
       key: const Key('medicine-home-search-bar'),
-      constraints: const BoxConstraints(minHeight: 45),
+      constraints: const BoxConstraints(minHeight: 56),
       child: FButton.raw(
         onPress: () => context.push(AppRoutes.medicineSearch),
         variant: FButtonVariant.ghost,

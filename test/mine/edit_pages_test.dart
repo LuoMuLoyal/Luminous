@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +14,8 @@ import 'package:luminous/features/mine/presentation/pages/allergy_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/condition_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/current_medicine_edit.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
-import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   // ── Profile ──
@@ -306,39 +306,26 @@ Widget _app(
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       healthContextRepositoryProvider.overrideWithValue(fakeRepo),
     ],
-    child: FTheme(
-      data: FThemes.neutral.light.touch,
-      child: MaterialApp.router(
-        theme: FThemes.neutral.light.touch.toApproximateMaterialTheme(),
-        darkTheme: FThemes.neutral.dark.touch.toApproximateMaterialTheme(),
-        locale: const Locale('zh'),
-        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: GoRouter(
-          initialLocation: '/',
-          routes: [
-            GoRoute(
-              path: '/',
-              builder: (context, state) => Scaffold(
-                body: TextButton(
-                  onPressed: () => context.push('/mine-edit'),
-                  child: const Text('open-profile-edit'),
-                ),
+    child: TestForuiRouterApp(
+      routerConfig: GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) => Scaffold(
+              body: TextButton(
+                onPressed: () => context.push('/mine-edit'),
+                child: const Text('open-profile-edit'),
               ),
             ),
-            GoRoute(path: '/mine-edit', builder: (context, state) => page),
-            GoRoute(
-              path: '/login',
-              builder: (context, state) =>
-                  const Scaffold(body: Text('login-page')),
-            ),
-          ],
-        ),
+          ),
+          GoRoute(path: '/mine-edit', builder: (context, state) => page),
+          GoRoute(
+            path: '/login',
+            builder: (context, state) =>
+                const Scaffold(body: Text('login-page')),
+          ),
+        ],
       ),
     ),
   );

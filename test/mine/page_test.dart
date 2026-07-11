@@ -285,7 +285,7 @@ void main() {
     expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
     // authGoLogin appears in both the hero CTA and the sign-out tile.
     expect(find.text(l10n.authGoLogin), findsNWidgets(2));
-    expect(find.byType(SignInHintBanner), findsNothing);
+    expect(find.byType(SignInHintBanner), findsOneWidget);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
     expect(find.byKey(const Key('mine-status-overview')), findsNothing);
 
