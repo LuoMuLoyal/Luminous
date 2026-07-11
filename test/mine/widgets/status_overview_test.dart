@@ -30,7 +30,8 @@ MineDashboard _buildDashboard({List<MineStatusCard>? alerts}) {
       currentMedicineCount: 2,
       basicInfoCompleted: true,
     ),
-    alerts: alerts ??
+    alerts:
+        alerts ??
         [
           const MineStatusCard(
             icon: FLucideIcons.alertTriangle,
@@ -67,9 +68,7 @@ void main() {
   testWidgets('renders card with key mine-status-overview', (tester) async {
     await tester.pumpWidget(
       TestForuiApp(
-        home: Scaffold(
-          body: MineStatusOverview(dashboard: _buildDashboard()),
-        ),
+        home: Scaffold(body: MineStatusOverview(dashboard: _buildDashboard())),
       ),
     );
 
@@ -81,9 +80,7 @@ void main() {
 
     await tester.pumpWidget(
       TestForuiApp(
-        home: Scaffold(
-          body: MineStatusOverview(dashboard: _buildDashboard()),
-        ),
+        home: Scaffold(body: MineStatusOverview(dashboard: _buildDashboard())),
       ),
     );
 
@@ -97,9 +94,7 @@ void main() {
 
     await tester.pumpWidget(
       TestForuiApp(
-        home: Scaffold(
-          body: MineStatusOverview(dashboard: _buildDashboard()),
-        ),
+        home: Scaffold(body: MineStatusOverview(dashboard: _buildDashboard())),
       ),
     );
 
@@ -113,9 +108,7 @@ void main() {
 
     await tester.pumpWidget(
       TestForuiApp(
-        home: Scaffold(
-          body: MineStatusOverview(dashboard: _buildDashboard()),
-        ),
+        home: Scaffold(body: MineStatusOverview(dashboard: _buildDashboard())),
       ),
     );
 
@@ -189,9 +182,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: MineStatusOverview(
-            dashboard: _buildDashboard(alerts: []),
-          ),
+          body: MineStatusOverview(dashboard: _buildDashboard(alerts: [])),
         ),
       ),
     );

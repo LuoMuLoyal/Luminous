@@ -25,12 +25,14 @@ class _MockAdapter implements HttpClientAdapter {
     String statusMessage = '',
     Map<String, String>? headers,
   }) {
-    enqueue(_MockResponse(
-      statusCode: statusCode,
-      data: data,
-      statusMessage: statusMessage,
-      headers: headers,
-    ));
+    enqueue(
+      _MockResponse(
+        statusCode: statusCode,
+        data: data,
+        statusMessage: statusMessage,
+        headers: headers,
+      ),
+    );
   }
 
   @override
@@ -65,8 +67,7 @@ class _MockAdapter implements HttpClientAdapter {
     final allHeaders = <String, List<String>>{
       Headers.contentTypeHeader: ['application/json'],
       if (response.headers != null)
-        for (final entry in response.headers!.entries)
-          entry.key: [entry.value],
+        for (final entry in response.headers!.entries) entry.key: [entry.value],
     };
 
     return ResponseBody(
@@ -117,14 +118,11 @@ LucentApiException? _extractApiException(DioException err) {
 void main() {
   group('ErrorInterceptor — envelope message mapping', () {
     test('uses envelope message when present', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 401,
-        data: {
-          'code': 401002,
-          'message': 'Token已过期，请重新登录',
-          'data': null,
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 401,
+          data: {'code': 401002, 'message': 'Token已过期，请重新登录', 'data': null},
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -139,14 +137,11 @@ void main() {
     });
 
     test('extracts code from envelope', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 400,
-        data: {
-          'code': 400002,
-          'message': 'validation failed',
-          'data': null,
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 400,
+          data: {'code': 400002, 'message': 'validation failed', 'data': null},
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -158,15 +153,12 @@ void main() {
     });
 
     test('extracts X-Request-Id header', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 500,
-        data: {
-          'code': 500001,
-          'message': 'internal error',
-          'data': null,
-        },
-        headers: {'X-Request-Id': 'req-abc-123'},
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 500,
+          data: {'code': 500001, 'message': 'internal error', 'data': null},
+          headers: {'X-Request-Id': 'req-abc-123'},
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -178,14 +170,11 @@ void main() {
     });
 
     test('requestId is null when header is absent', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 500,
-        data: {
-          'code': 500001,
-          'message': 'err',
-          'data': null,
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 500,
+          data: {'code': 500001, 'message': 'err', 'data': null},
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -200,11 +189,13 @@ void main() {
   group('ErrorInterceptor — fallback messages', () {
     test('uses fallback for connectionTimeout', () async {
       final adapter = _MockAdapter()
-        ..enqueue(_MockResponse(
-          statusCode: null,
-          data: null,
-          errorType: DioExceptionType.connectionTimeout,
-        ));
+        ..enqueue(
+          _MockResponse(
+            statusCode: null,
+            data: null,
+            errorType: DioExceptionType.connectionTimeout,
+          ),
+        );
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
       dio.httpClientAdapter = adapter;
       dio.interceptors.add(ErrorInterceptor());
@@ -220,11 +211,13 @@ void main() {
 
     test('uses fallback for sendTimeout', () async {
       final adapter = _MockAdapter()
-        ..enqueue(_MockResponse(
-          statusCode: null,
-          data: null,
-          errorType: DioExceptionType.sendTimeout,
-        ));
+        ..enqueue(
+          _MockResponse(
+            statusCode: null,
+            data: null,
+            errorType: DioExceptionType.sendTimeout,
+          ),
+        );
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
       dio.httpClientAdapter = adapter;
       dio.interceptors.add(ErrorInterceptor());
@@ -240,11 +233,13 @@ void main() {
 
     test('uses fallback for connectionError', () async {
       final adapter = _MockAdapter()
-        ..enqueue(_MockResponse(
-          statusCode: null,
-          data: null,
-          errorType: DioExceptionType.connectionError,
-        ));
+        ..enqueue(
+          _MockResponse(
+            statusCode: null,
+            data: null,
+            errorType: DioExceptionType.connectionError,
+          ),
+        );
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
       dio.httpClientAdapter = adapter;
       dio.interceptors.add(ErrorInterceptor());
@@ -260,11 +255,13 @@ void main() {
 
     test('uses fallback for cancel', () async {
       final adapter = _MockAdapter()
-        ..enqueue(_MockResponse(
-          statusCode: null,
-          data: null,
-          errorType: DioExceptionType.cancel,
-        ));
+        ..enqueue(
+          _MockResponse(
+            statusCode: null,
+            data: null,
+            errorType: DioExceptionType.cancel,
+          ),
+        );
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
       dio.httpClientAdapter = adapter;
       dio.interceptors.add(ErrorInterceptor());
@@ -279,10 +276,7 @@ void main() {
     });
 
     test('fallback message for badResponse when no envelope', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 404,
-        data: null,
-      );
+      final adapter = _MockAdapter()..enqueueError(statusCode: 404, data: null);
       final dio = _buildDio(adapter);
 
       try {
@@ -295,14 +289,11 @@ void main() {
     });
 
     test('uses fallback when envelope message is empty', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 500,
-        data: {
-          'code': 500001,
-          'message': '',
-          'data': null,
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 500,
+          data: {'code': 500001, 'message': '', 'data': null},
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -316,14 +307,15 @@ void main() {
 
   group('ErrorInterceptor — data preservation', () {
     test('preserves response data as json map', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 400,
-        data: {
-          'code': 400001,
-          'message': 'bad request',
-          'data': {'field': 'value'},
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 400,
+          data: {
+            'code': 400001,
+            'message': 'bad request',
+            'data': {'field': 'value'},
+          },
+        );
       final dio = _buildDio(adapter);
 
       try {
@@ -336,10 +328,7 @@ void main() {
     });
 
     test('data is null when response body is null', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 500,
-        data: null,
-      );
+      final adapter = _MockAdapter()..enqueueError(statusCode: 500, data: null);
       final dio = _buildDio(adapter);
 
       try {
@@ -353,14 +342,15 @@ void main() {
 
   group('ErrorInterceptor — statusCode preservation', () {
     test('preserves statusCode from response', () async {
-      final adapter = _MockAdapter()..enqueueError(
-        statusCode: 503,
-        data: {
-          'code': 500003,
-          'message': 'external service error',
-          'data': null,
-        },
-      );
+      final adapter = _MockAdapter()
+        ..enqueueError(
+          statusCode: 503,
+          data: {
+            'code': 500003,
+            'message': 'external service error',
+            'data': null,
+          },
+        );
       final dio = _buildDio(adapter);
 
       try {

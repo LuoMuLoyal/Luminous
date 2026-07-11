@@ -41,10 +41,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordWeekStrip(
-            days: buildWeekDays(),
-            l10n: l10n,
-          ),
+          body: RecordWeekStrip(days: buildWeekDays(), l10n: l10n),
         ),
       ),
     );
@@ -63,10 +60,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordWeekStrip(
-            days: buildWeekDays(),
-            l10n: l10n,
-          ),
+          body: RecordWeekStrip(days: buildWeekDays(), l10n: l10n),
         ),
       ),
     );
@@ -99,10 +93,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordWeekStrip(
-            days: buildWeekDays(),
-            l10n: l10n,
-          ),
+          body: RecordWeekStrip(days: buildWeekDays(), l10n: l10n),
         ),
       ),
     );
@@ -114,15 +105,15 @@ void main() {
 
   testWidgets('renders with hasAlert', (tester) async {
     final days = buildWeekDays();
-    days[0] = days[0].copyWith(hasAlert: true, markers: [SemanticColor.primary]);
+    days[0] = days[0].copyWith(
+      hasAlert: true,
+      markers: [SemanticColor.primary],
+    );
 
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordWeekStrip(
-            days: days,
-            l10n: l10n,
-          ),
+          body: RecordWeekStrip(days: days, l10n: l10n),
         ),
       ),
     );
@@ -139,10 +130,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordWeekStrip(
-            days: days,
-            l10n: l10n,
-          ),
+          body: RecordWeekStrip(days: days, l10n: l10n),
         ),
       ),
     );

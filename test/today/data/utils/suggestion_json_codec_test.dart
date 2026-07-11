@@ -104,10 +104,7 @@ void main() {
         expect(restored.secondary![1].id, 'secondary-002');
         expect(restored.observations, hasLength(1));
         expect(restored.observations![0].id, 'obs-001');
-        expect(
-          restored.observations![0].type,
-          TodaySuggestionType.trend,
-        );
+        expect(restored.observations![0].type, TodaySuggestionType.trend);
       });
 
       test('round-trips a bundle with null primary and empty lists', () {
@@ -193,14 +190,19 @@ void main() {
         expect(restoredCard.secondaryActions![0].route, '/snooze');
         expect(restoredCard.secondaryActions![0].authRequired, false);
         expect(restoredCard.feedbackOptions, hasLength(4));
-        expect(restoredCard.feedbackOptions![0],
-            TodaySuggestionFeedback.accepted);
-        expect(restoredCard.feedbackOptions![1],
-            TodaySuggestionFeedback.later);
-        expect(restoredCard.feedbackOptions![2],
-            TodaySuggestionFeedback.notApplicable);
-        expect(restoredCard.feedbackOptions![3],
-            TodaySuggestionFeedback.suppress);
+        expect(
+          restoredCard.feedbackOptions![0],
+          TodaySuggestionFeedback.accepted,
+        );
+        expect(restoredCard.feedbackOptions![1], TodaySuggestionFeedback.later);
+        expect(
+          restoredCard.feedbackOptions![2],
+          TodaySuggestionFeedback.notApplicable,
+        );
+        expect(
+          restoredCard.feedbackOptions![3],
+          TodaySuggestionFeedback.suppress,
+        );
       });
 
       test('round-trips evidence with all optional fields', () {
@@ -250,12 +252,16 @@ void main() {
         final restored = TodaySuggestionJsonCodec.bundleFromJson(json);
 
         expect(restored.primary!.evidence, hasLength(2));
-        expect(restored.primary!.evidence[0].kind,
-            TodaySuggestionEvidenceKind.riskCheck);
+        expect(
+          restored.primary!.evidence[0].kind,
+          TodaySuggestionEvidenceKind.riskCheck,
+        );
         expect(restored.primary!.evidence[0].recordId, 'rec-123');
         expect(restored.primary!.evidence[0].medicineId, 'med-456');
-        expect(restored.primary!.evidence[1].kind,
-            TodaySuggestionEvidenceKind.baseline);
+        expect(
+          restored.primary!.evidence[1].kind,
+          TodaySuggestionEvidenceKind.baseline,
+        );
         expect(restored.primary!.evidence[1].recordId, isNull);
         expect(restored.primary!.evidence[1].medicineId, isNull);
       });
@@ -313,16 +319,13 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        (jsonMap['primary']! as Map<String, dynamic>)['confidence'] = 'unknown_value';
+        (jsonMap['primary']! as Map<String, dynamic>)['confidence'] =
+            'unknown_value';
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored =
-            TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
+        final restored = TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
 
-        expect(
-          restored.primary!.confidence,
-          TodaySuggestionConfidence.medium,
-        );
+        expect(restored.primary!.confidence, TodaySuggestionConfidence.medium);
       });
 
       test('unknown trigger type string falls back to timer', () {
@@ -334,16 +337,13 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        (jsonMap['primary']! as Map<String, dynamic>)['triggerType'] = 'unknown_trigger';
+        (jsonMap['primary']! as Map<String, dynamic>)['triggerType'] =
+            'unknown_trigger';
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored =
-            TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
+        final restored = TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
 
-        expect(
-          restored.primary!.triggerType,
-          TodaySuggestionTriggerType.timer,
-        );
+        expect(restored.primary!.triggerType, TodaySuggestionTriggerType.timer);
       });
 
       test('unknown feedback string falls back to later', () {
@@ -357,11 +357,12 @@ void main() {
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        ((jsonMap['primary']! as Map<String, dynamic>)['feedbackOptions'] as List)[0] = 'mystery';
+        ((jsonMap['primary']! as Map<String, dynamic>)['feedbackOptions']
+                as List)[0] =
+            'mystery';
         final modifiedJson = jsonEncode(jsonMap);
 
-        final restored =
-            TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
+        final restored = TodaySuggestionJsonCodec.bundleFromJson(modifiedJson);
 
         expect(
           restored.primary!.feedbackOptions![0],

@@ -60,9 +60,13 @@ class _JsonAdapter implements HttpClientAdapter {
         ? '{"code":0,"message":"ok","data":${jsonEncode(responseBody)}}'
         : '{"code":0,"message":"ok","data":null}';
 
-    return ResponseBody.fromString(body, statusCode, headers: {
-      Headers.contentTypeHeader: ['application/json'],
-    });
+    return ResponseBody.fromString(
+      body,
+      statusCode,
+      headers: {
+        Headers.contentTypeHeader: ['application/json'],
+      },
+    );
   }
 }
 
@@ -77,15 +81,17 @@ void main() {
     });
 
     test('returns parsed DTO on success', () async {
-      final adapter = _JsonAdapter(responseBody: {
-        'date': '2026-07-11',
-        'generatedAt': '2026-07-11T08:00:00.000Z',
-        'summary': '今日状态良好',
-        'bullets': [],
-        'actionLabel': '保持现状',
-        'action': 'navigate_to_record',
-        'confidenceNote': '基于最近7天数据',
-      });
+      final adapter = _JsonAdapter(
+        responseBody: {
+          'date': '2026-07-11',
+          'generatedAt': '2026-07-11T08:00:00.000Z',
+          'summary': '今日状态良好',
+          'bullets': [],
+          'actionLabel': '保持现状',
+          'action': 'navigate_to_record',
+          'confidenceNote': '基于最近7天数据',
+        },
+      );
       dio.httpClientAdapter = adapter;
 
       final ds = TodayAiRemoteDataSource(api: api, dio: dio);
@@ -97,15 +103,17 @@ void main() {
     });
 
     test('passes date parameter to API', () async {
-      final adapter = _JsonAdapter(responseBody: {
-        'date': '2026-07-11',
-        'generatedAt': '2026-07-11T08:00:00.000Z',
-        'summary': 'ok',
-        'bullets': [],
-        'actionLabel': '',
-        'action': '',
-        'confidenceNote': '',
-      });
+      final adapter = _JsonAdapter(
+        responseBody: {
+          'date': '2026-07-11',
+          'generatedAt': '2026-07-11T08:00:00.000Z',
+          'summary': 'ok',
+          'bullets': [],
+          'actionLabel': '',
+          'action': '',
+          'confidenceNote': '',
+        },
+      );
       dio.httpClientAdapter = adapter;
 
       final ds = TodayAiRemoteDataSource(api: api, dio: dio);
@@ -154,7 +162,7 @@ void main() {
             'actionLabel': '多喝水',
             'action': 'navigate_to_record',
             'confidenceNote': 'confidence',
-          }
+          },
         ),
         (event: 'done', data: {}),
       ]);
@@ -216,7 +224,11 @@ void main() {
       final adapter = _SseAdapter([
         (
           event: 'error',
-          data: {'message': 'AI service unavailable', 'code': 5000, 'statusCode': 500},
+          data: {
+            'message': 'AI service unavailable',
+            'code': 5000,
+            'statusCode': 500,
+          },
         ),
       ]);
       dio.httpClientAdapter = adapter;
@@ -233,9 +245,7 @@ void main() {
     });
 
     test('error event with empty data uses default message', () async {
-      final adapter = _SseAdapter([
-        (event: 'error', data: {}),
-      ]);
+      final adapter = _SseAdapter([(event: 'error', data: {})]);
       dio.httpClientAdapter = adapter;
 
       final ds = TodayAiRemoteDataSource(
@@ -307,7 +317,7 @@ void main() {
             'actionLabel': '',
             'action': '',
             'confidenceNote': '',
-          }
+          },
         ),
         (event: 'done', data: {}),
       ]);
@@ -327,9 +337,7 @@ void main() {
     });
 
     test('passes date parameter in stream body', () async {
-      final adapter = _SseAdapter([
-        (event: 'done', data: {}),
-      ]);
+      final adapter = _SseAdapter([(event: 'done', data: {})]);
       dio.httpClientAdapter = adapter;
 
       final ds = TodayAiRemoteDataSource(
@@ -343,9 +351,7 @@ void main() {
     });
 
     test('null date omits date from stream body', () async {
-      final adapter = _SseAdapter([
-        (event: 'done', data: {}),
-      ]);
+      final adapter = _SseAdapter([(event: 'done', data: {})]);
       dio.httpClientAdapter = adapter;
 
       final ds = TodayAiRemoteDataSource(

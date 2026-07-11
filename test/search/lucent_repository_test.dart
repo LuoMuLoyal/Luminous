@@ -47,13 +47,13 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
 }
 
 MedicineSearchMetaDto _defaultMeta() => const MedicineSearchMetaDto(
-      pagination: MedicinePaginationDto(
-        page: 1,
-        pageSize: 20,
-        total: 0,
-        totalPages: 0,
-      ),
-    );
+  pagination: MedicinePaginationDto(
+    page: 1,
+    pageSize: 20,
+    total: 0,
+    totalPages: 0,
+  ),
+);
 
 MedicineSearchResponseDto _okSearchResponse([
   List<MedicineSearchItemDto>? items,
@@ -161,37 +161,36 @@ void main() {
         );
 
         expect(
-          () => repo.search(
-            query: 'test',
-            source: MedicineSearchSource.cn,
-          ),
+          () => repo.search(query: 'test', source: MedicineSearchSource.cn),
           throwsA(isA<Exception>()),
         );
       });
 
-      test('throws with default message when response message is empty',
-          () async {
-        dataSource.searchResponse = MedicineSearchResponseDto(
-          code: 500,
-          message: '',
-          data: [],
-          meta: _defaultMeta(),
-        );
+      test(
+        'throws with default message when response message is empty',
+        () async {
+          dataSource.searchResponse = MedicineSearchResponseDto(
+            code: 500,
+            message: '',
+            data: [],
+            meta: _defaultMeta(),
+          );
 
-        expect(
-          () => repo.search(
-            query: 'test',
-            source: MedicineSearchSource.drugbank,
-          ),
-          throwsA(
-            isA<Exception>().having(
-              (e) => e.toString(),
-              'toString',
-              contains('500'),
+          expect(
+            () => repo.search(
+              query: 'test',
+              source: MedicineSearchSource.drugbank,
             ),
-          ),
-        );
-      });
+            throwsA(
+              isA<Exception>().having(
+                (e) => e.toString(),
+                'toString',
+                contains('500'),
+              ),
+            ),
+          );
+        },
+      );
 
       test('passes source, query, page, pageSize to dataSource', () async {
         dataSource.searchResponse = _okSearchResponse();
@@ -212,10 +211,7 @@ void main() {
       test('passes source name correctly for cn', () async {
         dataSource.searchResponse = _okSearchResponse();
 
-        await repo.search(
-          query: 'test',
-          source: MedicineSearchSource.cn,
-        );
+        await repo.search(query: 'test', source: MedicineSearchSource.cn);
 
         expect(dataSource.lastSearchSource, 'cn');
       });
@@ -223,10 +219,7 @@ void main() {
       test('uses default page and pageSize when not specified', () async {
         dataSource.searchResponse = _okSearchResponse();
 
-        await repo.search(
-          query: 'test',
-          source: MedicineSearchSource.cn,
-        );
+        await repo.search(query: 'test', source: MedicineSearchSource.cn);
 
         expect(dataSource.lastSearchPage, 1);
         expect(dataSource.lastSearchPageSize, 20);
@@ -236,10 +229,7 @@ void main() {
         dataSource.searchError = Exception('Network error');
 
         expect(
-          () => repo.search(
-            query: 'test',
-            source: MedicineSearchSource.cn,
-          ),
+          () => repo.search(query: 'test', source: MedicineSearchSource.cn),
           throwsException,
         );
       });
@@ -276,10 +266,7 @@ void main() {
           subtitle: 'Pain reliever\nFever reducer',
         );
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNotNull);
         expect(result!.title, 'Aspirin');
@@ -302,10 +289,7 @@ void main() {
           ),
         );
 
-        final result = await repo.fetchDetail(
-          'med-x',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-x', MedicineSearchSource.cn);
 
         expect(result, isNull);
       });
@@ -313,37 +297,24 @@ void main() {
       test('returns null when dataSource throws', () async {
         dataSource.detailError = Exception('Network error');
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNull);
       });
 
       test('returns empty conditions when subtitle is null', () async {
-        dataSource.detailResponse = _okDetailResponse(
-          subtitle: null,
-        );
+        dataSource.detailResponse = _okDetailResponse(subtitle: null);
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNotNull);
         expect(result!.conditions, isEmpty);
       });
 
       test('returns single empty condition when subtitle is empty', () async {
-        dataSource.detailResponse = _okDetailResponse(
-          subtitle: '',
-        );
+        dataSource.detailResponse = _okDetailResponse(subtitle: '');
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNotNull);
         // ''.split('\n') produces [''] (a list with one empty string)
@@ -354,10 +325,7 @@ void main() {
       test('passes id and source name to dataSource', () async {
         dataSource.detailResponse = _okDetailResponse();
 
-        await repo.fetchDetail(
-          'med-42',
-          MedicineSearchSource.drugbank,
-        );
+        await repo.fetchDetail('med-42', MedicineSearchSource.drugbank);
 
         expect(dataSource.lastDetailId, 'med-42');
         expect(dataSource.lastDetailSource, 'drugbank');
@@ -368,10 +336,7 @@ void main() {
           subtitle: 'Single line subtitle',
         );
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNotNull);
         expect(result!.conditions, hasLength(1));
@@ -383,10 +348,7 @@ void main() {
           subtitle: 'Line 1\n\nLine 2',
         );
 
-        final result = await repo.fetchDetail(
-          'med-1',
-          MedicineSearchSource.cn,
-        );
+        final result = await repo.fetchDetail('med-1', MedicineSearchSource.cn);
 
         expect(result, isNotNull);
         expect(result!.conditions, hasLength(3));

@@ -311,7 +311,8 @@ void main() {
 
         final json = DailyRecordJsonCodec.itemToJson(item);
         final jsonMap = jsonDecode(json) as Map<String, dynamic>;
-        ((jsonMap['attachments'] as List)[0] as Map<String, dynamic>)['kind'] = 'unknown_kind';
+        ((jsonMap['attachments'] as List)[0] as Map<String, dynamic>)['kind'] =
+            'unknown_kind';
         final modifiedJson = jsonEncode(jsonMap);
 
         final restored = DailyRecordJsonCodec.itemFromJson(modifiedJson);
@@ -351,8 +352,8 @@ void main() {
 
         final json = DailyRecordJsonCodec.itemToJson(item);
         final map = jsonDecode(json) as Map<String, dynamic>;
-        final attMap = (map['attachments'] as List).first
-            as Map<String, dynamic>;
+        final attMap =
+            (map['attachments'] as List).first as Map<String, dynamic>;
 
         expect(attMap, containsPair('id', 'att-001'));
         expect(attMap, containsPair('kind', 'image'));

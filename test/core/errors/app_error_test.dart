@@ -34,34 +34,22 @@ void main() {
     });
 
     test('toString includes code when present', () {
-      const error = AppError(
-        message: 'fail',
-        code: 401002,
-      );
+      const error = AppError(message: 'fail', code: 401002);
       expect(error.toString(), contains(', code: 401002'));
     });
 
     test('toString includes statusCode when present', () {
-      const error = AppError(
-        message: 'fail',
-        statusCode: 500,
-      );
+      const error = AppError(message: 'fail', statusCode: 500);
       expect(error.toString(), contains(', statusCode: 500'));
     });
 
     test('toString includes requestId when non-empty', () {
-      const error = AppError(
-        message: 'fail',
-        requestId: 'req-123',
-      );
+      const error = AppError(message: 'fail', requestId: 'req-123');
       expect(error.toString(), contains(', requestId: req-123'));
     });
 
     test('toString omits requestId when empty', () {
-      const error = AppError(
-        message: 'fail',
-        requestId: '',
-      );
+      const error = AppError(message: 'fail', requestId: '');
       expect(error.toString(), isNot(contains('requestId')));
     });
 
@@ -80,13 +68,16 @@ void main() {
 
   group('AppErrorKind', () {
     test('has all expected values', () {
-      expect(AppErrorKind.values, containsAll([
-        AppErrorKind.network,
-        AppErrorKind.auth,
-        AppErrorKind.server,
-        AppErrorKind.business,
-        AppErrorKind.unknown,
-      ]));
+      expect(
+        AppErrorKind.values,
+        containsAll([
+          AppErrorKind.network,
+          AppErrorKind.auth,
+          AppErrorKind.server,
+          AppErrorKind.business,
+          AppErrorKind.unknown,
+        ]),
+      );
     });
   });
 }

@@ -48,10 +48,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordQuickActions(
-            actions: buildActions(),
-            l10n: l10n,
-          ),
+          body: RecordQuickActions(actions: buildActions(), l10n: l10n),
         ),
       ),
     );
@@ -64,10 +61,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordQuickActions(
-            actions: buildActions(),
-            l10n: l10n,
-          ),
+          body: RecordQuickActions(actions: buildActions(), l10n: l10n),
         ),
       ),
     );
@@ -82,10 +76,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordQuickActions(
-            actions: actions,
-            l10n: l10n,
-          ),
+          body: RecordQuickActions(actions: actions, l10n: l10n),
         ),
       ),
     );
@@ -147,10 +138,7 @@ void main() {
     await tester.pumpWidget(
       TestForuiApp(
         home: Scaffold(
-          body: RecordQuickActions(
-            actions: [],
-            l10n: l10n,
-          ),
+          body: RecordQuickActions(actions: [], l10n: l10n),
         ),
       ),
     );

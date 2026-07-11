@@ -106,16 +106,18 @@ void main() {
       expect(result.isSuccess, isTrue);
     });
 
-    test('falls back to appTalker when ref is neither Ref nor WidgetRef',
-        () async {
-      final result = await runGuarded<String>(
-        ref: 'not-a-ref',
-        tag: 'string-ref',
-        action: () async => 'ok',
-      );
+    test(
+      'falls back to appTalker when ref is neither Ref nor WidgetRef',
+      () async {
+        final result = await runGuarded<String>(
+          ref: 'not-a-ref',
+          tag: 'string-ref',
+          action: () async => 'ok',
+        );
 
-      expect(result.isSuccess, isTrue);
-    });
+        expect(result.isSuccess, isTrue);
+      },
+    );
 
     test('works with Ref from provider', () async {
       final container = ProviderContainer();
@@ -141,6 +143,7 @@ final _testErrorProvider = FutureProvider<Result<String>>((ref) {
   return runGuarded<String>(
     ref: ref,
     tag: 'test-error',
-    action: () async => throw const LucentApiException(message: 'planned failure'),
+    action: () async =>
+        throw const LucentApiException(message: 'planned failure'),
   );
 });

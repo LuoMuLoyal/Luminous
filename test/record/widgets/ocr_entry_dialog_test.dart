@@ -27,8 +27,7 @@ void main() {
               onPressed: () => showRecordOcrEntrySheet(
                 context,
                 pickImage: pickImage ?? (_) async => null,
-                recognizeText: recognizeText ??
-                    (_, __) async => '',
+                recognizeText: recognizeText ?? (_, __) async => '',
               ),
               child: const Text('open-sheet'),
             ),
@@ -155,7 +154,9 @@ void main() {
     expect(result, 'Final text');
   });
 
-  testWidgets('shows empty candidates message when recognition returns empty', (tester) async {
+  testWidgets('shows empty candidates message when recognition returns empty', (
+    tester,
+  ) async {
     await pumpSheet(
       tester,
       pickImage: (_) async => XFile('test.jpg'),
@@ -168,7 +169,9 @@ void main() {
     expect(find.text(l10n.recordNlpEmptyCandidatesToast), findsOneWidget);
   });
 
-  testWidgets('use text button disabled when recognized text is empty', (tester) async {
+  testWidgets('use text button disabled when recognized text is empty', (
+    tester,
+  ) async {
     await pumpSheet(
       tester,
       pickImage: (_) async => XFile('test.jpg'),
@@ -188,7 +191,9 @@ void main() {
     expect(button.onPress, isNull);
   });
 
-  testWidgets('use text button disabled when recognized text is whitespace', (tester) async {
+  testWidgets('use text button disabled when recognized text is whitespace', (
+    tester,
+  ) async {
     await pumpSheet(
       tester,
       pickImage: (_) async => XFile('test.jpg'),

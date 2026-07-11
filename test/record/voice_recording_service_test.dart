@@ -73,8 +73,7 @@ void main() {
         stt.LocaleName('zh_CN', '中文（中国）'),
         stt.LocaleName('en_US', 'English (US)'),
       ];
-      when(() => mockSpeech.locales())
-          .thenAnswer((_) async => localeNames);
+      when(() => mockSpeech.locales()).thenAnswer((_) async => localeNames);
       final result = await service.locales();
       expect(result, hasLength(2));
       expect(result.first.localeId, 'zh_CN');
@@ -87,20 +86,24 @@ void main() {
         final result = await service.initialize(localeId: 'zh_CN');
 
         expect(result, isTrue);
-        verifyNever(() => mockSpeech.initialize(
-              onError: any(named: 'onError'),
-              onStatus: any(named: 'onStatus'),
-              debugLogging: any(named: 'debugLogging'),
-            ));
+        verifyNever(
+          () => mockSpeech.initialize(
+            onError: any(named: 'onError'),
+            onStatus: any(named: 'onStatus'),
+            debugLogging: any(named: 'debugLogging'),
+          ),
+        );
       });
 
       test('returns true when speech.initialize succeeds', () async {
         when(() => mockSpeech.isAvailable).thenReturn(false);
-        when(() => mockSpeech.initialize(
-              onError: any(named: 'onError'),
-              onStatus: any(named: 'onStatus'),
-              debugLogging: any(named: 'debugLogging'),
-            )).thenAnswer((_) async => true);
+        when(
+          () => mockSpeech.initialize(
+            onError: any(named: 'onError'),
+            onStatus: any(named: 'onStatus'),
+            debugLogging: any(named: 'debugLogging'),
+          ),
+        ).thenAnswer((_) async => true);
 
         final result = await service.initialize(localeId: 'zh_CN');
 
@@ -109,11 +112,13 @@ void main() {
 
       test('returns false when speech.initialize fails', () async {
         when(() => mockSpeech.isAvailable).thenReturn(false);
-        when(() => mockSpeech.initialize(
-              onError: any(named: 'onError'),
-              onStatus: any(named: 'onStatus'),
-              debugLogging: any(named: 'debugLogging'),
-            )).thenAnswer((_) async => false);
+        when(
+          () => mockSpeech.initialize(
+            onError: any(named: 'onError'),
+            onStatus: any(named: 'onStatus'),
+            debugLogging: any(named: 'debugLogging'),
+          ),
+        ).thenAnswer((_) async => false);
 
         final result = await service.initialize(localeId: 'en_US');
 
@@ -133,19 +138,23 @@ void main() {
 
       test('calls speech.listen with correct options', () async {
         when(() => mockSpeech.isAvailable).thenReturn(true);
-        when(() => mockSpeech.listen(
-              onResult: any(named: 'onResult'),
-              onSoundLevelChange: any(named: 'onSoundLevelChange'),
-              listenOptions: any(named: 'listenOptions'),
-            )).thenAnswer((_) async {});
+        when(
+          () => mockSpeech.listen(
+            onResult: any(named: 'onResult'),
+            onSoundLevelChange: any(named: 'onSoundLevelChange'),
+            listenOptions: any(named: 'listenOptions'),
+          ),
+        ).thenAnswer((_) async {});
 
         await service.startListening(localeId: 'zh_CN');
 
-        verify(() => mockSpeech.listen(
-              onResult: any(named: 'onResult'),
-              onSoundLevelChange: any(named: 'onSoundLevelChange'),
-              listenOptions: any(named: 'listenOptions'),
-            )).called(1);
+        verify(
+          () => mockSpeech.listen(
+            onResult: any(named: 'onResult'),
+            onSoundLevelChange: any(named: 'onSoundLevelChange'),
+            listenOptions: any(named: 'listenOptions'),
+          ),
+        ).called(1);
       });
     });
 
@@ -193,13 +202,16 @@ void main() {
     group('streams', () {
       test('soundLevelStream emits normalized values', () async {
         when(() => mockSpeech.isAvailable).thenReturn(true);
-        when(() => mockSpeech.listen(
-              onResult: any(named: 'onResult'),
-              onSoundLevelChange: any(named: 'onSoundLevelChange'),
-              listenOptions: any(named: 'listenOptions'),
-            )).thenAnswer((invocation) async {
-          final onSoundLevelChange = invocation.namedArguments[#onSoundLevelChange]
-              as void Function(double);
+        when(
+          () => mockSpeech.listen(
+            onResult: any(named: 'onResult'),
+            onSoundLevelChange: any(named: 'onSoundLevelChange'),
+            listenOptions: any(named: 'listenOptions'),
+          ),
+        ).thenAnswer((invocation) async {
+          final onSoundLevelChange =
+              invocation.namedArguments[#onSoundLevelChange]
+                  as void Function(double);
 
           onSoundLevelChange(4.0); // Should normalize to 0.5
         });

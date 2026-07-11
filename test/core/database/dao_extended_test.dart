@@ -1,4 +1,3 @@
-
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/app_database.dart';
@@ -176,30 +175,24 @@ void main() {
       // Should not throw
     });
 
-    test(
-      'fetchByDate with kind filter returns only matching records',
-      () async {
-        const date = '2026-07-10';
-        const sleepJson =
-            '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
+    test('fetchByDate with kind filter returns only matching records', () async {
+      const date = '2026-07-10';
+      const sleepJson =
+          '{"id":"rec2","kind":"sleep","occurredAt":"2026-07-10","occurredTime":null,"title":null,"value":"8","unit":"h","note":null,"source":null,"payload":null,"mealAnalysisStatus":null,"mealAnalysisCoverage":null,"mealAnalysisUpdatedAt":null,"mealAnalysisFailureReason":null,"mealShortDescription":null,"mealTopFoods":[],"attachments":[],"createdAt":"2026-07-10T00:00:00.000Z","updatedAt":"2026-07-10T00:00:00.000Z"}';
 
-        await dao.replaceByDate(
-          date,
-          jsonItems: [_dailyRecordJson, sleepJson],
-        );
+      await dao.replaceByDate(date, jsonItems: [_dailyRecordJson, sleepJson]);
 
-        final waterOnly = await dao.fetchByDate(date, kind: 'water');
-        expect(waterOnly, hasLength(1));
-        expect(waterOnly.first, contains('"id":"rec1"'));
+      final waterOnly = await dao.fetchByDate(date, kind: 'water');
+      expect(waterOnly, hasLength(1));
+      expect(waterOnly.first, contains('"id":"rec1"'));
 
-        final sleepOnly = await dao.fetchByDate(date, kind: 'sleep');
-        expect(sleepOnly, hasLength(1));
-        expect(sleepOnly.first, contains('"id":"rec2"'));
+      final sleepOnly = await dao.fetchByDate(date, kind: 'sleep');
+      expect(sleepOnly, hasLength(1));
+      expect(sleepOnly.first, contains('"id":"rec2"'));
 
-        final all = await dao.fetchByDate(date);
-        expect(all, hasLength(2));
-      },
-    );
+      final all = await dao.fetchByDate(date);
+      expect(all, hasLength(2));
+    });
   });
 
   // ─── CurrentMedicineDao — clear ──────────────────────────────────────
@@ -340,23 +333,25 @@ void main() {
       expect(await dao.pendingCount(), 0);
     });
 
-    test('PendingSyncEntry.isPermanentlyFailed when retryCount >= maxRetry',
-        () async {
-      final id = await dao.enqueue(
-        entityType: 'daily_record',
-        operation: 'create',
-        payload: '{}',
-      );
+    test(
+      'PendingSyncEntry.isPermanentlyFailed when retryCount >= maxRetry',
+      () async {
+        final id = await dao.enqueue(
+          entityType: 'daily_record',
+          operation: 'create',
+          payload: '{}',
+        );
 
-      // Exhaust all retries (default maxRetry = 5)
-      for (var i = 0; i < 5; i++) {
-        await dao.markSyncing(id);
-        await dao.markFailed(id, 'error $i');
-      }
+        // Exhaust all retries (default maxRetry = 5)
+        for (var i = 0; i < 5; i++) {
+          await dao.markSyncing(id);
+          await dao.markFailed(id, 'error $i');
+        }
 
-      final ready = await dao.fetchReady();
-      expect(ready, isEmpty);
-    });
+        final ready = await dao.fetchReady();
+        expect(ready, isEmpty);
+      },
+    );
 
     test(
       'fetchReady returns items with no lastAttemptAt immediately',
@@ -387,24 +382,21 @@ void main() {
       expect(await dao.fetchReady(), isEmpty);
     });
 
-    test(
-      'enqueue generates unique IDs for concurrent inserts',
-      () async {
-        final id1 = await dao.enqueue(
-          entityType: 'type_a',
-          operation: 'create',
-          payload: '{}',
-        );
-        final id2 = await dao.enqueue(
-          entityType: 'type_b',
-          operation: 'create',
-          payload: '{}',
-        );
+    test('enqueue generates unique IDs for concurrent inserts', () async {
+      final id1 = await dao.enqueue(
+        entityType: 'type_a',
+        operation: 'create',
+        payload: '{}',
+      );
+      final id2 = await dao.enqueue(
+        entityType: 'type_b',
+        operation: 'create',
+        payload: '{}',
+      );
 
-        expect(id1, isNot(equals(id2)));
-        expect(await dao.pendingCount(), 2);
-      },
-    );
+      expect(id1, isNot(equals(id2)));
+      expect(await dao.pendingCount(), 2);
+    });
 
     test('remove on non-existent id is a no-op', () async {
       await dao.remove('nonexistent');

@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,11 +6,7 @@ import 'package:luminous/core/database/app_database.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 
 class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
-  _FakeDoseLogRemote()
-      : super(
-          api: MedicineDoseLogsApi(Dio()),
-          dio: Dio(),
-        );
+  _FakeDoseLogRemote() : super(api: MedicineDoseLogsApi(Dio()), dio: Dio());
 
   List<DoseLogItem> fetchResult = [];
   Object? fetchError;
@@ -234,9 +229,7 @@ void main() {
       });
 
       test('handles null currentMedicineId', () async {
-        remote.fetchResult = [
-          _buildItem(currentMedicineId: null),
-        ];
+        remote.fetchResult = [_buildItem(currentMedicineId: null)];
 
         await dataSource.fetchForDate('2026-07-10');
 
@@ -274,9 +267,7 @@ void main() {
       });
 
       test('handles planned status', () async {
-        remote.fetchResult = [
-          _buildItem(status: DoseLogStatus.planned),
-        ];
+        remote.fetchResult = [_buildItem(status: DoseLogStatus.planned)];
 
         await dataSource.fetchForDate('2026-07-10');
 
@@ -299,10 +290,7 @@ void main() {
       test('propagates remote fetch errors when cache is empty', () async {
         remote.fetchError = Exception('Network error');
 
-        expect(
-          () => dataSource.fetchForDate('2026-07-10'),
-          throwsException,
-        );
+        expect(() => dataSource.fetchForDate('2026-07-10'), throwsException);
       });
     });
 
@@ -381,17 +369,19 @@ void main() {
         expect(remote.lastMarkScheduledTime, '08:00');
       });
 
-      test('passes null reminderId and scheduledTime when not provided',
-          () async {
-        await dataSource.mark(
-          currentMedicineId: 'med-1',
-          status: 'taken',
-          date: '2026-07-10',
-        );
+      test(
+        'passes null reminderId and scheduledTime when not provided',
+        () async {
+          await dataSource.mark(
+            currentMedicineId: 'med-1',
+            status: 'taken',
+            date: '2026-07-10',
+          );
 
-        expect(remote.lastMarkReminderId, isNull);
-        expect(remote.lastMarkScheduledTime, isNull);
-      });
+          expect(remote.lastMarkReminderId, isNull);
+          expect(remote.lastMarkScheduledTime, isNull);
+        },
+      );
 
       test('refreshes cache after mark', () async {
         await dataSource.mark(
@@ -410,7 +400,8 @@ void main() {
       test('handles all DoseLogStatus values', () async {
         for (final status in DoseLogStatus.values) {
           // Use a unique date per status to avoid cache collision
-          final date = '2026-07-${(status.index + 1).toString().padLeft(2, '0')}';
+          final date =
+              '2026-07-${(status.index + 1).toString().padLeft(2, '0')}';
           remote.fetchResult = [_buildItem(status: status, scheduledFor: date)];
 
           await dataSource.fetchForDate(date);
@@ -420,8 +411,11 @@ void main() {
 
           final result = await dataSource.fetchForDate(date);
 
-          expect(result.first.status, status,
-              reason: 'Failed for status: $status');
+          expect(
+            result.first.status,
+            status,
+            reason: 'Failed for status: $status',
+          );
         }
       });
     });

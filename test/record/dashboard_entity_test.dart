@@ -50,26 +50,11 @@ void main() {
         final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 11));
 
         expect(dashboard.quickActions.length, 5);
-        expect(
-          dashboard.quickActions[0].type,
-          RecordEntryType.meal,
-        );
-        expect(
-          dashboard.quickActions[1].type,
-          RecordEntryType.water,
-        );
-        expect(
-          dashboard.quickActions[2].type,
-          RecordEntryType.symptom,
-        );
-        expect(
-          dashboard.quickActions[3].type,
-          RecordEntryType.note,
-        );
-        expect(
-          dashboard.quickActions[4].type,
-          RecordEntryType.sleep,
-        );
+        expect(dashboard.quickActions[0].type, RecordEntryType.meal);
+        expect(dashboard.quickActions[1].type, RecordEntryType.water);
+        expect(dashboard.quickActions[2].type, RecordEntryType.symptom);
+        expect(dashboard.quickActions[3].type, RecordEntryType.note);
+        expect(dashboard.quickActions[4].type, RecordEntryType.sleep);
       });
 
       test('quick actions use neutral softColor and primary accent', () {
@@ -245,8 +230,14 @@ void main() {
   group('RecordTrendKind enum', () {
     test('has bloodSugar and hydration', () {
       expect(RecordTrendKind.values.length, 2);
-      expect(RecordTrendKind.values.contains(RecordTrendKind.bloodSugar), isTrue);
-      expect(RecordTrendKind.values.contains(RecordTrendKind.hydration), isTrue);
+      expect(
+        RecordTrendKind.values.contains(RecordTrendKind.bloodSugar),
+        isTrue,
+      );
+      expect(
+        RecordTrendKind.values.contains(RecordTrendKind.hydration),
+        isTrue,
+      );
     });
   });
 }

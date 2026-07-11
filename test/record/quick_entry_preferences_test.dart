@@ -99,9 +99,7 @@ void main() {
     test('setDynamicSortEnabled updates state and persists', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.setDynamicSortEnabled(true);
 
       final state = container.read(quickEntryPreferencesProvider).requireValue;
@@ -114,25 +112,24 @@ void main() {
     test('setCustomOrder updates state and persists', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.setCustomOrder(['meal', 'sleep', 'water']);
 
       final state = container.read(quickEntryPreferencesProvider).requireValue;
       expect(state.customOrder, ['meal', 'sleep', 'water']);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getStringList('record.quickEntry.customOrder'),
-          ['meal', 'sleep', 'water']);
+      expect(prefs.getStringList('record.quickEntry.customOrder'), [
+        'meal',
+        'sleep',
+        'water',
+      ]);
     });
 
     test('setCollapsed updates state and persists', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.setCollapsed(true);
 
       final state = container.read(quickEntryPreferencesProvider).requireValue;
@@ -145,14 +142,15 @@ void main() {
     test('recordTap increments frequency count', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.recordTap(RecordEntryType.meal);
       await controller.recordTap(RecordEntryType.meal);
       await controller.recordTap(RecordEntryType.water);
 
-      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+      final freq = container
+          .read(quickEntryPreferencesProvider)
+          .requireValue
+          .frequency;
       expect(freq['meal'], 2);
       expect(freq['water'], 1);
     });
@@ -160,9 +158,7 @@ void main() {
     test('recordTap persists frequency to SharedPreferences', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
       await controller.recordTap(RecordEntryType.mood);
 
       final prefs = await SharedPreferences.getInstance();
@@ -172,9 +168,7 @@ void main() {
     test('recordTap trims proportionally when total exceeds 50', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
 
       // Record 51 taps across two types
       for (var i = 0; i < 30; i++) {
@@ -184,7 +178,10 @@ void main() {
         await controller.recordTap(RecordEntryType.water);
       }
 
-      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+      final freq = container
+          .read(quickEntryPreferencesProvider)
+          .requireValue
+          .frequency;
 
       // Total should be trimmed to ≤ 50
       final total = freq.values.fold(0, (a, b) => a + b);
@@ -197,9 +194,7 @@ void main() {
     test('recordTap removes zero entries after trimming', () async {
       await readPrefs();
 
-      final controller = container.read(
-        quickEntryPreferencesProvider.notifier,
-      );
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
 
       // Record one type heavily and another just once
       for (var i = 0; i < 50; i++) {
@@ -207,7 +202,10 @@ void main() {
       }
       await controller.recordTap(RecordEntryType.weight);
 
-      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+      final freq = container
+          .read(quickEntryPreferencesProvider)
+          .requireValue
+          .frequency;
 
       // weight count should be 0 after trimming and thus removed
       // (1 * 50/51 = 0.98 → floor = 0)

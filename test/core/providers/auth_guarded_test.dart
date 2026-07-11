@@ -11,9 +11,11 @@ void main() {
     test('calls fetch when authenticated', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: true),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: true),
+            ),
+          ),
         ],
       );
 
@@ -24,30 +26,39 @@ void main() {
       container.dispose();
     });
 
-    test('throws AuthRequiredException when signed out and no fallback',
-        () async {
-      final container = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: false),
-          )),
-        ],
-      );
+    test(
+      'throws AuthRequiredException when signed out and no fallback',
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            authSessionProvider.overrideWith(
+              () => _FakeSessionNotifier(
+                const AuthSessionState(
+                  isLoading: false,
+                  isAuthenticated: false,
+                ),
+              ),
+            ),
+          ],
+        );
 
-      // authGuarded throws synchronously; the provider should be in error state
-      final value = container.read(_testNoFallbackProvider);
-      expect(value.hasError, isTrue);
-      expect(value.error, isA<AuthRequiredException>());
+        // authGuarded throws synchronously; the provider should be in error state
+        final value = container.read(_testNoFallbackProvider);
+        expect(value.hasError, isTrue);
+        expect(value.error, isA<AuthRequiredException>());
 
-      container.dispose();
-    });
+        container.dispose();
+      },
+    );
 
     test('calls signedOutFallback when signed out', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: false),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: false),
+            ),
+          ),
         ],
       );
 
@@ -61,9 +72,11 @@ void main() {
     test('stays pending when session is restoring', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: true, isAuthenticated: false),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: true, isAuthenticated: false),
+            ),
+          ),
         ],
       );
 
@@ -82,9 +95,11 @@ void main() {
     test('propagates fetch errors', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: true),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: true),
+            ),
+          ),
         ],
       );
 
@@ -100,9 +115,11 @@ void main() {
     test('propagates signedOutFallback errors', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: false),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: false),
+            ),
+          ),
         ],
       );
 
@@ -118,9 +135,11 @@ void main() {
     test('works with nullable return type', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: true),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: true),
+            ),
+          ),
         ],
       );
 
@@ -134,9 +153,11 @@ void main() {
     test('works with int return type', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: true),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: true),
+            ),
+          ),
         ],
       );
 
@@ -150,9 +171,11 @@ void main() {
     test('works with List return type', () async {
       final container = ProviderContainer(
         overrides: [
-          authSessionProvider.overrideWith(() => _FakeSessionNotifier(
-            const AuthSessionState(isLoading: false, isAuthenticated: true),
-          )),
+          authSessionProvider.overrideWith(
+            () => _FakeSessionNotifier(
+              const AuthSessionState(isLoading: false, isAuthenticated: true),
+            ),
+          ),
         ],
       );
 
@@ -178,76 +201,56 @@ void main() {
 
   group('AuthSessionStateStatus extensions', () {
     test('isRestoring is true when loading and not authenticated', () {
-      const state = AuthSessionState(
-        isLoading: true,
-        isAuthenticated: false,
-      );
+      const state = AuthSessionState(isLoading: true, isAuthenticated: false);
       expect(state.isRestoring, isTrue);
     });
 
     test('isRestoring is false when loading and authenticated', () {
-      const state = AuthSessionState(
-        isLoading: true,
-        isAuthenticated: true,
-      );
+      const state = AuthSessionState(isLoading: true, isAuthenticated: true);
       expect(state.isRestoring, isFalse);
     });
 
     test('isRestoring is false when not loading', () {
-      const state = AuthSessionState(
-        isLoading: false,
-        isAuthenticated: false,
-      );
+      const state = AuthSessionState(isLoading: false, isAuthenticated: false);
       expect(state.isRestoring, isFalse);
     });
 
-    test('isConfirmedSignedOut is true when not loading and not authenticated',
-        () {
-      const state = AuthSessionState(
-        isLoading: false,
-        isAuthenticated: false,
-      );
-      expect(state.isConfirmedSignedOut, isTrue);
-    });
+    test(
+      'isConfirmedSignedOut is true when not loading and not authenticated',
+      () {
+        const state = AuthSessionState(
+          isLoading: false,
+          isAuthenticated: false,
+        );
+        expect(state.isConfirmedSignedOut, isTrue);
+      },
+    );
 
     test('isConfirmedSignedOut is false when loading', () {
-      const state = AuthSessionState(
-        isLoading: true,
-        isAuthenticated: false,
-      );
+      const state = AuthSessionState(isLoading: true, isAuthenticated: false);
       expect(state.isConfirmedSignedOut, isFalse);
     });
 
     test('isConfirmedSignedOut is false when authenticated', () {
-      const state = AuthSessionState(
-        isLoading: false,
-        isAuthenticated: true,
-      );
+      const state = AuthSessionState(isLoading: false, isAuthenticated: true);
       expect(state.isConfirmedSignedOut, isFalse);
     });
 
-    test('canAccessProtectedData is true when not loading and authenticated',
-        () {
-      const state = AuthSessionState(
-        isLoading: false,
-        isAuthenticated: true,
-      );
-      expect(state.canAccessProtectedData, isTrue);
-    });
+    test(
+      'canAccessProtectedData is true when not loading and authenticated',
+      () {
+        const state = AuthSessionState(isLoading: false, isAuthenticated: true);
+        expect(state.canAccessProtectedData, isTrue);
+      },
+    );
 
     test('canAccessProtectedData is false when loading', () {
-      const state = AuthSessionState(
-        isLoading: true,
-        isAuthenticated: true,
-      );
+      const state = AuthSessionState(isLoading: true, isAuthenticated: true);
       expect(state.canAccessProtectedData, isFalse);
     });
 
     test('canAccessProtectedData is false when not authenticated', () {
-      const state = AuthSessionState(
-        isLoading: false,
-        isAuthenticated: false,
-      );
+      const state = AuthSessionState(isLoading: false, isAuthenticated: false);
       expect(state.canAccessProtectedData, isFalse);
     });
   });
@@ -281,17 +284,11 @@ class _FakeSessionNotifier extends AuthSessionNotifier {
 // Test providers that use authGuarded
 
 final _testFetchProvider = FutureProvider<String>((ref) {
-  return authGuarded(
-    ref: ref,
-    fetch: () async => 'success',
-  );
+  return authGuarded(ref: ref, fetch: () async => 'success');
 });
 
 final _testNoFallbackProvider = FutureProvider<String>((ref) {
-  return authGuarded(
-    ref: ref,
-    fetch: () async => 'should not reach',
-  );
+  return authGuarded(ref: ref, fetch: () async => 'should not reach');
 });
 
 final _testWithFallbackProvider = FutureProvider<String>((ref) {
@@ -318,17 +315,11 @@ final _testErrorFallbackProvider = FutureProvider<String>((ref) {
 });
 
 final _testNullableProvider = FutureProvider<String?>((ref) {
-  return authGuarded<String?>(
-    ref: ref,
-    fetch: () async => null,
-  );
+  return authGuarded<String?>(ref: ref, fetch: () async => null);
 });
 
 final _testIntProvider = FutureProvider<int>((ref) {
-  return authGuarded<int>(
-    ref: ref,
-    fetch: () async => 42,
-  );
+  return authGuarded<int>(ref: ref, fetch: () async => 42);
 });
 
 final _testListProvider = FutureProvider<List<String>>((ref) {

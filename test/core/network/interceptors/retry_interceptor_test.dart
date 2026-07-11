@@ -18,14 +18,13 @@ class _MockAdapter implements HttpClientAdapter {
     _queue.add(response);
   }
 
-  void enqueueSuccess({
-    int statusCode = 200,
-    Map<String, dynamic>? data,
-  }) {
-    enqueue(_MockResponse(
-      statusCode: statusCode,
-      data: data ?? {'code': 0, 'message': '', 'data': null},
-    ));
+  void enqueueSuccess({int statusCode = 200, Map<String, dynamic>? data}) {
+    enqueue(
+      _MockResponse(
+        statusCode: statusCode,
+        data: data ?? {'code': 0, 'message': '', 'data': null},
+      ),
+    );
   }
 
   void enqueueError({
@@ -33,11 +32,9 @@ class _MockAdapter implements HttpClientAdapter {
     Map<String, dynamic>? data,
     DioExceptionType? errorType,
   }) {
-    enqueue(_MockResponse(
-      statusCode: statusCode,
-      data: data,
-      errorType: errorType,
-    ));
+    enqueue(
+      _MockResponse(statusCode: statusCode, data: data, errorType: errorType),
+    );
   }
 
   @override
@@ -83,11 +80,7 @@ class _MockAdapter implements HttpClientAdapter {
 }
 
 class _MockResponse {
-  _MockResponse({
-    this.statusCode,
-    this.data,
-    this.errorType,
-  });
+  _MockResponse({this.statusCode, this.data, this.errorType});
 
   final int? statusCode;
   final Map<String, dynamic>? data;
@@ -104,11 +97,9 @@ void main() {
     adapter = _MockAdapter();
     dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
     dio.httpClientAdapter = adapter;
-    dio.interceptors.add(RetryInterceptor(
-      dio: dio,
-      retries: 2,
-      backoff: (_) => Duration.zero,
-    ));
+    dio.interceptors.add(
+      RetryInterceptor(dio: dio, retries: 2, backoff: (_) => Duration.zero),
+    );
   });
 
   group('RetryInterceptor — retryable errors', () {
@@ -155,9 +146,7 @@ void main() {
 
     test('retries on connectionTimeout', () async {
       adapter
-        ..enqueueError(
-          errorType: DioExceptionType.connectionTimeout,
-        )
+        ..enqueueError(errorType: DioExceptionType.connectionTimeout)
         ..enqueueSuccess();
 
       await dio.get('/api/v1/test');
@@ -167,9 +156,7 @@ void main() {
 
     test('retries on receiveTimeout', () async {
       adapter
-        ..enqueueError(
-          errorType: DioExceptionType.receiveTimeout,
-        )
+        ..enqueueError(errorType: DioExceptionType.receiveTimeout)
         ..enqueueSuccess();
 
       await dio.get('/api/v1/test');
@@ -179,9 +166,7 @@ void main() {
 
     test('retries on connectionError', () async {
       adapter
-        ..enqueueError(
-          errorType: DioExceptionType.connectionError,
-        )
+        ..enqueueError(errorType: DioExceptionType.connectionError)
         ..enqueueSuccess();
 
       await dio.get('/api/v1/test');
@@ -191,9 +176,7 @@ void main() {
 
     test('retries on sendTimeout', () async {
       adapter
-        ..enqueueError(
-          errorType: DioExceptionType.sendTimeout,
-        )
+        ..enqueueError(errorType: DioExceptionType.sendTimeout)
         ..enqueueSuccess();
 
       await dio.get('/api/v1/test');
@@ -240,9 +223,7 @@ void main() {
     });
 
     test('does not retry on badCertificate', () async {
-      adapter.enqueueError(
-        errorType: DioExceptionType.badCertificate,
-      );
+      adapter.enqueueError(errorType: DioExceptionType.badCertificate);
 
       try {
         await dio.get('/api/v1/test');
@@ -254,9 +235,7 @@ void main() {
     });
 
     test('does not retry on cancel', () async {
-      adapter.enqueueError(
-        errorType: DioExceptionType.cancel,
-      );
+      adapter.enqueueError(errorType: DioExceptionType.cancel);
 
       try {
         await dio.get('/api/v1/test');

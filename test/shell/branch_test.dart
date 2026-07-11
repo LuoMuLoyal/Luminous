@@ -15,8 +15,7 @@ void main() {
 
     test('isVisible returns true for all branches (5 tabs ≤ 5 branches)', () {
       for (final branch in ShellBranch.values) {
-        expect(branch.isVisible, isTrue,
-            reason: '$branch should be visible');
+        expect(branch.isVisible, isTrue, reason: '$branch should be visible');
       }
     });
 

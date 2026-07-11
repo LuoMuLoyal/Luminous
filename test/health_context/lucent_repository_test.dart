@@ -1,4 +1,3 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
@@ -35,17 +34,24 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> updateProfile(HealthProfileUpdateInput input) async {
+  Future<HealthContextDataDto> updateProfile(
+    HealthProfileUpdateInput input,
+  ) async {
     return updateProfileResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextDataDto> createAllergy(HealthAllergyWriteInput input) async {
+  Future<HealthContextDataDto> createAllergy(
+    HealthAllergyWriteInput input,
+  ) async {
     return createAllergyResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextDataDto> updateAllergy(String id, HealthAllergyUpdateInput input) async {
+  Future<HealthContextDataDto> updateAllergy(
+    String id,
+    HealthAllergyUpdateInput input,
+  ) async {
     return updateAllergyResult ?? _buildDto();
   }
 
@@ -55,12 +61,17 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> createCondition(HealthConditionWriteInput input) async {
+  Future<HealthContextDataDto> createCondition(
+    HealthConditionWriteInput input,
+  ) async {
     return createConditionResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextDataDto> updateCondition(String id, HealthConditionUpdateInput input) async {
+  Future<HealthContextDataDto> updateCondition(
+    String id,
+    HealthConditionUpdateInput input,
+  ) async {
     return updateConditionResult ?? _buildDto();
   }
 
@@ -70,12 +81,17 @@ class _FakeHealthContextRemoteDataSource
   }
 
   @override
-  Future<HealthContextDataDto> createCurrentMedicine(CurrentMedicineWriteInput input) async {
+  Future<HealthContextDataDto> createCurrentMedicine(
+    CurrentMedicineWriteInput input,
+  ) async {
     return createCurrentMedicineResult ?? _buildDto();
   }
 
   @override
-  Future<HealthContextDataDto> updateCurrentMedicine(String id, CurrentMedicineUpdateInput input) async {
+  Future<HealthContextDataDto> updateCurrentMedicine(
+    String id,
+    CurrentMedicineUpdateInput input,
+  ) async {
     return updateCurrentMedicineResult ?? _buildDto();
   }
 
@@ -197,10 +213,7 @@ void main() {
     test('network error propagates when cache is empty', () async {
       dataSource.fetchError = Exception('network error');
 
-      expect(
-        () => repo.fetchHealthContext(),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => repo.fetchHealthContext(), throwsA(isA<Exception>()));
     });
   });
 
@@ -291,8 +304,9 @@ void main() {
 
   group('createCurrentMedicine', () {
     test('calls dataSource and caches result', () async {
-      dataSource.createCurrentMedicineResult =
-          _buildDto(currentMedicineCount: 1);
+      dataSource.createCurrentMedicineResult = _buildDto(
+        currentMedicineCount: 1,
+      );
 
       final input = const CurrentMedicineWriteInput(
         source: HealthMedicineSource.cn,
@@ -307,8 +321,9 @@ void main() {
 
   group('updateCurrentMedicine', () {
     test('calls dataSource with id and caches result', () async {
-      dataSource.updateCurrentMedicineResult =
-          _buildDto(currentMedicineCount: 1);
+      dataSource.updateCurrentMedicineResult = _buildDto(
+        currentMedicineCount: 1,
+      );
 
       final input = const CurrentMedicineUpdateInput();
       final result = await repo.updateCurrentMedicine('med-1', input);
@@ -320,8 +335,9 @@ void main() {
 
   group('deleteCurrentMedicine', () {
     test('calls dataSource with id and caches result', () async {
-      dataSource.deleteCurrentMedicineResult =
-          _buildDto(currentMedicineCount: 0);
+      dataSource.deleteCurrentMedicineResult = _buildDto(
+        currentMedicineCount: 0,
+      );
 
       final result = await repo.deleteCurrentMedicine('med-1');
 
@@ -371,10 +387,12 @@ void main() {
         currentMedicines: [],
       );
 
-      await repo.createAllergy(const HealthAllergyWriteInput(
-        kind: HealthAllergyKind.food,
-        label: 'Peanuts',
-      ));
+      await repo.createAllergy(
+        const HealthAllergyWriteInput(
+          kind: HealthAllergyKind.food,
+          label: 'Peanuts',
+        ),
+      );
 
       dataSource.fetchCallCount = 0;
       final result = await repo.fetchHealthContext();
@@ -425,7 +443,9 @@ void main() {
         currentMedicines: [],
       );
 
-      await repo.createCondition(const HealthConditionWriteInput(label: 'Hypertension'));
+      await repo.createCondition(
+        const HealthConditionWriteInput(label: 'Hypertension'),
+      );
 
       dataSource.fetchCallCount = 0;
       final result = await repo.fetchHealthContext();
@@ -480,10 +500,12 @@ void main() {
         ],
       );
 
-      await repo.createCurrentMedicine(const CurrentMedicineWriteInput(
-        source: HealthMedicineSource.cn,
-        displayName: 'Aspirin',
-      ));
+      await repo.createCurrentMedicine(
+        const CurrentMedicineWriteInput(
+          source: HealthMedicineSource.cn,
+          displayName: 'Aspirin',
+        ),
+      );
 
       dataSource.fetchCallCount = 0;
       final result = await repo.fetchHealthContext();

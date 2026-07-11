@@ -52,7 +52,9 @@ void main() {
     expect(find.text(l10n.reportRangeCustom), findsOneWidget);
   });
 
-  testWidgets('shows check icon for selected range (last7Days)', (tester) async {
+  testWidgets('shows check icon for selected range (last7Days)', (
+    tester,
+  ) async {
     await showDialogAndSettle(tester);
 
     // The check icon is shown for the selected option
@@ -210,7 +212,9 @@ void main() {
     });
   });
 
-  testWidgets('custom with existing dates pre-populates calendar', (tester) async {
+  testWidgets('custom with existing dates pre-populates calendar', (
+    tester,
+  ) async {
     final fixedTime = DateTime(2026, 7, 11, 10, 0, 0);
 
     await withClock(Clock.fixed(fixedTime), () async {

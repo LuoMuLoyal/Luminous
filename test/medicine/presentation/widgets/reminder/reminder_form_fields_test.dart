@@ -54,10 +54,7 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WeekdayPicker(
-              selectedWeekdays: const {},
-              onToggled: (_) {},
-            ),
+            body: WeekdayPicker(selectedWeekdays: const {}, onToggled: (_) {}),
           ),
         ),
       );
@@ -155,9 +152,7 @@ void main() {
         TestForuiApp(
           home: Scaffold(
             body: TimePickerRow(
-              times: const [
-                MedicineReminderTimeInput(hour: 8, minute: 0),
-              ],
+              times: const [MedicineReminderTimeInput(hour: 8, minute: 0)],
               onAddTime: () => addCalled = true,
               onRemoveTime: (_) {},
             ),
@@ -173,8 +168,9 @@ void main() {
       expect(addCalled, isTrue);
     });
 
-    testWidgets('onRemoveTime is wired when multiple times exist',
-        (tester) async {
+    testWidgets('onRemoveTime is wired when multiple times exist', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -204,9 +200,7 @@ void main() {
         TestForuiApp(
           home: Scaffold(
             body: TimePickerRow(
-              times: const [
-                MedicineReminderTimeInput(hour: 8, minute: 0),
-              ],
+              times: const [MedicineReminderTimeInput(hour: 8, minute: 0)],
               onAddTime: () {},
               onRemoveTime: (_) {},
             ),
@@ -296,7 +290,10 @@ void main() {
     });
 
     test('storageValue returns correct strings', () {
-      expect(MedicineReminderSoundPreference.defaultTone.storageValue, 'default');
+      expect(
+        MedicineReminderSoundPreference.defaultTone.storageValue,
+        'default',
+      );
       expect(MedicineReminderSoundPreference.gentle.storageValue, 'gentle');
       expect(MedicineReminderSoundPreference.silent.storageValue, 'silent');
     });

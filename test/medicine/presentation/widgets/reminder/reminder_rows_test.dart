@@ -74,8 +74,9 @@ void main() {
       expect(find.byType(Column), findsWidgets);
     });
 
-    testWidgets('does not render divider when showDivider is false',
-        (tester) async {
+    testWidgets('does not render divider when showDivider is false', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const TestForuiApp(
           home: Scaffold(
@@ -95,8 +96,9 @@ void main() {
   });
 
   group('ValueActionRow', () {
-    testWidgets('renders title and value, calls onTap when pressed',
-        (tester) async {
+    testWidgets('renders title and value, calls onTap when pressed', (
+      tester,
+    ) async {
       var tapCount = 0;
       await tester.pumpWidget(
         TestForuiApp(
@@ -120,8 +122,7 @@ void main() {
       expect(tapCount, 1);
     });
 
-    testWidgets('shows clear button when onClear is provided',
-        (tester) async {
+    testWidgets('shows clear button when onClear is provided', (tester) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -160,8 +161,9 @@ void main() {
   });
 
   group('SwitchRow', () {
-    testWidgets('renders title, subtitle and switch with correct value',
-        (tester) async {
+    testWidgets('renders title, subtitle and switch with correct value', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -181,8 +183,9 @@ void main() {
       expect(find.byType(FSwitch), findsOneWidget);
     });
 
-    testWidgets('calls onChanged with new value when switch is toggled',
-        (tester) async {
+    testWidgets('calls onChanged with new value when switch is toggled', (
+      tester,
+    ) async {
       bool? changedValue;
       await tester.pumpWidget(
         TestForuiApp(
@@ -233,9 +236,7 @@ void main() {
       final medicine = _buildMedicine();
       await tester.pumpWidget(
         TestForuiApp(
-          home: Scaffold(
-            body: SelectedMedicineRow(medicine: medicine),
-          ),
+          home: Scaffold(body: SelectedMedicineRow(medicine: medicine)),
         ),
       );
       await tester.pumpAndSettle();
@@ -251,9 +252,7 @@ void main() {
 
       await tester.pumpWidget(
         TestForuiApp(
-          home: Scaffold(
-            body: SelectedMedicineRow(medicine: medicine),
-          ),
+          home: Scaffold(body: SelectedMedicineRow(medicine: medicine)),
         ),
       );
       await tester.pumpAndSettle();

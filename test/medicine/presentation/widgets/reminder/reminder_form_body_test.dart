@@ -10,9 +10,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../../helpers/test_forui_app.dart';
 
-HealthContextSnapshot _buildSnapshot({
-  List<CurrentMedicineItem>? medicines,
-}) {
+HealthContextSnapshot _buildSnapshot({List<CurrentMedicineItem>? medicines}) {
   return HealthContextSnapshot(
     summary: const HealthSummary(
       age: 30,
@@ -35,7 +33,8 @@ HealthContextSnapshot _buildSnapshot({
     ),
     allergies: [],
     conditions: [],
-    currentMedicines: medicines ??
+    currentMedicines:
+        medicines ??
         [
           const CurrentMedicineItem(
             id: 'med-1',
@@ -108,10 +107,7 @@ Widget _buildForm({
 /// unbounded width in the test environment. This causes rendering exceptions
 /// from the internal search [TextField]. We capture and ignore these
 /// exceptions since they don't affect the main widget tree layout.
-Future<void> _pumpForm(
-  WidgetTester tester,
-  Widget form,
-) async {
+Future<void> _pumpForm(WidgetTester tester, Widget form) async {
   await tester.pumpWidget(
     TestForuiRouterApp(
       routerConfig: GoRouter(
@@ -176,15 +172,12 @@ void main() {
       expect(button.onPress, isNull);
     });
 
-    testWidgets('renders delete button when onDelete is provided',
-        (tester) async {
+    testWidgets('renders delete button when onDelete is provided', (
+      tester,
+    ) async {
       await _pumpForm(
         tester,
-        _buildForm(
-          snapshot: _buildSnapshot(),
-          isEdit: true,
-          onDelete: () {},
-        ),
+        _buildForm(snapshot: _buildSnapshot(), isEdit: true, onDelete: () {}),
       );
 
       expect(
@@ -193,8 +186,9 @@ void main() {
       );
     });
 
-    testWidgets('does not render delete button when onDelete is null',
-        (tester) async {
+    testWidgets('does not render delete button when onDelete is null', (
+      tester,
+    ) async {
       await _pumpForm(
         tester,
         _buildForm(snapshot: _buildSnapshot(), onDelete: null),
@@ -244,10 +238,7 @@ void main() {
 
       await _pumpForm(tester, _buildForm(snapshot: _buildSnapshot()));
 
-      expect(
-        find.text(l10n.medicineReminderNoteOptionalLabel),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.medicineReminderNoteOptionalLabel), findsOneWidget);
     });
 
     testWidgets('renders frequency segments', (tester) async {
@@ -264,8 +255,9 @@ void main() {
       expect(find.text('自定义'), findsOneWidget);
     });
 
-    testWidgets('renders weekday picker when frequency is weekly',
-        (tester) async {
+    testWidgets('renders weekday picker when frequency is weekly', (
+      tester,
+    ) async {
       await _pumpForm(
         tester,
         _buildForm(
@@ -278,8 +270,9 @@ void main() {
       expect(find.byType(FilterChip), findsNWidgets(7));
     });
 
-    testWidgets('does not render weekday picker when frequency is daily',
-        (tester) async {
+    testWidgets('does not render weekday picker when frequency is daily', (
+      tester,
+    ) async {
       await _pumpForm(
         tester,
         _buildForm(
@@ -296,9 +289,7 @@ void main() {
         tester,
         _buildForm(
           snapshot: _buildSnapshot(),
-          times: [
-            const MedicineReminderTimeInput(hour: 8, minute: 0),
-          ],
+          times: [const MedicineReminderTimeInput(hour: 8, minute: 0)],
         ),
       );
 
@@ -328,20 +319,14 @@ void main() {
         _buildForm(snapshot: _buildSnapshot(), isActive: true),
       );
 
-      expect(
-        find.text(l10n.medicineReminderNotificationOn),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.medicineReminderNotificationOn), findsOneWidget);
     });
 
     testWidgets('onSave is called when save button tapped', (tester) async {
       var saveCalled = false;
       await _pumpForm(
         tester,
-        _buildForm(
-          snapshot: _buildSnapshot(),
-          onSave: () => saveCalled = true,
-        ),
+        _buildForm(snapshot: _buildSnapshot(), onSave: () => saveCalled = true),
       );
 
       // Call onPress directly to avoid FSelect overlay re-layout from tap.

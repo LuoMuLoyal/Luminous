@@ -25,9 +25,13 @@ class _JsonAdapter implements HttpClientAdapter {
         ? '{"code":0,"message":"ok","data":${jsonEncode(responseBody)}}'
         : '{"code":0,"message":"ok","data":null}';
 
-    return ResponseBody.fromString(body, statusCode, headers: {
-      Headers.contentTypeHeader: ['application/json'],
-    });
+    return ResponseBody.fromString(
+      body,
+      statusCode,
+      headers: {
+        Headers.contentTypeHeader: ['application/json'],
+      },
+    );
   }
 }
 

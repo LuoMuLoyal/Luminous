@@ -24,13 +24,16 @@ void main() {
         expect(result.state, 'fallback-state');
       });
 
-      test('returns null when URL has neither code nor state and no fallback', () {
-        final result = OAuthCallbackParser.parse(
-          'https://app.example.com/oauth/callback',
-          null,
-        );
-        expect(result, isNull);
-      });
+      test(
+        'returns null when URL has neither code nor state and no fallback',
+        () {
+          final result = OAuthCallbackParser.parse(
+            'https://app.example.com/oauth/callback',
+            null,
+          );
+          expect(result, isNull);
+        },
+      );
 
       test('returns null when URL has empty code', () {
         final result = OAuthCallbackParser.parse(
@@ -85,10 +88,7 @@ void main() {
       });
 
       test('returns null for query string with empty code', () {
-        final result = OAuthCallbackParser.parse(
-          '?code=&state=xyz',
-          null,
-        );
+        final result = OAuthCallbackParser.parse('?code=&state=xyz', null);
         expect(result, isNull);
       });
     });

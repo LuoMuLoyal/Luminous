@@ -269,7 +269,8 @@ void main() {
           'code': 0,
           'message': '',
           'data': <String, dynamic>{
-            'authorizeUrl': 'https://open.weixin.qq.com/connect/oauth2/authorize?...',
+            'authorizeUrl':
+                'https://open.weixin.qq.com/connect/oauth2/authorize?...',
             'state': 'random_state',
             'expiresIn': 300,
           },
@@ -413,24 +414,26 @@ void main() {
 
     // ─── logout ──────────────────────────────────────────────────────
     group('logout', () {
-      test('sends logout request with refresh token and clears store',
-          () async {
-        await store.write(
-          const LucentSessionTokens(
-            accessToken: 'at-1',
-            refreshToken: 'rt-1',
-          ),
-        );
-        adapter.body = <String, dynamic>{
-          'code': 0,
-          'message': '',
-          'data': null,
-        };
+      test(
+        'sends logout request with refresh token and clears store',
+        () async {
+          await store.write(
+            const LucentSessionTokens(
+              accessToken: 'at-1',
+              refreshToken: 'rt-1',
+            ),
+          );
+          adapter.body = <String, dynamic>{
+            'code': 0,
+            'message': '',
+            'data': null,
+          };
 
-        await dataSource.logout();
+          await dataSource.logout();
 
-        expect(await store.read(), isNull);
-      });
+          expect(await store.read(), isNull);
+        },
+      );
 
       test('clears store without API call when no refresh token', () async {
         // Store is already empty
@@ -441,10 +444,7 @@ void main() {
 
       test('clears store when refresh token is empty string', () async {
         await store.write(
-          const LucentSessionTokens(
-            accessToken: 'at-1',
-            refreshToken: '',
-          ),
+          const LucentSessionTokens(accessToken: 'at-1', refreshToken: ''),
         );
 
         await dataSource.logout();
@@ -672,9 +672,7 @@ void main() {
       });
 
       test('parses emailVerifiedAt when present', () async {
-        adapter.body = _accountDto(
-          emailVerifiedAt: '2026-07-01T00:00:00.000Z',
-        );
+        adapter.body = _accountDto(emailVerifiedAt: '2026-07-01T00:00:00.000Z');
 
         final user = await dataSource.fetchAccount();
         expect(user.emailVerifiedAt, isNotNull);
@@ -690,9 +688,7 @@ void main() {
       });
 
       test('parses lastLoginAt when present', () async {
-        adapter.body = _accountDto(
-          lastLoginAt: '2026-07-10T12:00:00.000Z',
-        );
+        adapter.body = _accountDto(lastLoginAt: '2026-07-10T12:00:00.000Z');
 
         final user = await dataSource.fetchAccount();
         expect(user.lastLoginAt, isNotNull);
@@ -837,10 +833,7 @@ void main() {
           'data': {'emailVerified': true},
         };
 
-        await dataSource.verifyEmail(
-          email: 'test@example.com',
-          code: '123456',
-        );
+        await dataSource.verifyEmail(email: 'test@example.com', code: '123456');
 
         expect(adapter.lastBody?['email'], 'test@example.com');
         expect(adapter.lastBody?['code'], '123456');
@@ -906,10 +899,7 @@ void main() {
     group('changePassword', () {
       test('clears session store after password change', () async {
         await store.write(
-          const LucentSessionTokens(
-            accessToken: 'at-1',
-            refreshToken: 'rt-1',
-          ),
+          const LucentSessionTokens(accessToken: 'at-1', refreshToken: 'rt-1'),
         );
 
         adapter.body = <String, dynamic>{
@@ -1013,10 +1003,7 @@ void main() {
     group('deleteAccount', () {
       test('clears session store after deletion', () async {
         await store.write(
-          const LucentSessionTokens(
-            accessToken: 'at-1',
-            refreshToken: 'rt-1',
-          ),
+          const LucentSessionTokens(accessToken: 'at-1', refreshToken: 'rt-1'),
         );
 
         adapter.body = <String, dynamic>{
@@ -1057,10 +1044,7 @@ void main() {
     // ─── _authUserFromAccount edge cases ─────────────────────────────
     group('_authUserFromAccount edge cases', () {
       test('handles null avatar and null emailVerifiedAt', () async {
-        adapter.body = _accountDto(
-          avatar: null,
-          emailVerifiedAt: null,
-        );
+        adapter.body = _accountDto(avatar: null, emailVerifiedAt: null);
 
         final user = await dataSource.fetchAccount();
 
@@ -1083,14 +1067,13 @@ void main() {
       });
 
       test('parses emailVerifiedAt as DateTime', () async {
-        adapter.body = _accountDto(
-          emailVerifiedAt: '2026-07-01T12:30:00.000Z',
-        );
+        adapter.body = _accountDto(emailVerifiedAt: '2026-07-01T12:30:00.000Z');
 
         final user = await dataSource.fetchAccount();
-        expect(user.emailVerifiedAt, equals(
-          DateTime.parse('2026-07-01T12:30:00.000Z'),
-        ));
+        expect(
+          user.emailVerifiedAt,
+          equals(DateTime.parse('2026-07-01T12:30:00.000Z')),
+        );
       });
     });
 

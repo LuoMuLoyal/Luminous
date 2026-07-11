@@ -6,8 +6,9 @@ import '../helpers/test_forui_app.dart';
 
 void main() {
   group('ShellDeferredContent', () {
-    testWidgets('shows placeholder on first frame, child on next',
-        (tester) async {
+    testWidgets('shows placeholder on first frame, child on next', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const TestForuiApp(
           home: ShellDeferredContent(
@@ -29,13 +30,12 @@ void main() {
       expect(find.byKey(const Key('placeholder')), findsNothing);
     });
 
-    testWidgets('shows default placeholder when no placeholder provided',
-        (tester) async {
+    testWidgets('shows default placeholder when no placeholder provided', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const TestForuiApp(
-          home: ShellDeferredContent(
-            child: SizedBox(key: Key('child')),
-          ),
+          home: ShellDeferredContent(child: SizedBox(key: Key('child'))),
         ),
       );
 
@@ -50,9 +50,7 @@ void main() {
     testWidgets('child remains visible after rebuilds', (tester) async {
       await tester.pumpWidget(
         const TestForuiApp(
-          home: ShellDeferredContent(
-            child: SizedBox(key: Key('child')),
-          ),
+          home: ShellDeferredContent(child: SizedBox(key: Key('child'))),
         ),
       );
 

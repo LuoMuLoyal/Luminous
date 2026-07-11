@@ -40,11 +40,11 @@ void main() {
   const eventChannel = MethodChannel('dev.fluttercommunity.plus/connectivity');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(eventChannel, (call) async {
-    if (call.method == 'getAllLocations') {
-      return <Map<dynamic, dynamic>>[];
-    }
-    return null;
-  });
+        if (call.method == 'getAllLocations') {
+          return <Map<dynamic, dynamic>>[];
+        }
+        return null;
+      });
 
   late MockPendingSyncDao mockDao;
   late talker_pkg.Talker talker;
@@ -53,11 +53,7 @@ void main() {
   setUp(() {
     mockDao = MockPendingSyncDao();
     talker = talker_pkg.Talker();
-    worker = SyncWorker(
-      pendingSyncDao: mockDao,
-      dio: Dio(),
-      talker: talker,
-    );
+    worker = SyncWorker(pendingSyncDao: mockDao, dio: Dio(), talker: talker);
   });
 
   group('SyncWorker.registerHandler', () {
@@ -68,11 +64,10 @@ void main() {
         handlerCalled = true;
       });
 
-      when(() => mockDao.fetchReady()).thenAnswer((_) async => [
-            _createEntry(),
-          ]);
-      when(() => mockDao.markSyncing(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockDao.fetchReady(),
+      ).thenAnswer((_) async => [_createEntry()]);
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
       when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
       await worker.flush();
@@ -96,10 +91,8 @@ void main() {
     test('replays entry successfully and removes it', () async {
       final entry = _createEntry(id: 'sync-001');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
-      when(() => mockDao.markSyncing('sync-001'))
-          .thenAnswer((_) async {});
-      when(() => mockDao.remove('sync-001'))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing('sync-001')).thenAnswer((_) async {});
+      when(() => mockDao.remove('sync-001')).thenAnswer((_) async {});
 
       bool handlerCalled = false;
       worker.registerHandler('daily_record', (e) async {
@@ -118,10 +111,10 @@ void main() {
     test('marks failed on DioException and does not remove', () async {
       final entry = _createEntry(id: 'fail-001');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
-      when(() => mockDao.markSyncing('fail-001'))
-          .thenAnswer((_) async {});
-      when(() => mockDao.markFailed('fail-001', any()))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing('fail-001')).thenAnswer((_) async {});
+      when(
+        () => mockDao.markFailed('fail-001', any()),
+      ).thenAnswer((_) async {});
 
       worker.registerHandler('daily_record', (e) async {
         throw DioException(
@@ -140,10 +133,10 @@ void main() {
     test('marks failed on generic exception and does not remove', () async {
       final entry = _createEntry(id: 'generic-fail');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
-      when(() => mockDao.markSyncing('generic-fail'))
-          .thenAnswer((_) async {});
-      when(() => mockDao.markFailed('generic-fail', any()))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing('generic-fail')).thenAnswer((_) async {});
+      when(
+        () => mockDao.markFailed('generic-fail', any()),
+      ).thenAnswer((_) async {});
 
       worker.registerHandler('daily_record', (e) async {
         throw StateError('unexpected error');
@@ -155,17 +148,11 @@ void main() {
       verifyNever(() => mockDao.remove(any()));
     });
 
-    test('skips entry when no handler registered for entity type',
-        () async {
-      final entry = _createEntry(
-        id: 'no-handler',
-        entityType: 'unknown_type',
-      );
+    test('skips entry when no handler registered for entity type', () async {
+      final entry = _createEntry(id: 'no-handler', entityType: 'unknown_type');
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
-      when(() => mockDao.markSyncing(any()))
-          .thenAnswer((_) async {});
-      when(() => mockDao.remove(any()))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+      when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
       await worker.flush();
 
@@ -181,10 +168,8 @@ void main() {
         _createEntry(id: 'entry-3', entityId: 'rec-3'),
       ];
       when(() => mockDao.fetchReady()).thenAnswer((_) async => entries);
-      when(() => mockDao.markSyncing(any()))
-          .thenAnswer((_) async {});
-      when(() => mockDao.remove(any()))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+      when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
       final processedIds = <String>[];
       worker.registerHandler('daily_record', (e) async {
@@ -205,26 +190,22 @@ void main() {
         await Future.delayed(const Duration(milliseconds: 50));
         return [entry];
       });
-      when(() => mockDao.markSyncing(any()))
-          .thenAnswer((_) async {});
-      when(() => mockDao.remove(any()))
-          .thenAnswer((_) async {});
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+      when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
       worker.registerHandler('daily_record', (e) async {});
 
       // Call flush twice concurrently
-      await Future.wait([
-        worker.flush(),
-        worker.flush(),
-      ]);
+      await Future.wait([worker.flush(), worker.flush()]);
 
       // fetchReady should only be called once due to _isFlushing guard
       verify(() => mockDao.fetchReady()).called(1);
     });
 
     test('recovers from unexpected error in flush', () async {
-      when(() => mockDao.fetchReady())
-          .thenThrow(StateError('database connection lost'));
+      when(
+        () => mockDao.fetchReady(),
+      ).thenThrow(StateError('database connection lost'));
 
       // Should not throw — error is caught internally
       await worker.flush();
@@ -255,37 +236,32 @@ void main() {
   });
 
   group('SyncWorker — handler interaction patterns', () {
-    test(
-      'handler receives full entry with payload and operation',
-      () async {
-        final entry = _createEntry(
-          id: 'detail-001',
-          entityType: 'daily_record',
-          entityId: 'rec-detail',
-          operation: 'update',
-          payload: '{"value":"500","unit":"ml"}',
-        );
-        when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
-        when(() => mockDao.markSyncing(any()))
-            .thenAnswer((_) async {});
-        when(() => mockDao.remove(any()))
-            .thenAnswer((_) async {});
+    test('handler receives full entry with payload and operation', () async {
+      final entry = _createEntry(
+        id: 'detail-001',
+        entityType: 'daily_record',
+        entityId: 'rec-detail',
+        operation: 'update',
+        payload: '{"value":"500","unit":"ml"}',
+      );
+      when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+      when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
-        PendingSyncEntry? receivedEntry;
-        worker.registerHandler('daily_record', (e) async {
-          receivedEntry = e;
-        });
+      PendingSyncEntry? receivedEntry;
+      worker.registerHandler('daily_record', (e) async {
+        receivedEntry = e;
+      });
 
-        await worker.flush();
+      await worker.flush();
 
-        expect(receivedEntry, isNotNull);
-        expect(receivedEntry!.id, 'detail-001');
-        expect(receivedEntry!.entityType, 'daily_record');
-        expect(receivedEntry!.entityId, 'rec-detail');
-        expect(receivedEntry!.operation, 'update');
-        expect(receivedEntry!.payload, '{"value":"500","unit":"ml"}');
-      },
-    );
+      expect(receivedEntry, isNotNull);
+      expect(receivedEntry!.id, 'detail-001');
+      expect(receivedEntry!.entityType, 'daily_record');
+      expect(receivedEntry!.entityId, 'rec-detail');
+      expect(receivedEntry!.operation, 'update');
+      expect(receivedEntry!.payload, '{"value":"500","unit":"ml"}');
+    });
 
     test('different entity types use different handlers', () async {
       final dailyEntry = _createEntry(
@@ -296,13 +272,11 @@ void main() {
         id: 'med-001',
         entityType: 'medicine_dose_log',
       );
-      when(() => mockDao.fetchReady()).thenAnswer(
-        (_) async => [dailyEntry, medicineEntry],
-      );
-      when(() => mockDao.markSyncing(any()))
-          .thenAnswer((_) async {});
-      when(() => mockDao.remove(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockDao.fetchReady(),
+      ).thenAnswer((_) async => [dailyEntry, medicineEntry]);
+      when(() => mockDao.markSyncing(any())).thenAnswer((_) async {});
+      when(() => mockDao.remove(any())).thenAnswer((_) async {});
 
       final dailyHandlerCalled = <String>[];
       final medicineHandlerCalled = <String>[];

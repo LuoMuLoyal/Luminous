@@ -131,117 +131,34 @@ void main() {
 
     setUp(() {
       remoteDataSource = _FakeSearchDataSource();
-      repo = MedicineRiskCheckRepository(
-        remoteDataSource: remoteDataSource,
-      );
+      repo = MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
     });
 
     // ─── fetchForSnapshot — basic behavior ───────────────────────────
     group('fetchForSnapshot', () {
-      test('returns empty result when snapshot has no current medicines',
-          () async {
-        final snapshot = _buildSnapshot();
+      test(
+        'returns empty result when snapshot has no current medicines',
+        () async {
+          final snapshot = _buildSnapshot();
 
-        final result = await repo.fetchForSnapshot(snapshot);
+          final result = await repo.fetchForSnapshot(snapshot);
 
-        expect(result.currentMedicineCount, 0);
-        expect(result.checkedMedicineCount, 0);
-        expect(result.findings, isEmpty);
-        expect(result.coverageIssues, isEmpty);
-      });
-
-      test('returns coverage issue for current medicines without source',
-          () async {
-        final snapshot = _buildSnapshot(
-          currentMedicines: [
-            _buildMedicineItem(
-              id: 'med-1',
-              source: 'manual',
-              displayName: 'Hand-entered Med',
-            ),
-          ],
-        );
-
-        final result = await repo.fetchForSnapshot(snapshot);
-
-        expect(result.currentMedicineCount, 1);
-        expect(result.checkedMedicineCount, 0);
-        expect(result.coverageIssues, hasLength(1));
-        expect(
-          result.coverageIssues.first.reason,
-          MedicineRiskCoverageReason.manualEntry,
-        );
-      });
-
-      test('returns coverage issue for cn medicine without sourceRefId',
-          () async {
-        final snapshot = _buildSnapshot(
-          currentMedicines: [
-            _buildMedicineItem(
-              id: 'med-1',
-              source: 'cn',
-              sourceRefId: null,
-              displayName: 'CN Med',
-            ),
-          ],
-        );
-
-        final result = await repo.fetchForSnapshot(snapshot);
-
-        expect(result.currentMedicineCount, 1);
-        expect(result.coverageIssues, hasLength(1));
-        expect(
-          result.coverageIssues.first.reason,
-          MedicineRiskCoverageReason.missingSourceRef,
-        );
-      });
-
-      test('returns coverage issue for cn medicine with empty sourceRefId',
-          () async {
-        final snapshot = _buildSnapshot(
-          currentMedicines: [
-            _buildMedicineItem(
-              id: 'med-1',
-              source: 'cn',
-              sourceRefId: '   ',
-              displayName: 'CN Med',
-            ),
-          ],
-        );
-
-        final result = await repo.fetchForSnapshot(snapshot);
-
-        expect(result.coverageIssues, hasLength(1));
-        expect(
-          result.coverageIssues.first.reason,
-          MedicineRiskCoverageReason.missingSourceRef,
-        );
-      });
+          expect(result.currentMedicineCount, 0);
+          expect(result.checkedMedicineCount, 0);
+          expect(result.findings, isEmpty);
+          expect(result.coverageIssues, isEmpty);
+        },
+      );
 
       test(
-        'fetches detail for cn medicine with valid sourceRefId',
+        'returns coverage issue for current medicines without source',
         () async {
-          remoteDataSource.detailResponses['cn-1'] = _detailResponse(
-            id: 'cn-1',
-            name: 'Test CN Medicine',
-            detailJson: {
-              'ingredients': '测试成分',
-              'contraindications': '无',
-              'precautions': '',
-              'foodInteractions': <dynamic>[],
-              'drugInteractions': <dynamic>[],
-              'synonyms': <String>[],
-              'drugbankIds': <String>[],
-            },
-          );
-
           final snapshot = _buildSnapshot(
             currentMedicines: [
               _buildMedicineItem(
                 id: 'med-1',
-                source: 'cn',
-                sourceRefId: 'cn-1',
-                displayName: 'CN Medicine',
+                source: 'manual',
+                displayName: 'Hand-entered Med',
               ),
             ],
           );
@@ -249,21 +166,71 @@ void main() {
           final result = await repo.fetchForSnapshot(snapshot);
 
           expect(result.currentMedicineCount, 1);
-          expect(result.checkedMedicineCount, 1);
-          expect(result.coverageIssues, isEmpty);
-          expect(remoteDataSource.lastDetailId, 'cn-1');
-          expect(remoteDataSource.lastDetailSource, 'cn');
+          expect(result.checkedMedicineCount, 0);
+          expect(result.coverageIssues, hasLength(1));
+          expect(
+            result.coverageIssues.first.reason,
+            MedicineRiskCoverageReason.manualEntry,
+          );
         },
       );
 
-      test('fetches detail for drugbank medicine with valid sourceRefId',
-          () async {
-        remoteDataSource.detailResponses['DB-1'] = _detailResponse(
-          id: 'DB-1',
-          name: 'DrugBank Medicine',
+      test(
+        'returns coverage issue for cn medicine without sourceRefId',
+        () async {
+          final snapshot = _buildSnapshot(
+            currentMedicines: [
+              _buildMedicineItem(
+                id: 'med-1',
+                source: 'cn',
+                sourceRefId: null,
+                displayName: 'CN Med',
+              ),
+            ],
+          );
+
+          final result = await repo.fetchForSnapshot(snapshot);
+
+          expect(result.currentMedicineCount, 1);
+          expect(result.coverageIssues, hasLength(1));
+          expect(
+            result.coverageIssues.first.reason,
+            MedicineRiskCoverageReason.missingSourceRef,
+          );
+        },
+      );
+
+      test(
+        'returns coverage issue for cn medicine with empty sourceRefId',
+        () async {
+          final snapshot = _buildSnapshot(
+            currentMedicines: [
+              _buildMedicineItem(
+                id: 'med-1',
+                source: 'cn',
+                sourceRefId: '   ',
+                displayName: 'CN Med',
+              ),
+            ],
+          );
+
+          final result = await repo.fetchForSnapshot(snapshot);
+
+          expect(result.coverageIssues, hasLength(1));
+          expect(
+            result.coverageIssues.first.reason,
+            MedicineRiskCoverageReason.missingSourceRef,
+          );
+        },
+      );
+
+      test('fetches detail for cn medicine with valid sourceRefId', () async {
+        remoteDataSource.detailResponses['cn-1'] = _detailResponse(
+          id: 'cn-1',
+          name: 'Test CN Medicine',
           detailJson: {
-            'ingredients': '',
-            'contraindications': '',
+            'ingredients': '测试成分',
+            'contraindications': '无',
             'precautions': '',
             'foodInteractions': <dynamic>[],
             'drugInteractions': <dynamic>[],
@@ -276,19 +243,57 @@ void main() {
           currentMedicines: [
             _buildMedicineItem(
               id: 'med-1',
-              source: 'drugbank',
-              sourceRefId: 'DB-1',
-              displayName: 'DB Medicine',
+              source: 'cn',
+              sourceRefId: 'cn-1',
+              displayName: 'CN Medicine',
             ),
           ],
         );
 
         final result = await repo.fetchForSnapshot(snapshot);
 
+        expect(result.currentMedicineCount, 1);
         expect(result.checkedMedicineCount, 1);
-        expect(remoteDataSource.lastDetailId, 'DB-1');
-        expect(remoteDataSource.lastDetailSource, 'drugbank');
+        expect(result.coverageIssues, isEmpty);
+        expect(remoteDataSource.lastDetailId, 'cn-1');
+        expect(remoteDataSource.lastDetailSource, 'cn');
       });
+
+      test(
+        'fetches detail for drugbank medicine with valid sourceRefId',
+        () async {
+          remoteDataSource.detailResponses['DB-1'] = _detailResponse(
+            id: 'DB-1',
+            name: 'DrugBank Medicine',
+            detailJson: {
+              'ingredients': '',
+              'contraindications': '',
+              'precautions': '',
+              'foodInteractions': <dynamic>[],
+              'drugInteractions': <dynamic>[],
+              'synonyms': <String>[],
+              'drugbankIds': <String>[],
+            },
+          );
+
+          final snapshot = _buildSnapshot(
+            currentMedicines: [
+              _buildMedicineItem(
+                id: 'med-1',
+                source: 'drugbank',
+                sourceRefId: 'DB-1',
+                displayName: 'DB Medicine',
+              ),
+            ],
+          );
+
+          final result = await repo.fetchForSnapshot(snapshot);
+
+          expect(result.checkedMedicineCount, 1);
+          expect(remoteDataSource.lastDetailId, 'DB-1');
+          expect(remoteDataSource.lastDetailSource, 'drugbank');
+        },
+      );
 
       test('skips medicines with unknown source', () async {
         final snapshot = _buildSnapshot(
@@ -328,38 +333,36 @@ void main() {
         expect(result.checkedMedicineCount, 0);
       });
 
-      test(
-        'returns coverage issue when API returns non-zero code',
-        () async {
-        remoteDataSource.detailResponses['cn-1'] = const MedicineDetailResponseDto(
-          code: 1001,
-          message: 'Not found',
-          data: MedicineDetailDataDto(
-            id: 'cn-1',
-            source: lucent.MedicineDetailDataDtoSourceSource.cn,
-            name: '',
-            subtitle: null,
-            detail: lucent.MedicineDetailDataDtoDetailDetail({}),
-          ),
+      test('returns coverage issue when API returns non-zero code', () async {
+        remoteDataSource.detailResponses['cn-1'] =
+            const MedicineDetailResponseDto(
+              code: 1001,
+              message: 'Not found',
+              data: MedicineDetailDataDto(
+                id: 'cn-1',
+                source: lucent.MedicineDetailDataDtoSourceSource.cn,
+                name: '',
+                subtitle: null,
+                detail: lucent.MedicineDetailDataDtoDetailDetail({}),
+              ),
+            );
+
+        final snapshot = _buildSnapshot(
+          currentMedicines: [
+            _buildMedicineItem(
+              id: 'med-1',
+              source: 'cn',
+              sourceRefId: 'cn-1',
+              displayName: 'CN Med',
+            ),
+          ],
         );
 
-          final snapshot = _buildSnapshot(
-            currentMedicines: [
-              _buildMedicineItem(
-                id: 'med-1',
-                source: 'cn',
-                sourceRefId: 'cn-1',
-                displayName: 'CN Med',
-              ),
-            ],
-          );
+        final result = await repo.fetchForSnapshot(snapshot);
 
-          final result = await repo.fetchForSnapshot(snapshot);
-
-          expect(result.checkedMedicineCount, 0);
-          expect(result.coverageIssues, hasLength(1));
-        },
-      );
+        expect(result.checkedMedicineCount, 0);
+        expect(result.coverageIssues, hasLength(1));
+      });
 
       test('handles network error gracefully with coverage issue', () async {
         remoteDataSource.detailError = Exception('Network error');
@@ -414,22 +417,26 @@ void main() {
         // returns a default response with code 0, so it will succeed but
         // with the "Unknown" name).
         // Let's make cn-2 return a non-zero code to simulate failure.
-        remoteDataSource.detailResponses['cn-2'] = const MedicineDetailResponseDto(
-          code: 1001,
-          message: 'Not found',
-          data: MedicineDetailDataDto(
-            id: 'cn-2',
-            source: lucent.MedicineDetailDataDtoSourceSource.cn,
-            name: '',
-            subtitle: null,
-            detail: lucent.MedicineDetailDataDtoDetailDetail({}),
-          ),
-        );
+        remoteDataSource.detailResponses['cn-2'] =
+            const MedicineDetailResponseDto(
+              code: 1001,
+              message: 'Not found',
+              data: MedicineDetailDataDto(
+                id: 'cn-2',
+                source: lucent.MedicineDetailDataDtoSourceSource.cn,
+                name: '',
+                subtitle: null,
+                detail: lucent.MedicineDetailDataDtoDetailDetail({}),
+              ),
+            );
 
         final result = await repo.fetchForSnapshot(snapshot);
 
         expect(result.currentMedicineCount, 3);
-        expect(result.checkedMedicineCount, 1); // Only cn-1 was successfully fetched
+        expect(
+          result.checkedMedicineCount,
+          1,
+        ); // Only cn-1 was successfully fetched
         expect(result.coverageIssues, hasLength(2)); // cn-2 + manual
       });
 
@@ -496,31 +503,28 @@ void main() {
         expect(result.coverageIssues, isEmpty);
       });
 
-      test(
-        'trims sourceRefId before API call',
-        () async {
-          remoteDataSource.detailResponses['cn-1'] = _detailResponse(
-            id: 'cn-1',
-            name: 'Med A',
-            detailJson: {},
-          );
+      test('trims sourceRefId before API call', () async {
+        remoteDataSource.detailResponses['cn-1'] = _detailResponse(
+          id: 'cn-1',
+          name: 'Med A',
+          detailJson: {},
+        );
 
-          final snapshot = _buildSnapshot(
-            currentMedicines: [
-              _buildMedicineItem(
-                id: 'med-1',
-                source: 'cn',
-                sourceRefId: '  cn-1  ',
-                displayName: 'Med A',
-              ),
-            ],
-          );
+        final snapshot = _buildSnapshot(
+          currentMedicines: [
+            _buildMedicineItem(
+              id: 'med-1',
+              source: 'cn',
+              sourceRefId: '  cn-1  ',
+              displayName: 'Med A',
+            ),
+          ],
+        );
 
-          await repo.fetchForSnapshot(snapshot);
+        await repo.fetchForSnapshot(snapshot);
 
-          expect(remoteDataSource.lastDetailId, 'cn-1');
-        },
-      );
+        expect(remoteDataSource.lastDetailId, 'cn-1');
+      });
     });
   });
 }

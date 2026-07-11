@@ -17,11 +17,7 @@ void main() {
   });
 
   Future<void> pumpPage(WidgetTester tester, Widget page) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: TestForuiApp(home: page),
-      ),
-    );
+    await tester.pumpWidget(ProviderScope(child: TestForuiApp(home: page)));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
   }
@@ -108,24 +104,42 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AccessibilitySettingsPage());
 
-      expect(find.text(l10n.settingsAccessibilityFontSizeSection), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAccessibilityFontSizeSection),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders all font size options', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AccessibilitySettingsPage());
 
-      expect(find.text(l10n.settingsAccessibilityFontSizeSmall), findsOneWidget);
-      expect(find.text(l10n.settingsAccessibilityFontSizeStandard), findsOneWidget);
-      expect(find.text(l10n.settingsAccessibilityFontSizeLarge), findsOneWidget);
-      expect(find.text(l10n.settingsAccessibilityFontSizeExtraLarge), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAccessibilityFontSizeSmall),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAccessibilityFontSizeStandard),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAccessibilityFontSizeLarge),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsAccessibilityFontSizeExtraLarge),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders reduce animations toggle', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AccessibilitySettingsPage());
 
-      expect(find.text(l10n.settingsAccessibilityReduceAnimations), findsOneWidget);
+      expect(
+        find.text(l10n.settingsAccessibilityReduceAnimations),
+        findsOneWidget,
+      );
       expect(
         find.text(l10n.settingsAccessibilityReduceAnimationsSubtitle),
         findsOneWidget,
@@ -183,31 +197,52 @@ void main() {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const DataStorageSettingsPage());
 
-      expect(find.text(l10n.settingsDataStorageRetentionSection), findsOneWidget);
+      expect(
+        find.text(l10n.settingsDataStorageRetentionSection),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders all retention period options', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const DataStorageSettingsPage());
 
-      expect(find.text(l10n.settingsDataStorageRetention30Days), findsOneWidget);
-      expect(find.text(l10n.settingsDataStorageRetention90Days), findsOneWidget);
-      expect(find.text(l10n.settingsDataStorageRetentionForever), findsOneWidget);
+      expect(
+        find.text(l10n.settingsDataStorageRetention30Days),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsDataStorageRetention90Days),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsDataStorageRetentionForever),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders image quality section label', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const DataStorageSettingsPage());
 
-      expect(find.text(l10n.settingsDataStorageImageQualitySection), findsOneWidget);
+      expect(
+        find.text(l10n.settingsDataStorageImageQualitySection),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders all image quality options', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const DataStorageSettingsPage());
 
-      expect(find.text(l10n.settingsDataStorageImageQualityStandard), findsOneWidget);
-      expect(find.text(l10n.settingsDataStorageImageQualityDataSaver), findsOneWidget);
+      expect(
+        find.text(l10n.settingsDataStorageImageQualityStandard),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n.settingsDataStorageImageQualityDataSaver),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders sync section label', (tester) async {
@@ -222,7 +257,10 @@ void main() {
       await pumpPage(tester, const DataStorageSettingsPage());
 
       expect(find.text(l10n.settingsDataStorageSyncWifiOnly), findsOneWidget);
-      expect(find.text(l10n.settingsDataStorageSyncWifiAndMobile), findsOneWidget);
+      expect(
+        find.text(l10n.settingsDataStorageSyncWifiAndMobile),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders retention row keys', (tester) async {
@@ -230,21 +268,33 @@ void main() {
 
       expect(find.byKey(const Key('data-retention-row-30')), findsOneWidget);
       expect(find.byKey(const Key('data-retention-row-90')), findsOneWidget);
-      expect(find.byKey(const Key('data-retention-row-forever')), findsOneWidget);
+      expect(
+        find.byKey(const Key('data-retention-row-forever')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders image quality row keys', (tester) async {
       await pumpPage(tester, const DataStorageSettingsPage());
 
-      expect(find.byKey(const Key('image-quality-row-standard')), findsOneWidget);
-      expect(find.byKey(const Key('image-quality-row-dataSaver')), findsOneWidget);
+      expect(
+        find.byKey(const Key('image-quality-row-standard')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('image-quality-row-dataSaver')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders sync preference row keys', (tester) async {
       await pumpPage(tester, const DataStorageSettingsPage());
 
       expect(find.byKey(const Key('sync-pref-row-wifiOnly')), findsOneWidget);
-      expect(find.byKey(const Key('sync-pref-row-wifiAndMobile')), findsOneWidget);
+      expect(
+        find.byKey(const Key('sync-pref-row-wifiAndMobile')),
+        findsOneWidget,
+      );
     });
   });
 }

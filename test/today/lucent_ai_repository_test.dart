@@ -13,8 +13,9 @@ class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   Object? streamError;
 
   @override
-  final lucent.TodayAnalysisApi api =
-      lucent.TodayAnalysisApi(Dio(BaseOptions(baseUrl: 'http://localhost')));
+  final lucent.TodayAnalysisApi api = lucent.TodayAnalysisApi(
+    Dio(BaseOptions(baseUrl: 'http://localhost')),
+  );
 
   @override
   final Dio dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
@@ -85,10 +86,7 @@ void main() {
 
         expect(events, hasLength(2));
         expect(events[0], isA<TodayAiGenerationSummaryEvent>());
-        expect(
-          (events[0] as TodayAiGenerationSummaryEvent).summary,
-          '正在分析...',
-        );
+        expect((events[0] as TodayAiGenerationSummaryEvent).summary, '正在分析...');
         expect(events[1], isA<TodayAiGenerationResultEvent>());
       });
 
@@ -106,9 +104,7 @@ void main() {
           ],
         );
 
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(dto),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
@@ -141,14 +137,10 @@ void main() {
 
       test('maps unknown bullet kind to general', () async {
         final dto = _buildDto(
-          bullets: [
-            _bullet(kind: 'unknown_kind', text: 'Unknown category'),
-          ],
+          bullets: [_bullet(kind: 'unknown_kind', text: 'Unknown category')],
         );
 
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(dto),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
@@ -177,9 +169,7 @@ void main() {
       });
 
       test('emits only result event when no summaries', () async {
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(_buildDto()),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(_buildDto())];
 
         final events = await repo.generateStream().toList();
 
@@ -218,9 +208,7 @@ void main() {
       test('maps empty bullets list', () async {
         final dto = _buildDto(bullets: []);
 
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(dto),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
         final events = await repo.generateStream().toList();
 
@@ -232,10 +220,7 @@ void main() {
     // ─── generate ────────────────────────────────────────────────────
     group('generate', () {
       test('returns analysis from stream result event', () async {
-        final dto = _buildDto(
-          date: '2026-07-10',
-          summary: '健康日报',
-        );
+        final dto = _buildDto(date: '2026-07-10', summary: '健康日报');
 
         dataSource.streamEvents = [
           const TodayAiRemoteSummaryEvent('分析中...'),
@@ -248,34 +233,22 @@ void main() {
         expect(analysis.summary, '健康日报');
       });
 
-      test('throws StateError when stream ends without result event',
-          () async {
-        dataSource.streamEvents = [
-          const TodayAiRemoteSummaryEvent('分析中...'),
-        ];
+      test('throws StateError when stream ends without result event', () async {
+        dataSource.streamEvents = [const TodayAiRemoteSummaryEvent('分析中...')];
 
-        expect(
-          () => repo.generate(),
-          throwsA(isA<StateError>()),
-        );
+        expect(() => repo.generate(), throwsA(isA<StateError>()));
       });
 
       test('throws StateError when stream is empty', () async {
         dataSource.streamEvents = [];
 
-        expect(
-          () => repo.generate(),
-          throwsA(isA<StateError>()),
-        );
+        expect(() => repo.generate(), throwsA(isA<StateError>()));
       });
 
-      test('returns analysis immediately when result is first event',
-          () async {
+      test('returns analysis immediately when result is first event', () async {
         final dto = _buildDto();
 
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(dto),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
         final analysis = await repo.generate();
 
@@ -285,9 +258,7 @@ void main() {
       test('passes date parameter through', () async {
         final dto = _buildDto(date: '2026-07-15');
 
-        dataSource.streamEvents = [
-          TodayAiRemoteResultEvent(dto),
-        ];
+        dataSource.streamEvents = [TodayAiRemoteResultEvent(dto)];
 
         final analysis = await repo.generate(date: '2026-07-15');
 
@@ -297,10 +268,7 @@ void main() {
       test('propagates stream errors', () async {
         dataSource.streamError = Exception('Stream failed');
 
-        expect(
-          () => repo.generate(),
-          throwsException,
-        );
+        expect(() => repo.generate(), throwsException);
       });
     });
   });

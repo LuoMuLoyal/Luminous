@@ -17,10 +17,10 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
     this._openedConversation,
     this._clearResult,
     this._stream,
-  })  : super(
-          api: lucent.AssistantApi(Dio(BaseOptions())),
-          dio: Dio(BaseOptions()),
-        );
+  }) : super(
+         api: lucent.AssistantApi(Dio(BaseOptions())),
+         dio: Dio(BaseOptions()),
+       );
 
   final lucent.AssistantCapabilitiesDataDto? _capabilities;
   final lucent.AssistantConversationDataDto? _latestConversation;
@@ -216,11 +216,14 @@ void main() {
                 required: const ['health_profile'],
               ),
               _tool(
-                name: lucent.AssistantToolCapabilityDtoNameName.getCurrentMedicines,
+                name: lucent
+                    .AssistantToolCapabilityDtoNameName
+                    .getCurrentMedicines,
                 enabled: false,
                 implemented: false,
                 permitted: false,
-                disabledReason: lucent.AssistantToolCapabilityDtoDisabledReasonDisabledReason
+                disabledReason: lucent
+                    .AssistantToolCapabilityDtoDisabledReasonDisabledReason
                     .notImplemented,
               ),
             ],
@@ -296,7 +299,9 @@ void main() {
       final repo = LucentAssistantRepository(
         dataSource: _FakeAssistantRemoteDataSource(
           capabilities: _capabilitiesDto(
-            tools: [_tool(name: lucent.AssistantToolCapabilityDtoNameName.$unknown)],
+            tools: [
+              _tool(name: lucent.AssistantToolCapabilityDtoNameName.$unknown),
+            ],
           ),
         ),
       );
@@ -391,7 +396,12 @@ void main() {
         dataSource: _FakeAssistantRemoteDataSource(
           recentConversations: [
             _summaryDto(id: 'c1', title: 'First'),
-            _summaryDto(id: 'c2', title: 'Second', status: lucent.AssistantConversationSummaryDtoStatusStatus.archived),
+            _summaryDto(
+              id: 'c2',
+              title: 'Second',
+              status:
+                  lucent.AssistantConversationSummaryDtoStatusStatus.archived,
+            ),
             _summaryDto(id: 'c3', title: null, lastMessageAt: null),
           ],
         ),
@@ -539,10 +549,7 @@ void main() {
                   'previewFields': [
                     {'label': 'Value', 'value': '120/80'},
                   ],
-                  'target': {
-                    'kind': 'daily_record',
-                    'label': 'Blood Pressure',
-                  },
+                  'target': {'kind': 'daily_record', 'label': 'Blood Pressure'},
                   'constraints': ['requires_confirmation'],
                   'expiresAt': '2026-07-02T00:00:00Z',
                   'payloadVersion': 2,
@@ -592,7 +599,8 @@ void main() {
       expect(action.confirmationRequired, isTrue);
       expect(action.backendStatus, 'proposed');
 
-      final payload = action.payload as AssistantCreateDailyRecordProposalPayload;
+      final payload =
+          action.payload as AssistantCreateDailyRecordProposalPayload;
       expect(payload.draft.kind, 'blood_pressure');
       expect(payload.draft.occurredAt, '2026-07-01T10:00:00Z');
       expect(payload.draft.title, 'Morning BP');
@@ -640,7 +648,8 @@ void main() {
       final action = result.message.proposedActions.single;
 
       expect(action.type, AssistantProposedActionType.updateDailyRecord);
-      final payload = action.payload as AssistantUpdateDailyRecordProposalPayload;
+      final payload =
+          action.payload as AssistantUpdateDailyRecordProposalPayload;
       expect(payload.recordId, 'rec-1');
       expect(payload.draft['value'], '70');
       expect(payload.draft['unit'], 'kg');
@@ -683,7 +692,8 @@ void main() {
       final action = result.message.proposedActions.single;
 
       expect(action.type, AssistantProposedActionType.deleteDailyRecord);
-      final payload = action.payload as AssistantDeleteDailyRecordProposalPayload;
+      final payload =
+          action.payload as AssistantDeleteDailyRecordProposalPayload;
       expect(payload.recordId, 'rec-2');
     });
 
@@ -702,7 +712,10 @@ void main() {
                   'type': 'update_user_settings',
                   'title': 'Enable memory',
                   'summary': 'Turn on assistant memory',
-                  'target': {'kind': 'user_settings', 'settingKeys': ['assistantMemoryEnabled']},
+                  'target': {
+                    'kind': 'user_settings',
+                    'settingKeys': ['assistantMemoryEnabled'],
+                  },
                   'payload': {
                     'draft': {
                       'assistantEnabled': true,
@@ -734,7 +747,8 @@ void main() {
       final action = result.message.proposedActions.single;
 
       expect(action.type, AssistantProposedActionType.updateUserSettings);
-      final payload = action.payload as AssistantUpdateUserSettingsProposalPayload;
+      final payload =
+          action.payload as AssistantUpdateUserSettingsProposalPayload;
       expect(payload.draft.assistantEnabled, isTrue);
       expect(payload.draft.assistantMemoryEnabled, isTrue);
       expect(payload.draft.assistantContext!.healthProfile, isTrue);
@@ -858,45 +872,54 @@ void main() {
       ]).toList();
 
       final result = events[0] as AssistantGenerationResultEvent;
-      expect(result.message.proposedActions.single.confirmationRequired, isTrue);
-    });
-
-    test('confirmationRequired is false when explicitly set to false', () async {
-      final repo = LucentAssistantRepository(
-        dataSource: _FakeAssistantRemoteDataSource(
-          stream: Stream.fromIterable([
-            AssistantRemoteResultEvent(
-              conversationId: 'c1',
-              content: 'test',
-              usedTools: const [],
-              generatedAt: DateTime(2026, 7, 1),
-              proposedActions: [
-                {
-                  'id': 'pa-1',
-                  'type': 'delete_daily_record',
-                  'title': 'T',
-                  'summary': 'S',
-                  'target': {'kind': 'daily_record'},
-                  'payload': {'recordId': 'r1'},
-                  'confirmationRequired': false,
-                },
-              ],
-            ),
-          ]),
-        ),
+      expect(
+        result.message.proposedActions.single.confirmationRequired,
+        isTrue,
       );
-
-      final events = await repo.streamMessages([
-        AssistantMessage(
-          role: AssistantMessageRole.user,
-          content: 'x',
-          createdAt: dummyDateTime,
-        ),
-      ]).toList();
-
-      final result = events[0] as AssistantGenerationResultEvent;
-      expect(result.message.proposedActions.single.confirmationRequired, isFalse);
     });
+
+    test(
+      'confirmationRequired is false when explicitly set to false',
+      () async {
+        final repo = LucentAssistantRepository(
+          dataSource: _FakeAssistantRemoteDataSource(
+            stream: Stream.fromIterable([
+              AssistantRemoteResultEvent(
+                conversationId: 'c1',
+                content: 'test',
+                usedTools: const [],
+                generatedAt: DateTime(2026, 7, 1),
+                proposedActions: [
+                  {
+                    'id': 'pa-1',
+                    'type': 'delete_daily_record',
+                    'title': 'T',
+                    'summary': 'S',
+                    'target': {'kind': 'daily_record'},
+                    'payload': {'recordId': 'r1'},
+                    'confirmationRequired': false,
+                  },
+                ],
+              ),
+            ]),
+          ),
+        );
+
+        final events = await repo.streamMessages([
+          AssistantMessage(
+            role: AssistantMessageRole.user,
+            content: 'x',
+            createdAt: dummyDateTime,
+          ),
+        ]).toList();
+
+        final result = events[0] as AssistantGenerationResultEvent;
+        expect(
+          result.message.proposedActions.single.confirmationRequired,
+          isFalse,
+        );
+      },
+    );
 
     test('payloadVersion defaults to 1 when absent', () async {
       final repo = LucentAssistantRepository(

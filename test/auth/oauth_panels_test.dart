@@ -23,7 +23,10 @@ void main() {
         ),
       );
 
-      expect(find.byKey(const Key('wechat-login-start-button')), findsOneWidget);
+      expect(
+        find.byKey(const Key('wechat-login-start-button')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('start button disabled when isStarting', (tester) async {
@@ -70,7 +73,9 @@ void main() {
       expect(button.onPress, isNull);
     });
 
-    testWidgets('shows callback input when authorizeUrl is set', (tester) async {
+    testWidgets('shows callback input when authorizeUrl is set', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -78,7 +83,8 @@ void main() {
               callbackController: TextEditingController(),
               isStarting: false,
               isCompleting: false,
-              authorizeUrl: 'https://open.weixin.qq.com/connect/oauth2/authorize',
+              authorizeUrl:
+                  'https://open.weixin.qq.com/connect/oauth2/authorize',
               onStart: () {},
               onComplete: () {},
             ),
@@ -89,7 +95,9 @@ void main() {
       expect(find.byKey(const Key('wechat-callback-input')), findsOneWidget);
     });
 
-    testWidgets('hides callback input when authorizeUrl is null', (tester) async {
+    testWidgets('hides callback input when authorizeUrl is null', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -108,7 +116,9 @@ void main() {
       expect(find.byKey(const Key('wechat-callback-input')), findsNothing);
     });
 
-    testWidgets('hides callback input when authorizeUrl is empty', (tester) async {
+    testWidgets('hides callback input when authorizeUrl is empty', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -215,7 +225,9 @@ void main() {
       expect(button.onPress, isNull);
     });
 
-    testWidgets('shows callback input when authorizeUrl is set', (tester) async {
+    testWidgets('shows callback input when authorizeUrl is set', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -234,7 +246,9 @@ void main() {
       expect(find.byKey(const Key('qq-callback-input')), findsOneWidget);
     });
 
-    testWidgets('hides callback input when authorizeUrl is null', (tester) async {
+    testWidgets('hides callback input when authorizeUrl is null', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(

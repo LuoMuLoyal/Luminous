@@ -50,14 +50,13 @@ class _MockAdapter implements HttpClientAdapter {
     _queue.add(response);
   }
 
-  void enqueueSuccess({
-    int statusCode = 200,
-    Map<String, dynamic>? data,
-  }) {
-    enqueue(_MockResponse(
-      statusCode: statusCode,
-      data: data ?? {'code': 0, 'message': '', 'data': null},
-    ));
+  void enqueueSuccess({int statusCode = 200, Map<String, dynamic>? data}) {
+    enqueue(
+      _MockResponse(
+        statusCode: statusCode,
+        data: data ?? {'code': 0, 'message': '', 'data': null},
+      ),
+    );
   }
 
   void enqueueError({
@@ -65,28 +64,29 @@ class _MockAdapter implements HttpClientAdapter {
     Map<String, dynamic>? data,
     String statusMessage = '',
   }) {
-    enqueue(_MockResponse(
-      statusCode: statusCode,
-      data: data,
-      statusMessage: statusMessage,
-    ));
+    enqueue(
+      _MockResponse(
+        statusCode: statusCode,
+        data: data,
+        statusMessage: statusMessage,
+      ),
+    );
   }
 
   void enqueueRefreshSuccess({
     String accessToken = 'new-access-token',
     String refreshToken = 'new-refresh-token',
   }) {
-    enqueue(_MockResponse(
-      statusCode: 200,
-      data: {
-        'code': 0,
-        'message': '',
-        'data': {
-          'accessToken': accessToken,
-          'refreshToken': refreshToken,
+    enqueue(
+      _MockResponse(
+        statusCode: 200,
+        data: {
+          'code': 0,
+          'message': '',
+          'data': {'accessToken': accessToken, 'refreshToken': refreshToken},
         },
-      },
-    ));
+      ),
+    );
   }
 
   @override
@@ -119,11 +119,7 @@ class _MockAdapter implements HttpClientAdapter {
 }
 
 class _MockResponse {
-  _MockResponse({
-    this.statusCode = 200,
-    this.data,
-    this.statusMessage = 'OK',
-  });
+  _MockResponse({this.statusCode = 200, this.data, this.statusMessage = 'OK'});
 
   final int statusCode;
   final Map<String, dynamic>? data;
@@ -303,54 +299,59 @@ void main() {
   });
 
   group('AuthInterceptor.onError — token refresh', () {
-    test('refreshes token on 401 with tokenExpired and retries successfully',
-        () async {
-      final store = _MemorySessionStore();
-      await store.write(
-        const LucentSessionTokens(
-          accessToken: 'expired-token',
-          refreshToken: 'valid-refresh-token',
-        ),
-      );
+    test(
+      'refreshes token on 401 with tokenExpired and retries successfully',
+      () async {
+        final store = _MemorySessionStore();
+        await store.write(
+          const LucentSessionTokens(
+            accessToken: 'expired-token',
+            refreshToken: 'valid-refresh-token',
+          ),
+        );
 
-      final mainAdapter = _MockAdapter()
-        ..enqueueError(
-          statusCode: 401,
-          data: _tokenExpiredBody,
-          statusMessage: 'Unauthorized',
-        )
-        ..enqueueSuccess(data: {'code': 0, 'message': '', 'data': 'ok'});
+        final mainAdapter = _MockAdapter()
+          ..enqueueError(
+            statusCode: 401,
+            data: _tokenExpiredBody,
+            statusMessage: 'Unauthorized',
+          )
+          ..enqueueSuccess(data: {'code': 0, 'message': '', 'data': 'ok'});
 
-      final refreshAdapter = _MockAdapter()..enqueueRefreshSuccess();
+        final refreshAdapter = _MockAdapter()..enqueueRefreshSuccess();
 
-      final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
-      dio.httpClientAdapter = mainAdapter;
-      dio.interceptors.add(
-        AuthInterceptor(
-          dio: dio,
-          sessionStore: store,
-          refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
-            ..httpClientAdapter = refreshAdapter,
-        ),
-      );
+        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+        dio.httpClientAdapter = mainAdapter;
+        dio.interceptors.add(
+          AuthInterceptor(
+            dio: dio,
+            sessionStore: store,
+            refreshDio: Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
+              ..httpClientAdapter = refreshAdapter,
+          ),
+        );
 
-      final response = await dio.get('/api/v1/test');
+        final response = await dio.get('/api/v1/test');
 
-      // Original request + retry after refresh
-      expect(mainAdapter.callCount, 2);
-      expect(refreshAdapter.callCount, 1);
-      expect(response.statusCode, 200);
+        // Original request + retry after refresh
+        expect(mainAdapter.callCount, 2);
+        expect(refreshAdapter.callCount, 1);
+        expect(response.statusCode, 200);
 
-      // New tokens should be stored
-      final tokens = await store.read();
-      expect(tokens!.accessToken, 'new-access-token');
-      expect(tokens.refreshToken, 'new-refresh-token');
+        // New tokens should be stored
+        final tokens = await store.read();
+        expect(tokens!.accessToken, 'new-access-token');
+        expect(tokens.refreshToken, 'new-refresh-token');
 
-      // Retry request should use new token
-      final retryRequest = mainAdapter.capturedRequests[1];
-      expect(retryRequest.headers['Authorization'], 'Bearer new-access-token');
-      expect(retryRequest.extra['hasRetriedAfterRefresh'], true);
-    });
+        // Retry request should use new token
+        final retryRequest = mainAdapter.capturedRequests[1];
+        expect(
+          retryRequest.headers['Authorization'],
+          'Bearer new-access-token',
+        );
+        expect(retryRequest.extra['hasRetriedAfterRefresh'], true);
+      },
+    );
 
     test('does not refresh when skipAuthRefresh is set', () async {
       final store = _MemorySessionStore();
@@ -626,8 +627,7 @@ void main() {
       },
     );
 
-    test('onSessionExpired setter wires callback after construction',
-        () async {
+    test('onSessionExpired setter wires callback after construction', () async {
       final store = _MemorySessionStore();
       await store.write(
         const LucentSessionTokens(
@@ -707,10 +707,7 @@ void main() {
       // Fire two concurrent requests — both get 401
       // The refresh should only happen once
       try {
-        await Future.wait([
-          dio.get('/api/v1/test'),
-          dio.get('/api/v1/other'),
-        ]);
+        await Future.wait([dio.get('/api/v1/test'), dio.get('/api/v1/other')]);
       } on DioException {
         // Expected when refresh/retry fails
       }

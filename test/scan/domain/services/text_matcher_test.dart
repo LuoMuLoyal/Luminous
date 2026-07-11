@@ -119,14 +119,9 @@ void main() {
         final candidates = matcher.extractCandidates(ocrText);
 
         // Should contain '阿莫西林胶囊' as a candidate (5 chars)
+        expect(candidates.any((c) => c.query == '阿莫西林胶囊'), isTrue);
         expect(
-          candidates.any((c) => c.query == '阿莫西林胶囊'),
-          isTrue,
-        );
-        expect(
-          candidates.every(
-            (c) => c.matchType == MedicineMatchType.nameFuzzy,
-          ),
+          candidates.every((c) => c.matchType == MedicineMatchType.nameFuzzy),
           isTrue,
         );
       });
@@ -203,10 +198,7 @@ void main() {
         final candidates = matcher.extractCandidates(ocrText);
 
         expect(candidates, isNotEmpty);
-        expect(
-          candidates.any((c) => c.query == '阿司匹林肠溶片'),
-          isTrue,
-        );
+        expect(candidates.any((c) => c.query == '阿司匹林肠溶片'), isTrue);
       });
     });
   });
@@ -258,7 +250,10 @@ void main() {
   group('MedicineMatchType', () {
     test('has all expected values', () {
       expect(MedicineMatchType.values, hasLength(3));
-      expect(MedicineMatchType.values, contains(MedicineMatchType.approvalNumber));
+      expect(
+        MedicineMatchType.values,
+        contains(MedicineMatchType.approvalNumber),
+      );
       expect(MedicineMatchType.values, contains(MedicineMatchType.barcode));
       expect(MedicineMatchType.values, contains(MedicineMatchType.nameFuzzy));
     });

@@ -21,8 +21,11 @@ void main() {
 
     test('each tab has an activeIcon', () {
       for (final tab in ShellTab.values) {
-        expect(tab.activeIcon, isNotNull,
-            reason: '$tab should have an activeIcon');
+        expect(
+          tab.activeIcon,
+          isNotNull,
+          reason: '$tab should have an activeIcon',
+        );
       }
     });
 

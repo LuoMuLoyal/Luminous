@@ -24,11 +24,7 @@ void main() {
     mockApi = _MockMedicinesApi();
     mockDio = _MockDio();
     mockFilesApi = _MockFilesApi();
-    repo = ScanRepository(
-      api: mockApi,
-      dio: mockDio,
-      filesApi: mockFilesApi,
-    );
+    repo = ScanRepository(api: mockApi, dio: mockDio, filesApi: mockFilesApi);
   });
 
   group('ScanRepository.search', () {
@@ -59,12 +55,14 @@ void main() {
         ),
       );
 
-      when(() => mockApi.medicinesControllerSearchV1(
-            source: any(named: 'source'),
-            q: any(named: 'q'),
-            page: any(named: 'page'),
-            pageSize: any(named: 'pageSize'),
-          )).thenAnswer((_) async => searchResponse);
+      when(
+        () => mockApi.medicinesControllerSearchV1(
+          source: any(named: 'source'),
+          q: any(named: 'q'),
+          page: any(named: 'page'),
+          pageSize: any(named: 'pageSize'),
+        ),
+      ).thenAnswer((_) async => searchResponse);
 
       final result = await repo.search('阿莫西林');
 
@@ -72,12 +70,14 @@ void main() {
       expect(result.first.id, 'med-1');
       expect(result.first.name, '阿莫西林胶囊');
 
-      verify(() => mockApi.medicinesControllerSearchV1(
-            source: Source.cn,
-            q: '阿莫西林',
-            page: 1,
-            pageSize: 20,
-          )).called(1);
+      verify(
+        () => mockApi.medicinesControllerSearchV1(
+          source: Source.cn,
+          q: '阿莫西林',
+          page: 1,
+          pageSize: 20,
+        ),
+      ).called(1);
     });
 
     test('returns empty list when API returns empty data', () async {
@@ -95,12 +95,14 @@ void main() {
         ),
       );
 
-      when(() => mockApi.medicinesControllerSearchV1(
-            source: any(named: 'source'),
-            q: any(named: 'q'),
-            page: any(named: 'page'),
-            pageSize: any(named: 'pageSize'),
-          )).thenAnswer((_) async => emptyResponse);
+      when(
+        () => mockApi.medicinesControllerSearchV1(
+          source: any(named: 'source'),
+          q: any(named: 'q'),
+          page: any(named: 'page'),
+          pageSize: any(named: 'pageSize'),
+        ),
+      ).thenAnswer((_) async => emptyResponse);
 
       final result = await repo.search('nonexistent');
 
@@ -108,20 +110,21 @@ void main() {
     });
 
     test('propagates API errors', () async {
-      when(() => mockApi.medicinesControllerSearchV1(
-            source: any(named: 'source'),
-            q: any(named: 'q'),
-            page: any(named: 'page'),
-            pageSize: any(named: 'pageSize'),
-          )).thenThrow(DioException(
-        requestOptions: RequestOptions(path: '/api/v1/medicines/search'),
-        type: DioExceptionType.connectionTimeout,
-      ));
-
-      expect(
-        () => repo.search('test'),
-        throwsA(isA<DioException>()),
+      when(
+        () => mockApi.medicinesControllerSearchV1(
+          source: any(named: 'source'),
+          q: any(named: 'q'),
+          page: any(named: 'page'),
+          pageSize: any(named: 'pageSize'),
+        ),
+      ).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: '/api/v1/medicines/search'),
+          type: DioExceptionType.connectionTimeout,
+        ),
       );
+
+      expect(() => repo.search('test'), throwsA(isA<DioException>()));
     });
   });
 
@@ -133,24 +136,29 @@ void main() {
         'headers': {'Content-Type': 'image/jpeg'},
       };
 
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((_) async => Response<Object>(
-            data: {'code': 0, 'message': 'ok', 'data': presignData},
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-          ));
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer(
+        (_) async => Response<Object>(
+          data: {'code': 0, 'message': 'ok', 'data': presignData},
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
+        ),
+      );
 
-      when(() => mockDio.put(
-            any(),
-            data: any(named: 'data'),
-            options: any(named: 'options'),
-          )).thenAnswer((_) async => Response<dynamic>(
-            data: '',
-            statusCode: 200,
-            requestOptions: RequestOptions(path: ''),
-          ));
+      when(
+        () => mockDio.put(
+          any(),
+          data: any(named: 'data'),
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          data: '',
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       final result = await repo.uploadImage(
         bytes: [1, 2, 3],
@@ -166,24 +174,29 @@ void main() {
         'headers': {},
       };
 
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((_) async => Response<Object>(
-            data: {'code': 0, 'message': 'ok', 'data': presignData},
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-          ));
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer(
+        (_) async => Response<Object>(
+          data: {'code': 0, 'message': 'ok', 'data': presignData},
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
+        ),
+      );
 
-      when(() => mockDio.put(
-            any(),
-            data: any(named: 'data'),
-            options: any(named: 'options'),
-          )).thenAnswer((_) async => Response<dynamic>(
-            data: '',
-            statusCode: 200,
-            requestOptions: RequestOptions(path: ''),
-          ));
+      when(
+        () => mockDio.put(
+          any(),
+          data: any(named: 'data'),
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          data: '',
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       final result = await repo.uploadImage(
         bytes: [1, 2, 3],
@@ -194,10 +207,9 @@ void main() {
     });
 
     test('uses sizeBytes from parameter when provided', () async {
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer((invocation) async {
         final data = invocation.namedArguments[#data] as Map<String, Object?>;
         expect(data['sizeBytes'], 999);
         return Response<Object>(
@@ -208,22 +220,26 @@ void main() {
               'uploadUrl': 'https://upload.example.com',
               'publicUrl': 'https://cdn.example.com/img.jpg',
               'headers': {},
-            }
+            },
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
         );
       });
 
-      when(() => mockDio.put(
-            any(),
-            data: any(named: 'data'),
-            options: any(named: 'options'),
-          )).thenAnswer((_) async => Response<dynamic>(
-            data: '',
-            statusCode: 200,
-            requestOptions: RequestOptions(path: ''),
-          ));
+      when(
+        () => mockDio.put(
+          any(),
+          data: any(named: 'data'),
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          data: '',
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       await repo.uploadImage(
         bytes: [1, 2, 3],
@@ -233,10 +249,9 @@ void main() {
     });
 
     test('includes fileName in presign request when provided', () async {
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer((invocation) async {
         final data = invocation.namedArguments[#data] as Map<String, Object?>;
         expect(data['fileName'], 'test.jpg');
         return Response<Object>(
@@ -247,22 +262,26 @@ void main() {
               'uploadUrl': 'https://upload.example.com',
               'publicUrl': 'https://cdn.example.com/img.jpg',
               'headers': {},
-            }
+            },
           },
           statusCode: 200,
           requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
         );
       });
 
-      when(() => mockDio.put(
-            any(),
-            data: any(named: 'data'),
-            options: any(named: 'options'),
-          )).thenAnswer((_) async => Response<dynamic>(
-            data: '',
-            statusCode: 200,
-            requestOptions: RequestOptions(path: ''),
-          ));
+      when(
+        () => mockDio.put(
+          any(),
+          data: any(named: 'data'),
+          options: any(named: 'options'),
+        ),
+      ).thenAnswer(
+        (_) async => Response<dynamic>(
+          data: '',
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       await repo.uploadImage(
         bytes: [1, 2, 3],
@@ -272,20 +291,18 @@ void main() {
     });
 
     test('throws when presign response is empty', () async {
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((_) async => Response<Object>(
-            data: null,
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
-          ));
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer(
+        (_) async => Response<Object>(
+          data: null,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/api/v1/user/files/upload'),
+        ),
+      );
 
       expect(
-        () => repo.uploadImage(
-          bytes: [1, 2, 3],
-          contentType: 'image/jpeg',
-        ),
+        () => repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
         throwsA(isA<Exception>()),
       );
     });
@@ -296,36 +313,37 @@ void main() {
       final responseData = {
         'code': 0,
         'message': 'ok',
-        'data': {
-          'name': '布洛芬缓释胶囊',
-          'approvalNumber': '国药准字H20044321',
-        },
+        'data': {'name': '布洛芬缓释胶囊', 'approvalNumber': '国药准字H20044321'},
       };
 
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((_) async => Response<Object>(
-            data: responseData,
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-          ));
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer(
+        (_) async => Response<Object>(
+          data: responseData,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
+        ),
+      );
 
-      final result = await repo.recognizeMedicine('https://cdn.example.com/img.jpg');
+      final result = await repo.recognizeMedicine(
+        'https://cdn.example.com/img.jpg',
+      );
 
       expect(result['name'], '布洛芬缓释胶囊');
       expect(result['approvalNumber'], '国药准字H20044321');
     });
 
     test('throws when response is empty', () async {
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((_) async => Response<Object>(
-            data: null,
-            statusCode: 200,
-            requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
-          ));
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer(
+        (_) async => Response<Object>(
+          data: null,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: '/api/v1/medicines/recognize'),
+        ),
+      );
 
       expect(
         () => repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
@@ -334,10 +352,9 @@ void main() {
     });
 
     test('sends imageUrl in request body', () async {
-      when(() => mockDio.post<Object>(
-            any(),
-            data: any(named: 'data'),
-          )).thenAnswer((invocation) async {
+      when(
+        () => mockDio.post<Object>(any(), data: any(named: 'data')),
+      ).thenAnswer((invocation) async {
         final data = invocation.namedArguments[#data] as Map<String, Object?>;
         expect(data['imageUrl'], 'https://cdn.example.com/img.jpg');
         return Response<Object>(
