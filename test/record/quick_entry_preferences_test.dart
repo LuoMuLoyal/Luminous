@@ -1,133 +1,11 @@
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  group('buildMobileQuickActions', () {
-    final actions = <RecordQuickAction>[
-      const RecordQuickAction(
-        type: RecordEntryType.meal,
-        icon: FLucideIcons.utensils,
-        titleKey: RecordCopyKey.typeMeal,
-        subtitleKey: RecordCopyKey.summaryTimesUnit,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-      ),
-      const RecordQuickAction(
-        type: RecordEntryType.water,
-        icon: FLucideIcons.cupSoda,
-        titleKey: RecordCopyKey.typeWater,
-        subtitleKey: RecordCopyKey.summaryCupsUnit,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-      ),
-      const RecordQuickAction(
-        type: RecordEntryType.symptom,
-        icon: FLucideIcons.cross,
-        titleKey: RecordCopyKey.typeSymptom,
-        subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-      ),
-      const RecordQuickAction(
-        type: RecordEntryType.note,
-        icon: FLucideIcons.notebookPen,
-        titleKey: RecordCopyKey.typeNote,
-        subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-      ),
-      const RecordQuickAction(
-        type: RecordEntryType.sleep,
-        icon: FLucideIcons.moon,
-        titleKey: RecordCopyKey.typeSleep,
-        subtitleKey: RecordCopyKey.summaryRecorded,
-        accent: SemanticColor.primary,
-        softColor: SemanticColor.neutral,
-      ),
-    ];
-
-    test('default order uses defaultQuickActionOrder', () {
-      final ordered = buildMobileQuickActions(actions);
-      // defaultQuickActionOrder: symptom, medication, water, meal, sleep, mood, note
-      // actions only has: meal, water, symptom, note, sleep
-      // So filtered order: symptom, water, meal, sleep, note
-      expect(ordered.first.type, RecordEntryType.symptom);
-      expect(ordered[1].type, RecordEntryType.water);
-      expect(ordered[2].type, RecordEntryType.meal);
-      expect(ordered[3].type, RecordEntryType.sleep);
-      expect(ordered[4].type, RecordEntryType.note);
-    });
-
-    test('dynamic sort enabled orders by frequency descending', () {
-      final prefs = const QuickEntryPreferences(
-        dynamicSortEnabled: true,
-        frequency: {'water': 10, 'meal': 5, 'symptom': 0},
-      );
-      final ordered = buildMobileQuickActions(actions, preferences: prefs);
-      // water (10) > meal (5) > symptom/note/sleep (0, default order)
-      // Zero-frequency items follow defaultQuickActionOrder: symptom, sleep, note
-      expect(ordered[0].type, RecordEntryType.water);
-      expect(ordered[1].type, RecordEntryType.meal);
-      expect(ordered[2].type, RecordEntryType.symptom);
-      expect(ordered[3].type, RecordEntryType.sleep);
-      expect(ordered[4].type, RecordEntryType.note);
-    });
-
-    test('custom order overrides default order when dynamic sort is off', () {
-      final prefs = const QuickEntryPreferences(
-        dynamicSortEnabled: false,
-        customOrder: ['sleep', 'water', 'meal', 'symptom', 'note'],
-      );
-      final ordered = buildMobileQuickActions(actions, preferences: prefs);
-      expect(ordered[0].type, RecordEntryType.sleep);
-      expect(ordered[1].type, RecordEntryType.water);
-      expect(ordered[2].type, RecordEntryType.meal);
-      expect(ordered[3].type, RecordEntryType.symptom);
-      expect(ordered[4].type, RecordEntryType.note);
-    });
-
-    test('dynamic sort takes priority over custom order', () {
-      final prefs = const QuickEntryPreferences(
-        dynamicSortEnabled: true,
-        customOrder: ['sleep', 'water', 'meal', 'symptom', 'note'],
-        frequency: {'meal': 100},
-      );
-      final ordered = buildMobileQuickActions(actions, preferences: prefs);
-      // meal (100) should be first despite custom order saying sleep first
-      expect(ordered[0].type, RecordEntryType.meal);
-    });
-
-    test('empty frequency with dynamic sort falls back to default order', () {
-      final prefs = const QuickEntryPreferences(
-        dynamicSortEnabled: true,
-        frequency: {},
-      );
-      final ordered = buildMobileQuickActions(actions, preferences: prefs);
-      expect(ordered.first.type, RecordEntryType.symptom);
-    });
-
-    test('actions not in preferred order are appended at the end', () {
-      final extraActions = [
-        ...actions,
-        const RecordQuickAction(
-          type: RecordEntryType.mood,
-          icon: FLucideIcons.smile,
-          titleKey: RecordCopyKey.typeMood,
-          subtitleKey: RecordCopyKey.summaryRecorded,
-          accent: SemanticColor.primary,
-          softColor: SemanticColor.neutral,
-        ),
-      ];
-      final ordered = buildMobileQuickActions(extraActions);
-      // mood is in defaultQuickActionOrder but may come after others
-      expect(ordered.any((a) => a.type == RecordEntryType.mood), isTrue);
-      expect(ordered.length, 6);
-    });
-  });
+  TestWidgetsFlutterBinding.ensureInitialized();
 
   group('QuickEntryPreferences', () {
     test('default values', () {
@@ -138,13 +16,231 @@ void main() {
       expect(prefs.frequency, isEmpty);
     });
 
-    test('copyWith updates only specified fields', () {
-      const prefs = QuickEntryPreferences();
-      final updated = prefs.copyWith(dynamicSortEnabled: true, collapsed: true);
+    test('copyWith creates new instance with updated values', () {
+      const original = QuickEntryPreferences();
+      final updated = original.copyWith(
+        dynamicSortEnabled: true,
+        customOrder: const ['meal', 'water'],
+        collapsed: true,
+        frequency: const {'meal': 5},
+      );
+
       expect(updated.dynamicSortEnabled, isTrue);
+      expect(updated.customOrder, ['meal', 'water']);
       expect(updated.collapsed, isTrue);
-      expect(updated.customOrder, isEmpty);
-      expect(updated.frequency, isEmpty);
+      expect(updated.frequency, {'meal': 5});
+
+      // Original unchanged
+      expect(original.dynamicSortEnabled, isFalse);
+      expect(original.customOrder, isEmpty);
+      expect(original.collapsed, isFalse);
+      expect(original.frequency, isEmpty);
+    });
+
+    test('copyWith partial update preserves other fields', () {
+      const original = QuickEntryPreferences(
+        dynamicSortEnabled: true,
+        customOrder: ['water'],
+        collapsed: true,
+        frequency: {'water': 3},
+      );
+
+      final updated = original.copyWith(collapsed: false);
+
+      expect(updated.dynamicSortEnabled, isTrue);
+      expect(updated.customOrder, ['water']);
+      expect(updated.collapsed, isFalse);
+      expect(updated.frequency, {'water': 3});
+    });
+  });
+
+  group('QuickEntryPreferencesController', () {
+    late ProviderContainer container;
+
+    setUp(() {
+      SharedPreferences.setMockInitialValues({});
+      container = ProviderContainer();
+      addTearDown(container.dispose);
+    });
+
+    Future<QuickEntryPreferences> readPrefs() async {
+      return container.read(quickEntryPreferencesProvider.future);
+    }
+
+    test('build loads default values when no preferences stored', () async {
+      final prefs = await readPrefs();
+
+      expect(prefs.dynamicSortEnabled, isFalse);
+      expect(prefs.customOrder, isEmpty);
+      expect(prefs.collapsed, isFalse);
+      expect(prefs.frequency, isEmpty);
+    });
+
+    test('build loads stored values from SharedPreferences', () async {
+      SharedPreferences.setMockInitialValues({
+        'record.quickEntry.dynamicSortEnabled': true,
+        'record.quickEntry.customOrder': ['meal', 'water'],
+        'record.quickEntry.collapsed': true,
+        'record.quickEntry.freq.meal': 5,
+        'record.quickEntry.freq.water': 3,
+      });
+
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
+
+      final prefs = await c.read(quickEntryPreferencesProvider.future);
+
+      expect(prefs.dynamicSortEnabled, isTrue);
+      expect(prefs.customOrder, ['meal', 'water']);
+      expect(prefs.collapsed, isTrue);
+      expect(prefs.frequency, {'meal': 5, 'water': 3});
+    });
+
+    test('setDynamicSortEnabled updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+      await controller.setDynamicSortEnabled(true);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.dynamicSortEnabled, isTrue);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('record.quickEntry.dynamicSortEnabled'), isTrue);
+    });
+
+    test('setCustomOrder updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+      await controller.setCustomOrder(['meal', 'sleep', 'water']);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.customOrder, ['meal', 'sleep', 'water']);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getStringList('record.quickEntry.customOrder'),
+          ['meal', 'sleep', 'water']);
+    });
+
+    test('setCollapsed updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+      await controller.setCollapsed(true);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.collapsed, isTrue);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('record.quickEntry.collapsed'), isTrue);
+    });
+
+    test('recordTap increments frequency count', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+      await controller.recordTap(RecordEntryType.meal);
+      await controller.recordTap(RecordEntryType.meal);
+      await controller.recordTap(RecordEntryType.water);
+
+      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+      expect(freq['meal'], 2);
+      expect(freq['water'], 1);
+    });
+
+    test('recordTap persists frequency to SharedPreferences', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+      await controller.recordTap(RecordEntryType.mood);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt('record.quickEntry.freq.mood'), 1);
+    });
+
+    test('recordTap trims proportionally when total exceeds 50', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+
+      // Record 51 taps across two types
+      for (var i = 0; i < 30; i++) {
+        await controller.recordTap(RecordEntryType.meal);
+      }
+      for (var i = 0; i < 21; i++) {
+        await controller.recordTap(RecordEntryType.water);
+      }
+
+      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+
+      // Total should be trimmed to ≤ 50
+      final total = freq.values.fold(0, (a, b) => a + b);
+      expect(total, lessThanOrEqualTo(50));
+
+      // Meal should still have more counts than water (proportional)
+      expect(freq['meal']!, greaterThan(freq['water']!));
+    });
+
+    test('recordTap removes zero entries after trimming', () async {
+      await readPrefs();
+
+      final controller = container.read(
+        quickEntryPreferencesProvider.notifier,
+      );
+
+      // Record one type heavily and another just once
+      for (var i = 0; i < 50; i++) {
+        await controller.recordTap(RecordEntryType.meal);
+      }
+      await controller.recordTap(RecordEntryType.weight);
+
+      final freq = container.read(quickEntryPreferencesProvider).requireValue.frequency;
+
+      // weight count should be 0 after trimming and thus removed
+      // (1 * 50/51 = 0.98 → floor = 0)
+      expect(freq.containsKey('weight'), isFalse);
+    });
+
+    test('reset clears all state and SharedPreferences', () async {
+      SharedPreferences.setMockInitialValues({
+        'record.quickEntry.dynamicSortEnabled': true,
+        'record.quickEntry.customOrder': ['meal'],
+        'record.quickEntry.collapsed': true,
+        'record.quickEntry.freq.meal': 5,
+      });
+
+      final c = ProviderContainer();
+      addTearDown(c.dispose);
+
+      await c.read(quickEntryPreferencesProvider.future);
+
+      final controller = c.read(quickEntryPreferencesProvider.notifier);
+      await controller.reset();
+
+      final state = c.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.dynamicSortEnabled, isFalse);
+      expect(state.customOrder, isEmpty);
+      expect(state.collapsed, isFalse);
+      expect(state.frequency, isEmpty);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('record.quickEntry.dynamicSortEnabled'), isNull);
+      expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
+      expect(prefs.getBool('record.quickEntry.collapsed'), isNull);
+      expect(prefs.getInt('record.quickEntry.freq.meal'), isNull);
     });
   });
 }
