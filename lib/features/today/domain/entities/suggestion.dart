@@ -12,6 +12,14 @@ enum TodaySuggestionType {
   behaviorAdvice,
   coverage;
 
+  String toJson() => switch (this) {
+        TodaySuggestionType.confirmedRisk => 'confirmed_risk',
+        TodaySuggestionType.compliance => 'compliance',
+        TodaySuggestionType.trend => 'trend',
+        TodaySuggestionType.behaviorAdvice => 'behavior_advice',
+        TodaySuggestionType.coverage => 'coverage',
+      };
+
   static TodaySuggestionType fromJson(String value) {
     return switch (value) {
       'confirmed_risk' => TodaySuggestionType.confirmedRisk,
@@ -111,6 +119,15 @@ enum TodaySuggestionEvidenceKind {
   trend,
   profile,
   baseline;
+
+  String toJson() => switch (this) {
+        TodaySuggestionEvidenceKind.record => 'record',
+        TodaySuggestionEvidenceKind.reminder => 'reminder',
+        TodaySuggestionEvidenceKind.riskCheck => 'risk_check',
+        TodaySuggestionEvidenceKind.trend => 'trend',
+        TodaySuggestionEvidenceKind.profile => 'profile',
+        TodaySuggestionEvidenceKind.baseline => 'baseline',
+      };
 
   static TodaySuggestionEvidenceKind fromJson(String value) {
     return switch (value) {

@@ -35,7 +35,7 @@ class TodaySuggestionJsonCodec {
   static Map<String, dynamic> _cardToJson(TodaySuggestionCard c) {
     return {
       'id': c.id,
-      'type': c.type.name,
+      'type': c.type.toJson(),
       'cardTone': c.cardTone.name,
       'icon': c.icon,
       'title': c.title,
@@ -50,7 +50,7 @@ class TodaySuggestionJsonCodec {
       'triggerType': c.triggerType.name,
       'lifecycleState': c.lifecycleState.name,
       'notificationEligible': c.notificationEligible,
-      'feedbackOptions': c.feedbackOptions?.map((f) => f.name).toList(),
+      'feedbackOptions': c.feedbackOptions?.map((f) => f.toJson()).toList(),
       'subtype': c.subtype,
     };
   }
@@ -89,7 +89,7 @@ class TodaySuggestionJsonCodec {
   }
 
   static Map<String, dynamic> _evidenceToJson(TodaySuggestionEvidence e) => {
-    'kind': e.kind.name,
+    'kind': e.kind.toJson(),
     'label': e.label,
     'value': e.value,
     'recordId': e.recordId,
