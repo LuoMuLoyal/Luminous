@@ -501,11 +501,8 @@ FButton(
 
 | 步骤 | 内容                                              | 工作量 | 依赖                  |
 | ---- | ------------------------------------------------- | ------ | --------------------- |
-| 23   | Lucent 新建法律文档管理 API（module + controller + service + DTO） | 1d     | 可选，初期可用 assets |
-| 24   | App 端 data source 改为远程优先 + assets fallback | 0.5d   | Step 23               |
 | 25   | ICP 备案信息 + About 页增强（公司信息、联系方式） | 0.5d   | 需备案号              |
-| 26   | OpenAPI 导出 (`pnpm export:openapi`) + Flutter 客户端重新生成 (`dart run build_runner build`) | 0.5d   | Step 23               |
-| 27   | 废弃 `AppInfoDataDto.privacyPolicyUrl` / `termsOfServiceUrl` 字段 | 0.25d  | Step 24               |
+| 27   | 废弃 `AppInfoDataDto.privacyPolicyUrl` / `termsOfServiceUrl` 字段 | 0.25d  | Step 24（已完成）     |
 
 ---
 

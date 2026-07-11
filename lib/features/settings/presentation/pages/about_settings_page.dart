@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -88,20 +90,12 @@ class AboutSettingsPage extends ConsumerWidget {
                 FTile(
                   title: Text(l10n.settingsAboutPrivacyPolicy),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => _openUrl(
-                    context,
-                    infoAsync.asData?.value?.privacyPolicyUrl ??
-                        'https://luminous.app/privacy',
-                  ),
+                  onPress: () => context.push('${AppRoutes.legal}/privacy'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutTermsOfService),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => _openUrl(
-                    context,
-                    infoAsync.asData?.value?.termsOfServiceUrl ??
-                        'https://luminous.app/terms',
-                  ),
+                  onPress: () => context.push('${AppRoutes.legal}/terms'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutLicenses),

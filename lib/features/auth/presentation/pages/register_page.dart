@@ -7,7 +7,6 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/register_form_provider.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -30,7 +29,6 @@ class RegisterPage extends HookConsumerWidget {
     final state = ref.watch(registerFormProvider);
     final notifier = ref.read(registerFormProvider.notifier);
     final l10n = AppLocalizations.of(context);
-    final urlLauncher = ref.read(externalUrlLauncherProvider);
 
     return AuthShell(
       title: l10n?.authCreateAccountAction ?? 'Create account',
@@ -169,16 +167,8 @@ class RegisterPage extends HookConsumerWidget {
                     'By creating an account, you agree to the Terms of Service and Privacy Policy',
               ),
               description: _TermsLinks(
-                onTerms: () => _openLegalUrl(
-                  context,
-                  urlLauncher,
-                  'https://luminous.app/terms',
-                ),
-                onPrivacy: () => _openLegalUrl(
-                  context,
-                  urlLauncher,
-                  'https://luminous.app/privacy',
-                ),
+                onTerms: () => context.push('${AppRoutes.legal}/terms'),
+                onPrivacy: () => context.push('${AppRoutes.legal}/privacy'),
               ),
             ),
             if ((state.errorMessage?.isNotEmpty ?? false) ||
@@ -268,18 +258,6 @@ class RegisterPage extends HookConsumerWidget {
       ),
     );
   }
-}
-
-Future<void> _openLegalUrl(
-  BuildContext context,
-  ExternalUrlLauncher launcher,
-  String url,
-) async {
-  final uri = Uri.tryParse(url);
-  if (uri == null) {
-    return;
-  }
-  await launcher.open(uri);
 }
 
 class _TermsLinks extends StatelessWidget {

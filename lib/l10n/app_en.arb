@@ -2067,5 +2067,20 @@
   "placeholderNoTime": "No time set",
   "placeholderNoDuration": "Not tracked",
   "medicineEmptyAddFirstTitle": "Add your first medication",
-  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
+  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks.",
+  "legalListTitle": "Legal Documents",
+  "legalDetailTitle": "Legal Document",
+  "legalNotFoundTitle": "Document not found",
+  "legalNotFoundDescription": "This legal document could not be found. Please go back to the list.",
+  "legalLoadErrorTitle": "Loading failed",
+  "legalLoadErrorDescription": "Unable to load the legal document content. Please try again later.",
+  "legalRetryAction": "Retry",
+  "legalListEmptyTitle": "No legal documents",
+  "legalListEmptyDescription": "Legal documents will appear here once available.",
+  "legalListUpdatedAt": "Updated {date}",
+  "@legalListUpdatedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  }
 }

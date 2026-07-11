@@ -13,6 +13,8 @@ import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
 import 'package:luminous/features/report/presentation/pages/page.dart';
+import 'package:luminous/features/legal/presentation/routes.dart'
+    as legal_routes;
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
@@ -81,6 +83,9 @@ class AppRoutes {
   static const assistant = '/assistant';
 
   static const scanBarcode = '/scan/barcode';
+
+  static const legal = '/legal';
+  static const legalDetail = '/legal/:docType';
 }
 
 /// The main application router.
@@ -164,5 +169,6 @@ final router = GoRouter(
     ...notification_routes.$appRoutes,
     ...assistant_routes.$appRoutes,
     ...scan_routes.$appRoutes,
+    ...legal_routes.$appRoutes,
   ],
 );
