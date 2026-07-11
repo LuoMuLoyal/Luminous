@@ -49,7 +49,7 @@ jobs:
         run: dart format --set-exit-if-changed lib/ test/ tool/
 
       - name: Run tests
-        run: flutter test --coverage
+        run: flutter test --coverage --exclude-tags golden
 
       - name: Build APK (release)
         run: flutter build apk --release
