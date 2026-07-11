@@ -61,7 +61,7 @@ class ReportAiSummarySection extends StatelessWidget {
                   size: Spacing.level8,
                   child: Icon(
                     FLucideIcons.sparkles,
-                    color: SemanticColor.primary.resolve(colors),
+                    color: SemanticColor.primary.solid(context),
                     size: Spacing.level5,
                   ),
                 ),
@@ -160,7 +160,7 @@ class ReportAiSummarySection extends StatelessWidget {
                       padding: const EdgeInsets.only(top: Spacing.level2),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: content.bullets[index].color.resolve(colors),
+                          color: content.bullets[index].color.solid(context),
                           shape: BoxShape.circle,
                         ),
                         child: const SizedBox.square(dimension: Spacing.level2),

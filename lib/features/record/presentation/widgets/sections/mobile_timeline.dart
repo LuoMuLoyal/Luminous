@@ -171,7 +171,7 @@ class _TimelineRow extends StatelessWidget {
                       width: Spacing.level8,
                       height: Spacing.level8,
                       decoration: BoxDecoration(
-                        color: entry.softColor.resolve(colors),
+                        color: entry.softColor.solid(context),
                         borderRadius: BorderRadius.circular(
                           RadiusTokens.level4,
                         ),
@@ -179,7 +179,7 @@ class _TimelineRow extends StatelessWidget {
                       child: Center(
                         child: Icon(
                           entry.icon,
-                          color: entry.accent.resolve(colors),
+                          color: entry.accent.solid(context),
                           size: Spacing.level5,
                         ),
                       ),
@@ -290,7 +290,7 @@ class _TimelineDot extends StatelessWidget {
     final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: entry.accent.resolve(colors),
+        color: entry.accent.solid(context),
         shape: BoxShape.circle,
         border: Border.all(color: colors.background, width: Spacing.level1),
       ),

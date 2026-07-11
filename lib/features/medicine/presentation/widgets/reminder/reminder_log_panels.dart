@@ -157,7 +157,7 @@ class _DeliveryLogRow extends StatelessWidget {
         children: [
           Icon(
             deliveryStatusIcon(log.status),
-            color: color.resolve(colors),
+            color: color.solid(context),
             size: 18,
           ),
           const SizedBox(width: Spacing.level3),
@@ -225,7 +225,7 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(FLucideIcons.badgeCheck, color: color.resolve(colors), size: 18),
+          Icon(FLucideIcons.badgeCheck, color: color.solid(context), size: 18),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(

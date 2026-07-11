@@ -101,7 +101,7 @@ class _QuickOperationRow extends StatelessWidget {
               size: Spacing.level8,
               child: Icon(
                 operation.icon,
-                color: operation.color.resolve(colors),
+                color: operation.color.solid(context),
                 size: Spacing.level5,
               ),
             ),

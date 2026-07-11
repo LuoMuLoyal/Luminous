@@ -82,7 +82,7 @@ class _PatternCard extends StatelessWidget {
                   ),
                   child: Icon(
                     pattern.icon,
-                    color: pattern.color.resolve(colors),
+                    color: pattern.color.solid(context),
                     size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.048,

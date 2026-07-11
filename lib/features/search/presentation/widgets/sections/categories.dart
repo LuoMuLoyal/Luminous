@@ -52,8 +52,6 @@ class _CategoryItem extends StatelessWidget {
   final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FButton.raw(
       onPress:
           onTap ??
@@ -73,7 +71,7 @@ class _CategoryItem extends StatelessWidget {
                   .solid(context)
                   .withValues(alpha: 0.74),
             ),
-            child: Icon(category.icon, color: category.accent.resolve(colors)),
+            child: Icon(category.icon, color: category.accent.solid(context)),
           ),
           const SizedBox(height: Spacing.level3),
           Text(

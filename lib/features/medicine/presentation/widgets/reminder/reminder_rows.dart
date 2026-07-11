@@ -286,7 +286,7 @@ class SelectedMedicineRow extends StatelessWidget {
           FAvatar.raw(
             child: Icon(
               FLucideIcons.pill,
-              color: SemanticColor.primary.resolve(colors),
+              color: SemanticColor.primary.solid(context),
             ),
           ),
           const SizedBox(width: Spacing.level4),

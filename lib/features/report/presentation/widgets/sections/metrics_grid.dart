@@ -169,7 +169,7 @@ class _MetricCard extends StatelessWidget {
                     ),
                     child: Icon(
                       metric.icon,
-                      color: metric.color.resolve(colors),
+                      color: metric.color.solid(context),
                       size: ResponsiveSizing.scaleByWidth(
                         context,
                         fraction: 0.046,
@@ -201,7 +201,7 @@ class _MetricCard extends StatelessWidget {
                     style: TypographyToken.level8
                         .display(context)
                         .copyWith(
-                          color: metric.color.resolve(colors),
+                          color: metric.color.solid(context),
                           fontWeight: FontWeight.w800,
                         ),
                     widthFactor: 0.32,

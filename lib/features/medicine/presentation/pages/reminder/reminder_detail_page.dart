@@ -150,7 +150,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   size: Spacing.level9,
                   child: Icon(
                     FLucideIcons.pillBottle,
-                    color: SemanticColor.primary.resolve(colors),
+                    color: SemanticColor.primary.solid(context),
                     size: Spacing.level6,
                   ),
                 ),

@@ -30,9 +30,23 @@ Last updated: 2026-07-11
 
 ## 语义颜色系统增量清理 (LUM-2026-0709-07 后续)
 
-二维 `SemanticColor` / `SemanticColorPalette` / `SemanticColors` 基础设施已就位，全部 feature 的 `colors.X.withValues(alpha: Y)` 模式迁移已完成。剩余少量范围外 alpha 值（0.32、0.35、0.74 等）已改为基于 `SemanticColor` palette 的 `withValues(alpha:)`，不再直接访问 `FColors` 属性。
+二维 `SemanticColor` / `SemanticColorPalette` / `SemanticColors` 基础设施已就位。全部 feature 的 `colors.X.withValues(alpha: Y)` 模式和 `.resolve(colors)` 桥接方法已迁移到 `SemanticColor` palette 预计算色调。迁移映射表：`0.04~0.06 → palette.subtle`、`0.08~0.12 → palette.muted`、`0.18~0.25 → palette.border`、无 alpha → `palette.solid`。范围外 alpha 值使用 `SemanticColor.X.solid(context).withValues(alpha: Y)`。
 
-迁移映射表：`0.04~0.06 → palette.subtle`、`0.08~0.12 → palette.muted`、`0.18~0.25 → palette.border`、无 alpha → palette.solid`。范围外 alpha 值使用 `SemanticColor.X.solid(context).withValues(alpha: Y)` 或 `SemanticColor.X.muted(context).withValues(alpha: Y)`。
+### 残留无法迁移项
+
+以下 `withValues(alpha:)` 调用因无 `SemanticColor` 等价物而保留：
+
+| 文件 | 代码 | 原因 |
+|---|---|---|
+| `medicine/presentation/widgets/risk/risk_red_flag.dart:77` | `colors.background.withValues(alpha: 0.84)` | `background` 无 SemanticColor 映射 |
+| `mine/presentation/widgets/shared/components.dart:32` | `colors.background.withValues(alpha: 0.72)` | 同上 |
+| `record/presentation/widgets/shared/components.dart:196` | `color.withValues(alpha: 0.7)` | `color` 是 raw `Color` 参数，非 `SemanticColor` |
+| `record/presentation/widgets/dialogs/voice_entry_dialog.dart:250` | `(primaryColor or colors.foreground).withValues(alpha: 0.2)` | 条件 boxShadow 色，两分支类型不同 |
+| `lib/theme/styles/button_styles.dart:147` | `colors.destructive.withValues(alpha: 0.5)` | Forui CLI 生成，不修改 |
+
+### 残留 `.resolveAll(colors)` 桥接方法
+
+`record/presentation/widgets/sections/sidebar.dart:218-219` 中的 `day.markers.resolveAll(colors)` 保留——这是 `List<SemanticColor>` 批量解析方法，且 `colors` 在该 build 方法中仍有其他用途。
 
 ## 实验性功能（稳定版后启动）
 

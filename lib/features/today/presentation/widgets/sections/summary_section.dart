@@ -294,7 +294,7 @@ class _SummaryMetric extends StatelessWidget {
           children: [
             Icon(
               item.icon,
-              color: item.color.resolve(colors),
+              color: item.color.solid(context),
               size: Spacing.level4,
             ),
             const SizedBox(height: Spacing.level2),
@@ -334,7 +334,7 @@ class _SummaryBullet extends StatelessWidget {
           padding: const EdgeInsets.only(top: Spacing.level1),
           child: Icon(
             item.icon,
-            color: item.color.resolve(colors),
+            color: item.color.solid(context),
             size: Spacing.level4,
           ),
         ),

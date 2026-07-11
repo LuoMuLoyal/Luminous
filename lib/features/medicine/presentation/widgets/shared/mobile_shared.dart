@@ -38,7 +38,7 @@ class _DoseActionButton extends StatelessWidget {
     final colors = context.theme.colors;
     final foregroundColor = filled
         ? colors.primaryForeground
-        : color.resolve(colors);
+        : color.solid(context);
 
     return FButton(
       onPress: onTap,

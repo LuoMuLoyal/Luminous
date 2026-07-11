@@ -455,10 +455,10 @@ class _ReorderableTile extends StatelessWidget {
           const SizedBox(width: Spacing.level4),
           FAvatar.raw(
             size: metrics.avatarSize,
-            style: .delta(backgroundColor: action.softColor.resolve(colors)),
+            style: .delta(backgroundColor: action.softColor.solid(context)),
             child: Icon(
               action.icon,
-              color: action.accent.resolve(colors),
+              color: action.accent.solid(context),
               size: Spacing.level4,
             ),
           ),
@@ -588,7 +588,6 @@ class _QuickRecordTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final isLocked = action.locked;
     final displayLabel = recordCopy(l10n, action.titleKey);
 
@@ -612,11 +611,11 @@ class _QuickRecordTile extends StatelessWidget {
                 FAvatar.raw(
                   size: metrics.avatarSize,
                   style: .delta(
-                    backgroundColor: action.softColor.resolve(colors),
+                    backgroundColor: action.softColor.solid(context),
                   ),
                   child: Icon(
                     isLocked ? FLucideIcons.lock : action.icon,
-                    color: action.accent.resolve(colors),
+                    color: action.accent.solid(context),
                     size: Spacing.level4,
                   ),
                 ),
@@ -654,7 +653,6 @@ class _QuickRecordNoteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
     final isLocked = action.locked;
     final label = recordCopy(l10n, action.titleKey);
 
@@ -673,7 +671,7 @@ class _QuickRecordNoteButton extends StatelessWidget {
       ),
       prefix: Icon(
         isLocked ? FLucideIcons.lock : action.icon,
-        color: action.accent.resolve(colors),
+        color: action.accent.solid(context),
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );

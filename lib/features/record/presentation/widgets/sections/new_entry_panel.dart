@@ -108,7 +108,6 @@ class _NewEntryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = recordCopy(l10n, action.titleKey);
-    final colors = context.theme.colors;
 
     return FButton.raw(
       onPress: onTap == null ? null : () => onTap!(action),
@@ -134,14 +133,14 @@ class _NewEntryChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(action.icon, color: action.accent.resolve(colors), size: 16),
+          Icon(action.icon, color: action.accent.solid(context), size: 16),
           const SizedBox(width: Spacing.level2),
           Text(
             label,
             style: TypographyToken.level3
                 .body(context)
                 .copyWith(
-                  color: action.accent.resolve(colors),
+                  color: action.accent.solid(context),
                   fontWeight: FontWeight.w600,
                 ),
           ),

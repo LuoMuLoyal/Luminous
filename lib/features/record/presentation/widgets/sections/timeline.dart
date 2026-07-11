@@ -170,7 +170,7 @@ class _TimelineDot extends StatelessWidget {
     final colors = context.theme.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: entry.accent.resolve(colors),
+        color: entry.accent.solid(context),
         shape: BoxShape.circle,
         border: Border.all(color: colors.background, width: borderWidth),
       ),
@@ -234,13 +234,13 @@ class _TimelineCard extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: entry.softColor.resolve(colors),
+                  color: entry.softColor.solid(context),
                   borderRadius: BorderRadius.circular(RadiusTokens.level4),
                 ),
                 child: Center(
                   child: Icon(
                     entry.icon,
-                    color: entry.accent.resolve(colors),
+                    color: entry.accent.solid(context),
                     size: 19,
                   ),
                 ),

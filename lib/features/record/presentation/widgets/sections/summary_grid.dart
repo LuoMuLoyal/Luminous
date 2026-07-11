@@ -107,13 +107,13 @@ class _SummaryTile extends StatelessWidget {
                       maxValue: 32,
                     ),
                     decoration: BoxDecoration(
-                      color: item.softColor.resolve(colors),
+                      color: item.softColor.solid(context),
                       borderRadius: BorderRadius.circular(RadiusTokens.level4),
                     ),
                     child: Center(
                       child: Icon(
                         item.icon,
-                        color: item.accent.resolve(colors),
+                        color: item.accent.solid(context),
                         size: ResponsiveSizing.scaleByWidth(
                           context,
                           fraction: 0.042,
@@ -172,7 +172,7 @@ class _SummaryTile extends StatelessWidget {
                   detail,
                   style: TypographyToken.level3
                       .body(context)
-                      .copyWith(color: item.accent.resolve(colors)),
+                      .copyWith(color: item.accent.solid(context)),
                   maxLines: 2,
                   softWrap: true,
                   overflow: TextOverflow.ellipsis,

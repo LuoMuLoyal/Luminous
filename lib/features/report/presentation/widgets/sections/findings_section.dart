@@ -159,7 +159,7 @@ class _FindingCard extends StatelessWidget {
                   ),
                   child: Icon(
                     FLucideIcons.chevronRight,
-                    color: SemanticColor.neutral.resolve(colors),
+                    color: SemanticColor.neutral.solid(context),
                     size: ResponsiveSizing.scaleByWidth(
                       context,
                       fraction: 0.042,

@@ -43,8 +43,6 @@ class _QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FTappable(
       onPress: () {
         switch (action.type) {
@@ -61,7 +59,7 @@ class _QuickActionButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(action.icon, color: action.accent.resolve(colors)),
+            Icon(action.icon, color: action.accent.solid(context)),
             const SizedBox(width: Spacing.level3),
             Text(
               actionLabel(l10n, action.type),

@@ -102,10 +102,10 @@ class _QuickActionTile extends StatelessWidget {
         children: [
           FAvatar.raw(
             size: 40,
-            style: .delta(backgroundColor: action.softColor.resolve(colors)),
+            style: .delta(backgroundColor: action.softColor.solid(context)),
             child: Icon(
               action.icon,
-              color: action.accent.resolve(colors),
+              color: action.accent.solid(context),
               size: 20,
             ),
           ),

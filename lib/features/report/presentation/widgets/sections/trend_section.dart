@@ -111,7 +111,7 @@ class _TrendChart extends StatelessWidget {
     // Build one LineChartBarData per trend series.
     final bars = <LineChartBarData>[];
     for (final series in trends) {
-      final resolvedColor = series.color.resolve(colors);
+      final resolvedColor = series.color.solid(context);
       final spots = series.values.isEmpty
           ? const <FlSpot>[]
           : series.values
@@ -255,7 +255,7 @@ class _LegendDot extends StatelessWidget {
       children: [
         DecoratedBox(
           decoration: BoxDecoration(
-            color: color.resolve(colors),
+            color: color.solid(context),
             shape: BoxShape.circle,
           ),
           child: const SizedBox.square(dimension: 8),
