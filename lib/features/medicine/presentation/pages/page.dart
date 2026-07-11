@@ -357,9 +357,9 @@ class _MedicineMobileSearchBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return SizedBox(
+    return ConstrainedBox(
       key: const Key('medicine-home-search-bar'),
-      height: 56,
+      constraints: const BoxConstraints(minHeight: 45),
       child: FButton.raw(
         onPress: () => context.push(AppRoutes.medicineSearch),
         variant: FButtonVariant.ghost,

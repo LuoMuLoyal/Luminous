@@ -96,16 +96,12 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
               statusKey: _slotStateKey(
                 _slotStatusForReminder(
                   reminder: reminder,
-                  reminderCount: reminders.length,
                   doseStatusBySlot: doseStatusBySlot,
-                  fallbackStatus: fallbackStatus,
                 ),
               ),
               status: _slotStatusForReminder(
                 reminder: reminder,
-                reminderCount: reminders.length,
                 doseStatusBySlot: doseStatusBySlot,
-                fallbackStatus: fallbackStatus,
               ),
             ),
           )
@@ -236,17 +232,11 @@ String _reminderSlotKey(MedicineReminderItem reminder) {
 
 MedicineDoseStatus _slotStatusForReminder({
   required MedicineReminderItem reminder,
-  required int reminderCount,
   required Map<String, DoseLogStatus> doseStatusBySlot,
-  required DoseLogStatus? fallbackStatus,
 }) {
   final slotStatus = doseStatusBySlot[_reminderSlotKey(reminder)];
   if (slotStatus != null) {
     return _medicineStatusFromDoseLog(slotStatus);
-  }
-
-  if (reminderCount == 1 && fallbackStatus != null) {
-    return _medicineStatusFromDoseLog(fallbackStatus);
   }
 
   return MedicineDoseStatus.pending;
@@ -280,9 +270,9 @@ MedicineCopyKey _slotStateKey(MedicineDoseStatus status) {
 
 SemanticColor _stateColor(MedicineDoseStatus status) {
   return switch (status) {
-    MedicineDoseStatus.taken => SemanticColor.primary,
-    MedicineDoseStatus.skipped => SemanticColor.primary,
-    MedicineDoseStatus.pending => SemanticColor.primary,
+    MedicineDoseStatus.taken => SemanticColor.success,
+    MedicineDoseStatus.skipped => SemanticColor.neutral,
+    MedicineDoseStatus.pending => SemanticColor.warning,
   };
 }
 

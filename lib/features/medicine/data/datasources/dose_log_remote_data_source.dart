@@ -115,7 +115,7 @@ class DoseLogRemoteDataSource {
       doseText: _optionalString(json['doseText']),
       note: _optionalString(json['note']),
       createdAt: json['createdAt'] as String,
-      updatedAt: json['updatedAt'] as String? ?? json['createdAt'] as String,
+      updatedAt: json['updatedAt'] as String,
     );
   }
 

@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-07-09
+Last updated: 2026-07-11
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -20,6 +20,13 @@ Last updated: 2026-07-09
 
 - 超大页面拆分：`login_page.dart`（620+ 行）、`medicine_reminder_edit_page.dart`（400+ 行）— Phase Guide 明确"现在不要做"
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
+
+## 审查后续关注项（2026-07-11 回查）
+
+以下项来自 7-11 审查回查报告，代码层面问题已全部修复，剩余两项为架构/设计层面关注：
+
+- SemanticColor 暗色主题对比度验证：`subtle` 和 `border` 色调在暗色模式下对比度是否足够，需在实际设备上验证
+- Drift 缓存一致性：缓存优先模式已上线（今日建议 + 药品记录），需关注缓存与远程数据的一致性策略、缓存失效机制、离线场景数据同步
 
 ## 语义颜色系统增量清理 (LUM-2026-0709-07 后续)
 
