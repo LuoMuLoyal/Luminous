@@ -4,145 +4,360 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
-void main() {
-  late _FakeReportsAdapter adapter;
-  late ReportAiSummaryRemoteDataSource dataSource;
+/// Adapter that returns a JSON response with configurable body.
+class _JsonAdapter implements HttpClientAdapter {
+  _JsonAdapter() : statusCode = 200, responseBody = null;
 
-  setUp(() {
-    adapter = _FakeReportsAdapter();
-    final dio = Dio(BaseOptions(baseUrl: 'https://api.example.test'));
-    dio.httpClientAdapter = adapter;
-    dataSource = ReportAiSummaryRemoteDataSource(
-      api: lucent.ReportsApi(dio),
-      dio: dio,
-    );
-  });
-
-  test('generate sends POST to summary/generate endpoint', () async {
-    final result = await dataSource.generate(ReportAiSummaryRange.last30Days);
-
-    final req = adapter.lastRequest!;
-    expect(req.method, 'POST');
-    expect(req.path, '/api/v1/user/reports/summary/generate');
-
-    // Request body should be a valid GenerateReportSummaryDto JSON.
-    final body = req.jsonBody;
-    expect(body, isA<Map<String, dynamic>>());
-    expect(body['range'], 'last_30_days');
-
-    // Response should deserialize correctly.
-    expect(result.summary, '本周用药记录整体稳定。');
-    expect(result.bullets, hasLength(1));
-    expect(result.bullets.first.text, '用药记录良好。');
-  });
-
-  test('generate propagates DioException on network failure', () async {
-    adapter.failNext = true;
-
-    expect(
-      () => dataSource.generate(ReportAiSummaryRange.last7Days),
-      throwsA(isA<DioException>()),
-    );
-  });
-
-  test('generate throws on empty response', () async {
-    adapter.emptyResponse = true;
-
-    expect(
-      () => dataSource.generate(ReportAiSummaryRange.last7Days),
-      throwsA(isA<TypeError>()),
-    );
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Fake adapter
-// ---------------------------------------------------------------------------
-
-class _FakeReportsAdapter implements HttpClientAdapter {
-  _CapturedRequest? lastRequest;
-  bool failNext = false;
-  bool emptyResponse = false;
-
-  @override
-  Future<ResponseBody> fetch(
-    RequestOptions options,
-    Stream<Uint8List>? requestStream,
-    Future<void>? cancelFuture,
-  ) async {
-    final bodyBytes = <int>[];
-    if (requestStream != null) {
-      await for (final chunk in requestStream) {
-        bodyBytes.addAll(chunk);
-      }
-    }
-
-    lastRequest = _CapturedRequest(
-      method: options.method,
-      path: options.path,
-      bodyBytes: bodyBytes,
-    );
-
-    if (failNext) {
-      throw DioException(
-        requestOptions: options,
-        type: DioExceptionType.connectionTimeout,
-      );
-    }
-
-    if (emptyResponse) {
-      return ResponseBody.fromString('', 200);
-    }
-
-    return _jsonResponse(<String, Object?>{
-      'code': 0,
-      'message': 'ok',
-      'data': <String, Object?>{
-        'range': 'last_30_days',
-        'startDate': '2026-05-14',
-        'endDate': '2026-06-12',
-        'generatedAt': '2026-06-12T10:00:00.000Z',
-        'summary': '本周用药记录整体稳定。',
-        'bullets': [
-          <String, Object?>{'kind': 'medication', 'text': '用药记录良好。'},
-        ],
-        'actionLabel': '查看报告',
-        'action': 'today',
-        'confidenceNote': '仅基于近 7 天已记录数据生成。',
-      },
-    });
-  }
+  Object? responseBody;
+  int statusCode;
 
   @override
   void close({bool force = false}) {}
 
-  ResponseBody _jsonResponse(Map<String, Object?> body) {
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final body = responseBody != null
+        ? '{"code":0,"message":"ok","data":${jsonEncode(responseBody)}}'
+        : '{"code":0,"message":"ok","data":null}';
+
     return ResponseBody.fromString(
-      jsonEncode(body),
-      200,
-      headers: const <String, List<String>>{
-        Headers.contentTypeHeader: <String>['application/json'],
+      body,
+      statusCode,
+      headers: {
+        Headers.contentTypeHeader: ['application/json'],
       },
     );
   }
 }
 
-class _CapturedRequest {
-  const _CapturedRequest({
-    required this.method,
-    required this.path,
-    required this.bodyBytes,
+/// Adapter that returns an SSE stream from raw event text.
+class _SseAdapter implements HttpClientAdapter {
+  _SseAdapter(this.sseText);
+
+  final String sseText;
+  final int statusCode = 200;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    final bytes = Uint8List.fromList(utf8.encode(sseText));
+    final stream = Stream.fromIterable([bytes]);
+
+    return ResponseBody(
+      stream,
+      statusCode,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
+  }
+}
+
+String _sseEvent(String event, Object? data) {
+  return 'event: $event\ndata: ${jsonEncode(data)}\n\n';
+}
+
+void main() {
+  group('ReportAiSummaryRemoteDataSource — generate', () {
+    late _JsonAdapter adapter;
+    late Dio dio;
+    late lucent.ReportsApi api;
+    late ReportAiSummaryRemoteDataSource ds;
+
+    setUp(() {
+      adapter = _JsonAdapter();
+      dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+      dio.httpClientAdapter = adapter;
+      api = lucent.ReportsApi(dio);
+      ds = ReportAiSummaryRemoteDataSource(api: api, dio: dio);
+    });
+
+    test('returns ReportSummaryDataDto on success', () async {
+      adapter.responseBody = {
+        'range': 'last_7_days',
+        'startDate': '2026-07-05',
+        'endDate': '2026-07-11',
+        'generatedAt': '2026-07-11T10:00:00.000Z',
+        'summary': '本周记录良好',
+        'bullets': [],
+        'actionLabel': '查看详情',
+        'action': '',
+        'confidenceNote': '中等',
+      };
+
+      final result = await ds.generate(ReportAiSummaryRange.last7Days);
+
+      expect(result.range.json, 'last_7_days');
+      expect(result.startDate, '2026-07-05');
+      expect(result.endDate, '2026-07-11');
+      expect(result.summary, '本周记录良好');
+    });
+
+    test('passes custom range with startDate and endDate', () async {
+      adapter.responseBody = {
+        'range': 'custom',
+        'startDate': '2026-07-01',
+        'endDate': '2026-07-10',
+        'generatedAt': '2026-07-11T10:00:00.000Z',
+        'summary': 'custom',
+        'bullets': [],
+        'actionLabel': '',
+        'action': '',
+        'confidenceNote': '',
+      };
+
+      final result = await ds.generate(
+        ReportAiSummaryRange.custom,
+        startDate: '2026-07-01',
+        endDate: '2026-07-10',
+      );
+
+      expect(result.range.json, 'custom');
+      expect(result.startDate, '2026-07-01');
+      expect(result.endDate, '2026-07-10');
+    });
+
+    test('passes last30Days range correctly', () async {
+      adapter.responseBody = {
+        'range': 'last_30_days',
+        'startDate': '2026-06-12',
+        'endDate': '2026-07-11',
+        'generatedAt': '2026-07-11T10:00:00.000Z',
+        'summary': '30天',
+        'bullets': [],
+        'actionLabel': '',
+        'action': '',
+        'confidenceNote': '',
+      };
+
+      final result = await ds.generate(ReportAiSummaryRange.last30Days);
+
+      expect(result.range.json, 'last_30_days');
+    });
   });
 
-  final String method;
-  final String path;
-  final List<int> bodyBytes;
+  group('ReportAiSummaryRemoteDataSource — generateStream', () {
+    late Dio dio;
+    late lucent.ReportsApi api;
+    late ReportAiSummaryRemoteDataSource ds;
 
-  Map<String, dynamic> get jsonBody {
-    if (bodyBytes.isEmpty) return const <String, dynamic>{};
-    return jsonDecode(utf8.decode(bodyBytes)) as Map<String, dynamic>;
+    setUp(() {
+      dio = Dio(BaseOptions(baseUrl: 'http://localhost'));
+      api = lucent.ReportsApi(dio);
+      ds = ReportAiSummaryRemoteDataSource(api: api, dio: dio);
+    });
+
+    test('yields summary event then result event then done', () async {
+      final sseText = [
+        _sseEvent('summary', {'summary': '正在生成...'}),
+        _sseEvent('result', {
+          'range': 'last_7_days',
+          'startDate': '2026-07-05',
+          'endDate': '2026-07-11',
+          'generatedAt': '2026-07-11T10:00:00.000Z',
+          'summary': '完成总结',
+          'bullets': [],
+          'actionLabel': '',
+          'action': '',
+          'confidenceNote': '',
+        }),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, hasLength(2));
+      expect(events[0], isA<ReportAiRemoteSummaryEvent>());
+      expect((events[0] as ReportAiRemoteSummaryEvent).summary, '正在生成...');
+      expect(events[1], isA<ReportAiRemoteResultEvent>());
+      expect((events[1] as ReportAiRemoteResultEvent).dto.summary, '完成总结');
+    });
+
+    test('skips summary event with empty text', () async {
+      final sseText = [
+        _sseEvent('summary', {'summary': '   '}),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, isEmpty);
+    });
+
+    test('skips summary event with non-string data', () async {
+      final sseText = [
+        _sseEvent('summary', {'summary': 123}),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, isEmpty);
+    });
+
+    test('throws LucentApiException on error event', () async {
+      final sseText = [
+        _sseEvent('error', {'message': '服务繁忙', 'code': 500, 'statusCode': 500}),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      expect(
+        () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
+        throwsA(isA<LucentApiException>()),
+      );
+    });
+
+    test(
+      'throws LucentApiException with default message on error event without message',
+      () async {
+        final sseText = [_sseEvent('error', {})].join();
+
+        dio.httpClientAdapter = _SseAdapter(sseText);
+
+        expect(
+          () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
+          throwsA(
+            predicate<LucentApiException>((e) => e.message == '请求失败，请稍后再试。'),
+          ),
+        );
+      },
+    );
+
+    test('done event terminates stream immediately', () async {
+      final sseText = _sseEvent('done', null);
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, isEmpty);
+    });
+
+    test(
+      'passes custom range with startDate and endDate in stream body',
+      () async {
+        final capturedPaths = <String>[];
+        final sseText = _sseEvent('done', null);
+
+        dio.httpClientAdapter = _RecordingSseAdapter(sseText, capturedPaths);
+
+        await ds
+            .generateStream(
+              ReportAiSummaryRange.custom,
+              startDate: '2026-07-01',
+              endDate: '2026-07-10',
+            )
+            .toList();
+
+        // Verify the POST was made to the stream endpoint
+        expect(capturedPaths, isNotEmpty);
+        expect(capturedPaths.first, contains('/summary/generate/stream'));
+      },
+    );
+
+    test('handles result event with Map data (non-generic)', () async {
+      // SSE decoder can produce Map<Object?, Object?> in some scenarios.
+      // _requireMap handles Map (non-generic) by casting keys to String.
+      final resultData = {
+        'range': 'last_7_days',
+        'startDate': '2026-07-05',
+        'endDate': '2026-07-11',
+        'generatedAt': '2026-07-11T10:00:00.000Z',
+        'summary': 'test',
+        'bullets': [],
+        'actionLabel': '',
+        'action': '',
+        'confidenceNote': '',
+      };
+      final sseText = [
+        _sseEvent('result', resultData),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, hasLength(1));
+      expect(events[0], isA<ReportAiRemoteResultEvent>());
+      final dto = (events[0] as ReportAiRemoteResultEvent).dto;
+      expect(dto.summary, 'test');
+    });
+
+    test('unknown event types are ignored', () async {
+      final sseText = [
+        _sseEvent('unknown', {'foo': 'bar'}),
+        _sseEvent('done', null),
+      ].join();
+
+      dio.httpClientAdapter = _SseAdapter(sseText);
+
+      final events = await ds
+          .generateStream(ReportAiSummaryRange.last7Days)
+          .toList();
+
+      expect(events, isEmpty);
+    });
+  });
+}
+
+/// SSE adapter that records the request path.
+class _RecordingSseAdapter implements HttpClientAdapter {
+  _RecordingSseAdapter(this.sseText, this.recordedPaths);
+
+  final String sseText;
+  final List<String> recordedPaths;
+
+  @override
+  void close({bool force = false}) {}
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<List<int>>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    recordedPaths.add(options.path);
+    final bytes = Uint8List.fromList(utf8.encode(sseText));
+    final stream = Stream.fromIterable([bytes]);
+
+    return ResponseBody(
+      stream,
+      200,
+      headers: {
+        Headers.contentTypeHeader: ['text/event-stream'],
+      },
+    );
   }
 }

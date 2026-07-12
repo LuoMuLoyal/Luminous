@@ -44,9 +44,16 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
               selected: selectedQuery.range == ReportDashboardRange.custom,
               onTap: () async {
                 final now = clock.now();
+                // Normalize to date-only (midnight) to avoid forui calendar
+                // debug range checks failing on time components.
+                final today = DateTime(now.year, now.month, now.day);
+                // Extend end to the last day of the current month so the
+                // calendar grid can render all visible dates without
+                // triggering forui's debugCheckInclusiveDateRange.
+                final monthEnd = DateTime(today.year, today.month + 1, 0);
                 final initialRange = selectedQuery.isCustom
                     ? (selectedQuery.startDate!, selectedQuery.endDate!)
-                    : (now.subtract(const Duration(days: 7)), now);
+                    : (today.subtract(const Duration(days: 7)), today);
                 final rangeController = FDateSelectionController.range(
                   initial: initialRange,
                 );
@@ -64,7 +71,7 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                               child: FCalendar.grid(
                                 control: FGridCalendarControl(
                                   start: DateTime(2020),
-                                  end: now,
+                                  end: monthEnd,
                                 ),
                                 selectionControl:
                                     FDateSelectionControl.managedRange(
@@ -87,11 +94,15 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                 );
                 rangeController.dispose();
                 if (picked != null && dialogContext.mounted) {
+                  // Clamp end date to today to prevent future selections.
+                  final clampedEnd = picked.$2.isAfter(today)
+                      ? today
+                      : picked.$2;
                   Navigator.of(dialogContext).pop(
                     ReportDashboardQuery(
                       range: ReportDashboardRange.custom,
                       startDate: picked.$1,
-                      endDate: picked.$2,
+                      endDate: clampedEnd,
                     ),
                   );
                 }

@@ -1,4 +1,3 @@
-import 'package:forui/forui.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 
 import '../support/e2e_test_helpers.dart';

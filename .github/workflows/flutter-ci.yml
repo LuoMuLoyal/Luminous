@@ -46,7 +46,7 @@ jobs:
         run: flutter analyze
 
       - name: Run tests
-        run: flutter test --coverage --exclude-tags golden
+        run: flutter test --coverage --exclude-tags golden --reporter=compact
 
       - name: Build APK (release)
         run: flutter build apk --release
