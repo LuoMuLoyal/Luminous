@@ -43,12 +43,12 @@
 - **字体**：
   - 正文/默认：`_token.body(context)`
   - 强调/大标题：`_token.display(context)`
-  - Tab 根页大标题：`AppTypographyToken.level9.display(context).copyWith(fontWeight: FontWeight.w800)`
-- **间距**：`AppSpacingTokens.level1`（4）到 `level12`（128）。
-- **圆角**：`AppRadiusTokens.level0` 到 `level9` 及 `levelFull`。
+  - Tab 根页大标题：`TypographyToken.level9.display(context).copyWith(fontWeight: FontWeight.w800)`
+- **间距**：`Spacing.level1`（4）到 `level12`（128）。
+- **圆角**：`RadiusTokens.level0` 到 `level9` 及 `levelFull`。
 - **颜色**：
   - Widget 层直接读 `context.theme.colors.*`。
-  - 数据/领域层用语义枚举 `AppColors`，在 widget 处通过 `AppColors.resolve(context.theme.colors)` 解析。
+  - 数据/领域层用语义枚举 `SemanticColor`，在 widget 处通过 `semanticColor.palette(context)` 解析。
 
 ## 常用组件速查
 
@@ -121,7 +121,7 @@ FTileGroup(
 )
 ```
 
-- 设置页分组标签：用 `AppTypographyToken.level4.body(context).copyWith(color: colors.mutedForeground,
+- 设置页分组标签：用 `TypographyToken.level4.body(context).copyWith(color: colors.mutedForeground,
    fontWeight: FontWeight.w600)`。
 - 子页瓷砖统一用外层的 `FTileGroup` 边框，内部 `FTile` 不再重复描边。
 
@@ -138,7 +138,7 @@ FCard.raw(
       ),
     ),
   ),
-  child: Padding(padding: const EdgeInsets.all(AppSpacingTokens.level4), child: content),
+  child: Padding(padding: const EdgeInsets.all(Spacing.level4), child: content),
 )
 ```
 
@@ -193,7 +193,7 @@ FButton.raw(
       ),
     ]),
     contentStyle: const .delta(
-      padding: .value(EdgeInsets.symmetric(horizontal: AppSpacingTokens.level3)),
+      padding: .value(EdgeInsets.symmetric(horizontal: Spacing.level3)),
     ),
   ),
   child: ...,

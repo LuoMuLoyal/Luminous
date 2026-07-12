@@ -7,7 +7,7 @@
 - 顶部栏操作按钮使用 Forui `FTooltip` 提供语义提示。
 - 顶部 `AI chat` 入口使用 Forui `secondary` 胶囊按钮，通知入口使用 `outline` 图标按钮，交互权重更清晰。
 - 主建议卡承接当前最高优先的用药或饮水动作，卡内补齐 `证据 / 边界 / 主动作`。
-  - 用药类建议使用 `TodayCardTone.urgent`（destructive 边框 + 淡红底色），饮水类使用 `AppColors.primary`。
+  - 用药类建议使用 `TodayCardTone.urgent`（destructive 边框 + 淡红底色），饮水类使用 `SemanticColor.primary`。
   - 主卡图标使用 `gradient: true`，用药红色渐变、饮水蓝色渐变。
   - 主卡首屏只保留图标+标题+原因+进度条+主按钮，证据和边界收入 `FCollapsible` 折叠区。
   - 主卡底部有 `已采纳 / 稍后处理 / 不适用 / 不再看到` 四个 ghost 按钮，根据后端 `feedbackOptions` 动态渲染，接入 `POST /today/suggestions/:id/feedback`。

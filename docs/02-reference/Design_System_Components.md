@@ -8,8 +8,8 @@
 ## 组件规范
 
 - pill alpha：`0.12`
-- status pill radius：`AppRadiusTokens.sm`
-- panel radius：`AppRadiusTokens.lg`
+- status pill radius：`RadiusTokens.level3`
+- panel radius：`RadiusTokens.level5`
 - section header fontWeight：`w600`
 - icon badge size：`48px`
 - text action icon：`16px`

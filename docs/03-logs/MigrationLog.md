@@ -18,7 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
-- [2026-07-12](migration-log/2026-07-12.md) — 审查修复 + 历史兼容代码清理 + ARB 拆分 + 测试补测（第四批/第五批）+ Material Icons 清理 + Drift Web 适配 + Report 历史建议接入 + CI compact reporter + 文档口径同步
+- [2026-07-12](migration-log/2026-07-12.md) — 审查修复 + 历史兼容代码清理 + ARB 拆分 + 测试补测（第四批/第五批）+ Material Icons 清理 + Drift Web 适配 + Report 历史建议接入 + CI compact reporter + 文档口径同步 + 文档与代码偏差修复
 - [2026-07-11](migration-log/2026-07-11.md) — 审查修复 + 测试补测（第一批~第三批）+ Patrol 统一迁移 + flutter_markdown_plus 升级 + Sentry 集成 + OAuth-only 注销 + 法律合规页面 + 网站法律页面补齐
 - [2026-07-10](migration-log/2026-07-10.md) — 审查修复 + 测试补测（第四批/第五批）+ ADR-0006~0010 实施（riverpod_generator / authGuarded / 网络层拆分 / Result 类型 / Drift 离线缓存 / go_router_builder）+ UI 刷新计划完成
 - [2026-07-09](migration-log/2026-07-09.md) — debugPrint → Talker 迁移 + 文档治理 + pre-push 钩子 + CI 简化 + 审查报告快速修复 + Today 建议引擎后端架构规划 + Today 建议引擎前端接入 Phase 1-9

@@ -75,7 +75,7 @@ This replaces the long historical error audit as the current quick-read checklis
    feature boundary such as `features/support/` instead of leaving it nested under `settings`.
 - Keep design-system primitives in `lib/core/design/`. Do not split responsive breakpoints or theme
    seed colors into parallel `core/constants` files when they are part of the same UI token system.
-- Prefer `AppResponsiveSizing` helpers or `AppSpacingTokens` over literal widths/heights for
+- Prefer `ResponsiveSizing` helpers or `Spacing` over literal widths/heights for
    layout-affecting dimensions. Fixed values are acceptable only for hairline dividers, minimum tap
    targets, or one-off decorative details.
 - New dialogs must use `showAppDialog` / `AppDialogShell`

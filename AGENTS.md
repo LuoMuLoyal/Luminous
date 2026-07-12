@@ -46,27 +46,94 @@ flutter test
 
 ## File Naming Rules
 
-- **No directory-name prefix on files.** A file inside `lib/features/medicine/` must not start
-  with `medicine_`; the directory already provides that context. Example:
-  `lib/features/medicine/presentation/pages/medicine_page.dart` → `page.dart`.
-- **No `core/` sub-directory prefix on files.** Files in `lib/core/network/` must not start with
-  `lucent_`; files in `lib/core/design/` must not start with `app_`; files in
-  `lib/core/widgets/common/` must not start with `app_`; files in `lib/core/accessibility/` must
-  not start with `accessibility_`.
-- **No `router/` prefix on router files.** Files in `lib/app/router/` must not start with
-  `router_`.
-- **Class names are unaffected.** This rule covers file names only. Class names like
-  `AppSpacingTokens` or `LucentDioClient` retain their prefixes for clarity at the call site.
-- **Scattered files belong in subdirectories.** Do not place files directly in
-  `presentation/widgets/` or `presentation/` — use `shared/`, `sections/`, `dialogs/`, `views/`,
-  etc.
-- **Repository implementation naming.** The Lucent-backed implementation in each feature's
-  `data/repositories/` is named `lucent_repository.dart` (or `lucent_{sub-domain}_repository.dart`
-  when a feature has multiple backends). Mock implementations are `mock_repository.dart` (or
-  `mock_{sub-domain}_repository.dart`).
-- **Test files mirror source names.** `test/` paths and file names follow the corresponding
-  `lib/` file, with a `_test.dart` suffix. Example: `lib/core/network/dio_client.dart` →
-  `test/core/network/dio_client_test.dart`.
+### Core Principle: File Name = Responsibility, Not Location
+
+```
+Directory = namespace (tells you the type/layer)
+File name = specific responsibility (tells you WHAT it does, not WHERE it is)
+```
+
+### Quality Hierarchy
+
+| Level | Example (in `providers/`) | Problem |
+|---|---|---|
+| **Worst** | `provider.dart` | Pure type word, zero business meaning |
+| **Worst** | `providers.dart` | Same, pluralized |
+| Bad | `auth_provider.dart` | Business word too vague + type suffix redundant |
+| Redundant | `session_provider.dart` | Good business word, but `_provider` suffix repeats directory |
+| **Best** | `session.dart` | Clear responsibility, no redundant type word |
+
+### Rules
+
+1. **No type-suffix when the directory already conveys the type.** The suffixes `_provider`,
+   `_page`, `_widget`, `_section`, `_data_source`, `_repository`, `_controller` (when inside
+   `controllers/` or `providers/`) are redundant — the directory already says what kind of file it
+   is.
+   - ❌ `providers/session_provider.dart` → ✅ `providers/session.dart`
+   - ❌ `pages/login_page.dart` → ✅ `pages/login.dart`
+   - ❌ `widgets/sections/summary_section.dart` → ✅ `widgets/sections/summary.dart`
+   - ❌ `datasources/suggestion_remote_data_source.dart` → ✅ `datasources/suggestion_remote.dart`
+   - ❌ `repositories/lucent_repository.dart` → ✅ `repositories/lucent.dart`
+
+2. **Never use a pure type word as a file name.** `provider.dart`, `providers.dart`,
+   `repository.dart`, `controller.dart` carry zero responsibility information. Always include a
+   business word.
+   - ❌ `providers/provider.dart` → ✅ `providers/medicine_search.dart`
+   - ❌ `domain/repositories/repository.dart` → ✅ `domain/repositories/dashboard.dart`
+
+3. **No directory-name prefix on files.** A file inside `lib/features/medicine/` must not start
+   with `medicine_`; the directory already provides that context. Same for `wechat/` subdirectory:
+   files inside `data/datasources/wechat/` must not start with `wechat_`.
+   - ❌ `medicine/presentation/pages/medicine_page.dart` → ✅ `medicine/presentation/pages/page.dart`
+   - ❌ `datasources/wechat/wechat_mobile_auth_client.dart` → ✅ `datasources/wechat/mobile_auth_client.dart`
+
+4. **No `app_` prefix on `core/` files.** `app_` is not a business word — everything in the app
+   is part of the app. Files in `lib/core/` must not start with `app_`.
+   - ❌ `core/database/app_database.dart` → ✅ `core/database/database.dart`
+   - ❌ `core/logger/app_logger.dart` → ✅ `core/logger/logger.dart`
+   - ❌ `core/feedback/app_toast.dart` → ✅ `core/feedback/toast.dart`
+
+5. **Keep business words.** `session`, `login`, `dashboard`, `suggestion`, `risk_check` describe
+   what the file does — these stay. Only strip the redundant type suffix.
+   - `session_provider.dart` → `session.dart` (keep `session`, drop `_provider`)
+   - `risk_check_provider.dart` → `risk_check.dart` (keep `risk_check`, drop `_provider`)
+
+6. **Implementation qualifiers are not type words.** `lucent`, `mock`, `remote`, `cached` are
+   implementation qualifiers that distinguish variants — keep them.
+   - `repositories/lucent_repository.dart` → `repositories/lucent.dart` (keep `lucent`, drop `_repository`)
+   - `datasources/dose_log_remote_data_source.dart` → `datasources/dose_log_remote.dart` (keep `remote`, drop `_data_source`)
+
+7. **`_settings_page` is double redundancy.** In `settings/presentation/pages/`, both `_settings`
+   (repeats the feature directory) and `_page` (repeats the pages directory) are redundant.
+   - ❌ `pages/about_settings_page.dart` → ✅ `pages/about.dart`
+   - ❌ `pages/theme_settings_page.dart` → ✅ `pages/theme.dart`
+
+8. **Class names are unaffected.** This rule covers file names only. Class names like
+   `AppSpacingTokens` or `LucentDioClient` retain their prefixes for clarity at the call site.
+
+9. **Scattered files belong in subdirectories.** Do not place files directly in
+   `presentation/widgets/` or `presentation/` — use `shared/`, `sections/`, `dialogs/`, `views/`,
+   etc.
+
+10. **Test files mirror source names.** `test/` paths and file names follow the corresponding
+    `lib/` file, with a `_test.dart` suffix. Example: `lib/core/network/dio_client.dart` →
+    `test/core/network/dio_client_test.dart`.
+
+### Decision Flow
+
+```
+File name has a business word (not just a type word)?
+├─ No (e.g. provider.dart, repository.dart) → MUST rename, add a business word
+└─ Yes (e.g. session_provider.dart)
+   └─ Has a type-suffix that repeats the directory?
+      ├─ Yes (e.g. _provider, _page, _section) → Strip the type suffix
+      └─ No (e.g. session.dart) → Already optimal, do not change
+```
+
+### Reference
+
+See `plans/2026-07-12-naming-cleanup.md` for the full migration plan with per-file rename
+mappings.
 
 ## State Management
 

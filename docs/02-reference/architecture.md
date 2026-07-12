@@ -30,7 +30,7 @@ lib/
 │   ├── theme/             # App theme, theme controller, theme extensions
 │   └── widgets/           # Shared UI components
 │       ├── common/        # AppBackButton, AppDialogShell, AppStateErrorView, AppStateMessageView, etc.
-│       ├── layout/        # PageScaffoldShell, ResponsiveContentFrame
+│       ├── layout/        # PageScaffold, ResponsiveContentFrame
 │       └── settings/      # Legacy settings-row wrappers still used by untouched /settings/* sub-pages
 │
 ├── features/              # Business feature modules (Clean Architecture)

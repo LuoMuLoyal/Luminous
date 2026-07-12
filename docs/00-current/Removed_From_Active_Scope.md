@@ -14,5 +14,5 @@
 - 桌面优先工作流。
 - feature 级调色板类（`MedicinePalette`、`TodayPalette`、`ReportPalette`）已完全移除。
 - 旧的 `AppColorTokens` wrapper 也已移除。
-- 所有颜色引用现在通过语义 `AppColors` token enum 或直接的 `context.theme.colors.*` 读取。
+- 所有颜色引用现在通过语义 `SemanticColor` token enum 或直接的 `context.theme.colors.*` 读取。
 - 健康上下文、风险检查器与 Prisma schema 中的孕/乳/儿童/老年特殊人群字段。
