@@ -1,7 +1,7 @@
 ﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 

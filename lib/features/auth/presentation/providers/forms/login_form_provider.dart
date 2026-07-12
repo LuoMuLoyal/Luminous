@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
-import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';

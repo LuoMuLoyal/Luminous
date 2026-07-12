@@ -7,7 +7,7 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp_controller.dart';
 
 void main() {

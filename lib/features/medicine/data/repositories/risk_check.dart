@@ -1,12 +1,12 @@
-import 'package:luminous/core/logger/app_logger.dart';
+﻿import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
-import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/search/data/datasources/medicine_search.dart';
+import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'risk_check_repository.g.dart';
+part 'risk_check.g.dart';
 
 class MedicineRiskCheckRepository {
   MedicineRiskCheckRepository({

@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

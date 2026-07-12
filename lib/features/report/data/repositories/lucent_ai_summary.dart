@@ -1,13 +1,13 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
+import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_ai_summary_repository.g.dart';
+part 'lucent_ai_summary.g.dart';
 
 sealed class ReportAiGenerationEvent {
   const ReportAiGenerationEvent();

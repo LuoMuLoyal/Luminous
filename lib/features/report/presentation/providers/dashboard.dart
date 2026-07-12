@@ -1,9 +1,9 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/report/data/repositories/mock_repository.dart';
+import 'package:luminous/features/report/data/repositories/mock.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 const _reportDashboardTimeout = Duration(seconds: 5);

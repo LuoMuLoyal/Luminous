@@ -11,11 +11,11 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';

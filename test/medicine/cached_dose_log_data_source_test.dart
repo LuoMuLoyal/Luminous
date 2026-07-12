@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
 import 'package:luminous/core/database/app_database.dart';
-import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 
 class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   _FakeDoseLogRemote() : super(api: MedicineDoseLogsApi(Dio()), dio: Dio());

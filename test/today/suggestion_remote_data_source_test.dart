@@ -1,9 +1,9 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/today/data/datasources/suggestion_remote_data_source.dart';
+import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// Adapter that returns a JSON response with configurable body.

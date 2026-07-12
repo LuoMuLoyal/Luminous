@@ -1,12 +1,12 @@
 ﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock_repository.g.dart';
+part 'mock.g.dart';
 
 /// Demo-only mock implementation of [RecordRepository] used for tests.
 ///

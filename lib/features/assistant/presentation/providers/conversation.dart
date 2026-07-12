@@ -9,7 +9,7 @@ import 'package:lucent_api/api/export.dart'
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';

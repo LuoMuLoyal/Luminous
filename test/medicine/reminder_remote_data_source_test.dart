@@ -1,10 +1,10 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 
 void main() {
   group('MedicineReminderRemoteDataSource', () {

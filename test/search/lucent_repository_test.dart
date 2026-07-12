@@ -1,8 +1,8 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/mapper.dart';
-import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 
 class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {

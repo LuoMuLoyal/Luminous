@@ -14,9 +14,9 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 
 import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder_pages.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';

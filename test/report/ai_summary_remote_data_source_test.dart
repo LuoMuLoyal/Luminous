@@ -1,11 +1,11 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/features/report/data/datasources/ai_summary_remote_data_source.dart';
+import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
 /// Adapter that returns a JSON response with configurable body.

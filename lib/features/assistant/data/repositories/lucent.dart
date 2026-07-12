@@ -1,11 +1,11 @@
-import 'package:clock/clock.dart';
+﻿import 'package:clock/clock.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/assistant/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_repository.g.dart';
+part 'lucent.g.dart';
 
 sealed class AssistantGenerationEvent {
   const AssistantGenerationEvent();

@@ -1,12 +1,12 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/errors/app_error.dart';
-import 'package:luminous/features/record/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/record/data/repositories/lucent_daily_repository.dart';
+import 'package:luminous/features/record/data/datasources/record.dart';
+import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
 import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';

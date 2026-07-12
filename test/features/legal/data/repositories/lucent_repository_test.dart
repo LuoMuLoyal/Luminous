@@ -1,7 +1,7 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/legal/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/legal_doc_type.dart';
 import 'package:mocktail/mocktail.dart';
 

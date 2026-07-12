@@ -14,7 +14,7 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';

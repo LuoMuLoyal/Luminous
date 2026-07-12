@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

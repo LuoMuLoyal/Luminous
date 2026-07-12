@@ -1,7 +1,7 @@
 ﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/red_flag_evaluator.dart';
 

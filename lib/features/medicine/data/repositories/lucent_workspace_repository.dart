@@ -6,12 +6,12 @@ import 'package:forui/forui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
-import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
+import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
 /// Lucent-backed [MedicineWorkspaceRepository] that derives the medicine

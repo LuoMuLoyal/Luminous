@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';

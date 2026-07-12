@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
 import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/settings/data/datasources/profile_remote_data_source.dart';
+import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync_provider.dart';
 

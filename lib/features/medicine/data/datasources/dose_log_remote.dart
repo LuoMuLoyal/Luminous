@@ -3,7 +3,7 @@ import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'dose_log_remote_data_source.g.dart';
+part 'dose_log_remote.g.dart';
 
 enum DoseLogStatus { taken, skipped, missed, planned }
 

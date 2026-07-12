@@ -1,11 +1,11 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
-import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 class _MockAdapter implements HttpClientAdapter {

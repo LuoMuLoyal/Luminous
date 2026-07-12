@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/app.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/features/today/data/repositories/mock_repository.dart';
-import 'package:luminous/features/report/data/repositories/mock_repository.dart';
-import 'package:luminous/features/record/data/repositories/mock_repository.dart';
-import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
+import 'package:luminous/features/today/data/repositories/mock.dart';
+import 'package:luminous/features/report/data/repositories/mock.dart';
+import 'package:luminous/features/record/data/repositories/mock.dart';
+import 'package:luminous/features/mine/data/repositories/mock.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {

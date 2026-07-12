@@ -1,10 +1,10 @@
-import 'package:lucent_api/api/export.dart' as lucent;
+﻿import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/today/data/datasources/ai_remote_data_source.dart';
+import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_ai_repository.g.dart';
+part 'lucent_ai.g.dart';
 
 sealed class TodayAiGenerationEvent {
   const TodayAiGenerationEvent();

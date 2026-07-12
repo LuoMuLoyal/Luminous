@@ -18,7 +18,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_delete_dialog.dart';

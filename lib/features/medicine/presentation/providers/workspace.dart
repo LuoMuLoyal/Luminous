@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 
 final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {

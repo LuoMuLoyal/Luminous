@@ -1,9 +1,9 @@
-﻿import 'package:luminous/features/today/data/repositories/lucent_repository.dart';
+﻿import 'package:luminous/features/today/data/repositories/lucent.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock_repository.g.dart';
+part 'mock.g.dart';
 
 /// Demo-only mock implementation of [TodayRepository] used for tests.
 ///

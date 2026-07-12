@@ -12,7 +12,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
-import 'package:luminous/features/settings/data/datasources/profile_remote_data_source.dart';
+import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';

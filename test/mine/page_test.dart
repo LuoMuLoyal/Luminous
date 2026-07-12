@@ -16,7 +16,7 @@ import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
+import 'package:luminous/features/mine/data/repositories/mock.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/completeness_notice.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';

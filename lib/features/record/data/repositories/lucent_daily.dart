@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
@@ -8,12 +8,12 @@ import 'package:luminous/core/errors/app_error.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/features/record/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 /// Cache-first implementation of [DailyRecordRepository].
 ///

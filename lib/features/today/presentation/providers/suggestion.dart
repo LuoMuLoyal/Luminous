@@ -1,10 +1,10 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/today/data/datasources/suggestion_remote_data_source.dart';
+import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

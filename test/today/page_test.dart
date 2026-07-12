@@ -9,7 +9,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/today/data/repositories/mock_repository.dart';
+import 'package:luminous/features/today/data/repositories/mock.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';

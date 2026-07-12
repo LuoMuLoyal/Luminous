@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
-import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/report/data/repositories/lucent_repository.dart';
+import 'package:luminous/features/report/data/datasources/report.dart';
+import 'package:luminous/features/report/data/repositories/lucent.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 void main() {

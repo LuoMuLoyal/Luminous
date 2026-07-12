@@ -29,7 +29,7 @@ library;
 import 'package:mocktail/mocktail.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
-import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
+import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';

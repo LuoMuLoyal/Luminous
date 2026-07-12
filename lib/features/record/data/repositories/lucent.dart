@@ -6,7 +6,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 

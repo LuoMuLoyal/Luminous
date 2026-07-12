@@ -6,7 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_form_fields.dart';

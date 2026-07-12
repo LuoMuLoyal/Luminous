@@ -1,8 +1,8 @@
-import 'package:clock/clock.dart';
+﻿import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/record/data/repositories/mock_repository.dart';
+import 'package:luminous/features/record/data/repositories/mock.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 
 class SelectedRecordDateNotifier extends Notifier<DateTime> {

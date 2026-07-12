@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

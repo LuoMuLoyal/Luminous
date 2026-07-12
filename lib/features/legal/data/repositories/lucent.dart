@@ -8,7 +8,7 @@ import 'package:lucent_api/api/export.dart';
 
 import '../../domain/entities/legal_doc_type.dart';
 import '../../domain/entities/legal_document.dart';
-import '../../domain/repositories/legal_repository.dart';
+import '../../domain/repositories/documents.dart';
 
 /// Riverpod provider for [LegalRepository].
 final legalRepositoryProvider = Provider<LegalRepository>((ref) {

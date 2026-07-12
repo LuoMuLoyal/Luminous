@@ -1,10 +1,10 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/features/today/data/datasources/ai_remote_data_source.dart';
+import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 
 /// SSE adapter that returns a stream of events.
 class _SseAdapter implements HttpClientAdapter {

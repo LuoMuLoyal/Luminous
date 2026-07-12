@@ -1,5 +1,5 @@
-import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/settings/data/datasources/profile_remote_data_source.dart';
+﻿import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'profile.g.dart';

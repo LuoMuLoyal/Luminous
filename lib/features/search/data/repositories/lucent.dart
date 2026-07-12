@@ -1,13 +1,13 @@
 ﻿import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/search/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/mapper.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lucent_repository.g.dart';
+part 'lucent.g.dart';
 
 /// Lucent-backed medicine search repository.
 class LucentMedicineSearchRepository implements MedicineSearchRepository {

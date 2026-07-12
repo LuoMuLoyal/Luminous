@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+﻿import 'package:flutter/foundation.dart';
 import 'package:clock/clock.dart';
 import 'package:luminous/core/utils/string_utils.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 
 @immutable

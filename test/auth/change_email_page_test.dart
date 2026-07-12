@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
+import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
