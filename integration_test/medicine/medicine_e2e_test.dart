@@ -7,7 +7,7 @@ void main() {
     await openTab($, '用药');
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
 
-    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await $.tester.tap(find.byIcon(FLucideIcons.search).last);
     await settleE2e($);
 
     expect($('搜索药品').exists, true);
@@ -33,7 +33,7 @@ void main() {
     );
 
     await openTab($, '用药');
-    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await $.tester.tap(find.byIcon(FLucideIcons.search).last);
     await settleE2e($);
 
     await $.tester.enterText(find.byType(TextField), '布洛芬');
@@ -64,7 +64,7 @@ void main() {
     await pumpOfflineApp($, healthContextRepository: healthContextRepository);
 
     await openTab($, '用药');
-    await $.tester.tap(find.byIcon(Icons.search_rounded).last);
+    await $.tester.tap(find.byIcon(FLucideIcons.search).last);
     await settleE2e($);
 
     await $.tester.enterText(find.byType(TextField), '布洛芬');

@@ -18,24 +18,26 @@ void main() {
       await tester.pumpWidget(
         _appShell(
           FBadge.raw(
-            builder: (context, style) => const Icon(Icons.star, size: 16),
+            builder: (context, style) =>
+                const Icon(FLucideIcons.star, size: 16),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.star), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.star), findsOneWidget);
     });
 
     testWidgets('FBadge.raw 渲染图标带自定义颜色', (tester) async {
       await tester.pumpWidget(
         _appShell(
           FBadge.raw(
-            builder: (context, style) => const Icon(Icons.favorite, size: 16),
+            builder: (context, style) =>
+                const Icon(FLucideIcons.heart, size: 16),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.heart), findsOneWidget);
     });
   });
 
@@ -51,12 +53,12 @@ void main() {
         _appShell(
           const FHeader.nested(
             title: Text('Profile'),
-            prefixes: [Icon(Icons.person)],
+            prefixes: [Icon(FLucideIcons.userRound)],
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.person), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.userRound), findsOneWidget);
       expect(find.text('Profile'), findsOneWidget);
     });
 

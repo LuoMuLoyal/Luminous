@@ -2200,7 +2200,7 @@ class _FakeRecordRepository implements RecordRepository {
             const RecordTimelineEntry(
               time: '09:45',
               type: RecordEntryType.vitals,
-              icon: Icons.favorite_rounded,
+              icon: FLucideIcons.heart,
               accent: SemanticColor.primary,
               softColor: SemanticColor.neutral,
               titleKey: RecordCopyKey.typeVitals,

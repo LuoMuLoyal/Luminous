@@ -52,14 +52,17 @@ void main() {
           PageScaffold(
             title: 'Page',
             actions: [
-              IconButton(icon: const Icon(Icons.share), onPressed: () {}),
+              IconButton(
+                icon: const Icon(FLucideIcons.share2),
+                onPressed: () {},
+              ),
             ],
             child: const SizedBox.shrink(),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.share), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.share2), findsOneWidget);
     });
 
     testWidgets('renders custom title widget', (tester) async {

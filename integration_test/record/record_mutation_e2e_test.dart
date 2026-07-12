@@ -14,7 +14,7 @@ void main() {
 
     await openTab($, '记录');
 
-    await $.tester.tap(find.byIcon(Icons.add_rounded).last);
+    await $.tester.tap(find.byIcon(FLucideIcons.plus).last);
     await settleE2e($);
 
     expect($('类型').exists, true);

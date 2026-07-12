@@ -225,12 +225,12 @@ void main() {
         _appShell(
           FTile(
             title: const Text('With trailing'),
-            suffix: const Icon(Icons.star),
+            suffix: const Icon(FLucideIcons.star),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.star), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.star), findsOneWidget);
     });
   });
 

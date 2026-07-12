@@ -19,7 +19,7 @@ void main() {
           const AppStateMessageView(
             title: 'No data',
             description: 'Nothing to show yet.',
-            icon: Icons.inbox_outlined,
+            icon: FLucideIcons.inbox,
           ),
         ),
       );
@@ -27,7 +27,7 @@ void main() {
       expect(find.byType(FCard), findsOneWidget);
       expect(find.text('No data'), findsOneWidget);
       expect(find.text('Nothing to show yet.'), findsOneWidget);
-      expect(find.byIcon(Icons.inbox_outlined), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.inbox), findsOneWidget);
     });
 
     testWidgets('renders action button when provided', (tester) async {
@@ -36,7 +36,7 @@ void main() {
           AppStateMessageView(
             title: 'Error',
             description: 'Tap to retry',
-            icon: Icons.warning_amber_rounded,
+            icon: FLucideIcons.triangleAlert,
             actionLabel: 'Retry',
             onAction: () {},
           ),
@@ -54,7 +54,7 @@ void main() {
           AppStateMessageView(
             title: 'Network error',
             description: 'Check connection',
-            icon: Icons.wifi_off,
+            icon: FLucideIcons.wifiOff,
             actionLabel: 'Retry',
             onAction: () => tapped = true,
           ),
@@ -73,7 +73,7 @@ void main() {
             maxWidth: 560,
             title: 'Limited',
             description: 'Width is constrained.',
-            icon: Icons.info_outline,
+            icon: FLucideIcons.info,
           ),
         ),
       );
@@ -95,7 +95,7 @@ void main() {
           const AppStateMessageView(
             title: 'Full',
             description: 'No width limit.',
-            icon: Icons.info_outline,
+            icon: FLucideIcons.info,
           ),
         ),
       );
@@ -118,7 +118,7 @@ void main() {
             child: AppStateMessageView(
               title: 'Need retry',
               description: 'The response did not finish.',
-              icon: Icons.warning_amber_rounded,
+              icon: FLucideIcons.triangleAlert,
               actionLabel: 'Retry',
             ),
           ),
@@ -136,7 +136,7 @@ void main() {
           const AppStateErrorView(
             title: 'Something went wrong',
             description: 'Please try again later.',
-            icon: Icons.error_outline,
+            icon: FLucideIcons.circleAlert,
           ),
         ),
       );
@@ -151,7 +151,7 @@ void main() {
           const AppStateErrorView(
             title: 'Compact',
             description: 'Small error view',
-            icon: Icons.info_outline,
+            icon: FLucideIcons.info,
             compact: true,
           ),
         ),
@@ -169,7 +169,7 @@ void main() {
           const AppStateMessageView(
             title: 'Neutral',
             description: 'Primary accent',
-            icon: Icons.info_outline,
+            icon: FLucideIcons.info,
             tone: AppStateTone.neutral,
           ),
         ),
@@ -186,7 +186,7 @@ void main() {
           const AppStateMessageView(
             title: 'Danger',
             description: 'Destructive accent',
-            icon: Icons.error_outline,
+            icon: FLucideIcons.circleAlert,
             tone: AppStateTone.danger,
           ),
         ),

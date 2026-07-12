@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:patrol/patrol.dart';
 import 'package:lucent_api/api/export.dart'
     show CooldownMessageDto, LucentClient, MedicineDoseLogsApi;
@@ -57,6 +58,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
+export 'package:forui/forui.dart';
 export 'package:patrol/patrol.dart' hide Notification;
 export 'package:luminous/app/router.dart' show router;
 export 'package:luminous/features/auth/data/datasources/remote_data_source.dart'
@@ -714,7 +716,7 @@ class E2eRecordRepository implements RecordRepository {
         RecordTimelineEntry(
           time: '09:45',
           type: RecordEntryType.vitals,
-          icon: Icons.favorite_rounded,
+          icon: FLucideIcons.heart,
           accent: SemanticColor.destructive,
           softColor: SemanticColor.neutral,
           titleKey: RecordCopyKey.typeVitals,
