@@ -1,12 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/features/auth/presentation/providers/shared/auth_action_runner.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 
 part 'login_form_provider.freezed.dart';
@@ -103,7 +104,7 @@ class LoginFormNotifier extends Notifier<LoginFormState>
 
   Future<AuthSession?> submit() async {
     state = state.copyWith(isSubmitting: true, errorMessage: null);
-    final (:value, :error) = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'LoginFormNotifier.submit',
       action: () async {
@@ -120,17 +121,22 @@ class LoginFormNotifier extends Notifier<LoginFormState>
         return session;
       },
     );
-    if (error != null) {
-      state = state.copyWith(isSubmitting: false, errorMessage: error);
-      return null;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSubmitting: false,
+          errorMessage: error.message,
+        );
+        return null;
+      case Success(:final value):
+        state = state.copyWith(isSubmitting: false);
+        return value;
     }
-    state = state.copyWith(isSubmitting: false);
-    return value;
   }
 
   Future<bool> sendCode() async {
     state = state.copyWith(isSendingCode: true, errorMessage: null);
-    final (:value, :error) = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'LoginFormNotifier.sendCode',
       action: () => ref
@@ -140,18 +146,23 @@ class LoginFormNotifier extends Notifier<LoginFormState>
             scene: AuthVerificationScene.login,
           ),
     );
-    if (error != null) {
-      state = state.copyWith(isSendingCode: false, errorMessage: error);
-      return false;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSendingCode: false,
+          errorMessage: error.message,
+        );
+        return false;
+      case Success(:final value):
+        final cooldown = value.cooldown.toInt();
+        state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
+        startCooldown(
+          cooldown,
+          getCooldownSeconds: () => state.cooldownSeconds,
+          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+        );
+        return true;
     }
-    final cooldown = value!.cooldown.toInt();
-    state = state.copyWith(isSendingCode: false, cooldownSeconds: cooldown);
-    startCooldown(
-      cooldown,
-      getCooldownSeconds: () => state.cooldownSeconds,
-      setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
-    );
-    return true;
   }
 }
 

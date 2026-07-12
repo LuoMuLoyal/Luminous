@@ -9,6 +9,44 @@
   "desktopSidebarSettings": "设置",
   "desktopSidebarHelp": "帮助",
   "desktopSidebarHelpToast": "会打开帮助与支持。",
+  "placeholderSoon": "{label} · 即将上线",
+  "@placeholderSoon": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。",
+  "stateFatalErrorTitle": "加载失败",
+  "stateFatalErrorDescription": "页面数据未能加载，请重试。",
+  "stateNotSignedInTitle": "尚未登录",
+  "stateNotSignedInDescription": "登录后可查看你的个性化数据、提醒和报告。",
+  "statePreviewSignInHint": "登录后查看你的真实数据",
+  "statePreviewSignInAction": "登录查看",
+  "stateEmptyDefaultTitle": "暂无数据",
+  "stateEmptyDefaultDescription": "添加记录后即可解锁个性化洞察和摘要。",
+  "placeholderNoData": "暂无数据",
+  "placeholderNotSet": "未设置",
+  "placeholderAddToUnlock": "记录后解锁",
+  "placeholderNoTime": "未设置时间",
+  "placeholderNoDuration": "未记录",
+  "legalListTitle": "法律文件",
+  "legalDetailTitle": "法律文件",
+  "legalNotFoundTitle": "文档不存在",
+  "legalNotFoundDescription": "找不到该法律文档，请返回列表查看可用文档。",
+  "legalLoadErrorTitle": "加载失败",
+  "legalLoadErrorDescription": "无法加载法律文档内容，请稍后重试。",
+  "legalRetryAction": "重试",
+  "legalBackToListAction": "返回列表",
+  "legalListEmptyTitle": "暂无法律文档",
+  "legalListEmptyDescription": "法律文档将在添加后显示。",
+  "legalListUpdatedAt": "更新于 {date}",
+  "@legalListUpdatedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "recordPageDescription": "日历、时间线与多类型每日记录会从这里生长出来。",
   "recordSectionTitle": "每日时间线",
   "recordSectionSubtitle": "记录页的第一步先搭结构，不急着恢复旧逻辑。",
@@ -99,11 +137,6 @@
   "recordQuickReorderHint": "长按拖拽调整顺序",
   "recordQuickReorderDone": "完成",
   "recordQuickReorderCancel": "取消",
-  "settingsQuickEntrySection": "快速记录",
-  "settingsQuickEntryCollapseTitle": "默认收起快速入口",
-  "settingsQuickEntryCollapseSubtitle": "在记录页收起快速记录区域，仅显示标题",
-  "settingsQuickEntryDynamicSortTitle": "动态排序",
-  "settingsQuickEntryDynamicSortSubtitle": "按使用频率自动排列快捷入口",
   "recordFastEntryTitle": "快速记录{type}",
   "@recordFastEntryTitle": {
     "placeholders": {
@@ -242,7 +275,9 @@
   "recordFilterActiveLabel": "已筛选：{label}",
   "@recordFilterActiveLabel": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
   "recordFilterClearAction": "清除",
@@ -798,422 +833,72 @@
   "medicineSearchNoResultSwitch": "切换数据源",
   "medicineSearchErrorTitle": "搜索页暂时没有加载出来",
   "medicineSearchErrorDescription": "请检查网络连接后重试。",
-  "mineSectionTitle": "个人工作区",
-  "mineSectionSubtitle": "身份、目标与隐私控制会共享在这一块安静的界面里。",
-  "mineHeaderNotifications": "通知",
-  "mineHeaderSettings": "设置",
-  "mineAccountDisplayName": "Lumi 用户",
-  "mineAccountGuestDisplayName": "访客",
-  "mineAccountSignedIn": "已登录",
-  "mineAccountSignedOut": "未登录",
-  "mineAccountMeta": "会员到期：2026-05-20",
-  "mineAccountSignedOutMeta": "登录后可同步档案、提醒与个性化健康数据",
-  "mineAccountManageAction": "管理账号",
-  "mineAccountEmailVerified": "邮箱已验证",
-  "mineAccountEmailUnverified": "邮箱未验证",
-  "mineAccountPasswordSet": "已设置密码",
-  "mineAccountPasswordUnset": "未设置密码",
-  "mineAccountLinkedIdentityCount": "已绑定 {count} 个",
-  "@mineAccountLinkedIdentityCount": {
+  "medicineSearchPreviewClinical": "临床提示",
+  "medicineSearchPreviewSafety": "安全确认",
+  "medicineSearchPreviewEmpty": "选择一个药品查看详情",
+  "medicineSearchSourceRefCn": "批准文号：{id}",
+  "@medicineSearchSourceRefCn": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineAccountLinkedIdentityNone": "未绑定第三方",
-  "mineAccountLastLogin": "上次登录 {date}",
-  "@mineAccountLastLogin": {
-    "placeholders": {
-      "date": {
+      "id": {
         "type": "String"
       }
     }
   },
-  "mineAccountLastLoginNone": "上次登录 --",
-  "mineAccountStudentRole": "大学生",
-  "mineSignedOutNoticeTitle": "当前未登录",
-  "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
-  "mineCompletionTitle": "档案完整度",
-  "mineAlertAllergyTitle": "过敏史",
-  "mineAlertAllergySubtitle": "花粉、青霉素",
-  "mineAlertAllergyBadge": "2 项",
-  "mineAlertMedicineTitle": "当前用药",
-  "mineAlertMedicineSubtitle": "2 种药物",
-  "mineAlertMedicineBadge": "按时服用",
-  "mineAlertPrivacyTitle": "分享控制",
-  "mineAlertPrivacySubtitle": "分享前先预览确认",
-  "mineAlertPrivacyBadge": "先确认",
-  "mineArchiveBasicTitle": "基础信息",
-  "mineArchiveBasicSubtitle": "个人信息与健康信息",
-  "mineArchiveAllergyTitle": "过敏史",
-  "mineArchiveAllergySubtitle": "食物、药物、环境过敏记录",
-  "mineArchiveMedicineTitle": "当前用药",
-  "mineArchiveMedicineSubtitle": "正在使用的药品与用药记录",
-  "mineArchiveEmergencyTitle": "紧急联系人",
-  "mineArchiveEmergencySubtitle": "1 位联系人",
-  "mineArchiveCompleted": "已完善",
-  "mineArchiveNeedsFill": "待补充",
-  "mineCompletenessGapTitle": "完善健康档案",
-  "mineCompletenessGapSubtitle": "以下信息缺失可能影响安全检查精度",
-  "mineCompletenessGapBasicInfo": "基础信息",
-  "mineCompletenessGapBasicInfoDesc": "出生日期与身高用于剂量计算",
-  "mineCompletenessGapAllergy": "过敏史",
-  "mineCompletenessGapAllergyDesc": "缺失可能影响用药安全提醒",
-  "mineCompletenessGapMedicine": "当前用药",
-  "mineCompletenessGapMedicineDesc": "缺失将影响药物相互作用检查",
-  "mineCompletenessGapAction": "去完善",
-  "minePrivacyReportTitle": "报告分享",
-  "minePrivacyReportSubtitle": "健康报告、趋势分析",
-  "mineAiPrivacySectionTitle": "AI 与隐私",
-  "minePrivacyAiTitle": "AI 总结与建议",
-  "minePrivacyAiSubtitle": "每日总结、趋势建议",
-  "assistantEntryTitle": "AI 对话",
-  "assistantEntrySubtitle": "流式问答与受控健康上下文",
-  "minePrivacyOnlyMe": "仅自己可见",
-  "minePrivacyShareAfterGrant": "授权后分享",
-  "mineReminderSectionTitle": "提醒设置",
-  "mineReminderMedicineTitle": "用药提醒",
-  "mineReminderWaterTitle": "饮水提醒",
-  "mineReminderSleepTitle": "睡眠提醒",
-  "mineReminderLocalOnly": "仅本地",
-  "mineReminderEnabled": "已开启",
-  "mineNotificationReminderSectionTitle": "通知与提醒",
-  "mineNotificationInboxTitle": "通知收件箱",
-  "mineNotificationInboxUnreadSummary": "{count} 条未读",
-  "@mineNotificationInboxUnreadSummary": {
+  "medicineSearchSourceRefDrugbank": "DrugBank ID：{id}",
+  "@medicineSearchSourceRefDrugbank": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineNotificationInboxSignedOutSummary": "登录后查看",
-  "mineReminderSleepOff": "未开启",
-  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
-  "@mineReminderSleepSummary": {
-    "placeholders": {
-      "bedtime": {
-        "type": "String"
-      },
-      "wakeTime": {
+      "id": {
         "type": "String"
       }
     }
   },
-  "mineAccountSettingsTitle": "账号与设置",
-  "mineSettingLanguageTitle": "语言设置",
-  "mineSettingLanguageValue": "简体中文",
-  "mineSettingExportTitle": "数据导出",
-  "mineSettingExportValue": "导出我的健康数据",
-  "mineSettingHelpTitle": "帮助与反馈",
-  "mineSettingHelpValue": "常见问题与意见反馈",
-  "mineSettingAboutTitle": "关于 Luminous",
-  "mineSettingAboutValue": "版本 1.2.0",
-  "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
-  "minePrivacyNoticeAction": "查看隐私政策",
-  "mineProfileUnknownValue": "未设置",
-  "mineProfileAgeYears": "{age}岁",
-  "@mineProfileAgeYears": {
+  "medicineRiskCheckRedFlagBannerTitle": "红旗警告",
+  "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。",
+  "@medicineRiskCheckRedFlagSevereAllergy": {
     "placeholders": {
-      "age": {
-        "type": "int"
-      }
+      "drug": {},
+      "allergen": {}
     }
   },
-  "mineProfileHeightCm": "{height}cm",
-  "@mineProfileHeightCm": {
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生。",
+  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
     "placeholders": {
-      "height": {
-        "type": "int"
-      }
+      "drug": {}
     }
   },
-  "mineProfileMeta": "{age} · {height}",
-  "@mineProfileMeta": {
+  "medicineRiskCheckRedFlagPregnancyContraindication": "孕期/哺乳期用药警告：{drug} 标注为禁忌，请务必咨询医生后再使用。",
+  "@medicineRiskCheckRedFlagPregnancyContraindication": {
     "placeholders": {
-      "age": {
-        "type": "String"
-      },
-      "height": {
-        "type": "String"
-      }
+      "drug": {}
     }
   },
-  "mineCompletionSubtitle": "完成度良好，继续完善更准确的建议",
-  "mineSummaryTitle": "健康上下文摘要",
-  "mineSummaryUpdatedAt": "更新于 2025-05-15",
-  "mineSummaryAge": "年龄",
-  "mineSummaryAllergies": "过敏",
-  "mineSummaryConditions": "慢病/条件",
-  "mineSummaryMedicines": "当前用药",
-  "mineSummaryMissingInfo": "缺失信息：生日、身高、单位制",
-  "mineSummaryCompleteAction": "去完善",
-  "mineReadinessPreviewTitle": "个人档案尚未解锁",
-  "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药。",
-  "mineReadinessPreviewBadge": "预览",
-  "mineReadinessSignedInBadge": "已登录",
-  "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
-  "@mineReadinessIncompleteTitle": {
+  "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。",
+  "@medicineRiskCheckRedFlagInformationGap": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "drug": {}
     }
   },
-  "mineReadinessIncompleteDescription": "补充这些信息后，安全提醒、分享控制和摘要会更准确。",
-  "mineReadinessReadyTitle": "档案已基本就绪",
-  "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权。",
-  "mineReadinessManageAction": "管理档案",
-  "mineAccountPrivacySectionTitle": "账户与隐私",
-  "mineProfileTitle": "健康档案",
-  "mineProfileBasicInfoTitle": "基础资料",
-  "mineProfileBasicInfoSubtitle": "个人基本信息",
-  "mineProfileAllergiesTitle": "过敏史",
-  "mineProfileAllergiesSubtitle": "2 项记录",
-  "mineProfileConditionsTitle": "基础病史",
-  "mineProfileConditionsSubtitle": "1 项记录",
-  "mineProfileMedicinesTitle": "当前用药",
-  "mineProfileMedicinesSubtitle": "3 种药品",
-  "mineSettingsThemeTitle": "主题",
-  "mineSettingsAccountTitle": "账号与安全",
-  "mineSettingsLanguageTitle": "语言",
-  "mineSettingsNotificationsTitle": "通知设置",
-  "settingsLanguageSystemLabel": "跟随系统",
-  "settingsLanguageChineseLabel": "简体中文",
-  "settingsLanguageEnglishLabel": "English",
-  "settingsThemeAppearanceTitle": "外观",
-  "settingsThemeModeSectionTitle": "显示模式",
-  "settingsThemeFamilySectionTitle": "颜色主题",
-  "settingsThemeFamilyBlue": "蓝色",
-  "settingsThemeFamilyGreen": "绿色",
-  "settingsThemeFamilyNeutral": "中性灰",
-  "settingsThemeFamilyOrange": "橙色",
-  "settingsThemeFamilyRed": "红色",
-  "settingsThemeFamilyRose": "玫瑰",
-  "settingsThemeFamilySlate": "石板灰",
-  "settingsThemeFamilyViolet": "紫罗兰",
-  "settingsThemeFamilyYellow": "黄色",
-  "settingsThemeFamilyZinc": "锌灰",
-  "settingsSyncFailed": "同步设置失败",
-  "settingsNotificationsMedicationReminders": "用药提醒",
-  "settingsNotificationsHealthAlerts": "健康提醒",
-  "settingsNotificationsWeeklySummary": "每周摘要",
-  "settingsNotificationsPermissionEnabled": "系统通知已开启",
-  "settingsNotificationsPermissionDisabled": "系统通知未开启",
-  "settingsNotificationsPermissionUnsupported": "当前平台不提供通知权限状态",
-  "settingsNotificationsPermissionEnabledHint": "通知已授权。下方开关可控制各类通知的显示。",
-  "settingsNotificationsPermissionDisabledHint": "点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。",
-  "settingsNotificationsGeneralGroup": "通用通知",
-  "settingsNotificationsReminderGroup": "提醒",
-  "settingsNotificationsSleepReminderTitle": "睡眠提醒",
-  "settingsNotificationsSleepReminderSubtitle": "在设定时间提醒你准备入睡",
-  "settingsNotificationsSleepBedtime": "就寝时间",
-  "settingsNotificationsSleepWakeTime": "起床时间",
-  "settingsNotificationsTimeUnset": "未设置",
-  "settingsAccountSecuritySectionTitle": "账号与安全",
-  "settingsNotificationsSectionTitle": "通知",
-  "settingsNotificationsSummary": "已开启 {count} 项",
-  "@settingsNotificationsSummary": {
+  "medicineRiskCheckRedFlagActionSevereAllergy": "请立即联系急救（120），不要自行处理",
+  "medicineRiskCheckRedFlagActionPregnancyContraindication": "请停止自行用药，尽快咨询医生或药师",
+  "medicineRiskCheckRedFlagActionInformationGap": "当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认",
+  "scanResultTitle": "识别结果",
+  "scanNoResultTitle": "未能识别到药品信息",
+  "scanRetakeAction": "重新拍照",
+  "scanConfirmDetailAction": "确认，查看详情",
+  "scanMethodPickerTitle": "选择识别方式",
+  "scanBarcodeNotFoundToast": "未找到该条码对应的药品",
+  "scanSearchFailedToast": "搜索失败: {error}",
+  "@scanSearchFailedToast": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsPrivacySectionTitle": "隐私",
-  "settingsAiTitle": "AI 设置",
-  "settingsAiSubtitle": "AI 总结、助手与记忆",
-  "settingsAiSummariesTitle": "AI 总结与建议",
-  "settingsAiSummariesSubtitle": "每日健康总结与趋势建议",
-  "settingsAiAssistantTitle": "AI 助手",
-  "settingsAiAssistantSubtitle": "健康问答助手",
-  "settingsAiMemoryTitle": "AI 记忆",
-  "settingsAiMemorySubtitle": "让 AI 记住你的健康偏好",
-  "settingsGeneralSectionTitle": "通用",
-  "settingsAboutSectionTitle": "关于",
-  "settingsExportDescription": "导出你的健康数据为 PDF，处理完成后可下载。",
-  "settingsExportRequestButton": "请求导出",
-  "settingsHelpEmpty": "暂无帮助内容",
-  "settingsHelpError": "帮助内容加载失败",
-  "settingsAboutPrivacyPolicy": "隐私政策",
-  "settingsAboutTermsOfService": "服务条款",
-  "settingsAboutLicenses": "开源许可",
-  "settingsAboutSupport": "帮助与反馈",
-  "mineErrorTitle": "我的页面暂时没有加载出来",
-  "mineErrorDescription": "结构已经接好，可以重新拉取一次数据。",
-  "mineActionToast": "{action}：后续会接入对应详情或设置流程。",
-  "@mineActionToast": {
-    "placeholders": {
-      "action": {
+      "error": {
         "type": "String"
       }
     }
   },
+  "medicineEmptyAddFirstTitle": "添加你的第一个药品",
+  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。",
   "todaySectionTitle": "今日工作区",
   "todaySectionSubtitle": "新的首页会从这里逐步接入提醒、快照、喝水与 Lumi 建议。",
-  "authWelcomeBack": "欢迎回来",
-  "authCreateAccount": "创建账号",
-  "authModePassword": "密码",
-  "authModeCode": "验证码",
-  "authEmailLabel": "邮箱",
-  "authEmailHint": "name@example.com",
-  "authPasswordLabel": "密码",
-  "authPasswordHint": "至少 8 位，建议包含大小写和数字",
-  "authCodeLabel": "验证码",
-  "authNicknameLabel": "昵称",
-  "authNicknameHint": "可选",
-  "authEmailRequiredToast": "请先填写邮箱。",
-  "authCodeRequiredToast": "请先填写验证码。",
-  "authPasswordRequiredToast": "请先填写密码。",
-  "authConfirmPasswordRequiredToast": "请先确认密码。",
-  "authEmailRequiredError": "请输入邮箱。",
-  "authEmailInvalidError": "请输入有效的邮箱地址。",
-  "authCodeRequiredError": "请输入验证码。",
-  "authPasswordRequiredError": "请输入密码。",
-  "authConfirmPasswordRequiredError": "请确认密码。",
-  "authPasswordsDoNotMatchError": "两次输入的密码不一致。",
-  "authSendCode": "发送验证码",
-  "authSendCodeAgain": "{seconds} 秒后重发",
-  "@authSendCodeAgain": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "authCodeResendWait": "请 {seconds} 秒后再发送验证码",
-  "@authCodeResendWait": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "authRegisterSuccess": "注册成功，请登录",
-  "authSignIn": "登录",
-  "authWechatSignIn": "微信登录",
-  "authWechatAuthorizeOpened": "已在浏览器打开微信授权页。",
-  "authWechatBrowserOpenFailed": "无法打开微信授权页。",
-  "authWechatCallbackLabel": "微信回调链接 / 授权码",
-  "authWechatCallbackHint": "扫码后粘贴回调链接",
-  "authWechatCompleteAction": "完成微信登录",
-  "authWechatCallbackRequiredToast": "请先粘贴微信回调链接。",
-  "authWechatCallbackInvalidToast": "微信回调链接缺少 code 或 state。",
-  "authCreateAccountAction": "创建账号",
-  "authForgotPasswordPrompt": "忘记密码？",
-  "authResetPasswordAction": "重置密码",
-  "authNeedAccountPrompt": "还没有账号？",
-  "authRegisterNowAction": "立即注册",
-  "authHaveAccountPrompt": "已经有账号？",
-  "authRememberPasswordPrompt": "想起密码了？",
-  "authNewPasswordLabel": "新密码",
-  "authConfirmPasswordLabel": "确认密码",
-  "authPasswordsDoNotMatch": "两次输入的密码不一致。",
-  "authResetPasswordSubmit": "重置密码",
-  "authResetPasswordSuccess": "密码已更新，请重新登录。",
-  "authLoginSubtitle": "登录以继续你的健康记录",
-  "authRegisterSubtitle": "加入 Luminous,开启你的健康记录",
-  "authForgotPasswordSubtitle": "我们将发送验证码以重置你的密码",
-  "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
-  "@authTermsAgreement": {
-    "placeholders": {
-      "terms": {
-        "type": "String"
-      },
-      "privacy": {
-        "type": "String"
-      }
-    }
-  },
-  "authTermsOfService": "服务条款",
-  "authPrivacyPolicy": "隐私政策",
-  "authTermsComingSoonToast": "服务条款与隐私政策即将上线。",
-  "authChangeEmailFormTitle": "更换邮箱",
-  "authNewEmailLabel": "新邮箱",
-  "authChangeEmailSubmit": "更新邮箱",
-  "authChangeEmailSuccess": "邮箱已更新。",
-  "authAccountSettingsFormTitle": "账号与安全",
-  "authAccountOverviewTitle": "账号状态",
-  "authAccountOverviewEmail": "邮箱",
-  "authAccountOverviewEmailVerified": "邮箱验证",
-  "authAccountOverviewPassword": "密码",
-  "authAccountOverviewLastLogin": "上次登录",
-  "authEmailMissing": "未设置",
-  "authEmailVerifiedAt": "{time} 已验证",
-  "@authEmailVerifiedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "authEmailUnverifiedStatus": "未验证",
-  "authPasswordSetStatus": "已设置",
-  "authPasswordUnsetStatus": "未设置",
-  "authLastLoginUnknown": "未知",
-  "authProfileSectionTitle": "资料信息",
-  "authProfileSectionDescription": "修改昵称或头像地址；留空会按 Lucent 当前规则清空对应字段。",
-  "authAvatarLabel": "头像地址",
-  "authAvatarHint": "https://example.com/avatar.png",
-  "authProfileSaveAction": "保存资料",
-  "authProfileSaveSuccess": "资料已更新。",
-  "authEmailSectionTitle": "登录邮箱",
-  "authEmailVerifiedDescription": "当前邮箱已经验证，可以继续更换登录邮箱。",
-  "authEmailUnverifiedDescription": "当前邮箱仍未验证；你仍可以进入更换邮箱流程。",
-  "authEmailAddAction": "添加邮箱",
-  "authEmailChangeAction": "更换邮箱",
-  "authLinkedIdentitiesSectionTitle": "第三方身份",
-  "authLinkedIdentityNone": "尚未绑定第三方身份。",
-  "authLinkedIdentityEmailMissing": "无第三方邮箱",
-  "authLinkedIdentityLinkedAt": "{date} 绑定",
-  "@authLinkedIdentityLinkedAt": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "authIdentityProviderWechatWeb": "微信网页",
-  "authIdentityProviderWechatMobile": "微信移动端",
-  "authIdentityUnlinkAction": "解绑",
-  "authIdentityUnlinkDisabledAction": "保留",
-  "authIdentityUnlinkSuccess": "身份已解绑。",
-  "authIdentityUnlinkConfirmTitle": "解绑身份",
-  "authIdentityUnlinkConfirmMessage": "确定要解绑 {provider}？",
-  "@authIdentityUnlinkConfirmMessage": {
-    "placeholders": {
-      "provider": {
-        "type": "String"
-      }
-    }
-  },
-  "authIdentityLinkWechatAction": "绑定微信",
-  "authIdentityLinkSuccess": "微信身份已绑定。",
-  "authIdentityLinkUnsupported": "当前平台无法打开微信绑定。",
-  "authCancelAction": "取消",
-  "authPasswordSectionTitle": "修改密码",
-  "authPasswordSectionDescription": "修改后当前账号的 refresh 会话会全部失效，你需要重新登录。",
-  "authPasswordUnsetManagementHint": "当前账号还没有本地密码。",
-  "authCurrentPasswordLabel": "当前密码",
-  "authCurrentPasswordRequiredToast": "请先填写当前密码。",
-  "authNewPasswordRequiredToast": "请先填写新密码。",
-  "authChangePasswordAction": "更新密码",
-  "authChangePasswordSuccess": "密码已更新，请重新登录。",
-  "authDeleteAccountSectionTitle": "注销账号",
-  "authDeleteAccountSectionDescription": "这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。",
-  "authDeleteAccountHint": "输入当前密码以确认注销",
-  "authDeleteAccountCodeHint": "输入邮箱验证码以确认注销",
-  "authDeleteAccountEmailRequiredHint": "请先绑定并验证邮箱后再注销账号。",
-  "authDeleteAccountAction": "注销账号",
-  "authDeleteAccountSuccess": "账号已注销。",
-  "authBackHomePrompt": "返回首页？",
-  "authCheckingSession": "正在检查登录状态...",
-  "authNotSignedIn": "尚未登录",
-  "authLoginRequiredPrompt": "是否去登录",
-  "authGoLogin": "去登录",
-  "authGoRegister": "去注册",
-  "authSignOut": "退出登录",
   "todayHeroTitle": "今日",
   "todayHeroDescription": "新的首页将从这里开始重建：先完成响应式视觉系统，再逐步接入喝水、提醒、健康快照和 Lumi 建议。",
   "todayChipWater": "喝水追踪",
@@ -1327,88 +1012,6 @@
   "todayEmptyDescription": "先记录饮水、用药或睡眠，我们会为你提供个性化建议。",
   "todayEmptyAction": "去记录",
   "todayRetryAction": "重试",
-  "assistantPageTitle": "AI 对话",
-  "assistantSignedOutDescription": "登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。",
-  "assistantLoadErrorTitle": "AI 对话暂时没有加载出来",
-  "assistantLoadErrorFallback": "能力信息这次没有取到，可以重新拉取一次。",
-  "assistantSettingsEnableTitle": "启用 AI 对话",
-  "assistantSettingsEnableSubtitle": "关闭后不会发送新的对话请求",
-  "assistantSettingsMemoryTitle": "启用持久化记忆",
-  "assistantSettingsMemorySubtitle": "新对话开始时，可选择让助手参考之前的对话历史",
-  "assistantContextHealthProfile": "健康档案",
-  "assistantContextDailyRecords": "最近记录",
-  "assistantContextSleepRecords": "睡眠数据",
-  "assistantContextCurrentMedicines": "当前用药",
-  "assistantStatusSectionTitle": "当前状态",
-  "assistantStatusReady": "后端能力已就绪，可以开始对话。",
-  "assistantStatusDisabled": "你已关闭 AI 对话，当前不会发送聊天请求。",
-  "assistantStatusModelMissing": "服务端还没有可用的聊天模型配置。",
-  "assistantStatusNotReady": "交互式对话链路还没有完全就绪。",
-  "assistantStatusToolsLabel": "工具",
-  "assistantStatusContextLabel": "上下文",
-  "assistantStatusStreamingLabel": "流式输出",
-  "assistantStatusRagLabel": "RAG",
-  "assistantConversationDisabledTitle": "当前还不能开始对话",
-  "assistantConversationDisabledByUser": "你已关闭 AI 对话，重新开启后才能发送消息。",
-  "assistantConversationModelMissing": "服务端还没有可用模型，暂时无法生成回复。",
-  "assistantConversationNotReady": "交互式对话链路还没准备好，先保持当前设置即可。",
-  "assistantConversationEmptyTitle": "开始第一条消息",
-  "assistantConversationEmptyDescription": "可以直接问最近睡眠、最近记录或当前用药相关的问题。",
-  "assistantSendErrorTitle": "这次回复没有完成",
-  "assistantInputHint": "比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。",
-  "assistantSendAction": "发送",
-  "assistantSendingAction": "发送中",
-  "assistantNewConversationAction": "新对话",
-  "assistantRecentConversationsAction": "最近会话",
-  "assistantRecentConversationsTitle": "最近会话",
-  "assistantRecentConversationsEmptyTitle": "还没有历史会话",
-  "assistantRecentConversationsEmptyDescription": "开始一次对话后，最近的会话会显示在这里。",
-  "assistantRecentConversationCurrentLabel": "当前",
-  "assistantOpeningConversationLabel": "正在切换会话…",
-  "assistantUntitledConversation": "未命名会话",
-  "assistantStreamingLabel": "正在生成",
-  "assistantRetryAction": "重新发送",
-  "assistantErrorStreamInterrupted": "连接中断了，请检查网络后重试。",
-  "assistantErrorEmptyResult": "AI 没有返回有效内容，可以再试一次。",
-  "assistantErrorServer": "服务端出现问题，请稍后再试。",
-  "assistantToolTodayRecords": "今日记录",
-  "assistantToolRecordsByDate": "按日记录",
-  "assistantToolRecordsByRange": "区间记录",
-  "assistantToolTodaySummaryByDate": "指定日期总结",
-  "assistantToolReportSummaryByRange": "指定报告总结",
-  "assistantToolRecentTodaySummaries": "今日历史总结",
-  "assistantToolRecentReportSummaries": "报告历史总结",
-  "assistantToolUserProfile": "用户档案",
-  "assistantToolUserSettings": "用户设置",
-  "assistantToolCurrentMedicines": "当前用药",
-  "assistantToolSleepByRange": "睡眠概况",
-  "assistantToolSearchMedicineLeaflets": "中文说明书检索",
-  "assistantToolSearchMedicalQaCorpus": "医学问答检索",
-  "assistantToolResolveDrugbankEntity": "DrugBank 实体定位",
-  "assistantToolSearchDrugbankPassages": "DrugBank 片段检索",
-  "assistantToolProposeCreateRecord": "保存建议",
-  "assistantToolProposeUpdateRecord": "修改建议",
-  "assistantToolProposeDeleteRecord": "删除建议",
-  "assistantToolProposeUpdateSettings": "设置建议",
-  "assistantUsedToolsLabel": "参考来源",
-  "assistantConversationDisabledByUserHint": "你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。",
-  "assistantProposalConfirmCreateAction": "确认保存",
-  "assistantProposalConfirmUpdateAction": "确认修改",
-  "assistantProposalConfirmDeleteAction": "确认删除",
-  "assistantProposalConfirmSettingsAction": "确认更新",
-  "assistantProposalDismissAction": "取消",
-  "assistantProposalPendingState": "待确认",
-  "assistantProposalExecutingState": "执行中",
-  "assistantProposalConfirmedState": "已确认",
-  "assistantProposalDismissedState": "已取消",
-  "assistantProposalFailedState": "执行失败",
-  "assistantProposalConfirmedToast": "已执行这条建议。",
-  "assistantProposalTargetLabel": "目标",
-  "assistantProposalMatchedByLabel": "定位方式",
-  "assistantProposalSettingKeysLabel": "设置项",
-  "assistantProposalExpiresAtLabel": "过期时间",
-  "assistantProposalConstraintsLabel": "确认前约束",
-  "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。",
   "todayUpdatedAt": "更新于 {time}",
   "@todayUpdatedAt": {
     "placeholders": {
@@ -1630,71 +1233,6 @@
     }
   },
   "todayGreetingEveningAllDone": "晚上好，今天的记录都已处理",
-  "placeholderSoon": "{label} · 即将上线",
-  "@placeholderSoon": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。",
-  "mineThemeModeSystem": "跟随系统",
-  "mineThemeModeLight": "浅色",
-  "mineThemeModeDark": "深色",
-  "medicineSearchPreviewClinical": "临床提示",
-  "medicineSearchPreviewSafety": "安全确认",
-  "medicineSearchPreviewEmpty": "选择一个药品查看详情",
-  "medicineSearchSourceRefCn": "批准文号：{id}",
-  "@medicineSearchSourceRefCn": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "medicineSearchSourceRefDrugbank": "DrugBank ID：{id}",
-  "@medicineSearchSourceRefDrugbank": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "mineEditProfileTitle": "编辑档案",
-  "mineEditAllergyTitle": "编辑过敏",
-  "mineEditAllergyNewTitle": "新增过敏",
-  "mineEditConditionTitle": "编辑疾病",
-  "mineEditConditionNewTitle": "新增疾病",
-  "mineEditMedicineTitle": "编辑用药",
-  "mineEditMedicineNewTitle": "新增用药",
-  "mineEditSaveAction": "保存",
-  "mineEditDeleteAction": "删除",
-  "mineEditSavedToast": "已保存",
-  "mineEditDeletedToast": "已删除",
-  "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",
-  "mineEditFieldHeightCm": "身高 (cm)",
-  "mineEditFieldBloodType": "血型",
-  "mineEditFieldLocale": "语言",
-  "mineEditFieldTimezone": "时区",
-  "mineEditFieldUnitSystem": "单位制",
-  "mineEditFieldOnboardingCompleted": "完成新手引导",
-  "mineEditFieldKind": "类型",
-  "mineEditFieldLabel": "名称",
-  "mineEditFieldReaction": "反应",
-  "mineEditFieldSeverity": "严重程度",
-  "mineEditFieldNote": "备注",
-  "mineEditFieldRecordedAt": "记录时间",
-  "mineEditFieldStatus": "状态",
-  "mineEditFieldDiagnosedAt": "诊断日期 (YYYY-MM-DD)",
-  "mineEditFieldSource": "来源",
-  "mineEditFieldSourceRefId": "来源ID",
-  "mineEditFieldDisplayName": "药品名称",
-  "mineEditFieldStrengthText": "规格",
-  "mineEditFieldDoseText": "剂量",
-  "mineEditFieldRoute": "给药途径",
-  "mineEditFieldStartedAt": "开始日期 (YYYY-MM-DD)",
-  "mineEditFieldEndedAt": "结束日期 (YYYY-MM-DD)",
   "reportRangePickerTitle": "选择报告周期",
   "reportRangeCustom": "自定义",
   "reportGenerateAction": "生成总结",
@@ -1828,75 +1366,80 @@
   "reportErrorTitle": "报告页暂时没有加载出来",
   "reportErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
   "reportSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",
-  "mineSettingsAdvancedTitle": "高级设置",
+  "reportPatternSleepTitle": "睡眠变化",
+  "reportPatternSleepStatus": "持续观察",
+  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
+  "settingsQuickEntrySection": "快速记录",
+  "settingsQuickEntryCollapseTitle": "默认收起快速入口",
+  "settingsQuickEntryCollapseSubtitle": "在记录页收起快速记录区域，仅显示标题",
+  "settingsQuickEntryDynamicSortTitle": "动态排序",
+  "settingsQuickEntryDynamicSortSubtitle": "按使用频率自动排列快捷入口",
+  "settingsLanguageSystemLabel": "跟随系统",
+  "settingsLanguageChineseLabel": "简体中文",
+  "settingsLanguageEnglishLabel": "English",
+  "settingsThemeAppearanceTitle": "外观",
+  "settingsThemeModeSectionTitle": "显示模式",
+  "settingsThemeFamilySectionTitle": "颜色主题",
+  "settingsThemeFamilyBlue": "蓝色",
+  "settingsThemeFamilyGreen": "绿色",
+  "settingsThemeFamilyNeutral": "中性灰",
+  "settingsThemeFamilyOrange": "橙色",
+  "settingsThemeFamilyRed": "红色",
+  "settingsThemeFamilyRose": "玫瑰",
+  "settingsThemeFamilySlate": "石板灰",
+  "settingsThemeFamilyViolet": "紫罗兰",
+  "settingsThemeFamilyYellow": "黄色",
+  "settingsThemeFamilyZinc": "锌灰",
+  "settingsSyncFailed": "同步设置失败",
+  "settingsNotificationsMedicationReminders": "用药提醒",
+  "settingsNotificationsHealthAlerts": "健康提醒",
+  "settingsNotificationsWeeklySummary": "每周摘要",
+  "settingsNotificationsPermissionEnabled": "系统通知已开启",
+  "settingsNotificationsPermissionDisabled": "系统通知未开启",
+  "settingsNotificationsPermissionUnsupported": "当前平台不提供通知权限状态",
+  "settingsNotificationsPermissionEnabledHint": "通知已授权。下方开关可控制各类通知的显示。",
+  "settingsNotificationsPermissionDisabledHint": "点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。",
+  "settingsNotificationsGeneralGroup": "通用通知",
+  "settingsNotificationsReminderGroup": "提醒",
+  "settingsNotificationsSleepReminderTitle": "睡眠提醒",
+  "settingsNotificationsSleepReminderSubtitle": "在设定时间提醒你准备入睡",
+  "settingsNotificationsSleepBedtime": "就寝时间",
+  "settingsNotificationsSleepWakeTime": "起床时间",
+  "settingsNotificationsTimeUnset": "未设置",
+  "settingsAccountSecuritySectionTitle": "账号与安全",
+  "settingsNotificationsSectionTitle": "通知",
+  "settingsNotificationsSummary": "已开启 {count} 项",
+  "@settingsNotificationsSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPrivacySectionTitle": "隐私",
+  "settingsAiTitle": "AI 设置",
+  "settingsAiSubtitle": "AI 总结、助手与记忆",
+  "settingsAiSummariesTitle": "AI 总结与建议",
+  "settingsAiSummariesSubtitle": "每日健康总结与趋势建议",
+  "settingsAiAssistantTitle": "AI 助手",
+  "settingsAiAssistantSubtitle": "健康问答助手",
+  "settingsAiMemoryTitle": "AI 记忆",
+  "settingsAiMemorySubtitle": "让 AI 记住你的健康偏好",
+  "settingsGeneralSectionTitle": "通用",
+  "settingsAboutSectionTitle": "关于",
+  "settingsExportDescription": "导出你的健康数据为 PDF，处理完成后可下载。",
+  "settingsExportRequestButton": "请求导出",
+  "settingsHelpEmpty": "暂无帮助内容",
+  "settingsHelpError": "帮助内容加载失败",
+  "settingsAboutPrivacyPolicy": "隐私政策",
+  "settingsAboutTermsOfService": "服务条款",
+  "settingsAboutLicenses": "开源许可",
+  "settingsAboutSupport": "帮助与反馈",
   "settingsAdvancedClearImageCache": "清理图片缓存",
   "settingsAdvancedCacheCleared": "图片缓存已清理",
   "settingsAdvancedResetDefaults": "恢复默认设置",
   "settingsAdvancedDefaultsReset": "已恢复默认设置",
   "settingsAdvancedOpenSourceLicenses": "开源许可",
-  "reportPatternSleepTitle": "睡眠变化",
-  "reportPatternSleepStatus": "持续观察",
-  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠",
-  "mineReminderDisabled": "已关闭",
-  "mineExportStatusRequested": "已提交",
-  "mineExportStatusPending": "处理中",
-  "mineExportStatusCompleted": "已完成",
-  "mineExportStatusFailed": "失败",
-  "mineExportStatusLinkMissing": "链接待刷新",
-  "mineExportStatusUnavailable": "暂不可用",
-  "mineExportDownloadButton": "下载报告",
-  "mineExportRegenerateButton": "重新生成",
-  "mineExportRequested": "导出请求已提交",
-  "medicineRiskCheckRedFlagBannerTitle": "红旗警告",
-  "medicineRiskCheckRedFlagSevereAllergy": "严重过敏风险：{drug} 含有 {allergen}，请勿使用并立即咨询医生。",
-  "@medicineRiskCheckRedFlagSevereAllergy": {
-    "placeholders": {
-      "drug": {},
-      "allergen": {}
-    }
-  },
-  "medicineRiskCheckRedFlagSevereAllergyGeneric": "严重过敏风险：{drug} 与已知过敏原匹配，请勿使用并立即咨询医生。",
-  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagPregnancyContraindication": "孕期/哺乳期用药警告：{drug} 标注为禁忌，请务必咨询医生后再使用。",
-  "@medicineRiskCheckRedFlagPregnancyContraindication": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagInformationGap": "无法确认 {drug} 的安全性，建议线下核对药品说明书或咨询药师。",
-  "@medicineRiskCheckRedFlagInformationGap": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagActionSevereAllergy": "请立即联系急救（120），不要自行处理",
-  "medicineRiskCheckRedFlagActionPregnancyContraindication": "请停止自行用药，尽快咨询医生或药师",
-  "medicineRiskCheckRedFlagActionInformationGap": "当前处于高风险状态，部分药品无法自动检查，建议尽快线下确认",
-  "notificationListTitle": "通知",
-  "notificationDetailTitle": "通知详情",
-  "notificationEmptyTitle": "暂无通知",
-  "notificationEmptyDescription": "有新消息时会在这里显示。",
-  "notificationErrorTitle": "通知加载失败",
-  "notificationRetryAction": "重试",
-  "notificationMarkAllRead": "全部已读",
-  "notificationMarkAllReadSuccess": "已全部标记为已读",
-  "notificationMarkUnreadSuccess": "已标记为未读",
-  "notificationDeleteSuccess": "已删除",
-  "notificationActionNavigate": "去处理",
-  "notificationActionMarkRead": "设为已读",
-  "notificationActionMarkUnread": "设为未读",
-  "notificationActionDelete": "删除",
-  "notificationDeleteConfirmTitle": "确认删除",
-  "notificationDeleteConfirmDescription": "删除后无法恢复，确定要继续吗？",
-  "notificationDeleteConfirmCancel": "取消",
-  "notificationDeleteConfirmConfirm": "删除",
-  "notificationLoadMore": "加载更多",
-  "notificationNotFoundTitle": "通知已失效",
-  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。",
   "settingsDataSharingConfirmTitle": "确认修改报告分享设置？",
   "settingsDataSharingConfirmDescription": "开启后，你的健康报告和趋势分析可能会被用于改进服务。是否继续？",
   "settingsDataSharingConfirmAction": "确认",
@@ -1907,23 +1450,6 @@
       "buildNumber": {}
     }
   },
-  "scanResultTitle": "识别结果",
-  "scanNoResultTitle": "未能识别到药品信息",
-  "scanRetakeAction": "重新拍照",
-  "scanConfirmDetailAction": "确认，查看详情",
-  "scanMethodPickerTitle": "选择识别方式",
-  "scanBarcodeNotFoundToast": "未找到该条码对应的药品",
-  "scanSearchFailedToast": "搜索失败: {error}",
-  "@scanSearchFailedToast": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "authQqSignIn": "QQ 登录",
-  "authQqCallbackLabel": "QQ 回调链接 / 授权码",
-  "authQqCompleteAction": "完成 QQ 登录",
   "settingsAiContextSectionTitle": "助手数据访问权限",
   "settingsAiContextSectionSubtitle": "控制 AI 助手可以读取哪些数据",
   "settingsAiContextHealthProfile": "健康档案",
@@ -2067,35 +1593,511 @@
   "settingsFeatureFlagsReportSection": "报告",
   "settingsFeatureFlagsPdfExport": "PDF 导出",
   "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件",
-  "stateFatalErrorTitle": "加载失败",
-  "stateFatalErrorDescription": "页面数据未能加载，请重试。",
-  "stateNotSignedInTitle": "尚未登录",
-  "stateNotSignedInDescription": "登录后可查看你的个性化数据、提醒和报告。",
-  "statePreviewSignInHint": "登录后查看你的真实数据",
-  "statePreviewSignInAction": "登录查看",
-  "stateEmptyDefaultTitle": "暂无数据",
-  "stateEmptyDefaultDescription": "添加记录后即可解锁个性化洞察和摘要。",
-  "placeholderNoData": "暂无数据",
-  "placeholderNotSet": "未设置",
-  "placeholderAddToUnlock": "记录后解锁",
-  "placeholderNoTime": "未设置时间",
-  "placeholderNoDuration": "未记录",
-  "medicineEmptyAddFirstTitle": "添加你的第一个药品",
-  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。",
-  "legalListTitle": "法律文件",
-  "legalDetailTitle": "法律文件",
-  "legalNotFoundTitle": "文档不存在",
-  "legalNotFoundDescription": "找不到该法律文档，请返回列表查看可用文档。",
-  "legalLoadErrorTitle": "加载失败",
-  "legalLoadErrorDescription": "无法加载法律文档内容，请稍后重试。",
-  "legalRetryAction": "重试",
-  "legalBackToListAction": "返回列表",
-  "legalListEmptyTitle": "暂无法律文档",
-  "legalListEmptyDescription": "法律文档将在添加后显示。",
-  "legalListUpdatedAt": "更新于 {date}",
-  "@legalListUpdatedAt": {
+  "authWelcomeBack": "欢迎回来",
+  "authCreateAccount": "创建账号",
+  "authModePassword": "密码",
+  "authModeCode": "验证码",
+  "authEmailLabel": "邮箱",
+  "authEmailHint": "name@example.com",
+  "authPasswordLabel": "密码",
+  "authPasswordHint": "至少 8 位，建议包含大小写和数字",
+  "authCodeLabel": "验证码",
+  "authNicknameLabel": "昵称",
+  "authNicknameHint": "可选",
+  "authEmailRequiredToast": "请先填写邮箱。",
+  "authCodeRequiredToast": "请先填写验证码。",
+  "authPasswordRequiredToast": "请先填写密码。",
+  "authConfirmPasswordRequiredToast": "请先确认密码。",
+  "authEmailRequiredError": "请输入邮箱。",
+  "authEmailInvalidError": "请输入有效的邮箱地址。",
+  "authCodeRequiredError": "请输入验证码。",
+  "authPasswordRequiredError": "请输入密码。",
+  "authConfirmPasswordRequiredError": "请确认密码。",
+  "authPasswordsDoNotMatchError": "两次输入的密码不一致。",
+  "authSendCode": "发送验证码",
+  "authSendCodeAgain": "{seconds} 秒后重发",
+  "@authSendCodeAgain": {
     "placeholders": {
-      "date": {}
+      "seconds": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "authCodeResendWait": "请 {seconds} 秒后再发送验证码",
+  "@authCodeResendWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authRegisterSuccess": "注册成功，请登录",
+  "authSignIn": "登录",
+  "authWechatSignIn": "微信登录",
+  "authWechatAuthorizeOpened": "已在浏览器打开微信授权页。",
+  "authWechatBrowserOpenFailed": "无法打开微信授权页。",
+  "authWechatCallbackLabel": "微信回调链接 / 授权码",
+  "authWechatCallbackHint": "扫码后粘贴回调链接",
+  "authWechatCompleteAction": "完成微信登录",
+  "authWechatCallbackRequiredToast": "请先粘贴微信回调链接。",
+  "authWechatCallbackInvalidToast": "微信回调链接缺少 code 或 state。",
+  "authCreateAccountAction": "创建账号",
+  "authForgotPasswordPrompt": "忘记密码？",
+  "authResetPasswordAction": "重置密码",
+  "authNeedAccountPrompt": "还没有账号？",
+  "authRegisterNowAction": "立即注册",
+  "authHaveAccountPrompt": "已经有账号？",
+  "authRememberPasswordPrompt": "想起密码了？",
+  "authNewPasswordLabel": "新密码",
+  "authConfirmPasswordLabel": "确认密码",
+  "authPasswordsDoNotMatch": "两次输入的密码不一致。",
+  "authResetPasswordSubmit": "重置密码",
+  "authResetPasswordSuccess": "密码已更新，请重新登录。",
+  "authLoginSubtitle": "登录以继续你的健康记录",
+  "authRegisterSubtitle": "加入 Luminous,开启你的健康记录",
+  "authForgotPasswordSubtitle": "我们将发送验证码以重置你的密码",
+  "authTermsAgreement": "创建即表示同意{terms}与{privacy}",
+  "@authTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "authTermsOfService": "服务条款",
+  "authPrivacyPolicy": "隐私政策",
+  "authTermsComingSoonToast": "服务条款与隐私政策即将上线。",
+  "authChangeEmailFormTitle": "更换邮箱",
+  "authNewEmailLabel": "新邮箱",
+  "authChangeEmailSubmit": "更新邮箱",
+  "authChangeEmailSuccess": "邮箱已更新。",
+  "authAccountSettingsFormTitle": "账号与安全",
+  "authAccountOverviewTitle": "账号状态",
+  "authAccountOverviewEmail": "邮箱",
+  "authAccountOverviewEmailVerified": "邮箱验证",
+  "authAccountOverviewPassword": "密码",
+  "authAccountOverviewLastLogin": "上次登录",
+  "authEmailMissing": "未设置",
+  "authEmailVerifiedAt": "{time} 已验证",
+  "@authEmailVerifiedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authEmailUnverifiedStatus": "未验证",
+  "authPasswordSetStatus": "已设置",
+  "authPasswordUnsetStatus": "未设置",
+  "authLastLoginUnknown": "未知",
+  "authProfileSectionTitle": "资料信息",
+  "authProfileSectionDescription": "修改昵称或头像地址；留空会按 Lucent 当前规则清空对应字段。",
+  "authAvatarLabel": "头像地址",
+  "authAvatarHint": "https://example.com/avatar.png",
+  "authProfileSaveAction": "保存资料",
+  "authProfileSaveSuccess": "资料已更新。",
+  "authEmailSectionTitle": "登录邮箱",
+  "authEmailVerifiedDescription": "当前邮箱已经验证，可以继续更换登录邮箱。",
+  "authEmailUnverifiedDescription": "当前邮箱仍未验证；你仍可以进入更换邮箱流程。",
+  "authEmailAddAction": "添加邮箱",
+  "authEmailChangeAction": "更换邮箱",
+  "authLinkedIdentitiesSectionTitle": "第三方身份",
+  "authLinkedIdentityNone": "尚未绑定第三方身份。",
+  "authLinkedIdentityEmailMissing": "无第三方邮箱",
+  "authLinkedIdentityLinkedAt": "{date} 绑定",
+  "@authLinkedIdentityLinkedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityProviderWechatWeb": "微信网页",
+  "authIdentityProviderWechatMobile": "微信移动端",
+  "authIdentityUnlinkAction": "解绑",
+  "authIdentityUnlinkDisabledAction": "保留",
+  "authIdentityUnlinkSuccess": "身份已解绑。",
+  "authIdentityUnlinkConfirmTitle": "解绑身份",
+  "authIdentityUnlinkConfirmMessage": "确定要解绑 {provider}？",
+  "@authIdentityUnlinkConfirmMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityLinkWechatAction": "绑定微信",
+  "authIdentityLinkSuccess": "微信身份已绑定。",
+  "authIdentityLinkUnsupported": "当前平台无法打开微信绑定。",
+  "authCancelAction": "取消",
+  "authPasswordSectionTitle": "修改密码",
+  "authPasswordSectionDescription": "修改后当前账号的 refresh 会话会全部失效，你需要重新登录。",
+  "authPasswordUnsetManagementHint": "当前账号还没有本地密码。",
+  "authCurrentPasswordLabel": "当前密码",
+  "authCurrentPasswordRequiredToast": "请先填写当前密码。",
+  "authNewPasswordRequiredToast": "请先填写新密码。",
+  "authChangePasswordAction": "更新密码",
+  "authChangePasswordSuccess": "密码已更新，请重新登录。",
+  "authDeleteAccountSectionTitle": "注销账号",
+  "authDeleteAccountSectionDescription": "这是高风险操作；提交后会清空本地会话并让 Lucent 将账号标记为删除状态。",
+  "authDeleteAccountHint": "输入当前密码以确认注销",
+  "authDeleteAccountCodeHint": "输入邮箱验证码以确认注销",
+  "authDeleteAccountEmailRequiredHint": "请先绑定并验证邮箱后再注销账号。",
+  "authDeleteAccountAction": "注销账号",
+  "authDeleteAccountSuccess": "账号已注销。",
+  "authBackHomePrompt": "返回首页？",
+  "authCheckingSession": "正在检查登录状态...",
+  "authNotSignedIn": "尚未登录",
+  "authLoginRequiredPrompt": "是否去登录",
+  "authGoLogin": "去登录",
+  "authGoRegister": "去注册",
+  "authSignOut": "退出登录",
+  "authQqSignIn": "QQ 登录",
+  "authQqCallbackLabel": "QQ 回调链接 / 授权码",
+  "authQqCompleteAction": "完成 QQ 登录",
+  "mineSectionTitle": "个人工作区",
+  "mineSectionSubtitle": "身份、目标与隐私控制会共享在这一块安静的界面里。",
+  "mineHeaderNotifications": "通知",
+  "mineHeaderSettings": "设置",
+  "mineAccountDisplayName": "Lumi 用户",
+  "mineAccountGuestDisplayName": "访客",
+  "mineAccountSignedIn": "已登录",
+  "mineAccountSignedOut": "未登录",
+  "mineAccountMeta": "会员到期：2026-05-20",
+  "mineAccountSignedOutMeta": "登录后可同步档案、提醒与个性化健康数据",
+  "mineAccountManageAction": "管理账号",
+  "mineAccountEmailVerified": "邮箱已验证",
+  "mineAccountEmailUnverified": "邮箱未验证",
+  "mineAccountPasswordSet": "已设置密码",
+  "mineAccountPasswordUnset": "未设置密码",
+  "mineAccountLinkedIdentityCount": "已绑定 {count} 个",
+  "@mineAccountLinkedIdentityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAccountLinkedIdentityNone": "未绑定第三方",
+  "mineAccountLastLogin": "上次登录 {date}",
+  "@mineAccountLastLogin": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountLastLoginNone": "上次登录 --",
+  "mineAccountStudentRole": "大学生",
+  "mineSignedOutNoticeTitle": "当前未登录",
+  "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
+  "mineCompletionTitle": "档案完整度",
+  "mineAlertAllergyTitle": "过敏史",
+  "mineAlertAllergySubtitle": "花粉、青霉素",
+  "mineAlertAllergyBadge": "2 项",
+  "mineAlertMedicineTitle": "当前用药",
+  "mineAlertMedicineSubtitle": "2 种药物",
+  "mineAlertMedicineBadge": "按时服用",
+  "mineAlertPrivacyTitle": "分享控制",
+  "mineAlertPrivacySubtitle": "分享前先预览确认",
+  "mineAlertPrivacyBadge": "先确认",
+  "mineArchiveBasicTitle": "基础信息",
+  "mineArchiveBasicSubtitle": "个人信息与健康信息",
+  "mineArchiveAllergyTitle": "过敏史",
+  "mineArchiveAllergySubtitle": "食物、药物、环境过敏记录",
+  "mineArchiveMedicineTitle": "当前用药",
+  "mineArchiveMedicineSubtitle": "正在使用的药品与用药记录",
+  "mineArchiveEmergencyTitle": "紧急联系人",
+  "mineArchiveEmergencySubtitle": "1 位联系人",
+  "mineArchiveCompleted": "已完善",
+  "mineArchiveNeedsFill": "待补充",
+  "mineCompletenessGapTitle": "完善健康档案",
+  "mineCompletenessGapSubtitle": "以下信息缺失可能影响安全检查精度",
+  "mineCompletenessGapBasicInfo": "基础信息",
+  "mineCompletenessGapBasicInfoDesc": "出生日期与身高用于剂量计算",
+  "mineCompletenessGapAllergy": "过敏史",
+  "mineCompletenessGapAllergyDesc": "缺失可能影响用药安全提醒",
+  "mineCompletenessGapMedicine": "当前用药",
+  "mineCompletenessGapMedicineDesc": "缺失将影响药物相互作用检查",
+  "mineCompletenessGapAction": "去完善",
+  "minePrivacyReportTitle": "报告分享",
+  "minePrivacyReportSubtitle": "健康报告、趋势分析",
+  "mineAiPrivacySectionTitle": "AI 与隐私",
+  "minePrivacyAiTitle": "AI 总结与建议",
+  "minePrivacyAiSubtitle": "每日总结、趋势建议",
+  "minePrivacyOnlyMe": "仅自己可见",
+  "minePrivacyShareAfterGrant": "授权后分享",
+  "mineReminderSectionTitle": "提醒设置",
+  "mineReminderMedicineTitle": "用药提醒",
+  "mineReminderWaterTitle": "饮水提醒",
+  "mineReminderSleepTitle": "睡眠提醒",
+  "mineReminderLocalOnly": "仅本地",
+  "mineReminderEnabled": "已开启",
+  "mineNotificationReminderSectionTitle": "通知与提醒",
+  "mineNotificationInboxTitle": "通知收件箱",
+  "mineNotificationInboxUnreadSummary": "{count} 条未读",
+  "@mineNotificationInboxUnreadSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxSignedOutSummary": "登录后查看",
+  "mineReminderSleepOff": "未开启",
+  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
+  "@mineReminderSleepSummary": {
+    "placeholders": {
+      "bedtime": {
+        "type": "String"
+      },
+      "wakeTime": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountSettingsTitle": "账号与设置",
+  "mineSettingLanguageTitle": "语言设置",
+  "mineSettingLanguageValue": "简体中文",
+  "mineSettingExportTitle": "数据导出",
+  "mineSettingExportValue": "导出我的健康数据",
+  "mineSettingHelpTitle": "帮助与反馈",
+  "mineSettingHelpValue": "常见问题与意见反馈",
+  "mineSettingAboutTitle": "关于 Luminous",
+  "mineSettingAboutValue": "版本 1.2.0",
+  "minePrivacyNoticeTitle": "敏感数据默认保护，可随时撤回授权",
+  "minePrivacyNoticeAction": "查看隐私政策",
+  "mineProfileUnknownValue": "未设置",
+  "mineProfileAgeYears": "{age}岁",
+  "@mineProfileAgeYears": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileHeightCm": "{height}cm",
+  "@mineProfileHeightCm": {
+    "placeholders": {
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileMeta": "{age} · {height}",
+  "@mineProfileMeta": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "mineCompletionSubtitle": "完成度良好，继续完善更准确的建议",
+  "mineSummaryTitle": "健康上下文摘要",
+  "mineSummaryUpdatedAt": "更新于 2025-05-15",
+  "mineSummaryAge": "年龄",
+  "mineSummaryAllergies": "过敏",
+  "mineSummaryConditions": "慢病/条件",
+  "mineSummaryMedicines": "当前用药",
+  "mineSummaryMissingInfo": "缺失信息：生日、身高、单位制",
+  "mineSummaryCompleteAction": "去完善",
+  "mineReadinessPreviewTitle": "个人档案尚未解锁",
+  "mineReadinessPreviewDescription": "登录后查看你的真实基础信息、过敏史和当前用药。",
+  "mineReadinessPreviewBadge": "预览",
+  "mineReadinessSignedInBadge": "已登录",
+  "mineReadinessIncompleteTitle": "还差 {count} 项关键信息",
+  "@mineReadinessIncompleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineReadinessIncompleteDescription": "补充这些信息后，安全提醒、分享控制和摘要会更准确。",
+  "mineReadinessReadyTitle": "档案已基本就绪",
+  "mineReadinessReadyDescription": "继续维护你的健康档案，并管理分享与账户授权。",
+  "mineReadinessManageAction": "管理档案",
+  "mineAccountPrivacySectionTitle": "账户与隐私",
+  "mineProfileTitle": "健康档案",
+  "mineProfileBasicInfoTitle": "基础资料",
+  "mineProfileBasicInfoSubtitle": "个人基本信息",
+  "mineProfileAllergiesTitle": "过敏史",
+  "mineProfileAllergiesSubtitle": "2 项记录",
+  "mineProfileConditionsTitle": "基础病史",
+  "mineProfileConditionsSubtitle": "1 项记录",
+  "mineProfileMedicinesTitle": "当前用药",
+  "mineProfileMedicinesSubtitle": "3 种药品",
+  "mineSettingsThemeTitle": "主题",
+  "mineSettingsAccountTitle": "账号与安全",
+  "mineSettingsLanguageTitle": "语言",
+  "mineSettingsNotificationsTitle": "通知设置",
+  "mineErrorTitle": "我的页面暂时没有加载出来",
+  "mineErrorDescription": "结构已经接好，可以重新拉取一次数据。",
+  "mineActionToast": "{action}：后续会接入对应详情或设置流程。",
+  "@mineActionToast": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "mineThemeModeSystem": "跟随系统",
+  "mineThemeModeLight": "浅色",
+  "mineThemeModeDark": "深色",
+  "mineEditProfileTitle": "编辑档案",
+  "mineEditAllergyTitle": "编辑过敏",
+  "mineEditAllergyNewTitle": "新增过敏",
+  "mineEditConditionTitle": "编辑疾病",
+  "mineEditConditionNewTitle": "新增疾病",
+  "mineEditMedicineTitle": "编辑用药",
+  "mineEditMedicineNewTitle": "新增用药",
+  "mineEditSaveAction": "保存",
+  "mineEditDeleteAction": "删除",
+  "mineEditSavedToast": "已保存",
+  "mineEditDeletedToast": "已删除",
+  "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",
+  "mineEditFieldHeightCm": "身高 (cm)",
+  "mineEditFieldBloodType": "血型",
+  "mineEditFieldLocale": "语言",
+  "mineEditFieldTimezone": "时区",
+  "mineEditFieldUnitSystem": "单位制",
+  "mineEditFieldOnboardingCompleted": "完成新手引导",
+  "mineEditFieldKind": "类型",
+  "mineEditFieldLabel": "名称",
+  "mineEditFieldReaction": "反应",
+  "mineEditFieldSeverity": "严重程度",
+  "mineEditFieldNote": "备注",
+  "mineEditFieldRecordedAt": "记录时间",
+  "mineEditFieldStatus": "状态",
+  "mineEditFieldDiagnosedAt": "诊断日期 (YYYY-MM-DD)",
+  "mineEditFieldSource": "来源",
+  "mineEditFieldSourceRefId": "来源ID",
+  "mineEditFieldDisplayName": "药品名称",
+  "mineEditFieldStrengthText": "规格",
+  "mineEditFieldDoseText": "剂量",
+  "mineEditFieldRoute": "给药途径",
+  "mineEditFieldStartedAt": "开始日期 (YYYY-MM-DD)",
+  "mineEditFieldEndedAt": "结束日期 (YYYY-MM-DD)",
+  "mineSettingsAdvancedTitle": "高级设置",
+  "mineReminderDisabled": "已关闭",
+  "mineExportStatusRequested": "已提交",
+  "mineExportStatusPending": "处理中",
+  "mineExportStatusCompleted": "已完成",
+  "mineExportStatusFailed": "失败",
+  "mineExportStatusLinkMissing": "链接待刷新",
+  "mineExportStatusUnavailable": "暂不可用",
+  "mineExportDownloadButton": "下载报告",
+  "mineExportRegenerateButton": "重新生成",
+  "mineExportRequested": "导出请求已提交",
+  "assistantEntryTitle": "AI 对话",
+  "assistantEntrySubtitle": "流式问答与受控健康上下文",
+  "assistantPageTitle": "AI 对话",
+  "assistantSignedOutDescription": "登录后才可以使用 AI 对话，并由你决定是否开放健康上下文。",
+  "assistantLoadErrorTitle": "AI 对话暂时没有加载出来",
+  "assistantLoadErrorFallback": "能力信息这次没有取到，可以重新拉取一次。",
+  "assistantSettingsEnableTitle": "启用 AI 对话",
+  "assistantSettingsEnableSubtitle": "关闭后不会发送新的对话请求",
+  "assistantSettingsMemoryTitle": "启用持久化记忆",
+  "assistantSettingsMemorySubtitle": "新对话开始时，可选择让助手参考之前的对话历史",
+  "assistantContextHealthProfile": "健康档案",
+  "assistantContextDailyRecords": "最近记录",
+  "assistantContextSleepRecords": "睡眠数据",
+  "assistantContextCurrentMedicines": "当前用药",
+  "assistantStatusSectionTitle": "当前状态",
+  "assistantStatusReady": "后端能力已就绪，可以开始对话。",
+  "assistantStatusDisabled": "你已关闭 AI 对话，当前不会发送聊天请求。",
+  "assistantStatusModelMissing": "服务端还没有可用的聊天模型配置。",
+  "assistantStatusNotReady": "交互式对话链路还没有完全就绪。",
+  "assistantStatusToolsLabel": "工具",
+  "assistantStatusContextLabel": "上下文",
+  "assistantStatusStreamingLabel": "流式输出",
+  "assistantStatusRagLabel": "RAG",
+  "assistantConversationDisabledTitle": "当前还不能开始对话",
+  "assistantConversationDisabledByUser": "你已关闭 AI 对话，重新开启后才能发送消息。",
+  "assistantConversationModelMissing": "服务端还没有可用模型，暂时无法生成回复。",
+  "assistantConversationNotReady": "交互式对话链路还没准备好，先保持当前设置即可。",
+  "assistantConversationEmptyTitle": "开始第一条消息",
+  "assistantConversationEmptyDescription": "可以直接问最近睡眠、最近记录或当前用药相关的问题。",
+  "assistantSendErrorTitle": "这次回复没有完成",
+  "assistantInputHint": "比如：结合我最近几天的睡眠和用药，帮我看看要注意什么。",
+  "assistantSendAction": "发送",
+  "assistantSendingAction": "发送中",
+  "assistantNewConversationAction": "新对话",
+  "assistantRecentConversationsAction": "最近会话",
+  "assistantRecentConversationsTitle": "最近会话",
+  "assistantRecentConversationsEmptyTitle": "还没有历史会话",
+  "assistantRecentConversationsEmptyDescription": "开始一次对话后，最近的会话会显示在这里。",
+  "assistantRecentConversationCurrentLabel": "当前",
+  "assistantOpeningConversationLabel": "正在切换会话…",
+  "assistantUntitledConversation": "未命名会话",
+  "assistantStreamingLabel": "正在生成",
+  "assistantRetryAction": "重新发送",
+  "assistantErrorStreamInterrupted": "连接中断了，请检查网络后重试。",
+  "assistantErrorEmptyResult": "AI 没有返回有效内容，可以再试一次。",
+  "assistantErrorServer": "服务端出现问题，请稍后再试。",
+  "assistantToolTodayRecords": "今日记录",
+  "assistantToolRecordsByDate": "按日记录",
+  "assistantToolRecordsByRange": "区间记录",
+  "assistantToolTodaySummaryByDate": "指定日期总结",
+  "assistantToolReportSummaryByRange": "指定报告总结",
+  "assistantToolRecentTodaySummaries": "今日历史总结",
+  "assistantToolRecentReportSummaries": "报告历史总结",
+  "assistantToolUserProfile": "用户档案",
+  "assistantToolUserSettings": "用户设置",
+  "assistantToolCurrentMedicines": "当前用药",
+  "assistantToolSleepByRange": "睡眠概况",
+  "assistantToolSearchMedicineLeaflets": "中文说明书检索",
+  "assistantToolSearchMedicalQaCorpus": "医学问答检索",
+  "assistantToolResolveDrugbankEntity": "DrugBank 实体定位",
+  "assistantToolSearchDrugbankPassages": "DrugBank 片段检索",
+  "assistantToolProposeCreateRecord": "保存建议",
+  "assistantToolProposeUpdateRecord": "修改建议",
+  "assistantToolProposeDeleteRecord": "删除建议",
+  "assistantToolProposeUpdateSettings": "设置建议",
+  "assistantUsedToolsLabel": "参考来源",
+  "assistantConversationDisabledByUserHint": "你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。",
+  "assistantProposalConfirmCreateAction": "确认保存",
+  "assistantProposalConfirmUpdateAction": "确认修改",
+  "assistantProposalConfirmDeleteAction": "确认删除",
+  "assistantProposalConfirmSettingsAction": "确认更新",
+  "assistantProposalDismissAction": "取消",
+  "assistantProposalPendingState": "待确认",
+  "assistantProposalExecutingState": "执行中",
+  "assistantProposalConfirmedState": "已确认",
+  "assistantProposalDismissedState": "已取消",
+  "assistantProposalFailedState": "执行失败",
+  "assistantProposalConfirmedToast": "已执行这条建议。",
+  "assistantProposalTargetLabel": "目标",
+  "assistantProposalMatchedByLabel": "定位方式",
+  "assistantProposalSettingKeysLabel": "设置项",
+  "assistantProposalExpiresAtLabel": "过期时间",
+  "assistantProposalConstraintsLabel": "确认前约束",
+  "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。",
+  "notificationListTitle": "通知",
+  "notificationDetailTitle": "通知详情",
+  "notificationEmptyTitle": "暂无通知",
+  "notificationEmptyDescription": "有新消息时会在这里显示。",
+  "notificationErrorTitle": "通知加载失败",
+  "notificationRetryAction": "重试",
+  "notificationMarkAllRead": "全部已读",
+  "notificationMarkAllReadSuccess": "已全部标记为已读",
+  "notificationMarkUnreadSuccess": "已标记为未读",
+  "notificationDeleteSuccess": "已删除",
+  "notificationActionNavigate": "去处理",
+  "notificationActionMarkRead": "设为已读",
+  "notificationActionMarkUnread": "设为未读",
+  "notificationActionDelete": "删除",
+  "notificationDeleteConfirmTitle": "确认删除",
+  "notificationDeleteConfirmDescription": "删除后无法恢复，确定要继续吗？",
+  "notificationDeleteConfirmCancel": "取消",
+  "notificationDeleteConfirmConfirm": "删除",
+  "notificationLoadMore": "加载更多",
+  "notificationNotFoundTitle": "通知已失效",
+  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。"
 }

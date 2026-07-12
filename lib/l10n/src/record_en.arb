@@ -1,0 +1,380 @@
+{
+  "recordPageDescription": "Calendar, timeline, and multi-type daily records will grow here.",
+  "recordSectionTitle": "Daily timeline",
+  "recordSectionSubtitle": "The first rebuild step for Record is structure, not logic.",
+  "recordTodayAction": "Today",
+  "recordPreviousDayAction": "Previous day",
+  "recordNextDayAction": "Next day",
+  "recordPickDateAction": "Pick date",
+  "recordSearchAction": "Search",
+  "recordFilterAction": "Filter",
+  "recordSwitchDateAction": "Switch date",
+  "recordDatePillLabel": "{month}/{day} · {weekday}",
+  "@recordDatePillLabel": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayEntriesTitle": "{count, plural, =0{Today entries · 0} =1{Today entry · 1} other{Today entries · {count}}}",
+  "@recordTodayEntriesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickActionLabel": "Log {type}",
+  "@recordQuickActionLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordAddAction": "Record",
+  "recordAddCompactAction": "Record",
+  "recordCreateFieldKind": "Kind",
+  "recordCreateFieldDate": "Date",
+  "recordCreateFieldTime": "Time",
+  "recordCreateFieldUnit": "Unit",
+  "recordWaterUnitMl": "ml",
+  "recordWaterUnitCup": "cup",
+  "recordWaterUnitTimes": "times",
+  "recordCreateFieldTitleOptional": "Title (optional)",
+  "recordCreateFieldNote": "Note",
+  "recordCreateKindNote": "Note",
+  "recordCreateValueWater": "Water amount",
+  "recordCreateValueMeal": "Name / description",
+  "recordCreateValueVital": "Value (e.g. 120/80)",
+  "recordCreateValueSymptom": "Severity / feeling",
+  "recordCreateValueSleep": "Duration (e.g. 8h)",
+  "recordSleepInvalidValueToast": "Please enter a valid sleep duration (e.g. 7.5).",
+  "recordSleepBedtimeLabel": "Bedtime",
+  "recordSleepWakeTimeLabel": "Wake time",
+  "recordSleepQualityLabel": "Sleep quality",
+  "recordSleepQualityPoor": "Poor",
+  "recordSleepQualityFair": "Fair",
+  "recordSleepQualityGood": "Good",
+  "recordSleepQualityExcellent": "Excellent",
+  "recordSleepDeepMinutesLabel": "Deep sleep (min)",
+  "recordSleepLightMinutesLabel": "Light sleep (min)",
+  "recordSleepRemMinutesLabel": "REM sleep (min)",
+  "recordSleepDetailsSectionTitle": "Sleep details",
+  "recordSleepDurationLabel": "Duration",
+  "recordSleepTimeRangeLabel": "Time range",
+  "recordSleepNotSet": "Not set",
+  "recordSleepMinutesUnit": "min",
+  "recordCreateFailedToast": "Record was not saved.",
+  "recordImageSectionTitle": "Image attachment",
+  "recordImageEmptyLabel": "No image attached",
+  "recordImageAttachedLabel": "Image attached",
+  "recordImagePickAction": "Choose image",
+  "recordImageReplaceAction": "Replace image",
+  "recordImageRemoveAction": "Remove",
+  "recordImageUnsupportedToast": "Only JPG, PNG, WEBP, or GIF images are supported.",
+  "recordImagePickFailedToast": "Image was not selected.",
+  "recordQuickSectionTitle": "Quick record",
+  "recordQuickDynamicSortTooltip": "When enabled, quick entries are automatically sorted by usage frequency",
+  "recordQuickEditOrder": "Custom order",
+  "recordQuickSortDisableDynamicFirst": "Please disable dynamic sorting before editing order",
+  "recordQuickReorderTitle": "Drag to reorder",
+  "recordQuickReorderHint": "Long press and drag to reorder",
+  "recordQuickReorderDone": "Done",
+  "recordQuickReorderCancel": "Cancel",
+  "recordFastEntryTitle": "Quick {type}",
+  "@recordFastEntryTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryDateHint": "Save to {date}",
+  "@recordFastEntryDateHint": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryMoreAction": "More",
+  "recordFastChoiceMealBreakfast": "Breakfast",
+  "recordFastChoiceMealLunch": "Lunch",
+  "recordFastChoiceMealDinner": "Dinner",
+  "recordFastChoiceMealSnack": "Snack",
+  "recordFastChoiceSymptomHeadache": "Headache",
+  "recordFastChoiceSymptomStomachache": "Stomachache",
+  "recordFastChoiceSymptomDizzy": "Dizziness",
+  "recordFastChoiceSymptomFever": "Fever",
+  "recordFastChoiceSeverityMild": "Mild",
+  "recordFastChoiceNoteStable": "Stable today",
+  "recordFastChoiceNoteTired": "Feeling tired today",
+  "recordFastChoiceNoteBusy": "Busy today",
+  "recordFastChoiceNoteRecovered": "Recovered better today",
+  "recordFastChoiceMoodGreat": "Great",
+  "recordFastChoiceMoodGood": "Good",
+  "recordFastChoiceMoodOkay": "Okay",
+  "recordFastChoiceMoodBad": "Not great",
+  "recordFastChoiceMoodTerrible": "Terrible",
+  "recordAiInputHint": "My stomach feels a bit bloated after eating...",
+  "recordAiBadge": "AI",
+  "recordNlpFabAction": "Natural language",
+  "recordNlpSheetTitle": "Natural-language input",
+  "recordNlpSheetSubtitle": "Parse into candidate records first, then save after confirmation.",
+  "recordNlpInputHint": "For example: I drank two cups of water this morning, felt bloated at noon, and slept 6 hours last night.",
+  "recordNlpGenerateAction": "Parse candidates",
+  "recordNlpGeneratingAction": "Parsing",
+  "recordNlpResetAction": "Clear",
+  "recordNlpMealTitleOptional": "Meal label / title (optional)",
+  "recordNlpSymptomTitleLabel": "Symptom name",
+  "recordNlpNoteBodyLabel": "Content",
+  "recordNlpDetailsLabel": "Details",
+  "recordNlpCandidatesTitle": "{count, plural, =0{Candidate records · 0} =1{Candidate record · 1} other{Candidate records · {count}}}",
+  "@recordNlpCandidatesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRemoveAction": "Remove",
+  "recordNlpSaveAllAction": "Save all",
+  "recordNlpSaveSelectedAction": "Save selected ({count})",
+  "@recordNlpSaveSelectedAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpSavingAction": "Saving",
+  "recordNlpSelectedCountHint": "{count, plural, =0{No items selected yet} =1{1 item selected and ready to edit} other{{count} items selected and ready to edit}}",
+  "@recordNlpSelectedCountHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpInputRequiredToast": "Enter a short record note first.",
+  "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
+  "recordNlpNoCandidatesToSaveToast": "There are no candidate records to save.",
+  "recordNlpNoCandidatesSelectedToast": "Select at least one candidate record first.",
+  "recordNlpSavedToast": "{count, plural, =0{Saved 0 records} =1{Saved 1 record} other{Saved {count} records}}",
+  "@recordNlpSavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpPartialSavedToast": "Saved {savedCount} record(s), and {failedCount} failed.",
+  "@recordNlpPartialSavedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetryFailedAction": "Retry failed",
+  "recordNlpFailedCandidatesHint": "{count, plural, =0{No failed candidates remain} =1{1 candidate failed to save last time. Review it and retry only the failed item.} other{{count} candidates failed to save last time. Review them and retry only the failed items.}}",
+  "@recordNlpFailedCandidatesHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetrySavedToast": "{count, plural, =0{No failed records were retried} =1{Retried and saved 1 failed record} other{Retried and saved {count} failed records}}",
+  "@recordNlpRetrySavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpNoFailedCandidatesToast": "There are no failed items to retry right now.",
+  "recordNlpCandidateSaveFailedHint": "Last save failed for this item: {message}",
+  "@recordNlpCandidateSaveFailedHint": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "recordSummarySectionTitle": "Day summary",
+  "recordSummaryDateLabel": "May 15, 2025 (Thu)",
+  "recordTimelineSectionTitle": "Timeline",
+  "recordTimelineViewAllAction": "View all records",
+  "recordTimelineCollapseAction": "Collapse",
+  "recordTrendsSectionTitle": "Trends",
+  "recordNewEntrySectionTitle": "New record",
+  "recordFilterSectionTitle": "Record types",
+  "recordFilterMobileTitle": "Record filter",
+  "recordFilterAllAction": "All",
+  "recordFilterSelectAll": "Select all",
+  "recordFilterActiveLabel": "Filtered: {label}",
+  "@recordFilterActiveLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFilterClearAction": "Clear",
+  "recordAllTypesAction": "All types",
+  "recordVoiceInputTitle": "Voice input",
+  "recordGuideHint": "Tip: steady records help you understand your health better",
+  "recordGuideAction": "View record guide",
+  "recordDetailTitle": "Record details",
+  "recordDetailErrorTitle": "Record details did not load this time",
+  "recordDetailValueLabel": "Value",
+  "recordDetailSourceLabel": "Source",
+  "recordDetailUpdatedAtLabel": "Updated at",
+  "recordMealAnalysisSectionTitle": "Meal analysis",
+  "recordMealAnalysisStatusAnalyzing": "Analyzing",
+  "recordMealAnalysisStatusUnconfirmed": "Needs confirmation",
+  "recordMealAnalysisStatusConfirmed": "Confirmed",
+  "recordMealAnalysisStatusFailed": "Analysis failed",
+  "recordMealAnalysisCoveragePartial": "Partial coverage",
+  "recordMealAnalysisCoverageComplete": "Complete coverage",
+  "recordMealAnalysisCoverageNone": "No coverage",
+  "recordMealAnalysisRecognizedDishes": "Recognized dishes",
+  "recordMealAnalysisResolvedIngredients": "Resolved ingredients",
+  "recordMealAnalysisCompositionMatches": "Composition matches",
+  "recordMealAnalysisNutritionEstimate": "Nutrition estimate",
+  "recordMealAnalysisNutritionEnergy": "Energy",
+  "recordMealAnalysisNutritionProtein": "Protein",
+  "recordMealAnalysisEstimateDisclaimer": "This result is a conservative estimate and may not fully match the actual meal.",
+  "recordMealConfirmAction": "Confirm current dish result",
+  "recordMealConfirmActionSelected": "Will confirm current dish result on save",
+  "recordMealDishEditorHelperText": "Only edit dishes here. Ingredients and nutrition will be re-estimated by the system.",
+  "recordMealDishAddAction": "Add dish",
+  "recordMealDishRemoveAction": "Remove dish",
+  "recordMealDishFieldLabel": "Dish {index}",
+  "@recordMealDishFieldLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "recordEditAction": "Edit",
+  "recordDeleteAction": "Delete",
+  "recordDeleteConfirmMessage": "Delete this record? This action cannot be undone.",
+  "recordMonthLabel": "May 2025",
+  "recordOpenDateAction": "Open date",
+  "recordNotEnabledLabel": "Off",
+  "recordVoiceAction": "Voice record (hold to talk)",
+  "recordVoiceEntryTitle": "Voice input",
+  "recordVoiceListeningHint": "Listening...",
+  "recordVoiceTapToStart": "Tap to speak",
+  "recordVoiceUseText": "Use this text",
+  "recordOcrEntryTitle": "Photo recognition",
+  "recordOcrCameraAction": "Take photo",
+  "recordOcrGalleryAction": "Choose from gallery",
+  "recordOcrRecognizingHint": "Recognizing text...",
+  "recordOcrRecognitionFailed": "Text recognition failed. Try another photo.",
+  "recordMicPermissionDenied": "Microphone permission denied. Please enable it in system settings.",
+  "recordErrorTitle": "Record did not load this time",
+  "recordErrorDescription": "The data boundary is wired, so try fetching it again.",
+  "recordWeekdaySun": "Sun",
+  "recordWeekdayMon": "Mon",
+  "recordWeekdayTue": "Tue",
+  "recordWeekdayWed": "Wed",
+  "recordWeekdayThu": "Thu",
+  "recordWeekdayFri": "Fri",
+  "recordWeekdaySat": "Sat",
+  "recordTypeMeal": "Meal",
+  "recordTypeVitals": "Vitals",
+  "recordTypeWater": "Water",
+  "recordTypeMood": "Mood",
+  "recordTypeSymptom": "Symptom",
+  "recordTypeActivity": "Activity",
+  "recordTypeMedication": "Medication",
+  "recordTypeSleep": "Sleep",
+  "recordTypeHeartRate": "Heart rate",
+  "recordTypeWeight": "Weight",
+  "recordSummaryMealTitle": "Meal records",
+  "recordSummaryWaterTitle": "Water progress",
+  "recordSummaryLatestVitalTitle": "Latest vital",
+  "recordSummaryMoodTitle": "Mood record",
+  "recordSummaryTimesUnit": "times",
+  "recordSummaryCupsUnit": "cups",
+  "recordSummaryRecorded": "Recorded",
+  "recordSummaryNormal": "Normal",
+  "recordTimelineMealLunch": "Meal · Lunch",
+  "recordTimelineMealName": "Chicken quinoa salad",
+  "recordTimelineMealNutrition": "About 520 kcal · protein 32g · carbs 45g · fat 12g",
+  "recordTimelineAiBadge": "AI read",
+  "recordTimelineBloodPressure": "Blood pressure",
+  "recordTimelineBloodPressureDetail": "Source: manual entry · normal",
+  "recordTimelineManualBadge": "Manual",
+  "recordTimelineWaterAmount": "1 cup 250ml",
+  "recordTimelineWaterProgress": "Cup 4 / 8",
+  "recordTimelineMedicationName": "Atorvastatin 20mg",
+  "recordTimelineMedicationDetail": "Taken · synced with medication plan",
+  "recordTimelineMoodCalm": "Mood · Calm",
+  "recordTimelineMoodDetail": "Mood is steady, sleep was okay",
+  "recordTimelineMoodGreat": "Mood · Great",
+  "recordTimelineMoodGood": "Mood · Good",
+  "recordTimelineMoodOkay": "Mood · Okay",
+  "recordTimelineMoodBad": "Mood · Not great",
+  "recordTimelineMoodTerrible": "Mood · Terrible",
+  "recordTimelineSymptomRecord": "Symptom record",
+  "recordTimelineSymptomDetail": "Headache · pain score 3/5",
+  "recordTimelineSleepRecord": "Sleep record",
+  "recordTimelineSleepDetail": "Bedtime 23:30 · sleep duration 7.0 h",
+  "recordTimelineHeartRateDetail": "72 bpm · source: watch · normal",
+  "recordTimelineWeightDetail": "Source: smart scale · BMI 22.5",
+  "recordTrendBloodSugarTitle": "Meal-blood sugar",
+  "recordTrendBloodSugarLegend": "Post-meal glucose (mmol/L)",
+  "recordTrendHydrationTitle": "Water completion",
+  "recordRange7Days": "Last 7 days",
+  "recordRange30Days": "Last 30 days",
+  "recordFoodImagePlaceholder": "Meal image placeholder",
+  "recordSymptomTrackingSectionTitle": "Symptom tracking",
+  "recordSymptomHeadache": "Headache",
+  "recordSymptomLoggedAt": "Logged today at {time}",
+  "@recordSymptomLoggedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordBodyPartLabel": "Body part",
+  "recordBodyPartForehead": "Head (forehead)",
+  "recordAccompanyingSymptomsLabel": "Other symptoms",
+  "recordSymptomNausea": "Mild nausea",
+  "recordSymptomLightSensitive": "Light sensitive",
+  "recordPainRatingLabel": "Pain rating",
+  "recordPainModerate": "Moderate",
+  "recordViewTrendAction": "View trend",
+  "recordDietTitle": "Meal records",
+  "recordMealCountValue": "{count, plural, =0{0 meals today} =1{1 meal today} other{{count} meals today}}",
+  "@recordMealCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordMealLogging": "Logging",
+  "recordDietRecordAction": "Log meal",
+  "recordDentalRecordTitle": "Dental",
+  "recordEyeRecordTitle": "Eye",
+  "recordHearingRecordTitle": "Hearing",
+  "recordZeroCountLabel": "0 records"
+}

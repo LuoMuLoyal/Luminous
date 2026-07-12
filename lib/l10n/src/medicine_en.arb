@@ -1,0 +1,467 @@
+{
+  "medicineHeaderAddToast": "This will open medicine addition and recognition.",
+  "medicineSafetyGuardLabel": "Safe guard",
+  "medicineNotificationsTooltip": "Medication reminders",
+  "medicineHomeSearchHint": "Search medicine or symptom",
+  "medicineManageMedicinesAction": "Manage meds",
+  "medicineDrugboxTitle": "My drugbox",
+  "medicineDrugboxSubtitle": "Manage my medicines",
+  "medicineDrugboxTotalPrefix": "Medicine total",
+  "medicineDrugboxTotal": "{count} meds",
+  "@medicineDrugboxTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineNextDoseReminderTitle": "Next dose reminder",
+  "medicineNextDoseTodayTime": "Today {time}",
+  "@medicineNextDoseTodayTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineDoseDueStatus": "Due",
+  "medicineNoMedicineTitle": "No medicines yet",
+  "medicineNoMedicineBody": "Add medicine to show reminders",
+  "medicineSafetyEngineTitle": "Safety check preview",
+  "medicineSafetyAllRecordsAction": "Source notes",
+  "medicineQuickOperationTitle": "Medication actions",
+  "medicineQuickAddTitle": "Add med",
+  "medicineQuickAddSubtitle": "Manual add",
+  "medicineQuickRecordTitle": "Log dose",
+  "medicineQuickRecordSubtitle": "Track use",
+  "medicineQuickSafetyCheckTitle": "Risk check",
+  "medicineQuickSafetyCheckSubtitle": "Interactions and contraindications",
+  "medicineQuickSafetyCheckToast": "This will open interaction and contraindication checks.",
+  "medicineRiskCheckPageTitle": "Risk check",
+  "medicineRiskCheckSummaryTitle": "Check summary",
+  "medicineRiskCheckCurrentMedicinesLabel": "Current meds",
+  "medicineRiskCheckCheckedMedicinesLabel": "Checked",
+  "medicineRiskCheckFindingsLabel": "Findings",
+  "medicineRiskCheckCoverageLabel": "Coverage gaps",
+  "medicineRiskCheckFindingsTitle": "Risk findings",
+  "medicineRiskCheckCoverageTitle": "Unchecked medicines",
+  "medicineRiskCheckNoFindingsTitle": "No explicit risk finding yet",
+  "medicineRiskCheckNoFindingsBody": "No explicit risk finding was found for the medicines we could check, but you should still confirm with clinical advice and official instructions.",
+  "medicineRiskCheckViewAction": "View",
+  "medicineRiskCheckAllClearAlertTitle": "Risk check completed",
+  "medicineRiskCheckAllClearAlertBody": "No explicit risk finding was found for the medicines we could check",
+  "medicineRiskCheckAllClearAlertDetail": "This does not mean self-medication is safe. Confirm with clinical advice and official instructions.",
+  "medicineRiskCheckCoverageAlertTitle": "Risk check coverage incomplete",
+  "medicineRiskCheckCoverageAlertBody": "{count} medicines still lack checkable detail",
+  "@medicineRiskCheckCoverageAlertBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetail": "{names} currently lack checkable detail.",
+  "@medicineRiskCheckCoverageAlertDetail": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageAlertDetailWithMore": "{names} and others currently lack checkable detail.",
+  "@medicineRiskCheckCoverageAlertDetailWithMore": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingTitleInteraction": "Potential drug interaction found",
+  "medicineRiskCheckFindingTitleDuplicate": "Potential duplicate ingredient found",
+  "medicineRiskCheckFindingTitleAllergy": "Allergy-related note found",
+  "medicineRiskCheckFindingTitleSpecialGroup": "Special-group medication note found",
+  "medicineRiskCheckFindingTitleFoodInteraction": "Food interaction note found",
+  "medicineRiskCheckFindingBodyInteraction": "{primary} and {secondary} may interact",
+  "@medicineRiskCheckFindingBodyInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyInteractionSingle": "{primary} has an interaction note",
+  "@medicineRiskCheckFindingBodyInteractionSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicate": "{primary} and {secondary} may duplicate therapy",
+  "@medicineRiskCheckFindingBodyDuplicate": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyDuplicateSingle": "{primary} may have a duplicate ingredient",
+  "@medicineRiskCheckFindingBodyDuplicateSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergy": "{primary} references allergy-related term: {related}",
+  "@medicineRiskCheckFindingBodyAllergy": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "related": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyAllergyGeneric": "{primary} has an allergy-related note",
+  "@medicineRiskCheckFindingBodyAllergyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodySpecialGroup": "{primary} should be checked against special-group context",
+  "@medicineRiskCheckFindingBodySpecialGroup": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyFoodInteraction": "{primary} has a food-related caution",
+  "@medicineRiskCheckFindingBodyFoodInteraction": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodyGeneric": "{primary} has risk information that still needs confirmation",
+  "@medicineRiskCheckFindingBodyGeneric": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingEvidenceFallback": "The note comes from medicine detail data. Open the risk-check page for a closer review.",
+  "medicineRiskCheckCoverageReasonManualEntry": "Manual entry without standard medicine detail",
+  "medicineRiskCheckCoverageReasonMissingSourceRef": "Missing source reference, so detail cannot be fetched",
+  "medicineRiskCheckCoverageReasonDetailUnavailable": "Medicine detail is currently unavailable",
+  "medicineRiskCheckSeverityHigh": "High risk",
+  "medicineRiskCheckSeverityMedium": "Needs review",
+  "medicineRiskCheckSeverityInfo": "Note",
+  "medicineRiskCheckTierConfirmedRisk": "Confirmed Risk",
+  "medicineRiskCheckTierConfirmedSafe": "Confirmed Safe",
+  "medicineRiskCheckTierUncovered": "Uncovered / Uncertain",
+  "medicineRiskCheckTierSafeDisclaimer": "No explicit risk found in checked medicines, but this does not mean absolutely safe. Still consult your doctor and medication instructions.",
+  "medicineRiskCheckTierUncoveredDisclaimer": "The following medicines lack checkable data and cannot be automatically verified. Please review the instructions or consult a pharmacist.",
+  "medicineRiskCheckTierSafeBody": "Checked {checked} medicine(s), no explicit risk found.",
+  "medicineRiskCheckContextPregnancy": "Pregnancy",
+  "medicineRiskCheckContextLactation": "Lactation",
+  "medicineRiskCheckContextPediatric": "Pediatric",
+  "medicineRiskCheckContextGeriatric": "Geriatric",
+  "medicineRiskCheckContextAlcohol": "Alcohol",
+  "medicineRiskCheckContextCaffeine": "Caffeine",
+  "medicineRiskConclusionContraindicated": "Contraindicated",
+  "medicineRiskConclusionAvoid": "Avoid",
+  "medicineRiskConclusionCaution": "Use with Caution",
+  "medicineRiskConclusionConsultClinician": "Consult Clinician",
+  "medicineRiskConclusionInsufficientInformation": "Insufficient Info",
+  "medicineQuickRecordToast": "This will open dose logging.",
+  "medicineRecordsTitle": "Medication records",
+  "medicineAllMedicinesFilter": "All meds",
+  "medicineLastSevenDaysFilter": "Last 7 days",
+  "medicineViewMoreRecordsAction": "View more records",
+  "medicineRecordTodayLabel": "Today",
+  "medicineRecordPreviousDate": "5/19",
+  "medicineRecordOlderDate": "5/18",
+  "medicineRecordOnTimeStatus": "On time",
+  "medicineRecordScheduledStatus": "Planned",
+  "medicineReferenceNoticeTitle": "For reference only. Ask a doctor or pharmacist when needed.",
+  "medicineReferenceNoticeBody": "This app does not provide diagnosis. Seek care promptly if you feel unwell.",
+  "medicineSafetyTipsTitle": "Medication safety tips",
+  "medicineSafetyTipsRefreshAction": "Refresh",
+  "medicineErrorTitle": "Medication page did not load",
+  "medicineErrorDescription": "Please check your network connection and try again.",
+  "medicineHeroMetricTodayCountLabel": "Doses today",
+  "medicineHeroMetricTodayCountUnit": " meds",
+  "medicineHeroMetricAdherenceLabel": "On-time adherence",
+  "medicineHeroMetricAdherenceUnit": "%",
+  "medicineQuickActionSectionTitle": "Recognition and intake",
+  "medicineQuickActionCameraTitle": "Recognize by camera",
+  "medicineQuickActionCameraSubtitle": "Read packaging, boxes, and prescription labels",
+  "medicineQuickActionBarcodeTitle": "Scan barcode",
+  "medicineQuickActionBarcodeSubtitle": "Fill dosage form, manufacturer, and common aliases",
+  "medicineQuickActionSearchTitle": "Search manually",
+  "medicineQuickActionSearchSubtitle": "Find medicines by name, ingredient, or symptom",
+  "medicineQuickActionPrescriptionTitle": "Import prescription",
+  "medicineQuickActionPrescriptionSubtitle": "OCR and follow-up reminders can attach later",
+  "medicineTodayPlanTitle": "Today's dosing plan",
+  "medicineTodayPlanInspectAction": "View all",
+  "medicineGenericName": "Medicine",
+  "medicineGenericDosage": "Dosage",
+  "medicineGenericSchedule": "Schedule",
+  "medicineDoseStatusTaken": "Taken",
+  "medicineDoseStatusSkipped": "Skipped",
+  "medicineDoseStatusPending": "Pending",
+  "medicineDoseActionTaken": "Taken",
+  "medicineDoseActionSkipped": "Skipped",
+  "medicineDoseActionSavedToast": "Dose log saved.",
+  "medicineDoseActionFailedToast": "Dose log was not saved.",
+  "medicineDoseNotSet": "Dose not set",
+  "medicineScheduleNotSet": "Reminder not set",
+  "medicineReminderNewTitle": "New reminder",
+  "medicineReminderSelectMedicineHint": "Please select a medicine first",
+  "medicineReminderSelectMedicineAction": "Select medicine",
+  "medicineReminderEditTitle": "Edit reminder",
+  "medicineReminderDetailTitle": "Medication reminder details",
+  "medicineReminderNotFoundTitle": "Reminder did not load",
+  "medicineReminderNotFoundDescription": "This reminder has been deleted or does not exist",
+  "medicineReminderGenericErrorTitle": "Loading failed",
+  "medicineReminderGenericErrorDescription": "Failed to load reminder details. Please check your network and try again.",
+  "medicineReminderQuickTitle": "Reminder setup",
+  "medicineReminderQuickSubtitle": "Manage dose times",
+  "medicineReminderEnabledStatus": "On",
+  "medicineReminderDisabledStatus": "Off",
+  "medicineReminderFrequencyLabel": "Frequency",
+  "medicineReminderFrequencyDaily": "Daily",
+  "medicineReminderFrequencyWeekly": "Weekly",
+  "medicineReminderFrequencyCustom": "Custom",
+  "medicineReminderTimesLabel": "Dose times",
+  "medicineReminderDoseLabel": "Dose",
+  "medicineReminderStartDateLabel": "Start date",
+  "medicineReminderEndDateLabel": "End date",
+  "medicineReminderDateNotSet": "Not set",
+  "medicineReminderClearDateAction": "Clear date",
+  "medicineReminderMethodLabel": "Reminder method",
+  "medicineReminderNotificationOn": "Reminder notification",
+  "medicineReminderNotificationOff": "Reminder off",
+  "medicineReminderDeviceLocalHint": "Only the schedule is saved; system notifications are controlled on this device.",
+  "medicineReminderSmsLabel": "SMS reminder",
+  "medicineReminderSmsOff": "SMS unavailable",
+  "medicineReminderSmsUnavailableHint": "SMS delivery is not open yet.",
+  "medicineReminderUnavailableStatus": "Unavailable",
+  "medicineReminderSoundLabel": "Sound reminder",
+  "medicineReminderSoundLocalHint": "Sound preference used for local reminders.",
+  "medicineReminderSoundDefault": "Default tone",
+  "medicineReminderSoundGentle": "Gentle tone",
+  "medicineReminderSoundSilent": "Silent",
+  "medicineReminderNotificationDefaultTitle": "Medication reminder",
+  "medicineReminderNotificationDefaultBody": "It's time to take your medicine.",
+  "medicineReminderNotificationChannelName": "Medication reminders",
+  "medicineReminderNotificationChannelDescription": "On-device reminders for your medication schedule.",
+  "medicineReminderNoteLabel": "Note",
+  "medicineReminderNoteOptionalLabel": "Note (optional)",
+  "medicineReminderNoteHint": "Add a note, e.g. after meals",
+  "medicineReminderMedicineSectionTitle": "Medicine info",
+  "medicineReminderMedicineLabel": "Choose medicine",
+  "medicineReminderSettingsSectionTitle": "Reminder settings",
+  "medicineReminderAddTimeAction": "Add time",
+  "medicineReminderTodayLogsTitle": "Today's dose logs",
+  "medicineReminderNoTodayLogs": "No dose logs yet today",
+  "medicineReminderDeliveryLogsTitle": "Reminder delivery history",
+  "medicineReminderNoDeliveryLogs": "No reminder delivery records yet",
+  "medicineReminderDeliveryChannelLocal": "Local notification",
+  "medicineReminderDeliveryChannelPush": "Push notification",
+  "medicineReminderDeliveryChannelEmail": "Email",
+  "medicineReminderDeliveryChannelSms": "SMS",
+  "medicineReminderDeliveryStatusScheduled": "Pending",
+  "medicineReminderDeliveryStatusDelivered": "Delivered",
+  "medicineReminderDeliveryStatusFailed": "Failed",
+  "medicineReminderMissedStatus": "Missed",
+  "medicineReminderSavedToast": "Medication reminder saved.",
+  "medicineReminderDeletedToast": "Medication reminder deleted.",
+  "medicineReminderMedicineRequiredToast": "Choose a medicine.",
+  "medicineReminderTimeRequiredToast": "Add at least one dose time.",
+  "medicineReminderWeekdayRequiredToast": "Choose reminder days.",
+  "medicineReminderDateRangeInvalidToast": "End date cannot be before start date.",
+  "medicineReminderDeleteAction": "Delete this reminder",
+  "medicineReminderDeleteConfirmTitle": "Delete this reminder?",
+  "medicineReminderDeleteConfirmBody": "This cannot be restored. Dose history will stay.",
+  "medicineReminderConfirmDeleteAction": "Delete",
+  "medicineReminderCancelAction": "Cancel",
+  "medicineNoPendingDose": "Today's medicines are done",
+  "medicineNoPendingDoseDetail": "No pending dose reminders",
+  "medicineStatusStable": "Stable routine",
+  "medicineStatusNeedsCheckin": "Stable routine",
+  "medicineSafetyPanelTitle": "Medication safety",
+  "medicineSafetyPanelSubtitle": "High-risk alerts and adherence risk collect here.",
+  "medicineAlertInteractionTitle": "Interaction warning",
+  "medicineAlertInteractionBody": "Aspirin with ibuprofen may increase bleeding risk.",
+  "medicineAlertInteractionDetail": "Use together only with clinical advice",
+  "medicineAlertInteractionAction": "Review details",
+  "medicineAlertOtherTitle": "Other safety reminder",
+  "medicineAlertOtherBody": "Ibuprofen is not recommended for continuous use beyond 5 days",
+  "medicineAlertOtherDetail": "Ask a clinician if longer use is needed",
+  "medicineAlertOtherAction": "Review details",
+  "medicineAlertAlcoholRiskTitle": "Alcohol note",
+  "medicineAlertAlcoholRiskBody": "Guidance preview waits for medicine data",
+  "medicineAlertAlcoholRiskDetail": "Show source-backed advice before treating this as a risk",
+  "medicineAlertAlcoholRiskStatus": "Preview",
+  "medicineAlertCoffeeReminderTitle": "Caffeine note",
+  "medicineAlertCoffeeReminderBody": "Caffeine guidance needs source review",
+  "medicineAlertCoffeeReminderDetail": "Some medicines can be affected by caffeine",
+  "medicineAlertCoffeeReminderStatus": "Review",
+  "medicineAlertDuplicateCheckTitle": "Duplicate source check",
+  "medicineAlertDuplicateCheckBody": "Same-ingredient checks need source review",
+  "medicineAlertDuplicateCheckDetail": "New medicines will trigger another source check",
+  "medicineAlertDuplicateCheckStatus": "Preview",
+  "medicineAlertSpecialGroupSafetyTitle": "Special-group medication safety",
+  "medicineAlertSpecialGroupSafetyBody": "Record special medication conditions for more cautious safety tips",
+  "medicineAlertSpecialGroupSafetyDetail": "Follow clinician or pharmacist guidance first for pregnancy, lactation, pediatric, or other special-group medication use",
+  "medicineAlertSpecialGroupSafetyStatus": "Missing",
+  "medicinePromiseTitle": "Safety boundary",
+  "medicinePromiseBody": "This page should help surface risk early without pretending to be a diagnosis.",
+  "medicinePromisePointBoundary": "Results are reference-only and do not replace diagnosis or treatment.",
+  "medicinePromisePointSpecialGroup": "Pregnancy, lactation, pediatric, and psychiatric medicines get higher-priority alerts.",
+  "medicinePromisePointPrivacy": "Prescriptions, photos, and sensitive medicine data follow minimum exposure first.",
+  "medicinePromisePointDiagnosis": "We do not diagnose, replace clinicians, or invent medicine facts.",
+  "medicinePromiseAction": "Learn more about safety",
+  "medicineViewPlanToast": "This will open the full medication list and history.",
+  "medicineOpenPlanItemToast": "This will open medicine details, reminders, and dose history.",
+  "medicineOpenPromiseToast": "This will open safety boundaries, special-population alerts, and privacy notes.",
+  "medicineQuickActionCameraToast": "This will open camera recognition for boxes, blisters, or labels.",
+  "medicineQuickActionBarcodeToast": "This will open barcode scan and fill medicine information.",
+  "medicineQuickActionPrescriptionToast": "This will open image import and prescription recognition.",
+  "medicineAlertInteractionToast": "This will open interaction details and risk notes.",
+  "medicineAlertOtherToast": "This will open other safety reminder details.",
+  "medicineAlertAlcoholRiskToast": "This will open source notes for the alcohol preview.",
+  "medicineAlertCoffeeReminderToast": "This will open source notes for the caffeine preview.",
+  "medicineAlertDuplicateCheckToast": "This will open duplicate-source preview notes.",
+  "medicineAlertSpecialGroupSafetyToast": "This will open special-group medication safety notes.",
+  "medicineSearchPageTitle": "Search medicine",
+  "medicineSearchAssistantTitle": "Medication assistant",
+  "medicineSearchMyBoxTab": "My drugbox",
+  "medicineSearchFieldHint": "Search medicine, ingredient, condition, symptom...",
+  "medicineSearchSourceCn": "Package inserts (cn)",
+  "medicineSearchSourceDrugbank": "Drug knowledge (DrugBank)",
+  "medicineSearchSwitchSource": "Switch source",
+  "medicineSearchRecentTitle": "Recent searches",
+  "medicineSearchClearAction": "Clear",
+  "medicineSearchPhotoAction": "Photo recognition",
+  "medicineSearchBarcodeAction": "Scan barcode",
+  "medicineSearchPhotoToast": "This will open camera recognition for boxes, blisters, or inserts.",
+  "medicineSearchBarcodeToast": "This will open barcode scan and fill medicine information.",
+  "medicineSearchScanHint": "This will open scan or photo recognition.",
+  "medicineSearchCategoryTitle": "Common medicine categories",
+  "medicineSearchCategoryPainFever": "Pain & fever",
+  "medicineSearchCategoryColdCough": "Cold & cough",
+  "medicineSearchCategoryStomach": "Stomach",
+  "medicineSearchCategorySupplement": "Supplements",
+  "medicineSearchCategoryChronic": "Chronic care",
+  "medicineSearchReferenceNotice": "Medicine information is for reference only. Follow clinical advice for actual use.",
+  "medicineSearchResultTitle": "Search results",
+  "medicineSearchResultCount": "{count} results found",
+  "@medicineSearchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineSearchMatchedBy": "Matched",
+  "medicineSearchMatchIngredient": "ingredient",
+  "medicineSearchMatchName": "name",
+  "medicineSearchAddToBoxAction": "Add to drugbox",
+  "medicineSearchAddToast": "This will add the medicine and open reminder setup.",
+  "medicineSearchPrecheckTitle": "Pre-add risk check",
+  "medicineSearchPrecheckDescription": "Risk findings or missing coverage were found. You can still continue and add the medicine.",
+  "medicineSearchPrecheckConfirmAction": "Add anyway",
+  "medicineSearchPrecheckFailedToast": "Risk check failed",
+  "medicineSearchPrecheckScopeTitle": "Check Scope",
+  "medicineSearchPrecheckScopeAllergy": "Allergy cross-check",
+  "medicineSearchPrecheckScopeInteraction": "Current medicine interactions",
+  "medicineSearchPrecheckScopeContraindication": "Contraindication check",
+  "medicineSearchOpenDetailToast": "This will open medicine details.",
+  "medicineSearchPreviewTitle": "Selected preview",
+  "medicineSearchSafetyLead": "Your allergy, special medication conditions, or current medicines may affect use.",
+  "medicineSearchSafetyAction": "Open details for complete information",
+  "medicineSearchNoResultTitle": "No result?",
+  "medicineSearchNoResultKeyword": "Check keywords",
+  "medicineSearchNoResultSwitch": "Switch source",
+  "medicineSearchErrorTitle": "Search did not load this time",
+  "medicineSearchErrorDescription": "Please check your network and try again.",
+  "medicineSearchPreviewClinical": "Clinical Notes",
+  "medicineSearchPreviewSafety": "Safety Checklist",
+  "medicineSearchPreviewEmpty": "Select a medicine to view details",
+  "medicineSearchSourceRefCn": "Approval No. {id}",
+  "@medicineSearchSourceRefCn": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineSearchSourceRefDrugbank": "DrugBank ID: {id}",
+  "@medicineSearchSourceRefDrugbank": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
+  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergy": {
+    "placeholders": {
+      "drug": {},
+      "allergen": {}
+    }
+  },
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagPregnancyContraindication": "Pregnancy/lactation warning: {drug} is listed as contraindicated. Consult a doctor before use.",
+  "@medicineRiskCheckRedFlagPregnancyContraindication": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagInformationGap": "Unable to confirm safety of {drug}. Check the drug label or consult a pharmacist.",
+  "@medicineRiskCheckRedFlagInformationGap": {
+    "placeholders": {
+      "drug": {}
+    }
+  },
+  "medicineRiskCheckRedFlagActionSevereAllergy": "Call emergency services (911) immediately. Do not self-treat.",
+  "medicineRiskCheckRedFlagActionPregnancyContraindication": "Stop self-medication. Consult a doctor or pharmacist as soon as possible.",
+  "medicineRiskCheckRedFlagActionInformationGap": "You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible.",
+  "scanResultTitle": "Recognition result",
+  "scanNoResultTitle": "Could not identify medicine information",
+  "scanRetakeAction": "Retake photo",
+  "scanConfirmDetailAction": "Confirm, view details",
+  "scanMethodPickerTitle": "Choose recognition method",
+  "scanBarcodeNotFoundToast": "No medicine found for this barcode",
+  "scanSearchFailedToast": "Search failed: {error}",
+  "@scanSearchFailedToast": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineEmptyAddFirstTitle": "Add your first medication",
+  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
+}

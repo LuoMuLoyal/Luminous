@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/features/auth/presentation/providers/shared/auth_action_runner.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -116,31 +117,35 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    final (:value, :error) = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'PasswordResetNotifier.sendResetCode',
       action: () => ref
           .read(authRemoteDataSourceProvider)
           .forgotPassword(email: state.email),
     );
-    if (error != null) {
-      state = state.copyWith(
-        isSubmitting: false,
-        isSendingCode: false,
-        errorMessage: error,
-        successMessage: null,
-      );
-      return false;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSubmitting: false,
+          isSendingCode: false,
+          errorMessage: error.message,
+          successMessage: null,
+        );
+        return false;
+      case Success(:final value):
+        final cooldown = value.cooldown.toInt();
+        state = state.copyWith(
+          isSendingCode: false,
+          successMessage: value.message,
+        );
+        startCooldown(
+          cooldown,
+          getCooldownSeconds: () => state.cooldownSeconds,
+          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+        );
+        return true;
     }
-    final cooldown = value!.cooldown.toInt();
-    state = state.copyWith(isSendingCode: false, successMessage: value.message);
-    startCooldown(
-      cooldown,
-      getCooldownSeconds: () => state.cooldownSeconds,
-      setCooldownSeconds: (value) =>
-          state = state.copyWith(cooldownSeconds: value),
-    );
-    return true;
   }
 
   Future<bool> resetPassword() async {
@@ -149,7 +154,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       errorMessage: null,
       successMessage: null,
     );
-    final actionResult = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'PasswordResetNotifier.resetPassword',
       action: () => ref
@@ -160,17 +165,19 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
             password: state.password,
           ),
     );
-    if (actionResult.error != null) {
-      state = state.copyWith(
-        isSubmitting: false,
-        isSendingCode: false,
-        errorMessage: actionResult.error,
-        successMessage: null,
-      );
-      return false;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSubmitting: false,
+          isSendingCode: false,
+          errorMessage: error.message,
+          successMessage: null,
+        );
+        return false;
+      case Success():
+        state = state.copyWith(isSubmitting: false, successMessage: '');
+        return true;
     }
-    state = state.copyWith(isSubmitting: false, successMessage: '');
-    return true;
   }
 }
 

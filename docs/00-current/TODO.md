@@ -44,10 +44,6 @@ Last updated: 2026-07-11
 | `record/presentation/widgets/dialogs/voice_entry_dialog.dart:250` | `(primaryColor or colors.foreground).withValues(alpha: 0.2)` | 条件 boxShadow 色，两分支类型不同 |
 | `lib/theme/styles/button_styles.dart:147` | `colors.destructive.withValues(alpha: 0.5)` | Forui CLI 生成，不修改 |
 
-### 残留 `.resolveAll(colors)` 桥接方法
-
-`record/presentation/widgets/sections/sidebar.dart:218-219` 中的 `day.markers.resolveAll(colors)` 保留——这是 `List<SemanticColor>` 批量解析方法，且 `colors` 在该 build 方法中仍有其他用途。
-
 ## 实验性功能（稳定版后启动）
 
 - GenUI（Generative UI）渲染引擎

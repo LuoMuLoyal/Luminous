@@ -45,3 +45,4 @@ linter:
 analyzer:
   exclude:
     - generated/lucent_api/**
+    - scripts/**

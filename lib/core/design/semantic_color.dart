@@ -25,19 +25,6 @@ extension SemanticColorResolution on SemanticColor {
   SemanticColorPalette paletteFromColors(FColors colors) =>
       colors.semantic.of(this);
 
-  // ── Bridge methods (migration from AppColors) ──
-
-  /// Resolves the solid tone from [FColors].
-  ///
-  /// Bridge for code that previously called `AppColors.resolve(FColors)`.
-  /// Prefer [solid] (BuildContext) or [palette] for new code.
-  Color resolve(FColors colors) => paletteFromColors(colors).solid;
-
-  /// Resolves the solid tone from the current theme.
-  ///
-  /// Bridge for code that previously called `AppColors.of(BuildContext)`.
-  Color of(BuildContext context) => solid(context);
-
   // ── Convenience shortcuts ──
 
   /// Full-saturation color. Use for icons, active indicators, buttons.
@@ -56,8 +43,7 @@ extension SemanticColorResolution on SemanticColor {
   Color border(BuildContext context) => palette(context).border;
 }
 
-/// Bridge for code that previously called `List<AppColors>.resolveAll(FColors)`.
 extension SemanticColorListResolution on List<SemanticColor> {
   List<Color> resolveAll(FColors colors) =>
-      map((c) => c.resolve(colors)).toList();
+      map((c) => c.paletteFromColors(colors).solid).toList();
 }

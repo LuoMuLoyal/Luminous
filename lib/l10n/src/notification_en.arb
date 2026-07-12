@@ -1,0 +1,23 @@
+{
+  "notificationListTitle": "Notifications",
+  "notificationDetailTitle": "Notification Detail",
+  "notificationEmptyTitle": "No notifications",
+  "notificationEmptyDescription": "New messages will appear here.",
+  "notificationErrorTitle": "Failed to load notifications",
+  "notificationRetryAction": "Retry",
+  "notificationMarkAllRead": "Mark all read",
+  "notificationMarkAllReadSuccess": "All marked as read",
+  "notificationMarkUnreadSuccess": "Marked as unread",
+  "notificationDeleteSuccess": "Deleted",
+  "notificationActionNavigate": "Go to handle",
+  "notificationActionMarkRead": "Mark as read",
+  "notificationActionMarkUnread": "Mark as unread",
+  "notificationActionDelete": "Delete",
+  "notificationDeleteConfirmTitle": "Confirm delete",
+  "notificationDeleteConfirmDescription": "This cannot be undone. Are you sure?",
+  "notificationDeleteConfirmCancel": "Cancel",
+  "notificationDeleteConfirmConfirm": "Delete",
+  "notificationLoadMore": "Load more",
+  "notificationNotFoundTitle": "Notification expired",
+  "notificationNotFoundDescription": "This notification may have been deleted or expired."
+}

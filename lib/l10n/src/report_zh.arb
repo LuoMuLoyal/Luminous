@@ -1,0 +1,138 @@
+{
+  "reportRangePickerTitle": "选择报告周期",
+  "reportRangeCustom": "自定义",
+  "reportGenerateAction": "生成总结",
+  "reportContinueRecordAction": "继续记录",
+  "reportSyncAction": "同步",
+  "reportSnapshotStatus": "当前显示上次报告快照",
+  "reportSnapshotHint": "点击生成或同步后更新",
+  "reportReadinessPreviewBadge": "预览",
+  "reportReadinessInsufficientBadge": "数据不足",
+  "reportReadinessReadyBadge": "已就绪",
+  "reportReadinessSignedOutTitle": "暂未解锁完整报告",
+  "reportReadinessSignedOutDescription": "登录后可查看真实近 7 天聚合。",
+  "reportReadinessInsufficientTitle": "数据还不足，暂无法生成完整报告",
+  "reportReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容。",
+  "reportReadinessReadyTitle": "近 7 天报告已就绪",
+  "reportReadinessReadyDescription": "你现在可以查看完整报告、生成总结并导出摘要。",
+  "reportReadinessUpdatedAt": "当前显示的数据更新于 {time}",
+  "@reportReadinessUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReadinessMissingMetricsHint": "当前还缺 {count} 项指标数据。",
+  "@reportReadinessMissingMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportScoreTitle": "报告预览评分",
+  "reportScoreOutOf": "预览 / {max}",
+  "@reportScoreOutOf": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reportStatusOverallStable": "演示快照",
+  "reportScoreBody": "报告数据接入前仅作预览",
+  "reportMetricMedicationTitle": "用药完成率",
+  "reportMetricSleepTitle": "睡眠",
+  "reportMetricWaterTitle": "饮水",
+  "reportMetricOverallTitle": "总体状态",
+  "reportMetricOverallDelta": "综合最近 7 天",
+  "reportUnitPercent": "%",
+  "reportUnitHour": "小时",
+  "reportUnitLiter": "L",
+  "reportStatusGood": "良好",
+  "reportStatusNeedsImprove": "待提升",
+  "reportStatusStable": "稳定",
+  "reportDeltaMedication": "9%",
+  "reportDeltaSleep": "0.6",
+  "reportDeltaWater": "0.2",
+  "reportTrendSectionTitle": "健康趋势",
+  "reportRangeLast7Days": "近 7 天",
+  "reportRangeLast30Days": "近 30 天",
+  "reportTrendSleepLabel": "睡眠(小时)",
+  "reportTrendWaterLabel": "饮水(L)",
+  "reportTrendMedicationLabel": "用药完成率(%)",
+  "reportTrendDateLabels": "5/19|5/20|5/21|5/22|5/23|5/24|5/25",
+  "reportViewDetailsAction": "查看详细数据",
+  "reportFindingsSectionTitle": "重点发现",
+  "reportSuggestionHistorySectionTitle": "历史建议回顾",
+  "reportSuggestionHistoryEmptyTitle": "最近还没有主动建议",
+  "reportSuggestionHistoryEmptyBody": "当系统产生新的 AI 主动建议后，这里会显示最近的回顾记录。",
+  "reportSuggestionHistoryUnreadBadge": "未读",
+  "reportSuggestionHistoryReadBadge": "已读",
+  "reportFindingCoffeeTitle": "咖啡因影响睡眠",
+  "reportFindingCoffeeBody": "下午摄入咖啡后睡眠时长下降",
+  "reportFindingMedicineTitle": "按时用药稳定",
+  "reportFindingMedicineBody": "连续 7 天按时用药状态良好",
+  "reportAiSummaryTitle": "总结",
+  "reportAiSummarySubtitle": "基于本周记录的智能分析",
+  "reportAiSummarySubtitleLast30Days": "基于近 30 天记录的智能分析",
+  "reportAiSummarySubtitleCustom": "基于所选时段的智能分析",
+  "reportAiSummaryDefaultHint": "还没有生成本周 AI 总结，当前先显示最近一次报告快照。",
+  "reportAiSummaryGeneratingHint": "正在生成本周 AI 总结",
+  "reportAiSummaryGeneratingHintLast30Days": "正在生成近 30 天 AI 总结",
+  "reportAiSummaryGeneratingHintCustom": "正在生成所选时段 AI 总结",
+  "reportAiSummaryErrorHint": "本周 AI 总结生成失败，当前先保留报告快照。",
+  "reportAiSummaryDisabledHint": "你已在设置中关闭 AI 总结，当前只显示报告快照。",
+  "reportViewAdviceAction": "查看建议",
+  "reportAiBulletSleep": "睡眠质量整体良好，周末略有波动，保持规律作息有助于提升精力。",
+  "reportAiBulletWater": "饮水达成率中等，部分天数偏低，记得随身带水，少量多次补水。",
+  "reportAiBulletMedicine": "用药达成率较高，继续保持按时服药的好习惯。",
+  "reportAiBulletDiet": "饮食多为均衡搭配，但水果与蔬菜摄入偏少，可适当增加。",
+  "reportExportSectionTitle": "导出摘要",
+  "reportExportHospitalTitle": "给校医院",
+  "reportExportHospitalSubtitle": "导出健康摘要",
+  "reportExportMonthlyTitle": "月度报告",
+  "reportExportMonthlySubtitle": "PDF 格式",
+  "reportExportPrintTitle": "打印预览",
+  "reportExportPrintSubtitle": "纸质版预览",
+  "reportExportClinicShareTitle": "分享给医生",
+  "reportExportClinicShareSubtitle": "脱敏健康摘要",
+  "reportExportRequestedToast": "导出请求已提交。",
+  "reportExportProcessingToast": "导出正在处理中。",
+  "reportExportUnavailableToast": "当前环境暂时无法生成这个导出文件。",
+  "reportExportReadyToast": "导出文件已准备好，正在打开。",
+  "reportExportFailedToast": "导出失败。",
+  "reportExportLinkMissingToast": "导出已完成，但下载链接暂时不可用。",
+  "reportExportOpenFailedToast": "导出已完成，但无法打开下载链接。",
+  "reportPatternSectionTitle": "健康模式分析",
+  "reportPatternDietWaterTitle": "饮食与饮水",
+  "reportPatternDietWaterStatus": "良好搭配",
+  "reportPatternDietWaterBody": "饮水充足时，精力更容易保持稳定",
+  "reportPatternMedicationTitle": "用药依从性",
+  "reportPatternMedicationStatus": "表现优秀",
+  "reportPatternMedicationBody": "按时服药有助于维持健康状态",
+  "reportReferenceNotice": "本报告仅供参考，不构成诊断或治疗建议。",
+  "reportDataInsufficientTitle": "数据不足，暂无法生成完整报告",
+  "reportDataInsufficientMessage": "持续记录健康数据（饮水、睡眠、症状等），系统会自动生成趋势分析和 AI 总结。",
+  "reportDataInsufficientMetricsHint": "当前有 {count} 项指标数据不足，继续记录即可补齐。",
+  "@reportDataInsufficientMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportFindingsEmptyTitle": "暂无重点发现",
+  "reportFindingsEmptyBody": "持续记录健康数据后，系统会自动发现值得关注的变化和趋势。",
+  "reportExportInsufficientReason": "数据不足时暂不支持导出，请先补充记录。",
+  "reportLockedFeaturesTitle": "完整报告暂未展开",
+  "reportLockedFeaturesSignedOutHint": "登录并补齐记录后可查看总结、导出 PDF、打印预览和更深入的模式分析。",
+  "reportLockedFeaturesInsufficientHint": "补齐记录后可生成总结、导出 PDF、打印预览和查看更深入的模式分析。",
+  "reportErrorTitle": "报告页暂时没有加载出来",
+  "reportErrorDescription": "报告数据这次没有拉取成功，可以重新同步一次。",
+  "reportSignedOutInlineHint": "登录后查看你的真实周报、AI 总结和导出结果。",
+  "reportPatternSleepTitle": "睡眠变化",
+  "reportPatternSleepStatus": "持续观察",
+  "reportPatternSleepBody": "晚间咖啡因和作息变化可能影响睡眠"
+}

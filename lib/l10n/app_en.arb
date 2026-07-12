@@ -9,6 +9,44 @@
   "desktopSidebarSettings": "Settings",
   "desktopSidebarHelp": "Help",
   "desktopSidebarHelpToast": "This will open help and support.",
+  "placeholderSoon": "{label} · Coming Soon",
+  "@placeholderSoon": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "placeholderDescription": "This area is reserved structurally and will be rebuilt with the new multi-platform design system.",
+  "stateFatalErrorTitle": "Something went wrong",
+  "stateFatalErrorDescription": "We couldn't load this page. Please try again.",
+  "stateNotSignedInTitle": "Not signed in",
+  "stateNotSignedInDescription": "Sign in to access your personalized data, reminders, and reports.",
+  "statePreviewSignInHint": "Sign in to see your real data",
+  "statePreviewSignInAction": "View after sign in",
+  "stateEmptyDefaultTitle": "No data yet",
+  "stateEmptyDefaultDescription": "Add records to unlock personalized insights and summaries.",
+  "placeholderNoData": "No data yet",
+  "placeholderNotSet": "Not set",
+  "placeholderAddToUnlock": "Add records to unlock",
+  "placeholderNoTime": "No time set",
+  "placeholderNoDuration": "Not tracked",
+  "legalListTitle": "Legal Documents",
+  "legalDetailTitle": "Legal Document",
+  "legalNotFoundTitle": "Document not found",
+  "legalNotFoundDescription": "This legal document could not be found. Please go back to the list.",
+  "legalLoadErrorTitle": "Loading failed",
+  "legalLoadErrorDescription": "Unable to load the legal document content. Please try again later.",
+  "legalRetryAction": "Retry",
+  "legalBackToListAction": "Back to list",
+  "legalListEmptyTitle": "No legal documents",
+  "legalListEmptyDescription": "Legal documents will appear here once available.",
+  "legalListUpdatedAt": "Updated {date}",
+  "@legalListUpdatedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "recordPageDescription": "Calendar, timeline, and multi-type daily records will grow here.",
   "recordSectionTitle": "Daily timeline",
   "recordSectionSubtitle": "The first rebuild step for Record is structure, not logic.",
@@ -99,11 +137,6 @@
   "recordQuickReorderHint": "Long press and drag to reorder",
   "recordQuickReorderDone": "Done",
   "recordQuickReorderCancel": "Cancel",
-  "settingsQuickEntrySection": "Quick record",
-  "settingsQuickEntryCollapseTitle": "Collapse quick entries by default",
-  "settingsQuickEntryCollapseSubtitle": "Collapse the quick record section on the record page, showing only the title",
-  "settingsQuickEntryDynamicSortTitle": "Dynamic sorting",
-  "settingsQuickEntryDynamicSortSubtitle": "Automatically sort quick entries by usage frequency",
   "recordFastEntryTitle": "Quick {type}",
   "@recordFastEntryTitle": {
     "placeholders": {
@@ -242,7 +275,9 @@
   "recordFilterActiveLabel": "Filtered: {label}",
   "@recordFilterActiveLabel": {
     "placeholders": {
-      "label": { "type": "String" }
+      "label": {
+        "type": "String"
+      }
     }
   },
   "recordFilterClearAction": "Clear",
@@ -791,422 +826,72 @@
   "medicineSearchNoResultSwitch": "Switch source",
   "medicineSearchErrorTitle": "Search did not load this time",
   "medicineSearchErrorDescription": "Please check your network and try again.",
-  "mineSectionTitle": "Personal workspace",
-  "mineSectionSubtitle": "Identity, goals, and privacy controls will share one calm surface here.",
-  "mineHeaderNotifications": "Notifications",
-  "mineHeaderSettings": "Settings",
-  "mineAccountDisplayName": "Lumi User",
-  "mineAccountGuestDisplayName": "Guest",
-  "mineAccountSignedIn": "Signed in",
-  "mineAccountSignedOut": "Signed out",
-  "mineAccountMeta": "Member until: 2026-05-20",
-  "mineAccountSignedOutMeta": "Sign in to sync profile, reminders, and personalized health data",
-  "mineAccountManageAction": "Manage account",
-  "mineAccountEmailVerified": "Email verified",
-  "mineAccountEmailUnverified": "Email unverified",
-  "mineAccountPasswordSet": "Password set",
-  "mineAccountPasswordUnset": "No password",
-  "mineAccountLinkedIdentityCount": "{count} linked",
-  "@mineAccountLinkedIdentityCount": {
+  "medicineSearchPreviewClinical": "Clinical Notes",
+  "medicineSearchPreviewSafety": "Safety Checklist",
+  "medicineSearchPreviewEmpty": "Select a medicine to view details",
+  "medicineSearchSourceRefCn": "Approval No. {id}",
+  "@medicineSearchSourceRefCn": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineAccountLinkedIdentityNone": "No linked identity",
-  "mineAccountLastLogin": "Last login {date}",
-  "@mineAccountLastLogin": {
-    "placeholders": {
-      "date": {
+      "id": {
         "type": "String"
       }
     }
   },
-  "mineAccountLastLoginNone": "Last login --",
-  "mineAccountStudentRole": "Student",
-  "mineSignedOutNoticeTitle": "You are not signed in",
-  "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
-  "mineCompletionTitle": "Profile completion",
-  "mineAlertAllergyTitle": "Allergies",
-  "mineAlertAllergySubtitle": "Pollen, penicillin",
-  "mineAlertAllergyBadge": "2 items",
-  "mineAlertMedicineTitle": "Current meds",
-  "mineAlertMedicineSubtitle": "2 medicines",
-  "mineAlertMedicineBadge": "On schedule",
-  "mineAlertPrivacyTitle": "Sharing controls",
-  "mineAlertPrivacySubtitle": "Preview before sharing",
-  "mineAlertPrivacyBadge": "Confirm first",
-  "mineArchiveBasicTitle": "Basic info",
-  "mineArchiveBasicSubtitle": "Personal and health information",
-  "mineArchiveAllergyTitle": "Allergies",
-  "mineArchiveAllergySubtitle": "Food, medicine, and environment allergy records",
-  "mineArchiveMedicineTitle": "Current meds",
-  "mineArchiveMedicineSubtitle": "Active medicines and medication records",
-  "mineArchiveEmergencyTitle": "Emergency contact",
-  "mineArchiveEmergencySubtitle": "1 contact",
-  "mineArchiveCompleted": "Complete",
-  "mineArchiveNeedsFill": "Needs info",
-  "mineCompletenessGapTitle": "Complete your health profile",
-  "mineCompletenessGapSubtitle": "Missing items below may affect safety check accuracy",
-  "mineCompletenessGapBasicInfo": "Basic info",
-  "mineCompletenessGapBasicInfoDesc": "Birth date and height are used for dosage calculations",
-  "mineCompletenessGapAllergy": "Allergies",
-  "mineCompletenessGapAllergyDesc": "Missing allergy data may affect medication safety alerts",
-  "mineCompletenessGapMedicine": "Current meds",
-  "mineCompletenessGapMedicineDesc": "Missing medication data affects drug interaction checks",
-  "mineCompletenessGapAction": "Complete",
-  "minePrivacyReportTitle": "Report sharing",
-  "minePrivacyReportSubtitle": "Health reports and trend analysis",
-  "mineAiPrivacySectionTitle": "AI & Privacy",
-  "minePrivacyAiTitle": "AI summaries and advice",
-  "minePrivacyAiSubtitle": "Daily summaries, trend advice",
-  "assistantEntryTitle": "AI chat",
-  "assistantEntrySubtitle": "Streaming replies with controlled health context",
-  "minePrivacyOnlyMe": "Only me",
-  "minePrivacyShareAfterGrant": "Share after grant",
-  "mineReminderSectionTitle": "Reminder settings",
-  "mineReminderMedicineTitle": "Medication",
-  "mineReminderWaterTitle": "Water",
-  "mineReminderSleepTitle": "Sleep",
-  "mineReminderLocalOnly": "Local only",
-  "mineReminderEnabled": "Enabled",
-  "mineNotificationReminderSectionTitle": "Notifications & reminders",
-  "mineNotificationInboxTitle": "Notification inbox",
-  "mineNotificationInboxUnreadSummary": "{count} unread",
-  "@mineNotificationInboxUnreadSummary": {
+  "medicineSearchSourceRefDrugbank": "DrugBank ID: {id}",
+  "@medicineSearchSourceRefDrugbank": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "mineNotificationInboxSignedOutSummary": "Sign in to view",
-  "mineReminderSleepOff": "Off",
-  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
-  "@mineReminderSleepSummary": {
-    "placeholders": {
-      "bedtime": {
-        "type": "String"
-      },
-      "wakeTime": {
+      "id": {
         "type": "String"
       }
     }
   },
-  "mineAccountSettingsTitle": "Account and settings",
-  "mineSettingLanguageTitle": "Language",
-  "mineSettingLanguageValue": "English",
-  "mineSettingExportTitle": "Data export",
-  "mineSettingExportValue": "Export my health data",
-  "mineSettingHelpTitle": "Help and feedback",
-  "mineSettingHelpValue": "FAQ and feedback",
-  "mineSettingAboutTitle": "About Luminous",
-  "mineSettingAboutValue": "Version 1.2.0",
-  "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
-  "minePrivacyNoticeAction": "View privacy policy",
-  "mineProfileUnknownValue": "Not set",
-  "mineProfileAgeYears": "{age}y",
-  "@mineProfileAgeYears": {
+  "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
+  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergy": {
     "placeholders": {
-      "age": {
-        "type": "int"
-      }
+      "drug": {},
+      "allergen": {}
     }
   },
-  "mineProfileHeightCm": "{height}cm",
-  "@mineProfileHeightCm": {
+  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use and consult a doctor immediately.",
+  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
     "placeholders": {
-      "height": {
-        "type": "int"
-      }
+      "drug": {}
     }
   },
-  "mineProfileMeta": "{age} · {height}",
-  "@mineProfileMeta": {
+  "medicineRiskCheckRedFlagPregnancyContraindication": "Pregnancy/lactation warning: {drug} is listed as contraindicated. Consult a doctor before use.",
+  "@medicineRiskCheckRedFlagPregnancyContraindication": {
     "placeholders": {
-      "age": {
-        "type": "String"
-      },
-      "height": {
-        "type": "String"
-      }
+      "drug": {}
     }
   },
-  "mineCompletionSubtitle": "Good progress. Keep filling it out for more precise suggestions.",
-  "mineSummaryTitle": "Health context summary",
-  "mineSummaryUpdatedAt": "Updated 2025-05-15",
-  "mineSummaryAge": "Age",
-  "mineSummaryAllergies": "Allergies",
-  "mineSummaryConditions": "Conditions",
-  "mineSummaryMedicines": "Current meds",
-  "mineSummaryMissingInfo": "Missing info: birth date, height, unit system",
-  "mineSummaryCompleteAction": "Complete",
-  "mineReadinessPreviewTitle": "Your personal profile is still locked",
-  "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and current medications.",
-  "mineReadinessPreviewBadge": "Preview",
-  "mineReadinessSignedInBadge": "Signed in",
-  "mineReadinessIncompleteTitle": "{count} key items still missing",
-  "@mineReadinessIncompleteTitle": {
+  "medicineRiskCheckRedFlagInformationGap": "Unable to confirm safety of {drug}. Check the drug label or consult a pharmacist.",
+  "@medicineRiskCheckRedFlagInformationGap": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
+      "drug": {}
     }
   },
-  "mineReadinessIncompleteDescription": "Adding these details improves safety reminders, sharing controls, and summaries.",
-  "mineReadinessReadyTitle": "Your profile is mostly ready",
-  "mineReadinessReadyDescription": "Keep your health archive current and manage sharing or account access from here.",
-  "mineReadinessManageAction": "Manage profile",
-  "mineAccountPrivacySectionTitle": "Account and privacy",
-  "mineProfileTitle": "Health profile",
-  "mineProfileBasicInfoTitle": "Basic info",
-  "mineProfileBasicInfoSubtitle": "Personal basics",
-  "mineProfileAllergiesTitle": "Allergies",
-  "mineProfileAllergiesSubtitle": "2 records",
-  "mineProfileConditionsTitle": "Conditions",
-  "mineProfileConditionsSubtitle": "1 record",
-  "mineProfileMedicinesTitle": "Current meds",
-  "mineProfileMedicinesSubtitle": "3 medicines",
-  "mineSettingsThemeTitle": "Theme",
-  "mineSettingsAccountTitle": "Account and security",
-  "mineSettingsLanguageTitle": "Language",
-  "mineSettingsNotificationsTitle": "Notifications",
-  "settingsLanguageSystemLabel": "Follow system",
-  "settingsLanguageChineseLabel": "Simplified Chinese",
-  "settingsLanguageEnglishLabel": "English",
-  "settingsThemeAppearanceTitle": "Appearance",
-  "settingsThemeModeSectionTitle": "Display mode",
-  "settingsThemeFamilySectionTitle": "Color theme",
-  "settingsThemeFamilyBlue": "Blue",
-  "settingsThemeFamilyGreen": "Green",
-  "settingsThemeFamilyNeutral": "Neutral",
-  "settingsThemeFamilyOrange": "Orange",
-  "settingsThemeFamilyRed": "Red",
-  "settingsThemeFamilyRose": "Rose",
-  "settingsThemeFamilySlate": "Slate",
-  "settingsThemeFamilyViolet": "Violet",
-  "settingsThemeFamilyYellow": "Yellow",
-  "settingsThemeFamilyZinc": "Zinc",
-  "settingsSyncFailed": "Failed to sync settings",
-  "settingsNotificationsMedicationReminders": "Medication reminders",
-  "settingsNotificationsHealthAlerts": "Health alerts",
-  "settingsNotificationsWeeklySummary": "Weekly summary",
-  "settingsNotificationsPermissionEnabled": "System notifications are enabled",
-  "settingsNotificationsPermissionDisabled": "System notifications are disabled",
-  "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",
-  "settingsNotificationsPermissionEnabledHint": "Notifications are allowed. Preference toggles below control which types appear.",
-  "settingsNotificationsPermissionDisabledHint": "Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.",
-  "settingsNotificationsGeneralGroup": "General",
-  "settingsNotificationsReminderGroup": "Reminders",
-  "settingsNotificationsSleepReminderTitle": "Sleep Reminder",
-  "settingsNotificationsSleepReminderSubtitle": "Remind you to wind down for sleep",
-  "settingsNotificationsSleepBedtime": "Bedtime",
-  "settingsNotificationsSleepWakeTime": "Wake time",
-  "settingsNotificationsTimeUnset": "Not set",
-  "settingsAccountSecuritySectionTitle": "Account & Security",
-  "settingsNotificationsSectionTitle": "Notifications",
-  "settingsNotificationsSummary": "{count} enabled",
-  "@settingsNotificationsSummary": {
+  "medicineRiskCheckRedFlagActionSevereAllergy": "Call emergency services (911) immediately. Do not self-treat.",
+  "medicineRiskCheckRedFlagActionPregnancyContraindication": "Stop self-medication. Consult a doctor or pharmacist as soon as possible.",
+  "medicineRiskCheckRedFlagActionInformationGap": "You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible.",
+  "scanResultTitle": "Recognition result",
+  "scanNoResultTitle": "Could not identify medicine information",
+  "scanRetakeAction": "Retake photo",
+  "scanConfirmDetailAction": "Confirm, view details",
+  "scanMethodPickerTitle": "Choose recognition method",
+  "scanBarcodeNotFoundToast": "No medicine found for this barcode",
+  "scanSearchFailedToast": "Search failed: {error}",
+  "@scanSearchFailedToast": {
     "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsPrivacySectionTitle": "Privacy",
-  "settingsAiTitle": "AI Settings",
-  "settingsAiSubtitle": "AI summaries, assistant & memory",
-  "settingsAiSummariesTitle": "AI Summaries & Suggestions",
-  "settingsAiSummariesSubtitle": "Daily health summaries and trend advice",
-  "settingsAiAssistantTitle": "AI Assistant",
-  "settingsAiAssistantSubtitle": "Health Q&A assistant",
-  "settingsAiMemoryTitle": "AI Memory",
-  "settingsAiMemorySubtitle": "Let AI remember your health preferences",
-  "settingsGeneralSectionTitle": "General",
-  "settingsAboutSectionTitle": "About",
-  "settingsExportDescription": "Export your health data as a PDF. You can download it once processing is complete.",
-  "settingsExportRequestButton": "Request Export",
-  "settingsHelpEmpty": "No help content available",
-  "settingsHelpError": "Failed to load help content",
-  "settingsAboutPrivacyPolicy": "Privacy Policy",
-  "settingsAboutTermsOfService": "Terms of Service",
-  "settingsAboutLicenses": "Open Source Licenses",
-  "settingsAboutSupport": "Help & Support",
-  "mineErrorTitle": "Mine did not load this time",
-  "mineErrorDescription": "The structure is wired. Try fetching the data again.",
-  "mineActionToast": "{action}: this will open the related details or settings flow later.",
-  "@mineActionToast": {
-    "placeholders": {
-      "action": {
+      "error": {
         "type": "String"
       }
     }
   },
+  "medicineEmptyAddFirstTitle": "Add your first medication",
+  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks.",
   "todaySectionTitle": "Today workspace",
   "todaySectionSubtitle": "The new home will gradually attach reminders, snapshots, water tracking, and Lumi guidance here.",
-  "authWelcomeBack": "Welcome back",
-  "authCreateAccount": "Create account",
-  "authModePassword": "Password",
-  "authModeCode": "Code",
-  "authEmailLabel": "Email",
-  "authEmailHint": "name@example.com",
-  "authPasswordLabel": "Password",
-  "authPasswordHint": "At least 8 characters, ideally with mixed case and numbers",
-  "authCodeLabel": "Verification code",
-  "authNicknameLabel": "Nickname",
-  "authNicknameHint": "Optional",
-  "authEmailRequiredToast": "Please enter your email.",
-  "authCodeRequiredToast": "Please enter the verification code.",
-  "authPasswordRequiredToast": "Please enter your password.",
-  "authConfirmPasswordRequiredToast": "Please confirm your password.",
-  "authEmailRequiredError": "Please enter your email.",
-  "authEmailInvalidError": "Please enter a valid email address.",
-  "authCodeRequiredError": "Please enter the verification code.",
-  "authPasswordRequiredError": "Please enter your password.",
-  "authConfirmPasswordRequiredError": "Please confirm your password.",
-  "authPasswordsDoNotMatchError": "Passwords do not match.",
-  "authSendCode": "Send code",
-  "authSendCodeAgain": "Send again ({seconds}s)",
-  "@authSendCodeAgain": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "authCodeResendWait": "Please wait {seconds}s before resending the code.",
-  "@authCodeResendWait": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "authRegisterSuccess": "Account created. Please sign in.",
-  "authSignIn": "Sign in",
-  "authWechatSignIn": "Sign in with WeChat",
-  "authWechatAuthorizeOpened": "WeChat authorization opened in your browser.",
-  "authWechatBrowserOpenFailed": "Could not open the WeChat authorization page.",
-  "authWechatCallbackLabel": "WeChat callback link / code",
-  "authWechatCallbackHint": "Paste the callback URL after scanning",
-  "authWechatCompleteAction": "Complete WeChat sign-in",
-  "authWechatCallbackRequiredToast": "Paste the WeChat callback link first.",
-  "authWechatCallbackInvalidToast": "The WeChat callback link is missing code or state.",
-  "authCreateAccountAction": "Create account",
-  "authForgotPasswordPrompt": "Forgot your password?",
-  "authResetPasswordAction": "Reset password",
-  "authNeedAccountPrompt": "Need an account?",
-  "authRegisterNowAction": "Register now",
-  "authHaveAccountPrompt": "Already have an account?",
-  "authRememberPasswordPrompt": "Remember your password?",
-  "authNewPasswordLabel": "New password",
-  "authConfirmPasswordLabel": "Confirm password",
-  "authPasswordsDoNotMatch": "Passwords do not match.",
-  "authResetPasswordSubmit": "Reset password",
-  "authResetPasswordSuccess": "Password updated. Please sign in again.",
-  "authLoginSubtitle": "Sign in to continue your health tracking",
-  "authRegisterSubtitle": "Join Luminous and start your health journal",
-  "authForgotPasswordSubtitle": "We'll send a code to reset your password",
-  "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
-  "@authTermsAgreement": {
-    "placeholders": {
-      "terms": {
-        "type": "String"
-      },
-      "privacy": {
-        "type": "String"
-      }
-    }
-  },
-  "authTermsOfService": "Terms of Service",
-  "authPrivacyPolicy": "Privacy Policy",
-  "authTermsComingSoonToast": "Terms and privacy policy will be available soon.",
-  "authChangeEmailFormTitle": "Change email",
-  "authNewEmailLabel": "New email",
-  "authChangeEmailSubmit": "Update email",
-  "authChangeEmailSuccess": "Email updated.",
-  "authAccountSettingsFormTitle": "Account and security",
-  "authAccountOverviewTitle": "Account status",
-  "authAccountOverviewEmail": "Email",
-  "authAccountOverviewEmailVerified": "Email verification",
-  "authAccountOverviewPassword": "Password",
-  "authAccountOverviewLastLogin": "Last login",
-  "authEmailMissing": "Not set",
-  "authEmailVerifiedAt": "Verified {time}",
-  "@authEmailVerifiedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "authEmailUnverifiedStatus": "Unverified",
-  "authPasswordSetStatus": "Set",
-  "authPasswordUnsetStatus": "Not set",
-  "authLastLoginUnknown": "Unknown",
-  "authProfileSectionTitle": "Profile details",
-  "authProfileSectionDescription": "Update nickname or avatar URL; leaving a field empty will clear it under the current Lucent rules.",
-  "authAvatarLabel": "Avatar URL",
-  "authAvatarHint": "https://example.com/avatar.png",
-  "authProfileSaveAction": "Save profile",
-  "authProfileSaveSuccess": "Profile updated.",
-  "authEmailSectionTitle": "Login email",
-  "authEmailVerifiedDescription": "This email is already verified, and you can continue to the change-email flow.",
-  "authEmailUnverifiedDescription": "This email is still unverified; you can still continue to the change-email flow.",
-  "authEmailAddAction": "Add email",
-  "authEmailChangeAction": "Change email",
-  "authLinkedIdentitiesSectionTitle": "Linked identities",
-  "authLinkedIdentityNone": "No third-party identity linked.",
-  "authLinkedIdentityEmailMissing": "No provider email",
-  "authLinkedIdentityLinkedAt": "Linked {date}",
-  "@authLinkedIdentityLinkedAt": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "authIdentityProviderWechatWeb": "WeChat Web",
-  "authIdentityProviderWechatMobile": "WeChat Mobile",
-  "authIdentityUnlinkAction": "Unlink",
-  "authIdentityUnlinkDisabledAction": "Keep",
-  "authIdentityUnlinkSuccess": "Identity unlinked.",
-  "authIdentityUnlinkConfirmTitle": "Unlink identity",
-  "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
-  "@authIdentityUnlinkConfirmMessage": {
-    "placeholders": {
-      "provider": {
-        "type": "String"
-      }
-    }
-  },
-  "authIdentityLinkWechatAction": "Link WeChat",
-  "authIdentityLinkSuccess": "WeChat identity linked.",
-  "authIdentityLinkUnsupported": "WeChat linking cannot be opened on this platform.",
-  "authCancelAction": "Cancel",
-  "authPasswordSectionTitle": "Change password",
-  "authPasswordSectionDescription": "Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.",
-  "authPasswordUnsetManagementHint": "This account does not have a local password yet.",
-  "authCurrentPasswordLabel": "Current password",
-  "authCurrentPasswordRequiredToast": "Please enter your current password.",
-  "authNewPasswordRequiredToast": "Please enter your new password.",
-  "authChangePasswordAction": "Update password",
-  "authChangePasswordSuccess": "Password updated. Please sign in again.",
-  "authDeleteAccountSectionTitle": "Delete account",
-  "authDeleteAccountSectionDescription": "This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.",
-  "authDeleteAccountHint": "Enter your current password to confirm deletion",
-  "authDeleteAccountCodeHint": "Enter the email verification code to confirm deletion",
-  "authDeleteAccountEmailRequiredHint": "Please bind and verify an email address before deleting your account.",
-  "authDeleteAccountAction": "Delete account",
-  "authDeleteAccountSuccess": "Account deleted.",
-  "authBackHomePrompt": "Back to home?",
-  "authCheckingSession": "Checking session...",
-  "authNotSignedIn": "Not signed in yet",
-  "authLoginRequiredPrompt": "Go to sign in",
-  "authGoLogin": "Sign in",
-  "authGoRegister": "Create account",
-  "authSignOut": "Sign out",
   "todayHeroTitle": "Today",
   "todayHeroDescription": "The new home starts here: we are rebuilding the responsive visual system first, then layering in water tracking, reminders, health snapshots, and Lumi guidance.",
   "todayChipWater": "Water Tracking",
@@ -1320,88 +1005,6 @@
   "todayEmptyDescription": "Log water, medication, or sleep first, then we can shape personalized suggestions.",
   "todayEmptyAction": "Start logging",
   "todayRetryAction": "Retry",
-  "assistantPageTitle": "AI chat",
-  "assistantSignedOutDescription": "Sign in to use AI chat and decide whether your health context may be used.",
-  "assistantLoadErrorTitle": "AI chat did not load this time",
-  "assistantLoadErrorFallback": "Capabilities were not loaded this time. Try fetching them again.",
-  "assistantSettingsEnableTitle": "Enable AI chat",
-  "assistantSettingsEnableSubtitle": "When disabled, no new chat requests will be sent",
-  "assistantSettingsMemoryTitle": "Enable persistent memory",
-  "assistantSettingsMemorySubtitle": "When a new chat starts, the assistant may reference earlier conversations",
-  "assistantContextHealthProfile": "Health profile",
-  "assistantContextDailyRecords": "Recent records",
-  "assistantContextSleepRecords": "Sleep data",
-  "assistantContextCurrentMedicines": "Current medicines",
-  "assistantStatusSectionTitle": "Current status",
-  "assistantStatusReady": "Backend capabilities are ready and chat can start.",
-  "assistantStatusDisabled": "AI chat is turned off, so no chat request will be sent.",
-  "assistantStatusModelMissing": "The backend does not have a usable chat model configured yet.",
-  "assistantStatusNotReady": "The interactive chat route is not fully ready yet.",
-  "assistantStatusToolsLabel": "Tools",
-  "assistantStatusContextLabel": "Context",
-  "assistantStatusStreamingLabel": "Streaming",
-  "assistantStatusRagLabel": "RAG",
-  "assistantConversationDisabledTitle": "Chat cannot start yet",
-  "assistantConversationDisabledByUser": "AI chat is turned off. Enable it again before sending messages.",
-  "assistantConversationModelMissing": "The backend does not have a usable model yet, so replies cannot be generated.",
-  "assistantConversationNotReady": "The interactive chat route is not ready yet. Keep the current settings for now.",
-  "assistantConversationEmptyTitle": "Start the first message",
-  "assistantConversationEmptyDescription": "You can ask about recent sleep, recent records, or current medicines directly.",
-  "assistantSendErrorTitle": "This reply did not complete",
-  "assistantInputHint": "For example: Based on my recent sleep and medicines, what should I pay attention to?",
-  "assistantSendAction": "Send",
-  "assistantSendingAction": "Sending",
-  "assistantNewConversationAction": "New chat",
-  "assistantRecentConversationsAction": "Recent chats",
-  "assistantRecentConversationsTitle": "Recent chats",
-  "assistantRecentConversationsEmptyTitle": "No chat history yet",
-  "assistantRecentConversationsEmptyDescription": "Recent conversations will appear here after you start chatting.",
-  "assistantRecentConversationCurrentLabel": "Current",
-  "assistantOpeningConversationLabel": "Switching conversation…",
-  "assistantUntitledConversation": "Untitled conversation",
-  "assistantStreamingLabel": "Generating",
-  "assistantRetryAction": "Retry",
-  "assistantErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
-  "assistantErrorEmptyResult": "AI did not return a valid response. Please try again.",
-  "assistantErrorServer": "The server encountered an issue. Please try again later.",
-  "assistantToolTodayRecords": "Today records",
-  "assistantToolRecordsByDate": "Records by date",
-  "assistantToolRecordsByRange": "Records by range",
-  "assistantToolTodaySummaryByDate": "Today summary by date",
-  "assistantToolReportSummaryByRange": "Report summary by range",
-  "assistantToolRecentTodaySummaries": "Past Today summaries",
-  "assistantToolRecentReportSummaries": "Past Report summaries",
-  "assistantToolUserProfile": "User profile",
-  "assistantToolUserSettings": "User settings",
-  "assistantToolCurrentMedicines": "Current medicines",
-  "assistantToolSleepByRange": "Sleep summary",
-  "assistantToolSearchMedicineLeaflets": "Chinese leaflet search",
-  "assistantToolSearchMedicalQaCorpus": "Medical QA search",
-  "assistantToolResolveDrugbankEntity": "DrugBank entity resolve",
-  "assistantToolSearchDrugbankPassages": "DrugBank passage search",
-  "assistantToolProposeCreateRecord": "Save proposal",
-  "assistantToolProposeUpdateRecord": "Update proposal",
-  "assistantToolProposeDeleteRecord": "Delete proposal",
-  "assistantToolProposeUpdateSettings": "Settings proposal",
-  "assistantUsedToolsLabel": "Sources used",
-  "assistantConversationDisabledByUserHint": "AI chat is turned off. Toggle “Enable AI chat” above to resume.",
-  "assistantProposalConfirmCreateAction": "Confirm save",
-  "assistantProposalConfirmUpdateAction": "Confirm update",
-  "assistantProposalConfirmDeleteAction": "Confirm delete",
-  "assistantProposalConfirmSettingsAction": "Confirm update",
-  "assistantProposalDismissAction": "Dismiss",
-  "assistantProposalPendingState": "Pending",
-  "assistantProposalExecutingState": "Running",
-  "assistantProposalConfirmedState": "Confirmed",
-  "assistantProposalDismissedState": "Dismissed",
-  "assistantProposalFailedState": "Failed",
-  "assistantProposalConfirmedToast": "The proposed action was applied.",
-  "assistantProposalTargetLabel": "Target",
-  "assistantProposalMatchedByLabel": "Matched by",
-  "assistantProposalSettingKeysLabel": "Settings",
-  "assistantProposalExpiresAtLabel": "Expires at",
-  "assistantProposalConstraintsLabel": "Constraints before confirm",
-  "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming.",
   "todayUpdatedAt": "Updated at {time}",
   "@todayUpdatedAt": {
     "placeholders": {
@@ -1623,71 +1226,6 @@
     }
   },
   "todayGreetingEveningAllDone": "Good evening, everything is handled today",
-  "placeholderSoon": "{label} · Coming Soon",
-  "@placeholderSoon": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "placeholderDescription": "This area is reserved structurally and will be rebuilt with the new multi-platform design system.",
-  "mineThemeModeSystem": "System",
-  "mineThemeModeLight": "Light",
-  "mineThemeModeDark": "Dark",
-  "medicineSearchPreviewClinical": "Clinical Notes",
-  "medicineSearchPreviewSafety": "Safety Checklist",
-  "medicineSearchPreviewEmpty": "Select a medicine to view details",
-  "medicineSearchSourceRefCn": "Approval No. {id}",
-  "@medicineSearchSourceRefCn": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "medicineSearchSourceRefDrugbank": "DrugBank ID: {id}",
-  "@medicineSearchSourceRefDrugbank": {
-    "placeholders": {
-      "id": {
-        "type": "String"
-      }
-    }
-  },
-  "mineEditProfileTitle": "Edit Profile",
-  "mineEditAllergyTitle": "Edit Allergy",
-  "mineEditAllergyNewTitle": "New Allergy",
-  "mineEditConditionTitle": "Edit Condition",
-  "mineEditConditionNewTitle": "New Condition",
-  "mineEditMedicineTitle": "Edit Medicine",
-  "mineEditMedicineNewTitle": "New Medicine",
-  "mineEditSaveAction": "Save",
-  "mineEditDeleteAction": "Delete",
-  "mineEditSavedToast": "Saved",
-  "mineEditDeletedToast": "Deleted",
-  "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",
-  "mineEditFieldHeightCm": "Height (cm)",
-  "mineEditFieldBloodType": "Blood type",
-  "mineEditFieldLocale": "Locale",
-  "mineEditFieldTimezone": "Timezone",
-  "mineEditFieldUnitSystem": "Unit system",
-  "mineEditFieldOnboardingCompleted": "Onboarding completed",
-  "mineEditFieldKind": "Kind",
-  "mineEditFieldLabel": "Label",
-  "mineEditFieldReaction": "Reaction",
-  "mineEditFieldSeverity": "Severity",
-  "mineEditFieldNote": "Note",
-  "mineEditFieldRecordedAt": "Recorded at",
-  "mineEditFieldStatus": "Status",
-  "mineEditFieldDiagnosedAt": "Diagnosed at (YYYY-MM-DD)",
-  "mineEditFieldSource": "Source",
-  "mineEditFieldSourceRefId": "Source ref ID",
-  "mineEditFieldDisplayName": "Display name",
-  "mineEditFieldStrengthText": "Strength",
-  "mineEditFieldDoseText": "Dose",
-  "mineEditFieldRoute": "Route",
-  "mineEditFieldStartedAt": "Started at (YYYY-MM-DD)",
-  "mineEditFieldEndedAt": "Ended at (YYYY-MM-DD)",
   "reportRangePickerTitle": "Select report period",
   "reportRangeCustom": "Custom",
   "reportGenerateAction": "Generate summary",
@@ -1814,75 +1352,80 @@
   "reportErrorTitle": "Report did not load this time",
   "reportErrorDescription": "Report data did not load this time. Try syncing again.",
   "reportSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",
-  "mineSettingsAdvancedTitle": "Advanced settings",
+  "reportPatternSleepTitle": "Sleep changes",
+  "reportPatternSleepStatus": "Watch trend",
+  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
+  "settingsQuickEntrySection": "Quick record",
+  "settingsQuickEntryCollapseTitle": "Collapse quick entries by default",
+  "settingsQuickEntryCollapseSubtitle": "Collapse the quick record section on the record page, showing only the title",
+  "settingsQuickEntryDynamicSortTitle": "Dynamic sorting",
+  "settingsQuickEntryDynamicSortSubtitle": "Automatically sort quick entries by usage frequency",
+  "settingsLanguageSystemLabel": "Follow system",
+  "settingsLanguageChineseLabel": "Simplified Chinese",
+  "settingsLanguageEnglishLabel": "English",
+  "settingsThemeAppearanceTitle": "Appearance",
+  "settingsThemeModeSectionTitle": "Display mode",
+  "settingsThemeFamilySectionTitle": "Color theme",
+  "settingsThemeFamilyBlue": "Blue",
+  "settingsThemeFamilyGreen": "Green",
+  "settingsThemeFamilyNeutral": "Neutral",
+  "settingsThemeFamilyOrange": "Orange",
+  "settingsThemeFamilyRed": "Red",
+  "settingsThemeFamilyRose": "Rose",
+  "settingsThemeFamilySlate": "Slate",
+  "settingsThemeFamilyViolet": "Violet",
+  "settingsThemeFamilyYellow": "Yellow",
+  "settingsThemeFamilyZinc": "Zinc",
+  "settingsSyncFailed": "Failed to sync settings",
+  "settingsNotificationsMedicationReminders": "Medication reminders",
+  "settingsNotificationsHealthAlerts": "Health alerts",
+  "settingsNotificationsWeeklySummary": "Weekly summary",
+  "settingsNotificationsPermissionEnabled": "System notifications are enabled",
+  "settingsNotificationsPermissionDisabled": "System notifications are disabled",
+  "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",
+  "settingsNotificationsPermissionEnabledHint": "Notifications are allowed. Preference toggles below control which types appear.",
+  "settingsNotificationsPermissionDisabledHint": "Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.",
+  "settingsNotificationsGeneralGroup": "General",
+  "settingsNotificationsReminderGroup": "Reminders",
+  "settingsNotificationsSleepReminderTitle": "Sleep Reminder",
+  "settingsNotificationsSleepReminderSubtitle": "Remind you to wind down for sleep",
+  "settingsNotificationsSleepBedtime": "Bedtime",
+  "settingsNotificationsSleepWakeTime": "Wake time",
+  "settingsNotificationsTimeUnset": "Not set",
+  "settingsAccountSecuritySectionTitle": "Account & Security",
+  "settingsNotificationsSectionTitle": "Notifications",
+  "settingsNotificationsSummary": "{count} enabled",
+  "@settingsNotificationsSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPrivacySectionTitle": "Privacy",
+  "settingsAiTitle": "AI Settings",
+  "settingsAiSubtitle": "AI summaries, assistant & memory",
+  "settingsAiSummariesTitle": "AI Summaries & Suggestions",
+  "settingsAiSummariesSubtitle": "Daily health summaries and trend advice",
+  "settingsAiAssistantTitle": "AI Assistant",
+  "settingsAiAssistantSubtitle": "Health Q&A assistant",
+  "settingsAiMemoryTitle": "AI Memory",
+  "settingsAiMemorySubtitle": "Let AI remember your health preferences",
+  "settingsGeneralSectionTitle": "General",
+  "settingsAboutSectionTitle": "About",
+  "settingsExportDescription": "Export your health data as a PDF. You can download it once processing is complete.",
+  "settingsExportRequestButton": "Request Export",
+  "settingsHelpEmpty": "No help content available",
+  "settingsHelpError": "Failed to load help content",
+  "settingsAboutPrivacyPolicy": "Privacy Policy",
+  "settingsAboutTermsOfService": "Terms of Service",
+  "settingsAboutLicenses": "Open Source Licenses",
+  "settingsAboutSupport": "Help & Support",
   "settingsAdvancedClearImageCache": "Clear image cache",
   "settingsAdvancedCacheCleared": "Image cache cleared",
   "settingsAdvancedResetDefaults": "Reset defaults",
   "settingsAdvancedDefaultsReset": "Defaults restored",
   "settingsAdvancedOpenSourceLicenses": "Open source licenses",
-  "reportPatternSleepTitle": "Sleep changes",
-  "reportPatternSleepStatus": "Watch trend",
-  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
-  "mineReminderDisabled": "Disabled",
-  "mineExportStatusRequested": "Requested",
-  "mineExportStatusPending": "Processing",
-  "mineExportStatusCompleted": "Completed",
-  "mineExportStatusFailed": "Failed",
-  "mineExportStatusLinkMissing": "Link refresh needed",
-  "mineExportStatusUnavailable": "Unavailable",
-  "mineExportDownloadButton": "Download Report",
-  "mineExportRegenerateButton": "Regenerate",
-  "mineExportRequested": "Export request submitted",
-  "medicineRiskCheckRedFlagBannerTitle": "Red Flag Warning",
-  "medicineRiskCheckRedFlagSevereAllergy": "Severe allergy risk: {drug} contains {allergen}. Do not use and consult a doctor immediately.",
-  "@medicineRiskCheckRedFlagSevereAllergy": {
-    "placeholders": {
-      "drug": {},
-      "allergen": {}
-    }
-  },
-  "medicineRiskCheckRedFlagSevereAllergyGeneric": "Severe allergy risk: {drug} matches a known allergen. Do not use and consult a doctor immediately.",
-  "@medicineRiskCheckRedFlagSevereAllergyGeneric": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagPregnancyContraindication": "Pregnancy/lactation warning: {drug} is listed as contraindicated. Consult a doctor before use.",
-  "@medicineRiskCheckRedFlagPregnancyContraindication": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagInformationGap": "Unable to confirm safety of {drug}. Check the drug label or consult a pharmacist.",
-  "@medicineRiskCheckRedFlagInformationGap": {
-    "placeholders": {
-      "drug": {}
-    }
-  },
-  "medicineRiskCheckRedFlagActionSevereAllergy": "Call emergency services (911) immediately. Do not self-treat.",
-  "medicineRiskCheckRedFlagActionPregnancyContraindication": "Stop self-medication. Consult a doctor or pharmacist as soon as possible.",
-  "medicineRiskCheckRedFlagActionInformationGap": "You are in a high-risk state and some medicines cannot be auto-checked. Verify offline as soon as possible.",
-  "notificationListTitle": "Notifications",
-  "notificationDetailTitle": "Notification Detail",
-  "notificationEmptyTitle": "No notifications",
-  "notificationEmptyDescription": "New messages will appear here.",
-  "notificationErrorTitle": "Failed to load notifications",
-  "notificationRetryAction": "Retry",
-  "notificationMarkAllRead": "Mark all read",
-  "notificationMarkAllReadSuccess": "All marked as read",
-  "notificationMarkUnreadSuccess": "Marked as unread",
-  "notificationDeleteSuccess": "Deleted",
-  "notificationActionNavigate": "Go to handle",
-  "notificationActionMarkRead": "Mark as read",
-  "notificationActionMarkUnread": "Mark as unread",
-  "notificationActionDelete": "Delete",
-  "notificationDeleteConfirmTitle": "Confirm delete",
-  "notificationDeleteConfirmDescription": "This cannot be undone. Are you sure?",
-  "notificationDeleteConfirmCancel": "Cancel",
-  "notificationDeleteConfirmConfirm": "Delete",
-  "notificationLoadMore": "Load more",
-  "notificationNotFoundTitle": "Notification expired",
-  "notificationNotFoundDescription": "This notification may have been deleted or expired.",
   "settingsDataSharingConfirmTitle": "Confirm report sharing settings?",
   "settingsDataSharingConfirmDescription": "When enabled, your health reports and trend analysis may be used to improve services. Continue?",
   "settingsDataSharingConfirmAction": "Confirm",
@@ -1893,23 +1436,6 @@
       "buildNumber": {}
     }
   },
-  "scanResultTitle": "Recognition result",
-  "scanNoResultTitle": "Could not identify medicine information",
-  "scanRetakeAction": "Retake photo",
-  "scanConfirmDetailAction": "Confirm, view details",
-  "scanMethodPickerTitle": "Choose recognition method",
-  "scanBarcodeNotFoundToast": "No medicine found for this barcode",
-  "scanSearchFailedToast": "Search failed: {error}",
-  "@scanSearchFailedToast": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
-  "authQqSignIn": "Sign in with QQ",
-  "authQqCallbackLabel": "QQ callback link / code",
-  "authQqCompleteAction": "Complete QQ sign-in",
   "settingsAiContextSectionTitle": "Assistant Data Access",
   "settingsAiContextSectionSubtitle": "Control what data the AI assistant can read",
   "settingsAiContextHealthProfile": "Health Profile",
@@ -2053,35 +1579,511 @@
   "settingsFeatureFlagsReportSection": "Report",
   "settingsFeatureFlagsPdfExport": "PDF Export",
   "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files",
-  "stateFatalErrorTitle": "Something went wrong",
-  "stateFatalErrorDescription": "We couldn't load this page. Please try again.",
-  "stateNotSignedInTitle": "Not signed in",
-  "stateNotSignedInDescription": "Sign in to access your personalized data, reminders, and reports.",
-  "statePreviewSignInHint": "Sign in to see your real data",
-  "statePreviewSignInAction": "View after sign in",
-  "stateEmptyDefaultTitle": "No data yet",
-  "stateEmptyDefaultDescription": "Add records to unlock personalized insights and summaries.",
-  "placeholderNoData": "No data yet",
-  "placeholderNotSet": "Not set",
-  "placeholderAddToUnlock": "Add records to unlock",
-  "placeholderNoTime": "No time set",
-  "placeholderNoDuration": "Not tracked",
-  "medicineEmptyAddFirstTitle": "Add your first medication",
-  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks.",
-  "legalListTitle": "Legal Documents",
-  "legalDetailTitle": "Legal Document",
-  "legalNotFoundTitle": "Document not found",
-  "legalNotFoundDescription": "This legal document could not be found. Please go back to the list.",
-  "legalLoadErrorTitle": "Loading failed",
-  "legalLoadErrorDescription": "Unable to load the legal document content. Please try again later.",
-  "legalRetryAction": "Retry",
-  "legalBackToListAction": "Back to list",
-  "legalListEmptyTitle": "No legal documents",
-  "legalListEmptyDescription": "Legal documents will appear here once available.",
-  "legalListUpdatedAt": "Updated {date}",
-  "@legalListUpdatedAt": {
+  "authWelcomeBack": "Welcome back",
+  "authCreateAccount": "Create account",
+  "authModePassword": "Password",
+  "authModeCode": "Code",
+  "authEmailLabel": "Email",
+  "authEmailHint": "name@example.com",
+  "authPasswordLabel": "Password",
+  "authPasswordHint": "At least 8 characters, ideally with mixed case and numbers",
+  "authCodeLabel": "Verification code",
+  "authNicknameLabel": "Nickname",
+  "authNicknameHint": "Optional",
+  "authEmailRequiredToast": "Please enter your email.",
+  "authCodeRequiredToast": "Please enter the verification code.",
+  "authPasswordRequiredToast": "Please enter your password.",
+  "authConfirmPasswordRequiredToast": "Please confirm your password.",
+  "authEmailRequiredError": "Please enter your email.",
+  "authEmailInvalidError": "Please enter a valid email address.",
+  "authCodeRequiredError": "Please enter the verification code.",
+  "authPasswordRequiredError": "Please enter your password.",
+  "authConfirmPasswordRequiredError": "Please confirm your password.",
+  "authPasswordsDoNotMatchError": "Passwords do not match.",
+  "authSendCode": "Send code",
+  "authSendCodeAgain": "Send again ({seconds}s)",
+  "@authSendCodeAgain": {
     "placeholders": {
-      "date": {}
+      "seconds": {
+        "type": "int"
+      }
     }
-  }
+  },
+  "authCodeResendWait": "Please wait {seconds}s before resending the code.",
+  "@authCodeResendWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authRegisterSuccess": "Account created. Please sign in.",
+  "authSignIn": "Sign in",
+  "authWechatSignIn": "Sign in with WeChat",
+  "authWechatAuthorizeOpened": "WeChat authorization opened in your browser.",
+  "authWechatBrowserOpenFailed": "Could not open the WeChat authorization page.",
+  "authWechatCallbackLabel": "WeChat callback link / code",
+  "authWechatCallbackHint": "Paste the callback URL after scanning",
+  "authWechatCompleteAction": "Complete WeChat sign-in",
+  "authWechatCallbackRequiredToast": "Paste the WeChat callback link first.",
+  "authWechatCallbackInvalidToast": "The WeChat callback link is missing code or state.",
+  "authCreateAccountAction": "Create account",
+  "authForgotPasswordPrompt": "Forgot your password?",
+  "authResetPasswordAction": "Reset password",
+  "authNeedAccountPrompt": "Need an account?",
+  "authRegisterNowAction": "Register now",
+  "authHaveAccountPrompt": "Already have an account?",
+  "authRememberPasswordPrompt": "Remember your password?",
+  "authNewPasswordLabel": "New password",
+  "authConfirmPasswordLabel": "Confirm password",
+  "authPasswordsDoNotMatch": "Passwords do not match.",
+  "authResetPasswordSubmit": "Reset password",
+  "authResetPasswordSuccess": "Password updated. Please sign in again.",
+  "authLoginSubtitle": "Sign in to continue your health tracking",
+  "authRegisterSubtitle": "Join Luminous and start your health journal",
+  "authForgotPasswordSubtitle": "We'll send a code to reset your password",
+  "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
+  "@authTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "authTermsOfService": "Terms of Service",
+  "authPrivacyPolicy": "Privacy Policy",
+  "authTermsComingSoonToast": "Terms and privacy policy will be available soon.",
+  "authChangeEmailFormTitle": "Change email",
+  "authNewEmailLabel": "New email",
+  "authChangeEmailSubmit": "Update email",
+  "authChangeEmailSuccess": "Email updated.",
+  "authAccountSettingsFormTitle": "Account and security",
+  "authAccountOverviewTitle": "Account status",
+  "authAccountOverviewEmail": "Email",
+  "authAccountOverviewEmailVerified": "Email verification",
+  "authAccountOverviewPassword": "Password",
+  "authAccountOverviewLastLogin": "Last login",
+  "authEmailMissing": "Not set",
+  "authEmailVerifiedAt": "Verified {time}",
+  "@authEmailVerifiedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authEmailUnverifiedStatus": "Unverified",
+  "authPasswordSetStatus": "Set",
+  "authPasswordUnsetStatus": "Not set",
+  "authLastLoginUnknown": "Unknown",
+  "authProfileSectionTitle": "Profile details",
+  "authProfileSectionDescription": "Update nickname or avatar URL; leaving a field empty will clear it under the current Lucent rules.",
+  "authAvatarLabel": "Avatar URL",
+  "authAvatarHint": "https://example.com/avatar.png",
+  "authProfileSaveAction": "Save profile",
+  "authProfileSaveSuccess": "Profile updated.",
+  "authEmailSectionTitle": "Login email",
+  "authEmailVerifiedDescription": "This email is already verified, and you can continue to the change-email flow.",
+  "authEmailUnverifiedDescription": "This email is still unverified; you can still continue to the change-email flow.",
+  "authEmailAddAction": "Add email",
+  "authEmailChangeAction": "Change email",
+  "authLinkedIdentitiesSectionTitle": "Linked identities",
+  "authLinkedIdentityNone": "No third-party identity linked.",
+  "authLinkedIdentityEmailMissing": "No provider email",
+  "authLinkedIdentityLinkedAt": "Linked {date}",
+  "@authLinkedIdentityLinkedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityProviderWechatWeb": "WeChat Web",
+  "authIdentityProviderWechatMobile": "WeChat Mobile",
+  "authIdentityUnlinkAction": "Unlink",
+  "authIdentityUnlinkDisabledAction": "Keep",
+  "authIdentityUnlinkSuccess": "Identity unlinked.",
+  "authIdentityUnlinkConfirmTitle": "Unlink identity",
+  "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
+  "@authIdentityUnlinkConfirmMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityLinkWechatAction": "Link WeChat",
+  "authIdentityLinkSuccess": "WeChat identity linked.",
+  "authIdentityLinkUnsupported": "WeChat linking cannot be opened on this platform.",
+  "authCancelAction": "Cancel",
+  "authPasswordSectionTitle": "Change password",
+  "authPasswordSectionDescription": "Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.",
+  "authPasswordUnsetManagementHint": "This account does not have a local password yet.",
+  "authCurrentPasswordLabel": "Current password",
+  "authCurrentPasswordRequiredToast": "Please enter your current password.",
+  "authNewPasswordRequiredToast": "Please enter your new password.",
+  "authChangePasswordAction": "Update password",
+  "authChangePasswordSuccess": "Password updated. Please sign in again.",
+  "authDeleteAccountSectionTitle": "Delete account",
+  "authDeleteAccountSectionDescription": "This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.",
+  "authDeleteAccountHint": "Enter your current password to confirm deletion",
+  "authDeleteAccountCodeHint": "Enter the email verification code to confirm deletion",
+  "authDeleteAccountEmailRequiredHint": "Please bind and verify an email address before deleting your account.",
+  "authDeleteAccountAction": "Delete account",
+  "authDeleteAccountSuccess": "Account deleted.",
+  "authBackHomePrompt": "Back to home?",
+  "authCheckingSession": "Checking session...",
+  "authNotSignedIn": "Not signed in yet",
+  "authLoginRequiredPrompt": "Go to sign in",
+  "authGoLogin": "Sign in",
+  "authGoRegister": "Create account",
+  "authSignOut": "Sign out",
+  "authQqSignIn": "Sign in with QQ",
+  "authQqCallbackLabel": "QQ callback link / code",
+  "authQqCompleteAction": "Complete QQ sign-in",
+  "mineSectionTitle": "Personal workspace",
+  "mineSectionSubtitle": "Identity, goals, and privacy controls will share one calm surface here.",
+  "mineHeaderNotifications": "Notifications",
+  "mineHeaderSettings": "Settings",
+  "mineAccountDisplayName": "Lumi User",
+  "mineAccountGuestDisplayName": "Guest",
+  "mineAccountSignedIn": "Signed in",
+  "mineAccountSignedOut": "Signed out",
+  "mineAccountMeta": "Member until: 2026-05-20",
+  "mineAccountSignedOutMeta": "Sign in to sync profile, reminders, and personalized health data",
+  "mineAccountManageAction": "Manage account",
+  "mineAccountEmailVerified": "Email verified",
+  "mineAccountEmailUnverified": "Email unverified",
+  "mineAccountPasswordSet": "Password set",
+  "mineAccountPasswordUnset": "No password",
+  "mineAccountLinkedIdentityCount": "{count} linked",
+  "@mineAccountLinkedIdentityCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineAccountLinkedIdentityNone": "No linked identity",
+  "mineAccountLastLogin": "Last login {date}",
+  "@mineAccountLastLogin": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountLastLoginNone": "Last login --",
+  "mineAccountStudentRole": "Student",
+  "mineSignedOutNoticeTitle": "You are not signed in",
+  "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
+  "mineCompletionTitle": "Profile completion",
+  "mineAlertAllergyTitle": "Allergies",
+  "mineAlertAllergySubtitle": "Pollen, penicillin",
+  "mineAlertAllergyBadge": "2 items",
+  "mineAlertMedicineTitle": "Current meds",
+  "mineAlertMedicineSubtitle": "2 medicines",
+  "mineAlertMedicineBadge": "On schedule",
+  "mineAlertPrivacyTitle": "Sharing controls",
+  "mineAlertPrivacySubtitle": "Preview before sharing",
+  "mineAlertPrivacyBadge": "Confirm first",
+  "mineArchiveBasicTitle": "Basic info",
+  "mineArchiveBasicSubtitle": "Personal and health information",
+  "mineArchiveAllergyTitle": "Allergies",
+  "mineArchiveAllergySubtitle": "Food, medicine, and environment allergy records",
+  "mineArchiveMedicineTitle": "Current meds",
+  "mineArchiveMedicineSubtitle": "Active medicines and medication records",
+  "mineArchiveEmergencyTitle": "Emergency contact",
+  "mineArchiveEmergencySubtitle": "1 contact",
+  "mineArchiveCompleted": "Complete",
+  "mineArchiveNeedsFill": "Needs info",
+  "mineCompletenessGapTitle": "Complete your health profile",
+  "mineCompletenessGapSubtitle": "Missing items below may affect safety check accuracy",
+  "mineCompletenessGapBasicInfo": "Basic info",
+  "mineCompletenessGapBasicInfoDesc": "Birth date and height are used for dosage calculations",
+  "mineCompletenessGapAllergy": "Allergies",
+  "mineCompletenessGapAllergyDesc": "Missing allergy data may affect medication safety alerts",
+  "mineCompletenessGapMedicine": "Current meds",
+  "mineCompletenessGapMedicineDesc": "Missing medication data affects drug interaction checks",
+  "mineCompletenessGapAction": "Complete",
+  "minePrivacyReportTitle": "Report sharing",
+  "minePrivacyReportSubtitle": "Health reports and trend analysis",
+  "mineAiPrivacySectionTitle": "AI & Privacy",
+  "minePrivacyAiTitle": "AI summaries and advice",
+  "minePrivacyAiSubtitle": "Daily summaries, trend advice",
+  "minePrivacyOnlyMe": "Only me",
+  "minePrivacyShareAfterGrant": "Share after grant",
+  "mineReminderSectionTitle": "Reminder settings",
+  "mineReminderMedicineTitle": "Medication",
+  "mineReminderWaterTitle": "Water",
+  "mineReminderSleepTitle": "Sleep",
+  "mineReminderLocalOnly": "Local only",
+  "mineReminderEnabled": "Enabled",
+  "mineNotificationReminderSectionTitle": "Notifications & reminders",
+  "mineNotificationInboxTitle": "Notification inbox",
+  "mineNotificationInboxUnreadSummary": "{count} unread",
+  "@mineNotificationInboxUnreadSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxSignedOutSummary": "Sign in to view",
+  "mineReminderSleepOff": "Off",
+  "mineReminderSleepSummary": "{bedtime} - {wakeTime}",
+  "@mineReminderSleepSummary": {
+    "placeholders": {
+      "bedtime": {
+        "type": "String"
+      },
+      "wakeTime": {
+        "type": "String"
+      }
+    }
+  },
+  "mineAccountSettingsTitle": "Account and settings",
+  "mineSettingLanguageTitle": "Language",
+  "mineSettingLanguageValue": "English",
+  "mineSettingExportTitle": "Data export",
+  "mineSettingExportValue": "Export my health data",
+  "mineSettingHelpTitle": "Help and feedback",
+  "mineSettingHelpValue": "FAQ and feedback",
+  "mineSettingAboutTitle": "About Luminous",
+  "mineSettingAboutValue": "Version 1.2.0",
+  "minePrivacyNoticeTitle": "Sensitive data is protected by default, and grants can be revoked anytime",
+  "minePrivacyNoticeAction": "View privacy policy",
+  "mineProfileUnknownValue": "Not set",
+  "mineProfileAgeYears": "{age}y",
+  "@mineProfileAgeYears": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileHeightCm": "{height}cm",
+  "@mineProfileHeightCm": {
+    "placeholders": {
+      "height": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileMeta": "{age} · {height}",
+  "@mineProfileMeta": {
+    "placeholders": {
+      "age": {
+        "type": "String"
+      },
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "mineCompletionSubtitle": "Good progress. Keep filling it out for more precise suggestions.",
+  "mineSummaryTitle": "Health context summary",
+  "mineSummaryUpdatedAt": "Updated 2025-05-15",
+  "mineSummaryAge": "Age",
+  "mineSummaryAllergies": "Allergies",
+  "mineSummaryConditions": "Conditions",
+  "mineSummaryMedicines": "Current meds",
+  "mineSummaryMissingInfo": "Missing info: birth date, height, unit system",
+  "mineSummaryCompleteAction": "Complete",
+  "mineReadinessPreviewTitle": "Your personal profile is still locked",
+  "mineReadinessPreviewDescription": "Sign in to view your real basic info, allergies, and current medications.",
+  "mineReadinessPreviewBadge": "Preview",
+  "mineReadinessSignedInBadge": "Signed in",
+  "mineReadinessIncompleteTitle": "{count} key items still missing",
+  "@mineReadinessIncompleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineReadinessIncompleteDescription": "Adding these details improves safety reminders, sharing controls, and summaries.",
+  "mineReadinessReadyTitle": "Your profile is mostly ready",
+  "mineReadinessReadyDescription": "Keep your health archive current and manage sharing or account access from here.",
+  "mineReadinessManageAction": "Manage profile",
+  "mineAccountPrivacySectionTitle": "Account and privacy",
+  "mineProfileTitle": "Health profile",
+  "mineProfileBasicInfoTitle": "Basic info",
+  "mineProfileBasicInfoSubtitle": "Personal basics",
+  "mineProfileAllergiesTitle": "Allergies",
+  "mineProfileAllergiesSubtitle": "2 records",
+  "mineProfileConditionsTitle": "Conditions",
+  "mineProfileConditionsSubtitle": "1 record",
+  "mineProfileMedicinesTitle": "Current meds",
+  "mineProfileMedicinesSubtitle": "3 medicines",
+  "mineSettingsThemeTitle": "Theme",
+  "mineSettingsAccountTitle": "Account and security",
+  "mineSettingsLanguageTitle": "Language",
+  "mineSettingsNotificationsTitle": "Notifications",
+  "mineErrorTitle": "Mine did not load this time",
+  "mineErrorDescription": "The structure is wired. Try fetching the data again.",
+  "mineActionToast": "{action}: this will open the related details or settings flow later.",
+  "@mineActionToast": {
+    "placeholders": {
+      "action": {
+        "type": "String"
+      }
+    }
+  },
+  "mineThemeModeSystem": "System",
+  "mineThemeModeLight": "Light",
+  "mineThemeModeDark": "Dark",
+  "mineEditProfileTitle": "Edit Profile",
+  "mineEditAllergyTitle": "Edit Allergy",
+  "mineEditAllergyNewTitle": "New Allergy",
+  "mineEditConditionTitle": "Edit Condition",
+  "mineEditConditionNewTitle": "New Condition",
+  "mineEditMedicineTitle": "Edit Medicine",
+  "mineEditMedicineNewTitle": "New Medicine",
+  "mineEditSaveAction": "Save",
+  "mineEditDeleteAction": "Delete",
+  "mineEditSavedToast": "Saved",
+  "mineEditDeletedToast": "Deleted",
+  "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",
+  "mineEditFieldHeightCm": "Height (cm)",
+  "mineEditFieldBloodType": "Blood type",
+  "mineEditFieldLocale": "Locale",
+  "mineEditFieldTimezone": "Timezone",
+  "mineEditFieldUnitSystem": "Unit system",
+  "mineEditFieldOnboardingCompleted": "Onboarding completed",
+  "mineEditFieldKind": "Kind",
+  "mineEditFieldLabel": "Label",
+  "mineEditFieldReaction": "Reaction",
+  "mineEditFieldSeverity": "Severity",
+  "mineEditFieldNote": "Note",
+  "mineEditFieldRecordedAt": "Recorded at",
+  "mineEditFieldStatus": "Status",
+  "mineEditFieldDiagnosedAt": "Diagnosed at (YYYY-MM-DD)",
+  "mineEditFieldSource": "Source",
+  "mineEditFieldSourceRefId": "Source ref ID",
+  "mineEditFieldDisplayName": "Display name",
+  "mineEditFieldStrengthText": "Strength",
+  "mineEditFieldDoseText": "Dose",
+  "mineEditFieldRoute": "Route",
+  "mineEditFieldStartedAt": "Started at (YYYY-MM-DD)",
+  "mineEditFieldEndedAt": "Ended at (YYYY-MM-DD)",
+  "mineSettingsAdvancedTitle": "Advanced settings",
+  "mineReminderDisabled": "Disabled",
+  "mineExportStatusRequested": "Requested",
+  "mineExportStatusPending": "Processing",
+  "mineExportStatusCompleted": "Completed",
+  "mineExportStatusFailed": "Failed",
+  "mineExportStatusLinkMissing": "Link refresh needed",
+  "mineExportStatusUnavailable": "Unavailable",
+  "mineExportDownloadButton": "Download Report",
+  "mineExportRegenerateButton": "Regenerate",
+  "mineExportRequested": "Export request submitted",
+  "assistantEntryTitle": "AI chat",
+  "assistantEntrySubtitle": "Streaming replies with controlled health context",
+  "assistantPageTitle": "AI chat",
+  "assistantSignedOutDescription": "Sign in to use AI chat and decide whether your health context may be used.",
+  "assistantLoadErrorTitle": "AI chat did not load this time",
+  "assistantLoadErrorFallback": "Capabilities were not loaded this time. Try fetching them again.",
+  "assistantSettingsEnableTitle": "Enable AI chat",
+  "assistantSettingsEnableSubtitle": "When disabled, no new chat requests will be sent",
+  "assistantSettingsMemoryTitle": "Enable persistent memory",
+  "assistantSettingsMemorySubtitle": "When a new chat starts, the assistant may reference earlier conversations",
+  "assistantContextHealthProfile": "Health profile",
+  "assistantContextDailyRecords": "Recent records",
+  "assistantContextSleepRecords": "Sleep data",
+  "assistantContextCurrentMedicines": "Current medicines",
+  "assistantStatusSectionTitle": "Current status",
+  "assistantStatusReady": "Backend capabilities are ready and chat can start.",
+  "assistantStatusDisabled": "AI chat is turned off, so no chat request will be sent.",
+  "assistantStatusModelMissing": "The backend does not have a usable chat model configured yet.",
+  "assistantStatusNotReady": "The interactive chat route is not fully ready yet.",
+  "assistantStatusToolsLabel": "Tools",
+  "assistantStatusContextLabel": "Context",
+  "assistantStatusStreamingLabel": "Streaming",
+  "assistantStatusRagLabel": "RAG",
+  "assistantConversationDisabledTitle": "Chat cannot start yet",
+  "assistantConversationDisabledByUser": "AI chat is turned off. Enable it again before sending messages.",
+  "assistantConversationModelMissing": "The backend does not have a usable model yet, so replies cannot be generated.",
+  "assistantConversationNotReady": "The interactive chat route is not ready yet. Keep the current settings for now.",
+  "assistantConversationEmptyTitle": "Start the first message",
+  "assistantConversationEmptyDescription": "You can ask about recent sleep, recent records, or current medicines directly.",
+  "assistantSendErrorTitle": "This reply did not complete",
+  "assistantInputHint": "For example: Based on my recent sleep and medicines, what should I pay attention to?",
+  "assistantSendAction": "Send",
+  "assistantSendingAction": "Sending",
+  "assistantNewConversationAction": "New chat",
+  "assistantRecentConversationsAction": "Recent chats",
+  "assistantRecentConversationsTitle": "Recent chats",
+  "assistantRecentConversationsEmptyTitle": "No chat history yet",
+  "assistantRecentConversationsEmptyDescription": "Recent conversations will appear here after you start chatting.",
+  "assistantRecentConversationCurrentLabel": "Current",
+  "assistantOpeningConversationLabel": "Switching conversation…",
+  "assistantUntitledConversation": "Untitled conversation",
+  "assistantStreamingLabel": "Generating",
+  "assistantRetryAction": "Retry",
+  "assistantErrorStreamInterrupted": "The connection was interrupted. Check your network and try again.",
+  "assistantErrorEmptyResult": "AI did not return a valid response. Please try again.",
+  "assistantErrorServer": "The server encountered an issue. Please try again later.",
+  "assistantToolTodayRecords": "Today records",
+  "assistantToolRecordsByDate": "Records by date",
+  "assistantToolRecordsByRange": "Records by range",
+  "assistantToolTodaySummaryByDate": "Today summary by date",
+  "assistantToolReportSummaryByRange": "Report summary by range",
+  "assistantToolRecentTodaySummaries": "Past Today summaries",
+  "assistantToolRecentReportSummaries": "Past Report summaries",
+  "assistantToolUserProfile": "User profile",
+  "assistantToolUserSettings": "User settings",
+  "assistantToolCurrentMedicines": "Current medicines",
+  "assistantToolSleepByRange": "Sleep summary",
+  "assistantToolSearchMedicineLeaflets": "Chinese leaflet search",
+  "assistantToolSearchMedicalQaCorpus": "Medical QA search",
+  "assistantToolResolveDrugbankEntity": "DrugBank entity resolve",
+  "assistantToolSearchDrugbankPassages": "DrugBank passage search",
+  "assistantToolProposeCreateRecord": "Save proposal",
+  "assistantToolProposeUpdateRecord": "Update proposal",
+  "assistantToolProposeDeleteRecord": "Delete proposal",
+  "assistantToolProposeUpdateSettings": "Settings proposal",
+  "assistantUsedToolsLabel": "Sources used",
+  "assistantConversationDisabledByUserHint": "AI chat is turned off. Toggle “Enable AI chat” above to resume.",
+  "assistantProposalConfirmCreateAction": "Confirm save",
+  "assistantProposalConfirmUpdateAction": "Confirm update",
+  "assistantProposalConfirmDeleteAction": "Confirm delete",
+  "assistantProposalConfirmSettingsAction": "Confirm update",
+  "assistantProposalDismissAction": "Dismiss",
+  "assistantProposalPendingState": "Pending",
+  "assistantProposalExecutingState": "Running",
+  "assistantProposalConfirmedState": "Confirmed",
+  "assistantProposalDismissedState": "Dismissed",
+  "assistantProposalFailedState": "Failed",
+  "assistantProposalConfirmedToast": "The proposed action was applied.",
+  "assistantProposalTargetLabel": "Target",
+  "assistantProposalMatchedByLabel": "Matched by",
+  "assistantProposalSettingKeysLabel": "Settings",
+  "assistantProposalExpiresAtLabel": "Expires at",
+  "assistantProposalConstraintsLabel": "Constraints before confirm",
+  "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming.",
+  "notificationListTitle": "Notifications",
+  "notificationDetailTitle": "Notification Detail",
+  "notificationEmptyTitle": "No notifications",
+  "notificationEmptyDescription": "New messages will appear here.",
+  "notificationErrorTitle": "Failed to load notifications",
+  "notificationRetryAction": "Retry",
+  "notificationMarkAllRead": "Mark all read",
+  "notificationMarkAllReadSuccess": "All marked as read",
+  "notificationMarkUnreadSuccess": "Marked as unread",
+  "notificationDeleteSuccess": "Deleted",
+  "notificationActionNavigate": "Go to handle",
+  "notificationActionMarkRead": "Mark as read",
+  "notificationActionMarkUnread": "Mark as unread",
+  "notificationActionDelete": "Delete",
+  "notificationDeleteConfirmTitle": "Confirm delete",
+  "notificationDeleteConfirmDescription": "This cannot be undone. Are you sure?",
+  "notificationDeleteConfirmCancel": "Cancel",
+  "notificationDeleteConfirmConfirm": "Delete",
+  "notificationLoadMore": "Load more",
+  "notificationNotFoundTitle": "Notification expired",
+  "notificationNotFoundDescription": "This notification may have been deleted or expired."
 }

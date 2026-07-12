@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/providers/data_providers.dart';
 
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/features/auth/presentation/providers/shared/auth_action_runner.dart';
 
 import '../shared/form_mixin.dart';
 
@@ -122,7 +123,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    final (:value, :error) = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'RegisterFormNotifier.sendCode',
       action: () => ref
@@ -132,23 +133,27 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
             scene: AuthVerificationScene.register,
           ),
     );
-    if (error != null) {
-      state = state.copyWith(
-        isSendingCode: false,
-        errorMessage: error,
-        successMessage: null,
-      );
-      return false;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSendingCode: false,
+          errorMessage: error.message,
+          successMessage: null,
+        );
+        return false;
+      case Success(:final value):
+        final cooldown = value.cooldown.toInt();
+        state = state.copyWith(
+          isSendingCode: false,
+          successMessage: value.message,
+        );
+        startCooldown(
+          cooldown,
+          getCooldownSeconds: () => state.cooldownSeconds,
+          setCooldownSeconds: (v) => state = state.copyWith(cooldownSeconds: v),
+        );
+        return true;
     }
-    final cooldown = value!.cooldown.toInt();
-    state = state.copyWith(isSendingCode: false, successMessage: value.message);
-    startCooldown(
-      cooldown,
-      getCooldownSeconds: () => state.cooldownSeconds,
-      setCooldownSeconds: (value) =>
-          state = state.copyWith(cooldownSeconds: value),
-    );
-    return true;
   }
 
   Future<bool> submit() async {
@@ -157,7 +162,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       errorMessage: null,
       successMessage: null,
     );
-    final actionResult = await runAuthAction(
+    final result = await runGuarded(
       ref: ref,
       tag: 'RegisterFormNotifier.submit',
       action: () => ref
@@ -169,15 +174,17 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
             nickname: state.nickname,
           ),
     );
-    if (actionResult.error != null) {
-      state = state.copyWith(
-        isSubmitting: false,
-        errorMessage: actionResult.error,
-      );
-      return false;
+    switch (result) {
+      case Failure(:final error):
+        state = state.copyWith(
+          isSubmitting: false,
+          errorMessage: error.message,
+        );
+        return false;
+      case Success():
+        state = state.copyWith(isSubmitting: false, successMessage: '');
+        return true;
     }
-    state = state.copyWith(isSubmitting: false, successMessage: '');
-    return true;
   }
 }
 

@@ -1,0 +1,167 @@
+{
+  "authWelcomeBack": "Welcome back",
+  "authCreateAccount": "Create account",
+  "authModePassword": "Password",
+  "authModeCode": "Code",
+  "authEmailLabel": "Email",
+  "authEmailHint": "name@example.com",
+  "authPasswordLabel": "Password",
+  "authPasswordHint": "At least 8 characters, ideally with mixed case and numbers",
+  "authCodeLabel": "Verification code",
+  "authNicknameLabel": "Nickname",
+  "authNicknameHint": "Optional",
+  "authEmailRequiredToast": "Please enter your email.",
+  "authCodeRequiredToast": "Please enter the verification code.",
+  "authPasswordRequiredToast": "Please enter your password.",
+  "authConfirmPasswordRequiredToast": "Please confirm your password.",
+  "authEmailRequiredError": "Please enter your email.",
+  "authEmailInvalidError": "Please enter a valid email address.",
+  "authCodeRequiredError": "Please enter the verification code.",
+  "authPasswordRequiredError": "Please enter your password.",
+  "authConfirmPasswordRequiredError": "Please confirm your password.",
+  "authPasswordsDoNotMatchError": "Passwords do not match.",
+  "authSendCode": "Send code",
+  "authSendCodeAgain": "Send again ({seconds}s)",
+  "@authSendCodeAgain": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authCodeResendWait": "Please wait {seconds}s before resending the code.",
+  "@authCodeResendWait": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "authRegisterSuccess": "Account created. Please sign in.",
+  "authSignIn": "Sign in",
+  "authWechatSignIn": "Sign in with WeChat",
+  "authWechatAuthorizeOpened": "WeChat authorization opened in your browser.",
+  "authWechatBrowserOpenFailed": "Could not open the WeChat authorization page.",
+  "authWechatCallbackLabel": "WeChat callback link / code",
+  "authWechatCallbackHint": "Paste the callback URL after scanning",
+  "authWechatCompleteAction": "Complete WeChat sign-in",
+  "authWechatCallbackRequiredToast": "Paste the WeChat callback link first.",
+  "authWechatCallbackInvalidToast": "The WeChat callback link is missing code or state.",
+  "authCreateAccountAction": "Create account",
+  "authForgotPasswordPrompt": "Forgot your password?",
+  "authResetPasswordAction": "Reset password",
+  "authNeedAccountPrompt": "Need an account?",
+  "authRegisterNowAction": "Register now",
+  "authHaveAccountPrompt": "Already have an account?",
+  "authRememberPasswordPrompt": "Remember your password?",
+  "authNewPasswordLabel": "New password",
+  "authConfirmPasswordLabel": "Confirm password",
+  "authPasswordsDoNotMatch": "Passwords do not match.",
+  "authResetPasswordSubmit": "Reset password",
+  "authResetPasswordSuccess": "Password updated. Please sign in again.",
+  "authLoginSubtitle": "Sign in to continue your health tracking",
+  "authRegisterSubtitle": "Join Luminous and start your health journal",
+  "authForgotPasswordSubtitle": "We'll send a code to reset your password",
+  "authTermsAgreement": "By creating an account, you agree to the {terms} and {privacy}",
+  "@authTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
+  "authTermsOfService": "Terms of Service",
+  "authPrivacyPolicy": "Privacy Policy",
+  "authTermsComingSoonToast": "Terms and privacy policy will be available soon.",
+  "authChangeEmailFormTitle": "Change email",
+  "authNewEmailLabel": "New email",
+  "authChangeEmailSubmit": "Update email",
+  "authChangeEmailSuccess": "Email updated.",
+  "authAccountSettingsFormTitle": "Account and security",
+  "authAccountOverviewTitle": "Account status",
+  "authAccountOverviewEmail": "Email",
+  "authAccountOverviewEmailVerified": "Email verification",
+  "authAccountOverviewPassword": "Password",
+  "authAccountOverviewLastLogin": "Last login",
+  "authEmailMissing": "Not set",
+  "authEmailVerifiedAt": "Verified {time}",
+  "@authEmailVerifiedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "authEmailUnverifiedStatus": "Unverified",
+  "authPasswordSetStatus": "Set",
+  "authPasswordUnsetStatus": "Not set",
+  "authLastLoginUnknown": "Unknown",
+  "authProfileSectionTitle": "Profile details",
+  "authProfileSectionDescription": "Update nickname or avatar URL; leaving a field empty will clear it under the current Lucent rules.",
+  "authAvatarLabel": "Avatar URL",
+  "authAvatarHint": "https://example.com/avatar.png",
+  "authProfileSaveAction": "Save profile",
+  "authProfileSaveSuccess": "Profile updated.",
+  "authEmailSectionTitle": "Login email",
+  "authEmailVerifiedDescription": "This email is already verified, and you can continue to the change-email flow.",
+  "authEmailUnverifiedDescription": "This email is still unverified; you can still continue to the change-email flow.",
+  "authEmailAddAction": "Add email",
+  "authEmailChangeAction": "Change email",
+  "authLinkedIdentitiesSectionTitle": "Linked identities",
+  "authLinkedIdentityNone": "No third-party identity linked.",
+  "authLinkedIdentityEmailMissing": "No provider email",
+  "authLinkedIdentityLinkedAt": "Linked {date}",
+  "@authLinkedIdentityLinkedAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityProviderWechatWeb": "WeChat Web",
+  "authIdentityProviderWechatMobile": "WeChat Mobile",
+  "authIdentityUnlinkAction": "Unlink",
+  "authIdentityUnlinkDisabledAction": "Keep",
+  "authIdentityUnlinkSuccess": "Identity unlinked.",
+  "authIdentityUnlinkConfirmTitle": "Unlink identity",
+  "authIdentityUnlinkConfirmMessage": "Unlink {provider} from this account?",
+  "@authIdentityUnlinkConfirmMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "authIdentityLinkWechatAction": "Link WeChat",
+  "authIdentityLinkSuccess": "WeChat identity linked.",
+  "authIdentityLinkUnsupported": "WeChat linking cannot be opened on this platform.",
+  "authCancelAction": "Cancel",
+  "authPasswordSectionTitle": "Change password",
+  "authPasswordSectionDescription": "Changing the password invalidates all refresh sessions for this account, so you will need to sign in again.",
+  "authPasswordUnsetManagementHint": "This account does not have a local password yet.",
+  "authCurrentPasswordLabel": "Current password",
+  "authCurrentPasswordRequiredToast": "Please enter your current password.",
+  "authNewPasswordRequiredToast": "Please enter your new password.",
+  "authChangePasswordAction": "Update password",
+  "authChangePasswordSuccess": "Password updated. Please sign in again.",
+  "authDeleteAccountSectionTitle": "Delete account",
+  "authDeleteAccountSectionDescription": "This is a high-risk action; submitting it clears the local session and asks Lucent to soft-delete the account.",
+  "authDeleteAccountHint": "Enter your current password to confirm deletion",
+  "authDeleteAccountCodeHint": "Enter the email verification code to confirm deletion",
+  "authDeleteAccountEmailRequiredHint": "Please bind and verify an email address before deleting your account.",
+  "authDeleteAccountAction": "Delete account",
+  "authDeleteAccountSuccess": "Account deleted.",
+  "authBackHomePrompt": "Back to home?",
+  "authCheckingSession": "Checking session...",
+  "authNotSignedIn": "Not signed in yet",
+  "authLoginRequiredPrompt": "Go to sign in",
+  "authGoLogin": "Sign in",
+  "authGoRegister": "Create account",
+  "authSignOut": "Sign out",
+  "authQqSignIn": "Sign in with QQ",
+  "authQqCallbackLabel": "QQ callback link / code",
+  "authQqCompleteAction": "Complete QQ sign-in"
+}

@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-08
+Last updated: 2026-07-12
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -8,8 +8,27 @@ current string.
 ## Files
 
 - Config: `l10n.yaml`
-- ARB: `lib/l10n/app_zh.arb`, `lib/l10n/app_en.arb`
-- Generated output: `lib/l10n/app_localizations*.dart`
+- ARB source fragments: `lib/l10n/src/{fragment}_{locale}.arb` (10 fragments × 2 locales)
+- Merged ARB (generated, gitignored): `lib/l10n/app_zh.arb`, `lib/l10n/app_en.arb`
+- Generated Dart output (gitignored): `lib/l10n/app_localizations*.dart`
+- Merge/split tool: `scripts/arb_tools.dart`
+
+### Fragment Map
+
+| Fragment | Key prefixes | Aligns with |
+|----------|-------------|-------------|
+| `common` | `app*`, `tab*`, `desktop*`, `state*`, `placeholder*`, `legal*` | Shell / global |
+| `record` | `record*` | Record feature |
+| `medicine` | `medicine*`, `scan*` | Medicine feature |
+| `today` | `today*` | Today feature |
+| `report` | `report*` | Report feature |
+| `settings` | `settings*`, `sidebar*` | Settings feature |
+| `auth` | `auth*` | Auth feature |
+| `mine` | `mine*` | Mine feature |
+| `assistant` | `assistant*` | AI assistant feature |
+| `notification` | `notification*` | Notification feature |
+
+New feature modules should add a row to `fragmentRules` in `scripts/arb_tools.dart`.
 
 ## Supported Locales
 
@@ -86,10 +105,11 @@ Persisted preference keys:
 
 ## Add Or Change Text
 
-1. Edit both ARB files.
-2. Run:
+1. Edit the appropriate fragment ARB file(s) in `lib/l10n/src/`.
+2. Run merge + gen-l10n:
 
 ```bash
+dart scripts/arb_tools.dart merge
 flutter gen-l10n
 ```
 

@@ -46,6 +46,9 @@ migrate_working_dir/
 /coverage/
 lib/l10n/app_localizations.dart
 lib/l10n/app_localizations_*.dart
+# Merged ARB — generated from lib/l10n/src/ by `dart scripts/arb_tools.dart merge`
+lib/l10n/app_zh.arb
+lib/l10n/app_en.arb
 **/*.freezed.dart
 **/*.g.dart
 **/*.drift.dart

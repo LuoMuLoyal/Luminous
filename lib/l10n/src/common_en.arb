@@ -1,0 +1,49 @@
+{
+  "appTitle": "Luminous",
+  "tabToday": "Today",
+  "tabRecord": "Record",
+  "tabMedicine": "Medicine",
+  "tabReport": "Report",
+  "tabMine": "Mine",
+  "desktopSidebarSettings": "Settings",
+  "desktopSidebarHelp": "Help",
+  "desktopSidebarHelpToast": "This will open help and support.",
+  "placeholderSoon": "{label} · Coming Soon",
+  "@placeholderSoon": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "placeholderDescription": "This area is reserved structurally and will be rebuilt with the new multi-platform design system.",
+  "stateFatalErrorTitle": "Something went wrong",
+  "stateFatalErrorDescription": "We couldn't load this page. Please try again.",
+  "stateNotSignedInTitle": "Not signed in",
+  "stateNotSignedInDescription": "Sign in to access your personalized data, reminders, and reports.",
+  "statePreviewSignInHint": "Sign in to see your real data",
+  "statePreviewSignInAction": "View after sign in",
+  "stateEmptyDefaultTitle": "No data yet",
+  "stateEmptyDefaultDescription": "Add records to unlock personalized insights and summaries.",
+  "placeholderNoData": "No data yet",
+  "placeholderNotSet": "Not set",
+  "placeholderAddToUnlock": "Add records to unlock",
+  "placeholderNoTime": "No time set",
+  "placeholderNoDuration": "Not tracked",
+  "legalListTitle": "Legal Documents",
+  "legalDetailTitle": "Legal Document",
+  "legalNotFoundTitle": "Document not found",
+  "legalNotFoundDescription": "This legal document could not be found. Please go back to the list.",
+  "legalLoadErrorTitle": "Loading failed",
+  "legalLoadErrorDescription": "Unable to load the legal document content. Please try again later.",
+  "legalRetryAction": "Retry",
+  "legalBackToListAction": "Back to list",
+  "legalListEmptyTitle": "No legal documents",
+  "legalListEmptyDescription": "Legal documents will appear here once available.",
+  "legalListUpdatedAt": "Updated {date}",
+  "@legalListUpdatedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  }
+}

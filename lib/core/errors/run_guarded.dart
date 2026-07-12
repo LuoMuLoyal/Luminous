@@ -7,10 +7,6 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 /// Runs [action] with unified error handling, returning a [Result].
 ///
-/// This is the general-purpose equivalent of `runAuthAction` (which is
-/// scoped to the auth feature). All non-auth providers and widget callbacks
-/// should use this helper instead of writing ad-hoc try-catch blocks.
-///
 /// On success, returns [Result.success] with the action's return value.
 /// On any thrown exception, logs to [talker] with [tag] (which also
 /// forwards to Sentry via [SentryTalkerObserver]) and returns

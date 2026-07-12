@@ -1,0 +1,338 @@
+{
+  "todaySectionTitle": "今日工作区",
+  "todaySectionSubtitle": "新的首页会从这里逐步接入提醒、快照、喝水与 Lumi 建议。",
+  "todayHeroTitle": "今日",
+  "todayHeroDescription": "新的首页将从这里开始重建：先完成响应式视觉系统，再逐步接入喝水、提醒、健康快照和 Lumi 建议。",
+  "todayChipWater": "喝水追踪",
+  "todayChipMedication": "用药提醒",
+  "todayChipSnapshot": "健康快照",
+  "todayChipDiet": "饮食建议",
+  "todayChipEnvironment": "环境提醒",
+  "todayChipLumi": "Lumi 建议",
+  "todayNotificationsTooltip": "通知",
+  "todayGreetingTitleMorning": "早上好，阳光正好",
+  "todayGreetingTitleAfternoon": "下午好，继续稳稳推进",
+  "todayGreetingTitleEvening": "晚上好，准备轻松收尾",
+  "todayGreetingSubtitleMorning": "早上好，照顾好自己每一天",
+  "todayGreetingSubtitleAfternoon": "下午好，照顾好自己每一天",
+  "todayGreetingSubtitleEvening": "晚上好，照顾好自己每一天",
+  "todayHeroCareLine": "我们会在需要时，给你恰到好处的提醒",
+  "todayHeroImagePlaceholder": "Banner 图片占位",
+  "todayWaterCardTitle": "今日喝水",
+  "todayWaterUnit": "次",
+  "todayWaterCount": "{count} 次",
+  "@todayWaterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterGoalCount": "目标 {count} 次",
+  "@todayWaterGoalCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterOverviewCount": "{done}/{target} 次",
+  "@todayWaterOverviewCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterRemainingCount": "还差 {count} 次",
+  "@todayWaterRemainingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationCardTitle": "用药提醒",
+  "todayMedicationAction": "查看",
+  "todayMedicationSummary": "{medicineCount} 种药品 · {pendingCount} 个待服用",
+  "@todayMedicationSummary": {
+    "placeholders": {
+      "medicineCount": {
+        "type": "int"
+      },
+      "pendingCount": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationNextDose": "下一次 {time} · {medicineName}",
+  "@todayMedicationNextDose": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMedicationNameAtorvastatin": "阿托伐他汀",
+  "todayMedicationNameVitaminBComplex": "维生素B族",
+  "todayHealthSummaryCardTitle": "今天概览",
+  "todayVitalHeartRateLabel": "心率",
+  "todayVitalHeartRateUnit": "次/分",
+  "todayVitalBloodPressureLabel": "血压",
+  "todayVitalSleepLabel": "睡眠",
+  "todayVitalSleepUnit": "小时",
+  "todaySleepFallbackValue": "未记录",
+  "todayVitalStatusNormal": "正常",
+  "todayVitalStatusGood": "良好",
+  "todayMealCardTitle": "今日饮食建议",
+  "todayMealHighProteinBalancedTitle": "高蛋白均衡餐",
+  "todayMealHighProteinBalancedDescription": "鸡胸肉、藜麦、时蔬沙拉",
+  "todayMealEnergyHint": "补充优质蛋白，均衡营养，给身体满满能量。",
+  "todayMealImagePlaceholder": "餐图占位",
+  "todayMealRefreshAction": "换一换",
+  "todayEnvironmentCardTitle": "环境提醒",
+  "todayEnvironmentPollenLabel": "花粉",
+  "todayEnvironmentUvLabel": "紫外线",
+  "todayEnvironmentLevelLow": "较低",
+  "todayEnvironmentLevelMedium": "中等",
+  "todayEnvironmentLevelHigh": "较高",
+  "todayMoreAction": "更多",
+  "todayViewDetailsAction": "查看详情",
+  "todayLumiCardTitle": "Lumi 建议",
+  "todayPreviewBadge": "预览",
+  "todayLumiPollenProtectionBody": "今天空气中花粉较多，建议外出佩戴口罩，注意防护呼吸敏感。",
+  "todayLumiAction": "查看详情",
+  "todayErrorTitle": "今日页暂时没有加载出来",
+  "todayErrorDescription": "页面结构已经接好，可以重新拉取一次看看。",
+  "todayEmptyTitle": "你还没有任何记录",
+  "todayEmptyDescription": "先记录饮水、用药或睡眠，我们会为你提供个性化建议。",
+  "todayEmptyAction": "去记录",
+  "todayRetryAction": "重试",
+  "todayUpdatedAt": "更新于 {time}",
+  "@todayUpdatedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "todayHydrationOverviewLabel": "饮水",
+  "todayMedicationOverviewLabel": "用药",
+  "todayStatusNeedsImprovement": "待提升",
+  "todayStatusCompleted": "已完成",
+  "todayMedicationPendingStatus": "待服用",
+  "todayPrioritySectionTitle": "今日优先事项",
+  "todayManageAction": "管理",
+  "todayMedicationPrioritySubtitle": "今日 {count} 条待服用",
+  "@todayMedicationPrioritySubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayMedicationPriorityDetail": "{time} {medicineName}",
+  "@todayMedicationPriorityDetail": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMedicationTakeAction": "去服用",
+  "todayWaterPriorityTitle": "饮水目标",
+  "todayDrinkWaterAction": "去喝水",
+  "todayPrimarySuggestionSectionTitle": "现在最该处理",
+  "todayPrimarySuggestionBadge": "最高优先",
+  "todaySecondarySuggestionSectionTitle": "接下来可处理",
+  "todaySuggestionEvidenceLabel": "依据",
+  "todaySuggestionBoundaryLabel": "注意",
+  "todayMedicationSuggestionTitle": "该确认用药了",
+  "todayMedicationSuggestionBoundary": "只做确认，不替你调整剂量；若计划有误，请到用药页核对。",
+  "todayWaterSuggestionTitle": "还差 {count} 次饮水",
+  "@todayWaterSuggestionTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterSuggestionReason": "已完成 {done}/{target}，少量多次更好",
+  "@todayWaterSuggestionReason": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterSuggestionBoundary": "这是一般性提醒；若你有明确限水医嘱，请以医生要求为准。",
+  "todayAiSummaryTitle": "AI 日总结",
+  "todayAiSummarySubtitle": "基于今日记录生成",
+  "todayAiSummaryGenerateAction": "生成",
+  "todayAiSummaryGeneratingAction": "生成中",
+  "todayAiSummaryOpenSettingsAction": "设置",
+  "todayAiSummaryDefaultHint": "生成后会用今天的记录整理出一句总结和两条提醒。",
+  "todayAiSummaryPreviewHint": "登录后可看到今天的总结和提醒。",
+  "todayAiSummaryGeneratingHint": "正在整理今天的记录，请稍等一下。",
+  "todayAiSummaryErrorHint": "这次生成没有成功，可以再试一次。",
+  "todayAiSummaryDisabledHint": "AI 总结已在设置中关闭，开启后才会生成。",
+  "todayAiSummarySignedOutHint": "登录后才会基于你的今日记录生成 AI 总结。",
+  "todayAiSummaryMedicationPending": "还有 {count} 条用药需要确认，先不要自行调整剂量",
+  "@todayAiSummaryMedicationPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayAiSummaryMedicationDone": "今日用药待办已处理，新增药物后仍需检查风险",
+  "todayAiSummaryWaterRemaining": "饮水还差 {count} 次，可分几次补齐",
+  "@todayAiSummaryWaterRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayAiSummaryWaterDone": "今日饮水次数已达标，继续保持少量多次",
+  "todayAiSummarySleepPlaceholder": "记录睡眠后会纳入今日总结",
+  "todaySummaryFallbackNarrative": "处理完今天的待办，就可以放心了。",
+  "todayRecommendationSectionTitle": "主动建议",
+  "todayRecommendationErrorTitle": "推荐加载失败",
+  "todayRecommendationErrorDescription": "请检查网络后重试",
+  "todayViewMoreAction": "查看更多",
+  "todayRecommendationRefreshAction": "刷新",
+  "todayRecommendationMedicineSafetyTitle": "用药安全小贴士",
+  "todayRecommendationMedicineSafetyBody": "按时按量用药，勿随意增减或停药",
+  "todayRecommendationSleepTitle": "睡前放松，助力睡眠",
+  "todayRecommendationSleepBody": "睡前 1 小时减少蓝光，放松身心",
+  "todayRecommendationWaterTitle": "少量多次喝水",
+  "todayRecommendationWaterBody": "保持身体水分，有助于专注与代谢",
+  "todayRecommendationCoffeeTitle": "咖啡因适量，注意时间",
+  "todayRecommendationCoffeeBody": "下午 3 点后尽量避免，影响睡眠质量",
+  "todayLearnMoreAction": "了解更多",
+  "todayCompleteAction": "去完成",
+  "todayTodoSectionTitle": "今日待办",
+  "todayTodoAddAction": "添加",
+  "todayTodoSourceSystem": "系统",
+  "todayTodoSourceUser": "用户",
+  "todayTodoMedicationTitle": "服药提醒",
+  "todayTodoMedicationSubtitle": "下一次 {time} {medicineName}",
+  "@todayTodoMedicationSubtitle": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "medicineName": {
+        "type": "String"
+      }
+    }
+  },
+  "todayTodoWaterTitle": "补充饮水",
+  "todayTodoWaterSubtitle": "今日进度 {progress}%",
+  "@todayTodoWaterSubtitle": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "todayTodoCustomTitle": "自定义待办",
+  "todayTodoCustomSubtitle": "可添加复诊、休息或自定义提醒",
+  "todayObservationSectionTitle": "留意事项",
+  "todayObservationSubtitle": "以下内容仅供参考，不构成待办",
+  "todayObservationEmptyState": "当前没有额外观察项。",
+  "todayObservationErrorTitle": "观察项暂时不可用",
+  "todayObservationSleepMissingTitle": "最近还缺睡眠记录",
+  "todayObservationSleepMissingSubtitle": "暂时无法判断睡眠趋势，补一条记录后再看会更准。",
+  "todayObservationLowConfidenceTag": "仅供参考",
+  "todayObservationReviewTag": "去看看",
+  "todayObservationMedicineNote": "这是一条轻量提示，具体风险与覆盖范围请到用药页查看。",
+  "todayObservationSleepNote": "更像值得留意的提示，不直接当成今天必须完成的任务。",
+  "todayObservationRecordNote": "如果你愿意补一条记录，后续建议会更贴近真实情况。",
+  "todayObservationReportNote": "更适合放到报告里回看，不需要抢占今天的主行动位。",
+  "todayQuickActionSectionTitle": "轻动作",
+  "todayQuickActionConfirmTitle": "确认用药",
+  "todayQuickActionConfirmSubtitle": "打开用药页核对今日计划",
+  "todayQuickActionConfirmDoneSubtitle": "今日用药已全部确认",
+  "todayQuickActionConfirmPendingSubtitle": "{count} 条待确认",
+  "@todayQuickActionConfirmPendingSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayQuickActionRecordTitle": "快速记录",
+  "todayQuickActionRecordSubtitle": "饮水 / 睡眠 / 症状",
+  "todayQuickActionExplainTitle": "用药安全",
+  "todayQuickActionExplainSubtitle": "风险解释与覆盖范围",
+  "todayQuickActionReminderTitle": "提醒设置",
+  "todayQuickActionReminderSubtitle": "用药提醒计划",
+  "todayQuickActionProfileTitle": "健康档案",
+  "todayQuickActionProfileSubtitle": "过敏史、用药背景",
+  "todayQuickActionMoreTitle": "更多",
+  "todayPreviewBannerMessage": "登录后查看你的今日数据",
+  "todaySuggestionShowEvidence": "查看依据",
+  "todaySuggestionHideEvidence": "收起",
+  "todaySuggestionLaterAction": "稍后处理",
+  "todaySuggestionNotApplicableAction": "不适用",
+  "todaySuggestionAcceptedAction": "已采纳",
+  "todaySuggestionSuppressAction": "不再看到",
+  "todaySuggestionFeedbackSuccess": "反馈已提交",
+  "todaySuggestionFeedbackError": "反馈提交失败，请稍后再试",
+  "todaySuggestionAiExplainAction": "AI 解释",
+  "todaySuggestionAiExplainLoading": "正在生成 AI 解释…",
+  "todaySuggestionAiExplainRetry": "重试",
+  "todaySuggestionAiLabel": "AI",
+  "todaySuggestionEmptyTitle": "今日暂无建议",
+  "todaySuggestionEmptySubtitle": "记录更多数据后将会生成个性化建议",
+  "todaySuggestionLoadingHint": "正在获取今日建议…",
+  "todaySuggestionErrorHint": "建议加载失败，请稍后重试",
+  "todaySuggestionRetryAction": "重试",
+  "todaySuggestionSecondaryErrorHint": "更多建议加载失败",
+  "todaySuggestionAiExplainMaxRetry": "AI 解释暂时不可用，请稍后再试",
+  "todaySuggestionFeedbackSubmitted": "已反馈",
+  "todayRecordHintTitle": "今天还没有记录",
+  "todayRecordHintBody": "先记一条饮水或症状，建议会更贴合你的情况",
+  "todayRecordHintAction": "去记录",
+  "todayGreetingMorningPending": "早上好，今天有 {count} 条用药待确认",
+  "@todayGreetingMorningPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingMorningClear": "早上好，今天暂无用药安排",
+  "todayGreetingAfternoonWaterShort": "下午好，饮水还差 {count} 次",
+  "@todayGreetingAfternoonWaterShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingAfternoonWaterDone": "下午好，饮水已达标",
+  "todayGreetingEveningPending": "晚上好，还有 {count} 条用药未确认",
+  "@todayGreetingEveningPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayGreetingEveningAllDone": "晚上好，今天的记录都已处理"
+}

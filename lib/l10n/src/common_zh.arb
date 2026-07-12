@@ -1,0 +1,49 @@
+{
+  "appTitle": "Luminous",
+  "tabToday": "今日",
+  "tabRecord": "记录",
+  "tabMedicine": "用药",
+  "tabReport": "报告",
+  "tabMine": "我的",
+  "desktopSidebarSettings": "设置",
+  "desktopSidebarHelp": "帮助",
+  "desktopSidebarHelpToast": "会打开帮助与支持。",
+  "placeholderSoon": "{label} · 即将上线",
+  "@placeholderSoon": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "placeholderDescription": "这一栏的结构已经预留完成，下一步会按新的多端设计系统重建。",
+  "stateFatalErrorTitle": "加载失败",
+  "stateFatalErrorDescription": "页面数据未能加载，请重试。",
+  "stateNotSignedInTitle": "尚未登录",
+  "stateNotSignedInDescription": "登录后可查看你的个性化数据、提醒和报告。",
+  "statePreviewSignInHint": "登录后查看你的真实数据",
+  "statePreviewSignInAction": "登录查看",
+  "stateEmptyDefaultTitle": "暂无数据",
+  "stateEmptyDefaultDescription": "添加记录后即可解锁个性化洞察和摘要。",
+  "placeholderNoData": "暂无数据",
+  "placeholderNotSet": "未设置",
+  "placeholderAddToUnlock": "记录后解锁",
+  "placeholderNoTime": "未设置时间",
+  "placeholderNoDuration": "未记录",
+  "legalListTitle": "法律文件",
+  "legalDetailTitle": "法律文件",
+  "legalNotFoundTitle": "文档不存在",
+  "legalNotFoundDescription": "找不到该法律文档，请返回列表查看可用文档。",
+  "legalLoadErrorTitle": "加载失败",
+  "legalLoadErrorDescription": "无法加载法律文档内容，请稍后重试。",
+  "legalRetryAction": "重试",
+  "legalBackToListAction": "返回列表",
+  "legalListEmptyTitle": "暂无法律文档",
+  "legalListEmptyDescription": "法律文档将在添加后显示。",
+  "legalListUpdatedAt": "更新于 {date}",
+  "@legalListUpdatedAt": {
+    "placeholders": {
+      "date": {}
+    }
+  }
+}

@@ -1,54 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/medicine/presentation/pages/page.dart';
-import 'package:luminous/features/mine/presentation/pages/page.dart';
-import 'package:luminous/features/record/presentation/pages/page.dart';
-import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
-import 'package:luminous/features/shell/providers/provider.dart';
-import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 const _shellInset = 16.0;
 
-class ShellPage extends ConsumerWidget {
-  const ShellPage({super.key, this.navigationShell});
+class ShellPage extends StatelessWidget {
+  const ShellPage({super.key, required this.navigationShell});
 
-  /// The navigation shell provided by [StatefulShellRoute]. When `null` the
-  /// page falls back to the legacy [shellProvider] behaviour, which is still
-  /// useful for unit tests that render [ShellPage] in isolation.
-  final StatefulNavigationShell? navigationShell;
-
-  static const _pages = <Widget>[
-    TodayPage(),
-    RecordPage(),
-    MedicinePage(),
-    ReportPage(),
-    MinePage(),
-  ];
+  /// The navigation shell provided by [StatefulShellRoute].
+  final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final legacyIndex = ref.watch(shellProvider).currentIndex;
-    final legacyNotifier = ref.read(shellProvider.notifier);
-    final currentIndex = navigationShell?.currentIndex ?? legacyIndex;
+  Widget build(BuildContext context) {
+    final currentIndex = navigationShell.currentIndex;
     final width = MediaQuery.sizeOf(context).width;
     final l10n = AppLocalizations.of(context);
     final isDesktop = width >= Breakpoints.desktop;
-    final content = navigationShell ?? _pages[currentIndex];
+    final content = navigationShell;
 
     void onSelectTab(int index) {
-      final shell = navigationShell;
-      if (shell != null) {
-        shell.goBranch(index);
-      } else {
-        legacyNotifier.selectTab(index);
-      }
+      navigationShell.goBranch(index);
     }
 
     return MediaQuery.withClampedTextScaling(

@@ -1,0 +1,380 @@
+{
+  "recordPageDescription": "日历、时间线与多类型每日记录会从这里生长出来。",
+  "recordSectionTitle": "每日时间线",
+  "recordSectionSubtitle": "记录页的第一步先搭结构，不急着恢复旧逻辑。",
+  "recordTodayAction": "今天",
+  "recordPreviousDayAction": "上一天",
+  "recordNextDayAction": "下一天",
+  "recordPickDateAction": "选择日期",
+  "recordSearchAction": "搜索",
+  "recordFilterAction": "筛选",
+  "recordSwitchDateAction": "切换日期",
+  "recordDatePillLabel": "{month} 月 {day} 日  星期{weekday}",
+  "@recordDatePillLabel": {
+    "placeholders": {
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      },
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayEntriesTitle": "今日记录 · {count} 条",
+  "@recordTodayEntriesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickActionLabel": "记{type}",
+  "@recordQuickActionLabel": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordAddAction": "记录",
+  "recordAddCompactAction": "记录",
+  "recordCreateFieldKind": "类型",
+  "recordCreateFieldDate": "日期",
+  "recordCreateFieldTime": "时间",
+  "recordCreateFieldUnit": "单位",
+  "recordWaterUnitMl": "ml",
+  "recordWaterUnitCup": "杯",
+  "recordWaterUnitTimes": "次",
+  "recordCreateFieldTitleOptional": "标题（可选）",
+  "recordCreateFieldNote": "备注",
+  "recordCreateKindNote": "备注",
+  "recordCreateValueWater": "饮水量",
+  "recordCreateValueMeal": "名称 / 描述",
+  "recordCreateValueVital": "数值（如 120/80）",
+  "recordCreateValueSymptom": "严重程度 / 感受",
+  "recordCreateValueSleep": "时长（如 8h）",
+  "recordSleepInvalidValueToast": "请输入有效的睡眠时长（如 7.5）",
+  "recordSleepBedtimeLabel": "就寝时间",
+  "recordSleepWakeTimeLabel": "起床时间",
+  "recordSleepQualityLabel": "睡眠质量",
+  "recordSleepQualityPoor": "较差",
+  "recordSleepQualityFair": "一般",
+  "recordSleepQualityGood": "良好",
+  "recordSleepQualityExcellent": "优秀",
+  "recordSleepDeepMinutesLabel": "深度睡眠（分钟）",
+  "recordSleepLightMinutesLabel": "浅度睡眠（分钟）",
+  "recordSleepRemMinutesLabel": "REM 睡眠（分钟）",
+  "recordSleepDetailsSectionTitle": "睡眠详情",
+  "recordSleepDurationLabel": "时长",
+  "recordSleepTimeRangeLabel": "时间段",
+  "recordSleepNotSet": "未设置",
+  "recordSleepMinutesUnit": "分钟",
+  "recordCreateFailedToast": "记录未保存",
+  "recordImageSectionTitle": "图片附件",
+  "recordImageEmptyLabel": "未添加图片",
+  "recordImageAttachedLabel": "已添加图片",
+  "recordImagePickAction": "选择图片",
+  "recordImageReplaceAction": "更换图片",
+  "recordImageRemoveAction": "移除",
+  "recordImageUnsupportedToast": "仅支持 JPG、PNG、WEBP 或 GIF 图片",
+  "recordImagePickFailedToast": "图片未选择",
+  "recordQuickSectionTitle": "快速记录",
+  "recordQuickDynamicSortTooltip": "开启后，按使用频率自动排列快捷入口",
+  "recordQuickEditOrder": "自定义顺序",
+  "recordQuickSortDisableDynamicFirst": "请先关闭动态排序再编辑顺序",
+  "recordQuickReorderTitle": "拖拽排序",
+  "recordQuickReorderHint": "长按拖拽调整顺序",
+  "recordQuickReorderDone": "完成",
+  "recordQuickReorderCancel": "取消",
+  "recordFastEntryTitle": "快速记录{type}",
+  "@recordFastEntryTitle": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryDateHint": "保存到 {date}",
+  "@recordFastEntryDateHint": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFastEntryMoreAction": "更多",
+  "recordFastChoiceMealBreakfast": "早餐",
+  "recordFastChoiceMealLunch": "午餐",
+  "recordFastChoiceMealDinner": "晚餐",
+  "recordFastChoiceMealSnack": "加餐",
+  "recordFastChoiceSymptomHeadache": "头痛",
+  "recordFastChoiceSymptomStomachache": "胃痛",
+  "recordFastChoiceSymptomDizzy": "头晕",
+  "recordFastChoiceSymptomFever": "发热",
+  "recordFastChoiceSeverityMild": "轻度",
+  "recordFastChoiceNoteStable": "今天状态平稳",
+  "recordFastChoiceNoteTired": "今天有点累",
+  "recordFastChoiceNoteBusy": "今天比较忙",
+  "recordFastChoiceNoteRecovered": "今天恢复不错",
+  "recordFastChoiceMoodGreat": "很棒",
+  "recordFastChoiceMoodGood": "不错",
+  "recordFastChoiceMoodOkay": "一般",
+  "recordFastChoiceMoodBad": "不太好",
+  "recordFastChoiceMoodTerrible": "很糟",
+  "recordAiInputHint": "刚吃完饭胃有点胀...",
+  "recordAiBadge": "AI",
+  "recordNlpFabAction": "自然语言",
+  "recordNlpSheetTitle": "自然语言录入",
+  "recordNlpSheetSubtitle": "先解析成候选记录，确认后再保存。",
+  "recordNlpInputHint": "比如：今天早上喝了两杯水，中午胃有点胀，昨晚睡了 6 小时。",
+  "recordNlpGenerateAction": "解析候选",
+  "recordNlpGeneratingAction": "解析中",
+  "recordNlpResetAction": "清空",
+  "recordNlpMealTitleOptional": "餐次 / 标题（可选）",
+  "recordNlpSymptomTitleLabel": "症状名称",
+  "recordNlpNoteBodyLabel": "内容",
+  "recordNlpDetailsLabel": "补充说明",
+  "recordNlpCandidatesTitle": "候选记录 · {count} 条",
+  "@recordNlpCandidatesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRemoveAction": "移除",
+  "recordNlpSaveAllAction": "保存全部",
+  "recordNlpSaveSelectedAction": "保存选中项（{count}）",
+  "@recordNlpSaveSelectedAction": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpSavingAction": "保存中",
+  "recordNlpSelectedCountHint": "已选中 {count} 条，可先改再存。",
+  "@recordNlpSelectedCountHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpInputRequiredToast": "先输入一段记录描述。",
+  "recordNlpEmptyCandidatesToast": "这次没有解析出可保存的候选记录。",
+  "recordNlpNoCandidatesToSaveToast": "没有可保存的候选记录。",
+  "recordNlpNoCandidatesSelectedToast": "先选中至少一条候选记录。",
+  "recordNlpSavedToast": "已保存 {count} 条记录",
+  "@recordNlpSavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpPartialSavedToast": "已保存 {savedCount} 条，另有 {failedCount} 条保存失败。",
+  "@recordNlpPartialSavedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetryFailedAction": "重试失败项",
+  "recordNlpFailedCandidatesHint": "还有 {count} 条候选记录上次保存失败，可修正后仅重试失败项。",
+  "@recordNlpFailedCandidatesHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpRetrySavedToast": "已重试并保存 {count} 条失败记录",
+  "@recordNlpRetrySavedToast": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordNlpNoFailedCandidatesToast": "当前没有失败项可重试。",
+  "recordNlpCandidateSaveFailedHint": "这条上次保存失败：{message}",
+  "@recordNlpCandidateSaveFailedHint": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "recordSummarySectionTitle": "当天摘要",
+  "recordSummaryDateLabel": "2025年5月15日（周四）",
+  "recordTimelineSectionTitle": "时间线",
+  "recordTimelineViewAllAction": "查看全部记录",
+  "recordTimelineCollapseAction": "收起",
+  "recordTrendsSectionTitle": "趋势查看",
+  "recordNewEntrySectionTitle": "新建记录",
+  "recordFilterSectionTitle": "记录类型",
+  "recordFilterMobileTitle": "记录筛选",
+  "recordFilterAllAction": "全部",
+  "recordFilterSelectAll": "全选",
+  "recordFilterActiveLabel": "已筛选：{label}",
+  "@recordFilterActiveLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "recordFilterClearAction": "清除",
+  "recordAllTypesAction": "全部类型",
+  "recordVoiceInputTitle": "语音输入",
+  "recordGuideHint": "小贴士：坚持记录有助于更好地了解自己的健康状态",
+  "recordGuideAction": "查看记录指南",
+  "recordDetailTitle": "记录详情",
+  "recordDetailErrorTitle": "记录详情暂时没有加载出来",
+  "recordDetailValueLabel": "数值",
+  "recordDetailSourceLabel": "来源",
+  "recordDetailUpdatedAtLabel": "更新于",
+  "recordMealAnalysisSectionTitle": "餐食分析",
+  "recordMealAnalysisStatusAnalyzing": "分析中",
+  "recordMealAnalysisStatusUnconfirmed": "待确认",
+  "recordMealAnalysisStatusConfirmed": "已确认",
+  "recordMealAnalysisStatusFailed": "分析失败",
+  "recordMealAnalysisCoveragePartial": "部分覆盖",
+  "recordMealAnalysisCoverageComplete": "完整覆盖",
+  "recordMealAnalysisCoverageNone": "未覆盖",
+  "recordMealAnalysisRecognizedDishes": "识别菜品",
+  "recordMealAnalysisResolvedIngredients": "拆解食材",
+  "recordMealAnalysisCompositionMatches": "成分表命中",
+  "recordMealAnalysisNutritionEstimate": "营养估算",
+  "recordMealAnalysisNutritionEnergy": "热量",
+  "recordMealAnalysisNutritionProtein": "蛋白质",
+  "recordMealAnalysisEstimateDisclaimer": "当前结果仅作保守估算，请以实际情况为准。",
+  "recordMealConfirmAction": "确认当前菜品结果",
+  "recordMealConfirmActionSelected": "保存时确认当前菜品结果",
+  "recordMealDishEditorHelperText": "仅编辑菜品层，食材和营养将由系统重新估算。",
+  "recordMealDishAddAction": "添加菜品",
+  "recordMealDishRemoveAction": "删除菜品",
+  "recordMealDishFieldLabel": "菜品 {index}",
+  "@recordMealDishFieldLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "recordEditAction": "编辑",
+  "recordDeleteAction": "删除",
+  "recordDeleteConfirmMessage": "确定删除此记录？此操作不可撤销。",
+  "recordMonthLabel": "2025年5月",
+  "recordOpenDateAction": "查看日期",
+  "recordNotEnabledLabel": "未开启",
+  "recordVoiceAction": "语音记录（长按说话）",
+  "recordVoiceEntryTitle": "语音录入",
+  "recordVoiceListeningHint": "正在聆听...",
+  "recordVoiceTapToStart": "点击说话",
+  "recordVoiceUseText": "使用此文本",
+  "recordOcrEntryTitle": "拍照识别",
+  "recordOcrCameraAction": "拍照",
+  "recordOcrGalleryAction": "从相册选择",
+  "recordOcrRecognizingHint": "正在识别文字...",
+  "recordOcrRecognitionFailed": "文字识别失败了，换一张更清晰的图片再试。",
+  "recordMicPermissionDenied": "麦克风权限未授权，请在系统设置中开启。",
+  "recordErrorTitle": "记录页暂时没有加载出来",
+  "recordErrorDescription": "数据边界已经接好，可以重新拉取一次。",
+  "recordWeekdaySun": "日",
+  "recordWeekdayMon": "一",
+  "recordWeekdayTue": "二",
+  "recordWeekdayWed": "三",
+  "recordWeekdayThu": "四",
+  "recordWeekdayFri": "五",
+  "recordWeekdaySat": "六",
+  "recordTypeMeal": "饮食",
+  "recordTypeVitals": "体征",
+  "recordTypeWater": "饮水",
+  "recordTypeMood": "情绪",
+  "recordTypeSymptom": "症状",
+  "recordTypeActivity": "运动",
+  "recordTypeMedication": "用药",
+  "recordTypeSleep": "睡眠",
+  "recordTypeHeartRate": "心率",
+  "recordTypeWeight": "体重",
+  "recordSummaryMealTitle": "饮食记录",
+  "recordSummaryWaterTitle": "饮水进度",
+  "recordSummaryLatestVitalTitle": "最新体征",
+  "recordSummaryMoodTitle": "情绪记录",
+  "recordSummaryTimesUnit": "次",
+  "recordSummaryCupsUnit": "杯",
+  "recordSummaryRecorded": "已记录",
+  "recordSummaryNormal": "正常",
+  "recordTimelineMealLunch": "饮食 · 午餐",
+  "recordTimelineMealName": "鸡胸肉藜麦沙拉",
+  "recordTimelineMealNutrition": "热量约 520 kcal · 蛋白质 32g · 碳水 45g · 脂肪 12g",
+  "recordTimelineAiBadge": "AI 识别",
+  "recordTimelineBloodPressure": "血压",
+  "recordTimelineBloodPressureDetail": "来源：手动记录 · 正常",
+  "recordTimelineManualBadge": "手动记录",
+  "recordTimelineWaterAmount": "1 杯 250ml",
+  "recordTimelineWaterProgress": "第 4 / 8 杯",
+  "recordTimelineMedicationName": "阿托伐他汀 20mg",
+  "recordTimelineMedicationDetail": "已服用 · 与用药计划同步",
+  "recordTimelineMoodCalm": "情绪 · 平静",
+  "recordTimelineMoodDetail": "心情不错，睡得还可以",
+  "recordTimelineMoodGreat": "情绪 · 很棒",
+  "recordTimelineMoodGood": "情绪 · 不错",
+  "recordTimelineMoodOkay": "情绪 · 一般",
+  "recordTimelineMoodBad": "情绪 · 不太好",
+  "recordTimelineMoodTerrible": "情绪 · 很糟",
+  "recordTimelineSymptomRecord": "症状记录",
+  "recordTimelineSymptomDetail": "头痛 · 疼痛评分 3/5",
+  "recordTimelineSleepRecord": "睡眠记录",
+  "recordTimelineSleepDetail": "上床 23:30 · 睡眠时长 7.0 小时",
+  "recordTimelineHeartRateDetail": "72 次/分 · 来源：手表 · 正常",
+  "recordTimelineWeightDetail": "来源：体脂秤 · BMI 22.5",
+  "recordTrendBloodSugarTitle": "饮食-血糖",
+  "recordTrendBloodSugarLegend": "餐后血糖 (mmol/L)",
+  "recordTrendHydrationTitle": "饮水完成率",
+  "recordRange7Days": "近 7 天",
+  "recordRange30Days": "近 30 天",
+  "recordFoodImagePlaceholder": "餐图占位",
+  "recordSymptomTrackingSectionTitle": "症状跟踪",
+  "recordSymptomHeadache": "头痛",
+  "recordSymptomLoggedAt": "今天 {time} 记录",
+  "@recordSymptomLoggedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "recordBodyPartLabel": "部位",
+  "recordBodyPartForehead": "头部（前额）",
+  "recordAccompanyingSymptomsLabel": "伴随症状",
+  "recordSymptomNausea": "轻微恶心",
+  "recordSymptomLightSensitive": "对光敏感",
+  "recordPainRatingLabel": "疼痛评分",
+  "recordPainModerate": "中等",
+  "recordViewTrendAction": "查看趋势",
+  "recordDietTitle": "饮食记录",
+  "recordMealCountValue": "今日 {count} 餐",
+  "@recordMealCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordMealLogging": "记录中",
+  "recordDietRecordAction": "记录饮食",
+  "recordDentalRecordTitle": "牙科记录",
+  "recordEyeRecordTitle": "眼科记录",
+  "recordHearingRecordTitle": "听力记录",
+  "recordZeroCountLabel": "0 条记录"
+}
