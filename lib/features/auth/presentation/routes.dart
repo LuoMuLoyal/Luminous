@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
-import 'package:luminous/features/auth/presentation/pages/change_email_page.dart';
-import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
-import 'package:luminous/features/auth/presentation/pages/login_page.dart';
-import 'package:luminous/features/auth/presentation/pages/register_page.dart';
+import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
+import 'package:luminous/features/auth/presentation/pages/change_email.dart';
+import 'package:luminous/features/auth/presentation/pages/forgot_password.dart';
+import 'package:luminous/features/auth/presentation/pages/login.dart';
+import 'package:luminous/features/auth/presentation/pages/register.dart';
 
 part 'routes.g.dart';
 

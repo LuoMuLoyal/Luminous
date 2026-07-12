@@ -5,8 +5,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/auth/presentation/pages/login_page.dart';
-import 'package:luminous/features/auth/presentation/pages/register_page.dart';
+import 'package:luminous/features/auth/presentation/pages/login.dart';
+import 'package:luminous/features/auth/presentation/pages/register.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 
 import 'test_helpers.dart';

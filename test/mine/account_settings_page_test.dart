@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
+import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

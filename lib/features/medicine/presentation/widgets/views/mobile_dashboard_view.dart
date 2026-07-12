@@ -14,10 +14,10 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-part '../sections/mobile_drugbox_section.dart';
-part '../sections/mobile_quick_operations_section.dart';
-part '../sections/mobile_records_section.dart';
-part '../sections/mobile_safety_section.dart';
+part '../sections/mobile_drugbox.dart';
+part '../sections/mobile_quick_operations.dart';
+part '../sections/mobile_records.dart';
+part '../sections/mobile_safety.dart';
 part '../shared/mobile_shared.dart';
 
 class MedicineMobileDashboardView extends StatelessWidget {

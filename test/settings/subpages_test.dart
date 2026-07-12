@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
+import 'package:luminous/features/settings/presentation/pages/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

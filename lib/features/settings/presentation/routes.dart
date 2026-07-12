@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
-import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/accessibility_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/ai_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/about.dart';
+import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
+import 'package:luminous/features/settings/presentation/pages/advanced.dart';
+import 'package:luminous/features/settings/presentation/pages/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
-import 'package:luminous/features/settings/presentation/pages/data_storage_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/dnd_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/feature_flags_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/language_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/notification_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
+import 'package:luminous/features/settings/presentation/pages/dnd.dart';
+import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
+import 'package:luminous/features/settings/presentation/pages/help.dart';
+import 'package:luminous/features/settings/presentation/pages/language.dart';
+import 'package:luminous/features/settings/presentation/pages/notification.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
-import 'package:luminous/features/settings/presentation/pages/security_pin_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/sleep_reminder_settings_page.dart';
-import 'package:luminous/features/settings/presentation/pages/theme_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/security_pin.dart';
+import 'package:luminous/features/settings/presentation/pages/sleep_reminder.dart';
+import 'package:luminous/features/settings/presentation/pages/theme.dart';
 
 part 'routes.g.dart';
 

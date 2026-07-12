@@ -2,7 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/settings/presentation/pages/help_settings_page.dart';
+import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

@@ -6,7 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/sections/readiness_section.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';

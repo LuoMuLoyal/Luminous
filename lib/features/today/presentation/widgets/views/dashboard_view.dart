@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -6,11 +6,11 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/observation_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/quick_actions_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/record_hint_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/summary_section.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/suggestion_section.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/record_hint.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/summary.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

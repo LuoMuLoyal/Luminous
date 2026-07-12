@@ -1,11 +1,11 @@
-export '../sections/ai_summary_section.dart';
-export '../sections/export_section.dart';
-export '../sections/findings_section.dart';
+export '../sections/ai_summary.dart';
+export '../sections/export.dart';
+export '../sections/findings.dart';
 export '../sections/metrics_grid.dart';
-export '../sections/patterns_section.dart';
+export '../sections/patterns.dart';
 export '../shared/reference_notice.dart';
 export '../sections/score_hero.dart';
 export '../shared/section_models.dart';
-export '../sections/suggestion_history_section.dart';
+export '../sections/suggestion_history.dart';
 export '../shared/top_bar.dart';
-export '../sections/trend_section.dart';
+export '../sections/trend.dart';

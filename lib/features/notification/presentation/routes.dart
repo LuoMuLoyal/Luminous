@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
-import 'package:luminous/features/notification/presentation/pages/detail_page.dart';
-import 'package:luminous/features/notification/presentation/pages/list_page.dart';
+import 'package:luminous/features/notification/presentation/pages/detail.dart';
+import 'package:luminous/features/notification/presentation/pages/list.dart';
 
 part 'routes.g.dart';
 

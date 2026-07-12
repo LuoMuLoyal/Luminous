@@ -14,7 +14,7 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/page.dart';
-import 'package:luminous/features/medicine/presentation/pages/risk_check_page.dart';
+import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
