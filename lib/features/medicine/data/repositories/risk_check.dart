@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/logger/app_logger.dart';
+﻿import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';

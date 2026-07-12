@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
+import '../database.dart';
 import '../tables/pending_sync_queue.dart';
 
 part 'pending_sync_dao.g.dart';

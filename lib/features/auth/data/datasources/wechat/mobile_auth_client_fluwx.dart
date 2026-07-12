@@ -1,11 +1,11 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:luminous/core/network/api_exception.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client_base.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_config.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client_base.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_config.dart';
 
 class DefaultWechatMobileAuthClient extends WechatMobileAuthClient {
   DefaultWechatMobileAuthClient({Fluwx? fluwx}) : _providedFluwx = fluwx;

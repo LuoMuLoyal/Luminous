@@ -1,4 +1,4 @@
-import 'package:luminous/core/database/app_database.dart';
+﻿import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/daos/current_medicine_dao.dart';

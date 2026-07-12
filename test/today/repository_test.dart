@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
-import 'package:luminous/core/database/app_database.dart';
+import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';

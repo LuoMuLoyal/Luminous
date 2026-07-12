@@ -4,7 +4,7 @@ import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
 import 'package:luminous/core/logger/sentry_talker_observer.dart';
 
-part 'app_logger.g.dart';
+part 'logger.g.dart';
 
 /// Application log severity levels.
 ///

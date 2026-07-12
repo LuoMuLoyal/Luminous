@@ -3,13 +3,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_listener.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_server.dart';
-import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/desktop_oauth_callback_listener.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/desktop_oauth_callback_server.dart';
+import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
-import 'package:luminous/features/auth/presentation/providers/session/account_provider.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/account.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import 'test_helpers.dart';
 

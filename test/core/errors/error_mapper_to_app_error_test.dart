@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/app_error.dart';
+import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 

@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/i18n/app_locale.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/i18n/locale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLocaleController extends AsyncNotifier<AppLocale> {

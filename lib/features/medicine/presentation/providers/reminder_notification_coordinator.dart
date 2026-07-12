@@ -1,11 +1,11 @@
 ﻿import 'dart:ui' as ui;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';

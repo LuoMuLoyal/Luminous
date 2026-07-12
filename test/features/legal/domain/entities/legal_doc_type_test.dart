@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/legal/domain/entities/legal_doc_type.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 
 void main() {
   group('LegalDocType', () {

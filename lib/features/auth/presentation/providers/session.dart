@@ -3,12 +3,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
-part 'session_provider.freezed.dart';
+part 'session.freezed.dart';
 
 @freezed
 abstract class AuthSessionState with _$AuthSessionState {

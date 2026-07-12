@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
+import '../database.dart';
 import '../tables/medicine_dose_logs.dart';
 
 part 'medicine_dose_log_dao.g.dart';

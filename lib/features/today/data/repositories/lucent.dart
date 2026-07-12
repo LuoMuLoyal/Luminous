@@ -1,7 +1,7 @@
 ﻿import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';

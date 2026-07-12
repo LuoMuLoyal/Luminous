@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/presentation/providers/forms/password_reset_provider.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import '../../test_helpers.dart';
 

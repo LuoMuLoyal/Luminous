@@ -2,11 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
-import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';

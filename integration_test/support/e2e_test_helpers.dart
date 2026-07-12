@@ -7,7 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:patrol/patrol.dart';
 import 'package:lucent_api/api/export.dart'
     show CooldownMessageDto, LucentClient, MedicineDoseLogsApi;
-import 'package:luminous/app/app.dart';
+import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart' show router;
 import 'package:luminous/core/network/network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
@@ -15,7 +15,7 @@ import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -63,7 +63,7 @@ export 'package:patrol/patrol.dart' hide Notification;
 export 'package:luminous/app/router.dart' show router;
 export 'package:luminous/features/auth/data/datasources/auth.dart'
     show AuthVerificationScene;
-export 'package:luminous/features/auth/presentation/providers/session/session_provider.dart'
+export 'package:luminous/features/auth/presentation/providers/session.dart'
     show authSessionProvider;
 export 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 export 'package:luminous/features/record/domain/entities/inputs.dart'

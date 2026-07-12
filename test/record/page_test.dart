@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';

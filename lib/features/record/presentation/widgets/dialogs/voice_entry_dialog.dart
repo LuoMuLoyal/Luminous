@@ -1,13 +1,13 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';

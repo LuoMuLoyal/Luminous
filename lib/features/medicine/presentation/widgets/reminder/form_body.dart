@@ -9,8 +9,8 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_form_fields.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form_fields.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 

@@ -6,7 +6,7 @@ import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import '../../test_helpers.dart';
 

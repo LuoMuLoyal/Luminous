@@ -2,7 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
-import 'package:luminous/features/legal/domain/entities/legal_doc_type.dart';
+import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLegalDocumentsApi extends Mock implements LegalDocumentsApi {}

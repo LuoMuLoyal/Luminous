@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,8 +7,8 @@ import 'package:lucent_api/api/export.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';

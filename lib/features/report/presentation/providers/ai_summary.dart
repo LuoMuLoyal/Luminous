@@ -1,8 +1,8 @@
 ﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/result_code.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';

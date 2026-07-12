@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
+import '../database.dart';
 import '../tables/health_context.dart';
 
 part 'health_context_dao.g.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/database_providers.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -6,11 +6,11 @@ import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 
-part 'login_form_provider.freezed.dart';
+part 'login.freezed.dart';
 
 enum AuthLoginMode { password, code }
 

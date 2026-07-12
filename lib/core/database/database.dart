@@ -20,7 +20,7 @@ import 'daos/health_context_dao.dart';
 import 'daos/today_suggestion_dao.dart';
 import 'daos/pending_sync_dao.dart';
 
-part 'app_database.g.dart';
+part 'database.g.dart';
 
 @DriftDatabase(
   tables: [

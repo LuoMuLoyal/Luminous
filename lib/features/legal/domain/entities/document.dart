@@ -1,4 +1,4 @@
-import 'legal_doc_type.dart';
+import 'doc_type.dart';
 
 /// Metadata item for a legal document in list views.
 class LegalDocumentSummary {

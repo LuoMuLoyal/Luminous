@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_rows.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../../helpers/test_forui_app.dart';

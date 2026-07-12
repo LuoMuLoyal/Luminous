@@ -1,7 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/errors/app_error.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/errors/result.dart';
-import 'package:luminous/core/logger/app_logger.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

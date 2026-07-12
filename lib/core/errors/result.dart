@@ -1,4 +1,4 @@
-import 'app_error.dart';
+import 'error.dart';
 
 /// A lightweight discriminated union representing the outcome of an
 /// operation that can either succeed or fail.

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -8,7 +8,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/legal/domain/entities/legal_doc_type.dart';
+import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/presentation/providers/legal.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

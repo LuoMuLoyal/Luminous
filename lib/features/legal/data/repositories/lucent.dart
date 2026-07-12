@@ -1,13 +1,13 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:lucent_api/api/export.dart';
 
-import '../../domain/entities/legal_doc_type.dart';
-import '../../domain/entities/legal_document.dart';
+import '../../domain/entities/doc_type.dart';
+import '../../domain/entities/document.dart';
 import '../../domain/repositories/documents.dart';
 
 /// Riverpod provider for [LegalRepository].

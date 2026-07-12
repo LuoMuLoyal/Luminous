@@ -1,10 +1,10 @@
 ﻿import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/app/app.dart';
+import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/features/auth/presentation/providers/forms/login_form_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 

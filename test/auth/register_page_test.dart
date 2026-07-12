@@ -7,7 +7,7 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import 'test_helpers.dart';
 

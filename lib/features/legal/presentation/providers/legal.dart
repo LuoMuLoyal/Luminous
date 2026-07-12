@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/lucent.dart';
-import '../../domain/entities/legal_doc_type.dart';
-import '../../domain/entities/legal_document.dart';
+import '../../domain/entities/doc_type.dart';
+import '../../domain/entities/document.dart';
 
 /// Re-export so presentation code can import from one place.
 export '../../data/repositories/lucent.dart' show legalRepositoryProvider;

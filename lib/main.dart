@@ -3,7 +3,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/app/app.dart';
+import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/features/today/data/repositories/mock.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/errors/app_error.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/errors/error.dart';
 
 void main() {
   group('AppError', () {

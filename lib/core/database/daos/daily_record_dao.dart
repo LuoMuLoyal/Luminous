@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
+import '../database.dart';
 import '../tables/daily_records.dart';
 
 part 'daily_record_dao.g.dart';

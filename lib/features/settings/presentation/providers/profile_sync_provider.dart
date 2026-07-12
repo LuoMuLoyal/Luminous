@@ -1,8 +1,8 @@
 ﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/core/i18n/app_locale_controller.dart';
-import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
+import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';

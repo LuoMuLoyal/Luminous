@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_delete_dialog.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 
 import '../../../../helpers/test_forui_app.dart';
 

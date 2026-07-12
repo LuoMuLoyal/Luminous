@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/logger/app_logger.dart';
+﻿import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';

@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
-import 'package:luminous/core/i18n/app_locale.dart';
-import 'package:luminous/core/i18n/app_locale_controller.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync_provider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';

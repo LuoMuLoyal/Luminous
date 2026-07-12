@@ -1,23 +1,25 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/features/auth/data/providers/auth.dart';
-
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
+
 import 'package:luminous/core/forms/validators.dart';
 
 import '../shared/form_mixin.dart';
 
-part 'password_reset_provider.freezed.dart';
+part 'register.freezed.dart';
 
 @freezed
-abstract class PasswordResetState with _$PasswordResetState {
-  const factory PasswordResetState({
+abstract class RegisterFormState with _$RegisterFormState {
+  const factory RegisterFormState({
     @Default('') String email,
-    @Default('') String code,
     @Default('') String password,
     @Default('') String confirmPassword,
+    @Default('') String code,
+    @Default('') String nickname,
     @Default(false) bool isSubmitting,
     @Default(false) bool isSendingCode,
     int? cooldownSeconds,
@@ -27,23 +29,19 @@ abstract class PasswordResetState with _$PasswordResetState {
     String? confirmPasswordError,
     String? errorMessage,
     String? successMessage,
-  }) = _PasswordResetState;
+  }) = _RegisterFormState;
 }
 
-class PasswordResetNotifier extends Notifier<PasswordResetState>
-    with CooldownTimerMixin<PasswordResetState> {
+class RegisterFormNotifier extends Notifier<RegisterFormState>
+    with CooldownTimerMixin<RegisterFormState> {
   @override
-  PasswordResetState build() {
+  RegisterFormState build() {
     ref.onDispose(disposeCooldown);
-    return const PasswordResetState();
+    return const RegisterFormState();
   }
 
   void updateEmail(String value) {
     state = state.copyWith(email: value, emailError: null, errorMessage: null);
-  }
-
-  void updateCode(String value) {
-    state = state.copyWith(code: value, codeError: null, errorMessage: null);
   }
 
   void updatePassword(String value) {
@@ -60,6 +58,14 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       confirmPasswordError: null,
       errorMessage: null,
     );
+  }
+
+  void updateCode(String value) {
+    state = state.copyWith(code: value, codeError: null, errorMessage: null);
+  }
+
+  void updateNickname(String value) {
+    state = state.copyWith(nickname: value, errorMessage: null);
   }
 
   void setEmailError(String message) {
@@ -111,7 +117,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     return emailError == null;
   }
 
-  Future<bool> sendResetCode() async {
+  Future<bool> sendCode() async {
     state = state.copyWith(
       isSendingCode: true,
       errorMessage: null,
@@ -119,15 +125,17 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     );
     final result = await runGuarded(
       ref: ref,
-      tag: 'PasswordResetNotifier.sendResetCode',
+      tag: 'RegisterFormNotifier.sendCode',
       action: () => ref
           .read(authRemoteDataSourceProvider)
-          .forgotPassword(email: state.email),
+          .sendVerificationCode(
+            email: state.email,
+            scene: AuthVerificationScene.register,
+          ),
     );
     switch (result) {
       case Failure(:final error):
         state = state.copyWith(
-          isSubmitting: false,
           isSendingCode: false,
           errorMessage: error.message,
           successMessage: null,
@@ -148,7 +156,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     }
   }
 
-  Future<bool> resetPassword() async {
+  Future<bool> submit() async {
     state = state.copyWith(
       isSubmitting: true,
       errorMessage: null,
@@ -156,22 +164,21 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     );
     final result = await runGuarded(
       ref: ref,
-      tag: 'PasswordResetNotifier.resetPassword',
+      tag: 'RegisterFormNotifier.submit',
       action: () => ref
           .read(authRemoteDataSourceProvider)
-          .resetPassword(
+          .register(
             email: state.email,
-            code: state.code,
             password: state.password,
+            code: state.code,
+            nickname: state.nickname,
           ),
     );
     switch (result) {
       case Failure(:final error):
         state = state.copyWith(
           isSubmitting: false,
-          isSendingCode: false,
           errorMessage: error.message,
-          successMessage: null,
         );
         return false;
       case Success():
@@ -181,7 +188,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
   }
 }
 
-final passwordResetProvider =
-    NotifierProvider<PasswordResetNotifier, PasswordResetState>(
-      PasswordResetNotifier.new,
+final registerFormProvider =
+    NotifierProvider<RegisterFormNotifier, RegisterFormState>(
+      RegisterFormNotifier.new,
     );

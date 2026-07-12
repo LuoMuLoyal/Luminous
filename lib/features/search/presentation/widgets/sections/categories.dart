@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/app_toast.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:forui/forui.dart';

@@ -1,5 +1,5 @@
-import '../entities/legal_doc_type.dart';
-import '../entities/legal_document.dart';
+import '../entities/doc_type.dart';
+import '../entities/document.dart';
 
 /// Repository interface for fetching legal documents.
 abstract class LegalRepository {

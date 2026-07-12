@@ -5,7 +5,7 @@ import 'package:drift/drift.dart';
 /// This is the stub / fallback. It is overridden at compile time by either
 /// [database_connection_io.dart] (native platforms) or
 /// [database_connection_web.dart] (web / WASM platforms) via conditional
-/// imports in `app_database.dart`.
+/// imports in `database.dart`.
 DatabaseConnection connect() {
   throw UnsupportedError(
     'No database connection implementation for this platform. '

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 
-import '../app_database.dart';
+import '../database.dart';
 import '../tables/today_suggestions.dart';
 
 part 'today_suggestion_dao.g.dart';
