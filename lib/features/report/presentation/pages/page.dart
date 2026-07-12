@@ -15,8 +15,6 @@ import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/notification/presentation/providers/providers.dart';
-import 'package:luminous/features/notification/presentation/routes.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -29,6 +27,8 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 DataExportRequestInput? _exportInputForKind(ReportExportKind kind) {
@@ -360,19 +360,16 @@ class ReportPage extends ConsumerWidget {
       dataExportControllerProvider.select((s) => s.asData?.value),
     );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
-    final notificationListAsync = canAccessProtectedData
-        ? ref.watch(notificationListPageProvider)
+    final suggestionHistoryAsync = canAccessProtectedData
+        ? ref.watch(suggestionHistoryProvider)
         : null;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
-    final proactiveSuggestions =
-        notificationListAsync?.asData?.value.items
-            .where(
-              (item) => item.type == UserNotificationType.aiProactiveSuggestion,
-            )
+    final suggestionHistory =
+        suggestionHistoryAsync?.asData?.value?.items
             .take(3)
             .toList(growable: false) ??
-        const <NotificationListItemDto>[];
+        const <TodaySuggestionHistoryItem>[];
 
     final dateRangeLabel = reportDashboardDateRangeLabel(
       context,
@@ -401,10 +398,9 @@ class ReportPage extends ConsumerWidget {
       onSignIn: onSignIn,
       onContinueRecord: () => context.push('/record/create'),
       onSync: () => _refreshDashboard(ref),
-      proactiveSuggestions: proactiveSuggestions,
-      isSuggestionHistoryLoading: notificationListAsync?.isLoading ?? false,
-      onSuggestionTap: (item) =>
-          NotificationDetailRoute(id: item.id).push(context),
+      suggestionHistory: suggestionHistory,
+      isSuggestionHistoryLoading: suggestionHistoryAsync?.isLoading ?? false,
+      onSuggestionTap: null,
       onAiSummaryRangeChanged: (range) {
         ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
       },

@@ -106,12 +106,3 @@ Last updated: 2026-07-11
 
 
 ### Today — ✅ 无差距
-
-- 建议引擎前后端已全部完成：5 类卡片类型、5 种 cardTone、反馈闭环、AI 解释、观察项区接入 `todaySuggestionProvider.observations`。
-- `TodayRecordHintSection` 作为非蓝图增强保留。
-
-### 待完成：Report 历史建议回顾接入 suggestion history API
-
-- 后端 `GET /today/suggestions/history` 已就绪，前端 data source `fetchHistory()` 已实现
-- Report 页当前使用通知接口 (`ai_proactive_suggestion`) 展示历史建议，未接入建议历史 API
-- 需将 Report 页历史建议回顾区切换到 suggestion history API，展示已执行/未执行/被延后状态

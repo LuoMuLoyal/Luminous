@@ -9,6 +9,7 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness_section.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportDashboardView extends StatelessWidget {
@@ -37,7 +38,7 @@ class ReportDashboardView extends StatelessWidget {
     this.onSignIn,
     this.onContinueRecord,
     this.onSync,
-    this.proactiveSuggestions = const [],
+    this.suggestionHistory = const [],
     this.isSuggestionHistoryLoading = false,
     this.onSuggestionTap,
   });
@@ -61,9 +62,9 @@ class ReportDashboardView extends StatelessWidget {
   final VoidCallback? onSignIn;
   final VoidCallback? onContinueRecord;
   final VoidCallback? onSync;
-  final List<NotificationListItemDto> proactiveSuggestions;
+  final List<TodaySuggestionHistoryItem> suggestionHistory;
   final bool isSuggestionHistoryLoading;
-  final ValueChanged<NotificationListItemDto>? onSuggestionTap;
+  final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +143,7 @@ class ReportDashboardView extends StatelessWidget {
         if (canAccessProtectedData) ...[
           const SizedBox(height: Spacing.level4),
           ReportSuggestionHistorySection(
-            suggestions: proactiveSuggestions,
+            suggestions: suggestionHistory,
             isLoading: isSuggestionHistoryLoading,
             onSuggestionTap: onSuggestionTap,
             l10n: l10n,
@@ -238,7 +239,7 @@ class ReportDashboardView extends StatelessWidget {
               if (canAccessProtectedData) ...[
                 const SizedBox(height: Spacing.level5),
                 ReportSuggestionHistorySection(
-                  suggestions: proactiveSuggestions,
+                  suggestions: suggestionHistory,
                   isLoading: isSuggestionHistoryLoading,
                   onSuggestionTap: onSuggestionTap,
                   l10n: l10n,

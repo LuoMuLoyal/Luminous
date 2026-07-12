@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportSuggestionHistorySection extends StatelessWidget {
@@ -16,10 +16,10 @@ class ReportSuggestionHistorySection extends StatelessWidget {
     this.onSuggestionTap,
   });
 
-  final List<NotificationListItemDto> suggestions;
+  final List<TodaySuggestionHistoryItem> suggestions;
   final AppLocalizations l10n;
   final bool isLoading;
-  final ValueChanged<NotificationListItemDto>? onSuggestionTap;
+  final ValueChanged<TodaySuggestionHistoryItem>? onSuggestionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class ReportSuggestionHistorySection extends StatelessWidget {
                 FTile(
                   key: Key('report-suggestion-${suggestion.id}'),
                   prefix: FAvatar.raw(
-                    child: const Icon(FLucideIcons.sparkles, size: 18),
+                    child: Icon(_iconForType(suggestion.type), size: 18),
                   ),
                   title: Text(
                     suggestion.title,
@@ -56,13 +56,13 @@ class ReportSuggestionHistorySection extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(
-                    suggestion.content,
+                    suggestion.reason,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  details: Text(_formatTime(context, suggestion.createdAt)),
+                  details: Text(_formatTime(context, suggestion.generatedAt)),
                   suffix: _SuggestionBadge(
-                    isRead: suggestion.isRead,
+                    lifecycleState: suggestion.lifecycleState,
                     l10n: l10n,
                   ),
                   onPress: onSuggestionTap == null
@@ -73,6 +73,16 @@ class ReportSuggestionHistorySection extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  IconData _iconForType(TodaySuggestionType type) {
+    return switch (type) {
+      TodaySuggestionType.confirmedRisk => FLucideIcons.triangleAlert,
+      TodaySuggestionType.compliance => FLucideIcons.clipboardList,
+      TodaySuggestionType.trend => FLucideIcons.trendingUp,
+      TodaySuggestionType.behaviorAdvice => FLucideIcons.lightbulb,
+      TodaySuggestionType.coverage => FLucideIcons.activity,
+    };
   }
 
   String _formatTime(BuildContext context, String iso8601) {
@@ -86,20 +96,31 @@ class ReportSuggestionHistorySection extends StatelessWidget {
 }
 
 class _SuggestionBadge extends StatelessWidget {
-  const _SuggestionBadge({required this.isRead, required this.l10n});
+  const _SuggestionBadge({required this.lifecycleState, required this.l10n});
 
-  final bool isRead;
+  final TodaySuggestionLifecycleState lifecycleState;
   final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
-    final semanticColor = isRead
-        ? SemanticColor.neutral
-        : SemanticColor.primary;
+    final (semanticColor, label) = switch (lifecycleState) {
+      TodaySuggestionLifecycleState.generated ||
+      TodaySuggestionLifecycleState.active ||
+      TodaySuggestionLifecycleState.fading => (
+        SemanticColor.primary,
+        l10n.reportSuggestionHistoryActiveBadge,
+      ),
+      TodaySuggestionLifecycleState.expired => (
+        SemanticColor.neutral,
+        l10n.reportSuggestionHistoryExpiredBadge,
+      ),
+      TodaySuggestionLifecycleState.dismissed => (
+        SemanticColor.neutral,
+        l10n.reportSuggestionHistoryDismissedBadge,
+      ),
+    };
+
     final color = semanticColor.solid(context);
-    final label = isRead
-        ? l10n.reportSuggestionHistoryReadBadge
-        : l10n.reportSuggestionHistoryUnreadBadge;
 
     return DecoratedBox(
       decoration: BoxDecoration(

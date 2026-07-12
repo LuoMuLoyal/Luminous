@@ -11,13 +11,14 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/notification/presentation/providers/providers.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/repository.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import '../helpers/test_forui_app.dart';
 import '../today/test_helpers.dart';
@@ -38,8 +39,8 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-            notificationListPageProvider.overrideWith(
-              (ref) => Future.value(_suggestionNotificationResponse),
+            suggestionHistoryProvider.overrideWith(
+              (ref) => Future.value(_testSuggestionHistory),
             ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(_readyDashboard),
@@ -110,8 +111,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -189,8 +190,8 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-            notificationListPageProvider.overrideWith(
-              (ref) => Future.value(_suggestionNotificationResponse),
+            suggestionHistoryProvider.overrideWith(
+              (ref) => Future.value(_testSuggestionHistory),
             ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(MockReportRepository.previewDashboard),
@@ -233,8 +234,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -275,8 +276,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(
             _FixedReportRepository(_readyDashboard),
@@ -341,8 +342,8 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-            notificationListPageProvider.overrideWith(
-              (ref) => Future.value(_suggestionNotificationResponse),
+            suggestionHistoryProvider.overrideWith(
+              (ref) => Future.value(_testSuggestionHistory),
             ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(_readyDashboard),
@@ -390,8 +391,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -427,8 +428,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -459,8 +460,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -495,8 +496,8 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          notificationListPageProvider.overrideWith(
-            (ref) => Future.value(_suggestionNotificationResponse),
+          suggestionHistoryProvider.overrideWith(
+            (ref) => Future.value(_testSuggestionHistory),
           ),
           reportRepositoryProvider.overrideWithValue(repo),
           userSettingsControllerProvider.overrideWith(
@@ -529,8 +530,8 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-            notificationListPageProvider.overrideWith(
-              (ref) => Future.value(_suggestionNotificationResponse),
+            suggestionHistoryProvider.overrideWith(
+              (ref) => Future.value(_testSuggestionHistory),
             ),
             reportRepositoryProvider.overrideWithValue(
               _FixedReportRepository(_readyDashboard),
@@ -560,36 +561,38 @@ void main() {
   );
 }
 
-final _suggestionNotificationResponse = const NotificationListResponseDto(
-  code: 0,
-  message: 'ok',
-  total: 3,
+const _testSuggestionHistory = TodaySuggestionHistory(
   items: [
-    NotificationListItemDto(
+    TodaySuggestionHistoryItem(
       id: 'suggestion-1',
-      type: UserNotificationType.aiProactiveSuggestion,
+      date: '2026-07-07',
+      type: TodaySuggestionType.behaviorAdvice,
       title: '建议减少晚间咖啡因',
-      content: '最近 3 天睡前 6 小时内摄入咖啡因，建议提前调整。',
-      isRead: false,
-      createdAt: '2026-07-07T08:00:00.000Z',
+      reason: '最近 3 天睡前 6 小时内摄入咖啡因，建议提前调整。',
+      ruleId: 'rule-1',
+      ruleVersion: '1.0.0',
+      triggerType: TodaySuggestionTriggerType.timer,
+      lifecycleState: TodaySuggestionLifecycleState.active,
+      confidence: TodaySuggestionConfidence.high,
+      generatedAt: '2026-07-07T08:00:00.000Z',
     ),
-    NotificationListItemDto(
+    TodaySuggestionHistoryItem(
       id: 'suggestion-2',
-      type: UserNotificationType.aiProactiveSuggestion,
+      date: '2026-07-06',
+      type: TodaySuggestionType.coverage,
       title: '补充今天的饮水记录',
-      content: '当前饮水记录偏少，建议补录以完善趋势判断。',
-      isRead: true,
-      createdAt: '2026-07-06T08:00:00.000Z',
-    ),
-    NotificationListItemDto(
-      id: 'report-generated-1',
-      type: UserNotificationType.reportGenerated,
-      title: '周报已生成',
-      content: '你的周报已经可以查看。',
-      isRead: true,
-      createdAt: '2026-07-05T08:00:00.000Z',
+      reason: '当前饮水记录偏少，建议补录以完善趋势判断。',
+      ruleId: 'rule-2',
+      ruleVersion: '1.0.0',
+      triggerType: TodaySuggestionTriggerType.event,
+      lifecycleState: TodaySuggestionLifecycleState.expired,
+      confidence: TodaySuggestionConfidence.medium,
+      generatedAt: '2026-07-06T08:00:00.000Z',
     ),
   ],
+  total: 2,
+  startDate: '2026-06-12',
+  endDate: '2026-07-12',
 );
 
 final _readyDashboard = MockReportRepository.previewDashboard.copyWith(
