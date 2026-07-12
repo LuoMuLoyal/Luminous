@@ -132,8 +132,8 @@ File name has a business word (not just a type word)?
 
 ### Reference
 
-See `plans/2026-07-12-naming-cleanup.md` for the full migration plan with per-file rename
-mappings.
+The naming cleanup has been completed. See `docs/03-logs/migration-log/2026-07-12.md` for the
+migration record.
 
 ## State Management
 
