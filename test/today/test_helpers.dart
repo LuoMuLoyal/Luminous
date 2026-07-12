@@ -1,13 +1,13 @@
 ﻿import 'dart:async';
 
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai_repository.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 
 class StaticTodayRepository implements TodayRepository {
   const StaticTodayRepository(this.dashboard, {this.delay = Duration.zero});

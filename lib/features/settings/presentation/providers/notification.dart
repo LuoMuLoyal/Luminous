@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'notification_settings_controller.freezed.dart';
+part 'notification.freezed.dart';
 
 @freezed
 abstract class NotificationSettingsState with _$NotificationSettingsState {

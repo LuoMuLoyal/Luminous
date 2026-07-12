@@ -1,4 +1,4 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,10 +13,10 @@ import 'package:luminous/core/network/network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
-import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
@@ -30,7 +30,7 @@ import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
 import 'package:luminous/features/mine/data/repositories/mock_repository.dart'
     show MockMineRepository;
-import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart'
+import 'package:luminous/features/mine/presentation/providers/dashboard.dart'
     show mineRepositoryProvider;
 import 'package:luminous/features/notification/presentation/providers/notification.dart'
     show notificationUnreadCountProvider;
@@ -50,7 +50,7 @@ import 'package:luminous/features/search/data/repositories/lucent_repository.dar
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';

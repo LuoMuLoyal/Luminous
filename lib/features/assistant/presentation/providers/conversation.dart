@@ -15,7 +15,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
 part 'conversation.freezed.dart';
 

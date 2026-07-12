@@ -4,7 +4,7 @@ import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oa
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'data_providers.g.dart';
+part 'auth.g.dart';
 
 @riverpod
 AuthRemoteDataSource authRemoteDataSource(Ref ref) {

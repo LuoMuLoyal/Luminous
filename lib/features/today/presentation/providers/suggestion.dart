@@ -9,7 +9,7 @@ import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'suggestion_provider.g.dart';
+part 'suggestion.g.dart';
 
 @riverpod
 TodaySuggestionRemoteDataSource todaySuggestionRemoteDataSource(Ref ref) {

@@ -11,11 +11,11 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordFastEntryDialog extends ConsumerStatefulWidget {

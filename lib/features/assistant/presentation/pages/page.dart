@@ -22,7 +22,7 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/convers
 
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

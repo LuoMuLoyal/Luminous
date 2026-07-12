@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/reminder_delete_dialog.dart';

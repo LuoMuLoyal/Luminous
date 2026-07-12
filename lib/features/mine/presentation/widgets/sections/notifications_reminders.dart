@@ -9,7 +9,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/shared.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MineNotificationsReminderSection extends ConsumerWidget {

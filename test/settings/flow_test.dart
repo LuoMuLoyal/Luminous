@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+﻿import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +13,8 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/auth/presentation/pages/account_settings_page.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote_data_source.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
-import 'package:luminous/features/settings/data/providers/profile_data_providers.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission.dart';
+import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/pages/about_settings_page.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced_settings_page.dart';

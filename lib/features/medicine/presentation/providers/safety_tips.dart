@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 export 'package:luminous/features/medicine/presentation/utils/safety_tip_style.dart';
 
-part 'safety_tips_provider.g.dart';
+part 'safety_tips.g.dart';
 
 @riverpod
 SafetyTipsRemoteDataSource safetyTipsRemoteDataSource(Ref ref) {

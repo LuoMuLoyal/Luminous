@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'data_storage_settings_controller.freezed.dart';
+part 'data_storage.freezed.dart';
 
 /// Offline data retention period.
 enum DataRetentionPeriod {

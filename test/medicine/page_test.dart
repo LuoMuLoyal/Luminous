@@ -1,4 +1,4 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,11 +18,11 @@ import 'package:luminous/features/medicine/presentation/pages/risk_check_page.da
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/medicine/presentation/providers/risk_check_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
-import 'package:luminous/features/medicine/presentation/providers/safety_tips_provider.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';

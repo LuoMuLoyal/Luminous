@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/pages/forgot_password_page.dart';
 
 import 'test_helpers.dart';

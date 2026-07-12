@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 
 void main() {
   test('recordDashboardProvider is defined and accessible', () {

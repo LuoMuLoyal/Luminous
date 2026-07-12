@@ -1,8 +1,8 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 
 void main() {
   group('medicineWorkspaceProvider', () {

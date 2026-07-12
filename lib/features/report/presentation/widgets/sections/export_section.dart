@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ReportExportSection extends StatelessWidget {

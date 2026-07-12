@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
@@ -8,7 +8,7 @@ import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness_section.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

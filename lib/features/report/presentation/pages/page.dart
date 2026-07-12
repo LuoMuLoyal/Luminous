@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,19 +16,19 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
+import 'package:luminous/features/report/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 DataExportRequestInput? _exportInputForKind(ReportExportKind kind) {

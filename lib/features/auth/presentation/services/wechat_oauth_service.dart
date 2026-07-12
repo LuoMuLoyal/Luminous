@@ -1,6 +1,6 @@
-import 'package:luminous/core/network/api.dart';
+﻿import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wechat_oauth_service.g.dart';

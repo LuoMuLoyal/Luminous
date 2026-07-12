@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,8 +6,8 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_listener.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_desktop_oauth_callback_server.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
-import 'package:luminous/features/auth/data/providers/data_providers.dart';
-import 'package:luminous/features/auth/presentation/providers/oauth_login_provider.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
 import 'package:luminous/features/auth/presentation/providers/session/account_provider.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 

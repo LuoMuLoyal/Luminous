@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -12,9 +12,9 @@ import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
-import 'package:luminous/features/settings/presentation/providers/data_storage_settings_controller.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
+import 'package:luminous/features/settings/presentation/providers/notification.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';

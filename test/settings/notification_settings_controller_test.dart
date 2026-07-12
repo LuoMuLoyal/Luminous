@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

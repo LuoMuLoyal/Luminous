@@ -2,7 +2,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';

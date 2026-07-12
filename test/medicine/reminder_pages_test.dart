@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,7 @@ import 'package:luminous/core/database/app_database.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 
 import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -18,8 +18,8 @@ import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder_pages.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

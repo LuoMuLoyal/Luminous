@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,7 +12,7 @@ import 'package:luminous/core/i18n/app_locale_controller.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/theme/app_theme_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/theme/theme.dart';

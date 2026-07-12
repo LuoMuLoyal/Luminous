@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
@@ -11,7 +11,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'data_providers.g.dart';
+part 'health_context.g.dart';
 
 @riverpod
 HealthContextMapper healthContextMapper(Ref ref) {

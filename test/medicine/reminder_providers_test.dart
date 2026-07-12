@@ -1,6 +1,6 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 
 void main() {
   test('initial state', () {

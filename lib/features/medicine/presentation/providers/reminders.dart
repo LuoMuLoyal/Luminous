@@ -1,18 +1,18 @@
-import 'package:clock/clock.dart';
+﻿import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';

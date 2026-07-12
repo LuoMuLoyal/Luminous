@@ -1,4 +1,4 @@
-import '../helpers/test_forui_app.dart';
+﻿import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'dart:async';
 
@@ -12,8 +12,8 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';

@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion_provider.dart';
+import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';

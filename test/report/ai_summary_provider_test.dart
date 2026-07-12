@@ -1,4 +1,4 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import '../helpers/test_helpers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +8,8 @@ import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary_repository.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
-import 'package:luminous/features/report/presentation/providers/ai_summary_provider.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
+import 'package:luminous/features/report/presentation/providers/ai_summary.dart';
+import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
 import '../today/test_helpers.dart';
 

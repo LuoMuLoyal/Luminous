@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/record/data/repositories/mock_repository.dart';
 import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
-import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 

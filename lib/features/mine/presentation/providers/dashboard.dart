@@ -1,11 +1,11 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/mine/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'dashboard_provider.g.dart';
+part 'dashboard.g.dart';
 
 @riverpod
 MineRepository mineRepository(Ref ref) {

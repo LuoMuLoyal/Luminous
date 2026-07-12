@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +6,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/support/data/providers/resources_providers.dart';
+import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/l10n/app_localizations.dart';

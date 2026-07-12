@@ -1,4 +1,4 @@
-import 'dart:ui' as ui;
+﻿import 'dart:ui' as ui;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
@@ -8,9 +8,9 @@ import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';

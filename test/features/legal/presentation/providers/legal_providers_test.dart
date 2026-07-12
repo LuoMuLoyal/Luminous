@@ -1,9 +1,9 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/legal/domain/entities/legal_doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/legal_document.dart';
 import 'package:luminous/features/legal/domain/repositories/legal_repository.dart';
-import 'package:luminous/features/legal/presentation/providers/legal_providers.dart';
+import 'package:luminous/features/legal/presentation/providers/legal.dart';
 
 void main() {
   group('legalDocumentsProvider', () {

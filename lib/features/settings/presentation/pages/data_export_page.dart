@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/errors/result.dart';
@@ -8,7 +8,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/settings/presentation/providers/data_export_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';

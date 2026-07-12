@@ -24,7 +24,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart'
         DailyRecordImageUploadInput,
         DailyRecordUpdateInput,
         dailyRecordNoChange;
-import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
@@ -32,9 +32,9 @@ import 'package:luminous/features/record/presentation/widgets/forms/image_attach
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/meal_dish_editor_section.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordEditPage extends HookConsumerWidget {

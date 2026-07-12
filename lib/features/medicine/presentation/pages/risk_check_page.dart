@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +8,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/providers/risk_check_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_coverage_issue_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_metric_chip.dart';

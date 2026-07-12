@@ -6,7 +6,7 @@ import 'package:lucent_api/api/export.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
 import 'package:luminous/core/database/app_database.dart';
 import 'package:luminous/core/database/database_providers.dart';
-import 'package:luminous/features/health_context/data/providers/data_providers.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';

@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+﻿import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
@@ -11,10 +11,10 @@ import 'package:luminous/features/medicine/data/datasources/reminder_remote_data
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminder_providers.dart';
-import 'package:luminous/features/settings/data/providers/notification_permission_providers.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
-import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
+import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

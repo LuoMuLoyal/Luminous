@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/providers/data_providers.dart';
+import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/wechat_mobile_auth_client.dart';
 import 'package:luminous/features/auth/presentation/pages/login_page.dart';

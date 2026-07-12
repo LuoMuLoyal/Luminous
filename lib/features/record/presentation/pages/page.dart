@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +18,8 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp_controller.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/record/presentation/providers/time_provider.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard.dart';
+import 'package:luminous/features/record/presentation/providers/time.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';

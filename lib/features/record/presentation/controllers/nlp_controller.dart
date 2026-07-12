@@ -8,9 +8,9 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/record/presentation/providers/dashboard.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 
 part 'nlp_controller.freezed.dart';
 

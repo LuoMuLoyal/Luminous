@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
+import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
@@ -22,7 +22,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
+import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicinePage extends ConsumerWidget {
