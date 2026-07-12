@@ -1,4 +1,4 @@
-import 'package:clock/clock.dart';
+﻿import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/app_logger.dart';
@@ -6,9 +6,9 @@ import 'package:luminous/features/health_context/data/providers/data_providers.d
 import 'package:luminous/features/medicine/data/datasources/cached_dose_log_data_source.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
-import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/domain/repositories/repository.dart';
+import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 
 /// Lucent-backed [TodayRepository] that merges real health-context and
 /// daily-record signals with static mock sections for unsupported surfaces.

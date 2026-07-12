@@ -1,4 +1,4 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/mock_repository.dart';
 import 'package:luminous/features/record/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -20,7 +20,7 @@ import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/domain/repositories/repository.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';

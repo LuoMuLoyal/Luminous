@@ -1,11 +1,11 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/logger/app_logger.dart';
 import 'package:collection/collection.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/domain/repositories/repository.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';

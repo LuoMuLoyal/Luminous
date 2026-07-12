@@ -13,7 +13,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'providers.g.dart';
+part 'record_access.g.dart';
 
 @riverpod
 DailyRecordRemoteDataSource dailyRecordRemoteDataSource(Ref ref) {

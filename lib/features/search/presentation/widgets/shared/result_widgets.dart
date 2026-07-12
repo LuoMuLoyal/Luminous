@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
-import 'package:luminous/features/search/presentation/providers/provider.dart';
+import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/header_widgets.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

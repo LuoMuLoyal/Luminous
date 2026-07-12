@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -13,7 +13,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/providers/controller.dart';
+import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/controls_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_surface.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/hero.dart';

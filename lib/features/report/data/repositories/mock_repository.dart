@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+﻿// ignore_for_file: prefer_const_constructors
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
@@ -6,7 +6,7 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/remote_data_source.dart';
 import 'package:luminous/features/report/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/domain/repositories/repository.dart';
+import 'package:luminous/features/report/domain/repositories/report.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'mock_repository.g.dart';

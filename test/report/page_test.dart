@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/report/data/repositories/mock_repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/domain/repositories/repository.dart';
+import 'package:luminous/features/report/domain/repositories/report.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';

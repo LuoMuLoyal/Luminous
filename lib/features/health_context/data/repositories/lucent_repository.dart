@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_initializing_formals
+﻿// ignore_for_file: prefer_initializing_formals
 
 import 'dart:async';
 import 'dart:convert';
@@ -9,7 +9,7 @@ import 'package:luminous/features/health_context/data/datasources/remote_data_so
 import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 
 /// Cache-first implementation of [HealthContextRepository].
 ///

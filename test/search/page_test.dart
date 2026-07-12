@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,7 @@ import 'package:luminous/features/auth/presentation/providers/session/session_pr
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -19,7 +19,7 @@ import 'package:luminous/features/search/data/repositories/lucent_repository.dar
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
-import 'package:luminous/features/search/domain/repositories/repository.dart';
+import 'package:luminous/features/search/domain/repositories/search.dart';
 
 import '../auth/test_helpers.dart';
 

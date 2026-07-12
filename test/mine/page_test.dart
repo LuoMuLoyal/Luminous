@@ -1,4 +1,4 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.
 import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/completeness_notice.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
-import 'package:luminous/features/notification/presentation/providers/providers.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/notification_settings_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

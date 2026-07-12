@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/providers/controller.dart';
+import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String localizeToolName(String toolId, BuildContext context) {

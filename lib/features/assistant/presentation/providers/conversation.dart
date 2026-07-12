@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
@@ -12,12 +12,12 @@ import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/record/data/providers/providers.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 
-part 'controller.freezed.dart';
+part 'conversation.freezed.dart';
 
 enum AssistantSendErrorType { server, streamInterrupted, emptyResult, unknown }
 

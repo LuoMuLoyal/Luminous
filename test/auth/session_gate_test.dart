@@ -1,26 +1,26 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
 import 'package:luminous/features/health_context/data/providers/data_providers.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
-import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/mock_workspace_repository.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
 import 'package:luminous/features/mine/data/repositories/mock_repository.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
-import 'package:luminous/features/mine/domain/repositories/repository.dart';
+import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/record/data/repositories/mock_repository.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
-import 'package:luminous/features/record/domain/repositories/repository.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard_provider.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/domain/repositories/repository.dart';
+import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';
 
 void main() {

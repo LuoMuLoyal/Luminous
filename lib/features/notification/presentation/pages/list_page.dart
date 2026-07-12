@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:luminous/core/feedback/app_toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:luminous/features/notification/presentation/providers/providers.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

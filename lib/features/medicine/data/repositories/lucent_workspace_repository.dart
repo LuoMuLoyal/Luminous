@@ -1,11 +1,11 @@
-import 'package:luminous/core/design/semantic_color.dart';
+﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'dart:io';
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/logger/app_logger.dart';
-import 'package:luminous/features/health_context/domain/repositories/repository.dart';
+import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote_data_source.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/data/datasources/reminder_remote_data_source.dart';

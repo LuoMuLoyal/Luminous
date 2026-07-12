@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -9,7 +9,7 @@ import 'package:luminous/features/notification/presentation/routes.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
-import 'package:luminous/features/search/presentation/providers/provider.dart';
+import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';

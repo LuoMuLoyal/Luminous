@@ -6,7 +6,7 @@ import 'package:luminous/core/logger/app_logger.dart';
 import 'package:luminous/features/search/data/repositories/lucent_repository.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 
-part 'provider.freezed.dart';
+part 'medicine_search.freezed.dart';
 
 /// State for the medicine search page.
 @freezed

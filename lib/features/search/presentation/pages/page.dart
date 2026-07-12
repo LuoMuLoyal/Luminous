@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +17,7 @@ import 'package:luminous/features/health_context/domain/entities/write_inputs.da
 import 'package:luminous/features/medicine/data/repositories/risk_check_repository.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace_provider.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
-import 'package:luminous/features/search/presentation/providers/provider.dart';
+import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard_provider.dart';

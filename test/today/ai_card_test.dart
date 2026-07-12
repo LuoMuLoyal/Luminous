@@ -1,4 +1,4 @@
-import '../helpers/test_forui_app.dart';
+﻿import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session/session_provider.dart';
-import 'package:luminous/features/notification/presentation/providers/providers.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings_controller.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai_repository.dart';
 import 'package:luminous/features/today/data/repositories/mock_repository.dart';
