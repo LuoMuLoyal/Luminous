@@ -25,7 +25,8 @@ provides a release-level summary. Pre-2026-07 entries are archived under
 - **Feature Flags system** — `FeatureFlagsController` with SharedPreferences
   persistence, seeded from compile-time env variables on first launch.
 - **Open-source docs** — ROADMAP.md, CHANGELOG.md, CONTRIBUTING.md (expanded),
-  CODE_OF_CONDUCT.md, GitHub Issue / PR templates.
+  CODE_OF_CONDUCT.md, SECURITY.md, CODEOWNERS, dependabot.yml, GitHub Issue / PR
+  templates.
 
 ### Changed
 
@@ -98,9 +99,9 @@ considered stable.
 
 | Version       | Status      | Notes                                      |
 | ------------- | ----------- | ------------------------------------------ |
-| `0.1.0-dev`   | Development | Forui migration, five-tab MVP, AI assistant |
+| `0.1.0-dev`   | Development | Forui migration, five-tab shell, AI assistant |
 | `1.0.0`       | Planned     | First stable mobile release                |
-| `1.1.0`       | Planned     | Post-MVP polish, crash analytics, perf     |
+| `1.1.0`       | Planned     | P2 polish, crash analytics, perf     |
 | `1.2.0`       | Planned     | Medicine scan, GenUI, report drill-down    |
 | `2.0.0`       | Planned     | Desktop, web, family profiles, wearable    |
 

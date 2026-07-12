@@ -12,6 +12,7 @@ Current version: **0.1.0-dev**
 - [Changelog](CHANGELOG.md) — release-level change history
 - [Contributing](CONTRIBUTING.md) — development setup, conventions, and PR process
 - [Code of Conduct](.github/CODE_OF_CONDUCT.md) — community standards
+- [Security Policy](SECURITY.md) — vulnerability reporting
 - [Issues](https://github.com/LuoMuLoyal/Luminous/issues) — bug reports and feature requests
 
 ## AI Workflow

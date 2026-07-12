@@ -344,8 +344,9 @@ dart run tool/verify_lucent_openapi_sync.dart
   Include reproduction steps, expected vs actual behavior, and environment info.
 - **Feature requests**: Use the [Feature Request template](.github/ISSUE_TEMPLATE/feature_request.yml).
   Describe the problem and proposed solution.
-- **Security vulnerabilities**: Do NOT open a public issue. Email the maintainer
-  directly.
+- **Security vulnerabilities**: Do NOT open a public issue. Follow the
+  [Security Policy](SECURITY.md) and report privately to
+  **luomuloyal@outlook.com**.
 - **Roadmap discussions**: Check [ROADMAP.md](ROADMAP.md) before suggesting
   large-scale changes.
 

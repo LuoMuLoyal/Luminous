@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-07-09
+Last updated: 2026-07-12
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,9 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-07-12](migration-log/2026-07-12.md) — 审查修复 + 历史兼容代码清理 + ARB 拆分 + 测试补测（第四批/第五批）+ Material Icons 清理 + Drift Web 适配 + Report 历史建议接入 + CI compact reporter + 文档口径同步
+- [2026-07-11](migration-log/2026-07-11.md) — 审查修复 + 测试补测（第一批~第三批）+ Patrol 统一迁移 + flutter_markdown_plus 升级 + Sentry 集成 + OAuth-only 注销 + 法律合规页面 + 网站法律页面补齐
+- [2026-07-10](migration-log/2026-07-10.md) — 审查修复 + 测试补测（第四批/第五批）+ ADR-0006~0010 实施（riverpod_generator / authGuarded / 网络层拆分 / Result 类型 / Drift 离线缓存 / go_router_builder）+ UI 刷新计划完成
 - [2026-07-09](migration-log/2026-07-09.md) — debugPrint → Talker 迁移 + 文档治理 + pre-push 钩子 + CI 简化 + 审查报告快速修复 + Today 建议引擎后端架构规划 + Today 建议引擎前端接入 Phase 1-9
 - [2026-07-08](migration-log/2026-07-08.md) — OpenAPI 生成器迁移 + Today 重构 + 7.8 审查修复 + Medicine Phase 1 + slot-aware 打卡 + Record/Mine 收尾 + 生成物边界治理 + Git 钩子轻量化
 - [2026-07-07](migration-log/2026-07-07.md) — 审查修复 + 开发者选项 + Talker 迁移 + 开源标准文档
@@ -44,17 +47,21 @@ Major changes grouped by area:
   - Key Dates: 06/02, 06/04, 06/06, 06/09, 06/23, 06/25, 06/28, 07/08
 - **Report** (dashboard, generation, export)
   - Key Dates: 06/06, 06/09, 06/19, 06/22
-- **Today Dashboard** (analysis, recommendations, empty states, suggestion engine planning)
-  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28, 07/08, 07/09
-- **Daily Records** (fast entry, candidate generation)
-  - Key Dates: 06/09, 06/10, 06/12, 06/16, 06/20
-- **Settings / Mine** (profile, health context, preferences)
-  - Key Dates: 06/08, 06/12, 06/17, 06/26
-- **Assistant** (AI chat, tool integration)
-  - Key Dates: 06/15, 06/18, 06/30
-- **Tests** (unit, widget, integration, full-stack E2E)
-  - Key Dates: 06/06, 06/07, 06/11, 06/13, 06/30, 07/08, 07/09
+- **Today Dashboard** (analysis, recommendations, empty states, suggestion engine)
+  - Key Dates: 06/07, 06/09, 06/10, 06/14, 06/28, 07/08, 07/09, 07/10, 07/11, 07/12
+- **Daily Records** (fast entry, candidate generation, offline cache)
+  - Key Dates: 06/09, 06/10, 06/12, 06/16, 06/20, 07/10, 07/11, 07/12
+- **Settings / Mine** (profile, health context, preferences, legal)
+  - Key Dates: 06/08, 06/12, 06/17, 06/26, 07/11, 07/12
+- **Assistant** (AI chat, tool integration, Markdown rendering)
+  - Key Dates: 06/15, 06/18, 06/30, 07/11
+- **Tests** (unit, widget, integration, full-stack E2E, Patrol)
+  - Key Dates: 06/06, 06/07, 06/11, 06/13, 06/30, 07/08, 07/09, 07/10, 07/11, 07/12
 - **CI / Tooling** (melos, git hooks, GitHub Actions)
-  - Key Dates: 06/05, 06/13, 06/30, 07/08
-- **Docs / Governance** (migration log, guardrails, architecture)
-  - Key Dates: 06/07, 06/08, 06/30, 07/03, 07/07, 07/08, 07/09
+  - Key Dates: 06/05, 06/13, 06/30, 07/08, 07/11, 07/12
+- **Docs / Governance** (migration log, guardrails, architecture, ROADMAP alignment)
+  - Key Dates: 06/07, 06/08, 06/30, 07/03, 07/07, 07/08, 07/09, 07/12
+- **Infrastructure** (Riverpod codegen, network layer, Drift, Sentry, routing)
+  - Key Dates: 07/10, 07/11, 07/12
+- **Localization** (ARB splitting, i18n)
+  - Key Dates: 07/12

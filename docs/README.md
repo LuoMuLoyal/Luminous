@@ -7,9 +7,9 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 - [[00-current/Current_State]] — 当前实现状态入口
 - [[00-current/Work_Phase_Guide]] — 阶段总纲：每个时期先做什么、暂时不做什么
 - [[00-current/Next_Plan]] — 下一步实现顺序
-- [[00-current/TODO]] — 剩余 MVP 缺口与延后项
+- [[00-current/TODO]] — 剩余 P1/P2 缺口与延后项
 - [[01-product/Product_Vision]] — 产品愿景总览
-- [[01-product/Product_MVP_Scope]] — MVP 范围
+- [[01-product/Product_MVP_Scope]] — 首发版本范围
 - [[01-product/Product_AI_Design]] — AI 能力设计
 - [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界

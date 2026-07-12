@@ -1,6 +1,6 @@
 # Luminous TODO
 
-Last updated: 2026-07-11
+Last updated: 2026-07-12
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -54,7 +54,7 @@ Last updated: 2026-07-11
   - 不需要 Firebase，纯客户端渲染 + Lucent 后端 LLM
   - 预估工作量：15-23 个工作日（含 UI Schema 规范、后端 prompt 改造、渲染引擎、基础组件库、Action 回调、流式渲染、测试）
 
-## Not MVP
+## Not in P0-P3 Scope
 
 - Women-health / period management
 - Sports recovery
@@ -64,14 +64,14 @@ Last updated: 2026-07-11
 - Skin recognition
 - Desktop-first workflows
 
-## MVP Gaps To Close
+## P0/P1 Gaps To Close
 
-- 当前 frozen mobile MVP 承诺无剩余 blocker
-- 移动 MVP 路径现定义为：`record -> summarize -> bounded medicine safety check -> export`
+- 当前 P0 两项已完成，P1 三项待执行
+- 核心闭环路径现定义为：`record -> summarize -> bounded medicine safety check -> export`
 - 对未审核药品有明确不确定性；不声称 broad cross-source normalization 或 unreviewed interaction expansion
-- 下列工作属于 post-MVP 产品化或加固，不阻塞 MVP 完成
+- 下列工作属于 P2/P3 产品化或加固，不阻塞 P0/P1 完成
 
-## MVP Gated But Not Blocking Right Now
+## P2/P3 Gated But Not Blocking Right Now
 
 - 当前边界之外的额外已审核药品规则扩展
 - 跨来源药品归一化与未审核相互作用扩展

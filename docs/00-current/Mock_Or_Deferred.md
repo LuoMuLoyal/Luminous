@@ -74,6 +74,6 @@
 仍有用的延后代码应使用以下注释标记：
 
 ```dart
-// Deferred by Product_Vision MVP: keep this code because the capability is useful,
+// Deferred by Product Brainstorm P0/P1: keep this code because the capability is useful,
 // but do not surface it until the matching contract/product job is ready.
 ```

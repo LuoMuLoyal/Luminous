@@ -1,6 +1,6 @@
 # Work Phase Guide
 
-Last updated: 2026-07-04
+Last updated: 2026-07-12
 
 本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。它不是短期执行计划；
 短期任务仍放在 `plans/`，完成后删除计划，并把稳定事实同步回 `docs/00-current/`。
@@ -15,9 +15,9 @@ Last updated: 2026-07-04
 ## 优先级定义
 
 - P0：用户可见破损、Flutter overflow、崩溃、核心流程不可用、测试门失败。
-- P1：影响 MVP 演示可信度的问题，包括明显假数据、登录态/空态混乱、硬编码日期、可见文案未本地化。
+- P1：影响 P0/P1 演示可信度的问题，包括明显假数据、登录态/空态混乱、硬编码日期、可见文案未本地化。
 - P2：长期维护债，包括 Provider 注入重整、路由拆分、Clock 全量注入、组件抽象整理。
-- P3：post-MVP 探索，包括新能力、新输入形态、地图/外部服务、非核心垂直场景。
+- P3：P2/P3 扩展探索，包括新能力、新输入形态、地图/外部服务、非核心垂直场景。
 
 ## Phase 1: 迁移落地收敛
 
@@ -45,7 +45,7 @@ Last updated: 2026-07-04
 - 手动或截图确认移动端五个 Tab 无明显 overflow、文本遮挡和交互黑块。
 - 当天 migration log 与当前状态文档已同步。
 
-## Phase 2: 移动端 MVP 体验打磨
+## Phase 2: 移动端 P0 体验打磨
 
 目标：让五个 Tab 看起来像同一个产品，而不是迁移后拼接的页面集合。
 
@@ -64,7 +64,7 @@ Last updated: 2026-07-04
 - 交互元素有明确目标，不把未来能力伪装成当前真实能力。
 - 对应页面测试通过。
 
-## Phase 3: MVP 可靠性加固
+## Phase 3: P0 可靠性加固
 
 目标：清理会影响演示可信度和排障能力的问题。
 
@@ -90,7 +90,7 @@ Last updated: 2026-07-04
 
 ## Phase 4: 架构收敛
 
-目标：在 UI 和 MVP 稳定后，降低长期维护成本。
+目标：在 UI 和 P0/P1 稳定后，降低长期维护成本。
 
 可进入的前提：
 
@@ -114,7 +114,7 @@ Last updated: 2026-07-04
 
 ## Phase 5: Release Gate
 
-目标：准备 1.0.0 或下一次可演示版本。
+目标：准备首个稳定发布。产品优先级口径以 [[01-product/Product_Brainstorm_2026-07-07]] 为准，P0/P1 全部完成后运行发布门。
 
 必须运行：
 
@@ -135,23 +135,29 @@ dart run tool/run_fullstack_checks.dart
 - 当前状态文档只描述真实已完成能力。
 - `Next_Plan.md` 不保留已完成事项。
 - 活跃 `plans/` 中没有已完成但未删除的计划。
-- 不把 post-MVP 能力写成当前 MVP 承诺。
+- 不把 P2/P3 能力写成当前 P0/P1 承诺。
 
-## Phase 6: Post-MVP 探索
+## Phase 6: P2/P3 扩展探索
 
-目标：在核心闭环稳定后，选择一个明确场景扩展，而不是继续堆功能。
+目标：在 P0/P1 闭环稳定后，按照 Brainstorm P2/P3 优先级选择一个明确场景扩展，而不是继续堆功能。
 
-候选方向：
+候选方向（对应 Brainstorm P2 — 1.1.0）：
 
-- Report drill-down。
-- Medicine scan/OCR/barcode/prescription 的真实合同。
-- Environment-driven Today/Mine 建议。
-- Agent-assisted support discovery。
-- 认证 Web 报告预览。
+- 就诊摘要模板化（Brainstorm 3）
+- 症状-用药关联时间线（Brainstorm 4）
+- 记录连续性激励（Brainstorm 1）
+
+候选方向（对应 Brainstorm P3 — 1.2.0+）：
+
+- 红旗信号规则提示（Brainstorm 5）
+- 智能提醒优先级调度（Brainstorm 2）
+- Apple Health / Health Connect 桥接（Brainstorm 7）
+- 快捷记录 Widget（Brainstorm 6）
+- Assistant 嵌入式重构（Brainstorm B）
 
 进入条件：
 
-- 1.0.0 移动端闭环已经稳定。
+- P0 + P1 移动端闭环已经稳定。
 - 有产品决策、后端合同和验证方式。
 - 涉及外部服务、资质、计费或凭证时，先单独确认。
 

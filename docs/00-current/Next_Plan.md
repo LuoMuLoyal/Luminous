@@ -1,21 +1,25 @@
 # Luminous Next Plan
 
-Last updated: 2026-07-08
+Last updated: 2026-07-12
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
+产品优先级口径以 [[01-product/Product_Brainstorm_2026-07-07]] 为准。
 
 ## 当前目标
 
-**Shipping Luminous 1.0.0**。两个 P0 功能（Medicine 安全检查三层展示 + Report 门控透明度）已完成。剩余 P1 项和发布门待执行。
+按照 Product Brainstorm 优先级体系推进。P0 两项（Medicine 安全检查三层展示 + Report 门控透明度）已完成。当前进入 P1 体验优化期，完成后运行发布验证门。
 
-长期阶段排序见 [[00-current/Work_Phase_Guide]]。当前进入发布前收敛期：完成 P1 体验优化后运行发布门。
+长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **运行完整 1.0.0 验证门**
+1. **完成 P1 体验优化（Brainstorm P1 — 发布前内）**
+   - Today 信息密度收窄（Brainstorm A）— 只保留 3 个区域：主建议/提醒 → AI 日总结（折叠态） → 快速操作入口
+   - Record 快速入口动态排序（Brainstorm C）— 按使用频率排序，新用户默认只显示饮水/症状/睡眠
+   - Mine 档案完整度提示（Brainstorm E）— 健康档案新增完整度提示，空档案提醒完善
+2. **运行发布验证门**
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
    - 集成测试框架选型暂缓，待评估后引入
-2. **门通过后打 1.0.0 tag**
 3. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals
    - Memory 保持可选、显式、用户控制
@@ -25,6 +29,8 @@ Last updated: 2026-07-08
 
 ## 延后但有用
 
+- P2 项（Brainstorm P2 — 1.1.0 候选）：就诊摘要模板化、症状-用药关联时间线、记录连续性激励
+- P3 项（Brainstorm P3 — 1.2.0+ 候选）：红旗信号规则、智能提醒优先级、Apple Health 桥接、快捷记录 Widget、Assistant 嵌入式重构
 - agent-assisted support discovery 与 map-backed nearby-care lookup
 - Today/Mine 使用的环境信号
 - Report score/finding/pattern/trend/AI action card drill-down
@@ -32,7 +38,6 @@ Last updated: 2026-07-08
 - medicine-side scan/OCR/barcode/prescription action 形态
   - 需要产品范围 + 后端合同
 - 超越竞赛站的真实认证 Web 报告预览
-- 通过 Apple Health / Health Connect 的系统健康桥接
 
 ## 用药安全后续
 

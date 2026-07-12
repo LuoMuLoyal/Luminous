@@ -12,8 +12,8 @@
 
 ## 测试工具链
 
-- Lucent 使用 Jest。
-- 不考虑迁移到 Vitest：NestJS 生态支持与迁移成本超过速度收益。
+- Lucent 使用 Vitest。
+- Luminous 使用 Flutter 内置 test + Patrol 集成测试。
 
 ## 仓库布局
 

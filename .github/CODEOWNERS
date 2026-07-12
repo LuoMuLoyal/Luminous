@@ -1,0 +1,27 @@
+# Default owner — all paths not explicitly listed below
+* @LuoMuLoyal
+
+# Authentication and security-sensitive areas
+/lib/features/auth/           @LuoMuLoyal
+/lib/core/network/session_store.dart  @LuoMuLoyal
+SECURITY.md                   @LuoMuLoyal
+
+# AI assistant and local AI runtime
+/lib/features/assistant/      @LuoMuLoyal
+/lib/core/ai/                 @LuoMuLoyal
+
+# Generated API client (contract-sync sensitive)
+/generated/lucent_api/        @LuoMuLoyal
+
+# Router and app entry
+/lib/app/                     @LuoMuLoyal
+
+# Design system and theme
+/lib/core/design/             @LuoMuLoyal
+/lib/theme/                   @LuoMuLoyal
+
+# i18n / localization
+/lib/l10n/                    @LuoMuLoyal
+
+# CI/CD
+/.github/workflows/           @LuoMuLoyal

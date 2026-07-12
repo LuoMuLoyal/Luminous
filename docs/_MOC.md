@@ -6,7 +6,7 @@
 
 - [[00-current/Current_State]] — 当前实现状态入口，链接到各区域详情
 - [[00-current/Next_Plan]] — 下一步实现顺序与明确不开始项
-- [[00-current/TODO]] — 剩余 MVP 缺口与延后项
+- [[00-current/TODO]] — 剩余 P1/P2 缺口与延后项
 - [[00-current/Project_Governance]] — 项目治理：单人维护、架构、测试、仓库划分
 - [[00-current/Repository_Split]] — Lucent / Luminous / Luminous-site 职责边界
 - [[00-current/Product_Surface]] — 产品表面：移动端、Web、桌面边界
@@ -25,12 +25,12 @@
 ## 01-product — 产品
 
 - [[01-product/Product_Vision]] — 产品定位与愿景总览
-- [[01-product/Product_MVP_Scope]] — MVP 范围
+- [[01-product/Product_MVP_Scope]] — 首发版本范围
 - [[01-product/Product_AI_Design]] — AI 能力设计
 - [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
 - [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
-- [[01-product/MVP_Demo_Baseline]] — 可重复的 MVP 演示基线
+- [[01-product/MVP_Demo_Baseline]] — 可重复的演示基线
 - [[01-product/MVP_Demo_Script]] — 演示/答辩操作脚本
 - [[01-product/Product_Brainstorm_2026-07-07]] — 功能头脑风暴与调整建议
 

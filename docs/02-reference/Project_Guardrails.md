@@ -67,7 +67,7 @@ This replaces the long historical error audit as the current quick-read checklis
 - For mobile UI refinement, "avoid nested boxes" means keep the necessary outer section panel and
    replace only inner cards with rows, dividers, pills, or controls. Do not flatten an entire
    section into loose dividers when the outer panel provides visual grouping.
-- The mobile MVP bottom navigation is frozen as `today / record / medicine / report / mine`. Do not
+- The mobile bottom navigation is frozen as `today / record / medicine / report / mine`. Do not
    add or revive a generic More tab; route low-frequency utilities through Mine, contextual Today
    actions, or defer them.
 - Do not hide shared business data under one page feature just because it was first used there. If
