@@ -15,13 +15,12 @@ import 'package:luminous/features/medicine/data/repositories/mock_workspace_repo
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await _initSentry();
 
   unawaited(
     runZonedGuarded(
       () async {
-        WidgetsFlutterBinding.ensureInitialized();
-
         FlutterError.onError = (details) {
           FlutterError.presentError(details);
           Sentry.captureException(details.exception, stackTrace: details.stack);
@@ -61,13 +60,16 @@ Future<void> main() async {
 
 /// Initializes Sentry if a DSN is configured.
 ///
-/// In debug mode without a DSN, this is a no-op — the Sentry SDK runs in
-/// a disabled state and all capture calls are silently dropped.
+/// When the DSN is empty (e.g. debug builds without Sentry configured),
+/// the entire [SentryFlutter.init] call is skipped to avoid any SDK
+/// overhead. All [Sentry.captureException] calls are safe no-ops when
+/// the SDK has not been initialized.
 Future<void> _initSentry() async {
   final dsn = EnvReader.string(EnvKey.sentryDsn);
+  if (dsn.isEmpty) return;
 
   await SentryFlutter.init((options) {
-    options.dsn = dsn.isEmpty ? null : dsn;
+    options.dsn = dsn;
     options.tracesSampleRate = kReleaseMode ? 0.2 : 1.0;
     options.attachStacktrace = true;
     options.sendDefaultPii = false;

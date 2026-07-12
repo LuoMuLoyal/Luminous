@@ -2075,6 +2075,7 @@
   "legalLoadErrorTitle": "Loading failed",
   "legalLoadErrorDescription": "Unable to load the legal document content. Please try again later.",
   "legalRetryAction": "Retry",
+  "legalBackToListAction": "Back to list",
   "legalListEmptyTitle": "No legal documents",
   "legalListEmptyDescription": "Legal documents will appear here once available.",
   "legalListUpdatedAt": "Updated {date}",

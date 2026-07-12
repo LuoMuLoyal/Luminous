@@ -22,10 +22,11 @@ enum TodaySuggestionType {
 
   static TodaySuggestionType fromJson(String value) {
     return switch (value) {
-      'confirmed_risk' => TodaySuggestionType.confirmedRisk,
+      'confirmed_risk' || 'confirmedRisk' => TodaySuggestionType.confirmedRisk,
       'compliance' => TodaySuggestionType.compliance,
       'trend' => TodaySuggestionType.trend,
-      'behavior_advice' => TodaySuggestionType.behaviorAdvice,
+      'behavior_advice' ||
+      'behaviorAdvice' => TodaySuggestionType.behaviorAdvice,
       'coverage' => TodaySuggestionType.coverage,
       _ => TodaySuggestionType.behaviorAdvice,
     };
@@ -133,7 +134,7 @@ enum TodaySuggestionEvidenceKind {
     return switch (value) {
       'record' => TodaySuggestionEvidenceKind.record,
       'reminder' => TodaySuggestionEvidenceKind.reminder,
-      'risk_check' => TodaySuggestionEvidenceKind.riskCheck,
+      'risk_check' || 'riskCheck' => TodaySuggestionEvidenceKind.riskCheck,
       'trend' => TodaySuggestionEvidenceKind.trend,
       'profile' => TodaySuggestionEvidenceKind.profile,
       'baseline' => TodaySuggestionEvidenceKind.baseline,

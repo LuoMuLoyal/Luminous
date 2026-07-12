@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
@@ -27,6 +29,8 @@ class LegalDetailPage extends ConsumerWidget {
           title: l10n.legalNotFoundTitle,
           description: l10n.legalNotFoundDescription,
           icon: FLucideIcons.fileQuestion,
+          actionLabel: l10n.legalBackToListAction,
+          onAction: () => context.go(AppRoutes.legal),
         ),
       );
     }

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/app_locale.dart';
@@ -25,8 +26,10 @@ final legalRepositoryProvider = Provider<LegalRepository>((ref) {
 
 /// Lucent-backed implementation of [LegalRepository].
 ///
-/// Strategy: remote-first. If the API call fails (network error, 404, etc.),
+/// Strategy: remote-first. If the API returns 404 (document not found),
 /// falls back to bundled Markdown assets in `assets/legal/`.
+/// Network errors, 500s, and other non-404 exceptions are rethrown so the
+/// UI can display a proper error state with retry.
 class LucentLegalRepository implements LegalRepository {
   LucentLegalRepository({required this.api, required this.localeResolver});
 
@@ -50,8 +53,11 @@ class LucentLegalRepository implements LegalRepository {
             ),
           )
           .toList();
-    } catch (_) {
-      return _fallbackSummaries();
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return _fallbackSummaries();
+      }
+      rethrow;
     }
   }
 
@@ -69,8 +75,11 @@ class LucentLegalRepository implements LegalRepository {
         content: d.content,
         updatedAt: d.updatedAt,
       );
-    } catch (_) {
-      return _fallbackDocument(docType);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return _fallbackDocument(docType);
+      }
+      rethrow;
     }
   }
 

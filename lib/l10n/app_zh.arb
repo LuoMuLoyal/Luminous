@@ -2089,6 +2089,7 @@
   "legalLoadErrorTitle": "加载失败",
   "legalLoadErrorDescription": "无法加载法律文档内容，请稍后重试。",
   "legalRetryAction": "重试",
+  "legalBackToListAction": "返回列表",
   "legalListEmptyTitle": "暂无法律文档",
   "legalListEmptyDescription": "法律文档将在添加后显示。",
   "legalListUpdatedAt": "更新于 {date}",

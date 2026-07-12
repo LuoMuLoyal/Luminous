@@ -139,7 +139,8 @@ class TodaySuggestionJsonCodec {
       switch (value) {
         'accepted' => TodaySuggestionFeedback.accepted,
         'later' => TodaySuggestionFeedback.later,
-        'not_applicable' => TodaySuggestionFeedback.notApplicable,
+        'not_applicable' ||
+        'notApplicable' => TodaySuggestionFeedback.notApplicable,
         'suppress' => TodaySuggestionFeedback.suppress,
         _ => TodaySuggestionFeedback.later,
       };

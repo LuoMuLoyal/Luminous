@@ -14,15 +14,17 @@ enum LegalDocType {
   final String pathSegment;
   const LegalDocType(this.pathSegment);
 
+  /// O(1) lookup map from path segment to [LegalDocType].
+  static final Map<String, LegalDocType> _byPathSegment = {
+    for (final type in LegalDocType.values) type.pathSegment: type,
+  };
+
   /// Parses a path segment into a [LegalDocType].
   ///
   /// Returns `null` for unrecognized values so the caller can redirect
   /// to the list page or show an error state.
   static LegalDocType? fromPathSegment(String? value) {
     if (value == null) return null;
-    for (final type in LegalDocType.values) {
-      if (type.pathSegment == value) return type;
-    }
-    return null;
+    return _byPathSegment[value];
   }
 }
