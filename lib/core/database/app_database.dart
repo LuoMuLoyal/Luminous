@@ -1,9 +1,10 @@
-import 'dart:io';
-
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
-import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'database_connection.dart'
+    if (dart.library.io) 'database_connection_io.dart'
+    if (dart.library.js_interop) 'database_connection_web.dart'
+    as conn;
 
 import 'tables/daily_records.dart';
 import 'tables/medicine_dose_logs.dart';
@@ -40,7 +41,7 @@ part 'app_database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_open());
+  AppDatabase() : super(conn.connect());
 
   /// For testing: pass an in-memory or custom executor.
   AppDatabase.forTesting(super.e);
@@ -58,16 +59,11 @@ class AppDatabase extends _$AppDatabase {
     },
 
     beforeOpen: (details) async {
-      await customStatement('PRAGMA journal_mode = WAL');
+      // WAL mode is only supported on native SQLite (not WASM).
+      if (!kIsWeb) {
+        await customStatement('PRAGMA journal_mode = WAL');
+      }
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
-}
-
-LazyDatabase _open() {
-  return LazyDatabase(() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dir.path, 'luminous.db'));
-    return NativeDatabase.createInBackground(file);
-  });
 }
