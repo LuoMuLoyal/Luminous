@@ -12,7 +12,10 @@ import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MinePage extends ConsumerWidget {
@@ -28,6 +31,11 @@ class MinePage extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
+    final l10n = AppLocalizations.of(context)!;
+
+    final unreadAsync = ref.watch(notificationUnreadCountProvider);
+    final hasUnread =
+        unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
 
     // Always watch the provider — when signed out it returns preview data.
     final dashboardAsync = ref.watch(mineDashboardProvider);
@@ -61,12 +69,24 @@ class MinePage extends ConsumerWidget {
 
     return ShellDeferredContent(
       child: isDesktop
-          ? _MineDesktopShell(
+          ? DesktopTabShell(
+              title: l10n.tabMine,
+              trailing: [
+                IconActionButton(
+                  tooltip: l10n.mineHeaderNotifications,
+                  icon: FLucideIcons.bell,
+                  onTap: () => context.push(AppRoutes.notifications),
+                  showBadge: hasUnread,
+                ),
+                IconActionButton(
+                  key: const Key('mine-settings-action'),
+                  tooltip: l10n.mineHeaderSettings,
+                  icon: FLucideIcons.settings,
+                  onTap: () => context.push(AppRoutes.settings),
+                ),
+              ],
               onRefresh: () => _refreshDashboard(ref),
-              topBar: MineTopBar(
-                onNotificationsTap: () => context.push(AppRoutes.notifications),
-                onSettingsTap: () => context.push(AppRoutes.settings),
-              ),
+              scrollStorageKey: 'mine-desktop-scroll',
               child: body,
             )
           : DecoratedBox(
@@ -121,48 +141,6 @@ class MineErrorView extends StatelessWidget {
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.warning,
-    );
-  }
-}
-
-class _MineDesktopShell extends StatelessWidget {
-  const _MineDesktopShell({
-    required this.child,
-    required this.topBar,
-    required this.onRefresh,
-  });
-
-  final Widget child;
-  final MineTopBar topBar;
-  final Future<void> Function() onRefresh;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: ListView(
-            key: const PageStorageKey<String>('mine-desktop-scroll'),
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.level6,
-              Spacing.level6,
-              Spacing.level6,
-              Spacing.level6,
-            ),
-            children: [
-              topBar,
-              const SizedBox(height: Spacing.level5),
-              child,
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

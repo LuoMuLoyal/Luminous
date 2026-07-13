@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
@@ -108,9 +109,14 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.home,
-              pageBuilder: (context, state) => NoTransitionPage(
+              pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const TodayPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                transitionDuration: const Duration(milliseconds: 150),
+                reverseTransitionDuration: Duration.zero,
               ),
             ),
           ],
@@ -119,9 +125,14 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.record,
-              pageBuilder: (context, state) => NoTransitionPage(
+              pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const RecordPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                transitionDuration: const Duration(milliseconds: 150),
+                reverseTransitionDuration: Duration.zero,
               ),
             ),
           ],
@@ -130,9 +141,14 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.medicine,
-              pageBuilder: (context, state) => NoTransitionPage(
+              pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const MedicinePage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                transitionDuration: const Duration(milliseconds: 150),
+                reverseTransitionDuration: Duration.zero,
               ),
             ),
           ],
@@ -141,9 +157,14 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.report,
-              pageBuilder: (context, state) => NoTransitionPage(
+              pageBuilder: (context, state) => CustomTransitionPage(
                 key: state.pageKey,
                 child: const ReportPage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                transitionDuration: const Duration(milliseconds: 150),
+                reverseTransitionDuration: Duration.zero,
               ),
             ),
           ],
@@ -152,8 +173,15 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.mine,
-              pageBuilder: (context, state) =>
-                  NoTransitionPage(key: state.pageKey, child: const MinePage()),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const MinePage(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) =>
+                        FadeTransition(opacity: animation, child: child),
+                transitionDuration: const Duration(milliseconds: 150),
+                reverseTransitionDuration: Duration.zero,
+              ),
             ),
           ],
         ),

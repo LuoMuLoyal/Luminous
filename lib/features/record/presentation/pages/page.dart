@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
@@ -132,6 +133,79 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             ),
           ];
 
+    final pageStateContent = PageStateSwitch<RecordDashboard>(
+      state: resolvePageViewState(session: session, data: dashboardAsync),
+      loadingBuilder: () => const RecordSkeletonView(),
+      fatalErrorBuilder: (error) => AppStateErrorView(
+        title: l10n.recordErrorTitle,
+        description: l10n.recordErrorDescription,
+        icon: FLucideIcons.notebookPen,
+        actionLabel: l10n.todayRetryAction,
+        onAction: () => ref.invalidate(recordDashboardProvider),
+        tone: AppStateTone.warning,
+      ),
+      readyBuilder: (dashboard, isPreview) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isPreview) ...[
+            SignInHintBanner(
+              onSignIn: () =>
+                  context.push(loginRouteForCurrentLocation(context)),
+            ),
+            const SizedBox(height: Spacing.level4),
+          ],
+          RecordDashboardView(
+            dashboard: dashboard,
+            isPreview: isPreview,
+            onFilterSelected: (type) =>
+                ref.read(selectedRecordFilterProvider.notifier).setFilter(type),
+            onDateSelected: (date) => _setSelectedDate(date),
+            onQuickAction: (action) {
+              // Defer provider modification to avoid "modified while
+              // widget tree was building" errors when the quick entry
+              // panel rebuilds during tap handling.
+              Future(
+                () => ref
+                    .read(quickEntryPreferencesProvider.notifier)
+                    .recordTap(action.type),
+              );
+              _handleQuickAction(context, action);
+            },
+            onAiInputTap: () => _openNlpDialog(
+              context,
+              canAccessProtectedData: canAccessProtectedData,
+              isAuthLoading: isAuthLoading,
+              selectedDate: selectedDate,
+            ),
+            onMicTap: () => _openVoiceEntry(
+              context,
+              canAccessProtectedData: canAccessProtectedData,
+              isAuthLoading: isAuthLoading,
+              selectedDate: selectedDate,
+            ),
+            onCameraTap: () => _openOcrEntry(
+              context,
+              canAccessProtectedData: canAccessProtectedData,
+              isAuthLoading: isAuthLoading,
+              selectedDate: selectedDate,
+            ),
+            onNewEntry: () => _openRecordCreate(context),
+          ),
+        ],
+      ),
+    );
+
+    if (!isMobileLayout) {
+      return ShellDeferredContent(
+        child: DesktopTabShell(
+          title: l10n.tabRecord,
+          trailing: headerActions,
+          scrollStorageKey: 'record-desktop-scroll',
+          child: pageStateContent,
+        ),
+      );
+    }
+
     final scaffoldBody = SafeArea(
       top: false,
       child: ResponsiveContentFrame(
@@ -139,77 +213,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           key: const Key('record-dashboard-scrollable'),
           child: Padding(
             padding: contentVerticalPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PageStateSwitch<RecordDashboard>(
-                  state: resolvePageViewState(
-                    session: session,
-                    data: dashboardAsync,
-                  ),
-                  loadingBuilder: () => const RecordSkeletonView(),
-                  fatalErrorBuilder: (error) => AppStateErrorView(
-                    title: l10n.recordErrorTitle,
-                    description: l10n.recordErrorDescription,
-                    icon: FLucideIcons.notebookPen,
-                    actionLabel: l10n.todayRetryAction,
-                    onAction: () => ref.invalidate(recordDashboardProvider),
-                    tone: AppStateTone.warning,
-                  ),
-                  readyBuilder: (dashboard, isPreview) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isPreview) ...[
-                        SignInHintBanner(
-                          onSignIn: () => context.push(
-                            loginRouteForCurrentLocation(context),
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.level4),
-                      ],
-                      RecordDashboardView(
-                        dashboard: dashboard,
-                        isPreview: isPreview,
-                        onFilterSelected: (type) => ref
-                            .read(selectedRecordFilterProvider.notifier)
-                            .setFilter(type),
-                        onDateSelected: (date) => _setSelectedDate(date),
-                        onQuickAction: (action) {
-                          // Defer provider modification to avoid "modified while
-                          // widget tree was building" errors when the quick entry
-                          // panel rebuilds during tap handling.
-                          Future(
-                            () => ref
-                                .read(quickEntryPreferencesProvider.notifier)
-                                .recordTap(action.type),
-                          );
-                          _handleQuickAction(context, action);
-                        },
-                        onAiInputTap: () => _openNlpDialog(
-                          context,
-                          canAccessProtectedData: canAccessProtectedData,
-                          isAuthLoading: isAuthLoading,
-                          selectedDate: selectedDate,
-                        ),
-                        onMicTap: () => _openVoiceEntry(
-                          context,
-                          canAccessProtectedData: canAccessProtectedData,
-                          isAuthLoading: isAuthLoading,
-                          selectedDate: selectedDate,
-                        ),
-                        onCameraTap: () => _openOcrEntry(
-                          context,
-                          canAccessProtectedData: canAccessProtectedData,
-                          isAuthLoading: isAuthLoading,
-                          selectedDate: selectedDate,
-                        ),
-                        onNewEntry: () => _openRecordCreate(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: pageStateContent,
           ),
         ),
       ),

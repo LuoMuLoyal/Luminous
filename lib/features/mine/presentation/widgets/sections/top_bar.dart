@@ -27,13 +27,13 @@ class MineTopBar extends ConsumerWidget {
     return AppTopBar(
       title: l10n.tabMine,
       trailing: [
-        _IconActionButton(
+        IconActionButton(
           tooltip: l10n.mineHeaderNotifications,
           icon: FLucideIcons.bell,
           onTap: onNotificationsTap,
           showBadge: hasUnread,
         ),
-        _IconActionButton(
+        IconActionButton(
           key: const Key('mine-settings-action'),
           tooltip: l10n.mineHeaderSettings,
           icon: FLucideIcons.settings,
@@ -44,8 +44,8 @@ class MineTopBar extends ConsumerWidget {
   }
 }
 
-class _IconActionButton extends StatelessWidget {
-  const _IconActionButton({
+class IconActionButton extends StatelessWidget {
+  const IconActionButton({
     super.key,
     required this.tooltip,
     required this.icon,

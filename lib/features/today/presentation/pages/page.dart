@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -6,10 +6,13 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Today page.
 class TodayPage extends ConsumerWidget {
@@ -27,6 +30,9 @@ class TodayPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+    final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
     // Always watch the provider — when signed out it returns preview data.
@@ -37,44 +43,32 @@ class TodayPage extends ConsumerWidget {
       data: dashboardAsync,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(color: colors.background),
-      child: SafeArea(
-        bottom: false,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isDesktop = constraints.maxWidth >= Breakpoints.desktop;
-            final maxWidth = isDesktop
-                ? LayoutScaleResolver.resolve(
-                    constraints.maxWidth,
-                  ).maxContentWidth
-                : constraints.maxWidth;
-
-            return Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: maxWidth),
-                child: PageStateSwitch(
-                  state: pageState,
-                  loadingBuilder: () => const TodaySkeletonView(),
-                  fatalErrorBuilder: (error) => TodayErrorView(
-                    onRetry: () => ref.invalidate(todayDashboardProvider),
-                  ),
-                  readyBuilder: (dashboard, isPreview) => TodayDashboardView(
-                    dashboard: dashboard,
-                    isPreview: isPreview,
-                    onSignIn: isPreview
-                        ? () => context.push(
-                            loginRouteForCurrentLocation(context),
-                          )
-                        : null,
-                    onRefresh: () => _refreshAll(ref),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+    final content = PageStateSwitch(
+      state: pageState,
+      loadingBuilder: () => const TodaySkeletonView(),
+      fatalErrorBuilder: (error) =>
+          TodayErrorView(onRetry: () => ref.invalidate(todayDashboardProvider)),
+      readyBuilder: (dashboard, isPreview) => TodayDashboardView(
+        dashboard: dashboard,
+        isPreview: isPreview,
+        onSignIn: isPreview
+            ? () => context.push(loginRouteForCurrentLocation(context))
+            : null,
+        onRefresh: () => _refreshAll(ref),
       ),
+    );
+
+    return ShellDeferredContent(
+      child: isDesktop
+          ? DesktopTabShell(
+              title: l10n.tabToday,
+              scrollable: false,
+              child: content,
+            )
+          : DecoratedBox(
+              decoration: BoxDecoration(color: colors.background),
+              child: SafeArea(bottom: false, child: content),
+            ),
     );
   }
 }

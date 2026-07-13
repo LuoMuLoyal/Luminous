@@ -42,42 +42,11 @@ class ReportTopBar extends StatelessWidget {
         ),
       ],
       bottom: showActionBar
-          ? Row(
-              children: [
-                Expanded(
-                  child: FButton(
-                    key: const Key('report-top-generate-action'),
-                    onPress: isGenerating ? null : onGenerate,
-                    prefix: Icon(
-                      isGenerating
-                          ? FLucideIcons.loaderCircle
-                          : FLucideIcons.sparkles,
-                      size: 16,
-                    ),
-                    child: Text(
-                      l10n.reportGenerateAction,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: Spacing.level3),
-                FTooltip(
-                  tipBuilder: (context, controller) =>
-                      Text(l10n.reportSyncAction),
-                  child: FButton(
-                    key: const Key('report-top-sync-action'),
-                    variant: FButtonVariant.secondary,
-                    onPress: isSyncing ? null : onSync,
-                    child: Icon(
-                      isSyncing
-                          ? FLucideIcons.loaderCircle
-                          : FLucideIcons.refreshCw,
-                      size: 16,
-                    ),
-                  ),
-                ),
-              ],
+          ? ReportActionBar(
+              onGenerate: onGenerate,
+              onSync: onSync,
+              isGenerating: isGenerating,
+              isSyncing: isSyncing,
             )
           : null,
     );
@@ -91,6 +60,63 @@ class ReportTopBar extends StatelessWidget {
     if (selected != null && selected != selectedQuery) {
       onQueryChanged(selected);
     }
+  }
+}
+
+/// Report action bar with generate-AI-summary and sync buttons.
+///
+/// Extracted from [ReportTopBar.bottom] so it can be used independently
+/// as [DesktopTabShell.bottom].
+class ReportActionBar extends StatelessWidget {
+  const ReportActionBar({
+    super.key,
+    required this.onGenerate,
+    required this.onSync,
+    this.isGenerating = false,
+    this.isSyncing = false,
+  });
+
+  final VoidCallback onGenerate;
+  final VoidCallback onSync;
+  final bool isGenerating;
+  final bool isSyncing;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Row(
+      children: [
+        Expanded(
+          child: FButton(
+            key: const Key('report-top-generate-action'),
+            onPress: isGenerating ? null : onGenerate,
+            prefix: Icon(
+              isGenerating ? FLucideIcons.loaderCircle : FLucideIcons.sparkles,
+              size: 16,
+            ),
+            child: Text(
+              l10n.reportGenerateAction,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        const SizedBox(width: Spacing.level3),
+        FTooltip(
+          tipBuilder: (context, controller) => Text(l10n.reportSyncAction),
+          child: FButton(
+            key: const Key('report-top-sync-action'),
+            variant: FButtonVariant.secondary,
+            onPress: isSyncing ? null : onSync,
+            child: Icon(
+              isSyncing ? FLucideIcons.loaderCircle : FLucideIcons.refreshCw,
+              size: 16,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

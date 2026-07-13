@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 
 /// Defers building [child] until after the current frame.
 ///
@@ -42,51 +41,10 @@ class _ShellDeferredContentState extends State<ShellDeferredContent> {
       return widget.child;
     }
 
-    return widget.placeholder ?? const _DefaultTabPlaceholder();
-  }
-}
-
-class _DefaultTabPlaceholder extends StatelessWidget {
-  const _DefaultTabPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
-      child: const SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.all(Spacing.level5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppInlineSkeletonBlock(
-                height: Spacing.level7,
-                widthFactor: 0.45,
-                radius: RadiusTokens.level4,
-              ),
-              SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(
-                height: Spacing.level9,
-                widthFactor: 1,
-                radius: RadiusTokens.level4,
-              ),
-              SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(
-                height: Spacing.level9,
-                widthFactor: 1,
-                radius: RadiusTokens.level4,
-              ),
-              SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(
-                height: Spacing.level9,
-                widthFactor: 0.72,
-                radius: RadiusTokens.level4,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    return widget.placeholder ??
+        ColoredBox(
+          color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
+          child: const SizedBox.expand(),
+        );
   }
 }

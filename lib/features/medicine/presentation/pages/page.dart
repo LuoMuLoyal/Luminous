@@ -22,6 +22,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -49,19 +50,43 @@ class MedicinePage extends ConsumerWidget {
       child: PageStateSwitch<MedicineWorkspace>(
         state: pageState,
         loadingBuilder: () => isDesktop
-            ? const _MedicineDesktopShell(child: MedicineSkeletonView())
+            ? DesktopTabShell(
+                title: l10n.tabMedicine,
+                trailing: const [
+                  _MedicineSafeGuardPill(),
+                  _MedicineNotificationButton(),
+                ],
+                scrollable: false,
+                child: const MedicineSkeletonView(),
+              )
             : const _MedicineMobileShell(child: MedicineSkeletonView()),
-        fatalErrorBuilder: (error) => DecoratedBox(
-          decoration: BoxDecoration(color: colors.background),
-          child: SafeArea(
-            bottom: false,
-            child: MedicineErrorView(
-              onRetry: () => ref.invalidate(medicineWorkspaceProvider),
-            ),
-          ),
-        ),
+        fatalErrorBuilder: (error) => isDesktop
+            ? DesktopTabShell(
+                title: l10n.tabMedicine,
+                trailing: const [
+                  _MedicineSafeGuardPill(),
+                  _MedicineNotificationButton(),
+                ],
+                child: MedicineErrorView(
+                  onRetry: () => ref.invalidate(medicineWorkspaceProvider),
+                ),
+              )
+            : DecoratedBox(
+                decoration: BoxDecoration(color: colors.background),
+                child: SafeArea(
+                  bottom: false,
+                  child: MedicineErrorView(
+                    onRetry: () => ref.invalidate(medicineWorkspaceProvider),
+                  ),
+                ),
+              ),
         emptyInsufficientBuilder: (empty) => isDesktop
-            ? _MedicineDesktopShell(
+            ? DesktopTabShell(
+                title: l10n.tabMedicine,
+                trailing: const [
+                  _MedicineSafeGuardPill(),
+                  _MedicineNotificationButton(),
+                ],
                 child: AppStateMessageView(
                   title: l10n.medicineEmptyAddFirstTitle,
                   description: l10n.medicineEmptyAddFirstDescription,
@@ -92,31 +117,34 @@ class MedicinePage extends ConsumerWidget {
                 _openReminder(context, ref, currentMedicineId),
             onCreateReminder: () => _openReminder(context, ref, null),
           );
-          return isDesktop
-              ? _MedicineDesktopShell(
-                  child: isPreview
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SignInHintBanner(onSignIn: onSignIn),
-                            const SizedBox(height: Spacing.level4),
-                            content,
-                          ],
-                        )
-                      : content,
+          final dashboardContent = isPreview
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SignInHintBanner(onSignIn: onSignIn),
+                    const SizedBox(height: Spacing.level4),
+                    content,
+                  ],
                 )
-              : isPreview
-              ? _MedicineMobileShell(
+              : content;
+          return isDesktop
+              ? DesktopTabShell(
+                  title: l10n.tabMedicine,
+                  trailing: const [
+                    _MedicineSafeGuardPill(),
+                    _MedicineNotificationButton(),
+                  ],
+                  scrollStorageKey: 'medicine-desktop-scroll',
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SignInHintBanner(onSignIn: onSignIn),
+                      const _MedicineMobileSearchBar(),
                       const SizedBox(height: Spacing.level4),
-                      content,
+                      dashboardContent,
                     ],
                   ),
                 )
-              : _MedicineMobileShell(child: content);
+              : _MedicineMobileShell(child: dashboardContent);
         },
       ),
     );
@@ -234,34 +262,6 @@ class _MedicineMobileShell extends StatelessWidget {
             const SizedBox(height: Spacing.level4),
             child,
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _MedicineDesktopShell extends StatelessWidget {
-  const _MedicineDesktopShell({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(color: colors.background),
-      child: SafeArea(
-        bottom: false,
-        child: ListView(
-          key: const PageStorageKey<String>('medicine-desktop-scroll'),
-          padding: const EdgeInsets.fromLTRB(
-            Spacing.level6,
-            Spacing.level6,
-            Spacing.level6,
-            Spacing.level6,
-          ),
-          children: [child],
         ),
       ),
     );

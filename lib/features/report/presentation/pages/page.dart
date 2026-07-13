@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +25,8 @@ import 'package:luminous/features/report/presentation/widgets/views/skeleton_vie
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
+import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -42,6 +44,22 @@ class ReportPage extends ConsumerWidget {
     final query = ref.read(reportDashboardSelectedQueryProvider);
     ref.invalidate(reportDashboardProvider(query));
     await ref.read(reportDashboardProvider(query).future);
+  }
+
+  Future<void> _showRangePicker(
+    BuildContext context, {
+    required ReportDashboardQuery selectedQuery,
+    required WidgetRef ref,
+  }) async {
+    final selected = await showReportRangePickerDialog(
+      context,
+      selectedQuery: selectedQuery,
+    );
+    if (selected != null && selected != selectedQuery) {
+      ref
+          .read(reportDashboardSelectedQueryProvider.notifier)
+          .setQuery(selected);
+    }
   }
 
   void _openRecordFilter(
@@ -216,6 +234,8 @@ class ReportPage extends ConsumerWidget {
     final canAccessProtectedData = session.canAccessProtectedData;
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
 
     final selectedDashboardQuery = ref.watch(
       reportDashboardSelectedQueryProvider,
@@ -240,38 +260,63 @@ class ReportPage extends ConsumerWidget {
           ref: ref,
           selectedDashboardQuery: selectedDashboardQuery,
         ),
-        fatalErrorBuilder: (error) => FScaffold(
-          header: const SafeArea(
-            bottom: false,
-            child: FHeader.nested(prefixes: [AppBackButton()]),
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: AppStateErrorView(
-              title: l10n.reportErrorTitle,
-              description: l10n.reportErrorDescription,
-              icon: FLucideIcons.chartColumnBig,
-              actionLabel: l10n.todayRetryAction,
-              onAction: () => ref.invalidate(
-                reportDashboardProvider(selectedDashboardQuery),
+        fatalErrorBuilder: (error) => isDesktop
+            ? DesktopTabShell(
+                title: l10n.tabReport,
+                child: AppStateErrorView(
+                  title: l10n.reportErrorTitle,
+                  description: l10n.reportErrorDescription,
+                  icon: FLucideIcons.chartColumnBig,
+                  actionLabel: l10n.todayRetryAction,
+                  onAction: () => ref.invalidate(
+                    reportDashboardProvider(selectedDashboardQuery),
+                  ),
+                  tone: AppStateTone.warning,
+                ),
+              )
+            : FScaffold(
+                header: const SafeArea(
+                  bottom: false,
+                  child: FHeader.nested(prefixes: [AppBackButton()]),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: AppStateErrorView(
+                    title: l10n.reportErrorTitle,
+                    description: l10n.reportErrorDescription,
+                    icon: FLucideIcons.chartColumnBig,
+                    actionLabel: l10n.todayRetryAction,
+                    onAction: () => ref.invalidate(
+                      reportDashboardProvider(selectedDashboardQuery),
+                    ),
+                    tone: AppStateTone.warning,
+                  ),
+                ),
               ),
-              tone: AppStateTone.warning,
-            ),
-          ),
-        ),
-        emptyInsufficientBuilder: (empty) => DecoratedBox(
-          decoration: BoxDecoration(color: colors.background),
-          child: SafeArea(
-            bottom: false,
-            child: AppStateMessageView(
-              title: l10n.stateEmptyDefaultTitle,
-              description: l10n.stateEmptyDefaultDescription,
-              icon: FLucideIcons.chartColumnBig,
-              actionLabel: l10n.todayEmptyAction,
-              onAction: () => context.push('/record/create'),
-            ),
-          ),
-        ),
+        emptyInsufficientBuilder: (empty) => isDesktop
+            ? DesktopTabShell(
+                title: l10n.tabReport,
+                child: AppStateMessageView(
+                  title: l10n.stateEmptyDefaultTitle,
+                  description: l10n.stateEmptyDefaultDescription,
+                  icon: FLucideIcons.chartColumnBig,
+                  actionLabel: l10n.todayEmptyAction,
+                  onAction: () => context.push('/record/create'),
+                ),
+              )
+            : DecoratedBox(
+                decoration: BoxDecoration(color: colors.background),
+                child: SafeArea(
+                  bottom: false,
+                  child: AppStateMessageView(
+                    title: l10n.stateEmptyDefaultTitle,
+                    description: l10n.stateEmptyDefaultDescription,
+                    icon: FLucideIcons.chartColumnBig,
+                    actionLabel: l10n.todayEmptyAction,
+                    onAction: () => context.push('/record/create'),
+                  ),
+                ),
+              ),
         readyBuilder: (dashboard, isPreview) => _buildReadyContent(
           context: context,
           ref: ref,
@@ -296,22 +341,21 @@ class ReportPage extends ConsumerWidget {
     final dateRangeLabel = l10n.placeholderNoData;
 
     return isDesktop
-        ? _ReportDesktopShell(
-            isGenerating: false,
-            isSyncing: false,
-            onGenerate: () {},
-            onSync: () {},
-            onRefresh: () async {},
-            topBar: ReportTopBar(
-              dateRangeLabel: dateRangeLabel,
-              selectedQuery: selectedDashboardQuery,
-              onQueryChanged: (_) {},
-              onGenerate: () {},
-              onSync: () {},
-              isGenerating: false,
-              isSyncing: false,
-              showActionBar: true,
-            ),
+        ? DesktopTabShell(
+            title: l10n.tabReport,
+            subtitle: Text(dateRangeLabel),
+            trailing: [
+              ReportPeriodPill(
+                range: selectedDashboardQuery.range,
+                onTap: () => _showRangePicker(
+                  context,
+                  selectedQuery: selectedDashboardQuery,
+                  ref: ref,
+                ),
+              ),
+            ],
+            bottom: ReportActionBar(onGenerate: () {}, onSync: () {}),
+            scrollable: false,
             child: const ReportSkeletonView(),
           )
         : _ReportMobileShell(
@@ -343,6 +387,7 @@ class ReportPage extends ConsumerWidget {
     required bool isPreview,
     required VoidCallback onSignIn,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final aiSummariesEnabled = canAccessProtectedData
         ? ref.watch(
             userSettingsControllerProvider.select(
@@ -418,28 +463,20 @@ class ReportPage extends ConsumerWidget {
     );
 
     if (isDesktop) {
-      return _ReportDesktopShell(
-        onGenerate: () {
-          ref
-              .read(
-                reportAiSummaryControllerProvider(
-                  selectedAiSummaryRange,
-                ).notifier,
-              )
-              .generate();
-        },
-        onSync: () => _refreshDashboard(ref),
-        onRefresh: () => _refreshDashboard(ref),
-        isGenerating: aiSummaryState.isLoading,
-        isSyncing: false,
-        topBar: ReportTopBar(
-          dateRangeLabel: dateRangeLabel,
-          selectedQuery: selectedDashboardQuery,
-          onQueryChanged: (query) {
-            ref
-                .read(reportDashboardSelectedQueryProvider.notifier)
-                .setQuery(query);
-          },
+      return DesktopTabShell(
+        title: l10n.tabReport,
+        subtitle: Text(dateRangeLabel),
+        trailing: [
+          ReportPeriodPill(
+            range: selectedDashboardQuery.range,
+            onTap: () => _showRangePicker(
+              context,
+              selectedQuery: selectedDashboardQuery,
+              ref: ref,
+            ),
+          ),
+        ],
+        bottom: ReportActionBar(
           onGenerate: () {
             ref
                 .read(
@@ -452,8 +489,9 @@ class ReportPage extends ConsumerWidget {
           onSync: () => _refreshDashboard(ref),
           isGenerating: aiSummaryState.isLoading,
           isSyncing: false,
-          showActionBar: true,
         ),
+        onRefresh: () => _refreshDashboard(ref),
+        scrollStorageKey: 'report-desktop-scroll',
         child: dashboardView,
       );
     }
@@ -495,56 +533,6 @@ class ReportPage extends ConsumerWidget {
         showActionBar: false,
       ),
       child: dashboardView,
-    );
-  }
-}
-
-class _ReportDesktopShell extends StatelessWidget {
-  const _ReportDesktopShell({
-    required this.child,
-    required this.topBar,
-    required this.onGenerate,
-    required this.onSync,
-    required this.onRefresh,
-    this.isGenerating = false,
-    this.isSyncing = false,
-  });
-
-  final Widget child;
-  final ReportTopBar topBar;
-  final VoidCallback onGenerate;
-  final VoidCallback onSync;
-  final Future<void> Function() onRefresh;
-  final bool isGenerating;
-  final bool isSyncing;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(color: colors.background),
-      child: SafeArea(
-        bottom: false,
-        child: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: ListView(
-            key: const PageStorageKey<String>('report-desktop-scroll'),
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.level6,
-              Spacing.level6,
-              Spacing.level6,
-              Spacing.level6,
-            ),
-            children: [
-              topBar,
-              const SizedBox(height: Spacing.level5),
-              child,
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
