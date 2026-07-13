@@ -43,6 +43,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
   @override
   Widget build(BuildContext context) {
     ref.listen<AuthSessionState>(authSessionProvider, (previous, next) {
+      // Re-evaluate the router redirect whenever auth state changes.
+      router.refresh();
+
       final previousUserId = previous?.user?.id;
       final nextUserId = next.user?.id;
 

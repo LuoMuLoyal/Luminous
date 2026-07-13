@@ -54,6 +54,7 @@ Last updated: 2026-07-13
 - Material Icons 残留全量清理（2026-07-12）：全项目正则扫描 `(?<!FLucide)Icons\.`，将 `test/` 和 `integration_test/` 中 14 种 Material `Icons.*` 引用全部替换为 Forui `FLucideIcons.*` Lucide 图标。涉及 11 个文件（7 个 unit/widget test + 4 个 integration test），`e2e_test_helpers.dart` 新增 forui import + export。`lib/` 目录此前已零残留。`flutter analyze` 零问题，125 个测试全部通过。
 - 依赖清理与图片压缩接入（2026-07-13）：移除 `cupertino_icons`（零引用）；引入 `flutter_image_compress ^2.4.0`；新建 `lib/core/utils/image_compressor.dart`（`AppImageCompressor` 提供 `compressForUpload` 1280px/85% 和 `compressForAiRecognition` 1920px/90% 两个预设，Web + 异常 fallback 返回原始 bytes）；`record/create.dart`、`record/edit.dart` 的 `onPickImage()` 接入日常记录附件压缩；`scan/box_scan.dart` AI 识别路径接入高保真压缩；OCR 路径不压缩（ML Kit 直接处理文件路径）。`flutter analyze` 零问题。
 - 桌面端 UI 优化（2026-07-13）：侧边栏移除全部 `FSidebarItem.children`（5 个扁平 Tab + Settings + Help）；移除面包屑；Tab 路由 `NoTransitionPage` 改为 150ms `FadeTransition`；`ShellDeferredContent` placeholder 从骨架屏改为纯色占位；新建 `DesktopTabShell` 统一桌面端外壳（AppTopBar + maxWidth 约束 + muted 背景 + 可选 RefreshIndicator/PageStorageKey）；5 个 Tab 页面全部迁移到 `DesktopTabShell`，所有状态分支（loading/error/empty/ready）统一 Shell 结构；MedicinePage 桌面端新增搜索栏和 trailing 按钮；ReportPage 提取 `ReportActionBar` 独立组件；MinePage `_IconActionButton` 改为公共 `IconActionButton`；清理 16 个 sidebar ARB key。`flutter analyze` 零问题，2294 tests passed。
+- 安全审查修复：GoRouter 全局重定向守卫（2026-07-13）：`router.dart` 添加 `redirect` 回调，未认证用户访问受保护路由时重定向到 `/login`，已认证用户访问 auth 路由时重定向到 `/`；session 恢复中不跳转防闪烁；`/legal` 作为公开路由不拦截。`bootstrap.dart` 认证状态监听中添加 `router.refresh()` 触发 redirect 重新评估。`flutter analyze` 零问题。
 
 ## 相关文档
 
