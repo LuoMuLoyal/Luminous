@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -401,12 +402,15 @@ class RecordEditPage extends HookConsumerWidget {
           }
           return;
         }
-        final bytes = await image.readAsBytes();
+        final rawBytes = await image.readAsBytes();
         if (!context.mounted) return;
+        final compressedBytes = await AppImageCompressor.compressForUpload(
+          rawBytes,
+        );
         selectedImage.value = _PendingDailyRecordImage(
-          bytes: bytes,
+          bytes: compressedBytes,
           fileName: image.name,
-          contentType: contentType,
+          contentType: 'image/jpeg',
         );
         attachmentsChanged.value = true;
       } catch (e) {

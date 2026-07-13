@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-12
+Last updated: 2026-07-13
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 历史 completed baselines 已归档至 [[04-archive/current-state-archive]]。
@@ -52,6 +52,7 @@ Last updated: 2026-07-12
 - 法律合规页面 legal feature（2026-07-11）：新建 `lib/features/legal/` 模块，实现法律文档 App 内浏览，替代之前的外部链接。后端 `legal-documents` API 提供远程数据源（`LegalDocumentsController` + AdminJS 管理），前端采用远程优先 + `assets/legal/` Markdown fallback 策略。路由 `/legal`（列表页 `FTileGroup`）+ `/legal/:docType`（详情页 `Markdown` 渲染），通过 `@TypedGoRoute` 类型安全路由注册。About 页"隐私政策"/"服务条款" tile 和注册页协议链接从 `ExternalUrlLauncher` 外链改为 `context.push` App 内导航。6 个 Markdown assets（terms/privacy/disclaimer × 中英文）作为 fallback。12 个 l10n key + 7 个测试通过。**审查修复（2026-07-12）**：非法 docType 错误页增加返回列表操作按钮（`legalBackToListAction`）；`LucentLegalRepository` 异常处理从 `catch (_)` 细化为仅 404 时 fallback，网络错误/500 等向上抛出由 UI 显示错误状态；`LegalDocType.fromPathSegment` 改用 `Map` O(1) 查找。**网站端同步补齐：** Luminous-website 新建 `terms.vue` + `disclaimer.vue`，重写 `privacy.vue` 补全 PIPL 7 个必需章节（数据处理者信息、收集范围与保存期限、用户权利清单、第三方共享表格、跨境传输、未成年人保护、政策更新机制），footer 导航新增 3 个法律页面链接，`nuxt.config.ts` 添加 prerender 规则，`pnpm build` 验证 8 条路由全部预渲染成功。
 - ARB 文件按功能拆分（2026-07-12）：将单一大型 ARB 文件（`app_zh.arb` ~2085 行 / `app_en.arb` ~2071 行）拆分为 10 个按功能模块对齐的源片段（`lib/l10n/src/{fragment}_{locale}.arb`，20 个文件），通过 `scripts/arb_tools.dart` 的 `merge` 命令在 `flutter gen-l10n` 前合并。分片对应 `lib/features/` 结构：`common` / `record` / `medicine` / `today` / `report` / `settings` / `auth` / `mine` / `assistant` / `notification`。合并产物 `app_{zh,en}.arb` 改为 gitignored（与 `app_localizations*.dart` 同级处理），所有业务代码零改动，`AppLocalizations` API 完全不变。
 - Material Icons 残留全量清理（2026-07-12）：全项目正则扫描 `(?<!FLucide)Icons\.`，将 `test/` 和 `integration_test/` 中 14 种 Material `Icons.*` 引用全部替换为 Forui `FLucideIcons.*` Lucide 图标。涉及 11 个文件（7 个 unit/widget test + 4 个 integration test），`e2e_test_helpers.dart` 新增 forui import + export。`lib/` 目录此前已零残留。`flutter analyze` 零问题，125 个测试全部通过。
+- 依赖清理与图片压缩接入（2026-07-13）：移除 `cupertino_icons`（零引用）；引入 `flutter_image_compress ^2.4.0`；新建 `lib/core/utils/image_compressor.dart`（`AppImageCompressor` 提供 `compressForUpload` 1280px/85% 和 `compressForAiRecognition` 1920px/90% 两个预设，Web + 异常 fallback 返回原始 bytes）；`record/create.dart`、`record/edit.dart` 的 `onPickImage()` 接入日常记录附件压缩；`scan/box_scan.dart` AI 识别路径接入高保真压缩；OCR 路径不压缩（ML Kit 直接处理文件路径）。`flutter analyze` 零问题。
 
 ## 相关文档
 

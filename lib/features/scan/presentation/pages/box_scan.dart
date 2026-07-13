@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:clock/clock.dart';
@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
@@ -140,7 +141,8 @@ Future<List<MedicineMatchResult>> _processPhoto(
 
     return results;
   } else {
-    final bytes = await File(photo.path).readAsBytes();
+    final rawBytes = await File(photo.path).readAsBytes();
+    final bytes = await AppImageCompressor.compressForAiRecognition(rawBytes);
     final imageUrl = await repo.uploadImage(
       bytes: bytes,
       contentType: 'image/jpeg',
