@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,6 +54,11 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/repositories/mock.dart';
+import 'package:luminous/features/legal/data/repositories/lucent.dart'
+    show legalRepositoryProvider;
+import 'package:luminous/features/legal/domain/entities/doc_type.dart';
+import 'package:luminous/features/legal/domain/entities/document.dart';
+import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:flutter/material.dart';
@@ -73,6 +78,11 @@ export 'package:luminous/features/record/domain/entities/record.dart'
 export 'package:luminous/features/report/data/repositories/mock.dart'
     show MockReportRepository, reportRepositoryProvider;
 export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+export 'package:luminous/features/legal/data/repositories/lucent.dart'
+    show legalRepositoryProvider;
+export 'package:luminous/features/legal/domain/entities/doc_type.dart';
+export 'package:luminous/features/legal/domain/entities/document.dart';
+export 'package:luminous/features/legal/domain/repositories/documents.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 
 Future<ProviderContainer> pumpOfflineApp(
@@ -87,6 +97,7 @@ Future<ProviderContainer> pumpOfflineApp(
   ReportRepository? reportRepository,
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
+  LegalRepository? legalRepository,
 }) async {
   SharedPreferences.setMockInitialValues(const <String, Object>{});
   final prefs = await SharedPreferences.getInstance();
@@ -135,6 +146,8 @@ Future<ProviderContainer> pumpOfflineApp(
       medicineSearchRepositoryProvider.overrideWithValue(
         const MockMedicineSearchRepository(),
       ),
+      if (legalRepository != null)
+        legalRepositoryProvider.overrideWithValue(legalRepository),
     ],
   );
   addTearDown(container.dispose);
@@ -976,3 +989,196 @@ class MockMedicineSearchRepository implements MedicineSearchRepository {
     );
   }
 }
+
+/// E2E mock for [LegalRepository] that returns test data.
+class E2eLegalRepository implements LegalRepository {
+  E2eLegalRepository();
+
+  @override
+  Future<List<LegalDocumentSummary>> findAll() async {
+    return const [
+      LegalDocumentSummary(
+        docType: LegalDocType.terms,
+        title: 'E2E 服务条款',
+        updatedAt: '2026-07-01',
+      ),
+      LegalDocumentSummary(
+        docType: LegalDocType.privacy,
+        title: 'E2E 隐私政策',
+        updatedAt: '2026-07-02',
+      ),
+      LegalDocumentSummary(
+        docType: LegalDocType.disclaimer,
+        title: 'E2E 免责声明',
+        updatedAt: '2026-07-03',
+      ),
+    ];
+  }
+
+  @override
+  Future<LegalDocument> findOne(LegalDocType docType) async {
+    return LegalDocument(
+      docType: docType,
+      title: 'E2E ${docType.pathSegment}',
+      content: '# E2E ${docType.pathSegment}\n\nThis is a test document.',
+      updatedAt: '2026-07-01',
+    );
+  }
+}
+
+/// Enhanced health context repository that returns a snapshot with existing
+/// items, so edit pages can prefill fields.
+class E2eHealthContextRepositoryWithItems implements HealthContextRepository {
+  E2eHealthContextRepositoryWithItems();
+
+  HealthProfileUpdateInput? profileUpdate;
+  HealthAllergyUpdateInput? allergyUpdate;
+  String? allergyDeleteId;
+  HealthConditionUpdateInput? conditionUpdate;
+  String? conditionDeleteId;
+  CurrentMedicineUpdateInput? medicineUpdate;
+  String? medicineDeleteId;
+
+  @override
+  Future<HealthContextSnapshot> fetchHealthContext() async {
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateProfile(
+    HealthProfileUpdateInput input,
+  ) async {
+    profileUpdate = input;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createAllergy(
+    HealthAllergyWriteInput input,
+  ) async {
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateAllergy(
+    String id,
+    HealthAllergyUpdateInput input,
+  ) async {
+    allergyUpdate = input;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteAllergy(String id) async {
+    allergyDeleteId = id;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createCondition(
+    HealthConditionWriteInput input,
+  ) async {
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateCondition(
+    String id,
+    HealthConditionUpdateInput input,
+  ) async {
+    conditionUpdate = input;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteCondition(String id) async {
+    conditionDeleteId = id;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> createCurrentMedicine(
+    CurrentMedicineWriteInput input,
+  ) async {
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> updateCurrentMedicine(
+    String id,
+    CurrentMedicineUpdateInput input,
+  ) async {
+    medicineUpdate = input;
+    return _snapshotWithItems;
+  }
+
+  @override
+  Future<HealthContextSnapshot> deleteCurrentMedicine(String id) async {
+    medicineDeleteId = id;
+    return _snapshotWithItems;
+  }
+}
+
+const _snapshotWithItems = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 28,
+    onboardingCompleted: true,
+    activeAllergyCount: 1,
+    conditionCount: 1,
+    currentMedicineCount: 1,
+    missingCoreProfileFields: <String>[],
+  ),
+  profile: HealthProfile(
+    birthDate: '1998-06-07',
+    sexAtBirth: 'male',
+    heightCm: 171,
+    bloodType: 'AB',
+    locale: 'zh-CN',
+    timezone: 'Asia/Shanghai',
+    unitSystem: 'metric',
+    onboardingCompletedAt: '2026-06-06T00:00:00Z',
+    extras: <String, dynamic>{},
+  ),
+  allergies: <AllergyItem>[
+    AllergyItem(
+      id: 'e2e-allergy-1',
+      kind: 'drug',
+      label: 'E2E Penicillin',
+      reaction: 'rash',
+      severity: 'moderate',
+      isActive: true,
+      note: 'test note',
+      createdAt: '2026-06-01T00:00:00Z',
+      updatedAt: '2026-06-01T00:00:00Z',
+    ),
+  ],
+  conditions: <ConditionItem>[
+    ConditionItem(
+      id: 'e2e-condition-1',
+      label: 'E2E Asthma',
+      status: 'active',
+      diagnosedAt: '2020-01-01',
+      resolvedAt: null,
+      note: 'chronic condition',
+      createdAt: '2026-06-01T00:00:00Z',
+      updatedAt: '2026-06-01T00:00:00Z',
+    ),
+  ],
+  currentMedicines: <CurrentMedicineItem>[
+    CurrentMedicineItem(
+      id: 'e2e-medicine-1',
+      source: 'manual',
+      sourceRefId: null,
+      displayName: 'E2E Ibuprofen',
+      strengthText: '200mg',
+      doseText: '1 tablet',
+      route: 'oral',
+      startedAt: '2026-01-01',
+      endedAt: null,
+      isCurrent: true,
+      note: 'as needed',
+      createdAt: '2026-06-01T00:00:00Z',
+      updatedAt: '2026-06-01T00:00:00Z',
+    ),
+  ],
+);
