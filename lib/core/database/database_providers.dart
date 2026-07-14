@@ -23,32 +23,32 @@ AppDatabase appDatabase(Ref ref) {
 /// DAO providers — thin wrappers that extract the DAO from the database.
 /// Feature code should depend on these rather than the raw database.
 
-@riverpod
+@Riverpod(keepAlive: true)
 DailyRecordDao dailyRecordDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).dailyRecordDao;
+  return ref.read(appDatabaseProvider).dailyRecordDao;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 MedicineDoseLogDao medicineDoseLogDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).medicineDoseLogDao;
+  return ref.read(appDatabaseProvider).medicineDoseLogDao;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 CurrentMedicineDao currentMedicineDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).currentMedicineDao;
+  return ref.read(appDatabaseProvider).currentMedicineDao;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 HealthContextDao healthContextDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).healthContextDao;
+  return ref.read(appDatabaseProvider).healthContextDao;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 TodaySuggestionDao todaySuggestionDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).todaySuggestionDao;
+  return ref.read(appDatabaseProvider).todaySuggestionDao;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 PendingSyncDao pendingSyncDao(Ref ref) {
-  return ref.watch(appDatabaseProvider).pendingSyncDao;
+  return ref.read(appDatabaseProvider).pendingSyncDao;
 }
