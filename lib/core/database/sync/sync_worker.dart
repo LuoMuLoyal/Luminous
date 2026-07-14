@@ -43,8 +43,8 @@ class SyncWorker {
   }
 
   /// Starts listening to connectivity changes.
-  void start() {
-    _subscription?.cancel();
+  Future<void> start() async {
+    await _subscription?.cancel();
     _subscription = Connectivity().onConnectivityChanged.listen((results) {
       final hasConnection = results.any((r) => r != ConnectivityResult.none);
       if (hasConnection) {
@@ -140,7 +140,10 @@ SyncWorker syncWorker(Ref ref) {
   // own handlers when they come online. This avoids circular dependencies.
   // See LucentDailyRecordRepository for an example of handler registration.
 
-  worker.start();
+  // start() is async (awaits subscription cancellation before listening).
+  // Fire-and-forget is safe here — the worker starts listening as soon as
+  // the previous subscription (if any) is cancelled.
+  unawaited(worker.start());
   ref.onDispose(worker.stop);
 
   return worker;
