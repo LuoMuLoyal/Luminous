@@ -44,7 +44,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
   Widget build(BuildContext context) {
     ref.listen<AuthSessionState>(authSessionProvider, (previous, next) {
       // Re-evaluate the router redirect whenever auth state changes.
-      router.refresh();
+      ref.read(appRouterProvider).refresh();
 
       final previousUserId = previous?.user?.id;
       final nextUserId = next.user?.id;
@@ -129,7 +129,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: widget.routerConfig ?? router,
+      routerConfig: widget.routerConfig ?? ref.watch(appRouterProvider),
     );
   }
 

@@ -82,14 +82,14 @@ void main() {
   ) async {
     final healthContextRepository = E2eHealthContextRepository();
 
-    await pumpOfflineApp(
+    final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       healthContextRepository: healthContextRepository,
     );
 
     await openTab($, '我的');
-    unawaited(router.push('/mine/condition/new'));
+    unawaited(container.read(appRouterProvider).push('/mine/condition/new'));
     await settleE2e($);
 
     expect($('新增疾病').exists, true);

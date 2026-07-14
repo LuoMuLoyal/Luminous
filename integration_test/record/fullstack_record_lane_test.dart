@@ -45,6 +45,7 @@ void main() {
 
     await waitForRoute(
       $,
+      container: container,
       predicate: (uri) => uri.path == '/',
       description: 'return to record timeline after create',
     );

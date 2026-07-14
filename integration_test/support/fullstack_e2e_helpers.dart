@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/config/env_keys.dart';
@@ -158,8 +158,6 @@ Future<ProviderContainer> pumpFullstackApp(
   SharedPreferences.setMockInitialValues(const <String, Object>{
     'app.locale': 'zh-CN',
   });
-  router.go('/');
-
   final container = ProviderContainer(
     overrides: [
       lucentBaseUrlProvider.overrideWithValue(config.baseUrl),
@@ -169,6 +167,8 @@ Future<ProviderContainer> pumpFullstackApp(
     ],
   );
   addTearDown(container.dispose);
+
+  container.read(appRouterProvider).go('/');
 
   await $.pumpWidget(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),
@@ -225,7 +225,7 @@ Future<void> waitForAuthenticatedSession(
   final loginForm = container.read(loginFormProvider);
   throw TestFailure(
     'Timed out waiting for authenticated session. '
-    'route=${router.routeInformationProvider.value.uri}, '
+    'route=${container.read(appRouterProvider).routeInformationProvider.value.uri}, '
     'isLoading=${state.isLoading}, isAuthenticated=${state.isAuthenticated}, authError=${state.errorMessage}, '
     'loginSubmitting=${loginForm.isSubmitting}, loginError=${loginForm.errorMessage}',
   );
@@ -233,6 +233,7 @@ Future<void> waitForAuthenticatedSession(
 
 Future<void> waitForRoute(
   PatrolIntegrationTester $, {
+  required ProviderContainer container,
   required bool Function(Uri uri) predicate,
   required String description,
   Duration timeout = const Duration(seconds: 15),
@@ -242,7 +243,11 @@ Future<void> waitForRoute(
 
   do {
     await $.pump(step);
-    final currentRoute = router.routeInformationProvider.value.uri;
+    final currentRoute = container
+        .read(appRouterProvider)
+        .routeInformationProvider
+        .value
+        .uri;
     if (predicate(currentRoute)) {
       return;
     }
@@ -250,7 +255,7 @@ Future<void> waitForRoute(
 
   throw TestFailure(
     'Timed out waiting for route: $description. '
-    'currentRoute=${router.routeInformationProvider.value.uri}',
+    'currentRoute=${container.read(appRouterProvider).routeInformationProvider.value.uri}',
   );
 }
 

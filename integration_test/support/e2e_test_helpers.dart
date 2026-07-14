@@ -8,7 +8,7 @@ import 'package:patrol/patrol.dart';
 import 'package:lucent_api/api/export.dart'
     show CooldownMessageDto, LucentClient, MedicineDoseLogsApi;
 import 'package:luminous/app/bootstrap.dart';
-import 'package:luminous/app/router.dart' show router;
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/network/network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
 import 'package:luminous/core/network/session_store.dart';
@@ -60,7 +60,7 @@ export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
 export 'package:patrol/patrol.dart' hide Notification;
-export 'package:luminous/app/router.dart' show router;
+export 'package:luminous/app/router.dart' show appRouterProvider;
 export 'package:luminous/features/auth/data/datasources/auth.dart'
     show AuthVerificationScene;
 export 'package:luminous/features/auth/presentation/providers/session.dart'
@@ -92,8 +92,6 @@ Future<ProviderContainer> pumpOfflineApp(
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
   await prefs.setString('app.locale', 'zh-CN');
-  router.go('/');
-
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(
@@ -140,6 +138,8 @@ Future<ProviderContainer> pumpOfflineApp(
     ],
   );
   addTearDown(container.dispose);
+
+  container.read(appRouterProvider).go('/');
 
   await $.pumpWidget(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),

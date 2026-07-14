@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -23,6 +23,8 @@ import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
+
+part 'router.g.dart';
 
 /// Named route constants used throughout the codebase.
 ///
@@ -103,13 +105,13 @@ class AppRoutes {
 ///
 /// A global `redirect` guard prevents unauthenticated users from accessing
 /// protected routes and redirects authenticated users away from auth pages.
-/// Call `router.refresh()` (e.g. from an auth session listener) to re-evaluate
-/// the redirect after authentication state changes.
-final router = GoRouter(
+/// Call `appRouterProvider`'s `refresh()` (e.g. from an auth session
+/// listener) to re-evaluate the redirect after authentication state changes.
+@Riverpod(keepAlive: true)
+GoRouter appRouter(Ref ref) => GoRouter(
   initialLocation: AppRoutes.home,
   redirect: (context, state) {
-    final container = ProviderScope.containerOf(context, listen: false);
-    final session = container.read(authSessionProvider);
+    final session = ref.read(authSessionProvider);
 
     // Don't redirect while session is being restored (prevents flicker).
     if (session.isRestoring) return null;

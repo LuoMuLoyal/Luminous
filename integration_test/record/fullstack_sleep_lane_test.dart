@@ -60,6 +60,7 @@ void main() {
 
     await waitForRoute(
       $,
+      container: container,
       predicate: (uri) => uri.path == '/',
       description: 'return to shell after saving sleep record',
       timeout: const Duration(seconds: 15),

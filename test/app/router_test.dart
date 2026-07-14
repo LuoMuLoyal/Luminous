@@ -14,6 +14,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
 
+late ProviderContainer _testContainer;
+
+GoRouter get _testRouter => _testContainer.read(appRouterProvider);
+
 String _joinPath(String parent, String child) {
   if (child.startsWith('/')) return child;
   if (parent.isEmpty || parent == '/') return '/$child';
@@ -81,7 +85,7 @@ bool _isInsideStatefulShell(
 }
 
 bool _routeIsInsideShell(String path) =>
-    _isInsideStatefulShell(router.configuration.routes, path);
+    _isInsideStatefulShell(_testRouter.configuration.routes, path);
 
 class _FakeMedicineSearchNotifier extends MedicineSearchNotifier {
   @override
@@ -95,7 +99,7 @@ Widget _testableRouter({
   SharedPreferences.setMockInitialValues(const <String, Object>{});
   final testRouter = GoRouter(
     initialLocation: initialLocation,
-    routes: router.configuration.routes,
+    routes: _testRouter.configuration.routes,
   );
   addTearDown(testRouter.dispose);
   return ProviderScope(
@@ -109,6 +113,11 @@ Widget _testableRouter({
 }
 
 void main() {
+  setUpAll(() {
+    _testContainer = ProviderContainer();
+    addTearDown(_testContainer.dispose);
+  });
+
   group('main tab roots are nested inside StatefulShellRoute', () {
     const shellPaths = <String>[
       '/',
