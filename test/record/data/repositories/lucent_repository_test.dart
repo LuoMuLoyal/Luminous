@@ -1,0 +1,1006 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/features/record/data/repositories/lucent.dart';
+import 'package:luminous/features/record/domain/entities/candidates.dart';
+import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
+
+// ── Fake DailyRecordRepository ──────────────────────────────────
+
+class _FakeDailyRecordRepository implements DailyRecordRepository {
+  DailyRecordListData? fetchRecordsResult;
+  Object? fetchRecordsError;
+  String? lastFetchDate;
+  String? lastFetchKind;
+  int? lastFetchPage;
+  int? lastFetchPageSize;
+
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    lastFetchDate = date;
+    lastFetchKind = kind;
+    lastFetchPage = page;
+    lastFetchPageSize = pageSize;
+    if (fetchRecordsError != null) throw fetchRecordsError!;
+    return fetchRecordsResult ?? const DailyRecordListData(items: [], total: 0);
+  }
+
+  @override
+  Future<DailyRecordSummaryData> fetchSummary(String date) async {
+    return const DailyRecordSummaryData(summaries: []);
+  }
+
+  @override
+  Future<DailyRecordItem> get(String id) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    throw UnimplementedError();
+  }
+}
+
+DailyRecordItem _item({
+  String id = 'rec-1',
+  DailyRecordKind kind = DailyRecordKind.water,
+  String occurredAt = '2026-07-14',
+  String? occurredTime = '08:30',
+  String? title,
+  String? value,
+  String? unit,
+  String? note,
+  Map<String, dynamic>? payload,
+  String? mealAnalysisStatus,
+  String? mealAnalysisCoverage,
+  String? mealShortDescription,
+  List<String> mealTopFoods = const [],
+  List<DailyRecordAttachment> attachments = const [],
+}) {
+  return DailyRecordItem(
+    id: id,
+    kind: kind,
+    occurredAt: occurredAt,
+    occurredTime: occurredTime,
+    title: title,
+    value: value,
+    unit: unit,
+    note: note,
+    payload: payload,
+    mealAnalysisStatus: mealAnalysisStatus,
+    mealAnalysisCoverage: mealAnalysisCoverage,
+    mealShortDescription: mealShortDescription,
+    mealTopFoods: mealTopFoods,
+    attachments: attachments,
+    createdAt: '2026-07-14T08:30:00Z',
+    updatedAt: '2026-07-14T08:30:00Z',
+  );
+}
+
+void main() {
+  late _FakeDailyRecordRepository dailyRepo;
+  late LucentRecordRepository repo;
+
+  setUp(() {
+    dailyRepo = _FakeDailyRecordRepository();
+    repo = LucentRecordRepository(dailyRecordRepo: dailyRepo);
+  });
+
+  // ── fetchDashboard — basic orchestration ─────────────────────
+  group('fetchDashboard', () {
+    test('returns dashboard with empty timeline when no records', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.selectedDate, DateTime(2026, 7, 14));
+      expect(dashboard.selectedDay, 14);
+      expect(dashboard.timeline, isEmpty);
+      expect(dashboard.summary.items, isEmpty);
+    });
+
+    test(
+      'returns dashboard with timeline entries when records exist',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(
+              id: 'r1',
+              kind: DailyRecordKind.water,
+              value: '500',
+              unit: 'ml',
+            ),
+            _item(id: 'r2', kind: DailyRecordKind.meal, title: 'Lunch'),
+          ],
+          total: 2,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline, hasLength(2));
+        expect(dashboard.timeline[0].recordId, 'r1');
+        expect(dashboard.timeline[1].recordId, 'r2');
+      },
+    );
+
+    test('passes correct date string to dailyRepo', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      await repo.fetchDashboard(DateTime(2026, 3, 5));
+
+      expect(dailyRepo.lastFetchDate, '2026-03-05');
+    });
+
+    test('passes kind filter when filterType is provided', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      await repo.fetchDashboard(
+        DateTime(2026, 7, 14),
+        filterType: RecordEntryType.water,
+      );
+
+      expect(dailyRepo.lastFetchKind, 'water');
+    });
+
+    test('does not pass kind filter when filterType is null', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dailyRepo.lastFetchKind, isNull);
+    });
+
+    test(
+      'returns empty timeline for medication filterType (no matching kind)',
+      () async {
+        dailyRepo.fetchRecordsResult = const DailyRecordListData(
+          items: [],
+          total: 0,
+        );
+
+        await repo.fetchDashboard(
+          DateTime(2026, 7, 14),
+          filterType: RecordEntryType.medication,
+        );
+
+        // medication has no matching DailyRecordKind, so no fetch should occur
+        expect(dailyRepo.lastFetchDate, isNull);
+      },
+    );
+
+    test('returns empty timeline when fetchRecords throws', () async {
+      dailyRepo.fetchRecordsError = Exception('Network error');
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline, isEmpty);
+    });
+  });
+
+  // ── _toTimelineEntry — icon mapping ──────────────────────────
+  group('timeline icon mapping', () {
+    // vital and activity are filtered out by _isActiveRecordEntryType
+    final cases = [
+      (DailyRecordKind.water, FLucideIcons.droplets),
+      (DailyRecordKind.meal, FLucideIcons.utensils),
+      (DailyRecordKind.mood, FLucideIcons.smile),
+      (DailyRecordKind.symptom, FLucideIcons.cross),
+      (DailyRecordKind.note, FLucideIcons.notebookPen),
+      (DailyRecordKind.sleep, FLucideIcons.moon),
+    ];
+
+    for (final (kind, expectedIcon) in cases) {
+      test('maps ${kind.name} to correct icon', () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [_item(kind: kind)],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline.first.icon, expectedIcon);
+      });
+    }
+  });
+
+  // ── _toTimelineEntry — title resolution ──────────────────────
+  group('timeline title resolution', () {
+    test('uses record.title when present', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.water, title: 'Morning Water')],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawTitle, 'Morning Water');
+    });
+
+    test('uses mealShortDescription for meal when title is null', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.meal,
+            title: null,
+            mealShortDescription: 'Rice with chicken',
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawTitle, 'Rice with chicken');
+    });
+
+    test(
+      'uses kind+value fallback for non-meal/non-note/non-mood kinds',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(
+              kind: DailyRecordKind.water,
+              title: null,
+              value: '500',
+              unit: 'ml',
+            ),
+          ],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        // rawTitle falls back to "kind value" format
+        expect(dashboard.timeline.first.rawTitle, isNotNull);
+        expect(dashboard.timeline.first.rawTitle, contains('water'));
+        expect(dashboard.timeline.first.rawTitle, contains('500'));
+      },
+    );
+
+    test('sets rawTitle to null for note kind when title is null', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.note, title: null)],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawTitle, isNull);
+    });
+
+    test('sets rawTitle to null for mood kind when title is null', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.mood, title: null)],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawTitle, isNull);
+    });
+  });
+
+  // ── _toTimelineEntry — value formatting ──────────────────────
+  group('timeline value formatting', () {
+    test('formats value with unit for non-meal kinds', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.water, value: '500', unit: 'ml')],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, '500 ml');
+    });
+
+    test('uses note as value when value is null for non-meal kinds', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.note,
+            value: null,
+            note: 'Feeling good today',
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, 'Feeling good today');
+    });
+
+    test('formats sleep duration from payload', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.sleep,
+            value: null,
+            payload: {'durationMinutes': 450}, // 7h 30m
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, '7h 30m');
+    });
+
+    test('sleep duration only hours when minutes are zero', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.sleep,
+            value: null,
+            payload: {'durationMinutes': 420}, // 7h 0m
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, '7h');
+    });
+
+    test('sleep duration only minutes when hours are zero', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.sleep,
+            value: null,
+            payload: {'durationMinutes': 30}, // 0h 30m
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, '30m');
+    });
+
+    test('sleep payload ignored when durationMinutes is not a num', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.sleep,
+            value: null,
+            payload: {'durationMinutes': 'abc'},
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, isNull);
+    });
+
+    test(
+      'sleep payload ignored when durationMinutes is zero or negative',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(
+              kind: DailyRecordKind.sleep,
+              value: null,
+              payload: {'durationMinutes': 0},
+            ),
+          ],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline.first.value, isNull);
+      },
+    );
+
+    test('sleep payload ignored for non-sleep kinds', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.water,
+            value: null,
+            payload: {'durationMinutes': 450},
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, isNull);
+    });
+
+    test('uses mealShortDescription for meal value', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.meal,
+            mealShortDescription: 'Light breakfast',
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.value, 'Light breakfast');
+    });
+  });
+
+  // ── _toTimelineEntry — mood value key mapping ────────────────
+  group('mood value key mapping', () {
+    final cases = [
+      ('great', RecordCopyKey.timelineMoodGreat),
+      ('good', RecordCopyKey.timelineMoodGood),
+      ('okay', RecordCopyKey.timelineMoodOkay),
+      ('bad', RecordCopyKey.timelineMoodBad),
+      ('terrible', RecordCopyKey.timelineMoodTerrible),
+    ];
+
+    for (final (label, expectedKey) in cases) {
+      test('maps mood label "$label" to correct key', () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(kind: DailyRecordKind.mood, payload: {'moodLabel': label}),
+          ],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline.first.valueKey, expectedKey);
+      });
+    }
+
+    test('returns null valueKey for unknown mood label', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.mood,
+            payload: {'moodLabel': 'unknown_mood'},
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.valueKey, isNull);
+    });
+
+    test('returns null valueKey when moodLabel is not a String', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(kind: DailyRecordKind.mood, payload: {'moodLabel': 123}),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.valueKey, isNull);
+    });
+
+    test('returns null valueKey for non-mood kinds', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(kind: DailyRecordKind.water, payload: {'moodLabel': 'great'}),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.valueKey, isNull);
+    });
+
+    test('returns null valueKey when payload is null', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.mood, payload: null)],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.valueKey, isNull);
+    });
+  });
+
+  // ── _toTimelineEntry — meal badge key mapping ────────────────
+  group('meal badge key mapping', () {
+    final cases = [
+      ('confirmed', RecordCopyKey.timelineMealConfirmedBadge),
+      ('analysis_failed', RecordCopyKey.timelineMealFailedBadge),
+      ('analyzing', RecordCopyKey.timelineMealAnalyzingBadge),
+      ('unconfirmed', RecordCopyKey.timelineMealEstimateBadge),
+      ('', RecordCopyKey.timelineMealEstimateBadge),
+      ('unknown_status', RecordCopyKey.timelineMealEstimateBadge),
+    ];
+
+    for (final (status, expectedKey) in cases) {
+      test('maps mealAnalysisStatus "$status" to correct badge key', () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [
+            _item(kind: DailyRecordKind.meal, mealAnalysisStatus: status),
+          ],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline.first.badgeKey, expectedKey);
+      });
+    }
+
+    test('returns null badgeKey for non-meal kinds', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(kind: DailyRecordKind.water, mealAnalysisStatus: 'confirmed'),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.badgeKey, isNull);
+    });
+  });
+
+  // ── _toTimelineEntry — image URL extraction ─────────────────
+  group('image URL extraction', () {
+    test('extracts first image attachment URL', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            attachments: [
+              const DailyRecordAttachment(
+                id: 'att-1',
+                kind: DailyRecordAttachmentKind.image,
+                objectKey: 'uploads/1.jpg',
+                publicUrl: 'https://cdn.example.com/1.jpg',
+                createdAt: '2026-07-14T10:00:00Z',
+              ),
+            ],
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(
+        dashboard.timeline.first.imageUrl,
+        'https://cdn.example.com/1.jpg',
+      );
+    });
+
+    test('returns null imageUrl when attachment has no publicUrl', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            attachments: [
+              const DailyRecordAttachment(
+                id: 'att-1',
+                kind: DailyRecordAttachmentKind.image,
+                objectKey: 'uploads/1.jpg',
+                publicUrl: null,
+                createdAt: '2026-07-14T10:00:00Z',
+              ),
+            ],
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.imageUrl, isNull);
+    });
+
+    test('returns null imageUrl when no attachments', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item()],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.imageUrl, isNull);
+    });
+  });
+
+  // ── _toTimelineEntry — meal detail (topFoods) ────────────────
+  group('meal topFoods detail', () {
+    test('builds rawDetail from mealTopFoods', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(
+            kind: DailyRecordKind.meal,
+            mealTopFoods: ['Rice', 'Chicken', 'Vegetables'],
+          ),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawDetail, isNotNull);
+      expect(dashboard.timeline.first.rawDetail, contains('Rice'));
+      expect(dashboard.timeline.first.rawDetail, contains('Chicken'));
+      expect(dashboard.timeline.first.rawDetail, contains('Vegetables'));
+    });
+
+    test('rawDetail is null when mealTopFoods is empty', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.meal, mealTopFoods: [])],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawDetail, isNull);
+    });
+
+    test(
+      'vital records are filtered out by _isActiveRecordEntryType',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [_item(kind: DailyRecordKind.vital)],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline, isEmpty);
+      },
+    );
+
+    test(
+      'activity records are filtered out by _isActiveRecordEntryType',
+      () async {
+        dailyRepo.fetchRecordsResult = DailyRecordListData(
+          items: [_item(kind: DailyRecordKind.activity)],
+          total: 1,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.timeline, isEmpty);
+      },
+    );
+
+    test('rawDetail is null for non-meal kinds even with topFoods', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [
+          _item(kind: DailyRecordKind.water, mealTopFoods: ['Rice']),
+        ],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.rawDetail, isNull);
+    });
+  });
+
+  // ── _toTimelineEntry — time label formatting ─────────────────
+  group('time label', () {
+    test('uses occurredTime when present', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(occurredTime: '14:30')],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.time, '14:30');
+    });
+
+    test('returns em dash when occurredTime is null', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(occurredTime: null)],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.time, '—');
+    });
+
+    test('returns em dash when occurredTime is empty', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(occurredTime: '')],
+        total: 1,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline.first.time, '—');
+    });
+  });
+
+  // ── static data: weekDays ────────────────────────────────────
+  group('weekDays generation', () {
+    test('generates 7 days starting from Monday', () async {
+      // 2026-07-14 is a Tuesday (weekday=2)
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.weekDays, hasLength(7));
+      // Monday of that week is 2026-07-13
+      expect(dashboard.weekDays[0].day, 13);
+      expect(dashboard.weekDays[0].weekdayKey, RecordCopyKey.weekdayMon);
+      expect(dashboard.weekDays[6].day, 19);
+      expect(dashboard.weekDays[6].weekdayKey, RecordCopyKey.weekdaySun);
+    });
+
+    test('marks the selected date as selected', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final selectedDays = dashboard.weekDays.where((d) => d.selected);
+      expect(selectedDays, hasLength(1));
+      expect(selectedDays.first.day, 14);
+    });
+
+    test('marks selected day with marker color', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final selectedDay = dashboard.weekDays.firstWhere((d) => d.selected);
+      expect(selectedDay.markers, contains(SemanticColor.primary));
+    });
+
+    test('non-selected days have empty markers', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final nonSelectedDays = dashboard.weekDays.where((d) => !d.selected);
+      for (final day in nonSelectedDays) {
+        expect(day.markers, isEmpty);
+      }
+    });
+  });
+
+  // ── static data: monthDays ───────────────────────────────────
+  group('monthDays generation', () {
+    test('generates correct number of days for July 2026', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      // July 2026: July 1 is Wednesday (weekday=3), so 2 offset days
+      // 2 offset + 31 days = 33 total
+      expect(dashboard.monthDays, hasLength(33));
+    });
+
+    test('first days are padding (day=0, inMonth=false)', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      // July 1, 2026 is Wednesday, so offset = 2
+      expect(dashboard.monthDays[0].day, 0);
+      expect(dashboard.monthDays[0].inMonth, isFalse);
+      expect(dashboard.monthDays[1].day, 0);
+      expect(dashboard.monthDays[1].inMonth, isFalse);
+    });
+
+    test('marks the selected day as selected', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final selectedDays = dashboard.monthDays.where((d) => d.selected);
+      expect(selectedDays, hasLength(1));
+      expect(selectedDays.first.day, 14);
+    });
+
+    test('all in-month days have correct day numbers', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      final inMonthDays = dashboard.monthDays.where((d) => d.inMonth);
+      expect(inMonthDays, hasLength(31));
+      var expectedDay = 1;
+      for (final day in inMonthDays) {
+        expect(day.day, expectedDay);
+        expectedDay++;
+      }
+    });
+  });
+
+  // ── static data: filters ─────────────────────────────────────
+  group('filters generation', () {
+    test(
+      'generates filters with all selected when filterType is null',
+      () async {
+        dailyRepo.fetchRecordsResult = const DailyRecordListData(
+          items: [],
+          total: 0,
+        );
+
+        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+        expect(dashboard.filters, isNotEmpty);
+        for (final filter in dashboard.filters) {
+          expect(filter.selected, isTrue);
+        }
+      },
+    );
+
+    test(
+      'only matching filter is selected when filterType is provided',
+      () async {
+        dailyRepo.fetchRecordsResult = const DailyRecordListData(
+          items: [],
+          total: 0,
+        );
+
+        final dashboard = await repo.fetchDashboard(
+          DateTime(2026, 7, 14),
+          filterType: RecordEntryType.water,
+        );
+
+        final waterFilter = dashboard.filters.firstWhere(
+          (f) => f.type == RecordEntryType.water,
+        );
+        expect(waterFilter.selected, isTrue);
+
+        final otherFilters = dashboard.filters.where(
+          (f) => f.type != RecordEntryType.water,
+        );
+        for (final filter in otherFilters) {
+          expect(filter.selected, isFalse);
+        }
+      },
+    );
+  });
+
+  // ── static data: quickActions ────────────────────────────────
+  group('quickActions generation', () {
+    test('generates non-empty list of quick actions', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.quickActions, isNotEmpty);
+    });
+
+    test('all quick actions have active entry types', () async {
+      dailyRepo.fetchRecordsResult = const DailyRecordListData(
+        items: [],
+        total: 0,
+      );
+
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+
+      for (final action in dashboard.quickActions) {
+        expect(action.type, isNot(RecordEntryType.heartRate));
+        expect(action.type, isNot(RecordEntryType.weight));
+      }
+    });
+  });
+
+  // ── signedOutDashboard ───────────────────────────────────────
+  group('signedOutDashboard', () {
+    test('returns dashboard with empty timeline', () async {
+      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.timeline, isEmpty);
+      expect(dashboard.summary.items, isEmpty);
+      expect(dashboard.trends, isEmpty);
+      expect(dashboard.monthDays, isEmpty);
+    });
+
+    test('returns dashboard with selectedDate and selectedDay', () async {
+      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.selectedDate, DateTime(2026, 7, 14));
+      expect(dashboard.selectedDay, 14);
+    });
+
+    test('returns dashboard with quickActions', () async {
+      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.quickActions, isNotEmpty);
+    });
+
+    test('returns dashboard with filters', () async {
+      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.filters, isNotEmpty);
+    });
+
+    test('returns dashboard with weekDays', () async {
+      final dashboard = await repo.signedOutDashboard(DateTime(2026, 7, 14));
+
+      expect(dashboard.weekDays, hasLength(7));
+    });
+  });
+}
