@@ -52,10 +52,20 @@ lib/l10n/app_en.arb
 **/*.freezed.dart
 **/*.g.dart
 **/*.drift.dart
+# Drift web worker — compiled from web/drift_worker.dart
+web/drift_worker.js
+web/drift_worker.js.deps
+web/drift_worker.js.map
 packages/
 !generated/lucent_api/lib/api/**
 generated/lucent_api/lib/api/**/*.g.dart
 generated/lucent_api/pubspec.lock
+
+# Drift web worker — compiled from web/drift_worker.dart
+web/drift_worker.js
+web/drift_worker.js.deps
+web/drift_worker.js.map
+web/sqlite3.wasm
 
 # Symbolication related
 app.*.symbols

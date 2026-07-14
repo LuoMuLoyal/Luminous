@@ -16,7 +16,7 @@ jobs:
   ci:
     name: Flutter CI
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       PUB_HOSTED_URL: https://pub.dev
@@ -47,6 +47,9 @@ jobs:
           dart pub get
           dart run build_runner build --delete-conflicting-outputs
           cd ../..
+
+      - name: Compile drift web worker
+        run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
       - name: Analyze
         run: flutter analyze
