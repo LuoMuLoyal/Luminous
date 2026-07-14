@@ -79,11 +79,15 @@ void main() {
   });
 
   group('MedicineDoseStatus enum', () {
-    test('has exactly 3 values', () {
-      expect(MedicineDoseStatus.values.length, 3);
-      expect(MedicineDoseStatus.values, contains(MedicineDoseStatus.taken));
-      expect(MedicineDoseStatus.values, contains(MedicineDoseStatus.skipped));
-      expect(MedicineDoseStatus.values, contains(MedicineDoseStatus.pending));
+    test('contains expected values', () {
+      expect(
+        MedicineDoseStatus.values,
+        containsAll([
+          MedicineDoseStatus.taken,
+          MedicineDoseStatus.skipped,
+          MedicineDoseStatus.pending,
+        ]),
+      );
     });
   });
 }

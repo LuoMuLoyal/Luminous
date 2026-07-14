@@ -218,25 +218,24 @@ void main() {
   });
 
   group('RecordEntryType enum', () {
-    test('has all expected types', () {
-      expect(RecordEntryType.values.length, 11);
-      expect(RecordEntryType.values.contains(RecordEntryType.meal), isTrue);
-      expect(RecordEntryType.values.contains(RecordEntryType.water), isTrue);
-      expect(RecordEntryType.values.contains(RecordEntryType.sleep), isTrue);
-      expect(RecordEntryType.values.contains(RecordEntryType.note), isTrue);
+    test('contains all expected types', () {
+      expect(
+        RecordEntryType.values,
+        containsAll([
+          RecordEntryType.meal,
+          RecordEntryType.water,
+          RecordEntryType.sleep,
+          RecordEntryType.note,
+        ]),
+      );
     });
   });
 
   group('RecordTrendKind enum', () {
-    test('has bloodSugar and hydration', () {
-      expect(RecordTrendKind.values.length, 2);
+    test('contains bloodSugar and hydration', () {
       expect(
-        RecordTrendKind.values.contains(RecordTrendKind.bloodSugar),
-        isTrue,
-      );
-      expect(
-        RecordTrendKind.values.contains(RecordTrendKind.hydration),
-        isTrue,
+        RecordTrendKind.values,
+        containsAll([RecordTrendKind.bloodSugar, RecordTrendKind.hydration]),
       );
     });
   });

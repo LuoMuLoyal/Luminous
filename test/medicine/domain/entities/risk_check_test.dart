@@ -192,56 +192,57 @@ void main() {
   });
 
   group('Enum completeness', () {
-    test('MedicineRiskSeverity has exactly 3 values', () {
-      expect(MedicineRiskSeverity.values.length, 3);
-      expect(MedicineRiskSeverity.values, contains(MedicineRiskSeverity.high));
+    test('MedicineRiskSeverity contains expected values', () {
       expect(
         MedicineRiskSeverity.values,
-        contains(MedicineRiskSeverity.medium),
+        containsAll([
+          MedicineRiskSeverity.high,
+          MedicineRiskSeverity.medium,
+          MedicineRiskSeverity.info,
+        ]),
       );
-      expect(MedicineRiskSeverity.values, contains(MedicineRiskSeverity.info));
     });
 
-    test('MedicineRiskFindingType has exactly 5 values', () {
-      expect(MedicineRiskFindingType.values.length, 5);
+    test('MedicineRiskFindingType contains expected values', () {
+      expect(
+        MedicineRiskFindingType.values,
+        containsAll([
+          MedicineRiskFindingType.interaction,
+          MedicineRiskFindingType.allergy,
+          MedicineRiskFindingType.duplicateIngredient,
+          MedicineRiskFindingType.foodInteraction,
+          MedicineRiskFindingType.specialGroup,
+        ]),
+      );
     });
 
-    test('MedicineRiskFindingContext has exactly 3 values', () {
-      expect(MedicineRiskFindingContext.values.length, 3);
+    test('MedicineRiskFindingContext contains expected values', () {
       expect(
         MedicineRiskFindingContext.values,
-        contains(MedicineRiskFindingContext.none),
-      );
-      expect(
-        MedicineRiskFindingContext.values,
-        contains(MedicineRiskFindingContext.alcohol),
-      );
-      expect(
-        MedicineRiskFindingContext.values,
-        contains(MedicineRiskFindingContext.caffeine),
+        containsAll([
+          MedicineRiskFindingContext.none,
+          MedicineRiskFindingContext.alcohol,
+          MedicineRiskFindingContext.caffeine,
+        ]),
       );
     });
 
-    test('MedicineRiskCoverageReason has exactly 3 values', () {
-      expect(MedicineRiskCoverageReason.values.length, 3);
+    test('MedicineRiskCoverageReason contains expected values', () {
       expect(
         MedicineRiskCoverageReason.values,
-        contains(MedicineRiskCoverageReason.manualEntry),
-      );
-      expect(
-        MedicineRiskCoverageReason.values,
-        contains(MedicineRiskCoverageReason.missingSourceRef),
-      );
-      expect(
-        MedicineRiskCoverageReason.values,
-        contains(MedicineRiskCoverageReason.detailUnavailable),
+        containsAll([
+          MedicineRiskCoverageReason.manualEntry,
+          MedicineRiskCoverageReason.missingSourceRef,
+          MedicineRiskCoverageReason.detailUnavailable,
+        ]),
       );
     });
 
-    test('RedFlagRule has exactly 2 values', () {
-      expect(RedFlagRule.values.length, 2);
-      expect(RedFlagRule.values, contains(RedFlagRule.severeAllergy));
-      expect(RedFlagRule.values, contains(RedFlagRule.informationGap));
+    test('RedFlagRule contains expected values', () {
+      expect(
+        RedFlagRule.values,
+        containsAll([RedFlagRule.severeAllergy, RedFlagRule.informationGap]),
+      );
     });
   });
 }

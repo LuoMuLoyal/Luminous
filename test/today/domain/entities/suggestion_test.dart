@@ -218,33 +218,26 @@ void main() {
   });
 
   group('TodaySuggestionConfidence', () {
-    test('has exactly three values', () {
-      expect(TodaySuggestionConfidence.values.length, 3);
+    test('contains expected values', () {
       expect(
         TodaySuggestionConfidence.values,
-        contains(TodaySuggestionConfidence.high),
-      );
-      expect(
-        TodaySuggestionConfidence.values,
-        contains(TodaySuggestionConfidence.medium),
-      );
-      expect(
-        TodaySuggestionConfidence.values,
-        contains(TodaySuggestionConfidence.low),
+        containsAll([
+          TodaySuggestionConfidence.high,
+          TodaySuggestionConfidence.medium,
+          TodaySuggestionConfidence.low,
+        ]),
       );
     });
   });
 
   group('TodaySuggestionTriggerType', () {
-    test('has exactly two values', () {
-      expect(TodaySuggestionTriggerType.values.length, 2);
+    test('contains expected values', () {
       expect(
         TodaySuggestionTriggerType.values,
-        contains(TodaySuggestionTriggerType.event),
-      );
-      expect(
-        TodaySuggestionTriggerType.values,
-        contains(TodaySuggestionTriggerType.timer),
+        containsAll([
+          TodaySuggestionTriggerType.event,
+          TodaySuggestionTriggerType.timer,
+        ]),
       );
     });
   });

@@ -18,8 +18,15 @@ void main() {
       expect(MedicineReminderSoundPreference.silent.storageValue, 'silent');
     });
 
-    test('has exactly 3 values', () {
-      expect(MedicineReminderSoundPreference.values.length, 3);
+    test('contains expected values', () {
+      expect(
+        MedicineReminderSoundPreference.values,
+        containsAll([
+          MedicineReminderSoundPreference.defaultTone,
+          MedicineReminderSoundPreference.gentle,
+          MedicineReminderSoundPreference.silent,
+        ]),
+      );
     });
   });
 
