@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:luminous/core/logger/logger.dart';
 
 /// Image compression utility for upload scenarios.
 ///
@@ -68,8 +69,9 @@ class AppImageCompressor {
         format: CompressFormat.jpeg,
       );
       return result;
-    } catch (_) {
+    } catch (e, st) {
       // Compression failed — upload original bytes rather than blocking the user.
+      appTalker.warning('Image compression failed, using original: $e', e, st);
       return bytes;
     }
   }
