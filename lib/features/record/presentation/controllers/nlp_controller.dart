@@ -138,24 +138,36 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     final targetIndexSet = targetIndexes.toSet();
     state = state.copyWith(status: RecordNlpStatus.saving, errorMessage: null);
 
-    final failedItemsByIndex = <int, RecordNlpCandidateDraft>{};
+    // Save all selected candidates in parallel to reduce user wait time.
+    final results = await Future.wait(
+      targetIndexes.map((index) async {
+        final item = currentCandidates[index];
+        try {
+          await repo.create(item.toCreateInput());
+          return (index: index, success: true, error: null as String?);
+        } catch (error) {
+          ref
+              .read(talkerProvider)
+              .error('RecordNlpController._saveCandidates: failed: $error');
+          final apiError = LucentErrorMapper.fromObject(error);
+          return (index: index, success: false, error: apiError.message);
+        }
+      }),
+    );
+
     var savedCount = 0;
     String? lastErrorMessage;
+    final failedItemsByIndex = <int, RecordNlpCandidateDraft>{};
 
-    for (final index in targetIndexes) {
-      final item = currentCandidates[index];
-      try {
-        await repo.create(item.toCreateInput());
+    for (final result in results) {
+      if (result.success) {
         savedCount += 1;
-      } catch (error) {
-        ref
-            .read(talkerProvider)
-            .error('RecordNlpController._saveCandidates: failed: $error');
-        final apiError = LucentErrorMapper.fromObject(error);
-        lastErrorMessage = apiError.message;
-        failedItemsByIndex[index] = item.copyWith(
+      } else {
+        final item = currentCandidates[result.index];
+        lastErrorMessage = result.error;
+        failedItemsByIndex[result.index] = item.copyWith(
           selected: true,
-          lastErrorMessage: apiError.message,
+          lastErrorMessage: result.error,
         );
       }
     }
