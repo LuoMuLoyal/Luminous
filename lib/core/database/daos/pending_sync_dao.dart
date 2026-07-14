@@ -145,5 +145,5 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     return 'pending_${DateTime.now().microsecondsSinceEpoch}_${_counter++}';
   }
 
-  int _counter = 0;
+  static int _counter = 0;
 }
