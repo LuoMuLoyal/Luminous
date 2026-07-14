@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-13
+Last updated: 2026-07-14
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 历史 completed baselines 已归档至 [[04-archive/current-state-archive]]。
@@ -55,6 +55,8 @@ Last updated: 2026-07-13
 - 依赖清理与图片压缩接入（2026-07-13）：移除 `cupertino_icons`（零引用）；引入 `flutter_image_compress ^2.4.0`；新建 `lib/core/utils/image_compressor.dart`（`AppImageCompressor` 提供 `compressForUpload` 1280px/85% 和 `compressForAiRecognition` 1920px/90% 两个预设，Web + 异常 fallback 返回原始 bytes）；`record/create.dart`、`record/edit.dart` 的 `onPickImage()` 接入日常记录附件压缩；`scan/box_scan.dart` AI 识别路径接入高保真压缩；OCR 路径不压缩（ML Kit 直接处理文件路径）。`flutter analyze` 零问题。
 - 桌面端 UI 优化（2026-07-13）：侧边栏移除全部 `FSidebarItem.children`（5 个扁平 Tab + Settings + Help）；移除面包屑；Tab 路由 `NoTransitionPage` 改为 150ms `FadeTransition`；`ShellDeferredContent` placeholder 从骨架屏改为纯色占位；新建 `DesktopTabShell` 统一桌面端外壳（AppTopBar + maxWidth 约束 + muted 背景 + 可选 RefreshIndicator/PageStorageKey）；5 个 Tab 页面全部迁移到 `DesktopTabShell`，所有状态分支（loading/error/empty/ready）统一 Shell 结构；MedicinePage 桌面端新增搜索栏和 trailing 按钮；ReportPage 提取 `ReportActionBar` 独立组件；MinePage `_IconActionButton` 改为公共 `IconActionButton`；清理 16 个 sidebar ARB key。`flutter analyze` 零问题，2294 tests passed。
 - 安全审查修复：GoRouter 全局重定向守卫（2026-07-13）：`router.dart` 添加 `redirect` 回调，未认证用户访问受保护路由时重定向到 `/login`，已认证用户访问 auth 路由时重定向到 `/`；session 恢复中不跳转防闪烁；`/legal` 作为公开路由不拦截。`bootstrap.dart` 认证状态监听中添加 `router.refresh()` 触发 redirect 重新评估。`flutter analyze` 零问题。
+- 7-14 增量审查报告改写为 Bug 修复计划（2026-07-14）：`plans/Luminous-2026-07-14.md` 从审查报告格式改写为可执行的 Bug 修复计划。经代码核实，确认 12 个问题（2 个 P0 严重、4 个 P1 警告、3 个 P2 警告、3 个 P3 建议），按 Phase 1-4 组织，每个问题包含问题确认、修复步骤、验证标准。P0 问题：Web 编译产物提交到 git 仓库膨胀、GoRouter redirect 中 `ProviderScope.containerOf` 崩溃风险。P1 问题：SyncWorker Stream 竞态、PendingSyncDao counter 实例变量、测试 enum.length 脆弱断言、AppImageCompressor 静默吞错。P2 问题：DAO providers 非 keepAlive、arb_tools 同步 IO 防误用注释、条件导入 ArkWeb 兼容。P3 问题：NLP 串行保存、CI timeout 偏紧、schemaVersion 迁移策略预留。
+- 7-14 Bug 修复计划执行（2026-07-14）：执行 `plans/Luminous-2026-07-14.md` 中的全部 12 个 bug 修复。P0：Web 编译产物从 git 移除并加入 .gitignore + CI 编译步骤；GoRouter redirect 从 `ProviderScope.containerOf` 改为 `@Riverpod(keepAlive: true)` provider + `ref.read`。P1：SyncWorker `start()` 改为 async + await cancel；PendingSyncDao `_counter` 改为 static；6 个测试文件 13 处 `enum.values.length` 改为 `containsAll`；AppImageCompressor catch 块添加 `appTalker.warning` 日志。P2：6 个 DAO provider 改为 `@Riverpod(keepAlive: true)` + `ref.read`；arb_tools 添加 CLI-only 注释；database.dart 添加 ArkWeb 已知风险注释。P3：NLP `_saveCandidates` 改为 `Future.wait` 并行保存；CI timeout 25→35 分钟；schemaVersion 迁移注释模板扩展。`flutter analyze` 零问题，2287 tests passed。
 
 ## 相关文档
 

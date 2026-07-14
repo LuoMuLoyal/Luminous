@@ -1,5 +1,9 @@
 // arb_tools.dart — ARB 文件拆分 / 合并工具
 //
+// NOTE: This script uses synchronous IO because it is designed to run
+// from the command line only. Do not use these functions from a Flutter
+// isolate/UI thread.
+//
 // 用法:
 //   dart scripts/arb_tools.dart split   — 将 app_{zh,en}.arb 拆分到 lib/l10n/src/
 //   dart scripts/arb_tools.dart merge   — 将 lib/l10n/src/*_{zh,en}.arb 合并为 app_{zh,en}.arb
