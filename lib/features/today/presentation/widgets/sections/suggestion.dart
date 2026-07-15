@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -368,7 +369,8 @@ class _SuggestionFeedbackRowState
         setState(() => _submittedFeedback = feedback);
         unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackSuccess));
       }
-    } catch (_) {
+    } catch (e, st) {
+      appTalker.error('submitFeedback failed: $e', e, st);
       if (mounted) {
         unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackError));
       }

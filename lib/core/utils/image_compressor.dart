@@ -57,6 +57,7 @@ class AppImageCompressor {
   }) async {
     if (kIsWeb) {
       // flutter_image_compress has no stable web backend; return original.
+      appTalker.debug('Image compression skipped on Web (no plugin backend)');
       return bytes;
     }
 

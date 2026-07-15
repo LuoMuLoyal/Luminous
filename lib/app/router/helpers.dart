@@ -16,6 +16,24 @@ CustomTransitionPage<T> fadePage<T>({
   );
 }
 
+/// Fade transition helper for shell tab routes.
+///
+/// Uses the fast [DurationTokens.tabPageTransitionIn] / [tabPageTransitionOut]
+/// tokens so tab switching feels instantaneous.
+CustomTransitionPage<T> tabFadePage<T>({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        FadeTransition(opacity: animation, child: child),
+    transitionDuration: DurationTokens.tabPageTransitionIn,
+    reverseTransitionDuration: DurationTokens.tabPageTransitionOut,
+  );
+}
+
 CustomTransitionPage<T> slidePage<T>({
   required LocalKey key,
   required Widget child,

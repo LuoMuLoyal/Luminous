@@ -13,6 +13,7 @@
 export 'semantic_color.dart';
 export 'semantic_color_palette.dart';
 export 'semantic_colors.dart';
+export 'high_contrast.dart';
 
 // Layout
 export 'breakpoints.dart';

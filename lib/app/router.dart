@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
@@ -22,6 +21,7 @@ import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
 import 'package:luminous/features/shell/presentation/page.dart';
+import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 
 part 'router.g.dart';
@@ -140,15 +140,8 @@ GoRouter appRouter(Ref ref) => GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.home,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const TodayPage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
-                transitionDuration: const Duration(milliseconds: 150),
-                reverseTransitionDuration: Duration.zero,
-              ),
+              pageBuilder: (context, state) =>
+                  tabFadePage(key: state.pageKey, child: const TodayPage()),
             ),
           ],
         ),
@@ -156,15 +149,8 @@ GoRouter appRouter(Ref ref) => GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.record,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const RecordPage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
-                transitionDuration: const Duration(milliseconds: 150),
-                reverseTransitionDuration: Duration.zero,
-              ),
+              pageBuilder: (context, state) =>
+                  tabFadePage(key: state.pageKey, child: const RecordPage()),
             ),
           ],
         ),
@@ -172,15 +158,8 @@ GoRouter appRouter(Ref ref) => GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.medicine,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const MedicinePage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
-                transitionDuration: const Duration(milliseconds: 150),
-                reverseTransitionDuration: Duration.zero,
-              ),
+              pageBuilder: (context, state) =>
+                  tabFadePage(key: state.pageKey, child: const MedicinePage()),
             ),
           ],
         ),
@@ -188,15 +167,8 @@ GoRouter appRouter(Ref ref) => GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.report,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const ReportPage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
-                transitionDuration: const Duration(milliseconds: 150),
-                reverseTransitionDuration: Duration.zero,
-              ),
+              pageBuilder: (context, state) =>
+                  tabFadePage(key: state.pageKey, child: const ReportPage()),
             ),
           ],
         ),
@@ -204,15 +176,8 @@ GoRouter appRouter(Ref ref) => GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.mine,
-              pageBuilder: (context, state) => CustomTransitionPage(
-                key: state.pageKey,
-                child: const MinePage(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        FadeTransition(opacity: animation, child: child),
-                transitionDuration: const Duration(milliseconds: 150),
-                reverseTransitionDuration: Duration.zero,
-              ),
+              pageBuilder: (context, state) =>
+                  tabFadePage(key: state.pageKey, child: const MinePage()),
             ),
           ],
         ),

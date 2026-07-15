@@ -11,6 +11,14 @@ abstract final class DurationTokens {
   /// Auth page route transition (fade out).
   static const authPageTransitionOut = Duration(milliseconds: 280);
 
+  /// Shell tab route transition (fade in). Fast to keep tab
+  /// switching feeling instantaneous.
+  static const tabPageTransitionIn = Duration(milliseconds: 150);
+
+  /// Shell tab route transition (fade out). Zero so outgoing
+  /// tab content is removed immediately without flicker.
+  static const tabPageTransitionOut = Duration.zero;
+
   /// CRUD page route transition (slide in).
   static const crudPageTransitionIn = Duration(milliseconds: 220);
 

@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings_controller.dart';
 import 'package:luminous/core/database/cache_cleanup_provider.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -166,11 +167,15 @@ FThemeData _applyHighContrast(FThemeData theme) {
     touch: true,
     debugLabel: theme.debugLabel,
     colors: colors.copyWith(
-      foreground: isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
+      foreground: isDark
+          ? HighContrastColors.darkForeground
+          : HighContrastColors.lightForeground,
       mutedForeground: isDark
-          ? const Color(0xFFE0E0E0)
-          : const Color(0xFF1A1A1A),
-      border: isDark ? const Color(0xFFCCCCCC) : const Color(0xFF333333),
+          ? HighContrastColors.darkMutedForeground
+          : HighContrastColors.lightMutedForeground,
+      border: isDark
+          ? HighContrastColors.darkBorder
+          : HighContrastColors.lightBorder,
     ),
   );
 }

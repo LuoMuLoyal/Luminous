@@ -454,6 +454,7 @@
   "scanConfirmDetailAction": "Confirm, view details",
   "scanMethodPickerTitle": "Choose recognition method",
   "scanBarcodeNotFoundToast": "No medicine found for this barcode",
+  "scanRecognitionFailedToast": "Recognition failed. Please try again.",
   "scanSearchFailedToast": "Search failed: {error}",
   "@scanSearchFailedToast": {
     "placeholders": {

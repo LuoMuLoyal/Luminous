@@ -86,7 +86,12 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
     appTalker.error('showMedicineBoxScanSheet: failed: $e');
     if (context.mounted) {
       Navigator.of(context, rootNavigator: true).pop();
-      unawaited(AppToast.show(context, '识别失败: $e'));
+      unawaited(
+        AppToast.show(
+          context,
+          AppLocalizations.of(context)!.scanRecognitionFailedToast,
+        ),
+      );
     }
   }
 }
