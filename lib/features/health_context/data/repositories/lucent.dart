@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
@@ -148,7 +149,7 @@ class LucentHealthContextRepository implements HealthContextRepository {
   void _refreshInBackground() {
     final now = DateTime.now();
     if (_lastRefreshAttempt != null &&
-        now.difference(_lastRefreshAttempt!) < const Duration(seconds: 30)) {
+        now.difference(_lastRefreshAttempt!) < backgroundRefreshThrottle) {
       return;
     }
     _lastRefreshAttempt = now;

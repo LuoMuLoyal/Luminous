@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+import '../cache_constants.dart';
 import '../database.dart';
 import '../tables/pending_sync_queue.dart';
 
@@ -31,10 +32,13 @@ class PendingSyncEntry {
   bool get isPermanentlyFailed => retryCount >= maxRetry;
 
   /// The minimum delay before the next retry attempt.
-  /// Exponential backoff: 30s * 2^retryCount, capped at 30 minutes.
+  /// Exponential backoff: [syncBackoffBase] * 2^retryCount,
+  /// capped at [syncBackoffMax].
   Duration get backoffDelay {
-    final seconds = 30 * (1 << retryCount);
-    return Duration(seconds: seconds.clamp(0, 1800));
+    final baseSeconds = syncBackoffBase.inSeconds;
+    final maxSeconds = syncBackoffMax.inSeconds;
+    final seconds = baseSeconds * (1 << retryCount);
+    return Duration(seconds: seconds.clamp(0, maxSeconds));
   }
 }
 
@@ -124,6 +128,22 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     final query = selectOnly(pendingSyncItems)
       ..addColumns([count])
       ..where(pendingSyncItems.isSyncing.equals(false));
+    final result = await query.getSingle();
+    return result.read(count) ?? 0;
+  }
+
+  /// Returns the count of permanently failed sync items
+  /// (retryCount >= maxRetry).
+  ///
+  /// Used by [syncFailedCountProvider] to surface a warning in the Mine
+  /// page when offline writes could not be synced after all retries.
+  Future<int> permanentlyFailedCount() async {
+    final count = countAll();
+    final query = selectOnly(pendingSyncItems)
+      ..addColumns([count])
+      ..where(
+        pendingSyncItems.retryCount.isBiggerOrEqual(pendingSyncItems.maxRetry),
+      );
     final result = await query.getSingle();
     return result.read(count) ?? 0;
   }

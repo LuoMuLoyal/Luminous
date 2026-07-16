@@ -235,5 +235,14 @@
   "mineExportStatusUnavailable": "Unavailable",
   "mineExportDownloadButton": "Download Report",
   "mineExportRegenerateButton": "Regenerate",
-  "mineExportRequested": "Export request submitted"
+  "mineExportRequested": "Export request submitted",
+  "mineSyncFailedWarning": "{count} item(s) failed to sync, which may affect cross-device consistency",
+  "@mineSyncFailedWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineSyncFailedAction": "View details"
 }

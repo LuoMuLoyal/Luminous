@@ -23,18 +23,7 @@ Last updated: 2026-07-15
 
 ## 审查后续关注项（2026-07-11 回查 → 7-15 细化）
 
-以下项来自 7-11 审查回查报告，代码层面问题已全部修复，剩余两项为架构/设计层面待办：
-
-### SemanticColor 暗色对比度验证
-
-- 在真机/模拟器上切换暗色模式，对每个 SemanticColor 的 `subtle`（alpha 0.04~0.06）和 `border`（alpha 0.18~0.25）色调做 WCAG 对比度检查（≥ 3:1 large text, ≥ 4.5:1 normal text）
-- 如果对比度不足，调整 `semantic_colors.dart` 中暗色模式的 alpha 值
-
-### Drift 缓存一致性
-
-- 统一 TTL 常量：审查各 DAO 的 TTL 值，在 `lib/core/database/` 下新建 `cache_constants.dart` 统一定义
-- `SyncWorker` permanently failed UI 通知：`lib/core/database/sync/sync_worker.dart` 中 `_replayEntry` 在 `retryCount + 1 >= maxRetry` 时标记为 permanently failed 但无 UI 提示，改为通过 Riverpod provider 暴露 failed count，在 Mine 页面展示同步失败提示
-- 多设备冲突策略文档化：在 `Current_State.md` 添加「多设备数据同步策略」段落，明确 last-write-wins 行为
+以下项来自 7-11 审查回查报告，代码层面问题已全部修复。
 
 ## 语义颜色系统增量清理 (LUM-2026-0709-07 后续)
 

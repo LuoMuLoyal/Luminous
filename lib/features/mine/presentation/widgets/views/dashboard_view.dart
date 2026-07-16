@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 
 class MineDashboardView extends StatelessWidget {
@@ -47,6 +48,8 @@ class MineDashboardView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const MineSyncFailedBanner(),
+        const SizedBox(height: Spacing.level4),
         MineAccountHero(
           key: const Key('mine-account-header'),
           dashboard: dashboard,
@@ -75,6 +78,8 @@ class MineDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const MineSyncFailedBanner(),
+              const SizedBox(height: Spacing.level4),
               MineAccountHero(
                 key: const Key('mine-account-header'),
                 dashboard: dashboard,

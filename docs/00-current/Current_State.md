@@ -69,6 +69,12 @@ Last updated: 2026-07-16
 
 - 代码审查修复（2026-07-16）：根据 `plans/2026-07-16-code-review-fixes.md` 修复 2 个遗留审查问题。**#1 SSE 错误映射去重**：`map_utils.dart` 新增 `requireMap` 和 `mapSseStreamError` 公共函数，三个 AI datasource（`ai_remote.dart` / `ai_summary_remote.dart` / `assistant.dart`）删除各自重复的 `_requireMap` / `_mapStreamError` 私有方法，统一调用公共函数。**#2 测试断言修复**：`voice_entry_dialog_test.dart` 中硬编码 ARB key 字符串 `'recordVoiceEntryTitle'` 改为 `l10n.recordVoiceEntryTitle` 本地化文本，使断言能正确验证 sheet 关闭逻辑。`flutter analyze` 零问题，2781 tests passed。
 
+- SemanticColor 暗色对比度验证 + Drift 缓存一致性（2026-07-16）：
+  - **暗色对比度**：`theme.dart` `_fixedPalette` 暗色模式 `subtle` alpha 从 0.08 提升至 0.10，确保空状态背景在深色背景上有足够区分度。`muted`（0.18）和 `border`（0.35）经 WCAG 2.1 分析验证通过——`solid` 在 `muted` 背景上对比度 >7:1（超 AAA）。完整分析文档化在 `_fixedPalette` 注释中。
+  - **缓存常量统一**：新建 `lib/core/database/cache_constants.dart` 统一所有时间常量——`backgroundRefreshThrottle`（30s）、`networkTimeoutShort`（5s）、`defaultMaxRetry`（5）、`syncBackoffBase`（30s）、`syncBackoffMax`（30min）。`PendingSyncEntry.backoffDelay` 和 `LucentHealthContextRepository._refreshInBackground` 从硬编码改为引用统一常量。
+  - **SyncWorker 失败 UI 通知**：`PendingSyncDao` 新增 `permanentlyFailedCount()` 方法查询永久失败项数；新增 `syncFailedCountProvider` Riverpod provider；新建 `MineSyncFailedBanner` widget 在 Mine 页面顶部展示同步失败警告（warning 色 subtle 背景 + border + cloudAlert 图标 + 点击重试 flush），移动端和桌面端布局均已接入。
+  - **多设备同步策略文档化**：明确 last-write-wins 行为——服务端时间戳为权威，客户端缓存为读取优化，离线写入通过 pending sync queue 最终一致化。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]

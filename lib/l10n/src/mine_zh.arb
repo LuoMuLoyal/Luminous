@@ -235,5 +235,14 @@
   "mineExportStatusUnavailable": "暂不可用",
   "mineExportDownloadButton": "下载报告",
   "mineExportRegenerateButton": "重新生成",
-  "mineExportRequested": "导出请求已提交"
+  "mineExportRequested": "导出请求已提交",
+  "mineSyncFailedWarning": "{count} 项数据同步失败，可能影响跨设备一致性",
+  "@mineSyncFailedWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineSyncFailedAction": "查看详情"
 }

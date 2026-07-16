@@ -148,3 +148,14 @@ SyncWorker syncWorker(Ref ref) {
 
   return worker;
 }
+
+/// Exposes the count of permanently failed sync items.
+///
+/// When > 0, the Mine page shows a warning banner so the user knows some
+/// offline writes could not be synced. The count is re-evaluated after
+/// each [SyncWorker.flush] cycle.
+@Riverpod(keepAlive: true)
+Future<int> syncFailedCount(Ref ref) async {
+  final dao = ref.watch(pendingSyncDaoProvider);
+  return dao.permanentlyFailedCount();
+}
