@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-15
+Last updated: 2026-07-16
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 历史 completed baselines 已归档至 [[04-archive/current-state-archive]]。
@@ -66,6 +66,8 @@ Last updated: 2026-07-15
 - 测试覆盖缺口补测第十批（2026-07-14）：针对纯逻辑函数/getter 缺失测试，新增 5 个测试文件共 96 个测试用例。`meal_analysis_view_data_test`（13 个）覆盖 `displayName`/`hasAnyValue` getter + 构造器；`record_entity_test`（17 个）覆盖 `DailyRecordAttachment.displayUrl` getter + 全实体构造器；`section_models_extended_test`（10 个）覆盖 `reportExportInputForKind`/`reportAiSummaryFallbackBullets` 纯函数；`medicine_search_notifier_test`（17 个）覆盖 `MedicineSearchNotifier` 全状态转换（updateQuery/switchSource/selectResult/retry/timeout/empty results）；`view_models_extended_test`（39 个）覆盖 `greetingSubtitle`/`medicationName`/`buildQuickActionItems`/`buildAiSummaryBullets` Today 视图模型纯函数。`flutter analyze` 零问题。
 - 测试覆盖缺口补测第十一批（2026-07-14）：针对 Tier 1 剩余缺口（具有纯逻辑的非 UI 模块），新增 3 个测试文件共 93 个测试用例。`lucent_repository_test`（71 个）覆盖 `LucentRecordRepository` 全部逻辑：`fetchDashboard` 编排、`_toTimelineEntry` 记录→时间线映射（icon/title/value/badge/mood/sleep/meal）、image URL 提取、`_staticWeekDays`/`_staticMonthDays` 日历生成、filters/quickActions 静态数据、`signedOutDashboard`、`_isActiveRecordEntryType` 过滤逻辑（vital/activity 被过滤）；`cache_cleanup_provider_test`（9 个）覆盖保留期 forever/30 天/90 天 cutoff 计算、DAO cleanup 调用、异常吞错、未知值默认 ninetyDays；`profile_remote_test`（13 个）覆盖 `SettingsProfileRemoteDataSource.updatePreferences` 哨兵模式 payload 构建（单字段/多字段/全哨兵空 payload/显式哨兵）、HTTP 方法/端点/content-type 验证、`HealthContextDataDto.profile` 响应解析。`flutter analyze` 零问题。
 - 7-15 审查遗留问题全部修复（2026-07-15）：根据 `plans/luminous-review-2026-07-15.md` 审查文档，修复全部 6 项遗留问题。**#2 router 重复配置**：`durations.dart` 新增 `tabPageTransitionIn/Out` token，`router/helpers.dart` 新增 `tabFadePage` 辅助函数，`router.dart` 5 个 Tab 从内联 `CustomTransitionPage` 改为调用 `tabFadePage`，移除多余 `flutter/material.dart` import。**#3 Web 压缩无日志**：`image_compressor.dart` `kIsWeb` 分支添加 `appTalker.debug` 日志。**#4 异常暴露给用户**：新增 `scanRecognitionFailedToast` ARB key（中英双语 + 模板 ARB），`box_scan.dart` 从 `'识别失败: $e'` 改为本地化消息。**#5 suggestion 空 catch**：`catch (_)` 改为 `catch (e, st)` + `appTalker.error` 日志记录。**#6 高对比度颜色硬编码**：新建 `lib/core/design/high_contrast.dart` 定义 `HighContrastColors` 6 个常量，`bootstrap.dart` `_applyHighContrast` 从硬编码 `Color(0xFF...)` 改为引用设计系统 token。`flutter analyze` 零问题。
+
+- 代码审查修复（2026-07-16）：根据 `plans/2026-07-16-code-review-fixes.md` 修复 2 个遗留审查问题。**#1 SSE 错误映射去重**：`map_utils.dart` 新增 `requireMap` 和 `mapSseStreamError` 公共函数，三个 AI datasource（`ai_remote.dart` / `ai_summary_remote.dart` / `assistant.dart`）删除各自重复的 `_requireMap` / `_mapStreamError` 私有方法，统一调用公共函数。**#2 测试断言修复**：`voice_entry_dialog_test.dart` 中硬编码 ARB key 字符串 `'recordVoiceEntryTitle'` 改为 `l10n.recordVoiceEntryTitle` 本地化文本，使断言能正确验证 sheet 关闭逻辑。`flutter analyze` 零问题，2781 tests passed。
 
 ## 相关文档
 

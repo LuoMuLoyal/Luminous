@@ -88,6 +88,7 @@ void main() {
     });
 
     testWidgets('closes sheet when X button tapped', (tester) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpSheet(tester);
 
       await tester.tap(find.text('Open'));
@@ -97,7 +98,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Sheet should be closed — title no longer visible
-      expect(find.text('recordVoiceEntryTitle'), findsNothing);
+      expect(find.text(l10n.recordVoiceEntryTitle), findsNothing);
     });
   });
 }
