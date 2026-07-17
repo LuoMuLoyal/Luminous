@@ -1,19 +1,13 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart'
-    show
-        AssistantContextSettingsDto,
-        SecurityPinSettingsDto,
-        UpdateAssistantContextSettingsDto,
-        UpdateUserSettingsDto,
-        UserSettingsDataDto;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
 import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -255,11 +249,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(settingsController.lastPatchedSettings, isNotNull);
-    expect(
-      settingsController.lastPatchedSettings?.assistantMemoryEnabled,
-      isFalse,
-    );
+    expect(settingsController.lastPatch, isNotNull);
+
+    expect(settingsController.lastPatch?.assistantMemoryEnabled, isFalse);
     expect(find.text('已确认'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
   });
@@ -532,18 +524,16 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 class _PendingUserSettingsController extends UserSettingsController {
-  UpdateAssistantContextSettingsDto? lastContextUpdate;
+  AssistantContextPatch? lastContextUpdate;
 
   @override
-  Future<UserSettingsDataDto> build() {
-    return Completer<UserSettingsDataDto>().future;
+  Future<UserSettings> build() {
+    return Completer<UserSettings>().future;
   }
 
   @override
-  Future<void> setAssistantContext(
-    UpdateAssistantContextSettingsDto contextSettings,
-  ) async {
-    lastContextUpdate = contextSettings;
+  Future<void> setAssistantContext(AssistantContextPatch patch) async {
+    lastContextUpdate = patch;
   }
 }
 
@@ -632,31 +622,53 @@ Widget _buildTestApp({
 
 class _ReadyUserSettingsController extends UserSettingsController {
   @override
-  Future<UserSettingsDataDto> build() async {
-    return const UserSettingsDataDto(
+  Future<UserSettings> build() async {
+    return const UserSettings(
       aiSummariesEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: true,
       assistantMemoryEnabled: false,
       waterTargetCount: 8,
-      assistantContext: AssistantContextSettingsDto(
+      assistantContext: AssistantContextSettings(
         healthProfile: true,
         dailyRecords: true,
         sleepRecords: true,
         currentMedicines: true,
       ),
       updatedAt: null,
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+      securityPin: SecurityPinSettings(enabled: false, lastChangedAt: null),
     );
   }
 }
 
 class _TrackingUserSettingsController extends _ReadyUserSettingsController {
-  UpdateUserSettingsDto? lastPatchedSettings;
+  ({
+    bool aiSummariesEnabled,
+    bool dataSharingConsent,
+    bool assistantEnabled,
+    bool assistantMemoryEnabled,
+    int waterTargetCount,
+    AssistantContextPatch assistantContext,
+  })?
+  lastPatch;
 
   @override
-  Future<void> applySettingsPatch(UpdateUserSettingsDto dto) async {
-    lastPatchedSettings = dto;
+  Future<void> applySettingsPatch({
+    required bool aiSummariesEnabled,
+    required bool dataSharingConsent,
+    required bool assistantEnabled,
+    required bool assistantMemoryEnabled,
+    required int waterTargetCount,
+    required AssistantContextPatch assistantContext,
+  }) async {
+    lastPatch = (
+      aiSummariesEnabled: aiSummariesEnabled,
+      dataSharingConsent: dataSharingConsent,
+      assistantEnabled: assistantEnabled,
+      assistantMemoryEnabled: assistantMemoryEnabled,
+      waterTargetCount: waterTargetCount,
+      assistantContext: assistantContext,
+    );
   }
 }
 

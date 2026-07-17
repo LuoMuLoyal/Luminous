@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
@@ -17,8 +17,8 @@ class AssistantControlsPanel extends StatelessWidget {
     required this.onToggleContext,
   });
 
-  final UserSettingsDataDto? settings;
-  final UpdateAssistantContextSettingsDto? fallbackContext;
+  final UserSettings? settings;
+  final AssistantContextPatch? fallbackContext;
   final AssistantCapabilities capabilities;
   final ValueChanged<bool> onToggleEnabled;
   final ValueChanged<bool> onToggleMemoryEnabled;

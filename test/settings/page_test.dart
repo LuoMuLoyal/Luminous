@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +10,9 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/page.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -594,21 +594,21 @@ class _FakeUserSettingsController extends UserSettingsController {
   bool? lastDataSharingConsent;
 
   @override
-  Future<UserSettingsDataDto> build() async {
-    return const UserSettingsDataDto(
+  Future<UserSettings> build() async {
+    return const UserSettings(
       aiSummariesEnabled: false,
       dataSharingConsent: false,
       assistantEnabled: false,
       assistantMemoryEnabled: false,
       waterTargetCount: 8,
-      assistantContext: AssistantContextSettingsDto(
+      assistantContext: AssistantContextSettings(
         healthProfile: false,
         dailyRecords: false,
         sleepRecords: false,
         currentMedicines: false,
       ),
       updatedAt: '2026-06-28T00:00:00Z',
-      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+      securityPin: SecurityPinSettings(enabled: false, lastChangedAt: null),
     );
   }
 
@@ -616,20 +616,20 @@ class _FakeUserSettingsController extends UserSettingsController {
   Future<void> setDataSharingConsent(bool consent) async {
     lastDataSharingConsent = consent;
     state = AsyncData(
-      UserSettingsDataDto(
+      UserSettings(
         aiSummariesEnabled: false,
         dataSharingConsent: consent,
         assistantEnabled: false,
         assistantMemoryEnabled: false,
         waterTargetCount: 8,
-        assistantContext: const AssistantContextSettingsDto(
+        assistantContext: const AssistantContextSettings(
           healthProfile: false,
           dailyRecords: false,
           sleepRecords: false,
           currentMedicines: false,
         ),
         updatedAt: '2026-06-28T00:00:00Z',
-        securityPin: const SecurityPinSettingsDto(
+        securityPin: const SecurityPinSettings(
           enabled: false,
           lastChangedAt: null,
         ),

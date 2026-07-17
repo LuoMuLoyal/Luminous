@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -163,7 +163,7 @@ class AiSettingsPage extends ConsumerWidget {
                       title: l10n.settingsAiContextHealthProfile,
                       subtitle: l10n.settingsAiContextHealthProfileSubtitle,
                       value: settings?.assistantContext.healthProfile ?? false,
-                      field: UpdateAssistantContextSettingsDto(
+                      field: AssistantContextPatch(
                         healthProfile:
                             !(settings?.assistantContext.healthProfile ??
                                 false),
@@ -179,7 +179,7 @@ class AiSettingsPage extends ConsumerWidget {
                       title: l10n.settingsAiContextDailyRecords,
                       subtitle: l10n.settingsAiContextDailyRecordsSubtitle,
                       value: settings?.assistantContext.dailyRecords ?? false,
-                      field: UpdateAssistantContextSettingsDto(
+                      field: AssistantContextPatch(
                         dailyRecords:
                             !(settings?.assistantContext.dailyRecords ?? false),
                       ),
@@ -194,7 +194,7 @@ class AiSettingsPage extends ConsumerWidget {
                       title: l10n.settingsAiContextSleepRecords,
                       subtitle: l10n.settingsAiContextSleepRecordsSubtitle,
                       value: settings?.assistantContext.sleepRecords ?? false,
-                      field: UpdateAssistantContextSettingsDto(
+                      field: AssistantContextPatch(
                         sleepRecords:
                             !(settings?.assistantContext.sleepRecords ?? false),
                       ),
@@ -210,7 +210,7 @@ class AiSettingsPage extends ConsumerWidget {
                       subtitle: l10n.settingsAiContextCurrentMedicinesSubtitle,
                       value:
                           settings?.assistantContext.currentMedicines ?? false,
-                      field: UpdateAssistantContextSettingsDto(
+                      field: AssistantContextPatch(
                         currentMedicines:
                             !(settings?.assistantContext.currentMedicines ??
                                 false),
@@ -236,7 +236,7 @@ class AiSettingsPage extends ConsumerWidget {
     required String title,
     required String subtitle,
     required bool value,
-    required UpdateAssistantContextSettingsDto field,
+    required AssistantContextPatch field,
   }) {
     return FTile(
       title: Text(title),

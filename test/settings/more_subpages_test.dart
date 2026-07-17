@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
 import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
@@ -18,12 +19,12 @@ import '../helpers/test_forui_app.dart';
 // -- Stub controllers --------------------------------------------------
 
 class _StubSettingsController extends UserSettingsController {
-  final UserSettingsDataDto data;
+  final UserSettings data;
 
   _StubSettingsController(this.data);
 
   @override
-  Future<UserSettingsDataDto> build() async => data;
+  Future<UserSettings> build() async => data;
 }
 
 class _StubExportController extends DataExportController {
@@ -35,7 +36,7 @@ class _StubExportController extends DataExportController {
   Future<DataExportRequestDataDto?> build() async => exportData;
 }
 
-UserSettingsDataDto _buildSettings({
+UserSettings _buildSettings({
   bool pinEnabled = false,
   String? lastChangedAt,
   bool aiSummaries = false,
@@ -46,20 +47,20 @@ UserSettingsDataDto _buildSettings({
   bool sleepRecords = true,
   bool currentMedicines = true,
 }) {
-  return UserSettingsDataDto(
+  return UserSettings(
     aiSummariesEnabled: aiSummaries,
     dataSharingConsent: true,
     assistantEnabled: assistantEnabled,
     assistantMemoryEnabled: assistantMemory,
     waterTargetCount: 8,
-    assistantContext: AssistantContextSettingsDto(
+    assistantContext: AssistantContextSettings(
       healthProfile: healthProfile,
       dailyRecords: dailyRecords,
       sleepRecords: sleepRecords,
       currentMedicines: currentMedicines,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
-    securityPin: SecurityPinSettingsDto(
+    securityPin: SecurityPinSettings(
       enabled: pinEnabled,
       lastChangedAt: lastChangedAt,
     ),
@@ -80,7 +81,7 @@ void main() {
   Future<void> pumpPageWithSettings(
     WidgetTester tester,
     Widget page,
-    UserSettingsDataDto settings,
+    UserSettings settings,
   ) async {
     await tester.pumpWidget(
       ProviderScope(

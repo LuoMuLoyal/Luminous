@@ -1,11 +1,9 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lucent_api/api/export.dart'
-    show UpdateAssistantContextSettingsDto, UpdateUserSettingsDto;
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -15,6 +13,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
 part 'conversation.freezed.dart';
@@ -488,33 +487,31 @@ class AssistantController extends Notifier<AssistantState> {
         await ref
             .read(userSettingsControllerProvider.notifier)
             .applySettingsPatch(
-              UpdateUserSettingsDto(
-                aiSummariesEnabled: current?.aiSummariesEnabled ?? false,
-                dataSharingConsent: current?.dataSharingConsent ?? false,
-                assistantEnabled:
-                    payload.draft.assistantEnabled ??
-                    current?.assistantEnabled ??
-                    false,
-                assistantMemoryEnabled:
-                    payload.draft.assistantMemoryEnabled ??
-                    current?.assistantMemoryEnabled ??
-                    false,
-                waterTargetCount: current?.waterTargetCount ?? 8,
-                assistantContext: ctx != null
-                    ? UpdateAssistantContextSettingsDto(
-                        healthProfile: ctx.healthProfile,
-                        dailyRecords: ctx.dailyRecords,
-                        sleepRecords: ctx.sleepRecords,
-                        currentMedicines: ctx.currentMedicines,
-                      )
-                    : UpdateAssistantContextSettingsDto(
-                        healthProfile: current?.assistantContext.healthProfile,
-                        dailyRecords: current?.assistantContext.dailyRecords,
-                        sleepRecords: current?.assistantContext.sleepRecords,
-                        currentMedicines:
-                            current?.assistantContext.currentMedicines,
-                      ),
-              ),
+              aiSummariesEnabled: current?.aiSummariesEnabled ?? false,
+              dataSharingConsent: current?.dataSharingConsent ?? false,
+              assistantEnabled:
+                  payload.draft.assistantEnabled ??
+                  current?.assistantEnabled ??
+                  false,
+              assistantMemoryEnabled:
+                  payload.draft.assistantMemoryEnabled ??
+                  current?.assistantMemoryEnabled ??
+                  false,
+              waterTargetCount: current?.waterTargetCount ?? 8,
+              assistantContext: ctx != null
+                  ? AssistantContextPatch(
+                      healthProfile: ctx.healthProfile,
+                      dailyRecords: ctx.dailyRecords,
+                      sleepRecords: ctx.sleepRecords,
+                      currentMedicines: ctx.currentMedicines,
+                    )
+                  : AssistantContextPatch(
+                      healthProfile: current?.assistantContext.healthProfile,
+                      dailyRecords: current?.assistantContext.dailyRecords,
+                      sleepRecords: current?.assistantContext.sleepRecords,
+                      currentMedicines:
+                          current?.assistantContext.currentMedicines,
+                    ),
             );
         await loadCapabilities();
     }

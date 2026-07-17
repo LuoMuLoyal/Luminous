@@ -1,11 +1,10 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -22,6 +21,7 @@ import 'package:luminous/features/assistant/presentation/widgets/dialogs/convers
 
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -40,7 +40,7 @@ class AssistantPage extends HookConsumerWidget {
     final settings = settingsAsync?.asData?.value;
     final capabilities = chatState.capabilities;
     final effectiveContext = settings == null && capabilities != null
-        ? UpdateAssistantContextSettingsDto(
+        ? AssistantContextPatch(
             healthProfile: capabilities.assistantContext.healthProfile,
             dailyRecords: capabilities.assistantContext.dailyRecords,
             sleepRecords: capabilities.assistantContext.sleepRecords,
@@ -118,8 +118,8 @@ class AssistantPage extends HookConsumerWidget {
 
     Future<void> toggleContextSetting(
       BuildContext ctx, {
-      required UserSettingsDataDto? settings,
-      required UpdateAssistantContextSettingsDto? fallbackContext,
+      required UserSettings? settings,
+      required AssistantContextPatch? fallbackContext,
       bool? healthProfile,
       bool? dailyRecords,
       bool? sleepRecords,
@@ -135,7 +135,7 @@ class AssistantPage extends HookConsumerWidget {
             await ref
                 .read(userSettingsControllerProvider.notifier)
                 .setAssistantContext(
-                  UpdateAssistantContextSettingsDto(
+                  AssistantContextPatch(
                     healthProfile:
                         healthProfile ?? fallbackContext.healthProfile,
                     dailyRecords: dailyRecords ?? fallbackContext.dailyRecords,
@@ -162,7 +162,7 @@ class AssistantPage extends HookConsumerWidget {
           await ref
               .read(userSettingsControllerProvider.notifier)
               .setAssistantContext(
-                UpdateAssistantContextSettingsDto(
+                AssistantContextPatch(
                   healthProfile: healthProfile ?? current.healthProfile,
                   dailyRecords: dailyRecords ?? current.dailyRecords,
                   sleepRecords: sleepRecords ?? current.sleepRecords,

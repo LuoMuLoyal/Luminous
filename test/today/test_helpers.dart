@@ -1,6 +1,6 @@
-﻿import 'dart:async';
+import 'dart:async';
 
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
@@ -30,14 +30,14 @@ class StaticTodayRepository implements TodayRepository {
 
 class EnabledUserSettingsController extends UserSettingsController {
   @override
-  Future<UserSettingsDataDto> build() async {
+  Future<UserSettings> build() async {
     return userSettings(aiSummariesEnabled: true);
   }
 }
 
 class DisabledUserSettingsController extends UserSettingsController {
   @override
-  Future<UserSettingsDataDto> build() async {
+  Future<UserSettings> build() async {
     return userSettings(aiSummariesEnabled: false);
   }
 }
@@ -61,24 +61,21 @@ class FakeTodayAiRepository implements TodayAiRepository {
   }
 }
 
-UserSettingsDataDto userSettings({required bool aiSummariesEnabled}) {
-  return UserSettingsDataDto(
+UserSettings userSettings({required bool aiSummariesEnabled}) {
+  return UserSettings(
     aiSummariesEnabled: aiSummariesEnabled,
     dataSharingConsent: false,
     assistantEnabled: true,
     assistantMemoryEnabled: false,
     waterTargetCount: 8,
-    assistantContext: const AssistantContextSettingsDto(
+    assistantContext: const AssistantContextSettings(
       healthProfile: true,
       dailyRecords: true,
       sleepRecords: true,
       currentMedicines: true,
     ),
     updatedAt: '2026-06-12T00:00:00.000Z',
-    securityPin: const SecurityPinSettingsDto(
-      enabled: false,
-      lastChangedAt: null,
-    ),
+    securityPin: const SecurityPinSettings(enabled: false, lastChangedAt: null),
   );
 }
 
