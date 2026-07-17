@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/config/env_keys.dart';
-import 'package:luminous/features/today/data/repositories/mock.dart';
-import 'package:luminous/features/report/data/repositories/mock.dart';
-import 'package:luminous/features/record/data/repositories/mock.dart';
-import 'package:luminous/features/mine/data/repositories/mock.dart';
-import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
@@ -26,30 +20,7 @@ Future<void> main() async {
           Sentry.captureException(details.exception, stackTrace: details.stack);
         };
 
-        runApp(
-          ProviderScope(
-            overrides: kDebugMode
-                ? [
-                    todayRepositoryProvider.overrideWith(
-                      (ref) => const MockTodayRepository(),
-                    ),
-                    reportRepositoryProvider.overrideWith(
-                      (ref) => const MockReportRepository(),
-                    ),
-                    recordRepositoryProvider.overrideWith(
-                      (ref) => const MockRecordRepository(),
-                    ),
-                    mineRepositoryProvider.overrideWith(
-                      (ref) => const MockMineRepository(),
-                    ),
-                    medicineWorkspaceRepositoryProvider.overrideWith(
-                      (ref) => const MockMedicineWorkspaceRepository(),
-                    ),
-                  ]
-                : [],
-            child: const LuminousApp(),
-          ),
-        );
+        runApp(const ProviderScope(child: LuminousApp()));
       },
       (error, stackTrace) {
         Sentry.captureException(error, stackTrace: stackTrace);

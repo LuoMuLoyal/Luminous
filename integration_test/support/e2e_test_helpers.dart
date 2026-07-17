@@ -25,24 +25,21 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
-import 'package:luminous/features/mine/data/repositories/mock.dart'
-    show MockMineRepository;
-import 'package:luminous/features/mine/presentation/providers/dashboard.dart'
+import 'package:luminous/features/mine/data/providers/repository.dart'
     show mineRepositoryProvider;
 import 'package:luminous/features/notification/presentation/providers/notification.dart'
     show notificationUnreadCountProvider;
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/repositories/mock.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
-import 'package:luminous/features/report/data/repositories/mock.dart'
+import 'package:luminous/features/report/data/providers/repository.dart'
     show reportRepositoryProvider;
 import 'package:luminous/features/report/domain/repositories/report.dart'
     show ReportRepository;
@@ -53,12 +50,13 @@ import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
-import 'package:luminous/features/today/data/repositories/mock.dart';
+import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart'
     show legalRepositoryProvider;
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
+import '../../test/helpers/feature_mocks.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:flutter/material.dart';
@@ -75,8 +73,9 @@ export 'package:luminous/features/record/domain/entities/inputs.dart'
     show dailyRecordNoChange;
 export 'package:luminous/features/record/domain/entities/record.dart'
     show DailyRecordKind;
-export 'package:luminous/features/report/data/repositories/mock.dart'
-    show MockReportRepository, reportRepositoryProvider;
+export '../../test/helpers/feature_mocks.dart' show MockReportRepository;
+export 'package:luminous/features/report/data/providers/repository.dart'
+    show reportRepositoryProvider;
 export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 export 'package:luminous/features/legal/data/repositories/lucent.dart'
     show legalRepositoryProvider;

@@ -10,25 +10,6 @@
 
 ## 高优先级
 
-### 1. Mock/真实数据切换：编译期硬编码 + 真实 provider 寄生在 mock 文件里
-
-**问题**：`main.dart` 在 `kDebugMode` 下无条件 override 5 个核心 repository——debug 构建的 Today/Report/Record/Mine/Medicine 永远走 mock，无法对真后端调试；返回真实实现的 provider 定义在 mock 文件底部，presentation 层必须 import mock 文件才能拿到 repository provider；e2e 端还有第二份手工同步的 override 清单。
-
-**证据**：
-- `lib/main.dart:31-49` — `kDebugMode` 硬编码 5 个 `overrideWith(Mock*)`
-- `lib/features/today/data/repositories/mock.dart:111-113`（642 行）——真实 provider 藏在 mock 文件里；record/mock.dart:638-642、report/mock.dart:21 同样模式
-- `lib/features/mine/presentation/providers/dashboard.dart:10-13` — repository provider 定义在 presentation 层
-- presentation 直接 import mock 文件：today/report/record 的 `presentation/providers/dashboard.dart`、medicine `workspace.dart`
-- `integration_test/support/e2e_test_helpers.dart:108-150` — 第二份约 15 个 override 的手工清单
-- `lib/core/config/feature_flags_controller.dart` — 有 6 个 runtime flag，唯独没有 data-mode 开关
-
-**行动**：
-1. 每个 repository provider 移到 `data/providers/`（对照 health_context、record 的正确示例），默认返回 Lucent 实现。
-2. 新增统一 `dataModeProvider`（dart-define 播种 + SharedPreferences runtime override，接入现有 feature flags 设置页）。
-3. `main.dart` 与 e2e helper 只读这一处。
-
-**影响范围**：5 个 feature 的 data/providers 文件、main.dart、e2e helpers、feature flags 设置页。改动面中等，收益高。
-
 ### 4. 跨 feature 的 presentation→presentation 直接耦合
 
 **问题**：feature 间没有边界，改一个 dashboard provider 签名要动三个 feature。
