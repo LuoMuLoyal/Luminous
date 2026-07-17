@@ -1,9 +1,9 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/report/data/repositories/mock.dart';
+import 'package:luminous/features/report/data/providers/repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 const _reportDashboardTimeout = Duration(seconds: 5);
@@ -24,7 +24,8 @@ final reportDashboardProvider =
                   throw TimeoutException('report_dashboard_timeout'),
             ),
         signedOutFallback: () async {
-          final base = await const MockReportRepository().signedOutDashboard;
+          final repo = ref.watch(reportRepositoryProvider);
+          final base = await repo.signedOutDashboard;
           return base.copyWith(
             range: query.range,
             startDate: _dateOnly(

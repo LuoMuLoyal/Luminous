@@ -1,29 +1,11 @@
-﻿// ignore_for_file: prefer_const_constructors
-import 'package:luminous/core/design/semantic_color.dart';
+// ignore_for_file: prefer_const_constructors
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/report/data/datasources/report.dart';
-import 'package:luminous/features/report/data/repositories/lucent.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock.g.dart';
-
-@riverpod
-ReportRemoteDataSource reportRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentClientProvider).reports;
-  final dio = ref.watch(lucentDioClientProvider).dio;
-  return ReportRemoteDataSource(api: api, dio: dio);
-}
-
-@riverpod
-ReportRepository reportRepository(Ref ref) {
-  final dataSource = ref.watch(reportRemoteDataSourceProvider);
-  return LucentReportRepository(dataSource: dataSource);
-}
-
+/// Test-only mock implementation of [ReportRepository].
 class MockReportRepository implements ReportRepository {
   const MockReportRepository();
 
