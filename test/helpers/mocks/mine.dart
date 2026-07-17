@@ -1,16 +1,11 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 
-/// Demo-only mock implementation of [MineRepository] used for tests.
-///
-/// Like [LucentMineRepository], this is an aggregate repository: it assembles
-/// the dashboard from static placeholders without its own datasource/mappers.
-/// Account/profile values are intentionally placeholder so they cannot be
-/// mistaken for real user data.
+/// Test-only mock implementation of [MineRepository].
 class MockMineRepository implements MineRepository {
   const MockMineRepository();
 
