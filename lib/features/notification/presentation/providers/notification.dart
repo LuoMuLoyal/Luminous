@@ -1,10 +1,15 @@
 ﻿import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_api/api/export.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
+
+import '../../data/repositories/lucent.dart';
+import '../../domain/entities/notification.dart';
+
+/// Re-export so presentation code can import from one place.
+export '../../data/repositories/lucent.dart'
+    show notificationRepositoryProvider;
 
 const _notificationPageSize = 20;
 
@@ -13,35 +18,18 @@ const _notificationPageSize = 20;
 final notificationUnreadCountProvider = FutureProvider<int>((ref) async {
   return authGuarded(
     ref: ref,
-    fetch: () async {
-      final api = ref.watch(lucentClientProvider).notifications;
-      final response = await api.notificationsControllerGetUnreadCountV1();
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
-      return response.count.toInt();
-    },
+    fetch: () => ref.watch(notificationRepositoryProvider).getUnreadCount(),
     signedOutFallback: () => pendingAuthSessionResolution(),
   );
 });
 
-// ── Notification list ──────────────────────────────────────────────────────
+// ── Notification detail ────────────────────────────────────────────────────
 
-final notificationListPageProvider =
-    FutureProvider<NotificationListResponseDto>((ref) async {
+final notificationDetailProvider =
+    FutureProvider.family<NotificationDetail?, String>((ref, id) async {
       return authGuarded(
         ref: ref,
-        fetch: () async {
-          final api = ref.watch(lucentClientProvider).notifications;
-          final response = await api.notificationsControllerFindAllV1(
-            page: 1,
-            pageSize: _notificationPageSize,
-          );
-          if (response.code != 0) {
-            throw StateError(response.message);
-          }
-          return response;
-        },
+        fetch: () => ref.watch(notificationRepositoryProvider).findOne(id),
         signedOutFallback: () => pendingAuthSessionResolution(),
       );
     });
@@ -58,48 +46,22 @@ class _LoadingMoreNotifier extends Notifier<bool> {
 final notificationListLoadingMoreProvider =
     NotifierProvider<_LoadingMoreNotifier, bool>(_LoadingMoreNotifier.new);
 
-// ── Notification detail ──────────────────────────────────────────────────────
+// ── Notification list controller ────────────────────────────────────────────
 
-final notificationDetailProvider =
-    FutureProvider.family<NotificationDetailDto?, String>((ref, id) async {
-      return authGuarded(
-        ref: ref,
-        fetch: () async {
-          final api = ref.watch(lucentClientProvider).notifications;
-          final response = await api.notificationsControllerFindOneV1(id: id);
-          if (response.code != 0) {
-            throw StateError(response.message);
-          }
-          return response.data;
-        },
-        signedOutFallback: () => pendingAuthSessionResolution(),
-      );
-    });
-
-// ── Mutations ────────────────────────────────────────────────────────────────
-
-class NotificationListController
-    extends AsyncNotifier<NotificationListResponseDto> {
+class NotificationListController extends AsyncNotifier<NotificationPage> {
   int _currentPage = 1;
 
   bool get hasMore {
     final value = state.value;
     if (value == null) return false;
-    return value.items.length < value.total.toInt();
+    return value.hasMore;
   }
 
   @override
-  Future<NotificationListResponseDto> build() async {
+  Future<NotificationPage> build() async {
     _currentPage = 1;
-    final api = ref.read(lucentClientProvider).notifications;
-    final response = await api.notificationsControllerFindAllV1(
-      page: 1,
-      pageSize: _notificationPageSize,
-    );
-    if (response.code != 0) {
-      throw StateError(response.message);
-    }
-    return response;
+    final repo = ref.read(notificationRepositoryProvider);
+    return repo.findAll(page: 1, pageSize: _notificationPageSize);
   }
 
   Future<void> loadMore() async {
@@ -108,22 +70,19 @@ class NotificationListController
 
     ref.read(notificationListLoadingMoreProvider.notifier).setLoading(true);
     try {
-      final api = ref.read(lucentClientProvider).notifications;
+      final repo = ref.read(notificationRepositoryProvider);
       final nextPage = _currentPage + 1;
-      final response = await api.notificationsControllerFindAllV1(
+      final page = await repo.findAll(
         page: nextPage,
         pageSize: _notificationPageSize,
       );
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
       _currentPage = nextPage;
       state = AsyncValue.data(
-        NotificationListResponseDto(
-          code: response.code,
-          message: response.message,
-          items: [...current.items, ...response.items],
-          total: response.total,
+        NotificationPage(
+          items: [...current.items, ...page.items],
+          total: page.total,
+          page: nextPage,
+          pageSize: _notificationPageSize,
         ),
       );
     } catch (e, st) {
@@ -134,42 +93,27 @@ class NotificationListController
   }
 
   Future<void> markAllAsRead() async {
-    final api = ref.read(lucentClientProvider).notifications;
-    await api.notificationsControllerMarkAllAsReadV1();
+    final repo = ref.read(notificationRepositoryProvider);
+    await repo.markAllAsRead();
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;
-    state = await AsyncValue.guard(() async {
-      final response = await api.notificationsControllerFindAllV1(
-        page: 1,
-        pageSize: _notificationPageSize,
-      );
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
-      return response;
-    });
+    state = await AsyncValue.guard(
+      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
+    );
   }
 
   Future<void> deleteNotification(String id) async {
-    final api = ref.read(lucentClientProvider).notifications;
-    await api.notificationsControllerRemoveV1(id: id);
+    final repo = ref.read(notificationRepositoryProvider);
+    await repo.delete(id);
     ref.invalidate(notificationUnreadCountProvider);
     _currentPage = 1;
-    state = await AsyncValue.guard(() async {
-      final response = await api.notificationsControllerFindAllV1(
-        page: 1,
-        pageSize: _notificationPageSize,
-      );
-      if (response.code != 0) {
-        throw StateError(response.message);
-      }
-      return response;
-    });
+    state = await AsyncValue.guard(
+      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
+    );
   }
 }
 
 final notificationListControllerProvider =
-    AsyncNotifierProvider<
-      NotificationListController,
-      NotificationListResponseDto
-    >(NotificationListController.new);
+    AsyncNotifierProvider<NotificationListController, NotificationPage>(
+      NotificationListController.new,
+    );

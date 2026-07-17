@@ -1,18 +1,17 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -80,7 +79,7 @@ class NotificationDetailPage extends ConsumerWidget {
 class _DetailBody extends ConsumerWidget {
   const _DetailBody({required this.detail});
 
-  final NotificationDetailDto detail;
+  final NotificationDetail detail;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,8 +119,8 @@ class _DetailBody extends ConsumerWidget {
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
           onMarkUnread: () async {
-            final api = ref.read(lucentClientProvider).notifications;
-            await api.notificationsControllerMarkAsUnreadV1(id: detail.id);
+            final repo = ref.read(notificationRepositoryProvider);
+            await repo.markAsUnread(detail.id);
             ref.invalidate(notificationUnreadCountProvider);
             ref.invalidate(notificationListControllerProvider);
             if (context.mounted) {
@@ -164,25 +163,22 @@ class _DetailBody extends ConsumerWidget {
 class _TypeChip extends StatelessWidget {
   const _TypeChip({required this.type});
 
-  final UserNotificationType type;
+  final NotificationType type;
 
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (type) {
-      UserNotificationType.aiTodaySummary => ('AI 总结', SemanticColor.primary),
-      UserNotificationType.reportGenerated => ('报告', SemanticColor.primary),
-      UserNotificationType.passwordChanged => ('安全', SemanticColor.destructive),
-      UserNotificationType.aiProactiveSuggestion => (
+      NotificationType.aiTodaySummary => ('AI 总结', SemanticColor.primary),
+      NotificationType.reportGenerated => ('报告', SemanticColor.primary),
+      NotificationType.passwordChanged => ('安全', SemanticColor.destructive),
+      NotificationType.aiProactiveSuggestion => (
         'AI 建议',
         SemanticColor.primary,
       ),
-      UserNotificationType.medicineMissedDose => (
-        '用药',
-        SemanticColor.destructive,
-      ),
-      UserNotificationType.medicineReminder => ('提醒', SemanticColor.primary),
-      UserNotificationType.systemAnnouncement => ('系统', SemanticColor.primary),
-      UserNotificationType.$unknown => ('通知', SemanticColor.neutral),
+      NotificationType.medicineMissedDose => ('用药', SemanticColor.destructive),
+      NotificationType.medicineReminder => ('提醒', SemanticColor.primary),
+      NotificationType.systemAnnouncement => ('系统', SemanticColor.primary),
+      NotificationType.unknown => ('通知', SemanticColor.neutral),
     };
 
     return DecoratedBox(
@@ -217,7 +213,7 @@ class _ActionBar extends StatelessWidget {
     required this.onDelete,
   });
 
-  final NotificationDetailDto detail;
+  final NotificationDetail detail;
   final VoidCallback onNavigate;
   final VoidCallback onMarkUnread;
   final VoidCallback onDelete;

@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/pages/detail.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -56,9 +56,9 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         notificationDetailProvider('n1').overrideWith(
-          (ref) async => const NotificationDetailDto(
+          (ref) async => const NotificationDetail(
             id: 'n1',
-            type: UserNotificationType.systemAnnouncement,
+            type: NotificationType.systemAnnouncement,
             title: 'System Update',
             content: 'The system will be updated tonight at 2am.',
             isRead: false,

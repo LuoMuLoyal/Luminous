@@ -2,8 +2,9 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
+
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 
 class NotificationListItemWidget extends StatelessWidget {
   const NotificationListItemWidget({
@@ -13,7 +14,7 @@ class NotificationListItemWidget extends StatelessWidget {
     required this.onDismiss,
   });
 
-  final NotificationListItemDto item;
+  final NotificationItem item;
   final VoidCallback onTap;
   final VoidCallback onDismiss;
 

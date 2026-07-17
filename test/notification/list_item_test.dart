@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -10,16 +10,16 @@ Widget _appShell(Widget child) {
   return TestForuiApp(home: Scaffold(body: child));
 }
 
-NotificationListItemDto _item({
+NotificationItem _item({
   required String id,
   String title = 'Title',
   String content = 'Content',
   bool isRead = false,
   String createdAt = '2026-06-10T08:00:00.000Z',
 }) {
-  return NotificationListItemDto(
+  return NotificationItem(
     id: id,
-    type: UserNotificationType.systemAnnouncement,
+    type: NotificationType.systemAnnouncement,
     title: title,
     content: content,
     isRead: isRead,

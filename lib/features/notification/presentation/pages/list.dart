@@ -1,16 +1,16 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/notification/presentation/widgets/shared/list_item.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -45,8 +45,8 @@ class NotificationListPage extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: listAsync.when(
-              data: (response) {
-                final items = response.items;
+              data: (page) {
+                final items = page.items;
                 if (items.isEmpty) {
                   return const _EmptyView();
                 }
@@ -156,14 +156,14 @@ class NotificationListPage extends ConsumerWidget {
     );
   }
 
-  Map<String, List<NotificationListItemDto>> _groupByRelativeDate(
-    List<NotificationListItemDto> items,
+  Map<String, List<NotificationItem>> _groupByRelativeDate(
+    List<NotificationItem> items,
   ) {
     final now = clock.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
 
-    final groups = <String, List<NotificationListItemDto>>{};
+    final groups = <String, List<NotificationItem>>{};
     for (final item in items) {
       final createdAt = DateTime.tryParse(item.createdAt);
       String key;

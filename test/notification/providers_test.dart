@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
@@ -220,30 +220,6 @@ void main() {
         container.read(notificationUnreadCountProvider.future),
         throwsA(isA<StateError>()),
       );
-    });
-  });
-
-  group('notificationListPageProvider', () {
-    test('returns paginated notification list', () async {
-      final api = FakeNotificationsApi(
-        notifications: [
-          _item(id: '1', title: 'First'),
-          _item(id: '2', title: 'Second'),
-        ],
-      );
-      final container = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(() => signedInSession),
-          lucentClientProvider.overrideWithValue(
-            _FakeLucentClient(notificationsApi: api),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final result = await container.read(notificationListPageProvider.future);
-      expect(result.items, hasLength(2));
-      expect(result.items[0].title, equals('First'));
     });
   });
 

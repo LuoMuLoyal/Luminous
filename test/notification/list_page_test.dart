@@ -1,7 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/pages/list.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -22,7 +22,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         notificationListControllerProvider.overrideWith(
-          () => _FixedListController(items: const <NotificationListItemDto>[]),
+          () => _FixedListController(items: const <NotificationItem>[]),
         ),
       ],
     );
@@ -56,9 +56,9 @@ void main() {
         notificationListControllerProvider.overrideWith(
           () => _FixedListController(
             items: [
-              NotificationListItemDto(
+              NotificationItem(
                 id: 'n1',
-                type: UserNotificationType.systemAnnouncement,
+                type: NotificationType.systemAnnouncement,
                 title: 'Hello',
                 content: 'World',
                 isRead: false,
@@ -92,15 +92,15 @@ void main() {
 class _FixedListController extends NotificationListController {
   _FixedListController({required this.items});
 
-  final List<NotificationListItemDto> items;
+  final List<NotificationItem> items;
 
   @override
-  Future<NotificationListResponseDto> build() async {
-    return NotificationListResponseDto(
-      code: 0,
-      message: '',
+  Future<NotificationPage> build() async {
+    return NotificationPage(
       items: items,
       total: items.length,
+      page: 1,
+      pageSize: 20,
     );
   }
 }
