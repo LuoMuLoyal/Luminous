@@ -1,4 +1,4 @@
-﻿// ignore_for_file: prefer_final_locals, prefer_const_constructors
+// ignore_for_file: prefer_final_locals, prefer_const_constructors
 
 import 'package:flutter/foundation.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';

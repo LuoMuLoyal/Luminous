@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:clock/clock.dart';
 import 'package:luminous/core/utils/string_utils.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';

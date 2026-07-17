@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/logger/logger.dart';

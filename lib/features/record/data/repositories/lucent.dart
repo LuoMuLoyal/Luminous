@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:collection/collection.dart';

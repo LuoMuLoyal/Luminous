@@ -1,4 +1,4 @@
-﻿import 'package:clock/clock.dart';
+import 'package:clock/clock.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';

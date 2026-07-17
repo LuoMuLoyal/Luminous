@@ -1,4 +1,4 @@
-﻿import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';

@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';

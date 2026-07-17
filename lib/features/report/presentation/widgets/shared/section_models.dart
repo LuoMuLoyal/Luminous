@@ -1,4 +1,4 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';

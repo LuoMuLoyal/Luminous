@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/daos/daily_record_dao.dart';

@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/safety_tips_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';

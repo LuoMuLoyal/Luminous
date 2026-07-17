@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
