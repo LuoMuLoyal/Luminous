@@ -1,9 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -19,33 +19,29 @@ void main() {
         overrides: [
           supportResourcesProvider('help').overrideWith(
             (ref) async => [
-              const SupportResourceDto(
+              const SupportResource(
                 id: 'enabled-url',
-                scope: SupportResourceScope.help,
                 title: 'Enabled URL',
                 actionUrl: 'https://example.com/help',
-                actionType: SupportResourceActionType.url,
+                actionType: SupportResourceAction.url,
                 available: true,
               ),
-              const SupportResourceDto(
+              const SupportResource(
                 id: 'disabled-url',
-                scope: SupportResourceScope.help,
                 title: 'Disabled URL',
                 actionUrl: 'https://example.com/help2',
-                actionType: SupportResourceActionType.url,
+                actionType: SupportResourceAction.url,
                 available: false,
               ),
-              const SupportResourceDto(
+              const SupportResource(
                 id: 'no-url',
-                scope: SupportResourceScope.help,
                 title: 'No URL',
                 actionUrl: null,
-                actionType: SupportResourceActionType.url,
+                actionType: SupportResourceAction.url,
                 available: true,
               ),
-              const SupportResourceDto(
+              const SupportResource(
                 id: 'no-type',
-                scope: SupportResourceScope.help,
                 title: 'No Type',
                 actionUrl: 'https://example.com/help3',
                 actionType: null,

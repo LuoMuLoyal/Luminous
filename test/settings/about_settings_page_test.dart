@@ -1,9 +1,9 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -16,7 +16,7 @@ void main() {
       ProviderScope(
         overrides: [
           appInfoProvider.overrideWith(
-            (ref) async => const AppInfoDataDto(
+            (ref) async => const AppInfo(
               name: 'Luminous Test',
               version: '1.2.3',
               description: 'Test description',

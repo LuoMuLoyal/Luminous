@@ -7,8 +7,8 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
@@ -134,7 +134,7 @@ class AboutSettingsPage extends ConsumerWidget {
     }
   }
 
-  Future<void> _openSupport(BuildContext context, AppInfoDataDto? info) async {
+  Future<void> _openSupport(BuildContext context, AppInfo? info) async {
     final email = info?.supportEmail;
     if (email != null && email.isNotEmpty) {
       await const ExternalUrlLauncher().open(

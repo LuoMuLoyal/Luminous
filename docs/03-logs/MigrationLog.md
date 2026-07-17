@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-07-13
+Last updated: 2026-07-17
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,10 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-07-17](migration-log/2026-07-17.md) — 审查回查验证（luminous-review-2026-07-17.md 全部 5 项问题已修复验证）
+- [2026-07-16](migration-log/2026-07-16.md) — SSE 错误映射去重 + 测试断言修复 + SemanticColor 暗色对比度 + Drift 缓存一致性
+- [2026-07-15](migration-log/2026-07-15.md) — 7-15 审查遗留问题全部修复
+- [2026-07-14](migration-log/2026-07-14.md) — 7-14 审查报告改写为 Bug 修复计划 + Bug 修复执行 + 测试补测（第七~十一批）+ 集成测试补充
 - [2026-07-13](migration-log/2026-07-13.md) — 7-12 审查回查文档关闭（枚举命名重复问题不修复，审查计划文档删除）
 - [2026-07-12](migration-log/2026-07-12.md) — 审查修复 + 历史兼容代码清理 + ARB 拆分 + 测试补测（第四批/第五批）+ Material Icons 清理 + Drift Web 适配 + Report 历史建议接入 + CI compact reporter + 文档口径同步 + 文档与代码偏差修复
 - [2026-07-11](migration-log/2026-07-11.md) — 审查修复 + 测试补测（第一批~第三批）+ Patrol 统一迁移 + flutter_markdown_plus 升级 + Sentry 集成 + OAuth-only 注销 + 法律合规页面 + 网站法律页面补齐

@@ -9,8 +9,8 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
@@ -74,7 +74,7 @@ class HelpSettingsPage extends ConsumerWidget {
     );
   }
 
-  bool _isActionable(SupportResourceDto resource) {
+  bool _isActionable(SupportResource resource) {
     return resource.available &&
         resource.actionUrl != null &&
         (resource.actionUrl?.isNotEmpty ?? false) &&
@@ -83,12 +83,12 @@ class HelpSettingsPage extends ConsumerWidget {
 
   Future<void> _openResource(
     BuildContext context,
-    SupportResourceDto resource,
+    SupportResource resource,
   ) async {
     final actionUrl = resource.actionUrl;
     if (actionUrl == null || actionUrl.isEmpty) return;
-    if (resource.actionType == SupportResourceActionType.url ||
-        resource.actionType == SupportResourceActionType.phone) {
+    if (resource.actionType == SupportResourceAction.url ||
+        resource.actionType == SupportResourceAction.phone) {
       final uri = Uri.tryParse(actionUrl);
       if (uri != null) {
         await const ExternalUrlLauncher().open(uri);
