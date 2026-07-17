@@ -12,6 +12,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -19,15 +20,12 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordCreatePage extends HookConsumerWidget {
@@ -261,9 +259,9 @@ class RecordCreatePage extends HookConsumerWidget {
             attachments: attachments,
           ),
         );
-        ref.invalidate(recordDashboardProvider);
-        ref.invalidate(todayDashboardProvider);
-        ref.invalidate(reportDashboardProvider);
+        ref
+            .read(dataChangeBusProvider.notifier)
+            .emit(DataChangeTopic.dailyRecords);
         if (context.mounted) {
           unawaited(
             AppToast.show(

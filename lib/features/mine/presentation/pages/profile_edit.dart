@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,6 +9,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -157,7 +158,9 @@ class ProfileEditPage extends HookConsumerWidget {
                   description: l10n.mineErrorDescription,
                   icon: FLucideIcons.badge,
                   actionLabel: l10n.todayRetryAction,
-                  onAction: () => ref.invalidate(healthContextSnapshotProvider),
+                  onAction: () => ref
+                      .read(dataChangeBusProvider.notifier)
+                      .emit(DataChangeTopic.healthContext),
                   tone: AppStateTone.warning,
                 ),
               ),

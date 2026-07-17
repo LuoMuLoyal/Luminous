@@ -1,4 +1,4 @@
-﻿import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -8,9 +8,7 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/presentation/providers/dashboard.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 
 part 'nlp_controller.freezed.dart';
 
@@ -173,9 +171,9 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     }
 
     if (savedCount > 0) {
-      ref.invalidate(recordDashboardProvider);
-      ref.invalidate(todayDashboardProvider);
-      ref.invalidate(reportDashboardProvider);
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.dailyRecords);
     }
 
     final failedItems = [

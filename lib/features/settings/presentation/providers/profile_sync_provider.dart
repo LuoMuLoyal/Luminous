@@ -1,10 +1,9 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
 
 class SettingsProfileSyncNotifier extends Notifier<void> {
@@ -83,8 +82,9 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
   }
 
   void _refreshDerivedState() {
-    ref.invalidate(healthContextSnapshotProvider);
-    ref.invalidate(mineDashboardProvider);
+    ref
+        .read(dataChangeBusProvider.notifier)
+        .emit(DataChangeTopic.healthContext);
   }
 
   Object? _toBackendLocale(AppLocale locale) {

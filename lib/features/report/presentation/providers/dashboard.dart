@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/report/data/providers/repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,6 +17,9 @@ Future<ReportDashboard> reportDashboard(
   Ref ref,
   ReportDashboardQuery query,
 ) async {
+  // Watch cross-feature data change topics.
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.dailyRecords));
+
   return authGuarded(
     ref: ref,
     fetch: () => ref

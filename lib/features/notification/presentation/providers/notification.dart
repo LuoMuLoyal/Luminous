@@ -1,31 +1,21 @@
-﻿import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/lucent.dart';
+import '../../data/providers/unread_count.dart';
 import '../../domain/entities/notification.dart';
 
 /// Re-export so presentation code can import from one place.
 export '../../data/repositories/lucent.dart'
     show notificationRepositoryProvider;
+export '../../data/providers/unread_count.dart'
+    show notificationUnreadCountProvider;
 
 part 'notification.g.dart';
 
 const _notificationPageSize = 20;
-
-// ── Unread count ─────────────────────────────────────────────────────────────
-
-@Riverpod(keepAlive: true)
-Future<int> notificationUnreadCount(Ref ref) async {
-  return authGuarded(
-    ref: ref,
-    fetch: () => ref.watch(notificationRepositoryProvider).getUnreadCount(),
-    signedOutFallback: () => pendingAuthSessionResolution(),
-  );
-}
 
 // ── Notification detail ────────────────────────────────────────────────────
 

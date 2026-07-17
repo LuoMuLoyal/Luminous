@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +18,13 @@ const _todayDashboardTimeout = Duration(
 
 @Riverpod(keepAlive: true)
 Future<TodayDashboard> todayDashboard(Ref ref) {
+  // Watch cross-feature data change topics — when any of these change,
+  // the provider automatically rebuilds.
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.dailyRecords));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.currentMedicines));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
+
   return authGuarded(
     ref: ref,
     fetch: () => ref

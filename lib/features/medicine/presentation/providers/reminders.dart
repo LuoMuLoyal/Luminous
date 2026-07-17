@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
@@ -11,8 +12,6 @@ import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -265,8 +264,9 @@ class MedicineReminderFormNotifier extends Notifier<MedicineReminderFormState> {
     ref.invalidate(medicineReminderListProvider);
     ref.invalidate(medicineTodayDoseLogsProvider);
     ref.invalidate(medicineReminderDeliveryLogProvider);
-    ref.invalidate(medicineWorkspaceProvider);
-    ref.invalidate(todayDashboardProvider);
+    ref
+        .read(dataChangeBusProvider.notifier)
+        .emit(DataChangeTopic.medicineReminders);
   }
 }
 

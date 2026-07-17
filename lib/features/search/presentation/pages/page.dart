@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -15,12 +16,10 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
 import 'package:luminous/features/search/presentation/widgets/views/view.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchPage extends ConsumerWidget {
@@ -101,9 +100,9 @@ class SearchPage extends ConsumerWidget {
       }
 
       await repository.createCurrentMedicine(input);
-      ref.invalidate(healthContextSnapshotProvider);
-      ref.invalidate(medicineWorkspaceProvider);
-      ref.invalidate(todayDashboardProvider);
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.currentMedicines);
 
       if (context.mounted) {
         unawaited(AppToast.show(context, l10n.mineEditSavedToast));

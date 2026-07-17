@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -23,7 +24,6 @@ import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicinePage extends ConsumerWidget {
@@ -185,8 +185,7 @@ Future<void> _markDose(
           status: request.action.name,
           date: dateStr,
         );
-    ref.invalidate(medicineWorkspaceProvider);
-    ref.invalidate(todayDashboardProvider);
+    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
     if (context.mounted) {
       unawaited(AppToast.show(context, l10n.medicineDoseActionSavedToast));
     }

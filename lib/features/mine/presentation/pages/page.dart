@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +15,7 @@ import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
-import 'package:luminous/features/notification/presentation/providers/notification.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MinePage extends ConsumerWidget {

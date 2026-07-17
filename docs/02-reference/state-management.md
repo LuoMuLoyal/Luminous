@@ -125,8 +125,86 @@ final myFormProvider =
 ### Ephemeral UI State
 
 `StatefulWidget` / `flutter_hooks` are allowed for ephemeral UI state (animation progress, local
-loading flags, expand/collapse toggles). This does not conflict with Riverpod as the single source
-of truth for shared/business state.
+loading flags, expand/collapse toggles). This does not conflict with Riverpod as the single source of
+truth for shared/business state.
+
+### Cross-Feature Data Refresh (Invalidation Bus)
+
+Feature modules are isolated: a feature must **never** import another feature's presentation-layer
+provider to call `ref.invalidate()` on it after a data mutation. That creates presentation→presentation
+coupling and circular dependency risks.
+
+Instead, cross-feature refresh is mediated by a lightweight **invalidation bus** in
+`lib/core/providers/data_change_bus.dart`:
+
+- `DataChangeBus` — a keepAlive `Notifier` holding a `Map<String, int>` version counter.
+- `DataChangeTopic` — constants for the 5 domain topics: `dailyRecords`, `healthContext`,
+  `currentMedicines`, `doseLogs`, `medicineReminders`.
+- `dataChangeVersionProvider(topic)` — a family provider; watch it inside a dashboard/workspace
+  provider to trigger an automatic rebuild when the topic's version increments.
+
+**Emitting** (after a write that affects other features):
+
+```dart
+ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.dailyRecords);
+```
+
+**Watching** (inside a provider that should refresh on cross-feature changes):
+
+```dart
+@Riverpod(keepAlive: true)
+Future<TodayDashboard> todayDashboard(Ref ref) async {
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.dailyRecords));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.currentMedicines));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
+  return authGuarded(ref: ref, fetch: () => ...);
+}
+```
+
+| Topic | Emitted by | Watched by |
+|---|---|---|
+| `dailyRecords` | record (create/update/delete/NLP) | recordDashboard, todayDashboard, reportDashboard |
+| `healthContext` | mine (profile/allergy/condition edits), settings (preference sync) | healthContextSnapshot, mineDashboard |
+| `currentMedicines` | mine (current medicine add/remove), search (add to current medicines) | medicineWorkspace, todayDashboard, healthContextSnapshot |
+| `doseLogs` | medicine (mark dose) | medicineWorkspace, todayDashboard |
+| `medicineReminders` | medicine (reminder create/update/delete) | medicineWorkspace, todayDashboard |
+
+> **Note**: `ref.invalidate()` is still appropriate for **same-feature** retry/refresh (e.g. an error
+> state's retry button invalidating its own feature's providers) and for **app-level** lifecycle
+> events (e.g. `bootstrap.dart` invalidating `healthContextSnapshotProvider` on auth state changes).
+> The bus only replaces **cross-feature write-path** invalidation.
+
+### Shared Read-Only Snapshot Hub
+
+`healthContextSnapshotProvider` (`lib/features/health_context/data/providers/health_context.dart`) is
+the single shared read-only entry point for the user's health context across features. Multiple
+features read from it instead of each independently fetching their own copy:
+
+- `today/data/repositories/lucent.dart` — builds the Today dashboard from the snapshot.
+- `medicine/presentation/providers/risk_check.dart` — risk check reads allergies/conditions.
+- `medicine/presentation/providers/reminders.dart` — reminder prefill reads current medicines.
+- `mine/presentation/pages/{allergy,condition,current_medicine,profile}_edit.dart` — edit forms
+  prefill from the snapshot.
+- `mine/data/repositories/lucent.dart` — Mine dashboard reads the snapshot.
+
+This provider is `keepAlive` and `authGuarded`. It watches `DataChangeTopic.healthContext` and
+`DataChangeTopic.currentMedicines` on the invalidation bus, so it auto-refreshes when any feature
+mutates those data domains — consumers simply `ref.watch` / `ref.read` it and always get fresh data.
+
+**Consuming the snapshot hub** (read-only, from any feature):
+
+```dart
+// Async read (one-shot, e.g. inside a repository method)
+final snapshot = await ref.read(healthContextSnapshotProvider.future);
+
+// Reactive watch (inside a build method)
+final snapshot = ref.watch(healthContextSnapshotProvider);
+snapshot.whenData((data) => ...);
+```
+
+> Do **not** create a second health-context fetch provider in another feature. Always read through
+> `healthContextSnapshotProvider` so the cache and invalidation bus stay coherent.
 
 ### Why Riverpod
 

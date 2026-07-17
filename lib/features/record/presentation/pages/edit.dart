@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -25,7 +26,6 @@ import 'package:luminous/features/record/domain/entities/inputs.dart'
         DailyRecordImageUploadInput,
         DailyRecordUpdateInput,
         dailyRecordNoChange;
-import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
@@ -33,9 +33,7 @@ import 'package:luminous/features/record/presentation/widgets/forms/image_attach
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
-import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordEditPage extends HookConsumerWidget {
@@ -76,9 +74,9 @@ class RecordEditPage extends HookConsumerWidget {
 
     void invalidateProviders() {
       ref.invalidate(dailyRecordDetailProvider(recordId));
-      ref.invalidate(recordDashboardProvider);
-      ref.invalidate(todayDashboardProvider);
-      ref.invalidate(reportDashboardProvider);
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.dailyRecords);
     }
 
     void loadSleepPayloadData(Map<String, dynamic>? payload) {

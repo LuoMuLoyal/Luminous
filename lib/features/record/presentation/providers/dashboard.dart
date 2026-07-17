@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,6 +39,9 @@ final selectedRecordFilterProvider =
 
 @Riverpod(keepAlive: true)
 Future<RecordDashboard> recordDashboard(Ref ref) async {
+  // Watch cross-feature data change topics.
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.dailyRecords));
+
   final selectedDate = ref.watch(selectedRecordDateProvider);
   final selectedFilter = ref.watch(selectedRecordFilterProvider);
 
