@@ -1,9 +1,14 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
+import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/database.dart';
+import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   _FakeDoseLogRemote() : super(api: MedicineDoseLogsApi(Dio()), dio: Dio());
@@ -25,6 +30,15 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   String? lastMarkScheduledTime;
   int fetchCallCount = 0;
 
+  /// When true, write operations throw a [DioException].
+  bool writeShouldFail = false;
+
+  DioException _networkError(String path, {Map<String, dynamic>? data}) =>
+      DioException(
+        requestOptions: RequestOptions(path: path, method: 'POST', data: data),
+        type: DioExceptionType.connectionError,
+      );
+
   @override
   Future<List<DoseLogItem>> fetchForDate(String date) async {
     lastFetchDate = date;
@@ -39,6 +53,16 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
     String status,
     String date,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError(
+        '/api/v1/user/medicine-dose-logs',
+        data: {
+          'currentMedicineId': currentMedicineId,
+          'status': status,
+          'scheduledFor': date,
+        },
+      );
+    }
     lastCreateDate = date;
     lastCreateStatus = status;
     return createResult ??
@@ -54,6 +78,12 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
 
   @override
   Future<DoseLogItem> update(String doseLogId, String status) async {
+    if (writeShouldFail) {
+      throw _networkError(
+        '/api/v1/user/medicine-dose-logs/$doseLogId',
+        data: {'status': status},
+      );
+    }
     lastUpdateId = doseLogId;
     lastUpdateStatus = status;
     return updateResult ??
@@ -74,6 +104,18 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
     String? reminderId,
     String? scheduledTime,
   }) async {
+    if (writeShouldFail) {
+      throw _networkError(
+        '/api/v1/user/medicine-dose-logs/mark',
+        data: {
+          'currentMedicineId': currentMedicineId,
+          'status': status,
+          'scheduledFor': date,
+          if (reminderId != null) 'reminderId': reminderId,
+          if (scheduledTime != null) 'scheduledTime': scheduledTime,
+        },
+      );
+    }
     lastMarkMedicineId = currentMedicineId;
     lastMarkStatus = status;
     lastMarkDate = date;
@@ -90,6 +132,20 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
           createdAt: '2026-07-10T00:00:00.000Z',
           updatedAt: '2026-07-10T00:00:00.000Z',
         );
+  }
+}
+
+class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
+
+class _FakeSyncWorker extends SyncWorker {
+  _FakeSyncWorker({required super.pendingSyncDao})
+    : super(dio: Dio(), talker: Talker());
+
+  bool flushCalled = false;
+
+  @override
+  Future<void> flush() async {
+    flushCalled = true;
   }
 }
 
@@ -417,6 +473,115 @@ void main() {
             reason: 'Failed for status: $status',
           );
         }
+      });
+    });
+    // ─── offline write-path replay ─────────────────────────────────
+    group('offline write-path replay', () {
+      late _MockPendingSyncDao pendingSyncDao;
+      late _FakeSyncWorker syncWorker;
+
+      setUp(() {
+        pendingSyncDao = _MockPendingSyncDao();
+        syncWorker = _FakeSyncWorker(pendingSyncDao: pendingSyncDao);
+        dataSource = CachedDoseLogDataSource(
+          remote: remote,
+          dao: db.medicineDoseLogDao,
+          pendingSyncDao: pendingSyncDao,
+          syncWorker: syncWorker,
+        );
+        when(
+          () => pendingSyncDao.enqueue(
+            entityType: any(named: 'entityType'),
+            entityId: any(named: 'entityId'),
+            operation: any(named: 'operation'),
+            payload: any(named: 'payload'),
+          ),
+        ).thenAnswer((_) async => 'pending-id');
+      });
+
+      test('create enqueues pending sync on network failure', () async {
+        remote.writeShouldFail = true;
+
+        expect(
+          () => dataSource.create('med-1', 'taken', '2026-07-10'),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verify(
+          () => pendingSyncDao.enqueue(
+            entityType: 'dose_log',
+            operation: 'write',
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
+        expect(syncWorker.flushCalled, isTrue);
+      });
+
+      test('mark enqueues pending sync on network failure', () async {
+        remote.writeShouldFail = true;
+
+        expect(
+          () => dataSource.mark(
+            currentMedicineId: 'med-1',
+            status: 'taken',
+            date: '2026-07-10',
+          ),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verify(
+          () => pendingSyncDao.enqueue(
+            entityType: 'dose_log',
+            operation: 'write',
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
+      });
+
+      test('update enqueues pending sync on network failure', () async {
+        remote.writeShouldFail = true;
+
+        expect(
+          () => dataSource.update('log-1', 'skipped'),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verify(
+          () => pendingSyncDao.enqueue(
+            entityType: 'dose_log',
+            operation: 'write',
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
+      });
+
+      test('does not enqueue when pendingSyncDao is null', () async {
+        dataSource = CachedDoseLogDataSource(
+          remote: remote,
+          dao: db.medicineDoseLogDao,
+        );
+        remote.writeShouldFail = true;
+
+        expect(
+          () => dataSource.create('med-1', 'taken', '2026-07-10'),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verifyNever(
+          () => pendingSyncDao.enqueue(
+            entityType: any(named: 'entityType'),
+            operation: any(named: 'operation'),
+            payload: any(named: 'payload'),
+          ),
+        );
       });
     });
   });

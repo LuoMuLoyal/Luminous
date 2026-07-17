@@ -1,11 +1,16 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
+import 'package:luminous/core/database/daos/pending_sync_dao.dart';
+import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/mapper.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 // ── Fakes ───────────────────────────────────────────────────────
 
@@ -26,6 +31,19 @@ class _FakeHealthContextRemoteDataSource
   Object? fetchError;
   int fetchCallCount = 0;
 
+  /// When true, write operations throw a [DioException] simulating
+  /// network failure.
+  bool writeShouldFail = false;
+
+  DioException _networkError(String path) => DioException(
+    requestOptions: RequestOptions(
+      path: path,
+      method: 'POST',
+      data: <String, dynamic>{'test': true},
+    ),
+    type: DioExceptionType.connectionError,
+  );
+
   @override
   Future<HealthContextDataDto> fetchHealthContext() async {
     fetchCallCount++;
@@ -37,6 +55,9 @@ class _FakeHealthContextRemoteDataSource
   Future<HealthContextDataDto> updateProfile(
     HealthProfileUpdateInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/profile');
+    }
     return updateProfileResult ?? _buildDto();
   }
 
@@ -44,6 +65,9 @@ class _FakeHealthContextRemoteDataSource
   Future<HealthContextDataDto> createAllergy(
     HealthAllergyWriteInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/allergies');
+    }
     return createAllergyResult ?? _buildDto();
   }
 
@@ -52,11 +76,17 @@ class _FakeHealthContextRemoteDataSource
     String id,
     HealthAllergyUpdateInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/allergies/$id');
+    }
     return updateAllergyResult ?? _buildDto();
   }
 
   @override
   Future<HealthContextDataDto> deleteAllergy(String id) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/allergies/$id');
+    }
     return deleteAllergyResult ?? _buildDto();
   }
 
@@ -64,6 +94,9 @@ class _FakeHealthContextRemoteDataSource
   Future<HealthContextDataDto> createCondition(
     HealthConditionWriteInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/conditions');
+    }
     return createConditionResult ?? _buildDto();
   }
 
@@ -72,11 +105,17 @@ class _FakeHealthContextRemoteDataSource
     String id,
     HealthConditionUpdateInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/conditions/$id');
+    }
     return updateConditionResult ?? _buildDto();
   }
 
   @override
   Future<HealthContextDataDto> deleteCondition(String id) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/conditions/$id');
+    }
     return deleteConditionResult ?? _buildDto();
   }
 
@@ -84,6 +123,9 @@ class _FakeHealthContextRemoteDataSource
   Future<HealthContextDataDto> createCurrentMedicine(
     CurrentMedicineWriteInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/current-medicines');
+    }
     return createCurrentMedicineResult ?? _buildDto();
   }
 
@@ -92,16 +134,36 @@ class _FakeHealthContextRemoteDataSource
     String id,
     CurrentMedicineUpdateInput input,
   ) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/current-medicines/$id');
+    }
     return updateCurrentMedicineResult ?? _buildDto();
   }
 
   @override
   Future<HealthContextDataDto> deleteCurrentMedicine(String id) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/health-context/current-medicines/$id');
+    }
     return deleteCurrentMedicineResult ?? _buildDto();
   }
 }
 
 class _MockHealthContextDao extends Mock implements HealthContextDao {}
+
+class _MockPendingSyncDao extends Mock implements PendingSyncDao {}
+
+class _FakeSyncWorker extends SyncWorker {
+  _FakeSyncWorker({required super.pendingSyncDao})
+    : super(dio: Dio(), talker: Talker());
+
+  bool flushCalled = false;
+
+  @override
+  Future<void> flush() async {
+    flushCalled = true;
+  }
+}
 
 // ── DTO builder ─────────────────────────────────────────────────
 
@@ -343,6 +405,126 @@ void main() {
 
       expect(result.summary.currentMedicineCount, 0);
       verify(() => dao.replace(any())).called(1);
+    });
+  });
+
+  group('offline write-path replay', () {
+    late _MockPendingSyncDao pendingSyncDao;
+    late _FakeSyncWorker syncWorker;
+
+    setUp(() {
+      pendingSyncDao = _MockPendingSyncDao();
+      syncWorker = _FakeSyncWorker(pendingSyncDao: pendingSyncDao);
+      repo = LucentHealthContextRepository(
+        dataSource: dataSource,
+        mapper: mapper,
+        dao: dao,
+        pendingSyncDao: pendingSyncDao,
+        syncWorker: syncWorker,
+      );
+      when(
+        () => pendingSyncDao.enqueue(
+          entityType: any(named: 'entityType'),
+          entityId: any(named: 'entityId'),
+          operation: any(named: 'operation'),
+          payload: any(named: 'payload'),
+        ),
+      ).thenAnswer((_) async => 'pending-id');
+    });
+
+    test('createAllergy enqueues pending sync on network failure', () async {
+      dataSource.writeShouldFail = true;
+
+      expect(
+        () => repo.createAllergy(
+          const HealthAllergyWriteInput(
+            kind: HealthAllergyKind.food,
+            label: 'Peanuts',
+          ),
+        ),
+        throwsA(isA<AppError>()),
+      );
+
+      await Future.delayed(Duration.zero);
+
+      verify(
+        () => pendingSyncDao.enqueue(
+          entityType: 'health_context',
+          operation: 'write',
+          payload: any(named: 'payload'),
+        ),
+      ).called(1);
+      expect(syncWorker.flushCalled, isTrue);
+    });
+
+    test('updateProfile enqueues pending sync on network failure', () async {
+      dataSource.writeShouldFail = true;
+
+      expect(
+        () => repo.updateProfile(const HealthProfileUpdateInput()),
+        throwsA(isA<AppError>()),
+      );
+
+      await Future.delayed(Duration.zero);
+
+      verify(
+        () => pendingSyncDao.enqueue(
+          entityType: 'health_context',
+          operation: 'write',
+          payload: any(named: 'payload'),
+        ),
+      ).called(1);
+    });
+
+    test(
+      'deleteCurrentMedicine enqueues pending sync on network failure',
+      () async {
+        dataSource.writeShouldFail = true;
+
+        expect(
+          () => repo.deleteCurrentMedicine('med-1'),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verify(
+          () => pendingSyncDao.enqueue(
+            entityType: 'health_context',
+            operation: 'write',
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test('does not enqueue when pendingSyncDao is null', () async {
+      repo = LucentHealthContextRepository(
+        dataSource: dataSource,
+        mapper: mapper,
+        dao: dao,
+      );
+      dataSource.writeShouldFail = true;
+
+      expect(
+        () => repo.createAllergy(
+          const HealthAllergyWriteInput(
+            kind: HealthAllergyKind.food,
+            label: 'Peanuts',
+          ),
+        ),
+        throwsA(isA<AppError>()),
+      );
+
+      await Future.delayed(Duration.zero);
+
+      verifyNever(
+        () => pendingSyncDao.enqueue(
+          entityType: any(named: 'entityType'),
+          operation: any(named: 'operation'),
+          payload: any(named: 'payload'),
+        ),
+      );
     });
   });
 
