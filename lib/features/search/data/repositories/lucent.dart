@@ -1,6 +1,5 @@
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/mapper.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
@@ -33,14 +32,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
       pageSize: pageSize,
     );
 
-    // Check business code
-    if (response.code != 0) {
-      throw Exception(
-        response.message.isNotEmpty
-            ? response.message
-            : '搜索失败（${response.code}）',
-      );
-    }
+    ensureEnvelopeSuccess(code: response.code, message: response.message);
 
     return response.data.map(mapper.dtoToResult).toList();
   }
@@ -53,7 +45,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
     try {
       final response = await dataSource.getDetail(id: id, source: source.name);
 
-      if (response.code != 0) return null;
+      ensureEnvelopeSuccess(code: response.code, message: response.message);
 
       final detail = response.data;
       return MedicineSearchSafetyPreview(

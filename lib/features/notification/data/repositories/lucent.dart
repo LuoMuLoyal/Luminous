@@ -1,5 +1,4 @@
-import 'package:lucent_api/api/export.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/notification.dart';
@@ -29,9 +28,7 @@ class LucentNotificationRepository implements NotificationRepository {
       page: page,
       pageSize: pageSize,
     );
-    if (response.code != 0) {
-      throw StateError(response.message);
-    }
+    ensureEnvelopeSuccess(code: response.code, message: response.message);
     return NotificationPage(
       items: response.items.map(_mapItem).toList(),
       total: response.total.toInt(),
@@ -43,9 +40,7 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   Future<NotificationDetail?> findOne(String id) async {
     final response = await api.notificationsControllerFindOneV1(id: id);
-    if (response.code != 0) {
-      throw StateError(response.message);
-    }
+    ensureEnvelopeSuccess(code: response.code, message: response.message);
     final d = response.data;
     return NotificationDetail(
       id: d.id,
@@ -63,9 +58,7 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   Future<int> getUnreadCount() async {
     final response = await api.notificationsControllerGetUnreadCountV1();
-    if (response.code != 0) {
-      throw StateError(response.message);
-    }
+    ensureEnvelopeSuccess(code: response.code, message: response.message);
     return response.count.toInt();
   }
 

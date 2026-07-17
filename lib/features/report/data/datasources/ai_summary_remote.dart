@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -70,7 +71,7 @@ class ReportAiSummaryRemoteDataSource {
     final sse = LucentSseClient(dio: dio);
 
     await for (final event in sse.postJson(
-      '/api/v1/user/reports/summary/generate/stream',
+      LucentApiPaths.reportSummaryGenerateStream,
       body: body,
     )) {
       switch (event.event) {

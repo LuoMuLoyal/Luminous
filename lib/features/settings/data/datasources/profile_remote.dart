@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Settings is a thin configuration surface: its data layer maps directly to
@@ -31,7 +31,7 @@ class SettingsProfileRemoteDataSource {
     }
 
     final response = await dio.patch<Object>(
-      '/api/v1/user/health-context/profile',
+      LucentApiPaths.healthContextProfile,
       data: payload,
       options: Options(contentType: Headers.jsonContentType),
     );

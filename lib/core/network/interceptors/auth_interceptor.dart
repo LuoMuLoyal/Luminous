@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
 
 import 'package:dio/dio.dart';
+import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/result_code.dart';
@@ -159,7 +160,7 @@ class AuthInterceptor extends Interceptor {
 
     try {
       final response = await _refreshDio.post<Object>(
-        '/api/v1/auth/refresh',
+        LucentApiPaths.authRefresh,
         data: <String, String>{'refreshToken': refreshToken},
         options: Options(
           headers: _localeResolver == null

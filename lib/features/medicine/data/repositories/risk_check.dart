@@ -1,4 +1,5 @@
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
@@ -41,9 +42,7 @@ class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
           id: sourceRefId,
           source: source,
         );
-        if (response.code != 0) {
-          continue;
-        }
+        ensureEnvelopeSuccess(code: response.code, message: response.message);
         details.add(
           MedicineRiskMedicineDetail(item: item, detail: response.data),
         );

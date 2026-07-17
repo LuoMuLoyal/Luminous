@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:luminous/core/network/api.dart'
+    hide DailyRecordKind, DailyRecordAttachmentKind;
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -135,11 +137,7 @@ class DailyRecordRemoteDataSource {
           .toList();
     }
 
-    final response = await _write(
-      'POST',
-      '/api/v1/user/daily-records',
-      payload,
-    );
+    final response = await _write('POST', LucentApiPaths.dailyRecords, payload);
     return _toItem(response);
   }
 
@@ -187,7 +185,7 @@ class DailyRecordRemoteDataSource {
 
     final response = await _write(
       'PATCH',
-      '/api/v1/user/daily-records/$id',
+      LucentApiPaths.dailyRecord(id),
       payload,
     );
     return _toItem(response);
@@ -195,20 +193,16 @@ class DailyRecordRemoteDataSource {
 
   Future<void> delete(String id) async {
     final response = await dio.request<Object>(
-      '/api/v1/user/daily-records/$id',
+      LucentApiPaths.dailyRecord(id),
       options: Options(method: 'DELETE', contentType: Headers.jsonContentType),
     );
 
-    final body = coerceToStringMap(response.data);
-    final code = body?['code'];
-    if (body == null || code != 0) {
-      throw DioException(
-        requestOptions: response.requestOptions,
-        response: response,
-        type: DioExceptionType.badResponse,
-        error: 'Daily record delete failed.',
-      );
-    }
+    final body = requireBody(
+      response,
+      message: 'Daily record delete response is empty.',
+    );
+    final envelope = LucentEnvelope<void>.fromJson(body);
+    envelope.throwIfFailed();
   }
 
   Future<lucent.DailyRecordItemDto> _write(

@@ -1,9 +1,8 @@
 // ignore_for_file: use_of_void_result
 
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,7 +47,7 @@ class LucentScanRepository implements ScanRepository {
     String? fileName,
   }) async {
     final presignResponse = await dio.post<Object>(
-      '/api/v1/user/files/upload',
+      LucentApiPaths.filesUpload,
       data: <String, Object?>{
         'contentType': contentType,
         'sizeBytes': sizeBytes ?? bytes.length,
@@ -85,7 +84,7 @@ class LucentScanRepository implements ScanRepository {
   @override
   Future<MedicineRecognitionResult> recognizeMedicine(String imageUrl) async {
     final response = await dio.post<Object>(
-      '/api/v1/medicines/recognize',
+      LucentApiPaths.medicinesRecognize,
       data: <String, Object?>{'imageUrl': imageUrl},
     );
     final envelope = coerceToStringMap(response.data);
