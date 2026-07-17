@@ -7,7 +7,7 @@ import 'package:luminous/features/health_context/domain/entities/write_inputs.da
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/lucent_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/lucent_workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';

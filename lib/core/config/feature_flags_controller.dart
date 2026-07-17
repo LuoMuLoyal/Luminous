@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/ai/ai_runtime_config.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'feature_flags_controller.freezed.dart';
@@ -41,12 +42,12 @@ abstract class FeatureFlagsState with _$FeatureFlagsState {
 }
 
 class FeatureFlagsController extends AsyncNotifier<FeatureFlagsState> {
-  static const _onDeviceAiRuntimeKey = 'featureFlags.onDeviceAiRuntime';
-  static const _aiProviderKey = 'featureFlags.aiRuntimeProvider';
-  static const _genUiKey = 'featureFlags.genUiEnabled';
-  static const _streamModeKey = 'featureFlags.assistantStreamMode';
-  static const _barcodeScanKey = 'featureFlags.medicineBarcodeScan';
-  static const _pdfExportKey = 'featureFlags.reportExportPdf';
+  static const _onDeviceAiRuntimeKey = PrefKeys.featureFlagsOnDeviceAiRuntime;
+  static const _aiProviderKey = PrefKeys.featureFlagsAiRuntimeProvider;
+  static const _genUiKey = PrefKeys.featureFlagsGenUiEnabled;
+  static const _streamModeKey = PrefKeys.featureFlagsAssistantStreamMode;
+  static const _barcodeScanKey = PrefKeys.featureFlagsMedicineBarcodeScan;
+  static const _pdfExportKey = PrefKeys.featureFlagsReportExportPdf;
 
   @override
   Future<FeatureFlagsState> build() async {

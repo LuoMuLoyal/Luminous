@@ -5,6 +5,7 @@ import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
@@ -12,21 +13,19 @@ import 'package:luminous/features/settings/data/services/notification_permission
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'reminder_notification_coordinator.g.dart';
-
-const medicineReminderScheduledNotificationIdsStorageKey =
-    'medicine.reminder.scheduledNotificationIds';
 
 class MedicineReminderNotificationCoordinator {
   MedicineReminderNotificationCoordinator({
     required this.gateway,
     required this.planner,
+    this.preferences = const MedicineReminderLocalPreferences(),
   });
 
   final LocalNotificationGateway gateway;
   final MedicineReminderNotificationPlanner planner;
+  final MedicineReminderLocalPreferences preferences;
 
   Future<void> resync({
     required List<MedicineReminderItem> reminders,
@@ -47,12 +46,7 @@ class MedicineReminderNotificationCoordinator {
       return;
     }
 
-    final preferences = await SharedPreferences.getInstance();
-    final previousIds =
-        preferences.getStringList(
-          medicineReminderScheduledNotificationIdsStorageKey,
-        ) ??
-        const <String>[];
+    final previousIds = await preferences.readScheduledNotificationIds();
 
     for (final id in previousIds) {
       final parsedId = int.tryParse(id);
@@ -63,10 +57,7 @@ class MedicineReminderNotificationCoordinator {
     }
 
     if (!remindersEnabled) {
-      await preferences.setStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
-        const <String>[],
-      );
+      await preferences.writeScheduledNotificationIds(const <String>[]);
       return;
     }
 
@@ -100,8 +91,7 @@ class MedicineReminderNotificationCoordinator {
       );
     }
 
-    await preferences.setStringList(
-      medicineReminderScheduledNotificationIdsStorageKey,
+    await preferences.writeScheduledNotificationIds(
       planned.map((item) => item.id.toString()).toList(growable: false),
     );
   }

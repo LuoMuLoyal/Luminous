@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,20 +33,24 @@ abstract class NotificationSettingsState with _$NotificationSettingsState {
 
 class NotificationSettingsController
     extends AsyncNotifier<NotificationSettingsState> {
-  static const _medicationKey = 'settings.notifications.medicationReminders';
-  static const _healthAlertsKey = 'settings.notifications.healthAlerts';
-  static const _weeklySummaryKey = 'settings.notifications.weeklySummary';
-  static const _waterRemindersKey = 'settings.notifications.waterReminders';
-  static const _sleepRemindersKey = 'settings.notifications.sleepReminders';
+  static const _medicationKey =
+      PrefKeys.settingsNotificationsMedicationReminders;
+  static const _healthAlertsKey = PrefKeys.settingsNotificationsHealthAlerts;
+  static const _weeklySummaryKey = PrefKeys.settingsNotificationsWeeklySummary;
+  static const _waterRemindersKey =
+      PrefKeys.settingsNotificationsWaterReminders;
+  static const _sleepRemindersKey =
+      PrefKeys.settingsNotificationsSleepReminders;
   static const _sleepReminderEnabledKey =
       'settings.notifications.sleepReminderEnabled';
-  static const _sleepBedtimeKey = 'settings.notifications.sleepBedtime';
-  static const _sleepWakeTimeKey = 'settings.notifications.sleepWakeTime';
-  static const _dndEnabledKey = 'settings.notifications.dnd.enabled';
-  static const _dndStartTimeKey = 'settings.notifications.dnd.startTime';
-  static const _dndEndTimeKey = 'settings.notifications.dnd.endTime';
-  static const _soundEnabledKey = 'settings.notifications.soundEnabled';
-  static const _vibrationEnabledKey = 'settings.notifications.vibrationEnabled';
+  static const _sleepBedtimeKey = PrefKeys.settingsNotificationsSleepBedtime;
+  static const _sleepWakeTimeKey = PrefKeys.settingsNotificationsSleepWakeTime;
+  static const _dndEnabledKey = PrefKeys.settingsNotificationsDndEnabled;
+  static const _dndStartTimeKey = PrefKeys.settingsNotificationsDndStartTime;
+  static const _dndEndTimeKey = PrefKeys.settingsNotificationsDndEndTime;
+  static const _soundEnabledKey = PrefKeys.settingsNotificationsSoundEnabled;
+  static const _vibrationEnabledKey =
+      PrefKeys.settingsNotificationsVibrationEnabled;
   static const _reminderAdvanceMinutesKey =
       'settings.notifications.reminderAdvanceMinutes';
 

@@ -2,7 +2,7 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/lucent_workspace_repository.dart';
+import 'package:luminous/features/medicine/data/repositories/lucent_workspace.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppLocaleController extends AsyncNotifier<AppLocale> {
-  static const _storageKey = 'app.locale';
+  static const _storageKey = PrefKeys.appLocale;
 
   @override
   Future<AppLocale> build() async {

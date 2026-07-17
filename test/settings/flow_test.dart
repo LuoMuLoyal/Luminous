@@ -1,4 +1,4 @@
-﻿import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +19,7 @@ import 'package:luminous/features/settings/data/services/notification_permission
 import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/settings/presentation/pages/language.dart';
 import 'package:luminous/features/settings/presentation/pages/notification.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,8 +61,8 @@ enum AppThemeModePreference {
 }
 
 class AppThemeController extends AsyncNotifier<AppThemePreference> {
-  static const _modeStorageKey = 'theme.mode';
-  static const _familyStorageKey = 'theme.family';
+  static const _modeStorageKey = PrefKeys.themeMode;
+  static const _familyStorageKey = PrefKeys.themeFamily;
 
   @override
   Future<AppThemePreference> build() async {

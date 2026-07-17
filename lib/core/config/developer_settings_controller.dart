@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/base_url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,9 +63,9 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
 
 class DeveloperSettingsController
     extends AsyncNotifier<DeveloperSettingsState> {
-  static const _apiEndpointKey = 'developer.apiEndpoint';
-  static const _customApiUrlKey = 'developer.customApiUrl';
-  static const _logLevelKey = 'developer.logLevel';
+  static const _apiEndpointKey = PrefKeys.developerApiEndpoint;
+  static const _customApiUrlKey = PrefKeys.developerCustomApiUrl;
+  static const _logLevelKey = PrefKeys.developerLogLevel;
 
   talker.Talker get _talker => ref.read(talkerProvider);
 

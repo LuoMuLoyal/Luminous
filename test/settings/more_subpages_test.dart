@@ -6,7 +6,7 @@ import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';
 import 'package:luminous/features/settings/presentation/pages/security_pin.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';

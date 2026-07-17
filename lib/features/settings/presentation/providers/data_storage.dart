@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'data_storage.freezed.dart';
@@ -79,9 +80,9 @@ abstract class DataStorageSettingsState with _$DataStorageSettingsState {
 
 class DataStorageSettingsController
     extends AsyncNotifier<DataStorageSettingsState> {
-  static const _retentionKey = 'settings.dataStorage.retentionPeriod';
-  static const _imageQualityKey = 'settings.dataStorage.imageQuality';
-  static const _syncKey = 'settings.dataStorage.syncPreference';
+  static const _retentionKey = PrefKeys.settingsDataStorageRetentionPeriod;
+  static const _imageQualityKey = PrefKeys.settingsDataStorageImageQuality;
+  static const _syncKey = PrefKeys.settingsDataStorageSyncPreference;
 
   @override
   Future<DataStorageSettingsState> build() async {

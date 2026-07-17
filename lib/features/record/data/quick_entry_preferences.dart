@@ -1,13 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 
 /// SharedPreferences keys for quick-entry preferences.
-const _kDynamicSortEnabled = 'record.quickEntry.dynamicSortEnabled';
-const _kCustomOrder = 'record.quickEntry.customOrder';
-const _kCollapsed = 'record.quickEntry.collapsed';
-const _kFrequencyPrefix = 'record.quickEntry.freq.';
+const _kDynamicSortEnabled = PrefKeys.recordQuickEntryDynamicSort;
+const _kCustomOrder = PrefKeys.recordQuickEntryCustomOrder;
+const _kCollapsed = PrefKeys.recordQuickEntryCollapsed;
+const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 
 /// Maximum number of recent taps to keep for frequency-based sorting.
 const _maxFrequencyEntries = 50;

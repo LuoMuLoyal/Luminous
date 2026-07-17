@@ -8,12 +8,12 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 
@@ -35,20 +35,16 @@ class MedicineReminderDetailData {
 
 class MedicineReminderSoundController
     extends AsyncNotifier<MedicineReminderSoundPreference> {
-  static const _storageKey = 'medicine.reminder.sound';
+  final _prefs = const MedicineReminderLocalPreferences();
 
   @override
   Future<MedicineReminderSoundPreference> build() async {
-    final preferences = await SharedPreferences.getInstance();
-    return MedicineReminderSoundPreference.fromStorage(
-      preferences.getString(_storageKey),
-    );
+    return _prefs.readSound();
   }
 
   Future<void> setSound(MedicineReminderSoundPreference preference) async {
     state = AsyncData(preference);
-    final preferences = await SharedPreferences.getInstance();
-    await preferences.setString(_storageKey, preference.storageValue);
+    await _prefs.writeSound(preference);
   }
 }
 

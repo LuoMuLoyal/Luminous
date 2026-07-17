@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'settings_controller.freezed.dart';
@@ -36,9 +37,9 @@ abstract class AccessibilitySettingsState with _$AccessibilitySettingsState {
 
 class AccessibilitySettingsController
     extends AsyncNotifier<AccessibilitySettingsState> {
-  static const _fontSizeKey = 'accessibility.fontSize';
-  static const _reduceAnimationsKey = 'accessibility.reduceAnimations';
-  static const _highContrastKey = 'accessibility.highContrast';
+  static const _fontSizeKey = PrefKeys.accessibilityFontSize;
+  static const _reduceAnimationsKey = PrefKeys.accessibilityReduceAnimations;
+  static const _highContrastKey = PrefKeys.accessibilityHighContrast;
 
   @override
   Future<AccessibilitySettingsState> build() async {

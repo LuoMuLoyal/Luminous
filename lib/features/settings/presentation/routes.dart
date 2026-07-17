@@ -5,7 +5,7 @@ import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/settings/presentation/pages/accessibility.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
-import 'package:luminous/features/settings/presentation/pages/data_export_page.dart';
+import 'package:luminous/features/settings/presentation/pages/data_export.dart';
 import 'package:luminous/features/settings/presentation/pages/data_storage.dart';
 import 'package:luminous/features/settings/presentation/pages/dnd.dart';
 import 'package:luminous/features/settings/presentation/pages/feature_flags.dart';

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
@@ -30,7 +31,7 @@ void main() {
     'coordinator cancels old ids schedules new ones and persists them',
     () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        medicineReminderScheduledNotificationIdsStorageKey: <String>['7', '8'],
+        PrefKeys.medicineReminderScheduledNotificationIds: <String>['7', '8'],
       });
       final gateway = _FakeLocalNotificationGateway();
       final coordinator = MedicineReminderNotificationCoordinator(
@@ -55,7 +56,7 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
       expect(
         preferences.getStringList(
-          medicineReminderScheduledNotificationIdsStorageKey,
+          PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         hasLength(14),
       );
@@ -66,7 +67,7 @@ void main() {
     'coordinator leaves preferences untouched when gateway is unavailable',
     () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        medicineReminderScheduledNotificationIdsStorageKey: <String>['7'],
+        PrefKeys.medicineReminderScheduledNotificationIds: <String>['7'],
       });
       final gateway = _FakeLocalNotificationGateway(available: false);
       final coordinator = MedicineReminderNotificationCoordinator(
@@ -90,7 +91,7 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
       expect(
         preferences.getStringList(
-          medicineReminderScheduledNotificationIdsStorageKey,
+          PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         <String>['7'],
       );
@@ -99,7 +100,7 @@ void main() {
 
   test('coordinator clears stored ids when reminders are disabled', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
-      medicineReminderScheduledNotificationIdsStorageKey: <String>['5', '6'],
+      PrefKeys.medicineReminderScheduledNotificationIds: <String>['5', '6'],
     });
     final gateway = _FakeLocalNotificationGateway();
     final coordinator = MedicineReminderNotificationCoordinator(
@@ -121,7 +122,7 @@ void main() {
     final preferences = await SharedPreferences.getInstance();
     expect(
       preferences.getStringList(
-        medicineReminderScheduledNotificationIdsStorageKey,
+        PrefKeys.medicineReminderScheduledNotificationIds,
       ),
       isEmpty,
     );
@@ -187,10 +188,7 @@ void main() {
     'sync provider keeps previous schedule when reminder fetch fails',
     () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        medicineReminderScheduledNotificationIdsStorageKey: <String>[
-          '11',
-          '12',
-        ],
+        PrefKeys.medicineReminderScheduledNotificationIds: <String>['11', '12'],
       });
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource(const <MedicineReminderItem>[])
@@ -228,7 +226,7 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
       expect(
         preferences.getStringList(
-          medicineReminderScheduledNotificationIdsStorageKey,
+          PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         <String>['11', '12'],
       );
@@ -239,10 +237,7 @@ void main() {
     'sync provider clears notifications after medication reminders are turned off',
     () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        medicineReminderScheduledNotificationIdsStorageKey: <String>[
-          '21',
-          '22',
-        ],
+        PrefKeys.medicineReminderScheduledNotificationIds: <String>['21', '22'],
       });
       final gateway = _FakeLocalNotificationGateway();
       final reminderSource = _FakeReminderSource([
@@ -290,7 +285,7 @@ void main() {
       final preferences = await SharedPreferences.getInstance();
       expect(
         preferences.getStringList(
-          medicineReminderScheduledNotificationIdsStorageKey,
+          PrefKeys.medicineReminderScheduledNotificationIds,
         ),
         isEmpty,
       );

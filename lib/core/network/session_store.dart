@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LucentSessionTokens {
@@ -31,8 +32,8 @@ abstract interface class LucentSessionStore {
 class SharedPrefsLucentSessionStore implements LucentSessionStore {
   const SharedPrefsLucentSessionStore();
 
-  static const String accessTokenKey = 'lucent_access_token';
-  static const String refreshTokenKey = 'lucent_refresh_token';
+  static const String accessTokenKey = PrefKeys.accessToken;
+  static const String refreshTokenKey = PrefKeys.refreshToken;
 
   Future<SharedPreferences> _prefs() => SharedPreferences.getInstance();
 

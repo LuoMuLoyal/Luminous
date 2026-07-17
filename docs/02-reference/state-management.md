@@ -128,6 +128,36 @@ final myFormProvider =
 loading flags, expand/collapse toggles). This does not conflict with Riverpod as the single source of
 truth for shared/business state.
 
+**Boundary rule**: `setState` / `useState` is acceptable when **all** of the following hold:
+
+1. The state is **local to a single widget subtree** — it is not read or mutated by any other widget,
+   provider, or feature module.
+2. The state is **ephemeral** — losing it on dispose/rebuild is acceptable. It is not data that needs
+   to survive navigation, app restart, or configuration changes.
+3. The state has **no business semantics** — it controls presentation concerns (animation progress,
+   scroll position, temporary loading flags, expand/collapse toggles, text-field focus) rather than
+   domain data.
+
+**Allowed examples** (no review action needed):
+
+- `AnimationController` progress in a page that animates between states.
+- A local `bool _loading` flag set during a one-shot async action whose result is surfaced via a
+  toast/snackbar rather than stored in a Riverpod provider.
+- `ScrollController` / `TabController` held by a `StatefulWidget`.
+- Expand/collapse toggles for accordion sections.
+- Text field focus and keyboard-visible state.
+
+**Disallowed examples** (must use Riverpod instead):
+
+- Form data that will be submitted to a repository.
+- Filter/sort criteria that affect a list shown across multiple pages.
+- Auth session state, user preferences, or health context.
+- Any state that another feature module needs to read or invalidate.
+
+> **Note for reviewers**: When auditing for `StatefulWidget` / `setState` usage, do not flag patterns
+> matching the "Allowed examples" above. The AGENTS.md rule "State is Riverpod, not GetX" refers to
+> **shared/business state management**, not to ephemeral widget-local presentation state.
+
 ### Cross-Feature Data Refresh (Invalidation Bus)
 
 Feature modules are isolated: a feature must **never** import another feature's presentation-layer
