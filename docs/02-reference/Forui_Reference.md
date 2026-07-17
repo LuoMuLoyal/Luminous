@@ -31,9 +31,9 @@
 
 ## 项目级使用约定
 
-- **根主题**：`lib/theme/theme.dart` 维护 Luminous 可选的 Forui 内置主题族目录，当前直接映射
+- **根主题**：`lib/core/theme/theme.dart` 维护 Luminous 可选的 Forui 内置主题族目录，当前直接映射
    `FThemes.blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc` 的 touch
-   light/dark 变体；`lib/app/app.dart` 根据持久化的 `theme.family` + `theme.mode` 派生 `ThemeData`，
+   light/dark 变体；`lib/app/bootstrap.dart` 根据持久化的 `theme.family` + `theme.mode` 派生 `ThemeData`，
    再用 `FTheme` 包裹整棵树。
 - **页面 header**：
   - 子页（有返回按钮的 drill-down 页面）统一用 `lib/core/widgets/layout/page_scaffold.dart` 的 `PageScaffold`。

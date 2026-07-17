@@ -149,12 +149,12 @@ migration record.
 
 ## Design System
 
-- Root theming is Forui-led: `lib/theme/theme.dart` owns the app theme-family catalog and maps `theme.family` to stock Forui `FThemes.*` light/dark touch themes; `lib/app/app.dart` derives `ThemeData` from the selected family and injects `FTheme` at the app root.
-- `AppColors` (`lib/core/design/app_colors.dart`) — semantic color enum used by data/domain layers. Widgets resolve it via `AppColors.resolve(context.theme.colors)`.
-- `AppSpacingTokens` — `level1` through `level12` spacing scale retained as the project layout vocabulary because Forui has no generic spacing scale.
-- `AppRadiusTokens` — `level0` through `level9` plus `levelFull`, mapped to Forui’s `FBorderRadius` scale.
-- `AppTypographyTokens` (`lib/core/design/app_typography_tokens.dart`) — `level1` through `level10` mapped to Forui’s `FTypeface` scale (`xs3` through `xl4`). Widgets resolve a token via `AppTypographyToken.levelN.body(context)` or `.display(context)`.
-- `AppLayoutTokens`, `AppBreakpoints`, `AppResponsiveSizing` — layout helpers, not visual tokens.
+- Root theming is Forui-led: `lib/core/theme/theme.dart` owns the app theme-family catalog and maps `theme.family` to stock Forui `FThemes.*` light/dark touch themes; `lib/app/bootstrap.dart` derives `ThemeData` from the selected family and injects `FTheme` at the app root.
+- `SemanticColor` (`lib/core/design/semantic_color.dart`) — semantic color enum used by data/domain layers. Widgets resolve it via `SemanticColor.X.solid(context)` / `.subtle(context)` / `.muted(context)` / `.border(context)`.
+- `Spacing` — `level1` through `level12` spacing scale retained as the project layout vocabulary because Forui has no generic spacing scale.
+- `RadiusTokens` — `level0` through `level9` plus `levelFull`, mapped to Forui's `FBorderRadius` scale.
+- `TypographyToken` (`lib/core/design/typography.dart`) — `level1` through `level10` mapped to Forui's `FTypeface` scale (`xs3` through `xl4`). Widgets resolve a token via `TypographyToken.levelN.body(context)` or `.display(context)`.
+- `LayoutScale`, `Breakpoints`, `ResponsiveSizing` — layout helpers, not visual tokens.
 - Legacy token aliases (`AppThemeSurface`, `AppSectionSurface`, `AppColorTokens`, `AppShadowTokens`) and legacy interaction aliases (`AppInkWell`, `AppDialog`) have been removed from runtime `lib/`.
 - During the Forui migration, touched UI should prefer Forui primitives directly instead of adding new `App*` wrapper aliases around base components.
 - During the Forui migration, touched UI should prefer Forui-bundled Lucide icons (`FLucideIcons`) over Material icons. If a screen still uses `Icons.*`, treat that as migration debt and replace it unless Forui/Lucide truly has no reasonable equivalent.

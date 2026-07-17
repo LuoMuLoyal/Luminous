@@ -86,7 +86,7 @@ class AppRoutes {
 
 See [ADR-0002: GoRouter Navigation](adr/0002-gorouter-navigation.md).
 
-> **ADR-0009 审查备注:** `lib/app/app.dart` 在 `initState` postFrame 回调中新增了 `ref.read(cacheCleanupProvider)` 调用，用于触发数据保留期缓存清理。此变更不影响路由结构、路由守卫或导航行为。
+> **ADR-0009 审查备注:** `lib/app/bootstrap.dart` 在 `initState` postFrame 回调中新增了 `ref.read(cacheCleanupProvider)` 调用，用于触发数据保留期缓存清理。此变更不影响路由结构、路由守卫或导航行为。
 
 ---
 

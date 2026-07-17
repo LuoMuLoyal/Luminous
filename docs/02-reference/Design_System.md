@@ -9,7 +9,7 @@
 
 ## 根主题
 
-- 根主题为 Forui-led，当前通过 `lib/theme/theme.dart` 暴露 Forui 内置主题族目录。
+- 根主题为 Forui-led，当前通过 `lib/core/theme/theme.dart` 暴露 Forui 内置主题族目录。
 - `LuminousApp` 根据本地 `theme.family` 选择 `FThemes.blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc` 的 light/dark touch 变体，再派生 app 的 `ThemeData`。
 - 在 app 根注入 `FTheme`，替代 earlier green-skewed auth look。
 

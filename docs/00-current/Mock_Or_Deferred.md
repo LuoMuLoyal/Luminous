@@ -54,9 +54,10 @@
 - Today 或 Mine 的环境上下文连线。
 - 用药侧拍照识别（药盒 AI 识别）和条码扫描已在移动端暴露。
 - 处方导入/OCR 处方识别仍延后，底层枚举保留但仅 Toast 提示。
-- Mock repositories（`mock_*_repository.dart`）保留用于开发与测试预览。
-- Release 构建通过 `kDebugMode` 门控使用 domain `signedOut()` 工厂。
-- `MockMedicineSearchRepository` 仅用于测试。
+- Mock repositories 已从生产代码中移除，仅存在于 `test/helpers/mocks/` 目录下
+  （`MockTodayRepository`、`MockReportRepository`、`MockRecordRepository`、`MockMineRepository`、
+  `MockMedicineWorkspaceRepository`），用于单元/Widget 测试。
+- 未登录态使用 repository 实现类的 `signedOut()` 工厂方法返回静态预览数据，不再通过 `kDebugMode` 门控 mock。
 
 ## 2026-06-30 更新
 

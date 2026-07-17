@@ -17,7 +17,7 @@ lib/
 ├── main.dart              # App entry point
 │
 ├── app/                   # App-level configuration
-│   ├── app.dart           # LuminousApp bootstrap (providers, theme, locale)
+│   ├── bootstrap.dart     # LuminousApp bootstrap (providers, theme, locale)
 │   └── router.dart        # GoRouter configuration (StatefulShellRoute + top-level routes)
 │
 ├── core/                  # Cross-cutting infrastructure
@@ -30,8 +30,7 @@ lib/
 │   ├── theme/             # App theme, theme controller, theme extensions
 │   └── widgets/           # Shared UI components
 │       ├── common/        # AppBackButton, AppDialogShell, AppStateErrorView, AppStateMessageView, etc.
-│       ├── layout/        # PageScaffold, ResponsiveContentFrame
-│       └── settings/      # Legacy settings-row wrappers still used by untouched /settings/* sub-pages
+│       └── layout/        # PageScaffold, ResponsiveContentFrame
 │
 ├── features/              # Business feature modules (Clean Architecture)
 │   ├── assistant/         # AI health assistant chat
@@ -66,11 +65,10 @@ layers — some are lightweight:
 ```
 lib/features/<feature>/
 ├── data/                   # Data access layer
-│   ├── datasources/        # Remote API, local storage, mock sources
+│   ├── datasources/        # Remote API, local storage, cached sources
 │   ├── mappers/            # DTO ↔ domain entity mappers
 │   ├── providers/          # Riverpod providers for data sources
 │   └── repositories/      # Repository implementations
-│       └── mock/           # Demo-only mock repositories (kDebugMode gated)
 │
 ├── domain/                 # Business logic layer
 │   ├── entities/           # Domain entities (freezed models)
@@ -91,12 +89,9 @@ lib/features/<feature>/
 ```
 
 **Full Clean Architecture** (data + domain + presentation): `assistant`, `auth`, `health_context`,
-`medicine`, `mine`, `record`, `report`, `search`, `today`
+`medicine`, `mine`, `notification`, `record`, `report`, `scan`, `search`, `settings`, `support`, `today`
 
-**Presentation-only** (no data/domain): `notification`, `shell`
-
-**Lightweight** (partial layers): `scan` (minimal), `settings` (data + presentation, no domain),
-`support` (data only, no domain/presentation)
+**Presentation-only** (no data/domain): `shell`
 
 ---
 
@@ -106,13 +101,13 @@ The active root theme is now Forui-led. `LuminousApp` applies Forui `FTheme` at 
 derives `MaterialApp` light/dark themes from Forui `FThemeData` through
 `toApproximateMaterialTheme()`.
 
-- **Root theme** → `lib/theme/theme.dart` — Owns the app-level Forui theme-family catalog and stock
+- **Root theme** → `lib/core/theme/theme.dart` — Owns the app-level Forui theme-family catalog and stock
   light/dark theme mapping
-- **Color token bridge** → `lib/core/design/app_colors.dart` — Semantic color enum used by
-  data/domain layers; resolved through the current Forui theme in widgets
-- **Spacing/radius tokens** → `lib/core/design/app_spacing_tokens.dart`, `app_radius_tokens.dart` —
-  Project layout vocabulary mapped to Forui’s scale; legacy aliases removed
-- **Theme preference** → `lib/core/theme/app_theme_controller.dart` — Persists both `ThemeMode`
+- **Color token** → `lib/core/design/semantic_color.dart` — `SemanticColor` enum used by
+  data/domain layers; resolved through the current Forui theme in widgets via `.solid(context)` / `.subtle(context)` / `.muted(context)` / `.border(context)`
+- **Spacing/radius tokens** → `lib/core/design/spacing.dart`, `radius.dart` —
+  Project layout vocabulary (`Spacing`, `RadiusTokens`) mapped to Forui's scale
+- **Theme preference** → `lib/core/theme/theme_controller.dart` — Persists both `ThemeMode`
   and `theme.family`
   (`system / light / dark`)
 
@@ -142,7 +137,7 @@ migration bridge for any still-unrewritten settings surfaces.
 - All page-level error states use `AppStateErrorView`.
 - All page-level loading states use shimmer skeleton screens.
 - Child pages default to a standard header: left back arrow + centered title.
-- Mock data is gated behind `kDebugMode`; release builds show empty states.
+- Mock repositories live only under `test/helpers/mocks/`; production code always uses the Lucent implementation.
 - During the Forui migration, touched pages should move toward Forui primitives directly instead of
   adding new handcrafted wrapper aliases.
 - The root shell is already on Forui primitives: `ShellPage` uses `FScaffold`,
