@@ -1,6 +1,6 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 
 final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
@@ -9,6 +9,6 @@ final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
     fetch: () =>
         ref.watch(medicineWorkspaceRepositoryProvider).fetchWorkspace(),
     signedOutFallback: () =>
-        Future.value(MockMedicineWorkspaceRepository.previewWorkspace),
+        ref.watch(medicineWorkspaceRepositoryProvider).signedOutWorkspace,
   );
 });

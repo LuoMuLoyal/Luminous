@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
@@ -8,7 +8,7 @@ import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';

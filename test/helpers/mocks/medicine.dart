@@ -1,23 +1,11 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:forui/forui.dart';
 import 'dart:io';
-import 'package:luminous/core/network/network_providers.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/repositories/lucent_workspace_repository.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock_workspace.g.dart';
-
-/// Demo-only mock implementation of [MedicineWorkspaceRepository] used for tests.
-///
-/// Hero metrics and medicine names are intentionally placeholder so they cannot
-/// be mistaken for real clinical data.
+/// Test-only mock implementation of [MedicineWorkspaceRepository].
 class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   const MockMedicineWorkspaceRepository();
 
@@ -30,8 +18,6 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     return previewWorkspace;
   }
 
-  // Camera recognition and barcode scan are live on mobile devices.
-  // Prescription import remains deferred pending OCR/contract work.
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
       icon: FLucideIcons.camera,
@@ -180,26 +166,5 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         copyKey: MedicineCopyKey.promisePointDiagnosis,
       ),
     ],
-  );
-}
-
-@riverpod
-MedicineReminderRemoteDataSource medicineReminderRemoteDataSource(Ref ref) {
-  final api = ref.watch(lucentClientProvider).medicineReminders;
-  final dio = ref.watch(lucentDioClientProvider).dio;
-  return MedicineReminderRemoteDataSource(api: api, dio: dio);
-}
-
-@riverpod
-MedicineWorkspaceRepository medicineWorkspaceRepository(Ref ref) {
-  final healthRepo = ref.watch(healthContextRepositoryProvider);
-  final doseLogDs = ref.watch(doseLogRemoteDataSourceProvider);
-  final reminderDs = ref.watch(medicineReminderRemoteDataSourceProvider);
-  final riskCheckRepository = ref.watch(medicineRiskCheckRepositoryProvider);
-  return LucentMedicineWorkspaceRepository(
-    healthRepo: healthRepo,
-    doseLogDs: doseLogDs,
-    reminderDs: reminderDs,
-    riskCheckRepository: riskCheckRepository,
   );
 }

@@ -1,4 +1,5 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
+import '../helpers/feature_mocks.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';

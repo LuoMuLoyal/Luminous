@@ -1,4 +1,4 @@
-﻿import 'package:clock/clock.dart';
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,7 +10,7 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
-import 'package:luminous/features/medicine/data/repositories/mock_workspace.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
