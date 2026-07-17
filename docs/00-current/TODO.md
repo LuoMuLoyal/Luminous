@@ -18,7 +18,7 @@ Last updated: 2026-07-15
 
 以下项经三份审查报告确认后暂缓，有明确原因：
 
-- 超大页面拆分：`login_page.dart`（620+ 行）、`medicine_reminder_edit_page.dart`（400+ 行）— Phase Guide 明确"现在不要做"
+- 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`quick_entry_panel.dart`（685 行）、`record/edit.dart`（646 行）、`settings/page.dart`（638 行）、`record/detail.dart`（570 行）、`report/page.dart`（559 行）、`mobile_drugbox.dart`（546 行）、`conversation.dart`（542 行）。`suggestion.dart`（原 952 行）已拆分为 4 个文件（主文件降至 125 行）
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 ## 审查后续关注项（2026-07-11 回查 → 7-15 细化）
