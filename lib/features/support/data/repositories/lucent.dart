@@ -1,16 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/support_resource.dart';
 import '../../domain/repositories/support.dart';
 
-/// Riverpod provider for [SupportRepository].
-final supportRepositoryProvider = Provider<SupportRepository>((ref) {
+part 'lucent.g.dart';
+
+@riverpod
+SupportRepository supportRepository(Ref ref) {
   return LucentSupportRepository(
     api: ref.watch(lucentClientProvider).supportResources,
   );
-});
+}
 
 /// Lucent-backed implementation of [SupportRepository].
 class LucentSupportRepository implements SupportRepository {

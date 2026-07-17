@@ -5,37 +5,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/report/data/providers/repository.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'dashboard.g.dart';
 
 const _reportDashboardTimeout = Duration(seconds: 5);
 
-final reportDashboardProvider =
-    FutureProvider.family<ReportDashboard, ReportDashboardQuery>((
-      ref,
-      query,
-    ) async {
-      return authGuarded(
-        ref: ref,
-        fetch: () => ref
-            .watch(reportRepositoryProvider)
-            .fetchDashboard(query)
-            .timeout(
-              _reportDashboardTimeout,
-              onTimeout: () =>
-                  throw TimeoutException('report_dashboard_timeout'),
-            ),
-        signedOutFallback: () async {
-          final repo = ref.watch(reportRepositoryProvider);
-          final base = await repo.signedOutDashboard;
-          return base.copyWith(
-            range: query.range,
-            startDate: _dateOnly(
-              query.startDate ?? clock.now().subtract(const Duration(days: 7)),
-            ),
-            endDate: _dateOnly(query.endDate ?? clock.now()),
-          );
-        },
+@Riverpod(keepAlive: true)
+Future<ReportDashboard> reportDashboard(
+  Ref ref,
+  ReportDashboardQuery query,
+) async {
+  return authGuarded(
+    ref: ref,
+    fetch: () => ref
+        .watch(reportRepositoryProvider)
+        .fetchDashboard(query)
+        .timeout(
+          _reportDashboardTimeout,
+          onTimeout: () => throw TimeoutException('report_dashboard_timeout'),
+        ),
+    signedOutFallback: () async {
+      final repo = ref.watch(reportRepositoryProvider);
+      final base = await repo.signedOutDashboard;
+      return base.copyWith(
+        range: query.range,
+        startDate: _dateOnly(
+          query.startDate ?? clock.now().subtract(const Duration(days: 7)),
+        ),
+        endDate: _dateOnly(query.endDate ?? clock.now()),
       );
-    });
+    },
+  );
+}
 
 String _dateOnly(DateTime date) {
   final local = date.toLocal();

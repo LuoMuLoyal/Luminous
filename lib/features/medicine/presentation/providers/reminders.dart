@@ -13,9 +13,12 @@ import 'package:luminous/features/medicine/presentation/utils/reminder_formatter
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 export 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
+
+part 'reminders.g.dart';
 
 class MedicineReminderDetailData {
   const MedicineReminderDetailData({
@@ -103,17 +106,16 @@ class MedicineReminderFormState {
   final bool deleted;
 }
 
-final medicineReminderListProvider = FutureProvider<List<MedicineReminderItem>>(
-  (ref) {
-    return authGuarded(
-      ref: ref,
-      fetch: () =>
-          ref.watch(medicineReminderRemoteDataSourceProvider).fetchAll(),
-    );
-  },
-);
+@Riverpod(keepAlive: true)
+Future<List<MedicineReminderItem>> medicineReminderList(Ref ref) {
+  return authGuarded(
+    ref: ref,
+    fetch: () => ref.watch(medicineReminderRemoteDataSourceProvider).fetchAll(),
+  );
+}
 
-final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
+@Riverpod(keepAlive: true)
+Future<List<DoseLogItem>> medicineTodayDoseLogs(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () {
@@ -123,59 +125,59 @@ final medicineTodayDoseLogsProvider = FutureProvider<List<DoseLogItem>>((ref) {
       return ref.watch(cachedDoseLogDataSourceProvider).fetchForDate(date);
     },
   );
-});
+}
 
-final medicineReminderDeliveryLogProvider =
-    FutureProvider<List<ReminderDeliveryItem>>((ref) {
-      return authGuarded(
-        ref: ref,
-        fetch: () => ref
-            .watch(medicineReminderRemoteDataSourceProvider)
-            .fetchDeliveries(limit: 20),
-      );
-    });
+@Riverpod(keepAlive: true)
+Future<List<ReminderDeliveryItem>> medicineReminderDeliveryLog(Ref ref) {
+  return authGuarded(
+    ref: ref,
+    fetch: () => ref
+        .watch(medicineReminderRemoteDataSourceProvider)
+        .fetchDeliveries(limit: 20),
+  );
+}
 
-final medicineReminderDetailProvider =
-    FutureProvider.family<MedicineReminderDetailData, String>((
-      ref,
-      currentMedicineId,
-    ) async {
-      final snapshot = await ref.watch(healthContextSnapshotProvider.future);
-      final medicine = snapshot.currentMedicines
-          .where((item) => item.id == currentMedicineId)
-          .firstOrNull;
-      if (medicine == null) {
-        throw StateError('Medicine not found.');
-      }
+@Riverpod(keepAlive: true)
+Future<MedicineReminderDetailData> medicineReminderDetail(
+  Ref ref,
+  String currentMedicineId,
+) async {
+  final snapshot = await ref.watch(healthContextSnapshotProvider.future);
+  final medicine = snapshot.currentMedicines
+      .where((item) => item.id == currentMedicineId)
+      .firstOrNull;
+  if (medicine == null) {
+    throw StateError('Medicine not found.');
+  }
 
-      final reminders = await ref.watch(medicineReminderListProvider.future);
-      final todayLogs = await ref.watch(medicineTodayDoseLogsProvider.future);
-      final deliveryLogs = await ref.watch(
-        medicineReminderDeliveryLogProvider.future,
-      );
-      final medicineReminders =
-          reminders
-              .where((item) => item.currentMedicineId == currentMedicineId)
-              .toList()
-            ..sort(compareReminderTime);
-      final medicineLogs = todayLogs
+  final reminders = await ref.watch(medicineReminderListProvider.future);
+  final todayLogs = await ref.watch(medicineTodayDoseLogsProvider.future);
+  final deliveryLogs = await ref.watch(
+    medicineReminderDeliveryLogProvider.future,
+  );
+  final medicineReminders =
+      reminders
           .where((item) => item.currentMedicineId == currentMedicineId)
-          .toList(growable: false);
-      final reminderIds = medicineReminders.map((item) => item.id).toSet();
-      final medicineDeliveryLogs = deliveryLogs
-          .where((item) {
-            final reminderId = item.reminderId;
-            return reminderId != null && reminderIds.contains(reminderId);
-          })
-          .toList(growable: false);
+          .toList()
+        ..sort(compareReminderTime);
+  final medicineLogs = todayLogs
+      .where((item) => item.currentMedicineId == currentMedicineId)
+      .toList(growable: false);
+  final reminderIds = medicineReminders.map((item) => item.id).toSet();
+  final medicineDeliveryLogs = deliveryLogs
+      .where((item) {
+        final reminderId = item.reminderId;
+        return reminderId != null && reminderIds.contains(reminderId);
+      })
+      .toList(growable: false);
 
-      return MedicineReminderDetailData(
-        medicine: medicine,
-        reminders: medicineReminders,
-        todayLogs: medicineLogs,
-        deliveryLogs: medicineDeliveryLogs,
-      );
-    });
+  return MedicineReminderDetailData(
+    medicine: medicine,
+    reminders: medicineReminders,
+    todayLogs: medicineLogs,
+    deliveryLogs: medicineDeliveryLogs,
+  );
+}
 
 final medicineReminderSoundProvider =
     AsyncNotifierProvider<

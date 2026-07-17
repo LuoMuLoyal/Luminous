@@ -1,9 +1,12 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
+part 'workspace.g.dart';
+
+@Riverpod(keepAlive: true)
+Future<MedicineWorkspace> medicineWorkspace(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () =>
@@ -11,4 +14,4 @@ final medicineWorkspaceProvider = FutureProvider<MedicineWorkspace>((ref) {
     signedOutFallback: () =>
         ref.watch(medicineWorkspaceRepositoryProvider).signedOutWorkspace,
   );
-});
+}

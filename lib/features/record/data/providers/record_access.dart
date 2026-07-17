@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/network/network_providers.dart';
@@ -85,13 +84,13 @@ RecordRepository recordRepository(Ref ref) {
   return LucentRecordRepository(dailyRecordRepo: dailyRecordRepo);
 }
 
-final dailyRecordDetailProvider =
-    FutureProvider.family<DailyRecordItem, String>((ref, id) {
-      return ref
-          .watch(dailyRecordRepositoryProvider)
-          .get(id)
-          .timeout(
-            const Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
-          );
-    });
+@Riverpod(keepAlive: true)
+Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) {
+  return ref
+      .watch(dailyRecordRepositoryProvider)
+      .get(id)
+      .timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+      );
+}

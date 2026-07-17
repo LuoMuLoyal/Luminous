@@ -1,16 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/user_settings.dart';
 import '../../domain/repositories/user_settings.dart';
 
-/// Riverpod provider for [UserSettingsRepository].
-final userSettingsRepositoryProvider = Provider<UserSettingsRepository>((ref) {
+part 'lucent.g.dart';
+
+@riverpod
+UserSettingsRepository userSettingsRepository(Ref ref) {
   return LucentUserSettingsRepository(
     api: ref.watch(lucentClientProvider).userSettings,
   );
-});
+}
 
 /// Lucent-backed implementation of [UserSettingsRepository].
 class LucentUserSettingsRepository implements UserSettingsRepository {

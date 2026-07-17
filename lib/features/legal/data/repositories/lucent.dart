@@ -1,17 +1,19 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:lucent_api/api/export.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';
 import '../../domain/entities/document.dart';
 import '../../domain/repositories/documents.dart';
 
-/// Riverpod provider for [LegalRepository].
-final legalRepositoryProvider = Provider<LegalRepository>((ref) {
+part 'lucent.g.dart';
+
+@riverpod
+LegalRepository legalRepository(Ref ref) {
   return LucentLegalRepository(
     api: ref.watch(lucentClientProvider).legalDocuments,
     localeResolver: () =>
@@ -22,7 +24,7 @@ final legalRepositoryProvider = Provider<LegalRepository>((ref) {
         ? Lang.en
         : Lang.zh,
   );
-});
+}
 
 /// Lucent-backed implementation of [LegalRepository].
 ///

@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../data/repositories/lucent.dart';
 import '../../domain/entities/notification.dart';
@@ -11,28 +12,31 @@ import '../../domain/entities/notification.dart';
 export '../../data/repositories/lucent.dart'
     show notificationRepositoryProvider;
 
+part 'notification.g.dart';
+
 const _notificationPageSize = 20;
 
 // ── Unread count ─────────────────────────────────────────────────────────────
 
-final notificationUnreadCountProvider = FutureProvider<int>((ref) async {
+@Riverpod(keepAlive: true)
+Future<int> notificationUnreadCount(Ref ref) async {
   return authGuarded(
     ref: ref,
     fetch: () => ref.watch(notificationRepositoryProvider).getUnreadCount(),
     signedOutFallback: () => pendingAuthSessionResolution(),
   );
-});
+}
 
 // ── Notification detail ────────────────────────────────────────────────────
 
-final notificationDetailProvider =
-    FutureProvider.family<NotificationDetail?, String>((ref, id) async {
-      return authGuarded(
-        ref: ref,
-        fetch: () => ref.watch(notificationRepositoryProvider).findOne(id),
-        signedOutFallback: () => pendingAuthSessionResolution(),
-      );
-    });
+@Riverpod(keepAlive: true)
+Future<NotificationDetail?> notificationDetail(Ref ref, String id) async {
+  return authGuarded(
+    ref: ref,
+    fetch: () => ref.watch(notificationRepositoryProvider).findOne(id),
+    signedOutFallback: () => pendingAuthSessionResolution(),
+  );
+}
 
 // ── Loading-more flag ──────────────────────────────────────────────────────
 

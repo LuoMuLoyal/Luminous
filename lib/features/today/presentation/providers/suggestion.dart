@@ -99,36 +99,36 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
 ///
 /// Returns `null` when the user is not authenticated.
 /// Fetches the most recent 20 suggestion history items.
-final suggestionHistoryProvider =
-    FutureProvider.autoDispose<TodaySuggestionHistory?>((ref) async {
-      return authGuarded(
-        ref: ref,
-        fetch: () {
-          final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-          return ds.fetchHistory(limit: 20);
-        },
-        signedOutFallback: () async => null,
-      );
-    });
+@riverpod
+Future<TodaySuggestionHistory?> suggestionHistory(Ref ref) async {
+  return authGuarded(
+    ref: ref,
+    fetch: () {
+      final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
+      return ds.fetchHistory(limit: 20);
+    },
+    signedOutFallback: () async => null,
+  );
+}
 
 /// AI explanation for a single suggestion, loaded on demand.
 ///
 /// The [language] parameter should be the current locale tag (e.g. `zh-CN`).
 /// Returns `null` if the user is not authenticated.
-final suggestionExplanationProvider = FutureProvider.autoDispose
-    .family<
-      TodaySuggestionExplanation?,
-      ({String suggestionId, String language})
-    >((ref, params) async {
-      return authGuarded(
-        ref: ref,
-        fetch: () {
-          final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-          return ds.explainSuggestion(
-            id: params.suggestionId,
-            language: params.language,
-          );
-        },
-        signedOutFallback: () async => null,
+@riverpod
+Future<TodaySuggestionExplanation?> suggestionExplanation(
+  Ref ref,
+  ({String suggestionId, String language}) params,
+) async {
+  return authGuarded(
+    ref: ref,
+    fetch: () {
+      final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
+      return ds.explainSuggestion(
+        id: params.suggestionId,
+        language: params.language,
       );
-    });
+    },
+    signedOutFallback: () async => null,
+  );
+}

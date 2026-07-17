@@ -1,6 +1,5 @@
-﻿import 'dart:ui' as ui;
+import 'dart:ui' as ui;
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -130,9 +129,8 @@ DateTime Function() medicineReminderNotificationNow(Ref ref) {
   return DateTime.now;
 }
 
-final medicineReminderNotificationSyncProvider = FutureProvider<void>((
-  ref,
-) async {
+@Riverpod(keepAlive: true)
+Future<void> medicineReminderNotificationSync(Ref ref) async {
   final auth = ref.watch(authSessionProvider);
   if (auth.isLoading) {
     return;
@@ -205,7 +203,7 @@ final medicineReminderNotificationSyncProvider = FutureProvider<void>((
         .error('MedicineReminderNotificationCoordinator: resync failed: $e');
     return;
   }
-});
+}
 
 MedicineReminderNotificationTexts _notificationTexts(Ref ref) {
   final currentLocale =

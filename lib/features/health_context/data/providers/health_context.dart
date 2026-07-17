@@ -1,6 +1,5 @@
-﻿import 'dart:async';
+import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
@@ -37,9 +36,8 @@ HealthContextRepository healthContextRepository(Ref ref) {
   );
 }
 
-final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>((
-  ref,
-) {
+@Riverpod(keepAlive: true)
+Future<HealthContextSnapshot> healthContextSnapshot(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () => ref
@@ -50,4 +48,4 @@ final healthContextSnapshotProvider = FutureProvider<HealthContextSnapshot>((
           onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
         ),
   );
-});
+}

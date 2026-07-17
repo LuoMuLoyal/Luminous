@@ -4,6 +4,9 @@ import 'dart:async';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'dashboard.g.dart';
 
 class SelectedRecordDateNotifier extends Notifier<DateTime> {
   @override
@@ -33,7 +36,8 @@ final selectedRecordFilterProvider =
       SelectedRecordFilterNotifier.new,
     );
 
-final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
+@Riverpod(keepAlive: true)
+Future<RecordDashboard> recordDashboard(Ref ref) async {
   final selectedDate = ref.watch(selectedRecordDateProvider);
   final selectedFilter = ref.watch(selectedRecordFilterProvider);
 
@@ -50,7 +54,7 @@ final recordDashboardProvider = FutureProvider<RecordDashboard>((ref) async {
         .watch(recordRepositoryProvider)
         .signedOutDashboard(selectedDate, filterType: selectedFilter),
   );
-});
+}
 
 DateTime _dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);

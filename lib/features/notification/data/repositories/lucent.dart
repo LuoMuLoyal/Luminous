@@ -1,16 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/notification.dart';
 import '../../domain/repositories/notification.dart';
 
-/// Riverpod provider for [NotificationRepository].
-final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+part 'lucent.g.dart';
+
+@riverpod
+NotificationRepository notificationRepository(Ref ref) {
   return LucentNotificationRepository(
     api: ref.watch(lucentClientProvider).notifications,
   );
-});
+}
 
 /// Lucent-backed implementation of [NotificationRepository].
 class LucentNotificationRepository implements NotificationRepository {

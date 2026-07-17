@@ -11,7 +11,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
-      Future.value(MedicineWorkspace.signedOut());
+      Future.value(previewWorkspace);
 
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {

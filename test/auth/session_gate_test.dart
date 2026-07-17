@@ -160,7 +160,7 @@ class _CountingMedicineWorkspaceRepository
 
   @override
   Future<MedicineWorkspace> get signedOutWorkspace =>
-      Future.value(MedicineWorkspace.signedOut());
+      Future.value(MockMedicineWorkspaceRepository.previewWorkspace);
 }
 
 class _CountingMineRepository implements MineRepository {

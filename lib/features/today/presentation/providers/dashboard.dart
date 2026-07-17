@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'dashboard.g.dart';
 
 /// Configurable timeout for the dashboard fetch.
 ///
@@ -13,7 +15,8 @@ const _todayDashboardTimeout = Duration(
   seconds: int.fromEnvironment('DASHBOARD_TIMEOUT_SECONDS', defaultValue: 5),
 );
 
-final todayDashboardProvider = FutureProvider<TodayDashboard>((ref) {
+@Riverpod(keepAlive: true)
+Future<TodayDashboard> todayDashboard(Ref ref) {
   return authGuarded(
     ref: ref,
     fetch: () => ref
@@ -26,4 +29,4 @@ final todayDashboardProvider = FutureProvider<TodayDashboard>((ref) {
     signedOutFallback: () =>
         ref.watch(todayRepositoryProvider).signedOutDashboard,
   );
-});
+}
