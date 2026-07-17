@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/dio_client.dart';
@@ -25,7 +25,7 @@ void main() {
     );
     container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         lucentSessionStoreProvider.overrideWithValue(sessionStore),
         lucentDioClientProvider.overrideWithValue(dioClient),
       ],
@@ -294,7 +294,7 @@ void main() {
 }
 
 /// Fake with fetchAccount + logout overrides for session provider tests.
-class _SessionTestRemoteDataSource extends FakeAuthRemoteDataSource {
+class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   bool logoutCalled = false;
   bool logoutShouldFail = false;
   bool fetchAccountShouldFail = false;

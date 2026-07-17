@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import 'package:luminous/core/design/design.dart';
@@ -12,6 +11,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
+import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:forui/forui.dart';
 
 class BarcodeScannerPage extends ConsumerStatefulWidget {
@@ -96,7 +96,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
     }
   }
 
-  void _showCandidatePicker(List<MedicineSearchItemDto> items) {
+  void _showCandidatePicker(List<ScanSearchResult> items) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
@@ -131,7 +131,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
                   Text(item.name, style: typography.body.md),
                   if (item.subtitle != null)
                     Text(
-                      item.subtitle.toString(),
+                      item.subtitle!,
                       style: typography.body.sm.copyWith(
                         color: colors.mutedForeground,
                       ),

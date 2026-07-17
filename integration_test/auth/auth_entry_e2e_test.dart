@@ -4,8 +4,8 @@ void main() {
   patrolTest('auth password login updates global session from app flow', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
-    final container = await pumpOfflineApp($, authRemoteDataSource: remote);
+    final remote = E2eLucentAuthRepository();
+    final container = await pumpOfflineApp($, authRepository: remote);
 
     await openLoginFromSignedOutMine($);
 
@@ -29,10 +29,10 @@ void main() {
   patrolTest('auth register flow submits registration from login entry', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     await pumpOfflineApp(
       $,
-      authRemoteDataSource: remote,
+      authRepository: remote,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
@@ -68,10 +68,10 @@ void main() {
   patrolTest('auth register flow sends verification code from login entry', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     await pumpOfflineApp(
       $,
-      authRemoteDataSource: remote,
+      authRepository: remote,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
@@ -98,10 +98,10 @@ void main() {
   patrolTest('auth forgot password flow submits reset from login entry', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     await pumpOfflineApp(
       $,
-      authRemoteDataSource: remote,
+      authRepository: remote,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 
@@ -134,10 +134,10 @@ void main() {
   patrolTest('auth forgot password flow sends reset verification code', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     await pumpOfflineApp(
       $,
-      authRemoteDataSource: remote,
+      authRepository: remote,
       medicineWorkspaceRepository: E2eMedicineWorkspaceRepository(),
     );
 

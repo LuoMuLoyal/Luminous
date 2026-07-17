@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,11 +15,11 @@ import 'test_helpers.dart';
 
 void main() {
   test('startWechatMobileLogin completes SDK callback login', () async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-code');
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
       ],
     );
@@ -37,7 +37,7 @@ void main() {
   });
 
   test('startWechatDesktopLogin completes desktop callback login', () async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
     final callbackCompleter = Completer<WechatOAuthCallback>();
     var isCallbackServerClosed = false;
@@ -51,7 +51,7 @@ void main() {
     final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         externalUrlLauncherProvider.overrideWithValue(launcher),
         wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
       ],
@@ -84,7 +84,7 @@ void main() {
   });
 
   test('startWechatDesktopLogin ignores mismatched callback state', () async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
     final callbackCompleter = Completer<WechatOAuthCallback>();
     var isCallbackServerClosed = false;
@@ -98,7 +98,7 @@ void main() {
     final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         externalUrlLauncherProvider.overrideWithValue(launcher),
         wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
       ],
@@ -124,13 +124,13 @@ void main() {
   test(
     'startWechatIdentityLink completes mobile SDK identity linking',
     () async {
-      final remote = FakeAuthRemoteDataSource();
+      final remote = FakeLucentAuthRepository();
       final mobileClient = _FakeWechatMobileAuthClient(
         code: 'mobile-link-code',
       );
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         ],
@@ -157,7 +157,7 @@ void main() {
   );
 
   test('startWechatIdentityLink completes desktop identity linking', () async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
     final callbackCompleter = Completer<WechatOAuthCallback>();
     var isCallbackServerClosed = false;
@@ -171,7 +171,7 @@ void main() {
     final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         externalUrlLauncherProvider.overrideWithValue(launcher),
         wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(listener),
         wechatMobileAuthClientProvider.overrideWithValue(
@@ -221,7 +221,7 @@ void main() {
   test(
     'startWechatIdentityLink ignores mismatched desktop callback state',
     () async {
-      final remote = FakeAuthRemoteDataSource();
+      final remote = FakeLucentAuthRepository();
       final launcher = _FakeExternalUrlLauncher();
       final callbackCompleter = Completer<WechatOAuthCallback>();
       var isCallbackServerClosed = false;
@@ -235,7 +235,7 @@ void main() {
       final listener = _FakeWechatDesktopOAuthCallbackListener(callbackServer);
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           externalUrlLauncherProvider.overrideWithValue(launcher),
           wechatDesktopOAuthCallbackListenerProvider.overrideWithValue(
             listener,

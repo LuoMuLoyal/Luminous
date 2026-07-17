@@ -5,6 +5,7 @@ import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/repositories/ai.dart';
 
 class _FakeTodayAiRemoteDataSource implements TodayAiRemoteDataSource {
   _FakeTodayAiRemoteDataSource();

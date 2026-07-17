@@ -6,13 +6,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:patrol/patrol.dart';
 import 'package:lucent_api/api/export.dart'
-    show CooldownMessageDto, LucentClient, MedicineDoseLogsApi;
+    show LucentClient, MedicineDoseLogsApi;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/network/network_providers.dart'
     show lucentBaseUrlProvider, lucentSessionStoreProvider;
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
+import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -20,10 +23,10 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
-import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
+import 'package:luminous/features/medicine/data/repositories/risk_check.dart'
+    show medicineRiskCheckRepositoryProvider;
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
-import 'package:luminous/features/search/data/datasources/medicine_search.dart';
+import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
@@ -64,7 +67,7 @@ export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
 export 'package:patrol/patrol.dart' hide Notification;
 export 'package:luminous/app/router.dart' show appRouterProvider;
-export 'package:luminous/features/auth/data/datasources/auth.dart'
+export 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart'
     show AuthVerificationScene;
 export 'package:luminous/features/auth/presentation/providers/session.dart'
     show authSessionProvider;
@@ -87,7 +90,7 @@ export 'package:shared_preferences/shared_preferences.dart';
 Future<ProviderContainer> pumpOfflineApp(
   PatrolIntegrationTester $, {
   AuthSessionNotifier Function()? authSessionOverride,
-  AuthRemoteDataSource? authRemoteDataSource,
+  AuthRepository? authRepository,
   HealthContextRepository? healthContextRepository,
   MedicineRiskCheckRepository? medicineRiskCheckRepository,
   NotificationPermissionService? notificationPermissionService,
@@ -110,8 +113,8 @@ Future<ProviderContainer> pumpOfflineApp(
       lucentBaseUrlProvider.overrideWithValue('http://localhost'),
       lucentSessionStoreProvider.overrideWithValue(_MemorySessionStore()),
       notificationUnreadCountProvider.overrideWith((ref) => Future.value(0)),
-      if (authRemoteDataSource != null)
-        authRemoteDataSourceProvider.overrideWithValue(authRemoteDataSource),
+      if (authRepository != null)
+        authRepositoryProvider.overrideWithValue(authRepository),
       healthContextSnapshotProvider.overrideWith(
         (ref) => Future.value(_emptyHealthContextSnapshot),
       ),
@@ -368,8 +371,8 @@ class SignedInWithWechatIdentityAuthSessionNotifier
   Future<void> restore() async {}
 }
 
-class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
-  E2eAuthRemoteDataSource()
+class E2eLucentAuthRepository extends LucentAuthRepository {
+  E2eLucentAuthRepository()
     : super(
         LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
         _MemorySessionStore(),
@@ -453,19 +456,19 @@ class E2eAuthRemoteDataSource extends AuthRemoteDataSource {
   }
 
   @override
-  Future<CooldownMessageDto> sendVerificationCode({
+  Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   }) async {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return const CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
   }
 
   @override
-  Future<CooldownMessageDto> forgotPassword({required String email}) async {
+  Future<VerificationCooldown> forgotPassword({required String email}) async {
     forgotPasswordEmail = email;
-    return const CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
   }
 
   @override
@@ -597,14 +600,6 @@ class E2eNotificationPermissionService extends NotificationPermissionService {
 
 class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   const E2eMedicineRiskCheckRepository();
-
-  @override
-  MedicineRiskChecker get checker => const MedicineRiskChecker();
-
-  @override
-  // ignore: unused_element
-  MedicineSearchRemoteDataSource get remoteDataSource =>
-      throw UnimplementedError();
 
   @override
   Future<MedicineRiskCheckResult> fetchForSnapshot(

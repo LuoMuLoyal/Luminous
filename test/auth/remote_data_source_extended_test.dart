@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 class _MockAdapter implements HttpClientAdapter {
@@ -117,11 +118,11 @@ Map<String, dynamic> _accountDto({
 }
 
 void main() {
-  group('AuthRemoteDataSource — extended', () {
+  group('LucentAuthRepository — extended', () {
     late _MockAdapter adapter;
     late _MemStore store;
     late LucentClient client;
-    late AuthRemoteDataSource dataSource;
+    late LucentAuthRepository dataSource;
 
     setUp(() {
       adapter = _MockAdapter();
@@ -129,7 +130,7 @@ void main() {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
       client = LucentClient(dio, baseUrl: 'http://localhost:3000');
-      dataSource = AuthRemoteDataSource(client, store);
+      dataSource = LucentAuthRepository(client, store);
     });
 
     // ─── OAuth: WeChat Web ───────────────────────────────────────────
@@ -808,7 +809,7 @@ void main() {
           email: 'test@example.com',
         );
 
-        expect(result.cooldown, 120);
+        expect(result.cooldownSeconds, 120);
         expect(result.message, '重置链接已发送');
       });
 

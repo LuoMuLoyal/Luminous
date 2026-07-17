@@ -1,8 +1,8 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
@@ -10,9 +10,9 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import '../../../test_helpers.dart';
 
-/// Extends [FakeAuthRemoteDataSource] with overrides for methods used by
+/// Extends [FakeLucentAuthRepository] with overrides for methods used by
 /// [AuthAccountNotifier] that the base fake doesn't cover.
-class _AccountFakeRemote extends FakeAuthRemoteDataSource {
+class _AccountFakeRemote extends FakeLucentAuthRepository {
   bool fetchAccountCalled = false;
   bool verifyEmailCalled = false;
 
@@ -146,7 +146,7 @@ class _FailingAccountRemote extends _AccountFakeRemote {
   }
 
   @override
-  Future<CooldownMessageDto> sendVerificationCode({
+  Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   }) async {
@@ -191,7 +191,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );
@@ -217,7 +217,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );
@@ -242,7 +242,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -269,7 +269,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -296,7 +296,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -318,7 +318,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -340,7 +340,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -366,7 +366,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );
@@ -390,7 +390,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -415,7 +415,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -441,7 +441,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -466,7 +466,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -488,7 +488,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -510,7 +510,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -530,7 +530,7 @@ void main() {
       final remote = _FailingAccountRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -552,7 +552,7 @@ void main() {
       final remote = _AccountFakeRemote();
       final container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );

@@ -8,6 +8,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/repositories/ai.dart';
 
 class TodayAiAnalysisController extends Notifier<TodayAiAnalysisCardState> {
   static const String _defaultStreamingSummary = 'AI 正在整理今天的记录摘要...';

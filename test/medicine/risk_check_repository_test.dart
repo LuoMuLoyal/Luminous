@@ -1,8 +1,9 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
@@ -125,13 +126,15 @@ MedicineDetailResponseDto _detailResponse({
 }
 
 void main() {
-  group('MedicineRiskCheckRepository', () {
+  group('LucentMedicineRiskCheckRepository', () {
     late _FakeSearchDataSource remoteDataSource;
     late MedicineRiskCheckRepository repo;
 
     setUp(() {
       remoteDataSource = _FakeSearchDataSource();
-      repo = MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
+      repo = LucentMedicineRiskCheckRepository(
+        remoteDataSource: remoteDataSource,
+      );
     });
 
     // ─── fetchForSnapshot — basic behavior ───────────────────────────
@@ -443,7 +446,7 @@ void main() {
       test('uses custom MedicineRiskChecker when provided', () async {
         final fakeChecker = _NoOpRiskChecker();
 
-        final repo = MedicineRiskCheckRepository(
+        final repo = LucentMedicineRiskCheckRepository(
           remoteDataSource: remoteDataSource,
           checker: fakeChecker,
         );

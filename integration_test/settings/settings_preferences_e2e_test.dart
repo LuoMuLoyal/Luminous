@@ -78,11 +78,11 @@ void main() {
   patrolTest('settings footer sign out clears session and routes to login', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openSettings($);

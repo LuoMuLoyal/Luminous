@@ -31,26 +31,6 @@
 
 ## 中优先级
 
-### 5. Repository 接口位置错误/缺失，抽象风格不统一
-
-**证据**：
-- 接口错位在 data 层：`assistant/data/repositories/lucent.dart:30`、`report/data/repositories/lucent_ai_summary.dart:28`、`today/data/repositories/lucent_ai.dart:25`
-- 完全无接口：`scan/data/scan_repository.dart:11`（方法直接返回 `MedicineSearchItemDto`/`Map<String,dynamic>`）、`medicine/data/repositories/risk_check.dart`
-- auth 无 repository：`auth/data/providers/auth.dart` 直接暴露 `AuthRemoteDataSource`
-- `abstract class`（health_context/legal/mine）与 `abstract interface class`（today/record/search/medicine）混用
-
-**行动**：接口统一挪入 `domain/repositories/`，统一 `abstract interface class`；scan 补接口 + 领域实体（消掉 raw Map）。
-
-**影响范围**：4 个 feature 的文件移动 + import 更新，机械性改动。
-
-### 6. Riverpod 三种风格混用，ADR-0006 完成宣称与事实不符
-
-**证据**：`@riverpod` 注解 56 处 vs 手写 Provider/FutureProvider 18 处 + 手写 NotifierProvider/AsyncNotifierProvider 36 处并存。`Current_State.md:39-41` 宣称「全部迁移为 @riverpod」，但 legal、support、notification、today suggestion、health_context snapshot、mine/record/today dashboard 仍是手写（如 `notification.dart:13,30,58,171`、`today/.../suggestion.dart:29-32`）。
-
-**行动**：要么完成迁移，要么明确「Notifier 类手写、简单函数用注解」的取舍标准写进 state-management.md，并修正 Current_State 的宣称。
-
-**影响范围**：约 15 个文件；不改行为，改的是可预测性。
-
 ### 7. 缓存/离线策略三种实现位置，写路径回放只覆盖 record
 
 **证据**：cache-first 在 record 和 health_context 放 repository，但 today suggestion 把 DAO + JSON codec + stale-while-error 全放在 presentation notifier（`today/presentation/providers/suggestion.dart:47-66`，直读 remote datasource + DAO 绕过 repository）；`SyncWorker` 的 replay handler 只注册了 `daily_record` 一路（`record/data/providers/record_access.dart:33`），health_context 更新、dose log create/mark、settings patch 离线写后无回放。

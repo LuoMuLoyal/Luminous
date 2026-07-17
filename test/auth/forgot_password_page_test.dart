@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -10,11 +10,11 @@ import 'test_helpers.dart';
 
 void main() {
   testWidgets('Forgot password page sends reset code', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/forgot-password',
@@ -40,11 +40,11 @@ void main() {
   });
 
   testWidgets('Forgot password page submits reset request', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/forgot-password',

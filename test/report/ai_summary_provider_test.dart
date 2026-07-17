@@ -8,6 +8,7 @@ import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
+import 'package:luminous/features/report/domain/repositories/ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 

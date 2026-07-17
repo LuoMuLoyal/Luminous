@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
+import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
 import '../helpers/test_forui_app.dart';

@@ -153,10 +153,10 @@ Future<List<MedicineMatchResult>> _processPhoto(
       contentType: 'image/jpeg',
       fileName: 'medicine-box-${clock.now().millisecondsSinceEpoch}.jpg',
     );
-    final json = await repo.recognizeMedicine(imageUrl);
+    final recognition = await repo.recognizeMedicine(imageUrl);
 
-    final name = json['name'] as String? ?? '';
-    final approvalNumber = json['approvalNumber'] as String? ?? '';
+    final name = recognition.name;
+    final approvalNumber = recognition.approvalNumber ?? '';
     if (name.isEmpty && approvalNumber.isEmpty) return [];
 
     final query = approvalNumber.isNotEmpty ? approvalNumber : name;

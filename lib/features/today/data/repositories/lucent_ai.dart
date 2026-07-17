@@ -2,30 +2,10 @@
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lucent_ai.g.dart';
-
-sealed class TodayAiGenerationEvent {
-  const TodayAiGenerationEvent();
-}
-
-class TodayAiGenerationSummaryEvent extends TodayAiGenerationEvent {
-  const TodayAiGenerationSummaryEvent(this.summary);
-
-  final String summary;
-}
-
-class TodayAiGenerationResultEvent extends TodayAiGenerationEvent {
-  const TodayAiGenerationResultEvent(this.analysis);
-
-  final TodayAiAnalysis analysis;
-}
-
-abstract interface class TodayAiRepository {
-  Future<TodayAiAnalysis> generate({String? date});
-  Stream<TodayAiGenerationEvent> generateStream({String? date});
-}
 
 @riverpod
 TodayAiRemoteDataSource todayAiRemoteDataSource(Ref ref) {

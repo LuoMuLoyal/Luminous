@@ -1,6 +1,6 @@
-﻿import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wechat_oauth_service.g.dart';
@@ -51,7 +51,7 @@ class WechatOAuthService {
     final listener = _ref.read(wechatDesktopOAuthCallbackListenerProvider);
     if (!listener.isSupported) return null;
 
-    final remote = _ref.read(authRemoteDataSourceProvider);
+    final remote = _ref.read(authRepositoryProvider);
     final server = await listener.start();
     try {
       final authorize = forIdentityLink
@@ -68,7 +68,7 @@ class WechatOAuthService {
       if (!opened) return null;
 
       final callback = await server.callback.timeout(
-        Duration(seconds: authorize.expiresIn.toInt()),
+        Duration(seconds: authorize.expiresInSeconds),
       );
       if (callback.state != authorize.state) return null;
 
@@ -83,11 +83,11 @@ class WechatOAuthService {
   /// Creates a web authorize URL for the manual callback flow.
   ///
   /// When [forIdentityLink] is `true`, uses the identity-link endpoint.
-  Future<OAuthAuthorizeDataDto> createWebAuthorizeUrl({
+  Future<OAuthAuthorizeData> createWebAuthorizeUrl({
     String? callbackUri,
     bool forIdentityLink = false,
   }) async {
-    final remote = _ref.read(authRemoteDataSourceProvider);
+    final remote = _ref.read(authRepositoryProvider);
     return forIdentityLink
         ? remote.createWechatWebIdentityLinkAuthorizeUrl(
             callbackUri: callbackUri,

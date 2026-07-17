@@ -120,9 +120,8 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
     final result = await runGuarded(
       ref: ref,
       tag: 'PasswordResetNotifier.sendResetCode',
-      action: () => ref
-          .read(authRemoteDataSourceProvider)
-          .forgotPassword(email: state.email),
+      action: () =>
+          ref.read(authRepositoryProvider).forgotPassword(email: state.email),
     );
     switch (result) {
       case Failure(:final error):
@@ -134,7 +133,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
         );
         return false;
       case Success(:final value):
-        final cooldown = value.cooldown.toInt();
+        final cooldown = value.cooldownSeconds;
         state = state.copyWith(
           isSendingCode: false,
           successMessage: value.message,
@@ -158,7 +157,7 @@ class PasswordResetNotifier extends Notifier<PasswordResetState>
       ref: ref,
       tag: 'PasswordResetNotifier.resetPassword',
       action: () => ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .resetPassword(
             email: state.email,
             code: state.code,

@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/pages/register.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -13,11 +13,11 @@ import 'test_helpers.dart';
 
 void main() {
   testWidgets('Register page sends register verification code', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/register',
@@ -44,9 +44,9 @@ void main() {
   });
 
   testWidgets('Register page submits and navigates to login', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
-      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+      overrides: [authRepositoryProvider.overrideWithValue(remote)],
     );
     addTearDown(container.dispose);
 

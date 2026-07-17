@@ -1,9 +1,12 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 
@@ -20,8 +23,8 @@ class TestAuthApp extends StatelessWidget {
   }
 }
 
-class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
-  FakeAuthRemoteDataSource()
+class FakeLucentAuthRepository extends LucentAuthRepository {
+  FakeLucentAuthRepository()
     : super(
         LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
         _MemorySessionStore(),
@@ -72,32 +75,30 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   }
 
   @override
-  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl({
+  Future<OAuthAuthorizeData> createWechatWebAuthorizeUrl({
     String? callbackUri,
   }) async {
     createWechatAuthorizeCalled = true;
     wechatAuthorizeCallbackUri = callbackUri;
-    return OAuthAuthorizeDataDto(
+    return const OAuthAuthorizeData(
       authorizeUrl:
           'https://open.weixin.qq.com/connect/qrconnect?state=state-1',
       state: 'state-1',
-      expiresIn: 600,
-      callbackUri: callbackUri,
+      expiresInSeconds: 600,
     );
   }
 
   @override
-  Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
+  Future<OAuthAuthorizeData> createWechatWebIdentityLinkAuthorizeUrl({
     String? callbackUri,
   }) async {
     createWechatIdentityLinkAuthorizeCalled = true;
     wechatIdentityLinkAuthorizeCallbackUri = callbackUri;
-    return OAuthAuthorizeDataDto(
+    return const OAuthAuthorizeData(
       authorizeUrl:
           'https://open.weixin.qq.com/connect/qrconnect?state=link-state-1',
       state: 'link-state-1',
-      expiresIn: 600,
-      callbackUri: callbackUri,
+      expiresInSeconds: 600,
     );
   }
 
@@ -151,19 +152,19 @@ class FakeAuthRemoteDataSource extends AuthRemoteDataSource {
   }
 
   @override
-  Future<CooldownMessageDto> sendVerificationCode({
+  Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   }) async {
     sentCodeEmail = email;
     sentCodeScene = scene;
-    return const CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
   }
 
   @override
-  Future<CooldownMessageDto> forgotPassword({required String email}) async {
+  Future<VerificationCooldown> forgotPassword({required String email}) async {
     forgotPasswordEmail = email;
-    return const CooldownMessageDto(message: 'sent', cooldown: 60);
+    return const VerificationCooldown(message: 'sent', cooldownSeconds: 60);
   }
 
   @override

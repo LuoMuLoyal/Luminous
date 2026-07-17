@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -89,10 +89,10 @@ void main() {
   testWidgets('Account settings saves profile through auth account flow', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
       ],
     );
@@ -136,12 +136,12 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -193,12 +193,12 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(
             () => _SignedInAuthSessionNotifier(),
           ),
@@ -248,10 +248,10 @@ void main() {
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         authSessionProvider.overrideWith(
           () => _SignedInAuthSessionNotifier(
             linkedIdentities: [
@@ -313,11 +313,11 @@ void main() {
   testWidgets('Account settings links WeChat identity through account flow', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-link-code');
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
         authSessionProvider.overrideWith(() => _SignedInAuthSessionNotifier()),
       ],

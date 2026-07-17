@@ -6,6 +6,7 @@ import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 
 // ── Fake data source ───────────────────────────────────────────
 

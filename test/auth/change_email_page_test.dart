@@ -1,10 +1,10 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/presentation/pages/change_email.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 
@@ -14,12 +14,12 @@ void main() {
   testWidgets('Change email page sends verification code for change-email', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
         ],
         child: TestAuthApp(
@@ -47,10 +47,10 @@ void main() {
   testWidgets('Change email page submits and updates session email', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
       ],
     );

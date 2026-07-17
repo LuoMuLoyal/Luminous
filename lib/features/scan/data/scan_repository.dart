@@ -4,12 +4,14 @@ import 'package:dio/dio.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'scan_repository.g.dart';
 
-class ScanRepository {
-  const ScanRepository({
+class LucentScanRepository implements ScanRepository {
+  const LucentScanRepository({
     required this.api,
     required this.dio,
     required this.filesApi,
@@ -19,16 +21,26 @@ class ScanRepository {
   final Dio dio;
   final FilesApi filesApi;
 
-  Future<List<MedicineSearchItemDto>> search(String query) async {
+  @override
+  Future<List<ScanSearchResult>> search(String query) async {
     final response = await api.medicinesControllerSearchV1(
       source: Source.cn,
       q: query,
       page: 1,
       pageSize: 20,
     );
-    return response.data;
+    return response.data
+        .map(
+          (item) => ScanSearchResult(
+            id: item.id,
+            name: item.name,
+            subtitle: item.subtitle?.toString(),
+          ),
+        )
+        .toList(growable: false);
   }
 
+  @override
   Future<String> uploadImage({
     required List<int> bytes,
     required String contentType,
@@ -70,7 +82,8 @@ class ScanRepository {
     return publicUrl ?? uploadUrl;
   }
 
-  Future<Map<String, dynamic>> recognizeMedicine(String imageUrl) async {
+  @override
+  Future<MedicineRecognitionResult> recognizeMedicine(String imageUrl) async {
     final response = await dio.post<Object>(
       '/api/v1/medicines/recognize',
       data: <String, Object?>{'imageUrl': imageUrl},
@@ -79,13 +92,17 @@ class ScanRepository {
     if (envelope == null) {
       throw Exception('Recognize medicine response is empty.');
     }
-    return Map<String, dynamic>.from(envelope['data'] as Map);
+    final data = Map<String, dynamic>.from(envelope['data'] as Map);
+    return MedicineRecognitionResult(
+      name: data['name'] as String? ?? '',
+      approvalNumber: data['approvalNumber'] as String?,
+    );
   }
 }
 
 @riverpod
 ScanRepository scanRepository(Ref ref) {
-  return ScanRepository(
+  return LucentScanRepository(
     api: ref.watch(lucentClientProvider).medicines,
     dio: ref.watch(lucentDioClientProvider).dio,
     filesApi: ref.watch(lucentClientProvider).files,

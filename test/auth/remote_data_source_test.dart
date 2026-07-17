@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 
 /// A mock adapter that returns canned JSON responses.
 class _MockAdapter implements HttpClientAdapter {
@@ -82,11 +83,11 @@ Map<String, dynamic> _loginResponse({
 }
 
 void main() {
-  group('AuthRemoteDataSource', () {
+  group('LucentAuthRepository', () {
     late _MockAdapter adapter;
     late _MemStore store;
     late LucentClient client;
-    late AuthRemoteDataSource dataSource;
+    late LucentAuthRepository dataSource;
 
     setUp(() {
       adapter = _MockAdapter();
@@ -94,7 +95,7 @@ void main() {
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
       client = LucentClient(dio, baseUrl: 'http://localhost:3000');
-      dataSource = AuthRemoteDataSource(client, store);
+      dataSource = LucentAuthRepository(client, store);
     });
 
     group('login', () {
@@ -227,29 +228,8 @@ void main() {
           scene: AuthVerificationScene.login,
         );
 
-        expect(msg.cooldown, 60);
+        expect(msg.cooldownSeconds, 60);
         expect(msg.message, '验证码已发送');
-      });
-    });
-
-    group('AuthVerificationScene.toDtoScene', () {
-      test('maps all scenes correctly', () {
-        expect(
-          AuthVerificationScene.register.toDtoScene(),
-          SendVerificationCodeDtoSceneScene.register,
-        );
-        expect(
-          AuthVerificationScene.login.toDtoScene(),
-          SendVerificationCodeDtoSceneScene.login,
-        );
-        expect(
-          AuthVerificationScene.resetPassword.toDtoScene(),
-          SendVerificationCodeDtoSceneScene.resetPassword,
-        );
-        expect(
-          AuthVerificationScene.changeEmail.toDtoScene(),
-          SendVerificationCodeDtoSceneScene.changeEmail,
-        );
       });
     });
   });

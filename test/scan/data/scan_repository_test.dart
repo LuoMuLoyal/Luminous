@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
+import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockMedicinesApi extends Mock implements MedicinesApi {}
@@ -24,10 +25,14 @@ void main() {
     mockApi = _MockMedicinesApi();
     mockDio = _MockDio();
     mockFilesApi = _MockFilesApi();
-    repo = ScanRepository(api: mockApi, dio: mockDio, filesApi: mockFilesApi);
+    repo = LucentScanRepository(
+      api: mockApi,
+      dio: mockDio,
+      filesApi: mockFilesApi,
+    );
   });
 
-  group('ScanRepository.search', () {
+  group('LucentScanRepository.search', () {
     test('returns response data from API', () async {
       final items = [
         const MedicineSearchItemDto(
@@ -69,6 +74,7 @@ void main() {
       expect(result, hasLength(1));
       expect(result.first.id, 'med-1');
       expect(result.first.name, '阿莫西林胶囊');
+      expect(result.first.subtitle, '抗生素');
 
       verify(
         () => mockApi.medicinesControllerSearchV1(
@@ -128,7 +134,7 @@ void main() {
     });
   });
 
-  group('ScanRepository.uploadImage', () {
+  group('LucentScanRepository.uploadImage', () {
     test('returns publicUrl from presign response', () async {
       const presignData = {
         'uploadUrl': 'https://upload.example.com/presigned',
@@ -308,8 +314,8 @@ void main() {
     });
   });
 
-  group('ScanRepository.recognizeMedicine', () {
-    test('returns recognized data map', () async {
+  group('LucentScanRepository.recognizeMedicine', () {
+    test('returns recognized data', () async {
       final responseData = {
         'code': 0,
         'message': 'ok',
@@ -330,8 +336,8 @@ void main() {
         'https://cdn.example.com/img.jpg',
       );
 
-      expect(result['name'], '布洛芬缓释胶囊');
-      expect(result['approvalNumber'], '国药准字H20044321');
+      expect(result.name, '布洛芬缓释胶囊');
+      expect(result.approvalNumber, '国药准字H20044321');
     });
 
     test('throws when response is empty', () async {

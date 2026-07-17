@@ -2,11 +2,11 @@ import '../support/e2e_test_helpers.dart';
 
 void main() {
   patrolTest('account settings profile save updates global session', ($) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');
@@ -45,11 +45,11 @@ void main() {
   });
 
   patrolTest('account change email flow updates global session', ($) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');
@@ -88,11 +88,11 @@ void main() {
   });
 
   patrolTest('account change email flow sends verification code', ($) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');
@@ -122,11 +122,11 @@ void main() {
   patrolTest('account change password clears session and routes to login', (
     $,
   ) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');
@@ -158,11 +158,11 @@ void main() {
   });
 
   patrolTest('account delete clears session and routes to login', ($) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');
@@ -189,11 +189,11 @@ void main() {
   });
 
   patrolTest('account unlink identity updates global session', ($) async {
-    final remote = E2eAuthRemoteDataSource();
+    final remote = E2eLucentAuthRepository();
     final container = await pumpOfflineApp(
       $,
       authSessionOverride: SignedInWithWechatIdentityAuthSessionNotifier.new,
-      authRemoteDataSource: remote,
+      authRepository: remote,
     );
 
     await openTab($, '我的');

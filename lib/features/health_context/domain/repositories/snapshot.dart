@@ -2,7 +2,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
 /// Repository interface for reading and writing the authenticated user health context.
-abstract class HealthContextRepository {
+abstract interface class HealthContextRepository {
   /// Fetches the aggregated health context snapshot for the current user.
   Future<HealthContextSnapshot> fetchHealthContext();
 

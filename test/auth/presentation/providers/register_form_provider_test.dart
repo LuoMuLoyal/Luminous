@@ -1,8 +1,8 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/register.dart';
@@ -11,14 +11,14 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import '../../test_helpers.dart';
 
 void main() {
-  late FakeAuthRemoteDataSource remote;
+  late FakeLucentAuthRepository remote;
   late ProviderContainer container;
 
   setUp(() {
-    remote = FakeAuthRemoteDataSource();
+    remote = FakeLucentAuthRepository();
     container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
       ],
     );
@@ -181,10 +181,10 @@ void main() {
 
     test('returns false and sets errorMessage on failure', () async {
       container.dispose();
-      remote = _FailingAuthRemoteDataSource();
+      remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );
@@ -223,10 +223,10 @@ void main() {
 
     test('returns false and sets errorMessage on failure', () async {
       container.dispose();
-      remote = _FailingAuthRemoteDataSource();
+      remote = _FailingLucentAuthRepository();
       container = ProviderContainer(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           authSessionProvider.overrideWith(() => _NoOpAuthSessionNotifier()),
         ],
       );
@@ -251,7 +251,7 @@ class _NoOpAuthSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() => const AuthSessionState();
 }
 
-class _FailingAuthRemoteDataSource extends FakeAuthRemoteDataSource {
+class _FailingLucentAuthRepository extends FakeLucentAuthRepository {
   @override
   Future<AuthSession> register({
     required String email,
@@ -271,7 +271,7 @@ class _FailingAuthRemoteDataSource extends FakeAuthRemoteDataSource {
   }
 
   @override
-  Future<CooldownMessageDto> sendVerificationCode({
+  Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   }) async {

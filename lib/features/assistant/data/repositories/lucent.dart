@@ -3,45 +3,10 @@ import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lucent.g.dart';
-
-sealed class AssistantGenerationEvent {
-  const AssistantGenerationEvent();
-}
-
-class AssistantGenerationChunkEvent extends AssistantGenerationEvent {
-  const AssistantGenerationChunkEvent(this.content);
-
-  final String content;
-}
-
-class AssistantGenerationResultEvent extends AssistantGenerationEvent {
-  const AssistantGenerationResultEvent({
-    required this.conversationId,
-    required this.message,
-  });
-
-  final String conversationId;
-  final AssistantMessage message;
-}
-
-abstract interface class AssistantRepository {
-  Future<AssistantCapabilities> getCapabilities();
-
-  Future<List<AssistantConversationSummary>> listRecentConversations();
-
-  Future<AssistantConversation?> getLatestConversation();
-
-  Future<AssistantConversation> openConversation(String conversationId);
-
-  Future<bool> clearLatestConversation();
-
-  Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  );
-}
 
 @riverpod
 AssistantRemoteDataSource assistantRemoteDataSource(Ref ref) {

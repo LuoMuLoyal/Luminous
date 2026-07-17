@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -65,7 +65,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
         return;
       }
 
-      final user = await ref.read(authRemoteDataSourceProvider).fetchAccount();
+      final user = await ref.read(authRepositoryProvider).fetchAccount();
       state = AuthSessionState(
         user: user,
         isLoading: false,
@@ -108,7 +108,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
   Future<void> logout() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      await ref.read(authRemoteDataSourceProvider).logout();
+      await ref.read(authRepositoryProvider).logout();
     } finally {
       state = const AuthSessionState();
     }

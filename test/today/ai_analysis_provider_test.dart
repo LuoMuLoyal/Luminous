@@ -7,6 +7,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
+import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 
 import 'test_helpers.dart';

@@ -5,38 +5,10 @@ import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
+import 'package:luminous/features/report/domain/repositories/ai_summary.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lucent_ai_summary.g.dart';
-
-sealed class ReportAiGenerationEvent {
-  const ReportAiGenerationEvent();
-}
-
-class ReportAiGenerationSummaryEvent extends ReportAiGenerationEvent {
-  const ReportAiGenerationSummaryEvent(this.summary);
-
-  final String summary;
-}
-
-class ReportAiGenerationResultEvent extends ReportAiGenerationEvent {
-  const ReportAiGenerationResultEvent(this.summary);
-
-  final ReportAiSummary summary;
-}
-
-abstract interface class ReportAiSummaryRepository {
-  Future<ReportAiSummary> generate(
-    ReportAiSummaryRange range, {
-    String? startDate,
-    String? endDate,
-  });
-  Stream<ReportAiGenerationEvent> generateStream(
-    ReportAiSummaryRange range, {
-    String? startDate,
-    String? endDate,
-  });
-}
 
 @riverpod
 ReportAiSummaryRemoteDataSource reportAiSummaryRemoteDataSource(Ref ref) {

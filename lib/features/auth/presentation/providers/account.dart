@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
@@ -47,14 +47,14 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     );
     try {
       final result = await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .sendVerificationCode(email: email, scene: scene);
       state = state.copyWith(
         isSendingCode: false,
         successMessage: result.message,
       );
       startCooldown(
-        result.cooldown.toInt(),
+        result.cooldownSeconds,
         getCooldownSeconds: () => state.lastCooldownSeconds,
         setCooldownSeconds: (value) =>
             state = state.copyWith(lastCooldownSeconds: value),
@@ -74,13 +74,11 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     return _run(() async {
       await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .verifyEmail(email: email, code: code);
       final currentUser = ref.read(authSessionProvider).user;
       if (currentUser != null && currentUser.email == email.trim()) {
-        final user = await ref
-            .read(authRemoteDataSourceProvider)
-            .fetchAccount();
+        final user = await ref.read(authRepositoryProvider).fetchAccount();
         ref.read(authSessionProvider.notifier).applyUser(user);
       }
     });
@@ -89,7 +87,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   Future<bool> updateProfile({String? nickname, String? avatar}) async {
     return _run(() async {
       final user = await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .updateAccountProfile(nickname: nickname, avatar: avatar);
       ref.read(authSessionProvider.notifier).applyUser(user);
     });
@@ -111,7 +109,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
 
     return _run(() async {
       final user = await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .changeEmail(
             newEmail: newEmail,
             code: code,
@@ -127,7 +125,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     return _run(() async {
       await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .changePassword(oldPassword: oldPassword, newPassword: newPassword);
       ref.read(authSessionProvider.notifier).clearLocalSession();
     });
@@ -136,7 +134,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   Future<bool> deleteAccount({String? password, String? code}) async {
     return _run(() async {
       await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .deleteAccount(password: password, code: code);
       ref.read(authSessionProvider.notifier).clearLocalSession();
     });
@@ -145,7 +143,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   Future<bool> unlinkIdentity({required String identityId}) async {
     return _run(() async {
       final user = await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .unlinkIdentity(identityId: identityId);
       ref.read(authSessionProvider.notifier).applyUser(user);
     });
@@ -165,7 +163,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
     );
 
     final wechat = ref.read(wechatOAuthServiceProvider);
-    final remote = ref.read(authRemoteDataSourceProvider);
+    final remote = ref.read(authRepositoryProvider);
 
     // 1. Try mobile SDK
     try {
@@ -248,7 +246,7 @@ class AuthAccountNotifier extends Notifier<AuthAccountState>
   }) async {
     return _run(() async {
       final user = await ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .linkWechatWebIdentity(code: code, state: state);
       ref.read(authSessionProvider.notifier).applyUser(user);
     });

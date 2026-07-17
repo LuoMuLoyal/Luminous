@@ -1,11 +1,11 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -16,9 +16,9 @@ void main() {
   testWidgets('Login page submits password login and updates session', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
-      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+      overrides: [authRepositoryProvider.overrideWithValue(remote)],
     );
     addTearDown(container.dispose);
 
@@ -54,9 +54,9 @@ void main() {
   testWidgets('Login page returns to returnTo after password login', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final container = ProviderContainer(
-      overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+      overrides: [authRepositoryProvider.overrideWithValue(remote)],
     );
     addTearDown(container.dispose);
 
@@ -94,11 +94,11 @@ void main() {
   });
 
   testWidgets('Login page sends code in code mode', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [authRemoteDataSourceProvider.overrideWithValue(remote)],
+        overrides: [authRepositoryProvider.overrideWithValue(remote)],
         child: TestAuthApp(
           router: GoRouter(
             initialLocation: '/login',
@@ -124,13 +124,13 @@ void main() {
   });
 
   testWidgets('Login page opens WeChat authorize URL', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          authRemoteDataSourceProvider.overrideWithValue(remote),
+          authRepositoryProvider.overrideWithValue(remote),
           externalUrlLauncherProvider.overrideWithValue(launcher),
         ],
         child: TestAuthApp(
@@ -166,12 +166,12 @@ void main() {
   testWidgets('Login page uses mobile WeChat SDK before browser OAuth', (
     tester,
   ) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
     final mobileClient = _FakeWechatMobileAuthClient(code: 'mobile-code');
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         externalUrlLauncherProvider.overrideWithValue(launcher),
         wechatMobileAuthClientProvider.overrideWithValue(mobileClient),
       ],
@@ -211,11 +211,11 @@ void main() {
   });
 
   testWidgets('Login page completes WeChat callback login', (tester) async {
-    final remote = FakeAuthRemoteDataSource();
+    final remote = FakeLucentAuthRepository();
     final launcher = _FakeExternalUrlLauncher();
     final container = ProviderContainer(
       overrides: [
-        authRemoteDataSourceProvider.overrideWithValue(remote),
+        authRepositoryProvider.overrideWithValue(remote),
         externalUrlLauncherProvider.overrideWithValue(launcher),
       ],
     );

@@ -1,32 +1,14 @@
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/mappers/mapper.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
+import 'package:luminous/features/auth/domain/repositories/auth.dart';
 
-enum AuthVerificationScene {
-  register,
-  login,
-  resetPassword,
-  changeEmail,
-  deleteAccount;
-
-  SendVerificationCodeDtoSceneScene toDtoScene() {
-    return switch (this) {
-      AuthVerificationScene.register =>
-        SendVerificationCodeDtoSceneScene.register,
-      AuthVerificationScene.login => SendVerificationCodeDtoSceneScene.login,
-      AuthVerificationScene.resetPassword =>
-        SendVerificationCodeDtoSceneScene.resetPassword,
-      AuthVerificationScene.changeEmail =>
-        SendVerificationCodeDtoSceneScene.changeEmail,
-      AuthVerificationScene.deleteAccount =>
-        SendVerificationCodeDtoSceneScene.deleteAccount,
-    };
-  }
-}
-
-class AuthRemoteDataSource {
-  const AuthRemoteDataSource(this._client, this._sessionStore);
+class LucentAuthRepository implements AuthRepository {
+  const LucentAuthRepository(this._client, this._sessionStore);
 
   final LucentClient _client;
   final LucentSessionStore _sessionStore;
@@ -45,6 +27,21 @@ class AuthRemoteDataSource {
     );
   }
 
+  SendVerificationCodeDtoSceneScene _toDtoScene(AuthVerificationScene scene) {
+    return switch (scene) {
+      AuthVerificationScene.register =>
+        SendVerificationCodeDtoSceneScene.register,
+      AuthVerificationScene.login => SendVerificationCodeDtoSceneScene.login,
+      AuthVerificationScene.resetPassword =>
+        SendVerificationCodeDtoSceneScene.resetPassword,
+      AuthVerificationScene.changeEmail =>
+        SendVerificationCodeDtoSceneScene.changeEmail,
+      AuthVerificationScene.deleteAccount =>
+        SendVerificationCodeDtoSceneScene.deleteAccount,
+    };
+  }
+
+  @override
   Future<AuthSession> login({
     required String email,
     String? password,
@@ -66,7 +63,8 @@ class AuthRemoteDataSource {
     return session;
   }
 
-  Future<OAuthAuthorizeDataDto> createWechatWebAuthorizeUrl({
+  @override
+  Future<OAuthAuthorizeData> createWechatWebAuthorizeUrl({
     String? callbackUri,
   }) async {
     final trimmedCallbackUri = callbackUri?.trim();
@@ -76,10 +74,11 @@ class AuthRemoteDataSource {
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
               : null,
         );
-    return response.data;
+    return _mapAuthorizeData(response.data);
   }
 
-  Future<OAuthAuthorizeDataDto> createWechatWebIdentityLinkAuthorizeUrl({
+  @override
+  Future<OAuthAuthorizeData> createWechatWebIdentityLinkAuthorizeUrl({
     String? callbackUri,
   }) async {
     final trimmedIdentityCallbackUri = callbackUri?.trim();
@@ -91,9 +90,10 @@ class AuthRemoteDataSource {
               ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
               : null,
         );
-    return response.data;
+    return _mapAuthorizeData(response.data);
   }
 
+  @override
   Future<AuthSession> loginWithWechatWeb({
     required String code,
     required String state,
@@ -106,6 +106,7 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  @override
   Future<AuthSession> loginWithWechatMobile({required String code}) async {
     final response = await _client.auth.oAuthControllerLoginWithWechatMobileV1(
       body: OAuthCodeCallbackDto(code: code.trim()),
@@ -115,6 +116,7 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  @override
   Future<AuthSession> loginWithApple({
     required String identityToken,
     String? authorizationCode,
@@ -134,18 +136,18 @@ class AuthRemoteDataSource {
     return session;
   }
 
-  Future<OAuthAuthorizeDataDto> createQqAuthorizeUrl({
-    String? callbackUri,
-  }) async {
+  @override
+  Future<OAuthAuthorizeData> createQqAuthorizeUrl({String? callbackUri}) async {
     final trimmedQqCallbackUri = callbackUri?.trim();
     final response = await _client.auth.oAuthControllerCreateQqAuthorizeUrlV1(
       body: trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
           ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
           : null,
     );
-    return response.data;
+    return _mapAuthorizeData(response.data);
   }
 
+  @override
   Future<AuthSession> loginWithQq({
     required String code,
     required String state,
@@ -158,6 +160,7 @@ class AuthRemoteDataSource {
     return session;
   }
 
+  @override
   Future<AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,
@@ -169,6 +172,7 @@ class AuthRemoteDataSource {
     return _authUserFromAccount(response.data);
   }
 
+  @override
   Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
     final response = await _client.account
         .accountControllerLinkWechatMobileIdentityV1(
@@ -177,6 +181,7 @@ class AuthRemoteDataSource {
     return _authUserFromAccount(response.data);
   }
 
+  @override
   Future<AuthSession> register({
     required String email,
     required String password,
@@ -197,6 +202,7 @@ class AuthRemoteDataSource {
     return AuthMapper.toSessionFromRegister(response);
   }
 
+  @override
   Future<void> logout() async {
     final refreshToken = await _sessionStore.readRefreshToken();
     if (refreshToken == null || refreshToken.isEmpty) {
@@ -210,24 +216,27 @@ class AuthRemoteDataSource {
     await _sessionStore.clear();
   }
 
+  @override
   Future<AuthUser> fetchAccount() async {
     final response = await _client.account.accountControllerGetAccountV1();
     return _authUserFromAccount(response.data);
   }
 
-  Future<CooldownMessageDto> sendVerificationCode({
+  @override
+  Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,
   }) async {
     final response = await _client.auth.localControllerSendVerificationCodeV1(
       body: SendVerificationCodeDto(
         email: email.trim(),
-        scene: scene.toDtoScene(),
+        scene: _toDtoScene(scene),
       ),
     );
-    return response.data;
+    return _mapCooldown(response.data);
   }
 
+  @override
   Future<void> resetPassword({
     required String email,
     required String code,
@@ -242,13 +251,15 @@ class AuthRemoteDataSource {
     );
   }
 
-  Future<CooldownMessageDto> forgotPassword({required String email}) async {
+  @override
+  Future<VerificationCooldown> forgotPassword({required String email}) async {
     final response = await _client.auth.localControllerForgotPasswordV1(
       body: ForgotPasswordDto(email: email.trim()),
     );
-    return response.data;
+    return _mapCooldown(response.data);
   }
 
+  @override
   Future<void> verifyEmail({
     required String email,
     required String code,
@@ -258,6 +269,7 @@ class AuthRemoteDataSource {
     );
   }
 
+  @override
   Future<AuthUser> updateAccountProfile({
     String? nickname,
     String? avatar,
@@ -271,6 +283,7 @@ class AuthRemoteDataSource {
     return _authUserFromAccount(response.data);
   }
 
+  @override
   Future<void> changePassword({
     required String oldPassword,
     required String newPassword,
@@ -284,6 +297,7 @@ class AuthRemoteDataSource {
     await _sessionStore.clear();
   }
 
+  @override
   Future<AuthUser> changeEmail({
     required String newEmail,
     required String code,
@@ -298,6 +312,7 @@ class AuthRemoteDataSource {
     );
   }
 
+  @override
   Future<void> deleteAccount({String? password, String? code}) async {
     final trimmedPassword = password?.trim();
     final trimmedCode = code?.trim();
@@ -312,6 +327,7 @@ class AuthRemoteDataSource {
     await _sessionStore.clear();
   }
 
+  @override
   Future<AuthUser> unlinkIdentity({required String identityId}) async {
     final response = await _client.account.accountControllerUnlinkIdentityV1(
       identityId: identityId,
@@ -341,6 +357,21 @@ class AuthRemoteDataSource {
           .toList(),
       createdAt: DateTime.parse(user.createdAt),
       updatedAt: DateTime.parse(user.updatedAt),
+    );
+  }
+
+  OAuthAuthorizeData _mapAuthorizeData(OAuthAuthorizeDataDto dto) {
+    return OAuthAuthorizeData(
+      authorizeUrl: dto.authorizeUrl,
+      state: dto.state,
+      expiresInSeconds: dto.expiresIn.toInt(),
+    );
+  }
+
+  VerificationCooldown _mapCooldown(CooldownMessageDto dto) {
+    return VerificationCooldown(
+      message: dto.message,
+      cooldownSeconds: dto.cooldown.toInt(),
     );
   }
 

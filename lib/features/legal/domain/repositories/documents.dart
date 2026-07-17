@@ -2,7 +2,7 @@ import '../entities/doc_type.dart';
 import '../entities/document.dart';
 
 /// Repository interface for fetching legal documents.
-abstract class LegalRepository {
+abstract interface class LegalRepository {
   /// Returns all active legal document summaries.
   Future<List<LegalDocumentSummary>> findAll();
 

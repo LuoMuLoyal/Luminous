@@ -1,7 +1,7 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -110,7 +110,7 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
   OAuthLoginState build() => const OAuthLoginState();
 
   WechatOAuthService get _wechat => ref.read(wechatOAuthServiceProvider);
-  AuthRemoteDataSource get _remote => ref.read(authRemoteDataSourceProvider);
+  AuthRepository get _remote => ref.read(authRepositoryProvider);
 
   /// Maps an error to a user-facing message and logs it.
   String _mapError(Object error, String tag) {

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
-import 'package:luminous/features/auth/data/datasources/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 
 import 'package:luminous/core/forms/validators.dart';
@@ -127,7 +127,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       ref: ref,
       tag: 'RegisterFormNotifier.sendCode',
       action: () => ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .sendVerificationCode(
             email: state.email,
             scene: AuthVerificationScene.register,
@@ -142,7 +142,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
         );
         return false;
       case Success(:final value):
-        final cooldown = value.cooldown.toInt();
+        final cooldown = value.cooldownSeconds;
         state = state.copyWith(
           isSendingCode: false,
           successMessage: value.message,
@@ -166,7 +166,7 @@ class RegisterFormNotifier extends Notifier<RegisterFormState>
       ref: ref,
       tag: 'RegisterFormNotifier.submit',
       action: () => ref
-          .read(authRemoteDataSourceProvider)
+          .read(authRepositoryProvider)
           .register(
             email: state.email,
             password: state.password,

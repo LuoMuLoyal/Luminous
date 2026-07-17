@@ -1,6 +1,7 @@
 ﻿import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
@@ -8,8 +9,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'risk_check.g.dart';
 
-class MedicineRiskCheckRepository {
-  MedicineRiskCheckRepository({
+class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
+  LucentMedicineRiskCheckRepository({
     required this.remoteDataSource,
     this.checker = const MedicineRiskChecker(),
   });
@@ -17,6 +18,7 @@ class MedicineRiskCheckRepository {
   final MedicineSearchRemoteDataSource remoteDataSource;
   final MedicineRiskChecker checker;
 
+  @override
   Future<MedicineRiskCheckResult> fetchForSnapshot(
     HealthContextSnapshot snapshot,
   ) async {
@@ -59,5 +61,5 @@ class MedicineRiskCheckRepository {
 @riverpod
 MedicineRiskCheckRepository medicineRiskCheckRepository(Ref ref) {
   final remoteDataSource = ref.watch(medicineSearchRemoteDataSourceProvider);
-  return MedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
+  return LucentMedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
 }
