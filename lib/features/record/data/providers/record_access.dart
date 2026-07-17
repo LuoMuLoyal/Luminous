@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,11 +6,13 @@ import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
+import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';
 import 'package:luminous/features/record/data/utils/daily_record_json_codec.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'record_access.g.dart';
@@ -75,6 +77,12 @@ DailyRecordRepository dailyRecordRepository(Ref ref) {
     pendingSyncDao: pendingSyncDao,
     syncWorker: syncWorker,
   );
+}
+
+@riverpod
+RecordRepository recordRepository(Ref ref) {
+  final dailyRecordRepo = ref.watch(dailyRecordRepositoryProvider);
+  return LucentRecordRepository(dailyRecordRepo: dailyRecordRepo);
 }
 
 final dailyRecordDetailProvider =

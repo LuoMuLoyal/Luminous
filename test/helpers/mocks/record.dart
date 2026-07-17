@@ -1,17 +1,10 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock.g.dart';
+/// Test-only mock implementation of [RecordRepository].
 
-/// Demo-only mock implementation of [RecordRepository] used for tests.
-///
-/// Vital/record values are intentionally placeholder so they cannot be
-/// mistaken for real health data.
 class MockRecordRepository implements RecordRepository {
   const MockRecordRepository();
 
@@ -633,10 +626,4 @@ class MockRecordRepository implements RecordRepository {
       _ => false,
     };
   }
-}
-
-@riverpod
-RecordRepository recordRepository(Ref ref) {
-  final dailyRecordRepo = ref.watch(dailyRecordRepositoryProvider);
-  return LucentRecordRepository(dailyRecordRepo: dailyRecordRepo);
 }
