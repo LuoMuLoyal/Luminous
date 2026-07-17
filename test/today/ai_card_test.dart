@@ -1,4 +1,5 @@
-﻿import '../helpers/test_forui_app.dart';
+import '../helpers/test_forui_app.dart';
+import '../helpers/feature_mocks.dart';
 import '../helpers/test_helpers.dart';
 
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
-import 'package:luminous/features/today/data/repositories/mock.dart';
+import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';

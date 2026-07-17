@@ -1,8 +1,8 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/today/data/repositories/mock.dart';
+import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
 /// Configurable timeout for the dashboard fetch.

@@ -1,11 +1,7 @@
-﻿import 'package:luminous/features/today/data/repositories/lucent.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'mock.g.dart';
-
-/// Demo-only mock implementation of [TodayRepository] used for tests.
+/// Test-only mock implementation of [TodayRepository].
 ///
 /// Vital/metric values are intentionally placeholder so they cannot be
 /// mistaken for real health data.
@@ -33,15 +29,11 @@ class MockTodayRepository implements TodayRepository {
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
-      // Deferred by Product_Vision MVP: keep lightweight mood data for future
-      // self-check-ins, but do not surface it as a formal mental-health module.
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
-    // Deferred by Product_Vision MVP: keep environment signals because Lucent
-    // has a useful reference-data contract, but do not surface them yet.
     environment: TodayEnvironmentSummary(
       signals: <TodayEnvironmentSignal>[
         TodayEnvironmentSignal(
@@ -76,15 +68,11 @@ class MockTodayRepository implements TodayRepository {
       TodayVitalSummary(type: TodayVitalType.heartRate, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.bloodPressure, valueLabel: '--'),
       TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
-      // Deferred by Product_Vision MVP: keep lightweight mood data for future
-      // self-check-ins, but do not surface it as a formal mental-health module.
       TodayVitalSummary(type: TodayVitalType.mood, valueLabel: '--'),
     ],
     mealSuggestion: TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
-    // Deferred by Product_Vision MVP: keep environment signals because Lucent
-    // has a useful reference-data contract, but do not surface them yet.
     environment: TodayEnvironmentSummary(
       signals: <TodayEnvironmentSignal>[
         TodayEnvironmentSignal(
@@ -106,9 +94,4 @@ class MockTodayRepository implements TodayRepository {
   Future<TodayDashboard> fetchDashboard() async {
     return previewDashboard;
   }
-}
-
-@riverpod
-TodayRepository todayRepository(Ref ref) {
-  return LucentTodayRepository(ref: ref);
 }
