@@ -166,5 +166,12 @@
   "authSignOutConfirmAction": "退出",
   "authQqSignIn": "QQ 登录",
   "authQqCallbackLabel": "QQ 回调链接 / 授权码",
-  "authQqCompleteAction": "完成 QQ 登录"
+  "authQqCallbackHint": "授权后粘贴回调链接",
+  "authQqCompleteAction": "完成 QQ 登录",
+  "authQqBrowserOpenFailed": "无法打开 QQ 授权页。",
+  "authQqAuthorizeOpened": "已在浏览器打开 QQ 授权页。",
+  "authQqCallbackRequiredToast": "请先粘贴 QQ 回调链接。",
+  "authQqCallbackInvalidToast": "QQ 回调链接缺少 code 或 state。",
+  "authBackHomeAction": "返回首页",
+  "authAppleSignInFailed": "Apple 登录失败。"
 }

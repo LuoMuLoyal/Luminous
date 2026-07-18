@@ -40,19 +40,15 @@ class AuthTermsNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     final linkStyle = TypographyToken.level3
         .body(context)
         .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
-    final String leadText =
-        l10n?.authTermsAgreement('', '') ??
-        'By creating an account, you agree to the ';
-    final String connector = l10n?.localeName.startsWith('zh') == true
-        ? '与'
-        : ' and ';
-    final String termsLabel = l10n?.authTermsOfService ?? 'Terms of Service';
-    final String privacyLabel = l10n?.authPrivacyPolicy ?? 'Privacy Policy';
+    final String leadText = l10n.authTermsAgreement('', '');
+    final String connector = l10n.localeName.startsWith('zh') ? '与' : ' and ';
+    final String termsLabel = l10n.authTermsOfService;
+    final String privacyLabel = l10n.authPrivacyPolicy;
 
     final String trimmedLead = leadText.trimRight().replaceAll(
       RegExp(r'\s+(and|与)\s*$'),

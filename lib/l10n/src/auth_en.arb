@@ -166,5 +166,12 @@
   "authSignOutConfirmAction": "Sign out",
   "authQqSignIn": "Sign in with QQ",
   "authQqCallbackLabel": "QQ callback link / code",
-  "authQqCompleteAction": "Complete QQ sign-in"
+  "authQqCallbackHint": "Paste the callback URL after authorization",
+  "authQqCompleteAction": "Complete QQ sign-in",
+  "authQqBrowserOpenFailed": "Could not open the QQ authorization page.",
+  "authQqAuthorizeOpened": "QQ authorization opened in your browser.",
+  "authQqCallbackRequiredToast": "Please paste the QQ callback link first.",
+  "authQqCallbackInvalidToast": "The QQ callback link is missing code or state.",
+  "authBackHomeAction": "Back to home",
+  "authAppleSignInFailed": "Apple Sign In failed."
 }

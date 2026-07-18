@@ -28,11 +28,11 @@ class RegisterPage extends HookConsumerWidget {
 
     final state = ref.watch(registerFormProvider);
     final notifier = ref.read(registerFormProvider.notifier);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return AuthShell(
-      title: l10n?.authCreateAccountAction ?? 'Create account',
-      subtitle: l10n?.authRegisterSubtitle,
+      title: l10n.authCreateAccountAction,
+      subtitle: l10n.authRegisterSubtitle,
       logo: const AuthBrandLogo(),
       leading: const AppBackButton(fallbackRoute: AppRoutes.home),
       centerTitle: true,
@@ -44,42 +44,31 @@ class RegisterPage extends HookConsumerWidget {
           children: [
             FTextFormField.email(
               control: FTextFieldControl.managed(controller: emailController),
-              label: Text(l10n?.authEmailLabel ?? 'Email'),
-              hint: l10n?.authEmailHint ?? 'name@example.com',
+              label: Text(l10n.authEmailLabel),
+              hint: l10n.authEmailHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) => EmailInput.validate(
                 value,
-                requiredMessage:
-                    l10n?.authEmailRequiredError ?? 'Please enter your email.',
-                invalidMessage:
-                    l10n?.authEmailInvalidError ??
-                    'Please enter a valid email address.',
+                requiredMessage: l10n.authEmailRequiredError,
+                invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
             const SizedBox(height: Spacing.level4),
             VerificationCodeField(
               controller: codeController,
-              label: l10n?.authCodeLabel ?? 'Verification code',
-              hint: l10n?.authCodeLabel ?? 'Verification code',
+              label: l10n.authCodeLabel,
+              hint: l10n.authCodeLabel,
               buttonLabel: state.cooldownSeconds == null
-                  ? l10n?.authSendCode ?? 'Send code'
-                  : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
-                        'Send again (${state.cooldownSeconds}s)',
+                  ? l10n.authSendCode
+                  : l10n.authSendCodeAgain(state.cooldownSeconds!),
               isLoading: state.isSendingCode,
-              validator: (value) => RequiredInput.validate(
-                value,
-                l10n?.authCodeRequiredError ??
-                    'Please enter the verification code.',
-              ),
+              validator: (value) =>
+                  RequiredInput.validate(value, l10n.authCodeRequiredError),
               onSendCode: () async {
                 final emailError = EmailInput.validate(
                   emailController.text,
-                  requiredMessage:
-                      l10n?.authEmailRequiredError ??
-                      'Please enter your email.',
-                  invalidMessage:
-                      l10n?.authEmailInvalidError ??
-                      'Please enter a valid email address.',
+                  requiredMessage: l10n.authEmailRequiredError,
+                  invalidMessage: l10n.authEmailInvalidError,
                 );
                 if (emailError != null) {
                   formKey.currentState?.validate();
@@ -89,8 +78,7 @@ class RegisterPage extends HookConsumerWidget {
                     state.cooldownSeconds! > 0) {
                   await AppToast.show(
                     context,
-                    l10n?.authCodeResendWait(state.cooldownSeconds!) ??
-                        'Please wait ${state.cooldownSeconds}s before resending.',
+                    l10n.authCodeResendWait(state.cooldownSeconds!),
                   );
                   return;
                 }
@@ -103,39 +91,30 @@ class RegisterPage extends HookConsumerWidget {
               control: FTextFieldControl.managed(
                 controller: passwordController,
               ),
-              label: Text(l10n?.authPasswordLabel ?? 'Password'),
-              hint:
-                  l10n?.authPasswordHint ??
-                  'At least 8 characters, ideally with mixed case and numbers',
+              label: Text(l10n.authPasswordLabel),
+              hint: l10n.authPasswordHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              validator: (value) => RequiredInput.validate(
-                value,
-                l10n?.authPasswordRequiredError ??
-                    'Please enter your password.',
-              ),
+              validator: (value) =>
+                  RequiredInput.validate(value, l10n.authPasswordRequiredError),
             ),
             const SizedBox(height: Spacing.level4),
             FTextFormField.password(
               control: FTextFieldControl.managed(
                 controller: confirmPasswordController,
               ),
-              label: Text(l10n?.authConfirmPasswordLabel ?? 'Confirm password'),
-              hint:
-                  l10n?.authPasswordHint ??
-                  'At least 8 characters, ideally with mixed case and numbers',
+              label: Text(l10n.authConfirmPasswordLabel),
+              hint: l10n.authPasswordHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 final requiredError = RequiredInput.validate(
                   value,
-                  l10n?.authConfirmPasswordRequiredError ??
-                      'Please confirm your password.',
+                  l10n.authConfirmPasswordRequiredError,
                 );
                 if (requiredError != null) {
                   return requiredError;
                 }
                 if ((value ?? '') != passwordController.text) {
-                  return l10n?.authPasswordsDoNotMatchError ??
-                      'Passwords do not match.';
+                  return l10n.authPasswordsDoNotMatchError;
                 }
                 return null;
               },
@@ -145,26 +124,23 @@ class RegisterPage extends HookConsumerWidget {
               control: FTextFieldControl.managed(
                 controller: nicknameController,
               ),
-              label: Text(l10n?.authNicknameLabel ?? 'Nickname'),
-              hint: l10n?.authNicknameHint ?? 'Optional',
+              label: Text(l10n.authNicknameLabel),
+              hint: l10n.authNicknameHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
             const SizedBox(height: Spacing.level4),
             FCheckbox(
               value: acceptedTerms.value,
               onChange: (value) => acceptedTerms.value = value,
-              semanticsLabel:
-                  l10n?.authTermsAgreement(
-                    l10n.authTermsOfService,
-                    l10n.authPrivacyPolicy,
-                  ) ??
-                  'By creating an account, you agree to the Terms of Service and Privacy Policy',
+              semanticsLabel: l10n.authTermsAgreement(
+                l10n.authTermsOfService,
+                l10n.authPrivacyPolicy,
+              ),
               label: Text(
-                l10n?.authTermsAgreement(
-                      l10n.authTermsOfService,
-                      l10n.authPrivacyPolicy,
-                    ) ??
-                    'By creating an account, you agree to the Terms of Service and Privacy Policy',
+                l10n.authTermsAgreement(
+                  l10n.authTermsOfService,
+                  l10n.authPrivacyPolicy,
+                ),
               ),
               description: _TermsLinks(
                 onTerms: () => context.push('${AppRoutes.legal}/terms'),
@@ -209,8 +185,7 @@ class RegisterPage extends HookConsumerWidget {
                           if (ok && context.mounted) {
                             await AppToast.show(
                               context,
-                              l10n?.authRegisterSuccess ??
-                                  'Account created. Please sign in.',
+                              l10n.authRegisterSuccess,
                             );
                             if (!context.mounted) {
                               return;
@@ -224,7 +199,7 @@ class RegisterPage extends HookConsumerWidget {
                           height: 18,
                           child: FCircularProgress(),
                         )
-                      : Text(l10n?.authCreateAccountAction ?? 'Create account'),
+                      : Text(l10n.authCreateAccountAction),
                 ),
               ],
             ),
@@ -236,7 +211,7 @@ class RegisterPage extends HookConsumerWidget {
               runSpacing: Spacing.level1,
               children: [
                 Text(
-                  l10n?.authHaveAccountPrompt ?? 'Already have an account?',
+                  l10n.authHaveAccountPrompt,
                   style: TypographyToken.level2
                       .body(context)
                       .copyWith(color: context.theme.colors.mutedForeground),
@@ -247,7 +222,7 @@ class RegisterPage extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(AppRoutes.login),
                   child: Text(
-                    l10n?.authSignIn ?? 'Sign in',
+                    l10n.authSignIn,
                     style: TypographyToken.level2.body(context),
                   ),
                 ),

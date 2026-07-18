@@ -28,7 +28,7 @@ class WechatOAuthPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,19 +43,15 @@ class WechatOAuthPanel extends StatelessWidget {
                   height: 18,
                   child: FCircularProgress(),
                 )
-              : Text(l10n?.authWechatSignIn ?? 'Sign in with WeChat'),
+              : Text(l10n.authWechatSignIn),
         ),
         if (authorizeUrl?.isNotEmpty == true) ...[
           const SizedBox(height: Spacing.level4),
           FTextField(
             key: const Key('wechat-callback-input'),
             control: FTextFieldControl.managed(controller: callbackController),
-            label: Text(
-              l10n?.authWechatCallbackLabel ?? 'WeChat callback link / code',
-            ),
-            hint:
-                l10n?.authWechatCallbackHint ??
-                'Paste the callback URL after scanning',
+            label: Text(l10n.authWechatCallbackLabel),
+            hint: l10n.authWechatCallbackHint,
             keyboardType: TextInputType.url,
           ),
           const SizedBox(height: Spacing.level4),
@@ -69,10 +65,7 @@ class WechatOAuthPanel extends StatelessWidget {
                       height: 18,
                       child: FCircularProgress(),
                     )
-                  : Text(
-                      l10n?.authWechatCompleteAction ??
-                          'Complete WeChat sign-in',
-                    ),
+                  : Text(l10n.authWechatCompleteAction),
             ),
           ),
         ],
@@ -125,7 +118,7 @@ class QqOAuthPanel extends StatelessWidget {
             key: const Key('qq-callback-input'),
             control: FTextFieldControl.managed(controller: callbackController),
             label: Text(l10n.authQqCallbackLabel),
-            hint: 'Paste the callback URL after authorization',
+            hint: l10n.authQqCallbackHint,
             keyboardType: TextInputType.url,
           ),
           const SizedBox(height: Spacing.level4),

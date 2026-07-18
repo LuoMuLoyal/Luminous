@@ -28,14 +28,14 @@ class ChangeEmailPage extends HookConsumerWidget {
     final accountState = ref.watch(authAccountProvider);
     final accountNotifier = ref.read(authAccountProvider.notifier);
     final session = ref.watch(authSessionProvider);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isSignedIn = session.canAccessProtectedData && session.user != null;
     final success = accountState.successMessage?.isNotEmpty == true
         ? accountState.successMessage
         : null;
 
     return AuthShell(
-      title: l10n?.authChangeEmailFormTitle ?? 'Change email',
+      title: l10n.authChangeEmailFormTitle,
       leading: const AppBackButton(),
       centerTitle: true,
       form: session.isLoading
@@ -50,47 +50,37 @@ class ChangeEmailPage extends HookConsumerWidget {
                     control: FTextFieldControl.managed(
                       controller: emailController,
                     ),
-                    label: Text(l10n?.authNewEmailLabel ?? 'New email'),
-                    hint: l10n?.authEmailHint ?? 'name@example.com',
+                    label: Text(l10n.authNewEmailLabel),
+                    hint: l10n.authEmailHint,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) => EmailInput.validate(
                       value,
-                      requiredMessage:
-                          l10n?.authEmailRequiredError ??
-                          'Please enter your email.',
-                      invalidMessage:
-                          l10n?.authEmailInvalidError ??
-                          'Please enter a valid email address.',
+                      requiredMessage: l10n.authEmailRequiredError,
+                      invalidMessage: l10n.authEmailInvalidError,
                     ),
                   ),
                   const SizedBox(height: Spacing.level4),
                   VerificationCodeField(
                     controller: codeController,
-                    label: l10n?.authCodeLabel ?? 'Verification code',
-                    hint: l10n?.authCodeLabel ?? 'Verification code',
+                    label: l10n.authCodeLabel,
+                    hint: l10n.authCodeLabel,
                     buttonLabel: accountState.lastCooldownSeconds == null
-                        ? l10n?.authSendCode ?? 'Send code'
-                        : l10n?.authSendCodeAgain(
-                                accountState.lastCooldownSeconds!,
-                              ) ??
-                              'Send again (${accountState.lastCooldownSeconds}s)',
+                        ? l10n.authSendCode
+                        : l10n.authSendCodeAgain(
+                            accountState.lastCooldownSeconds!,
+                          ),
                     isLoading: accountState.isSendingCode,
                     validator: (value) => RequiredInput.validate(
                       value,
-                      l10n?.authCodeRequiredError ??
-                          'Please enter the verification code.',
+                      l10n.authCodeRequiredError,
                     ),
                     onSendCode: !isSignedIn
                         ? null
                         : () async {
                             final emailError = EmailInput.validate(
                               emailController.text,
-                              requiredMessage:
-                                  l10n?.authEmailRequiredError ??
-                                  'Please enter your email.',
-                              invalidMessage:
-                                  l10n?.authEmailInvalidError ??
-                                  'Please enter a valid email address.',
+                              requiredMessage: l10n.authEmailRequiredError,
+                              invalidMessage: l10n.authEmailInvalidError,
                             );
                             if (emailError != null) {
                               formKey.currentState?.validate();
@@ -137,8 +127,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                                 if (ok && context.mounted) {
                                   await AppToast.show(
                                     context,
-                                    l10n?.authChangeEmailSuccess ??
-                                        'Email updated.',
+                                    l10n.authChangeEmailSuccess,
                                   );
                                 }
                               },
@@ -148,9 +137,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                                 height: 18,
                                 child: FCircularProgress(),
                               )
-                            : Text(
-                                l10n?.authChangeEmailSubmit ?? 'Update email',
-                              ),
+                            : Text(l10n.authChangeEmailSubmit),
                       ),
                     ],
                   ),
@@ -160,8 +147,8 @@ class ChangeEmailPage extends HookConsumerWidget {
                       Expanded(
                         child: Text(
                           !isSignedIn
-                              ? l10n?.authNotSignedIn ?? 'Not signed in yet.'
-                              : l10n?.authBackHomePrompt ?? 'Back to home?',
+                              ? l10n.authNotSignedIn
+                              : l10n.authBackHomePrompt,
                           style: TypographyToken.level3
                               .body(context)
                               .copyWith(
@@ -178,8 +165,8 @@ class ChangeEmailPage extends HookConsumerWidget {
                         ),
                         child: Text(
                           !isSignedIn
-                              ? l10n?.authSignIn ?? 'Sign in'
-                              : l10n?.todayHeroTitle ?? 'Today',
+                              ? l10n.authSignIn
+                              : l10n.authBackHomeAction,
                         ),
                       ),
                     ],

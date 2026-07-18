@@ -48,7 +48,7 @@ class LoginPage extends HookConsumerWidget {
     final notifier = ref.read(loginFormProvider.notifier);
     final oauthState = ref.watch(oauthLoginProvider);
     final oauthController = ref.read(oauthLoginProvider.notifier);
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     // ---- navigation helpers ----
 
@@ -116,18 +116,10 @@ class LoginPage extends HookConsumerWidget {
               .open(Uri.parse(authorizeUrl));
           if (!context.mounted) return;
           if (!opened) {
-            await AppToast.show(
-              context,
-              l10n?.authWechatBrowserOpenFailed ??
-                  'Could not open the WeChat authorization page.',
-            );
+            await AppToast.show(context, l10n.authWechatBrowserOpenFailed);
             return;
           }
-          await AppToast.show(
-            context,
-            l10n?.authWechatAuthorizeOpened ??
-                'WeChat authorization opened in your browser.',
-          );
+          await AppToast.show(context, l10n.authWechatAuthorizeOpened);
         case WechatLoginFailed():
           // Error is in oauthState.errorMessage — toast is shown via state
           break;
@@ -141,10 +133,8 @@ class LoginPage extends HookConsumerWidget {
       );
       if (callback == null) {
         final message = wechatCallbackController.text.trim().isEmpty
-            ? l10n?.authWechatCallbackRequiredToast ??
-                  'Paste the WeChat callback link first.'
-            : l10n?.authWechatCallbackInvalidToast ??
-                  'The WeChat callback link is missing code or state.';
+            ? l10n.authWechatCallbackRequiredToast
+            : l10n.authWechatCallbackInvalidToast;
         await AppToast.show(context, message);
         return;
       }
@@ -167,14 +157,10 @@ class LoginPage extends HookConsumerWidget {
           .open(Uri.parse(authorizeUrl));
       if (!context.mounted) return;
       if (!opened) {
-        await AppToast.show(
-          context,
-          l10n?.authWechatBrowserOpenFailed ??
-              'Could not open the QQ authorization page.',
-        );
+        await AppToast.show(context, l10n.authQqBrowserOpenFailed);
         return;
       }
-      await AppToast.show(context, 'QQ authorization opened in your browser.');
+      await AppToast.show(context, l10n.authQqAuthorizeOpened);
     }
 
     Future<void> completeQqLoginFromInput() async {
@@ -184,8 +170,8 @@ class LoginPage extends HookConsumerWidget {
       );
       if (callback == null) {
         final message = qqCallbackController.text.trim().isEmpty
-            ? 'Please paste the QQ callback link first.'
-            : 'The QQ callback link is missing code or state.';
+            ? l10n.authQqCallbackRequiredToast
+            : l10n.authQqCallbackInvalidToast;
         await AppToast.show(context, message);
         return;
       }
@@ -199,8 +185,7 @@ class LoginPage extends HookConsumerWidget {
 
     Future<void> startAppleLogin() async {
       if (!context.mounted) return;
-      final failMessage =
-          l10n?.authWechatBrowserOpenFailed ?? 'Apple Sign In failed.';
+      final failMessage = l10n.authAppleSignInFailed;
       try {
         final credential = await SignInWithApple.getAppleIDCredential(
           scopes: [
@@ -253,8 +238,8 @@ class LoginPage extends HookConsumerWidget {
     // ---- build UI ----
 
     return AuthShell(
-      title: l10n?.authWelcomeBack ?? 'Welcome back',
-      subtitle: l10n?.authLoginSubtitle,
+      title: l10n.authWelcomeBack,
+      subtitle: l10n.authLoginSubtitle,
       logo: const AuthBrandLogo(),
       leading: const AppBackButton(fallbackRoute: AppRoutes.home),
       centerTitle: true,
@@ -266,11 +251,11 @@ class LoginPage extends HookConsumerWidget {
         ),
         children: [
           FTabEntry(
-            label: Text(l10n?.authModePassword ?? 'Password'),
+            label: Text(l10n.authModePassword),
             child: const SizedBox.shrink(),
           ),
           FTabEntry(
-            label: Text(l10n?.authModeCode ?? 'Code'),
+            label: Text(l10n.authModeCode),
             child: const SizedBox.shrink(),
           ),
         ],
@@ -284,16 +269,13 @@ class LoginPage extends HookConsumerWidget {
             FTextFormField.email(
               key: const Key('auth-login-email-field'),
               control: FTextFieldControl.managed(controller: emailController),
-              label: Text(l10n?.authEmailLabel ?? 'Email'),
-              hint: l10n?.authEmailHint ?? 'name@example.com',
+              label: Text(l10n.authEmailLabel),
+              hint: l10n.authEmailHint,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) => EmailInput.validate(
                 value,
-                requiredMessage:
-                    l10n?.authEmailRequiredError ?? 'Please enter your email.',
-                invalidMessage:
-                    l10n?.authEmailInvalidError ??
-                    'Please enter a valid email address.',
+                requiredMessage: l10n.authEmailRequiredError,
+                invalidMessage: l10n.authEmailInvalidError,
               ),
             ),
             const SizedBox(height: Spacing.level4),
@@ -303,42 +285,31 @@ class LoginPage extends HookConsumerWidget {
                 control: FTextFieldControl.managed(
                   controller: passwordController,
                 ),
-                label: Text(l10n?.authPasswordLabel ?? 'Password'),
-                hint:
-                    l10n?.authPasswordHint ??
-                    'At least 8 characters, ideally with mixed case and numbers',
+                label: Text(l10n.authPasswordLabel),
+                hint: l10n.authPasswordHint,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => RequiredInput.validate(
                   value,
-                  l10n?.authPasswordRequiredError ??
-                      'Please enter your password.',
+                  l10n.authPasswordRequiredError,
                 ),
               )
             else
               VerificationCodeField(
                 fieldKey: const ValueKey('auth-login-code-field'),
                 controller: codeController,
-                label: l10n?.authCodeLabel ?? 'Verification code',
-                hint: l10n?.authCodeLabel ?? 'Verification code',
+                label: l10n.authCodeLabel,
+                hint: l10n.authCodeLabel,
                 buttonLabel: state.cooldownSeconds == null
-                    ? l10n?.authSendCode ?? 'Send code'
-                    : l10n?.authSendCodeAgain(state.cooldownSeconds!) ??
-                          'Send again (${state.cooldownSeconds}s)',
+                    ? l10n.authSendCode
+                    : l10n.authSendCodeAgain(state.cooldownSeconds!),
                 isLoading: state.isSendingCode,
-                validator: (value) => RequiredInput.validate(
-                  value,
-                  l10n?.authCodeRequiredError ??
-                      'Please enter the verification code.',
-                ),
+                validator: (value) =>
+                    RequiredInput.validate(value, l10n.authCodeRequiredError),
                 onSendCode: () async {
                   final emailError = EmailInput.validate(
                     emailController.text,
-                    requiredMessage:
-                        l10n?.authEmailRequiredError ??
-                        'Please enter your email.',
-                    invalidMessage:
-                        l10n?.authEmailInvalidError ??
-                        'Please enter a valid email address.',
+                    requiredMessage: l10n.authEmailRequiredError,
+                    invalidMessage: l10n.authEmailInvalidError,
                   );
                   if (emailError != null) {
                     formKey.currentState?.validate();
@@ -348,8 +319,7 @@ class LoginPage extends HookConsumerWidget {
                       state.cooldownSeconds! > 0) {
                     await AppToast.show(
                       context,
-                      l10n?.authCodeResendWait(state.cooldownSeconds!) ??
-                          'Please wait ${state.cooldownSeconds}s before resending.',
+                      l10n.authCodeResendWait(state.cooldownSeconds!),
                     );
                     return;
                   }
@@ -397,7 +367,7 @@ class LoginPage extends HookConsumerWidget {
                           height: 18,
                           child: FCircularProgress(),
                         )
-                      : Text(l10n?.authSignIn ?? 'Sign in'),
+                      : Text(l10n.authSignIn),
                 ),
               ],
             ),
@@ -409,7 +379,7 @@ class LoginPage extends HookConsumerWidget {
               runSpacing: Spacing.level1,
               children: [
                 Text(
-                  l10n?.authNeedAccountPrompt ?? 'Need an account?',
+                  l10n.authNeedAccountPrompt,
                   style: TypographyToken.level2
                       .body(context)
                       .copyWith(color: context.theme.colors.mutedForeground),
@@ -420,7 +390,7 @@ class LoginPage extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(AppRoutes.register),
                   child: Text(
-                    l10n?.authRegisterNowAction ?? 'Register now',
+                    l10n.authRegisterNowAction,
                     style: TypographyToken.level2.body(context),
                   ),
                 ),
@@ -430,7 +400,7 @@ class LoginPage extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   onPress: () => context.push(AppRoutes.forgotPassword),
                   child: Text(
-                    l10n?.authForgotPasswordPrompt ?? 'Forgot your password?',
+                    l10n.authForgotPasswordPrompt,
                     style: TypographyToken.level2.body(context),
                   ),
                 ),
