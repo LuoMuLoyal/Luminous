@@ -27,7 +27,9 @@ class HelpSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile
+              ? Spacing.level6
+              : Spacing.level7,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

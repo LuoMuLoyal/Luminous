@@ -38,7 +38,7 @@ class SettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
