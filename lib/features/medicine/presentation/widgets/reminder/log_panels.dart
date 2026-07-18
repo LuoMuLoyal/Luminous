@@ -166,7 +166,11 @@ class _DeliveryLogRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  dateTimeShortLabel(l10n, log.scheduledFor),
+                  dateTimeShortLabel(
+                    l10n,
+                    log.scheduledFor,
+                    Localizations.localeOf(context),
+                  ),
                   style: TypographyToken.level5
                       .body(context)
                       .copyWith(fontWeight: FontWeight.w700),
@@ -206,10 +210,16 @@ class _TodayLogRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     final color = switch (log.status) {
-      DoseLogStatus.taken => SemanticColor.primary,
-      DoseLogStatus.skipped => SemanticColor.primary,
+      DoseLogStatus.taken => SemanticColor.success,
+      DoseLogStatus.skipped => SemanticColor.neutral,
       DoseLogStatus.missed => SemanticColor.destructive,
-      DoseLogStatus.planned => SemanticColor.primary,
+      DoseLogStatus.planned => SemanticColor.warning,
+    };
+    final icon = switch (log.status) {
+      DoseLogStatus.taken => FLucideIcons.circleCheck,
+      DoseLogStatus.skipped => FLucideIcons.circleSlash,
+      DoseLogStatus.missed => FLucideIcons.circleX,
+      DoseLogStatus.planned => FLucideIcons.clock,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,
@@ -225,11 +235,14 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(FLucideIcons.badgeCheck, color: color.solid(context), size: 18),
+          Icon(icon, color: color.solid(context), size: 18),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
-              dateTimeTimeLabel(log.scheduledFor),
+              dateTimeTimeLabel(
+                log.scheduledFor,
+                Localizations.localeOf(context),
+              ),
               style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -70,10 +71,14 @@ class WeekdayPicker extends StatelessWidget {
       runSpacing: Spacing.level2,
       children: labels.entries
           .map(
-            (entry) => FilterChip(
-              label: Text(entry.value),
+            (entry) => FButton(
+              key: Key('medicine-reminder-weekday-${entry.key}'),
+              onPress: () => onToggled(entry.key),
+              variant: FButtonVariant.outline,
               selected: selectedWeekdays.contains(entry.key),
-              onSelected: (_) => onToggled(entry.key),
+              size: FButtonSizeVariant.xs,
+              mainAxisSize: MainAxisSize.min,
+              child: Text(entry.value),
             ),
           )
           .toList(growable: false),
@@ -96,6 +101,7 @@ class TimePickerRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final canRemove = times.length > 1;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,17 +119,32 @@ class TimePickerRow extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             for (var index = 0; index < times.length; index += 1)
-              InputChip(
+              FButton(
                 key: Key('medicine-reminder-time-$index'),
-                label: Text(times[index].label),
-                avatar: const Icon(FLucideIcons.clock3, size: 16),
-                onDeleted: times.length > 1 ? () => onRemoveTime(index) : null,
+                onPress: canRemove ? () => onRemoveTime(index) : null,
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.xs,
+                mainAxisSize: MainAxisSize.min,
+                prefix: const Icon(FLucideIcons.clock3, size: 16),
+                suffix: canRemove ? const Icon(FLucideIcons.x, size: 16) : null,
+                child: Text(
+                  formatTimeOfDay(
+                    TimeOfDay(
+                      hour: times[index].hour,
+                      minute: times[index].minute,
+                    ),
+                    Localizations.localeOf(context),
+                  ),
+                ),
               ),
-            ActionChip(
+            FButton(
               key: const Key('medicine-reminder-add-time'),
-              avatar: const Icon(FLucideIcons.plus, size: 16),
-              label: Text(l10n.medicineReminderAddTimeAction),
-              onPressed: onAddTime,
+              onPress: onAddTime,
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              mainAxisSize: MainAxisSize.min,
+              prefix: const Icon(FLucideIcons.plus, size: 16),
+              child: Text(l10n.medicineReminderAddTimeAction),
             ),
           ],
         ),

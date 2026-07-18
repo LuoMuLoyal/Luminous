@@ -177,14 +177,22 @@ class ReminderFormBody extends StatelessWidget {
                 ValueActionRow(
                   icon: FLucideIcons.calendar,
                   title: l10n.medicineReminderStartDateLabel,
-                  value: dateLabel(l10n, startDate),
+                  value: dateLabel(
+                    l10n,
+                    startDate,
+                    Localizations.localeOf(context),
+                  ),
                   onTap: onStartDateTap,
                 ),
                 const AppDivider(),
                 ValueActionRow(
                   icon: FLucideIcons.calendarX2,
                   title: l10n.medicineReminderEndDateLabel,
-                  value: dateLabel(l10n, endDate),
+                  value: dateLabel(
+                    l10n,
+                    endDate,
+                    Localizations.localeOf(context),
+                  ),
                   onTap: onEndDateTap,
                   onClear: onClearEndDate,
                 ),

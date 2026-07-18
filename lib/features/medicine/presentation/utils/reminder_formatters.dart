@@ -3,6 +3,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
@@ -72,9 +73,9 @@ String weekdayLabel(AppLocalizations l10n, int day) {
   };
 }
 
-String dateLabel(AppLocalizations l10n, DateTime? value) {
+String dateLabel(AppLocalizations l10n, DateTime? value, Locale locale) {
   if (value == null) return l10n.medicineReminderDateNotSet;
-  return formatDateInput(value);
+  return formatDateLabel(value, locale);
 }
 
 String soundPreferenceLabel(
@@ -125,22 +126,21 @@ SemanticColor deliveryStatusColor(String value, FColors colors) {
   };
 }
 
-String dateTimeShortLabel(AppLocalizations l10n, String value) {
+String dateTimeShortLabel(AppLocalizations l10n, String value, Locale locale) {
   final parsed = DateTime.tryParse(value);
   if (parsed == null) return value;
   final now = clock.now();
   final date = dateOnly(parsed);
   final today = dateOnly(now);
-  final datePrefix = date == today
-      ? l10n.recordTodayAction
-      : formatDateInput(parsed);
-  return '$datePrefix ${dateTimeTimeLabel(value)}';
+  if (date == today) {
+    final timeLabel = formatTimeOfDayLabel(value, locale);
+    return '${l10n.recordTodayAction} $timeLabel';
+  }
+  return formatDateTimeLabel(value, locale, fallback: value);
 }
 
-String dateTimeTimeLabel(String value) {
-  final parsed = DateTime.tryParse(value);
-  if (parsed == null) return value;
-  return '${parsed.hour.toString().padLeft(2, '0')}:${parsed.minute.toString().padLeft(2, '0')}';
+String dateTimeTimeLabel(String value, Locale locale) {
+  return formatTimeOfDayLabel(value, locale);
 }
 
 // ---------------------------------------------------------------------------
