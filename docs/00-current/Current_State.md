@@ -113,6 +113,8 @@ Last updated: 2026-07-18
 
 - P2-C2 骨架屏与真实版面对齐（2026-07-18）：五个 Tab 骨架屏的 section 顺序/栏数与真实页面布局对齐，消除 loading→loaded 布局跳变，删除死代码 placeholder。**Today**：`today/skeleton_view.dart` 完全重写——移动端 7 个 placeholder 按 `TopBar→RecordHint→PrimarySuggestion→SecondarySuggestions→Summary→Observation→QuickActions` 真实顺序；桌面端双栏 `Row[左7: Primary+Summary | 右5: Secondary+Observation] + QuickActions`；删除旧版 5 个不匹配 placeholder 类。**Mine**：`mine/skeleton_view.dart` 完全重写——删除 `_CampusServicePlaceholder` 和 `_StatusOverviewPlaceholder` 两个死代码；移动端 6 个 placeholder 按 `SyncBanner→AccountHero→Archive→AiPrivacy→NotificationsReminders→AccountSecurity` 真实顺序；桌面端双栏 `Row[左7: Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]`。**Record**：`record/skeleton_view.dart` 删除 `_GuidePlaceholder`（对应已删除的 `RecordGuideRow`）。**Report**：`report/skeleton_view.dart` 桌面端双栏从 `左7: MetricsGrid+Trend+Findings+Patterns | 右5: AiSummary+Export+ReferenceNotice` 重排为 `左7: Trend+Findings | 右5: MetricsGrid+Export+AiSummary+Patterns+ReferenceNotice`，与真实页面一致。`flutter analyze` 零问题，103 个测试通过。
 
+- P2 桌面/移动一致性：月历交互解耦 + 平板限宽（2026-07-18）：**月历交互解耦（3.2.1）**：`RecordMonthCalendarPanel` 从 `StatelessWidget` 改为 `StatefulWidget`，新增 `_viewedMonth` 本地状态；月历左右箭头切换月份仅更新本地查看月份，不再调用 `onDateSelected` 强制跳到 1 号；`_buildViewedDays()` 在查看月份与选中日期同月时使用父组件传入的 `days`（含服务端标记），否则本地生成该月日历网格（无标记，仅高亮选中日）；`didUpdateWidget` 在 `selectedDate` 跨月变化时自动同步 `_viewedMonth`；`dashboard_view.dart` 移除 `onMonthChanged: onDateSelected` 绑定。用户可在桌面月历中自由浏览前后月份而不丢失当前选中日期。**平板中间档限宽**：`ResponsiveContentFrame` 的 `maxContentWidth` 约束条件从 `width >= Breakpoints.desktop` 改为 `width >= Breakpoints.tablet`，平板档（960px+）内容居中并限宽至 1040px，消除平板/中小桌面窗口上内容全宽拉伸问题。`flutter analyze` 零问题，1228 个测试通过。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]
