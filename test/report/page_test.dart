@@ -165,7 +165,7 @@ void main() {
       expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
       expect(find.byKey(const Key('report-signed-out-notice')), findsNothing);
       expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
-      expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+      expect(find.text(l10n.reportScoreTitlePreview), findsOneWidget);
       expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
       expect(find.byKey(const Key('report-patterns-section')), findsNothing);

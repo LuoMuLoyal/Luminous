@@ -20,9 +20,9 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level4),
       decoration: BoxDecoration(
-        color: SemanticColor.primary.muted(context),
+        color: SemanticColor.destructive.muted(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border.all(color: SemanticColor.primary.border(context)),
+        border: Border.all(color: SemanticColor.destructive.border(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +31,7 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
             children: [
               Icon(
                 FLucideIcons.triangleAlert,
-                color: context.theme.colors.primary,
+                color: SemanticColor.destructive.solid(context),
                 size: 20,
               ),
               const SizedBox(width: Spacing.level3),
@@ -40,7 +40,7 @@ class MedicineRiskRedFlagBanner extends StatelessWidget {
                 style: TypographyToken.level5
                     .body(context)
                     .copyWith(
-                      color: context.theme.colors.primary,
+                      color: SemanticColor.destructive.solid(context),
                       fontWeight: FontWeight.w800,
                     ),
               ),
@@ -96,7 +96,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                   children: [
                     Icon(
                       FLucideIcons.siren,
-                      color: context.theme.colors.primary,
+                      color: SemanticColor.destructive.solid(context),
                       size: 16,
                     ),
                     const SizedBox(width: Spacing.level2),
@@ -106,7 +106,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                         style: TypographyToken.level3
                             .body(context)
                             .copyWith(
-                              color: context.theme.colors.primary,
+                              color: SemanticColor.destructive.solid(context),
                               fontWeight: FontWeight.w700,
                             ),
                       ),

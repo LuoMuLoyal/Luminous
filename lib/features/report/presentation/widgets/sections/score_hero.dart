@@ -11,15 +11,23 @@ class ReportScoreHero extends StatelessWidget {
     super.key,
     required this.dashboard,
     required this.l10n,
+    this.isPreview = false,
   });
 
   final ReportDashboard dashboard;
   final AppLocalizations l10n;
+  final bool isPreview;
 
   @override
   Widget build(BuildContext context) {
     final score = dashboard.score;
     final colors = context.theme.colors;
+    final titleText = isPreview
+        ? l10n.reportScoreTitlePreview
+        : l10n.reportScoreTitle;
+    final outOfText = isPreview
+        ? l10n.reportScoreOutOfPreview(score.maxValue)
+        : l10n.reportScoreOutOf(score.maxValue);
 
     return FCard.raw(
       child: Padding(
@@ -35,7 +43,7 @@ class ReportScoreHero extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          l10n.reportScoreTitle,
+                          titleText,
                           style: TypographyToken.level7
                               .display(context)
                               .copyWith(fontWeight: FontWeight.w800),
@@ -77,7 +85,7 @@ class ReportScoreHero extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        l10n.reportScoreOutOf(score.maxValue),
+                        outOfText,
                         style: TypographyToken.level5
                             .body(context)
                             .copyWith(color: colors.mutedForeground),

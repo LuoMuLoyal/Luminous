@@ -123,6 +123,7 @@ class ReportDashboardView extends StatelessWidget {
           key: const Key('report-score-hero'),
           dashboard: dashboard,
           l10n: l10n,
+          isPreview: isPreview,
         ),
         const SizedBox(height: Spacing.level4),
         ReportTrendSection(
@@ -185,6 +186,11 @@ class ReportDashboardView extends StatelessWidget {
             patterns: dashboard.patterns,
             l10n: l10n,
           ),
+          const SizedBox(height: Spacing.level5),
+          ReportReferenceNotice(
+            key: const Key('report-reference-notice-mobile'),
+            l10n: l10n,
+          ),
         ],
       ],
     );
@@ -220,6 +226,7 @@ class ReportDashboardView extends StatelessWidget {
                 key: const Key('report-score-hero'),
                 dashboard: dashboard,
                 l10n: l10n,
+                isPreview: isPreview,
               ),
               const SizedBox(height: Spacing.level5),
               ReportTrendSection(

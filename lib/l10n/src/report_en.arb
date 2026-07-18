@@ -31,9 +31,18 @@
       }
     }
   },
-  "reportScoreTitle": "Report preview score",
-  "reportScoreOutOf": "preview / {max}",
+  "reportScoreTitle": "Health score",
+  "reportScoreOutOf": "/ {max}",
   "@reportScoreOutOf": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reportScoreTitlePreview": "Report preview score",
+  "reportScoreOutOfPreview": "preview / {max}",
+  "@reportScoreOutOfPreview": {
     "placeholders": {
       "max": {
         "type": "int"

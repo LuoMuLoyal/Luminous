@@ -31,9 +31,18 @@
       }
     }
   },
-  "reportScoreTitle": "报告预览评分",
-  "reportScoreOutOf": "预览 / {max}",
+  "reportScoreTitle": "健康评分",
+  "reportScoreOutOf": "/ {max}",
   "@reportScoreOutOf": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "reportScoreTitlePreview": "报告预览评分",
+  "reportScoreOutOfPreview": "预览 / {max}",
+  "@reportScoreOutOfPreview": {
     "placeholders": {
       "max": {
         "type": "int"

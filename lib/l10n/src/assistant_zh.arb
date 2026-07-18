@@ -18,6 +18,7 @@
   "assistantStatusDisabled": "你已关闭 AI 对话，当前不会发送聊天请求。",
   "assistantStatusModelMissing": "服务端还没有可用的聊天模型配置。",
   "assistantStatusNotReady": "交互式对话链路还没有完全就绪。",
+  "assistantScrollToBottom": "回到底部",
   "assistantStatusToolsLabel": "工具",
   "assistantStatusContextLabel": "上下文",
   "assistantStatusStreamingLabel": "流式输出",

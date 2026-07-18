@@ -74,14 +74,18 @@ class MineAccountSecuritySection extends ConsumerWidget {
               key: const Key('mine-sign-out-tile'),
               prefix: Icon(
                 FLucideIcons.logOut,
-                color: colors.error,
+                color: signedIn ? colors.error : context.theme.colors.primary,
                 size: Spacing.level5,
               ),
               title: Text(
                 signedIn ? l10n.authSignOut : l10n.authGoLogin,
                 style: TypographyToken.level5
                     .body(context)
-                    .copyWith(color: colors.error),
+                    .copyWith(
+                      color: signedIn
+                          ? colors.error
+                          : context.theme.colors.primary,
+                    ),
               ),
               enabled: !session.isLoading,
               onPress: session.isLoading

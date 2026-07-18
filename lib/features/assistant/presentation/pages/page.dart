@@ -50,6 +50,10 @@ class AssistantPage extends HookConsumerWidget {
 
     final inputController = useTextEditingController();
     final scrollController = useMemoized(() => ScrollController());
+    // Tracks whether the user is currently near the bottom of the conversation.
+    // Only then do we auto-scroll on new streamed chunks; otherwise we show a
+    // floating "scroll to bottom" button so users can read history undisturbed.
+    final isNearBottom = useState<bool>(true);
 
     void scrollToBottom() {
       if (!scrollController.hasClients) return;
@@ -60,10 +64,34 @@ class AssistantPage extends HookConsumerWidget {
       );
     }
 
-    // Auto-scroll to bottom on new messages
-    ref.listen<AssistantState>(assistantControllerProvider, (_, __) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => scrollToBottom());
+    void onUserScroll() {
+      if (!scrollController.hasClients) return;
+      final pos = scrollController.position;
+      // Consider "near bottom" if within 96 logical px of the max extent.
+      final nearBottom =
+          (pos.pixels - pos.maxScrollExtent).abs() <= 96 ||
+          pos.pixels >= pos.maxScrollExtent - 1;
+      if (isNearBottom.value != nearBottom) {
+        isNearBottom.value = nearBottom;
+      }
+    }
+
+    // Auto-scroll to bottom only when the user is already near the bottom.
+    // This avoids yanking the view back during streaming while the user is
+    // reading earlier messages.
+    ref.listen<AssistantState>(assistantControllerProvider, (prev, next) {
+      final wasUserMessageAdded = prev?.messages.length != next.messages.length;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (isNearBottom.value || wasUserMessageAdded) {
+          scrollToBottom();
+        }
+      });
     });
+
+    useEffect(() {
+      scrollController.addListener(onUserScroll);
+      return () => scrollController.removeListener(onUserScroll);
+    }, [scrollController]);
 
     String statusSummaryText(AppLocalizations l, AssistantCapabilities caps) {
       if (!caps.assistantEnabled) return l.assistantStatusDisabled;
@@ -333,33 +361,58 @@ class AssistantPage extends HookConsumerWidget {
                 ],
                 const SizedBox(height: Spacing.level4),
                 Expanded(
-                  child: AssistantConversationSurface(
-                    state: chatState,
-                    capabilities: capabilities,
-                    scrollController: scrollController,
-                    controller: inputController,
-                    onSend: handleSend,
-                    onRetry: chatState.lastFailedInput != null
-                        ? () => ref
-                              .read(assistantControllerProvider.notifier)
-                              .retryLastMessage()
-                        : null,
-                    onConfirmProposal:
-                        ({required messageId, required proposalId}) =>
-                            handleConfirmProposal(
-                              context,
-                              messageId: messageId,
-                              proposalId: proposalId,
+                  child: Stack(
+                    children: [
+                      AssistantConversationSurface(
+                        state: chatState,
+                        capabilities: capabilities,
+                        scrollController: scrollController,
+                        controller: inputController,
+                        onSend: handleSend,
+                        onRetry: chatState.lastFailedInput != null
+                            ? () => ref
+                                  .read(assistantControllerProvider.notifier)
+                                  .retryLastMessage()
+                            : null,
+                        onConfirmProposal:
+                            ({required messageId, required proposalId}) =>
+                                handleConfirmProposal(
+                                  context,
+                                  messageId: messageId,
+                                  proposalId: proposalId,
+                                ),
+                        onDismissProposal:
+                            ({required messageId, required proposalId}) {
+                              ref
+                                  .read(assistantControllerProvider.notifier)
+                                  .dismissProposedAction(
+                                    messageId: messageId,
+                                    proposalId: proposalId,
+                                  );
+                            },
+                      ),
+                      if (!isNearBottom.value)
+                        Positioned(
+                          right: Spacing.level4,
+                          bottom: Spacing.level4,
+                          child: FButton(
+                            variant: .secondary,
+                            mainAxisSize: .min,
+                            onPress: () {
+                              isNearBottom.value = true;
+                              scrollToBottom();
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(FLucideIcons.chevronDown, size: 16),
+                                const SizedBox(width: Spacing.level2),
+                                Text(l10n.assistantScrollToBottom),
+                              ],
                             ),
-                    onDismissProposal:
-                        ({required messageId, required proposalId}) {
-                          ref
-                              .read(assistantControllerProvider.notifier)
-                              .dismissProposedAction(
-                                messageId: messageId,
-                                proposalId: proposalId,
-                              );
-                        },
+                          ),
+                        ),
+                    ],
                   ),
                 ),
                 if (chatState.recentConversationError != null) ...[

@@ -18,6 +18,7 @@
   "assistantStatusDisabled": "AI chat is turned off, so no chat request will be sent.",
   "assistantStatusModelMissing": "The backend does not have a usable chat model configured yet.",
   "assistantStatusNotReady": "The interactive chat route is not fully ready yet.",
+  "assistantScrollToBottom": "Scroll to bottom",
   "assistantStatusToolsLabel": "Tools",
   "assistantStatusContextLabel": "Context",
   "assistantStatusStreamingLabel": "Streaming",

@@ -115,8 +115,8 @@ class _TierBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = switch (tone) {
       AppStateTone.neutral => SemanticColor.primary,
-      AppStateTone.success => SemanticColor.primary,
-      AppStateTone.warning => SemanticColor.destructive,
+      AppStateTone.success => SemanticColor.success,
+      AppStateTone.warning => SemanticColor.warning,
       AppStateTone.danger => SemanticColor.destructive,
     };
 
