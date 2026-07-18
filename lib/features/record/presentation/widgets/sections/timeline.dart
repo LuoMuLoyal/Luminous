@@ -16,12 +16,14 @@ class RecordTimelinePanel extends StatelessWidget {
     required this.l10n,
     this.dense = false,
     this.onClearFilter,
+    this.selectedDate,
   });
 
   final List<RecordTimelineEntry> entries;
   final AppLocalizations l10n;
   final bool dense;
   final VoidCallback? onClearFilter;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -74,18 +76,28 @@ class RecordTimelinePanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.level4),
-            Column(
-              children: [
-                for (var index = 0; index < entries.length; index += 1)
-                  _TimelineEntryRow(
-                    index: index,
-                    entry: entries[index],
-                    l10n: l10n,
-                    isLast: index == entries.length - 1,
-                    dense: dense,
-                  ),
-              ],
-            ),
+            if (entries.isEmpty)
+              _DesktopTimelineEmptyState(
+                l10n: l10n,
+                onClearFilter: onClearFilter,
+                onCreate: () => pushAuthRequiredRoute(
+                  context,
+                  '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
+                ),
+              )
+            else
+              Column(
+                children: [
+                  for (var index = 0; index < entries.length; index += 1)
+                    _TimelineEntryRow(
+                      index: index,
+                      entry: entries[index],
+                      l10n: l10n,
+                      isLast: index == entries.length - 1,
+                      dense: dense,
+                    ),
+                ],
+              ),
           ],
         ),
       ),
@@ -454,6 +466,84 @@ class _TimelineImageFallback extends StatelessWidget {
         border: Border.all(color: colors.border),
       ),
       child: Center(child: Icon(icon, color: colors.mutedForeground, size: 22)),
+    );
+  }
+}
+
+class _DesktopTimelineEmptyState extends StatelessWidget {
+  const _DesktopTimelineEmptyState({
+    required this.l10n,
+    this.onClearFilter,
+    required this.onCreate,
+  });
+
+  final AppLocalizations l10n;
+  final VoidCallback? onClearFilter;
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Spacing.level4,
+        vertical: Spacing.level8,
+      ),
+      child: Column(
+        children: [
+          Icon(
+            FLucideIcons.filePlus2,
+            size: Spacing.level8,
+            color: colors.mutedForeground,
+          ),
+          const SizedBox(height: Spacing.level4),
+          Text(
+            l10n.recordTimelineEmptyTitle,
+            style: TypographyToken.level5
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: Spacing.level1),
+          Text(
+            l10n.recordTimelineEmptyDescription,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: Spacing.level5),
+          Wrap(
+            spacing: Spacing.level3,
+            runSpacing: Spacing.level2,
+            alignment: WrapAlignment.center,
+            children: [
+              FButton(
+                variant: FButtonVariant.primary,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: onCreate,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(FLucideIcons.plus, size: 16),
+                    const SizedBox(width: Spacing.level2),
+                    Text(l10n.recordTimelineEmptyAction),
+                  ],
+                ),
+              ),
+              if (onClearFilter != null)
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: onClearFilter,
+                  child: Text(l10n.recordTimelineClearFilter),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

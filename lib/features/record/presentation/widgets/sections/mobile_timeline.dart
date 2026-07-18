@@ -15,12 +15,14 @@ class RecordMobileTimeline extends StatefulWidget {
     required this.entries,
     required this.totalCount,
     required this.l10n,
+    this.selectedDate,
     this.initialVisibleCount = 7,
   });
 
   final List<RecordTimelineEntry> entries;
   final int totalCount;
   final AppLocalizations l10n;
+  final DateTime? selectedDate;
   final int initialVisibleCount;
 
   @override
@@ -38,6 +40,9 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
         : widget.entries
               .take(widget.initialVisibleCount)
               .toList(growable: false);
+
+    final isEmpty = widget.entries.isEmpty;
+    final createDate = widget.selectedDate ?? DateTime.now();
 
     return Column(
       key: const Key('record-timeline'),
@@ -70,19 +75,28 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
           ],
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
-          child: Column(
-            children: [
-              for (var index = 0; index < visibleEntries.length; index += 1)
-                _TimelineRow(
-                  index: index,
-                  entry: visibleEntries[index],
-                  l10n: widget.l10n,
-                  isLast: index == visibleEntries.length - 1,
-                ),
-            ],
+        if (isEmpty)
+          _MobileTimelineEmptyState(
+            l10n: widget.l10n,
+            onCreate: () => pushAuthRequiredRoute(
+              context,
+              '/record/create?date=${formatRecordDate(createDate)}',
+            ),
+          )
+        else
+          FCard.raw(
+            child: Column(
+              children: [
+                for (var index = 0; index < visibleEntries.length; index += 1)
+                  _TimelineRow(
+                    index: index,
+                    entry: visibleEntries[index],
+                    l10n: widget.l10n,
+                    isLast: index == visibleEntries.length - 1,
+                  ),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -295,6 +309,66 @@ class _TimelineDot extends StatelessWidget {
         border: Border.all(color: colors.background, width: Spacing.level1),
       ),
       child: const SizedBox.square(dimension: Spacing.level3),
+    );
+  }
+}
+
+class _MobileTimelineEmptyState extends StatelessWidget {
+  const _MobileTimelineEmptyState({required this.l10n, required this.onCreate});
+
+  final AppLocalizations l10n;
+  final VoidCallback onCreate;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level6,
+          vertical: Spacing.level8,
+        ),
+        child: Column(
+          children: [
+            Icon(
+              FLucideIcons.filePlus2,
+              size: Spacing.level8,
+              color: colors.mutedForeground,
+            ),
+            const SizedBox(height: Spacing.level4),
+            Text(
+              l10n.recordTimelineEmptyTitle,
+              style: TypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: Spacing.level1),
+            Text(
+              l10n.recordTimelineEmptyDescription,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: Spacing.level5),
+            FButton(
+              variant: FButtonVariant.outline,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: onCreate,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(FLucideIcons.plus, size: 16),
+                  const SizedBox(width: Spacing.level2),
+                  Text(l10n.recordTimelineEmptyAction),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

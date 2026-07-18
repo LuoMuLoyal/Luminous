@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -69,29 +67,6 @@ class TodayErrorView extends StatelessWidget {
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: AppStateTone.danger,
-    );
-  }
-}
-
-class TodayEmptyView extends StatelessWidget {
-  const TodayEmptyView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520),
-        child: AppStateMessageView(
-          title: l10n.todayEmptyTitle,
-          description: l10n.todayEmptyDescription,
-          icon: FLucideIcons.info,
-          actionLabel: l10n.todayEmptyAction,
-          onAction: () => context.push(AppRoutes.recordCreate),
-          tone: AppStateTone.success,
-        ),
-      ),
     );
   }
 }
