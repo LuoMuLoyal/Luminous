@@ -109,6 +109,8 @@ Last updated: 2026-07-18
 
 - P2-C3/C5 一致性打磨：剩余硬编码文案消除 + 触控目标与语义补齐（2026-07-18）：**C3 扫码页硬编码中文**：`box_scan.dart` 和 `recognize_dialog.dart` 的全部硬编码中文（方法选择器标题/副标题/处理中/来源/药品/批准文号/置信度/候选列表/匹配类型）迁入 15 个新 scan l10n 键；`MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` 辅助函数 + l10n 映射。**C3 认证页 English fallback 消除**：4 个表单页（login/register/forgot_password/change_email）+ 2 个共享组件（branding/oauth_panels）全部从 `AppLocalizations.of(context)?.` + `?? 'English'` 改为 `AppLocalizations.of(context)!.` 无兜底模式；`login.dart` Apple Sign In 错误消息从误用 `authWechatBrowserOpenFailed` 改为专用 `authAppleSignInFailed`；QQ 登录 4 条错误/提示消息从硬编码英文改为专用 QQ l10n 键；`change_email.dart` "返回首页"按钮从误用 `todayHeroTitle`（"今日"）改为 `authBackHomeAction`。新增 7 个 auth l10n 键。**C5 触控目标与语义补齐**：4 个裸 `GestureDetector` 迁移为 `FTappable`——今日 `_AiExpandButton`/`EvidenceToggleButton` 添加 vertical padding 扩大热区；搜索清除钮添加 `Semantics(button, label)` + padding；语音麦克风格按钮添加 `Semantics` 按录音状态动态切换标签。新增 1 个 record l10n 键（`recordVoiceStopListening`）。`flutter analyze` 零问题。
 
+- P2 剩余一致性打磨收尾：PIN 二次确认 + 保留期缩短确认 + MaterialLocalizations 清理（2026-07-18）：**PIN 启用二次输入确认**：`security_pin.dart` 开启 PIN 码区新增"请再次输入 PIN 码"确认字段，`_enablePin` 方法新增 `confirmPin` 参数并校验两次输入一致，防止手误锁死。**数据保留期缩短确认**：`data_storage.dart` 保留期切换时若新期限短于当前期限（含 forever→有限），弹出 `showDangerConfirmationDialog` 二次确认（标题+消息+取消/确认 destructive），取消则不切换。新增 3 个 settings l10n 键（`settingsSecurityPinConfirmPin`/`settingsDataStorageRetentionShortenConfirmTitle`/`settingsDataStorageRetentionShortenConfirmMessage`）。**MaterialLocalizations 残留清理**：3 处 `MaterialLocalizations.of(context).okButtonLabel`/`cancelButtonLabel` 全部替换为 `l10n.commonConfirm`/`l10n.commonCancel`——报告范围选择器日历确认钮、记录快捷弹层取消钮、用药提醒时间选择确认钮。`flutter analyze` 零问题，287 个相关测试通过。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]
