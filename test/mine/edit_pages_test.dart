@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -160,6 +160,9 @@ void main() {
 
     await _scrollToSave(tester);
     await tester.tap(find.byKey(const Key('allergy-delete-button')));
+    await tester.pumpAndSettle();
+    // Confirm in the danger dialog
+    await tester.tap(find.text('删除').last);
     await tester.pump(const Duration(seconds: 2));
 
     expect(fakeRepo.allergyDeleted, 'allergy-1');
@@ -219,6 +222,9 @@ void main() {
 
     await _scrollToSave(tester);
     await tester.tap(find.byKey(const Key('condition-delete-button')));
+    await tester.pumpAndSettle();
+    // Confirm in the danger dialog
+    await tester.tap(find.text('删除').last);
     await tester.pump(const Duration(seconds: 2));
 
     expect(fakeRepo.conditionDeleted, 'cond-1');
@@ -278,6 +284,9 @@ void main() {
 
     await _scrollToSave(tester);
     await tester.tap(find.byKey(const Key('medicine-delete-button')));
+    await tester.pumpAndSettle();
+    // Confirm in the danger dialog
+    await tester.tap(find.text('删除').last);
     await tester.pump(const Duration(seconds: 2));
 
     expect(fakeRepo.medicineDeleted, 'med-1');

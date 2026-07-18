@@ -161,6 +161,9 @@
   "authGoLogin": "Sign in",
   "authGoRegister": "Create account",
   "authSignOut": "Sign out",
+  "authSignOutConfirmTitle": "Sign out?",
+  "authSignOutConfirmMessage": "You'll need to sign in again to access your health data.",
+  "authSignOutConfirmAction": "Sign out",
   "authQqSignIn": "Sign in with QQ",
   "authQqCallbackLabel": "QQ callback link / code",
   "authQqCompleteAction": "Complete QQ sign-in"

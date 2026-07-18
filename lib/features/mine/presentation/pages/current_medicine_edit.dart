@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -304,7 +305,16 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                         FButton(
                           key: const Key('medicine-delete-button'),
                           variant: FButtonVariant.destructive,
-                          onPress: onDelete,
+                          onPress: () async {
+                            final confirmed =
+                                await showDangerConfirmationDialog(
+                                  context: context,
+                                  title: l10n.mineEditDeleteConfirmTitle,
+                                  message: l10n.mineEditDeleteConfirmMessage,
+                                  confirmLabel: l10n.mineEditDeleteAction,
+                                );
+                            if (confirmed) onDelete();
+                          },
                           child: Text(l10n.mineEditDeleteAction),
                         ),
                       ],

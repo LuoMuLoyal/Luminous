@@ -161,6 +161,9 @@
   "authGoLogin": "去登录",
   "authGoRegister": "去注册",
   "authSignOut": "退出登录",
+  "authSignOutConfirmTitle": "确认退出登录？",
+  "authSignOutConfirmMessage": "退出后需要重新登录才能查看你的健康数据。",
+  "authSignOutConfirmAction": "退出",
   "authQqSignIn": "QQ 登录",
   "authQqCallbackLabel": "QQ 回调链接 / 授权码",
   "authQqCompleteAction": "完成 QQ 登录"

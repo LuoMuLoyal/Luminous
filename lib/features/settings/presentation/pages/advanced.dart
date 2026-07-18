@@ -11,6 +11,7 @@ import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/theme/theme_controller.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
@@ -63,6 +64,14 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       key: const Key('advanced-settings-row-reset-defaults'),
                       title: Text(l10n.settingsAdvancedResetDefaults),
                       onPress: () async {
+                        final confirmed = await showDangerConfirmationDialog(
+                          context: context,
+                          title: l10n.settingsAdvancedRestoreConfirmTitle,
+                          message: l10n.settingsAdvancedRestoreConfirmMessage,
+                          confirmLabel:
+                              l10n.settingsAdvancedRestoreConfirmAction,
+                        );
+                        if (!confirmed || !context.mounted) return;
                         await ref
                             .read(appThemeControllerProvider.notifier)
                             .setMode(AppThemeModePreference.system);

@@ -200,6 +200,8 @@
   "mineEditMedicineNewTitle": "新增用药",
   "mineEditSaveAction": "保存",
   "mineEditDeleteAction": "删除",
+  "mineEditDeleteConfirmTitle": "确认删除？",
+  "mineEditDeleteConfirmMessage": "删除后无法恢复，确定要继续吗？",
   "mineEditSavedToast": "已保存",
   "mineEditDeletedToast": "已删除",
   "mineEditFieldBirthDate": "出生日期 (YYYY-MM-DD)",

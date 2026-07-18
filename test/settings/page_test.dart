@@ -516,6 +516,10 @@ void main() {
     await tester.tap(find.byKey(const Key('settings-footer-action')));
     await tester.pumpAndSettle();
 
+    // Confirm in the sign-out danger dialog
+    await tester.tap(find.text('退出').last);
+    await tester.pumpAndSettle();
+
     final notifier =
         container.read(authSessionProvider.notifier)
             as _LogoutTrackingAuthSessionNotifier;

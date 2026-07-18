@@ -200,6 +200,8 @@
   "mineEditMedicineNewTitle": "New Medicine",
   "mineEditSaveAction": "Save",
   "mineEditDeleteAction": "Delete",
+  "mineEditDeleteConfirmTitle": "Confirm delete?",
+  "mineEditDeleteConfirmMessage": "This cannot be undone. Are you sure?",
   "mineEditSavedToast": "Saved",
   "mineEditDeletedToast": "Deleted",
   "mineEditFieldBirthDate": "Birth date (YYYY-MM-DD)",

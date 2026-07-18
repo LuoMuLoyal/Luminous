@@ -45,5 +45,7 @@
     "placeholders": {
       "date": {}
     }
-  }
+  },
+  "commonCancel": "取消",
+  "commonConfirm": "确认"
 }

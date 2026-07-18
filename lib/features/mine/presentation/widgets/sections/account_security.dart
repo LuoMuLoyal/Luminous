@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
@@ -95,6 +96,13 @@ class MineAccountSecuritySection extends ConsumerWidget {
                         context.go(loginRouteForCurrentLocation(context));
                         return;
                       }
+                      final confirmed = await showDangerConfirmationDialog(
+                        context: context,
+                        title: l10n.authSignOutConfirmTitle,
+                        message: l10n.authSignOutConfirmMessage,
+                        confirmLabel: l10n.authSignOutConfirmAction,
+                      );
+                      if (!confirmed || !context.mounted) return;
                       await ref.read(authSessionProvider.notifier).logout();
                       if (!context.mounted) return;
                       context.go(AppRoutes.login);

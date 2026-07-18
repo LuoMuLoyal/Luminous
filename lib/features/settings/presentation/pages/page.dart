@@ -121,6 +121,13 @@ class SettingsPage extends ConsumerWidget {
                       context.go(loginRouteForCurrentLocation(context));
                       return;
                     }
+                    final confirmed = await showDangerConfirmationDialog(
+                      context: context,
+                      title: l10n.authSignOutConfirmTitle,
+                      message: l10n.authSignOutConfirmMessage,
+                      confirmLabel: l10n.authSignOutConfirmAction,
+                    );
+                    if (!confirmed || !context.mounted) return;
                     await ref.read(authSessionProvider.notifier).logout();
                     if (!context.mounted) return;
                     context.go(AppRoutes.login);
