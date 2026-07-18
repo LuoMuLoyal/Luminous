@@ -1382,6 +1382,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Enter a value (required by front-end validation)
+    await tester.enterText(
+      find.byKey(const Key('daily-record-value-field')),
+      '250',
+    );
+    await tester.pump();
+
     final saveButton = find.byKey(const Key('record-create-save-action'));
     await tester.ensureVisible(saveButton);
     await tester.pump();
@@ -1394,7 +1401,7 @@ void main() {
     expect(input!.kind, DailyRecordKind.water);
     expect(input.occurredAt, '2026-06-06');
     expect(input.title, isNull);
-    expect(input.value, isNull);
+    expect(input.value, '250');
     expect(input.unit, 'ml');
     expect(input.note, isNull);
   });

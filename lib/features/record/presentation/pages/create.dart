@@ -241,11 +241,46 @@ class RecordCreatePage extends HookConsumerWidget {
         return;
       }
 
+      // ── Front-end validation for required fields ──
+      final rules = dailyRecordFormRules(kind.value);
+      final l10n = AppLocalizations.of(context)!;
+
+      // Value field: required for water/vital/symptom/meal/activity
+      if (rules.showValue) {
+        final rawValue = valueController.text.trim();
+        if (rawValue.isEmpty) {
+          unawaited(
+            AppToast.show(context, l10n.recordCreateValueRequiredToast),
+          );
+          return;
+        }
+        // Numeric validation for water (must be a positive number)
+        if (kind.value == DailyRecordKind.water) {
+          final parsed = double.tryParse(rawValue);
+          if (parsed == null || parsed <= 0) {
+            unawaited(
+              AppToast.show(context, l10n.recordCreateValueInvalidToast),
+            );
+            return;
+          }
+        }
+      }
+
+      // Title field: required for vital/symptom/meal/note/mood/activity
+      if (rules.showTitle) {
+        final rawTitle = titleController.text.trim();
+        if (rawTitle.isEmpty) {
+          unawaited(
+            AppToast.show(context, l10n.recordCreateTitleRequiredToast),
+          );
+          return;
+        }
+      }
+
       saving.value = true;
       try {
         final repo = ref.read(dailyRecordRepositoryProvider);
         final attachments = await uploadSelectedImage();
-        final rules = dailyRecordFormRules(kind.value);
         await repo.create(
           DailyRecordCreateInput(
             kind: kind.value,
