@@ -17,6 +17,10 @@ class Categories extends StatelessWidget {
   final ValueChanged<MedicineSearchCategory>? onCategorySelected;
   @override
   Widget build(BuildContext context) {
+    if (categories.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

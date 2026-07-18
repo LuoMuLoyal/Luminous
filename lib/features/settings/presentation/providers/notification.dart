@@ -92,9 +92,13 @@ class NotificationSettingsController
 
   Future<void> requestPermission() async {
     final current = state.asData?.value ?? const NotificationSettingsState();
-    final permissionState = await ref
-        .read(notificationPermissionServiceProvider)
-        .requestPermission();
+    final service = ref.read(notificationPermissionServiceProvider);
+    final permissionState = await service.requestPermission();
+    // If the system permanently denied notifications, the in-app request
+    // dialog can never show again. Redirect the user to OS settings.
+    if (permissionState == NotificationPermissionState.permanentlyDenied) {
+      await service.openSystemSettings();
+    }
     state = AsyncData(current.copyWith(permissionState: permissionState));
   }
 

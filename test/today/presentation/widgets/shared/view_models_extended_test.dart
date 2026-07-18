@@ -208,7 +208,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[2].icon, FLucideIcons.shieldPlus);
-      expect(items[2].route, AppRoutes.medicine);
+      expect(items[2].route, AppRoutes.medicineRiskCheck);
     });
 
     test('fourth item is reminder', () async {
@@ -216,6 +216,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[3].icon, FLucideIcons.alarmClockCheck);
+      expect(items[3].route, AppRoutes.medicineReminders);
     });
 
     test('fifth item is profile', () async {

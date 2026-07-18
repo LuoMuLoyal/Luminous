@@ -29,6 +29,8 @@
   "settingsNotificationsPermissionUnsupported": "当前平台不提供通知权限状态",
   "settingsNotificationsPermissionEnabledHint": "通知已授权。下方开关可控制各类通知的显示。",
   "settingsNotificationsPermissionDisabledHint": "点击可打开系统权限对话框。系统通知权限未开启时，本地提醒无法显示。",
+  "settingsNotificationsPermissionPermanentlyDenied": "系统通知被永久拒绝",
+  "settingsNotificationsPermissionPermanentlyDeniedHint": "点击跳转系统设置页手动开启通知权限。开启后返回本页可刷新状态。",
   "settingsNotificationsGeneralGroup": "通用通知",
   "settingsNotificationsReminderGroup": "提醒",
   "settingsNotificationsSleepReminderTitle": "睡眠提醒",

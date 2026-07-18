@@ -97,6 +97,8 @@ Last updated: 2026-07-18
 
 - UI/UX 优化阶段 1：P0 数据安全 + 行为反转（2026-07-18）：修复 4 项 App 主动伤害用户/说谎的问题。**身高丢数据**：`profile_edit.dart` 的 `int.tryParse` → `num.tryParse`，修复 double 身高值（如 `170.0`）保存时静默变 null。**通知已读链路反转**：`NotificationRepository` 补 `markAsRead` 接口+实现（后端已有端点），`_ActionBar` 拆分读写回调，按钮 `onPress` 按 `isRead` 状态调用对应方法。**删除确认标题错误**：新增 `recordDeleteConfirmTitle` l10n 键替换张冠李戴的 `authIdentityUnlinkConfirmTitle`。**删除反馈错误**：新增 `recordDeletedToast`/`recordDeleteFailedToast` l10n 键替换"已保存"/"创建失败"；`context.pop()` 调两次从编辑页直接回列表页。`flutter analyze` 零问题，559 个测试通过。
 
+- UI/UX 优化阶段 2：P0 死交互 / 错误路由修复（2026-07-18）：修复 5 项死交互/错误路由/文案错配问题。**今日快捷操作路由**：`view_models.dart` 中"药品解读"和"用药提醒"路由从 `/medicine` 改为 `/medicine/risk-check` 和 `/medicine/reminders`。**铃铛红点常亮+路由错误**：`_MedicineNotificationButton` 改为 `ConsumerWidget`，watch `notificationUnreadCountProvider` 条件渲染红点；路由从 `/medicine/reminders/new` 改为 `/medicine/reminders`。**通知权限死交互**：`NotificationPermissionState` 新增 `permanentlyDenied` 状态，`requestPermission()` 返回该状态时 Controller 自动调用 `openAppSettings()` 跳转系统设置；`_PermissionCard` 新增专属文案和 destructive 色调。**搜索页空壳**：`RecentSearches`/`QuickActions`/`Categories` 在数据为空时返回 `SizedBox.shrink()`。**依从率 detail 错配**：新增 `medicineAdherenceDetail` l10n 键替换 `medicineDoseDueStatus`（"待服用"）。`flutter analyze` 零问题，522 个测试通过。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]

@@ -187,9 +187,7 @@ class _MobileSearchLayout extends StatelessWidget {
             l10n: l10n,
             onKeywordSelected: onQueryChanged,
           ),
-          const SizedBox(height: Spacing.level5),
           QuickActions(actions: _scanQuickActions, l10n: l10n),
-          const SizedBox(height: Spacing.level6),
           Categories(
             categories: const <MedicineSearchCategory>[],
             l10n: l10n,
@@ -327,12 +325,10 @@ class _DesktopSearchPanel extends StatelessWidget {
             const SizedBox(height: Spacing.level5),
             if (state.query.trim().isEmpty) ...[
               RecentSearches(keywords: const <String>[], l10n: l10n),
-              const SizedBox(height: Spacing.level5),
               QuickActions(
                 actions: const <MedicineSearchQuickAction>[],
                 l10n: l10n,
               ),
-              const SizedBox(height: Spacing.level6),
               Categories(
                 categories: const <MedicineSearchCategory>[],
                 l10n: l10n,

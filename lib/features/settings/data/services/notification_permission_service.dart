@@ -3,7 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum NotificationPermissionState { granted, denied, unsupported }
+enum NotificationPermissionState {
+  granted,
+  denied,
+  permanentlyDenied,
+  unsupported,
+}
 
 class NotificationPermissionService {
   NotificationPermissionService({FlutterLocalNotificationsPlugin? plugin})
@@ -52,7 +57,10 @@ class NotificationPermissionService {
     if (status.isGranted) {
       return NotificationPermissionState.granted;
     }
-    if (status.isDenied || status.isPermanentlyDenied || status.isRestricted) {
+    if (status.isPermanentlyDenied) {
+      return NotificationPermissionState.permanentlyDenied;
+    }
+    if (status.isDenied || status.isRestricted) {
       return NotificationPermissionState.denied;
     }
     return NotificationPermissionState.unsupported;
@@ -73,9 +81,22 @@ class NotificationPermissionService {
     }
 
     final status = await Permission.notification.request();
-    return status.isGranted
-        ? NotificationPermissionState.granted
-        : NotificationPermissionState.denied;
+    if (status.isGranted) {
+      return NotificationPermissionState.granted;
+    }
+    if (status.isPermanentlyDenied) {
+      return NotificationPermissionState.permanentlyDenied;
+    }
+    return NotificationPermissionState.denied;
+  }
+
+  /// Opens the OS-level app settings page where the user can manually
+  /// re-grant notification permission after a permanent denial.
+  Future<void> openSystemSettings() async {
+    if (kIsWeb) {
+      return;
+    }
+    await openAppSettings();
   }
 
   Future<bool?> _requestPluginPermission() async {

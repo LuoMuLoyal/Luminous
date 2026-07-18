@@ -22,6 +22,7 @@ import 'package:luminous/features/medicine/presentation/widgets/views/workspace_
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -308,13 +309,16 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   }
 }
 
-class _MedicineNotificationButton extends StatelessWidget {
+class _MedicineNotificationButton extends ConsumerWidget {
   const _MedicineNotificationButton();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final unreadAsync = ref.watch(notificationUnreadCountProvider);
+    final unreadCount = unreadAsync.value ?? 0;
+    final showBadge = unreadCount > 0;
 
     return FTooltip(
       tipBuilder: (context, controller) =>
@@ -324,24 +328,25 @@ class _MedicineNotificationButton extends StatelessWidget {
         children: [
           FButton.icon(
             onPress: () =>
-                pushAuthRequiredRoute(context, '/medicine/reminders/new'),
+                pushAuthRequiredRoute(context, AppRoutes.medicineReminders),
             variant: FButtonVariant.ghost,
             child: Icon(FLucideIcons.bell, color: colors.foreground),
           ),
-          Positioned(
-            right: Spacing.level3,
-            top: Spacing.level2,
-            child: FBadge.raw(
-              style: .delta(
-                decoration: .shapeDelta(
-                  color: colors.destructive,
-                  shape: const CircleBorder(),
+          if (showBadge)
+            Positioned(
+              right: Spacing.level3,
+              top: Spacing.level2,
+              child: FBadge.raw(
+                style: .delta(
+                  decoration: .shapeDelta(
+                    color: colors.destructive,
+                    shape: const CircleBorder(),
+                  ),
                 ),
+                builder: (context, style) =>
+                    const SizedBox.square(dimension: Spacing.level2),
               ),
-              builder: (context, style) =>
-                  const SizedBox.square(dimension: Spacing.level2),
             ),
-          ),
         ],
       ),
     );

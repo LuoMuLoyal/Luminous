@@ -19,6 +19,10 @@ class RecentSearches extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
+    if (keywords.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

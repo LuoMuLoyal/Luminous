@@ -25,6 +25,7 @@
     }
   },
   "medicineDoseDueStatus": "Due",
+  "medicineAdherenceDetail": "On-time doses over recent period",
   "medicineNoMedicineTitle": "No medicines yet",
   "medicineNoMedicineBody": "Add medicine to show reminders",
   "medicineSafetyEngineTitle": "Safety check preview",

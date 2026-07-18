@@ -24,6 +24,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
+import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -44,6 +45,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
@@ -113,6 +115,7 @@ void main() {
       ProviderScope(
         overrides: [
           medicineWorkspaceProvider.overrideWith((ref) => pending.future),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
         ],
         child: const TestForuiApp(home: MedicinePage()),
       ),
@@ -141,6 +144,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
@@ -173,6 +177,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             _StaticMedicineWorkspaceRepository(_completedWorkspace),
           ),
@@ -219,6 +224,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
@@ -276,6 +282,7 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineWorkspaceRepositoryProvider.overrideWithValue(
               const MockMedicineWorkspaceRepository(),
             ),
@@ -334,6 +341,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
@@ -366,6 +374,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const _StaticMedicineWorkspaceRepository(_coverageGapWorkspace),
           ),
@@ -404,6 +413,7 @@ void main() {
         ProviderScope(
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
             medicineRiskCheckProvider.overrideWith((ref) async => _riskResult),
             redFlagAlertsProvider.overrideWith(
               (ref) async => [severeAllergyAlert],
@@ -490,6 +500,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceProvider.overrideWith(
             (ref) => Future<MedicineWorkspace>.error(Exception('test error')),
           ),
@@ -520,6 +531,7 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),

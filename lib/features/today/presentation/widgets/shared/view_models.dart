@@ -320,13 +320,13 @@ List<TodayQuickActionItem> buildQuickActionItems(
       icon: FLucideIcons.shieldPlus,
       title: l10n.todayQuickActionExplainTitle,
       subtitle: l10n.todayQuickActionExplainSubtitle,
-      route: AppRoutes.medicine,
+      route: AppRoutes.medicineRiskCheck,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.alarmClockCheck,
       title: l10n.todayQuickActionReminderTitle,
       subtitle: l10n.todayQuickActionReminderSubtitle,
-      route: AppRoutes.medicine,
+      route: AppRoutes.medicineReminders,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.userRound,

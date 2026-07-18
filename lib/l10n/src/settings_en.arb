@@ -29,6 +29,8 @@
   "settingsNotificationsPermissionUnsupported": "Notification permission status is unavailable on this platform",
   "settingsNotificationsPermissionEnabledHint": "Notifications are allowed. Preference toggles below control which types appear.",
   "settingsNotificationsPermissionDisabledHint": "Tap to open the system permission dialog. Notifications need system approval before local reminders can appear.",
+  "settingsNotificationsPermissionPermanentlyDenied": "Notifications permanently denied",
+  "settingsNotificationsPermissionPermanentlyDeniedHint": "Tap to open system settings and re-enable notifications manually. Return here to refresh the status.",
   "settingsNotificationsGeneralGroup": "General",
   "settingsNotificationsReminderGroup": "Reminders",
   "settingsNotificationsSleepReminderTitle": "Sleep Reminder",

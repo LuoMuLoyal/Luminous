@@ -18,6 +18,10 @@ class QuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (actions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return FCard.raw(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level3),

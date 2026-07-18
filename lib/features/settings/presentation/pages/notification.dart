@@ -291,6 +291,12 @@ class _PermissionCard extends StatelessWidget {
         FLucideIcons.circleAlert,
         colors.mutedForeground,
       ),
+      NotificationPermissionState.permanentlyDenied => (
+        l10n.settingsNotificationsPermissionPermanentlyDenied,
+        l10n.settingsNotificationsPermissionPermanentlyDeniedHint,
+        FLucideIcons.circleAlert,
+        colors.destructive,
+      ),
       NotificationPermissionState.unsupported => (
         l10n.settingsNotificationsPermissionUnsupported,
         '',

@@ -312,7 +312,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 color: SemanticColor.primary,
                 label: l10n.medicineHeroMetricAdherenceLabel,
                 value: workspace.hero.metricAdherence,
-                detail: l10n.medicineDoseDueStatus,
+                detail: l10n.medicineAdherenceDetail,
               ),
             ),
           ],
