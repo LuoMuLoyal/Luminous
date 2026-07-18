@@ -222,7 +222,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                 FButton(
                   onPress: () =>
                       Navigator.of(sheetContext).pop(timeController.value),
-                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                  child: Text(l10n.commonConfirm),
                 ),
               ],
             ),

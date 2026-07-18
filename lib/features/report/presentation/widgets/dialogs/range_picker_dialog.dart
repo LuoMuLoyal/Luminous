@@ -84,9 +84,7 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                               onPress: () => Navigator.of(
                                 calendarContext,
                               ).pop(rangeController.value),
-                              child: Text(
-                                MaterialLocalizations.of(context).okButtonLabel,
-                              ),
+                              child: Text(l10n.commonConfirm),
                             ),
                           ],
                         ),

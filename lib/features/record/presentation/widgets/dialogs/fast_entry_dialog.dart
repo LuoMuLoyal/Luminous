@@ -86,7 +86,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
         FButton(
           variant: FButtonVariant.ghost,
           onPress: _saving ? null : () => Navigator.of(context).pop(),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          child: Text(l10n.commonCancel),
         ),
       ],
     );
