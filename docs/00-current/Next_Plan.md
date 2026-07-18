@@ -1,29 +1,25 @@
 # Luminous Next Plan
 
-Last updated: 2026-07-12
+Last updated: 2026-07-18
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 产品优先级口径以 [[01-product/Product_Brainstorm_2026-07-07]] 为准。
 
 ## 当前目标
 
-按照 Product Brainstorm 优先级体系推进。P0 两项（Medicine 安全检查三层展示 + Report 门控透明度）已完成。当前进入 P1 体验优化期，完成后运行发布验证门。
+按照 Product Brainstorm 优先级体系推进。P0 两项（Medicine 安全检查三层展示 + Report 门控透明度）和 P1 三项（Today 信息密度评估、Record 快速入口动态排序、Mine 档案完整度提示）均已完成。下一步运行发布验证门。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **完成 P1 体验优化（Brainstorm P1 — 发布前内）**
-   - Today 信息密度收窄（Brainstorm A）— 只保留 3 个区域：主建议/提醒 → AI 日总结（折叠态） → 快速操作入口
-   - Record 快速入口动态排序（Brainstorm C）— 按使用频率排序，新用户默认只显示饮水/症状/睡眠
-   - Mine 档案完整度提示（Brainstorm E）— 健康档案新增完整度提示，空档案提醒完善
-2. **运行发布验证门**
+1. **运行发布验证门**
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
    - 集成测试框架选型暂缓，待评估后引入
-3. **助手演进限定在 concrete 场景**
+2. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals
    - Memory 保持可选、显式、用户控制
-4. **Web 作为 deliberate 决策保留**
+3. **Web 作为 deliberate 决策保留**
    - `Luminous-site` 是竞赛/营销表面，不是签入式产品壳
    - 如后续需要认证 Web 报告预览，另开专用计划
 
