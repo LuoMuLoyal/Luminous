@@ -1,10 +1,13 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
 void main() {
+  setUpAll(initializeDateFormatting);
   group('compareReminderTime', () {
     test('sorts by scheduledHour then scheduledMinute', () {
       final a = _item(8, 0);
@@ -42,10 +45,13 @@ void main() {
 
   group('dateTimeTimeLabel', () {
     test('returns HH:mm from ISO string', () {
-      expect(dateTimeTimeLabel('2026-06-10T08:30:00.000Z'), '08:30');
+      expect(
+        dateTimeTimeLabel('2026-06-10T08:30:00', const Locale('zh')),
+        '08:30',
+      );
     });
     test('handles null/empty', () {
-      expect(dateTimeTimeLabel(''), '');
+      expect(dateTimeTimeLabel('', const Locale('zh')), '');
     });
   });
 

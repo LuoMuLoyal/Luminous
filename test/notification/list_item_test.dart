@@ -100,8 +100,10 @@ void main() {
 
     testWidgets('formats createdAt as time for today', (tester) async {
       final now = DateTime.now();
+      // Construct a local ISO-8601 string (no 'Z' suffix) so that
+      // formatRelativeTimeLabel's `.toLocal()` is a no-op.
       final iso =
-          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:00.000Z';
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}T${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:00.000';
 
       await tester.pumpWidget(
         _appShell(

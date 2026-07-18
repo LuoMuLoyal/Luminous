@@ -154,16 +154,25 @@ void main() {
       expect(state.results, isEmpty);
     });
 
-    test('strips "Exception: " prefix from error message', () async {
-      repo.searchError = Exception('Something went wrong');
+    test(
+      'maps generic Exception to user-friendly message via mapper',
+      () async {
+        repo.searchError = Exception('Something went wrong');
 
-      final notifier = container.read(medicineSearchNotifierProvider.notifier);
-      await notifier.updateQuery('test');
+        final notifier = container.read(
+          medicineSearchNotifierProvider.notifier,
+        );
+        await notifier.updateQuery('test');
 
-      final state = container.read(medicineSearchNotifierProvider);
-      expect(state.errorMessage, 'Something went wrong');
-      expect(state.errorMessage, isNot(contains('Exception:')));
-    });
+        final state = container.read(medicineSearchNotifierProvider);
+        // userMessageFromError delegates to LucentErrorMapper which returns a
+        // localized generic message for non-API exceptions, never exposing the
+        // raw exception text to the user.
+        expect(state.errorMessage, isNotNull);
+        expect(state.errorMessage, isNot(contains('Exception')));
+        expect(state.errorMessage, isNot(contains('Something went wrong')));
+      },
+    );
 
     test('trims query before search', () async {
       repo.searchResults = [_result('m1')];

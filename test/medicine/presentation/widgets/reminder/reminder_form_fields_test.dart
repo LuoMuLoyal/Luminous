@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
@@ -61,7 +62,6 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(FilterChip), findsNWidgets(7));
       // Monday through Sunday labels
       expect(find.text('一'), findsOneWidget);
       expect(find.text('二'), findsOneWidget);
@@ -86,15 +86,20 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      final chips = tester.widgetList<FilterChip>(find.byType(FilterChip));
-      final chipList = chips.toList();
+      // Mon (key=1) and Wed (key=3) should be selected; Tue (key=2) should not.
+      final mon = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-weekday-1')),
+      );
+      final tue = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-weekday-2')),
+      );
+      final wed = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-weekday-3')),
+      );
 
-      // Monday (index 0 in the list, key=1) should be selected
-      expect(chipList[0].selected, isTrue);
-      // Wednesday (index 2, key=3) should be selected
-      expect(chipList[2].selected, isTrue);
-      // Tuesday (index 1, key=2) should not be selected
-      expect(chipList[1].selected, isFalse);
+      expect(mon.selected, isTrue);
+      expect(tue.selected, isFalse);
+      expect(wed.selected, isTrue);
     });
 
     testWidgets('calls onToggled with weekday number', (tester) async {
@@ -141,8 +146,13 @@ void main() {
 
       expect(find.text('08:00'), findsOneWidget);
       expect(find.text('20:30'), findsOneWidget);
-      expect(find.byType(InputChip), findsNWidgets(2));
-      expect(find.byType(ActionChip), findsOneWidget);
+      // Two time chips + one add button = 3 FButtons.
+      expect(find.byKey(const Key('medicine-reminder-time-0')), findsOneWidget);
+      expect(find.byKey(const Key('medicine-reminder-time-1')), findsOneWidget);
+      expect(
+        find.byKey(const Key('medicine-reminder-add-time')),
+        findsOneWidget,
+      );
     });
 
     testWidgets('calls onAddTime when add chip is pressed', (tester) async {
@@ -162,7 +172,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(ActionChip));
+      await tester.tap(find.byKey(const Key('medicine-reminder-add-time')));
       await tester.pumpAndSettle();
 
       expect(addCalled, isTrue);
@@ -171,6 +181,8 @@ void main() {
     testWidgets('onRemoveTime is wired when multiple times exist', (
       tester,
     ) async {
+      var removedIndex = -1;
+
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
@@ -180,7 +192,7 @@ void main() {
                 MedicineReminderTimeInput(hour: 12, minute: 0),
               ],
               onAddTime: () {},
-              onRemoveTime: (_) {},
+              onRemoveTime: (index) => removedIndex = index,
             ),
           ),
         ),
@@ -188,11 +200,20 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Verify both chips have delete enabled
-      final chips = tester.widgetList<InputChip>(find.byType(InputChip));
-      for (final chip in chips) {
-        expect(chip.onDeleted, isNotNull);
-      }
+      // Both time chips should be tappable (removable) when more than one.
+      final first = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-time-0')),
+      );
+      final second = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-time-1')),
+      );
+      expect(first.onPress, isNotNull);
+      expect(second.onPress, isNotNull);
+
+      // Tapping the first chip removes index 0.
+      await tester.tap(find.byKey(const Key('medicine-reminder-time-0')));
+      await tester.pumpAndSettle();
+      expect(removedIndex, 0);
     });
 
     testWidgets('disables delete when only one time remains', (tester) async {
@@ -210,8 +231,10 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      final chip = tester.widget<InputChip>(find.byType(InputChip));
-      expect(chip.onDeleted, isNull);
+      final chip = tester.widget<FButton>(
+        find.byKey(const Key('medicine-reminder-time-0')),
+      );
+      expect(chip.onPress, isNull);
     });
 
     testWidgets('renders empty list with only add button', (tester) async {
@@ -229,8 +252,11 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(InputChip), findsNothing);
-      expect(find.byType(ActionChip), findsOneWidget);
+      expect(find.byKey(const Key('medicine-reminder-time-0')), findsNothing);
+      expect(
+        find.byKey(const Key('medicine-reminder-add-time')),
+        findsOneWidget,
+      );
     });
   });
 

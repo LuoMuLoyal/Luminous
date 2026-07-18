@@ -1,6 +1,8 @@
-﻿import 'package:luminous/core/design/semantic_color.dart';
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
@@ -16,6 +18,7 @@ MedicineReminderItem _r({String id = '1', int h = 9, int m = 0}) {
 }
 
 void main() {
+  setUpAll(initializeDateFormatting);
   group('compareReminderTime', () {
     test('sorts by hour', () {
       expect(compareReminderTime(_r(h: 9), _r(h: 12)), lessThan(0));
@@ -60,10 +63,13 @@ void main() {
 
   group('dateTimeTimeLabel', () {
     test('extracts HH:mm', () {
-      expect(dateTimeTimeLabel('2026-06-15T09:45:00'), '09:45');
+      expect(
+        dateTimeTimeLabel('2026-06-15T09:45:00', const Locale('zh')),
+        '09:45',
+      );
     });
-    test('returns original on parse failure', () {
-      expect(dateTimeTimeLabel('not-a-date'), 'not-a-date');
+    test('returns empty on parse failure', () {
+      expect(dateTimeTimeLabel('not-a-date', const Locale('zh')), '');
     });
   });
 

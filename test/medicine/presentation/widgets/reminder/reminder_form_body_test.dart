@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +6,7 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/form_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../../helpers/test_forui_app.dart';
@@ -256,7 +257,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(FilterChip), findsNWidgets(7));
+      expect(find.byType(WeekdayPicker), findsOneWidget);
     });
 
     testWidgets('does not render weekday picker when frequency is daily', (
@@ -270,7 +271,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(FilterChip), findsNothing);
+      expect(find.byType(WeekdayPicker), findsNothing);
     });
 
     testWidgets('renders time picker row', (tester) async {
