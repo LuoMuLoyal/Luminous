@@ -107,6 +107,8 @@ Last updated: 2026-07-18
 
 - P2-D 一致性打磨：错误文案 mapper + 日期格式收敛（2026-07-18）：建立统一的错误文案映射和日期格式化工具。**C7 错误文案 mapper**：新增 `lib/core/errors/user_message.dart`（`userMessageFromError` 函数），通过 `LucentErrorMapper.toAppError` 安全转换任意异常为用户友好消息，避免内部异常文本暴露；search/medicine/notification 三个 feature 的 5 处 `error.toString()` 全部替换。**C8 日期格式收敛**：新增 `lib/core/utils/date_format_utils.dart`（locale 感知 `intl.DateFormat` 封装库，5 个格式化函数），medicine/notification/settings 三个 feature 的手写 `padLeft` 日期拼接全部替换；`reminder_formatters.dart` 三个函数新增 `Locale` 参数；`notification/detail.dart` + `list_item.dart` 的 `_formatTime` 方法新增 `BuildContext` 参数修复编译错误；3 个测试文件 BOM 修复 + 签名更新 + Forui 迁移后断言修正。`flutter analyze` 零问题，2753 个测试通过（1 个预存在超时失败除外）。
 
+- P2-C3/C5 一致性打磨：剩余硬编码文案消除 + 触控目标与语义补齐（2026-07-18）：**C3 扫码页硬编码中文**：`box_scan.dart` 和 `recognize_dialog.dart` 的全部硬编码中文（方法选择器标题/副标题/处理中/来源/药品/批准文号/置信度/候选列表/匹配类型）迁入 15 个新 scan l10n 键；`MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` 辅助函数 + l10n 映射。**C3 认证页 English fallback 消除**：4 个表单页（login/register/forgot_password/change_email）+ 2 个共享组件（branding/oauth_panels）全部从 `AppLocalizations.of(context)?.` + `?? 'English'` 改为 `AppLocalizations.of(context)!.` 无兜底模式；`login.dart` Apple Sign In 错误消息从误用 `authWechatBrowserOpenFailed` 改为专用 `authAppleSignInFailed`；QQ 登录 4 条错误/提示消息从硬编码英文改为专用 QQ l10n 键；`change_email.dart` "返回首页"按钮从误用 `todayHeroTitle`（"今日"）改为 `authBackHomeAction`。新增 7 个 auth l10n 键。**C5 触控目标与语义补齐**：4 个裸 `GestureDetector` 迁移为 `FTappable`——今日 `_AiExpandButton`/`EvidenceToggleButton` 添加 vertical padding 扩大热区；搜索清除钮添加 `Semantics(button, label)` + padding；语音麦克风格按钮添加 `Semantics` 按录音状态动态切换标签。新增 1 个 record l10n 键（`recordVoiceStopListening`）。`flutter analyze` 零问题。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]
