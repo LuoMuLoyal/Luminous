@@ -1,6 +1,6 @@
 # Luminous Current State
 
-Last updated: 2026-07-17
+Last updated: 2026-07-18
 
 本文件只保留简介和按区域链接。具体实现细节见 `00-current/` 下各子文件。
 历史 completed baselines 已归档至 [[04-archive/current-state-archive]]。
@@ -83,13 +83,15 @@ Last updated: 2026-07-17
 
 - 巨型文件拆分 + 文档校准（2026-07-17）：根据 `plans/2026-07-16-architecture-review.md` 第 8、9 项完成收尾。**Item 8**：`suggestion.dart` 从 952 行精简至 125 行，仅保留两个 section 入口 widget；拆出的 18 个类已按职责分散到 `suggestion_state_views.dart`（状态视图）、`suggestion_interactive.dart`（反馈/AI 解释）、`suggestion_primary_card.dart`（主卡片+证据+helper）三个文件，全部从私有类改为公开类。`TODO.md` 超大文件清单按实测行数重写。**Item 9**：一次性校准 8 个活跃文档文件中的过时路径引用——`AGENTS.md`/`architecture.md`/`data-layer.md`/`routing.md`/`Forui_Reference.md`/`Design_System.md`/`Mock_Or_Deferred.md`/`TODO.md`，修正 `lib/theme/theme.dart`→`lib/core/theme/theme.dart`、`lib/app/app.dart`→`lib/app/bootstrap.dart`、`lucent_dio_client.dart`→`dio_client.dart`、`lucent_session_store.dart`→`session_store.dart`、`lucent_api.dart`→`api.dart`、`app_colors.dart`→`semantic_color.dart`、`app_spacing_tokens.dart`→`spacing.dart`、`app_radius_tokens.dart`→`radius.dart`、`app_typography_tokens.dart`→`typography.dart`、`app_theme_controller.dart`→`theme_controller.dart`，以及 mock 命名 `mock_*_repository.dart`→`test/helpers/mocks/` 和 `kDebugMode` 门控→`signedOut()` 工厂的描述修正。`flutter analyze` 零问题。
 
-- 架构审查低优先级改进 #10-14（2026-07-17）：根据 `plans/2026-07-16-architecture-review.md` 低优先级第 10-14 项，完成全部收尾。**#10**：`core/network/envelope.dart` 新增 `throwIfFailed()`/`unwrapOrThrow()`/`ensureEnvelopeSuccess()` 统一业务错误 helper，4 个 datasource 文件的手动 `throw StateError/Exception` 全部替换。**#11**：新建 `core/network/api_paths.dart`（`LucentApiPaths` 常量注册表），8 个文件的硬编码 `/api/v1/...` 字符串全部替换为常量引用（SSE 流、void 返回端点、partial-PATCH、auth refresh）。**#12**：删空目录 `shell/providers/`；5 个文件 `git mv` 重命名移除 `_repository`/`_page` 后缀；6 个引用文件 import 更新；`flow_test.dart` BOM 修复。**#13**：新建 `core/config/pref_keys.dart`（33 个 key 集中注册），11 个文件全部替换本地字符串常量为 `PrefKeys.xxx`；新建 `medicine/data/datasources/reminder_local_preferences.dart` 数据层服务，`MedicineReminderSoundController` 和 `MedicineReminderNotificationCoordinator` 不再直接调用 `SharedPreferences.getInstance()`。**#14**：`state-management.md` Ephemeral UI State 章节扩展为完整边界规则（三准则 + 允许/禁止示例 + 审查注释）。计划文件已删除。`flutter analyze` 零问题。
+- 架构审查低优先级改进 #10-14（2026-07-17）：根据 `plans/2026-07-16-architecture-review.md` 低优先级第 10-14 项，完成全部收尾。**#10**：`core/network/envelope.dart` 新增 `throwIfFailed()`/`unwrapOrThrow()`/`ensureEnvelopeSuccess()` 统一业务错误 helper，4 个 datasource 文件的手动 `throw StateError/Exception` 全部替换。**#11**：新建 `core/network/api_paths.dart`（`LucentApiPaths` 常量注册表），8 个文件的硬编码 `/api/v1/...` 字符串全部替换为常量引用（SSE 流、void 返回端点、partial-PATCH、auth refresh）。**#12**：删空目录 `shell/providers/`；5 个文件 `git mv` 重命名移除 `_repository`/`_page` 后缀；6 个引用文件 import 更新；`flow_test.dart` BOM 修复。**#13**：新建 `core/config/pref_keys.dart`（35 个 key 集中注册），11 个文件全部替换本地字符串常量为 `PrefKeys.xxx`；新建 `medicine/data/datasources/reminder_local_preferences.dart` 数据层服务，`MedicineReminderSoundController` 和 `MedicineReminderNotificationCoordinator` 不再直接调用 `SharedPreferences.getInstance()`。**#14**：`state-management.md` Ephemeral UI State 章节扩展为完整边界规则（三准则 + 允许/禁止示例 + 审查注释）。计划文件已删除。`flutter analyze` 零问题。**审查修复（2026-07-18）**：补齐 `notification.dart` 遗漏的两个 key（`settingsNotificationsSleepReminderEnabled` / `settingsNotificationsReminderAdvanceMinutes`），全部 15 个通知 key 统一通过 `PrefKeys` 管理。
 
 - SemanticColor 暗色对比度验证 + Drift 缓存一致性（2026-07-16）：
   - **暗色对比度**：`theme.dart` `_fixedPalette` 暗色模式 `subtle` alpha 从 0.08 提升至 0.10，确保空状态背景在深色背景上有足够区分度。`muted`（0.18）和 `border`（0.35）经 WCAG 2.1 分析验证通过——`solid` 在 `muted` 背景上对比度 >7:1（超 AAA）。完整分析文档化在 `_fixedPalette` 注释中。
   - **缓存常量统一**：新建 `lib/core/database/cache_constants.dart` 统一所有时间常量——`backgroundRefreshThrottle`（30s）、`networkTimeoutShort`（5s）、`defaultMaxRetry`（5）、`syncBackoffBase`（30s）、`syncBackoffMax`（30min）。`PendingSyncEntry.backoffDelay` 和 `LucentHealthContextRepository._refreshInBackground` 从硬编码改为引用统一常量。
   - **SyncWorker 失败 UI 通知**：`PendingSyncDao` 新增 `permanentlyFailedCount()` 方法查询永久失败项数；新增 `syncFailedCountProvider` Riverpod provider；新建 `MineSyncFailedBanner` widget 在 Mine 页面顶部展示同步失败警告（warning 色 subtle 背景 + border + cloudAlert 图标 + 点击重试 flush），移动端和桌面端布局均已接入。
   - **多设备同步策略文档化**：明确 last-write-wins 行为——服务端时间戳为权威，客户端缓存为读取优化，离线写入通过 pending sync queue 最终一致化。
+
+- 建议性问题审查与修复（2026-07-18）：用户提供 5 个建议性问题，经核实修复 2 项、确认已修复 2 项、不修复 1 项。**问题 2（序列化兼容性）**：`suggestion.dart` 缓存反序列化路径（stale-while-error fallback）增加 try-catch，格式不兼容时记录 warning 日志 + 清理过期缓存 + rethrow 原始网络错误，避免 app 更新后旧缓存导致不可恢复错误。**问题 4（isPublicRoute 硬编码）**：`router.dart` redirect 守卫的 `location.startsWith('/legal')` 提取为 `_publicRoutePrefixes` 常量集合，便于未来新增公开路由。**问题 1（LegalDocType Map 查找）** 和 **问题 5（高对比度颜色硬编码）** 经核实已在之前的架构审查中修复。**问题 3（DesktopTabShell 参数多）** 不修复——8 参数在 Flutter widget 中正常，builder 模式反惯用。`flutter analyze` 零问题，72 个测试全部通过。
 
 ## 相关文档
 

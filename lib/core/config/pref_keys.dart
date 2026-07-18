@@ -72,6 +72,8 @@ abstract final class PrefKeys {
       'settings.notifications.waterReminders';
   static const settingsNotificationsSleepReminders =
       'settings.notifications.sleepReminders';
+  static const settingsNotificationsSleepReminderEnabled =
+      'settings.notifications.sleepReminderEnabled';
   static const settingsNotificationsSleepBedtime =
       'settings.notifications.sleepBedtime';
   static const settingsNotificationsSleepWakeTime =
@@ -86,6 +88,8 @@ abstract final class PrefKeys {
       'settings.notifications.soundEnabled';
   static const settingsNotificationsVibrationEnabled =
       'settings.notifications.vibrationEnabled';
+  static const settingsNotificationsReminderAdvanceMinutes =
+      'settings.notifications.reminderAdvanceMinutes';
 
   // ── Settings / Data Storage ───────────────────────────────────────────
 

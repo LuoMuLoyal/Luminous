@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:luminous/core/database/database_providers.dart';
@@ -144,6 +144,34 @@ void main() {
       // Verify the DAO was consulted as fallback
       verify(() => mockDao.fetch()).called(1);
     });
+
+    test(
+      'clears stale cache when deserialization fails and rethrows',
+      () async {
+        when(
+          () => mockDataSource.fetchSuggestions(
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenThrow(Exception('Network error'));
+        // Return corrupt JSON that will fail deserialization
+        when(() => mockDao.fetch()).thenAnswer((_) async => '{corrupt json}');
+        when(() => mockDao.clear()).thenAnswer((_) async {});
+
+        final c = buildContainer();
+
+        // The provider will try network first, fail, then try cache.
+        // Cache deserialization will fail, so it should clear the stale cache
+        // and rethrow the original network error.
+        c.read(todaySuggestionProvider);
+        await Future.delayed(const Duration(milliseconds: 100));
+
+        // Verify the DAO was consulted as fallback
+        verify(() => mockDao.fetch()).called(1);
+        // Verify the stale cache was cleared
+        verify(() => mockDao.clear()).called(1);
+      },
+    );
 
     test('dismiss adds id to excluded list and re-fetches', () async {
       final bundle1 = _bundle(primaryId: 's1');

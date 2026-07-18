@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
@@ -59,7 +60,19 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
       // Network failed — try cache as fallback (stale-while-error)
       final cached = await dao.fetch();
       if (cached != null) {
-        return TodaySuggestionJsonCodec.bundleFromJson(cached);
+        try {
+          return TodaySuggestionJsonCodec.bundleFromJson(cached);
+        } catch (e) {
+          // Cache format is incompatible (likely after an app update).
+          // Clear the stale cache so subsequent fetches don't hit the same
+          // error, then fall through to rethrow the original network error.
+          ref
+              .read(talkerProvider)
+              .warning(
+                'Suggestion cache deserialization failed, clearing stale cache: $e',
+              );
+          await dao.clear();
+        }
       }
       rethrow;
     }

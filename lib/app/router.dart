@@ -93,6 +93,14 @@ class AppRoutes {
   static const legalDetail = '/legal/:docType';
 }
 
+/// Route prefixes that are publicly accessible without authentication.
+///
+/// Auth routes (`/login`, `/register`, `/forgot-password`) are handled
+/// separately in the redirect guard. Add new public route prefixes here
+/// when introducing pages that should be viewable while signed out
+/// (e.g. help center, about page if made public).
+const _publicRoutePrefixes = <String>['/legal'];
+
 /// The main application router.
 ///
 /// The five main tabs live inside a [StatefulShellRoute.indexedStack] so that
@@ -121,7 +129,9 @@ GoRouter appRouter(Ref ref) => GoRouter(
         location.startsWith('/login') ||
         location.startsWith('/register') ||
         location.startsWith('/forgot-password');
-    final isPublicRoute = location.startsWith('/legal');
+    final isPublicRoute = _publicRoutePrefixes.any(
+      (prefix) => location.startsWith(prefix),
+    );
 
     if (!session.isAuthenticated && !isAuthRoute && !isPublicRoute) {
       return AppRoutes.login;

@@ -42,7 +42,7 @@ class NotificationSettingsController
   static const _sleepRemindersKey =
       PrefKeys.settingsNotificationsSleepReminders;
   static const _sleepReminderEnabledKey =
-      'settings.notifications.sleepReminderEnabled';
+      PrefKeys.settingsNotificationsSleepReminderEnabled;
   static const _sleepBedtimeKey = PrefKeys.settingsNotificationsSleepBedtime;
   static const _sleepWakeTimeKey = PrefKeys.settingsNotificationsSleepWakeTime;
   static const _dndEnabledKey = PrefKeys.settingsNotificationsDndEnabled;
@@ -52,7 +52,7 @@ class NotificationSettingsController
   static const _vibrationEnabledKey =
       PrefKeys.settingsNotificationsVibrationEnabled;
   static const _reminderAdvanceMinutesKey =
-      'settings.notifications.reminderAdvanceMinutes';
+      PrefKeys.settingsNotificationsReminderAdvanceMinutes;
 
   @override
   Future<NotificationSettingsState> build() async {
