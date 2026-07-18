@@ -471,6 +471,43 @@
       }
     }
   },
+  "scanMethodOcrTitle": "OCR 文字识别",
+  "scanMethodOcrSubtitle": "设备端识别，快速离线",
+  "scanMethodAiTitle": "AI 智能识别",
+  "scanMethodAiSubtitle": "云端大模型，更准确",
+  "scanMethodOcrLabel": "OCR 识别",
+  "scanMethodAiLabel": "AI 识别",
+  "scanProcessingOcr": "正在 OCR 识别…",
+  "scanProcessingAi": "正在 AI 识别…",
+  "scanResultSourceLabel": "来源: {method}",
+  "@scanResultSourceLabel": {
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "scanResultMedicineLabel": "药品",
+  "scanResultApprovalNumberLabel": "批准文号",
+  "scanResultConfidenceLabel": "置信度: {percent}%",
+  "@scanResultConfidenceLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "scanResultOtherMatches": "从列表选择其他匹配 ({count})",
+  "@scanResultOtherMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanMatchTypeApprovalNumber": "批准文号匹配",
+  "scanMatchTypeBarcode": "条码匹配",
+  "scanMatchTypeNameFuzzy": "名称模糊匹配",
   "medicineEmptyAddFirstTitle": "添加你的第一个药品",
   "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。"
 }

@@ -43,6 +43,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
+    final l10n = AppLocalizations.of(context)!;
     final top = _topResult;
     final sorted = _sortedResults;
 
@@ -78,7 +79,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                         style: typography.body.md,
                       ),
                       Text(
-                        '来源: ${widget.methodLabel}',
+                        l10n.scanResultSourceLabel(widget.methodLabel),
                         style: typography.body.sm.copyWith(
                           color: colors.primary,
                         ),
@@ -103,12 +104,17 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _infoRow('药品', top.name),
+                    _infoRow(l10n.scanResultMedicineLabel, top.name),
                     if (top.approvalNumber != null)
-                      _infoRow('批准文号', top.approvalNumber!),
+                      _infoRow(
+                        l10n.scanResultApprovalNumberLabel,
+                        top.approvalNumber!,
+                      ),
                     const SizedBox(height: Spacing.level2),
                     Text(
-                      '置信度: ${(top.confidence * 100).toInt()}%',
+                      l10n.scanResultConfidenceLabel(
+                        (top.confidence * 100).toInt(),
+                      ),
                       style: typography.body.sm.copyWith(color: colors.primary),
                     ),
                   ],
@@ -141,7 +147,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '从列表选择其他匹配 (${sorted.length})',
+                        l10n.scanResultOtherMatches(sorted.length),
                         style: typography.body.md.copyWith(
                           color: colors.primary,
                         ),
@@ -181,7 +187,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                                 children: [
                                   Text(r.name, style: typography.body.md),
                                   Text(
-                                    '${r.matchType.name} · ${(r.confidence * 100).toInt()}%',
+                                    '${_matchTypeLabel(r.matchType, l10n)} · ${(r.confidence * 100).toInt()}%',
                                     style: typography.body.sm.copyWith(
                                       color: colors.mutedForeground,
                                     ),
@@ -243,5 +249,17 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
         ],
       ),
     );
+  }
+}
+
+/// Maps a [MedicineMatchType] to its localized label.
+String _matchTypeLabel(MedicineMatchType type, AppLocalizations l10n) {
+  switch (type) {
+    case MedicineMatchType.approvalNumber:
+      return l10n.scanMatchTypeApprovalNumber;
+    case MedicineMatchType.barcode:
+      return l10n.scanMatchTypeBarcode;
+    case MedicineMatchType.nameFuzzy:
+      return l10n.scanMatchTypeNameFuzzy;
   }
 }

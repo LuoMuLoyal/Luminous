@@ -22,25 +22,26 @@ enum _ScanMethod { ocr, ai }
 /// Shows a bottom sheet for medicine box recognition method selection,
 /// then launches the camera, processes the photo, and shows the result dialog.
 Future<void> showMedicineBoxScanSheet(BuildContext context) async {
+  final l10n = AppLocalizations.of(context)!;
   final method = await showFDialog<_ScanMethod>(
     context: context,
     builder: (dialogContext, style, animation) => FDialog(
-      title: Text(AppLocalizations.of(context)!.scanMethodPickerTitle),
+      title: Text(l10n.scanMethodPickerTitle),
       actions: const [],
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _MethodTile(
             icon: FLucideIcons.camera,
-            title: 'OCR 文字识别',
-            subtitle: '设备端识别，快速离线',
+            title: l10n.scanMethodOcrTitle,
+            subtitle: l10n.scanMethodOcrSubtitle,
             onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
           ),
           const SizedBox(height: Spacing.level3),
           _MethodTile(
             icon: FLucideIcons.sparkles,
-            title: 'AI 智能识别',
-            subtitle: '云端大模型，更准确',
+            title: l10n.scanMethodAiTitle,
+            subtitle: l10n.scanMethodAiSubtitle,
             onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
           ),
         ],
@@ -72,7 +73,9 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
         barrierDismissible: false,
         builder: (dialogContext, style, animation) => MedicineRecognizeDialog(
           imagePath: photo.path,
-          methodLabel: method == _ScanMethod.ocr ? 'OCR 识别' : 'AI 识别',
+          methodLabel: method == _ScanMethod.ocr
+              ? l10n.scanMethodOcrLabel
+              : l10n.scanMethodAiLabel,
           results: results,
           onRetake: () {
             Navigator.of(dialogContext).pop();
@@ -97,6 +100,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
 }
 
 void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
+  final l10n = AppLocalizations.of(context)!;
   showFDialog(
     context: context,
     barrierDismissible: false,
@@ -109,7 +113,11 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
           children: [
             const FCircularProgress(),
             const SizedBox(height: Spacing.level4),
-            Text(method == _ScanMethod.ocr ? '正在 OCR 识别...' : '正在 AI 识别...'),
+            Text(
+              method == _ScanMethod.ocr
+                  ? l10n.scanProcessingOcr
+                  : l10n.scanProcessingAi,
+            ),
           ],
         ),
       ),

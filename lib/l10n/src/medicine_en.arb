@@ -464,6 +464,43 @@
       }
     }
   },
+  "scanMethodOcrTitle": "OCR Text Recognition",
+  "scanMethodOcrSubtitle": "On-device recognition, fast offline",
+  "scanMethodAiTitle": "AI Smart Recognition",
+  "scanMethodAiSubtitle": "Cloud model, more accurate",
+  "scanMethodOcrLabel": "OCR",
+  "scanMethodAiLabel": "AI",
+  "scanProcessingOcr": "OCR processing…",
+  "scanProcessingAi": "AI processing…",
+  "scanResultSourceLabel": "Source: {method}",
+  "@scanResultSourceLabel": {
+    "placeholders": {
+      "method": {
+        "type": "String"
+      }
+    }
+  },
+  "scanResultMedicineLabel": "Medicine",
+  "scanResultApprovalNumberLabel": "Approval No.",
+  "scanResultConfidenceLabel": "Confidence: {percent}%",
+  "@scanResultConfidenceLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "scanResultOtherMatches": "Select other matches ({count})",
+  "@scanResultOtherMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "scanMatchTypeApprovalNumber": "Approval Number",
+  "scanMatchTypeBarcode": "Barcode",
+  "scanMatchTypeNameFuzzy": "Name Fuzzy",
   "medicineEmptyAddFirstTitle": "Add your first medication",
   "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
 }
