@@ -149,25 +149,9 @@ class _FindingCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Spacer(),
-                FAvatar.raw(
-                  size: ResponsiveSizing.scaleByWidth(
-                    context,
-                    fraction: 0.068,
-                    minValue: 24,
-                    maxValue: 30,
-                  ),
-                  child: Icon(
-                    FLucideIcons.chevronRight,
-                    color: SemanticColor.neutral.solid(context),
-                    size: ResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.042,
-                      minValue: 16,
-                      maxValue: 20,
-                    ),
-                  ),
-                ),
+                // No decorative chevron — the card is informational, not
+                // navigational. A chevron would mislead users into expecting
+                // a tap action that doesn't exist.
               ],
             ),
             const SizedBox(height: Spacing.level4),

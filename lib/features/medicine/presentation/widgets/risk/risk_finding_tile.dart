@@ -101,6 +101,12 @@ class MedicineRiskFindingTile extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Icon(
+                            medicineRiskSeverityIcon(finding.severity),
+                            size: 12,
+                            color: foreground,
+                          ),
+                          const SizedBox(width: Spacing.level1),
                           Text(
                             medicineRiskSeverityLabel(l10n, finding.severity),
                             style: TypographyToken.level3

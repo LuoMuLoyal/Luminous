@@ -145,12 +145,8 @@ class _PatternCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: Spacing.level3),
-                Icon(
-                  FLucideIcons.chevronRight,
-                  color: colors.mutedForeground,
-                  size: 18,
-                ),
+                // No decorative chevron — the card is informational, not
+                // navigational.
               ],
             ),
           ],

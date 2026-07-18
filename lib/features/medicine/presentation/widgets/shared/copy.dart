@@ -201,16 +201,26 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
 SemanticColor medicineRiskSeverityColor(MedicineRiskSeverity severity) {
   return switch (severity) {
     MedicineRiskSeverity.high => SemanticColor.destructive,
-    MedicineRiskSeverity.medium => SemanticColor.neutral,
-    MedicineRiskSeverity.info => SemanticColor.primary,
+    MedicineRiskSeverity.medium => SemanticColor.warning,
+    MedicineRiskSeverity.info => SemanticColor.info,
   };
 }
 
 SemanticColor medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
   return switch (severity) {
     MedicineRiskSeverity.high => SemanticColor.destructive,
-    MedicineRiskSeverity.medium => SemanticColor.neutral,
-    MedicineRiskSeverity.info => SemanticColor.primary,
+    MedicineRiskSeverity.medium => SemanticColor.warning,
+    MedicineRiskSeverity.info => SemanticColor.info,
+  };
+}
+
+/// Returns a distinct icon for each risk severity level, providing a
+/// non-color channel for color-blind users to differentiate severity.
+IconData medicineRiskSeverityIcon(MedicineRiskSeverity severity) {
+  return switch (severity) {
+    MedicineRiskSeverity.high => FLucideIcons.triangleAlert,
+    MedicineRiskSeverity.medium => FLucideIcons.circleAlert,
+    MedicineRiskSeverity.info => FLucideIcons.info,
   };
 }
 

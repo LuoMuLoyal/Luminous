@@ -126,6 +126,14 @@ class ReportDashboardView extends StatelessWidget {
           isPreview: isPreview,
         ),
         const SizedBox(height: Spacing.level4),
+        ReportMetricsGrid(
+          key: const Key('report-metrics-grid'),
+          dashboard: dashboard,
+          metrics: dashboard.metrics,
+          l10n: l10n,
+          onMetricSelected: onMetricSelected,
+        ),
+        const SizedBox(height: Spacing.level4),
         ReportTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,

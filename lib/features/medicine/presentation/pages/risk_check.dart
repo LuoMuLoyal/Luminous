@@ -60,7 +60,9 @@ class MedicineRiskCheckPage extends ConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile ? 24 : 32,
+              vertical: width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,12 +85,12 @@ class _RiskCheckSectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FCard.raw(
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: TypographyToken.level6.body(context)),
-            const SizedBox(height: 20),
+            const SizedBox(height: Spacing.level5),
             child,
           ],
         ),
