@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
@@ -45,7 +46,20 @@ class DataStorageSettingsPage extends ConsumerWidget {
                         suffix: SettingsSelectionIcon(
                           selected: settings.retentionPeriod == period,
                         ),
-                        onPress: () => controller.setRetentionPeriod(period),
+                        onPress: () async {
+                          if (_isShortening(settings.retentionPeriod, period)) {
+                            final confirmed = await showDangerConfirmationDialog(
+                              context: context,
+                              title: l10n
+                                  .settingsDataStorageRetentionShortenConfirmTitle,
+                              message: l10n
+                                  .settingsDataStorageRetentionShortenConfirmMessage,
+                              confirmLabel: l10n.commonConfirm,
+                            );
+                            if (!confirmed) return;
+                          }
+                          await controller.setRetentionPeriod(period);
+                        },
                       ),
                   ],
                 ),
@@ -95,6 +109,14 @@ class DataStorageSettingsPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Returns true if switching from [current] to [next] shortens the
+  /// retention period (i.e. old cached data may be deleted).
+  bool _isShortening(DataRetentionPeriod current, DataRetentionPeriod next) {
+    if (next == DataRetentionPeriod.forever) return false;
+    if (current == DataRetentionPeriod.forever) return true;
+    return next.days < current.days;
   }
 
   String _retentionLabel(AppLocalizations l10n, DataRetentionPeriod period) {

@@ -26,6 +26,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     final lastChangedAt = settings?.securityPin.lastChangedAt;
 
     final enablePinController = useTextEditingController();
+    final enablePinConfirmController = useTextEditingController();
     final oldPinController = useTextEditingController();
     final newPinController = useTextEditingController();
     final confirmPinController = useTextEditingController();
@@ -126,6 +127,17 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             obscureText: true,
                           ),
                           const SizedBox(height: Spacing.level4),
+                          FTextField(
+                            control: FTextFieldControl.managed(
+                              controller: enablePinConfirmController,
+                            ),
+                            label: Text(l10n.settingsSecurityPinConfirmPin),
+                            hint: l10n.settingsSecurityPinInvalidPin,
+                            keyboardType: TextInputType.number,
+                            maxLength: 6,
+                            obscureText: true,
+                          ),
+                          const SizedBox(height: Spacing.level4),
                           SizedBox(
                             width: double.infinity,
                             child: FButton(
@@ -136,6 +148,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                                       ref,
                                       l10n,
                                       enablePinController.text,
+                                      enablePinConfirmController.text,
                                       isSubmitting,
                                     ),
                               child: isSubmitting.value
@@ -304,10 +317,15 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
     String pin,
+    String confirmPin,
     ValueNotifier<bool> isSubmitting,
   ) async {
     if (!_isValidPin(pin)) {
       await AppToast.show(context, l10n.settingsSecurityPinInvalidPin);
+      return;
+    }
+    if (pin != confirmPin) {
+      await AppToast.show(context, l10n.settingsSecurityPinPinMismatch);
       return;
     }
     isSubmitting.value = true;
