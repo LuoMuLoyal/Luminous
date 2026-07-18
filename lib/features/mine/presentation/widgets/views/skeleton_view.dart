@@ -5,7 +5,14 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 
 /// Skeleton placeholder for the Mine tab loading state.
 ///
-/// Avoids exposing fake display names, emails, or completion percentages.
+/// Mirrors the real dashboard section order so the loading-to-loaded
+/// transition doesn't cause a large layout jump:
+///
+/// **Mobile:** SyncBanner → AccountHero → Archive → AiPrivacy
+/// → NotificationsReminders → AccountSecurity
+///
+/// **Desktop:** SyncBanner → AccountHero →
+/// Row[左7: Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]
 class MineSkeletonView extends StatelessWidget {
   const MineSkeletonView({super.key});
 
@@ -13,11 +20,12 @@ class MineSkeletonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
-    final content = isDesktop
-        ? const _DesktopMineSkeleton()
-        : const _MobileMineSkeleton();
 
-    return AppSkeletonShimmer(child: content);
+    return AppSkeletonShimmer(
+      child: isDesktop
+          ? const _DesktopMineSkeleton()
+          : const _MobileMineSkeleton(),
+    );
   }
 }
 
@@ -29,15 +37,17 @@ class _MobileMineSkeleton extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _AccountHeroPlaceholder(),
+        _SyncBannerPlaceholder(),
         SizedBox(height: Spacing.level4),
-        _StatusOverviewPlaceholder(),
+        _AccountHeroPlaceholder(),
         SizedBox(height: Spacing.level5),
         _ArchivePlaceholder(),
         SizedBox(height: Spacing.level5),
-        _CampusServicePlaceholder(),
-        SizedBox(height: Spacing.level4),
-        _PrivacyNoticePlaceholder(),
+        _AiPrivacyPlaceholder(),
+        SizedBox(height: Spacing.level5),
+        _NotificationsRemindersPlaceholder(),
+        SizedBox(height: Spacing.level5),
+        _AccountSecurityPlaceholder(),
       ],
     );
   }
@@ -48,35 +58,70 @@ class _DesktopMineSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 7,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _AccountHeroPlaceholder(),
-              SizedBox(height: Spacing.level5),
-              _ArchivePlaceholder(),
-              SizedBox(height: Spacing.level5),
-              _PrivacyNoticePlaceholder(),
-            ],
-          ),
-        ),
-        SizedBox(width: Spacing.level5),
-        Expanded(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _StatusOverviewPlaceholder(),
-              SizedBox(height: Spacing.level5),
-              _CampusServicePlaceholder(),
-            ],
-          ),
+        _SyncBannerPlaceholder(),
+        SizedBox(height: Spacing.level4),
+        _AccountHeroPlaceholder(),
+        SizedBox(height: Spacing.level5),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ArchivePlaceholder(),
+                  SizedBox(height: Spacing.level5),
+                  _NotificationsRemindersPlaceholder(),
+                ],
+              ),
+            ),
+            SizedBox(width: Spacing.level5),
+            Expanded(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _AiPrivacyPlaceholder(),
+                  SizedBox(height: Spacing.level5),
+                  _AccountSecurityPlaceholder(),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
+    );
+  }
+}
+
+class _SyncBannerPlaceholder extends StatelessWidget {
+  const _SyncBannerPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.background,
+        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        border: Border.all(color: colors.border),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(Spacing.level4),
+        child: Row(
+          children: [
+            AppInlineSkeletonCircle(size: 24),
+            SizedBox(width: Spacing.level3),
+            Expanded(child: AppInlineSkeletonBlock(height: 14)),
+            SizedBox(width: Spacing.level3),
+            AppInlineSkeletonBlock(height: 14, width: 56),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -116,46 +161,6 @@ class _AccountHeroPlaceholder extends StatelessWidget {
         ),
         SizedBox(height: Spacing.level4),
         AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
-      ],
-    );
-  }
-}
-
-class _StatusOverviewPlaceholder extends StatelessWidget {
-  const _StatusOverviewPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return AppInlineSkeletonSection(
-      children: [
-        Row(
-          children: [
-            for (var i = 0; i < 3; i += 1) ...[
-              if (i > 0) ...[
-                Container(
-                  width: 1,
-                  height: 58,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: Spacing.level2,
-                  ),
-                  color: colors.border,
-                ),
-              ],
-              const Expanded(
-                child: Column(
-                  children: [
-                    AppInlineSkeletonCircle(size: 42),
-                    SizedBox(height: Spacing.level3),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.85),
-                    SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 18, width: 44),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        ),
       ],
     );
   }
@@ -204,8 +209,41 @@ class _ArchivePlaceholder extends StatelessWidget {
   }
 }
 
-class _CampusServicePlaceholder extends StatelessWidget {
-  const _CampusServicePlaceholder();
+class _AiPrivacyPlaceholder extends StatelessWidget {
+  const _AiPrivacyPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.background,
+        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        border: Border.all(color: colors.border),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.all(Spacing.level4),
+        child: Row(
+          children: [
+            AppInlineSkeletonCircle(size: 24),
+            SizedBox(width: Spacing.level3),
+            Expanded(child: AppInlineSkeletonBlock(height: 14)),
+            SizedBox(width: Spacing.level3),
+            AppInlineSkeletonBlock(height: 14, width: 56),
+            Icon(
+              FLucideIcons.chevronRight,
+              color: Colors.transparent,
+              size: Spacing.level5,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NotificationsRemindersPlaceholder extends StatelessWidget {
+  const _NotificationsRemindersPlaceholder();
 
   @override
   Widget build(BuildContext context) {
@@ -247,36 +285,45 @@ class _CampusServicePlaceholder extends StatelessWidget {
   }
 }
 
-class _PrivacyNoticePlaceholder extends StatelessWidget {
-  const _PrivacyNoticePlaceholder();
+class _AccountSecurityPlaceholder extends StatelessWidget {
+  const _AccountSecurityPlaceholder();
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
-        border: Border.all(color: colors.border),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(Spacing.level4),
-        child: Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.3),
+        const SizedBox(height: Spacing.level3),
+        AppInlineSkeletonSection(
           children: [
-            AppInlineSkeletonCircle(size: 24),
-            SizedBox(width: Spacing.level3),
-            Expanded(child: AppInlineSkeletonBlock(height: 14)),
-            SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 56),
-            Icon(
-              FLucideIcons.chevronRight,
-              color: Colors.transparent,
-              size: Spacing.level5,
-            ),
+            for (var i = 0; i < 3; i += 1) ...[
+              if (i > 0) const SizedBox(height: Spacing.level4),
+              const Row(
+                children: [
+                  AppInlineSkeletonCircle(size: 40),
+                  SizedBox(width: Spacing.level4),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppInlineSkeletonBlock(height: 16, widthFactor: 0.45),
+                        SizedBox(height: Spacing.level2),
+                        AppInlineSkeletonBlock(height: 14, widthFactor: 0.6),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    FLucideIcons.chevronRight,
+                    color: Colors.transparent,
+                    size: Spacing.level5,
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
-      ),
+      ],
     );
   }
 }

@@ -58,7 +58,7 @@ class _DesktopReportSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _ScoreHeroPlaceholder(),
-        SizedBox(height: Spacing.level4),
+        SizedBox(height: Spacing.level5),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -67,26 +67,26 @@ class _DesktopReportSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _MetricsGridPlaceholder(),
-                  SizedBox(height: Spacing.level4),
                   _TrendPlaceholder(),
-                  SizedBox(height: Spacing.level4),
+                  SizedBox(height: Spacing.level5),
                   _FindingsPlaceholder(),
-                  SizedBox(height: Spacing.level4),
-                  _PatternsPlaceholder(),
                 ],
               ),
             ),
-            SizedBox(width: Spacing.level4),
+            SizedBox(width: Spacing.level5),
             Expanded(
               flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _AiSummaryPlaceholder(),
-                  SizedBox(height: Spacing.level4),
+                  _MetricsGridPlaceholder(),
+                  SizedBox(height: Spacing.level5),
                   _ExportPlaceholder(),
-                  SizedBox(height: Spacing.level4),
+                  SizedBox(height: Spacing.level5),
+                  _AiSummaryPlaceholder(),
+                  SizedBox(height: Spacing.level5),
+                  _PatternsPlaceholder(),
+                  SizedBox(height: Spacing.level5),
                   _ReferenceNoticePlaceholder(),
                 ],
               ),

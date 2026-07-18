@@ -39,8 +39,6 @@ class _MobileRecordSkeleton extends StatelessWidget {
         _FilterPlaceholder(),
         SizedBox(height: Spacing.level4),
         _TimelinePlaceholder(itemCount: 5),
-        SizedBox(height: Spacing.level4),
-        _GuidePlaceholder(),
       ],
     );
   }
@@ -203,21 +201,6 @@ class _TimelinePlaceholder extends StatelessWidget {
             ],
           ),
         ],
-      ],
-    );
-  }
-}
-
-class _GuidePlaceholder extends StatelessWidget {
-  const _GuidePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        AppInlineSkeletonCircle(size: 16),
-        SizedBox(width: Spacing.level2),
-        Expanded(child: AppInlineSkeletonBlock(height: 14)),
       ],
     );
   }
