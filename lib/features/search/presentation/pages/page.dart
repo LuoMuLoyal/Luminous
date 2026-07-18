@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -115,7 +116,10 @@ class SearchPage extends ConsumerWidget {
         unawaited(
           AppToast.show(
             context,
-            '${l10n.medicineSearchPrecheckFailedToast}: $e',
+            userMessageFromError(
+              e,
+              fallback: l10n.medicineSearchPrecheckFailedToast,
+            ),
           ),
         );
       }

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -43,7 +44,7 @@ class NotificationListPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
             child: listAsync.when(
               data: (page) {
                 final items = page.items;
@@ -143,7 +144,10 @@ class NotificationListPage extends ConsumerWidget {
               ),
               error: (error, _) => AppStateErrorView(
                 title: l10n.notificationErrorTitle,
-                description: error.toString(),
+                description: userMessageFromError(
+                  error,
+                  fallback: l10n.notificationErrorTitle,
+                ),
                 icon: FLucideIcons.circleAlert,
                 actionLabel: l10n.notificationRetryAction,
                 onAction: () =>

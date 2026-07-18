@@ -1,8 +1,8 @@
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 
@@ -82,7 +82,7 @@ class NotificationListItemWidget extends StatelessWidget {
                           ),
                           const SizedBox(width: Spacing.level2),
                           Text(
-                            _formatTime(item.createdAt),
+                            _formatTime(context, item.createdAt),
                             style: TypographyToken.level3
                                 .body(context)
                                 .copyWith(color: colors.mutedForeground),
@@ -120,15 +120,8 @@ class NotificationListItemWidget extends StatelessWidget {
     );
   }
 
-  String _formatTime(String iso8601) {
-    final dt = DateTime.tryParse(iso8601);
-    if (dt == null) return '';
-    final now = clock.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final date = DateTime(dt.year, dt.month, dt.day);
-    if (date == today) {
-      return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    }
-    return '${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
+  String _formatTime(BuildContext context, String iso8601) {
+    final locale = Localizations.localeOf(context);
+    return formatRelativeTimeLabel(iso8601, locale);
   }
 }

@@ -13,6 +13,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 
 class NotificationSettingsPage extends ConsumerWidget {
   const NotificationSettingsPage({super.key});
@@ -31,7 +32,9 @@ class NotificationSettingsPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile
+              ? Spacing.level6
+              : Spacing.level7,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,14 +171,26 @@ class NotificationSettingsPage extends ConsumerWidget {
                 ),
                 FTile(
                   title: Text(l10n.settingsNotificationsSleepReminderTitle),
-                  details: Text(_sleepReminderSummary(l10n, settings)),
+                  details: Text(
+                    _sleepReminderSummary(
+                      l10n,
+                      settings,
+                      Localizations.localeOf(context),
+                    ),
+                  ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () =>
                       context.push(AppRoutes.settingsNotificationsSleep),
                 ),
                 FTile(
                   title: Text(l10n.settingsNotificationsDndTitle),
-                  subtitle: Text(_dndSummary(l10n, settings)),
+                  subtitle: Text(
+                    _dndSummary(
+                      l10n,
+                      settings,
+                      Localizations.localeOf(context),
+                    ),
+                  ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () =>
                       context.push(AppRoutes.settingsNotificationsDnd),
@@ -199,72 +214,72 @@ class NotificationSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(child: content),
     );
   }
+}
 
-  String _sleepReminderSummary(
-    AppLocalizations l10n,
-    NotificationSettingsState settings,
-  ) {
-    if (!settings.sleepReminderEnabled) {
-      return l10n.settingsNotificationsTimeUnset;
-    }
-    final bedtime = _formatTimeOfDay(settings.sleepBedtime);
-    final wakeTime = _formatTimeOfDay(settings.sleepWakeTime);
-    return '$bedtime - $wakeTime';
+String _sleepReminderSummary(
+  AppLocalizations l10n,
+  NotificationSettingsState settings,
+  Locale locale,
+) {
+  if (!settings.sleepReminderEnabled) {
+    return l10n.settingsNotificationsTimeUnset;
   }
+  final bedtime = _formatTimeOfDay(settings.sleepBedtime, locale);
+  final wakeTime = _formatTimeOfDay(settings.sleepWakeTime, locale);
+  return '$bedtime - $wakeTime';
+}
 
-  String _dndSummary(
-    AppLocalizations l10n,
-    NotificationSettingsState settings,
-  ) {
-    if (!settings.dndEnabled) {
-      return l10n.settingsNotificationsTimeUnset;
-    }
-    final start = _formatTimeOfDay(settings.dndStartTime);
-    final end = _formatTimeOfDay(settings.dndEndTime);
-    return '$start - $end';
+String _dndSummary(
+  AppLocalizations l10n,
+  NotificationSettingsState settings,
+  Locale locale,
+) {
+  if (!settings.dndEnabled) {
+    return l10n.settingsNotificationsTimeUnset;
   }
+  final start = _formatTimeOfDay(settings.dndStartTime, locale);
+  final end = _formatTimeOfDay(settings.dndEndTime, locale);
+  return '$start - $end';
+}
 
-  String _advanceSummary(
-    AppLocalizations l10n,
-    NotificationSettingsState settings,
-  ) {
-    if (settings.reminderAdvanceMinutes <= 0) {
-      return l10n.settingsNotificationsAdvanceOff;
-    }
-    return l10n.settingsNotificationsAdvanceMinutes(
-      settings.reminderAdvanceMinutes,
-    );
+String _advanceSummary(
+  AppLocalizations l10n,
+  NotificationSettingsState settings,
+) {
+  if (settings.reminderAdvanceMinutes <= 0) {
+    return l10n.settingsNotificationsAdvanceOff;
   }
+  return l10n.settingsNotificationsAdvanceMinutes(
+    settings.reminderAdvanceMinutes,
+  );
+}
 
-  Future<void> _showAdvancePicker(
-    BuildContext context,
-    NotificationSettingsState settings,
-    NotificationSettingsController controller,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    const options = <int>[0, 5, 10, 15, 30];
+Future<void> _showAdvancePicker(
+  BuildContext context,
+  NotificationSettingsState settings,
+  NotificationSettingsController controller,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  const options = <int>[0, 5, 10, 15, 30];
 
-    await showFSheet(
-      context: context,
-      side: FLayout.btt,
-      builder: (context) => _AdvancePickerSheet(
-        options: options,
-        selected: settings.reminderAdvanceMinutes,
-        l10n: l10n,
-        onSelect: (minutes) {
-          controller.setReminderAdvanceMinutes(minutes);
-          Navigator.of(context).pop();
-        },
-      ),
-    );
-  }
+  await showFSheet(
+    context: context,
+    side: FLayout.btt,
+    builder: (context) => _AdvancePickerSheet(
+      options: options,
+      selected: settings.reminderAdvanceMinutes,
+      l10n: l10n,
+      onSelect: (minutes) {
+        controller.setReminderAdvanceMinutes(minutes);
+        Navigator.of(context).pop();
+      },
+    ),
+  );
+}
 
-  String _formatTimeOfDay(TimeOfDay? time) {
-    if (time == null) return '—';
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
+String _formatTimeOfDay(TimeOfDay? time, Locale locale) {
+  if (time == null) return '—';
+  return formatTimeOfDay(time, locale);
 }
 
 class _PermissionCard extends StatelessWidget {

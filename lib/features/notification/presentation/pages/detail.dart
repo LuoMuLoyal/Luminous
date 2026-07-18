@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/user_message.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/router/action_route_mapper.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -29,7 +31,9 @@ class NotificationDetailPage extends ConsumerWidget {
     final content = ResponsiveContentFrame(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: width < Breakpoints.mobile ? 24 : 32,
+          vertical: width < Breakpoints.mobile
+              ? Spacing.level6
+              : Spacing.level7,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +60,10 @@ class NotificationDetailPage extends ConsumerWidget {
               ),
               error: (error, _) => AppStateErrorView(
                 title: l10n.notificationErrorTitle,
-                description: error.toString(),
+                description: userMessageFromError(
+                  error,
+                  fallback: l10n.notificationErrorTitle,
+                ),
                 icon: FLucideIcons.circleAlert,
                 actionLabel: l10n.notificationRetryAction,
                 onAction: () =>
@@ -99,7 +106,7 @@ class _DetailBody extends ConsumerWidget {
         ),
         const SizedBox(height: Spacing.level3),
         Text(
-          _formatTime(detail.createdAt),
+          _formatTime(context, detail.createdAt),
           style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.mutedForeground),
@@ -158,11 +165,9 @@ class _DetailBody extends ConsumerWidget {
     );
   }
 
-  String _formatTime(String iso8601) {
-    final dt = DateTime.tryParse(iso8601);
-    if (dt == null) return iso8601;
-    return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  String _formatTime(BuildContext context, String iso8601) {
+    final locale = Localizations.localeOf(context);
+    return formatDateTimeLabel(iso8601, locale, fallback: iso8601);
   }
 
   void _handleAction(BuildContext context, String? action) {

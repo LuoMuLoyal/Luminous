@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -58,7 +59,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               ),
               title: Text(l10n.settingsNotificationsDndTitle),
               subtitle: Text(
-                _dndSummary(l10n, settings),
+                _dndSummary(l10n, settings, Localizations.localeOf(context)),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -112,12 +113,13 @@ class MineNotificationsReminderSection extends ConsumerWidget {
   String _dndSummary(
     AppLocalizations l10n,
     NotificationSettingsState settings,
+    Locale locale,
   ) {
     if (!settings.dndEnabled) {
       return l10n.settingsNotificationsTimeUnset;
     }
-    final start = _formatTimeOfDay(settings.dndStartTime);
-    final end = _formatTimeOfDay(settings.dndEndTime);
+    final start = _formatTimeOfDay(settings.dndStartTime, locale);
+    final end = _formatTimeOfDay(settings.dndEndTime, locale);
     return '$start - $end';
   }
 
@@ -135,10 +137,8 @@ class MineNotificationsReminderSection extends ConsumerWidget {
     );
   }
 
-  String _formatTimeOfDay(TimeOfDay? time) {
+  String _formatTimeOfDay(TimeOfDay? time, Locale locale) {
     if (time == null) return '—';
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    return formatTimeOfDay(time, locale);
   }
 }
