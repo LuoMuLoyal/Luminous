@@ -6,7 +6,14 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class RecordMonthCalendarPanel extends StatelessWidget {
+/// Desktop-side month calendar with decoupled month navigation.
+///
+/// The user can browse previous/next months via the chevron buttons without
+/// losing their selected date. Only tapping a day cell calls [onDateSelected].
+/// The calendar grid is rebuilt locally based on the viewed month, drawing
+/// markers from the parent-provided [days] when the viewed month matches the
+/// selected date's month.
+class RecordMonthCalendarPanel extends StatefulWidget {
   const RecordMonthCalendarPanel({
     super.key,
     required this.days,
@@ -22,15 +29,117 @@ class RecordMonthCalendarPanel extends StatelessWidget {
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onMonthChanged;
 
-  void _changeMonth(int delta) {
-    if (onMonthChanged == null) return;
-    final base = DateTime(selectedDate.year, selectedDate.month, 1);
-    onMonthChanged!(DateTime(base.year, base.month + delta, 1));
+  @override
+  State<RecordMonthCalendarPanel> createState() =>
+      _RecordMonthCalendarPanelState();
+}
+
+class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
+  late DateTime _viewedMonth;
+
+  @override
+  void initState() {
+    super.initState();
+    _viewedMonth = DateTime(
+      widget.selectedDate.year,
+      widget.selectedDate.month,
+    );
   }
+
+  @override
+  void didUpdateWidget(covariant RecordMonthCalendarPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the selected date moved to a different month (e.g. via the header
+    // date pickers or the mobile date bar), sync the viewed month so the
+    // calendar stays in sync.
+    final selectedMonth = DateTime(
+      widget.selectedDate.year,
+      widget.selectedDate.month,
+    );
+    if (selectedMonth !=
+        DateTime(oldWidget.selectedDate.year, oldWidget.selectedDate.month)) {
+      _viewedMonth = selectedMonth;
+    }
+  }
+
+  void _changeMonth(int delta) {
+    setState(() {
+      _viewedMonth = DateTime(_viewedMonth.year, _viewedMonth.month + delta);
+    });
+    widget.onMonthChanged?.call(
+      DateTime(_viewedMonth.year, _viewedMonth.month, 1),
+    );
+  }
+
+  /// Builds the calendar grid for [_viewedMonth], merging marker data from
+  /// the parent [widget.days] when the viewed month matches the days' month.
+  List<RecordCalendarDay> _buildViewedDays() {
+    final selectedDate = widget.selectedDate;
+    final days = widget.days;
+
+    // If the viewed month matches the month of the parent-provided days,
+    // use the parent's days directly (they contain server markers).
+    // Otherwise, generate a plain grid for the viewed month.
+    final parentMonthMatches =
+        days.isNotEmpty &&
+        _isSameMonth(
+          _viewedMonth,
+          DateTime(selectedDate.year, selectedDate.month),
+        );
+
+    if (parentMonthMatches) {
+      return days;
+    }
+
+    return _buildPlainMonthDays(_viewedMonth, selectedDate);
+  }
+
+  List<RecordCalendarDay> _buildPlainMonthDays(
+    DateTime month,
+    DateTime selectedDate,
+  ) {
+    final first = DateTime(month.year, month.month, 1);
+    final last = DateTime(month.year, month.month + 1, 0);
+    final startOffset = first.weekday - 1;
+    final result = <RecordCalendarDay>[];
+
+    for (var i = 0; i < startOffset; i++) {
+      result.add(
+        const RecordCalendarDay(
+          day: 0,
+          inMonth: false,
+          selected: false,
+          markers: [],
+        ),
+      );
+    }
+
+    for (var d = 1; d <= last.day; d++) {
+      final isSelected =
+          selectedDate.year == month.year &&
+          selectedDate.month == month.month &&
+          selectedDate.day == d;
+      result.add(
+        RecordCalendarDay(
+          day: d,
+          inMonth: true,
+          selected: isSelected,
+          markers: const [],
+        ),
+      );
+    }
+
+    return result;
+  }
+
+  bool _isSameMonth(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final l10n = widget.l10n;
+    final viewedDays = _buildViewedDays();
 
     final weekdayKeys = const <RecordCopyKey>[
       RecordCopyKey.weekdaySun,
@@ -54,7 +163,7 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                   child: Text(
                     DateFormat.yMMMM(
                       Localizations.localeOf(context).toString(),
-                    ).format(selectedDate),
+                    ).format(_viewedMonth),
                     style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),
@@ -98,12 +207,12 @@ class RecordMonthCalendarPanel extends StatelessWidget {
                 mainAxisSpacing: Spacing.level2,
                 crossAxisSpacing: Spacing.level2,
               ),
-              itemCount: days.length,
+              itemCount: viewedDays.length,
               itemBuilder: (context, index) => _MonthDayCell(
-                day: days[index],
-                selectedDate: selectedDate,
+                day: viewedDays[index],
+                selectedDate: widget.selectedDate,
                 l10n: l10n,
-                onTap: onDateSelected,
+                onTap: widget.onDateSelected,
               ),
             ),
           ],

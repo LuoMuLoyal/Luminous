@@ -169,7 +169,8 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 selectedDate: dashboard.selectedDate,
                 l10n: l10n,
                 onDateSelected: onDateSelected,
-                onMonthChanged: onDateSelected,
+                // Month navigation is handled internally by the panel's
+                // _viewedMonth state — no parent callback needed.
               ),
               const SizedBox(height: Spacing.level4),
               RecordFilterPanel(

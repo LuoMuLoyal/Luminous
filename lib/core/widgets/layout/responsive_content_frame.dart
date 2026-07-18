@@ -31,7 +31,10 @@ class ResponsiveContentFrame extends StatelessWidget {
     final content = Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: width >= Breakpoints.desktop
+          // Constrain content from tablet onwards to prevent full-width
+          // stretching on mid-tier screens (600–1200). Mobile (< 960) stays
+          // unconstrained for natural edge-to-edge layouts.
+          maxWidth: width >= Breakpoints.tablet
               ? layout.maxContentWidth
               : double.infinity,
         ),
