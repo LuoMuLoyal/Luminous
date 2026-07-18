@@ -55,8 +55,8 @@ String reportStatusLabel(AppLocalizations l10n, ReportStatus status) {
     ReportStatus.good => l10n.reportStatusGood,
     ReportStatus.stable => l10n.reportStatusStable,
     ReportStatus.needsAttention => l10n.reportStatusNeedsImprove,
-    ReportStatus.insufficientData => l10n.medicineReminderUnavailableStatus,
-    ReportStatus.unknown => l10n.reportStatusStable,
+    ReportStatus.insufficientData => l10n.reportStatusInsufficientData,
+    ReportStatus.unknown => l10n.reportStatusUnknown,
   };
 }
 

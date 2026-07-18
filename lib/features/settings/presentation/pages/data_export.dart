@@ -141,7 +141,7 @@ class DataExportPage extends ConsumerWidget {
 
   String _statusLabel(AppLocalizations l10n, DataExportRequestDataDto? export) {
     return switch (dataExportUiStatusForRequest(export)) {
-      DataExportUiStatus.idle => l10n.mineSettingExportValue,
+      DataExportUiStatus.idle => l10n.settingsExportStatusIdle,
       DataExportUiStatus.requested => l10n.mineExportStatusRequested,
       DataExportUiStatus.processing => l10n.mineExportStatusPending,
       DataExportUiStatus.completed => l10n.mineExportStatusCompleted,

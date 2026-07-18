@@ -20,5 +20,16 @@
   "notificationDeleteConfirmConfirm": "Delete",
   "notificationLoadMore": "Load more",
   "notificationNotFoundTitle": "Notification expired",
-  "notificationNotFoundDescription": "This notification may have been deleted or expired."
+  "notificationNotFoundDescription": "This notification may have been deleted or expired.",
+  "notificationGroupToday": "Today",
+  "notificationGroupYesterday": "Yesterday",
+  "notificationGroupEarlier": "Earlier",
+  "notificationTypeAiTodaySummary": "AI Summary",
+  "notificationTypeReportGenerated": "Report",
+  "notificationTypePasswordChanged": "Security",
+  "notificationTypeAiProactiveSuggestion": "AI Suggestion",
+  "notificationTypeMedicineMissedDose": "Medication",
+  "notificationTypeMedicineReminder": "Reminder",
+  "notificationTypeSystemAnnouncement": "System",
+  "notificationTypeUnknown": "Notification"
 }

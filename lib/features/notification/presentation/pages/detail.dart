@@ -180,18 +180,40 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final (label, color) = switch (type) {
-      NotificationType.aiTodaySummary => ('AI 总结', SemanticColor.primary),
-      NotificationType.reportGenerated => ('报告', SemanticColor.primary),
-      NotificationType.passwordChanged => ('安全', SemanticColor.destructive),
-      NotificationType.aiProactiveSuggestion => (
-        'AI 建议',
+      NotificationType.aiTodaySummary => (
+        l10n.notificationTypeAiTodaySummary,
         SemanticColor.primary,
       ),
-      NotificationType.medicineMissedDose => ('用药', SemanticColor.destructive),
-      NotificationType.medicineReminder => ('提醒', SemanticColor.primary),
-      NotificationType.systemAnnouncement => ('系统', SemanticColor.primary),
-      NotificationType.unknown => ('通知', SemanticColor.neutral),
+      NotificationType.reportGenerated => (
+        l10n.notificationTypeReportGenerated,
+        SemanticColor.primary,
+      ),
+      NotificationType.passwordChanged => (
+        l10n.notificationTypePasswordChanged,
+        SemanticColor.destructive,
+      ),
+      NotificationType.aiProactiveSuggestion => (
+        l10n.notificationTypeAiProactiveSuggestion,
+        SemanticColor.primary,
+      ),
+      NotificationType.medicineMissedDose => (
+        l10n.notificationTypeMedicineMissedDose,
+        SemanticColor.destructive,
+      ),
+      NotificationType.medicineReminder => (
+        l10n.notificationTypeMedicineReminder,
+        SemanticColor.primary,
+      ),
+      NotificationType.systemAnnouncement => (
+        l10n.notificationTypeSystemAnnouncement,
+        SemanticColor.primary,
+      ),
+      NotificationType.unknown => (
+        l10n.notificationTypeUnknown,
+        SemanticColor.neutral,
+      ),
     };
 
     return DecoratedBox(

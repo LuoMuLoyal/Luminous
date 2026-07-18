@@ -156,7 +156,7 @@ List<TodayOverviewItem> buildOverviewItems(
     TodayOverviewItem(
       icon: FLucideIcons.moonStar,
       label: l10n.todayVitalSleepLabel,
-      value: '$sleep ${l10n.todayVitalSleepUnit}',
+      value: sleep,
       color: SemanticColor.primary,
     ),
   ];

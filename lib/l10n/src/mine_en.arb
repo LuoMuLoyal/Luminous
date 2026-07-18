@@ -244,5 +244,21 @@
       }
     }
   },
-  "mineSyncFailedAction": "View details"
+  "mineSyncFailedAction": "View details",
+  "mineEditFieldLabelRequired": "Please enter a name",
+  "mineEditFieldDisplayNameRequired": "Please enter a medicine name",
+  "mineAllergyKindDrug": "Drug",
+  "mineAllergyKindFood": "Food",
+  "mineAllergyKindEnvironment": "Environment",
+  "mineAllergyKindOther": "Other",
+  "mineAllergySeverityMild": "Mild",
+  "mineAllergySeverityModerate": "Moderate",
+  "mineAllergySeveritySevere": "Severe",
+  "mineAllergySeverityUnknown": "Unknown",
+  "mineConditionStatusActive": "Active",
+  "mineConditionStatusResolved": "Resolved",
+  "mineConditionStatusSuspected": "Suspected",
+  "mineMedicineSourceDrugbank": "DrugBank",
+  "mineMedicineSourceCn": "Chinese Pharmacopoeia",
+  "mineMedicineSourceManual": "Manual"
 }

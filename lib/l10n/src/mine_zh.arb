@@ -244,5 +244,21 @@
       }
     }
   },
-  "mineSyncFailedAction": "查看详情"
+  "mineSyncFailedAction": "查看详情",
+  "mineEditFieldLabelRequired": "请填写名称",
+  "mineEditFieldDisplayNameRequired": "请填写药品名称",
+  "mineAllergyKindDrug": "药物",
+  "mineAllergyKindFood": "食物",
+  "mineAllergyKindEnvironment": "环境",
+  "mineAllergyKindOther": "其他",
+  "mineAllergySeverityMild": "轻度",
+  "mineAllergySeverityModerate": "中度",
+  "mineAllergySeveritySevere": "重度",
+  "mineAllergySeverityUnknown": "未知",
+  "mineConditionStatusActive": "活动中",
+  "mineConditionStatusResolved": "已痊愈",
+  "mineConditionStatusSuspected": "疑似",
+  "mineMedicineSourceDrugbank": "DrugBank",
+  "mineMedicineSourceCn": "中国药典",
+  "mineMedicineSourceManual": "手动"
 }

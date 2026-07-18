@@ -14,6 +14,7 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
+import 'package:luminous/features/mine/presentation/utils/health_enum_l10n.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -76,7 +77,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     void onSave() {
       final displayNameError = RequiredInput.validate(
         displayNameController.text,
-        AppLocalizations.of(context)!.authCodeRequiredToast,
+        AppLocalizations.of(context)!.mineEditFieldDisplayNameRequired,
       );
       if (displayNameError != null) {
         AppToast.show(context, displayNameError);
@@ -239,6 +240,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                         value: source.value,
                         values: HealthMedicineSource.values,
                         onChanged: (v) => source.value = v,
+                        labelBuilder: (v) => medicineSourceLabel(l10n, v),
                       ),
                       const SizedBox(height: Spacing.level3),
                       FTextField(
@@ -332,11 +334,12 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required T value,
   required List<T> values,
   required ValueChanged<T> onChanged,
+  required String Function(T) labelBuilder,
 }) {
   return FSelect<T>.rich(
     label: Text(label),
     hint: label,
-    format: (value) => value.value,
+    format: labelBuilder,
     control: FSelectControl.lifted(
       value: value,
       onChange: (v) {
@@ -344,7 +347,7 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
       },
     ),
     children: values
-        .map((v) => FSelectItem.item(title: Text(v.value), value: v))
+        .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
         .toList(),
   );
 }

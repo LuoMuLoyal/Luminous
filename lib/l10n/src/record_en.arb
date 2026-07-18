@@ -379,5 +379,9 @@
   "recordDentalRecordTitle": "Dental",
   "recordEyeRecordTitle": "Eye",
   "recordHearingRecordTitle": "Hearing",
-  "recordZeroCountLabel": "0 records"
+  "recordZeroCountLabel": "0 records",
+  "recordFastChoiceWater250ml": "250 ml",
+  "recordFastChoiceWater500ml": "500 ml",
+  "recordFastChoiceWater1Cup": "1 cup",
+  "recordFastChoiceWater1Time": "1 time"
 }

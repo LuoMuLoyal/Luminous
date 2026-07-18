@@ -129,5 +129,7 @@
   "reportSignedOutInlineHint": "Sign in to view your real weekly report, AI summary, and exports.",
   "reportPatternSleepTitle": "Sleep changes",
   "reportPatternSleepStatus": "Watch trend",
-  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep"
+  "reportPatternSleepBody": "Evening caffeine and schedule changes may affect sleep",
+  "reportStatusInsufficientData": "Insufficient data",
+  "reportStatusUnknown": "Unknown"
 }

@@ -208,5 +208,6 @@
   "settingsFeatureFlagsBarcodeScanSubtitle": "Scan medicine barcodes for auto-recognition",
   "settingsFeatureFlagsReportSection": "Report",
   "settingsFeatureFlagsPdfExport": "PDF Export",
-  "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files"
+  "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files",
+  "settingsExportStatusIdle": "Not requested"
 }

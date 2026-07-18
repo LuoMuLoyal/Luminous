@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
@@ -51,7 +52,9 @@ class RecordMonthCalendarPanel extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    l10n.recordMonthLabel,
+                    DateFormat.yMMMM(
+                      Localizations.localeOf(context).toString(),
+                    ).format(selectedDate),
                     style: TypographyToken.level5
                         .body(context)
                         .copyWith(fontWeight: FontWeight.w700),

@@ -52,19 +52,21 @@ void main() {
       test('choices have correct values and units', () {
         final choices = recordFastEntryChoicesFor(DailyRecordKind.water, l10n);
         expect(choices[0].value, '250');
-        expect(choices[0].unit, 'ml');
+        expect(choices[0].unit, l10n.recordWaterUnitMl);
         expect(choices[1].value, '500');
-        expect(choices[1].unit, 'ml');
+        expect(choices[1].unit, l10n.recordWaterUnitMl);
         expect(choices[2].value, '1');
-        expect(choices[2].unit, 'cup');
+        expect(choices[2].unit, l10n.recordWaterUnitCup);
         expect(choices[3].value, '1');
-        expect(choices[3].unit, 'times');
+        expect(choices[3].unit, l10n.recordWaterUnitTimes);
       });
 
-      test('labels contain unit information', () {
+      test('labels match l10n strings', () {
         final choices = recordFastEntryChoicesFor(DailyRecordKind.water, l10n);
-        expect(choices[0].label, '250 ml');
-        expect(choices[1].label, '500 ml');
+        expect(choices[0].label, l10n.recordFastChoiceWater250ml);
+        expect(choices[1].label, l10n.recordFastChoiceWater500ml);
+        expect(choices[2].label, l10n.recordFastChoiceWater1Cup);
+        expect(choices[3].label, l10n.recordFastChoiceWater1Time);
       });
     });
 

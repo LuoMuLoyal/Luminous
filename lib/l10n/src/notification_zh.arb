@@ -20,5 +20,16 @@
   "notificationDeleteConfirmConfirm": "删除",
   "notificationLoadMore": "加载更多",
   "notificationNotFoundTitle": "通知已失效",
-  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。"
+  "notificationNotFoundDescription": "这条通知可能已被删除或已过期。",
+  "notificationGroupToday": "今天",
+  "notificationGroupYesterday": "昨天",
+  "notificationGroupEarlier": "更早",
+  "notificationTypeAiTodaySummary": "AI 总结",
+  "notificationTypeReportGenerated": "报告",
+  "notificationTypePasswordChanged": "安全",
+  "notificationTypeAiProactiveSuggestion": "AI 建议",
+  "notificationTypeMedicineMissedDose": "用药",
+  "notificationTypeMedicineReminder": "提醒",
+  "notificationTypeSystemAnnouncement": "系统",
+  "notificationTypeUnknown": "通知"
 }

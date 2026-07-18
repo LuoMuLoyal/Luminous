@@ -208,5 +208,6 @@
   "settingsFeatureFlagsBarcodeScanSubtitle": "扫描药品条码自动识别",
   "settingsFeatureFlagsReportSection": "报告",
   "settingsFeatureFlagsPdfExport": "PDF 导出",
-  "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件"
+  "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件",
+  "settingsExportStatusIdle": "尚未申请"
 }

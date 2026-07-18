@@ -50,7 +50,7 @@ class NotificationListPage extends ConsumerWidget {
                 if (items.isEmpty) {
                   return const _EmptyView();
                 }
-                final groups = _groupByRelativeDate(items);
+                final groups = _groupByRelativeDate(items, l10n);
                 final controller = ref.read(
                   notificationListControllerProvider.notifier,
                 );
@@ -158,34 +158,39 @@ class NotificationListPage extends ConsumerWidget {
 
   Map<String, List<NotificationItem>> _groupByRelativeDate(
     List<NotificationItem> items,
+    AppLocalizations l10n,
   ) {
     final now = clock.now();
     final today = DateTime(now.year, now.month, now.day);
     final yesterday = today.subtract(const Duration(days: 1));
+
+    final todayKey = l10n.notificationGroupToday;
+    final yesterdayKey = l10n.notificationGroupYesterday;
+    final earlierKey = l10n.notificationGroupEarlier;
 
     final groups = <String, List<NotificationItem>>{};
     for (final item in items) {
       final createdAt = DateTime.tryParse(item.createdAt);
       String key;
       if (createdAt == null) {
-        key = '更早';
+        key = earlierKey;
       } else {
         final date = DateTime(createdAt.year, createdAt.month, createdAt.day);
         if (date == today) {
-          key = '今天';
+          key = todayKey;
         } else if (date == yesterday) {
-          key = '昨天';
+          key = yesterdayKey;
         } else {
-          key = '更早';
+          key = earlierKey;
         }
       }
       groups.putIfAbsent(key, () => []).add(item);
     }
 
     final orderedKeys = <String>[];
-    if (groups.containsKey('今天')) orderedKeys.add('今天');
-    if (groups.containsKey('昨天')) orderedKeys.add('昨天');
-    if (groups.containsKey('更早')) orderedKeys.add('更早');
+    if (groups.containsKey(todayKey)) orderedKeys.add(todayKey);
+    if (groups.containsKey(yesterdayKey)) orderedKeys.add(yesterdayKey);
+    if (groups.containsKey(earlierKey)) orderedKeys.add(earlierKey);
 
     return {for (final k in orderedKeys) k: groups[k]!};
   }

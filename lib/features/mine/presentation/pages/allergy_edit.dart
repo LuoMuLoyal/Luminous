@@ -14,6 +14,7 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
+import 'package:luminous/features/mine/presentation/utils/health_enum_l10n.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -69,7 +70,7 @@ class AllergyEditPage extends HookConsumerWidget {
     void onSave() {
       final labelError = RequiredInput.validate(
         labelController.text,
-        AppLocalizations.of(context)!.authCodeRequiredToast,
+        AppLocalizations.of(context)!.mineEditFieldLabelRequired,
       );
       if (labelError != null) {
         AppToast.show(context, labelError);
@@ -208,6 +209,7 @@ class AllergyEditPage extends HookConsumerWidget {
                         value: kind.value,
                         values: HealthAllergyKind.values,
                         onChanged: (v) => kind.value = v,
+                        labelBuilder: (v) => allergyKindLabel(l10n, v),
                       ),
                       const SizedBox(height: Spacing.level3),
                       FTextField(
@@ -228,7 +230,7 @@ class AllergyEditPage extends HookConsumerWidget {
                       FSelect<HealthAllergySeverity>.rich(
                         label: Text(l10n.mineEditFieldSeverity),
                         hint: l10n.mineEditFieldSeverity,
-                        format: (value) => value.value,
+                        format: (value) => allergySeverityLabel(l10n, value),
                         control: FSelectControl.lifted(
                           value: severity.value,
                           onChange: (v) {
@@ -238,7 +240,7 @@ class AllergyEditPage extends HookConsumerWidget {
                         children: HealthAllergySeverity.values
                             .map(
                               (v) => FSelectItem.item(
-                                title: Text(v.value),
+                                title: Text(allergySeverityLabel(l10n, v)),
                                 value: v,
                               ),
                             )
@@ -293,11 +295,12 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required T value,
   required List<T> values,
   required ValueChanged<T> onChanged,
+  required String Function(T) labelBuilder,
 }) {
   return FSelect<T>.rich(
     label: Text(label),
     hint: label,
-    format: (value) => value.value,
+    format: labelBuilder,
     control: FSelectControl.lifted(
       value: value,
       onChange: (v) {
@@ -305,7 +308,7 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
       },
     ),
     children: values
-        .map((v) => FSelectItem.item(title: Text(v.value), value: v))
+        .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
         .toList(),
   );
 }

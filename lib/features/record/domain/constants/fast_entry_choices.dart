@@ -42,11 +42,27 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
   AppLocalizations l10n,
 ) {
   return switch (kind) {
-    DailyRecordKind.water => const [
-      RecordFastChoice(label: '250 ml', value: '250', unit: 'ml'),
-      RecordFastChoice(label: '500 ml', value: '500', unit: 'ml'),
-      RecordFastChoice(label: '1 cup', value: '1', unit: 'cup'),
-      RecordFastChoice(label: '1 time', value: '1', unit: 'times'),
+    DailyRecordKind.water => [
+      RecordFastChoice(
+        label: l10n.recordFastChoiceWater250ml,
+        value: '250',
+        unit: l10n.recordWaterUnitMl,
+      ),
+      RecordFastChoice(
+        label: l10n.recordFastChoiceWater500ml,
+        value: '500',
+        unit: l10n.recordWaterUnitMl,
+      ),
+      RecordFastChoice(
+        label: l10n.recordFastChoiceWater1Cup,
+        value: '1',
+        unit: l10n.recordWaterUnitCup,
+      ),
+      RecordFastChoice(
+        label: l10n.recordFastChoiceWater1Time,
+        value: '1',
+        unit: l10n.recordWaterUnitTimes,
+      ),
     ],
     DailyRecordKind.meal => [
       RecordFastChoice(

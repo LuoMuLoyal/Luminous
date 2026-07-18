@@ -379,5 +379,9 @@
   "recordDentalRecordTitle": "牙科记录",
   "recordEyeRecordTitle": "眼科记录",
   "recordHearingRecordTitle": "听力记录",
-  "recordZeroCountLabel": "0 条记录"
+  "recordZeroCountLabel": "0 条记录",
+  "recordFastChoiceWater250ml": "250 ml",
+  "recordFastChoiceWater500ml": "500 ml",
+  "recordFastChoiceWater1Cup": "1 杯",
+  "recordFastChoiceWater1Time": "1 次"
 }

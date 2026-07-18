@@ -10,8 +10,6 @@ import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
 class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
-  static const String _defaultStreamingSummary = 'AI 正在整理本阶段的报告摘要...';
-
   ReportAiSummaryController(this.range);
 
   final ReportAiSummaryRange range;
@@ -44,10 +42,7 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
     }
 
     final previousSummary = state.summary;
-    state = ReportAiSummaryCardState.loading(
-      previousSummary: previousSummary,
-      streamingSummary: _defaultStreamingSummary,
-    );
+    state = ReportAiSummaryCardState.loading(previousSummary: previousSummary);
 
     String? startDate;
     String? endDate;
