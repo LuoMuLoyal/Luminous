@@ -18,7 +18,6 @@ import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/mine/data/providers/repository.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/completeness_notice.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
@@ -614,8 +613,6 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    expect(find.byType(MineCompletenessNotice), findsNothing);
-    expect(find.text(l10n.mineCompletenessGapAction), findsOneWidget);
     expect(
       find.descendant(
         of: find.byKey(const Key('mine-account-header')),
@@ -689,7 +686,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text(l10n.mineCompletenessGapTitle), findsNothing);
-    expect(find.byType(MineCompletenessNotice), findsNothing);
   });
 
   testWidgets('Mine page does not render campus services section', (

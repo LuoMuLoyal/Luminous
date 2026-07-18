@@ -93,6 +93,8 @@ Last updated: 2026-07-18
 
 - 建议性问题审查与修复（2026-07-18）：用户提供 5 个建议性问题，经核实修复 2 项、确认已修复 2 项、不修复 1 项。**问题 2（序列化兼容性）**：`suggestion.dart` 缓存反序列化路径（stale-while-error fallback）增加 try-catch，格式不兼容时记录 warning 日志 + 清理过期缓存 + rethrow 原始网络错误，避免 app 更新后旧缓存导致不可恢复错误。**问题 4（isPublicRoute 硬编码）**：`router.dart` redirect 守卫的 `location.startsWith('/legal')` 提取为 `_publicRoutePrefixes` 常量集合，便于未来新增公开路由。**问题 1（LegalDocType Map 查找）** 和 **问题 5（高对比度颜色硬编码）** 经核实已在之前的架构审查中修复。**问题 3（DesktopTabShell 参数多）** 不修复——8 参数在 Flutter widget 中正常，builder 模式反惯用。`flutter analyze` 零问题，72 个测试全部通过。
 
+- UI/UX 优化阶段 0：死代码清理（2026-07-18）：根据 `plans/2026-07-18-uiux-per-page-optimization.md` C1 横向任务，删除 11 项零引用死代码。恒假表达式 `0.12 > 0.5`（`reminder_detail.dart`）简化；整文件删除 6 个（`master_toggle.dart`/`status_overview.dart`+测试/`completeness_notice.dart`+测试/`week_strip.dart`+测试/`quick_actions.dart`+测试）；整目录删除 `medicine/widgets/workspace/`（5 文件）；类删除 4 个（`MineHeaderActionChip`/`MedicineWorkspaceView`/`MedicineHeaderActionChip`/`RecordGuideRow`）；barrel export 清理 2 处（`sections.dart`/`overview.dart`）；`page_test.dart` 引用清理。`TodayEmptyView` 保留待 P1 接入。`flutter analyze` 零问题，880 个测试全部通过。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]

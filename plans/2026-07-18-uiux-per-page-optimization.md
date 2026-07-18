@@ -23,7 +23,6 @@
 
 | # | 主题 | 问题 | 涉及面 |
 |---|------|------|--------|
-| C1 | 死代码 / 死 UI 前置清理 | 多处定义后无引用的组件与"看似可点实际无效"的 UI，不先清理会被当成现状误改 | 今日 `TodayEmptyView`；记录 `RecordGuideRow`/`RecordWeekStrip`/`RecordQuickActions`；用药 `MedicineWorkspaceView`+`widgets/workspace/*`+`MedicineHeaderActionChip`、提醒详情 `0.12 > 0.5` 恒假表达式；我的 `MineStatusOverview`/`MineCompletenessNotice`/`MineHeaderActionChip`；搜索 `RecentSearches`/`Categories`/`DesktopTabs`；设置 `AppSettingsMasterTogglePage` |
 | C2 | 骨架屏与真实版面脱节 | 多个 tab 骨架结构对应的是旧版布局，加载完成瞬间大面积跳变 | 今日、记录、用药、报告、我的五个 tab 骨架全部需按当前真实 section 顺序/栏数重排（桌面端双栏骨架单列的问题普遍存在） |
 | C3 | 硬编码文案回潮 | 局部中文/英文硬编码绕过 l10n | 通知分组标题"今天/昨天/更早"与详情类型 chip（list.dart:171-188、detail.dart:170-182）；扫码 `box_scan.dart`/`recognize_dialog.dart` 整段中文；AI 流式占位（today `providers/ai_analysis.dart:14`、report `providers/ai_summary.dart:13,79`）；QQ 登录英文硬编码；多处 `?? 'English fallback'` |
 | C4 | 危险操作缺确认 | 一键触发不可逆操作 | 退出登录（mine、settings 两处）；高级页"恢复默认设置"；过敏/病史/用药表单删除；PIN 启用无二次输入；数据保留期缩短 |
@@ -438,7 +437,7 @@
 6. 设置：通知权限 denied 死交互（3.6.2）；导出页 idle 文案重复（3.6.2）。
 7. 通知：已读链路（按钮行为反了+返回不刷新）（3.7.2）；分组/类型 chip 硬编码中文（3.7.2）。
 8. 助手：流式强制滚底（3.7.1）。
-9. 横向：C1 死代码/死 UI 清理（搜索页三个空壳区块、各 feature 死组件）。
+9. 横向：搜索页三个空壳区块隐藏（RecentSearches/Categories/DesktopTabs，3.3.2）。
 
 ### P1 —— 体验缺口补全（约 30 项）
 
