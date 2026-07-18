@@ -1,5 +1,7 @@
 # Active UI — Record
 
+Last updated: 2026-07-18
+
 ## 支持的记录类型
 
 - 症状
@@ -12,56 +14,51 @@
 ## 自然语言录入
 
 - 移动端顶部输入条是唯一的自然语言录入入口；点击输入条本体打开底部弹层。
-- 语音与 OCR 继续作为输入条右侧的辅助入口，不再额外保留底部悬浮“自然语言”按钮。
-- 接入 Lucent candidate 解析。
-- 确认后保存流程。
+- 语音与 OCR 作为输入条右侧的辅助入口。
+- 接入 Lucent candidate 解析，确认后保存。
+- 候选审核可编辑、可选择性保存：调整 title/value/unit/note、编辑睡眠 payload、取消选中项、仅重试失败候选。
+- 候选编辑器按类型做轻量打磨：water 数字量 + 单位选择器、meal/symptom 更具体字段标签、note 强调正文。
 
 ## 日期与时间
 
 - 选中日期时间线 / 详情 / 创建 / 编辑。
 - 顶部日期栏、筛选器。
 - panel-backed 快速记录与时间线 section。
-- 创建/编辑表单使用 Forui `FDateField.calendar` + `FTimeField.picker` 选择发生日期与时间。
+- 创建/编辑表单使用 Forui `FDateField.calendar` + `FTimeField.picker`。
+- Lucent daily-record 持久化保留 `occurredAt` 作为日期键，单独持久化 `occurredTime`。
+
+## 桌面月历
+
+- `RecordMonthCalendarPanel` 为 `StatefulWidget`，月份浏览（`_viewedMonth`）与日期选中（`selectedDate`）解耦。
+- 左右箭头切换月份仅更新本地查看月份，不再调用 `onDateSelected` 强制跳到 1 号。
+- 查看月份与选中日期同月时使用父组件传入的 `days`（含服务端标记），否则本地生成该月日历网格（无标记，仅高亮选中日）。
+- `didUpdateWidget` 在 `selectedDate` 跨月变化时自动同步 `_viewedMonth`。
+- 月历标题使用 `DateFormat.yMMMM(locale).format(selectedDate)` 动态格式化。
 
 ## 时间线
 
-- 桌面端 `RecordTimelinePanel` 与移动端 `RecordMobileTimeline` 均使用 `timeline_tile` 绘制节点与连线。
-- 时间线项保持可点击跳转详情，并保留骨架屏加载态。
-- 移动端首屏默认展示前 7 条；当日记录超过 7 条时，时间线头部显示明确的“查看全部记录 / 收起”切换，而不是静默截断。
+- 桌面端 `RecordTimelinePanel` 与移动端 `RecordMobileTimeline` 均使用 `timeline_tile` 绘制。
+- 时间线项可点击跳转详情，保留骨架屏加载态。
+- 移动端首屏默认展示前 7 条；超过 7 条显示"查看全部记录/收起"切换。
+- **空态**：`entries.isEmpty` 时渲染图标+标题+描述+CTA 结构化空态，CTA 跳 `/record/create?date=<选中日期>`。桌面端额外附"清除筛选"按钮。
 
 ## 创建与快捷操作
 
 - 活跃创建类型：water、meal、symptom、note、sleep。
-- 这些类型的快捷操作先打开快速选择 bottom sheet：
-  - 点击快速选项立即保存，使用选中日期与真实当前 `HH:mm`。
-  - `more` 打开完整创建表单，可编辑日期与时间。
-- 创建/编辑表单使用 Forui `FDateField.calendar` + `FTimeField.picker` 选择发生日期与时间。
-- Lucent daily-record 持久化保留 `occurredAt` 作为日期键，单独持久化 `occurredTime`。
-- 时间线/详情显示保存的具体时/分，而不是从时间戳回退推断。
-- 首屏已移除底部“小贴士 / 查看记录指南”辅助区，移动端主线收敛为 `日期 → 自然语言/快捷记录 → 筛选 → 时间线`。
+- 快速选项点击立即保存（选中日期 + 真实当前 `HH:mm`），`more` 打开完整创建表单。
+- 快捷选项 label/unit 从硬编码改为 l10n 取值。
+- **必填校验**：`onSave` 新增前端校验——value 字段必填（空值拦截+toast），water 额外校验数值有效性，title 字段必填。
 
-## 候选记录
+## 骨架屏
 
-- 自然语言候选类型当前限于 water、meal、symptom、note、sleep。
-- 候选审核可编辑、可选择性保存：
-  - 调整 title / value / unit / note
-  - 编辑睡眠 duration / quality payload
-  - 取消选中项
-  - 保留失败项
-  - 仅重试失败候选，而非重新提交整批
-- 候选编辑器按类型做轻量打磨：
-  - water：数字量 + `ml / cup / times` 单位选择器
-  - meal / symptom：更具体的字段标签
-  - note：强调正文而非通用 remark 字段
-- 睡眠时间线行的紧凑时长标签从 payload 派生。
+- 删除 `_GuidePlaceholder`（对应已删除的 `RecordGuideRow`）。
 
 ## 数据层
 
-- 远程数据源 `RecordRemoteDataSource` 通过 `generated/lucent_api` 的 Retrofit 客户端访问 Lucent API。
-- DTO 访问模式为直接返回扁平 DTO（`response.data`），不再经过 `Response<T>` 包装。
-- Enum 序列化使用 `.json` 属性（`@JsonEnum` 约定），不再使用旧 `.value` 模式。
-- **ADR-0009 cache-first**: `LucentDailyRecordRepository` 已迁移为 cache-first 模式：
+- `LucentDailyRecordRepository` 为 cache-first 模式：
   - **读**: 先读本地 Drift 缓存（有则返回 + 后台刷新节流 30s），缓存空则走网络 + 写缓存。
-  - **写**: `create` 先写乐观本地副本（`syncStatus='pending'`），尝试远程写入，成功则 `confirmSync` 替换乐观副本，失败则入队 `PendingSyncItems` 并返回乐观副本（UI 正常展示）。
-  - **SyncWorker replay handler**: `dailyRecordRepositoryProvider` 中注册了 `daily_record` entity type 的 replay handler，网络恢复后自动重放离线写操作（create / delete / update 三路回放）。
-  - `DailyRecordJsonCodec` 手动序列化 `DailyRecordItem` 为 JSON Blob 存储在缓存表中。
+  - **写**: `create` 先写乐观本地副本（`syncStatus='pending'`），尝试远程写入，成功则 `confirmSync`，失败则入队 `PendingSyncItems`。
+  - **SyncWorker replay**: `daily_record` entity type 的 replay handler 重放离线写操作（create/delete/update）。
+- `DailyRecordJsonCodec` 手动序列化 `DailyRecordItem`。
+- 错误反馈使用 l10n 消息（`recordDeletedToast`/`recordDeleteFailedToast`），不用通用"已保存"/"创建失败"。
+- 删除操作 `context.pop()` 直接回列表页。

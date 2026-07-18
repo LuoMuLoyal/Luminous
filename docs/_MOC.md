@@ -7,17 +7,15 @@
 - [[00-current/Current_State]] — 当前实现状态入口，链接到各区域详情
 - [[00-current/Next_Plan]] — 下一步实现顺序与明确不开始项
 - [[00-current/TODO]] — 剩余 P1/P2 缺口与延后项
-- [[00-current/Project_Governance]] — 项目治理：单人维护、架构、测试、仓库划分
-- [[00-current/Repository_Split]] — Lucent / Luminous / Luminous-site 职责边界
-- [[00-current/Product_Surface]] — 产品表面：移动端、Web、桌面边界
+- [[00-current/Project_Governance]] — 项目治理：维护模式、架构、测试、仓库布局、产品表面、文档治理
+- [[00-current/Work_Phase_Guide]] — 阶段总纲（Phase 1-6）
 - [[00-current/Lucent_Contract_Snapshot]] — Lucent API 合同快照
 - [[00-current/Runtime_Snapshot]] — Luminous 运行时快照
 - [[00-current/Active_Mobile_UI]] — 活跃移动 UI 总览
 - [[00-current/Active_UI_Today]] — Today tab 当前状态
 - [[00-current/Active_UI_Record]] — Record tab 当前状态
 - [[00-current/Active_UI_Medicine]] — Medicine tab 当前状态
-- [[00-current/Active_UI_Report]] — Report tab 当前状态
-- [[00-current/Active_UI_Clinic_Summary]] — Clinic Summary 分享功能
+- [[00-current/Active_UI_Report]] — Report tab 当前状态（含 Clinic Summary）
 - [[00-current/Active_UI_Mine_Settings]] — Mine / Settings 当前状态
 - [[00-current/Mock_Or_Deferred]] — Mock 与延后能力
 - [[00-current/Removed_From_Active_Scope]] — 已移出活跃范围的功能

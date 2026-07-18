@@ -1,120 +1,49 @@
 # Work Phase Guide
 
-Last updated: 2026-07-12
+Last updated: 2026-07-18
 
-本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。它不是短期执行计划；
-短期任务仍放在 `plans/`，完成后删除计划，并把稳定事实同步回 `docs/00-current/`。
+本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。短期任务放在 `plans/`，完成后删除计划，把稳定事实同步回 `docs/00-current/`。
 
 ## 使用规则
 
-- 同一时间只激活一个主要阶段，避免把 UI 精修、架构清债、功能扩展混在同一批改动里。
+- 同一时间只激活一个主要阶段。
 - 阶段切换依赖可观察结果，不依赖主观感觉。
-- 如果出现 P0 问题，暂停当前阶段，先处理 P0。
-- 完成阶段任务后，更新当前状态、迁移日志和相关产品/参考文档。
+- 出现 P0 问题时暂停当前阶段先处理。
+- 完成阶段任务后更新当前状态、迁移日志和相关文档。
 
 ## 优先级定义
 
-- P0：用户可见破损、Flutter overflow、崩溃、核心流程不可用、测试门失败。
-- P1：影响 P0/P1 演示可信度的问题，包括明显假数据、登录态/空态混乱、硬编码日期、可见文案未本地化。
-- P2：长期维护债，包括 Provider 注入重整、路由拆分、Clock 全量注入、组件抽象整理。
-- P3：P2/P3 扩展探索，包括新能力、新输入形态、地图/外部服务、非核心垂直场景。
+- **P0**：用户可见破损、overflow、崩溃、核心流程不可用、测试门失败。
+- **P1**：影响演示可信度的问题——假数据、登录态/空态混乱、硬编码日期、文案未本地化。
+- **P2**：长期维护债——Provider 重整、路由拆分、Clock 注入、组件抽象整理、UI 一致性。
+- **P3**：扩展探索——新能力、新输入形态、地图/外部服务、非核心垂直场景。
 
-## Phase 1: 迁移落地收敛
+## Phase 1: 迁移落地收敛 ✅ 已完成
 
-目标：让 Forui 重构后的当前工作树稳定，先消除明显 UI 破损和迁移噪声。
+Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文本遮挡/交互黑块已修复。
 
-现在应该做：
+## Phase 2: 移动端 P0 体验打磨 ✅ 已完成
 
-- 修复五个 Tab 中已经截图确认的可见问题。
-- 优先处理 Report 指标卡 overflow、Today 优先事项截断/黑块、加载/空态重复文案。
-- 收口当前未提交的基础组件改动，避免继续扩大改动面。
-- 每次只改一个小区域，并运行对应 widget/page test。
+五个 Tab 看起来像同一个产品。每个 Tab 的 signed-out/loading/empty/success/error 状态稳定，文本不溢出，交互元素有明确目标。
 
-现在不要做：
+## Phase 3: P0 可靠性加固 ✅ 已完成
 
-- Provider 依赖注入大调整。
-- 路由拆分。
-- Clock 全量注入。
-- 新功能或新外部服务接入。
-- 为重复私有 widget 盲目提取共享组件。
+空 catch 清理、硬编码文案迁移到 ARB/l10n、路由字符串硬编码处理、mock/static 暗示移除。
 
-退出条件：
+## Phase 4: 架构收敛 ✅ 已完成
 
-- `flutter analyze --no-pub` 通过。
-- 相关页面测试通过，至少覆盖 Today / Record / Medicine / Report / Mine 的被改区域。
-- 手动或截图确认移动端五个 Tab 无明显 overflow、文本遮挡和交互黑块。
-- 当天 migration log 与当前状态文档已同步。
+- ADR-0006: `riverpod_generator` 引入，provider 声明风格统一。
+- ADR-0007: 网络层职责分离（`AuthInterceptor`/`ErrorInterceptor`/`RetryInterceptor`）。
+- ADR-0008: `Result` 类型与统一错误处理（`AppError`/`runGuarded`）。
+- ADR-0009: Drift 本地持久化基础设施 + cache-first repository 迁移。
+- ADR-0010: `go_router_builder` 类型安全路由全量迁移。
+- Repository 接口统一到 `domain/repositories/`，mock 数据移入 `test/helpers/mocks/`。
+- 跨 feature presentation 耦合通过 `DataChangeBus` 解耦。
+- 巨型文件拆分（`suggestion.dart` 952→125 行）。
 
-## Phase 2: 移动端 P0 体验打磨
+## Phase 5: Release Gate ← 当前阶段
 
-目标：让五个 Tab 看起来像同一个产品，而不是迁移后拼接的页面集合。
-
-推进顺序：
-
-1. Today：统一摘要、优先事项、主动建议的状态层级。
-2. Record：降低快速记录和筛选区的边框噪声，提高时间线扫读性。
-3. Medicine：收紧药盒、安全预览、操作列表之间的节奏。
-4. Report：统一预览、未登录、未开通、真实报告状态的视觉权重。
-5. Mine：压缩未登录解释文本，稳定档案入口和状态概览。
-
-每个 Tab 的完成标准：
-
-- signed-out / loading / empty / success / error 状态都有稳定显示。
-- 文本在常见移动宽度下不溢出、不遮挡、不依赖偶然截断。
-- 交互元素有明确目标，不把未来能力伪装成当前真实能力。
-- 对应页面测试通过。
-
-## Phase 3: P0 可靠性加固
-
-目标：清理会影响演示可信度和排障能力的问题。
-
-优先处理：
-
-- 空 catch 或异常吞没，至少保留可排查日志或用户反馈路径。
-- Mock 硬编码日期，改为相对日期或明确的演示边界。
-- 用户可见硬编码文案，迁移到 ARB/l10n。
-- 路由字符串硬编码，优先处理登录和主流程路径。
-- 仍在真实页面中可见的 mock/static/unsupported 暗示。
-
-暂缓处理：
-
-- 大范围文件拆分。
-- 把所有 `DateTime.now()` 一次性替换成注入 Clock。
-- 把所有 Provider 一次性切到顶层 override。
-
-退出条件：
-
-- 相关静态扫描项已复核，误报/过时项从活动计划中移除。
-- `flutter analyze --no-pub` 和相关测试通过。
-- `docs/00-current/TODO.md` 只保留真实仍需延后或门控的事项。
-
-## Phase 4: 架构收敛
-
-目标：在 UI 和 P0/P1 稳定后，降低长期维护成本。
-
-可进入的前提：
-
-- Phase 1 和 Phase 2 没有剩余 P0/P1。
-- 当前工作树已拆成可理解的提交或可审阅 diff。
-- 有明确的单一架构主题，不与 UI 精修混做。
-
-候选主题：
-
-- Provider 到 Repository 接口的注入边界。
-- Mock repository 移入 test/support 或明确 demo 数据边界。
-- Clock provider 注入与时间相关测试。
-- `router.dart` 按 feature 拆分。
-- 只在行为和 API 真正重复时提取共享 widget。
-
-退出条件：
-
-- 每个架构主题都有独立计划和验证命令。
-- 不改变用户可见流程，除非计划明确说明。
-- 通过全量 Flutter 测试或等价覆盖。
-
-## Phase 5: Release Gate
-
-目标：准备首个稳定发布。产品优先级口径以 [[01-product/Product_Brainstorm_2026-07-07]] 为准，P0/P1 全部完成后运行发布门。
+目标：准备首个稳定发布。
 
 必须运行：
 
@@ -137,29 +66,36 @@ dart run tool/run_fullstack_checks.dart
 - 活跃 `plans/` 中没有已完成但未删除的计划。
 - 不把 P2/P3 能力写成当前 P0/P1 承诺。
 
+### P0-P2 UI/UX 优化（2026-07-18 完成）
+
+基于 `plans/2026-07-18-uiux-per-page-optimization.md` 完成全量 UI/UX 优化：
+
+- **P0 数据安全**：身高丢数据修复、通知已读链路反转、删除确认文案修复。
+- **P0 死交互/错误路由**：Today 快捷操作路由修复、铃铛红点条件渲染、通知权限 permanentlyDenied 处理、搜索页空壳消除。
+- **P0 硬编码文案**：11 项硬编码中文/英文直出/文案错配修复。
+- **P0 视觉坍塌**：风险三级颜色体系修复、报告预览评分文案修复、移动端医疗免责声明补齐。
+- **P1 体验缺口**：空态体系（横幅 CTA + 时间线空态）、危险操作确认链（6 处二次确认）、表单必填校验。
+- **P2 一致性打磨**：错误文案 mapper、日期格式收敛、剩余硬编码文案消除、触控目标与语义补齐、PIN 二次确认、骨架屏与真实版面对齐、桌面月历交互解耦、平板档限宽。
+
 ## Phase 6: P2/P3 扩展探索
 
-目标：在 P0/P1 闭环稳定后，按照 Brainstorm P2/P3 优先级选择一个明确场景扩展，而不是继续堆功能。
+目标：在 P0/P1 闭环稳定后，按 Brainstorm P2/P3 优先级选择明确场景扩展。
 
-候选方向（对应 Brainstorm P2 — 1.1.0）：
+候选方向（Brainstorm P2 — 1.1.0）：
 
-- 就诊摘要模板化（Brainstorm 3）
-- 症状-用药关联时间线（Brainstorm 4）
-- 记录连续性激励（Brainstorm 1）
+- 就诊摘要模板化
+- 症状-用药关联时间线
+- 记录连续性激励
 
-候选方向（对应 Brainstorm P3 — 1.2.0+）：
+候选方向（Brainstorm P3 — 1.2.0+）：
 
-- 红旗信号规则提示（Brainstorm 5）
-- 智能提醒优先级调度（Brainstorm 2）
-- Apple Health / Health Connect 桥接（Brainstorm 7）
-- 快捷记录 Widget（Brainstorm 6）
-- Assistant 嵌入式重构（Brainstorm B）
+- 红旗信号规则
+- 智能提醒优先级
+- Apple Health / Health Connect 桥接
+- 快捷记录 Widget
+- Assistant 嵌入式重构
 
-进入条件：
-
-- P0 + P1 移动端闭环已经稳定。
-- 有产品决策、后端合同和验证方式。
-- 涉及外部服务、资质、计费或凭证时，先单独确认。
+进入条件：P0+P1 移动端闭环稳定 + 有产品决策、后端合同和验证方式。
 
 ## 文档落点
 
@@ -170,48 +106,3 @@ dart run tool/run_fullstack_checks.dart
 - 历史记录：`docs/03-logs/migration-log/YYYY-MM-DD.md`。
 - 产品范围：`docs/01-product/`。
 - 技术规则和避错清单：`docs/02-reference/Project_Guardrails.md`。
-
-## 以下为补充:
-
-UI 调整方向
-当前 UI 最大问题不是“不够花”，而是 所有东西都像同一层级的白卡 + 黑字 + 灰边框。Forui 迁移后组件统一了，但视觉语义还没统一。
-建议定一个视觉读法：
-冷静、可信、低干扰的学生健康工作台。信息密度中等偏高，视觉变化克制，优先保证状态清楚、操作可扫读、无溢出。
-
-具体调整优先级：
-先修破损
-Report 指标卡 overflow。
-Today 右侧黑色按钮/截断块。
-加载 spinner 换成形状匹配的 skeleton。
-所有 pill/chip/button 固定高度和最大宽，长文本必须可预测换行或退化为图标按钮。
-
-降低卡片泛滥
-外层 section 可以保留 panel。
-panel 内部不要再像卡片，改成 row + divider + compact badge。
-Record 快速记录现在像表格按钮，边框太重；应该保留外框，内部只用轻分割线和 hover/press feedback。
-
-重新分配字号层级
-页面标题最大，只允许 今日 / 记录 / 用药 / 报告 / 我的 这一层用超大黑体。
-section 标题降一级。
-row title 再降一级。
-数字和状态 badge 用稳定宽度，避免 --、0、未开通 把布局撑乱。
-
-状态文案收短
-Today AI 总结里“登录后才会...”重复了两次，应只留一次。
-Report 的“预览 / 未开通 / 尚未登录”同时出现太多，主状态只能有一个，其它做辅助说明。
-Mine 未登录说明太长，压成一句，详细解释放登录页或设置说明。
-
-每个 Tab 一个主任务
-Today：今天要做什么。
-Record：快速记录和回看。
-Medicine：当前用药和安全。
-Report：最近趋势和导出。
-Mine：身份、档案、设置。
-当前有些页面把说明、状态、操作、预览都放在同一视觉重量上，用户扫不出重点。
-
-不要急着抽共享组件
-redesign-existing-projects 的规则也支持这个判断：先修布局、层级、状态，再抽组件。
-现在看到重复私有 widget，不代表应该马上共享。共享太早会把 Forui 迁移债变成新的 wrapper 债。
-
-我的建议执行顺序不变，但更明确了：Phase 1 不是“美化”，是把迁移后的 UI 语义重新校准。
-先从 Report overflow + Today priority 截断开始，收益最高。

@@ -10,13 +10,11 @@ Last updated: 2026-07-18
   - 已通过移除测试树中的 `FToaster`、`AppToast.show` 加 try-catch 降级规避
   - 升级至 Forui 0.24+ 后恢复 toast 测试
 - `formz` 表单校验
-  - 已尝试,发现该校验并不合适后回退
+  - 已尝试，发现该校验并不合适后回退
 - `intl.DateFormat` 替代 ISO 字符串
   - `padLeft` 是线协议格式，DateFormat 不适用
 
-## 审查暂缓项（2026-07-07 三审）
-
-以下项经三份审查报告确认后暂缓，有明确原因：
+## 审查暂缓项
 
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`quick_entry_panel.dart`（685 行）、`record/edit.dart`（648 行）、`settings/page.dart`（638 行）、`record/detail.dart`（572 行）、`report/page.dart`（559 行）
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
@@ -29,7 +27,7 @@ Last updated: 2026-07-18
   - 路径：Phase 2 在 `proposedActions` 里新增 `type: "gen_ui"`，渐进式替代固定卡片
   - 前置条件：稳定版发布后启动，Feature Flags `genUiEnabled` 已就绪
   - 不需要 Firebase，纯客户端渲染 + Lucent 后端 LLM
-  - 预估工作量：15-23 个工作日（含 UI Schema 规范、后端 prompt 改造、渲染引擎、基础组件库、Action 回调、流式渲染、测试）
+  - 预估工作量：15-23 个工作日
 
 ## Not in P0-P3 Scope
 
@@ -48,14 +46,8 @@ Last updated: 2026-07-18
 - 固定 red-flag 规则、审核过的 offline-care 升级文案、help-resource 完整性
 - Agent-assisted support discovery 或 map-backed nearby-care lookup
 - 当前边界之外更深的药品安全规则覆盖与更清晰的 unsupported / low-confidence wording
-- Report/export finish-pass 客户端清理：
-  - 最终状态文案一致性
-  - 过期链接处理
-  - 一次真实环境验收运行
-  - 除非发现真实 bug，否则不重新打开后端/export 范围
+- Report/export finish-pass 客户端清理：最终状态文案一致性、过期链接处理、一次真实环境验收运行
 - Worker-written reminder delivery history（本地/push/SMS 渠道）
 - Environment-driven Today 或 Mine 建议
 - 真实药品条码/OCR/拍照/处方识别流程
 - 超越竞赛/营销首页的真实认证 Web 报告预览
-- 环境驱动的 Today/Mine 建议
-- Agent 辅助就医发现

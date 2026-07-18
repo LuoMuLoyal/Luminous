@@ -7,13 +7,15 @@ Last updated: 2026-07-18
 
 ## 当前目标
 
-按照 Product Brainstorm 优先级体系推进。P0 两项（Medicine 安全检查三层展示 + Report 门控透明度）和 P1 三项（Today 信息密度评估、Record 快速入口动态排序、Mine 档案完整度提示）均已完成。下一步运行发布验证门。
+P0-P2 UI/UX 优化全部完成。当前处于 Phase 5 Release Gate 阶段。下一步运行发布验证门。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
 1. **运行发布验证门**
+   - `flutter analyze --no-pub`
+   - `flutter test --no-pub`
    - `dart run tool/run_daily_checks.dart`（仓库安全级）
    - 集成测试框架选型暂缓，待评估后引入
 2. **助手演进限定在 concrete 场景**

@@ -1,92 +1,339 @@
+# Luminous 文档覆盖映射
+#
+# tool/check_doc_coverage.dart 读取本文件：
+# - 阻断模式（默认）：有代码变更但无任何 docs/ 文件变更 → exit(1)
+# - 警告模式（--warning-only）：每条规则的 docs_required 中未被触及的文档输出警告
+# - 旁路：SKIP_DOC_CHECK=1
+#
+# glob 规则：* 匹配单层路径，** 匹配多层路径。
+# docs/03-logs/migration-log/*.md 在每条规则中都列出——任何代码变更都应记录迁移日志。
+
 rules:
+  # ──────────────────────────────────────────────
+  # 工具链与治理
+  # ──────────────────────────────────────────────
   - name: docs-tooling
     code:
       - tool/check_doc_coverage.dart
       - tool/doc_coverage.dart
       - tool/tooling_workflows.dart
+      - tool/tooling_support.dart
       - tool/git_hook.dart
       - tool/run_daily_checks.dart
-      - .github/workflows/flutter-ci.yml
+      - tool/run_fullstack_checks.dart
+      - tool/verify_lucent_openapi_sync.dart
+      - .github/workflows/**
       - .github/copilot-instructions.md
       - .cursor/mcp.json
       - .vscode/settings.json
       - .vscode/extensions.json
+      - AGENTS.md
       - CLAUDE.md
       - GEMINI.md
+      - docs/doc-map.yaml
     docs_required:
-      - docs/00-current/Current_State.md
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/02-reference/Project_Guardrails.md
+      - docs/00-current/Project_Governance.md
       - docs/02-reference/AI_Development_Workflow.md
+      - docs/02-reference/Project_Guardrails.md
       - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # App Shell、路由、桌面外壳
+  # ──────────────────────────────────────────────
   - name: app-shell
     code:
       - lib/app/**
       - lib/core/router/**
+      - lib/features/shell/**
     docs_required:
-      - docs/00-current/Current_State.md
       - docs/00-current/Active_Mobile_UI.md
+      - docs/00-current/Runtime_Snapshot.md
       - docs/02-reference/routing.md
+      - docs/02-reference/architecture.md
+      - docs/02-reference/adr/0002-gorouter-navigation.md
+      - docs/02-reference/adr/0010-type-safe-routing-go-router-builder.md
       - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 网络层与 API 客户端
+  # ──────────────────────────────────────────────
+  - name: core-network
+    code:
+      - lib/core/network/**
+      - generated/lucent_api/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
+      - docs/02-reference/data-layer.md
+      - docs/02-reference/OpenApi_Client.md
+      - docs/02-reference/adr/0007-network-layer-separation.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 设计系统与主题
+  # ──────────────────────────────────────────────
+  - name: core-design
+    code:
+      - lib/core/design/**
+      - lib/core/theme/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/Design_System.md
+      - docs/02-reference/Design_System_Components.md
+      - docs/02-reference/Design_System_Migration.md
+      - docs/02-reference/Forui_Reference.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 本地持久化（Drift）
+  # ──────────────────────────────────────────────
+  - name: core-database
+    code:
+      - lib/core/database/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/data-layer.md
+      - docs/02-reference/adr/0009-local-persistence-drift.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 错误处理与 Result 类型
+  # ──────────────────────────────────────────────
+  - name: core-errors
+    code:
+      - lib/core/errors/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/adr/0008-result-type-and-error-handling.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — Provider 与状态管理
+  # ──────────────────────────────────────────────
+  - name: core-providers
+    code:
+      - lib/core/providers/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/state-management.md
+      - docs/02-reference/adr/0001-riverpod-state-management.md
+      - docs/02-reference/adr/0006-riverpod-generator-and-auth-guard.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 配置与环境变量
+  # ──────────────────────────────────────────────
+  - name: core-config
+    code:
+      - lib/core/config/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 国际化与 ARB
+  # ──────────────────────────────────────────────
+  - name: core-i18n
+    code:
+      - lib/core/i18n/**
+      - lib/l10n/**
+      - scripts/arb_tools.dart
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/Localization.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 反馈与通知基础设施
+  # ──────────────────────────────────────────────
+  - name: core-feedback
+    code:
+      - lib/core/feedback/**
+      - lib/core/notifications/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 共享 Widget
+  # ──────────────────────────────────────────────
+  - name: core-widgets
+    code:
+      - lib/core/widgets/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/02-reference/Design_System_Components.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — 工具函数
+  # ──────────────────────────────────────────────
+  - name: core-utils
+    code:
+      - lib/core/utils/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Core — AI 运行时实验 seam
+  # ──────────────────────────────────────────────
+  - name: core-ai
+    code:
+      - lib/core/ai/**
+    docs_required:
+      - docs/00-current/Runtime_Snapshot.md
+      - docs/00-current/Mock_Or_Deferred.md
+      - docs/02-reference/AI_Development_Workflow.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Auth Feature
+  # ──────────────────────────────────────────────
   - name: auth
     code:
       - lib/features/auth/**
     docs_required:
-      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/02-reference/Auth_Forui_Migration_Pattern.md
       - docs/02-reference/Localization.md
       - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Today Feature
+  # ──────────────────────────────────────────────
+  - name: today
+    code:
+      - lib/features/today/**
+    docs_required:
+      - docs/00-current/Active_UI_Today.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
+      - docs/01-product/Product_AI_Design.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Record Feature
+  # ──────────────────────────────────────────────
   - name: record
     code:
       - lib/features/record/**
     docs_required:
-      - docs/00-current/Current_State.md
       - docs/00-current/Active_UI_Record.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Medicine Feature
+  # ──────────────────────────────────────────────
   - name: medicine
     code:
       - lib/features/medicine/**
     docs_required:
-      - docs/00-current/Current_State.md
       - docs/00-current/Active_UI_Medicine.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Report Feature
+  # ──────────────────────────────────────────────
   - name: report
     code:
       - lib/features/report/**
     docs_required:
-      - docs/00-current/Current_State.md
       - docs/00-current/Active_UI_Report.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
-  - name: mine-settings
+
+  # ──────────────────────────────────────────────
+  # Mine Feature
+  # ──────────────────────────────────────────────
+  - name: mine
     code:
       - lib/features/mine/**
-      - lib/features/settings/**
     docs_required:
-      - docs/00-current/Current_State.md
       - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
-  - name: today-assistant
+
+  # ──────────────────────────────────────────────
+  # Settings Feature
+  # ──────────────────────────────────────────────
+  - name: settings
     code:
-      - lib/features/today/**
-      - lib/features/assistant/**
-      - lib/features/support/**
+      - lib/features/settings/**
     docs_required:
-      - docs/00-current/Current_State.md
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Health Context Feature
+  # ──────────────────────────────────────────────
+  - name: health-context
+    code:
+      - lib/features/health_context/**
+    docs_required:
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Notification Feature
+  # ──────────────────────────────────────────────
+  - name: notification
+    code:
+      - lib/features/notification/**
+    docs_required:
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Assistant Feature
+  # ──────────────────────────────────────────────
+  - name: assistant
+    code:
+      - lib/features/assistant/**
+    docs_required:
       - docs/00-current/Active_UI_Today.md
+      - docs/00-current/Mock_Or_Deferred.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/01-product/Product_AI_Design.md
       - docs/03-logs/migration-log/*.md
-  - name: shared-runtime
+
+  # ──────────────────────────────────────────────
+  # Legal Feature
+  # ──────────────────────────────────────────────
+  - name: legal
     code:
-      - lib/core/ai/**
-      - lib/core/network/**
-      - lib/core/i18n/**
-      - lib/core/notifications/**
-      - lib/core/feedback/**
-      - tool/verify_lucent_openapi_sync.dart
+      - lib/features/legal/**
     docs_required:
-      - docs/00-current/Current_State.md
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Search Feature
+  # ──────────────────────────────────────────────
+  - name: search
+    code:
+      - lib/features/search/**
+    docs_required:
+      - docs/00-current/Active_UI_Medicine.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Scan Feature（药品拍照/条码识别）
+  # ──────────────────────────────────────────────
+  - name: scan
+    code:
+      - lib/features/scan/**
+    docs_required:
+      - docs/00-current/Active_UI_Medicine.md
       - docs/00-current/Mock_Or_Deferred.md
-      - docs/02-reference/AI_Development_Workflow.md
-      - docs/02-reference/OpenApi_Client.md
-      - docs/02-reference/Localization.md
+      - docs/03-logs/migration-log/*.md
+
+  # ──────────────────────────────────────────────
+  # Support Feature（帮助/关于元数据）
+  # ──────────────────────────────────────────────
+  - name: support
+    code:
+      - lib/features/support/**
+    docs_required:
+      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
