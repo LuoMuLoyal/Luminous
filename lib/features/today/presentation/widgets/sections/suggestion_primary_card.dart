@@ -181,30 +181,33 @@ class EvidenceToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            expanded
-                ? l10n.todaySuggestionHideEvidence
-                : l10n.todaySuggestionShowEvidence,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(width: Spacing.level1),
-          AnimatedRotation(
-            turns: expanded ? 0.25 : 0,
-            duration: DurationTokens.widgetQuick,
-            child: Icon(
-              FLucideIcons.chevronRight,
-              size: Spacing.level4,
-              color: colors.primary,
+    return FTappable(
+      onPress: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              expanded
+                  ? l10n.todaySuggestionHideEvidence
+                  : l10n.todaySuggestionShowEvidence,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.primary, fontWeight: FontWeight.w600),
             ),
-          ),
-        ],
+            const SizedBox(width: Spacing.level1),
+            AnimatedRotation(
+              turns: expanded ? 0.25 : 0,
+              duration: DurationTokens.widgetQuick,
+              child: Icon(
+                FLucideIcons.chevronRight,
+                size: Spacing.level4,
+                color: colors.primary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

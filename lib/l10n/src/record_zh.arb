@@ -390,5 +390,6 @@
   "recordFastChoiceWater250ml": "250 ml",
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 杯",
-  "recordFastChoiceWater1Time": "1 次"
+  "recordFastChoiceWater1Time": "1 次",
+  "recordVoiceStopListening": "停止录音"
 }

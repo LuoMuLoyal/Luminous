@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchInput extends HookWidget {
@@ -43,12 +44,22 @@ class SearchInput extends HookWidget {
       ),
       suffixBuilder: controller.text.isEmpty
           ? null
-          : (context, style, variants) => GestureDetector(
-              onTap: () {
+          : (context, style, variants) => FTappable(
+              onPress: () {
                 controller.clear();
                 onChanged('');
               },
-              child: Icon(FLucideIcons.circleX, color: colors.mutedForeground),
+              child: Semantics(
+                button: true,
+                label: l10n.medicineSearchClearAction,
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.level1),
+                  child: Icon(
+                    FLucideIcons.circleX,
+                    color: colors.mutedForeground,
+                  ),
+                ),
+              ),
             ),
     );
   }

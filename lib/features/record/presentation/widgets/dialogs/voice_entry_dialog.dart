@@ -230,37 +230,43 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                     ),
 
                   // Mic button
-                  GestureDetector(
-                    onTap: toggleListening,
-                    child: AnimatedContainer(
-                      duration: DurationTokens.widgetQuick,
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isListening.value
-                            ? primaryColor
-                            : colors.secondary,
-                        boxShadow: [
-                          BoxShadow(
-                            color:
-                                (isListening.value
-                                        ? primaryColor
-                                        : colors.foreground)
-                                    .withValues(alpha: 0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        isListening.value
-                            ? FLucideIcons.mic
-                            : FLucideIcons.micOff,
-                        color: isListening.value
-                            ? colors.primaryForeground
-                            : micColor,
-                        size: 32,
+                  Semantics(
+                    button: true,
+                    label: isListening.value
+                        ? l10n.recordVoiceStopListening
+                        : l10n.recordVoiceTapToStart,
+                    child: FTappable(
+                      onPress: toggleListening,
+                      child: AnimatedContainer(
+                        duration: DurationTokens.widgetQuick,
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isListening.value
+                              ? primaryColor
+                              : colors.secondary,
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  (isListening.value
+                                          ? primaryColor
+                                          : colors.foreground)
+                                      .withValues(alpha: 0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          isListening.value
+                              ? FLucideIcons.mic
+                              : FLucideIcons.micOff,
+                          color: isListening.value
+                              ? colors.primaryForeground
+                              : micColor,
+                          size: 32,
+                        ),
                       ),
                     ),
                   ),
