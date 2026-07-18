@@ -118,6 +118,19 @@ class _DetailBody extends ConsumerWidget {
         _ActionBar(
           detail: detail,
           onNavigate: () => _handleAction(context, detail.action),
+          onMarkRead: () async {
+            final repo = ref.read(notificationRepositoryProvider);
+            await repo.markAsRead(detail.id);
+            ref.invalidate(notificationUnreadCountProvider);
+            ref.invalidate(notificationListControllerProvider);
+            ref.invalidate(notificationDetailProvider(detail.id));
+            if (context.mounted) {
+              unawaited(
+                AppToast.show(context, l10n.notificationMarkReadSuccess),
+              );
+              context.pop();
+            }
+          },
           onMarkUnread: () async {
             final repo = ref.read(notificationRepositoryProvider);
             await repo.markAsUnread(detail.id);
@@ -209,12 +222,14 @@ class _ActionBar extends StatelessWidget {
   const _ActionBar({
     required this.detail,
     required this.onNavigate,
+    required this.onMarkRead,
     required this.onMarkUnread,
     required this.onDelete,
   });
 
   final NotificationDetail detail;
   final VoidCallback onNavigate;
+  final VoidCallback onMarkRead;
   final VoidCallback onMarkUnread;
   final VoidCallback onDelete;
 
@@ -236,7 +251,7 @@ class _ActionBar extends StatelessWidget {
       Expanded(
         child: FButton(
           variant: FButtonVariant.outline,
-          onPress: onMarkUnread,
+          onPress: detail.isRead ? onMarkUnread : onMarkRead,
           prefix: Icon(
             detail.isRead ? FLucideIcons.mailMinus : FLucideIcons.checkCheck,
             size: 18,

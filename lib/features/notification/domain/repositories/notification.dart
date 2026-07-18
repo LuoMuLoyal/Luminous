@@ -17,6 +17,9 @@ abstract interface class NotificationRepository {
   /// Marks all notifications as read.
   Future<void> markAllAsRead();
 
+  /// Marks a single notification as read.
+  Future<void> markAsRead(String id);
+
   /// Marks a single notification as unread.
   Future<void> markAsUnread(String id);
 

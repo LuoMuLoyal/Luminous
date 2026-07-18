@@ -8,6 +8,7 @@
   "notificationMarkAllRead": "Mark all read",
   "notificationMarkAllReadSuccess": "All marked as read",
   "notificationMarkUnreadSuccess": "Marked as unread",
+  "notificationMarkReadSuccess": "Marked as read",
   "notificationDeleteSuccess": "Deleted",
   "notificationActionNavigate": "Go to handle",
   "notificationActionMarkRead": "Mark as read",

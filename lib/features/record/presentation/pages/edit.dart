@@ -348,7 +348,7 @@ class RecordEditPage extends HookConsumerWidget {
       final confirmed = await showFDialog<bool>(
         context: context,
         builder: (dialogContext, style, animation) => FDialog(
-          title: Text(l10n.authIdentityUnlinkConfirmTitle),
+          title: Text(l10n.recordDeleteConfirmTitle),
           body: Text(l10n.recordDeleteConfirmMessage),
           actions: [
             FButton(
@@ -372,14 +372,15 @@ class RecordEditPage extends HookConsumerWidget {
         await repo.delete(recordId);
         invalidateProviders();
         if (context.mounted) {
-          await AppToast.show(context, l10n.mineEditSavedToast);
+          await AppToast.show(context, l10n.recordDeletedToast);
           if (!context.mounted) return;
+          context.pop();
           context.pop();
         }
       } catch (e) {
         ref.read(talkerProvider).error('RecordEditPage.onDelete: failed: $e');
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordCreateFailedToast);
+          await AppToast.show(context, l10n.recordDeleteFailedToast);
         }
       } finally {
         if (context.mounted) deleting.value = false;

@@ -8,6 +8,7 @@
   "notificationMarkAllRead": "全部已读",
   "notificationMarkAllReadSuccess": "已全部标记为已读",
   "notificationMarkUnreadSuccess": "已标记为未读",
+  "notificationMarkReadSuccess": "已标记为已读",
   "notificationDeleteSuccess": "已删除",
   "notificationActionNavigate": "去处理",
   "notificationActionMarkRead": "设为已读",

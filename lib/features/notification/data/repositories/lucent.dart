@@ -68,6 +68,11 @@ class LucentNotificationRepository implements NotificationRepository {
   }
 
   @override
+  Future<void> markAsRead(String id) async {
+    await api.notificationsControllerMarkAsReadV1(id: id);
+  }
+
+  @override
   Future<void> markAsUnread(String id) async {
     await api.notificationsControllerMarkAsUnreadV1(id: id);
   }

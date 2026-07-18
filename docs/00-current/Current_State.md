@@ -95,6 +95,8 @@ Last updated: 2026-07-18
 
 - UI/UX 优化阶段 0：死代码清理（2026-07-18）：根据 `plans/2026-07-18-uiux-per-page-optimization.md` C1 横向任务，删除 11 项零引用死代码。恒假表达式 `0.12 > 0.5`（`reminder_detail.dart`）简化；整文件删除 6 个（`master_toggle.dart`/`status_overview.dart`+测试/`completeness_notice.dart`+测试/`week_strip.dart`+测试/`quick_actions.dart`+测试）；整目录删除 `medicine/widgets/workspace/`（5 文件）；类删除 4 个（`MineHeaderActionChip`/`MedicineWorkspaceView`/`MedicineHeaderActionChip`/`RecordGuideRow`）；barrel export 清理 2 处（`sections.dart`/`overview.dart`）；`page_test.dart` 引用清理。`TodayEmptyView` 保留待 P1 接入。`flutter analyze` 零问题，880 个测试全部通过。
 
+- UI/UX 优化阶段 1：P0 数据安全 + 行为反转（2026-07-18）：修复 4 项 App 主动伤害用户/说谎的问题。**身高丢数据**：`profile_edit.dart` 的 `int.tryParse` → `num.tryParse`，修复 double 身高值（如 `170.0`）保存时静默变 null。**通知已读链路反转**：`NotificationRepository` 补 `markAsRead` 接口+实现（后端已有端点），`_ActionBar` 拆分读写回调，按钮 `onPress` 按 `isRead` 状态调用对应方法。**删除确认标题错误**：新增 `recordDeleteConfirmTitle` l10n 键替换张冠李戴的 `authIdentityUnlinkConfirmTitle`。**删除反馈错误**：新增 `recordDeletedToast`/`recordDeleteFailedToast` l10n 键替换"已保存"/"创建失败"；`context.pop()` 调两次从编辑页直接回列表页。`flutter analyze` 零问题，559 个测试通过。
+
 ## 相关文档
 
 - 产品方向：[[01-product/Product_Vision]]

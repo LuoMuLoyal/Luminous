@@ -49,7 +49,7 @@ class ProfileEditPage extends HookConsumerWidget {
         birthDate: birthDateController.text.isEmpty
             ? null
             : birthDateController.text,
-        heightCm: int.tryParse(heightCmController.text),
+        heightCm: num.tryParse(heightCmController.text),
         bloodType: bloodTypeController.text.isEmpty
             ? null
             : bloodTypeController.text,
