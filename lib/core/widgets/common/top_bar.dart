@@ -20,6 +20,7 @@ class AppTopBar extends StatelessWidget {
     this.subtitle,
     this.trailing = const [],
     this.bottom,
+    this.disableSafeAreaAndPadding = false,
   });
 
   /// 主标题。
@@ -34,12 +35,62 @@ class AppTopBar extends StatelessWidget {
   /// 标题行下方的额外内容（如报告页的日期选择器 + 操作按钮区）。
   final Widget? bottom;
 
+  /// 当为 true 时跳过内置的 [SafeArea] 和水平 padding。
+  ///
+  /// 用于 [AppTopBar] 被嵌入已有 padding 和 SafeArea 的容器（如
+  /// `ListView`）时，避免双重 padding 导致顶栏内容与下方卡片不对齐。
+  final bool disableSafeAreaAndPadding;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final layout = LayoutScaleResolver.resolve(
       MediaQuery.sizeOf(context).width,
     );
+
+    final children = <Widget>[
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: TypographyToken.level8
+                      .display(context)
+                      .copyWith(fontWeight: FontWeight.w800),
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: Spacing.level1),
+                  DefaultTextStyle.merge(
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                    child: subtitle!,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          if (trailing.isNotEmpty) ...[
+            const SizedBox(width: Spacing.level4),
+            Row(mainAxisSize: MainAxisSize.min, children: _spacedTrailing()),
+          ],
+        ],
+      ),
+      if (bottom != null) ...[const SizedBox(height: Spacing.level3), bottom!],
+    ];
+
+    if (disableSafeAreaAndPadding) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      );
+    }
 
     return SafeArea(
       bottom: false,
@@ -48,47 +99,7 @@ class AppTopBar extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        title,
-                        style: TypographyToken.level8
-                            .display(context)
-                            .copyWith(fontWeight: FontWeight.w800),
-                      ),
-                      if (subtitle != null) ...[
-                        const SizedBox(height: Spacing.level1),
-                        DefaultTextStyle.merge(
-                          style: TypographyToken.level4
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
-                          child: subtitle!,
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                if (trailing.isNotEmpty) ...[
-                  const SizedBox(width: Spacing.level4),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: _spacedTrailing(),
-                  ),
-                ],
-              ],
-            ),
-            if (bottom != null) ...[
-              const SizedBox(height: Spacing.level3),
-              bottom!,
-            ],
-          ],
+          children: children,
         ),
       ),
     );

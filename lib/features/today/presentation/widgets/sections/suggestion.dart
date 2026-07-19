@@ -125,7 +125,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const SizedBox.shrink(),
+      loading: () => const SecondarySuggestionSkeleton(),
       error: (_, __) => SecondarySuggestionErrorState(
         onRetry: () => ref.invalidate(todaySuggestionProvider),
       ),

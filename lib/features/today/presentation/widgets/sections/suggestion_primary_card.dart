@@ -354,13 +354,13 @@ class WaterProgressBar extends StatelessWidget {
 
 // ── Shared helpers ──────────────────────────────────────────────────────────
 
-/// Pushes or goes to [route] depending on whether it has query params.
+/// Pushes [route] onto the navigation stack.
+///
+/// Always uses [context.push] so the user can navigate back from the
+/// destination — [context.go] would replace the current route and leave
+/// no back path, which is inconsistent with the rest of the app.
 void openRoute(BuildContext context, String route) {
-  if (route.contains('?')) {
-    context.push(route);
-  } else {
-    context.go(route);
-  }
+  context.push(route);
 }
 
 /// Maps a suggestion card tone to the shared [TodayCardTone].

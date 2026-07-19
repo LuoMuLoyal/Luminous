@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -51,18 +52,104 @@ class SuggestionEmptyState extends StatelessWidget {
 }
 
 /// Skeleton loading state for the primary suggestion section.
+///
+/// Mirrors the real [SuggestionPrimaryCard] structure: header area with
+/// icon + title lines, body with reason lines, and an action row.
 class SuggestionSkeleton extends StatelessWidget {
   const SuggestionSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
     return AppSkeletonShimmer(
       child: Container(
-        height: 180,
         decoration: BoxDecoration(
-          color: context.theme.colors.card,
+          color: colors.card,
           borderRadius: BorderRadius.circular(RadiusTokens.level4),
-          border: Border.all(color: context.theme.colors.border),
+          border: Border.all(color: colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.level4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header row: icon + title
+              Row(
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    ),
+                    child: const SizedBox.square(dimension: Spacing.level7),
+                  ),
+                  const SizedBox(width: Spacing.level3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: colors.secondary,
+                            borderRadius: BorderRadius.circular(
+                              RadiusTokens.level2,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: Spacing.level2),
+                        Container(
+                          height: 12,
+                          width: 120,
+                          decoration: BoxDecoration(
+                            color: colors.secondary,
+                            borderRadius: BorderRadius.circular(
+                              RadiusTokens.level2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level4),
+              // Reason lines
+              Container(
+                height: 14,
+                decoration: BoxDecoration(
+                  color: colors.secondary,
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                ),
+              ),
+              const SizedBox(height: Spacing.level2),
+              Container(
+                height: 14,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: colors.secondary,
+                  borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                ),
+              ),
+              const SizedBox(height: Spacing.level5),
+              // Action row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: BorderRadius.circular(
+                        RadiusTokens.levelFull,
+                      ),
+                    ),
+                    child: const SizedBox(width: 80, height: 32),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -159,6 +246,79 @@ class SecondarySuggestionErrorState extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Skeleton loading state for the secondary suggestions section.
+///
+/// Renders 1-2 placeholder rows matching the real secondary suggestion card
+/// structure so the loading-to-loaded transition doesn't cause a layout jump.
+class SecondarySuggestionSkeleton extends StatelessWidget {
+  const SecondarySuggestionSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return TodaySection(
+      title: AppLocalizations.of(context)!.todaySecondarySuggestionSectionTitle,
+      child: AppSkeletonShimmer(
+        child: Column(
+          children: [
+            for (var i = 0; i < 2; i++) ...[
+              if (i > 0) const SizedBox(height: Spacing.level3),
+              FCard.raw(
+                style: todayCardStyle(context, tone: TodayCardTone.soft),
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.level4),
+                  child: Row(
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colors.secondary,
+                          borderRadius: BorderRadius.circular(
+                            RadiusTokens.level3,
+                          ),
+                        ),
+                        child: const SizedBox.square(dimension: Spacing.level7),
+                      ),
+                      const SizedBox(width: Spacing.level3),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 14,
+                              decoration: BoxDecoration(
+                                color: colors.secondary,
+                                borderRadius: BorderRadius.circular(
+                                  RadiusTokens.level2,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.level2),
+                            Container(
+                              height: 12,
+                              width: 140,
+                              decoration: BoxDecoration(
+                                color: colors.secondary,
+                                borderRadius: BorderRadius.circular(
+                                  RadiusTokens.level2,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

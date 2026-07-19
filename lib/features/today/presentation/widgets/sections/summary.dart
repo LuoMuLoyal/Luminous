@@ -313,7 +313,12 @@ class _SummaryMetric extends StatelessWidget {
               item.value,
               style: TypographyToken.level4
                   .body(context)
-                  .copyWith(fontWeight: FontWeight.w800),
+                  .copyWith(
+                    fontWeight: item.isFallback
+                        ? FontWeight.w500
+                        : FontWeight.w800,
+                    color: item.isFallback ? colors.mutedForeground : null,
+                  ),
             ),
           ],
         ),

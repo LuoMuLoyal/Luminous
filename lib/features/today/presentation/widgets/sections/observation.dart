@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
@@ -151,7 +152,7 @@ class _ObservationTile extends StatelessWidget {
             const SizedBox(width: Spacing.level2),
             Text(
               item.tag,
-              style: TypographyToken.level1
+              style: TypographyToken.level2
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
@@ -167,14 +168,16 @@ class _ObservationLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(Spacing.level4),
-      child: Column(
-        children: [
-          _ObservationSkeletonRow(),
-          SizedBox(height: Spacing.level3),
-          _ObservationSkeletonRow(),
-        ],
+    return const AppSkeletonShimmer(
+      child: Padding(
+        padding: EdgeInsets.all(Spacing.level4),
+        child: Column(
+          children: [
+            _ObservationSkeletonRow(),
+            SizedBox(height: Spacing.level3),
+            _ObservationSkeletonRow(),
+          ],
+        ),
       ),
     );
   }
@@ -276,12 +279,10 @@ class _ObservationItem {
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
+/// Mirrors [openRoute] from suggestion_primary_card.dart.
+/// Always uses [context.push] so users can navigate back.
 void _openRoute(BuildContext context, String route) {
-  if (route.contains('?')) {
-    context.push(route);
-  } else {
-    context.go(route);
-  }
+  context.push(route);
 }
 
 String _tagForConfidence(

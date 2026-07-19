@@ -22,6 +22,7 @@ class DesktopTabShell extends StatelessWidget {
     this.scrollable = true,
     this.onRefresh,
     this.scrollStorageKey,
+    this.showHeader = true,
   });
 
   /// 主标题，显示在 AppTopBar 中。
@@ -51,6 +52,12 @@ class DesktopTabShell extends StatelessWidget {
   /// 确保 Tab 切换后滚动位置不丢失。
   final String? scrollStorageKey;
 
+  /// 是否渲染外壳的 AppTopBar。默认 true。
+  ///
+  /// 某些页面（如 Today）在内容区自带顶栏（含标题 + trailing 按钮），
+  /// 设为 false 可避免桌面端出现双重标题。
+  final bool showHeader;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -61,13 +68,14 @@ class DesktopTabShell extends StatelessWidget {
       constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
       child: Column(
         children: [
-          // AppTopBar 内部已自带 SafeArea(bottom: false)
-          AppTopBar(
-            title: title,
-            subtitle: subtitle,
-            trailing: trailing,
-            bottom: bottom,
-          ),
+          if (showHeader)
+            // AppTopBar 内部已自带 SafeArea(bottom: false)
+            AppTopBar(
+              title: title,
+              subtitle: subtitle,
+              trailing: trailing,
+              bottom: bottom,
+            ),
           // 内容区
           Expanded(child: _buildContent(layout)),
         ],
@@ -78,8 +86,11 @@ class DesktopTabShell extends StatelessWidget {
       decoration: BoxDecoration(
         color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
       ),
-      // 仅处理底部 SafeArea，顶部由 AppTopBar 处理
-      child: SafeArea(top: false, child: Center(child: constrained)),
+      // showHeader=false 时顶部 SafeArea 由内容区自行处理
+      child: SafeArea(
+        top: !showHeader,
+        child: Center(child: constrained),
+      ),
     );
   }
 

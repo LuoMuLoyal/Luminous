@@ -12,12 +12,17 @@ class TodayOverviewItem {
     required this.label,
     required this.value,
     required this.color,
+    this.isFallback = false,
   });
 
   final IconData icon;
   final String label;
   final String value;
   final SemanticColor color;
+
+  /// True when [value] is a placeholder (e.g. "未记录") rather than real data.
+  /// Used to de-emphasize the text visually.
+  final bool isFallback;
 }
 
 class TodayAiSummaryItem {
@@ -127,6 +132,10 @@ List<TodayOverviewItem> buildOverviewItems(
   AppLocalizations l10n,
   TodayDashboard dashboard,
 ) {
+  final sleepIsFallback = !hasMeaningfulVitalValue(
+    dashboard.vitals,
+    TodayVitalType.sleep,
+  );
   final sleep = vitalValue(
     dashboard.vitals,
     TodayVitalType.sleep,
@@ -158,6 +167,7 @@ List<TodayOverviewItem> buildOverviewItems(
       label: l10n.todayVitalSleepLabel,
       value: sleep,
       color: SemanticColor.primary,
+      isFallback: sleepIsFallback,
     ),
   ];
 }

@@ -63,6 +63,10 @@ class TodayPage extends ConsumerWidget {
           ? DesktopTabShell(
               title: l10n.tabToday,
               scrollable: false,
+              // Today content includes its own TodayTopBar with title +
+              // assistant/notification buttons. Skip the shell header to
+              // avoid a double title on desktop.
+              showHeader: false,
               child: content,
             )
           : DecoratedBox(

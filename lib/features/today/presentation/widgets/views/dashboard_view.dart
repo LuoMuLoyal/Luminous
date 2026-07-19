@@ -143,12 +143,9 @@ class _DesktopTodayDashboard extends StatelessWidget {
       child: ListView(
         key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(
-          Spacing.level6,
-          Spacing.level6,
-          Spacing.level6,
-          Spacing.level6,
-        ),
+        // Horizontal padding is provided by DesktopTabShell's content area.
+        // Only add bottom padding for nav bar clearance.
+        padding: const EdgeInsets.only(bottom: Spacing.level10),
         children: [
           TodayTopBar(dashboard: dashboard),
           if (isPreview) ...[

@@ -69,3 +69,17 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取（cache-first）。
 - 图标映射提取为独立 `SuggestionIconMapping` 类。
 - Dashboard 超时支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。
+
+## 2026-07-19 补充
+
+- preview 问候语根据设备当前小时计算 moment（不再硬编码 morning）。
+- `SuggestionSkeleton` 重构为匹配真实 `SuggestionPrimaryCard` 结构（header + reason + action 行）。
+- 次级建议加载中渲染 `SecondarySuggestionSkeleton`（2 行骨架占位），消除加载后跳变。
+- `openRoute` 统一改为 `context.push`，保证用户可返回。
+- "未记录"降字重为 w500 + mutedForeground（`isFallback` 标志）。
+- 置信度标签从 `TypographyToken.level1` 升级为 `level2`。
+- observation 骨架行包 `AppSkeletonShimmer`。
+- 次要操作标题改为正常前景色，仅图标保持 muted。
+- `AppTopBar` 新增 `disableSafeAreaAndPadding` 参数（`TodayTopBar` 设为 true）。
+- `DesktopTabShell` 新增 `showHeader` 参数（Today 页面设为 false，由内容区 `TodayTopBar` 提供唯一标题）。
+- 桌面端 ListView 移除水平 padding，由 `DesktopTabShell` 内容区统一提供。

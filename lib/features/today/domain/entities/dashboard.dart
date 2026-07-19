@@ -41,25 +41,30 @@ abstract class TodayDashboard with _$TodayDashboard {
   }) = _TodayDashboard;
 
   /// A minimal dashboard for signed-out users with no real or mock data.
-  static TodayDashboard signedOut() => const TodayDashboard(
+  ///
+  /// The day moment is derived from the current device hour so the preview
+  /// greeting matches the time of day instead of always showing "早上好".
+  static TodayDashboard signedOut() => TodayDashboard(
     user: TodayUserSnapshot(
-      moment: TodayDayMoment.morning,
+      moment: todayDayMomentFromHour(DateTime.now().hour),
       hasUnreadNotifications: false,
       updatedAtLabel: '--',
     ),
-    water: TodayWaterSummary(completedCount: 0, targetCount: 8),
-    medication: TodayMedicationSummary(
+    water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
+    medication: const TodayMedicationSummary(
       medicineCount: 0,
       pendingCount: 0,
       nextDoseTimeLabel: '--',
       nextMedicine: TodayMedicationKind.atorvastatin,
     ),
     vitals: <TodayVitalSummary>[],
-    mealSuggestion: TodayMealSuggestion(
+    mealSuggestion: const TodayMealSuggestion(
       type: TodayMealSuggestionType.highProteinBalancedLunch,
     ),
-    environment: TodayEnvironmentSummary(signals: <TodayEnvironmentSignal>[]),
-    lumiSuggestion: TodayLumiSuggestion(
+    environment: const TodayEnvironmentSummary(
+      signals: <TodayEnvironmentSignal>[],
+    ),
+    lumiSuggestion: const TodayLumiSuggestion(
       type: TodayLumiSuggestionType.pollenProtection,
     ),
   );

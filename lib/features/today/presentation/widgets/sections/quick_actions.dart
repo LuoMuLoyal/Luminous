@@ -60,12 +60,7 @@ class TodayQuickActionsSection extends StatelessWidget {
                       size: Spacing.level5,
                       color: colors.mutedForeground,
                     ),
-                    title: Text(
-                      action.title,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                    ),
+                    title: Text(action.title),
                     subtitle: Text(action.subtitle),
                     suffix: const Icon(FLucideIcons.chevronRight),
                     onPress: () => action.usePush

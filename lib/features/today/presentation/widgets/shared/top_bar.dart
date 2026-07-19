@@ -35,6 +35,10 @@ class TodayTopBar extends StatelessWidget {
         widthFactor: 0.64,
       ),
       trailing: const [_AssistantEntryButton(), _NotificationButton()],
+      // TodayTopBar is always rendered inside a ListView that already
+      // provides horizontal padding and SafeArea, so skip the built-in
+      // wrappers to avoid double padding / double SafeArea.
+      disableSafeAreaAndPadding: true,
     );
   }
 }
