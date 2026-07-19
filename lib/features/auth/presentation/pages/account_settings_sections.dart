@@ -25,10 +25,12 @@ class AccountStatusSection extends StatelessWidget {
     super.key,
     required this.user,
     required this.l10n,
+    this.onVerifyEmail,
   });
 
   final AuthUser user;
   final AppLocalizations l10n;
+  final Future<void> Function()? onVerifyEmail;
 
   @override
   Widget build(BuildContext context) => _SectionColumn(
@@ -48,6 +50,17 @@ class AccountStatusSection extends StatelessWidget {
             ? l10n.authEmailUnverifiedStatus
             : l10n.authEmailVerifiedAt(formatDateTime(user.emailVerifiedAt!)),
       ),
+      if (user.email != null &&
+          user.emailVerifiedAt == null &&
+          onVerifyEmail != null)
+        SizedBox(
+          width: double.infinity,
+          child: FButton(
+            variant: FButtonVariant.outline,
+            onPress: () => onVerifyEmail!(),
+            child: Text(l10n.authEmailVerifyAction),
+          ),
+        ),
       _InfoRow(
         icon: user.hasPassword ? FLucideIcons.lock : FLucideIcons.lockOpen,
         label: l10n.authAccountOverviewPassword,
@@ -251,19 +264,27 @@ class PasswordSection extends StatelessWidget {
         if (!user.hasPassword)
           _MutedText(l10n.authPasswordUnsetManagementHint)
         else ...[
-          FTextField.password(
+          FTextFormField.password(
             control: FTextFieldControl.managed(
               controller: oldPasswordController,
             ),
             label: Text(l10n.authCurrentPasswordLabel),
             hint: l10n.authPasswordHint,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.authCurrentPasswordRequiredToast
+                : null,
           ),
-          FTextField.password(
+          FTextFormField.password(
             control: FTextFieldControl.managed(
               controller: newPasswordController,
             ),
             label: Text(l10n.authNewPasswordLabel),
             hint: l10n.authPasswordHint,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.authNewPasswordRequiredToast
+                : null,
           ),
           SizedBox(
             width: double.infinity,
@@ -318,16 +339,21 @@ class DeleteAccountSection extends StatelessWidget {
       );
     }
 
-    return _SectionColumn(
+    return _DangerZoneSection(
       title: l10n.authDeleteAccountSectionTitle,
+      dangerLabel: l10n.authDeleteAccountDangerZoneLabel,
       children: [
         if (user.hasPassword) ...[
-          FTextField.password(
+          FTextFormField.password(
             control: FTextFieldControl.managed(
               controller: deletePasswordController,
             ),
             label: Text(l10n.authCurrentPasswordLabel),
             hint: l10n.authDeleteAccountHint,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.authCurrentPasswordRequiredToast
+                : null,
           ),
         ] else ...[
           _MutedText(l10n.authDeleteAccountCodeHint),
@@ -342,7 +368,9 @@ class DeleteAccountSection extends StatelessWidget {
                 ? l10n.authSendCode
                 : l10n.authSendCodeAgain(cooldownSeconds!),
             isLoading: isSendingCode,
-            onSendCode: isSendingCode || cooldownSeconds != null
+            onSendCode:
+                isSendingCode ||
+                    (cooldownSeconds != null && cooldownSeconds! > 0)
                 ? null
                 : () => onSendCode(),
           ),
@@ -389,6 +417,70 @@ class _SectionColumn extends StatelessWidget {
       ],
     ],
   );
+}
+
+class _DangerZoneSection extends StatelessWidget {
+  const _DangerZoneSection({
+    required this.title,
+    required this.dangerLabel,
+    required this.children,
+  });
+
+  final String title;
+  final String dangerLabel;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(color: colors.destructive.withValues(alpha: 0.4)),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  FLucideIcons.triangleAlert,
+                  size: 16,
+                  color: colors.destructive,
+                ),
+                const SizedBox(width: Spacing.level2),
+                Text(
+                  dangerLabel,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(
+                        color: colors.destructive,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level2),
+            Text(
+              title,
+              style: TypographyToken.level5
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: Spacing.level5),
+            for (final child in children) ...[
+              child,
+              if (child != children.last)
+                const SizedBox(height: Spacing.level4),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _InfoRow extends StatelessWidget {

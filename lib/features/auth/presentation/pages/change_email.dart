@@ -30,9 +30,6 @@ class ChangeEmailPage extends HookConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final l10n = AppLocalizations.of(context)!;
     final isSignedIn = session.canAccessProtectedData && session.user != null;
-    final success = accountState.successMessage?.isNotEmpty == true
-        ? accountState.successMessage
-        : null;
 
     return AuthShell(
       title: l10n.authChangeEmailFormTitle,
@@ -92,54 +89,46 @@ class ChangeEmailPage extends HookConsumerWidget {
                             );
                           },
                   ),
-                  if ((accountState.errorMessage?.isNotEmpty ?? false) ||
-                      success != null) ...[
-                    const SizedBox(height: Spacing.level4),
-                    FToast(
-                      variant: accountState.errorMessage?.isNotEmpty == true
-                          ? FToastVariant.destructive
-                          : FToastVariant.primary,
-                      title: Text(
-                        accountState.errorMessage?.isNotEmpty == true
-                            ? accountState.errorMessage!
-                            : success!,
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: Spacing.level6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FButton(
-                        size: FButtonSizeVariant.sm,
-                        mainAxisSize: MainAxisSize.min,
-                        onPress: !isSignedIn || accountState.isSubmitting
-                            ? null
-                            : () async {
-                                if (!(formKey.currentState?.validate() ??
-                                    false)) {
-                                  return;
+                  SizedBox(
+                    width: double.infinity,
+                    child: FButton(
+                      onPress: !isSignedIn || accountState.isSubmitting
+                          ? null
+                          : () async {
+                              if (!(formKey.currentState?.validate() ??
+                                  false)) {
+                                return;
+                              }
+                              final ok = await accountNotifier.changeEmail(
+                                newEmail: emailController.text,
+                                code: codeController.text,
+                              );
+                              if (!ok && context.mounted) {
+                                final msg =
+                                    accountState.errorMessage?.isNotEmpty ==
+                                        true
+                                    ? accountState.errorMessage!
+                                    : null;
+                                if (msg != null) {
+                                  await AppToast.show(context, msg);
                                 }
-                                final ok = await accountNotifier.changeEmail(
-                                  newEmail: emailController.text,
-                                  code: codeController.text,
+                              }
+                              if (ok && context.mounted) {
+                                await AppToast.show(
+                                  context,
+                                  l10n.authChangeEmailSuccess,
                                 );
-                                if (ok && context.mounted) {
-                                  await AppToast.show(
-                                    context,
-                                    l10n.authChangeEmailSuccess,
-                                  );
-                                }
-                              },
-                        child: accountState.isSubmitting
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: FCircularProgress(),
-                              )
-                            : Text(l10n.authChangeEmailSubmit),
-                      ),
-                    ],
+                              }
+                            },
+                      child: accountState.isSubmitting
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: FCircularProgress(),
+                            )
+                          : Text(l10n.authChangeEmailSubmit),
+                    ),
                   ),
                   const SizedBox(height: Spacing.level3),
                   Row(

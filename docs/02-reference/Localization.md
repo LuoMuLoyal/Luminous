@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-12
+Last updated: 2026-07-19
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -94,6 +94,9 @@ Persisted preference keys:
 - Assistant tool inventory strings are owned by the Assistant ARB entries, including medicine
    retrieval tools such as leaflet search, DrugBank entity resolution, DrugBank passage search, and
    medical-QA search.
+- Assistant controls drawer strings such as the drawer title (`assistantControlsDrawerTitle`) and the
+   disabled-by-user hint (`assistantConversationDisabledByUserHint`) are owned by the Assistant ARB
+   entries. The hint text references the top-right settings entry point.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.
@@ -102,6 +105,12 @@ Persisted preference keys:
   (`scan*` keys).
 - Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
   `authQqCallbackLabel`, `authQqCompleteAction`).
+- Auth form strings such as login password hint (`authPasswordLoginHint`), register terms-required
+  hint (`authRegisterTermsRequiredHint`), email verify action (`authEmailVerifyAction`), and danger-zone
+  label (`authDeleteAccountDangerZoneLabel`) are owned by the Auth ARB entries.
+- Notification accessibility semantics keys such as `notificationUnreadSemantics` are owned by the
+  Notification ARB entries. Swipe-action labels (`notificationActionMarkRead` / `notificationActionMarkUnread`)
+  are also owned by the Notification ARB entries.
 - Deferred strings may remain only when deferred code still references them and the code is
    annotated.
 - When an action moves to another tab, remove the old tab's action strings instead of keeping

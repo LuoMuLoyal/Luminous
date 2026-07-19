@@ -40,9 +40,6 @@ class AccountSettingsPage extends HookConsumerWidget {
     final user = session.user;
     final resolvingSession = session.isLoading;
     final signedOut = !session.canAccessProtectedData || user == null;
-    final success = accountState.successMessage?.isNotEmpty == true
-        ? accountState.successMessage
-        : null;
 
     final emailController = useTextEditingController(text: user?.email ?? '');
     final nicknameController = useTextEditingController(
@@ -141,7 +138,16 @@ class AccountSettingsPage extends HookConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AccountStatusSection(user: user, l10n: l10n),
+                          AccountStatusSection(
+                            user: user,
+                            l10n: l10n,
+                            onVerifyEmail: () => _verifyEmailFlow(
+                              context,
+                              l10n,
+                              ref,
+                              user.email!,
+                            ),
+                          ),
                           const SizedBox(height: Spacing.level6),
                           _ProfileSection(
                             nicknameController: nicknameController,
@@ -230,6 +236,17 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 oldPassword: oldPasswordController.text,
                                 newPassword: newPasswordController.text,
                               );
+                              if (!ok && ctx.mounted) {
+                                final msg =
+                                    accountState.errorMessage?.isNotEmpty ==
+                                        true
+                                    ? accountState.errorMessage!
+                                    : null;
+                                if (msg != null) {
+                                  await AppToast.show(ctx, msg);
+                                }
+                                return;
+                              }
                               if (!ok || !ctx.mounted) return;
                               await AppToast.show(
                                 ctx,
@@ -276,6 +293,17 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 final ok = await accountNotifier.deleteAccount(
                                   password: deletePasswordController.text,
                                 );
+                                if (!ok && ctx.mounted) {
+                                  final msg =
+                                      accountState.errorMessage?.isNotEmpty ==
+                                          true
+                                      ? accountState.errorMessage!
+                                      : null;
+                                  if (msg != null) {
+                                    await AppToast.show(ctx, msg);
+                                  }
+                                  return;
+                                }
                                 if (!ok || !ctx.mounted) return;
                                 await AppToast.show(
                                   ctx,
@@ -293,6 +321,17 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 final ok = await accountNotifier.deleteAccount(
                                   code: deleteCodeController.text,
                                 );
+                                if (!ok && ctx.mounted) {
+                                  final msg =
+                                      accountState.errorMessage?.isNotEmpty ==
+                                          true
+                                      ? accountState.errorMessage!
+                                      : null;
+                                  if (msg != null) {
+                                    await AppToast.show(ctx, msg);
+                                  }
+                                  return;
+                                }
                                 if (!ok || !ctx.mounted) return;
                                 await AppToast.show(
                                   ctx,
@@ -309,20 +348,6 @@ class AccountSettingsPage extends HookConsumerWidget {
                 ),
               ],
             ),
-            if ((accountState.errorMessage?.isNotEmpty ?? false) ||
-                success != null) ...[
-              const SizedBox(height: Spacing.level4),
-              FToast(
-                variant: accountState.errorMessage?.isNotEmpty == true
-                    ? FToastVariant.destructive
-                    : FToastVariant.primary,
-                title: Text(
-                  accountState.errorMessage?.isNotEmpty == true
-                      ? accountState.errorMessage!
-                      : success!,
-                ),
-              ),
-            ],
           ],
         ],
       ),
@@ -411,6 +436,100 @@ Future<bool> _confirmUnlinkIdentity(
     ),
   );
   return result ?? false;
+}
+
+Future<void> _verifyEmailFlow(
+  BuildContext context,
+  AppLocalizations l10n,
+  WidgetRef ref,
+  String email,
+) async {
+  final notifier = ref.read(authAccountProvider.notifier);
+  final sent = await notifier.sendVerificationCode(
+    email: email,
+    scene: AuthVerificationScene.register,
+  );
+  if (!context.mounted) return;
+  if (!sent) {
+    final state = ref.read(authAccountProvider);
+    final msg = state.errorMessage?.isNotEmpty == true
+        ? state.errorMessage!
+        : l10n.authEmailRequiredError;
+    await AppToast.show(context, msg);
+    return;
+  }
+
+  await AppToast.show(context, l10n.authSendCode);
+  if (!context.mounted) return;
+
+  final code = await _showVerifyEmailDialog(context, l10n);
+  if (code == null || !context.mounted) return;
+
+  final ok = await notifier.verifyEmail(email: email, code: code);
+  if (!context.mounted) return;
+  if (ok) {
+    await AppToast.show(context, l10n.authEmailVerifiedAt(email));
+  } else {
+    final state = ref.read(authAccountProvider);
+    final msg = state.errorMessage?.isNotEmpty == true
+        ? state.errorMessage!
+        : l10n.authCodeRequiredError;
+    await AppToast.show(context, msg);
+  }
+}
+
+Future<String?> _showVerifyEmailDialog(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  final controller = TextEditingController();
+  final result = await showAppDialog<String>(
+    context: context,
+    maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.authEmailVerifyAction,
+          style: TypographyToken.level6
+              .body(dialogContext)
+              .copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: Spacing.level4),
+        FTextField(
+          control: FTextFieldControl.managed(controller: controller),
+          label: Text(l10n.authCodeLabel),
+          hint: l10n.authCodeLabel,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+        ),
+        const SizedBox(height: Spacing.level6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.authCancelAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () =>
+                  Navigator.of(dialogContext).pop(controller.text.trim()),
+              child: Text(l10n.authEmailVerifyAction),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+  controller.dispose();
+  return result;
 }
 
 class _ProfileSection extends StatelessWidget {

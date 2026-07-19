@@ -64,27 +64,22 @@ class RegisterPage extends HookConsumerWidget {
               isLoading: state.isSendingCode,
               validator: (value) =>
                   RequiredInput.validate(value, l10n.authCodeRequiredError),
-              onSendCode: () async {
-                final emailError = EmailInput.validate(
-                  emailController.text,
-                  requiredMessage: l10n.authEmailRequiredError,
-                  invalidMessage: l10n.authEmailInvalidError,
-                );
-                if (emailError != null) {
-                  formKey.currentState?.validate();
-                  return;
-                }
-                if (state.cooldownSeconds != null &&
-                    state.cooldownSeconds! > 0) {
-                  await AppToast.show(
-                    context,
-                    l10n.authCodeResendWait(state.cooldownSeconds!),
-                  );
-                  return;
-                }
-                notifier.updateEmail(emailController.text);
-                await notifier.sendCode();
-              },
+              onSendCode:
+                  (state.cooldownSeconds != null && state.cooldownSeconds! > 0)
+                  ? null
+                  : () async {
+                      final emailError = EmailInput.validate(
+                        emailController.text,
+                        requiredMessage: l10n.authEmailRequiredError,
+                        invalidMessage: l10n.authEmailInvalidError,
+                      );
+                      if (emailError != null) {
+                        formKey.currentState?.validate();
+                        return;
+                      }
+                      notifier.updateEmail(emailController.text);
+                      await notifier.sendCode();
+                    },
             ),
             const SizedBox(height: Spacing.level4),
             FTextFormField.password(
@@ -147,61 +142,61 @@ class RegisterPage extends HookConsumerWidget {
                 onPrivacy: () => context.push('${AppRoutes.legal}/privacy'),
               ),
             ),
-            if ((state.errorMessage?.isNotEmpty ?? false) ||
-                (state.successMessage?.isNotEmpty ?? false)) ...[
-              const SizedBox(height: Spacing.level4),
-              FToast(
-                variant: state.errorMessage?.isNotEmpty == true
-                    ? FToastVariant.destructive
-                    : FToastVariant.primary,
-                title: Text(
-                  state.errorMessage?.isNotEmpty == true
-                      ? state.errorMessage!
-                      : state.successMessage!,
+            if (!acceptedTerms.value)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.level2),
+                child: Text(
+                  l10n.authRegisterTermsRequiredHint,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: context.theme.colors.destructive),
                 ),
               ),
-            ],
             const SizedBox(height: Spacing.level6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: state.isSubmitting || !acceptedTerms.value
-                      ? null
-                      : () async {
-                          if (!(formKey.currentState?.validate() ?? false)) {
+            SizedBox(
+              width: double.infinity,
+              child: FButton(
+                onPress: state.isSubmitting || !acceptedTerms.value
+                    ? null
+                    : () async {
+                        if (!(formKey.currentState?.validate() ?? false)) {
+                          return;
+                        }
+                        notifier.updateEmail(emailController.text);
+                        notifier.updateCode(codeController.text);
+                        notifier.updatePassword(passwordController.text);
+                        notifier.updateConfirmPassword(
+                          confirmPasswordController.text,
+                        );
+                        notifier.updateNickname(nicknameController.text);
+                        final ok = await notifier.submit();
+                        if (!ok && context.mounted) {
+                          final msg = state.errorMessage?.isNotEmpty == true
+                              ? state.errorMessage!
+                              : null;
+                          if (msg != null) {
+                            await AppToast.show(context, msg);
+                          }
+                        }
+                        if (ok && context.mounted) {
+                          await AppToast.show(
+                            context,
+                            l10n.authRegisterSuccess,
+                          );
+                          if (!context.mounted) {
                             return;
                           }
-                          notifier.updateEmail(emailController.text);
-                          notifier.updateCode(codeController.text);
-                          notifier.updatePassword(passwordController.text);
-                          notifier.updateConfirmPassword(
-                            confirmPasswordController.text,
-                          );
-                          notifier.updateNickname(nicknameController.text);
-                          final ok = await notifier.submit();
-                          if (ok && context.mounted) {
-                            await AppToast.show(
-                              context,
-                              l10n.authRegisterSuccess,
-                            );
-                            if (!context.mounted) {
-                              return;
-                            }
-                            context.go(AppRoutes.login);
-                          }
-                        },
-                  child: state.isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: FCircularProgress(),
-                        )
-                      : Text(l10n.authCreateAccountAction),
-                ),
-              ],
+                          context.go(AppRoutes.login);
+                        }
+                      },
+                child: state.isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: FCircularProgress(),
+                      )
+                    : Text(l10n.authCreateAccountAction),
+              ),
             ),
             const SizedBox(height: Spacing.level3),
             Wrap(

@@ -27,9 +27,6 @@ class ForgotPasswordPage extends HookConsumerWidget {
     final state = ref.watch(passwordResetProvider);
     final notifier = ref.read(passwordResetProvider.notifier);
     final l10n = AppLocalizations.of(context)!;
-    final success = state.successMessage?.isNotEmpty == true
-        ? state.successMessage
-        : null;
 
     return AuthShell(
       title: l10n.authResetPasswordAction,
@@ -65,27 +62,22 @@ class ForgotPasswordPage extends HookConsumerWidget {
               isLoading: state.isSendingCode,
               validator: (value) =>
                   RequiredInput.validate(value, l10n.authCodeRequiredError),
-              onSendCode: () async {
-                final emailError = EmailInput.validate(
-                  emailController.text,
-                  requiredMessage: l10n.authEmailRequiredError,
-                  invalidMessage: l10n.authEmailInvalidError,
-                );
-                if (emailError != null) {
-                  formKey.currentState?.validate();
-                  return;
-                }
-                if (state.cooldownSeconds != null &&
-                    state.cooldownSeconds! > 0) {
-                  await AppToast.show(
-                    context,
-                    l10n.authCodeResendWait(state.cooldownSeconds!),
-                  );
-                  return;
-                }
-                notifier.updateEmail(emailController.text);
-                await notifier.sendResetCode();
-              },
+              onSendCode:
+                  (state.cooldownSeconds != null && state.cooldownSeconds! > 0)
+                  ? null
+                  : () async {
+                      final emailError = EmailInput.validate(
+                        emailController.text,
+                        requiredMessage: l10n.authEmailRequiredError,
+                        invalidMessage: l10n.authEmailInvalidError,
+                      );
+                      if (emailError != null) {
+                        formKey.currentState?.validate();
+                        return;
+                      }
+                      notifier.updateEmail(emailController.text);
+                      await notifier.sendResetCode();
+                    },
             ),
             const SizedBox(height: Spacing.level4),
             FTextFormField.password(
@@ -120,56 +112,46 @@ class ForgotPasswordPage extends HookConsumerWidget {
                 return null;
               },
             ),
-            if ((state.errorMessage?.isNotEmpty ?? false) ||
-                success != null) ...[
-              const SizedBox(height: Spacing.level4),
-              FToast(
-                variant: state.errorMessage?.isNotEmpty == true
-                    ? FToastVariant.destructive
-                    : FToastVariant.primary,
-                title: Text(
-                  state.errorMessage?.isNotEmpty == true
-                      ? state.errorMessage!
-                      : success!,
-                ),
-              ),
-            ],
             const SizedBox(height: Spacing.level6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: state.isSubmitting
-                      ? null
-                      : () async {
-                          if (!(formKey.currentState?.validate() ?? false)) {
-                            return;
+            SizedBox(
+              width: double.infinity,
+              child: FButton(
+                onPress: state.isSubmitting
+                    ? null
+                    : () async {
+                        if (!(formKey.currentState?.validate() ?? false)) {
+                          return;
+                        }
+                        notifier.updateEmail(emailController.text);
+                        notifier.updateCode(codeController.text);
+                        notifier.updatePassword(passwordController.text);
+                        notifier.updateConfirmPassword(
+                          confirmPasswordController.text,
+                        );
+                        final ok = await notifier.resetPassword();
+                        if (!ok && context.mounted) {
+                          final msg = state.errorMessage?.isNotEmpty == true
+                              ? state.errorMessage!
+                              : null;
+                          if (msg != null) {
+                            await AppToast.show(context, msg);
                           }
-                          notifier.updateEmail(emailController.text);
-                          notifier.updateCode(codeController.text);
-                          notifier.updatePassword(passwordController.text);
-                          notifier.updateConfirmPassword(
-                            confirmPasswordController.text,
+                        }
+                        if (ok && context.mounted) {
+                          await AppToast.show(
+                            context,
+                            l10n.authResetPasswordSuccess,
                           );
-                          final ok = await notifier.resetPassword();
-                          if (ok && context.mounted) {
-                            await AppToast.show(
-                              context,
-                              l10n.authResetPasswordSuccess,
-                            );
-                          }
-                        },
-                  child: state.isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: FCircularProgress(),
-                        )
-                      : Text(l10n.authResetPasswordAction),
-                ),
-              ],
+                        }
+                      },
+                child: state.isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: FCircularProgress(),
+                      )
+                    : Text(l10n.authResetPasswordAction),
+              ),
             ),
             const SizedBox(height: Spacing.level3),
             Wrap(

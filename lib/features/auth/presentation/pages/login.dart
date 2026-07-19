@@ -286,7 +286,7 @@ class LoginPage extends HookConsumerWidget {
                   controller: passwordController,
                 ),
                 label: Text(l10n.authPasswordLabel),
-                hint: l10n.authPasswordHint,
+                hint: l10n.authPasswordLoginHint,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => RequiredInput.validate(
                   value,
@@ -305,71 +305,61 @@ class LoginPage extends HookConsumerWidget {
                 isLoading: state.isSendingCode,
                 validator: (value) =>
                     RequiredInput.validate(value, l10n.authCodeRequiredError),
-                onSendCode: () async {
-                  final emailError = EmailInput.validate(
-                    emailController.text,
-                    requiredMessage: l10n.authEmailRequiredError,
-                    invalidMessage: l10n.authEmailInvalidError,
-                  );
-                  if (emailError != null) {
-                    formKey.currentState?.validate();
-                    return;
-                  }
-                  if (state.cooldownSeconds != null &&
-                      state.cooldownSeconds! > 0) {
-                    await AppToast.show(
-                      context,
-                      l10n.authCodeResendWait(state.cooldownSeconds!),
-                    );
-                    return;
-                  }
-                  notifier.updateEmail(emailController.text);
-                  await notifier.sendCode();
-                },
+                onSendCode:
+                    (state.cooldownSeconds != null &&
+                        state.cooldownSeconds! > 0)
+                    ? null
+                    : () async {
+                        final emailError = EmailInput.validate(
+                          emailController.text,
+                          requiredMessage: l10n.authEmailRequiredError,
+                          invalidMessage: l10n.authEmailInvalidError,
+                        );
+                        if (emailError != null) {
+                          formKey.currentState?.validate();
+                          return;
+                        }
+                        notifier.updateEmail(emailController.text);
+                        await notifier.sendCode();
+                      },
               ),
-            if ((state.errorMessage?.isNotEmpty ?? false) ||
-                (oauthState.errorMessage?.isNotEmpty ?? false)) ...[
-              const SizedBox(height: Spacing.level4),
-              FToast(
-                variant: FToastVariant.destructive,
-                title: Text(
-                  state.errorMessage?.isNotEmpty == true
-                      ? state.errorMessage!
-                      : oauthState.errorMessage!,
-                ),
-              ),
-            ],
             const SizedBox(height: Spacing.level6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  key: const Key('auth-login-submit-action'),
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: state.isSubmitting
-                      ? null
-                      : () async {
-                          if (!(formKey.currentState?.validate() ?? false)) {
-                            return;
+            SizedBox(
+              width: double.infinity,
+              child: FButton(
+                key: const Key('auth-login-submit-action'),
+                onPress: state.isSubmitting
+                    ? null
+                    : () async {
+                        if (!(formKey.currentState?.validate() ?? false)) {
+                          return;
+                        }
+                        notifier.updateEmail(emailController.text);
+                        notifier.updatePassword(passwordController.text);
+                        notifier.updateCode(codeController.text);
+                        final session = await notifier.submit();
+                        if (session == null && context.mounted) {
+                          final msg = state.errorMessage?.isNotEmpty == true
+                              ? state.errorMessage!
+                              : oauthState.errorMessage?.isNotEmpty == true
+                              ? oauthState.errorMessage!
+                              : null;
+                          if (msg != null) {
+                            await AppToast.show(context, msg);
                           }
-                          notifier.updateEmail(emailController.text);
-                          notifier.updatePassword(passwordController.text);
-                          notifier.updateCode(codeController.text);
-                          final session = await notifier.submit();
-                          if (session != null && context.mounted) {
-                            goAfterLogin();
-                          }
-                        },
-                  child: state.isSubmitting
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: FCircularProgress(),
-                        )
-                      : Text(l10n.authSignIn),
-                ),
-              ],
+                        }
+                        if (session != null && context.mounted) {
+                          goAfterLogin();
+                        }
+                      },
+                child: state.isSubmitting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: FCircularProgress(),
+                      )
+                    : Text(l10n.authSignIn),
+              ),
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(

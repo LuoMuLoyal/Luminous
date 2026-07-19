@@ -7,6 +7,7 @@
   "authEmailHint": "name@example.com",
   "authPasswordLabel": "密码",
   "authPasswordHint": "至少 8 位，建议包含大小写和数字",
+  "authPasswordLoginHint": "请输入密码",
   "authCodeLabel": "验证码",
   "authNicknameLabel": "昵称",
   "authNicknameHint": "可选",
@@ -173,5 +174,8 @@
   "authQqCallbackRequiredToast": "请先粘贴 QQ 回调链接。",
   "authQqCallbackInvalidToast": "QQ 回调链接缺少 code 或 state。",
   "authBackHomeAction": "返回首页",
-  "authAppleSignInFailed": "Apple 登录失败。"
+  "authAppleSignInFailed": "Apple 登录失败。",
+  "authRegisterTermsRequiredHint": "请先阅读并同意服务条款与隐私政策",
+  "authEmailVerifyAction": "去验证",
+  "authDeleteAccountDangerZoneLabel": "危险操作"
 }

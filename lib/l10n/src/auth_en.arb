@@ -7,6 +7,7 @@
   "authEmailHint": "name@example.com",
   "authPasswordLabel": "Password",
   "authPasswordHint": "At least 8 characters, ideally with mixed case and numbers",
+  "authPasswordLoginHint": "Enter your password",
   "authCodeLabel": "Verification code",
   "authNicknameLabel": "Nickname",
   "authNicknameHint": "Optional",
@@ -173,5 +174,8 @@
   "authQqCallbackRequiredToast": "Please paste the QQ callback link first.",
   "authQqCallbackInvalidToast": "The QQ callback link is missing code or state.",
   "authBackHomeAction": "Back to home",
-  "authAppleSignInFailed": "Apple Sign In failed."
+  "authAppleSignInFailed": "Apple Sign In failed.",
+  "authRegisterTermsRequiredHint": "Please read and accept the Terms of Service and Privacy Policy first",
+  "authEmailVerifyAction": "Verify now",
+  "authDeleteAccountDangerZoneLabel": "Danger zone"
 }
