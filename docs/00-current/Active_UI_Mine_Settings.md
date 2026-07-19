@@ -83,3 +83,28 @@ Last updated: 2026-07-18
 - `updatePreferences` 接受 `Object?` 类型参数（sentinel 区分"不修改"与"设为 null"）。
 - `UserSettingsController` 状态类型从 DTO 改为 domain `UserSettings` 实体。
 - 日期格式化通过 `lib/core/utils/date_format_utils.dart`，不使用手写 `padLeft` 拼接。
+
+## 2026-07-19 补充
+
+### Mine 档案链路
+
+- `_ArchiveRow` 改为 `ConsumerWidget`，有记录时弹出记录列表 bottom sheet（`_showRecordListSheet`），点击具体记录跳 `/:id/edit`，底部"添加新记录"按钮跳新建页。
+- 新增病史（condition）档案行（`heartPulse` 图标）。
+- "待补充"颜色从 `destructive` 改为 `SemanticColor.warning`。
+- "隐私报告"入口从 `AppRoutes.settings` 改为 `AppRoutes.settingsExport`。
+- Hero 卡取消整卡 `FTappable`，改为 `FCard.raw`，保留内部"补全资料"主按钮。
+- 头像新增编辑小徽标（pencil 图标 + primary 色圆形背景）。
+- 同步失败横幅移除自带水平 padding，点击重试后增加 `AppToast` 反馈。
+
+### 资料编辑
+
+- 保存失败新增 `errorMessage` 监听，失败时 `AppToast.show` 显示。
+- 保存按钮新增 `isSaving` 禁用 + `FCircularProgress` 进度指示器。
+- 单位制下拉新增 `labelBuilder` 显示本地化标签。
+- 移除 `onboardingCompleted` 状态和 `FSwitch` 开关。
+
+### 健康表单
+
+- 删除成功根据 `next.deleted` 区分显示 `mineEditDeletedToast`（"已删除"）。
+- 三个 `FormState` 新增 `deleted` 字段。
+- 保存/删除失败新增 `errorMessage` 监听。

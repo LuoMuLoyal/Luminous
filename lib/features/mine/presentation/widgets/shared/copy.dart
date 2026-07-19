@@ -25,6 +25,8 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.archiveBasicSubtitle => l10n.mineArchiveBasicSubtitle,
     MineCopyKey.archiveAllergyTitle => l10n.mineArchiveAllergyTitle,
     MineCopyKey.archiveAllergySubtitle => l10n.mineArchiveAllergySubtitle,
+    MineCopyKey.archiveConditionTitle => l10n.mineArchiveConditionTitle,
+    MineCopyKey.archiveConditionSubtitle => l10n.mineArchiveConditionSubtitle,
     MineCopyKey.archiveMedicineTitle => l10n.mineArchiveMedicineTitle,
     MineCopyKey.archiveMedicineSubtitle => l10n.mineArchiveMedicineSubtitle,
     MineCopyKey.archiveEmergencyTitle => l10n.mineArchiveEmergencyTitle,
@@ -33,5 +35,7 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.archiveNeedsFill => l10n.mineArchiveNeedsFill,
     MineCopyKey.privacyNoticeTitle => l10n.minePrivacyNoticeTitle,
     MineCopyKey.privacyNoticeAction => l10n.minePrivacyNoticeAction,
+    MineCopyKey.archiveRecordListTitle => l10n.mineArchiveRecordListTitle,
+    MineCopyKey.archiveAddNewAction => l10n.mineArchiveAddNewAction,
   };
 }

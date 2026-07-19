@@ -167,13 +167,26 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       statusKey: profile.allergyCount > 0
           ? MineCopyKey.archiveCompleted
           : MineCopyKey.archiveNeedsFill,
-      route: '/mine/allergy/new',
+      route: AppRoutes.mineAllergyNew,
+    ),
+    MineArchiveEntry(
+      icon: FLucideIcons.heartPulse,
+      accent: _red,
+      titleKey: MineCopyKey.archiveConditionTitle,
+      subtitleKey: MineCopyKey.archiveConditionSubtitle,
+      statusKey: profile.conditionCount > 0
+          ? MineCopyKey.archiveCompleted
+          : MineCopyKey.archiveNeedsFill,
+      route: AppRoutes.mineConditionNew,
     ),
     MineArchiveEntry(
       icon: FLucideIcons.pill,
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
+      statusKey: profile.currentMedicineCount > 0
+          ? MineCopyKey.archiveCompleted
+          : MineCopyKey.archiveNeedsFill,
       route: AppRoutes.mineMedicineNew,
     ),
   ];

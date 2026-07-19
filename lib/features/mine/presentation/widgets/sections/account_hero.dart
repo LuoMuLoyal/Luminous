@@ -44,139 +44,136 @@ class MineAccountHero extends StatelessWidget {
         ? l10n.mineCompletenessGapAction
         : l10n.mineReadinessManageAction;
 
-    return FTappable(
+    return FCard.raw(
       key: const Key('mine-account-manage-link'),
-      onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
-      child: FCard.raw(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const _AvatarPlaceholder(),
-                  const SizedBox(width: Spacing.level4),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: TypographyToken.level7
-                              .display(context)
-                              .copyWith(fontWeight: FontWeight.w800),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: Spacing.level2),
-                        Wrap(
-                          spacing: Spacing.level2,
-                          runSpacing: Spacing.level2,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            _StateBadge(
-                              label: isPreview
-                                  ? l10n.mineReadinessPreviewBadge
-                                  : l10n.mineReadinessSignedInBadge,
-                              preview: isPreview,
-                            ),
-                            Text(
-                              mineCopy(l10n, account.roleKey),
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: Spacing.level4),
-              Text(
-                title,
-                style: TypographyToken.level6
-                    .body(context)
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: Spacing.level2),
-              Text(
-                description,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground, height: 1.45),
-              ),
-              const SizedBox(height: Spacing.level4),
-              Row(
-                children: [
-                  Text(
-                    mineCopy(l10n, dashboard.completion.titleKey),
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
-                  const SizedBox(width: Spacing.level2),
-                  AppSkeletonSlot(
-                    skeleton: const AppInlineSkeletonBlock(
-                      height: 22,
-                      width: 42,
-                      radius: RadiusTokens.level2,
-                    ),
-                    child: Text(
-                      dashboard.completion.percentLabel,
-                      style: TypographyToken.level5
-                          .body(context)
-                          .copyWith(
-                            color: colors.primary,
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: Spacing.level2),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
-                  height: 8,
-                  radius: RadiusTokens.levelFull,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
-                  child: FDeterminateProgress(
-                    value: dashboard.completion.progress,
-                  ),
-                ),
-              ),
-              if (gaps.isNotEmpty) ...[
-                const SizedBox(height: Spacing.level3),
-                Wrap(
-                  spacing: Spacing.level2,
-                  runSpacing: Spacing.level2,
-                  children: [
-                    for (final gap in gaps.take(2))
-                      FBadge(
-                        variant: FBadgeVariant.secondary,
-                        child: Text(gap.label(l10n)),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _AvatarPlaceholder(),
+                const SizedBox(width: Spacing.level4),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TypographyToken.level7
+                            .display(context)
+                            .copyWith(fontWeight: FontWeight.w800),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                  ],
+                      const SizedBox(height: Spacing.level2),
+                      Wrap(
+                        spacing: Spacing.level2,
+                        runSpacing: Spacing.level2,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          _StateBadge(
+                            label: isPreview
+                                ? l10n.mineReadinessPreviewBadge
+                                : l10n.mineReadinessSignedInBadge,
+                            preview: isPreview,
+                          ),
+                          Text(
+                            mineCopy(l10n, account.roleKey),
+                            style: TypographyToken.level3
+                                .body(context)
+                                .copyWith(color: colors.mutedForeground),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
-              const SizedBox(height: Spacing.level4),
-              SizedBox(
-                width: double.infinity,
-                child: FButton(
-                  key: const Key('mine-readiness-action'),
-                  variant: isPreview
-                      ? FButtonVariant.outline
-                      : FButtonVariant.primary,
-                  onPress: () => _handlePrimaryAction(context, isPreview, gaps),
-                  child: Text(actionLabel),
+            ),
+            const SizedBox(height: Spacing.level4),
+            Text(
+              title,
+              style: TypographyToken.level6
+                  .body(context)
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: Spacing.level2),
+            Text(
+              description,
+              style: TypographyToken.level4
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground, height: 1.45),
+            ),
+            const SizedBox(height: Spacing.level4),
+            Row(
+              children: [
+                Text(
+                  mineCopy(l10n, dashboard.completion.titleKey),
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+                const SizedBox(width: Spacing.level2),
+                AppSkeletonSlot(
+                  skeleton: const AppInlineSkeletonBlock(
+                    height: 22,
+                    width: 42,
+                    radius: RadiusTokens.level2,
+                  ),
+                  child: Text(
+                    dashboard.completion.percentLabel,
+                    style: TypographyToken.level5
+                        .body(context)
+                        .copyWith(
+                          color: colors.primary,
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level2),
+            AppSkeletonSlot(
+              skeleton: const AppInlineSkeletonBlock(
+                height: 8,
+                radius: RadiusTokens.levelFull,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+                child: FDeterminateProgress(
+                  value: dashboard.completion.progress,
                 ),
               ),
+            ),
+            if (gaps.isNotEmpty) ...[
+              const SizedBox(height: Spacing.level3),
+              Wrap(
+                spacing: Spacing.level2,
+                runSpacing: Spacing.level2,
+                children: [
+                  for (final gap in gaps.take(2))
+                    FBadge(
+                      variant: FBadgeVariant.secondary,
+                      child: Text(gap.label(l10n)),
+                    ),
+                ],
+              ),
             ],
-          ),
+            const SizedBox(height: Spacing.level4),
+            SizedBox(
+              width: double.infinity,
+              child: FButton(
+                key: const Key('mine-readiness-action'),
+                variant: isPreview
+                    ? FButtonVariant.outline
+                    : FButtonVariant.primary,
+                onPress: () => _handlePrimaryAction(context, isPreview, gaps),
+                child: Text(actionLabel),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -204,19 +201,46 @@ class _AvatarPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.secondary,
-        shape: BoxShape.circle,
-        border: Border.all(color: colors.border),
-      ),
-      child: SizedBox.square(
-        dimension: 64,
-        child: Icon(
-          FLucideIcons.userRound,
-          color: colors.mutedForeground,
-          size: 32,
-        ),
+    return SizedBox.square(
+      dimension: 64,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.secondary,
+              shape: BoxShape.circle,
+              border: Border.all(color: colors.border),
+            ),
+            child: SizedBox.square(
+              dimension: 64,
+              child: Icon(
+                FLucideIcons.userRound,
+                color: colors.mutedForeground,
+                size: 32,
+              ),
+            ),
+          ),
+          Positioned(
+            right: -2,
+            bottom: -2,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.primary,
+                shape: BoxShape.circle,
+                border: Border.all(color: colors.background, width: 2),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  FLucideIcons.pencil,
+                  color: colors.primaryForeground,
+                  size: 12,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

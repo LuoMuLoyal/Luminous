@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -30,7 +32,6 @@ class ProfileEditPage extends HookConsumerWidget {
     final heightCmController = useTextEditingController();
     final bloodTypeController = useTextEditingController();
     final unitSystem = useState<HealthUnitSystem?>(null);
-    final onboardingCompleted = useState<bool?>(null);
     final initialized = useRef(false);
 
     void initFromSnapshot(HealthProfile profile) {
@@ -41,7 +42,6 @@ class ProfileEditPage extends HookConsumerWidget {
       heightCmController.text = profile.heightCm?.toString() ?? '';
       bloodTypeController.text = profile.bloodType ?? '';
       unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
-      onboardingCompleted.value = profile.onboardingCompletedAt != null;
     }
 
     void onSave() {
@@ -54,7 +54,6 @@ class ProfileEditPage extends HookConsumerWidget {
             ? null
             : bloodTypeController.text,
         unitSystem: unitSystem.value,
-        onboardingCompleted: onboardingCompleted.value,
       );
 
       ref.read(healthProfileFormProvider.notifier).save(input);
@@ -85,10 +84,19 @@ class ProfileEditPage extends HookConsumerWidget {
         ),
       );
     } else {
-      ref.listen<HealthProfileFormState>(healthProfileFormProvider, (_, next) {
-        if (next.saved) {
-          AppToast.show(context, l10n.mineEditSavedToast);
+      final formState = ref.watch(healthProfileFormProvider);
+
+      ref.listen<HealthProfileFormState>(healthProfileFormProvider, (
+        prev,
+        next,
+      ) {
+        if (next.saved && prev?.saved != true) {
+          unawaited(AppToast.show(context, l10n.mineEditSavedToast));
           if (context.mounted) context.pop();
+        }
+        final error = next.errorMessage;
+        if (error != null && error != prev?.errorMessage) {
+          unawaited(AppToast.show(context, error));
         }
       });
 
@@ -140,16 +148,20 @@ class ProfileEditPage extends HookConsumerWidget {
                           value: unitSystem.value,
                           values: HealthUnitSystem.values,
                           onChanged: (v) => unitSystem.value = v,
-                        ),
-                        const SizedBox(height: Spacing.level3),
-                        FSwitch(
-                          label: Text(l10n.mineEditFieldOnboardingCompleted),
-                          value: onboardingCompleted.value ?? false,
-                          onChange: (v) => onboardingCompleted.value = v,
+                          labelBuilder: (v) => v == HealthUnitSystem.metric
+                              ? l10n.mineEditUnitSystemMetric
+                              : l10n.mineEditUnitSystemImperial,
                         ),
                         const SizedBox(height: Spacing.level5),
                         FButton(
-                          onPress: onSave,
+                          onPress: formState.isSaving ? null : onSave,
+                          prefix: formState.isSaving
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: FCircularProgress(),
+                                )
+                              : null,
                           child: Text(l10n.mineEditSaveAction),
                         ),
                       ],
@@ -186,14 +198,16 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required T? value,
   required List<T> values,
   required ValueChanged<T?> onChanged,
+  String Function(T)? labelBuilder,
 }) {
+  final formatLabel = labelBuilder ?? (T v) => v.value;
   return FSelect<T>.rich(
     label: Text(label),
     hint: label,
-    format: (value) => value.value,
+    format: formatLabel,
     control: FSelectControl.lifted(value: value, onChange: onChanged),
     children: values
-        .map((v) => FSelectItem.item(title: Text(v.value), value: v))
+        .map((v) => FSelectItem.item(title: Text(formatLabel(v)), value: v))
         .toList(),
   );
 }

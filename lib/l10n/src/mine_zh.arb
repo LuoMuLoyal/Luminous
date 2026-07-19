@@ -49,6 +49,8 @@
   "mineArchiveBasicSubtitle": "个人信息与健康信息",
   "mineArchiveAllergyTitle": "过敏史",
   "mineArchiveAllergySubtitle": "食物、药物、环境过敏记录",
+  "mineArchiveConditionTitle": "基础病史",
+  "mineArchiveConditionSubtitle": "慢性病、手术史等健康条件记录",
   "mineArchiveMedicineTitle": "当前用药",
   "mineArchiveMedicineSubtitle": "正在使用的药品与用药记录",
   "mineArchiveEmergencyTitle": "紧急联系人",
@@ -210,6 +212,8 @@
   "mineEditFieldLocale": "语言",
   "mineEditFieldTimezone": "时区",
   "mineEditFieldUnitSystem": "单位制",
+  "mineEditUnitSystemMetric": "公制",
+  "mineEditUnitSystemImperial": "英制",
   "mineEditFieldOnboardingCompleted": "完成新手引导",
   "mineEditFieldKind": "类型",
   "mineEditFieldLabel": "名称",
@@ -262,5 +266,7 @@
   "mineConditionStatusSuspected": "疑似",
   "mineMedicineSourceDrugbank": "DrugBank",
   "mineMedicineSourceCn": "中国药典",
-  "mineMedicineSourceManual": "手动"
+  "mineMedicineSourceManual": "手动",
+  "mineArchiveRecordListTitle": "记录列表",
+  "mineArchiveAddNewAction": "添加新记录"
 }

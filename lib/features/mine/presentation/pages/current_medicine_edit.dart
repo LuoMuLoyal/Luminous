@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -152,12 +154,21 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     final session = ref.watch(authSessionProvider);
 
     ref.listen<CurrentMedicineFormState>(currentMedicineFormProvider, (
-      _,
+      prev,
       next,
     ) {
-      if (next.saved) {
-        AppToast.show(context, l10n.mineEditSavedToast);
+      if (next.saved && prev?.saved != true) {
+        unawaited(
+          AppToast.show(
+            context,
+            next.deleted ? l10n.mineEditDeletedToast : l10n.mineEditSavedToast,
+          ),
+        );
         if (context.mounted) context.pop();
+      }
+      final error = next.errorMessage;
+      if (error != null && error != prev?.errorMessage) {
+        unawaited(AppToast.show(context, error));
       }
     });
 

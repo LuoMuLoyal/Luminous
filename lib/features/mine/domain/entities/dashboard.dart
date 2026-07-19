@@ -139,6 +139,8 @@ enum MineCopyKey {
   archiveBasicSubtitle,
   archiveAllergyTitle,
   archiveAllergySubtitle,
+  archiveConditionTitle,
+  archiveConditionSubtitle,
   archiveMedicineTitle,
   archiveMedicineSubtitle,
   archiveEmergencyTitle,
@@ -147,4 +149,6 @@ enum MineCopyKey {
   archiveNeedsFill,
   privacyNoticeTitle,
   privacyNoticeAction,
+  archiveRecordListTitle,
+  archiveAddNewAction,
 }

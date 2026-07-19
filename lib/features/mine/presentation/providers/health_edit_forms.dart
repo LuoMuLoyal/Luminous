@@ -57,6 +57,7 @@ abstract class AllergyFormState with _$AllergyFormState {
     @Default(false) bool isSaving,
     String? errorMessage,
     @Default(false) bool saved,
+    @Default(false) bool deleted,
   }) = _AllergyFormState;
 }
 
@@ -97,7 +98,7 @@ class AllergyFormNotifier extends Notifier<AllergyFormState> {
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
-      state = const AllergyFormState(saved: true);
+      state = const AllergyFormState(saved: true, deleted: true);
     } catch (e) {
       ref.read(talkerProvider).error('AllergyFormNotifier.delete: failed: $e');
       state = AllergyFormState(isSaving: false, errorMessage: e.toString());
@@ -118,6 +119,7 @@ abstract class ConditionFormState with _$ConditionFormState {
     @Default(false) bool isSaving,
     String? errorMessage,
     @Default(false) bool saved,
+    @Default(false) bool deleted,
   }) = _ConditionFormState;
 }
 
@@ -158,7 +160,7 @@ class ConditionFormNotifier extends Notifier<ConditionFormState> {
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.healthContext);
-      state = const ConditionFormState(saved: true);
+      state = const ConditionFormState(saved: true, deleted: true);
     } catch (e) {
       ref
           .read(talkerProvider)
@@ -181,6 +183,7 @@ abstract class CurrentMedicineFormState with _$CurrentMedicineFormState {
     @Default(false) bool isSaving,
     String? errorMessage,
     @Default(false) bool saved,
+    @Default(false) bool deleted,
   }) = _CurrentMedicineFormState;
 }
 
@@ -232,7 +235,7 @@ class CurrentMedicineFormNotifier extends Notifier<CurrentMedicineFormState> {
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.currentMedicines);
-      state = const CurrentMedicineFormState(saved: true);
+      state = const CurrentMedicineFormState(saved: true, deleted: true);
     } catch (e) {
       ref
           .read(talkerProvider)

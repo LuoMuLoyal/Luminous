@@ -49,6 +49,8 @@
   "mineArchiveBasicSubtitle": "Personal and health information",
   "mineArchiveAllergyTitle": "Allergies",
   "mineArchiveAllergySubtitle": "Food, medicine, and environment allergy records",
+  "mineArchiveConditionTitle": "Conditions",
+  "mineArchiveConditionSubtitle": "Chronic conditions, surgeries, and other health records",
   "mineArchiveMedicineTitle": "Current meds",
   "mineArchiveMedicineSubtitle": "Active medicines and medication records",
   "mineArchiveEmergencyTitle": "Emergency contact",
@@ -210,6 +212,8 @@
   "mineEditFieldLocale": "Locale",
   "mineEditFieldTimezone": "Timezone",
   "mineEditFieldUnitSystem": "Unit system",
+  "mineEditUnitSystemMetric": "Metric",
+  "mineEditUnitSystemImperial": "Imperial",
   "mineEditFieldOnboardingCompleted": "Onboarding completed",
   "mineEditFieldKind": "Kind",
   "mineEditFieldLabel": "Label",
@@ -262,5 +266,7 @@
   "mineConditionStatusSuspected": "Suspected",
   "mineMedicineSourceDrugbank": "DrugBank",
   "mineMedicineSourceCn": "Chinese Pharmacopoeia",
-  "mineMedicineSourceManual": "Manual"
+  "mineMedicineSourceManual": "Manual",
+  "mineArchiveRecordListTitle": "Records",
+  "mineArchiveAddNewAction": "Add new record"
 }

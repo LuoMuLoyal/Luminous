@@ -54,7 +54,8 @@ class MineAiPrivacySection extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => pushAuthRequiredRoute(context, AppRoutes.settings),
+              onPress: () =>
+                  pushAuthRequiredRoute(context, AppRoutes.settingsExport),
             ),
           ],
         ),

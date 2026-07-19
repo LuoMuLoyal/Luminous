@@ -35,9 +35,6 @@ void main() {
     await tester.enterText(fields.at(1), '170');
     await tester.enterText(fields.at(2), '');
     await _scrollToSave(tester);
-    await tester.tap(find.text('完成新手引导'));
-    await tester.pump();
-    await _scrollToSave(tester);
     await tester.tap(find.text('保存'));
     await tester.pump(const Duration(seconds: 2));
 
@@ -47,7 +44,6 @@ void main() {
     expect(payload, containsPair('birthDate', '1999-02-03'));
     expect(payload, containsPair('heightCm', 170));
     expect(payload, containsPair('bloodType', null));
-    expect(payload, containsPair('onboardingCompleted', false));
   });
 
   testWidgets('Profile edit shows login dialog when signed out', (

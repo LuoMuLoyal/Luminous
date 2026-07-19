@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// A warning banner shown in the Mine page when there are permanently
@@ -24,7 +25,10 @@ class MineSyncFailedBanner extends ConsumerWidget {
         return _Banner(
           message: l10n.mineSyncFailedWarning(count),
           actionLabel: l10n.mineSyncFailedAction,
-          onTap: () => ref.read(syncWorkerProvider).flush(),
+          onTap: () {
+            ref.read(syncWorkerProvider).flush();
+            AppToast.show(context, l10n.mineSyncFailedAction);
+          },
         );
       },
       orElse: () => const SizedBox.shrink(),
@@ -47,51 +51,48 @@ class _Banner extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
-      child: FCard.raw(
-        child: FTappable(
-          onPress: onTap,
-          child: Container(
-            decoration: BoxDecoration(
-              color: SemanticColor.warning.subtle(context),
-              borderRadius: BorderRadius.circular(RadiusTokens.level3),
-              border: Border.all(color: SemanticColor.warning.border(context)),
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level3,
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  FLucideIcons.cloudAlert,
-                  size: 20,
-                  color: SemanticColor.warning.solid(context),
-                ),
-                const SizedBox(width: Spacing.level3),
-                Expanded(
-                  child: Text(
-                    message,
-                    style: TypographyToken.level4
-                        .body(context)
-                        .copyWith(color: colors.foreground),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                const SizedBox(width: Spacing.level3),
-                Text(
-                  actionLabel,
+    return FCard.raw(
+      child: FTappable(
+        onPress: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: SemanticColor.warning.subtle(context),
+            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            border: Border.all(color: SemanticColor.warning.border(context)),
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level4,
+            vertical: Spacing.level3,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                FLucideIcons.cloudAlert,
+                size: 20,
+                color: SemanticColor.warning.solid(context),
+              ),
+              const SizedBox(width: Spacing.level3),
+              Expanded(
+                child: Text(
+                  message,
                   style: TypographyToken.level4
                       .body(context)
-                      .copyWith(
-                        color: SemanticColor.warning.solid(context),
-                        fontWeight: FontWeight.w700,
-                      ),
+                      .copyWith(color: colors.foreground),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: Spacing.level3),
+              Text(
+                actionLabel,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: SemanticColor.warning.solid(context),
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ],
           ),
         ),
       ),

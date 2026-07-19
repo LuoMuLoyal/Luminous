@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
@@ -112,17 +114,25 @@ class AllergyEditPage extends HookConsumerWidget {
     }
 
     void onDelete() {
-      if (allergyId != null) {
-        ref.read(allergyFormProvider.notifier).delete(allergyId!);
-      }
+      if (allergyId == null) return;
+      unawaited(ref.read(allergyFormProvider.notifier).delete(allergyId!));
     }
 
     final session = ref.watch(authSessionProvider);
 
-    ref.listen<AllergyFormState>(allergyFormProvider, (_, next) {
-      if (next.saved) {
-        AppToast.show(context, l10n.mineEditSavedToast);
+    ref.listen<AllergyFormState>(allergyFormProvider, (prev, next) {
+      if (next.saved && prev?.saved != true) {
+        unawaited(
+          AppToast.show(
+            context,
+            next.deleted ? l10n.mineEditDeletedToast : l10n.mineEditSavedToast,
+          ),
+        );
         if (context.mounted) context.pop();
+      }
+      final error = next.errorMessage;
+      if (error != null && error != prev?.errorMessage) {
+        unawaited(AppToast.show(context, error));
       }
     });
 
