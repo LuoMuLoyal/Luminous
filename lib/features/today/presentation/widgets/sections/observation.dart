@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -54,7 +53,11 @@ class TodayObservationSection extends ConsumerWidget {
 
             return Column(
               children: [
-                for (final item in items) _ObservationTile(item: item),
+                for (var i = 0; i < items.length; i++) ...[
+                  _ObservationTile(item: items[i]),
+                  if (i < items.length - 1)
+                    Divider(height: 1, thickness: 1, color: colors.border),
+                ],
               ],
             );
           },
@@ -78,7 +81,7 @@ class TodayObservationSection extends ConsumerWidget {
           title: l10n.todayObservationSleepMissingTitle,
           subtitle: l10n.todayObservationSleepMissingSubtitle,
           tag: l10n.todayObservationLowConfidenceTag,
-          onPress: () => _openRoute(context, '/record/create?kind=sleep'),
+          onPress: () => openRoute(context, '/record/create?kind=sleep'),
         ),
       ];
     }
@@ -96,7 +99,7 @@ class TodayObservationSection extends ConsumerWidget {
       title: card.title,
       subtitle: card.reason,
       tag: _tagForConfidence(l10n, card.confidence),
-      onPress: () => _openRoute(context, card.primaryAction.route),
+      onPress: () => openRoute(context, card.primaryAction.route),
     );
   }
 }
@@ -156,6 +159,14 @@ class _ObservationTile extends StatelessWidget {
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
             ),
+            if (item.onPress != null) ...[
+              const SizedBox(width: Spacing.level2),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: Spacing.level4,
+                color: colors.mutedForeground,
+              ),
+            ],
           ],
         ),
       ),
@@ -234,12 +245,13 @@ class _ObservationErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.level4),
       child: Row(
         children: [
-          const Icon(FLucideIcons.circleAlert),
+          Icon(FLucideIcons.circleAlert, color: colors.destructive),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
@@ -277,13 +289,7 @@ class _ObservationItem {
   final VoidCallback? onPress;
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────
-
-/// Mirrors [openRoute] from suggestion_primary_card.dart.
-/// Always uses [context.push] so users can navigate back.
-void _openRoute(BuildContext context, String route) {
-  context.push(route);
-}
+// ── Helpers ───────────────────────────────────────────────────────────────
 
 String _tagForConfidence(
   AppLocalizations l10n,
@@ -291,7 +297,8 @@ String _tagForConfidence(
 ) {
   return switch (confidence) {
     TodaySuggestionConfidence.high => l10n.todayObservationReviewTag,
-    TodaySuggestionConfidence.medium => l10n.todayObservationLowConfidenceTag,
+    TodaySuggestionConfidence.medium =>
+      l10n.todayObservationMediumConfidenceTag,
     TodaySuggestionConfidence.low => l10n.todayObservationLowConfidenceTag,
   };
 }

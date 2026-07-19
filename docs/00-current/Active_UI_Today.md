@@ -93,3 +93,20 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - `AppTopBar` 新增 `disableSafeAreaAndPadding` 参数（`TodayTopBar` 设为 true）。
 - `DesktopTabShell` 新增 `showHeader` 参数（Today 页面设为 false，由内容区 `TodayTopBar` 提供唯一标题）。
 - 桌面端 ListView 移除水平 padding，由 `DesktopTabShell` 内容区统一提供。
+
+## 2026-07-19 P2 低级一致性打磨
+
+### Today 模块
+
+- `view_models.dart` 新增共享 `openRoute` 函数，统一 today 模块路由跳转逻辑（`suggestion_primary_card.dart`、`observation.dart` 引用）。
+- `buildQuickActionItems` 的 `usePush` 参数添加导航语义注释，明确 push vs go 使用场景。
+- 英文 ARB 问候语和警告串改为 ICU plural 格式（`todayGreetingMorningPending`、`todayGreetingAfternoonWaterShort`、`todayGreetingEveningPending`）。
+- `TodayGlyphTile` 渐变背景上的图标改用 `palette.foreground` 保证可读性。
+- `SuggestionPrimaryCard` 在 `fading` 状态外包 `IgnorePointer` 禁用交互。
+- `observation.dart` 各 `_ObservationTile` 间新增 `Divider`；`onPress` 非空时显示 `ChevronRight`；错误图标用 `colors.destructive`；置信度标签用 `todayObservationMediumConfidenceTag`。
+- `_refreshAll` 新增 try-catch + `context.mounted` 检查，失败时显示 `todayRefreshErrorToast`。
+- `_NotificationButton` 新增 `Semantics` 标签（`todayNotificationsUnreadLabel`），未登录时用 `showAuthRequiredDialog` 引导。
+
+### Assistant 模块
+
+- `AssistantContextAccess` 新增 `total` getter（值固定为 4），`hero.dart` 状态 chip 从硬编码 `/4` 改为动态 `/${capabilities.assistantContext.total}`。

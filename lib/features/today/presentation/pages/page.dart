@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -18,13 +19,19 @@ import 'package:luminous/l10n/app_localizations.dart';
 class TodayPage extends ConsumerWidget {
   const TodayPage({super.key});
 
-  Future<void> _refreshAll(WidgetRef ref) async {
+  Future<void> _refreshAll(BuildContext context, WidgetRef ref) async {
     ref.invalidate(todayDashboardProvider);
     ref.invalidate(todaySuggestionProvider);
-    await Future.wait([
-      ref.read(todayDashboardProvider.future),
-      ref.read(todaySuggestionProvider.future),
-    ]);
+    try {
+      await Future.wait([
+        ref.read(todayDashboardProvider.future),
+        ref.read(todaySuggestionProvider.future),
+      ]);
+    } catch (_) {
+      if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      await AppToast.show(context, l10n.todayRefreshErrorToast);
+    }
   }
 
   @override
@@ -54,7 +61,7 @@ class TodayPage extends ConsumerWidget {
         onSignIn: isPreview
             ? () => context.push(loginRouteForCurrentLocation(context))
             : null,
-        onRefresh: () => _refreshAll(ref),
+        onRefresh: () => _refreshAll(context, ref),
       ),
     );
 

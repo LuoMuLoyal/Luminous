@@ -2,6 +2,7 @@ import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -297,6 +298,13 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
 /// Build quick action items. The first two items (confirm + record) are
 /// "primary" actions that show status-aware subtitles. The remaining items
 /// are "secondary" and should be displayed under a "more" toggle.
+///
+/// Navigation semantics:
+/// - Actions targeting a tab root (e.g. [AppRoutes.medicine]) use
+///   `usePush: false` → `context.go`, which replaces the current route so
+///   the user lands on the tab's home screen.
+/// - Actions targeting a sub-page (e.g. record create) use `usePush: true`
+///   → `context.push`, preserving the back stack so the user can return.
 List<TodayQuickActionItem> buildQuickActionItems(
   AppLocalizations l10n,
   TodayDashboard dashboard,
@@ -353,4 +361,13 @@ bool shouldShowRecordHint(TodayDashboard dashboard) {
   final hasMeds = dashboard.medication.medicineCount > 0;
   final hasVitals = dashboard.vitals.isNotEmpty;
   return !hasWater && !hasMeds && !hasVitals;
+}
+
+/// Pushes [route] onto the navigation stack.
+///
+/// Always uses [context.push] so the user can navigate back from the
+/// destination — [context.go] would replace the current route and leave
+/// no back path, which is inconsistent with the rest of the app.
+void openRoute(BuildContext context, String route) {
+  context.push(route);
 }

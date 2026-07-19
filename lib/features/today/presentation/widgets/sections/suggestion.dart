@@ -9,6 +9,7 @@ import 'package:luminous/features/today/presentation/widgets/shared/card_style.d
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_primary_card.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_state_views.dart';
 import 'package:luminous/l10n/app_localizations.dart';

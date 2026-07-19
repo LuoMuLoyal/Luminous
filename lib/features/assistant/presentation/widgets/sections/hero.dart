@@ -131,7 +131,7 @@ class _FullHero extends StatelessWidget {
                 ),
                 _StatusChip(
                   label:
-                      '${l10n.assistantStatusContextLabel} ${capabilities.assistantContext.enabledCount}/4',
+                      '${l10n.assistantStatusContextLabel} ${capabilities.assistantContext.enabledCount}/${capabilities.assistantContext.total}',
                   enabled: capabilities.assistantContext.enabledCount > 0,
                 ),
                 _StatusChip(

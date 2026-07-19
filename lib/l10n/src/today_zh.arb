@@ -10,6 +10,7 @@
   "todayChipEnvironment": "环境提醒",
   "todayChipLumi": "Lumi 建议",
   "todayNotificationsTooltip": "通知",
+  "todayNotificationsUnreadLabel": "有未读通知",
   "todayGreetingTitleMorning": "早上好，阳光正好",
   "todayGreetingTitleAfternoon": "下午好，继续稳稳推进",
   "todayGreetingTitleEvening": "晚上好，准备轻松收尾",
@@ -114,6 +115,7 @@
   "todayEmptyDescription": "先记录饮水、用药或睡眠，我们会为你提供个性化建议。",
   "todayEmptyAction": "去记录",
   "todayRetryAction": "重试",
+  "todayRefreshErrorToast": "刷新失败，请重试",
   "todayUpdatedAt": "更新于 {time}",
   "@todayUpdatedAt": {
     "placeholders": {
@@ -258,6 +260,7 @@
   "todayObservationSleepMissingTitle": "最近还缺睡眠记录",
   "todayObservationSleepMissingSubtitle": "暂时无法判断睡眠趋势，补一条记录后再看会更准。",
   "todayObservationLowConfidenceTag": "仅供参考",
+  "todayObservationMediumConfidenceTag": "供参考",
   "todayObservationReviewTag": "去看看",
   "todayObservationMedicineNote": "这是一条轻量提示，具体风险与覆盖范围请到用药页查看。",
   "todayObservationSleepNote": "更像值得留意的提示，不直接当成今天必须完成的任务。",

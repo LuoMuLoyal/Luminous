@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -9,6 +8,7 @@ import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -69,94 +69,101 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
 
     return Opacity(
       opacity: isFading ? 0.6 : 1.0,
-      child: FCard.raw(
-        key: const Key('today-primary-suggestion-card'),
-        style: todayCardStyle(context, tone: cardTone),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  TodayGlyphTile(
-                    icon: SuggestionIconMapping.resolve(card.icon),
-                    color: colorFor(card.cardTone),
-                    size: Spacing.level8,
-                    radius: RadiusTokens.level3,
-                    gradient: true,
-                  ),
-                  const Spacer(),
-                  FButton(
-                    onPress: () => openRoute(context, card.primaryAction.route),
-                    variant: isUrgent(card.cardTone)
-                        ? FButtonVariant.primary
-                        : FButtonVariant.secondary,
-                    size: FButtonSizeVariant.sm,
-                    child: Text(card.primaryAction.label),
-                  ),
-                ],
-              ),
-              const SizedBox(height: Spacing.level4),
-              Text(
-                card.title,
-                style: TypographyToken.level7
-                    .display(context)
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: Spacing.level2),
-              Text(
-                card.reason,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: colors.mutedForeground,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              if (card.subtype == 'water' && widget.dashboard != null) ...[
-                const SizedBox(height: Spacing.level3),
-                WaterProgressBar(progress: widget.dashboard!.water.progress),
-              ],
-              const SizedBox(height: Spacing.level3),
-              EvidenceToggleButton(
-                expanded: _evidenceExpanded,
-                onTap: _toggleEvidence,
-                l10n: l10n,
-              ),
-              AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) =>
-                    FCollapsible(value: _animation.value, child: child!),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      // When a suggestion is fading out (pending dismissal) we disable all
+      // in-card interactions so users cannot trigger actions, feedback, or
+      // AI explain on a card that is about to disappear.
+      child: IgnorePointer(
+        ignoring: isFading,
+        child: FCard.raw(
+          key: const Key('today-primary-suggestion-card'),
+          style: todayCardStyle(context, tone: cardTone),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.level4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    const SizedBox(height: Spacing.level3),
-                    if (card.evidence.isNotEmpty) ...[
-                      EvidenceList(
-                        label: l10n.todaySuggestionEvidenceLabel,
-                        evidence: card.evidence,
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                    ],
-                    SuggestionMetaBlock(
-                      label: l10n.todaySuggestionBoundaryLabel,
-                      value: card.boundary,
+                    TodayGlyphTile(
+                      icon: SuggestionIconMapping.resolve(card.icon),
+                      color: colorFor(card.cardTone),
+                      size: Spacing.level8,
+                      radius: RadiusTokens.level3,
+                      gradient: true,
                     ),
-                    const SizedBox(height: Spacing.level3),
-                    SuggestionAiExplainButton(suggestionId: card.id),
+                    const Spacer(),
+                    FButton(
+                      onPress: () =>
+                          openRoute(context, card.primaryAction.route),
+                      variant: isUrgent(card.cardTone)
+                          ? FButtonVariant.primary
+                          : FButtonVariant.secondary,
+                      size: FButtonSizeVariant.sm,
+                      child: Text(card.primaryAction.label),
+                    ),
                   ],
                 ),
-              ),
-              if (card.feedbackOptions != null &&
-                  card.feedbackOptions!.isNotEmpty) ...[
                 const SizedBox(height: Spacing.level4),
-                SuggestionFeedbackRow(
-                  suggestionId: card.id,
-                  feedbackOptions: card.feedbackOptions!,
+                Text(
+                  card.title,
+                  style: TypographyToken.level7
+                      .display(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
+                const SizedBox(height: Spacing.level2),
+                Text(
+                  card.reason,
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(
+                        color: colors.mutedForeground,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                if (card.subtype == 'water' && widget.dashboard != null) ...[
+                  const SizedBox(height: Spacing.level3),
+                  WaterProgressBar(progress: widget.dashboard!.water.progress),
+                ],
+                const SizedBox(height: Spacing.level3),
+                EvidenceToggleButton(
+                  expanded: _evidenceExpanded,
+                  onTap: _toggleEvidence,
+                  l10n: l10n,
+                ),
+                AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) =>
+                      FCollapsible(value: _animation.value, child: child!),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Spacing.level3),
+                      if (card.evidence.isNotEmpty) ...[
+                        EvidenceList(
+                          label: l10n.todaySuggestionEvidenceLabel,
+                          evidence: card.evidence,
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                      ],
+                      SuggestionMetaBlock(
+                        label: l10n.todaySuggestionBoundaryLabel,
+                        value: card.boundary,
+                      ),
+                      const SizedBox(height: Spacing.level3),
+                      SuggestionAiExplainButton(suggestionId: card.id),
+                    ],
+                  ),
+                ),
+                if (card.feedbackOptions != null &&
+                    card.feedbackOptions!.isNotEmpty) ...[
+                  const SizedBox(height: Spacing.level4),
+                  SuggestionFeedbackRow(
+                    suggestionId: card.id,
+                    feedbackOptions: card.feedbackOptions!,
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -353,15 +360,6 @@ class WaterProgressBar extends StatelessWidget {
 }
 
 // ── Shared helpers ──────────────────────────────────────────────────────────
-
-/// Pushes [route] onto the navigation stack.
-///
-/// Always uses [context.push] so the user can navigate back from the
-/// destination — [context.go] would replace the current route and leave
-/// no back path, which is inconsistent with the rest of the app.
-void openRoute(BuildContext context, String route) {
-  context.push(route);
-}
 
 /// Maps a suggestion card tone to the shared [TodayCardTone].
 TodayCardTone mapTone(TodaySuggestionCardTone tone) {

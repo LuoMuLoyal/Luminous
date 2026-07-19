@@ -85,6 +85,7 @@ class _NotificationButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final session = ref.watch(authSessionProvider);
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
         unreadAsync.whenOrNull(data: (count) => count > 0) ?? false;
@@ -97,26 +98,49 @@ class _NotificationButton extends ConsumerWidget {
           FButton(
             variant: FButtonVariant.outline,
             size: FButtonSizeVariant.sm,
-            onPress: () => context.push(AppRoutes.notifications),
-            child: Icon(
-              FLucideIcons.bell,
-              size: Spacing.level5 + Spacing.level1,
-              color: colors.foreground,
+            onPress: () async {
+              if (session.canAccessProtectedData) {
+                unawaited(context.push(AppRoutes.notifications));
+                return;
+              }
+              if (session.isLoading) {
+                return;
+              }
+              await showAuthRequiredDialog(
+                context,
+                onLogin: () => context.push(
+                  loginRouteForReturnTo(AppRoutes.notifications),
+                ),
+              );
+            },
+            child: Semantics(
+              label: l10n.todayNotificationsTooltip,
+              button: true,
+              child: Icon(
+                FLucideIcons.bell,
+                size: Spacing.level5 + Spacing.level1,
+                color: colors.foreground,
+              ),
             ),
           ),
           if (hasUnread)
             Positioned(
               right: Spacing.level3,
               top: Spacing.level2,
-              child: FBadge.raw(
-                style: .delta(
-                  decoration: .shapeDelta(
-                    color: colors.destructive,
-                    shape: const CircleBorder(),
+              child: Semantics(
+                label: l10n.todayNotificationsUnreadLabel,
+                child: ExcludeSemantics(
+                  child: FBadge.raw(
+                    style: .delta(
+                      decoration: .shapeDelta(
+                        color: colors.destructive,
+                        shape: const CircleBorder(),
+                      ),
+                    ),
+                    builder: (context, style) =>
+                        const SizedBox.square(dimension: Spacing.level2),
                   ),
                 ),
-                builder: (context, style) =>
-                    const SizedBox.square(dimension: Spacing.level2),
               ),
             ),
         ],

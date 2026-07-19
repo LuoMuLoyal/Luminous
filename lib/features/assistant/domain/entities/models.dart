@@ -24,6 +24,9 @@ class AssistantContextAccess {
     sleepRecords,
     currentMedicines,
   ].where((value) => value).length;
+
+  /// Total number of context sources.
+  int get total => 4;
 }
 
 @immutable

@@ -41,7 +41,10 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          color: gradient ? context.theme.colors.primary : palette.solid,
+          // On a gradient/solid fill use the palette's on-color (foreground)
+          // so the icon reads against its tinted background; on a muted
+          // chip use the full-saturation solid.
+          color: gradient ? palette.foreground : palette.solid,
           size: size * 0.5,
         ),
       ),
