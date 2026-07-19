@@ -73,7 +73,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       }
       final error = next.errorMessage;
       if (error != null && error != previous?.errorMessage) {
-        AppToast.show(context, '${l10n.settingsSyncFailed}: $error');
+        AppToast.show(context, l10n.medicineReminderSaveFailedToast);
       }
     });
 
@@ -358,7 +358,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
               if (hasError)
                 AppStateErrorView(
                   title: l10n.medicineReminderNotFoundTitle,
-                  description: '',
+                  description: l10n.medicineReminderNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () {

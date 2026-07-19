@@ -290,6 +290,14 @@
   "medicineReminderAddTimeAction": "Add time",
   "medicineReminderTodayLogsTitle": "Today's dose logs",
   "medicineReminderNoTodayLogs": "No dose logs yet today",
+  "medicineReminderLogCountTotal": "{count, plural, other{# entries in total}}",
+  "@medicineReminderLogCountTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medicineReminderDeliveryLogsTitle": "Reminder delivery history",
   "medicineReminderNoDeliveryLogs": "No reminder delivery records yet",
   "medicineReminderDeliveryChannelLocal": "Local notification",
@@ -302,6 +310,8 @@
   "medicineReminderMissedStatus": "Missed",
   "medicineReminderSavedToast": "Medication reminder saved.",
   "medicineReminderDeletedToast": "Medication reminder deleted.",
+  "medicineReminderDeleteFailedToast": "Failed to delete medication reminder.",
+  "medicineReminderSaveFailedToast": "Failed to save medication reminder.",
   "medicineReminderMedicineRequiredToast": "Choose a medicine.",
   "medicineReminderTimeRequiredToast": "Add at least one dose time.",
   "medicineReminderDuplicateTimeToast": "This time already exists. Please choose a different time.",
@@ -392,6 +402,14 @@
     }
   },
   "medicineSearchMatchedBy": "Matched",
+  "medicineSearchMatchedByType": "Matched by: {type}",
+  "@medicineSearchMatchedByType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "medicineSearchMatchIngredient": "ingredient",
   "medicineSearchMatchName": "name",
   "medicineSearchAddToBoxAction": "Add to drugbox",

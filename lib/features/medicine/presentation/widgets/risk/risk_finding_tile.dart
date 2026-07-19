@@ -81,9 +81,6 @@ class MedicineRiskFindingTile extends StatelessWidget {
               FBadge.raw(
                 builder: (context, style) {
                   final resolvedColor = color.solid(context);
-                  final foreground = 0.08 > 0.5
-                      ? colors.primaryForeground
-                      : resolvedColor;
                   return DecoratedBox(
                     decoration: ShapeDecoration(
                       color: color.muted(context),
@@ -104,7 +101,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                           Icon(
                             medicineRiskSeverityIcon(finding.severity),
                             size: 12,
-                            color: foreground,
+                            color: resolvedColor,
                           ),
                           const SizedBox(width: Spacing.level1),
                           Text(
@@ -112,7 +109,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                             style: TypographyToken.level3
                                 .body(context)
                                 .copyWith(
-                                  color: foreground,
+                                  color: resolvedColor,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: 0,
                                 ),
@@ -130,9 +127,6 @@ class MedicineRiskFindingTile extends StatelessWidget {
                 FBadge.raw(
                   builder: (context, style) {
                     final resolvedColor = SemanticColor.neutral.solid(context);
-                    final foreground = 0.08 > 0.5
-                        ? colors.primaryForeground
-                        : resolvedColor;
                     return DecoratedBox(
                       decoration: ShapeDecoration(
                         color: SemanticColor.neutral.muted(context),
@@ -155,7 +149,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
                               style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(
-                                    color: foreground,
+                                    color: resolvedColor,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: 0,
                                   ),

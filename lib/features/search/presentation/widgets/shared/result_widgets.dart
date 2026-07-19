@@ -71,8 +71,9 @@ class SearchResultTile extends StatelessWidget {
               children: [
                 ...result.tags.map((tag) => _TagPill(label: tag)),
                 _TagPill(
-                  label:
-                      '${l10n.medicineSearchMatchedBy}：${matchTypeLabel(l10n, result.matchType)}',
+                  label: l10n.medicineSearchMatchedByType(
+                    matchTypeLabel(l10n, result.matchType),
+                  ),
                 ),
               ],
             ),

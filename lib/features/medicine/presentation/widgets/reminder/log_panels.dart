@@ -68,6 +68,16 @@ class ReminderTodayLogPanel extends StatelessWidget {
                   ],
                 ),
         ),
+        if (logs.length > visibleLogs.length)
+          Padding(
+            padding: const EdgeInsets.only(top: Spacing.level2),
+            child: Text(
+              l10n.medicineReminderLogCountTotal(logs.length),
+              style: TypographyToken.level2
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ),
       ],
     );
   }

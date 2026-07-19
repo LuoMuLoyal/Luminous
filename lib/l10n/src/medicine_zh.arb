@@ -297,6 +297,14 @@
   "medicineReminderAddTimeAction": "添加时间",
   "medicineReminderTodayLogsTitle": "今日用药打卡",
   "medicineReminderNoTodayLogs": "今天还没有用药打卡",
+  "medicineReminderLogCountTotal": "共 {count} 条记录",
+  "@medicineReminderLogCountTotal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "medicineReminderDeliveryLogsTitle": "提醒投递历史",
   "medicineReminderNoDeliveryLogs": "暂无提醒投递记录",
   "medicineReminderDeliveryChannelLocal": "本机通知",
@@ -309,6 +317,8 @@
   "medicineReminderMissedStatus": "已错过",
   "medicineReminderSavedToast": "用药提醒已保存",
   "medicineReminderDeletedToast": "用药提醒已删除",
+  "medicineReminderDeleteFailedToast": "删除用药提醒失败",
+  "medicineReminderSaveFailedToast": "保存用药提醒失败",
   "medicineReminderMedicineRequiredToast": "请选择药品",
   "medicineReminderTimeRequiredToast": "请至少添加一个服用时间",
   "medicineReminderDuplicateTimeToast": "该时间已存在，请选择其他时间",
@@ -399,6 +409,14 @@
     }
   },
   "medicineSearchMatchedBy": "命中",
+  "medicineSearchMatchedByType": "匹配方式：{type}",
+  "@medicineSearchMatchedByType": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "medicineSearchMatchIngredient": "成分",
   "medicineSearchMatchName": "名称",
   "medicineSearchAddToBoxAction": "加入药箱",

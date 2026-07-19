@@ -110,3 +110,10 @@ Last updated: 2026-07-19
 - 识别中 loading 遮罩；手电按钮状态实时刷新。
 - 识别失败/未找到时底部常驻"手动搜索"入口。
 - 多结果候选 sheet 规范化为带标题、分隔线、取消按钮的 bottom sheet。
+
+## 2026-07-19 P2 低级一致性打磨
+
+- `risk_finding_tile.dart` 移除恒 false 的 `0.08 > 0.5` 死代码，图标色改用 `resolvedColor` 而非 `foreground`。
+- 提醒失败 toast 专用化：`reminder_detail.dart` 删除失败用 `medicineReminderDeleteFailedToast`；`reminder_edit.dart` 保存失败用 `medicineReminderSaveFailedToast`，错误描述用 `medicineReminderNotFoundDescription`（不再空串）。
+- `log_panels.dart` 日志条目超过可见上限时显示 `medicineReminderLogCountTotal`（ICU plural "共 N 条记录"）。
+- `result_widgets.dart` 搜索结果匹配方式从硬编码全角冒号改为 `medicineSearchMatchedByType` l10n 键（"匹配方式：{type}"）。

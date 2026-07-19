@@ -378,7 +378,12 @@ class _ReminderDetailBody extends ConsumerWidget {
                   );
                   context.pop();
                 } else if (context.mounted) {
-                  unawaited(AppToast.show(context, l10n.settingsSyncFailed));
+                  unawaited(
+                    AppToast.show(
+                      context,
+                      l10n.medicineReminderDeleteFailedToast,
+                    ),
+                  );
                 }
               },
               prefix: const Icon(FLucideIcons.trash2),
