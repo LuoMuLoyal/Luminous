@@ -46,6 +46,15 @@
   "medicineRiskCheckCoverageLabel": "覆盖不足",
   "medicineRiskCheckFindingsTitle": "风险提示",
   "medicineRiskCheckCoverageTitle": "未覆盖药品",
+  "medicineRiskCheckShowAll": "展开全部（共 {count} 条）",
+  "@medicineRiskCheckShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskCheckCollapse": "收起",
   "medicineRiskCheckNoFindingsTitle": "暂未发现明确风险提示",
   "medicineRiskCheckNoFindingsBody": "当前已检查药物里没有发现明确风险提示，但仍需结合医生建议与说明书确认。",
   "medicineRiskCheckViewAction": "查看",
@@ -250,6 +259,7 @@
   "medicineReminderQuickSubtitle": "管理服药时间",
   "medicineReminderEnabledStatus": "启用中",
   "medicineReminderDisabledStatus": "已关闭",
+  "medicineReminderToggleActiveLabel": "启用提醒",
   "medicineReminderFrequencyLabel": "服用频次",
   "medicineReminderFrequencyDaily": "每日",
   "medicineReminderFrequencyWeekly": "每周",
@@ -300,6 +310,7 @@
   "medicineReminderDeletedToast": "用药提醒已删除",
   "medicineReminderMedicineRequiredToast": "请选择药品",
   "medicineReminderTimeRequiredToast": "请至少添加一个服用时间",
+  "medicineReminderDuplicateTimeToast": "该时间已存在，请选择其他时间",
   "medicineReminderWeekdayRequiredToast": "请选择提醒日期",
   "medicineReminderDateRangeInvalidToast": "结束日期不能早于开始日期",
   "medicineReminderDeleteAction": "删除此提醒",
@@ -391,6 +402,8 @@
   "medicineSearchMatchName": "名称",
   "medicineSearchAddToBoxAction": "加入药箱",
   "medicineSearchAddToast": "会加入药箱并进入用药提醒设置。",
+  "medicineSearchAddedToBoxToast": "已加入药箱",
+  "medicineSearchGoToReminderAction": "去设提醒",
   "medicineSearchPrecheckTitle": "添加前风险检查",
   "medicineSearchPrecheckDescription": "发现风险提示或资料不足，确认后仍可继续加入药箱。",
   "medicineSearchPrecheckConfirmAction": "仍然加入",
@@ -464,6 +477,7 @@
   "scanBarcodeNotFoundToast": "未找到该条码对应的药品",
   "scanRecognitionFailedToast": "识别失败，请重试",
   "scanSearchFailedToast": "搜索失败: {error}",
+  "scanManualSearchToast": "可手动搜索药品名称",
   "@scanSearchFailedToast": {
     "placeholders": {
       "error": {
@@ -508,6 +522,12 @@
   "scanMatchTypeApprovalNumber": "批准文号匹配",
   "scanMatchTypeBarcode": "条码匹配",
   "scanMatchTypeNameFuzzy": "名称模糊匹配",
+  "scanGuideHint": "将药品盒条码对准扫描框",
+  "scanPermissionDeniedTitle": "相机权限被拒绝",
+  "scanPermissionDeniedHint": "请在系统设置中开启相机权限以使用扫码功能",
+  "scanPermissionOpenSettings": "去系统设置开启",
+  "scanCandidateSheetTitle": "选择药品",
+  "scanManualSearchAction": "手动搜索",
   "medicineEmptyAddFirstTitle": "添加你的第一个药品",
   "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。"
 }

@@ -275,6 +275,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
 
     return FTooltip(
       tipBuilder: (context, controller) => Text(l10n.medicineSafetyGuardLabel),
@@ -298,12 +299,17 @@ class _MedicineSafeGuardPill extends StatelessWidget {
           color: colors.primary,
           size: Spacing.level5,
         ),
-        child: Text(
-          l10n.medicineSafetyGuardLabel,
-          style: TypographyToken.level4
-              .body(context)
-              .copyWith(color: colors.foreground, fontWeight: FontWeight.w700),
-        ),
+        child: isNarrow
+            ? null
+            : Text(
+                l10n.medicineSafetyGuardLabel,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
       ),
     );
   }

@@ -46,6 +46,15 @@
   "medicineRiskCheckCoverageLabel": "Coverage gaps",
   "medicineRiskCheckFindingsTitle": "Risk findings",
   "medicineRiskCheckCoverageTitle": "Unchecked medicines",
+  "medicineRiskCheckShowAll": "Show all ({count})",
+  "@medicineRiskCheckShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskCheckCollapse": "Collapse",
   "medicineRiskCheckNoFindingsTitle": "No explicit risk finding yet",
   "medicineRiskCheckNoFindingsBody": "No explicit risk finding was found for the medicines we could check, but you should still confirm with clinical advice and official instructions.",
   "medicineRiskCheckViewAction": "View",
@@ -243,6 +252,7 @@
   "medicineReminderQuickSubtitle": "Manage dose times",
   "medicineReminderEnabledStatus": "On",
   "medicineReminderDisabledStatus": "Off",
+  "medicineReminderToggleActiveLabel": "Enable reminder",
   "medicineReminderFrequencyLabel": "Frequency",
   "medicineReminderFrequencyDaily": "Daily",
   "medicineReminderFrequencyWeekly": "Weekly",
@@ -293,6 +303,7 @@
   "medicineReminderDeletedToast": "Medication reminder deleted.",
   "medicineReminderMedicineRequiredToast": "Choose a medicine.",
   "medicineReminderTimeRequiredToast": "Add at least one dose time.",
+  "medicineReminderDuplicateTimeToast": "This time already exists. Please choose a different time.",
   "medicineReminderWeekdayRequiredToast": "Choose reminder days.",
   "medicineReminderDateRangeInvalidToast": "End date cannot be before start date.",
   "medicineReminderDeleteAction": "Delete this reminder",
@@ -384,6 +395,8 @@
   "medicineSearchMatchName": "name",
   "medicineSearchAddToBoxAction": "Add to drugbox",
   "medicineSearchAddToast": "This will add the medicine and open reminder setup.",
+  "medicineSearchAddedToBoxToast": "Added to drugbox",
+  "medicineSearchGoToReminderAction": "Set reminder",
   "medicineSearchPrecheckTitle": "Pre-add risk check",
   "medicineSearchPrecheckDescription": "Risk findings or missing coverage were found. You can still continue and add the medicine.",
   "medicineSearchPrecheckConfirmAction": "Add anyway",
@@ -457,6 +470,7 @@
   "scanBarcodeNotFoundToast": "No medicine found for this barcode",
   "scanRecognitionFailedToast": "Recognition failed. Please try again.",
   "scanSearchFailedToast": "Search failed: {error}",
+  "scanManualSearchToast": "You can search medicine by name manually",
   "@scanSearchFailedToast": {
     "placeholders": {
       "error": {
@@ -501,6 +515,12 @@
   "scanMatchTypeApprovalNumber": "Approval Number",
   "scanMatchTypeBarcode": "Barcode",
   "scanMatchTypeNameFuzzy": "Name Fuzzy",
+  "scanGuideHint": "Align the barcode on the medicine box with the scan frame",
+  "scanPermissionDeniedTitle": "Camera permission denied",
+  "scanPermissionDeniedHint": "Please enable camera permission in system settings to use scanning",
+  "scanPermissionOpenSettings": "Open system settings",
+  "scanCandidateSheetTitle": "Select medicine",
+  "scanManualSearchAction": "Search manually",
   "medicineEmptyAddFirstTitle": "Add your first medication",
   "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
 }

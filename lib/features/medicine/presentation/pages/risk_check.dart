@@ -165,7 +165,7 @@ class _TierBanner extends StatelessWidget {
   }
 }
 
-class _MedicineRiskCheckBody extends StatelessWidget {
+class _MedicineRiskCheckBody extends StatefulWidget {
   const _MedicineRiskCheckBody({
     required this.result,
     this.redFlagAlerts = const [],
@@ -175,8 +175,18 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   final List<RedFlagAlert> redFlagAlerts;
 
   @override
+  State<_MedicineRiskCheckBody> createState() => _MedicineRiskCheckBodyState();
+}
+
+class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
+  static const _foldThreshold = 5;
+  bool _findingsExpanded = false;
+  bool _coverageExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final result = widget.result;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
@@ -184,8 +194,8 @@ class _MedicineRiskCheckBody extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Red flag banner (always first if present)
-          if (redFlagAlerts.isNotEmpty) ...[
-            MedicineRiskRedFlagBanner(alerts: redFlagAlerts, l10n: l10n),
+          if (widget.redFlagAlerts.isNotEmpty) ...[
+            MedicineRiskRedFlagBanner(alerts: widget.redFlagAlerts, l10n: l10n),
             const SizedBox(height: Spacing.level4),
           ],
           // Summary metrics card
@@ -223,6 +233,7 @@ class _MedicineRiskCheckBody extends StatelessWidget {
   }
 
   Widget _buildThreeTierSection(BuildContext context, AppLocalizations l10n) {
+    final result = widget.result;
     final hasFindings = result.hasFindings;
     final hasCoverageGaps = result.hasCoverageGaps;
 
@@ -245,12 +256,43 @@ class _MedicineRiskCheckBody extends StatelessWidget {
             title: l10n.medicineRiskCheckFindingsTitle,
             child: Column(
               children: [
-                for (var index = 0; index < result.findings.length; index += 1)
+                for (
+                  var index = 0;
+                  index <
+                      (_findingsExpanded
+                          ? result.findings.length
+                          : result.findings.length.clamp(0, _foldThreshold));
+                  index += 1
+                )
                   MedicineRiskFindingTile(
                     finding: result.findings[index],
-                    isLast: index == result.findings.length - 1,
+                    isLast:
+                        index ==
+                        (_findingsExpanded
+                            ? result.findings.length - 1
+                            : result.findings.length.clamp(0, _foldThreshold) -
+                                  1),
                     l10n: l10n,
                   ),
+                if (result.findings.length > _foldThreshold) ...[
+                  const SizedBox(height: Spacing.level3),
+                  Center(
+                    child: FButton(
+                      variant: FButtonVariant.ghost,
+                      size: .sm,
+                      onPress: () => setState(
+                        () => _findingsExpanded = !_findingsExpanded,
+                      ),
+                      child: Text(
+                        _findingsExpanded
+                            ? l10n.medicineRiskCheckCollapse
+                            : l10n.medicineRiskCheckShowAll(
+                                result.findings.length,
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -346,14 +388,47 @@ class _MedicineRiskCheckBody extends StatelessWidget {
               children: [
                 for (
                   var index = 0;
-                  index < result.coverageIssues.length;
+                  index <
+                      (_coverageExpanded
+                          ? result.coverageIssues.length
+                          : result.coverageIssues.length.clamp(
+                              0,
+                              _foldThreshold,
+                            ));
                   index += 1
                 )
                   MedicineRiskCoverageIssueTile(
                     issue: result.coverageIssues[index],
-                    isLast: index == result.coverageIssues.length - 1,
+                    isLast:
+                        index ==
+                        (_coverageExpanded
+                            ? result.coverageIssues.length - 1
+                            : result.coverageIssues.length.clamp(
+                                    0,
+                                    _foldThreshold,
+                                  ) -
+                                  1),
                     l10n: l10n,
                   ),
+                if (result.coverageIssues.length > _foldThreshold) ...[
+                  const SizedBox(height: Spacing.level3),
+                  Center(
+                    child: FButton(
+                      variant: FButtonVariant.ghost,
+                      size: .sm,
+                      onPress: () => setState(
+                        () => _coverageExpanded = !_coverageExpanded,
+                      ),
+                      child: Text(
+                        _coverageExpanded
+                            ? l10n.medicineRiskCheckCollapse
+                            : l10n.medicineRiskCheckShowAll(
+                                result.coverageIssues.length,
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

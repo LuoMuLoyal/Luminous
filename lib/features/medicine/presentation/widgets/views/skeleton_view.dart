@@ -33,15 +33,11 @@ class _MobileMedicineSkeleton extends StatelessWidget {
       children: [
         _DrugBoxPlaceholder(),
         SizedBox(height: Spacing.level4),
+        _RecordsPlaceholder(),
+        SizedBox(height: Spacing.level4),
         _SafetyEnginePlaceholder(),
         SizedBox(height: Spacing.level4),
         _QuickOperationsPlaceholder(),
-        SizedBox(height: Spacing.level4),
-        _RecordsPlaceholder(),
-        SizedBox(height: Spacing.level4),
-        _ReferenceNoticePlaceholder(),
-        SizedBox(height: Spacing.level4),
-        _SafetyTipsPlaceholder(),
       ],
     );
   }
@@ -62,9 +58,9 @@ class _DesktopMedicineSkeleton extends StatelessWidget {
             children: [
               _DrugBoxPlaceholder(),
               SizedBox(height: Spacing.level5),
-              _SafetyEnginePlaceholder(),
-              SizedBox(height: Spacing.level5),
               _RecordsPlaceholder(),
+              SizedBox(height: Spacing.level5),
+              _SafetyEnginePlaceholder(),
             ],
           ),
         ),
@@ -73,13 +69,7 @@ class _DesktopMedicineSkeleton extends StatelessWidget {
           flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ReferenceNoticePlaceholder(),
-              SizedBox(height: Spacing.level5),
-              _QuickOperationsPlaceholder(),
-              SizedBox(height: Spacing.level5),
-              _SafetyTipsPlaceholder(),
-            ],
+            children: [_QuickOperationsPlaceholder()],
           ),
         ),
       ],
@@ -254,55 +244,6 @@ class _RecordsPlaceholder extends StatelessWidget {
                 height: 28,
                 width: 56,
                 radius: RadiusTokens.levelFull,
-              ),
-            ],
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _ReferenceNoticePlaceholder extends StatelessWidget {
-  const _ReferenceNoticePlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
-      children: [
-        AppInlineSkeletonBlock(height: 14, widthFactor: 0.92),
-        SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 14, widthFactor: 0.78),
-      ],
-    );
-  }
-}
-
-class _SafetyTipsPlaceholder extends StatelessWidget {
-  const _SafetyTipsPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
-      children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.45),
-        const SizedBox(height: Spacing.level4),
-        for (var i = 0; i < 2; i += 1) ...[
-          if (i > 0) const SizedBox(height: Spacing.level4),
-          const Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppInlineSkeletonCircle(size: 24),
-              SizedBox(width: Spacing.level3),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
-                    SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.65),
-                  ],
-                ),
               ),
             ],
           ),

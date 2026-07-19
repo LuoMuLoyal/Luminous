@@ -72,3 +72,41 @@ Last updated: 2026-07-18
   - `fetchForDate`: 先读缓存（节流 60s）→ 缓存空则走网络 + 写缓存。
   - `create`/`update`/`mark`: 远程成功后刷新缓存；`DioException` 时入队 `pending_sync_queue`（entityType=`dose_log`），注册 SyncWorker handler 重放后按 `scheduledFor` 刷新缓存。
 - 消费方已全部迁移。
+
+## 2026-07-19 补充
+
+### 用药主页
+
+- 药箱计数统一使用过滤后的 `items.length`，消除"共 N 种"与实际行数不一致。
+- 窄屏"安全守护" pill 隐藏文字仅显示图标。
+- 骨架屏按真实 section 顺序重排，统一使用 `AppSkeletonShimmer`。
+
+### 提醒详情
+
+- 详情页新增启停 switch 卡片，直接切换 `isActive`。
+- 时间列表 `ReminderInfoRow` 新增 `maxLines: 2`，多时间拼接不再溢出。
+- 提醒方式行拆为独立行（通知/短信/提示音），不再拼接为单行。
+
+### 提醒编辑
+
+- 无 medicineId 时自动从药箱列表选第一种药并渲染表单+FSelect。
+- 添加时间前去重检查，重复时 toast 提示。
+- 移除顶栏保存按钮，仅保留底部主按钮 + `FCircularProgress` 进度。
+
+### 风险检查
+
+- findings/coverageIssues 超过 5 条时折叠，附"展开全部（共 N 条）"按钮。
+
+### 药品搜索
+
+- 移动端结果卡仅在提供 `onTap` 时才包 `FTappable`（桌面预览），移动端不包裹避免无效点击。
+- `updateQuery` 新增 300ms 防抖，取消前一次未完成搜索。
+- "加入药箱"成功后显示带"去设提醒"action 的 toast（`AppToast.showWithAction`）。
+
+### 扫码
+
+- 扫码页重写为四角括号扫描框+暗化遮罩+底部提示文案。
+- 权限被拒时显示引导页（"去系统设置开启"按钮）。
+- 识别中 loading 遮罩；手电按钮状态实时刷新。
+- 识别失败/未找到时底部常驻"手动搜索"入口。
+- 多结果候选 sheet 规范化为带标题、分隔线、取消按钮的 bottom sheet。

@@ -10,6 +10,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
@@ -136,8 +137,6 @@ class _ReminderDetailBody extends ConsumerWidget {
     final soundPreference =
         ref.watch(medicineReminderSoundProvider).asData?.value ??
         MedicineReminderSoundPreference.defaultTone;
-    final methodValue =
-        '${isActive ? l10n.medicineReminderNotificationOn : l10n.medicineReminderNotificationOff} · ${l10n.medicineReminderSmsOff} · ${soundPreferenceLabel(l10n, soundPreference)}';
     final hasNote = data.reminders.any(
       (item) => (item.note ?? '').trim().isNotEmpty,
     );
@@ -231,6 +230,60 @@ class _ReminderDetailBody extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: Spacing.level4),
+          // Active/inactive toggle — allows switching without entering edit page.
+          FCard.raw(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.level4,
+                vertical: Spacing.level3,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    FLucideIcons.power,
+                    color: isActive
+                        ? SemanticColor.primary.solid(context)
+                        : colors.mutedForeground,
+                    size: Spacing.level5,
+                  ),
+                  const SizedBox(width: Spacing.level4),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.medicineReminderToggleActiveLabel,
+                          style: context.theme.typography.body.sm.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: Spacing.level1),
+                        Text(
+                          isActive
+                              ? l10n.medicineReminderEnabledStatus
+                              : l10n.medicineReminderDisabledStatus,
+                          style: context.theme.typography.body.sm.copyWith(
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  FSwitch(
+                    value: isActive,
+                    onChange: (value) => _toggleReminderActive(
+                      ref,
+                      context,
+                      l10n,
+                      reminders,
+                      value,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: Spacing.level4),
           FCard.raw(
             child: Column(
               children: [
@@ -272,7 +325,21 @@ class _ReminderDetailBody extends ConsumerWidget {
                 ReminderInfoRow(
                   icon: FLucideIcons.bell,
                   label: l10n.medicineReminderMethodLabel,
-                  value: methodValue,
+                  value: isActive
+                      ? l10n.medicineReminderNotificationOn
+                      : l10n.medicineReminderNotificationOff,
+                  showDivider: true,
+                ),
+                ReminderInfoRow(
+                  icon: FLucideIcons.messageSquare,
+                  label: l10n.medicineReminderSmsLabel,
+                  value: l10n.medicineReminderSmsOff,
+                  showDivider: true,
+                ),
+                ReminderInfoRow(
+                  icon: FLucideIcons.volume2,
+                  label: l10n.medicineReminderSoundLabel,
+                  value: soundPreferenceLabel(l10n, soundPreference),
                   showDivider: hasNote,
                 ),
                 if (hasNote)
@@ -321,5 +388,44 @@ class _ReminderDetailBody extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _toggleReminderActive(
+    WidgetRef ref,
+    BuildContext context,
+    AppLocalizations l10n,
+    List<MedicineReminderItem> reminders,
+    bool newActive,
+  ) async {
+    if (reminders.isEmpty) return;
+    final first = reminders.first;
+    final input = MedicineReminderGroupWriteInput(
+      currentMedicineId: first.currentMedicineId!,
+      label: first.label,
+      times: reminders
+          .map(
+            (r) => MedicineReminderTimeInput(
+              hour: r.scheduledHour,
+              minute: r.scheduledMinute,
+            ),
+          )
+          .toList(),
+      daysOfWeek: first.daysOfWeek,
+      startDate: first.startDate,
+      endDate: first.endDate,
+      isActive: newActive,
+      note: first.note,
+    );
+    final success = await ref
+        .read(medicineReminderFormProvider.notifier)
+        .saveGroup(existingReminders: reminders, input: input);
+    if (context.mounted) {
+      unawaited(
+        AppToast.show(
+          context,
+          success ? l10n.medicineReminderSavedToast : l10n.settingsSyncFailed,
+        ),
+      );
+    }
   }
 }

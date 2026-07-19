@@ -31,6 +31,8 @@ class ReminderInfoRow extends StatelessWidget {
       details: Text(
         value,
         textAlign: TextAlign.right,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(color: colors.mutedForeground),
       ),
     );

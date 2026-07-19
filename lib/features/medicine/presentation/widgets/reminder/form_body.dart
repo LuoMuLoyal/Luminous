@@ -243,6 +243,13 @@ class ReminderFormBody extends StatelessWidget {
           FButton(
             key: const Key('medicine-reminder-save-button'),
             onPress: isSaving ? null : onSave,
+            prefix: isSaving
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : null,
             child: Text(l10n.mineEditSaveAction),
           ),
           if (onDelete != null) ...[

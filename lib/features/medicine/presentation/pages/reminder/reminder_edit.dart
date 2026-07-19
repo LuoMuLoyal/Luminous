@@ -118,11 +118,6 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     ) {
       if (prefilled.value) return;
 
-      if (currentMedicineId == null && initialMedicineId == null) {
-        prefilled.value = true;
-        return;
-      }
-
       final activeMedicines = snapshot.currentMedicines
           .where((item) => item.isCurrent)
           .toList(growable: false);
@@ -131,6 +126,8 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         return;
       }
 
+      // Auto-select first medicine when none specified so the form (with
+      // FSelect) renders directly instead of a dead-end "go search" prompt.
       final theId =
           currentMedicineId ?? initialMedicineId ?? activeMedicines.first.id;
       final medicine = activeMedicines
@@ -231,6 +228,16 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       );
       timeController.dispose();
       if (picked == null) return;
+      final isDuplicate = times.value.any(
+        (t) => t.hour == picked.hour && t.minute == picked.minute,
+      );
+      if (isDuplicate) {
+        if (!context.mounted) return;
+        unawaited(
+          AppToast.show(context, l10n.medicineReminderDuplicateTimeToast),
+        );
+        return;
+      }
       final updated = [
         ...times.value,
         MedicineReminderTimeInput(hour: picked.hour, minute: picked.minute),
@@ -466,15 +473,9 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         ),
       );
 
-      actions = [
-        FButton(
-          variant: FButtonVariant.ghost,
-          onPress: formState.isSaving || isLoading
-              ? null
-              : () => onSave(snapshot.asData?.value, reminders.asData?.value),
-          child: Text(l10n.mineEditSaveAction),
-        ),
-      ];
+      // Save button lives at the bottom of the form body (with saving state).
+      // No duplicate in the top bar.
+      actions = const [];
     }
 
     final title = isEdit

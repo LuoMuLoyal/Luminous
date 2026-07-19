@@ -44,7 +44,7 @@ class _DrugBoxSection extends StatelessWidget {
                 _DrugBoxHeader(
                   l10n: l10n,
                   hasMedicines: items.isNotEmpty,
-                  count: workspace.plan.items.length,
+                  count: items.length,
                 ),
                 const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
@@ -52,7 +52,7 @@ class _DrugBoxSection extends StatelessWidget {
                 else
                   _DrugBoxContent(
                     items: items.take(3).toList(growable: false),
-                    totalCount: workspace.plan.items.length,
+                    totalCount: items.length,
                     l10n: l10n,
                     onOpenReminder: onOpenReminder,
                   ),
