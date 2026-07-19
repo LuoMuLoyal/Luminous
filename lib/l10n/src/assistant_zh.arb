@@ -66,7 +66,7 @@
   "assistantToolProposeDeleteRecord": "删除建议",
   "assistantToolProposeUpdateSettings": "设置建议",
   "assistantUsedToolsLabel": "参考来源",
-  "assistantConversationDisabledByUserHint": "你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。",
+  "assistantConversationDisabledByUserHint": "你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。",
   "assistantProposalConfirmCreateAction": "确认保存",
   "assistantProposalConfirmUpdateAction": "确认修改",
   "assistantProposalConfirmDeleteAction": "确认删除",
@@ -83,5 +83,6 @@
   "assistantProposalSettingKeysLabel": "设置项",
   "assistantProposalExpiresAtLabel": "过期时间",
   "assistantProposalConstraintsLabel": "确认前约束",
-  "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。"
+  "assistantProposalExpiredHint": "这条建议已经过期，请重新生成后再确认。",
+  "assistantControlsDrawerTitle": "助手设置"
 }

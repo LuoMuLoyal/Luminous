@@ -1,6 +1,6 @@
 # Active UI — Today
 
-Last updated: 2026-07-18
+Last updated: 2026-07-19
 
 ## 页面结构
 
@@ -69,6 +69,13 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取（cache-first）。
 - 图标映射提取为独立 `SuggestionIconMapping` 类。
 - Dashboard 超时支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。
+
+## 助手入口
+
+- Today 顶部栏暴露一级助手入口（`FLucideIcons.sparkles` 图标按钮）→ `/assistant` 工作区。
+- 助手控制面板（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从对话页底部常驻移入底部抽屉（`_AssistantControlsSheet`），由助手页顶栏 `settings2` 图标按钮打开，释放对话区垂直空间。
+- 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
+- 助手禁用时的提示文案指向右上角设置入口。
 
 ## 2026-07-19 补充
 

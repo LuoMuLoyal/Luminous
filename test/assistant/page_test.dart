@@ -104,6 +104,10 @@ void main() {
 
       await tester.pumpAndSettle();
 
+      // The controls panel now lives in a drawer; open it first.
+      await tester.tap(find.byKey(const Key('assistant-controls-action')));
+      await tester.pumpAndSettle();
+
       expect(
         find.byKey(const Key('assistant-row-context-health-profile')),
         findsOneWidget,
@@ -312,6 +316,8 @@ void main() {
   });
 
   testWidgets('disabled AI chat shows hint about toggle above', (tester) async {
+    tester.view.physicalSize = const Size(1200, 1600);
+    tester.view.devicePixelRatio = 1.0;
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final repository = _DisabledAssistantRepository();
 
@@ -323,11 +329,13 @@ void main() {
       findsOneWidget,
     );
 
-    // Should show hint about toggling above
-    expect(find.text('你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。'), findsOneWidget);
+    // Should show hint about toggling in settings
+    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。'), findsOneWidget);
   });
 
   testWidgets('disabled AI chat still shows restored history', (tester) async {
+    tester.view.physicalSize = const Size(1200, 1600);
+    tester.view.devicePixelRatio = 1.0;
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     final repository = _DisabledWithHistoryAssistantRepository();
 
@@ -336,7 +344,7 @@ void main() {
 
     expect(find.text('之前那次睡眠为什么这么差？'), findsOneWidget);
     expect(find.text('我先结合你最近几天的睡眠记录来解释。'), findsOneWidget);
-    expect(find.text('你已关闭 AI 对话，打开上方的“启用 AI 对话”开关即可恢复。'), findsNothing);
+    expect(find.text('你已关闭 AI 对话，在右上角设置中打开“启用 AI 对话”开关即可恢复。'), findsNothing);
   });
 
   testWidgets('latest persisted conversation is restored on assistant page', (

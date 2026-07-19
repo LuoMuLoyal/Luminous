@@ -271,6 +271,42 @@ class AssistantPage extends HookConsumerWidget {
       );
     }
 
+    void openControlsDrawer() {
+      unawaited(
+        showFSheet<void>(
+          context: context,
+          side: FLayout.rtl,
+          builder: (sheetContext) => _AssistantControlsSheet(
+            title: l10n.assistantControlsDrawerTitle,
+            controls: AssistantControlsPanel(
+              settings: settings,
+              fallbackContext: effectiveContext,
+              capabilities: capabilities!,
+              onToggleEnabled: (nextValue) =>
+                  toggleAssistantEnabled(context, nextValue),
+              onToggleMemoryEnabled: (nextValue) =>
+                  toggleAssistantMemoryEnabled(context, nextValue),
+              onToggleContext:
+                  ({
+                    bool? healthProfile,
+                    bool? dailyRecords,
+                    bool? sleepRecords,
+                    bool? currentMedicines,
+                  }) => toggleContextSetting(
+                    context,
+                    settings: settings,
+                    fallbackContext: effectiveContext,
+                    healthProfile: healthProfile,
+                    dailyRecords: dailyRecords,
+                    sleepRecords: sleepRecords,
+                    currentMedicines: currentMedicines,
+                  ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final width = MediaQuery.sizeOf(context).width;
     final scaffoldBody = PageScaffold(
       title: l10n.assistantPageTitle,
@@ -298,6 +334,13 @@ class AssistantPage extends HookConsumerWidget {
               : handleStartNewConversation,
           child: const Icon(FLucideIcons.plus),
         ),
+        if (session.canAccessProtectedData && capabilities != null)
+          FButton.icon(
+            key: const Key('assistant-controls-action'),
+            variant: FButtonVariant.ghost,
+            onPress: openControlsDrawer,
+            child: const Icon(FLucideIcons.settings2),
+          ),
       ],
       child: ResponsiveContentFrame(
         child: Padding(
@@ -417,44 +460,6 @@ class AssistantPage extends HookConsumerWidget {
                     ],
                   ),
                 ),
-                if (chatState.recentConversationError != null) ...[
-                  const SizedBox(height: Spacing.level4),
-                  AppStateMessageView(
-                    title: l10n.assistantRecentConversationsTitle,
-                    description: chatState.recentConversationError!,
-                    icon: FLucideIcons.circleAlert,
-                    tone: AppStateTone.warning,
-                    actionLabel: l10n.todayRetryAction,
-                    onAction: () => ref
-                        .read(assistantControllerProvider.notifier)
-                        .loadRecentConversations(),
-                  ),
-                ],
-                const SizedBox(height: Spacing.level4),
-                AssistantControlsPanel(
-                  settings: settings,
-                  fallbackContext: effectiveContext,
-                  capabilities: capabilities,
-                  onToggleEnabled: (nextValue) =>
-                      toggleAssistantEnabled(context, nextValue),
-                  onToggleMemoryEnabled: (nextValue) =>
-                      toggleAssistantMemoryEnabled(context, nextValue),
-                  onToggleContext:
-                      ({
-                        bool? healthProfile,
-                        bool? dailyRecords,
-                        bool? sleepRecords,
-                        bool? currentMedicines,
-                      }) => toggleContextSetting(
-                        context,
-                        settings: settings,
-                        fallbackContext: effectiveContext,
-                        healthProfile: healthProfile,
-                        dailyRecords: dailyRecords,
-                        sleepRecords: sleepRecords,
-                        currentMedicines: currentMedicines,
-                      ),
-                ),
               ],
             ],
           ),
@@ -463,5 +468,50 @@ class AssistantPage extends HookConsumerWidget {
     );
 
     return scaffoldBody;
+  }
+}
+
+class _AssistantControlsSheet extends StatelessWidget {
+  const _AssistantControlsSheet({required this.title, required this.controls});
+
+  final String title;
+  final Widget controls;
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width < 600
+        ? MediaQuery.sizeOf(context).width * 0.85
+        : 400.0;
+
+    return SizedBox(
+      width: width,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.level5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TypographyToken.level7.display(context),
+                    ),
+                  ),
+                  FButton.icon(
+                    variant: FButtonVariant.ghost,
+                    onPress: () => Navigator.of(context).pop(),
+                    child: const Icon(FLucideIcons.x),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level4),
+              Expanded(child: SingleChildScrollView(child: controls)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

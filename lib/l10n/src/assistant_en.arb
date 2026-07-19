@@ -66,7 +66,7 @@
   "assistantToolProposeDeleteRecord": "Delete proposal",
   "assistantToolProposeUpdateSettings": "Settings proposal",
   "assistantUsedToolsLabel": "Sources used",
-  "assistantConversationDisabledByUserHint": "AI chat is turned off. Toggle “Enable AI chat” above to resume.",
+  "assistantConversationDisabledByUserHint": "AI chat is turned off. Open the settings in the top-right and toggle “Enable AI chat” to resume.",
   "assistantProposalConfirmCreateAction": "Confirm save",
   "assistantProposalConfirmUpdateAction": "Confirm update",
   "assistantProposalConfirmDeleteAction": "Confirm delete",
@@ -83,5 +83,6 @@
   "assistantProposalSettingKeysLabel": "Settings",
   "assistantProposalExpiresAtLabel": "Expires at",
   "assistantProposalConstraintsLabel": "Constraints before confirm",
-  "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming."
+  "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming.",
+  "assistantControlsDrawerTitle": "Assistant settings"
 }
