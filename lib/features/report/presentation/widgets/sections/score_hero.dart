@@ -49,10 +49,14 @@ class ReportScoreHero extends StatelessWidget {
                               .copyWith(fontWeight: FontWeight.w800),
                         ),
                       ),
-                      Icon(
-                        FLucideIcons.circleHelp,
-                        color: colors.mutedForeground,
-                        size: 18,
+                      FTooltip(
+                        tipBuilder: (context, controller) =>
+                            Text(l10n.reportScoreHelpTooltip),
+                        child: Icon(
+                          FLucideIcons.circleHelp,
+                          color: colors.mutedForeground,
+                          size: 18,
+                        ),
                       ),
                     ],
                   ),

@@ -26,6 +26,7 @@
   "stateEmptyDefaultTitle": "No data yet",
   "stateEmptyDefaultDescription": "Add records to unlock personalized insights and summaries.",
   "placeholderNoData": "No data yet",
+  "placeholderLoading": "Loading…",
   "placeholderNotSet": "Not set",
   "placeholderAddToUnlock": "Add records to unlock",
   "placeholderNoTime": "No time set",

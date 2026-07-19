@@ -39,6 +39,7 @@
       }
     }
   },
+  "reportScoreHelpTooltip": "A composite score based on your recent records, medication adherence, and vital trends.",
   "reportScoreTitle": "Health score",
   "reportScoreOutOf": "/ {max}",
   "@reportScoreOutOf": {

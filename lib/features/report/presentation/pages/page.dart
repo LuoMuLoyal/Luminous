@@ -249,7 +249,6 @@ class ReportPage extends ConsumerWidget {
     final pageState = resolvePageViewState<ReportDashboard>(
       session: session,
       data: dashboardAsync,
-      isInsufficient: (_) => false,
     );
 
     return ShellDeferredContent(
@@ -338,7 +337,7 @@ class ReportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
-    final dateRangeLabel = l10n.placeholderNoData;
+    final dateRangeLabel = l10n.placeholderLoading;
 
     return isDesktop
         ? DesktopTabShell(

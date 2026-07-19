@@ -122,12 +122,16 @@ class _SuggestionBadge extends StatelessWidget {
 
     final color = semanticColor.solid(context);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: semanticColor.muted(context),
-        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+    return FBadge.raw(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: semanticColor.muted(context),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+          ),
+        ),
       ),
-      child: Padding(
+      builder: (context, style) => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: Spacing.level3,
           vertical: Spacing.level1,

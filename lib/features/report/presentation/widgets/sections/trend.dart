@@ -318,7 +318,7 @@ class _LegendDot extends StatelessWidget {
             color: color.solid(context),
             shape: BoxShape.circle,
           ),
-          child: const SizedBox.square(dimension: 8),
+          child: const SizedBox.square(dimension: Spacing.level3),
         ),
         const SizedBox(width: Spacing.level2),
         Text(

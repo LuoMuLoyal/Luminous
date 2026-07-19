@@ -84,3 +84,11 @@ Last updated: 2026-07-18
 - X 轴标签改用 `DateFormat.Md(locale)` 格式化。
 - readiness 三态徽章按 status 映射：insufficient 用 `warning`，ready 用 `success`。
 - ready 标题按范围参数化（`reportReadinessReadyTitleRange`，`{range}报告已就绪`）。
+
+## 2026-07-19 P2 低级一致性打磨
+
+- `score_hero.dart` 的 `circleHelp` 帮助图标外包 `FTooltip`，显示 `reportScoreHelpTooltip`（评分构成说明）。
+- `trend.dart` 图例色点从 8px 增大为 `Spacing.level3`（10px），提升可识别性。X 轴日期已走 `DateFormat.Md(locale)`，无需改动。
+- `suggestion_history.dart` 手写 `DecoratedBox` 徽章改为 `FBadge.raw` + `.delta()` + `shapeDelta` 模式，与项目其他徽章实现一致。
+- `report/page.dart` 移除 `isInsufficient: (_) => false` 恒 false 死代码。
+- `report/page.dart` 加载副标题从 `placeholderNoData` 改为 `placeholderLoading`（"加载中…"）。
