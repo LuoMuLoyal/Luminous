@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/common/state_message.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -14,6 +14,7 @@ import 'package:luminous/features/settings/presentation/widgets/shared/subpage_t
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/skeleton.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
   const HelpSettingsPage({super.key});
@@ -38,7 +39,11 @@ class HelpSettingsPage extends ConsumerWidget {
               data: (resources) {
                 final actionable = resources.where(_isActionable).toList();
                 if (actionable.isEmpty) {
-                  return _EmptyState(message: l10n.settingsHelpEmpty);
+                  return AppStateMessageView(
+                    title: l10n.settingsHelpEmpty,
+                    description: l10n.settingsHelpEmpty,
+                    icon: FLucideIcons.circleHelp,
+                  );
                 }
                 return FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
@@ -63,7 +68,12 @@ class HelpSettingsPage extends ConsumerWidget {
                   AppInlineSkeletonBlock(height: 56),
                 ],
               ),
-              error: (error, _) => _EmptyState(message: l10n.settingsHelpError),
+              error: (error, _) => AppStateMessageView(
+                title: l10n.settingsHelpError,
+                description: l10n.settingsHelpError,
+                icon: FLucideIcons.circleAlert,
+                tone: AppStateTone.danger,
+              ),
             ),
           ],
         ),
@@ -98,27 +108,5 @@ class HelpSettingsPage extends ConsumerWidget {
     } else {
       unawaited(pushAuthRequiredRoute(context, actionUrl));
     }
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.level5),
-      child: Text(
-        message,
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
-        textAlign: TextAlign.center,
-      ),
-    );
   }
 }

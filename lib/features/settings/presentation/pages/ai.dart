@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -29,7 +30,11 @@ class AiSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -44,7 +49,10 @@ class AiSettingsPage extends ConsumerWidget {
                         enabled: !settingsAsync.isLoading,
                         onChange: (value) {
                           if (!signedIn) {
-                            pushAuthRequiredRoute(context, '/settings/ai');
+                            pushAuthRequiredRoute(
+                              context,
+                              AppRoutes.settingsAi,
+                            );
                             return;
                           }
                           ref
@@ -58,7 +66,10 @@ class AiSettingsPage extends ConsumerWidget {
                               final next =
                                   !(settings?.aiSummariesEnabled ?? false);
                               if (!signedIn) {
-                                pushAuthRequiredRoute(context, '/settings/ai');
+                                pushAuthRequiredRoute(
+                                  context,
+                                  AppRoutes.settingsAi,
+                                );
                                 return;
                               }
                               ref
@@ -75,7 +86,10 @@ class AiSettingsPage extends ConsumerWidget {
                         enabled: !settingsAsync.isLoading,
                         onChange: (value) {
                           if (!signedIn) {
-                            pushAuthRequiredRoute(context, '/settings/ai');
+                            pushAuthRequiredRoute(
+                              context,
+                              AppRoutes.settingsAi,
+                            );
                             return;
                           }
                           ref
@@ -89,7 +103,10 @@ class AiSettingsPage extends ConsumerWidget {
                               final next =
                                   !(settings?.assistantEnabled ?? false);
                               if (!signedIn) {
-                                pushAuthRequiredRoute(context, '/settings/ai');
+                                pushAuthRequiredRoute(
+                                  context,
+                                  AppRoutes.settingsAi,
+                                );
                                 return;
                               }
                               ref
@@ -106,7 +123,10 @@ class AiSettingsPage extends ConsumerWidget {
                         enabled: !settingsAsync.isLoading,
                         onChange: (value) {
                           if (!signedIn) {
-                            pushAuthRequiredRoute(context, '/settings/ai');
+                            pushAuthRequiredRoute(
+                              context,
+                              AppRoutes.settingsAi,
+                            );
                             return;
                           }
                           ref
@@ -120,7 +140,10 @@ class AiSettingsPage extends ConsumerWidget {
                               final next =
                                   !(settings?.assistantMemoryEnabled ?? false);
                               if (!signedIn) {
-                                pushAuthRequiredRoute(context, '/settings/ai');
+                                pushAuthRequiredRoute(
+                                  context,
+                                  AppRoutes.settingsAi,
+                                );
                                 return;
                               }
                               ref
@@ -245,7 +268,7 @@ class AiSettingsPage extends ConsumerWidget {
       onPress: enabled
           ? () {
               if (!signedIn) {
-                pushAuthRequiredRoute(context, '/settings/ai');
+                pushAuthRequiredRoute(context, AppRoutes.settingsAi);
                 return;
               }
               ref
@@ -259,7 +282,7 @@ class AiSettingsPage extends ConsumerWidget {
         onChange: enabled
             ? (newValue) {
                 if (!signedIn) {
-                  pushAuthRequiredRoute(context, '/settings/ai');
+                  pushAuthRequiredRoute(context, AppRoutes.settingsAi);
                   return;
                 }
                 ref

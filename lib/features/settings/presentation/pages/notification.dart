@@ -49,6 +49,11 @@ class NotificationSettingsPage extends ConsumerWidget {
                       NotificationPermissionState.granted) {
                     return;
                   }
+                  if (settings.permissionState ==
+                      NotificationPermissionState.permanentlyDenied) {
+                    await controller.openSystemSettings();
+                    return;
+                  }
                   await controller.requestPermission();
                 },
               ),
@@ -293,47 +298,67 @@ class _PermissionCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    final (title, subtitle, icon, color) = switch (state) {
+    final (title, subtitle, icon, color, ctaLabel) = switch (state) {
       NotificationPermissionState.granted => (
         l10n.settingsNotificationsPermissionEnabled,
         l10n.settingsNotificationsPermissionEnabledHint,
         FLucideIcons.check,
         colors.primary,
+        null,
       ),
       NotificationPermissionState.denied => (
         l10n.settingsNotificationsPermissionDisabled,
         l10n.settingsNotificationsPermissionDisabledHint,
         FLucideIcons.circleAlert,
         colors.mutedForeground,
+        null,
       ),
       NotificationPermissionState.permanentlyDenied => (
         l10n.settingsNotificationsPermissionPermanentlyDenied,
         l10n.settingsNotificationsPermissionPermanentlyDeniedHint,
         FLucideIcons.circleAlert,
         colors.destructive,
+        l10n.settingsNotificationsPermissionOpenSettings,
       ),
       NotificationPermissionState.unsupported => (
         l10n.settingsNotificationsPermissionUnsupported,
         '',
         FLucideIcons.circleAlert,
         colors.mutedForeground,
+        null,
       ),
     };
 
-    return FTile(
-      key: key,
-      prefix: Icon(icon, color: color),
-      title: Text(
-        title,
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(color: color, fontWeight: FontWeight.w600),
+    return FCard.raw(
+      child: FTile(
+        key: key,
+        prefix: Icon(icon, color: color),
+        title: Text(
+          title,
+          style: TypographyToken.level4
+              .body(context)
+              .copyWith(color: color, fontWeight: FontWeight.w600),
+        ),
+        subtitle: subtitle.isEmpty ? null : Text(subtitle),
+        suffix: state == NotificationPermissionState.granted
+            ? null
+            : ctaLabel != null
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    ctaLabel,
+                    style: TypographyToken.level3
+                        .body(context)
+                        .copyWith(color: color, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  const Icon(FLucideIcons.chevronRight),
+                ],
+              )
+            : const Icon(FLucideIcons.chevronRight),
+        onPress: state == NotificationPermissionState.granted ? null : onTap,
       ),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle),
-      suffix: state == NotificationPermissionState.granted
-          ? null
-          : const Icon(FLucideIcons.chevronRight),
-      onPress: state == NotificationPermissionState.granted ? null : onTap,
     );
   }
 }

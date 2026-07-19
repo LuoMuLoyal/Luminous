@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -33,15 +34,13 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     final disablePinController = useTextEditingController();
     final isSubmitting = useState(false);
 
-    final width = MediaQuery.sizeOf(context).width;
-
     return PageScaffold(
       title: l10n.settingsSecurityPinTitle,
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
                   ? Spacing.level6
                   : Spacing.level7,
             ),
@@ -121,8 +120,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               controller: enablePinController,
                             ),
                             label: Text(l10n.settingsSecurityPinEnterPin),
-                            hint: l10n.settingsSecurityPinInvalidPin,
+                            hint: l10n.settingsSecurityPinEnterPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),
@@ -132,8 +134,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               controller: enablePinConfirmController,
                             ),
                             label: Text(l10n.settingsSecurityPinConfirmPin),
-                            hint: l10n.settingsSecurityPinInvalidPin,
+                            hint: l10n.settingsSecurityPinConfirmPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),
@@ -183,7 +188,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             label: Text(
                               l10n.settingsSecurityPinEnterCurrentPin,
                             ),
+                            hint: l10n.settingsSecurityPinEnterPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),
@@ -193,7 +202,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               controller: newPinController,
                             ),
                             label: Text(l10n.settingsSecurityPinEnterNewPin),
+                            hint: l10n.settingsSecurityPinEnterPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),
@@ -203,7 +216,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               controller: confirmPinController,
                             ),
                             label: Text(l10n.settingsSecurityPinConfirmNewPin),
+                            hint: l10n.settingsSecurityPinConfirmPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),
@@ -255,7 +272,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             label: Text(
                               l10n.settingsSecurityPinEnterCurrentPin,
                             ),
+                            hint: l10n.settingsSecurityPinEnterPinHint,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
                             maxLength: 6,
                             obscureText: true,
                           ),

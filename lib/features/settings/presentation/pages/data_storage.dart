@@ -27,7 +27,11 @@ class DataStorageSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

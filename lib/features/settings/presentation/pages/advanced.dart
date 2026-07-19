@@ -24,6 +24,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
 
 class AdvancedSettingsPage extends ConsumerWidget {
   const AdvancedSettingsPage({super.key});
@@ -32,15 +33,13 @@ class AdvancedSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
 
-    final width = MediaQuery.sizeOf(context).width;
-
     return PageScaffold(
       title: l10n.mineSettingsAdvancedTitle,
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: width < Breakpoints.mobile
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
                   ? Spacing.level6
                   : Spacing.level7,
             ),
@@ -53,6 +52,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                     FTile(
                       key: const Key('advanced-settings-row-clear-cache'),
                       title: Text(l10n.settingsAdvancedClearImageCache),
+                      suffix: const Icon(FLucideIcons.chevronRight),
                       onPress: () async {
                         imageCache.clear();
                         imageCache.clearLiveImages();
@@ -63,8 +63,36 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       },
                     ),
                     FTile(
+                      key: const Key('advanced-settings-row-licenses'),
+                      title: Text(l10n.settingsAdvancedOpenSourceLicenses),
+                      suffix: const Icon(FLucideIcons.chevronRight),
+                      onPress: () => showLicensePage(
+                        context: context,
+                        applicationName: 'Luminous',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: Spacing.level5),
+                SettingsSectionLabel(label: l10n.settingsAdvancedResetDefaults),
+                const SizedBox(height: Spacing.level3),
+                FTileGroup(
+                  style: settingsSubpageTileGroupStyle(context.theme),
+                  children: [
+                    FTile(
                       key: const Key('advanced-settings-row-reset-defaults'),
-                      title: Text(l10n.settingsAdvancedResetDefaults),
+                      title: Text(
+                        l10n.settingsAdvancedResetDefaults,
+                        style: TypographyToken.level5
+                            .body(context)
+                            .copyWith(color: context.theme.colors.destructive),
+                      ),
+                      subtitle: Text(l10n.settingsAdvancedResetDefaultsHint),
+                      suffix: Icon(
+                        FLucideIcons.rotateCcw,
+                        size: 18,
+                        color: context.theme.colors.destructive,
+                      ),
                       onPress: () async {
                         final confirmed = await showDangerConfirmationDialog(
                           context: context,
@@ -127,15 +155,6 @@ class AdvancedSettingsPage extends ConsumerWidget {
                           l10n.settingsAdvancedDefaultsReset,
                         );
                       },
-                    ),
-                    FTile(
-                      key: const Key('advanced-settings-row-licenses'),
-                      title: Text(l10n.settingsAdvancedOpenSourceLicenses),
-                      suffix: const Icon(FLucideIcons.chevronRight),
-                      onPress: () => showLicensePage(
-                        context: context,
-                        applicationName: 'Luminous',
-                      ),
                     ),
                   ],
                 ),
@@ -329,11 +348,7 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                           : endpoint.defaultUrl,
                     ),
                     suffix: endpoint == _selected
-                        ? Icon(
-                            FLucideIcons.check,
-                            size: 18,
-                            color: context.theme.colors.primary,
-                          )
+                        ? const SettingsSelectionIcon(selected: true)
                         : null,
                     onPress: () {
                       setState(() => _selected = endpoint);
@@ -418,11 +433,7 @@ class _LogLevelSheet extends StatelessWidget {
                   FTile(
                     title: Text(_levelLabel(l10n, level)),
                     suffix: level == current
-                        ? Icon(
-                            FLucideIcons.check,
-                            size: 18,
-                            color: context.theme.colors.primary,
-                          )
+                        ? const SettingsSelectionIcon(selected: true)
                         : null,
                     onPress: () => onSelect(level),
                   ),

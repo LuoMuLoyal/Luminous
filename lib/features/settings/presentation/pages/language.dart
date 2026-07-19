@@ -41,6 +41,11 @@ class LanguageSettingsPage extends ConsumerWidget {
                 FTile(
                   key: const Key('language-row-system'),
                   title: Text(l10n.settingsLanguageSystemLabel),
+                  subtitle: Text(
+                    l10n.settingsLanguageSystemCurrentLabel(
+                      _resolveCurrentLanguageName(l10n, currentLocale),
+                    ),
+                  ),
                   suffix: SettingsSelectionIcon(
                     selected: currentLocale == AppLocale.system,
                   ),
@@ -98,4 +103,17 @@ Future<void> _handleLocaleTap(
       error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
     );
   }
+}
+
+String _resolveCurrentLanguageName(AppLocalizations l10n, AppLocale locale) {
+  final resolved = locale == AppLocale.system
+      ? AppLocale.fromFlutterLocale(
+          WidgetsBinding.instance.platformDispatcher.locale,
+        )
+      : locale;
+  return switch (resolved) {
+    AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
+    AppLocale.en => l10n.settingsLanguageEnglishLabel,
+    AppLocale.system => l10n.settingsLanguageChineseLabel,
+  };
 }

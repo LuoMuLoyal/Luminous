@@ -7,6 +7,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -25,7 +26,11 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -223,11 +228,7 @@ class _ProviderSheet extends ConsumerWidget {
                   FTile(
                     title: Text(kind.name),
                     suffix: kind == current
-                        ? Icon(
-                            FLucideIcons.check,
-                            size: 18,
-                            color: context.theme.colors.primary,
-                          )
+                        ? const SettingsSelectionIcon(selected: true)
                         : null,
                     onPress: () {
                       Navigator.of(context).pop();

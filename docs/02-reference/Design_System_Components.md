@@ -45,6 +45,8 @@
    `app_header_action_chip.dart`、`app_divider.dart` 使用直接 Forui 颜色 + Material `textTheme`。
 - `lib/core/widgets/common/` 不再保留 `AppSectionSurface`。
 - `IconActionButton`（`shared_widgets.dart`）是全 App 唯一的顶栏图标按钮实现，支持 `showBadge` 参数在右上角叠加红色小圆点（用于未读消息提醒等场景）。Mine/Today 等模块的顶栏统一引用 core 版本，不再各自维护同名实现。
+- `settingsPageVerticalPadding(BuildContext)`（`shared_widgets.dart`）是设置页面统一的响应式垂直 padding 函数——窄屏（< `Breakpoints.mobile`）返回 `Spacing.level6`，宽屏返回 `Spacing.level7`。设置主页和所有子页统一引用该函数，不再各自手写响应式三元表达式。
+- `SettingsSectionLabel`（`shared_widgets.dart`）是设置页面统一的分组标题组件——`TypographyToken.level3` + `w600` 字重 + `mutedForeground` 颜色 + `Spacing.level2` 水平 padding。设置主页和所有子页统一使用该组件，不再各自维护 `_SettingsGroup` 等自定义实现。
 - `showForuiDatePicker`（`lib/core/widgets/common/date_picker.dart`）是全 App 共享的日历日期选择器工具函数，基于 `showFDialog + FCalendar.grid` 封装，统一记录/提醒/健康表单等所有日期选择入口。
 
 ## 对话框基础设施

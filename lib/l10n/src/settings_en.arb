@@ -215,5 +215,17 @@
   "settingsFeatureFlagsReportSection": "Report",
   "settingsFeatureFlagsPdfExport": "PDF Export",
   "settingsFeatureFlagsPdfExportSubtitle": "Export reports as PDF files",
-  "settingsExportStatusIdle": "Not requested"
+  "settingsExportStatusIdle": "Not requested",
+  "settingsExportStatusLoading": "Requesting…",
+  "settingsSecurityPinEnterPinHint": "6 digits",
+  "settingsSecurityPinConfirmPinHint": "Re-enter the same PIN",
+  "settingsNotificationsPermissionOpenSettings": "Open system settings",
+  "settingsNotificationsCrossDayHint": "End time is before start time; will span overnight",
+  "settingsLanguageSystemCurrentLabel": "Current: {language}",
+  "@settingsLanguageSystemCurrentLabel": {
+    "placeholders": {
+      "language": {}
+    }
+  },
+  "settingsAdvancedResetDefaultsHint": "Reset all settings to defaults. This cannot be undone."
 }

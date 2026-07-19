@@ -79,9 +79,23 @@ class DataExportPage extends ConsumerWidget {
     final requestInFlight = ref.watch(dataExportRequestInFlightProvider);
 
     if (requestInFlight.inFlight) {
-      return const SizedBox.square(
-        dimension: 18,
-        child: Center(child: FCircularProgress()),
+      return SizedBox(
+        width: double.infinity,
+        child: FButton(
+          onPress: null,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: Center(child: FCircularProgress()),
+              ),
+              const SizedBox(width: Spacing.level2),
+              Text(l10n.settingsExportStatusLoading),
+            ],
+          ),
+        ),
       );
     }
 

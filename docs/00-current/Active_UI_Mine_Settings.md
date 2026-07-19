@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-18
+Last updated: 2026-07-19
 
 ## Mine 根页结构
 
@@ -38,8 +38,24 @@ Last updated: 2026-07-18
 - 多态项路由到子页。
 - 睡眠提醒页使用主开关；关闭时子项禁用；时间选择使用 Forui `FTimeField.picker`。
 - 保留期缩短确认：若新期限短于当前期限（含 forever→有限），弹出 `showDangerConfirmationDialog` 二次确认。
-- 恢复默认设置接入 `showDangerConfirmationDialog` 二次确认。
+- 恢复默认设置接入 `showDangerConfirmationDialog` 二次确认，使用 `destructive` 红色样式 + 副标题提示。
 - 通知 key 统一通过 `PrefKeys` 管理。
+
+### 设置模块细化（2026-07-19 追加）
+
+- **垂直 padding 统一**：新增 `settingsPageVerticalPadding(BuildContext)` 函数（`shared_widgets.dart`），统一响应式 `Spacing.level6`/`level7` 逻辑，`page.dart` 使用该函数替代固定 24。
+- **分组标题统一**：删除 `page.dart` 内部 `_SettingsGroup` 自定义实现，统一使用 `SettingsSectionLabel`（`shared_widgets.dart`），所有分组改为 `SettingsSectionLabel` + `FTileGroup` 标准模式。
+- **选中勾选图标统一**：`advanced.dart`、`feature_flags.dart` 的内联 `Icon(FLucideIcons.check, ...)` 统一替换为 `const SettingsSelectionIcon(selected: true)`，消除未选中时行宽跳变。
+- **开关 tile 统一**：删除 `_SettingsSwitchTile`（开关不可键盘聚焦），"隐私报告"行改用标准 `FTile` + `suffix: FSwitch` 模式。
+- **健康档案入口移位**：从"通用"组移至"账号与安全"组，返回栈不再混乱。
+- **通知页权限永久拒绝**：`permanentlyDenied` 态直接调用 `controller.openSystemSettings()` 跳转系统设置，权限卡片新增"去系统设置开启"CTA 文案。
+- **安全 PIN 输入优化**：新增"再次输入确认"步骤，专用 hint（"6 位数字"/"再次输入相同的 PIN 码"），所有输入框添加 `FilteringTextInputFormatter.digitsOnly`。
+- **主题色系预览**：`theme.dart` 新增 `_ThemeFamilyDot` 组件，10 种色系行 prefix 显示对应颜色圆点。
+- **无障碍字号预览**：`accessibility.dart` 字号选项 label 按对应 `scaleFactor` 缩放渲染。
+- **数据导出 loading 优化**：idle 状态使用专用文案"尚未申请"；loading 态 spinner 集成到按钮内部并附带文案。
+- **免打扰/睡眠提醒跨天提示**：结束时间早于开始时间时显示"跨天生效"提示。
+- **帮助页状态组件统一**：从手写 `_EmptyState` 迁移至 `AppStateMessageView`（带图标+色调），加载态使用 `AppInlineSkeleton` 骨架屏。
+- **语言页当前语言显示**："跟随系统"行显示当前生效语言（"当前：{language}"）。
 
 ## 主题
 

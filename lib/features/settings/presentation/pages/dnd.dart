@@ -26,7 +26,11 @@ class DndSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,6 +86,27 @@ class DndSettingsPage extends ConsumerWidget {
                                 controller.setDndEndTime(value?.toTimeOfDay()),
                           ),
                         ),
+                        if (settings.dndEnabled &&
+                            settings.dndStartTime != null &&
+                            settings.dndEndTime != null &&
+                            _isCrossDay(
+                              settings.dndStartTime!,
+                              settings.dndEndTime!,
+                            ))
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: Spacing.level2,
+                              top: Spacing.level2,
+                            ),
+                            child: Text(
+                              l10n.settingsNotificationsCrossDayHint,
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(
+                                    color: context.theme.colors.mutedForeground,
+                                  ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -101,4 +126,9 @@ extension _DndTimeOfDay on TimeOfDay {
 
 extension _DndFTime on FTime {
   TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
+}
+
+bool _isCrossDay(TimeOfDay start, TimeOfDay end) {
+  if (start.hour != end.hour) return end.hour < start.hour;
+  return end.minute < start.minute;
 }

@@ -28,7 +28,11 @@ class ThemeSettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -88,6 +92,7 @@ class ThemeSettingsPage extends ConsumerWidget {
                       FTile(
                         key: Key('theme-family-row-${family.storageValue}'),
                         title: Text(themeFamilyLabel(l10n, family)),
+                        prefix: _ThemeFamilyDot(family: family),
                         suffix: SettingsSelectionIcon(
                           selected: currentPreference.family == family,
                         ),
@@ -113,4 +118,36 @@ Future<void> _handleThemeModeTap(
 
 Future<void> _handleThemeFamilyTap(WidgetRef ref, AppThemeFamily family) async {
   await ref.read(appThemeControllerProvider.notifier).setFamily(family);
+}
+
+/// 主题色系的预览色点，使用对应 family 的 light 主题 primary 色。
+class _ThemeFamilyDot extends StatelessWidget {
+  const _ThemeFamilyDot({required this.family});
+
+  final AppThemeFamily family;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (family) {
+      AppThemeFamily.blue => const Color(0xFF3B82F6),
+      AppThemeFamily.green => const Color(0xFF22C55E),
+      AppThemeFamily.neutral => const Color(0xFF737373),
+      AppThemeFamily.orange => const Color(0xFFF97316),
+      AppThemeFamily.red => const Color(0xFFEF4444),
+      AppThemeFamily.rose => const Color(0xFFF43F5E),
+      AppThemeFamily.slate => const Color(0xFF64748B),
+      AppThemeFamily.violet => const Color(0xFF8B5CF6),
+      AppThemeFamily.yellow => const Color(0xFFEAB308),
+      AppThemeFamily.zinc => const Color(0xFF71717A),
+    };
+    return Container(
+      width: 18,
+      height: 18,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: context.theme.colors.border, width: 0.5),
+      ),
+    );
+  }
 }

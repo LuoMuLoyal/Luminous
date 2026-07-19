@@ -215,5 +215,17 @@
   "settingsFeatureFlagsReportSection": "报告",
   "settingsFeatureFlagsPdfExport": "PDF 导出",
   "settingsFeatureFlagsPdfExportSubtitle": "导出报告为 PDF 文件",
-  "settingsExportStatusIdle": "尚未申请"
+  "settingsExportStatusIdle": "尚未申请",
+  "settingsExportStatusLoading": "请求中…",
+  "settingsSecurityPinEnterPinHint": "6 位数字",
+  "settingsSecurityPinConfirmPinHint": "再次输入相同的 PIN 码",
+  "settingsNotificationsPermissionOpenSettings": "去系统设置开启",
+  "settingsNotificationsCrossDayHint": "结束时间早于开始时间，将跨天生效",
+  "settingsLanguageSystemCurrentLabel": "当前：{language}",
+  "@settingsLanguageSystemCurrentLabel": {
+    "placeholders": {
+      "language": {}
+    }
+  },
+  "settingsAdvancedResetDefaultsHint": "将所有设置恢复为默认值，此操作不可撤销"
 }

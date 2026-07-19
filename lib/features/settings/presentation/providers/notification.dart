@@ -102,6 +102,16 @@ class NotificationSettingsController
     state = AsyncData(current.copyWith(permissionState: permissionState));
   }
 
+  /// Directly opens OS app settings so the user can re-enable notifications
+  /// after a permanent denial, then refreshes the permission state.
+  Future<void> openSystemSettings() async {
+    final current = state.asData?.value ?? const NotificationSettingsState();
+    final service = ref.read(notificationPermissionServiceProvider);
+    await service.openSystemSettings();
+    final permissionState = await service.getPermissionState();
+    state = AsyncData(current.copyWith(permissionState: permissionState));
+  }
+
   Future<void> setMedicationReminders(bool enabled) async {
     final next = (state.asData?.value ?? const NotificationSettingsState())
         .copyWith(medicationReminders: enabled);

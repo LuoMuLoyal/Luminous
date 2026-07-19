@@ -28,7 +28,11 @@ class AccessibilitySettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
+                  ? Spacing.level6
+                  : Spacing.level7,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,7 +46,18 @@ class AccessibilitySettingsPage extends ConsumerWidget {
                     for (final option in FontSizePreference.values)
                       FTile(
                         key: Key('font-size-row-${option.storageValue}'),
-                        title: Text(_fontSizeLabel(l10n, option)),
+                        title: Text(
+                          _fontSizeLabel(l10n, option),
+                          style: TypographyToken.level5
+                              .body(context)
+                              .copyWith(
+                                fontSize:
+                                    TypographyToken.level5
+                                        .body(context)
+                                        .fontSize! *
+                                    option.scaleFactor,
+                              ),
+                        ),
                         suffix: SettingsSelectionIcon(
                           selected: settings.fontSize == option,
                         ),

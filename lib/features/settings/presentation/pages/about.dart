@@ -113,7 +113,7 @@ class AboutSettingsPage extends ConsumerWidget {
                   subtitle: supportEmail == null || supportEmail.isEmpty
                       ? null
                       : Text(supportEmail),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(FLucideIcons.arrowUpRight),
                   onPress: () => _openSupport(context, infoAsync.asData?.value),
                 ),
               ],

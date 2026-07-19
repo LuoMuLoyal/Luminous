@@ -21,6 +21,7 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 const _kGroupSpacing = 20.0;
 
@@ -38,26 +39,35 @@ class SettingsPage extends ConsumerWidget {
       child: SingleChildScrollView(
         child: ResponsiveContentFrame(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+            padding: EdgeInsets.symmetric(
+              vertical: settingsPageVerticalPadding(context),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _AccountHeader(
                   session: session,
                   signedIn: signedIn,
-                  onTap: () => pushAuthRequiredRoute(context, '/account'),
+                  onTap: () =>
+                      pushAuthRequiredRoute(context, AppRoutes.account),
                 ),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 账号与安全 --
-                _SettingsGroup(
+                SettingsSectionLabel(
                   label: l10n.settingsAccountSecuritySectionTitle,
+                ),
+                const SizedBox(height: Spacing.level3),
+                FTileGroup(
+                  physics: const NeverScrollableScrollPhysics(),
+                  divider: FItemDivider.full,
                   children: [
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-account-security'),
                       icon: FLucideIcons.shieldCheck,
                       title: l10n.mineSettingsAccountTitle,
-                      onTap: () => pushAuthRequiredRoute(context, '/account'),
+                      onTap: () =>
+                          pushAuthRequiredRoute(context, AppRoutes.account),
                     ),
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-security-pin'),
@@ -66,11 +76,19 @@ class SettingsPage extends ConsumerWidget {
                       subtitle: l10n.settingsSecurityPinSubtitle,
                       onTap: () {
                         if (!signedIn) {
-                          pushAuthRequiredRoute(context, '/settings');
+                          pushAuthRequiredRoute(context, AppRoutes.settings);
                           return;
                         }
                         context.push(AppRoutes.settingsSecurityPin);
                       },
+                    ),
+                    _SettingsNavigationTile(
+                      tileKey: const Key('settings-row-health-profile'),
+                      icon: FLucideIcons.heartPulse,
+                      title: l10n.settingsHealthProfileTitle,
+                      subtitle: l10n.settingsHealthProfileSubtitle,
+                      onTap: () =>
+                          pushAuthRequiredRoute(context, AppRoutes.mine),
                     ),
                   ],
                 ),
@@ -89,8 +107,13 @@ class SettingsPage extends ConsumerWidget {
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 通知 --
-                _SettingsGroup(
+                SettingsSectionLabel(
                   label: l10n.settingsNotificationsSectionTitle,
+                ),
+                const SizedBox(height: Spacing.level3),
+                FTileGroup(
+                  physics: const NeverScrollableScrollPhysics(),
+                  divider: FItemDivider.full,
                   children: [
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-notifications'),
@@ -144,7 +167,7 @@ class SettingsPage extends ConsumerWidget {
   String _notificationSummary(AppLocalizations l10n, WidgetRef ref) {
     final settingsAsync = ref.watch(notificationSettingsControllerProvider);
     final settings = settingsAsync.asData?.value;
-    if (settings == null) return '';
+    if (settings == null) return '—';
 
     final enabledCount = [
       settings.medicationReminders,
@@ -215,58 +238,89 @@ class _PrivacySection extends ConsumerWidget {
         : null;
     final settings = settingsAsync?.asData?.value;
 
-    return _SettingsGroup(
-      label: l10n.settingsPrivacySectionTitle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-ai'),
-          icon: FLucideIcons.sparkles,
-          title: l10n.settingsAiTitle,
-          subtitle: l10n.settingsAiSubtitle,
-          onTap: () {
-            if (!signedIn) {
-              pushAuthRequiredRoute(context, '/settings');
-              return;
-            }
-            context.push(AppRoutes.settingsAi);
-          },
-        ),
-        _SettingsSwitchTile(
-          tileKey: const Key('settings-row-privacy-report'),
-          icon: FLucideIcons.share2,
-          title: l10n.minePrivacyReportTitle,
-          subtitle: l10n.minePrivacyReportSubtitle,
-          value: settings?.dataSharingConsent ?? false,
-          onChanged: (value) async {
-            if (!signedIn) {
-              unawaited(pushAuthRequiredRoute(context, '/settings'));
-              return;
-            }
-            final confirmed = await _showDataSharingConfirmation(
-              context,
-              value,
-            );
-            if (!context.mounted) return;
-            if (confirmed) {
-              unawaited(
-                ref
-                    .read(userSettingsControllerProvider.notifier)
-                    .setDataSharingConsent(value),
-              );
-            }
-          },
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-export'),
-          icon: FLucideIcons.arrowDownToLine,
-          title: l10n.mineSettingExportTitle,
-          onTap: () {
-            if (!signedIn) {
-              pushAuthRequiredRoute(context, '/settings');
-              return;
-            }
-            context.push(AppRoutes.settingsExport);
-          },
+        SettingsSectionLabel(label: l10n.settingsPrivacySectionTitle),
+        const SizedBox(height: Spacing.level3),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: [
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-ai'),
+              icon: FLucideIcons.sparkles,
+              title: l10n.settingsAiTitle,
+              subtitle: l10n.settingsAiSubtitle,
+              onTap: () {
+                if (!signedIn) {
+                  pushAuthRequiredRoute(context, AppRoutes.settings);
+                  return;
+                }
+                context.push(AppRoutes.settingsAi);
+              },
+            ),
+            FTile(
+              key: const Key('settings-row-privacy-report'),
+              title: Text(l10n.minePrivacyReportTitle),
+              subtitle: Text(l10n.minePrivacyReportSubtitle),
+              prefix: const Icon(FLucideIcons.share2, size: 20),
+              suffix: FSwitch(
+                value: settings?.dataSharingConsent ?? false,
+                onChange: (value) async {
+                  if (!signedIn) {
+                    unawaited(
+                      pushAuthRequiredRoute(context, AppRoutes.settings),
+                    );
+                    return;
+                  }
+                  final confirmed = await _showDataSharingConfirmation(
+                    context,
+                    value,
+                  );
+                  if (!context.mounted) return;
+                  if (confirmed) {
+                    unawaited(
+                      ref
+                          .read(userSettingsControllerProvider.notifier)
+                          .setDataSharingConsent(value),
+                    );
+                  }
+                },
+              ),
+              onPress: () async {
+                final currentValue = settings?.dataSharingConsent ?? false;
+                if (!signedIn) {
+                  unawaited(pushAuthRequiredRoute(context, AppRoutes.settings));
+                  return;
+                }
+                final confirmed = await _showDataSharingConfirmation(
+                  context,
+                  !currentValue,
+                );
+                if (!context.mounted) return;
+                if (confirmed) {
+                  unawaited(
+                    ref
+                        .read(userSettingsControllerProvider.notifier)
+                        .setDataSharingConsent(!currentValue),
+                  );
+                }
+              },
+            ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-export'),
+              icon: FLucideIcons.arrowDownToLine,
+              title: l10n.mineSettingExportTitle,
+              onTap: () {
+                if (!signedIn) {
+                  pushAuthRequiredRoute(context, AppRoutes.settings);
+                  return;
+                }
+                context.push(AppRoutes.settingsExport);
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -336,42 +390,43 @@ class _GeneralSection extends ConsumerWidget {
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
 
-    return _SettingsGroup(
-      label: l10n.settingsGeneralSectionTitle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-theme'),
-          icon: FLucideIcons.palette,
-          title: l10n.mineSettingsThemeTitle,
-          value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
-          onTap: () => context.push(AppRoutes.settingsTheme),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-language'),
-          icon: FLucideIcons.globe,
-          title: l10n.mineSettingsLanguageTitle,
-          value: _languageLabel(l10n, currentLocale),
-          onTap: () => context.push(AppRoutes.settingsLanguage),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-advanced'),
-          icon: FLucideIcons.slidersHorizontal,
-          title: l10n.mineSettingsAdvancedTitle,
-          onTap: () => context.push(AppRoutes.settingsMore),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-health-profile'),
-          icon: FLucideIcons.heartPulse,
-          title: l10n.settingsHealthProfileTitle,
-          subtitle: l10n.settingsHealthProfileSubtitle,
-          onTap: () => pushAuthRequiredRoute(context, AppRoutes.mine),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-accessibility'),
-          icon: FLucideIcons.accessibility,
-          title: l10n.settingsAccessibilityTitle,
-          subtitle: l10n.settingsAccessibilitySubtitle,
-          onTap: () => context.push(AppRoutes.settingsAccessibility),
+        SettingsSectionLabel(label: l10n.settingsGeneralSectionTitle),
+        const SizedBox(height: Spacing.level3),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: [
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-theme'),
+              icon: FLucideIcons.palette,
+              title: l10n.mineSettingsThemeTitle,
+              value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
+              onTap: () => context.push(AppRoutes.settingsTheme),
+            ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-language'),
+              icon: FLucideIcons.globe,
+              title: l10n.mineSettingsLanguageTitle,
+              value: _languageLabel(l10n, currentLocale),
+              onTap: () => context.push(AppRoutes.settingsLanguage),
+            ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-advanced'),
+              icon: FLucideIcons.slidersHorizontal,
+              title: l10n.mineSettingsAdvancedTitle,
+              onTap: () => context.push(AppRoutes.settingsMore),
+            ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-accessibility'),
+              icon: FLucideIcons.accessibility,
+              title: l10n.settingsAccessibilityTitle,
+              subtitle: l10n.settingsAccessibilitySubtitle,
+              onTap: () => context.push(AppRoutes.settingsAccessibility),
+            ),
+          ],
         ),
       ],
     );
@@ -434,16 +489,24 @@ class _DataStorageSection extends ConsumerWidget {
     final settings =
         settingsAsync.asData?.value ?? const DataStorageSettingsState();
 
-    return _SettingsGroup(
-      label: l10n.settingsDataStorageSectionTitle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-data-storage'),
-          icon: FLucideIcons.database,
-          title: l10n.settingsDataStorageTitle,
-          subtitle: l10n.settingsDataStorageSubtitle,
-          value: _retentionLabel(l10n, settings.retentionPeriod),
-          onTap: () => context.push(AppRoutes.settingsDataStorage),
+        SettingsSectionLabel(label: l10n.settingsDataStorageSectionTitle),
+        const SizedBox(height: Spacing.level3),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: [
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-data-storage'),
+              icon: FLucideIcons.database,
+              title: l10n.settingsDataStorageTitle,
+              subtitle: l10n.settingsDataStorageSubtitle,
+              value: _retentionLabel(l10n, settings.retentionPeriod),
+              onTap: () => context.push(AppRoutes.settingsDataStorage),
+            ),
+          ],
         ),
       ],
     );
@@ -473,29 +536,37 @@ class _QuickEntrySection extends ConsumerWidget {
         const QuickEntryPreferences();
     final controller = ref.read(quickEntryPreferencesProvider.notifier);
 
-    return _SettingsGroup(
-      label: l10n.settingsQuickEntrySection,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        FTile(
-          key: const Key('settings-row-quick-entry-dynamic-sort'),
-          title: Text(l10n.settingsQuickEntryDynamicSortTitle),
-          subtitle: Text(l10n.settingsQuickEntryDynamicSortSubtitle),
-          suffix: FSwitch(
-            value: prefs.dynamicSortEnabled,
-            onChange: (value) => controller.setDynamicSortEnabled(value),
-          ),
-          onPress: () =>
-              controller.setDynamicSortEnabled(!prefs.dynamicSortEnabled),
-        ),
-        FTile(
-          key: const Key('settings-row-quick-entry-collapse'),
-          title: Text(l10n.settingsQuickEntryCollapseTitle),
-          subtitle: Text(l10n.settingsQuickEntryCollapseSubtitle),
-          suffix: FSwitch(
-            value: prefs.collapsed,
-            onChange: (value) => controller.setCollapsed(value),
-          ),
-          onPress: () => controller.setCollapsed(!prefs.collapsed),
+        SettingsSectionLabel(label: l10n.settingsQuickEntrySection),
+        const SizedBox(height: Spacing.level3),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: [
+            FTile(
+              key: const Key('settings-row-quick-entry-dynamic-sort'),
+              title: Text(l10n.settingsQuickEntryDynamicSortTitle),
+              subtitle: Text(l10n.settingsQuickEntryDynamicSortSubtitle),
+              suffix: FSwitch(
+                value: prefs.dynamicSortEnabled,
+                onChange: (value) => controller.setDynamicSortEnabled(value),
+              ),
+              onPress: () =>
+                  controller.setDynamicSortEnabled(!prefs.dynamicSortEnabled),
+            ),
+            FTile(
+              key: const Key('settings-row-quick-entry-collapse'),
+              title: Text(l10n.settingsQuickEntryCollapseTitle),
+              subtitle: Text(l10n.settingsQuickEntryCollapseSubtitle),
+              suffix: FSwitch(
+                value: prefs.collapsed,
+                onChange: (value) => controller.setCollapsed(value),
+              ),
+              onPress: () => controller.setCollapsed(!prefs.collapsed),
+            ),
+          ],
         ),
       ],
     );
@@ -515,20 +586,28 @@ class _AboutSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
 
-    return _SettingsGroup(
-      label: l10n.settingsAboutSectionTitle,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-help'),
-          icon: FLucideIcons.circleHelp,
-          title: l10n.mineSettingHelpTitle,
-          onTap: () => context.push(AppRoutes.settingsHelp),
-        ),
-        _SettingsNavigationTile(
-          tileKey: const Key('settings-row-about'),
-          icon: FLucideIcons.info,
-          title: l10n.mineSettingAboutTitle,
-          onTap: () => context.push(AppRoutes.settingsAbout),
+        SettingsSectionLabel(label: l10n.settingsAboutSectionTitle),
+        const SizedBox(height: Spacing.level3),
+        FTileGroup(
+          physics: const NeverScrollableScrollPhysics(),
+          divider: FItemDivider.full,
+          children: [
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-help'),
+              icon: FLucideIcons.circleHelp,
+              title: l10n.mineSettingHelpTitle,
+              onTap: () => context.push(AppRoutes.settingsHelp),
+            ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-about'),
+              icon: FLucideIcons.info,
+              title: l10n.mineSettingAboutTitle,
+              onTap: () => context.push(AppRoutes.settingsAbout),
+            ),
+          ],
         ),
       ],
     );
@@ -581,43 +660,8 @@ class _SignOutTile extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Shared group + tile widgets
+// Shared tile widgets
 // ---------------------------------------------------------------------------
-
-class _SettingsGroup extends StatelessWidget {
-  const _SettingsGroup({required this.label, required this.children});
-
-  final String label;
-  final List<FTileMixin> children;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            label,
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(
-                  color: colors.mutedForeground,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ),
-        FTileGroup(
-          physics: const NeverScrollableScrollPhysics(),
-          divider: FItemDivider.full,
-          children: children,
-        ),
-      ],
-    );
-  }
-}
 
 class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
   const _SettingsNavigationTile({
@@ -652,66 +696,6 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
       }(),
       suffix: const Icon(FLucideIcons.chevronRight),
       onPress: onTap,
-    );
-  }
-}
-
-class _SettingsSwitchTile extends ConsumerWidget with FTileMixin {
-  const _SettingsSwitchTile({
-    required this.title,
-    this.icon,
-    this.subtitle,
-    required this.value,
-    required this.onChanged,
-    this.tileKey,
-  });
-
-  final String title;
-  final IconData? icon;
-  final String? subtitle;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  final Key? tileKey;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.theme.colors;
-
-    return FTile.raw(
-      key: tileKey,
-      onPress: () => onChanged(!value),
-      child: Row(
-        children: [
-          if (icon != null) ...[
-            Icon(icon, size: 20, color: colors.foreground),
-            const SizedBox(width: 12),
-          ],
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(color: colors.foreground),
-                ),
-                if (subtitle?.isNotEmpty ?? false) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle ?? '',
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(width: 12),
-          IgnorePointer(child: FSwitch(value: value)),
-        ],
-      ),
     );
   }
 }
