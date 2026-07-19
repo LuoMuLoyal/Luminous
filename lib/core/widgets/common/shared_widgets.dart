@@ -43,10 +43,9 @@ class VerificationCodeField extends StatelessWidget {
           ),
         ),
         const SizedBox(width: Spacing.level3),
-        SizedBox(
-          width: 148,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 26),
+        Padding(
+          padding: const EdgeInsets.only(top: 26),
+          child: IntrinsicWidth(
             child: FButton(
               variant: FButtonVariant.outline,
               onPress: isLoading ? null : onSendCode,
