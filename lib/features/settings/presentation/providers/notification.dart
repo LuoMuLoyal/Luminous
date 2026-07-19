@@ -60,6 +60,12 @@ class NotificationSettingsController
     final permissionState = await ref
         .read(notificationPermissionServiceProvider)
         .getPermissionState();
+    // Times are intentionally *not* defaulted here: a null `sleepBedtime` /
+    // `dndStartTime` means "user never picked one". The list page renders
+    // "未设置" for that case; the sub-page shows a placeholder until the
+    // user toggles the feature on (which persists a default). This keeps the
+    // two surfaces in sync instead of the previous behavior where the list
+    // said "未设置" but the sub-page showed a phantom 22:00.
     return NotificationSettingsState(
       medicationReminders: preferences.getBool(_medicationKey) ?? true,
       healthAlerts: preferences.getBool(_healthAlertsKey) ?? true,
@@ -68,20 +74,12 @@ class NotificationSettingsController
       sleepReminders: preferences.getBool(_sleepRemindersKey) ?? true,
       sleepReminderEnabled:
           preferences.getBool(_sleepReminderEnabledKey) ?? false,
-      sleepBedtime:
-          _parseTime(preferences.getString(_sleepBedtimeKey)) ??
-          const TimeOfDay(hour: 23, minute: 0),
-      sleepWakeTime:
-          _parseTime(preferences.getString(_sleepWakeTimeKey)) ??
-          const TimeOfDay(hour: 7, minute: 0),
+      sleepBedtime: _parseTime(preferences.getString(_sleepBedtimeKey)),
+      sleepWakeTime: _parseTime(preferences.getString(_sleepWakeTimeKey)),
       permissionState: permissionState,
       dndEnabled: preferences.getBool(_dndEnabledKey) ?? false,
-      dndStartTime:
-          _parseTime(preferences.getString(_dndStartTimeKey)) ??
-          const TimeOfDay(hour: 22, minute: 0),
-      dndEndTime:
-          _parseTime(preferences.getString(_dndEndTimeKey)) ??
-          const TimeOfDay(hour: 7, minute: 0),
+      dndStartTime: _parseTime(preferences.getString(_dndStartTimeKey)),
+      dndEndTime: _parseTime(preferences.getString(_dndEndTimeKey)),
       notificationSoundEnabled: preferences.getBool(_soundEnabledKey) ?? true,
       notificationVibrationEnabled:
           preferences.getBool(_vibrationEnabledKey) ?? true,
@@ -158,12 +156,32 @@ class NotificationSettingsController
   }
 
   Future<void> setSleepReminderEnabled(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(sleepReminderEnabled: enabled);
+    final current = state.asData?.value ?? const NotificationSettingsState();
+    // When turning the feature on for the first time, seed any unset times
+    // with sane defaults so the sub-page never shows a placeholder while
+    // the list page claims the feature is active.
+    TimeOfDay? bedtime = current.sleepBedtime;
+    TimeOfDay? wakeTime = current.sleepWakeTime;
+    if (enabled) {
+      bedtime ??= const TimeOfDay(hour: 23, minute: 0);
+      wakeTime ??= const TimeOfDay(hour: 7, minute: 0);
+    }
+    final next = current.copyWith(
+      sleepReminderEnabled: enabled,
+      sleepBedtime: bedtime,
+      sleepWakeTime: wakeTime,
+    );
     await _save(
       next,
-      update: (preferences) =>
-          preferences.setBool(_sleepReminderEnabledKey, enabled),
+      update: (preferences) async {
+        await preferences.setBool(_sleepReminderEnabledKey, enabled);
+        if (bedtime != null) {
+          await preferences.setString(_sleepBedtimeKey, _formatTime(bedtime));
+        }
+        if (wakeTime != null) {
+          await preferences.setString(_sleepWakeTimeKey, _formatTime(wakeTime));
+        }
+      },
     );
   }
 
@@ -198,11 +216,31 @@ class NotificationSettingsController
   }
 
   Future<void> setDndEnabled(bool enabled) async {
-    final next = (state.asData?.value ?? const NotificationSettingsState())
-        .copyWith(dndEnabled: enabled);
+    final current = state.asData?.value ?? const NotificationSettingsState();
+    // Mirror `setSleepReminderEnabled`: seed defaults when first enabled so
+    // the sub-page and list page agree on a concrete time range.
+    TimeOfDay? start = current.dndStartTime;
+    TimeOfDay? end = current.dndEndTime;
+    if (enabled) {
+      start ??= const TimeOfDay(hour: 22, minute: 0);
+      end ??= const TimeOfDay(hour: 7, minute: 0);
+    }
+    final next = current.copyWith(
+      dndEnabled: enabled,
+      dndStartTime: start,
+      dndEndTime: end,
+    );
     await _save(
       next,
-      update: (preferences) => preferences.setBool(_dndEnabledKey, enabled),
+      update: (preferences) async {
+        await preferences.setBool(_dndEnabledKey, enabled);
+        if (start != null) {
+          await preferences.setString(_dndStartTimeKey, _formatTime(start));
+        }
+        if (end != null) {
+          await preferences.setString(_dndEndTimeKey, _formatTime(end));
+        }
+      },
     );
   }
 
@@ -271,6 +309,13 @@ class NotificationSettingsController
         permissionState:
             state.asData?.value.permissionState ??
             NotificationPermissionState.unsupported,
+        // Explicitly null out the time fields so the list page renders
+        // "未设置" after a reset, instead of inheriting the freezed
+        // `@Default(TimeOfDay(...))` which would desync from the sub-page.
+        sleepBedtime: null,
+        sleepWakeTime: null,
+        dndStartTime: null,
+        dndEndTime: null,
       ),
       update: (preferences) async {
         await preferences.remove(_medicationKey);

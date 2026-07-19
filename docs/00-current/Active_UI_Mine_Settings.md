@@ -36,7 +36,7 @@ Last updated: 2026-07-19
 
 - 两态切换使用内联 switch。
 - 多态项路由到子页。
-- 睡眠提醒页使用主开关；关闭时子项禁用；时间选择使用 Forui `FTimeField.picker`。
+- 睡眠提醒页与免打扰页均使用主开关；关闭时时间区显示 `settingsNotificationsTimeUnset`（"未设置"）muted 占位，开启时才渲染 `FTimeField.picker`。开启瞬间若时间为 null，controller 会持久化语义默认值（睡眠 23:00–07:00、免打扰 22:00–07:00），保证列表页与子页一致。
 - 保留期缩短确认：若新期限短于当前期限（含 forever→有限），弹出 `showDangerConfirmationDialog` 二次确认。
 - 恢复默认设置接入 `showDangerConfirmationDialog` 二次确认，使用 `destructive` 红色样式 + 副标题提示。
 - 通知 key 统一通过 `PrefKeys` 管理。
@@ -56,6 +56,8 @@ Last updated: 2026-07-19
 - **免打扰/睡眠提醒跨天提示**：结束时间早于开始时间时显示"跨天生效"提示。
 - **帮助页状态组件统一**：从手写 `_EmptyState` 迁移至 `AppStateMessageView`（带图标+色调），加载态使用 `AppInlineSkeleton` 骨架屏。
 - **语言页当前语言显示**："跟随系统"行显示当前生效语言（"当前：{language}"）。
+- **AI 设置开关写入时序修复**（2026-07-19 P1-2）：`AiSettingsPage` 改为 `ConsumerStatefulWidget`，新增本地 `_isPatching` 状态——任一 PATCH 进行中时所有开关禁用，避免快速连点用 stale 快照翻转两次。所有开关 `onPress` 点击瞬间通过 `ref.read(...).value` 读最新值再翻转，`onChange` 直接用 `FSwitch` 回传值；四个上下文开关的 `AssistantContextPatch` 也在点击时基于最新 state 构造。写入统一走 `runGuarded` + `AppToast.show`，失败显示 `error.message` 或 `settingsSyncFailed` 兜底。
+- **免打扰/睡眠提醒默认值一致性修复**（2026-07-19 P1-2）：`NotificationSettingsController.build()` 不再为四个时间字段兜底默认值，null 即"从未设置"；`setSleepReminderEnabled(true)`/`setDndEnabled(true)` 在时间为 null 时持久化语义默认值；`reset()` 显式将四个时间字段置 null。
 
 ## 主题
 

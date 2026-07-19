@@ -55,62 +55,68 @@ class DndSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.level5),
-                IgnorePointer(
-                  ignoring: !settings.dndEnabled,
-                  child: Opacity(
-                    opacity: settings.dndEnabled ? 1 : 0.45,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FTimeField.picker(
-                          label: Text(l10n.settingsNotificationsDndStart),
-                          enabled: settings.dndEnabled,
-                          control: FTimeFieldControl.lifted(
-                            time:
-                                settings.dndStartTime?.toFTime() ??
-                                const FTime(22, 0),
-                            onChange: (value) => controller.setDndStartTime(
-                              value?.toTimeOfDay(),
-                            ),
+                if (settings.dndEnabled)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FTimeField.picker(
+                        label: Text(l10n.settingsNotificationsDndStart),
+                        control: FTimeFieldControl.lifted(
+                          time:
+                              settings.dndStartTime?.toFTime() ??
+                              const FTime(22, 0),
+                          onChange: (value) =>
+                              controller.setDndStartTime(value?.toTimeOfDay()),
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.level3),
+                      FTimeField.picker(
+                        label: Text(l10n.settingsNotificationsDndEnd),
+                        control: FTimeFieldControl.lifted(
+                          time:
+                              settings.dndEndTime?.toFTime() ??
+                              const FTime(7, 0),
+                          onChange: (value) =>
+                              controller.setDndEndTime(value?.toTimeOfDay()),
+                        ),
+                      ),
+                      if (settings.dndStartTime != null &&
+                          settings.dndEndTime != null &&
+                          _isCrossDay(
+                            settings.dndStartTime!,
+                            settings.dndEndTime!,
+                          ))
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: Spacing.level2,
+                            top: Spacing.level2,
+                          ),
+                          child: Text(
+                            l10n.settingsNotificationsCrossDayHint,
+                            style: TypographyToken.level3
+                                .body(context)
+                                .copyWith(
+                                  color: context.theme.colors.mutedForeground,
+                                ),
                           ),
                         ),
-                        const SizedBox(height: Spacing.level3),
-                        FTimeField.picker(
-                          label: Text(l10n.settingsNotificationsDndEnd),
-                          enabled: settings.dndEnabled,
-                          control: FTimeFieldControl.lifted(
-                            time:
-                                settings.dndEndTime?.toFTime() ??
-                                const FTime(7, 0),
-                            onChange: (value) =>
-                                controller.setDndEndTime(value?.toTimeOfDay()),
+                    ],
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.level2,
+                      vertical: Spacing.level1,
+                    ),
+                    child: Text(
+                      l10n.settingsNotificationsTimeUnset,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.mutedForeground,
                           ),
-                        ),
-                        if (settings.dndEnabled &&
-                            settings.dndStartTime != null &&
-                            settings.dndEndTime != null &&
-                            _isCrossDay(
-                              settings.dndStartTime!,
-                              settings.dndEndTime!,
-                            ))
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: Spacing.level2,
-                              top: Spacing.level2,
-                            ),
-                            child: Text(
-                              l10n.settingsNotificationsCrossDayHint,
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(
-                                    color: context.theme.colors.mutedForeground,
-                                  ),
-                            ),
-                          ),
-                      ],
                     ),
                   ),
-                ),
               ],
             ),
           ),

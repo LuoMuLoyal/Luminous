@@ -1,7 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -9,21 +16,30 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
-import 'package:luminous/core/design/design.dart';
-
-class AiSettingsPage extends ConsumerWidget {
+class AiSettingsPage extends ConsumerStatefulWidget {
   const AiSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AiSettingsPage> createState() => _AiSettingsPageState();
+}
+
+class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
+  /// Tracks any in-flight PATCH on this page. While true, every toggle is
+  /// disabled so two rapid taps cannot both compute "flip false→true" off the
+  /// same stale snapshot — the first tap flips this to `true` and the second
+  /// tap's tile is disabled before its `onChange`/`onPress` can fire.
+  bool _isPatching = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settingsAsync = ref.watch(userSettingsControllerProvider);
     final settings = settingsAsync.asData?.value;
     final signedIn = settings != null;
     final assistantEnabled = settings?.assistantEnabled ?? false;
-    final contextDisabled = !assistantEnabled || settingsAsync.isLoading;
+    final disabled = _isPatching || settingsAsync.isLoading;
+    final contextDisabled = !assistantEnabled || disabled;
 
     return PageScaffold(
       title: l10n.settingsAiTitle,
@@ -41,116 +57,59 @@ class AiSettingsPage extends ConsumerWidget {
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [
-                    FTile(
-                      title: Text(l10n.settingsAiSummariesTitle),
-                      subtitle: Text(l10n.settingsAiSummariesSubtitle),
-                      suffix: FSwitch(
-                        value: settings?.aiSummariesEnabled ?? false,
-                        enabled: !settingsAsync.isLoading,
-                        onChange: (value) {
-                          if (!signedIn) {
-                            pushAuthRequiredRoute(
-                              context,
-                              AppRoutes.settingsAi,
-                            );
-                            return;
-                          }
-                          ref
-                              .read(userSettingsControllerProvider.notifier)
-                              .setAiSummariesEnabled(value);
-                        },
-                      ),
-                      enabled: !settingsAsync.isLoading,
-                      onPress: !settingsAsync.isLoading
-                          ? () {
-                              final next =
-                                  !(settings?.aiSummariesEnabled ?? false);
-                              if (!signedIn) {
-                                pushAuthRequiredRoute(
-                                  context,
-                                  AppRoutes.settingsAi,
-                                );
-                                return;
-                              }
-                              ref
-                                  .read(userSettingsControllerProvider.notifier)
-                                  .setAiSummariesEnabled(next);
-                            }
-                          : null,
+                    _buildToggleTile(
+                      context: context,
+                      l10n: l10n,
+                      signedIn: signedIn,
+                      disabled: disabled,
+                      title: l10n.settingsAiSummariesTitle,
+                      subtitle: l10n.settingsAiSummariesSubtitle,
+                      value: settings?.aiSummariesEnabled ?? false,
+                      read: (r) =>
+                          r
+                              .read(userSettingsControllerProvider)
+                              .value
+                              ?.aiSummariesEnabled ??
+                          false,
+                      apply: (next) => ref
+                          .read(userSettingsControllerProvider.notifier)
+                          .setAiSummariesEnabled(next),
                     ),
-                    FTile(
-                      title: Text(l10n.settingsAiAssistantTitle),
-                      subtitle: Text(l10n.settingsAiAssistantSubtitle),
-                      suffix: FSwitch(
-                        value: settings?.assistantEnabled ?? false,
-                        enabled: !settingsAsync.isLoading,
-                        onChange: (value) {
-                          if (!signedIn) {
-                            pushAuthRequiredRoute(
-                              context,
-                              AppRoutes.settingsAi,
-                            );
-                            return;
-                          }
-                          ref
-                              .read(userSettingsControllerProvider.notifier)
-                              .setAssistantEnabled(value);
-                        },
-                      ),
-                      enabled: !settingsAsync.isLoading,
-                      onPress: !settingsAsync.isLoading
-                          ? () {
-                              final next =
-                                  !(settings?.assistantEnabled ?? false);
-                              if (!signedIn) {
-                                pushAuthRequiredRoute(
-                                  context,
-                                  AppRoutes.settingsAi,
-                                );
-                                return;
-                              }
-                              ref
-                                  .read(userSettingsControllerProvider.notifier)
-                                  .setAssistantEnabled(next);
-                            }
-                          : null,
+                    _buildToggleTile(
+                      context: context,
+                      l10n: l10n,
+                      signedIn: signedIn,
+                      disabled: disabled,
+                      title: l10n.settingsAiAssistantTitle,
+                      subtitle: l10n.settingsAiAssistantSubtitle,
+                      value: settings?.assistantEnabled ?? false,
+                      read: (r) =>
+                          r
+                              .read(userSettingsControllerProvider)
+                              .value
+                              ?.assistantEnabled ??
+                          false,
+                      apply: (next) => ref
+                          .read(userSettingsControllerProvider.notifier)
+                          .setAssistantEnabled(next),
                     ),
-                    FTile(
-                      title: Text(l10n.settingsAiMemoryTitle),
-                      subtitle: Text(l10n.settingsAiMemorySubtitle),
-                      suffix: FSwitch(
-                        value: settings?.assistantMemoryEnabled ?? false,
-                        enabled: !settingsAsync.isLoading,
-                        onChange: (value) {
-                          if (!signedIn) {
-                            pushAuthRequiredRoute(
-                              context,
-                              AppRoutes.settingsAi,
-                            );
-                            return;
-                          }
-                          ref
-                              .read(userSettingsControllerProvider.notifier)
-                              .setAssistantMemoryEnabled(value);
-                        },
-                      ),
-                      enabled: !settingsAsync.isLoading,
-                      onPress: !settingsAsync.isLoading
-                          ? () {
-                              final next =
-                                  !(settings?.assistantMemoryEnabled ?? false);
-                              if (!signedIn) {
-                                pushAuthRequiredRoute(
-                                  context,
-                                  AppRoutes.settingsAi,
-                                );
-                                return;
-                              }
-                              ref
-                                  .read(userSettingsControllerProvider.notifier)
-                                  .setAssistantMemoryEnabled(next);
-                            }
-                          : null,
+                    _buildToggleTile(
+                      context: context,
+                      l10n: l10n,
+                      signedIn: signedIn,
+                      disabled: disabled,
+                      title: l10n.settingsAiMemoryTitle,
+                      subtitle: l10n.settingsAiMemorySubtitle,
+                      value: settings?.assistantMemoryEnabled ?? false,
+                      read: (r) =>
+                          r
+                              .read(userSettingsControllerProvider)
+                              .value
+                              ?.assistantMemoryEnabled ??
+                          false,
+                      apply: (next) => ref
+                          .read(userSettingsControllerProvider.notifier)
+                          .setAssistantMemoryEnabled(next),
                     ),
                   ],
                 ),
@@ -178,66 +137,44 @@ class AiSettingsPage extends ConsumerWidget {
                   children: [
                     _buildContextTile(
                       context: context,
-                      ref: ref,
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      isLoading: settingsAsync.isLoading,
                       title: l10n.settingsAiContextHealthProfile,
                       subtitle: l10n.settingsAiContextHealthProfileSubtitle,
                       value: settings?.assistantContext.healthProfile ?? false,
-                      field: AssistantContextPatch(
-                        healthProfile:
-                            !(settings?.assistantContext.healthProfile ??
-                                false),
-                      ),
+                      field: _AssistantContextField.healthProfile,
                     ),
                     _buildContextTile(
                       context: context,
-                      ref: ref,
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      isLoading: settingsAsync.isLoading,
                       title: l10n.settingsAiContextDailyRecords,
                       subtitle: l10n.settingsAiContextDailyRecordsSubtitle,
                       value: settings?.assistantContext.dailyRecords ?? false,
-                      field: AssistantContextPatch(
-                        dailyRecords:
-                            !(settings?.assistantContext.dailyRecords ?? false),
-                      ),
+                      field: _AssistantContextField.dailyRecords,
                     ),
                     _buildContextTile(
                       context: context,
-                      ref: ref,
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      isLoading: settingsAsync.isLoading,
                       title: l10n.settingsAiContextSleepRecords,
                       subtitle: l10n.settingsAiContextSleepRecordsSubtitle,
                       value: settings?.assistantContext.sleepRecords ?? false,
-                      field: AssistantContextPatch(
-                        sleepRecords:
-                            !(settings?.assistantContext.sleepRecords ?? false),
-                      ),
+                      field: _AssistantContextField.sleepRecords,
                     ),
                     _buildContextTile(
                       context: context,
-                      ref: ref,
                       l10n: l10n,
                       signedIn: signedIn,
                       enabled: !contextDisabled,
-                      isLoading: settingsAsync.isLoading,
                       title: l10n.settingsAiContextCurrentMedicines,
                       subtitle: l10n.settingsAiContextCurrentMedicinesSubtitle,
                       value:
                           settings?.assistantContext.currentMedicines ?? false,
-                      field: AssistantContextPatch(
-                        currentMedicines:
-                            !(settings?.assistantContext.currentMedicines ??
-                                false),
-                      ),
+                      field: _AssistantContextField.currentMedicines,
                     ),
                   ],
                 ),
@@ -249,48 +186,186 @@ class AiSettingsPage extends ConsumerWidget {
     );
   }
 
-  FTile _buildContextTile({
+  /// A boolean settings tile whose `onPress` always reads the latest value
+  /// from the controller state (via [read]) instead of capturing a build-time
+  /// snapshot, so rapid taps cannot flip the same field twice with a stale
+  /// value. PATCH failures are surfaced as a toast.
+  FTile _buildToggleTile({
     required BuildContext context,
-    required WidgetRef ref,
     required AppLocalizations l10n,
     required bool signedIn,
-    required bool enabled,
-    required bool isLoading,
+    required bool disabled,
     required String title,
     required String subtitle,
     required bool value,
-    required AssistantContextPatch field,
+    required bool Function(WidgetRef ref) read,
+    required Future<void> Function(bool next) apply,
+  }) {
+    return FTile(
+      title: Text(title),
+      subtitle: Text(subtitle),
+      enabled: !disabled,
+      onPress: disabled
+          ? null
+          : () => unawaited(
+              _guardedApply(
+                context: context,
+                l10n: l10n,
+                signedIn: signedIn,
+                apply: () => apply(!read(ref)),
+              ),
+            ),
+      suffix: FSwitch(
+        value: value,
+        enabled: !disabled,
+        onChange: disabled
+            ? null
+            : (next) => unawaited(
+                _guardedApply(
+                  context: context,
+                  l10n: l10n,
+                  signedIn: signedIn,
+                  apply: () => apply(next),
+                ),
+              ),
+      ),
+    );
+  }
+
+  FTile _buildContextTile({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool signedIn,
+    required bool enabled,
+    required String title,
+    required String subtitle,
+    required bool value,
+    required _AssistantContextField field,
   }) {
     return FTile(
       title: Text(title),
       subtitle: Text(subtitle),
       enabled: enabled,
       onPress: enabled
-          ? () {
-              if (!signedIn) {
-                pushAuthRequiredRoute(context, AppRoutes.settingsAi);
-                return;
-              }
-              ref
-                  .read(userSettingsControllerProvider.notifier)
-                  .setAssistantContext(field);
-            }
+          ? () => unawaited(
+              _toggleAssistantContextField(
+                context: context,
+                l10n: l10n,
+                signedIn: signedIn,
+                field: field,
+              ),
+            )
           : null,
       suffix: FSwitch(
         value: value,
         enabled: enabled,
         onChange: enabled
-            ? (newValue) {
-                if (!signedIn) {
-                  pushAuthRequiredRoute(context, AppRoutes.settingsAi);
-                  return;
-                }
-                ref
-                    .read(userSettingsControllerProvider.notifier)
-                    .setAssistantContext(field);
-              }
+            ? (_) => unawaited(
+                _toggleAssistantContextField(
+                  context: context,
+                  l10n: l10n,
+                  signedIn: signedIn,
+                  field: field,
+                ),
+              )
             : null,
       ),
     );
   }
+
+  Future<void> _guardedApply({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool signedIn,
+    required Future<void> Function() apply,
+  }) async {
+    if (!signedIn) {
+      unawaited(pushAuthRequiredRoute(context, AppRoutes.settingsAi));
+      return;
+    }
+    if (_isPatching) return;
+    setState(() => _isPatching = true);
+    try {
+      final result = await runGuarded<void>(
+        ref: ref,
+        tag: 'AiSettingsPage.toggle',
+        action: apply,
+      );
+      if (result case Failure(:final error)) {
+        if (!context.mounted) return;
+        await AppToast.show(
+          context,
+          error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isPatching = false);
+      }
+    }
+  }
+
+  Future<void> _toggleAssistantContextField({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required bool signedIn,
+    required _AssistantContextField field,
+  }) async {
+    if (!signedIn) {
+      unawaited(pushAuthRequiredRoute(context, AppRoutes.settingsAi));
+      return;
+    }
+    // Read the freshest snapshot at click time. Combined with the
+    // `_isPatching`-driven disable above, this guarantees that even two taps
+    // in quick succession cannot both compute "flip false→true" off the same
+    // stale snapshot: the first tap flips `_isPatching` to true and the
+    // second tap's tile is disabled before it can fire.
+    final current = ref.read(userSettingsControllerProvider).value;
+    if (current == null) return;
+    final ctx = current.assistantContext;
+    final patch = switch (field) {
+      _AssistantContextField.healthProfile => AssistantContextPatch(
+        healthProfile: !ctx.healthProfile,
+        dailyRecords: ctx.dailyRecords,
+        sleepRecords: ctx.sleepRecords,
+        currentMedicines: ctx.currentMedicines,
+      ),
+      _AssistantContextField.dailyRecords => AssistantContextPatch(
+        healthProfile: ctx.healthProfile,
+        dailyRecords: !ctx.dailyRecords,
+        sleepRecords: ctx.sleepRecords,
+        currentMedicines: ctx.currentMedicines,
+      ),
+      _AssistantContextField.sleepRecords => AssistantContextPatch(
+        healthProfile: ctx.healthProfile,
+        dailyRecords: ctx.dailyRecords,
+        sleepRecords: !ctx.sleepRecords,
+        currentMedicines: ctx.currentMedicines,
+      ),
+      _AssistantContextField.currentMedicines => AssistantContextPatch(
+        healthProfile: ctx.healthProfile,
+        dailyRecords: ctx.dailyRecords,
+        sleepRecords: ctx.sleepRecords,
+        currentMedicines: !ctx.currentMedicines,
+      ),
+    };
+    await _guardedApply(
+      context: context,
+      l10n: l10n,
+      signedIn: signedIn,
+      apply: () => ref
+          .read(userSettingsControllerProvider.notifier)
+          .setAssistantContext(patch),
+    );
+  }
+}
+
+/// Identifies a single field inside [AssistantContextSettings] so callers can
+/// request a toggle without having to construct a full [AssistantContextPatch]
+/// at build time (which is what caused the stale-snapshot bug).
+enum _AssistantContextField {
+  healthProfile,
+  dailyRecords,
+  sleepRecords,
+  currentMedicines,
 }

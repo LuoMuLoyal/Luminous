@@ -1,6 +1,7 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
@@ -38,8 +39,11 @@ void main() {
       expect(state.waterReminders, isTrue);
       expect(state.sleepReminders, isTrue);
       expect(state.sleepReminderEnabled, isFalse);
-      expect(state.sleepBedtime, const TimeOfDay(hour: 23, minute: 0));
-      expect(state.sleepWakeTime, const TimeOfDay(hour: 7, minute: 0));
+      // Times are null until the user enables the feature — this is what
+      // lets the list page render "未设置" and the sub-page show a
+      // placeholder instead of a phantom 22:00.
+      expect(state.sleepBedtime, isNull);
+      expect(state.sleepWakeTime, isNull);
     });
 
     test('loads persisted sleep reminder values', () async {
@@ -60,7 +64,7 @@ void main() {
       expect(state.sleepWakeTime, const TimeOfDay(hour: 6, minute: 45));
     });
 
-    test('falls back to defaults for malformed time strings', () async {
+    test('returns null for malformed time strings', () async {
       container = buildContainer(
         initialValues: const <String, Object>{
           'settings.notifications.sleepBedtime': 'invalid',
@@ -72,8 +76,8 @@ void main() {
         notificationSettingsControllerProvider.future,
       );
 
-      expect(state.sleepBedtime, const TimeOfDay(hour: 23, minute: 0));
-      expect(state.sleepWakeTime, const TimeOfDay(hour: 7, minute: 0));
+      expect(state.sleepBedtime, isNull);
+      expect(state.sleepWakeTime, isNull);
     });
   });
 
@@ -94,6 +98,92 @@ void main() {
       expect(
         preferences.getBool('settings.notifications.sleepReminderEnabled'),
         isTrue,
+      );
+    });
+
+    test(
+      'seeds default bedtime/wakeTime when first enabled with no prior time',
+      () async {
+        container = buildContainer();
+
+        await container.read(notificationSettingsControllerProvider.future);
+
+        await container
+            .read(notificationSettingsControllerProvider.notifier)
+            .setSleepReminderEnabled(true);
+
+        final state = container.read(notificationSettingsControllerProvider);
+        expect(state.value?.sleepBedtime, const TimeOfDay(hour: 23, minute: 0));
+        expect(state.value?.sleepWakeTime, const TimeOfDay(hour: 7, minute: 0));
+
+        final preferences = await SharedPreferences.getInstance();
+        expect(
+          preferences.getString('settings.notifications.sleepBedtime'),
+          '23:00',
+        );
+        expect(
+          preferences.getString('settings.notifications.sleepWakeTime'),
+          '07:00',
+        );
+      },
+    );
+
+    test(
+      'does not overwrite a previously chosen time when re-enabled',
+      () async {
+        container = buildContainer(
+          initialValues: const <String, Object>{
+            'settings.notifications.sleepBedtime': '21:30',
+            'settings.notifications.sleepWakeTime': '06:15',
+          },
+        );
+
+        await container.read(notificationSettingsControllerProvider.future);
+
+        await container
+            .read(notificationSettingsControllerProvider.notifier)
+            .setSleepReminderEnabled(true);
+
+        final state = container.read(notificationSettingsControllerProvider);
+        expect(
+          state.value?.sleepBedtime,
+          const TimeOfDay(hour: 21, minute: 30),
+        );
+        expect(
+          state.value?.sleepWakeTime,
+          const TimeOfDay(hour: 6, minute: 15),
+        );
+      },
+    );
+  });
+
+  group('setDndEnabled', () {
+    test('seeds default start/end times when first enabled', () async {
+      container = buildContainer();
+
+      await container.read(notificationSettingsControllerProvider.future);
+
+      await container
+          .read(notificationSettingsControllerProvider.notifier)
+          .setDndEnabled(true);
+
+      final state = container.read(notificationSettingsControllerProvider);
+      expect(state.value?.dndEnabled, isTrue);
+      expect(state.value?.dndStartTime, const TimeOfDay(hour: 22, minute: 0));
+      expect(state.value?.dndEndTime, const TimeOfDay(hour: 7, minute: 0));
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getBool(PrefKeys.settingsNotificationsDndEnabled),
+        isTrue,
+      );
+      expect(
+        preferences.getString(PrefKeys.settingsNotificationsDndStartTime),
+        '22:00',
+      );
+      expect(
+        preferences.getString(PrefKeys.settingsNotificationsDndEndTime),
+        '07:00',
       );
     });
   });
@@ -191,8 +281,10 @@ void main() {
       expect(state.value?.waterReminders, isTrue);
       expect(state.value?.sleepReminders, isTrue);
       expect(state.value?.sleepReminderEnabled, isFalse);
-      expect(state.value?.sleepBedtime, const TimeOfDay(hour: 23, minute: 0));
-      expect(state.value?.sleepWakeTime, const TimeOfDay(hour: 7, minute: 0));
+      expect(state.value?.sleepBedtime, isNull);
+      expect(state.value?.sleepWakeTime, isNull);
+      expect(state.value?.dndStartTime, isNull);
+      expect(state.value?.dndEndTime, isNull);
 
       final preferences = await SharedPreferences.getInstance();
       expect(

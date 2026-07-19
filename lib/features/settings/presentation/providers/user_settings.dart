@@ -93,6 +93,12 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
     required UserSettings current,
   }) async {
     final repo = ref.read(userSettingsRepositoryProvider);
+    // On success the state is replaced with the patched snapshot; on failure
+    // the state is left untouched (previous value stays) and the error is
+    // rethrown so callers using `runGuarded` can surface a toast. Rapid-tap
+    // protection is handled in the UI via a local `_isPatching` guard rather
+    // than by flipping the controller into `AsyncLoading` (which would lose
+    // the previous value and flash a skeleton).
     final updated = await repo.updateSettings(
       aiSummariesEnabled: aiSummariesEnabled ?? current.aiSummariesEnabled,
       dataSharingConsent: dataSharingConsent ?? current.dataSharingConsent,

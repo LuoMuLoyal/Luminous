@@ -60,63 +60,68 @@ class SleepReminderSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.level5),
-                IgnorePointer(
-                  ignoring: !settings.sleepReminderEnabled,
-                  child: Opacity(
-                    opacity: settings.sleepReminderEnabled ? 1 : 0.45,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FTimeField.picker(
-                          label: Text(l10n.settingsNotificationsSleepBedtime),
-                          enabled: settings.sleepReminderEnabled,
-                          control: FTimeFieldControl.lifted(
-                            time:
-                                settings.sleepBedtime?.toFTime() ??
-                                const FTime(23, 0),
-                            onChange: (value) => controller.setSleepBedtime(
-                              value?.toTimeOfDay(),
-                            ),
+                if (settings.sleepReminderEnabled)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FTimeField.picker(
+                        label: Text(l10n.settingsNotificationsSleepBedtime),
+                        control: FTimeFieldControl.lifted(
+                          time:
+                              settings.sleepBedtime?.toFTime() ??
+                              const FTime(23, 0),
+                          onChange: (value) =>
+                              controller.setSleepBedtime(value?.toTimeOfDay()),
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.level3),
+                      FTimeField.picker(
+                        label: Text(l10n.settingsNotificationsSleepWakeTime),
+                        control: FTimeFieldControl.lifted(
+                          time:
+                              settings.sleepWakeTime?.toFTime() ??
+                              const FTime(7, 0),
+                          onChange: (value) =>
+                              controller.setSleepWakeTime(value?.toTimeOfDay()),
+                        ),
+                      ),
+                      if (settings.sleepBedtime != null &&
+                          settings.sleepWakeTime != null &&
+                          _isCrossDay(
+                            settings.sleepBedtime!,
+                            settings.sleepWakeTime!,
+                          ))
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: Spacing.level2,
+                            top: Spacing.level2,
+                          ),
+                          child: Text(
+                            l10n.settingsNotificationsCrossDayHint,
+                            style: TypographyToken.level3
+                                .body(context)
+                                .copyWith(
+                                  color: context.theme.colors.mutedForeground,
+                                ),
                           ),
                         ),
-                        const SizedBox(height: Spacing.level3),
-                        FTimeField.picker(
-                          label: Text(l10n.settingsNotificationsSleepWakeTime),
-                          enabled: settings.sleepReminderEnabled,
-                          control: FTimeFieldControl.lifted(
-                            time:
-                                settings.sleepWakeTime?.toFTime() ??
-                                const FTime(7, 0),
-                            onChange: (value) => controller.setSleepWakeTime(
-                              value?.toTimeOfDay(),
-                            ),
+                    ],
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Spacing.level2,
+                      vertical: Spacing.level1,
+                    ),
+                    child: Text(
+                      l10n.settingsNotificationsTimeUnset,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.mutedForeground,
                           ),
-                        ),
-                        if (settings.sleepReminderEnabled &&
-                            settings.sleepBedtime != null &&
-                            settings.sleepWakeTime != null &&
-                            _isCrossDay(
-                              settings.sleepBedtime!,
-                              settings.sleepWakeTime!,
-                            ))
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: Spacing.level2,
-                              top: Spacing.level2,
-                            ),
-                            child: Text(
-                              l10n.settingsNotificationsCrossDayHint,
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(
-                                    color: context.theme.colors.mutedForeground,
-                                  ),
-                            ),
-                          ),
-                      ],
                     ),
                   ),
-                ),
               ],
             ),
           ),

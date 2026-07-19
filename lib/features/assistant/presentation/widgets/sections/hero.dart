@@ -289,8 +289,9 @@ class _CompactStatusDot extends StatelessWidget {
     AssistantCapabilities capabilities,
   ) {
     if (!capabilities.assistantEnabled) return l10n.assistantStatusDisabled;
-    if (!capabilities.chatModelConfigured)
+    if (!capabilities.chatModelConfigured) {
       return l10n.assistantStatusModelMissing;
+    }
     if (!capabilities.interactiveChatReady) return l10n.assistantStatusNotReady;
     return l10n.assistantStatusReady;
   }
