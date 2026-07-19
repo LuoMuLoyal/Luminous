@@ -68,6 +68,8 @@ Last updated: 2026-07-19
 - Today 与 Mine 铃铛图标上的未读红点由真实后端未读数驱动。
 - 分组列表页（今天/昨天/更早）使用 l10n 键，不硬编码中文。
 - 分页 load-more、批量标为已读、滑动删除。
+- 侧滑操作支持切换已读/未读状态（未读→标读 info 色、已读→标未读 warning 色）与删除（destructive 色），两个 action 平分 50% 宽度并带文字标签。
+- 未读圆点外包 `Semantics(label: notificationUnreadSemantics)`，读屏可识别。
 - 详情页带动作路由（「去处理」根据通知类型导航）。
 - 通知类型 chip 使用 l10n 键，不硬编码英文直出。
 - 详情页 `markAsRead` 在打开时自动调用（接口链路已反转）。
@@ -92,6 +94,8 @@ Last updated: 2026-07-19
 - Settings 保留相同的能力/权限控制作为二级入口。
 - 助手工作区读取真实 Lucent capabilities，发送真实 SSE 流式请求，Markdown 渲染。
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
+- 控制面板（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从对话页底部常驻移入右侧抽屉（`_AssistantControlsSheet`），顶栏新增 `settings2` 图标按钮打开，释放对话区垂直空间。
+- 助手禁用时的提示文案指向右上角设置入口（"在右上角设置中打开启用 AI 对话开关"）。
 
 ## 数据层
 
@@ -141,3 +145,13 @@ Last updated: 2026-07-19
 - **用药骨架**：`MineEditFormLoading` 的 `blockHeights` 改为 6 块，与用药表单实际字段数一致。
 - **共享日期选择器**：新增 `lib/core/widgets/common/date_picker.dart`（`showForuiDatePicker`），供全 App 统一使用。
 - **通知加载态**：`notifications_reminders.dart` 的 `orElse` 从 `placeholderNoData` 改为 `mineNotificationInboxLoadingSummary`（"加载中…"）。
+
+## 法律文档
+
+- 列表页展示 7 种文档类型（条款/隐私/免责/未成年人保护/SDK 列表/权限/账号注销），每项带类型图标 + 标题 + 更新时间。
+- 详情页从滚动 `Markdown` 改为 `MarkdownBody` + `SingleChildScrollView`，支持文本选择（`selectable: true`）。
+- 正文字号从 `TypographyToken.level3`（14px）升级为 `level4`（16px），行高 `1.7`，长文阅读更舒适。
+- h1/h2/h3 字号升级（level7/level6/level5）并添加段落间距（`h1Padding`/`h2Padding`/`h3Padding`）。
+- 详情页包裹 `ResponsiveContentFrame` 限宽，宽屏不再通栏。
+- 页面标题使用文档名（`doc.title`）替代固定"法律文件"。
+- 正文顶部显示更新时间（`legalListUpdatedAt` + locale 感知 `formatDateTimeLabel`）。
