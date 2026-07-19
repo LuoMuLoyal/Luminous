@@ -31,5 +31,6 @@
   "notificationTypeMedicineMissedDose": "用药",
   "notificationTypeMedicineReminder": "提醒",
   "notificationTypeSystemAnnouncement": "系统",
-  "notificationTypeUnknown": "通知"
+  "notificationTypeUnknown": "通知",
+  "notificationUnreadSemantics": "未读"
 }

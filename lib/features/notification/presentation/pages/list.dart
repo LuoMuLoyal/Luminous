@@ -39,124 +39,177 @@ class NotificationListPage extends ConsumerWidget {
               );
             }
           },
+          hasUnread: listAsync.maybeWhen(
+            data: (page) => page.items.any((item) => !item.isRead),
+            orElse: () => false,
+          ),
         ),
       ],
-      child: SingleChildScrollView(
-        child: ResponsiveContentFrame(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
-            child: listAsync.when(
-              data: (page) {
-                final items = page.items;
-                if (items.isEmpty) {
-                  return const _EmptyView();
-                }
-                final groups = _groupByRelativeDate(items, l10n);
-                final controller = ref.read(
-                  notificationListControllerProvider.notifier,
-                );
-                final isLoadingMore = ref.watch(
-                  notificationListLoadingMoreProvider,
-                );
-                final hasMore = controller.hasMore;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final entry in groups.entries) ...[
-                      _SectionHeader(title: entry.key),
-                      const SizedBox(height: Spacing.level2),
-                      Column(
-                        children: [
-                          for (
-                            var index = 0;
-                            index < entry.value.length;
-                            index++
-                          ) ...[
-                            NotificationListItemWidget(
-                              item: entry.value[index],
-                              onTap: () => context.push(
-                                '/notifications/${entry.value[index].id}',
-                              ),
-                              onDismiss: () async {
-                                final controller = ref.read(
-                                  notificationListControllerProvider.notifier,
-                                );
-                                await controller.deleteNotification(
-                                  entry.value[index].id,
-                                );
-                                if (context.mounted) {
-                                  unawaited(
-                                    AppToast.show(
-                                      context,
-                                      l10n.notificationDeleteSuccess,
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            if (index < entry.value.length - 1)
-                              const SizedBox(height: Spacing.level3),
-                          ],
-                        ],
-                      ),
-                      const SizedBox(height: Spacing.level4),
-                    ],
-                    if (hasMore) ...[
-                      const SizedBox(height: Spacing.level4),
-                      Center(
-                        child: isLoadingMore
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: FCircularProgress(),
-                              )
-                            : FButton(
-                                variant: FButtonVariant.outline,
-                                onPress: () => controller.loadMore(),
-                                child: Text(l10n.notificationLoadMore),
-                              ),
-                      ),
-                    ],
-                  ],
-                );
-              },
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(Spacing.level10),
-                  child: AppSkeletonShimmer(
-                    child: Column(
-                      children: [
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: Spacing.level4),
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: Spacing.level4),
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: Spacing.level4),
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: Spacing.level4),
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                        SizedBox(height: Spacing.level4),
-                        AppInlineSkeletonBlock(height: 64, widthFactor: 1),
-                      ],
-                    ),
-                  ),
+      child: listAsync.when(
+        data: (page) {
+          final items = page.items;
+          if (items.isEmpty) {
+            return const _EmptyView();
+          }
+          return RefreshIndicator(
+            onRefresh: () =>
+                ref.read(notificationListControllerProvider.notifier).refresh(),
+            child: ResponsiveContentFrame(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+                child: _GroupedNotificationList(
+                  items: items,
+                  l10n: l10n,
+                  onTap: (item) async {
+                    final controller = ref.read(
+                      notificationListControllerProvider.notifier,
+                    );
+                    if (!item.isRead) {
+                      await controller.markAsRead(item.id);
+                    }
+                    if (context.mounted) {
+                      unawaited(context.push('/notifications/${item.id}'));
+                    }
+                  },
+                  onDismiss: (item) async {
+                    final controller = ref.read(
+                      notificationListControllerProvider.notifier,
+                    );
+                    await controller.deleteNotification(item.id);
+                    if (context.mounted) {
+                      unawaited(
+                        AppToast.show(context, l10n.notificationDeleteSuccess),
+                      );
+                    }
+                  },
+                  onToggleRead: (item) async {
+                    final controller = ref.read(
+                      notificationListControllerProvider.notifier,
+                    );
+                    await controller.toggleReadStatus(item.id);
+                    if (context.mounted) {
+                      unawaited(
+                        AppToast.show(
+                          context,
+                          item.isRead
+                              ? l10n.notificationMarkUnreadSuccess
+                              : l10n.notificationMarkReadSuccess,
+                        ),
+                      );
+                    }
+                  },
+                  hasMore: ref
+                      .read(notificationListControllerProvider.notifier)
+                      .hasMore,
+                  isLoadingMore: ref.watch(notificationListLoadingMoreProvider),
+                  onLoadMore: () => ref
+                      .read(notificationListControllerProvider.notifier)
+                      .loadMore(),
+                  loadMoreLabel: l10n.notificationLoadMore,
                 ),
               ),
-              error: (error, _) => AppStateErrorView(
-                title: l10n.notificationErrorTitle,
-                description: userMessageFromError(
-                  error,
-                  fallback: l10n.notificationErrorTitle,
-                ),
-                icon: FLucideIcons.circleAlert,
-                actionLabel: l10n.notificationRetryAction,
-                onAction: () =>
-                    ref.invalidate(notificationListControllerProvider),
+            ),
+          );
+        },
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(Spacing.level10),
+            child: AppSkeletonShimmer(
+              child: Column(
+                children: [
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  SizedBox(height: Spacing.level4),
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  SizedBox(height: Spacing.level4),
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  SizedBox(height: Spacing.level4),
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  SizedBox(height: Spacing.level4),
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  SizedBox(height: Spacing.level4),
+                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                ],
               ),
             ),
           ),
         ),
+        error: (error, _) => AppStateErrorView(
+          title: l10n.notificationErrorTitle,
+          description: userMessageFromError(
+            error,
+            fallback: l10n.notificationErrorTitle,
+          ),
+          icon: FLucideIcons.circleAlert,
+          actionLabel: l10n.notificationRetryAction,
+          onAction: () => ref.invalidate(notificationListControllerProvider),
+        ),
       ),
+    );
+  }
+}
+
+class _GroupedNotificationList extends StatelessWidget {
+  const _GroupedNotificationList({
+    required this.items,
+    required this.l10n,
+    required this.onTap,
+    required this.onDismiss,
+    required this.onToggleRead,
+    required this.hasMore,
+    required this.isLoadingMore,
+    required this.onLoadMore,
+    required this.loadMoreLabel,
+  });
+
+  final List<NotificationItem> items;
+  final AppLocalizations l10n;
+  final void Function(NotificationItem) onTap;
+  final void Function(NotificationItem) onDismiss;
+  final void Function(NotificationItem) onToggleRead;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final VoidCallback onLoadMore;
+  final String loadMoreLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = _groupByRelativeDate(items, l10n);
+    return ListView(
+      shrinkWrap: true,
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        for (final entry in groups.entries) ...[
+          _SectionHeader(title: entry.key),
+          const SizedBox(height: Spacing.level2),
+          for (var index = 0; index < entry.value.length; index++) ...[
+            NotificationListItemWidget(
+              item: entry.value[index],
+              onTap: () => onTap(entry.value[index]),
+              onDismiss: () => onDismiss(entry.value[index]),
+              onToggleRead: () => onToggleRead(entry.value[index]),
+            ),
+            if (index < entry.value.length - 1)
+              const SizedBox(height: Spacing.level3),
+          ],
+          const SizedBox(height: Spacing.level4),
+        ],
+        if (hasMore) ...[
+          const SizedBox(height: Spacing.level4),
+          Center(
+            child: isLoadingMore
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: FCircularProgress(),
+                  )
+                : FButton(
+                    variant: FButtonVariant.outline,
+                    onPress: onLoadMore,
+                    child: Text(loadMoreLabel),
+                  ),
+          ),
+        ],
+      ],
     );
   }
 
@@ -201,9 +254,10 @@ class NotificationListPage extends ConsumerWidget {
 }
 
 class _MarkAllReadButton extends StatelessWidget {
-  const _MarkAllReadButton({required this.onPressed});
+  const _MarkAllReadButton({required this.onPressed, this.hasUnread = true});
 
   final VoidCallback onPressed;
+  final bool hasUnread;
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +266,7 @@ class _MarkAllReadButton extends StatelessWidget {
     return FButton(
       variant: FButtonVariant.ghost,
       size: FButtonSizeVariant.sm,
-      onPress: onPressed,
+      onPress: hasUnread ? onPressed : null,
       child: Text(l10n.notificationMarkAllRead),
     );
   }

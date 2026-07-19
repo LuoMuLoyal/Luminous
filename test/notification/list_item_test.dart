@@ -36,6 +36,7 @@ void main() {
             item: _item(id: '1', title: 'Test notice', content: 'Some content'),
             onTap: () {},
             onDismiss: () {},
+            onToggleRead: () {},
           ),
         ),
       );
@@ -51,6 +52,7 @@ void main() {
             item: _item(id: '1', isRead: false),
             onTap: () {},
             onDismiss: () {},
+            onToggleRead: () {},
           ),
         ),
       );
@@ -75,6 +77,7 @@ void main() {
             item: _item(id: '1'),
             onTap: () => tapped = true,
             onDismiss: () {},
+            onToggleRead: () {},
           ),
         ),
       );
@@ -91,6 +94,7 @@ void main() {
             item: _item(id: '1'),
             onTap: () {},
             onDismiss: () {},
+            onToggleRead: () {},
           ),
         ),
       );
@@ -111,6 +115,7 @@ void main() {
             item: _item(id: '1', title: 'Today', content: '', createdAt: iso),
             onTap: () {},
             onDismiss: () {},
+            onToggleRead: () {},
           ),
         ),
       );

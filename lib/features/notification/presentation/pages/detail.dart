@@ -83,15 +83,40 @@ class NotificationDetailPage extends ConsumerWidget {
   }
 }
 
-class _DetailBody extends ConsumerWidget {
+class _DetailBody extends ConsumerStatefulWidget {
   const _DetailBody({required this.detail});
 
   final NotificationDetail detail;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_DetailBody> createState() => _DetailBodyState();
+}
+
+class _DetailBodyState extends ConsumerState<_DetailBody> {
+  bool _autoMarkedRead = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.detail.isRead && !_autoMarkedRead) {
+      _autoMarkedRead = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _autoMarkRead());
+    }
+  }
+
+  Future<void> _autoMarkRead() async {
+    if (!mounted) return;
+    final repo = ref.read(notificationRepositoryProvider);
+    await repo.markAsRead(widget.detail.id);
+    ref.invalidate(notificationUnreadCountProvider);
+    ref.invalidate(notificationListControllerProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final detail = widget.detail;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,42 +291,40 @@ class _ActionBar extends StatelessWidget {
 
     final actions = <Widget>[
       if (detail.action?.isNotEmpty ?? false)
-        Expanded(
-          child: FButton(
-            onPress: onNavigate,
-            prefix: const Icon(FLucideIcons.externalLink, size: 18),
-            child: Text(l10n.notificationActionNavigate),
-          ),
+        FButton(
+          onPress: onNavigate,
+          prefix: const Icon(FLucideIcons.externalLink, size: 18),
+          child: Text(l10n.notificationActionNavigate),
         ),
       if (detail.action?.isNotEmpty ?? false)
         const SizedBox(width: Spacing.level3),
-      Expanded(
-        child: FButton(
-          variant: FButtonVariant.outline,
-          onPress: detail.isRead ? onMarkUnread : onMarkRead,
-          prefix: Icon(
-            detail.isRead ? FLucideIcons.mailMinus : FLucideIcons.checkCheck,
-            size: 18,
-          ),
-          child: Text(
-            detail.isRead
-                ? l10n.notificationActionMarkUnread
-                : l10n.notificationActionMarkRead,
-          ),
+      FButton(
+        variant: FButtonVariant.outline,
+        onPress: detail.isRead ? onMarkUnread : onMarkRead,
+        prefix: Icon(
+          detail.isRead ? FLucideIcons.mailMinus : FLucideIcons.checkCheck,
+          size: 18,
+        ),
+        child: Text(
+          detail.isRead
+              ? l10n.notificationActionMarkUnread
+              : l10n.notificationActionMarkRead,
         ),
       ),
       const SizedBox(width: Spacing.level3),
-      Expanded(
-        child: FButton(
-          variant: FButtonVariant.destructive,
-          onPress: () => _showDeleteConfirm(context, onDelete),
-          prefix: const Icon(FLucideIcons.trash2, size: 18),
-          child: Text(l10n.notificationActionDelete),
-        ),
+      FButton(
+        variant: FButtonVariant.destructive,
+        onPress: () => _showDeleteConfirm(context, onDelete),
+        prefix: const Icon(FLucideIcons.trash2, size: 18),
+        child: Text(l10n.notificationActionDelete),
       ),
     ];
 
-    return Row(children: actions);
+    return Wrap(
+      spacing: Spacing.level3,
+      runSpacing: Spacing.level3,
+      children: actions,
+    );
   }
 
   void _showDeleteConfirm(BuildContext context, VoidCallback onDelete) {

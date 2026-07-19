@@ -53,6 +53,29 @@ class NotificationItem {
 
   /// ISO-8601 timestamp.
   final String createdAt;
+
+  /// Returns a copy with updated fields.
+  NotificationItem copyWith({
+    String? id,
+    NotificationType? type,
+    String? title,
+    String? content,
+    String? action,
+    dynamic actionPayload,
+    bool? isRead,
+    String? createdAt,
+  }) {
+    return NotificationItem(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      action: action ?? this.action,
+      actionPayload: actionPayload ?? this.actionPayload,
+      isRead: isRead ?? this.isRead,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }
 
 /// Full notification detail with read timestamp.

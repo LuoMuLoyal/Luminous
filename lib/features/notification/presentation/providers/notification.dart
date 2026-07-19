@@ -105,6 +105,71 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
       () => repo.findAll(page: 1, pageSize: _notificationPageSize),
     );
   }
+
+  Future<void> markAsRead(String id) async {
+    final repo = ref.read(notificationRepositoryProvider);
+    await repo.markAsRead(id);
+    ref.invalidate(notificationUnreadCountProvider);
+    final current = state.value;
+    if (current == null) return;
+    state = AsyncValue.data(
+      NotificationPage(
+        items: current.items
+            .map(
+              (item) => item.id == id && !item.isRead
+                  ? item.copyWith(isRead: true)
+                  : item,
+            )
+            .toList(),
+        total: current.total,
+        page: current.page,
+        pageSize: current.pageSize,
+      ),
+    );
+  }
+
+  Future<void> markAsUnread(String id) async {
+    final repo = ref.read(notificationRepositoryProvider);
+    await repo.markAsUnread(id);
+    ref.invalidate(notificationUnreadCountProvider);
+    final current = state.value;
+    if (current == null) return;
+    state = AsyncValue.data(
+      NotificationPage(
+        items: current.items
+            .map(
+              (item) => item.id == id && item.isRead
+                  ? item.copyWith(isRead: false)
+                  : item,
+            )
+            .toList(),
+        total: current.total,
+        page: current.page,
+        pageSize: current.pageSize,
+      ),
+    );
+  }
+
+  /// Toggles the read status of a notification in-place without refetching.
+  Future<void> toggleReadStatus(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    final target = current.items.where((item) => item.id == id).firstOrNull;
+    if (target == null) return;
+    if (target.isRead) {
+      await markAsUnread(id);
+    } else {
+      await markAsRead(id);
+    }
+  }
+
+  Future<void> refresh() async {
+    _currentPage = 1;
+    final repo = ref.read(notificationRepositoryProvider);
+    state = await AsyncValue.guard(
+      () => repo.findAll(page: 1, pageSize: _notificationPageSize),
+    );
+  }
 }
 
 final notificationListControllerProvider =
