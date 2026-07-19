@@ -62,15 +62,6 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         );
                       },
                     ),
-                    FTile(
-                      key: const Key('advanced-settings-row-licenses'),
-                      title: Text(l10n.settingsAdvancedOpenSourceLicenses),
-                      suffix: const Icon(FLucideIcons.chevronRight),
-                      onPress: () => showLicensePage(
-                        context: context,
-                        applicationName: 'Luminous',
-                      ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: Spacing.level5),

@@ -94,16 +94,12 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: _kGroupSpacing),
 
-                // -- 通用 --
+                // -- 通用（含数据与存储）--
                 const _GeneralSection(),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 快速记录 --
                 const _QuickEntrySection(),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- 数据与存储 --
-                const _DataStorageSection(),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- 通知 --
@@ -389,6 +385,9 @@ class _GeneralSection extends ConsumerWidget {
     final currentLocale =
         ref.watch(appLocaleControllerProvider).asData?.value ??
         AppLocale.system;
+    final dataStorageAsync = ref.watch(dataStorageSettingsControllerProvider);
+    final dataStorage =
+        dataStorageAsync.asData?.value ?? const DataStorageSettingsState();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,6 +413,14 @@ class _GeneralSection extends ConsumerWidget {
               onTap: () => context.push(AppRoutes.settingsLanguage),
             ),
             _SettingsNavigationTile(
+              tileKey: const Key('settings-row-data-storage'),
+              icon: FLucideIcons.database,
+              title: l10n.settingsDataStorageTitle,
+              subtitle: l10n.settingsDataStorageSubtitle,
+              value: _retentionLabel(l10n, dataStorage.retentionPeriod),
+              onTap: () => context.push(AppRoutes.settingsDataStorage),
+            ),
+            _SettingsNavigationTile(
               tileKey: const Key('settings-row-advanced'),
               icon: FLucideIcons.slidersHorizontal,
               title: l10n.mineSettingsAdvancedTitle,
@@ -430,6 +437,14 @@ class _GeneralSection extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  String _retentionLabel(AppLocalizations l10n, DataRetentionPeriod period) {
+    return switch (period) {
+      DataRetentionPeriod.thirtyDays => l10n.settingsDataStorageRetention30Days,
+      DataRetentionPeriod.ninetyDays => l10n.settingsDataStorageRetention90Days,
+      DataRetentionPeriod.forever => l10n.settingsDataStorageRetentionForever,
+    };
   }
 
   String _themeModeLabel(
@@ -471,52 +486,6 @@ class _GeneralSection extends ConsumerWidget {
       AppLocale.system => l10n.settingsLanguageSystemLabel,
       AppLocale.en => l10n.settingsLanguageEnglishLabel,
       AppLocale.zhCn => l10n.settingsLanguageChineseLabel,
-    };
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Data & Storage section
-// ---------------------------------------------------------------------------
-
-class _DataStorageSection extends ConsumerWidget {
-  const _DataStorageSection();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final settingsAsync = ref.watch(dataStorageSettingsControllerProvider);
-    final settings =
-        settingsAsync.asData?.value ?? const DataStorageSettingsState();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SettingsSectionLabel(label: l10n.settingsDataStorageSectionTitle),
-        const SizedBox(height: Spacing.level3),
-        FTileGroup(
-          physics: const NeverScrollableScrollPhysics(),
-          divider: FItemDivider.full,
-          children: [
-            _SettingsNavigationTile(
-              tileKey: const Key('settings-row-data-storage'),
-              icon: FLucideIcons.database,
-              title: l10n.settingsDataStorageTitle,
-              subtitle: l10n.settingsDataStorageSubtitle,
-              value: _retentionLabel(l10n, settings.retentionPeriod),
-              onTap: () => context.push(AppRoutes.settingsDataStorage),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  String _retentionLabel(AppLocalizations l10n, DataRetentionPeriod period) {
-    return switch (period) {
-      DataRetentionPeriod.thirtyDays => l10n.settingsDataStorageRetention30Days,
-      DataRetentionPeriod.ninetyDays => l10n.settingsDataStorageRetention90Days,
-      DataRetentionPeriod.forever => l10n.settingsDataStorageRetentionForever,
     };
   }
 }

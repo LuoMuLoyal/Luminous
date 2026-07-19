@@ -242,7 +242,7 @@
   "mineExportDownloadButton": "Download Report",
   "mineExportRegenerateButton": "Regenerate",
   "mineExportRequested": "Export request submitted",
-  "mineSyncFailedWarning": "{count} item(s) failed to sync, which may affect cross-device consistency",
+  "mineSyncFailedWarning": "{count, plural, =1{1 item failed to sync, which may affect cross-device consistency} other{{count} items failed to sync, which may affect cross-device consistency}}",
   "@mineSyncFailedWarning": {
     "placeholders": {
       "count": {

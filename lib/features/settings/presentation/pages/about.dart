@@ -13,6 +13,9 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import 'package:luminous/core/design/design.dart';
 
+/// Fallback support URL used when no support email is configured.
+const _kFallbackSupportUrl = 'https://luminous.app/support';
+
 class AboutSettingsPage extends ConsumerWidget {
   const AboutSettingsPage({super.key});
 
@@ -144,6 +147,6 @@ class AboutSettingsPage extends ConsumerWidget {
       );
       return;
     }
-    await _openUrl(context, 'https://luminous.app/support');
+    await _openUrl(context, _kFallbackSupportUrl);
   }
 }

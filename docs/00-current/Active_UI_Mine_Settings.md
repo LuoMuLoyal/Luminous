@@ -158,3 +158,15 @@ Last updated: 2026-07-19
 - 详情页包裹 `ResponsiveContentFrame` 限宽，宽屏不再通栏。
 - 页面标题使用文档名（`doc.title`）替代固定"法律文件"。
 - 正文顶部显示更新时间（`legalListUpdatedAt` + locale 感知 `formatDateTimeLabel`）。
+
+## 2026-07-19 P2 低级一致性打磨
+
+### Settings 模块
+
+- **单 tile 分组合并**：`page.dart` 的 `_DataStorageSection`（单 tile）合并到 `_GeneralSection` 的 `FTileGroup`，消除碎片化分组。`_GeneralSection` 新增 `dataStorageSettingsControllerProvider` 订阅和 `_retentionLabel` 方法。
+- **开源许可重复入口移除**：移除 `advanced.dart` 中重复的"开源许可"tile（`about.dart` 已有同一入口），避免两个页面都能进入相同 `showLicensePage`。
+- **关于页 URL 常量化**：`about.dart` 的硬编码 `https://luminous.app/support` 提取为文件级私有常量 `_kFallbackSupportUrl`。
+
+### Notification 模块
+
+- **通知详情 typed route**：`list.dart` 的通知项点击从字符串拼路由 `context.push('/notifications/${item.id}')` 改为 typed route `NotificationDetailRoute(id: item.id).push(context)`，与项目其他路由一致，获得编译期路径校验。
