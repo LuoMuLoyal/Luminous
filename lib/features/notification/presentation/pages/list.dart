@@ -55,58 +55,55 @@ class NotificationListPage extends ConsumerWidget {
             onRefresh: () =>
                 ref.read(notificationListControllerProvider.notifier).refresh(),
             child: ResponsiveContentFrame(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
-                child: _GroupedNotificationList(
-                  items: items,
-                  l10n: l10n,
-                  onTap: (item) async {
-                    final controller = ref.read(
-                      notificationListControllerProvider.notifier,
+              child: _GroupedNotificationList(
+                items: items,
+                l10n: l10n,
+                onTap: (item) async {
+                  final controller = ref.read(
+                    notificationListControllerProvider.notifier,
+                  );
+                  if (!item.isRead) {
+                    await controller.markAsRead(item.id);
+                  }
+                  if (context.mounted) {
+                    unawaited(context.push('/notifications/${item.id}'));
+                  }
+                },
+                onDismiss: (item) async {
+                  final controller = ref.read(
+                    notificationListControllerProvider.notifier,
+                  );
+                  await controller.deleteNotification(item.id);
+                  if (context.mounted) {
+                    unawaited(
+                      AppToast.show(context, l10n.notificationDeleteSuccess),
                     );
-                    if (!item.isRead) {
-                      await controller.markAsRead(item.id);
-                    }
-                    if (context.mounted) {
-                      unawaited(context.push('/notifications/${item.id}'));
-                    }
-                  },
-                  onDismiss: (item) async {
-                    final controller = ref.read(
-                      notificationListControllerProvider.notifier,
+                  }
+                },
+                onToggleRead: (item) async {
+                  final controller = ref.read(
+                    notificationListControllerProvider.notifier,
+                  );
+                  await controller.toggleReadStatus(item.id);
+                  if (context.mounted) {
+                    unawaited(
+                      AppToast.show(
+                        context,
+                        item.isRead
+                            ? l10n.notificationMarkUnreadSuccess
+                            : l10n.notificationMarkReadSuccess,
+                      ),
                     );
-                    await controller.deleteNotification(item.id);
-                    if (context.mounted) {
-                      unawaited(
-                        AppToast.show(context, l10n.notificationDeleteSuccess),
-                      );
-                    }
-                  },
-                  onToggleRead: (item) async {
-                    final controller = ref.read(
-                      notificationListControllerProvider.notifier,
-                    );
-                    await controller.toggleReadStatus(item.id);
-                    if (context.mounted) {
-                      unawaited(
-                        AppToast.show(
-                          context,
-                          item.isRead
-                              ? l10n.notificationMarkUnreadSuccess
-                              : l10n.notificationMarkReadSuccess,
-                        ),
-                      );
-                    }
-                  },
-                  hasMore: ref
-                      .read(notificationListControllerProvider.notifier)
-                      .hasMore,
-                  isLoadingMore: ref.watch(notificationListLoadingMoreProvider),
-                  onLoadMore: () => ref
-                      .read(notificationListControllerProvider.notifier)
-                      .loadMore(),
-                  loadMoreLabel: l10n.notificationLoadMore,
-                ),
+                  }
+                },
+                hasMore: ref
+                    .read(notificationListControllerProvider.notifier)
+                    .hasMore,
+                isLoadingMore: ref.watch(notificationListLoadingMoreProvider),
+                onLoadMore: () => ref
+                    .read(notificationListControllerProvider.notifier)
+                    .loadMore(),
+                loadMoreLabel: l10n.notificationLoadMore,
               ),
             ),
           );
@@ -173,44 +170,94 @@ class _GroupedNotificationList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final groups = _groupByRelativeDate(items, l10n);
-    return ListView(
-      shrinkWrap: true,
+    // Flatten the grouped notifications into a single list of entries so a
+    // `ListView.builder` can lazily build only the visible rows. This replaces
+    // the previous `ListView(shrinkWrap: true)` + for-loop which eagerly built
+    // every item and defeated the purpose of a scrollable list.
+    final entries = _buildEntries();
+    final colors = context.theme.colors;
+
+    return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      children: [
-        for (final entry in groups.entries) ...[
-          _SectionHeader(title: entry.key),
-          const SizedBox(height: Spacing.level2),
-          for (var index = 0; index < entry.value.length; index++) ...[
-            NotificationListItemWidget(
-              item: entry.value[index],
-              onTap: () => onTap(entry.value[index]),
-              onDismiss: () => onDismiss(entry.value[index]),
-              onToggleRead: () => onToggleRead(entry.value[index]),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level6),
+      itemCount: entries.length,
+      itemBuilder: (context, index) {
+        final entry = entries[index];
+        return switch (entry) {
+          _HeaderEntry(:final title, :final isFirst) => Padding(
+            padding: EdgeInsets.only(
+              top: isFirst ? Spacing.level3 : Spacing.level4,
+              bottom: Spacing.level2,
+              left: Spacing.level3,
             ),
-            if (index < entry.value.length - 1)
-              const SizedBox(height: Spacing.level3),
-          ],
-          const SizedBox(height: Spacing.level4),
-        ],
-        if (hasMore) ...[
-          const SizedBox(height: Spacing.level4),
-          Center(
-            child: isLoadingMore
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: FCircularProgress(),
-                  )
-                : FButton(
-                    variant: FButtonVariant.outline,
-                    onPress: onLoadMore,
-                    child: Text(loadMoreLabel),
+            child: Text(
+              title,
+              style: TypographyToken.level4
+                  .body(context)
+                  .copyWith(
+                    color: colors.mutedForeground,
+                    fontWeight: FontWeight.w600,
                   ),
+            ),
           ),
-        ],
-      ],
+          _ItemEntry(
+            :final item,
+            :final onTap,
+            :final onDismiss,
+            :final onToggleRead,
+          ) =>
+            Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.level3),
+              child: NotificationListItemWidget(
+                item: item,
+                onTap: onTap,
+                onDismiss: onDismiss,
+                onToggleRead: onToggleRead,
+              ),
+            ),
+          _LoadMoreEntry() => Padding(
+            padding: const EdgeInsets.only(top: Spacing.level4),
+            child: Center(
+              child: isLoadingMore
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: FCircularProgress(),
+                    )
+                  : FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: onLoadMore,
+                      child: Text(loadMoreLabel),
+                    ),
+            ),
+          ),
+        };
+      },
     );
+  }
+
+  List<_ListEntry> _buildEntries() {
+    final groups = _groupByRelativeDate(items, l10n);
+    final entries = <_ListEntry>[];
+    var isFirst = true;
+    for (final groupEntry in groups.entries) {
+      entries.add(_HeaderEntry(groupEntry.key, isFirst: isFirst));
+      isFirst = false;
+      for (final item in groupEntry.value) {
+        entries.add(
+          _ItemEntry(
+            item,
+            onTap: () => onTap(item),
+            onDismiss: () => onDismiss(item),
+            onToggleRead: () => onToggleRead(item),
+          ),
+        );
+      }
+    }
+    if (hasMore) {
+      entries.add(const _LoadMoreEntry());
+    }
+    return entries;
   }
 
   Map<String, List<NotificationItem>> _groupByRelativeDate(
@@ -253,6 +300,36 @@ class _GroupedNotificationList extends StatelessWidget {
   }
 }
 
+/// Discriminated union for the flattened notification list. Using a sealed
+/// class lets `ListView.builder` pattern-match on the entry kind without
+/// building off-screen rows.
+sealed class _ListEntry {
+  const _ListEntry();
+}
+
+class _HeaderEntry extends _ListEntry {
+  const _HeaderEntry(this.title, {required this.isFirst});
+  final String title;
+  final bool isFirst;
+}
+
+class _ItemEntry extends _ListEntry {
+  const _ItemEntry(
+    this.item, {
+    required this.onTap,
+    required this.onDismiss,
+    required this.onToggleRead,
+  });
+  final NotificationItem item;
+  final VoidCallback onTap;
+  final VoidCallback onDismiss;
+  final VoidCallback onToggleRead;
+}
+
+class _LoadMoreEntry extends _ListEntry {
+  const _LoadMoreEntry();
+}
+
 class _MarkAllReadButton extends StatelessWidget {
   const _MarkAllReadButton({required this.onPressed, this.hasUnread = true});
 
@@ -268,30 +345,6 @@ class _MarkAllReadButton extends StatelessWidget {
       size: FButtonSizeVariant.sm,
       onPress: hasUnread ? onPressed : null,
       child: Text(l10n.notificationMarkAllRead),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.only(left: Spacing.level3, top: Spacing.level3),
-      child: Text(
-        title,
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(
-              color: colors.mutedForeground,
-              fontWeight: FontWeight.w600,
-            ),
-      ),
     );
   }
 }

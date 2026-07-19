@@ -77,6 +77,7 @@ Last updated: 2026-07-19
 - 详情页 `markAsRead` 在打开时自动调用（接口链路已反转）。
 - 显式标为未读/删除动作。
 - 后端在 AI 摘要完成、报告导出完成、密码变更时生成通知。
+- **列表懒加载**（2026-07-19 P1-3）：通知列表从 `ListView(shrinkWrap: true)` + for 循环全量渲染改为 `ListView.builder` + 拍平 entries 懒加载。新增 `sealed class _ListEntry`（`_HeaderEntry`/`_ItemEntry`/`_LoadMoreEntry`），`_buildEntries()` 将分组结果拍平为单一列表，`itemBuilder` 用 `switch` 模式匹配按类型渲染，只构建可见区域的行。
 
 ## 安全 PIN 码
 
