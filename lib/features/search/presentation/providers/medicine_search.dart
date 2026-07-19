@@ -25,15 +25,19 @@ abstract class MedicineSearchState with _$MedicineSearchState {
 
 /// Notifier that manages medicine search state interactively.
 class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
+  Timer? _debounceTimer;
+
   @override
   MedicineSearchState build() {
+    ref.onDispose(() => _debounceTimer?.cancel());
     return const MedicineSearchState();
   }
 
   Future<void> updateQuery(String query) async {
-    state = state.copyWith(query: query);
+    state = state.copyWith(query: query, errorMessage: null);
+    _debounceTimer?.cancel();
     if (query.trim().isNotEmpty) {
-      await _doSearch();
+      _debounceTimer = Timer(const Duration(milliseconds: 400), _doSearch);
     } else {
       state = state.copyWith(results: const [], errorMessage: null);
     }

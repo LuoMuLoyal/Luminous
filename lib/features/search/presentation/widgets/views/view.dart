@@ -161,11 +161,12 @@ class _MobileSearchLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    if (state.isSearching) {
+    // Keep old results visible during search; only show full loading on first search.
+    if (state.isSearching && state.results.isEmpty) {
       return const MedicineSearchLoadingView();
     }
 
-    if (state.errorMessage != null) {
+    if (state.errorMessage != null && state.results.isEmpty) {
       return MedicineSearchErrorView(onRetry: onRetry);
     }
 
@@ -174,6 +175,11 @@ class _MobileSearchLayout extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: Spacing.level6),
       children: [
         SearchInput(l10n: l10n, query: state.query, onChanged: onQueryChanged),
+        if (state.isSearching)
+          const Padding(
+            padding: EdgeInsets.only(top: Spacing.level2),
+            child: LinearProgressIndicator(),
+          ),
         const SizedBox(height: Spacing.level4),
         SourceSwitch(
           selectedSource: state.source,
@@ -210,14 +216,22 @@ class _MobileSearchLayout extends StatelessWidget {
                 result: result,
                 l10n: l10n,
                 expandedAction: true,
-                onTap: () => onResultSelected(result.id),
                 onAddToCurrentMedicines: onAddToCurrentMedicines != null
                     ? () => onAddToCurrentMedicines!(result)
                     : null,
               ),
             ),
           ),
-          if (state.results.isEmpty) NoResultTools(l10n: l10n),
+          if (state.results.isEmpty)
+            NoResultTools(
+              l10n: l10n,
+              onClearQuery: () => onQueryChanged(''),
+              onSwitchSource: () => onSourceSwitched(
+                state.source == MedicineSearchSource.cn
+                    ? MedicineSearchSource.drugbank
+                    : MedicineSearchSource.cn,
+              ),
+            ),
         ],
       ],
     );
@@ -245,11 +259,11 @@ class _DesktopSearchLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (state.isSearching) {
+    if (state.isSearching && state.results.isEmpty) {
       return const MedicineSearchLoadingView();
     }
 
-    if (state.errorMessage != null) {
+    if (state.errorMessage != null && state.results.isEmpty) {
       return MedicineSearchErrorView(onRetry: onRetry);
     }
 
@@ -355,7 +369,16 @@ class _DesktopSearchPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              if (state.results.isEmpty) NoResultTools(l10n: l10n),
+              if (state.results.isEmpty)
+                NoResultTools(
+                  l10n: l10n,
+                  onClearQuery: () => onQueryChanged(''),
+                  onSwitchSource: () => onSourceSwitched(
+                    state.source == MedicineSearchSource.cn
+                        ? MedicineSearchSource.drugbank
+                        : MedicineSearchSource.cn,
+                  ),
+                ),
             ],
           ],
         ),

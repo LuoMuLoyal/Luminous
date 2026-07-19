@@ -100,13 +100,26 @@ class SearchPage extends ConsumerWidget {
         }
       }
 
-      await repository.createCurrentMedicine(input);
+      final updatedSnapshot = await repository.createCurrentMedicine(input);
       ref
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.currentMedicines);
 
       if (context.mounted) {
-        unawaited(AppToast.show(context, l10n.mineEditSavedToast));
+        final newMedicine = updatedSnapshot.currentMedicines.firstWhere(
+          (m) => m.sourceRefId == result.id && m.source == medicineSource.name,
+          orElse: () => updatedSnapshot.currentMedicines.last,
+        );
+        unawaited(
+          AppToast.showWithAction(
+            context,
+            l10n.medicineSearchAddedToBoxToast,
+            l10n.medicineSearchGoToReminderAction,
+            () => context.push(
+              '/medicine/reminders/new?medicineId=${newMedicine.id}',
+            ),
+          ),
+        );
       }
     } catch (e) {
       ref

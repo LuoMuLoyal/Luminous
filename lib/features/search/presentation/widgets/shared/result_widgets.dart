@@ -27,79 +27,77 @@ class SearchResultTile extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return FTappable(
-      onPress: onTap,
-      child: FCard.raw(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.level5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      result.name,
-                      style: typography.body.lg.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+    final card = FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    result.name,
+                    style: typography.body.lg.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  _SourceBadge(source: result.source, l10n: l10n),
-                ],
-              ),
-              const SizedBox(height: Spacing.level2),
-              Text(
-                result.subtitle,
-                style: typography.body.sm.copyWith(
-                  color: colors.mutedForeground,
+                ),
+                _SourceBadge(source: result.source, l10n: l10n),
+              ],
+            ),
+            const SizedBox(height: Spacing.level2),
+            Text(
+              result.subtitle,
+              style: typography.body.sm.copyWith(color: colors.mutedForeground),
+            ),
+            const SizedBox(height: Spacing.level1),
+            Text(
+              sourceRefLabel(l10n, result.source, result.id),
+              style: typography.body.xs.copyWith(color: colors.mutedForeground),
+            ),
+            const SizedBox(height: Spacing.level4),
+            Text(
+              result.summary,
+              style: typography.body.md.copyWith(color: colors.foreground),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: Spacing.level4),
+            Wrap(
+              spacing: Spacing.level3,
+              runSpacing: Spacing.level3,
+              children: [
+                ...result.tags.map((tag) => _TagPill(label: tag)),
+                _TagPill(
+                  label:
+                      '${l10n.medicineSearchMatchedBy}：${matchTypeLabel(l10n, result.matchType)}',
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level4),
+            Align(
+              alignment: expandedAction
+                  ? Alignment.center
+                  : Alignment.centerRight,
+              child: SizedBox(
+                width: expandedAction ? double.infinity : null,
+                child: FButton(
+                  onPress: onAddToCurrentMedicines,
+                  child: Text(l10n.medicineSearchAddToBoxAction),
                 ),
               ),
-              const SizedBox(height: Spacing.level1),
-              Text(
-                sourceRefLabel(l10n, result.source, result.id),
-                style: typography.body.xs.copyWith(
-                  color: colors.mutedForeground,
-                ),
-              ),
-              const SizedBox(height: Spacing.level4),
-              Text(
-                result.summary,
-                style: typography.body.md.copyWith(color: colors.foreground),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: Spacing.level4),
-              Wrap(
-                spacing: Spacing.level3,
-                runSpacing: Spacing.level3,
-                children: [
-                  ...result.tags.map((tag) => _TagPill(label: tag)),
-                  _TagPill(
-                    label:
-                        '${l10n.medicineSearchMatchedBy}：${matchTypeLabel(l10n, result.matchType)}',
-                  ),
-                ],
-              ),
-              const SizedBox(height: Spacing.level4),
-              Align(
-                alignment: expandedAction
-                    ? Alignment.center
-                    : Alignment.centerRight,
-                child: SizedBox(
-                  width: expandedAction ? double.infinity : null,
-                  child: FButton(
-                    onPress: onAddToCurrentMedicines,
-                    child: Text(l10n.medicineSearchAddToBoxAction),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+
+    // Only wrap in FTappable when an onTap callback is provided (desktop preview).
+    // On mobile, the card is not tappable — the "Add to box" button is the
+    // primary action, and tapping the card body has no visible result.
+    return onTap != null ? FTappable(onPress: onTap, child: card) : card;
   }
 }
 
@@ -261,15 +259,26 @@ class PreviewPanel extends StatelessWidget {
 }
 
 class NoResultTools extends StatelessWidget {
-  const NoResultTools({super.key, required this.l10n});
+  const NoResultTools({
+    super.key,
+    required this.l10n,
+    this.onClearQuery,
+    this.onSwitchSource,
+  });
 
   final AppLocalizations l10n;
+  final VoidCallback? onClearQuery;
+  final VoidCallback? onSwitchSource;
 
   @override
   Widget build(BuildContext context) {
-    final actions = <(IconData, String)>[
-      (FLucideIcons.search, l10n.medicineSearchNoResultKeyword),
-      (FLucideIcons.arrowLeftRight, l10n.medicineSearchNoResultSwitch),
+    final actions = <(IconData, String, VoidCallback?)>[
+      (FLucideIcons.search, l10n.medicineSearchNoResultKeyword, onClearQuery),
+      (
+        FLucideIcons.arrowLeftRight,
+        l10n.medicineSearchNoResultSwitch,
+        onSwitchSource,
+      ),
     ];
     final typography = context.theme.typography;
 
@@ -287,7 +296,11 @@ class NoResultTools extends StatelessWidget {
               children: actions
                   .map(
                     (item) => Expanded(
-                      child: _NoResultAction(icon: item.$1, label: item.$2),
+                      child: _NoResultAction(
+                        icon: item.$1,
+                        label: item.$2,
+                        onTap: item.$3,
+                      ),
                     ),
                   )
                   .toList(),
@@ -300,26 +313,51 @@ class NoResultTools extends StatelessWidget {
 }
 
 class _NoResultAction extends StatelessWidget {
-  const _NoResultAction({required this.icon, required this.label});
+  const _NoResultAction({required this.icon, required this.label, this.onTap});
 
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.level3),
-      child: Column(
-        children: [
-          Icon(icon, color: colors.primary),
-          const SizedBox(height: Spacing.level2),
-          Text(label, textAlign: TextAlign.center, style: typography.body.xs),
-        ],
-      ),
-    );
+    return onTap != null
+        ? FTappable(
+            onPress: onTap,
+            child: Padding(
+              padding: const EdgeInsets.all(Spacing.level3),
+              child: Column(
+                children: [
+                  Icon(icon, color: colors.primary),
+                  const SizedBox(height: Spacing.level2),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: typography.body.xs,
+                  ),
+                ],
+              ),
+            ),
+          )
+        : Padding(
+            padding: const EdgeInsets.all(Spacing.level3),
+            child: Column(
+              children: [
+                Icon(icon, color: colors.mutedForeground),
+                const SizedBox(height: Spacing.level2),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: typography.body.xs.copyWith(
+                    color: colors.mutedForeground,
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }
 
