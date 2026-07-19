@@ -12,7 +12,13 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// losing their selected date. Only tapping a day cell calls [onDateSelected].
 /// The calendar grid is rebuilt locally based on the viewed month, drawing
 /// markers from the parent-provided [days] when the viewed month matches the
-/// selected date's month.
+/// [days] array's own month (validated by in-month day count, not by
+/// [selectedDate], so stale [days] data won't bleed into the wrong month).
+///
+/// [onMonthChanged] is an optional callback for parents that want to track
+/// which month the user is currently viewing. When not provided, the panel
+/// maintains its own [_viewedMonth] state and remains fully self-contained —
+/// month navigation works without any parent coordination.
 class RecordMonthCalendarPanel extends StatefulWidget {
   const RecordMonthCalendarPanel({
     super.key,
@@ -73,19 +79,29 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
 
   /// Builds the calendar grid for [_viewedMonth], merging marker data from
   /// the parent [widget.days] when the viewed month matches the days' month.
+  ///
+  /// The month match is validated by comparing the count of in-month days in
+  /// [widget.days] against the number of days in [_viewedMonth]. This is more
+  /// robust than comparing against [widget.selectedDate]'s month, because the
+  /// parent may asynchronously update [widget.days] after [widget.selectedDate]
+  /// has already changed, causing a temporary mismatch.
   List<RecordCalendarDay> _buildViewedDays() {
     final selectedDate = widget.selectedDate;
     final days = widget.days;
 
-    // If the viewed month matches the month of the parent-provided days,
-    // use the parent's days directly (they contain server markers).
-    // Otherwise, generate a plain grid for the viewed month.
+    // Validate that the parent-provided days array actually corresponds to
+    // the viewed month by checking that the count of in-month days matches
+    // the number of days in _viewedMonth. This avoids using stale days data
+    // when selectedDate and days are temporarily out of sync.
+    final viewedMonthDayCount = DateTime(
+      _viewedMonth.year,
+      _viewedMonth.month + 1,
+      0,
+    ).day;
+    final inMonthDayCount = days.where((d) => d.inMonth).length;
+
     final parentMonthMatches =
-        days.isNotEmpty &&
-        _isSameMonth(
-          _viewedMonth,
-          DateTime(selectedDate.year, selectedDate.month),
-        );
+        days.isNotEmpty && inMonthDayCount == viewedMonthDayCount;
 
     if (parentMonthMatches) {
       return days;
@@ -131,9 +147,6 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
 
     return result;
   }
-
-  bool _isSameMonth(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +223,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
               itemCount: viewedDays.length,
               itemBuilder: (context, index) => _MonthDayCell(
                 day: viewedDays[index],
-                selectedDate: widget.selectedDate,
+                viewedMonth: _viewedMonth,
                 l10n: l10n,
                 onTap: widget.onDateSelected,
               ),
@@ -311,13 +324,17 @@ class RecordFilterPanel extends StatelessWidget {
 class _MonthDayCell extends StatelessWidget {
   const _MonthDayCell({
     required this.day,
-    required this.selectedDate,
+    required this.viewedMonth,
     required this.l10n,
     this.onTap,
   });
 
   final RecordCalendarDay day;
-  final DateTime selectedDate;
+
+  /// The month the user is currently viewing (not necessarily the month of
+  /// [day] when [day.inMonth] is false). Used to compute the full [DateTime]
+  /// when the cell is tapped.
+  final DateTime viewedMonth;
   final AppLocalizations l10n;
   final ValueChanged<DateTime>? onTap;
 
@@ -333,7 +350,7 @@ class _MonthDayCell extends StatelessWidget {
     return FTappable(
       onPress: onTap == null
           ? null
-          : () => onTap!(_dateForDay(day, selectedDate)),
+          : () => onTap!(_dateForDay(day, viewedMonth)),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -471,12 +488,13 @@ class _CalendarIconActionButton extends StatelessWidget {
   }
 }
 
-DateTime _dateForDay(RecordCalendarDay day, DateTime selectedDate) {
-  final monthStart = DateTime(selectedDate.year, selectedDate.month, 1);
+DateTime _dateForDay(RecordCalendarDay day, DateTime viewedMonth) {
+  final monthStart = DateTime(viewedMonth.year, viewedMonth.month, 1);
   DateTime candidate;
   if (day.inMonth) {
     candidate = DateTime(monthStart.year, monthStart.month, day.day);
   } else if (day.day > 20) {
+    // Leading day from the previous month.
     candidate = DateTime(
       monthStart.year,
       monthStart.month,
@@ -484,6 +502,7 @@ DateTime _dateForDay(RecordCalendarDay day, DateTime selectedDate) {
     ).subtract(const Duration(days: 1));
     candidate = DateTime(candidate.year, candidate.month, day.day);
   } else {
+    // Trailing day from the next month.
     candidate = DateTime(monthStart.year, monthStart.month + 1, 1);
     candidate = DateTime(candidate.year, candidate.month, day.day);
   }
