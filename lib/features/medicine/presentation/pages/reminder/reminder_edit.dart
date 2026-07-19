@@ -24,7 +24,9 @@ import 'package:luminous/features/medicine/presentation/utils/reminder_formatter
 import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderEditPage extends HookConsumerWidget {
@@ -195,38 +197,13 @@ class MedicineReminderEditPage extends HookConsumerWidget {
 
     Future<void> addTime() async {
       final latest = times.value.isEmpty ? null : times.value.last;
-      final timeController = FTimePickerController(
-        time: FTime(latest?.hour ?? 8, latest?.minute ?? 0),
-      );
+      final initial = FTime(latest?.hour ?? 8, latest?.minute ?? 0);
       final picked = await showFSheet<FTime?>(
         context: context,
         side: FLayout.btt,
-        builder: (sheetContext) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 240,
-                  child: FTimePicker(
-                    control: FTimePickerControl.managed(
-                      controller: timeController,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: Spacing.level4),
-                FButton(
-                  onPress: () =>
-                      Navigator.of(sheetContext).pop(timeController.value),
-                  child: Text(l10n.commonConfirm),
-                ),
-              ],
-            ),
-          ),
-        ),
+        useSafeArea: true,
+        builder: (sheetContext) => _ReminderTimePickerSheet(initial: initial),
       );
-      timeController.dispose();
       if (picked == null) return;
       final isDuplicate = times.value.any(
         (t) => t.hour == picked.hour && t.minute == picked.minute,
@@ -514,6 +491,112 @@ class _MedicineSelectorPrompt extends StatelessWidget {
             FButton(
               onPress: onSelect,
               child: Text(l10n.medicineReminderSelectMedicineAction),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom sheet for picking a reminder time.
+///
+/// Shows a title, drag handle, live preview of the selected time, the
+/// [FTimePicker] wheel, and explicit cancel/confirm action buttons.
+class _ReminderTimePickerSheet extends HookWidget {
+  const _ReminderTimePickerSheet({required this.initial});
+
+  /// The time pre-selected when the sheet opens.
+  final FTime initial;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final typography = context.theme.typography;
+    final locale = Localizations.localeOf(context);
+
+    final timeController = useMemoized(
+      () => FTimePickerController(time: initial),
+    );
+    useEffect(() => timeController.dispose, [timeController]);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SheetDragHandle(),
+
+            // Title row with close button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.medicineReminderTimePickerTitle,
+                      style: typography.body.xl2.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  FButton.icon(
+                    onPress: () => Navigator.of(context).pop(),
+                    variant: FButtonVariant.ghost,
+                    child: const Icon(FLucideIcons.x),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: Spacing.level2),
+
+            // Live preview of the currently selected time
+            ValueListenableBuilder<FTime>(
+              valueListenable: timeController,
+              builder: (context, time, _) {
+                return Text(
+                  formatTimeOfDay(
+                    TimeOfDay(hour: time.hour, minute: time.minute),
+                    locale,
+                  ),
+                  style: typography.body.xl3.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: context.theme.colors.primary,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: Spacing.level4),
+
+            // Time picker wheel
+            SizedBox(
+              height: 240,
+              child: FTimePicker(
+                control: FTimePickerControl.managed(controller: timeController),
+              ),
+            ),
+            const SizedBox(height: Spacing.level4),
+
+            // Cancel + Confirm action buttons
+            Row(
+              children: [
+                Expanded(
+                  child: FButton(
+                    onPress: () => Navigator.of(context).pop(),
+                    variant: FButtonVariant.outline,
+                    child: Text(l10n.commonCancel),
+                  ),
+                ),
+                const SizedBox(width: Spacing.level3),
+                Expanded(
+                  child: FButton(
+                    onPress: () =>
+                        Navigator.of(context).pop(timeController.value),
+                    child: Text(l10n.commonConfirm),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

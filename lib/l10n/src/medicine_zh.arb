@@ -264,6 +264,7 @@
   "medicineReminderFrequencyDaily": "每日",
   "medicineReminderFrequencyWeekly": "每周",
   "medicineReminderFrequencyCustom": "自定义",
+  "medicineReminderTimePickerTitle": "选择时间",
   "medicineReminderTimesLabel": "服用时间",
   "medicineReminderDoseLabel": "每次剂量",
   "medicineReminderStartDateLabel": "开始日期",

@@ -257,6 +257,7 @@
   "medicineReminderFrequencyDaily": "Daily",
   "medicineReminderFrequencyWeekly": "Weekly",
   "medicineReminderFrequencyCustom": "Custom",
+  "medicineReminderTimePickerTitle": "Select time",
   "medicineReminderTimesLabel": "Dose times",
   "medicineReminderDoseLabel": "Dose",
   "medicineReminderStartDateLabel": "Start date",
