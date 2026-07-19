@@ -181,7 +181,7 @@ class _RecordDetailBody extends ConsumerWidget {
                   if (_nonEmpty(record.source) != null)
                     _DetailRowData(
                       l10n.recordDetailSourceLabel,
-                      record.source!,
+                      _sourceLabel(l10n, record.source!),
                     ),
                   _DetailRowData(
                     l10n.recordDetailUpdatedAtLabel,
@@ -364,7 +364,7 @@ class _RecordDetailBody extends ConsumerWidget {
     final confirmed = await showFDialog<bool>(
       context: context,
       builder: (dialogContext, style, animation) => FDialog(
-        title: Text(l10n.recordDeleteAction),
+        title: Text(l10n.recordDeleteConfirmTitle),
         body: Text(l10n.recordDeleteConfirmMessage),
         actions: [
           FButton(
@@ -395,7 +395,7 @@ class _RecordDetailBody extends ConsumerWidget {
     } catch (e) {
       ref.read(talkerProvider).error('RecordDetailPage.onDelete: failed: $e');
       if (context.mounted) {
-        await AppToast.show(context, l10n.recordCreateFailedToast);
+        await AppToast.show(context, l10n.recordDeleteFailedToast);
       }
     }
   }
@@ -622,5 +622,17 @@ String _sleepQualityLabel(AppLocalizations l10n, String quality) {
     'good' => l10n.recordSleepQualityGood,
     'excellent' => l10n.recordSleepQualityExcellent,
     _ => quality,
+  };
+}
+
+/// Maps a record source wire value to a user-facing label.
+/// Returns the raw value for unknown sources so data is not hidden.
+String _sourceLabel(AppLocalizations l10n, String source) {
+  return switch (source) {
+    'manual' => l10n.recordSourceManual,
+    'local' => l10n.recordSourceLocal,
+    'ai' => l10n.recordSourceAi,
+    'import' => l10n.recordSourceImport,
+    _ => source,
   };
 }

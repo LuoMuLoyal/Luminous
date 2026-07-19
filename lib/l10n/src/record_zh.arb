@@ -31,6 +31,17 @@
       }
     }
   },
+  "recordDateEntriesTitle": "{date} · {count} 条",
+  "@recordDateEntriesTitle": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordQuickActionLabel": "记{type}",
   "@recordQuickActionLabel": {
     "placeholders": {
@@ -56,7 +67,7 @@
   "recordCreateValueVital": "数值（如 120/80）",
   "recordCreateValueSymptom": "严重程度 / 感受",
   "recordCreateValueSleep": "时长（如 8h）",
-  "recordSleepInvalidValueToast": "请输入有效的睡眠时长（如 7.5）",
+  "recordSleepInvalidValueToast": "请选择就寝和起床时间",
   "recordSleepBedtimeLabel": "就寝时间",
   "recordSleepWakeTimeLabel": "起床时间",
   "recordSleepQualityLabel": "睡眠质量",
@@ -86,6 +97,7 @@
   "recordImagePickFailedToast": "图片未选择",
   "recordQuickSectionTitle": "快速记录",
   "recordQuickDynamicSortTooltip": "开启后，按使用频率自动排列快捷入口",
+  "recordQuickDynamicSortLabel": "动态排序",
   "recordQuickEditOrder": "自定义顺序",
   "recordQuickSortDisableDynamicFirst": "请先关闭动态排序再编辑顺序",
   "recordQuickReorderTitle": "拖拽排序",
@@ -248,6 +260,10 @@
   "recordDetailErrorTitle": "记录详情暂时没有加载出来",
   "recordDetailValueLabel": "数值",
   "recordDetailSourceLabel": "来源",
+  "recordSourceManual": "手动记录",
+  "recordSourceLocal": "本地",
+  "recordSourceAi": "AI 识别",
+  "recordSourceImport": "导入",
   "recordDetailUpdatedAtLabel": "更新于",
   "recordMealAnalysisSectionTitle": "餐食分析",
   "recordMealAnalysisStatusAnalyzing": "分析中",
@@ -262,6 +278,8 @@
   "recordMealAnalysisCompositionMatches": "成分表命中",
   "recordMealAnalysisNutritionEstimate": "营养估算",
   "recordMealAnalysisNutritionEnergy": "热量",
+  "recordMealAnalysisEnergyUnit": "kcal",
+  "recordMealAnalysisMatchArrow": "→",
   "recordMealAnalysisNutritionProtein": "蛋白质",
   "recordMealAnalysisEstimateDisclaimer": "当前结果仅作保守估算，请以实际情况为准。",
   "recordMealConfirmAction": "确认当前菜品结果",

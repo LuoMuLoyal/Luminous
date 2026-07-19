@@ -56,6 +56,7 @@ class RecordEditPage extends HookConsumerWidget {
     final deleting = useState(false);
     final loaded = useState(false);
     final loadingRecord = useState(false);
+    final loadError = useState(false);
     final existingImageAttachment = useState<DailyRecordAttachment?>(null);
     final existingSleepPayload = useState<Map<String, dynamic>?>(null);
     final selectedImage = useState<_PendingDailyRecordImage?>(null);
@@ -153,8 +154,7 @@ class RecordEditPage extends HookConsumerWidget {
       } catch (e) {
         ref.read(talkerProvider).error('RecordEditPage.loadRecord: failed: $e');
         if (context.mounted) {
-          unawaited(AppToast.show(context, l10n.recordCreateFailedToast));
-          context.pop();
+          loadError.value = true;
         }
       } finally {
         if (context.mounted && !loaded.value) {
@@ -464,6 +464,28 @@ class RecordEditPage extends HookConsumerWidget {
           ),
         ),
       );
+    } else if (loadError.value) {
+      final width = MediaQuery.sizeOf(context).width;
+      content = ResponsiveContentFrame(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: width < Breakpoints.mobile
+                ? Spacing.level6
+                : Spacing.level7,
+          ),
+          child: AppStateErrorView(
+            title: l10n.recordDetailErrorTitle,
+            description: l10n.recordErrorDescription,
+            icon: FLucideIcons.notebookPen,
+            actionLabel: l10n.todayRetryAction,
+            onAction: () {
+              loadError.value = false;
+              loaded.value = false;
+            },
+            tone: AppStateTone.warning,
+          ),
+        ),
+      );
     } else if (!loaded.value) {
       final width = MediaQuery.sizeOf(context).width;
       content = ResponsiveContentFrame(
@@ -608,6 +630,13 @@ class RecordEditPage extends HookConsumerWidget {
                     FButton(
                       key: const Key('record-edit-save-action'),
                       onPress: saving.value ? null : onSave,
+                      prefix: saving.value
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: FCircularProgress(),
+                            )
+                          : null,
                       child: Text(l10n.mineEditSaveAction),
                     ),
                     const SizedBox(height: Spacing.level3),

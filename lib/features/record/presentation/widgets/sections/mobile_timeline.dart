@@ -8,6 +8,8 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:clock/clock.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 
 class RecordMobileTimeline extends StatefulWidget {
   const RecordMobileTimeline({
@@ -43,6 +45,13 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
 
     final isEmpty = widget.entries.isEmpty;
     final createDate = widget.selectedDate ?? DateTime.now();
+    final isToday = _isSameDay(createDate, clock.now());
+    final titleText = isToday
+        ? widget.l10n.recordTodayEntriesTitle(widget.totalCount)
+        : widget.l10n.recordDateEntriesTitle(
+            formatDateLabel(createDate, Localizations.localeOf(context)),
+            widget.totalCount,
+          );
 
     return Column(
       key: const Key('record-timeline'),
@@ -52,7 +61,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
           children: [
             Expanded(
               child: Text(
-                widget.l10n.recordTodayEntriesTitle(widget.totalCount),
+                titleText,
                 style: TypographyToken.level7
                     .display(context)
                     .copyWith(fontWeight: FontWeight.w800),
@@ -93,6 +102,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
                     entry: visibleEntries[index],
                     l10n: widget.l10n,
                     isLast: index == visibleEntries.length - 1,
+                    selectedDate: widget.selectedDate,
                   ),
               ],
             ),
@@ -108,12 +118,14 @@ class _TimelineRow extends StatelessWidget {
     required this.entry,
     required this.l10n,
     required this.isLast,
+    this.selectedDate,
   });
 
   final int index;
   final RecordTimelineEntry entry;
   final AppLocalizations l10n;
   final bool isLast;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +189,7 @@ class _TimelineRow extends StatelessWidget {
                       )
                     : () => pushAuthRequiredRoute(
                         context,
-                        '/record/create?date=${formatRecordDate(DateTime.now())}',
+                        '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
                       ),
                 child: Row(
                   children: [
@@ -371,4 +383,8 @@ class _MobileTimelineEmptyState extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _isSameDay(DateTime a, DateTime b) {
+  return a.year == b.year && a.month == b.month && a.day == b.day;
 }

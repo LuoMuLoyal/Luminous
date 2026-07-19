@@ -95,6 +95,7 @@ class RecordTimelinePanel extends StatelessWidget {
                       l10n: l10n,
                       isLast: index == entries.length - 1,
                       dense: dense,
+                      selectedDate: selectedDate,
                     ),
                 ],
               ),
@@ -112,6 +113,7 @@ class _TimelineEntryRow extends StatelessWidget {
     required this.l10n,
     required this.isLast,
     required this.dense,
+    this.selectedDate,
   });
 
   final int index;
@@ -119,6 +121,7 @@ class _TimelineEntryRow extends StatelessWidget {
   final AppLocalizations l10n;
   final bool isLast;
   final bool dense;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +160,7 @@ class _TimelineEntryRow extends StatelessWidget {
                 index: index,
                 l10n: l10n,
                 dense: dense,
+                selectedDate: selectedDate,
               ),
             ),
           ),
@@ -197,12 +201,14 @@ class _TimelineCard extends StatelessWidget {
     required this.index,
     required this.l10n,
     required this.dense,
+    this.selectedDate,
   });
 
   final RecordTimelineEntry entry;
   final int index;
   final AppLocalizations l10n;
   final bool dense;
+  final DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +231,7 @@ class _TimelineCard extends StatelessWidget {
           ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
           : () => pushAuthRequiredRoute(
               context,
-              '/record/create?date=${formatRecordDate(DateTime.now())}',
+              '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
             ),
       child: FCard.raw(
         style: .delta(

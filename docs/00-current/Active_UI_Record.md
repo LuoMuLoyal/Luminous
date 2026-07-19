@@ -62,3 +62,18 @@ Last updated: 2026-07-18
 - `DailyRecordJsonCodec` 手动序列化 `DailyRecordItem`。
 - 错误反馈使用 l10n 消息（`recordDeletedToast`/`recordDeleteFailedToast`），不用通用"已保存"/"创建失败"。
 - 删除操作 `context.pop()` 直接回列表页。
+
+## 2026-07-19 补充
+
+- 移动端标题按选中日期动态文案（今日用 `recordTodayEntriesTitle`，非今日用 `recordDateEntriesTitle`）。
+- 占位条目跳创建页传入选中日期而非 `DateTime.now()`。
+- 桌面端"语音记录"按钮文案改为"新建记录"（与实际行为一致）。
+- "动态排序"开关新增文字标签；编辑顺序按钮在动态排序开启时真正禁用。
+- 睡眠校验 toast 改为"请选择就寝和起床时间"（与表单使用时间选择器一致）。
+- 保存按钮新增 `FCircularProgress` 进度指示器。
+- 删除失败 toast 使用 `recordDeleteFailedToast`（"删除失败"）。
+- "来源"行使用 `_sourceLabel` 映射（`manual`/`local`/`ai`/`import` → l10n 标签）。
+- 营养热量补 `kcal` 单位；食材匹配箭头从 ASCII `->` 改为 `→`。
+- 删除确认标题改为"删除记录"。
+- `loadRecord` 失败渲染 `AppStateErrorView` + 重试按钮（不再 toast+pop 闪烁）。
+- `RecordMonthCalendarPanel._dateForDay` 基于 `viewedMonth` 而非 `selectedDate` 计算日期（修复跨月浏览时日期计算错误）。

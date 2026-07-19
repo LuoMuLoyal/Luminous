@@ -118,7 +118,7 @@ void main() {
         find.text(l10n.recordMealAnalysisResolvedIngredients),
         findsOneWidget,
       );
-      expect(find.textContaining('西红柿 -> 番茄'), findsOneWidget);
+      expect(find.textContaining('西红柿 → 番茄'), findsOneWidget);
     });
 
     testWidgets('renders resolved ingredient without matched food name', (

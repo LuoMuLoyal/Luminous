@@ -63,7 +63,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
                       ? item.ingredientName
-                      : '${item.ingredientName} -> ${item.matchedFoodName}',
+                      : '${item.ingredientName} ${l10n.recordMealAnalysisMatchArrow} ${item.matchedFoodName}',
                 ),
               ),
             ],
@@ -75,7 +75,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
                 (item) => _BulletText(
                   text: item.matchedFoodName == null
                       ? item.ingredientName
-                      : '${item.ingredientName} -> ${item.matchedFoodName}',
+                      : '${item.ingredientName} ${l10n.recordMealAnalysisMatchArrow} ${item.matchedFoodName}',
                 ),
               ),
             ],
@@ -86,7 +86,7 @@ class MealAnalysisSummaryCard extends StatelessWidget {
               if (nutrition.energyKcal != null)
                 _BulletText(
                   text:
-                      '${l10n.recordMealAnalysisNutritionEnergy}: ${nutrition.energyKcal}',
+                      '${l10n.recordMealAnalysisNutritionEnergy}: ${nutrition.energyKcal} ${l10n.recordMealAnalysisEnergyUnit}',
                 ),
               if (nutrition.proteinG != null)
                 _BulletText(

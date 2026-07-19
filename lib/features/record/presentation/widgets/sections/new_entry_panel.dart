@@ -74,13 +74,13 @@ class RecordNewEntryPanel extends StatelessWidget {
                 ),
               ),
               prefix: Icon(
-                FLucideIcons.mic,
+                FLucideIcons.plus,
                 color: context.theme.colors.primary,
                 size: 20,
               ),
               child: Flexible(
                 child: Text(
-                  l10n.recordVoiceAction,
+                  l10n.recordNewEntrySectionTitle,
                   style: TypographyToken.level5
                       .body(context)
                       .copyWith(

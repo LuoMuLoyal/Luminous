@@ -782,7 +782,7 @@ void main() {
     expect(find.text('2026-06-06 09:45'), findsOneWidget);
     expect(find.text('118/76 mmHg'), findsOneWidget);
     expect(find.text('This is a note'), findsOneWidget);
-    expect(find.text('manual'), findsOneWidget);
+    expect(find.text('手动记录'), findsOneWidget);
     expect(find.text('test.jpg'), findsOneWidget);
   });
 

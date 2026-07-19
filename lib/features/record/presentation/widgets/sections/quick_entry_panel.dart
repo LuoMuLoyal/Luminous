@@ -318,6 +318,14 @@ class _PanelHeader extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w800),
           ),
         ),
+        // Dynamic sort label + switch
+        Text(
+          l10n.recordQuickDynamicSortLabel,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
+        ),
+        const SizedBox(width: Spacing.level1),
         // Info tooltip for dynamic sort
         FTooltip(
           tipBuilder: (context, controller) =>
@@ -336,14 +344,13 @@ class _PanelHeader extends StatelessWidget {
           onChange: onToggleDynamicSort,
         ),
         const SizedBox(width: Spacing.level3),
-        // Edit button (greyed when dynamic sort is on, shows toast on tap)
-        Opacity(
-          opacity: prefs.dynamicSortEnabled ? 0.4 : 1,
-          child: IconActionButton(
-            tooltip: l10n.recordQuickEditOrder,
-            icon: FLucideIcons.pencil,
-            onTap: onEditTap,
-          ),
+        // Edit button — properly disabled when dynamic sort is on
+        IconActionButton(
+          tooltip: prefs.dynamicSortEnabled
+              ? l10n.recordQuickSortDisableDynamicFirst
+              : l10n.recordQuickEditOrder,
+          icon: FLucideIcons.pencil,
+          onTap: prefs.dynamicSortEnabled ? null : onEditTap,
         ),
       ],
     );

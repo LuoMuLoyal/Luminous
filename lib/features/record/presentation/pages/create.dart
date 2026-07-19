@@ -419,6 +419,13 @@ class RecordCreatePage extends HookConsumerWidget {
                     FButton(
                       key: const Key('record-create-save-action'),
                       onPress: saving.value ? null : () => onSave(dateStr),
+                      prefix: saving.value
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: FCircularProgress(),
+                            )
+                          : null,
                       child: Text(l10n.mineEditSaveAction),
                     ),
                   ],
