@@ -8,6 +8,18 @@ const dailyRecordWaterDefaultUnit = 'ml';
 const dailyRecordWaterCupUnit = 'cup';
 const dailyRecordWaterTimesUnit = 'times';
 
+/// Returns the most appropriate keyboard type for the value field of the
+/// given record kind. Numeric kinds (water, sleep) get a number keyboard;
+/// textual kinds fall back to the default text keyboard.
+TextInputType _keyboardTypeForKind(DailyRecordKind kind) {
+  return switch (kind) {
+    DailyRecordKind.water => const TextInputType.numberWithOptions(
+      decimal: true,
+    ),
+    _ => TextInputType.text,
+  };
+}
+
 class DailyRecordFormFields extends StatelessWidget {
   const DailyRecordFormFields({
     super.key,
@@ -64,6 +76,7 @@ class DailyRecordFormFields extends StatelessWidget {
             key: const Key('daily-record-value-field'),
             control: FTextFieldControl.managed(controller: valueController),
             label: Text(dailyRecordValueLabel(l10n, kind)),
+            keyboardType: _keyboardTypeForKind(kind),
           ),
           const SizedBox(height: Spacing.level3),
         ],

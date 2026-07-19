@@ -52,7 +52,8 @@ Future<RecordDashboard> recordDashboard(Ref ref) async {
         .fetchDashboard(selectedDate, filterType: selectedFilter)
         .timeout(
           const Duration(seconds: 5),
-          onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
+          onTimeout: () =>
+              throw TimeoutException('Record dashboard fetch timed out'),
         ),
     signedOutFallback: () => ref
         .watch(recordRepositoryProvider)

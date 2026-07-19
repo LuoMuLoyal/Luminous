@@ -114,7 +114,52 @@ class RecordNlpDialog extends HookConsumerWidget {
       }
     }
 
-    void handleReset() {
+    Future<void> handleReset() async {
+      final confirmed = await showFDialog<bool>(
+        context: context,
+        builder: (dialogContext, style, animation) => AppDialogShell(
+          maxWidth: 360,
+          padding: const EdgeInsets.all(Spacing.level4),
+          scrollable: false,
+          builder: (innerContext) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.recordNlpResetConfirmTitle,
+                style: TypographyToken.level6
+                    .body(innerContext)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: Spacing.level2),
+              Text(
+                l10n.recordNlpResetConfirmBody,
+                style: TypographyToken.level4
+                    .body(innerContext)
+                    .copyWith(color: innerContext.theme.colors.mutedForeground),
+              ),
+              const SizedBox(height: Spacing.level4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    onPress: () => Navigator.of(dialogContext).pop(false),
+                    child: Text(l10n.commonCancel),
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  FButton(
+                    variant: FButtonVariant.primary,
+                    onPress: () => Navigator.of(dialogContext).pop(true),
+                    child: Text(l10n.recordNlpResetConfirmAction),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+      if (confirmed != true) return;
       controller.clear();
       ref.read(recordNlpControllerProvider.notifier).reset();
     }

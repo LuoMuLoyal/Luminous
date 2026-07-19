@@ -77,3 +77,12 @@ Last updated: 2026-07-18
 - 删除确认标题改为"删除记录"。
 - `loadRecord` 失败渲染 `AppStateErrorView` + 重试按钮（不再 toast+pop 闪烁）。
 - `RecordMonthCalendarPanel._dateForDay` 基于 `viewedMonth` 而非 `selectedDate` 计算日期（修复跨月浏览时日期计算错误）。
+
+## 2026-07-19 P2 低级一致性打磨
+
+- `date_bar.dart` 的 `_weekdayFontSize` 和 `_dateFontSize` 提取为文件级常量，消除魔数。
+- `form_fields.dart` 和 `nlp_candidate_editor.dart` 水量值字段新增 `keyboardType: TextInputType.number`，移动端弹出数字键盘。
+- `create.dart` 和 `fast_entry_dialog.dart` 保存成功 toast 从 `mineEditSavedToast` 改为专用 `recordCreateSavedToast`（"记录已保存"）。
+- `fast_entry_dialog.dart` 保存时新增 `FProgress` 指示器。
+- `nlp_dialog.dart` 的 `handleReset` 改为 async 并新增确认弹窗（`AppDialogShell` + `recordNlpResetConfirmTitle/Body/Action`），避免误触清空草稿。
+- `dashboard.dart` 的 `onTimeout` 文案改为英文与全 App 一致。

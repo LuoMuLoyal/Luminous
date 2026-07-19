@@ -74,6 +74,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                 ),
             ],
           ),
+          if (_saving) ...[
+            const SizedBox(height: Spacing.level4),
+            const Center(child: FProgress()),
+          ],
         ],
       ),
       actions: [
@@ -124,7 +128,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       unawaited(
         AppToast.show(
           context,
-          AppLocalizations.of(context)!.mineEditSavedToast,
+          AppLocalizations.of(context)!.recordCreateSavedToast,
         ),
       );
       Navigator.of(context).pop();

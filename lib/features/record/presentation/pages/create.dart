@@ -301,7 +301,7 @@ class RecordCreatePage extends HookConsumerWidget {
           unawaited(
             AppToast.show(
               context,
-              AppLocalizations.of(context)!.mineEditSavedToast,
+              AppLocalizations.of(context)!.recordCreateSavedToast,
             ),
           );
           context.pop();
