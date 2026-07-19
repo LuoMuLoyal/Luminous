@@ -29,6 +29,20 @@ String allergySeverityLabel(
   };
 }
 
+/// Short helper description shown below the severity selector to explain
+/// what each level means in practice.
+String allergySeverityDescription(
+  AppLocalizations l10n,
+  HealthAllergySeverity severity,
+) {
+  return switch (severity) {
+    HealthAllergySeverity.mild => l10n.mineAllergySeverityMildDesc,
+    HealthAllergySeverity.moderate => l10n.mineAllergySeverityModerateDesc,
+    HealthAllergySeverity.severe => l10n.mineAllergySeveritySevereDesc,
+    HealthAllergySeverity.unknown => l10n.mineAllergySeverityUnknownDesc,
+  };
+}
+
 String conditionStatusLabel(
   AppLocalizations l10n,
   HealthConditionStatus status,
@@ -37,6 +51,19 @@ String conditionStatusLabel(
     HealthConditionStatus.active => l10n.mineConditionStatusActive,
     HealthConditionStatus.resolved => l10n.mineConditionStatusResolved,
     HealthConditionStatus.suspected => l10n.mineConditionStatusSuspected,
+  };
+}
+
+/// Short helper description shown below the status selector to explain
+/// what each status means.
+String conditionStatusDescription(
+  AppLocalizations l10n,
+  HealthConditionStatus status,
+) {
+  return switch (status) {
+    HealthConditionStatus.active => l10n.mineConditionStatusActiveDesc,
+    HealthConditionStatus.resolved => l10n.mineConditionStatusResolvedDesc,
+    HealthConditionStatus.suspected => l10n.mineConditionStatusSuspectedDesc,
   };
 }
 

@@ -365,7 +365,6 @@ String? _fallbackRouteFor(MineCopyKey titleKey) {
     MineCopyKey.archiveAllergyTitle => AppRoutes.mineAllergyNew,
     MineCopyKey.archiveConditionTitle => AppRoutes.mineConditionNew,
     MineCopyKey.archiveMedicineTitle => AppRoutes.mineMedicineNew,
-    MineCopyKey.archiveEmergencyTitle => AppRoutes.settings,
     _ => null,
   };
 }

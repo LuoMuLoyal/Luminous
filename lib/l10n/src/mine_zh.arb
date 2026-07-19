@@ -268,5 +268,31 @@
   "mineMedicineSourceCn": "中国药典",
   "mineMedicineSourceManual": "手动",
   "mineArchiveRecordListTitle": "记录列表",
-  "mineArchiveAddNewAction": "添加新记录"
+  "mineArchiveAddNewAction": "添加新记录",
+  "mineEditFieldBloodTypeHint": "选择血型",
+  "mineEditFieldStrengthTextHint": "如 500mg、10ml",
+  "mineEditFieldDoseTextHint": "如 1片、5ml",
+  "mineEditFieldRouteHint": "如 口服、外用、吸入",
+  "mineReadinessGapMore": "还有 {count} 项",
+  "@mineReadinessGapMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxLoadingSummary": "加载中…",
+  "mineEditRecordNotFoundTitle": "记录不存在",
+  "mineEditRecordNotFoundDescription": "这条记录可能已被删除。",
+  "mineEditBackAction": "返回",
+  "mineEditMedicineSectionInfo": "药品信息",
+  "mineEditMedicineSectionDosage": "用法用量",
+  "mineEditMedicineSectionTimeline": "时间与备注",
+  "mineAllergySeverityMildDesc": "症状较轻，不影响日常生活",
+  "mineAllergySeverityModerateDesc": "症状明显，可能需要用药",
+  "mineAllergySeveritySevereDesc": "症状严重，可能需紧急处理",
+  "mineAllergySeverityUnknownDesc": "严重程度未知",
+  "mineConditionStatusActiveDesc": "目前仍处于活动期",
+  "mineConditionStatusResolvedDesc": "已痊愈或已康复",
+  "mineConditionStatusSuspectedDesc": "疑似但尚未确诊"
 }

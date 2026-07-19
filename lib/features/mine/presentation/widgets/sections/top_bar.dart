@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -40,58 +40,6 @@ class MineTopBar extends ConsumerWidget {
           onTap: onSettingsTap,
         ),
       ],
-    );
-  }
-}
-
-class IconActionButton extends StatelessWidget {
-  const IconActionButton({
-    super.key,
-    required this.tooltip,
-    required this.icon,
-    required this.onTap,
-    this.showBadge = false,
-  });
-
-  final String tooltip;
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool showBadge;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return FTooltip(
-      tipBuilder: (context, controller) => Text(tooltip),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          FButton(
-            onPress: onTap,
-            variant: FButtonVariant.ghost,
-            size: FButtonSizeVariant.sm,
-            child: Icon(icon, size: 22, color: colors.foreground),
-          ),
-          if (showBadge)
-            Positioned(
-              right: Spacing.level2,
-              top: Spacing.level2,
-              child: FBadge.raw(
-                style: .delta(
-                  decoration: .shapeDelta(
-                    color: colors.destructive,
-                    shape: CircleBorder(
-                      side: BorderSide(color: colors.background, width: 2),
-                    ),
-                  ),
-                ),
-                builder: (context, style) =>
-                    const SizedBox.square(dimension: Spacing.level3),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -20,7 +20,7 @@ import '../helpers/test_forui_app.dart';
 void main() {
   // ── Profile ──
 
-  testWidgets('Profile edit saves domain input with explicit null clears', (
+  testWidgets('Profile edit saves domain input from pre-filled snapshot', (
     tester,
   ) async {
     final fakeRepo = _FakeHealthContextRepository();
@@ -30,10 +30,13 @@ void main() {
     await tester.tap(find.text('open-profile-edit'));
     await tester.pumpAndSettle();
 
-    final fields = find.byType(FTextField);
-    await tester.enterText(fields.at(0), '1999-02-03');
-    await tester.enterText(fields.at(1), '170');
-    await tester.enterText(fields.at(2), '');
+    // Birth date is pre-filled as 1999-01-01 from the snapshot and rendered
+    // via FDateField.calendar (which internally builds an FTextField). Height
+    // is the only standalone FTextField on the page — target it by key.
+    await tester.enterText(
+      find.byKey(const Key('profile-height-field')),
+      '170',
+    );
     await _scrollToSave(tester);
     await tester.tap(find.text('保存'));
     await tester.pump(const Duration(seconds: 2));
@@ -41,9 +44,9 @@ void main() {
     final input = fakeRepo.profileUpdate;
     expect(input, isNotNull);
     final payload = healthProfileUpdatePayload(input!);
-    expect(payload, containsPair('birthDate', '1999-02-03'));
+    expect(payload, containsPair('birthDate', '1999-01-01'));
     expect(payload, containsPair('heightCm', 170));
-    expect(payload, containsPair('bloodType', null));
+    expect(payload, containsPair('bloodType', 'O+'));
   });
 
   testWidgets('Profile edit shows login dialog when signed out', (

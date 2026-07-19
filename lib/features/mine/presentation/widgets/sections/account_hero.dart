@@ -158,6 +158,11 @@ class MineAccountHero extends StatelessWidget {
                       variant: FBadgeVariant.secondary,
                       child: Text(gap.label(l10n)),
                     ),
+                  if (gapCount > 2)
+                    FBadge(
+                      variant: FBadgeVariant.secondary,
+                      child: Text(l10n.mineReadinessGapMore(gapCount - 2)),
+                    ),
                 ],
               ),
             ],

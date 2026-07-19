@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -32,6 +33,7 @@ class MinePage extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
 
     final unreadAsync = ref.watch(notificationUnreadCountProvider);
     final hasUnread =
@@ -90,11 +92,7 @@ class MinePage extends ConsumerWidget {
               child: body,
             )
           : DecoratedBox(
-              decoration: BoxDecoration(
-                color: SemanticColor.neutral
-                    .muted(context)
-                    .withValues(alpha: 0.32),
-              ),
+              decoration: BoxDecoration(color: colors.background),
               child: SafeArea(
                 bottom: false,
                 child: RefreshIndicator(

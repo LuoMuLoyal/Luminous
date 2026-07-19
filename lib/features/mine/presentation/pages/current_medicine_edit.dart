@@ -17,7 +17,6 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
-import 'package:luminous/features/mine/presentation/utils/health_enum_l10n.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
@@ -33,14 +32,12 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     final isNew = medicineId == null;
     final isEdit = !isNew;
 
-    final sourceRefIdController = useTextEditingController();
     final displayNameController = useTextEditingController();
     final strengthTextController = useTextEditingController();
     final doseTextController = useTextEditingController();
     final routeController = useTextEditingController();
-    final startedAtController = useTextEditingController();
+    final startedAt = useState<DateTime?>(null);
     final noteController = useTextEditingController();
-    final source = useState(HealthMedicineSource.manual);
     final prefilled = useState(false);
     final notFound = useState(false);
 
@@ -66,15 +63,11 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
 
       prefilled.value = true;
       displayNameController.text = item.displayName;
-      sourceRefIdController.text = item.sourceRefId ?? '';
       strengthTextController.text = item.strengthText ?? '';
       doseTextController.text = item.doseText ?? '';
       routeController.text = item.route ?? '';
-      startedAtController.text = item.startedAt ?? '';
+      startedAt.value = _tryParseDate(item.startedAt);
       noteController.text = item.note ?? '';
-      source.value =
-          HealthMedicineSource.fromValue(item.source) ??
-          HealthMedicineSource.manual;
     }
 
     void onSave() {
@@ -87,20 +80,22 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         return;
       }
 
+      // Source is always manual when created/edited from the UI — the
+      // drugbank/cn sources are reserved for imported data and should not
+      // be exposed as a user-facing concept.
+      const source = HealthMedicineSource.manual;
+
       if (medicineId != null) {
         ref
             .read(currentMedicineFormProvider.notifier)
             .save(
               create: const CurrentMedicineWriteInput(
-                source: HealthMedicineSource.manual,
+                source: source,
                 displayName: '',
               ),
               id: medicineId,
               update: CurrentMedicineUpdateInput(
-                source: source.value,
-                sourceRefId: sourceRefIdController.text.isEmpty
-                    ? null
-                    : sourceRefIdController.text,
+                source: source,
                 displayName: displayNameController.text,
                 strengthText: strengthTextController.text.isEmpty
                     ? null
@@ -111,9 +106,9 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                 route: routeController.text.isEmpty
                     ? null
                     : routeController.text,
-                startedAt: startedAtController.text.isEmpty
-                    ? null
-                    : startedAtController.text,
+                startedAt: startedAt.value != null
+                    ? _formatDate(startedAt.value!)
+                    : null,
                 note: noteController.text.isEmpty ? null : noteController.text,
               ),
             );
@@ -122,10 +117,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             .read(currentMedicineFormProvider.notifier)
             .save(
               create: CurrentMedicineWriteInput(
-                source: source.value,
-                sourceRefId: sourceRefIdController.text.isEmpty
-                    ? null
-                    : sourceRefIdController.text,
+                source: source,
                 displayName: displayNameController.text,
                 strengthText: strengthTextController.text.isEmpty
                     ? null
@@ -136,9 +128,9 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                 route: routeController.text.isEmpty
                     ? null
                     : routeController.text,
-                startedAt: startedAtController.text.isEmpty
-                    ? null
-                    : startedAtController.text,
+                startedAt: startedAt.value != null
+                    ? _formatDate(startedAt.value!)
+                    : null,
                 note: noteController.text.isEmpty ? null : noteController.text,
               ),
             );
@@ -187,7 +179,9 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               session.isLoading
-                  ? const MineEditFormLoading()
+                  ? const MineEditFormLoading(
+                      blockHeights: [56, 56, 56, 56, 56, 56],
+                    )
                   : AuthRequiredDialogGate(
                       onLogin: () =>
                           context.push(loginRouteForCurrentLocation(context)),
@@ -213,10 +207,10 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppStateErrorView(
-                  title: l10n.mineErrorDescription,
-                  description: '',
+                  title: l10n.mineEditRecordNotFoundTitle,
+                  description: l10n.mineEditRecordNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
-                  actionLabel: l10n.todayRetryAction,
+                  actionLabel: l10n.mineEditBackAction,
                   onAction: () => context.pop(),
                 ),
               ],
@@ -234,7 +228,9 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [MineEditFormLoading()],
+              children: [
+                MineEditFormLoading(blockHeights: [56, 56, 56, 56, 56, 56]),
+              ],
             ),
           ),
         );
@@ -250,94 +246,117 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(Spacing.level4),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _enumDropdown<HealthMedicineSource>(
-                        label: l10n.mineEditFieldSource,
-                        value: source.value,
-                        values: HealthMedicineSource.values,
-                        onChanged: (v) => source.value = v,
-                        labelBuilder: (v) => medicineSourceLabel(l10n, v),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: sourceRefIdController,
+                // Group 1 — 药品信息
+                SettingsSectionLabel(label: l10n.mineEditMedicineSectionInfo),
+                FCard.raw(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.level4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FTextField(
+                          key: const Key('medicine-displayname-field'),
+                          control: FTextFieldControl.managed(
+                            controller: displayNameController,
+                          ),
+                          label: Text(l10n.mineEditFieldDisplayName),
                         ),
-                        label: Text(l10n.mineEditFieldSourceRefId),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        key: const Key('medicine-displayname-field'),
-                        control: FTextFieldControl.managed(
-                          controller: displayNameController,
-                        ),
-                        label: Text(l10n.mineEditFieldDisplayName),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: strengthTextController,
-                        ),
-                        label: Text(l10n.mineEditFieldStrengthText),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: doseTextController,
-                        ),
-                        label: Text(l10n.mineEditFieldDoseText),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: routeController,
-                        ),
-                        label: Text(l10n.mineEditFieldRoute),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: startedAtController,
-                        ),
-                        label: Text(l10n.mineEditFieldStartedAt),
-                      ),
-                      const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: noteController,
-                        ),
-                        label: Text(l10n.mineEditFieldNote),
-                        maxLines: 3,
-                      ),
-                      const SizedBox(height: Spacing.level5),
-                      FButton(
-                        key: const Key('medicine-save-button'),
-                        onPress: onSave,
-                        child: Text(l10n.mineEditSaveAction),
-                      ),
-                      if (!isNew) ...[
                         const SizedBox(height: Spacing.level3),
-                        FButton(
-                          key: const Key('medicine-delete-button'),
-                          variant: FButtonVariant.destructive,
-                          onPress: () async {
-                            final confirmed =
-                                await showDangerConfirmationDialog(
-                                  context: context,
-                                  title: l10n.mineEditDeleteConfirmTitle,
-                                  message: l10n.mineEditDeleteConfirmMessage,
-                                  confirmLabel: l10n.mineEditDeleteAction,
-                                );
-                            if (confirmed) onDelete();
-                          },
-                          child: Text(l10n.mineEditDeleteAction),
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: strengthTextController,
+                          ),
+                          label: Text(l10n.mineEditFieldStrengthText),
+                          hint: l10n.mineEditFieldStrengthTextHint,
                         ),
                       ],
-                    ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: Spacing.level5),
+
+                // Group 2 — 用法用量
+                SettingsSectionLabel(label: l10n.mineEditMedicineSectionDosage),
+                FCard.raw(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.level4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: doseTextController,
+                          ),
+                          label: Text(l10n.mineEditFieldDoseText),
+                          hint: l10n.mineEditFieldDoseTextHint,
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: routeController,
+                          ),
+                          label: Text(l10n.mineEditFieldRoute),
+                          hint: l10n.mineEditFieldRouteHint,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: Spacing.level5),
+
+                // Group 3 — 时间与备注
+                SettingsSectionLabel(
+                  label: l10n.mineEditMedicineSectionTimeline,
+                ),
+                FCard.raw(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.level4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        FDateField.calendar(
+                          key: const Key('medicine-started-at-field'),
+                          label: Text(l10n.mineEditFieldStartedAt),
+                          selectionControl: FDateSelectionControl.managedSingle(
+                            initial: startedAt.value,
+                            toggleable: true,
+                            onChange: (value) => startedAt.value = value,
+                          ),
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        FTextField(
+                          control: FTextFieldControl.managed(
+                            controller: noteController,
+                          ),
+                          label: Text(l10n.mineEditFieldNote),
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: Spacing.level5),
+                        FButton(
+                          key: const Key('medicine-save-button'),
+                          onPress: onSave,
+                          child: Text(l10n.mineEditSaveAction),
+                        ),
+                        if (!isNew) ...[
+                          const SizedBox(height: Spacing.level3),
+                          FButton(
+                            key: const Key('medicine-delete-button'),
+                            variant: FButtonVariant.destructive,
+                            onPress: () async {
+                              final confirmed =
+                                  await showDangerConfirmationDialog(
+                                    context: context,
+                                    title: l10n.mineEditDeleteConfirmTitle,
+                                    message: l10n.mineEditDeleteConfirmMessage,
+                                    confirmLabel: l10n.mineEditDeleteAction,
+                                  );
+                              if (confirmed) onDelete();
+                            },
+                            child: Text(l10n.mineEditDeleteAction),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -358,25 +377,14 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
   }
 }
 
-Widget _enumDropdown<T extends HealthContextWireEnum>({
-  required String label,
-  required T value,
-  required List<T> values,
-  required ValueChanged<T> onChanged,
-  required String Function(T) labelBuilder,
-}) {
-  return FSelect<T>.rich(
-    label: Text(label),
-    hint: label,
-    format: labelBuilder,
-    control: FSelectControl.lifted(
-      value: value,
-      onChange: (v) {
-        if (v != null) onChanged(v);
-      },
-    ),
-    children: values
-        .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
-        .toList(),
-  );
+DateTime? _tryParseDate(String? value) {
+  if (value == null || value.isEmpty) return null;
+  return DateTime.tryParse(value);
+}
+
+String _formatDate(DateTime date) {
+  final y = date.year.toString().padLeft(4, '0');
+  final m = date.month.toString().padLeft(2, '0');
+  final d = date.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
 }

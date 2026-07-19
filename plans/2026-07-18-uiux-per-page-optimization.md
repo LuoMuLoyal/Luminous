@@ -277,57 +277,7 @@
 
 ### Tab 5 · 我的（mine）
 
-#### 3.5.0 全局（先于逐页）
-
-| 级别 | 问题 | 建议 |
-|------|------|------|
-| 高 | **三个编辑路由是死路由**：`/mine/allergy/:id/edit`、`/mine/condition/:id/edit`、`/mine/medicine/:id/edit` 已声明但零导航入口；`/mine/condition/new` 同样不可达。已有健康档案无法查看列表/编辑/删除，病史功能从 UI 根本进不去 | 打通"档案行 → 列表页（或页内展开）→ `/:id/edit`"链路（见 3.5.3） |
-| 中 | `IconActionButton` 同名两套实现（core/shared_widgets.dart:170 vs mine/top_bar.dart:47） | 合并为 core 版本扩展 badge 参数 |
-| 低 | 骨架含 `MineStatusOverview`/"校园服务"遗留占位，与真实 6 section 不符 | 重排骨架并改名 |
-
-#### 3.5.1 页面框架与 Hero 卡（`pages/page.dart`、`sections/account_hero.dart`、`sync_failed_banner.dart`）
-
-| 级别 | 问题 | 建议 |
-|------|------|------|
-| 中 | 同步失败横幅自带水平 padding，比下方卡片左右各窄 8pt（sync_failed_banner.dart:51）；点击重试无任何反馈 | 去自带 padding；点击给一次性反馈 |
-| 中 | Hero 卡整卡 `FTappable` 跳账号页与内部"补全资料"按钮嵌套（account_hero.dart:47-49、167-177），触摸/读屏语义混乱 | 取消整卡可点，保留主按钮 |
-| 中 | 头像固定灰占位、无编辑 affordance | 头像角加编辑小徽标入口 |
-| 低 | mine 移动端灰底 vs today 纯白底，跨 tab 底色跳变；角色文案固定"大学生"；缺口徽章只展示前 2 个无 "+N" | 逐项打磨 |
-
-#### 3.5.2 各分组（`sections/archive_section.dart`、`ai_privacy.dart`、`notifications_reminders.dart`、`account_security.dart`）
-
-| 级别 | 问题 | 建议 |
-|------|------|------|
-| 高 | 过敏/用药档案行点击写死进"新建"页（lucent.dart:170、177），已有 N 条记录时落点是空白表单，与"已完善"状态矛盾 | 有记录时先进列表/展开，再进 `/:id/edit` |
-| 高 | 缺病史（condition）档案行——`conditionCount` 已在 snapshot 里但无展示无入口 | 补病史档案行 |
-| 高 | 退出登录无二次确认（account_security.dart:89-97），健康类 App 误触代价高 | 加确认对话框 |
-| 中 | "待补充"用 destructive 红色渲染中性状态（archive_section.dart:88-90） | 改 muted/warning |
-| 中 | "隐私报告"入口跳通用设置页（ai_privacy.dart:57），承诺与落地不符 | 指向真正隐私/数据页或改名 |
-| 中 | 未登录"去登录"用错误红（account_security.dart:80-85，settings 主页同病） | 按 signedIn 区分颜色 |
-| 低 | 勿扰时间手拼 `HH:mm` 不走系统格式；未登录 inbox 副标题"暂无数据"在加载中也显示；紧急联系人残留 settings 兜底路由 | 逐项打磨 |
-
-#### 3.5.3 资料编辑 `/mine/profile/edit`（`profile_edit.dart`）
-
-| 级别 | 问题 | 建议 |
-|------|------|------|
-| 高 | 身高静默丢失：预填 `"170.0"`（double），保存 `int.tryParse` 失败变 null，老用户直接保存就丢数据（profile_edit.dart:41、52） | `num.tryParse` 接受小数 |
-| 高 | 保存失败零界面反馈——错误只进 state 不进 UI（health_edit_forms.dart:39-43 + :86-91） | 失败 toast 或表单内错误条（三个健康表单页同病） |
-| 中 | 保存按钮无 loading/禁用态可重复提交 | 接 `isSaving` |
-| 中 | 出生日期裸文本框无日期选择器无校验；血型自由文本；单位制下拉显示原始英文 "metric"/"imperial"（:189） | 日期选择器；血型下拉；l10n 映射 |
-| 中 | 暴露"已完成引导"内部流程开关给用户拨（:141-145） | 移出表单 |
-
-#### 3.5.4 过敏 / 病史 / 用药三个健康表单页（`allergy_edit.dart`、`condition_edit.dart`、`current_medicine_edit.dart`）
-
-三页同构，共性问题合并（行号以 allergy 为例）：
-
-| 级别 | 问题 | 建议 |
-|------|------|------|
-| 高 | 必填校验复用验证码文案 `authCodeRequiredToast` → 不填名称提示"请先填写验证码。"（:70-73） | 新增"请填写名称"类 l10n 键 |
-| 高 | 删除无确认弹窗，且删除成功 toast 显示"已保存"（:112-116） | 确认对话框 + "已删除"专用文案 |
-| 高 | 类型/严重程度/状态/来源下拉直接显示英文枚举 wire 值（`drug/food/...`、`mild/severe`、`active/resolved`、`drugbank/cn/manual`） | 全部 l10n 映射 |
-| 中 | 保存/删除失败静默（同 profile 页）；"记录不存在"态复用错误文案+按钮写"重试"实为返回 | 失败反馈；专用文案+返回按钮 |
-| 中 | 用药表单 8 字段无分组平铺；"来源"字段暴露内部数据血缘概念；日期裸文本框；"途径/剂量"自由文本无引导 | 分组+条件显示；来源隐藏或默认 manual；日期选择器；常用值选择+示例 hint |
-| 低 | 严重程度/病史状态各档无解释文案；用药预填骨架块数与字段数不符 | 逐项打磨 |
+> 全部项目已完成，见 `docs/03-logs/migration-log/2026-07-19.md`。
 
 ---
 

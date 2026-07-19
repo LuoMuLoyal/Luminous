@@ -179,10 +179,10 @@ class AllergyEditPage extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppStateErrorView(
-                  title: l10n.mineErrorDescription,
-                  description: '',
+                  title: l10n.mineEditRecordNotFoundTitle,
+                  description: l10n.mineEditRecordNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
-                  actionLabel: l10n.todayRetryAction,
+                  actionLabel: l10n.mineEditBackAction,
                   onAction: () => context.pop(),
                 ),
               ],
@@ -250,6 +250,9 @@ class AllergyEditPage extends HookConsumerWidget {
                         label: Text(l10n.mineEditFieldSeverity),
                         hint: l10n.mineEditFieldSeverity,
                         format: (value) => allergySeverityLabel(l10n, value),
+                        description: Text(
+                          allergySeverityDescription(l10n, severity.value),
+                        ),
                         control: FSelectControl.lifted(
                           value: severity.value,
                           onChange: (v) {

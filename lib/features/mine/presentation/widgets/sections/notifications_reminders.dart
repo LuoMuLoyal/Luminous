@@ -133,7 +133,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
     }
     return unreadCountAsync.maybeWhen(
       data: l10n.mineNotificationInboxUnreadSummary,
-      orElse: () => l10n.placeholderNoData,
+      orElse: () => l10n.mineNotificationInboxLoadingSummary,
     );
   }
 

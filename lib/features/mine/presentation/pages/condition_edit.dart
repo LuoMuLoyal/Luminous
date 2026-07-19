@@ -34,8 +34,8 @@ class ConditionEditPage extends HookConsumerWidget {
     final isEdit = !isNew;
 
     final labelController = useTextEditingController();
-    final diagnosedAtController = useTextEditingController();
     final noteController = useTextEditingController();
+    final diagnosedAt = useState<DateTime?>(null);
     final status = useState(HealthConditionStatus.active);
     final prefilled = useState(false);
     final notFound = useState(false);
@@ -60,7 +60,7 @@ class ConditionEditPage extends HookConsumerWidget {
 
       prefilled.value = true;
       labelController.text = item.label;
-      diagnosedAtController.text = item.diagnosedAt ?? '';
+      diagnosedAt.value = _tryParseDate(item.diagnosedAt);
       noteController.text = item.note ?? '';
       status.value =
           HealthConditionStatus.fromValue(item.status) ??
@@ -86,9 +86,9 @@ class ConditionEditPage extends HookConsumerWidget {
               update: HealthConditionUpdateInput(
                 label: labelController.text,
                 status: status.value,
-                diagnosedAt: diagnosedAtController.text.isEmpty
-                    ? null
-                    : diagnosedAtController.text,
+                diagnosedAt: diagnosedAt.value != null
+                    ? _formatDate(diagnosedAt.value!)
+                    : null,
                 note: noteController.text.isEmpty ? null : noteController.text,
               ),
             );
@@ -99,9 +99,9 @@ class ConditionEditPage extends HookConsumerWidget {
               create: HealthConditionWriteInput(
                 label: labelController.text,
                 status: status.value,
-                diagnosedAt: diagnosedAtController.text.isEmpty
-                    ? null
-                    : diagnosedAtController.text,
+                diagnosedAt: diagnosedAt.value != null
+                    ? _formatDate(diagnosedAt.value!)
+                    : null,
                 note: noteController.text.isEmpty ? null : noteController.text,
               ),
             );
@@ -175,10 +175,10 @@ class ConditionEditPage extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppStateErrorView(
-                  title: l10n.mineErrorDescription,
-                  description: '',
+                  title: l10n.mineEditRecordNotFoundTitle,
+                  description: l10n.mineEditRecordNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
-                  actionLabel: l10n.todayRetryAction,
+                  actionLabel: l10n.mineEditBackAction,
                   onAction: () => context.pop(),
                 ),
               ],
@@ -233,13 +233,20 @@ class ConditionEditPage extends HookConsumerWidget {
                         values: HealthConditionStatus.values,
                         onChanged: (v) => status.value = v,
                         labelBuilder: (v) => conditionStatusLabel(l10n, v),
+                        description: conditionStatusDescription(
+                          l10n,
+                          status.value,
+                        ),
                       ),
                       const SizedBox(height: Spacing.level3),
-                      FTextField(
-                        control: FTextFieldControl.managed(
-                          controller: diagnosedAtController,
-                        ),
+                      FDateField.calendar(
+                        key: const Key('condition-diagnosed-at-field'),
                         label: Text(l10n.mineEditFieldDiagnosedAt),
+                        selectionControl: FDateSelectionControl.managedSingle(
+                          initial: diagnosedAt.value,
+                          toggleable: true,
+                          onChange: (value) => diagnosedAt.value = value,
+                        ),
                       ),
                       const SizedBox(height: Spacing.level3),
                       FTextField(
@@ -300,11 +307,13 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
   required List<T> values,
   required ValueChanged<T> onChanged,
   required String Function(T) labelBuilder,
+  String? description,
 }) {
   return FSelect<T>.rich(
     label: Text(label),
     hint: label,
     format: labelBuilder,
+    description: description != null ? Text(description) : null,
     control: FSelectControl.lifted(
       value: value,
       onChange: (v) {
@@ -315,4 +324,16 @@ Widget _enumDropdown<T extends HealthContextWireEnum>({
         .map((v) => FSelectItem.item(title: Text(labelBuilder(v)), value: v))
         .toList(),
   );
+}
+
+DateTime? _tryParseDate(String? value) {
+  if (value == null || value.isEmpty) return null;
+  return DateTime.tryParse(value);
+}
+
+String _formatDate(DateTime date) {
+  final y = date.year.toString().padLeft(4, '0');
+  final m = date.month.toString().padLeft(2, '0');
+  final d = date.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
 }

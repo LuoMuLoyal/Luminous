@@ -108,3 +108,20 @@ Last updated: 2026-07-18
 - 删除成功根据 `next.deleted` 区分显示 `mineEditDeletedToast`（"已删除"）。
 - 三个 `FormState` 新增 `deleted` 字段。
 - 保存/删除失败新增 `errorMessage` 监听。
+
+### 表单输入细化（2026-07-19 追加）
+
+- **IconActionButton 统一**：`mine/top_bar.dart` 的同名实现合并到 `core/shared_widgets.dart`，扩展 `showBadge` 参数支持红色小圆点未读提醒。
+- **Mine 移动端底色**：从 `SemanticColor.neutral.muted` 改为 `colors.background`，与 today tab 一致。
+- **缺口徽章 "+N"**：`gapCount > 2` 时显示 `mineReadinessGapMore`（"还有 N 项"）。
+- **身高解析**：`profile_edit.dart` 从 `int.tryParse` 改为 `num.tryParse`，接受小数身高。
+- **出生日期**：从 `FTextField` 改为 `FDateField.calendar`（日历选择器）。
+- **血型**：从 `FTextField` 改为 `FSelect<String>.rich` 下拉（A+/A-/B+/B-/AB+/AB-/O+/O-）。
+- **枚举 l10n**：三个 edit 页的下拉全部接入 `health_enum_l10n.dart`，显示本地化标签。新增 `allergySeverityDescription`/`conditionStatusDescription` 在下拉 `description` 位展示各档解释。
+- **记录不存在态**：从复用 `mineErrorDescription` + `todayRetryAction` 改为专用 `mineEditRecordNotFoundTitle`/`Description` + `mineEditBackAction`（"返回"）。
+- **用药表单分组**：字段按语义分为三组（药品信息 / 用法用量 / 时间与备注），每组用 `SettingsSectionLabel` + `FCard.raw` 包裹。
+- **用药来源隐藏**：移除 `source` 下拉和 `sourceRefId` 文本框，`source` 固定为 `manual`，不再暴露 drugbank/cn 等内部概念。
+- **日期选择器**：condition 的 `diagnosedAt` 和 medicine 的 `startedAt` 改为 `FDateField.calendar`。
+- **用药骨架**：`MineEditFormLoading` 的 `blockHeights` 改为 6 块，与用药表单实际字段数一致。
+- **共享日期选择器**：新增 `lib/core/widgets/common/date_picker.dart`（`showForuiDatePicker`），供全 App 统一使用。
+- **通知加载态**：`notifications_reminders.dart` 的 `orElse` 从 `placeholderNoData` 改为 `mineNotificationInboxLoadingSummary`（"加载中…"）。

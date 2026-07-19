@@ -268,5 +268,31 @@
   "mineMedicineSourceCn": "Chinese Pharmacopoeia",
   "mineMedicineSourceManual": "Manual",
   "mineArchiveRecordListTitle": "Records",
-  "mineArchiveAddNewAction": "Add new record"
+  "mineArchiveAddNewAction": "Add new record",
+  "mineEditFieldBloodTypeHint": "Select blood type",
+  "mineEditFieldStrengthTextHint": "e.g. 500mg, 10ml",
+  "mineEditFieldDoseTextHint": "e.g. 1 tablet, 5ml",
+  "mineEditFieldRouteHint": "e.g. oral, topical, inhaled",
+  "mineReadinessGapMore": "{count} more",
+  "@mineReadinessGapMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mineNotificationInboxLoadingSummary": "Loading…",
+  "mineEditRecordNotFoundTitle": "Record not found",
+  "mineEditRecordNotFoundDescription": "This record may have been deleted.",
+  "mineEditBackAction": "Back",
+  "mineEditMedicineSectionInfo": "Medicine info",
+  "mineEditMedicineSectionDosage": "Dosage & usage",
+  "mineEditMedicineSectionTimeline": "Timeline & notes",
+  "mineAllergySeverityMildDesc": "Mild symptoms, does not affect daily life",
+  "mineAllergySeverityModerateDesc": "Noticeable symptoms, may require medication",
+  "mineAllergySeveritySevereDesc": "Severe symptoms, may require emergency care",
+  "mineAllergySeverityUnknownDesc": "Severity unknown",
+  "mineConditionStatusActiveDesc": "Currently active",
+  "mineConditionStatusResolvedDesc": "Resolved or recovered",
+  "mineConditionStatusSuspectedDesc": "Suspected but not yet confirmed"
 }

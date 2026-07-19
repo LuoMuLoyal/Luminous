@@ -20,6 +20,21 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
+/// Common blood type options offered in the profile editor.
+///
+/// The backend stores [bloodType] as a free-text string, but constraining the
+/// UI to a standard list avoids typos and makes the field easier to scan.
+const _bloodTypeOptions = <String>[
+  'A+',
+  'A-',
+  'B+',
+  'B-',
+  'AB+',
+  'AB-',
+  'O+',
+  'O-',
+];
+
 class ProfileEditPage extends HookConsumerWidget {
   const ProfileEditPage({super.key});
 
@@ -28,9 +43,9 @@ class ProfileEditPage extends HookConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
 
-    final birthDateController = useTextEditingController();
     final heightCmController = useTextEditingController();
-    final bloodTypeController = useTextEditingController();
+    final birthDate = useState<DateTime?>(null);
+    final bloodType = useState<String?>(null);
     final unitSystem = useState<HealthUnitSystem?>(null);
     final initialized = useRef(false);
 
@@ -38,21 +53,19 @@ class ProfileEditPage extends HookConsumerWidget {
       if (initialized.value) return;
       initialized.value = true;
 
-      birthDateController.text = profile.birthDate ?? '';
       heightCmController.text = profile.heightCm?.toString() ?? '';
-      bloodTypeController.text = profile.bloodType ?? '';
+      birthDate.value = _tryParseDate(profile.birthDate);
+      bloodType.value = profile.bloodType;
       unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
     }
 
     void onSave() {
       final input = HealthProfileUpdateInput(
-        birthDate: birthDateController.text.isEmpty
-            ? null
-            : birthDateController.text,
+        birthDate: birthDate.value != null
+            ? _formatDate(birthDate.value!)
+            : null,
         heightCm: num.tryParse(heightCmController.text),
-        bloodType: bloodTypeController.text.isEmpty
-            ? null
-            : bloodTypeController.text,
+        bloodType: bloodType.value,
         unitSystem: unitSystem.value,
       );
 
@@ -121,14 +134,18 @@ class ProfileEditPage extends HookConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        FTextField(
-                          control: FTextFieldControl.managed(
-                            controller: birthDateController,
-                          ),
+                        FDateField.calendar(
+                          key: const Key('profile-birthdate-field'),
                           label: Text(l10n.mineEditFieldBirthDate),
+                          selectionControl: FDateSelectionControl.managedSingle(
+                            initial: birthDate.value,
+                            toggleable: true,
+                            onChange: (value) => birthDate.value = value,
+                          ),
                         ),
                         const SizedBox(height: Spacing.level3),
                         FTextField(
+                          key: const Key('profile-height-field'),
                           control: FTextFieldControl.managed(
                             controller: heightCmController,
                           ),
@@ -136,11 +153,20 @@ class ProfileEditPage extends HookConsumerWidget {
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: Spacing.level3),
-                        FTextField(
-                          control: FTextFieldControl.managed(
-                            controller: bloodTypeController,
-                          ),
+                        FSelect<String>.rich(
                           label: Text(l10n.mineEditFieldBloodType),
+                          hint: l10n.mineEditFieldBloodTypeHint,
+                          format: (value) => value,
+                          control: FSelectControl.lifted(
+                            value: bloodType.value,
+                            onChange: (v) => bloodType.value = v,
+                          ),
+                          children: _bloodTypeOptions
+                              .map(
+                                (v) =>
+                                    FSelectItem.item(title: Text(v), value: v),
+                              )
+                              .toList(),
                         ),
                         const SizedBox(height: Spacing.level3),
                         _enumDropdown<HealthUnitSystem>(
@@ -191,6 +217,18 @@ class ProfileEditPage extends HookConsumerWidget {
       child: SingleChildScrollView(child: content),
     );
   }
+}
+
+DateTime? _tryParseDate(String? value) {
+  if (value == null || value.isEmpty) return null;
+  return DateTime.tryParse(value);
+}
+
+String _formatDate(DateTime date) {
+  final y = date.year.toString().padLeft(4, '0');
+  final m = date.month.toString().padLeft(2, '0');
+  final d = date.day.toString().padLeft(2, '0');
+  return '$y-$m-$d';
 }
 
 Widget _enumDropdown<T extends HealthContextWireEnum>({

@@ -82,6 +82,10 @@ Persisted preference keys:
   entry labels shown on the root page is owned by the Mine ARB entries.
 - Mine root-page lightweight notification/reminder summary copy such as section title, inbox label,
   unread-count wording, and signed-out inbox hint is owned by the Mine ARB entries.
+- Mine health-form copy such as record-not-found title/description, back action label, medicine
+  section labels (info/dosage/timeline), field hints (blood type/strength/dose/route), allergy
+  severity descriptions, condition status descriptions, and the "+N more" readiness gap badge is
+  owned by the Mine ARB entries.
 - Report root-page suggestion-history copy such as section title, empty state, and `已读 / 未读`
   badges is owned by the Report ARB entries.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings

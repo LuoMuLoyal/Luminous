@@ -373,7 +373,9 @@ void main() {
     expect(find.text('settings-page'), findsOneWidget);
   });
 
-  testWidgets('Mine account header routes to account page', (tester) async {
+  testWidgets('Mine account header action routes to profile edit', (
+    tester,
+  ) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(393, 852);
     addTearDown(() {
@@ -387,7 +389,7 @@ void main() {
           () => _EmailSignedInAuthSessionNotifier(),
         ),
         healthContextSnapshotProvider.overrideWith(
-          (ref) => Future.value(_mockSnapshot),
+          (ref) => Future.value(_completeSnapshot),
         ),
       ],
     );
@@ -402,9 +404,9 @@ void main() {
             routes: [
               GoRoute(path: '/', builder: (context, state) => const MinePage()),
               GoRoute(
-                path: '/account',
+                path: '/mine/profile/edit',
                 builder: (context, state) =>
-                    const Scaffold(body: Text('account-page')),
+                    const Scaffold(body: Text('profile-edit-page')),
               ),
             ],
           ),
@@ -418,10 +420,12 @@ void main() {
     expect(find.text('Lumi'), findsOneWidget);
     expect(find.text(l10n.mineAccountStudentRole), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('mine-account-manage-link')));
+    // Hero card is no longer entirely tappable — the action button is the
+    // sole navigation entry point.
+    await tester.tap(find.byKey(const Key('mine-readiness-action')));
     await tester.pumpAndSettle();
 
-    expect(find.text('account-page'), findsOneWidget);
+    expect(find.text('profile-edit-page'), findsOneWidget);
   });
 
   testWidgets('Mine archive routes basic info to edit page', (tester) async {
