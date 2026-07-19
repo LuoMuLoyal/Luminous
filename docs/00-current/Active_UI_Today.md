@@ -76,6 +76,9 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - 助手控制面板（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从对话页底部常驻移入底部抽屉（`_AssistantControlsSheet`），由助手页顶栏 `settings2` 图标按钮打开，释放对话区垂直空间。
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
 - 助手禁用时的提示文案指向右上角设置入口。
+- **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。
+- **输入区桌面快捷键 + 禁用态同步**：桌面宽度（`>= Breakpoints.tablet`）下 `FTextField` 外包 `Focus(onKeyEvent:)`，`Ctrl/⌘ + Enter` 触发发送（移动端 `Enter` 仍为换行）；助手禁用时 `FTextField.enabled = false` 真正禁用输入框，输入框上方显示 `assistantInputDisabledHint` 提示行，桌面端输入框下方显示 `assistantSendShortcutHint` 快捷键提示。
+- **Hero 折叠**：对话开始后（`hasConversation && !heroExpanded`）`AssistantHero` 自动折叠为单行紧凑状态条（bot 小徽章 + 标题 + 单行省略状态摘要 + 状态色圆点 + 展开钮），用户可点击展开/再折叠，`AnimatedSize`（`DurationTokens.widgetStandard` = 300ms）平滑过渡。状态色圆点映射 disabled → `mutedForeground` / 未配置或未就绪 → `SemanticColor.warning.solid` / 就绪 → `SemanticColor.success.solid`，带 `Tooltip` 显示完整状态文案。
 
 ## 2026-07-19 补充
 

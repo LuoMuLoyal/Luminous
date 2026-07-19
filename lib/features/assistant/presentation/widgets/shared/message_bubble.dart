@@ -70,6 +70,17 @@ class AssistantMessageBubble extends StatelessWidget {
                         .body(context)
                         .copyWith(color: foreground),
                   )
+                else if (isStreaming)
+                  // While streaming, render the in-progress content as plain
+                  // text. Re-parsing the full markdown on every chunk is the
+                  // main source of jank for long replies; we swap to
+                  // MarkdownBody once the result settles.
+                  Text(
+                    content,
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(color: foreground),
+                  )
                 else
                   MarkdownBody(
                     data: content,

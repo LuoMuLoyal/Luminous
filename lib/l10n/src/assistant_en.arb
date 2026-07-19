@@ -84,5 +84,9 @@
   "assistantProposalExpiresAtLabel": "Expires at",
   "assistantProposalConstraintsLabel": "Constraints before confirm",
   "assistantProposalExpiredHint": "This proposal has expired. Generate a fresh one before confirming.",
-  "assistantControlsDrawerTitle": "Assistant settings"
+  "assistantControlsDrawerTitle": "Assistant settings",
+  "assistantHeroCollapseAction": "Collapse status card",
+  "assistantHeroExpandAction": "Expand status card",
+  "assistantInputDisabledHint": "AI chat is turned off and input is disabled. Open the settings in the top-right to resume.",
+  "assistantSendShortcutHint": "Ctrl/⌘ + Enter to send"
 }

@@ -97,6 +97,9 @@ Persisted preference keys:
 - Assistant controls drawer strings such as the drawer title (`assistantControlsDrawerTitle`) and the
    disabled-by-user hint (`assistantConversationDisabledByUserHint`) are owned by the Assistant ARB
    entries. The hint text references the top-right settings entry point.
+- Assistant hero toggle strings (`assistantHeroCollapseAction` / `assistantHeroExpandAction`), the input
+   disabled hint (`assistantInputDisabledHint`), and the desktop send shortcut hint
+   (`assistantSendShortcutHint`) are owned by the Assistant ARB entries.
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.

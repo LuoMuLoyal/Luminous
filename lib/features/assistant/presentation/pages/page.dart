@@ -33,12 +33,41 @@ class AssistantPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
-    final chatState = ref.watch(assistantControllerProvider);
+
+    // Subscribe to capability-related state slices. These never change during
+    // streaming, so the parent stays stable while chunks arrive.
+    final capabilities = ref.watch(
+      assistantControllerProvider.select((s) => s.capabilities),
+    );
+    final isLoadingCapabilities = ref.watch(
+      assistantControllerProvider.select((s) => s.isLoadingCapabilities),
+    );
+    final isLoadingConversation = ref.watch(
+      assistantControllerProvider.select((s) => s.isLoadingConversation),
+    );
+    final isLoadingRecentConversations = ref.watch(
+      assistantControllerProvider.select((s) => s.isLoadingRecentConversations),
+    );
+    final isOpeningConversation = ref.watch(
+      assistantControllerProvider.select((s) => s.isOpeningConversation),
+    );
+    final capabilityError = ref.watch(
+      assistantControllerProvider.select((s) => s.capabilityError),
+    );
+    final conversationError = ref.watch(
+      assistantControllerProvider.select((s) => s.conversationError),
+    );
+    final lastFailedInput = ref.watch(
+      assistantControllerProvider.select((s) => s.lastFailedInput),
+    );
+    final hasConversation = ref.watch(
+      assistantControllerProvider.select((s) => s.hasConversation),
+    );
+
     final settingsAsync = session.canAccessProtectedData
         ? ref.watch(userSettingsControllerProvider)
         : null;
     final settings = settingsAsync?.asData?.value;
-    final capabilities = chatState.capabilities;
     final effectiveContext = settings == null && capabilities != null
         ? AssistantContextPatch(
             healthProfile: capabilities.assistantContext.healthProfile,
@@ -54,6 +83,9 @@ class AssistantPage extends HookConsumerWidget {
     // Only then do we auto-scroll on new streamed chunks; otherwise we show a
     // floating "scroll to bottom" button so users can read history undisturbed.
     final isNearBottom = useState<bool>(true);
+    // Hero collapses once a conversation has content, but the user can expand
+    // it again to inspect the full status summary at any time.
+    final heroExpanded = useState<bool>(false);
 
     void scrollToBottom() {
       if (!scrollController.hasClients) return;
@@ -78,15 +110,21 @@ class AssistantPage extends HookConsumerWidget {
 
     // Auto-scroll to bottom only when the user is already near the bottom.
     // This avoids yanking the view back during streaming while the user is
-    // reading earlier messages.
-    ref.listen<AssistantState>(assistantControllerProvider, (prev, next) {
-      final wasUserMessageAdded = prev?.messages.length != next.messages.length;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (isNearBottom.value || wasUserMessageAdded) {
-          scrollToBottom();
-        }
-      });
-    });
+    // reading earlier messages. We only watch message-count deltas here (not
+    // streamingDraft) so the parent does not rebuild on every chunk.
+    ref.listen<int>(
+      assistantControllerProvider.select(
+        (s) => s.messages.length + (s.streamingDraft.isNotEmpty ? 1 : 0),
+      ),
+      (prev, next) {
+        final grew = (prev ?? 0) < next;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (isNearBottom.value || grew) {
+            scrollToBottom();
+          }
+        });
+      },
+    );
 
     useEffect(() {
       scrollController.addListener(onUserScroll);
@@ -253,7 +291,9 @@ class AssistantPage extends HookConsumerWidget {
           context: context,
           side: FLayout.rtl,
           builder: (sheetContext) => AssistantConversationDrawer(
-            state: chatState,
+            // The drawer needs full state; pull a fresh snapshot here so it
+            // always reflects the latest even though the parent used select.
+            state: ref.read(assistantControllerProvider),
             title: l10n.assistantRecentConversationsTitle,
             emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
             emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
@@ -316,8 +356,8 @@ class AssistantPage extends HookConsumerWidget {
           variant: FButtonVariant.ghost,
           onPress:
               !session.canAccessProtectedData ||
-                  chatState.isLoadingRecentConversations ||
-                  chatState.isOpeningConversation
+                  isLoadingRecentConversations ||
+                  isOpeningConversation
               ? null
               : openRecentConversationsDrawer,
           child: const Icon(FLucideIcons.clock4),
@@ -327,9 +367,11 @@ class AssistantPage extends HookConsumerWidget {
           variant: FButtonVariant.ghost,
           onPress:
               !session.canAccessProtectedData ||
-                  chatState.isLoadingConversation ||
-                  chatState.isSending ||
-                  chatState.isOpeningConversation
+                  isLoadingConversation ||
+                  // `isSending` is read via provider so we don't resubscribe
+                  // here; we intentionally keep this single bool slice.
+                  ref.read(assistantControllerProvider).isSending ||
+                  isOpeningConversation
               ? null
               : handleStartNewConversation,
           child: const Icon(FLucideIcons.plus),
@@ -364,21 +406,19 @@ class AssistantPage extends HookConsumerWidget {
                   onAction: () =>
                       context.go(loginRouteForReturnTo('/assistant')),
                 ),
-              ] else if (chatState.isLoadingCapabilities &&
-                  chatState.isLoadingConversation &&
+              ] else if (isLoadingCapabilities &&
+                  isLoadingConversation &&
                   capabilities == null &&
-                  chatState.capabilityError == null) ...[
+                  capabilityError == null) ...[
                 const AssistantLoadingView(),
-              ] else if (chatState.isLoadingConversation &&
-                  !chatState.hasConversation) ...[
+              ] else if (isLoadingConversation && !hasConversation) ...[
                 const AssistantLoadingView(),
               ] else if (capabilities == null) ...[
                 AppStateMessageView(
                   maxWidth: Breakpoints.assistantContent,
                   title: l10n.assistantLoadErrorTitle,
                   description:
-                      chatState.capabilityError ??
-                      l10n.assistantLoadErrorFallback,
+                      capabilityError ?? l10n.assistantLoadErrorFallback,
                   icon: FLucideIcons.circleAlert,
                   tone: AppStateTone.warning,
                   actionLabel: l10n.todayRetryAction,
@@ -387,15 +427,24 @@ class AssistantPage extends HookConsumerWidget {
                       .loadCapabilities(),
                 ),
               ] else ...[
-                AssistantHero(
-                  capabilities: capabilities,
-                  statusSummary: statusSummaryText(l10n, capabilities),
+                AnimatedSize(
+                  duration: DurationTokens.widgetStandard,
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: AssistantHero(
+                    capabilities: capabilities,
+                    statusSummary: statusSummaryText(l10n, capabilities),
+                    compact: hasConversation && !heroExpanded.value,
+                    onToggleCompact: hasConversation
+                        ? () => heroExpanded.value = !heroExpanded.value
+                        : null,
+                  ),
                 ),
-                if (chatState.conversationError != null) ...[
+                if (conversationError != null) ...[
                   const SizedBox(height: Spacing.level4),
                   AppStateMessageView(
                     title: l10n.assistantLoadErrorTitle,
-                    description: chatState.conversationError!,
+                    description: conversationError,
                     icon: FLucideIcons.circleAlert,
                     tone: AppStateTone.warning,
                     actionLabel: l10n.todayRetryAction,
@@ -409,12 +458,11 @@ class AssistantPage extends HookConsumerWidget {
                   child: Stack(
                     children: [
                       AssistantConversationSurface(
-                        state: chatState,
                         capabilities: capabilities,
                         scrollController: scrollController,
                         controller: inputController,
                         onSend: handleSend,
-                        onRetry: chatState.lastFailedInput != null
+                        onRetry: lastFailedInput != null
                             ? () => ref
                                   .read(assistantControllerProvider.notifier)
                                   .retryLastMessage()
