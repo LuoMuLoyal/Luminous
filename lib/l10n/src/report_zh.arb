@@ -14,6 +14,14 @@
   "reportReadinessInsufficientTitle": "数据还不足，暂无法生成完整报告",
   "reportReadinessInsufficientDescription": "继续记录后，系统会补齐趋势分析、总结和导出内容。",
   "reportReadinessReadyTitle": "近 7 天报告已就绪",
+  "reportReadinessReadyTitleRange": "{range}报告已就绪",
+  "@reportReadinessReadyTitleRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "reportReadinessReadyDescription": "你现在可以查看完整报告、生成总结并导出摘要。",
   "reportReadinessUpdatedAt": "当前显示的数据更新于 {time}",
   "@reportReadinessUpdatedAt": {

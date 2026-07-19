@@ -150,8 +150,8 @@ class LucentReportRepository implements ReportRepository {
     return switch (kind) {
       ReportDataKind.medication => SemanticColor.primary,
       ReportDataKind.water => SemanticColor.info,
-      ReportDataKind.sleep => SemanticColor.info,
-      ReportDataKind.general => SemanticColor.primary,
+      ReportDataKind.sleep => SemanticColor.warning,
+      ReportDataKind.general => SemanticColor.success,
     };
   }
 
@@ -168,8 +168,8 @@ class LucentReportRepository implements ReportRepository {
     return switch (kind) {
       ReportInsightKind.medication => SemanticColor.primary,
       ReportInsightKind.hydration => SemanticColor.info,
-      ReportInsightKind.sleep => SemanticColor.info,
-      ReportInsightKind.general => SemanticColor.primary,
+      ReportInsightKind.sleep => SemanticColor.warning,
+      ReportInsightKind.general => SemanticColor.success,
     };
   }
 

@@ -14,6 +14,14 @@
   "reportReadinessInsufficientTitle": "There is not enough data for a full report yet",
   "reportReadinessInsufficientDescription": "Keep recording and the app will fill in trends, summaries, and exportable content.",
   "reportReadinessReadyTitle": "Your last 7 days report is ready",
+  "reportReadinessReadyTitleRange": "Your {range} report is ready",
+  "@reportReadinessReadyTitleRange": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
   "reportReadinessReadyDescription": "You can now view the full report, generate a summary, and export it.",
   "reportReadinessUpdatedAt": "Currently showing data updated at {time}",
   "@reportReadinessUpdatedAt": {

@@ -109,6 +109,7 @@ class ReportDashboardView extends StatelessWidget {
           generatedAtLabel: generatedAtLabel,
           insufficientMetricCount: _insufficientMetricCount(),
           l10n: l10n,
+          rangeLabel: _rangeLabel(l10n),
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
@@ -220,6 +221,7 @@ class ReportDashboardView extends StatelessWidget {
                 generatedAtLabel: generatedAtLabel,
                 insufficientMetricCount: _insufficientMetricCount(),
                 l10n: l10n,
+                rangeLabel: _rangeLabel(l10n),
                 onSignIn: onSignIn,
                 onContinueRecord: onContinueRecord,
                 onGenerate: onGenerateAiSummary == null
@@ -334,6 +336,12 @@ class ReportDashboardView extends StatelessWidget {
     }
     return ReportReadinessStatus.ready;
   }
+
+  String _rangeLabel(AppLocalizations l10n) => switch (dashboardQuery.range) {
+    ReportDashboardRange.last7Days => l10n.reportRangeLast7Days,
+    ReportDashboardRange.last30Days => l10n.reportRangeLast30Days,
+    ReportDashboardRange.custom => l10n.reportRangeCustom,
+  };
 }
 
 class _ReportLockedFeaturesHint extends StatelessWidget {

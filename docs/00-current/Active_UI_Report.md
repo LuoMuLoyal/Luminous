@@ -73,3 +73,14 @@ Last updated: 2026-07-18
 - DTO 直接返回扁平 DTO（`response.data`），Enum 序列化使用 `.json` 属性。
 - AI 摘要增量流通过 `LucentSseClient` + Dio 直接消费 SSE。
 - `userMessageFromError` 统一错误文案映射，不暴露内部异常文本。
+
+## 2026-07-19 补充
+
+- 趋势图 Y 轴恢复 `showTitles: true`，显示格式化数值。
+- 序列配色区分：sleep 从 info 改为 warning（琥珀），general 从 primary 改为 success（绿），四个 kind 互异。
+- `lineTouchData` 开启 touch tooltip（显示当前值+单位）。
+- 图表外包 `Semantics(label: reportTrendSectionTitle)`。
+- `_LegendDot` 新增 `currentValue` 和 `unit` 参数，图例项带当前值+单位。
+- X 轴标签改用 `DateFormat.Md(locale)` 格式化。
+- readiness 三态徽章按 status 映射：insufficient 用 `warning`，ready 用 `success`。
+- ready 标题按范围参数化（`reportReadinessReadyTitleRange`，`{range}报告已就绪`）。

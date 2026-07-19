@@ -12,6 +12,7 @@ class ReportReadinessSection extends StatelessWidget {
     required this.generatedAtLabel,
     required this.l10n,
     this.insufficientMetricCount = 0,
+    this.rangeLabel = '',
     this.onSignIn,
     this.onContinueRecord,
     this.onGenerate,
@@ -22,6 +23,11 @@ class ReportReadinessSection extends StatelessWidget {
   final String generatedAtLabel;
   final AppLocalizations l10n;
   final int insufficientMetricCount;
+
+  /// Localized label for the selected date range (e.g. "近 7 天").
+  /// Used in the ready title so it reflects the actual selected range.
+  final String rangeLabel;
+
   final VoidCallback? onSignIn;
   final VoidCallback? onContinueRecord;
   final VoidCallback? onGenerate;
@@ -44,12 +50,12 @@ class ReportReadinessSection extends StatelessWidget {
                   size: Spacing.level8,
                   child: Icon(
                     _statusIcon,
-                    color: colors.primary,
+                    color: _statusColor.solid(context),
                     size: Spacing.level5,
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
-                _StatusBadge(label: _badgeLabel),
+                _StatusBadge(label: _badgeLabel, color: _statusColor),
               ],
             ),
             const SizedBox(height: Spacing.level4),
@@ -125,6 +131,12 @@ class ReportReadinessSection extends StatelessWidget {
 
   bool get _showSecondaryAction => status != ReportReadinessStatus.signedOut;
 
+  SemanticColor get _statusColor => switch (status) {
+    ReportReadinessStatus.signedOut => SemanticColor.primary,
+    ReportReadinessStatus.insufficient => SemanticColor.warning,
+    ReportReadinessStatus.ready => SemanticColor.success,
+  };
+
   IconData get _statusIcon => switch (status) {
     ReportReadinessStatus.signedOut => FLucideIcons.lock,
     ReportReadinessStatus.insufficient => FLucideIcons.circleAlert,
@@ -140,7 +152,10 @@ class ReportReadinessSection extends StatelessWidget {
   String get _title => switch (status) {
     ReportReadinessStatus.signedOut => l10n.reportReadinessSignedOutTitle,
     ReportReadinessStatus.insufficient => l10n.reportReadinessInsufficientTitle,
-    ReportReadinessStatus.ready => l10n.reportReadinessReadyTitle,
+    ReportReadinessStatus.ready =>
+      rangeLabel.isNotEmpty
+          ? l10n.reportReadinessReadyTitleRange(rangeLabel)
+          : l10n.reportReadinessReadyTitle,
   };
 
   String get _description => switch (status) {
@@ -183,18 +198,17 @@ class _PrimaryAction extends StatelessWidget {
 }
 
 class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.label});
+  const _StatusBadge({required this.label, required this.color});
 
   final String label;
+  final SemanticColor color;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     return FBadge.raw(
       style: .delta(
         decoration: .shapeDelta(
-          color: SemanticColor.neutral.muted(context),
+          color: color.muted(context),
           shape: RoundedSuperellipseBorder(
             borderRadius: context.theme.style.borderRadius.pill,
           ),
@@ -209,7 +223,10 @@ class _StatusBadge extends StatelessWidget {
           label,
           style: TypographyToken.level3
               .body(context)
-              .copyWith(color: colors.secondary, fontWeight: FontWeight.w800),
+              .copyWith(
+                color: color.solid(context),
+                fontWeight: FontWeight.w800,
+              ),
         ),
       ),
     );

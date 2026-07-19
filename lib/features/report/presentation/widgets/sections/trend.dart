@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
@@ -61,11 +62,16 @@ class ReportTrendSection extends StatelessWidget {
               _LegendDot(
                 color: series.color,
                 label: reportMetricTitle(l10n, series.kind),
+                currentValue: series.currentValue,
+                unit: series.unit,
               ),
           ],
         ),
         const SizedBox(height: Spacing.level4),
-        _TrendChart(trends: trends, startDate: startDate),
+        Semantics(
+          label: l10n.reportTrendSectionTitle,
+          child: _TrendChart(trends: trends, startDate: startDate),
+        ),
       ],
     );
   }
@@ -137,7 +143,7 @@ class _TrendChart extends StatelessWidget {
     }
 
     // Generate x-axis labels from startDate.
-    final labels = _generateDateLabels(dayCount);
+    final labels = _generateDateLabels(dayCount, context);
 
     // For 30-day range, only show every Nth label to avoid crowding.
     final labelInterval = dayCount <= 7 ? 1.0 : (dayCount / 6).ceilToDouble();
@@ -179,8 +185,34 @@ class _TrendChart extends StatelessWidget {
                     rightTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false),
                     ),
-                    leftTitles: const AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 36,
+                        interval: span / 4,
+                        getTitlesWidget: (value, meta) {
+                          // Skip labels that are too close to the edges.
+                          if (value == meta.min || value == meta.max) {
+                            return const SizedBox.shrink();
+                          }
+                          // Format: integer if whole, otherwise 1 decimal.
+                          final label = value == value.roundToDouble()
+                              ? value.round().toString()
+                              : value.toStringAsFixed(1);
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              right: Spacing.level2,
+                            ),
+                            child: Text(
+                              label,
+                              style: TypographyToken.level2
+                                  .body(context)
+                                  .copyWith(color: colors.mutedForeground),
+                              maxLines: 1,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
@@ -213,7 +245,26 @@ class _TrendChart extends StatelessWidget {
                       ),
                     ),
                   ),
-                  lineTouchData: const LineTouchData(enabled: false),
+                  lineTouchData: LineTouchData(
+                    enabled: true,
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipColor: (_) => colors.card,
+                      getTooltipItems: (touchedSpots) {
+                        return touchedSpots.map((spot) {
+                          final series = trends[spot.barIndex];
+                          return LineTooltipItem(
+                            '${series.currentValue}${series.unit}',
+                            TypographyToken.level3
+                                .body(context)
+                                .copyWith(
+                                  color: series.color.solid(context),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
                   lineBarsData: bars,
                 ),
               ),
@@ -224,16 +275,18 @@ class _TrendChart extends StatelessWidget {
     );
   }
 
-  /// Generates short M/D date labels starting from [startDate].
-  List<String> _generateDateLabels(int count) {
+  /// Generates locale-aware date labels starting from [startDate].
+  List<String> _generateDateLabels(int count, BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
     final parsed = DateTime.tryParse(startDate);
     if (parsed == null) {
       // Fallback: use day offsets (1, 2, 3, ...).
       return List.generate(count, (i) => '${i + 1}');
     }
+    final formatter = DateFormat.Md(locale);
     return List.generate(count, (i) {
       final date = parsed.add(Duration(days: i));
-      return '${date.month}/${date.day}';
+      return formatter.format(date);
     });
   }
 }
@@ -241,10 +294,17 @@ class _TrendChart extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _LegendDot extends StatelessWidget {
-  const _LegendDot({required this.color, required this.label});
+  const _LegendDot({
+    required this.color,
+    required this.label,
+    required this.currentValue,
+    required this.unit,
+  });
 
   final SemanticColor color;
   final String label;
+  final String currentValue;
+  final String unit;
 
   @override
   Widget build(BuildContext context) {
@@ -266,6 +326,16 @@ class _LegendDot extends StatelessWidget {
           style: TypographyToken.level3
               .body(context)
               .copyWith(color: colors.mutedForeground),
+        ),
+        const SizedBox(width: Spacing.level1),
+        Text(
+          '$currentValue$unit',
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(
+                color: color.solid(context),
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );
