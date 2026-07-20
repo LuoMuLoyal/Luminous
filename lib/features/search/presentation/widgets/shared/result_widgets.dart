@@ -14,6 +14,7 @@ class SearchResultTile extends StatelessWidget {
     this.expandedAction = false,
     this.onTap,
     this.onAddToCurrentMedicines,
+    this.alreadyAdded = false,
   });
 
   final MedicineSearchResult result;
@@ -21,6 +22,7 @@ class SearchResultTile extends StatelessWidget {
   final bool expandedAction;
   final VoidCallback? onTap;
   final VoidCallback? onAddToCurrentMedicines;
+  final bool alreadyAdded;
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +86,27 @@ class SearchResultTile extends StatelessWidget {
                   : Alignment.centerRight,
               child: SizedBox(
                 width: expandedAction ? double.infinity : null,
-                child: FButton(
-                  onPress: onAddToCurrentMedicines,
-                  child: Text(l10n.medicineSearchAddToBoxAction),
-                ),
+                child: alreadyAdded
+                    ? FButton(
+                        onPress: null,
+                        variant: FButtonVariant.outline,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              FLucideIcons.check,
+                              size: Spacing.level4,
+                              color: colors.primary,
+                            ),
+                            const SizedBox(width: Spacing.level2),
+                            Text(l10n.medicineSearchAlreadyAddedLabel),
+                          ],
+                        ),
+                      )
+                    : FButton(
+                        onPress: onAddToCurrentMedicines,
+                        child: Text(l10n.medicineSearchAddToBoxAction),
+                      ),
               ),
             ),
           ],

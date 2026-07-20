@@ -31,10 +31,22 @@ class SearchPage extends ConsumerWidget {
     final searchState = ref.watch(medicineSearchNotifierProvider);
     final l10n = AppLocalizations.of(context)!;
 
+    // Build a set of already-added medicine keys (source:sourceRefId) so the
+    // search result tiles can show an "already added" state.
+    final snapshotAsync = ref.watch(healthContextSnapshotProvider);
+    final addedMedicineIds = snapshotAsync.maybeWhen(
+      data: (snapshot) => snapshot.currentMedicines
+          .where((m) => m.isCurrent && m.sourceRefId != null)
+          .map((m) => '${m.source}:${m.sourceRefId}')
+          .toSet(),
+      orElse: () => const <String>{},
+    );
+
     return PageScaffold(
       title: l10n.medicineSearchPageTitle,
       child: MedicineSearchView(
         state: searchState,
+        addedMedicineIds: addedMedicineIds,
         onQueryChanged: (q) =>
             ref.read(medicineSearchNotifierProvider.notifier).updateQuery(q),
         onSourceSwitched: (s) =>

@@ -14,12 +14,14 @@ class MedicineRecognizeDialog extends StatefulWidget {
     required this.methodLabel,
     required this.results,
     required this.onRetake,
+    this.onClose,
   });
 
   final String imagePath;
   final String methodLabel;
   final List<MedicineMatchResult> results;
   final VoidCallback onRetake;
+  final VoidCallback? onClose;
 
   @override
   State<MedicineRecognizeDialog> createState() =>
@@ -206,6 +208,11 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
         ),
       ),
       actions: [
+        FButton(
+          variant: FButtonVariant.ghost,
+          onPress: widget.onClose ?? () => Navigator.of(context).pop(),
+          child: Text(AppLocalizations.of(context)!.scanCloseAction),
+        ),
         FButton(
           variant: FButtonVariant.outline,
           onPress: widget.onRetake,

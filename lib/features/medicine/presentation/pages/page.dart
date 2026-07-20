@@ -58,7 +58,14 @@ class MedicinePage extends ConsumerWidget {
                   _MedicineNotificationButton(),
                 ],
                 scrollable: false,
-                child: const MedicineSkeletonView(),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _MedicineMobileSearchBar(),
+                    SizedBox(height: Spacing.level4),
+                    Expanded(child: MedicineSkeletonView()),
+                  ],
+                ),
               )
             : const _MedicineMobileShell(child: MedicineSkeletonView()),
         fatalErrorBuilder: (error) => isDesktop
@@ -68,8 +75,18 @@ class MedicinePage extends ConsumerWidget {
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
                 ],
-                child: MedicineErrorView(
-                  onRetry: () => ref.invalidate(medicineWorkspaceProvider),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const _MedicineMobileSearchBar(),
+                    const SizedBox(height: Spacing.level4),
+                    Expanded(
+                      child: MedicineErrorView(
+                        onRetry: () =>
+                            ref.invalidate(medicineWorkspaceProvider),
+                      ),
+                    ),
+                  ],
                 ),
               )
             : DecoratedBox(
@@ -88,13 +105,24 @@ class MedicinePage extends ConsumerWidget {
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
                 ],
-                child: AppStateMessageView(
-                  title: l10n.medicineEmptyAddFirstTitle,
-                  description: l10n.medicineEmptyAddFirstDescription,
-                  icon: FLucideIcons.pillBottle,
-                  actionLabel: l10n.medicineQuickAddTitle,
-                  onAction: () =>
-                      pushAuthRequiredRoute(context, AppRoutes.medicineSearch),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const _MedicineMobileSearchBar(),
+                    const SizedBox(height: Spacing.level4),
+                    Expanded(
+                      child: AppStateMessageView(
+                        title: l10n.medicineEmptyAddFirstTitle,
+                        description: l10n.medicineEmptyAddFirstDescription,
+                        icon: FLucideIcons.pillBottle,
+                        actionLabel: l10n.medicineQuickAddTitle,
+                        onAction: () => pushAuthRequiredRoute(
+                          context,
+                          AppRoutes.medicineSearch,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               )
             : _MedicineMobileShell(

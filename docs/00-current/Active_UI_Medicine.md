@@ -126,3 +126,13 @@ Last updated: 2026-07-20
 - `_MedicineSafeGuardPill` 窄屏下使用 `FButton.icon`（仅图标），宽屏使用 `FButton`（图标+文字），消除 `child: null` 断言。
 - 提醒启停切换失败 Toast 从 `settingsSyncFailed` 改为专用 `medicineReminderToggleFailedToast`。
 - 扫码识别中文案从 `scanRecognitionFailedToast` 改为 `scanRecognizingHint`（"识别中…"）。
+
+## 2026-07-20 P1 用药/搜索/扫码
+
+- **桌面搜索栏全状态可见**：loading/error/empty 三个桌面分支均渲染 `_MedicineMobileSearchBar()`，与 ready 态一致。
+- **搜索结果"已添加"态**：`SearchPage` 通过 `healthContextSnapshotProvider` 获取当前药品集合，构建 `source:sourceRefId` 键集合传入搜索视图。已添加的结果卡显示禁用 outline 按钮 + check 图标 + "已添加"文案，防止重复添加。
+- **拍照识别失败手动兜底**：catch 分支从 toast 改为 `_showScanFailureDialog()` 对话框，提供"重新拍照"和"手动搜索"（跳转 `/medicine/search`）两个操作。
+- **死键清理**：`scanSearchFailedToast`（零引用）删除；`scanManualSearchToast` / `scanManualSearchAction` 从零引用改为在失败对话框中使用。
+- **扫码遮罩安全弹窗**：新增 `_dismissOverlay()` 函数，通过 `canPop()` 检查后再 `pop()`，替代脆弱的 `Navigator.of(rootNavigator: true).pop()` 直弹。
+- **扫码结果对话框关闭按钮**：新增 `onClose` 可选回调和 `scanCloseAction` 按钮（ghost 变体），无结果时可直接关闭不必重拍。
+

@@ -414,6 +414,7 @@
   "medicineSearchMatchIngredient": "ingredient",
   "medicineSearchMatchName": "name",
   "medicineSearchAddToBoxAction": "Add to drugbox",
+  "medicineSearchAlreadyAddedLabel": "Already added",
   "medicineSearchAddToast": "This will add the medicine and open reminder setup.",
   "medicineSearchAddedToBoxToast": "Added to drugbox",
   "medicineSearchGoToReminderAction": "Set reminder",
@@ -485,19 +486,12 @@
   "scanResultTitle": "Recognition result",
   "scanNoResultTitle": "Could not identify medicine information",
   "scanRetakeAction": "Retake photo",
+  "scanCloseAction": "Close",
   "scanConfirmDetailAction": "Confirm, view details",
   "scanMethodPickerTitle": "Choose recognition method",
   "scanBarcodeNotFoundToast": "No medicine found for this barcode",
   "scanRecognitionFailedToast": "Recognition failed. Please try again.",
-  "scanSearchFailedToast": "Search failed: {error}",
   "scanManualSearchToast": "You can search medicine by name manually",
-  "@scanSearchFailedToast": {
-    "placeholders": {
-      "error": {
-        "type": "String"
-      }
-    }
-  },
   "scanMethodOcrTitle": "OCR Text Recognition",
   "scanMethodOcrSubtitle": "On-device recognition, fast offline",
   "scanMethodAiTitle": "AI Smart Recognition",

@@ -37,6 +37,7 @@ class MedicineSearchView extends StatelessWidget {
     required this.onResultSelected,
     required this.onRetry,
     this.onAddToCurrentMedicines,
+    this.addedMedicineIds = const <String>{},
   });
 
   final MedicineSearchState state;
@@ -45,6 +46,7 @@ class MedicineSearchView extends StatelessWidget {
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
+  final Set<String> addedMedicineIds;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,7 @@ class MedicineSearchView extends StatelessWidget {
                     onResultSelected: onResultSelected,
                     onRetry: onRetry,
                     onAddToCurrentMedicines: onAddToCurrentMedicines,
+                    addedMedicineIds: addedMedicineIds,
                   )
                 : _MobileSearchLayout(
                     state: state,
@@ -80,6 +83,7 @@ class MedicineSearchView extends StatelessWidget {
                     onResultSelected: onResultSelected,
                     onRetry: onRetry,
                     onAddToCurrentMedicines: onAddToCurrentMedicines,
+                    addedMedicineIds: addedMedicineIds,
                   ),
           ),
         ),
@@ -147,6 +151,7 @@ class _MobileSearchLayout extends StatelessWidget {
     required this.onResultSelected,
     required this.onRetry,
     this.onAddToCurrentMedicines,
+    this.addedMedicineIds = const <String>{},
   });
 
   final MedicineSearchState state;
@@ -156,6 +161,7 @@ class _MobileSearchLayout extends StatelessWidget {
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
+  final Set<String> addedMedicineIds;
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +222,9 @@ class _MobileSearchLayout extends StatelessWidget {
                 result: result,
                 l10n: l10n,
                 expandedAction: true,
+                alreadyAdded: addedMedicineIds.contains(
+                  '${result.source.name}:${result.id}',
+                ),
                 onAddToCurrentMedicines: onAddToCurrentMedicines != null
                     ? () => onAddToCurrentMedicines!(result)
                     : null,
@@ -247,6 +256,7 @@ class _DesktopSearchLayout extends StatelessWidget {
     required this.onResultSelected,
     required this.onRetry,
     this.onAddToCurrentMedicines,
+    this.addedMedicineIds = const <String>{},
   });
 
   final MedicineSearchState state;
@@ -256,6 +266,7 @@ class _DesktopSearchLayout extends StatelessWidget {
   final ValueChanged<String> onResultSelected;
   final VoidCallback onRetry;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
+  final Set<String> addedMedicineIds;
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +289,7 @@ class _DesktopSearchLayout extends StatelessWidget {
             onSourceSwitched: onSourceSwitched,
             onResultSelected: onResultSelected,
             onAddToCurrentMedicines: onAddToCurrentMedicines,
+            addedMedicineIds: addedMedicineIds,
           ),
         ),
         const SizedBox(width: Spacing.level5),
@@ -298,6 +310,7 @@ class _DesktopSearchPanel extends StatelessWidget {
     required this.onSourceSwitched,
     required this.onResultSelected,
     this.onAddToCurrentMedicines,
+    this.addedMedicineIds = const <String>{},
   });
 
   final MedicineSearchState state;
@@ -306,6 +319,7 @@ class _DesktopSearchPanel extends StatelessWidget {
   final ValueChanged<MedicineSearchSource> onSourceSwitched;
   final ValueChanged<String> onResultSelected;
   final void Function(MedicineSearchResult result)? onAddToCurrentMedicines;
+  final Set<String> addedMedicineIds;
 
   @override
   Widget build(BuildContext context) {
@@ -363,6 +377,9 @@ class _DesktopSearchPanel extends StatelessWidget {
                     result: result,
                     l10n: l10n,
                     onTap: () => onResultSelected(result.id),
+                    alreadyAdded: addedMedicineIds.contains(
+                      '${result.source.name}:${result.id}',
+                    ),
                     onAddToCurrentMedicines: onAddToCurrentMedicines != null
                         ? () => onAddToCurrentMedicines!(result)
                         : null,

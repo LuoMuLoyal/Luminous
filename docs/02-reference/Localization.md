@@ -74,6 +74,8 @@ Persisted preference keys:
    (`medicineReminderToggleFailedToast`) are owned by the Medicine feature ARB entries.
 - Medicine add-before-save risk precheck strings such as confirmation sheet title, warning
    description, confirm action, and failure toast are owned by the Medicine/Search ARB entries.
+- Search result "already added" label (`medicineSearchAlreadyAddedLabel`) is owned by the
+  Medicine/Search ARB entries.
 - Sleep structured-record strings such as bedtime/wake-time labels, duration, quality, and
    sleep-stage labels are owned by the Record feature ARB entries.
 - Mine no longer owns any campus-service strings; support-resource copy is limited to settings
@@ -106,9 +108,9 @@ Persisted preference keys:
 - Keep normal app pages limited to necessary titles, labels, values, statuses, and actions.
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.
-- Scan feature strings such as recognition result titles, retake/confirm actions, method picker
-  labels, barcode not-found toasts, search-failed toasts, and recognizing hint (`scanRecognizingHint`)
-  are owned by the Scan ARB entries (`scan*` keys).
+- Scan feature strings such as recognition result titles, retake/confirm/close actions, method picker
+  labels, barcode not-found toasts, recognition-failed dialog title/body, manual-search action, and
+  recognizing hint (`scanRecognizingHint`) are owned by the Scan ARB entries (`scan*` keys).
 - Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
   `authQqCallbackLabel`, `authQqCompleteAction`).
 - Auth form strings such as login password hint (`authPasswordLoginHint`), register terms-required

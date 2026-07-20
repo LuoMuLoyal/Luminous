@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:go_router/go_router.dart';
+
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -64,8 +66,8 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
     final results = await _processPhoto(context, photo, method);
     if (!context.mounted) return;
 
-    // Dismiss processing overlay
-    Navigator.of(context, rootNavigator: true).pop();
+    // Dismiss processing overlay safely.
+    _dismissOverlay(context);
 
     unawaited(
       showFDialog(
@@ -88,15 +90,51 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   } catch (e) {
     appTalker.error('showMedicineBoxScanSheet: failed: $e');
     if (context.mounted) {
-      Navigator.of(context, rootNavigator: true).pop();
-      unawaited(
-        AppToast.show(
-          context,
-          AppLocalizations.of(context)!.scanRecognitionFailedToast,
-        ),
-      );
+      _dismissOverlay(context);
+      if (context.mounted) {
+        await _showScanFailureDialog(context, l10n);
+      }
     }
   }
+}
+
+/// Safely dismisses the processing overlay dialog from the root navigator.
+void _dismissOverlay(BuildContext context) {
+  final navigator = Navigator.of(context, rootNavigator: true);
+  if (navigator.canPop()) {
+    navigator.pop();
+  }
+}
+
+/// Shows a dialog when scan recognition fails, offering manual search or retry.
+Future<void> _showScanFailureDialog(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  await showFDialog<void>(
+    context: context,
+    builder: (dialogContext, style, animation) => FDialog(
+      title: Text(l10n.scanRecognitionFailedToast),
+      body: Text(l10n.scanManualSearchToast),
+      actions: [
+        FButton(
+          variant: FButtonVariant.outline,
+          onPress: () {
+            Navigator.of(dialogContext).pop();
+            showMedicineBoxScanSheet(context);
+          },
+          child: Text(l10n.scanRetakeAction),
+        ),
+        FButton(
+          onPress: () {
+            Navigator.of(dialogContext).pop();
+            context.push(AppRoutes.medicineSearch);
+          },
+          child: Text(l10n.scanManualSearchAction),
+        ),
+      ],
+    ),
+  );
 }
 
 void _showProcessingOverlay(BuildContext context, _ScanMethod method) {

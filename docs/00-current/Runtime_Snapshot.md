@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20 (P1 record)
+Last updated: 2026-07-20 (P1 medicine/search/scan)
 
 ## 技术栈
 
