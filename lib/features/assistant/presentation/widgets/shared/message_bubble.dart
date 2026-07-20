@@ -64,7 +64,7 @@ class AssistantMessageBubble extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isUser)
-                  Text(
+                  SelectableText(
                     content,
                     style: TypographyToken.level4
                         .body(context)

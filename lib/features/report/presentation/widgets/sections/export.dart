@@ -107,7 +107,7 @@ class _ExportCard extends StatelessWidget {
         exportInput != null && requestInFlight.matches(exportInput);
     final trailingIcon = showProgress
         ? FLucideIcons.loaderCircle
-        : enabled
+        : enabled && !requestInFlight.inFlight
         ? FLucideIcons.chevronRight
         : FLucideIcons.lock;
 

@@ -2,6 +2,15 @@
 
 Last updated: 2026-07-20
 
+## 助手骨架死段清理
+
+- `loading_view.dart` 移除第三段骨架（3 个 height=56 的块），该段对应已删除的常驻开关面板。
+- 助手加载骨架现在只保留两段：标题行 + 对话区。
+
+## 助手用户消息可复制
+
+- `message_bubble.dart` 的用户消息从 `Text` 改为 `SelectableText`，允许选择复制。
+
 ## Mock 状态
 
 Mock repositories 已从生产代码中完全移除，仅存在于 `test/helpers/mocks/` 目录下（`MockTodayRepository`、`MockReportRepository`、`MockRecordRepository`、`MockMineRepository`、`MockMedicineWorkspaceRepository`），用于单元/Widget 测试。
