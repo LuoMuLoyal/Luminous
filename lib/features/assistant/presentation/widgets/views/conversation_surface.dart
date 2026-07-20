@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
@@ -66,11 +67,24 @@ class AssistantConversationSurface extends ConsumerWidget {
             if (isOpeningConversation) ...[
               Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.level3),
-                child: Text(
-                  l10n.assistantOpeningConversationLabel,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: FCircularProgress(),
+                    )
+                        .animate(onPlay: (c) => c.repeat())
+                        .rotate(duration: 800.ms),
+                    const SizedBox(width: Spacing.level2),
+                    Text(
+                      l10n.assistantOpeningConversationLabel,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -198,6 +212,7 @@ class _ConversationView extends ConsumerWidget {
           content: message.content,
           usedTools: message.usedTools,
           proposedActions: message.proposedActions,
+          createdAt: message.createdAt,
           onConfirmProposal: onConfirmProposal,
           onDismissProposal: onDismissProposal,
         );

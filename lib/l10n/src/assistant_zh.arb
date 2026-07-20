@@ -88,5 +88,7 @@
   "assistantHeroCollapseAction": "折叠状态卡",
   "assistantHeroExpandAction": "展开状态卡",
   "assistantInputDisabledHint": "AI 对话已关闭，输入暂不可用。点击右上角设置开启后再试。",
-  "assistantSendShortcutHint": "Ctrl/⌘ + Enter 发送"
+  "assistantSendShortcutHint": "Ctrl/⌘ + Enter 发送",
+  "assistantCopyAction": "复制文本",
+  "assistantCopySuccess": "已复制到剪贴板"
 }

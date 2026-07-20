@@ -88,5 +88,7 @@
   "assistantHeroCollapseAction": "Collapse status card",
   "assistantHeroExpandAction": "Expand status card",
   "assistantInputDisabledHint": "AI chat is turned off and input is disabled. Open the settings in the top-right to resume.",
-  "assistantSendShortcutHint": "Ctrl/⌘ + Enter to send"
+  "assistantSendShortcutHint": "Ctrl/⌘ + Enter to send",
+  "assistantCopyAction": "Copy text",
+  "assistantCopySuccess": "Copied to clipboard"
 }
