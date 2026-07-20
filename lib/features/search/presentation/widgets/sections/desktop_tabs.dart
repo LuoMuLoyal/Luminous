@@ -26,76 +26,16 @@ class DesktopTabs extends StatelessWidget {
           ],
         ),
         const Spacer(),
-        FButton(
-          variant: FButtonVariant.ghost,
-          style: const .delta(
-            contentStyle: .delta(
-              padding: .value(
-                EdgeInsets.symmetric(
-                  horizontal: Spacing.level4,
-                  vertical: Spacing.level2,
-                ),
-              ),
-            ),
-          ),
-          onPress: () {},
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.medicineSearchPageTitle,
-                style: typography.body.sm.copyWith(
-                  color: colors.primary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: Spacing.level2),
-              Container(width: 42, height: 2, color: colors.primary),
-            ],
-          ),
-        ),
-        FButton(
-          variant: FButtonVariant.ghost,
-          style: const .delta(
-            contentStyle: .delta(
-              padding: .value(
-                EdgeInsets.symmetric(
-                  horizontal: Spacing.level4,
-                  vertical: Spacing.level2,
-                ),
-              ),
-            ),
-          ),
-          onPress: () {},
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.medicineSearchMyBoxTab,
-                style: typography.body.sm.copyWith(
-                  color: colors.foreground,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: Spacing.level2),
-              Container(width: 42, height: 2, color: Colors.transparent),
-            ],
-          ),
-        ),
         const SizedBox(width: Spacing.level5),
         DecoratedBox(
           decoration: BoxDecoration(
             color: SemanticColor.primary.muted(context),
             shape: BoxShape.circle,
           ),
-          child: SizedBox(
+          child: const SizedBox(
             width: 28,
             height: 28,
-            child: Icon(
-              FLucideIcons.userRound,
-              size: 16,
-              color: colors.primary,
-            ),
+            child: Icon(FLucideIcons.userRound, size: 16),
           ),
         ),
       ],

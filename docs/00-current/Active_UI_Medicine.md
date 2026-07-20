@@ -102,6 +102,7 @@ Last updated: 2026-07-19
 - 移动端结果卡仅在提供 `onTap` 时才包 `FTappable`（桌面预览），移动端不包裹避免无效点击。
 - `updateQuery` 新增 300ms 防抖，取消前一次未完成搜索。
 - "加入药箱"成功后显示带"去设提醒"action 的 toast（`AppToast.showWithAction`）。
+- 桌面端 `DesktopTabs` 删除两个 `onPress: () {}` 空回调假 tab 按钮，只保留标题和用户头像装饰。
 
 ### 扫码
 
