@@ -37,4 +37,5 @@ Last updated: 2026-07-18
 ## 文档治理
 
 - `docs/doc-map.yaml` + `tool/check_doc_coverage.dart`：默认阻断模式——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于日常检查；`SKIP_DOC_CHECK=1` 可旁路。
-- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/arb_tools.dart` 合并。
+- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
+- `lib/l10n/AGENTS.md` 是 l10n 目录的专用规则文件。

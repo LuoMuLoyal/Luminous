@@ -86,8 +86,22 @@ Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 
 ## L10n
 
-- ARB files: `lib/l10n/app_en.arb`, `app_zh.arb`.
-- Run `dart run tool/bootstrap_generated_sources.dart` after ARB changes or on fresh clone.
+**CRITICAL — ARB Editing Workflow**
+
+The source of truth for l10n strings is the fragment files in `lib/l10n/src/`
+(e.g., `record_zh.arb`, `mine_en.arb`). The main files `lib/l10n/app_zh.arb`
+and `app_en.arb` are **generated** by merging these fragments — **never edit
+them directly**.
+
+Correct workflow when adding or modifying any user-visible string:
+1. Edit the fragment file(s) in `lib/l10n/src/`
+2. Run `dart scripts/arb_tools.dart merge` to regenerate `app_zh.arb` / `app_en.arb`
+3. Run `flutter gen-l10n` to regenerate Dart localization code
+
+Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
+
+- Run `dart run tool/bootstrap_generated_sources.dart` after fresh clone or
+  ARB / contract changes (includes the merge + gen-l10n + build_runner above).
 
 ## OpenAPI Client
 

@@ -99,10 +99,21 @@ Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 
 ## L10n
 
-- ARB source fragments: `lib/l10n/src/{fragment}_{locale}.arb` (10 fragments × 2 locales).
-- Merged ARB (generated, gitignored): `lib/l10n/app_zh.arb`, `app_en.arb`.
-- Workflow: edit fragment ARB → `dart scripts/arb_tools.dart merge` →
-  `flutter gen-l10n`.
+**CRITICAL — Never edit `app_zh.arb` / `app_en.arb` directly.**
+
+The source of truth for l10n strings is the fragment files in `lib/l10n/src/`
+(e.g., `record_zh.arb`, `mine_en.arb` — 10 fragments × 2 locales). The main
+files `lib/l10n/app_zh.arb` and `app_en.arb` are **generated** by merging these
+fragments — direct edits **will be lost** on the next merge.
+
+Correct workflow:
+1. Edit the fragment file(s) in `lib/l10n/src/`
+2. `dart scripts/arb_tools.dart merge` — merge fragments → `app_zh.arb` / `app_en.arb`
+3. `flutter gen-l10n` — generate Dart localization code
+
+`dart run tool/bootstrap_generated_sources.dart` runs after fresh clone or
+ARB / contract changes (includes the merge + gen-l10n + build_runner above).
+
 - `docs/02-reference/Localization.md` records ownership rules per ARB fragment —
   update it when adding new visible strings.
 

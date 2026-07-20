@@ -33,7 +33,7 @@ Current version: **0.1.0-dev**
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
 - API client: `generated/lucent_api`
 - Network layer: `lib/core/network/`
-- i18n: Flutter `gen-l10n`
+- i18n: Flutter `gen-l10n` — ARB fragments live in `lib/l10n/src/`; main `app_zh.arb` / `app_en.arb` are **generated** via `dart scripts/arb_tools.dart merge` — never edit them directly.
 - WeChat OAuth: Android/iOS uses the WeChat SDK through `fluwx` to obtain an auth code and then calls Lucent's mobile callback endpoint. Desktop login starts a loopback callback listener, asks Lucent for an authorize URL with that callback URI, opens the system browser, verifies the returned `state`, and completes login automatically when Lucent redirects back with `code` and `state`. Web login passes `/login/oauth/wechat` as the callback path. Manual callback paste remains as a fallback.
 
 Mobile WeChat SDK builds need:

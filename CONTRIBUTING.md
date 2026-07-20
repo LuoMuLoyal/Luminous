@@ -116,6 +116,9 @@ dart run tool/run_daily_checks.dart
 If you changed ARB files:
 
 ```bash
+# CRITICAL: Never edit app_zh.arb / app_en.arb directly.
+# Edit fragment files in lib/l10n/src/ instead, then:
+dart scripts/arb_tools.dart merge
 flutter gen-l10n
 ```
 
