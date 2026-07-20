@@ -72,4 +72,18 @@ abstract final class LucentApiPaths {
   /// `PATCH /api/v1/user/medicine-dose-logs/{id}` — raw update.
   static String medicineDoseLog(String id) =>
       '/api/v1/user/medicine-dose-logs/$id';
+
+  // ── Binary-response endpoints (generated client declares void) ──────────
+
+  /// `GET /api/v1/user/reports/clinic-summary/preview/pdf` —
+  /// Downloads the authenticated user's clinic summary as PDF (binary).
+  /// The generated [ReportsApi] declares this as `Future<void>`, so the
+  /// caller must use raw [Dio] with `ResponseType.bytes`.
+  static const clinicSummaryPreviewPdf =
+      '/api/v1/user/reports/clinic-summary/preview/pdf';
+
+  /// `GET /api/v1/user/reports/clinic-summary/shared/{token}/pdf` —
+  /// Downloads a shared clinic summary as PDF (no auth required).
+  static String clinicSummarySharedPdf(String token) =>
+      '/api/v1/user/reports/clinic-summary/shared/$token/pdf';
 }

@@ -60,7 +60,12 @@ Last updated: 2026-07-20
 - `GET /reports/clinic-summary/preview/pdf` — PDF 下载（需认证），A4 格式，含 profile/allergies/conditions/medicines/disclaimer，CJK 字体渲染
 - `GET /reports/clinic-summary/shared/:token/pdf` — 公开 PDF 下载
 - `@Public()` 装饰器 + `JwtAuthGuard`（支持 `Reflector` 的混合认证/公开路由）
-- 前端 Report 导出区分享按钮使用 `Share.share(url)`（`share_plus`）
+- 前端 Report 导出区分享按钮点击后先弹出预览弹窗（`ClinicSummaryPreviewDialog`），弹窗内展示脱敏摘要内容 + [下载 PDF] + [分享给医生] 两个操作按钮。
+- 预览弹窗桌面端使用 `showFDialog` + `AppDialogShell`，移动端使用 `showModalBottomSheet`。
+- PDF 下载通过 Raw Dio（`ResponseType.bytes`）调用 `GET /reports/clinic-summary/preview/pdf`，保存为临时文件后通过 `share_plus` 分享。
+- 分享按钮调用 `reportsControllerShareClinicSummaryV1()` 生成 Redis 分享链接，通过 `SharePlus.instance.share` 分享 URL。
+- 公开分享页 `/report/clinic-summary/:token` 调用 `GET /reports/clinic-summary/shared/:token` 展示脱敏摘要，底部含 [下载 PDF] 按钮（调用 `shared/:token/pdf`，`skipAuthorization: true`）。
+- `ClinicSummaryContent` 共享组件复用于预览弹窗和公开分享页，展示生成时间、数据范围、脱敏个人信息、过敏记录、疾病记录、当前用药、关键发现、免责声明。
 
 ## 骨架屏
 
@@ -122,3 +127,9 @@ Last updated: 2026-07-20
 ## 2026-07-20 联调修正
 
 - **建议历史详情面板**：新增 `suggestion_history_detail_sheet.dart`，点击历史建议列表项弹出详情（桌面端 `showFDialog` + `AppDialogShell`，移动端 `showModalBottomSheet`）。展示类型图标+标题、生命周期 Badge、原因正文、规则 ID/版本/触发方式/置信度/生成时间 meta 字段、用户反馈（如有）、过期时间（如有）。`page.dart` 的 `onSuggestionTap` 从 `null` 改为调用 `showSuggestionHistoryDetailSheet`。
+- **诊所摘要预览弹窗**：新增 `clinic_summary_preview_dialog.dart`，点击"分享给医生"导出按钮时先弹出预览弹窗，展示 `POST /reports/clinic-summary/preview` 返回的 `ClinicSummaryDto` 脱敏内容。弹窗内含 [下载 PDF] 和 [分享给医生] 两个操作按钮。
+- **诊所摘要 PDF 下载**：`LucentApiPaths` 新增 `clinicSummaryPreviewPdf` 和 `clinicSummarySharedPdf(token)` 路径常量。通过 Raw Dio 以 `ResponseType.bytes` 下载 PDF 二进制，保存到临时目录后通过 `share_plus` 分享。
+- **诊所摘要分享链路改造**：`page.dart` 的 `clinicShare` 导出入口从直接调用 `_handleClinicShare` 改为先弹出 `showClinicSummaryPreviewDialog`，用户在预览弹窗内点击 [分享给医生] 按钮触发分享。移除了 `page.dart` 中的 `_handleClinicShare` 方法（逻辑已迁移到弹窗内）。
+- **诊所摘要公开分享页**：新增 `clinic_summary_shared.dart` 页面和 `/report/clinic-summary/:token` 路由（公开路由，无需认证）。页面调用 `GET /reports/clinic-summary/shared/:token` 展示分享的摘要内容，底部含 [下载 PDF] 按钮（调用 `shared/:token/pdf`，`extra: {skipAuthorization: true}`）。
+- **诊所摘要 Provider**：新增 `clinic_summary.dart` provider 文件，包含 `clinicSummaryPreviewProvider`（autoDispose FutureProvider）和 `clinicSummarySharedProvider`（autoDispose family FutureProvider）。
+- **诊所摘要共享内容组件**：新增 `clinic_summary_content.dart`，`ClinicSummaryContent` widget 复用于预览弹窗和公开分享页，展示生成时间、数据范围、脱敏个人信息、过敏/疾病/用药列表、关键发现、免责声明，底部可选 [下载 PDF] / [分享] 按钮。

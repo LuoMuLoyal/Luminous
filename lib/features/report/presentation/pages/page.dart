@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -24,6 +22,7 @@ import 'package:luminous/features/report/presentation/widgets/views/skeleton_vie
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
@@ -93,9 +92,9 @@ class ReportPage extends ConsumerWidget {
       return;
     }
 
-    // Clinic share: generate a Redis share link and open native share sheet
+    // Clinic share: show preview dialog first, then share from inside
     if (kind == ReportExportKind.clinicShare) {
-      await _handleClinicShare(context, ref, l10n);
+      await showClinicSummaryPreviewDialog(context);
       return;
     }
 
@@ -122,53 +121,6 @@ class ReportPage extends ConsumerWidget {
           context,
           '${l10n.reportExportFailedToast}: ${error.message}',
         );
-    }
-  }
-
-  Future<void> _handleClinicShare(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-  ) async {
-    final notifier = ref.read(clinicShareInFlightProvider.notifier);
-    notifier.set(true);
-    try {
-      final result = await runGuarded(
-        ref: ref,
-        tag: 'ReportPage._handleClinicShare',
-        action: () async {
-          final reportsApi = ref.read(lucentClientProvider).reports;
-          final response = await reportsApi
-              .reportsControllerShareClinicSummaryV1();
-          final shareUrl = response.shareUrl;
-          if (shareUrl.isEmpty) {
-            if (context.mounted) {
-              await AppToast.show(context, l10n.reportExportFailedToast);
-            }
-            return false;
-          }
-          await SharePlus.instance.share(
-            ShareParams(
-              text: shareUrl,
-              subject: l10n.reportExportClinicShareTitle,
-            ),
-          );
-          return true;
-        },
-      );
-      switch (result) {
-        case Success():
-          // Toast already shown inside action if URL was empty.
-          break;
-        case Failure(:final error):
-          if (!context.mounted) return;
-          await AppToast.show(
-            context,
-            '${l10n.reportExportFailedToast}: ${error.message}',
-          );
-      }
-    } finally {
-      notifier.set(false);
     }
   }
 

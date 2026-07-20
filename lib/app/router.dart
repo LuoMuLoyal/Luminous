@@ -14,6 +14,7 @@ import 'package:luminous/features/notification/presentation/routes.dart'
 import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
+import 'package:luminous/features/report/presentation/pages/clinic_summary_shared.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/legal/presentation/routes.dart'
     as legal_routes;
@@ -90,6 +91,8 @@ class AppRoutes {
 
   static const legal = '/legal';
   static const legalDetail = '/legal/:docType';
+
+  static const reportClinicSummaryShared = '/report/clinic-summary/:token';
 }
 
 /// Route prefixes that are publicly accessible without authentication.
@@ -98,7 +101,7 @@ class AppRoutes {
 /// separately in the redirect guard. Add new public route prefixes here
 /// when introducing pages that should be viewable while signed out
 /// (e.g. help center, about page if made public).
-const _publicRoutePrefixes = <String>['/legal'];
+const _publicRoutePrefixes = <String>['/legal', '/report/clinic-summary'];
 
 /// The main application router.
 ///
@@ -203,5 +206,13 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ...assistant_routes.$appRoutes,
     ...scan_routes.$appRoutes,
     ...legal_routes.$appRoutes,
+    // -- public shared clinic summary (deep link, no auth required) --
+    GoRoute(
+      path: AppRoutes.reportClinicSummaryShared,
+      pageBuilder: (context, state) => slidePage(
+        key: state.pageKey,
+        child: ClinicSummarySharedPage(token: state.pathParameters['token']!),
+      ),
+    ),
   ],
 );
