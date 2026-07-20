@@ -277,31 +277,37 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final colors = context.theme.colors;
     final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
 
+    final shieldIcon = Icon(
+      FLucideIcons.shieldCheck,
+      color: colors.primary,
+      size: Spacing.level5,
+    );
+
     return FTooltip(
       tipBuilder: (context, controller) => Text(l10n.medicineSafetyGuardLabel),
-      child: FButton(
-        onPress: () => context.push(AppRoutes.medicineRiskCheck),
-        variant: FButtonVariant.ghost,
-        mainAxisSize: MainAxisSize.min,
-        style: const .delta(
-          contentStyle: .delta(
-            padding: .value(
-              EdgeInsets.symmetric(
-                horizontal: Spacing.level2,
-                vertical: Spacing.level2,
+      child: isNarrow
+          ? FButton.icon(
+              onPress: () => context.push(AppRoutes.medicineRiskCheck),
+              variant: FButtonVariant.ghost,
+              child: shieldIcon,
+            )
+          : FButton(
+              onPress: () => context.push(AppRoutes.medicineRiskCheck),
+              variant: FButtonVariant.ghost,
+              mainAxisSize: MainAxisSize.min,
+              style: const .delta(
+                contentStyle: .delta(
+                  padding: .value(
+                    EdgeInsets.symmetric(
+                      horizontal: Spacing.level2,
+                      vertical: Spacing.level2,
+                    ),
+                  ),
+                  spacing: Spacing.level2,
+                ),
               ),
-            ),
-            spacing: Spacing.level2,
-          ),
-        ),
-        prefix: Icon(
-          FLucideIcons.shieldCheck,
-          color: colors.primary,
-          size: Spacing.level5,
-        ),
-        child: isNarrow
-            ? null
-            : Text(
+              prefix: shieldIcon,
+              child: Text(
                 l10n.medicineSafetyGuardLabel,
                 style: TypographyToken.level4
                     .body(context)
@@ -310,7 +316,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
               ),
-      ),
+            ),
     );
   }
 }
@@ -334,7 +340,7 @@ class _MedicineNotificationButton extends ConsumerWidget {
         children: [
           FButton.icon(
             onPress: () =>
-                pushAuthRequiredRoute(context, AppRoutes.medicineReminders),
+                pushAuthRequiredRoute(context, AppRoutes.notifications),
             variant: FButtonVariant.ghost,
             child: Icon(FLucideIcons.bell, color: colors.foreground),
           ),

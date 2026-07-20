@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 ## 技术栈
 
@@ -82,6 +82,7 @@ Last updated: 2026-07-19
 - `go_router_builder ^4.3.0`，8 个 feature 各自 `presentation/routes.dart` 使用 `@TypedGoRoute` 注解（共 42 条路由）。
 - `router.dart` 通过 `...feature_routes.$appRoutes` spread 聚合。
 - 5 个 shell tab 路由保持手写（`StatefulShellRoute.indexedStack`）。
+- `AppRoutes` 常量集中管理所有路由路径字符串，已移除死路由 `medicineReminders`（无对应页面）。
 
 ## 国际化
 
@@ -104,4 +105,5 @@ Last updated: 2026-07-19
 - 子页直接组合 `FScaffold` + `FHeader` + `ResponsiveContentFrame`。
 - 骨架屏通过 `AppSkeletonScope`/`AppSkeletonSlot`/`AppSkeletonText` 细粒度行内骨架，不造假数据。
 - 页面级错误使用 `AppStateErrorView`，加载态使用 shimmer 骨架屏。
+- `AppStateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
 - 轻量反馈使用 `AppToast`（`lib/core/feedback/app_toast.dart`），不用页面级 `SnackBar`。

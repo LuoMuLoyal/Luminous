@@ -130,6 +130,8 @@ void main() {
           medicineSearchNotifierProvider.notifier,
         );
         await notifier.updateQuery('aspirin');
+        // Wait for the 400ms debounce timer to fire.
+        await Future.delayed(const Duration(milliseconds: 450));
 
         final state = container.read(medicineSearchNotifierProvider);
         expect(state.query, 'aspirin');
@@ -147,6 +149,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
+      await Future.delayed(const Duration(milliseconds: 450));
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isFalse);
@@ -163,6 +166,7 @@ void main() {
           medicineSearchNotifierProvider.notifier,
         );
         await notifier.updateQuery('test');
+        await Future.delayed(const Duration(milliseconds: 450));
 
         final state = container.read(medicineSearchNotifierProvider);
         // userMessageFromError delegates to LucentErrorMapper which returns a
@@ -179,6 +183,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('  aspirin  ');
+      await Future.delayed(const Duration(milliseconds: 450));
 
       expect(repo.lastSearchQuery, 'aspirin');
     });
@@ -191,13 +196,13 @@ void main() {
       // Don't await — check loading state
       unawaited(notifier.updateQuery('aspirin'));
 
-      // Wait a tick for the search to start
-      await Future.delayed(const Duration(milliseconds: 10));
+      // Wait for the 400ms debounce to fire, then a bit for search to start.
+      await Future.delayed(const Duration(milliseconds: 410));
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isTrue);
 
-      // Wait for completion
+      // Wait for completion (50ms search delay)
       await Future.delayed(const Duration(milliseconds: 60));
     });
   });
@@ -269,6 +274,7 @@ void main() {
 
       final notifier = container.read(medicineSearchNotifierProvider.notifier);
       await notifier.updateQuery('test');
+      await Future.delayed(const Duration(milliseconds: 450));
 
       await notifier.selectResult('m2');
 
@@ -334,6 +340,7 @@ void main() {
       repo.searchError = TimeoutException('请求超时，请检查网络后重试。');
 
       await notifier.updateQuery('test');
+      await Future.delayed(const Duration(milliseconds: 450));
 
       final state = container.read(medicineSearchNotifierProvider);
       expect(state.isSearching, isFalse);

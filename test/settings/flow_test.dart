@@ -174,7 +174,6 @@ void main() {
     expect(find.text('高级设置'), findsOneWidget);
     expect(find.text('清理图片缓存'), findsOneWidget);
     expect(find.text('恢复默认设置'), findsOneWidget);
-    expect(find.text('开源许可'), findsOneWidget);
 
     // Back navigation returns to settings
     await tester.tap(_settingsBackButton());

@@ -216,7 +216,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[3].icon, FLucideIcons.alarmClockCheck);
-      expect(items[3].route, AppRoutes.medicineReminders);
+      expect(items[3].route, AppRoutes.medicineRemindersNew);
     });
 
     test('fifth item is profile', () async {

@@ -81,6 +81,8 @@ class AppRoutes {
 - Shell branches only model the five visible tabs; no hidden branches.
 - `AppBackButton` uses `context.pop()` when the route can pop, otherwise falls back to
   `AppRoutes.home`.
+- Dead routes must be removed from `AppRoutes` immediately — there is no "placeholder"
+  route constant. `medicineReminders` was removed because it had no corresponding page.
 
 ### Why GoRouter
 

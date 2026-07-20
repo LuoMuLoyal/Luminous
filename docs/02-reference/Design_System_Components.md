@@ -43,6 +43,7 @@
 - `AppToast` 现在从 Forui theme 值解析颜色与图标处理，替代旧兼容主题层。
 - `app_state_views.dart`、`app_text_action.dart`、`app_status_pill.dart`、`app_image_placeholder.dart`、
    `app_header_action_chip.dart`、`app_divider.dart` 使用直接 Forui 颜色 + Material `textTheme`。
+- `AppStateMessageView`（`state_message.dart`）的 `description` 参数为可选 `String?`——仅需标题+图标的空态/错误态场景（如帮助页）不需要传入重复描述文案。
 - `lib/core/widgets/common/` 不再保留 `AppSectionSurface`。
 - `IconActionButton`（`shared_widgets.dart`）是全 App 唯一的顶栏图标按钮实现，支持 `showBadge` 参数在右上角叠加红色小圆点（用于未读消息提醒等场景）。Mine/Today 等模块的顶栏统一引用 core 版本，不再各自维护同名实现。
 - `settingsPageVerticalPadding(BuildContext)`（`shared_widgets.dart`）是设置页面统一的响应式垂直 padding 函数——窄屏（< `Breakpoints.mobile`）返回 `Spacing.level6`，宽屏返回 `Spacing.level7`。设置主页和所有子页统一引用该函数，不再各自手写响应式三元表达式。

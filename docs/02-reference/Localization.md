@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -67,8 +67,8 @@ Persisted preference keys:
 - Today root-page action-panel copy such as primary-suggestion titles, evidence/boundary labels,
   observation wording, and quick-action labels is owned by the Today ARB entries.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery
-   history, and on-device notification title/body/channel labels are owned by the Medicine feature
-   ARB entries.
+   history, on-device notification title/body/channel labels, and reminder toggle failure toast
+   (`medicineReminderToggleFailedToast`) are owned by the Medicine feature ARB entries.
 - Medicine add-before-save risk precheck strings such as confirmation sheet title, warning
    description, confirm action, and failure toast are owned by the Medicine/Search ARB entries.
 - Sleep structured-record strings such as bedtime/wake-time labels, duration, quality, and
@@ -104,8 +104,8 @@ Persisted preference keys:
 - Avoid explanatory, onboarding, or marketing-style page copy unless a task explicitly requires it.
 - Remove l10n keys when the active UI that owns them is deleted.
 - Scan feature strings such as recognition result titles, retake/confirm actions, method picker
-  labels, barcode not-found toasts, and search-failed toasts are owned by the Scan ARB entries
-  (`scan*` keys).
+  labels, barcode not-found toasts, search-failed toasts, and recognizing hint (`scanRecognizingHint`)
+  are owned by the Scan ARB entries (`scan*` keys).
 - Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
   `authQqCallbackLabel`, `authQqCompleteAction`).
 - Auth form strings such as login password hint (`authPasswordLoginHint`), register terms-required

@@ -1,6 +1,6 @@
 # Active UI — Today
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 ## 页面结构
 
@@ -49,7 +49,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 
 - `FTileGroup` 分组入口：`确认用药 / 快速记录 / 用药安全 / 提醒设置 / 健康档案`。
 - 确认用药副标题根据 `pendingCount` 动态生成。
-- 快捷操作路由已修复：药品解读 → `/medicine/risk-check`，用药提醒 → `/medicine/reminders`。
+- 快捷操作路由已修复：药品解读 → `/medicine/risk-check`，用药提醒 → `/medicine/reminders/new`（push）。
 
 ## 空态与提示
 

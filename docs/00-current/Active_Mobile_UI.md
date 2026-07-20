@@ -1,6 +1,6 @@
 # Active Mobile UI
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
 
 本文档是五个 Tab 页面状态的汇总入口。每个 Tab 的详情见子文件。
 

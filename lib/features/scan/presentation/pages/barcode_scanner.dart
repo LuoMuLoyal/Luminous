@@ -324,7 +324,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                         children: [
                           Text(
                             _isSearching
-                                ? l10n.scanRecognitionFailedToast
+                                ? l10n.scanRecognizingHint
                                 : l10n.scanGuideHint,
                             textAlign: TextAlign.center,
                             style: TypographyToken.level4

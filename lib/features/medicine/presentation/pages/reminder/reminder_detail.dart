@@ -428,7 +428,9 @@ class _ReminderDetailBody extends ConsumerWidget {
       unawaited(
         AppToast.show(
           context,
-          success ? l10n.medicineReminderSavedToast : l10n.settingsSyncFailed,
+          success
+              ? l10n.medicineReminderSavedToast
+              : l10n.medicineReminderToggleFailedToast,
         ),
       );
     }

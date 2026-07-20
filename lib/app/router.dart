@@ -76,7 +76,6 @@ class AppRoutes {
   static const medicineSearch = '/medicine/search';
   static const medicineRiskCheck = '/medicine/risk-check';
   static const medicineRemindersNew = '/medicine/reminders/new';
-  static const medicineReminders = '/medicine/reminders';
 
   static const mineProfileEdit = '/mine/profile/edit';
   static const mineAllergyNew = '/mine/allergy/new';

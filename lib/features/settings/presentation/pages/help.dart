@@ -41,7 +41,6 @@ class HelpSettingsPage extends ConsumerWidget {
                 if (actionable.isEmpty) {
                   return AppStateMessageView(
                     title: l10n.settingsHelpEmpty,
-                    description: l10n.settingsHelpEmpty,
                     icon: FLucideIcons.circleHelp,
                   );
                 }
@@ -70,7 +69,6 @@ class HelpSettingsPage extends ConsumerWidget {
               ),
               error: (error, _) => AppStateMessageView(
                 title: l10n.settingsHelpError,
-                description: l10n.settingsHelpError,
                 icon: FLucideIcons.circleAlert,
                 tone: AppStateTone.danger,
               ),

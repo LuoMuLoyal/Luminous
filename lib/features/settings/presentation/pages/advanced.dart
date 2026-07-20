@@ -65,8 +65,6 @@ class AdvancedSettingsPage extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: Spacing.level5),
-                SettingsSectionLabel(label: l10n.settingsAdvancedResetDefaults),
-                const SizedBox(height: Spacing.level3),
                 FTileGroup(
                   style: settingsSubpageTileGroupStyle(context.theme),
                   children: [

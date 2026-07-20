@@ -347,7 +347,8 @@ List<TodayQuickActionItem> buildQuickActionItems(
       icon: FLucideIcons.alarmClockCheck,
       title: l10n.todayQuickActionReminderTitle,
       subtitle: l10n.todayQuickActionReminderSubtitle,
-      route: AppRoutes.medicineReminders,
+      route: AppRoutes.medicineRemindersNew,
+      usePush: true,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.userRound,

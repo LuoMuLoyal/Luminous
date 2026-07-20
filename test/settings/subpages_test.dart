@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -38,12 +38,13 @@ void main() {
       expect(find.text(l10n.settingsNotificationsDndSubtitle), findsOneWidget);
     });
 
-    testWidgets('renders DnD start and end time fields', (tester) async {
+    testWidgets('renders DnD unset hint when disabled', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const DndSettingsPage());
 
-      expect(find.text(l10n.settingsNotificationsDndStart), findsOneWidget);
-      expect(find.text(l10n.settingsNotificationsDndEnd), findsOneWidget);
+      // When DnD is disabled (default), time fields are hidden and an
+      // "unset" hint is shown instead.
+      expect(find.text(l10n.settingsNotificationsTimeUnset), findsOneWidget);
     });
 
     testWidgets('renders FSwitch for DnD toggle', (tester) async {
@@ -74,15 +75,15 @@ void main() {
       );
     });
 
-    testWidgets('renders bedtime and wake time fields', (tester) async {
+    testWidgets('renders unset hint when sleep reminder disabled', (
+      tester,
+    ) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const SleepReminderSettingsPage());
 
-      expect(find.text(l10n.settingsNotificationsSleepBedtime), findsOneWidget);
-      expect(
-        find.text(l10n.settingsNotificationsSleepWakeTime),
-        findsOneWidget,
-      );
+      // When sleep reminder is disabled (default), time fields are hidden
+      // and an "unset" hint is shown instead.
+      expect(find.text(l10n.settingsNotificationsTimeUnset), findsOneWidget);
     });
 
     testWidgets('renders FSwitch for sleep reminder toggle', (tester) async {

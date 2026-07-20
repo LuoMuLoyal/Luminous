@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import '../auth/test_helpers.dart' as auth_helpers;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -204,23 +206,15 @@ void main() {
       expect(count, equals(3));
     });
 
-    test('throws StateError when API returns non-zero code', () async {
-      final errorApi = _ErrorUnreadCountApi();
-      final container = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(() => signedInSession),
-          lucentClientProvider.overrideWithValue(
-            _FakeLucentClient(notificationsApi: errorApi),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
+    test(
+      'getUnreadCount throws LucentApiException when API returns non-zero code',
+      () async {
+        final errorApi = _ErrorUnreadCountApi();
+        final repo = LucentNotificationRepository(api: errorApi);
 
-      expect(
-        container.read(notificationUnreadCountProvider.future),
-        throwsA(isA<StateError>()),
-      );
-    });
+        expect(repo.getUnreadCount(), throwsA(isA<LucentApiException>()));
+      },
+    );
   });
 
   group('notificationDetailProvider', () {

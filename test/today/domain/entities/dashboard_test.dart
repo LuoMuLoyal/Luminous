@@ -81,8 +81,9 @@ void main() {
   });
 
   group('TodayDashboard.signedOut', () {
-    test('has morning moment', () {
-      expect(TodayDashboard.signedOut().user.moment, TodayDayMoment.morning);
+    test('derives moment from current hour', () {
+      final expected = todayDayMomentFromHour(DateTime.now().hour);
+      expect(TodayDashboard.signedOut().user.moment, expected);
     });
 
     test('has zero water completed', () {

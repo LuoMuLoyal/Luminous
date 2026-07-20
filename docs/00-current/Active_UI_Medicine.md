@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-19
+Last updated: 2026-07-20
 
 ## 页面结构
 
@@ -25,7 +25,7 @@ Last updated: 2026-07-19
 ## 通知铃铛
 
 - `_MedicineNotificationButton` 为 `ConsumerWidget`，watch `notificationUnreadCountProvider` 条件渲染红点。
-- 铃铛点击路由从 `/medicine/reminders/new` 改为 `/medicine/reminders`。
+- 铃铛点击路由为 `/notifications`（通知列表页）。
 
 ## 用药安全摘要
 
@@ -118,3 +118,11 @@ Last updated: 2026-07-19
 - 提醒失败 toast 专用化：`reminder_detail.dart` 删除失败用 `medicineReminderDeleteFailedToast`；`reminder_edit.dart` 保存失败用 `medicineReminderSaveFailedToast`，错误描述用 `medicineReminderNotFoundDescription`（不再空串）。
 - `log_panels.dart` 日志条目超过可见上限时显示 `medicineReminderLogCountTotal`（ICU plural "共 N 条记录"）。
 - `result_widgets.dart` 搜索结果匹配方式从硬编码全角冒号改为 `medicineSearchMatchedByType` l10n 键（"匹配方式：{type}"）。
+
+## 2026-07-20 P0 修复
+
+- 移除死路由常量 `AppRoutes.medicineReminders`（该路径无对应页面）。
+- 通知铃铛按钮跳转改为 `/notifications`（通知列表页）。
+- `_MedicineSafeGuardPill` 窄屏下使用 `FButton.icon`（仅图标），宽屏使用 `FButton`（图标+文字），消除 `child: null` 断言。
+- 提醒启停切换失败 Toast 从 `settingsSyncFailed` 改为专用 `medicineReminderToggleFailedToast`。
+- 扫码识别中文案从 `scanRecognitionFailedToast` 改为 `scanRecognizingHint`（"识别中…"）。

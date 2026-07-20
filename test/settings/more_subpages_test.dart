@@ -427,20 +427,6 @@ void main() {
       expect(find.text(l10n.settingsAdvancedResetDefaults), findsOneWidget);
     });
 
-    testWidgets('renders licenses tile', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
-      await pumpPage(tester, const AdvancedSettingsPage());
-
-      expect(
-        find.byKey(const Key('advanced-settings-row-licenses')),
-        findsOneWidget,
-      );
-      expect(
-        find.text(l10n.settingsAdvancedOpenSourceLicenses),
-        findsOneWidget,
-      );
-    });
-
     testWidgets('renders developer section in debug mode', (tester) async {
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       await pumpPage(tester, const AdvancedSettingsPage());
@@ -477,7 +463,7 @@ void main() {
     testWidgets('renders chevron icons for tappable tiles', (tester) async {
       await pumpPage(tester, const AdvancedSettingsPage());
 
-      // 4 tiles have chevronRight: licenses, api-endpoint, log-level, feature-flags
+      // 4 tiles have chevronRight: clear-cache, api-endpoint, log-level, feature-flags
       expect(find.byIcon(FLucideIcons.chevronRight), findsNWidgets(4));
     });
 
@@ -490,7 +476,7 @@ void main() {
       expect(find.text(l10n.settingsDeveloperSectionTitle), findsOneWidget);
     });
 
-    testWidgets('renders all three tiles in main FTileGroup', (tester) async {
+    testWidgets('renders both tiles in main FTileGroup', (tester) async {
       await pumpPage(tester, const AdvancedSettingsPage());
 
       expect(
@@ -499,10 +485,6 @@ void main() {
       );
       expect(
         find.byKey(const Key('advanced-settings-row-reset-defaults')),
-        findsOneWidget,
-      );
-      expect(
-        find.byKey(const Key('advanced-settings-row-licenses')),
         findsOneWidget,
       );
     });

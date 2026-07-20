@@ -101,7 +101,11 @@ Widget _buildForm({
   );
 }
 
-Future<void> _pumpForm(WidgetTester tester, Widget form) async {
+Future<void> _pumpForm(
+  WidgetTester tester,
+  Widget form, {
+  bool settle = true,
+}) async {
   await tester.pumpWidget(
     TestForuiRouterApp(
       routerConfig: GoRouter(
@@ -125,7 +129,14 @@ Future<void> _pumpForm(WidgetTester tester, Widget form) async {
       ),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    // When isSaving is true, FCircularProgress runs an infinite animation
+    // that prevents pumpAndSettle from ever completing. Pump a fixed
+    // duration instead so the widget tree is ready for assertions.
+    await tester.pump(const Duration(milliseconds: 100));
+  }
 }
 
 void main() {
@@ -154,6 +165,7 @@ void main() {
       await _pumpForm(
         tester,
         _buildForm(snapshot: _buildSnapshot(), isSaving: true),
+        settle: false,
       );
 
       final button = tester.widget<FButton>(
@@ -199,6 +211,7 @@ void main() {
           isSaving: true,
           onDelete: () {},
         ),
+        settle: false,
       );
 
       final button = tester.widget<FButton>(

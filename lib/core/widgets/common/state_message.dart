@@ -20,7 +20,7 @@ class AppStateMessageView extends StatelessWidget {
   const AppStateMessageView({
     super.key,
     required this.title,
-    required this.description,
+    this.description,
     required this.icon,
     this.actionLabel,
     this.onAction,
@@ -31,7 +31,7 @@ class AppStateMessageView extends StatelessWidget {
   });
 
   final String title;
-  final String description;
+  final String? description;
   final IconData icon;
   final String? actionLabel;
   final VoidCallback? onAction;
@@ -76,14 +76,16 @@ class AppStateMessageView extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: Spacing.level2),
-              Text(
-                description,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: SemanticColor.neutral.solid(context)),
-                textAlign: TextAlign.center,
-              ),
+              if (description != null) ...[
+                const SizedBox(height: Spacing.level2),
+                Text(
+                  description!,
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(color: SemanticColor.neutral.solid(context)),
+                  textAlign: TextAlign.center,
+                ),
+              ],
               if (actionLabel != null && onAction != null) ...[
                 const SizedBox(height: Spacing.level5),
                 FButton(

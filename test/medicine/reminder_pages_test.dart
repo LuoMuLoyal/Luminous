@@ -155,6 +155,7 @@ void main() {
         child: const MedicineReminderEditPage(),
         reminderDataSource: _FakeReminderDataSource([]),
         doseLogDataSource: _FakeDoseLogDataSource([]),
+        snapshot: _emptySnapshot,
       ),
     );
 
@@ -223,12 +224,15 @@ Widget _testApp({
   required _FakeReminderDataSource reminderDataSource,
   required _FakeDoseLogDataSource doseLogDataSource,
   List overrides = const [],
+  HealthContextSnapshot? snapshot,
 }) {
   final db = AppDatabase.forTesting(NativeDatabase.memory());
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-      healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
+      healthContextSnapshotProvider.overrideWith(
+        (ref) async => snapshot ?? _snapshot,
+      ),
       medicineReminderRemoteDataSourceProvider.overrideWithValue(
         reminderDataSource,
       ),
@@ -432,4 +436,29 @@ const _snapshot = HealthContextSnapshot(
       updatedAt: '2026-06-09T07:00:00.000Z',
     ),
   ],
+);
+
+const _emptySnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: 22,
+    onboardingCompleted: true,
+    activeAllergyCount: 0,
+    conditionCount: 0,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: null,
+    sexAtBirth: null,
+    heightCm: null,
+    bloodType: null,
+    locale: null,
+    timezone: null,
+    unitSystem: null,
+    onboardingCompletedAt: null,
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
 );
