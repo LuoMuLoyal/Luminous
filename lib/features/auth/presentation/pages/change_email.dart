@@ -71,7 +71,8 @@ class ChangeEmailPage extends HookConsumerWidget {
                       value,
                       l10n.authCodeRequiredError,
                     ),
-                    onSendCode: !isSignedIn
+                    onSendCode:
+                        !isSignedIn || accountState.lastCooldownSeconds != null
                         ? null
                         : () async {
                             final emailError = EmailInput.validate(

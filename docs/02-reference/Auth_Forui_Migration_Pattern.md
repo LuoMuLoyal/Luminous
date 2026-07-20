@@ -111,6 +111,10 @@ custom widget stack to direct Forui composition. It is meant to be reused by lat
 5. Verify that theme changes come from the shared root, not local force overrides.
 6. Run `flutter analyze` for the touched feature, then full `flutter analyze`.
 
+## 2026-07-20 P2 Auth 打磨
+
+- **验证码冷却期禁用**：`change_email.dart` 的 `onSendCode` 在 `lastCooldownSeconds != null`（冷却中）时设为 `null`，防止冷却期间重复点击发送验证码。
+
 ## Verification Used For This Auth Migration
 
 - `flutter analyze lib/features/auth`
