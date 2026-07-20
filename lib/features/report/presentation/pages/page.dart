@@ -309,30 +309,6 @@ class ReportPage extends ConsumerWidget {
                   ),
                 ),
               ),
-        emptyInsufficientBuilder: (empty) => isDesktop
-            ? DesktopTabShell(
-                title: l10n.tabReport,
-                child: AppStateMessageView(
-                  title: l10n.stateEmptyDefaultTitle,
-                  description: l10n.stateEmptyDefaultDescription,
-                  icon: FLucideIcons.chartColumnBig,
-                  actionLabel: l10n.todayEmptyAction,
-                  onAction: () => context.push('/record/create'),
-                ),
-              )
-            : DecoratedBox(
-                decoration: BoxDecoration(color: colors.background),
-                child: SafeArea(
-                  bottom: false,
-                  child: AppStateMessageView(
-                    title: l10n.stateEmptyDefaultTitle,
-                    description: l10n.stateEmptyDefaultDescription,
-                    icon: FLucideIcons.chartColumnBig,
-                    actionLabel: l10n.todayEmptyAction,
-                    onAction: () => context.push('/record/create'),
-                  ),
-                ),
-              ),
         readyBuilder: (dashboard, isPreview) => _buildReadyContent(
           context: context,
           ref: ref,

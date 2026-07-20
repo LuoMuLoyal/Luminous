@@ -73,19 +73,17 @@ class ReportScoreHero extends StatelessWidget {
                         ),
                         child: Text(
                           score.value.toString(),
-                          style: TypographyToken.level9
-                              .display(context)
-                              .copyWith(
-                                color: context.theme.colors.primary,
-                                fontSize: ResponsiveSizing.scaleByWidth(
-                                  context,
-                                  fraction: 0.128,
-                                  minValue: 40,
-                                  maxValue: 54,
-                                ),
-                                height: 1,
-                                fontWeight: FontWeight.w800,
-                              ),
+                          style: TextStyle(
+                            color: context.theme.colors.primary,
+                            fontSize: ResponsiveSizing.scaleByWidth(
+                              context,
+                              fraction: 0.128,
+                              minValue: 40,
+                              maxValue: 54,
+                            ),
+                            height: 1,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                       Text(

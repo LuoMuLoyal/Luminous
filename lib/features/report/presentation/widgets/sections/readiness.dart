@@ -17,6 +17,7 @@ class ReportReadinessSection extends StatelessWidget {
     this.onContinueRecord,
     this.onGenerate,
     this.onSync,
+    this.isGenerating = false,
   });
 
   final ReportReadinessStatus status;
@@ -32,6 +33,7 @@ class ReportReadinessSection extends StatelessWidget {
   final VoidCallback? onContinueRecord;
   final VoidCallback? onGenerate;
   final VoidCallback? onSync;
+  final bool isGenerating;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +48,14 @@ class ReportReadinessSection extends StatelessWidget {
           children: [
             Row(
               children: [
-                FAvatar.raw(
-                  size: Spacing.level8,
-                  child: Icon(
-                    _statusIcon,
-                    color: _statusColor.solid(context),
-                    size: Spacing.level5,
+                ExcludeSemantics(
+                  child: FAvatar.raw(
+                    size: Spacing.level8,
+                    child: Icon(
+                      _statusIcon,
+                      color: _statusColor.solid(context),
+                      size: Spacing.level5,
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -76,10 +80,12 @@ class ReportReadinessSection extends StatelessWidget {
               const SizedBox(height: Spacing.level3),
               Row(
                 children: [
-                  Icon(
-                    FLucideIcons.clock3,
-                    color: colors.mutedForeground,
-                    size: 16,
+                  ExcludeSemantics(
+                    child: Icon(
+                      FLucideIcons.clock3,
+                      color: colors.mutedForeground,
+                      size: Spacing.level5,
+                    ),
                   ),
                   const SizedBox(width: Spacing.level2),
                   Expanded(
@@ -189,8 +195,14 @@ class _PrimaryAction extends StatelessWidget {
       ),
       ReportReadinessStatus.ready => FButton(
         key: const Key('report-top-generate-action'),
-        onPress: section.onGenerate,
-        prefix: const Icon(FLucideIcons.sparkles, size: 16),
+        onPress: section.isGenerating ? null : section.onGenerate,
+        prefix: section.isGenerating
+            ? const SizedBox(
+                width: Spacing.level5,
+                height: Spacing.level5,
+                child: FCircularProgress(),
+              )
+            : const Icon(FLucideIcons.sparkles, size: Spacing.level5),
         child: Text(section.l10n.reportGenerateAction),
       ),
     };

@@ -118,6 +118,8 @@ class ReportDashboardView extends StatelessWidget {
                   onGenerateAiSummary!();
                 },
           onSync: onSync,
+          isGenerating:
+              aiSummaryState.status == ReportAiSummaryCardStatus.loading,
         ),
         const SizedBox(height: Spacing.level4),
         ReportScoreHero(
@@ -230,6 +232,8 @@ class ReportDashboardView extends StatelessWidget {
                         onGenerateAiSummary!();
                       },
                 onSync: onSync,
+                isGenerating:
+                    aiSummaryState.status == ReportAiSummaryCardStatus.loading,
               ),
               const SizedBox(height: Spacing.level5),
               ReportScoreHero(

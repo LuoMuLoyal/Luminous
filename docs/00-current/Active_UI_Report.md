@@ -110,3 +110,10 @@ Last updated: 2026-07-20
 - **桌面 loading 假按钮禁用**：`_buildLoadingShell` 中 `ReportActionBar` 传 `isGenerating: true, isSyncing: true`，加载态按钮不可点击。
 - **图表 tooltip 触点值+日期**：tooltip 从恒显示 `currentValue` 改为根据 `spot.spotIndex` 取实际触点值，并新增日期行。
 - **图表 Semantics 数值摘要**：`Semantics.label` 从仅标题扩展为包含各指标当前值摘要。
+
+## 2026-07-20 P2 报告模块打磨
+
+- **装饰图标 ExcludeSemantics**：`readiness.dart` 的状态头像图标和时钟图标包裹 `ExcludeSemantics`，避免屏幕阅读器重复朗读相邻文字。
+- **就绪卡"生成总结"loading**：`readiness.dart` 的 `_PrimaryAction` ready 状态新增 `isGenerating` 参数，生成中禁用按钮 + 显示 `FCircularProgress`。`dashboard_view.dart` 传入 `isGenerating: aiSummaryState.status == ReportAiSummaryCardStatus.loading`。
+- **emptyInsufficientBuilder 死代码删除**：`page.dart` 移除不可达的 `emptyInsufficientBuilder` 分支。
+- **分数字号 token 外覆盖修复**：`score_hero.dart` 从 `TypographyToken.level9.display(context).copyWith(fontSize: ...)` 改为 `TextStyle(fontSize: ...)`，消除先套 token 再覆盖的矛盾写法。
