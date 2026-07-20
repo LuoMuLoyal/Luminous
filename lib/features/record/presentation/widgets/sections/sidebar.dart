@@ -306,7 +306,7 @@ class RecordFilterPanel extends StatelessWidget {
                       child: _FilterRow(
                         filter: filter,
                         l10n: l10n,
-                        onTap: onFilterSelected == null
+                        onTap: onFilterSelected == null || filter.locked
                             ? null
                             : () => onFilterSelected!(
                                 filter.selected ? null : filter.type,

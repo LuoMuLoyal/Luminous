@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -131,6 +132,13 @@ class _MobileRecordDashboard extends StatelessWidget {
           totalCount: dashboard.timeline.length,
           l10n: l10n,
           selectedDate: dashboard.selectedDate,
+          hasActiveFilter: !dashboard.filters.every((f) => f.selected),
+          onClearFilter: onFilterSelected != null
+              ? () => onFilterSelected!(null)
+              : null,
+          onBackToToday: onDateSelected != null
+              ? () => onDateSelected!(clock.now())
+              : null,
         ),
         const SizedBox(height: Spacing.level4),
       ],

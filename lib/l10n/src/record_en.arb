@@ -421,5 +421,13 @@
   "recordSpeechUnavailable": "Speech recognition is unavailable on this device.",
   "recordSpeechLocaleUnsupported": "Speech recognition does not support the current language.",
   "recordVoiceErrorHint": "Recognition error. Please try again.",
-  "recordVoiceEditHint": "You can edit the recognized text here"
+  "recordVoiceEditHint": "You can edit the recognized text here",
+  "recordOcrEmptyResult": "No text recognized. Try another photo.",
+  "recordBackToTodayAction": "Back to today",
+  "recordDiscardChangesTitle": "Discard changes",
+  "recordDiscardChangesMessage": "You have unsaved changes. Leave anyway?",
+  "recordDiscardChangesAction": "Discard",
+  "recordImageCameraAction": "Take photo",
+  "recordCreateSectionBasicTitle": "Basic info",
+  "recordCreateSectionDetailsTitle": "Record details"
 }

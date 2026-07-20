@@ -16,6 +16,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
     required this.existingAttachment,
     required this.onPick,
     required this.onRemove,
+    this.onCameraPick,
     this.enabled = true,
   });
 
@@ -25,6 +26,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
   final DailyRecordAttachment? existingAttachment;
   final VoidCallback onPick;
   final VoidCallback onRemove;
+  final VoidCallback? onCameraPick;
   final bool enabled;
 
   @override
@@ -95,6 +97,13 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                                   : l10n.recordImagePickAction,
                             ),
                           ),
+                          if (onCameraPick != null)
+                            FButton(
+                              variant: FButtonVariant.outline,
+                              onPress: enabled ? onCameraPick : null,
+                              prefix: const Icon(FLucideIcons.camera, size: 18),
+                              child: Text(l10n.recordImageCameraAction),
+                            ),
                           if (hasAttachment)
                             FButton(
                               variant: FButtonVariant.ghost,

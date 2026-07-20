@@ -7,11 +7,13 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 日历项星期文字字号（紧凑设计，小于正文最小字号）。
-const double _weekdayFontSize = 11;
+/// 日历项星期文字字号（紧凑设计，对应 TypographyToken.level2）。
+double _weekdayFontSize(BuildContext context) =>
+    TypographyToken.level2.body(context).fontSize!;
 
-/// 日历项日期数字字号。
-const double _dateFontSize = 14;
+/// 日历项日期数字字号（对应 TypographyToken.level3）。
+double _dateFontSize(BuildContext context) =>
+    TypographyToken.level3.body(context).fontSize!;
 
 class RecordDateBar extends StatelessWidget {
   const RecordDateBar({
@@ -105,13 +107,19 @@ class _CompactCalendarItem extends StatelessWidget {
                   DefaultTextStyle.merge(
                     style: style.weekdayTextStyle
                         .resolve(variants)
-                        .copyWith(fontSize: _weekdayFontSize, height: 1.0),
+                        .copyWith(
+                          fontSize: _weekdayFontSize(context),
+                          height: 1.0,
+                        ),
                     child: Text(localizations.shortWeekDays[date.weekday % 7]),
                   ),
                   DefaultTextStyle.merge(
                     style: style.dateTextStyle
                         .resolve(variants)
-                        .copyWith(fontSize: _dateFontSize, height: 1.0),
+                        .copyWith(
+                          fontSize: _dateFontSize(context),
+                          height: 1.0,
+                        ),
                     child: Text(
                       DateFormat.d(localizations.localeName).format(date),
                     ),

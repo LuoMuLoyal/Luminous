@@ -308,14 +308,6 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         ],
         const SizedBox(height: Spacing.level4),
         FButton(
-          key: const Key('record-detail-edit-action'),
-          onPress: () =>
-              pushAuthRequiredRoute(context, '/record/${record.id}/edit'),
-          prefix: const Icon(FLucideIcons.pencil, size: 18),
-          child: Text(l10n.recordEditAction),
-        ),
-        const SizedBox(height: Spacing.level3),
-        FButton(
           key: const Key('record-detail-delete-action'),
           variant: FButtonVariant.destructive,
           onPress: () => _deleteRecord(context, ref, record.id),
@@ -468,8 +460,11 @@ class _DetailRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 88,
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: Spacing.level8 * 2,
+            maxWidth: Spacing.level8 * 2 + Spacing.level4,
+          ),
           child: Text(
             data.label,
             style: TypographyToken.level3

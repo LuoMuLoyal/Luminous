@@ -107,3 +107,19 @@ Last updated: 2026-07-20 (P1 record)
 - **标题标签修正**：`recordCreateFieldTitleOptional`（“标题（可选）”）改为 `recordCreateFieldTitle`（“标题”），消除与必填校验的矛盾。
 - **保存中表单整体禁用**：`DailyRecordFormFields` 新增 `enabled` 参数，`saving` 时所有字段（kind/value/unit/title/note）连同图片附件一起禁用。
 - **NLP 预生成失败提示**：`nlp_dialog.dart` 新增 `RecordNlpStatus.error` 状态分支，显示图标+错误文案（`state.errorMessage` 或 `recordNlpGenerateFailedToast` 兜底）。
+
+## 2026-07-20 P2 记录模块打磨
+
+- **locked 筛选策略一致**：`sidebar.dart` 的 `_FilterRow` onTap 增加 `filter.locked` 检查，locked 筛选在桌面端也禁用点击，与移动端一致。
+- **创建页分区标题**：`create.dart` 在 `RecordOccurredAtFields` 前添加"基本信息"标题，在 `DailyRecordFormFields` 前添加"记录内容"标题，字段不再无分区堆叠。
+- **切类型清理不适字段**：`onKindChanged` 新增 `dailyRecordFormRules(newKind)` 检查，不显示的字段（`showValue`/`showTitle`/`showUnit` 为 false 时）自动清空 controller，避免切回时旧内容静默重现。
+- **date_bar 字号 token 化**：`_weekdayFontSize` / `_dateFontSize` 改为 `TypographyToken.level2` / `TypographyToken.level3` 的 `fontSize` 取值。
+- **移动端"回到今天"入口**：非今日选中时标题行右侧显示"回到今天"按钮。
+- **移动端筛选空态"清除筛选"**：筛选激活且无结果时空态显示"清除筛选"按钮。
+- **OCR 空结果反馈**：OCR 返回空文本时显示提示图标+文案。
+- **详情页编辑入口去重**：移除底部重复的"编辑"按钮，仅保留"删除"。
+- **详情页标签弹性宽**：`_DetailRow` 从 `SizedBox(width: 88)` 改为 `ConstrainedBox` 弹性约束。
+- **菜品删除 tooltip/语义**：删除图标按钮新增 `Tooltip` + `semanticLabel`。
+- **图片附件拍照入口**：新增可选 `onCameraPick` 回调，有值时显示"拍照"按钮。
+- **脏状态返回确认**：新增 `PopScope` + `_isDirty` + `_confirmDiscardChanges`，表单有未保存内容时返回弹出确认。
+- **NLP 候选睡眠时间选择器**：分钟数文本输入改为就寝/起床 `FTimeField.picker`，自动计算时长。

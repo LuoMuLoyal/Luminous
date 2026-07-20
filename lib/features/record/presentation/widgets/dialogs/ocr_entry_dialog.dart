@@ -217,16 +217,38 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                       // Recognized text (editable)
                       if (recognizedText.value != null &&
                           !isRecognizing.value) ...[
-                        FTextField(
-                          key: const Key('record-ocr-result-field'),
-                          control: FTextFieldControl.managed(
-                            controller: textController,
+                        if (recognizedText.value!.isEmpty) ...[
+                          const SizedBox(height: Spacing.level3),
+                          Row(
+                            children: [
+                              Icon(
+                                FLucideIcons.fileSearch,
+                                size: Spacing.level5,
+                                color: colors.mutedForeground,
+                              ),
+                              const SizedBox(width: Spacing.level3),
+                              Expanded(
+                                child: Text(
+                                  l10n.recordOcrEmptyResult,
+                                  style: typography.body.sm.copyWith(
+                                    color: colors.mutedForeground,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          focusNode: textFocus,
-                          minLines: 3,
-                          maxLines: 8,
-                          label: Text(l10n.recordOcrEntryTitle),
-                        ),
+                        ] else ...[
+                          FTextField(
+                            key: const Key('record-ocr-result-field'),
+                            control: FTextFieldControl.managed(
+                              controller: textController,
+                            ),
+                            focusNode: textFocus,
+                            minLines: 3,
+                            maxLines: 8,
+                            label: Text(l10n.recordOcrEntryTitle),
+                          ),
+                        ],
                       ],
                     ],
                   ],

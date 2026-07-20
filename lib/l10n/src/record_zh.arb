@@ -421,5 +421,13 @@
   "recordSpeechUnavailable": "语音识别不可用，请检查设备是否支持。",
   "recordSpeechLocaleUnsupported": "当前语言暂不支持语音识别。",
   "recordVoiceErrorHint": "识别出错，请重试。",
-  "recordVoiceEditHint": "可在此编辑识别结果"
+  "recordVoiceEditHint": "可在此编辑识别结果",
+  "recordOcrEmptyResult": "未识别到文字，请尝试更换图片",
+  "recordBackToTodayAction": "回到今天",
+  "recordDiscardChangesTitle": "放弃修改",
+  "recordDiscardChangesMessage": "当前内容尚未保存，确定离开吗？",
+  "recordDiscardChangesAction": "放弃",
+  "recordImageCameraAction": "拍照",
+  "recordCreateSectionBasicTitle": "基本信息",
+  "recordCreateSectionDetailsTitle": "记录内容"
 }

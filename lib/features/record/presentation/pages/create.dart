@@ -153,9 +153,22 @@ class RecordCreatePage extends HookConsumerWidget {
 
     void onKindChanged(DailyRecordKind newKind) {
       final wasWater = kind.value == DailyRecordKind.water;
+      final rules = dailyRecordFormRules(newKind);
       kind.value = newKind;
       if (newKind != DailyRecordKind.water &&
           wasWater &&
+          unitController.text.trim() == dailyRecordWaterDefaultUnit) {
+        unitController.clear();
+      }
+      // Clear fields that are not applicable to the new kind to avoid
+      // stale content silently reappearing when switching back.
+      if (!rules.showValue) {
+        valueController.clear();
+      }
+      if (!rules.showTitle) {
+        titleController.clear();
+      }
+      if (!rules.showUnit &&
           unitController.text.trim() == dailyRecordWaterDefaultUnit) {
         unitController.clear();
       }
@@ -170,10 +183,10 @@ class RecordCreatePage extends HookConsumerWidget {
       applyKindDefaults(newKind);
     }
 
-    Future<void> onPickImage() async {
+    Future<void> pickAndProcessImage(ImageSource source) async {
       try {
         final image = await imagePicker.pickImage(
-          source: ImageSource.gallery,
+          source: source,
           requestFullMetadata: false,
         );
         if (image == null) return;
@@ -202,7 +215,7 @@ class RecordCreatePage extends HookConsumerWidget {
       } catch (e) {
         ref
             .read(talkerProvider)
-            .error('RecordCreatePage.onPickImage: failed: $e');
+            .error('RecordCreatePage.pickAndProcessImage: failed: $e');
         if (context.mounted) {
           await AppToast.show(
             context,
@@ -211,6 +224,10 @@ class RecordCreatePage extends HookConsumerWidget {
         }
       }
     }
+
+    void onPickImage() => pickAndProcessImage(ImageSource.gallery);
+
+    void onPickFromCamera() => pickAndProcessImage(ImageSource.camera);
 
     void onRemoveImage() {
       selectedImage.value = null;
@@ -365,6 +382,13 @@ class RecordCreatePage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Text(
+                      l10n.recordCreateSectionBasicTitle,
+                      style: TypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: Spacing.level3),
                     RecordOccurredAtFields(
                       date: recordDate.value,
                       time: recordTime.value,
@@ -376,6 +400,13 @@ class RecordCreatePage extends HookConsumerWidget {
                       onTimeChanged: (time) => recordTime.value = time == null
                           ? null
                           : formatHourMinute(time.hour, time.minute),
+                    ),
+                    const SizedBox(height: Spacing.level5),
+                    Text(
+                      l10n.recordCreateSectionDetailsTitle,
+                      style: TypographyToken.level5
+                          .body(context)
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: Spacing.level3),
                     DailyRecordFormFields(
@@ -415,6 +446,7 @@ class RecordCreatePage extends HookConsumerWidget {
                       selectedFileName: selectedImage.value?.fileName,
                       existingAttachment: null,
                       onPick: onPickImage,
+                      onCameraPick: onPickFromCamera,
                       onRemove: onRemoveImage,
                       enabled: !saving.value,
                     ),
@@ -442,8 +474,62 @@ class RecordCreatePage extends HookConsumerWidget {
 
     return PageScaffold(
       title: l10n.recordAddAction,
-      child: SingleChildScrollView(child: content),
+      child: PopScope(
+        canPop: !_isDirty(
+          valueController: valueController,
+          unitController: unitController,
+          noteController: noteController,
+          titleController: titleController,
+          selectedImage: selectedImage.value,
+        ),
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          final shouldPop = await _confirmDiscardChanges(context);
+          if (shouldPop && context.mounted) {
+            context.pop();
+          }
+        },
+        child: SingleChildScrollView(child: content),
+      ),
     );
+  }
+
+  static bool _isDirty({
+    required TextEditingController valueController,
+    required TextEditingController unitController,
+    required TextEditingController noteController,
+    required TextEditingController titleController,
+    required _PendingDailyRecordImage? selectedImage,
+  }) {
+    return valueController.text.trim().isNotEmpty ||
+        unitController.text.trim().isNotEmpty ||
+        noteController.text.trim().isNotEmpty ||
+        titleController.text.trim().isNotEmpty ||
+        selectedImage != null;
+  }
+
+  static Future<bool> _confirmDiscardChanges(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showFDialog<bool>(
+      context: context,
+      builder: (dialogContext, style, animation) => FDialog(
+        title: Text(l10n.recordDiscardChangesTitle),
+        body: Text(l10n.recordDiscardChangesMessage),
+        actions: [
+          FButton(
+            variant: FButtonVariant.ghost,
+            onPress: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.authCancelAction),
+          ),
+          FButton(
+            variant: FButtonVariant.destructive,
+            onPress: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.recordDiscardChangesAction),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
   }
 
   static String? resolveImageContentType(XFile image) {

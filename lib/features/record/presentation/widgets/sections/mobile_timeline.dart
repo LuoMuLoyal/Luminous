@@ -19,6 +19,9 @@ class RecordMobileTimeline extends StatefulWidget {
     required this.l10n,
     this.selectedDate,
     this.initialVisibleCount = 7,
+    this.hasActiveFilter = false,
+    this.onClearFilter,
+    this.onBackToToday,
   });
 
   final List<RecordTimelineEntry> entries;
@@ -26,6 +29,9 @@ class RecordMobileTimeline extends StatefulWidget {
   final AppLocalizations l10n;
   final DateTime? selectedDate;
   final int initialVisibleCount;
+  final bool hasActiveFilter;
+  final VoidCallback? onClearFilter;
+  final VoidCallback? onBackToToday;
 
   @override
   State<RecordMobileTimeline> createState() => _RecordMobileTimelineState();
@@ -67,6 +73,18 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
                     .copyWith(fontWeight: FontWeight.w800),
               ),
             ),
+            if (!isToday && widget.onBackToToday != null)
+              FButton(
+                key: const Key('record-back-to-today'),
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: widget.onBackToToday,
+                child: Text(
+                  widget.l10n.recordBackToTodayAction,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
             if (hasOverflow)
               FButton(
                 key: const Key('record-timeline-toggle'),
@@ -87,10 +105,12 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
         if (isEmpty)
           _MobileTimelineEmptyState(
             l10n: widget.l10n,
+            hasActiveFilter: widget.hasActiveFilter,
             onCreate: () => pushAuthRequiredRoute(
               context,
               '/record/create?date=${formatRecordDate(createDate)}',
             ),
+            onClearFilter: widget.onClearFilter,
           )
         else
           FCard.raw(
@@ -326,10 +346,17 @@ class _TimelineDot extends StatelessWidget {
 }
 
 class _MobileTimelineEmptyState extends StatelessWidget {
-  const _MobileTimelineEmptyState({required this.l10n, required this.onCreate});
+  const _MobileTimelineEmptyState({
+    required this.l10n,
+    required this.onCreate,
+    this.hasActiveFilter = false,
+    this.onClearFilter,
+  });
 
   final AppLocalizations l10n;
   final VoidCallback onCreate;
+  final bool hasActiveFilter;
+  final VoidCallback? onClearFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -378,6 +405,16 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                 ],
               ),
             ),
+            if (hasActiveFilter && onClearFilter != null) ...[
+              const SizedBox(height: Spacing.level3),
+              FButton(
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: onClearFilter,
+                child: Text(l10n.recordTimelineClearFilter),
+              ),
+            ],
           ],
         ),
       ),

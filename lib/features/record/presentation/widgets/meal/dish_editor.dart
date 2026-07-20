@@ -53,10 +53,16 @@ class MealDishEditorSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: Spacing.level3),
-              FButton.icon(
-                key: Key('meal-dish-remove-$index'),
-                onPress: enabled ? () => onDishRemoved(index) : null,
-                child: const Icon(FLucideIcons.trash2),
+              Tooltip(
+                message: l10n.recordMealDishRemoveAction,
+                child: FButton.icon(
+                  key: Key('meal-dish-remove-$index'),
+                  onPress: enabled ? () => onDishRemoved(index) : null,
+                  child: Icon(
+                    FLucideIcons.trash2,
+                    semanticLabel: l10n.recordMealDishRemoveAction,
+                  ),
+                ),
               ),
             ],
           ),

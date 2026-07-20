@@ -279,30 +279,67 @@ class _SleepCandidateFields extends StatelessWidget {
     );
     final quality = payload['quality'] as String?;
 
+    // Extract bedtime/wakeTime from payload startAt/endAt if available.
+    final bedtime = _extractTimeOfDay(payload['startAt']);
+    final wakeTime = _extractTimeOfDay(payload['endAt']);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        FTextField(
-          key: Key('record-nlp-candidate-sleep-duration-$index'),
-          control: FTextFieldControl.managed(
-            initial: TextEditingValue(
-              text: _durationValue(payload['durationMinutes']),
+        Row(
+          children: [
+            Expanded(
+              child: FTimeField.picker(
+                key: Key('record-nlp-candidate-sleep-bedtime-$index'),
+                label: Text(l10n.recordSleepBedtimeLabel),
+                control: FTimeFieldControl.lifted(
+                  time: bedtime?.toFTime(),
+                  onChange: (value) {
+                    final nextPayload = Map<String, dynamic>.from(payload);
+                    final time = value?.toTimeOfDay();
+                    if (time != null) {
+                      nextPayload['startAt'] = _timeOfDayToPayload(time);
+                    } else {
+                      nextPayload.remove('startAt');
+                    }
+                    _syncDurationMinutes(nextPayload, time, wakeTime);
+                    onChanged(item.copyWith(payload: nextPayload));
+                  },
+                ),
+              ),
             ),
-            onChange: (value) {
-              final minutes = int.tryParse(value.text.trim());
-              final nextPayload = Map<String, dynamic>.from(payload);
-              if (minutes == null || minutes <= 0) {
-                nextPayload.remove('durationMinutes');
-              } else {
-                nextPayload['durationMinutes'] = minutes;
-              }
-              onChanged(item.copyWith(payload: nextPayload));
-            },
-          ),
-          enabled: enabled,
-          label: Text(l10n.recordSleepDurationLabel),
-          keyboardType: TextInputType.number,
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: FTimeField.picker(
+                key: Key('record-nlp-candidate-sleep-waketime-$index'),
+                label: Text(l10n.recordSleepWakeTimeLabel),
+                control: FTimeFieldControl.lifted(
+                  time: wakeTime?.toFTime(),
+                  onChange: (value) {
+                    final nextPayload = Map<String, dynamic>.from(payload);
+                    final time = value?.toTimeOfDay();
+                    if (time != null) {
+                      nextPayload['endAt'] = _timeOfDayToPayload(time);
+                    } else {
+                      nextPayload.remove('endAt');
+                    }
+                    _syncDurationMinutes(nextPayload, bedtime, time);
+                    onChanged(item.copyWith(payload: nextPayload));
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
+        if (bedtime != null && wakeTime != null) ...[
+          const SizedBox(height: Spacing.level3),
+          Text(
+            '${l10n.recordSleepDurationLabel}: ${_formatDuration(computeSleepDurationMinutes(bedtime, wakeTime) ?? 0, l10n)}',
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: context.theme.colors.mutedForeground),
+          ),
+        ],
         const SizedBox(height: Spacing.level3),
         FSelect<String>.rich(
           key: Key('record-nlp-candidate-sleep-quality-$index'),
@@ -336,9 +373,51 @@ class _SleepCandidateFields extends StatelessWidget {
     );
   }
 
-  String _durationValue(Object? value) {
-    if (value is num && value > 0) return value.round().toString();
-    return '';
+  /// Extracts a [TimeOfDay] from a payload value that may be an ISO string
+  /// or an hour:minute map.
+  TimeOfDay? _extractTimeOfDay(Object? value) {
+    if (value is String) {
+      final dt = DateTime.tryParse(value);
+      if (dt != null) {
+        final local = dt.toLocal();
+        return TimeOfDay(hour: local.hour, minute: local.minute);
+      }
+      return null;
+    }
+    if (value is Map) {
+      final hour = value['hour'];
+      final minute = value['minute'];
+      if (hour is int && minute is int) {
+        return TimeOfDay(hour: hour, minute: minute);
+      }
+    }
+    return null;
+  }
+
+  /// Converts a [TimeOfDay] to a storable payload map.
+  Map<String, int> _timeOfDayToPayload(TimeOfDay time) {
+    return {'hour': time.hour, 'minute': time.minute};
+  }
+
+  /// Updates `durationMinutes` in the payload based on bedtime and wake time.
+  void _syncDurationMinutes(
+    Map<String, dynamic> payload,
+    TimeOfDay? bedtime,
+    TimeOfDay? wakeTime,
+  ) {
+    final minutes = computeSleepDurationMinutes(bedtime, wakeTime);
+    if (minutes != null && minutes > 0) {
+      payload['durationMinutes'] = minutes;
+    } else {
+      payload.remove('durationMinutes');
+    }
+  }
+
+  String _formatDuration(int minutes, AppLocalizations l10n) {
+    final h = minutes ~/ 60;
+    final m = minutes % 60;
+    if (m == 0) return '$h${l10n.todayVitalSleepUnit}';
+    return '$h${l10n.todayVitalSleepUnit} $m${l10n.recordSleepMinutesUnit}';
   }
 }
 
@@ -349,4 +428,12 @@ String normalizedWaterUnit(String? value) {
     dailyRecordWaterTimesUnit => dailyRecordWaterTimesUnit,
     _ => dailyRecordWaterDefaultUnit,
   };
+}
+
+extension _NlpTimeOfDay on TimeOfDay {
+  FTime toFTime() => FTime(hour, minute);
+}
+
+extension _NlpFTime on FTime {
+  TimeOfDay toTimeOfDay() => TimeOfDay(hour: hour, minute: minute);
 }
