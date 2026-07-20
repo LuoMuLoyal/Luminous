@@ -16,6 +16,7 @@ class ReportExportSection extends StatelessWidget {
     required this.l10n,
     this.onActionTap,
     this.isDataInsufficient = false,
+    this.clinicShareInFlight = false,
   });
 
   final List<ReportExportAction> actions;
@@ -24,6 +25,7 @@ class ReportExportSection extends StatelessWidget {
   final AppLocalizations l10n;
   final Future<void> Function(ReportExportKind kind)? onActionTap;
   final bool isDataInsufficient;
+  final bool clinicShareInFlight;
 
   double _exportCardHeight(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
@@ -70,6 +72,7 @@ class ReportExportSection extends StatelessWidget {
               action: actions[index],
               latestRequest: latestRequest,
               requestInFlight: requestInFlight,
+              clinicShareInFlight: clinicShareInFlight,
               onTap: onActionTap,
               l10n: l10n,
             );
@@ -87,6 +90,7 @@ class _ExportCard extends StatelessWidget {
     required this.requestInFlight,
     required this.l10n,
     this.onTap,
+    this.clinicShareInFlight = false,
   });
 
   final ReportExportAction action;
@@ -94,6 +98,7 @@ class _ExportCard extends StatelessWidget {
   final DataExportRequestInFlightState requestInFlight;
   final AppLocalizations l10n;
   final Future<void> Function(ReportExportKind kind)? onTap;
+  final bool clinicShareInFlight;
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +108,21 @@ class _ExportCard extends StatelessWidget {
     final subtitle = reportExportCardSubtitle(l10n, action.kind, latestRequest);
     final enabled = onTap != null;
     final exportInput = reportExportInputForKind(action.kind);
-    final showProgress =
-        exportInput != null && requestInFlight.matches(exportInput);
+    final isClinicShare = action.kind == ReportExportKind.clinicShare;
+    final showProgress = isClinicShare
+        ? clinicShareInFlight
+        : exportInput != null && requestInFlight.matches(exportInput);
+    final anyInFlight = isClinicShare
+        ? clinicShareInFlight
+        : requestInFlight.inFlight;
     final trailingIcon = showProgress
         ? FLucideIcons.loaderCircle
-        : enabled && !requestInFlight.inFlight
+        : enabled && !anyInFlight
         ? FLucideIcons.chevronRight
         : FLucideIcons.lock;
 
     return FButton.raw(
-      onPress: !enabled || requestInFlight.inFlight
+      onPress: !enabled || anyInFlight
           ? null
           : () async {
               await onTap!(action.kind);

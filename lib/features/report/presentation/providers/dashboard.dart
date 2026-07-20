@@ -92,3 +92,20 @@ final reportDashboardSelectedQueryProvider =
       ReportDashboardSelectedQueryNotifier,
       ReportDashboardQuery
     >(ReportDashboardSelectedQueryNotifier.new);
+
+/// Tracks whether a clinic-share request is currently in-flight.
+/// Clinic share uses a separate API endpoint (not the data-export pipeline),
+/// so it needs its own in-flight state to show a spinner on the export card.
+class ClinicShareInFlightNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool value) {
+    state = value;
+  }
+}
+
+final clinicShareInFlightProvider =
+    NotifierProvider<ClinicShareInFlightNotifier, bool>(
+      ClinicShareInFlightNotifier.new,
+    );

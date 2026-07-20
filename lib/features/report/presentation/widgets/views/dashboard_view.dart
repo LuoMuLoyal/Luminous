@@ -33,6 +33,7 @@ class ReportDashboardView extends StatelessWidget {
     this.exportRequestInFlight = const DataExportRequestInFlightState(
       inFlight: false,
     ),
+    this.clinicShareInFlight = false,
     this.isPreview = false,
     this.generatedAtLabel = '',
     this.onSignIn,
@@ -57,6 +58,7 @@ class ReportDashboardView extends StatelessWidget {
   final ValueChanged<ReportDataKind>? onMetricSelected;
   final DataExportRequestDataDto? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
+  final bool clinicShareInFlight;
   final bool isPreview;
   final String generatedAtLabel;
   final VoidCallback? onSignIn;
@@ -188,6 +190,7 @@ class ReportDashboardView extends StatelessWidget {
             actions: dashboard.exportActions,
             latestRequest: latestExportRequest,
             requestInFlight: exportRequestInFlight,
+            clinicShareInFlight: clinicShareInFlight,
             onActionTap: onExportActionTap,
             l10n: l10n,
           ),
@@ -289,6 +292,7 @@ class ReportDashboardView extends StatelessWidget {
                 actions: dashboard.exportActions,
                 latestRequest: latestExportRequest,
                 requestInFlight: exportRequestInFlight,
+                clinicShareInFlight: clinicShareInFlight,
                 onActionTap: onExportActionTap,
                 l10n: l10n,
                 isDataInsufficient:

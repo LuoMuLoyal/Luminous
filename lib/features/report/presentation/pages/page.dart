@@ -129,39 +129,45 @@ class ReportPage extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) async {
-    final result = await runGuarded(
-      ref: ref,
-      tag: 'ReportPage._handleClinicShare',
-      action: () async {
-        final reportsApi = ref.read(lucentClientProvider).reports;
-        final response = await reportsApi
-            .reportsControllerShareClinicSummaryV1();
-        final shareUrl = response.shareUrl;
-        if (shareUrl.isEmpty) {
-          if (context.mounted) {
-            await AppToast.show(context, l10n.reportExportFailedToast);
+    final notifier = ref.read(clinicShareInFlightProvider.notifier);
+    notifier.set(true);
+    try {
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'ReportPage._handleClinicShare',
+        action: () async {
+          final reportsApi = ref.read(lucentClientProvider).reports;
+          final response = await reportsApi
+              .reportsControllerShareClinicSummaryV1();
+          final shareUrl = response.shareUrl;
+          if (shareUrl.isEmpty) {
+            if (context.mounted) {
+              await AppToast.show(context, l10n.reportExportFailedToast);
+            }
+            return false;
           }
-          return false;
-        }
-        await SharePlus.instance.share(
-          ShareParams(
-            text: shareUrl,
-            subject: l10n.reportExportClinicShareTitle,
-          ),
-        );
-        return true;
-      },
-    );
-    switch (result) {
-      case Success():
-        // Toast already shown inside action if URL was empty.
-        break;
-      case Failure(:final error):
-        if (!context.mounted) return;
-        await AppToast.show(
-          context,
-          '${l10n.reportExportFailedToast}: ${error.message}',
-        );
+          await SharePlus.instance.share(
+            ShareParams(
+              text: shareUrl,
+              subject: l10n.reportExportClinicShareTitle,
+            ),
+          );
+          return true;
+        },
+      );
+      switch (result) {
+        case Success():
+          // Toast already shown inside action if URL was empty.
+          break;
+        case Failure(:final error):
+          if (!context.mounted) return;
+          await AppToast.show(
+            context,
+            '${l10n.reportExportFailedToast}: ${error.message}',
+          );
+      }
+    } finally {
+      notifier.set(false);
     }
   }
 
@@ -403,6 +409,7 @@ class ReportPage extends ConsumerWidget {
       dataExportControllerProvider.select((s) => s.asData?.value),
     );
     final exportRequestInFlight = ref.watch(dataExportRequestInFlightProvider);
+    final clinicShareInFlight = ref.watch(clinicShareInFlightProvider);
     final suggestionHistoryAsync = canAccessProtectedData
         ? ref.watch(suggestionHistoryProvider)
         : null;
@@ -436,6 +443,7 @@ class ReportPage extends ConsumerWidget {
       aiSummaryRange: selectedAiSummaryRange,
       latestExportRequest: latestExportRequest,
       exportRequestInFlight: exportRequestInFlight,
+      clinicShareInFlight: clinicShareInFlight,
       isPreview: isPreview,
       generatedAtLabel: generatedAtLabel,
       onSignIn: onSignIn,
