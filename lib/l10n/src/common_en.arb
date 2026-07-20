@@ -48,5 +48,6 @@
     }
   },
   "commonCancel": "Cancel",
-  "commonConfirm": "Confirm"
+  "commonConfirm": "Confirm",
+  "commonClose": "Close"
 }

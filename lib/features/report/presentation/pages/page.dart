@@ -25,6 +25,7 @@ import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -451,7 +452,8 @@ class ReportPage extends ConsumerWidget {
       onSync: () => _refreshDashboard(ref),
       suggestionHistory: suggestionHistory,
       isSuggestionHistoryLoading: suggestionHistoryAsync?.isLoading ?? false,
-      onSuggestionTap: null,
+      onSuggestionTap: (item) =>
+          showSuggestionHistoryDetailSheet(context, suggestion: item),
       onAiSummaryRangeChanged: (range) {
         ref.read(reportAiSummarySelectedRangeProvider.notifier).setRange(range);
       },

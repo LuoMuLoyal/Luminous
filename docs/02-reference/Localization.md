@@ -91,8 +91,9 @@ Persisted preference keys:
   section labels (info/dosage/timeline), field hints (blood type/strength/dose/route), allergy
   severity descriptions, condition status descriptions, and the "+N more" readiness gap badge is
   owned by the Mine ARB entries.
-- Report root-page suggestion-history copy such as section title, empty state, and `已读 / 未读`
-  badges is owned by the Report ARB entries.
+- Report root-page suggestion-history copy such as section title, empty state, lifecycle
+  badges, and suggestion detail sheet labels (rule ID, trigger type, confidence, generated-at,
+  feedback, expired-at) is owned by the Report ARB entries.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings
   (`blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`), plus the
   section labels used by the theme settings subpage and the general-settings summary.

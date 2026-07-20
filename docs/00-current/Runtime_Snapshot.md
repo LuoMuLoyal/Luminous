@@ -41,7 +41,7 @@ Last updated: 2026-07-20 (P1 mine+settings)
 - 拦截器链：`AuthInterceptor`（token 注入 + 401 刷新）→ `RetryInterceptor`（5xx/超时重试）→ `ErrorInterceptor`（DioException → LucentApiException 映射）。
 - `LucentDioClient` 仅负责 Dio 实例配置 + interceptor 注册。
 - `lucentClientProvider`（keepAlive）是全部 feature 的统一 API 访问入口。
-- `LucentSseClient` 支持 `reconnect` 自动重连。
+- `LucentSseClient` 支持 `reconnect` 自动重连；SSE 请求单独覆盖 `receiveTimeout: Duration.zero`（不限超时），避免 AI 生成慢时主 Dio 的 10s `receiveTimeout` 导致流提前中断。
 - `LucentApiPaths` 常量注册表集中管理所有 API 路径字符串。
 - `LucentErrorMapper.toAppError()` 将任意异常转换为 `AppError`（5 分类：network/auth/server/business/unknown）。网络层 fallback 消息为英文（locale-neutral），业务错误消息由服务端按 locale 返回。
 

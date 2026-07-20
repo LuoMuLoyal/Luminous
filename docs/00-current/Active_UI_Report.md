@@ -117,4 +117,8 @@ Last updated: 2026-07-20
 - **就绪卡"生成总结"loading**：`readiness.dart` 的 `_PrimaryAction` ready 状态新增 `isGenerating` 参数，生成中禁用按钮 + 显示 `FCircularProgress`。`dashboard_view.dart` 传入 `isGenerating: aiSummaryState.status == ReportAiSummaryCardStatus.loading`。
 - **emptyInsufficientBuilder 死代码删除**：`page.dart` 移除不可达的 `emptyInsufficientBuilder` 分支。
 - **分数字号 token 外覆盖修复**：`score_hero.dart` 从 `TypographyToken.level9.display(context).copyWith(fontSize: ...)` 改为 `TextStyle(fontSize: ...)`，消除先套 token 再覆盖的矛盾写法。
-- **导出卡禁用态 chevron 修复**：`export.dart` 的 `_ExportCard` trailing 图标在 `requestInFlight.inFlight` 时显示 `lock` 而非 `chevronRight`，正确表达"其他导出进行中"的禁用语义。
+- **导出卡禁用态 chevron 修复**：`export.dart` 的 `_ExportCard` trailing 图标在 `requestInFlight.inFlight` 时显示 `lock` 而非 `chevronRight`，正确表达“其他导出进行中”的禁用语义。
+
+## 2026-07-20 联调修正
+
+- **建议历史详情面板**：新增 `suggestion_history_detail_sheet.dart`，点击历史建议列表项弹出详情（桌面端 `showFDialog` + `AppDialogShell`，移动端 `showModalBottomSheet`）。展示类型图标+标题、生命周期 Badge、原因正文、规则 ID/版本/触发方式/置信度/生成时间 meta 字段、用户反馈（如有）、过期时间（如有）。`page.dart` 的 `onSuggestionTap` 从 `null` 改为调用 `showSuggestionHistoryDetailSheet`。

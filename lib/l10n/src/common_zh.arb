@@ -48,5 +48,6 @@
     }
   },
   "commonCancel": "取消",
-  "commonConfirm": "确认"
+  "commonConfirm": "确认",
+  "commonClose": "关闭"
 }

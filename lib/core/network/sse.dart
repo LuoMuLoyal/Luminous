@@ -81,7 +81,14 @@ class LucentSseClient {
     final response = await _dio.post<ResponseBody>(
       path,
       data: body,
-      options: Options(responseType: ResponseType.stream, headers: headers),
+      options: Options(
+        responseType: ResponseType.stream,
+        headers: headers,
+        // SSE 是长连接流式响应，receiveTimeout 是两次数据事件之间的
+        // 最大间隔。AI 生成可能需要 >10s 来产出第一个 chunk，设为 0
+        // （不限超时）避免流提前中断。
+        receiveTimeout: Duration.zero,
+      ),
     );
 
     final responseBody = response.data;
