@@ -69,7 +69,7 @@ class ReportTrendSection extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.level4),
         Semantics(
-          label: l10n.reportTrendSectionTitle,
+          label: _buildSemanticsLabel(l10n),
           child: _TrendChart(trends: trends, startDate: startDate),
         ),
       ],
@@ -84,6 +84,16 @@ class ReportTrendSection extends StatelessWidget {
     if (selected != null && selected != selectedQuery) {
       onQueryChanged(selected);
     }
+  }
+
+  String _buildSemanticsLabel(AppLocalizations l10n) {
+    final parts = <String>[l10n.reportTrendSectionTitle];
+    for (final series in trends) {
+      parts.add(
+        '${reportMetricTitle(l10n, series.kind)}: ${series.currentValue}${series.unit}',
+      );
+    }
+    return parts.join(', ');
   }
 }
 
@@ -233,8 +243,17 @@ class _TrendChart extends StatelessWidget {
                       getTooltipItems: (touchedSpots) {
                         return touchedSpots.map((spot) {
                           final series = trends[spot.barIndex];
+                          final index = spot.spotIndex;
+                          final value =
+                              index >= 0 && index < series.values.length
+                              ? series.values[index]
+                              : null;
+                          final dateLabel = _dateLabelForIndex(index, context);
+                          final valueText = value != null
+                              ? '${value.toStringAsFixed(value.truncateToDouble() == value ? 0 : 1)}${series.unit}'
+                              : series.currentValue;
                           return LineTooltipItem(
-                            '${series.currentValue}${series.unit}',
+                            '$valueText\n$dateLabel',
                             TypographyToken.level3
                                 .body(context)
                                 .copyWith(
@@ -269,6 +288,15 @@ class _TrendChart extends StatelessWidget {
       final date = parsed.add(Duration(days: i));
       return formatter.format(date);
     });
+  }
+
+  /// Returns a locale-aware date label for a specific chart index.
+  String _dateLabelForIndex(int index, BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final parsed = DateTime.tryParse(startDate);
+    if (parsed == null || index < 0) return '';
+    final date = parsed.add(Duration(days: index));
+    return DateFormat.MMMEd(locale).format(date);
   }
 }
 

@@ -38,13 +38,9 @@
 
 ### 4.5 报告（report）
 
-- ❌（中）切时间范围首次加载仍整页骨架，无旧值兜底（family 新实例无缓存，`providers/dashboard.dart:15-19`）。
-- ❌（中）AI 总结"自定义"范围仍无日期选择入口，可空日期请求（`sections/ai_summary.dart:117-120`、`providers/ai_summary.dart:49-55`）。
-- ❌（中）桌面 loading 外壳 `ReportActionBar` 仍空回调假按钮（`page.dart:353`）。
-- ⚠️（中）图表 tooltip 恒显示 `currentValue` 而非触点值且无日期（`trend.dart:237`）；图表 Semantics 只有标题无数值摘要。
 - ⚠️（中）clinicShare 全程无进行中态；非进行中卡片禁用态仍显示 chevron（`export.dart:108-119`）。
-- ⚠️（中）移动端"弹窗套弹窗"未改（`range_picker_dialog.dart:15,60`）。
-- ⚠️（低）`emptyInsufficientBuilder` 死代码仍在（`page.dart:291-314`）；分数字号 token 外覆盖；装饰图标无 `ExcludeSemantics`；就绪卡"生成总结"入口无 loading；suggestion_history 仍传 `onSuggestionTap: null`（原计划注明可不阻塞）。
+- ⚠️（中）移动端“弹窗套弹窗”未改（`range_picker_dialog.dart:15,60`）。
+- ⚠️（低）`emptyInsufficientBuilder` 死代码仍在（`page.dart:291-314`）；分数字号 token 外覆盖；装饰图标无 `ExcludeSemantics`；就绪卡“生成总结”入口无 loading；suggestion_history 仍传 `onSuggestionTap: null`（原计划注明可不阻塞）。
 
 ### 4.6 我的（mine）——完成度最高
 
@@ -74,8 +70,7 @@
 
 ### P1 —— 一个迭代内（中级别实质缺口）
 
-1. 报告：切范围保留旧值；AI“自定义”日期入口（或移除该项）；桌面 loading 假按钮禁用；图表 tooltip 触点值+日期。
-2. PIN 行内 error；帮助页重试 action。
+1. PIN 行内 error；帮助页重试 action。
 
 ### P2 —— 打磨批（低级别合一次提交）
 

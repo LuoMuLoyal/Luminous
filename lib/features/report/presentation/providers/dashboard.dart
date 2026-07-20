@@ -12,6 +12,22 @@ part 'dashboard.g.dart';
 
 const _reportDashboardTimeout = Duration(seconds: 5);
 
+/// Caches the last successfully loaded [ReportDashboard] so that switching
+/// time ranges can show stale data instead of a full skeleton.
+class ReportLastDashboardNotifier extends Notifier<ReportDashboard?> {
+  @override
+  ReportDashboard? build() => null;
+
+  void set(ReportDashboard dashboard) {
+    state = dashboard;
+  }
+}
+
+final reportLastDashboardProvider =
+    NotifierProvider<ReportLastDashboardNotifier, ReportDashboard?>(
+      ReportLastDashboardNotifier.new,
+    );
+
 @Riverpod(keepAlive: true)
 Future<ReportDashboard> reportDashboard(
   Ref ref,

@@ -245,9 +245,30 @@ class ReportPage extends ConsumerWidget {
       reportDashboardProvider(selectedDashboardQuery),
     );
 
+    // Cache the last successful dashboard so that switching time ranges
+    // shows stale data instead of a full skeleton.
+    ref.listen<AsyncValue<ReportDashboard>>(
+      reportDashboardProvider(selectedDashboardQuery),
+      (_, next) {
+        next.whenData((dashboard) {
+          ref.read(reportLastDashboardProvider.notifier).set(dashboard);
+        });
+      },
+    );
+    final cachedDashboard = ref.watch(reportLastDashboardProvider);
+
+    // If the current query is loading without a value, fall back to the
+    // cached dashboard so resolvePageViewState shows stale data.
+    final effectiveAsync =
+        dashboardAsync.isLoading &&
+            !dashboardAsync.hasValue &&
+            cachedDashboard != null
+        ? AsyncValue<ReportDashboard>.data(cachedDashboard)
+        : dashboardAsync;
+
     final pageState = resolvePageViewState<ReportDashboard>(
       session: session,
-      data: dashboardAsync,
+      data: effectiveAsync,
     );
 
     return ShellDeferredContent(
@@ -350,7 +371,12 @@ class ReportPage extends ConsumerWidget {
                 ),
               ),
             ],
-            bottom: ReportActionBar(onGenerate: () {}, onSync: () {}),
+            bottom: ReportActionBar(
+              onGenerate: () {},
+              onSync: () {},
+              isGenerating: true,
+              isSyncing: true,
+            ),
             child: const ReportSkeletonView(),
           )
         : _ReportMobileShell(

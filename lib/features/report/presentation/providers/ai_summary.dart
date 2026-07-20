@@ -1,3 +1,4 @@
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
@@ -51,6 +52,17 @@ class ReportAiSummaryController extends Notifier<ReportAiSummaryCardState> {
       if (query.isCustom) {
         startDate = _formatDate(query.startDate);
         endDate = _formatDate(query.endDate);
+      } else {
+        // Dashboard isn't in custom mode — use its actual date range.
+        final cached = ref.read(reportLastDashboardProvider);
+        if (cached != null) {
+          startDate = cached.startDate;
+          endDate = cached.endDate;
+        } else {
+          final now = clock.now();
+          startDate = _formatDate(now.subtract(const Duration(days: 7)));
+          endDate = _formatDate(now);
+        }
       }
     }
 

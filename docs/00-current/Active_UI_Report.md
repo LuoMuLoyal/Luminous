@@ -1,6 +1,6 @@
 # Active UI — Report
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
 
 ## 页面结构
 
@@ -78,8 +78,8 @@ Last updated: 2026-07-18
 
 - 趋势图 Y 轴恢复 `showTitles: true`，显示格式化数值。
 - 序列配色区分：sleep 从 info 改为 warning（琥珀），general 从 primary 改为 success（绿），四个 kind 互异。
-- `lineTouchData` 开启 touch tooltip（显示当前值+单位）。
-- 图表外包 `Semantics(label: reportTrendSectionTitle)`。
+- `lineTouchData` 开启 touch tooltip，显示触点实际值+单位+日期（`DateFormat.MMMEd(locale)` 格式化）。
+- 图表外包 `Semantics` label 包含标题 + 各指标当前值摘要。
 - `_LegendDot` 新增 `currentValue` 和 `unit` 参数，图例项带当前值+单位。
 - X 轴标签改用 `DateFormat.Md(locale)` 格式化。
 - readiness 三态徽章按 status 映射：insufficient 用 `warning`，ready 用 `success`。
@@ -102,3 +102,11 @@ Last updated: 2026-07-18
 - 桌面 findings 从横向滚动 `Row` 改为 `Wrap` 自动换行。
 - `range_picker_dialog` 日历弹窗新增"取消"按钮（ghost 样式 + `Navigator.pop(null)`）。
 - 桌面端趋势区传 `showRangePill: false`，避免与 `DesktopTabShell` trailing pill 重复。
+
+## 2026-07-20 P1 修复
+
+- **切时间范围保留旧值**：新增 `reportLastDashboardProvider` 缓存最近一次成功加载的 dashboard。切换时间范围时，新查询加载期间展示旧数据而非整页骨架，`isRefreshing` 指示器仍正常显示。
+- **AI 总结"自定义"范围日期兜底**：`generate()` 在 `range == custom` 但 dashboard 非 custom 时，从缓存的 dashboard 取 `startDate`/`endDate`，不再传 null 日期。
+- **桌面 loading 假按钮禁用**：`_buildLoadingShell` 中 `ReportActionBar` 传 `isGenerating: true, isSyncing: true`，加载态按钮不可点击。
+- **图表 tooltip 触点值+日期**：tooltip 从恒显示 `currentValue` 改为根据 `spot.spotIndex` 取实际触点值，并新增日期行。
+- **图表 Semantics 数值摘要**：`Semantics.label` 从仅标题扩展为包含各指标当前值摘要。
