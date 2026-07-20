@@ -97,7 +97,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                     Icon(
                       FLucideIcons.siren,
                       color: SemanticColor.destructive.solid(context),
-                      size: 16,
+                      size: Spacing.level5,
                     ),
                     const SizedBox(width: Spacing.level2),
                     Expanded(

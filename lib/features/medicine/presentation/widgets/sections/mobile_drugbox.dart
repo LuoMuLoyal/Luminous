@@ -374,7 +374,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
               Icon(
                 icon,
                 color: color.solid(context).withValues(alpha: 0.78),
-                size: 16,
+                size: Spacing.level5,
               ),
               const SizedBox(width: Spacing.level1),
               Expanded(

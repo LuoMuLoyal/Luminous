@@ -136,3 +136,9 @@ Last updated: 2026-07-20
 - **扫码遮罩安全弹窗**：新增 `_dismissOverlay()` 函数，通过 `canPop()` 检查后再 `pop()`，替代脆弱的 `Navigator.of(rootNavigator: true).pop()` 直弹。
 - **扫码结果对话框关闭按钮**：新增 `onClose` 可选回调和 `scanCloseAction` 按钮（ghost 变体），无结果时可直接关闭不必重拍。
 
+## 2026-07-20 P2 用药模块打磨
+
+- **图标魔数统一**：`mobile_safety.dart`、`mobile_drugbox.dart`、`risk_red_flag.dart`、`rows.dart`、`log_panels.dart`、`form_fields.dart` 的 `size: 16` / `size: 18` 统一替换为 `size: Spacing.level5`（18），消除魔数。
+- **提示音下拉固定宽 140 → Flexible**：`rows.dart` 的 `SizedBox(width: 140, child: FSelect(...))` 改为 `Flexible(child: FSelect(...))`，宽度自适应。
+- **搜索超时文案中性化**：`medicine_search.dart` 的 `TimeoutException` 消息从硬编码中文改为英文（实际不上屏，由 `LucentErrorMapper` 覆盖）。
+

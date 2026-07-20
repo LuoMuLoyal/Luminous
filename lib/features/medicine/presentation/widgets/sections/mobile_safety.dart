@@ -133,7 +133,7 @@ class _SafetySummaryBanner extends StatelessWidget {
                 summary.icon,
                 key: const Key('medicine-safety-summary-icon'),
                 color: iconColor,
-                size: 18,
+                size: Spacing.level5,
               ),
             ),
             const SizedBox(width: Spacing.level3),

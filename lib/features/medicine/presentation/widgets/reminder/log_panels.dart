@@ -168,7 +168,7 @@ class _DeliveryLogRow extends StatelessWidget {
           Icon(
             deliveryStatusIcon(log.status),
             color: color.solid(context),
-            size: 18,
+            size: Spacing.level5,
           ),
           const SizedBox(width: Spacing.level3),
           Expanded(
@@ -245,7 +245,7 @@ class _TodayLogRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: color.solid(context), size: 18),
+          Icon(icon, color: color.solid(context), size: Spacing.level5),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(

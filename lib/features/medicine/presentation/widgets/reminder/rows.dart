@@ -77,7 +77,7 @@ class ValueActionRow extends StatelessWidget {
               variant: FButtonVariant.ghost,
               size: .sm,
               onPress: onClear,
-              child: const Icon(FLucideIcons.x, size: 18),
+              child: const Icon(FLucideIcons.x, size: Spacing.level5),
             )
           : Icon(
               FLucideIcons.chevronRight,
@@ -252,8 +252,7 @@ class SoundPreferenceRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.level3),
-          SizedBox(
-            width: 140,
+          Flexible(
             child: FSelect<MedicineReminderSoundPreference>(
               items: {
                 for (final item in MedicineReminderSoundPreference.values)

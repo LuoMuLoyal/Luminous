@@ -125,8 +125,10 @@ class TimePickerRow extends StatelessWidget {
                 variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.xs,
                 mainAxisSize: MainAxisSize.min,
-                prefix: const Icon(FLucideIcons.clock3, size: 16),
-                suffix: canRemove ? const Icon(FLucideIcons.x, size: 16) : null,
+                prefix: const Icon(FLucideIcons.clock3, size: Spacing.level5),
+                suffix: canRemove
+                    ? const Icon(FLucideIcons.x, size: Spacing.level5)
+                    : null,
                 child: Text(
                   formatTimeOfDay(
                     TimeOfDay(
@@ -143,7 +145,7 @@ class TimePickerRow extends StatelessWidget {
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
               mainAxisSize: MainAxisSize.min,
-              prefix: const Icon(FLucideIcons.plus, size: 16),
+              prefix: const Icon(FLucideIcons.plus, size: Spacing.level5),
               child: Text(l10n.medicineReminderAddTimeAction),
             ),
           ],
