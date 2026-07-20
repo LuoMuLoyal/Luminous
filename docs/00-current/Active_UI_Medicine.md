@@ -150,4 +150,8 @@ Last updated: 2026-07-20
 - **日志面板展开收起**：`ReminderDeliveryLogPanel` 从 `StatelessWidget` 改为 `StatefulWidget`，新增 `_showAll` 状态。日志超过 5 条时底部显示 ghost 按钮"查看全部"/"收起"，点击切换全部/前 5 条。新增 `medicineReminderLogCollapse` l10n 键。
 - **告警行装饰 chevron 移除**：`mobile_safety.dart` 的 `_SafetyAlertRow` 移除尾部装饰性 `chevronRight`，整行已是 `FTappable`，chevron 与上方"查看"按钮目标重复。
 - **短信不可用行降权**：`rows.dart` 的 `UnavailableMethodRow` 整体包裹 `Opacity(0.5)`，标题从 `FontWeight.w700` 改为 `mutedForeground` 色，视觉上明确表达"不可用"语义。
+- **频率切换清空星期提示**：`reminder_edit.dart` 切换为每日频率时若有已选星期，显示 `medicineReminderFrequencyDailyClearedWeekdays` toast 提示。
+- **扫码置信度解释**：`recognize_dialog.dart` 的置信度文本包裹 `FTooltip`，长按显示 `scanResultConfidenceExplanation` 解释文案。
+- **扫码结果头图占位**：`recognize_dialog.dart` 的 `Image.file` 新增 `errorBuilder`，图片加载失败时显示 `imageOff` 图标占位。
+- **扫码线框尺寸常量化**：`barcode_scanner.dart` 的 280×120 硬编码提取为 `_scanFrameWidth` / `_scanFrameHeight` 文件级常量。
 

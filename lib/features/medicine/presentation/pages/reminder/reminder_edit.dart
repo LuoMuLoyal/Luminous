@@ -402,9 +402,16 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                               );
                             },
                       onFrequencyChanged: (value) {
+                        final hadWeekdays = selectedWeekdays.value.isNotEmpty;
                         frequency.value = value;
                         if (value == ReminderFrequency.daily) {
                           selectedWeekdays.value = <int>{};
+                          if (hadWeekdays) {
+                            AppToast.show(
+                              context,
+                              l10n.medicineReminderFrequencyDailyClearedWeekdays,
+                            );
+                          }
                         } else if (selectedWeekdays.value.isEmpty) {
                           selectedWeekdays.value = {clock.now().weekday % 7};
                         }

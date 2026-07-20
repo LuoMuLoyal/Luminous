@@ -19,6 +19,9 @@ import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:forui/forui.dart';
 
+const _scanFrameWidth = 280.0;
+const _scanFrameHeight = 120.0;
+
 class BarcodeScannerPage extends ConsumerStatefulWidget {
   const BarcodeScannerPage({super.key});
 
@@ -286,8 +289,8 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                       ),
                       Center(
                         child: Container(
-                          width: 280,
-                          height: 120,
+                          width: _scanFrameWidth,
+                          height: _scanFrameHeight,
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(12),
@@ -300,8 +303,8 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                 // Corner brackets around scan frame
                 Center(
                   child: SizedBox(
-                    width: 280,
-                    height: 120,
+                    width: _scanFrameWidth,
+                    height: _scanFrameHeight,
                     child: CustomPaint(
                       painter: _ScanCornerPainter(
                         color: colors.primary,

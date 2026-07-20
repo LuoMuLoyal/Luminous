@@ -300,6 +300,7 @@
   },
   "medicineReminderDeliveryLogsTitle": "Reminder delivery history",
   "medicineReminderLogCollapse": "Collapse",
+  "medicineReminderFrequencyDailyClearedWeekdays": "Weekday selection cleared when switching to daily frequency",
   "medicineReminderNoDeliveryLogs": "No reminder delivery records yet",
   "medicineReminderDeliveryChannelLocal": "Local notification",
   "medicineReminderDeliveryChannelPush": "Push notification",
@@ -519,6 +520,7 @@
       }
     }
   },
+  "scanResultConfidenceExplanation": "Confidence indicates how closely the recognition result matches the database. For reference only — verify against the medicine packaging before confirming.",
   "scanResultOtherMatches": "Select other matches ({count})",
   "@scanResultOtherMatches": {
     "placeholders": {

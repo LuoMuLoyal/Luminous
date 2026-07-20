@@ -69,6 +69,16 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      width: 60,
+                      height: 60,
+                      color: colors.muted,
+                      child: Icon(
+                        FLucideIcons.imageOff,
+                        size: Spacing.level5,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.level4),
@@ -113,11 +123,17 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                         top.approvalNumber!,
                       ),
                     const SizedBox(height: Spacing.level2),
-                    Text(
-                      l10n.scanResultConfidenceLabel(
-                        (top.confidence * 100).toInt(),
+                    FTooltip(
+                      tipBuilder: (context, controller) =>
+                          Text(l10n.scanResultConfidenceExplanation),
+                      child: Text(
+                        l10n.scanResultConfidenceLabel(
+                          (top.confidence * 100).toInt(),
+                        ),
+                        style: typography.body.sm.copyWith(
+                          color: colors.primary,
+                        ),
                       ),
-                      style: typography.body.sm.copyWith(color: colors.primary),
                     ),
                   ],
                 ),
