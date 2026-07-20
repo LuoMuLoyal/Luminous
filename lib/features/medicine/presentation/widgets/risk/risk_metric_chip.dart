@@ -7,17 +7,19 @@ class MedicineRiskMetricChip extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    this.onTap,
   });
 
   final String label;
   final String value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return FCard.raw(
+    final card = FCard.raw(
       style: .delta(
         decoration: .shapeDelta(
           color: SemanticColor.neutral.muted(context),
@@ -49,5 +51,7 @@ class MedicineRiskMetricChip extends StatelessWidget {
         ),
       ),
     );
+    if (onTap == null) return card;
+    return FTappable(onPress: onTap, child: card);
   }
 }

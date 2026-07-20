@@ -154,4 +154,6 @@ Last updated: 2026-07-20
 - **扫码置信度解释**：`recognize_dialog.dart` 的置信度文本包裹 `FTooltip`，长按显示 `scanResultConfidenceExplanation` 解释文案。
 - **扫码结果头图占位**：`recognize_dialog.dart` 的 `Image.file` 新增 `errorBuilder`，图片加载失败时显示 `imageOff` 图标占位。
 - **扫码线框尺寸常量化**：`barcode_scanner.dart` 的 280×120 硬编码提取为 `_scanFrameWidth` / `_scanFrameHeight` 文件级常量。
+- **指标 chip 联动**：`MedicineRiskMetricChip` 新增 `onTap` 参数，有对应列表段时点击用 `Scrollable.ensureVisible` 滚动到 findings/coverage 段。`_RiskCheckSectionCard` 构造函数加 `super.key` 接受 `GlobalKey`。
+- **桌面预览空态改结构化**：搜索 `PreviewPanel` 的 `preview == null` 空态从一行小字改为带图标+居中文案的结构化空态。
 

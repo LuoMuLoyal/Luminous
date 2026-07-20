@@ -262,12 +262,23 @@ class PreviewPanel extends StatelessWidget {
               ],
               if (preview == null)
                 Padding(
-                  padding: const EdgeInsets.only(top: Spacing.level5),
-                  child: Text(
-                    l10n.medicineSearchPreviewEmpty,
-                    style: typography.body.md.copyWith(
-                      color: colors.mutedForeground,
-                    ),
+                  padding: const EdgeInsets.only(top: Spacing.level6),
+                  child: Column(
+                    children: [
+                      Icon(
+                        FLucideIcons.search,
+                        size: Spacing.level9,
+                        color: colors.mutedForeground,
+                      ),
+                      const SizedBox(height: Spacing.level4),
+                      Text(
+                        l10n.medicineSearchPreviewEmpty,
+                        style: typography.body.md.copyWith(
+                          color: colors.mutedForeground,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
             ],

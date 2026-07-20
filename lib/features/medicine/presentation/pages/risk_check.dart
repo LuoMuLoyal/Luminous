@@ -76,7 +76,11 @@ class MedicineRiskCheckPage extends ConsumerWidget {
 }
 
 class _RiskCheckSectionCard extends StatelessWidget {
-  const _RiskCheckSectionCard({required this.title, required this.child});
+  const _RiskCheckSectionCard({
+    super.key,
+    required this.title,
+    required this.child,
+  });
 
   final String title;
   final Widget child;
@@ -182,6 +186,20 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
   static const _foldThreshold = 5;
   bool _findingsExpanded = false;
   bool _coverageExpanded = false;
+  final _findingsKey = GlobalKey();
+  final _coverageKey = GlobalKey();
+
+  void _scrollToKey(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+        alignment: 0.1,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -216,10 +234,16 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
                 MedicineRiskMetricChip(
                   label: l10n.medicineRiskCheckFindingsLabel,
                   value: result.findingCount.toString(),
+                  onTap: result.hasFindings
+                      ? () => _scrollToKey(_findingsKey)
+                      : null,
                 ),
                 MedicineRiskMetricChip(
                   label: l10n.medicineRiskCheckCoverageLabel,
                   value: result.coverageCount.toString(),
+                  onTap: result.hasCoverageGaps
+                      ? () => _scrollToKey(_coverageKey)
+                      : null,
                 ),
               ],
             ),
@@ -253,6 +277,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
           ),
           const SizedBox(height: Spacing.level3),
           _RiskCheckSectionCard(
+            key: _findingsKey,
             title: l10n.medicineRiskCheckFindingsTitle,
             child: Column(
               children: [
@@ -383,6 +408,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
             const SizedBox(height: Spacing.level3),
           ],
           _RiskCheckSectionCard(
+            key: _coverageKey,
             title: l10n.medicineRiskCheckCoverageTitle,
             child: Column(
               children: [
