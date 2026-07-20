@@ -275,6 +275,26 @@ class RecordNlpDialog extends HookConsumerWidget {
           ] else if (state.status == RecordNlpStatus.generating) ...[
             const SizedBox(height: Spacing.level5),
             const FProgress(),
+          ] else if (state.status == RecordNlpStatus.error) ...[
+            const SizedBox(height: Spacing.level5),
+            Row(
+              children: [
+                Icon(
+                  FLucideIcons.circleAlert,
+                  color: colors.destructive,
+                  size: 18,
+                ),
+                const SizedBox(width: Spacing.level2),
+                Expanded(
+                  child: Text(
+                    state.errorMessage ?? l10n.recordNlpGenerateFailedToast,
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.destructive),
+                  ),
+                ),
+              ],
+            ),
           ],
         ],
       ),

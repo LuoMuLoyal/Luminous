@@ -52,6 +52,7 @@ class _DesktopRecordSkeleton extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Left rail: calendar + filter
         SizedBox(
           width: ResponsiveSizing.sidebarWidth(context),
           child: const AppInlineSkeletonSection(
@@ -65,16 +66,27 @@ class _DesktopRecordSkeleton extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: Spacing.level4),
+        const SizedBox(width: Spacing.level5),
+        // Center: summary + timeline
         const Expanded(
+          flex: 6,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _AiInputPlaceholder(),
-              SizedBox(height: Spacing.level4),
-              _QuickEntryPlaceholder(),
+              AppInlineSkeletonBlock(height: 120, radius: RadiusTokens.level4),
               SizedBox(height: Spacing.level4),
               _TimelinePlaceholder(itemCount: 6),
+            ],
+          ),
+        ),
+        const SizedBox(width: Spacing.level5),
+        // Right rail: new entry panel
+        SizedBox(
+          width: ResponsiveSizing.sidebarWidth(context),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppInlineSkeletonBlock(height: 200, radius: RadiusTokens.level4),
             ],
           ),
         ),

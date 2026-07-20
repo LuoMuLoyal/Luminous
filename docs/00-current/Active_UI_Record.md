@@ -1,12 +1,13 @@
 # Active UI — Record
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20 (P1 record)
 
 ## 支持的记录类型
 
 - 症状
 - 饮水（可选单位）
 - 饮食/餐食
+- 心情
 - 笔记（独立类型：有自己的快捷操作、筛选、时间线项）
 - 睡眠（结构化录入：就寝/起床/质量/阶段）
 - 用药（非创建型快捷操作）
@@ -44,14 +45,15 @@ Last updated: 2026-07-18
 
 ## 创建与快捷操作
 
-- 活跃创建类型：water、meal、symptom、note、sleep。
+- 活跃创建类型：water、meal、mood、symptom、note、sleep。
 - 快速选项点击立即保存（选中日期 + 真实当前 `HH:mm`），`more` 打开完整创建表单。
 - 快捷选项 label/unit 从硬编码改为 l10n 取值。
-- **必填校验**：`onSave` 新增前端校验——value 字段必填（空值拦截+toast），water 额外校验数值有效性，title 字段必填。
+- **必填校验**：`onSave` 新增前端校验——value 字段必填（空值拦截+内联 error），water 额外校验数值有效性，title 字段必填（内联 error）。校验消息通过 `FTextField.error` 在字段下方内联显示，不再走 toast。
 
 ## 骨架屏
 
 - 删除 `_GuidePlaceholder`（对应已删除的 `RecordGuideRow`）。
+- 桌面端骨架为三栏布局（左 sidebar + 中 summary/timeline + 右 new-entry），与真实 `_DesktopRecordDashboard` 对齐。
 
 ## 数据层
 
@@ -94,4 +96,14 @@ Last updated: 2026-07-18
 - 编辑页锁定类型不可切换（`showKindField: false`），消除切型静默丢弃 payload。
 - 菜品"确认当前结果"按钮改为可切换态（选中 `primary` + 对勾图标，未选中 `outline`），不再恒设 true。
 - NLP 主弹层 `scrollable` 从 `false` 改为 `true`，候选多时可滚动。
-- OCR 弹层识别结果从只读 `Text` 改为可编辑 `FTextField`；新增"重新选择"按钮（`recordOcrRetakeAction`），重置图片和文本。
+- OCR 弹层识别结果从只读 `Text` 改为可编辑 `FTextField`；新增“重新选择”按钮（`recordOcrRetakeAction`），重置图片和文本。
+
+## 2026-07-20 P1 记录模块
+
+- **桌面筛选单选语义**：`_FilterRow` 图标从 `squareCheckBig`/`square`（复选框）改为 `circleCheck`/`circle`（单选），选中色从 `foreground` 改为 `primary`。点击已选中筛选可取消（传回 `null`）。
+- **语音 sheet 错误显示**：`errorMessage` 不再只存不显，新增内联错误显示区（图标+红色文案）。
+- **语音 sheet 分类文案**：初始化失败区分三类场景——权限拒绝（`recordMicPermissionDenied`）、语音不可用（`recordSpeechUnavailable`）、locale 不支持（`recordSpeechLocaleUnsupported`），不再统一报“麦克风权限未授权”。
+- **语音结果可编辑**：识别结果从只读 `Text` 改为 `TextField`，用户可手动编辑修正（`recordVoiceEditHint` 提示）。
+- **标题标签修正**：`recordCreateFieldTitleOptional`（“标题（可选）”）改为 `recordCreateFieldTitle`（“标题”），消除与必填校验的矛盾。
+- **保存中表单整体禁用**：`DailyRecordFormFields` 新增 `enabled` 参数，`saving` 时所有字段（kind/value/unit/title/note）连同图片附件一起禁用。
+- **NLP 预生成失败提示**：`nlp_dialog.dart` 新增 `RecordNlpStatus.error` 状态分支，显示图标+错误文案（`state.errorMessage` 或 `recordNlpGenerateFailedToast` 兜底）。

@@ -58,7 +58,10 @@ Persisted preference keys:
 - Record fast-entry quick-choice labels plus date/time field labels are owned by the Record ARB
    entries.
 - Record voice/OCR intake copy such as sheet titles, action labels, microphone-permission wording,
-   and OCR failure toasts is owned by the Record ARB entries.
+   speech-unavailable / locale-unsupported errors, editable-result hint, and OCR failure toasts is
+   owned by the Record ARB entries.
+- Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is
+  owned by the Record ARB entries.
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate
    disclaimer, dish-editor helper text, and confirm-result action are owned by the Record ARB
    entries.

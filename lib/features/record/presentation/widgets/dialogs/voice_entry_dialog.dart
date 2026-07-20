@@ -5,7 +5,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
@@ -48,6 +47,20 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
     final errorMessage = useState<String?>(null);
     final hasPermission = useState<bool?>(null);
     final locale = Localizations.localeOf(context);
+
+    // Editable text controller for recognized text.
+    final textController = useTextEditingController();
+
+    // Sync textController when recognizedText changes from the speech
+    // recognition stream (but not when the user is editing manually).
+    useEffect(() {
+      // Only update if the stream value differs from what's in the
+      // controller (avoids cursor jumps during user editing).
+      if (textController.text != recognizedText.value) {
+        textController.text = recognizedText.value;
+      }
+      return null;
+    }, [recognizedText.value]);
 
     // Stream subscriptions
     useEffect(() {
@@ -106,10 +119,22 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         await init();
         if (!isInitialized.value) {
           if (!context.mounted) return;
+          // Distinguish three failure scenarios:
+          // 1. Mic permission denied → permission-specific message
+          // 2. Speech recognition unavailable → device-capability message
+          // 3. Locale not supported → locale message
           if (hasPermission.value == false) {
-            await AppToast.show(context, l10n.recordMicPermissionDenied);
+            errorMessage.value = l10n.recordMicPermissionDenied;
           } else {
-            await AppToast.show(context, l10n.recordMicPermissionDenied);
+            // init() sets hasPermission only when available is false.
+            // If hasPermission is true/null but init still failed, it means
+            // speech recognition itself is unavailable or locale mismatch.
+            final localeId = await _resolveSpeechLocaleId(service, locale);
+            if (localeId == null) {
+              errorMessage.value = l10n.recordSpeechLocaleUnsupported;
+            } else {
+              errorMessage.value = l10n.recordSpeechUnavailable;
+            }
           }
           return;
         }
@@ -124,7 +149,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
         final localeId = await _resolveSpeechLocaleId(service, locale);
         if (localeId == null) {
           if (context.mounted) {
-            await AppToast.show(context, l10n.recordMicPermissionDenied);
+            errorMessage.value = l10n.recordSpeechLocaleUnsupported;
           }
           return;
         }
@@ -185,7 +210,33 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
             ),
             const SizedBox(height: Spacing.level4),
 
-            // Recognized text display
+            // Error message (shown inline when present)
+            if (errorMessage.value != null) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level5),
+                child: Row(
+                  children: [
+                    Icon(
+                      FLucideIcons.circleAlert,
+                      color: colors.destructive,
+                      size: 16,
+                    ),
+                    const SizedBox(width: Spacing.level2),
+                    Expanded(
+                      child: Text(
+                        errorMessage.value!,
+                        style: typography.body.sm.copyWith(
+                          color: colors.destructive,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: Spacing.level3),
+            ],
+
+            // Recognized text display (editable)
             Expanded(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: Spacing.level5),
@@ -195,16 +246,22 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   borderRadius: BorderRadius.circular(RadiusTokens.level4),
                   border: Border.all(color: colors.border),
                 ),
-                child: SingleChildScrollView(
-                  child: Text(
-                    recognizedText.value.isEmpty
-                        ? l10n.recordVoiceTapToStart
-                        : recognizedText.value,
-                    style: recognizedText.value.isEmpty
-                        ? typography.body.md.copyWith(
-                            color: colors.mutedForeground,
-                          )
-                        : typography.body.md,
+                child: Material(
+                  color: Colors.transparent,
+                  child: TextField(
+                    controller: textController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: recognizedText.value.isEmpty
+                          ? l10n.recordVoiceTapToStart
+                          : l10n.recordVoiceEditHint,
+                      hintStyle: typography.body.md.copyWith(
+                        color: colors.mutedForeground,
+                      ),
+                    ),
+                    style: typography.body.md,
+                    onChanged: (text) => recognizedText.value = text,
                   ),
                 ),
               ),

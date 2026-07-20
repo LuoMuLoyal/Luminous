@@ -53,6 +53,8 @@ class RecordCreatePage extends HookConsumerWidget {
     final kind = useState(initialKind ?? DailyRecordKind.water);
     final saving = useState(false);
     final selectedImage = useState<_PendingDailyRecordImage?>(null);
+    final valueError = useState<String?>(null);
+    final titleError = useState<String?>(null);
     final seedDate = initialDate ?? clock.now();
     final recordDate = useState(
       DateTime(seedDate.year, seedDate.month, seedDate.day),
@@ -245,22 +247,22 @@ class RecordCreatePage extends HookConsumerWidget {
       final rules = dailyRecordFormRules(kind.value);
       final l10n = AppLocalizations.of(context)!;
 
+      // Clear previous errors
+      valueError.value = null;
+      titleError.value = null;
+
       // Value field: required for water/vital/symptom/meal/activity
       if (rules.showValue) {
         final rawValue = valueController.text.trim();
         if (rawValue.isEmpty) {
-          unawaited(
-            AppToast.show(context, l10n.recordCreateValueRequiredToast),
-          );
+          valueError.value = l10n.recordCreateValueRequiredToast;
           return;
         }
         // Numeric validation for water (must be a positive number)
         if (kind.value == DailyRecordKind.water) {
           final parsed = double.tryParse(rawValue);
           if (parsed == null || parsed <= 0) {
-            unawaited(
-              AppToast.show(context, l10n.recordCreateValueInvalidToast),
-            );
+            valueError.value = l10n.recordCreateValueInvalidToast;
             return;
           }
         }
@@ -270,9 +272,7 @@ class RecordCreatePage extends HookConsumerWidget {
       if (rules.showTitle) {
         final rawTitle = titleController.text.trim();
         if (rawTitle.isEmpty) {
-          unawaited(
-            AppToast.show(context, l10n.recordCreateTitleRequiredToast),
-          );
+          titleError.value = l10n.recordCreateTitleRequiredToast;
           return;
         }
       }
@@ -385,6 +385,9 @@ class RecordCreatePage extends HookConsumerWidget {
                       unitController: unitController,
                       titleController: titleController,
                       noteController: noteController,
+                      valueError: valueError.value,
+                      titleError: titleError.value,
+                      enabled: !saving.value,
                     ),
                     if (kind.value == DailyRecordKind.sleep) ...[
                       const SizedBox(height: Spacing.level3),

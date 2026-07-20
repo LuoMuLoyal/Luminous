@@ -30,6 +30,9 @@ class DailyRecordFormFields extends StatelessWidget {
     required this.titleController,
     required this.noteController,
     this.showKindField = true,
+    this.valueError,
+    this.titleError,
+    this.enabled = true,
   });
 
   final DailyRecordKind kind;
@@ -39,6 +42,9 @@ class DailyRecordFormFields extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController noteController;
   final bool showKindField;
+  final String? valueError;
+  final String? titleError;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +83,8 @@ class DailyRecordFormFields extends StatelessWidget {
             control: FTextFieldControl.managed(controller: valueController),
             label: Text(dailyRecordValueLabel(l10n, kind)),
             keyboardType: _keyboardTypeForKind(kind),
+            error: valueError != null ? Text(valueError!) : null,
+            enabled: enabled,
           ),
           const SizedBox(height: Spacing.level3),
         ],
@@ -124,7 +132,9 @@ class DailyRecordFormFields extends StatelessWidget {
           FTextField(
             key: const Key('daily-record-title-field'),
             control: FTextFieldControl.managed(controller: titleController),
-            label: Text(l10n.recordCreateFieldTitleOptional),
+            label: Text(l10n.recordCreateFieldTitle),
+            error: titleError != null ? Text(titleError!) : null,
+            enabled: enabled,
           ),
           const SizedBox(height: Spacing.level3),
         ],
@@ -133,6 +143,7 @@ class DailyRecordFormFields extends StatelessWidget {
           control: FTextFieldControl.managed(controller: noteController),
           label: Text(l10n.recordCreateFieldNote),
           maxLines: 3,
+          enabled: enabled,
         ),
       ],
     );
@@ -225,6 +236,7 @@ String dailyRecordValueLabel(AppLocalizations l10n, DailyRecordKind kind) {
 const activeDailyRecordKinds = <DailyRecordKind>[
   DailyRecordKind.water,
   DailyRecordKind.meal,
+  DailyRecordKind.mood,
   DailyRecordKind.symptom,
   DailyRecordKind.note,
   DailyRecordKind.sleep,

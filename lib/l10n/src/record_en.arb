@@ -59,7 +59,8 @@
   "recordWaterUnitMl": "ml",
   "recordWaterUnitCup": "cup",
   "recordWaterUnitTimes": "times",
-  "recordCreateFieldTitleOptional": "Title (optional)",
+  "recordCreateFieldTitleOptional": "Title",
+"recordCreateFieldTitle": "Title",
   "recordCreateFieldNote": "Note",
   "recordCreateKindNote": "Note",
   "recordCreateValueWater": "Water amount",
@@ -184,6 +185,7 @@
     }
   },
   "recordNlpInputRequiredToast": "Enter a short record note first.",
+  "recordNlpGenerateFailedToast": "Parsing failed. Please check your input and try again.",
   "recordNlpEmptyCandidatesToast": "No candidate records were parsed this time.",
   "recordNlpNoCandidatesToSaveToast": "There are no candidate records to save.",
   "recordNlpNoCandidatesSelectedToast": "Select at least one candidate record first.",
@@ -415,5 +417,9 @@
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 cup",
   "recordFastChoiceWater1Time": "1 time",
-  "recordVoiceStopListening": "Stop recording"
+  "recordVoiceStopListening": "Stop recording",
+  "recordSpeechUnavailable": "Speech recognition is unavailable on this device.",
+  "recordSpeechLocaleUnsupported": "Speech recognition does not support the current language.",
+  "recordVoiceErrorHint": "Recognition error. Please try again.",
+  "recordVoiceEditHint": "You can edit the recognized text here"
 }

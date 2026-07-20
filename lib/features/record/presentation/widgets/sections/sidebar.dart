@@ -308,7 +308,9 @@ class RecordFilterPanel extends StatelessWidget {
                         l10n: l10n,
                         onTap: onFilterSelected == null
                             ? null
-                            : () => onFilterSelected!(filter.type),
+                            : () => onFilterSelected!(
+                                filter.selected ? null : filter.type,
+                              ),
                       ),
                     ),
                   )
@@ -426,12 +428,8 @@ class _FilterRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              filter.selected
-                  ? FLucideIcons.squareCheckBig
-                  : FLucideIcons.square,
-              color: filter.selected
-                  ? colors.foreground
-                  : colors.mutedForeground,
+              filter.selected ? FLucideIcons.circleCheck : FLucideIcons.circle,
+              color: filter.selected ? colors.primary : colors.mutedForeground,
               size: 18,
             ),
             const SizedBox(width: Spacing.level3),

@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20 (P1)
+Last updated: 2026-07-20 (P1 record)
 
 ## 技术栈
 

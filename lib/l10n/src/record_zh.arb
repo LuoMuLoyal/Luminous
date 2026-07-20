@@ -59,7 +59,8 @@
   "recordWaterUnitMl": "ml",
   "recordWaterUnitCup": "杯",
   "recordWaterUnitTimes": "次",
-  "recordCreateFieldTitleOptional": "标题（可选）",
+  "recordCreateFieldTitleOptional": "标题",
+"recordCreateFieldTitle": "标题",
   "recordCreateFieldNote": "备注",
   "recordCreateKindNote": "备注",
   "recordCreateValueWater": "饮水量",
@@ -184,6 +185,7 @@
     }
   },
   "recordNlpInputRequiredToast": "先输入一段记录描述。",
+  "recordNlpGenerateFailedToast": "解析失败，请检查内容后重试。",
   "recordNlpEmptyCandidatesToast": "这次没有解析出可保存的候选记录。",
   "recordNlpNoCandidatesToSaveToast": "没有可保存的候选记录。",
   "recordNlpNoCandidatesSelectedToast": "先选中至少一条候选记录。",
@@ -415,5 +417,9 @@
   "recordFastChoiceWater500ml": "500 ml",
   "recordFastChoiceWater1Cup": "1 杯",
   "recordFastChoiceWater1Time": "1 次",
-  "recordVoiceStopListening": "停止录音"
+  "recordVoiceStopListening": "停止录音",
+  "recordSpeechUnavailable": "语音识别不可用，请检查设备是否支持。",
+  "recordSpeechLocaleUnsupported": "当前语言暂不支持语音识别。",
+  "recordVoiceErrorHint": "识别出错，请重试。",
+  "recordVoiceEditHint": "可在此编辑识别结果"
 }
