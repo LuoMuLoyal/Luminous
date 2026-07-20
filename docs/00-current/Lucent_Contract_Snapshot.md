@@ -1,6 +1,6 @@
 # Lucent Contract Snapshot
 
-Last updated: 2026-07-20
+Last updated: 2026-07-20 (P2 polish)
 
 ## 基础
 
