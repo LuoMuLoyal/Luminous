@@ -115,6 +115,7 @@
   "todayEmptyDescription": "Log water, medication, or sleep first, then we can shape personalized suggestions.",
   "todayEmptyAction": "Start logging",
   "todayRetryAction": "Retry",
+  "todayLoadingSlowHint": "Taking a moment to load…",
   "todayRefreshErrorToast": "Refresh failed, please try again",
   "todayUpdatedAt": "Updated at {time}",
   "@todayUpdatedAt": {
@@ -126,6 +127,13 @@
   },
   "todayHydrationOverviewLabel": "Water",
   "todayMedicationOverviewLabel": "Medication",
+  "todayMedicationOverviewCount": "{done}/{total} meds",
+  "@todayMedicationOverviewCount": {
+    "placeholders": {
+      "done": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
   "todayStatusNeedsImprovement": "Needs lift",
   "todayStatusCompleted": "Completed",
   "todayMedicationPendingStatus": "Pending",

@@ -10,10 +10,10 @@ part 'dashboard.g.dart';
 
 /// Configurable timeout for the dashboard fetch.
 ///
-/// Defaults to 5 seconds. Override at compile time via:
+/// Defaults to 8 seconds. Override at compile time via:
 ///   `flutter run --dart-define=DASHBOARD_TIMEOUT_SECONDS=10`
 const _todayDashboardTimeout = Duration(
-  seconds: int.fromEnvironment('DASHBOARD_TIMEOUT_SECONDS', defaultValue: 5),
+  seconds: int.fromEnvironment('DASHBOARD_TIMEOUT_SECONDS', defaultValue: 8),
 );
 
 @Riverpod(keepAlive: true)

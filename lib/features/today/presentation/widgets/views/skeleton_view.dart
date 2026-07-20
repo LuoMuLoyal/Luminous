@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Skeleton placeholder for the Today tab loading state.
 ///
@@ -13,8 +17,32 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 /// **Desktop:** TopBar → RecordHint →
 /// Row[左7: PrimarySuggestion+Summary | 右5: SecondarySuggestions+Observation]
 /// → QuickActions
-class TodaySkeletonView extends StatelessWidget {
+class TodaySkeletonView extends StatefulWidget {
   const TodaySkeletonView({super.key});
+
+  @override
+  State<TodaySkeletonView> createState() => _TodaySkeletonViewState();
+}
+
+class _TodaySkeletonViewState extends State<TodaySkeletonView> {
+  Timer? _slowHintTimer;
+  bool _showSlowHint = false;
+
+  static const _slowHintDelay = Duration(seconds: 2);
+
+  @override
+  void initState() {
+    super.initState();
+    _slowHintTimer = Timer(_slowHintDelay, () {
+      if (mounted) setState(() => _showSlowHint = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _slowHintTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +50,7 @@ class TodaySkeletonView extends StatelessWidget {
     final isDesktop = width >= Breakpoints.desktop;
     final horizontalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
     final verticalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
+    final l10n = AppLocalizations.of(context)!;
 
     return AppSkeletonShimmer(
       child: ListView(
@@ -79,6 +108,17 @@ class TodaySkeletonView extends StatelessWidget {
             const SizedBox(height: Spacing.level5),
           ],
           _QuickActionsPlaceholder(),
+          if (_showSlowHint) ...[
+            const SizedBox(height: Spacing.level6),
+            Center(
+              child: Text(
+                l10n.todayLoadingSlowHint,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+              ),
+            ),
+          ],
         ],
       ),
     );

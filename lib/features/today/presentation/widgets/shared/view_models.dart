@@ -151,7 +151,10 @@ List<TodayOverviewItem> buildOverviewItems(
     TodayOverviewItem(
       icon: FLucideIcons.pill,
       label: l10n.todayMedicationOverviewLabel,
-      value: '$safeMedicationDone/${dashboard.medication.medicineCount}',
+      value: l10n.todayMedicationOverviewCount(
+        safeMedicationDone,
+        dashboard.medication.medicineCount,
+      ),
       color: SemanticColor.primary,
     ),
     TodayOverviewItem(

@@ -35,6 +35,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - AI 摘要文本使用 `MarkdownBody` 渲染。
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
 - 睡眠概览值不再追加单位（后端 `valueLabel` 已含单位）。
+- 用药概览值使用 `todayMedicationOverviewCount` l10n 键（"{done}/{total} 种"），"种"后缀明确分母为药品种类数而非今日应服次数。
 
 ## 观察项
 
@@ -68,7 +69,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - AI 解释不缓存，始终走网络按需加载。
 - Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取（cache-first）。
 - 图标映射提取为独立 `SuggestionIconMapping` 类。
-- Dashboard 超时支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。
+- Dashboard 超时默认 8 秒，支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。骨架屏加载 2 秒后底部显示 `todayLoadingSlowHint`（"加载较慢，请稍候…"）muted 提示。
 
 ## 助手入口
 

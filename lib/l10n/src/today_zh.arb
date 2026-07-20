@@ -115,6 +115,7 @@
   "todayEmptyDescription": "先记录饮水、用药或睡眠，我们会为你提供个性化建议。",
   "todayEmptyAction": "去记录",
   "todayRetryAction": "重试",
+  "todayLoadingSlowHint": "加载较慢，请稍候…",
   "todayRefreshErrorToast": "刷新失败，请重试",
   "todayUpdatedAt": "更新于 {time}",
   "@todayUpdatedAt": {
@@ -126,6 +127,13 @@
   },
   "todayHydrationOverviewLabel": "饮水",
   "todayMedicationOverviewLabel": "用药",
+  "todayMedicationOverviewCount": "{done}/{total} 种",
+  "@todayMedicationOverviewCount": {
+    "placeholders": {
+      "done": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
   "todayStatusNeedsImprovement": "待提升",
   "todayStatusCompleted": "已完成",
   "todayMedicationPendingStatus": "待服用",
