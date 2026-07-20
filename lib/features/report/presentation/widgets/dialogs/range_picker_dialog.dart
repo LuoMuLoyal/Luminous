@@ -80,11 +80,23 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
                               ),
                             ),
                             const SizedBox(height: Spacing.level4),
-                            FButton(
-                              onPress: () => Navigator.of(
-                                calendarContext,
-                              ).pop(rangeController.value),
-                              child: Text(l10n.commonConfirm),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                FButton(
+                                  variant: FButtonVariant.ghost,
+                                  onPress: () =>
+                                      Navigator.of(calendarContext).pop(null),
+                                  child: Text(l10n.commonCancel),
+                                ),
+                                const SizedBox(width: Spacing.level3),
+                                FButton(
+                                  onPress: () => Navigator.of(
+                                    calendarContext,
+                                  ).pop(rangeController.value),
+                                  child: Text(l10n.commonConfirm),
+                                ),
+                              ],
                             ),
                           ],
                         ),

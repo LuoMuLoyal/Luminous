@@ -11,7 +11,6 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -273,11 +272,8 @@ class ReportPage extends ConsumerWidget {
                   tone: AppStateTone.warning,
                 ),
               )
-            : FScaffold(
-                header: const SafeArea(
-                  bottom: false,
-                  child: FHeader.nested(prefixes: [AppBackButton()]),
-                ),
+            : DecoratedBox(
+                decoration: BoxDecoration(color: colors.background),
                 child: SafeArea(
                   bottom: false,
                   child: AppStateErrorView(
@@ -320,6 +316,7 @@ class ReportPage extends ConsumerWidget {
           context: context,
           ref: ref,
           dashboard: dashboard,
+          isRefreshing: dashboardAsync.isLoading,
           selectedDashboardQuery: selectedDashboardQuery,
           canAccessProtectedData: canAccessProtectedData,
           isPreview: isPreview,
@@ -354,7 +351,6 @@ class ReportPage extends ConsumerWidget {
               ),
             ],
             bottom: ReportActionBar(onGenerate: () {}, onSync: () {}),
-            scrollable: false,
             child: const ReportSkeletonView(),
           )
         : _ReportMobileShell(
@@ -381,6 +377,7 @@ class ReportPage extends ConsumerWidget {
     required BuildContext context,
     required WidgetRef ref,
     required ReportDashboard dashboard,
+    required bool isRefreshing,
     required ReportDashboardQuery selectedDashboardQuery,
     required bool canAccessProtectedData,
     required bool isPreview,
@@ -487,7 +484,7 @@ class ReportPage extends ConsumerWidget {
           },
           onSync: () => _refreshDashboard(ref),
           isGenerating: aiSummaryState.isLoading,
-          isSyncing: false,
+          isSyncing: isRefreshing,
         ),
         onRefresh: () => _refreshDashboard(ref),
         scrollStorageKey: 'report-desktop-scroll',
@@ -508,7 +505,7 @@ class ReportPage extends ConsumerWidget {
       onSync: () => _refreshDashboard(ref),
       onRefresh: () => _refreshDashboard(ref),
       isGenerating: aiSummaryState.isLoading,
-      isSyncing: false,
+      isSyncing: isRefreshing,
       topBar: ReportTopBar(
         dateRangeLabel: dateRangeLabel,
         selectedQuery: selectedDashboardQuery,
@@ -528,7 +525,7 @@ class ReportPage extends ConsumerWidget {
         },
         onSync: () => _refreshDashboard(ref),
         isGenerating: aiSummaryState.isLoading,
-        isSyncing: false,
+        isSyncing: isRefreshing,
         showActionBar: false,
       ),
       child: dashboardView,

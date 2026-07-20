@@ -25,9 +25,9 @@ Last updated: 2026-07-18
 
 ## 趋势与发现
 
-- 趋势区使用 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。
-- 桌面端趋势区位于左栏，移动端位于指标卡下方。
-- findings 卡片为信息展示型（非导航型），已移除装饰性 chevron。
+- 趋势区使用 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。各序列按自身 min/max 独立归一化到 [0, 1]，避免不同量纲（% / ml / h）共用 Y 轴压成平线；Y 轴不显示数值，tooltip 仍显示原始值+单位。
+- 桌面端趋势区位于左栏（`showRangePill: false`，范围 pill 由外壳 trailing 提供），移动端位于指标卡下方。
+- findings 卡片为信息展示型（非导航型），已移除装饰性 chevron，桌面端使用 `Wrap` 自动换行排列。
 - patterns 卡片同样为信息展示型，已移除装饰性 chevron。
 
 ## AI 摘要
@@ -92,3 +92,13 @@ Last updated: 2026-07-18
 - `suggestion_history.dart` 手写 `DecoratedBox` 徽章改为 `FBadge.raw` + `.delta()` + `shapeDelta` 模式，与项目其他徽章实现一致。
 - `report/page.dart` 移除 `isInsufficient: (_) => false` 恒 false 死代码。
 - `report/page.dart` 加载副标题从 `placeholderNoData` 改为 `placeholderLoading`（"加载中…"）。
+
+## 2026-07-19 剩余中级项
+
+- 趋势图改为按序列独立归一化到 [0, 1]（Y 轴 [-0.1, 1.1]，去掉数值标签，tooltip 保留原始值+单位），解决不同量纲共用 Y 轴压成平线问题。
+- 桌面 loading 外壳移除 `scrollable: false`（使用默认 `true`），矮窗不再溢出。
+- 移动端错误态去掉 `AppBackButton`（tab 根页面不应有返回键），改为 `DecoratedBox` + `SafeArea` + `AppStateErrorView`。
+- 同步按钮 `isSyncing` 接入 `dashboardAsync.isLoading`（`isRefreshing`），同步进行中显示进度态。
+- 桌面 findings 从横向滚动 `Row` 改为 `Wrap` 自动换行。
+- `range_picker_dialog` 日历弹窗新增"取消"按钮（ghost 样式 + `Navigator.pop(null)`）。
+- 桌面端趋势区传 `showRangePill: false`，避免与 `DesktopTabShell` trailing pill 重复。

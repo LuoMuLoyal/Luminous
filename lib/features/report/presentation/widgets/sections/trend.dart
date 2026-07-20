@@ -104,28 +104,35 @@ class _TrendChart extends StatelessWidget {
         ? 7
         : trends.first.values.length;
 
-    // Compute global Y bounds across all series for a shared scale.
-    final allValues = trends.expand((s) => s.values).toList();
-    final minY = allValues.isEmpty
-        ? 0.0
-        : allValues.reduce((a, b) => a < b ? a : b);
-    final maxY = allValues.isEmpty
-        ? 1.0
-        : allValues.reduce((a, b) => a > b ? a : b);
-    final span = (maxY - minY).abs() < 1 ? 1.0 : (maxY - minY);
-
-    // Build one LineChartBarData per trend series.
-    final bars = <LineChartBarData>[];
+    // Normalize each series independently to [0, 1] so that different
+    // units (e.g. %, ml, h) don't squash each other on a shared Y axis.
+    // Tooltip still shows the original value + unit.
+    final normalizedBars = <LineChartBarData>[];
     for (final series in trends) {
       final resolvedColor = series.color.solid(context);
-      final spots = series.values.isEmpty
+      final seriesValues = series.values;
+      final seriesMin = seriesValues.isEmpty
+          ? 0.0
+          : seriesValues.reduce((a, b) => a < b ? a : b);
+      final seriesMax = seriesValues.isEmpty
+          ? 1.0
+          : seriesValues.reduce((a, b) => a > b ? a : b);
+      final seriesSpan = (seriesMax - seriesMin).abs() < 0.001
+          ? 1.0
+          : (seriesMax - seriesMin);
+      final spots = seriesValues.isEmpty
           ? const <FlSpot>[]
-          : series.values
+          : seriesValues
                 .asMap()
                 .entries
-                .map((e) => FlSpot(e.key.toDouble(), e.value))
+                .map(
+                  (e) => FlSpot(
+                    e.key.toDouble(),
+                    (e.value - seriesMin) / seriesSpan,
+                  ),
+                )
                 .toList();
-      bars.add(
+      normalizedBars.add(
         LineChartBarData(
           spots: spots,
           color: resolvedColor,
@@ -167,14 +174,14 @@ class _TrendChart extends StatelessWidget {
               ),
               child: LineChart(
                 LineChartData(
-                  minY: minY - span * 0.1,
-                  maxY: maxY + span * 0.1,
+                  minY: -0.1,
+                  maxY: 1.1,
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
                     getDrawingHorizontalLine: (_) =>
                         FlLine(color: colors.border, strokeWidth: 0.5),
-                    horizontalInterval: span / 4,
+                    horizontalInterval: 0.25,
                   ),
                   borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
@@ -185,34 +192,8 @@ class _TrendChart extends StatelessWidget {
                     rightTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false),
                     ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 36,
-                        interval: span / 4,
-                        getTitlesWidget: (value, meta) {
-                          // Skip labels that are too close to the edges.
-                          if (value == meta.min || value == meta.max) {
-                            return const SizedBox.shrink();
-                          }
-                          // Format: integer if whole, otherwise 1 decimal.
-                          final label = value == value.roundToDouble()
-                              ? value.round().toString()
-                              : value.toStringAsFixed(1);
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              right: Spacing.level2,
-                            ),
-                            child: Text(
-                              label,
-                              style: TypographyToken.level2
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
-                              maxLines: 1,
-                            ),
-                          );
-                        },
-                      ),
+                    leftTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
                     ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
@@ -265,7 +246,7 @@ class _TrendChart extends StatelessWidget {
                       },
                     ),
                   ),
-                  lineBarsData: bars,
+                  lineBarsData: normalizedBars,
                 ),
               ),
             ),

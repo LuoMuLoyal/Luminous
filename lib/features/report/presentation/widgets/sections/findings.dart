@@ -33,20 +33,16 @@ class ReportFindingsSection extends StatelessWidget {
         if (findings.isEmpty)
           _EmptyFindingsView(l10n: l10n)
         else
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (var index = 0; index < findings.length; index += 1) ...[
-                  SizedBox(
-                    width: ResponsiveSizing.cardWidth(context),
-                    child: _FindingCard(finding: findings[index]),
-                  ),
-                  if (index != findings.length - 1)
-                    const SizedBox(width: Spacing.level3),
-                ],
-              ],
-            ),
+          Wrap(
+            spacing: Spacing.level3,
+            runSpacing: Spacing.level3,
+            children: [
+              for (final finding in findings)
+                SizedBox(
+                  width: ResponsiveSizing.cardWidth(context),
+                  child: _FindingCard(finding: finding),
+                ),
+            ],
           ),
       ],
     );

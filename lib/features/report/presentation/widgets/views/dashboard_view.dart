@@ -246,6 +246,7 @@ class ReportDashboardView extends StatelessWidget {
                 onQueryChanged: onDashboardQueryChanged ?? (_) {},
                 l10n: l10n,
                 startDate: dashboard.startDate,
+                showRangePill: false,
               ),
               const SizedBox(height: Spacing.level5),
               ReportFindingsSection(
