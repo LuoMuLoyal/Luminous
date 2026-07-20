@@ -240,6 +240,14 @@ class _TypeChip extends StatelessWidget {
         l10n.notificationTypeSystemAnnouncement,
         SemanticColor.primary,
       ),
+      NotificationType.oauthLogin => (
+        l10n.notificationTypeOauthLogin,
+        SemanticColor.destructive,
+      ),
+      NotificationType.identityLinked => (
+        l10n.notificationTypeIdentityLinked,
+        SemanticColor.primary,
+      ),
       NotificationType.unknown => (
         l10n.notificationTypeUnknown,
         SemanticColor.neutral,

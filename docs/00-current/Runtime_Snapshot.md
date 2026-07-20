@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20 (P1 mine+settings)
+Last updated: 2026-07-20 (notification types oauth_login/identity_linked)
 
 ## 技术栈
 

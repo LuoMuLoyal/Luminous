@@ -74,6 +74,7 @@ Last updated: 2026-07-20
 - 未读圆点外包 `Semantics(label: notificationUnreadSemantics)`，读屏可识别。
 - 详情页带动作路由（「去处理」根据通知类型导航）。
 - 通知类型 chip 使用 l10n 键，不硬编码英文直出。
+- 通知类型支持：`ai_today_summary`、`ai_proactive_suggestion`、`medicine_missed_dose`、`password_changed`、`report_generated`、`medicine_reminder`、`system_announcement`、`oauth_login`（登录提醒，destructive 色）、`identity_linked`（绑定提醒，primary 色）、`unknown` 兜底。
 - 详情页 `markAsRead` 在打开时自动调用（接口链路已反转）。
 - 显式标为未读/删除动作。
 - 后端在 AI 摘要完成、报告导出完成、密码变更时生成通知。

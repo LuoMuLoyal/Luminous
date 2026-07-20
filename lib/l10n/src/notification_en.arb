@@ -31,6 +31,8 @@
   "notificationTypeMedicineMissedDose": "Medication",
   "notificationTypeMedicineReminder": "Reminder",
   "notificationTypeSystemAnnouncement": "System",
+  "notificationTypeOauthLogin": "Login",
+  "notificationTypeIdentityLinked": "Linkage",
   "notificationTypeUnknown": "Notification",
   "notificationUnreadSemantics": "Unread"
 }

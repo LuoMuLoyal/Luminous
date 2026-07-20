@@ -31,6 +31,8 @@
   "notificationTypeMedicineMissedDose": "用药",
   "notificationTypeMedicineReminder": "提醒",
   "notificationTypeSystemAnnouncement": "系统",
+  "notificationTypeOauthLogin": "登录提醒",
+  "notificationTypeIdentityLinked": "绑定提醒",
   "notificationTypeUnknown": "通知",
   "notificationUnreadSemantics": "未读"
 }

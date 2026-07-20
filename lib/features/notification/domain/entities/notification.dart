@@ -11,6 +11,8 @@ enum NotificationType {
   reportGenerated,
   medicineReminder,
   systemAnnouncement,
+  oauthLogin,
+  identityLinked,
   unknown;
 
   /// Maps from the backend string value.
@@ -23,6 +25,8 @@ enum NotificationType {
       'report_generated' => NotificationType.reportGenerated,
       'medicine_reminder' => NotificationType.medicineReminder,
       'system_announcement' => NotificationType.systemAnnouncement,
+      'oauth_login' => NotificationType.oauthLogin,
+      'identity_linked' => NotificationType.identityLinked,
       _ => NotificationType.unknown,
     };
   }

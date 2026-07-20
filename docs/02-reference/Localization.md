@@ -168,3 +168,5 @@ flutter test
 - Choosing `system` clears the backend locale preference.
 - After auth restore or sign-in, `LuminousApp` may backfill the local locale from Lucent
    `profile.locale` when the value maps to `zh-CN`, `en`, or `system`.
+- Notification type l10n includes `oauth_login`（登录提醒）and `identity_linked`（绑定提醒）,
+  added 2026-07-20 to match Lucent `UserNotificationType` enum.
