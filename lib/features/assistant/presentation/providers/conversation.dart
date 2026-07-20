@@ -295,7 +295,7 @@ class AssistantController extends Notifier<AssistantState> {
 
       state = state.copyWith(
         isSending: false,
-        sendError: 'AI 流式响应已结束，但没有返回最终结果。',
+        sendError: null,
         sendErrorType: AssistantSendErrorType.emptyResult,
         lastFailedInput: trimmed,
       );
@@ -437,7 +437,9 @@ class AssistantController extends Notifier<AssistantState> {
 
   Future<void> _executeProposal(AssistantProposedAction proposal) async {
     if (proposal.isExpired) {
-      throw const LucentApiException(message: '这条建议已过期，请重新生成。');
+      throw const LucentApiException(
+        message: 'Proposal expired; please regenerate.',
+      );
     }
     switch (proposal.payload) {
       case AssistantCreateDailyRecordProposalPayload():
