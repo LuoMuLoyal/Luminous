@@ -218,20 +218,6 @@ class AccountSettingsPage extends HookConsumerWidget {
                             onChangePassword: () async {
                               final ctx = context;
                               final router = GoRouter.of(ctx);
-                              if (oldPasswordController.text.trim().isEmpty) {
-                                await AppToast.show(
-                                  ctx,
-                                  l10n.authCurrentPasswordRequiredToast,
-                                );
-                                return;
-                              }
-                              if (newPasswordController.text.trim().isEmpty) {
-                                await AppToast.show(
-                                  ctx,
-                                  l10n.authNewPasswordRequiredToast,
-                                );
-                                return;
-                              }
                               final ok = await accountNotifier.changePassword(
                                 oldPassword: oldPasswordController.text,
                                 newPassword: newPasswordController.text,
@@ -281,15 +267,6 @@ class AccountSettingsPage extends HookConsumerWidget {
                               final ctx = context;
                               final router = GoRouter.of(ctx);
                               if (user.hasPassword) {
-                                if (deletePasswordController.text
-                                    .trim()
-                                    .isEmpty) {
-                                  await AppToast.show(
-                                    ctx,
-                                    l10n.authCurrentPasswordRequiredToast,
-                                  );
-                                  return;
-                                }
                                 final ok = await accountNotifier.deleteAccount(
                                   password: deletePasswordController.text,
                                 );
@@ -311,13 +288,6 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 );
                                 if (ctx.mounted) router.go(AppRoutes.login);
                               } else {
-                                if (deleteCodeController.text.trim().isEmpty) {
-                                  await AppToast.show(
-                                    ctx,
-                                    l10n.authCodeRequiredToast,
-                                  );
-                                  return;
-                                }
                                 final ok = await accountNotifier.deleteAccount(
                                   code: deleteCodeController.text,
                                 );
@@ -548,6 +518,7 @@ class _ProfileSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -558,6 +529,54 @@ class _ProfileSection extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: Spacing.level5),
+        // Avatar preview
+        ValueListenableBuilder<TextEditingValue>(
+          valueListenable: avatarController,
+          builder: (context, value, _) {
+            final url = value.text.trim();
+            final isValidUrl = url.isEmpty ||
+                (Uri.tryParse(url)?.hasAbsolutePath == true &&
+                    (url.startsWith('http://') ||
+                        url.startsWith('https://')));
+            return Row(
+              children: [
+                FAvatar.raw(
+                  size: 56,
+                  child: url.isNotEmpty && isValidUrl
+                      ? ClipOval(
+                          child: Image.network(
+                            url,
+                            fit: BoxFit.cover,
+                            width: 56,
+                            height: 56,
+                            errorBuilder: (_, __, ___) => const Icon(
+                              FLucideIcons.userRound,
+                              size: 28,
+                            ),
+                          ),
+                        )
+                      : const Icon(FLucideIcons.userRound, size: 28),
+                ),
+                const SizedBox(width: Spacing.level4),
+                Expanded(
+                  child: Text(
+                    url.isEmpty
+                        ? l10n.authAvatarPreviewEmpty
+                        : isValidUrl
+                        ? l10n.authAvatarPreviewReady
+                        : l10n.authAvatarPreviewInvalid,
+                    style: TypographyToken.level3.body(context).copyWith(
+                      color: url.isEmpty || isValidUrl
+                          ? colors.mutedForeground
+                          : colors.destructive,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: Spacing.level4),
         FTextField(
           control: FTextFieldControl.managed(controller: nicknameController),
           label: Text(l10n.authNicknameLabel),

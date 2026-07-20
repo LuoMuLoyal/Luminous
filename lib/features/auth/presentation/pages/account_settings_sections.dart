@@ -239,7 +239,7 @@ class _LinkedIdentityTile extends StatelessWidget {
   }
 }
 
-class PasswordSection extends StatelessWidget {
+class PasswordSection extends StatefulWidget {
   const PasswordSection({
     super.key,
     required this.user,
@@ -256,41 +256,65 @@ class PasswordSection extends StatelessWidget {
   final Future<void> Function() onChangePassword;
 
   @override
+  State<PasswordSection> createState() => _PasswordSectionState();
+}
+
+class _PasswordSectionState extends State<PasswordSection> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return _SectionColumn(
       title: l10n.authPasswordSectionTitle,
       children: [
-        if (!user.hasPassword)
+        if (!widget.user.hasPassword)
           _MutedText(l10n.authPasswordUnsetManagementHint)
         else ...[
-          FTextFormField.password(
-            control: FTextFieldControl.managed(
-              controller: oldPasswordController,
+          Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FTextFormField.password(
+                  control: FTextFieldControl.managed(
+                    controller: widget.oldPasswordController,
+                  ),
+                  label: Text(l10n.authCurrentPasswordLabel),
+                  hint: l10n.authPasswordHint,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      (value == null || value.trim().isEmpty)
+                      ? l10n.authCurrentPasswordRequiredToast
+                      : null,
+                ),
+                const SizedBox(height: Spacing.level4),
+                FTextFormField.password(
+                  control: FTextFieldControl.managed(
+                    controller: widget.newPasswordController,
+                  ),
+                  label: Text(l10n.authNewPasswordLabel),
+                  hint: l10n.authPasswordHint,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      (value == null || value.trim().isEmpty)
+                      ? l10n.authNewPasswordRequiredToast
+                      : null,
+                ),
+              ],
             ),
-            label: Text(l10n.authCurrentPasswordLabel),
-            hint: l10n.authPasswordHint,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) => (value == null || value.trim().isEmpty)
-                ? l10n.authCurrentPasswordRequiredToast
-                : null,
-          ),
-          FTextFormField.password(
-            control: FTextFieldControl.managed(
-              controller: newPasswordController,
-            ),
-            label: Text(l10n.authNewPasswordLabel),
-            hint: l10n.authPasswordHint,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) => (value == null || value.trim().isEmpty)
-                ? l10n.authNewPasswordRequiredToast
-                : null,
           ),
           SizedBox(
             width: double.infinity,
             child: FButton(
-              onPress: isSubmitting ? null : () => onChangePassword(),
-              child: isSubmitting
+              onPress: widget.isSubmitting
+                  ? null
+                  : () async {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        await widget.onChangePassword();
+                      }
+                    },
+              child: widget.isSubmitting
                   ? const SizedBox(
                       width: 18,
                       height: 18,
@@ -305,7 +329,7 @@ class PasswordSection extends StatelessWidget {
   }
 }
 
-class DeleteAccountSection extends StatelessWidget {
+class DeleteAccountSection extends StatefulWidget {
   const DeleteAccountSection({
     super.key,
     required this.user,
@@ -328,11 +352,18 @@ class DeleteAccountSection extends StatelessWidget {
   final Future<void> Function() onSendCode;
 
   @override
+  State<DeleteAccountSection> createState() => _DeleteAccountSectionState();
+}
+
+class _DeleteAccountSectionState extends State<DeleteAccountSection> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     // OAuth-only user with no verified email — cannot delete from here.
-    if (!user.hasPassword && !user.emailVerified) {
+    if (!widget.user.hasPassword && !widget.user.emailVerified) {
       return _SectionColumn(
         title: l10n.authDeleteAccountSectionTitle,
         children: [_MutedText(l10n.authDeleteAccountEmailRequiredHint)],
@@ -343,44 +374,58 @@ class DeleteAccountSection extends StatelessWidget {
       title: l10n.authDeleteAccountSectionTitle,
       dangerLabel: l10n.authDeleteAccountDangerZoneLabel,
       children: [
-        if (user.hasPassword) ...[
-          FTextFormField.password(
-            control: FTextFieldControl.managed(
-              controller: deletePasswordController,
-            ),
-            label: Text(l10n.authCurrentPasswordLabel),
-            hint: l10n.authDeleteAccountHint,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: (value) => (value == null || value.trim().isEmpty)
-                ? l10n.authCurrentPasswordRequiredToast
-                : null,
-          ),
-        ] else ...[
-          _MutedText(l10n.authDeleteAccountCodeHint),
-          VerificationCodeField(
-            controller: deleteCodeController,
-            label: l10n.authCodeLabel,
-            hint: l10n.authCodeLabel,
-            validator: (value) => value == null || value.trim().isEmpty
-                ? l10n.authCodeRequiredError
-                : null,
-            buttonLabel: cooldownSeconds == null
-                ? l10n.authSendCode
-                : l10n.authSendCodeAgain(cooldownSeconds!),
-            isLoading: isSendingCode,
-            onSendCode:
-                isSendingCode ||
-                    (cooldownSeconds != null && cooldownSeconds! > 0)
-                ? null
-                : () => onSendCode(),
-          ),
-        ],
+        Form(
+          key: _formKey,
+          child: widget.user.hasPassword
+              ? FTextFormField.password(
+                  control: FTextFieldControl.managed(
+                    controller: widget.deletePasswordController,
+                  ),
+                  label: Text(l10n.authCurrentPasswordLabel),
+                  hint: l10n.authDeleteAccountHint,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                      (value == null || value.trim().isEmpty)
+                      ? l10n.authCurrentPasswordRequiredToast
+                      : null,
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _MutedText(l10n.authDeleteAccountCodeHint),
+                    VerificationCodeField(
+                      controller: widget.deleteCodeController,
+                      label: l10n.authCodeLabel,
+                      hint: l10n.authCodeLabel,
+                      validator: (value) =>
+                          value == null || value.trim().isEmpty
+                          ? l10n.authCodeRequiredError
+                          : null,
+                      buttonLabel: widget.cooldownSeconds == null
+                          ? l10n.authSendCode
+                          : l10n.authSendCodeAgain(widget.cooldownSeconds!),
+                      isLoading: widget.isSendingCode,
+                      onSendCode: widget.isSendingCode ||
+                          (widget.cooldownSeconds != null &&
+                              widget.cooldownSeconds! > 0)
+                          ? null
+                          : () => widget.onSendCode(),
+                    ),
+                  ],
+                ),
+        ),
         SizedBox(
           width: double.infinity,
           child: FButton(
             variant: FButtonVariant.destructive,
-            onPress: isSubmitting ? null : () => onDelete(),
-            child: isSubmitting
+            onPress: widget.isSubmitting
+                ? null
+                : () async {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      await widget.onDelete();
+                    }
+                  },
+            child: widget.isSubmitting
                 ? const SizedBox(
                     width: 18,
                     height: 18,
