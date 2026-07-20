@@ -149,6 +149,5 @@ enum MineCopyKey {
   archiveNeedsFill,
   privacyNoticeTitle,
   privacyNoticeAction,
-  archiveRecordListTitle,
   archiveAddNewAction,
 }

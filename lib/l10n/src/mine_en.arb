@@ -32,7 +32,7 @@
     }
   },
   "mineAccountLastLoginNone": "Last login --",
-  "mineAccountStudentRole": "Student",
+  "mineAccountStudentRole": "User",
   "mineSignedOutNoticeTitle": "You are not signed in",
   "mineSignedOutNoticeDescription": "Mine stays on the static layout while signed out so it does not keep hitting the backend. Sign in to load your profile and health context.",
   "mineCompletionTitle": "Profile completion",

@@ -35,7 +35,6 @@ String mineCopy(AppLocalizations l10n, MineCopyKey key) {
     MineCopyKey.archiveNeedsFill => l10n.mineArchiveNeedsFill,
     MineCopyKey.privacyNoticeTitle => l10n.minePrivacyNoticeTitle,
     MineCopyKey.privacyNoticeAction => l10n.minePrivacyNoticeAction,
-    MineCopyKey.archiveRecordListTitle => l10n.mineArchiveRecordListTitle,
     MineCopyKey.archiveAddNewAction => l10n.mineArchiveAddNewAction,
   };
 }

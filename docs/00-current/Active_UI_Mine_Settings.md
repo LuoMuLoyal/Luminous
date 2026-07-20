@@ -182,3 +182,13 @@ Last updated: 2026-07-20
 - **PIN 校验行内 error**：`security_pin.dart` 从 toast 改为行内 `error: Text(...)` 显示校验错误。6 个 `ValueNotifier<String?>` 管理各字段错误，`useEffect` 注册 controller listener 自动清除。
 - **帮助页重试 action**：`help.dart` 错误态新增 `actionLabel` + `onAction`（`ref.invalidate` 重载）。
 - **弹层勾选图标占位**：`advanced.dart` + `feature_flags.dart` 的 `suffix` 从条件 null 改为始终渲染 `SettingsSelectionIcon(selected: ...)`，消除选中/未选间布局跳变。
+
+## 2026-07-20 P2 我的/设置模块打磨
+
+- **角色文案中性化**：`mineAccountStudentRole` 从"大学生"/"Student" 改为"用户"/"User"。
+- **无引用残留清理**：删除 `health_enum_l10n.dart` 中零引用的 `medicineSourceLabel` 函数；删除 `MineCopyKey.archiveRecordListTitle` 枚举值及 `copy.dart` 对应映射。
+- **SyncBanner 注释修正**：`skeleton_view.dart` 类文档注释从 `SyncBanner` 改为 `MineSyncFailedBanner`。
+- **免打扰 subtitle→details**：`notification.dart` 的 DnD tile 从 `subtitle:` 改为 `details:`，与同组其余 tile 一致。
+- **垂直 padding helper 统一到全部子页**：`dnd.dart`、`sleep_reminder.dart`、`ai.dart`、`accessibility.dart`、`advanced.dart`、`data_storage.dart`、`feature_flags.dart`、`security_pin.dart`、`theme.dart` 共 9 个子页的内联三元表达式替换为 `settingsPageVerticalPadding(context)` 共享函数。
+- **验证码冷却期禁用**：`change_email.dart` 的 `onSendCode` 在 `lastCooldownSeconds != null`（冷却中）时设为 `null`，防止冷却期间重复点击发送。
+- **助手 provider 硬编码文案清理**：`conversation.dart` 的 `sendError` 从硬编码中文改为 `null`；`LucentApiException` 消息从中文改为英文。

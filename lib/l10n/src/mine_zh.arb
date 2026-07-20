@@ -32,7 +32,7 @@
     }
   },
   "mineAccountLastLoginNone": "上次登录 --",
-  "mineAccountStudentRole": "大学生",
+  "mineAccountStudentRole": "用户",
   "mineSignedOutNoticeTitle": "当前未登录",
   "mineSignedOutNoticeDescription": "我的页面先展示静态结构，避免未登录时反复请求后端。登录后再加载你的档案与健康上下文。",
   "mineCompletionTitle": "档案完整度",

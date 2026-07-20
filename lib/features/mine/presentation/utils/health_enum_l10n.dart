@@ -66,11 +66,3 @@ String conditionStatusDescription(
     HealthConditionStatus.suspected => l10n.mineConditionStatusSuspectedDesc,
   };
 }
-
-String medicineSourceLabel(AppLocalizations l10n, HealthMedicineSource source) {
-  return switch (source) {
-    HealthMedicineSource.drugbank => l10n.mineMedicineSourceDrugbank,
-    HealthMedicineSource.cn => l10n.mineMedicineSourceCn,
-    HealthMedicineSource.manual => l10n.mineMedicineSourceManual,
-  };
-}

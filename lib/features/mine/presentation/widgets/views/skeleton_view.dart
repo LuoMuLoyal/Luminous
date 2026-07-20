@@ -8,10 +8,10 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 /// Mirrors the real dashboard section order so the loading-to-loaded
 /// transition doesn't cause a large layout jump:
 ///
-/// **Mobile:** SyncBanner → AccountHero → Archive → AiPrivacy
+/// **Mobile:** MineSyncFailedBanner → AccountHero → Archive → AiPrivacy
 /// → NotificationsReminders → AccountSecurity
 ///
-/// **Desktop:** SyncBanner → AccountHero →
+/// **Desktop:** MineSyncFailedBanner → AccountHero →
 /// Row[左7: Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]
 class MineSkeletonView extends StatelessWidget {
   const MineSkeletonView({super.key});
