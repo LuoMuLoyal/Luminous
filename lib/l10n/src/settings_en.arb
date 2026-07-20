@@ -227,5 +227,6 @@
       "language": {}
     }
   },
-  "settingsAdvancedResetDefaultsHint": "Reset all settings to defaults. This cannot be undone."
+  "settingsAdvancedResetDefaultsHint": "Reset all settings to defaults. This cannot be undone.",
+  "settingsHelpRetryAction": "Retry"
 }

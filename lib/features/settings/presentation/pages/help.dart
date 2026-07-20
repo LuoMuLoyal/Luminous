@@ -71,6 +71,9 @@ class HelpSettingsPage extends ConsumerWidget {
                 title: l10n.settingsHelpError,
                 icon: FLucideIcons.circleAlert,
                 tone: AppStateTone.danger,
+                actionLabel: l10n.settingsHelpRetryAction,
+                onAction: () =>
+                    ref.invalidate(supportResourcesProvider('help')),
               ),
             ),
           ],

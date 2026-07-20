@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20 (P1 report module)
+Last updated: 2026-07-20 (P1 mine+settings)
 
 ## 技术栈
 

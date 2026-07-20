@@ -34,6 +34,36 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     final confirmPinController = useTextEditingController();
     final disablePinController = useTextEditingController();
     final isSubmitting = useState(false);
+    final enablePinError = useState<String?>(null);
+    final enablePinConfirmError = useState<String?>(null);
+    final oldPinError = useState<String?>(null);
+    final newPinError = useState<String?>(null);
+    final confirmPinError = useState<String?>(null);
+    final disablePinError = useState<String?>(null);
+
+    // Clear inline errors when the user edits the corresponding field.
+    useEffect(() {
+      void clear() => enablePinError.value = null;
+      void clearConfirm() => enablePinConfirmError.value = null;
+      void clearOld() => oldPinError.value = null;
+      void clearNew() => newPinError.value = null;
+      void clearConfirmNew() => confirmPinError.value = null;
+      void clearDisable() => disablePinError.value = null;
+      enablePinController.addListener(clear);
+      enablePinConfirmController.addListener(clearConfirm);
+      oldPinController.addListener(clearOld);
+      newPinController.addListener(clearNew);
+      confirmPinController.addListener(clearConfirmNew);
+      disablePinController.addListener(clearDisable);
+      return () {
+        enablePinController.removeListener(clear);
+        enablePinConfirmController.removeListener(clearConfirm);
+        oldPinController.removeListener(clearOld);
+        newPinController.removeListener(clearNew);
+        confirmPinController.removeListener(clearConfirmNew);
+        disablePinController.removeListener(clearDisable);
+      };
+    }, []);
 
     return PageScaffold(
       title: l10n.settingsSecurityPinTitle,
@@ -132,6 +162,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: enablePinError.value != null
+                                ? Text(enablePinError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           FTextField(
@@ -146,6 +179,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: enablePinConfirmError.value != null
+                                ? Text(enablePinConfirmError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           SizedBox(
@@ -160,6 +196,8 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                                       enablePinController.text,
                                       enablePinConfirmController.text,
                                       isSubmitting,
+                                      enablePinError,
+                                      enablePinConfirmError,
                                     ),
                               child: isSubmitting.value
                                   ? const SizedBox(
@@ -200,6 +238,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: oldPinError.value != null
+                                ? Text(oldPinError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           FTextField(
@@ -214,6 +255,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: newPinError.value != null
+                                ? Text(newPinError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           FTextField(
@@ -228,6 +272,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: confirmPinError.value != null
+                                ? Text(confirmPinError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           SizedBox(
@@ -243,6 +290,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                                       newPinController.text,
                                       confirmPinController.text,
                                       isSubmitting,
+                                      oldPinError,
+                                      newPinError,
+                                      confirmPinError,
                                     ),
                               child: isSubmitting.value
                                   ? const SizedBox(
@@ -284,6 +334,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                             ],
                             maxLength: 6,
                             obscureText: true,
+                            error: disablePinError.value != null
+                                ? Text(disablePinError.value!)
+                                : null,
                           ),
                           const SizedBox(height: Spacing.level4),
                           SizedBox(
@@ -298,6 +351,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                                       l10n,
                                       disablePinController.text,
                                       isSubmitting,
+                                      disablePinError,
                                     ),
                               child: isSubmitting.value
                                   ? const SizedBox(
@@ -347,13 +401,15 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     String pin,
     String confirmPin,
     ValueNotifier<bool> isSubmitting,
+    ValueNotifier<String?> pinError,
+    ValueNotifier<String?> confirmError,
   ) async {
     if (!_isValidPin(pin)) {
-      await AppToast.show(context, l10n.settingsSecurityPinInvalidPin);
+      pinError.value = l10n.settingsSecurityPinInvalidPin;
       return;
     }
     if (pin != confirmPin) {
-      await AppToast.show(context, l10n.settingsSecurityPinPinMismatch);
+      confirmError.value = l10n.settingsSecurityPinPinMismatch;
       return;
     }
     isSubmitting.value = true;
@@ -385,13 +441,20 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     String newPin,
     String confirmPin,
     ValueNotifier<bool> isSubmitting,
+    ValueNotifier<String?> oldPinError,
+    ValueNotifier<String?> newPinError,
+    ValueNotifier<String?> confirmPinError,
   ) async {
-    if (!_isValidPin(oldPin) || !_isValidPin(newPin)) {
-      await AppToast.show(context, l10n.settingsSecurityPinInvalidPin);
+    if (!_isValidPin(oldPin)) {
+      oldPinError.value = l10n.settingsSecurityPinInvalidPin;
+      return;
+    }
+    if (!_isValidPin(newPin)) {
+      newPinError.value = l10n.settingsSecurityPinInvalidPin;
       return;
     }
     if (newPin != confirmPin) {
-      await AppToast.show(context, l10n.settingsSecurityPinPinMismatch);
+      confirmPinError.value = l10n.settingsSecurityPinPinMismatch;
       return;
     }
     isSubmitting.value = true;
@@ -421,9 +484,10 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     AppLocalizations l10n,
     String pin,
     ValueNotifier<bool> isSubmitting,
+    ValueNotifier<String?> pinError,
   ) async {
     if (!_isValidPin(pin)) {
-      await AppToast.show(context, l10n.settingsSecurityPinInvalidPin);
+      pinError.value = l10n.settingsSecurityPinInvalidPin;
       return;
     }
     isSubmitting.value = true;

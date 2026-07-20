@@ -336,9 +336,9 @@ class _EndpointSheetState extends State<_EndpointSheet> {
                           ? widget.l10n.settingsDevApiEndpointCustomHint
                           : endpoint.defaultUrl,
                     ),
-                    suffix: endpoint == _selected
-                        ? const SettingsSelectionIcon(selected: true)
-                        : null,
+                    suffix: SettingsSelectionIcon(
+                      selected: endpoint == _selected,
+                    ),
                     onPress: () {
                       setState(() => _selected = endpoint);
                       if (endpoint == ApiEndpoint.custom) {
@@ -421,9 +421,7 @@ class _LogLevelSheet extends StatelessWidget {
                 for (final level in LogLevel.values)
                   FTile(
                     title: Text(_levelLabel(l10n, level)),
-                    suffix: level == current
-                        ? const SettingsSelectionIcon(selected: true)
-                        : null,
+                    suffix: SettingsSelectionIcon(selected: level == current),
                     onPress: () => onSelect(level),
                   ),
               ],

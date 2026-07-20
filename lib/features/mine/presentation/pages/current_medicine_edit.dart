@@ -290,6 +290,23 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                           label: Text(l10n.mineEditFieldDoseText),
                           hint: l10n.mineEditFieldDoseTextHint,
                         ),
+                        const SizedBox(height: Spacing.level2),
+                        Wrap(
+                          spacing: Spacing.level2,
+                          runSpacing: Spacing.level2,
+                          children: [
+                            for (final v in [
+                              l10n.mineEditDoseQuick1Tablet,
+                              l10n.mineEditDoseQuick2Tablets,
+                              l10n.mineEditDoseQuick5ml,
+                              l10n.mineEditDoseQuick10ml,
+                            ])
+                              _QuickSelectChip(
+                                label: v,
+                                onTap: () => doseTextController.text = v,
+                              ),
+                          ],
+                        ),
                         const SizedBox(height: Spacing.level3),
                         FTextField(
                           control: FTextFieldControl.managed(
@@ -297,6 +314,23 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                           ),
                           label: Text(l10n.mineEditFieldRoute),
                           hint: l10n.mineEditFieldRouteHint,
+                        ),
+                        const SizedBox(height: Spacing.level2),
+                        Wrap(
+                          spacing: Spacing.level2,
+                          runSpacing: Spacing.level2,
+                          children: [
+                            for (final v in [
+                              l10n.mineEditRouteQuickOral,
+                              l10n.mineEditRouteQuickTopical,
+                              l10n.mineEditRouteQuickInhaled,
+                              l10n.mineEditRouteQuickInjection,
+                            ])
+                              _QuickSelectChip(
+                                label: v,
+                                onTap: () => routeController.text = v,
+                              ),
+                          ],
                         ),
                       ],
                     ),
@@ -387,4 +421,37 @@ String _formatDate(DateTime date) {
   final m = date.month.toString().padLeft(2, '0');
   final d = date.day.toString().padLeft(2, '0');
   return '$y-$m-$d';
+}
+
+class _QuickSelectChip extends StatelessWidget {
+  const _QuickSelectChip({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return FTappable(
+      onPress: onTap,
+      builder: (context, data, child) => DecoratedBox(
+        decoration: BoxDecoration(
+          color: SemanticColor.neutral.subtle(context),
+          borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          border: Border.all(color: context.theme.colors.border),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level3,
+            vertical: Spacing.level1,
+          ),
+          child: Text(
+            label,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: context.theme.colors.mutedForeground),
+          ),
+        ),
+      ),
+    );
+  }
 }

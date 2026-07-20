@@ -294,5 +294,13 @@
   "mineAllergySeverityUnknownDesc": "严重程度未知",
   "mineConditionStatusActiveDesc": "目前仍处于活动期",
   "mineConditionStatusResolvedDesc": "已痊愈或已康复",
-  "mineConditionStatusSuspectedDesc": "疑似但尚未确诊"
+  "mineConditionStatusSuspectedDesc": "疑似但尚未确诊",
+  "mineEditRouteQuickOral": "口服",
+  "mineEditRouteQuickTopical": "外用",
+  "mineEditRouteQuickInhaled": "吸入",
+  "mineEditRouteQuickInjection": "注射",
+  "mineEditDoseQuick1Tablet": "1片",
+  "mineEditDoseQuick2Tablets": "2片",
+  "mineEditDoseQuick5ml": "5ml",
+  "mineEditDoseQuick10ml": "10ml"
 }

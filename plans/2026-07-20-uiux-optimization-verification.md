@@ -45,14 +45,10 @@
 ### 4.6 我的（mine）——完成度最高
 
 - ❌（低）角色文案仍固定"大学生"（`data/repositories/lucent.dart:50`、`domain/entities/dashboard.dart:26`）。
-- ⚠️（中）用药表单"途径/剂量"只有示例 hint，无常用值选择器（`current_medicine_edit.dart:291,299`）。
 - 备注：桌面骨架 SyncBanner 位置注释与实现不符；`medicineSourceLabel`、`archiveRecordListTitle` 成无引用残留。
 
 ### 4.7 设置（settings）
 
-- ❌（中）PIN 校验失败仍只有 toast、无行内 error（`security_pin.dart:345,349,383,387,419`）。
-- ⚠️（中）advanced 两个弹层 + feature_flags provider 弹层勾选图标仍 `selected ? : null` 无占位（`advanced.dart:341-343,426-428`、`feature_flags.dart:230-232`）。
-- ⚠️（中）帮助页未接重试 action（`help.dart:42-46,71-76`）。title/description 重复显示已修复（`description` 改为可选，不再传入重复文案）。
 - ⚠️（低）"通知"组仍单 tile；免打扰摘要仍用 subtitle 其余用 details；支持 URL 仍为文件内常量（仅作兜底）；垂直 padding helper 仅主页在用。
 - 备注："健康档案"入口已移组但仍 push `/mine` tab 根，返回栈问题实质未解决。
 
@@ -70,7 +66,7 @@
 
 ### P1 —— 一个迭代内（中级别实质缺口）
 
-1. PIN 行内 error；帮助页重试 action。
+全部已闭环。
 
 ### P2 —— 打磨批（低级别合一次提交）
 

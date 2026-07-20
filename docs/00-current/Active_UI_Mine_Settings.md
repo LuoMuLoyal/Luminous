@@ -175,3 +175,10 @@ Last updated: 2026-07-20
 ### Notification 模块
 
 - **通知详情 typed route**：`list.dart` 的通知项点击从字符串拼路由 `context.push('/notifications/${item.id}')` 改为 typed route `NotificationDetailRoute(id: item.id).push(context)`，与项目其他路由一致，获得编译期路径校验。
+
+## 2026-07-20 P1 修复
+
+- **用药表单常用值选择器**：`current_medicine_edit.dart` 剂量和给药途径文本框下方新增 `_QuickSelectChip` 快速选择芯片（剂量 4 值 + 途径 4 值），点击直接填入。
+- **PIN 校验行内 error**：`security_pin.dart` 从 toast 改为行内 `error: Text(...)` 显示校验错误。6 个 `ValueNotifier<String?>` 管理各字段错误，`useEffect` 注册 controller listener 自动清除。
+- **帮助页重试 action**：`help.dart` 错误态新增 `actionLabel` + `onAction`（`ref.invalidate` 重载）。
+- **弹层勾选图标占位**：`advanced.dart` + `feature_flags.dart` 的 `suffix` 从条件 null 改为始终渲染 `SettingsSelectionIcon(selected: ...)`，消除选中/未选间布局跳变。

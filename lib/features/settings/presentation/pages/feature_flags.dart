@@ -227,9 +227,7 @@ class _ProviderSheet extends ConsumerWidget {
                 for (final kind in AiRuntimeProviderKind.values)
                   FTile(
                     title: Text(kind.name),
-                    suffix: kind == current
-                        ? const SettingsSelectionIcon(selected: true)
-                        : null,
+                    suffix: SettingsSelectionIcon(selected: kind == current),
                     onPress: () {
                       Navigator.of(context).pop();
                       onSelect(kind);

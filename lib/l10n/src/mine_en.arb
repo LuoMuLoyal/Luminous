@@ -294,5 +294,13 @@
   "mineAllergySeverityUnknownDesc": "Severity unknown",
   "mineConditionStatusActiveDesc": "Currently active",
   "mineConditionStatusResolvedDesc": "Resolved or recovered",
-  "mineConditionStatusSuspectedDesc": "Suspected but not yet confirmed"
+  "mineConditionStatusSuspectedDesc": "Suspected but not yet confirmed",
+  "mineEditRouteQuickOral": "Oral",
+  "mineEditRouteQuickTopical": "Topical",
+  "mineEditRouteQuickInhaled": "Inhaled",
+  "mineEditRouteQuickInjection": "Injection",
+  "mineEditDoseQuick1Tablet": "1 tablet",
+  "mineEditDoseQuick2Tablets": "2 tablets",
+  "mineEditDoseQuick5ml": "5ml",
+  "mineEditDoseQuick10ml": "10ml"
 }
