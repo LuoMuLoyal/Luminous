@@ -107,3 +107,10 @@ Last updated: 2026-07-20 (P1 mine+settings)
 - 页面级错误使用 `AppStateErrorView`，加载态使用 shimmer 骨架屏。
 - `AppStateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
 - 轻量反馈使用 `AppToast`（`lib/core/feedback/app_toast.dart`），不用页面级 `SnackBar`。
+
+## ARB 编辑流程（2026-07-20 更新）
+
+- **绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**：这两个文件是由 `lib/l10n/src/` 下分片合并生成的产物。直接编辑的改动会在下次 merge 时丢失。
+- 正确流程：编辑 `lib/l10n/src/` 下分片 → `dart scripts/arb_tools.dart merge` → `flutter gen-l10n`。
+- `lib/l10n/AGENTS.md` 是 l10n 目录的专用规则文件，详细记录了分片映射表和新模块添加流程。
+- 全部 9 个设置子页统一使用 `settingsPageVerticalPadding(context)` 共享函数，不再各自内联响应式三元表达式。

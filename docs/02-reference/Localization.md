@@ -111,6 +111,14 @@ Persisted preference keys:
 - Scan feature strings such as recognition result titles, retake/confirm/close actions, method picker
   labels, barcode not-found toasts, recognition-failed dialog title/body, manual-search action, and
   recognizing hint (`scanRecognizingHint`) are owned by the Scan ARB entries (`scan*` keys).
+- Record create-page section title strings (`recordCreateSectionBasicTitle` /
+  `recordCreateSectionDetailsTitle`) and discard-changes confirmation copy
+  (`recordDiscardChangesTitle` / `Message` / `Action`) are owned by the Record ARB entries.
+- Record OCR empty-result copy (`recordOcrEmptyResult`) and back-to-today action
+  (`recordBackToTodayAction`) are owned by the Record ARB entries.
+- Record image camera action (`recordImageCameraAction`) is owned by the Record ARB entries.
+- Mine account role text (`mineAccountStudentRole`) changed from "Student"/"大学生" to
+  "User"/"用户" — owned by the Mine ARB entries.
 - Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
   `authQqCallbackLabel`, `authQqCompleteAction`).
 - Auth form strings such as login password hint (`authPasswordLoginHint`), register terms-required
