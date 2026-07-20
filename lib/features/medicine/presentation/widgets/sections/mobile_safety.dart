@@ -253,12 +253,6 @@ class _SafetyAlertRow extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: Spacing.level3),
-            Icon(
-              FLucideIcons.chevronRight,
-              color: colors.mutedForeground,
-              size: Spacing.level5,
-            ),
           ],
         ),
       ),

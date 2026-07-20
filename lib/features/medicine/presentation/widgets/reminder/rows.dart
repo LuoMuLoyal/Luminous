@@ -166,37 +166,40 @@ class UnavailableMethodRow extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level3,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
-          const SizedBox(width: Spacing.level4),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: typography.body.sm.copyWith(
-                    fontWeight: FontWeight.w700,
+    return Opacity(
+      opacity: 0.5,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: typography.body.sm.copyWith(
-                    color: colors.mutedForeground,
+                  Text(
+                    subtitle,
+                    style: typography.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: Spacing.level3),
-          FBadge(variant: FBadgeVariant.secondary, child: Text(status)),
-        ],
+            const SizedBox(width: Spacing.level3),
+            FBadge(variant: FBadgeVariant.secondary, child: Text(status)),
+          ],
+        ),
       ),
     );
   }

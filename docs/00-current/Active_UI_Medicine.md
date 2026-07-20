@@ -148,4 +148,6 @@ Last updated: 2026-07-20
 - **红旗 action 去假链接**：`risk_red_flag.dart` 的 action 文案去掉 `FontWeight.w700`，避免被误认为可点击链接。
 - **coverage 图标改 warning 色**：`risk_coverage_issue_tile.dart` 的 `circleAlert` 图标从 `colors.primary` 改为 `SemanticColor.warning.solid`，正确表达数据覆盖缺失的警告语义。
 - **日志面板展开收起**：`ReminderDeliveryLogPanel` 从 `StatelessWidget` 改为 `StatefulWidget`，新增 `_showAll` 状态。日志超过 5 条时底部显示 ghost 按钮"查看全部"/"收起"，点击切换全部/前 5 条。新增 `medicineReminderLogCollapse` l10n 键。
+- **告警行装饰 chevron 移除**：`mobile_safety.dart` 的 `_SafetyAlertRow` 移除尾部装饰性 `chevronRight`，整行已是 `FTappable`，chevron 与上方"查看"按钮目标重复。
+- **短信不可用行降权**：`rows.dart` 的 `UnavailableMethodRow` 整体包裹 `Opacity(0.5)`，标题从 `FontWeight.w700` 改为 `mutedForeground` 色，视觉上明确表达"不可用"语义。
 
