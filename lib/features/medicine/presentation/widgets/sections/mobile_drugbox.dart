@@ -334,7 +334,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
                 key: const Key('medicine-next-dose-action-skipped'),
                 label: l10n.medicineDoseActionSkipped,
                 icon: FLucideIcons.ban,
-                color: SemanticColor.primary,
+                color: SemanticColor.neutral,
                 onTap: () => onMarkDose!(skippedRequest),
               ),
             ],

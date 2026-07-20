@@ -180,6 +180,7 @@ class _TodayPlanRow extends StatelessWidget {
                     key: const Key('medicine-plan-dose-action-skipped'),
                     label: l10n.medicineDoseActionSkipped,
                     icon: FLucideIcons.ban,
+                    color: SemanticColor.neutral,
                     onTap: () => onMarkDose!(skippedRequest),
                   ),
                 ),

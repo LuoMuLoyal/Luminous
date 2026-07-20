@@ -142,3 +142,10 @@ Last updated: 2026-07-20
 - **提示音下拉固定宽 140 → Flexible**：`rows.dart` 的 `SizedBox(width: 140, child: FSelect(...))` 改为 `Flexible(child: FSelect(...))`，宽度自适应。
 - **搜索超时文案中性化**：`medicine_search.dart` 的 `TimeoutException` 消息从硬编码中文改为英文（实际不上屏，由 `LucentErrorMapper` 覆盖）。
 
+## 2026-07-20 P2 用药模块打磨续
+
+- **跳过按钮区分**：`mobile_records.dart` 和 `mobile_drugbox.dart` 的跳过按钮从默认 `SemanticColor.primary` 改为 `SemanticColor.neutral`，与已服按钮（primary 填充）视觉区分。
+- **红旗 action 去假链接**：`risk_red_flag.dart` 的 action 文案去掉 `FontWeight.w700`，避免被误认为可点击链接。
+- **coverage 图标改 warning 色**：`risk_coverage_issue_tile.dart` 的 `circleAlert` 图标从 `colors.primary` 改为 `SemanticColor.warning.solid`，正确表达数据覆盖缺失的警告语义。
+- **日志面板展开收起**：`ReminderDeliveryLogPanel` 从 `StatelessWidget` 改为 `StatefulWidget`，新增 `_showAll` 状态。日志超过 5 条时底部显示 ghost 按钮"查看全部"/"收起"，点击切换全部/前 5 条。新增 `medicineReminderLogCollapse` l10n 键。
+

@@ -299,6 +299,7 @@
     }
   },
   "medicineReminderDeliveryLogsTitle": "Reminder delivery history",
+  "medicineReminderLogCollapse": "Collapse",
   "medicineReminderNoDeliveryLogs": "No reminder delivery records yet",
   "medicineReminderDeliveryChannelLocal": "Local notification",
   "medicineReminderDeliveryChannelPush": "Push notification",

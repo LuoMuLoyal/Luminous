@@ -298,6 +298,7 @@
   "medicineReminderTodayLogsTitle": "今日用药打卡",
   "medicineReminderNoTodayLogs": "今天还没有用药打卡",
   "medicineReminderLogCountTotal": "共 {count} 条记录",
+  "medicineReminderLogCollapse": "收起",
   "@medicineReminderLogCountTotal": {
     "placeholders": {
       "count": {

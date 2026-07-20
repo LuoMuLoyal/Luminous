@@ -83,17 +83,28 @@ class ReminderTodayLogPanel extends StatelessWidget {
   }
 }
 
-class ReminderDeliveryLogPanel extends StatelessWidget {
+class ReminderDeliveryLogPanel extends StatefulWidget {
   const ReminderDeliveryLogPanel({super.key, required this.logs});
 
   final List<ReminderDeliveryItem> logs;
+
+  @override
+  State<ReminderDeliveryLogPanel> createState() =>
+      _ReminderDeliveryLogPanelState();
+}
+
+class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
+  bool _showAll = false;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    final visibleLogs = logs.take(5).toList(growable: false);
+    final visibleLogs = (_showAll ? widget.logs : widget.logs.take(5)).toList(
+      growable: false,
+    );
+    final hasMore = widget.logs.length > 5;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +147,21 @@ class ReminderDeliveryLogPanel extends StatelessWidget {
                     for (var index = 0; index < visibleLogs.length; index += 1)
                       _DeliveryLogRow(
                         log: visibleLogs[index],
-                        isLast: index == visibleLogs.length - 1,
+                        isLast: index == visibleLogs.length - 1 && !hasMore,
+                      ),
+                    if (hasMore)
+                      Padding(
+                        padding: const EdgeInsets.all(Spacing.level3),
+                        child: FButton(
+                          onPress: () => setState(() => _showAll = !_showAll),
+                          variant: FButtonVariant.ghost,
+                          size: FButtonSizeVariant.xs,
+                          child: Text(
+                            _showAll
+                                ? l10n.medicineReminderLogCollapse
+                                : l10n.medicineTodayPlanInspectAction,
+                          ),
+                        ),
                       ),
                   ],
                 ),

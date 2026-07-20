@@ -107,7 +107,6 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
                             .body(context)
                             .copyWith(
                               color: SemanticColor.destructive.solid(context),
-                              fontWeight: FontWeight.w700,
                             ),
                       ),
                     ),
