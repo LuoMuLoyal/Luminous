@@ -189,7 +189,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                 ),
                 FTile(
                   title: Text(l10n.settingsNotificationsDndTitle),
-                  subtitle: Text(
+                  details: Text(
                     _dndSummary(
                       l10n,
                       settings,

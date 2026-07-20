@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
@@ -27,9 +28,7 @@ class DndSettingsPage extends ConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: settingsPageVerticalPadding(context),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

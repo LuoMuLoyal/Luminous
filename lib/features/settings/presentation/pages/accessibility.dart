@@ -29,9 +29,7 @@ class AccessibilitySettingsPage extends ConsumerWidget {
         child: ResponsiveContentFrame(
           child: Padding(
             padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.sizeOf(context).width < Breakpoints.mobile
-                  ? Spacing.level6
-                  : Spacing.level7,
+              vertical: settingsPageVerticalPadding(context),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

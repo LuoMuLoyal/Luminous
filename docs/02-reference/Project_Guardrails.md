@@ -56,6 +56,9 @@ This replaces the long historical error audit as the current quick-read checklis
    backend-backed sections.
 - Do not add page-local routine `SnackBar`; use shared feedback utilities.
 - Do not add visible text without ARB/l10n.
+- **Never edit `lib/l10n/app_zh.arb` or `app_en.arb` directly.** Edit fragments in
+  `lib/l10n/src/` instead, then run `dart scripts/arb_tools.dart merge` + `flutter gen-l10n`.
+  Direct edits to `app_*.arb` will be lost on the next merge.
 - Do not let signed-out pages repeatedly call protected APIs; show stable signed-out state or route
    to login.
 - Do not present mock/static/unsupported features as real capability.
