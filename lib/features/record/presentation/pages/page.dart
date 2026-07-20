@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -39,6 +40,17 @@ class RecordPage extends ConsumerStatefulWidget {
 }
 
 class _RecordPageState extends ConsumerState<RecordPage> {
+  Future<void> _refreshAll(BuildContext context) async {
+    ref.invalidate(recordDashboardProvider);
+    try {
+      await ref.read(recordDashboardProvider.future);
+    } catch (_) {
+      if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      await AppToast.show(context, l10n.recordRefreshErrorToast);
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -201,6 +213,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           title: l10n.tabRecord,
           trailing: headerActions,
           scrollStorageKey: 'record-desktop-scroll',
+          onRefresh: () => _refreshAll(context),
           child: pageStateContent,
         ),
       );
@@ -209,11 +222,15 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final scaffoldBody = SafeArea(
       top: false,
       child: ResponsiveContentFrame(
-        child: SingleChildScrollView(
-          key: const Key('record-dashboard-scrollable'),
-          child: Padding(
-            padding: contentVerticalPadding,
-            child: pageStateContent,
+        child: RefreshIndicator(
+          onRefresh: () => _refreshAll(context),
+          child: SingleChildScrollView(
+            key: const Key('record-dashboard-scrollable'),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: contentVerticalPadding,
+              child: pageStateContent,
+            ),
           ),
         ),
       ),

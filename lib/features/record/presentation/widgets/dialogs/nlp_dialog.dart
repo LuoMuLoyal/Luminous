@@ -165,7 +165,7 @@ class RecordNlpDialog extends HookConsumerWidget {
     }
 
     return AppDialogShell(
-      scrollable: false,
+      scrollable: true,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

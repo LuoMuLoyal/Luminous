@@ -86,3 +86,12 @@ Last updated: 2026-07-18
 - `fast_entry_dialog.dart` 保存时新增 `FProgress` 指示器。
 - `nlp_dialog.dart` 的 `handleReset` 改为 async 并新增确认弹窗（`AppDialogShell` + `recordNlpResetConfirmTitle/Body/Action`），避免误触清空草稿。
 - `dashboard.dart` 的 `onTimeout` 文案改为英文与全 App 一致。
+
+## 2026-07-19 剩余中级项
+
+- 记录主页两端接入下拉刷新（桌面 `DesktopTabShell.onRefresh`，移动 `RefreshIndicator`），失败显示 `recordRefreshErrorToast`。
+- 记录详情 meal 分析"分析中"状态自动 5 秒轮询（`Timer.periodic` → `ref.invalidate(dailyRecordDetailProvider)`），状态变更后自动停止。
+- 编辑页锁定类型不可切换（`showKindField: false`），消除切型静默丢弃 payload。
+- 菜品"确认当前结果"按钮改为可切换态（选中 `primary` + 对勾图标，未选中 `outline`），不再恒设 true。
+- NLP 主弹层 `scrollable` 从 `false` 改为 `true`，候选多时可滚动。
+- OCR 弹层识别结果从只读 `Text` 改为可编辑 `FTextField`；新增"重新选择"按钮（`recordOcrRetakeAction`），重置图片和文本。

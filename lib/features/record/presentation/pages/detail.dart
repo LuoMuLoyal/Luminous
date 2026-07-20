@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -110,15 +112,43 @@ class RecordDetailPage extends ConsumerWidget {
   }
 }
 
-class _RecordDetailBody extends ConsumerWidget {
+class _RecordDetailBody extends ConsumerStatefulWidget {
   const _RecordDetailBody({required this.record});
 
   final DailyRecordItem record;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_RecordDetailBody> createState() => _RecordDetailBodyState();
+}
+
+class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
+  Timer? _analysisPoller;
+
+  @override
+  void dispose() {
+    _analysisPoller?.cancel();
+    super.dispose();
+  }
+
+  /// Start/stop the analysis poller based on the current meal analysis status.
+  void _syncAnalysisPoller(bool isAnalyzing) {
+    if (isAnalyzing && _analysisPoller == null) {
+      _analysisPoller = Timer.periodic(const Duration(seconds: 5), (_) {
+        if (mounted) {
+          ref.invalidate(dailyRecordDetailProvider(widget.record.id));
+        }
+      });
+    } else if (!isAnalyzing && _analysisPoller != null) {
+      _analysisPoller!.cancel();
+      _analysisPoller = null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
+    final record = widget.record;
 
     final imageAttachment = record.attachments
         .where((item) => item.kind == DailyRecordAttachmentKind.image)
@@ -126,6 +156,13 @@ class _RecordDetailBody extends ConsumerWidget {
     final mealAnalysis = record.kind == DailyRecordKind.meal
         ? parseMealAnalysisViewData(record.payload)
         : null;
+
+    // Sync the analysis poller with the current status.
+    final isAnalyzing =
+        mealAnalysis != null && mealAnalysis.status == 'analyzing';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _syncAnalysisPoller(isAnalyzing);
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -293,7 +330,7 @@ class _RecordDetailBody extends ConsumerWidget {
     AppLocalizations l10n,
     Map<String, dynamic>? payload,
   ) {
-    if (payload == null || record.kind != DailyRecordKind.sleep) {
+    if (payload == null || widget.record.kind != DailyRecordKind.sleep) {
       return const [];
     }
 

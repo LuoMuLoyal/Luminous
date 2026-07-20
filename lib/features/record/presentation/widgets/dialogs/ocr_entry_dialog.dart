@@ -62,6 +62,8 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
     final recognizedText = useState<String?>(null);
     final isRecognizing = useState(false);
     final imagePath = useState<String?>(null);
+    final textController = useTextEditingController();
+    final textFocus = useFocusNode();
 
     Future<void> pickAndRecognize(ImageSource source) async {
       final locale = Localizations.localeOf(context);
@@ -70,11 +72,13 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
 
       imagePath.value = photo.path;
       recognizedText.value = null;
+      textController.clear();
       isRecognizing.value = true;
 
       try {
         final text = await recognizeText(photo, locale);
         recognizedText.value = text;
+        textController.text = text;
       } catch (e) {
         ref
             .read(talkerProvider)
@@ -88,11 +92,17 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
     }
 
     Future<void> handleUseText() async {
-      final text = recognizedText.value?.trim() ?? '';
+      final text = textController.text.trim();
       if (text.isEmpty) return;
       if (context.mounted) {
         Navigator.of(context).pop(text);
       }
+    }
+
+    void handleRetake() {
+      imagePath.value = null;
+      recognizedText.value = null;
+      textController.clear();
     }
 
     return Padding(
@@ -174,6 +184,17 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           fit: BoxFit.cover,
                         ),
                       ),
+                      const SizedBox(height: Spacing.level3),
+                      // Retake button
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: FButton(
+                          variant: FButtonVariant.ghost,
+                          onPress: isRecognizing.value ? null : handleRetake,
+                          prefix: const Icon(FLucideIcons.refreshCw, size: 16),
+                          child: Text(l10n.recordOcrRetakeAction),
+                        ),
+                      ),
                       const SizedBox(height: Spacing.level4),
 
                       // Recognizing indicator
@@ -193,29 +214,18 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         ),
                       ],
 
-                      // Recognized text
+                      // Recognized text (editable)
                       if (recognizedText.value != null &&
                           !isRecognizing.value) ...[
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(Spacing.level4),
-                          decoration: BoxDecoration(
-                            color: colors.background,
-                            borderRadius: BorderRadius.circular(
-                              RadiusTokens.level4,
-                            ),
-                            border: Border.all(color: colors.border),
+                        FTextField(
+                          key: const Key('record-ocr-result-field'),
+                          control: FTextFieldControl.managed(
+                            controller: textController,
                           ),
-                          child: Text(
-                            recognizedText.value?.isEmpty ?? true
-                                ? l10n.recordNlpEmptyCandidatesToast
-                                : recognizedText.value ?? '',
-                            style: (recognizedText.value?.isEmpty ?? true)
-                                ? typography.body.md.copyWith(
-                                    color: colors.mutedForeground,
-                                  )
-                                : typography.body.md,
-                          ),
+                          focusNode: textFocus,
+                          minLines: 3,
+                          maxLines: 8,
+                          label: Text(l10n.recordOcrEntryTitle),
                         ),
                       ],
                     ],
@@ -231,7 +241,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: FButton(
-                    onPress: (recognizedText.value?.trim().isNotEmpty ?? false)
+                    onPress: (textController.text.trim().isNotEmpty)
                         ? handleUseText
                         : null,
                     child: Text(l10n.recordVoiceUseText),

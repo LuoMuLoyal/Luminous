@@ -552,6 +552,7 @@ class RecordEditPage extends HookConsumerWidget {
                     DailyRecordFormFields(
                       kind: kind.value,
                       onKindChanged: onKindChanged,
+                      showKindField: false,
                       valueController: valueController,
                       unitController: unitController,
                       titleController: titleController,
@@ -602,9 +603,15 @@ class RecordEditPage extends HookConsumerWidget {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: FButton(
-                            variant: FButtonVariant.outline,
+                            variant: confirmMealAnalysis.value
+                                ? FButtonVariant.primary
+                                : FButtonVariant.outline,
                             key: const Key('meal-confirm-action'),
-                            onPress: () => confirmMealAnalysis.value = true,
+                            onPress: () => confirmMealAnalysis.value =
+                                !confirmMealAnalysis.value,
+                            prefix: confirmMealAnalysis.value
+                                ? const Icon(FLucideIcons.check, size: 16)
+                                : null,
                             child: Text(
                               confirmMealAnalysis.value
                                   ? l10n.recordMealConfirmActionSelected
