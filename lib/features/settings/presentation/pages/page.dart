@@ -87,8 +87,13 @@ class SettingsPage extends ConsumerWidget {
                       icon: FLucideIcons.heartPulse,
                       title: l10n.settingsHealthProfileTitle,
                       subtitle: l10n.settingsHealthProfileSubtitle,
-                      onTap: () =>
-                          pushAuthRequiredRoute(context, AppRoutes.mine),
+                      onTap: () {
+                        if (!signedIn) {
+                          pushAuthRequiredRoute(context, AppRoutes.settings);
+                          return;
+                        }
+                        context.go(AppRoutes.mine);
+                      },
                     ),
                   ],
                 ),
@@ -100,27 +105,6 @@ class SettingsPage extends ConsumerWidget {
 
                 // -- 快速记录 --
                 const _QuickEntrySection(),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- 通知 --
-                SettingsSectionLabel(
-                  label: l10n.settingsNotificationsSectionTitle,
-                ),
-                const SizedBox(height: Spacing.level3),
-                FTileGroup(
-                  physics: const NeverScrollableScrollPhysics(),
-                  divider: FItemDivider.full,
-                  children: [
-                    _SettingsNavigationTile(
-                      tileKey: const Key('settings-row-notifications'),
-                      icon: FLucideIcons.bell,
-                      title: l10n.mineSettingsNotificationsTitle,
-                      value: _notificationSummary(l10n, ref),
-                      onTap: () =>
-                          context.push(AppRoutes.settingsNotifications),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: _kGroupSpacing),
 
                 // -- AI 与隐私 --
@@ -158,22 +142,6 @@ class SettingsPage extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  String _notificationSummary(AppLocalizations l10n, WidgetRef ref) {
-    final settingsAsync = ref.watch(notificationSettingsControllerProvider);
-    final settings = settingsAsync.asData?.value;
-    if (settings == null) return '—';
-
-    final enabledCount = [
-      settings.medicationReminders,
-      settings.waterReminders,
-      settings.sleepReminders,
-      settings.healthAlerts,
-      settings.weeklySummary,
-    ].where((v) => v).length;
-
-    return l10n.settingsNotificationsSummary(enabledCount);
   }
 }
 
@@ -433,10 +401,34 @@ class _GeneralSection extends ConsumerWidget {
               subtitle: l10n.settingsAccessibilitySubtitle,
               onTap: () => context.push(AppRoutes.settingsAccessibility),
             ),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-notifications'),
+              icon: FLucideIcons.bell,
+              title: l10n.mineSettingsNotificationsTitle,
+              value: _notificationSummary(l10n, ref),
+              onTap: () =>
+                  context.push(AppRoutes.settingsNotifications),
+            ),
           ],
         ),
       ],
     );
+  }
+
+  String _notificationSummary(AppLocalizations l10n, WidgetRef ref) {
+    final settingsAsync = ref.watch(notificationSettingsControllerProvider);
+    final settings = settingsAsync.asData?.value;
+    if (settings == null) return '—';
+
+    final enabledCount = [
+      settings.medicationReminders,
+      settings.waterReminders,
+      settings.sleepReminders,
+      settings.healthAlerts,
+      settings.weeklySummary,
+    ].where((v) => v).length;
+
+    return l10n.settingsNotificationsSummary(enabledCount);
   }
 
   String _retentionLabel(AppLocalizations l10n, DataRetentionPeriod period) {

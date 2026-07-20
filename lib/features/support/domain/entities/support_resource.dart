@@ -66,3 +66,7 @@ class AppInfo {
   final String? privacyPolicyUrl;
   final String? termsOfServiceUrl;
 }
+
+/// Fallback support URL used when no support email is configured in [AppInfo].
+/// Only used as a last-resort link in the About page.
+const kFallbackSupportUrl = 'https://luminous.app/support';
