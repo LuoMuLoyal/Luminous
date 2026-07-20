@@ -81,6 +81,7 @@ class TodayObservationSection extends ConsumerWidget {
           title: l10n.todayObservationSleepMissingTitle,
           subtitle: l10n.todayObservationSleepMissingSubtitle,
           tag: l10n.todayObservationLowConfidenceTag,
+          confidence: TodaySuggestionConfidence.low,
           onPress: () => openRoute(context, '/record/create?kind=sleep'),
         ),
       ];
@@ -99,6 +100,7 @@ class TodayObservationSection extends ConsumerWidget {
       title: card.title,
       subtitle: card.reason,
       tag: _tagForConfidence(l10n, card.confidence),
+      confidence: card.confidence,
       onPress: () => openRoute(context, card.primaryAction.route),
     );
   }
@@ -153,12 +155,7 @@ class _ObservationTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: Spacing.level2),
-            Text(
-              item.tag,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
+            _ConfidenceBadge(label: item.tag, confidence: item.confidence),
             if (item.onPress != null) ...[
               const SizedBox(width: Spacing.level2),
               Icon(
@@ -279,6 +276,7 @@ class _ObservationItem {
     required this.title,
     required this.subtitle,
     required this.tag,
+    required this.confidence,
     this.onPress,
   });
 
@@ -286,7 +284,41 @@ class _ObservationItem {
   final String title;
   final String subtitle;
   final String tag;
+  final TodaySuggestionConfidence confidence;
   final VoidCallback? onPress;
+}
+
+/// Confidence-level badge for observation tiles.
+///
+/// Uses [FBadge] with different variants to visually distinguish confidence
+/// levels:
+/// - high → primary (solid, draws attention)
+/// - medium → secondary (muted, less prominent)
+/// - low → outline (minimal, de-emphasized)
+class _ConfidenceBadge extends StatelessWidget {
+  const _ConfidenceBadge({required this.label, required this.confidence});
+
+  final String label;
+  final TodaySuggestionConfidence confidence;
+
+  @override
+  Widget build(BuildContext context) {
+    final variant = switch (confidence) {
+      TodaySuggestionConfidence.high => FBadgeVariant.primary,
+      TodaySuggestionConfidence.medium => FBadgeVariant.secondary,
+      TodaySuggestionConfidence.low => FBadgeVariant.outline,
+    };
+
+    return FBadge(
+      variant: variant,
+      child: Text(
+        label,
+        style: TypographyToken.level3
+            .body(context)
+            .copyWith(fontWeight: FontWeight.w600),
+      ),
+    );
+  }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 # Active UI — Today
 
-Last updated: 2026-07-20
+Last updated: 2026-07-20 (P1)
 
 ## 页面结构
 
@@ -35,13 +35,13 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - AI 摘要文本使用 `MarkdownBody` 渲染。
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
 - 睡眠概览值不再追加单位（后端 `valueLabel` 已含单位）。
-- 用药概览值使用 `todayMedicationOverviewCount` l10n 键（"{done}/{total} 种"），"种"后缀明确分母为药品种类数而非今日应服次数。
+- 用药概览值使用 `todayMedicationOverviewCount` l10n 键（"{done}/{total} 种"）。分母已修正为今日有提醒计划的药品数（`_todayScheduledMedicineIds`），无提醒时回退为全部当前药品数。
 
 ## 观察项
 
 - 从 `FTile` 改为自定义 `_ObservationTile`，使用 muted 图标色、无背景色。
 - 数据源从旧 `todayRecommendationsProvider` 切换到 `todaySuggestionProvider.observations`。
-- 置信度 tag 从后端 `confidence` 映射：`high → 去看看`、`medium/low → 仅供参考`。
+- 置信度 tag 从后端 `confidence` 映射：`high → 去看看`、`medium → 值得留意`、`low → 仅供参考`。标签用 `FBadge` 呈现，high→`primary`、medium→`secondary`、low→`outline` 视觉分级。
 - fallback 睡眠缺失提示保留，与后端观察项合并展示。
 - section subtitle `以下内容仅供参考，不构成待办`。
 

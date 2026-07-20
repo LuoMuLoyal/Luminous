@@ -268,7 +268,7 @@
   "todayObservationSleepMissingTitle": "Recent sleep data is still missing",
   "todayObservationSleepMissingSubtitle": "Sleep trends are still unclear. Add one record and the picture will get sharper.",
   "todayObservationLowConfidenceTag": "FYI",
-  "todayObservationMediumConfidenceTag": "For reference",
+  "todayObservationMediumConfidenceTag": "Worth noting",
   "todayObservationReviewTag": "Take a look",
   "todayObservationMedicineNote": "This is a lightweight hint. Open the medicine page for the actual risk and coverage boundary.",
   "todayObservationSleepNote": "Treat this as something to watch, not as a must-do task for today.",

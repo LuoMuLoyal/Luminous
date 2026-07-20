@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20
+Last updated: 2026-07-20 (P1)
 
 ## 技术栈
 
@@ -43,7 +43,7 @@ Last updated: 2026-07-20
 - `lucentClientProvider`（keepAlive）是全部 feature 的统一 API 访问入口。
 - `LucentSseClient` 支持 `reconnect` 自动重连。
 - `LucentApiPaths` 常量注册表集中管理所有 API 路径字符串。
-- `LucentErrorMapper.toAppError()` 将任意异常转换为 `AppError`（5 分类：network/auth/server/business/unknown）。
+- `LucentErrorMapper.toAppError()` 将任意异常转换为 `AppError`（5 分类：network/auth/server/business/unknown）。网络层 fallback 消息为英文（locale-neutral），业务错误消息由服务端按 locale 返回。
 
 ## 错误处理
 

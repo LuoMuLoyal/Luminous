@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -56,7 +57,12 @@ class LegalListPage extends ConsumerWidget {
                   title: Text(doc.title),
                   subtitle: doc.updatedAt.isNotEmpty
                       ? Text(
-                          l10n.legalListUpdatedAt(doc.updatedAt),
+                          l10n.legalListUpdatedAt(
+                            formatDateTimeLabel(
+                              doc.updatedAt,
+                              Localizations.localeOf(context),
+                            ),
+                          ),
                           style: TypographyToken.level2
                               .body(context)
                               .copyWith(color: colors.mutedForeground),

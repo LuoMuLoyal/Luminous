@@ -17,7 +17,7 @@ abstract final class LucentErrorMapper {
       return LucentApiException(message: _fallbackMessage(error));
     }
 
-    return const LucentApiException(message: '发生了未预期的错误。');
+    return const LucentApiException(message: 'An unexpected error occurred.');
   }
 
   /// Converts any thrown object into a structured [AppError].
@@ -102,14 +102,19 @@ abstract final class LucentErrorMapper {
 
   static String _fallbackMessage(DioException error) {
     return switch (error.type) {
-      DioExceptionType.connectionTimeout => '连接超时，请稍后再试。',
-      DioExceptionType.sendTimeout => '请求发送超时，请稍后再试。',
-      DioExceptionType.receiveTimeout => '响应接收超时，请稍后再试。',
-      DioExceptionType.badCertificate => '服务器证书校验失败。',
-      DioExceptionType.connectionError => '网络请求失败，请检查当前连接。',
-      DioExceptionType.cancel => '请求已取消。',
-      DioExceptionType.badResponse => '请求失败，请稍后再试。',
-      DioExceptionType.unknown => '发生了未预期的网络错误。',
+      DioExceptionType.connectionTimeout =>
+        'Connection timed out. Please try again later.',
+      DioExceptionType.sendTimeout =>
+        'Request timed out. Please try again later.',
+      DioExceptionType.receiveTimeout =>
+        'Response timed out. Please try again later.',
+      DioExceptionType.badCertificate =>
+        'Server certificate verification failed.',
+      DioExceptionType.connectionError =>
+        'Network request failed. Please check your connection.',
+      DioExceptionType.cancel => 'Request was cancelled.',
+      DioExceptionType.badResponse => 'Request failed. Please try again later.',
+      DioExceptionType.unknown => 'An unexpected network error occurred.',
     };
   }
 }

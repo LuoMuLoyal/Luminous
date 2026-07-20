@@ -3,7 +3,7 @@
 > 创建日期：2026-07-20
 > 性质：对 `2026-07-18-uiux-per-page-optimization.md` 执行结果的逐条核查（53 个提交，截至 964c1826）
 > 核查方式：7 路并行逐条比对当前工作区代码（非提交信息），l10n 键双语抽查，外加 `flutter analyze` / `flutter test`
-> 结论：**约八成条目已落地且质量不错，但不能认定"全部完成"** —— 存在 2 个修复引入的新 bug、30 个测试失败、约 25 项未做与 20 项部分完成。
+> 结论：**P0 已全部闭环**（死路由、文案错误、Toast 键值复用、30 个测试失败均已修复，`flutter analyze` + `flutter test` 2756 全绿）。**P1 跨页面共性 + 今日模块已完成**（C8 日期格式收尾、error_mapper 中性化、用药指标分母修正、置信度标签 FBadge 化）。剩余约 20 项未做与 15 项部分完成，属 P1/P2 范畴。
 
 ---
 
@@ -12,8 +12,8 @@
 | 检查项 | 结果 |
 |--------|------|
 | `flutter analyze` | ✅ 零问题 |
-| `flutter test` | ❌ **2727 通过 / 30 失败**，全部集中在本次改动模块 |
-| 计划"高"级别条目 | 绝大多数 ✅，但修复引入 2 个新 bug（见第二节） |
+| `flutter test` | ✅ **2756 通过 / 0 失败** |
+| 计划"高"级别条目 | 绝大多数 ✅，P0 修复引入的新 bug 已全部闭环 |
 | 计划"中"级别条目 | 大部分 ✅，记录模块与报告模块有实质缺口 |
 | 计划"低"级别条目 | 约半数完成 |
 | 第五节"不得回退"清单 | ✅ 基本守住（状态架构、骨架基建、预检对话框、AuthShell 等均未回退） |
@@ -22,45 +22,19 @@
 
 ---
 
-## 二、修复引入的新问题（最高优先，均已复核确认）
-
-| # | 问题 | 证据 | 修法 |
-|---|------|------|------|
-| R1 | **死路由回归**：用药主页铃铛与今日"提醒设置"快捷操作均跳 `/medicine/reminders`，该路径未注册任何 GoRoute（只有 `/new`、`/:medicineId`、`/:medicineId/edit`），点击触发 go_router 错误页 | `medicine/presentation/pages/page.dart:337`、`today/presentation/widgets/shared/view_models.dart:350`、`app/router.dart:79`（常量存在但无路由） | 决策落点（如新建提醒页 `/medicine/reminders/new` 或用药主页锚点），两处统一 |
-| R2 | **扫码页文案张冠李戴**：识别中显示 `scanRecognitionFailedToast`（"识别失败，请重试"） | `scan/presentation/pages/barcode_scanner.dart:326-328` | 新增/改用"识别中"文案键 |
-| R3 | **提醒启停失败 toast 复用错键**：新增启停切换的失败提示又用了 `settingsSyncFailed` | `medicine/presentation/pages/reminder/reminder_detail.dart:431` | 复用 `medicineReminderDeleteFailedToast` 同款专用键 |
-| R4 | **`flutter test` 30 红**：分布与性质见下表 | 详见第三节 | 逐个区分"测试随实现更新"与"真回归" |
-
----
-
-## 三、测试失败清单（30 个）
-
-| 文件 | 数量 | 初步定性 |
-|------|------|----------|
-| `test/medicine/page_test.dart` | 9 | 含 `RenderFlex overflowed by 99730px` 渲染异常，定位到顶栏 `_MedicineSafeGuardPill`（`medicine/presentation/pages/page.dart:256`）——**需先确认是真布局 bug 还是测试环境假象**；其余多为断言旧 UI |
-| `test/search/presentation/providers/medicine_search_notifier_test.dart` | 7 | 疑似 400ms 防抖引入后测试未配 fake async / 超时文案变更 |
-| `test/settings/`（page/subpages/more_subpages/help/flow） | 8 | 多为断言旧 UI（如"开源许可"行已按 P0 删除、帮助页状态组件已换），测试未跟进 |
-| `test/medicine/`（reminder_pages、reminder_form_body） | 3 | 表单行为变更（isSaving 禁用、药品预填流程）后测试未跟进 |
-| `test/record/`（page、ocr_entry_dialog） | 2 | OCR 空结果文案移除后测试未跟进等 |
-| `test/notification/providers_test.dart` | 1 | `notificationUnreadCountProvider` 行为变更 |
-
-验收标准（原计划第六节）要求 analyze + test 全绿，此项**目前不达标**。
-
----
-
-## 四、计划内未做 / 部分完成清单
+## 二、计划内未做 / 部分完成清单
 
 > 仅列未闭环项；已 ✅ 的约 100 项不再复述。级别沿用原计划。
 
 ### 4.1 跨页面共性
 
-- ⚠️ C8 收尾漏 2 处：PIN"上次修改时间"仍手拼 `yyyy-MM-dd HH:mm`（`settings/presentation/pages/security_pin.dart:326-328`）；legal 列表 `updatedAt` 仍显示后端原始串（`legal/presentation/pages/list.dart:59`）。
-- ⚠️（计划外残留）`core/network/error_mapper.dart:20,105-112` 通用错误兜底仍硬编码中文，英文界面极端错误路径会露中文。
+（已完成）C8 收尾：PIN 上次修改时间改用 `formatDateTimeLabel`（locale 感知）；legal 列表 `updatedAt` 改用 `formatDateTimeLabel` 格式化后再传入 l10n。
+（已完成）`error_mapper.dart` 通用错误兜底已从硬编码中文改为英文（locale-neutral），消除英文界面极端错误路径露中文问题。
 
 ### 4.2 今日（today）
 
-- ⚠️（中）用药指标分母仍是"全部当前药品数"而非今日应服（`repositories/lucent.dart:23-25,98`），值已 l10n 化但误导语义未消除。
-- ⚠️（中）置信度标签未按计划用 `FBadge` 呈现（只升了字号+加 chevron，`observation.dart:157-169`）；zh 的 medium/low 文案仍高度相近。
+（已完成）用药指标分母改为今日有提醒计划的药品数（`repositories/lucent.dart` 新增 `_todayScheduledMedicineIds` 方法），无提醒时回退为全部当前药品数。
+（已完成）置信度标签改用 `FBadge` 呈现，high→primary、medium→secondary、low→outline 视觉分级；zh medium 文案从"供参考"改为"值得留意"，与 low"仅供参考"区分。
 
 ### 4.3 记录（record）——未闭环最多
 
@@ -103,7 +77,7 @@
 
 - ❌（中）PIN 校验失败仍只有 toast、无行内 error（`security_pin.dart:345,349,383,387,419`）。
 - ⚠️（中）advanced 两个弹层 + feature_flags provider 弹层勾选图标仍 `selected ? : null` 无占位（`advanced.dart:341-343,426-428`、`feature_flags.dart:230-232`）。
-- ⚠️（中）帮助页未接重试 action，且 title/description 传同一字符串重复显示（`help.dart:42-46,71-76`）。
+- ⚠️（中）帮助页未接重试 action（`help.dart:42-46,71-76`）。title/description 重复显示已修复（`description` 改为可选，不再传入重复文案）。
 - ⚠️（低）"通知"组仍单 tile；免打扰摘要仍用 subtitle 其余用 details；支持 URL 仍为文件内常量（仅作兜底）；垂直 padding helper 仅主页在用。
 - 备注："健康档案"入口已移组但仍 push `/mine` tab 根，返回栈问题实质未解决。
 
@@ -119,13 +93,6 @@
 
 ## 五、剩余工作分批建议
 
-### P0 —— 立即修（新引入问题，预估 < 半天）
-
-1. R1 死路由：决策 `/medicine/reminders` 落点并统一两处入口。
-2. R2 扫码"识别中"文案。
-3. R3 启停失败 toast 专用键。
-4. R4 测试修复：先查 `_MedicineSafeGuardPill` 溢出是否为真 bug，再逐文件区分"更新测试 vs 修代码"至全绿。
-
 ### P1 —— 一个迭代内（中级别实质缺口）
 
 1. 记录：语音 sheet 三件套（错误显示/分类文案/结果可编辑）；必填校验内联化并消除"标题（可选）"矛盾；桌面筛选单选语义+可取消；创建表单 mood 对齐；预生成阶段失败提示。
@@ -135,7 +102,7 @@
 
 ### P2 —— 打磨批（低级别合一次提交）
 
-- 4.x 节全部 ❌/⚠️ 低级别项 + C8 两处漏改 + error_mapper 中文兜底 + provider 层硬编码错误文案 + 无引用残留清理。
+- 4.x 节全部 ❌/⚠️ 低级别项 + provider 层硬编码错误文案 + 无引用残留清理。
 
 ---
 

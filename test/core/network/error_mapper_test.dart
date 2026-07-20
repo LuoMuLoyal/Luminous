@@ -22,81 +22,93 @@ void main() {
       expect(result.code, equals(401001));
     });
 
-    test('maps connectionTimeout to Chinese message', () {
+    test('maps connectionTimeout to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.connectionTimeout,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('连接超时，请稍后再试。'));
+      expect(
+        result.message,
+        equals('Connection timed out. Please try again later.'),
+      );
     });
 
-    test('maps sendTimeout to Chinese message', () {
+    test('maps sendTimeout to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.sendTimeout,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('请求发送超时，请稍后再试。'));
+      expect(
+        result.message,
+        equals('Request timed out. Please try again later.'),
+      );
     });
 
-    test('maps receiveTimeout to Chinese message', () {
+    test('maps receiveTimeout to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.receiveTimeout,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('响应接收超时，请稍后再试。'));
+      expect(
+        result.message,
+        equals('Response timed out. Please try again later.'),
+      );
     });
 
-    test('maps badCertificate to Chinese message', () {
+    test('maps badCertificate to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.badCertificate,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('服务器证书校验失败。'));
+      expect(result.message, equals('Server certificate verification failed.'));
     });
 
-    test('maps connectionError to Chinese message', () {
+    test('maps connectionError to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.connectionError,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('网络请求失败，请检查当前连接。'));
+      expect(
+        result.message,
+        equals('Network request failed. Please check your connection.'),
+      );
     });
 
-    test('maps cancel to Chinese message', () {
+    test('maps cancel to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.cancel,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('请求已取消。'));
+      expect(result.message, equals('Request was cancelled.'));
     });
 
-    test('maps badResponse to Chinese message', () {
+    test('maps badResponse to locale-neutral message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.badResponse,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('请求失败，请稍后再试。'));
+      expect(result.message, equals('Request failed. Please try again later.'));
     });
 
-    test('maps unknown to Chinese fallback message', () {
+    test('maps unknown to locale-neutral fallback message', () {
       final dioError = DioException(
         requestOptions: RequestOptions(path: '/test'),
         type: DioExceptionType.unknown,
       );
       final result = LucentErrorMapper.fromObject(dioError);
-      expect(result.message, equals('发生了未预期的网络错误。'));
+      expect(result.message, equals('An unexpected network error occurred.'));
     });
 
     test('returns fallback for non-DioException non-Lucent error', () {
       final result = LucentErrorMapper.fromObject(Exception('Some error'));
-      expect(result.message, equals('发生了未预期的错误。'));
+      expect(result.message, equals('An unexpected error occurred.'));
     });
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
@@ -86,19 +87,22 @@ void main() {
     });
 
     testWidgets('renders updated date subtitle', (tester) async {
-      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      const testLocale = Locale('zh');
+      final l10n = await AppLocalizations.delegate.load(testLocale);
+      const testDate = '2026-01-15T10:30:00Z';
       await pumpPage(
         tester,
         summaries: [
           const LegalDocumentSummary(
             docType: LegalDocType.terms,
             title: '用户协议',
-            updatedAt: '2026-01-01',
+            updatedAt: testDate,
           ),
         ],
       );
 
-      expect(find.text(l10n.legalListUpdatedAt('2026-01-01')), findsOneWidget);
+      final formatted = formatDateTimeLabel(testDate, testLocale);
+      expect(find.text(l10n.legalListUpdatedAt(formatted)), findsOneWidget);
     });
 
     testWidgets('hides subtitle when updatedAt is empty', (tester) async {

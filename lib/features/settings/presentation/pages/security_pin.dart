@@ -13,6 +13,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 
 class SecurityPinSettingsPage extends HookConsumerWidget {
   const SecurityPinSettingsPage({super.key});
@@ -77,7 +78,11 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                               ),
                               const SizedBox(height: Spacing.level1),
                               Text(
-                                _lastChangedLabel(l10n, lastChangedAt),
+                                _lastChangedLabel(
+                                  l10n,
+                                  Localizations.localeOf(context),
+                                  lastChangedAt,
+                                ),
                                 style: TypographyToken.level3
                                     .body(context)
                                     .copyWith(color: colors.mutedForeground),
@@ -316,16 +321,18 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     );
   }
 
-  String _lastChangedLabel(AppLocalizations l10n, Object? lastChangedAt) {
+  String _lastChangedLabel(
+    AppLocalizations l10n,
+    Locale locale,
+    Object? lastChangedAt,
+  ) {
     if (lastChangedAt == null) {
       return l10n.settingsSecurityPinNeverChanged;
     }
     final raw = lastChangedAt.toString();
     final dt = DateTime.tryParse(raw)?.toLocal();
     if (dt == null) return l10n.settingsSecurityPinNeverChanged;
-    final dateStr =
-        '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} '
-        '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    final dateStr = formatDateTimeLabel(dt.toIso8601String(), locale);
     return l10n.settingsSecurityPinLastChangedAt(dateStr);
   }
 

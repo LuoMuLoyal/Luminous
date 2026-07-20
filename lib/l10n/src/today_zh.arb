@@ -268,7 +268,7 @@
   "todayObservationSleepMissingTitle": "最近还缺睡眠记录",
   "todayObservationSleepMissingSubtitle": "暂时无法判断睡眠趋势，补一条记录后再看会更准。",
   "todayObservationLowConfidenceTag": "仅供参考",
-  "todayObservationMediumConfidenceTag": "供参考",
+  "todayObservationMediumConfidenceTag": "值得留意",
   "todayObservationReviewTag": "去看看",
   "todayObservationMedicineNote": "这是一条轻量提示，具体风险与覆盖范围请到用药页查看。",
   "todayObservationSleepNote": "更像值得留意的提示，不直接当成今天必须完成的任务。",

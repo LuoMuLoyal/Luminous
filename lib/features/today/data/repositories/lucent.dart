@@ -71,6 +71,21 @@ class LucentTodayRepository implements TodayRepository {
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
         .toList();
+
+    // Determine which medicines have at least one reminder scheduled for
+    // today. This is the correct denominator for the medication overview —
+    // "X/Y meds" should mean "X of Y medicines due today", not "X of all
+    // medicines in the cabinet".
+    final todayScheduledMedicineIds = await _todayScheduledMedicineIds(
+      today,
+      medicines.map((m) => m.id).toSet(),
+    );
+    // If no reminders exist at all, fall back to all current medicines so
+    // the overview still shows something meaningful.
+    final todayMedicineCount = todayScheduledMedicineIds.isNotEmpty
+        ? todayScheduledMedicineIds.length
+        : medicines.length;
+
     final nextReminder = await _nextReminderFor(
       today,
       pendingMedicines.map((medicine) => medicine.id).toSet(),
@@ -95,7 +110,7 @@ class LucentTodayRepository implements TodayRepository {
       ),
       water: TodayWaterSummary(completedCount: waterCount, targetCount: 8),
       medication: TodayMedicationSummary(
-        medicineCount: medicines.length,
+        medicineCount: todayMedicineCount,
         pendingCount: pendingMedicines.length,
         nextDoseTimeLabel: nextReminder?.timeLabel ?? '--',
         nextMedicine: TodayMedicationKind.atorvastatin,
@@ -151,6 +166,40 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticLumiSuggestion = TodayLumiSuggestion(
     type: TodayLumiSuggestionType.pollenProtection,
   );
+
+  /// Returns the set of medicine IDs that have at least one active
+  /// reminder matching [today].
+  ///
+  /// Used to compute the correct denominator for the medication overview —
+  /// only medicines with a reminder scheduled for today should be counted
+  /// as "due today".
+  Future<Set<String>> _todayScheduledMedicineIds(
+    DateTime today,
+    Set<String> allMedicineIds,
+  ) async {
+    if (allMedicineIds.isEmpty) return {};
+    try {
+      final reminders = await ref
+          .read(medicineReminderRemoteDataSourceProvider)
+          .fetchActive();
+      return reminders
+          .where((reminder) {
+            final medicineId = reminder.currentMedicineId;
+            return medicineId != null &&
+                allMedicineIds.contains(medicineId) &&
+                reminder.matchesDate(today);
+          })
+          .map((reminder) => reminder.currentMedicineId!)
+          .toSet();
+    } catch (e) {
+      ref
+          .read(talkerProvider)
+          .error(
+            'LucentTodayRepository._todayScheduledMedicineIds: failed: $e',
+          );
+      return {};
+    }
+  }
 
   Future<MedicineReminderItem?> _nextReminderFor(
     DateTime today,

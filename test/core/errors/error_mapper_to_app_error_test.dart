@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/network/api_exception.dart';
@@ -56,7 +56,10 @@ void main() {
       );
       final error = LucentErrorMapper.toAppError(dioError);
       expect(error.kind, equals(AppErrorKind.network));
-      expect(error.message, equals('连接超时，请稍后再试。'));
+      expect(
+        error.message,
+        equals('Connection timed out. Please try again later.'),
+      );
       expect(error.cause, same(dioError));
     });
 
@@ -94,7 +97,7 @@ void main() {
     test('maps plain Exception to unknown kind', () {
       final error = LucentErrorMapper.toAppError(Exception('something'));
       expect(error.kind, equals(AppErrorKind.unknown));
-      expect(error.message, equals('发生了未预期的错误。'));
+      expect(error.message, equals('An unexpected error occurred.'));
     });
 
     test('preserves requestId from LucentApiException', () {
