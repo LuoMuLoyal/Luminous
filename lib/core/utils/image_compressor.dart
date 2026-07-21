@@ -6,8 +6,8 @@ import 'package:luminous/core/logger/logger.dart';
 ///
 /// Reduces image dimensions and quality before network upload to save
 /// bandwidth and storage. All outputs are JPEG regardless of input format.
-class AppImageCompressor {
-  const AppImageCompressor._();
+class ImageCompressor {
+  const ImageCompressor._();
 
   /// Compresses image bytes for daily-record attachment uploads.
   ///

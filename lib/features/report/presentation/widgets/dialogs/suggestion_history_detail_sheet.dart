@@ -24,7 +24,7 @@ Future<void> showSuggestionHistoryDetailSheet(
   if (isDesktop) {
     return showFDialog<void>(
       context: context,
-      builder: (_, __, ___) => AppDialogShell(
+      builder: (_, __, ___) => DialogShell(
         maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
         builder: (_) => _SuggestionHistoryDetailContent(suggestion: suggestion),
       ),

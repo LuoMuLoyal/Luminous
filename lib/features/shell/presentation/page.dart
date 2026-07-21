@@ -154,12 +154,12 @@ class _DesktopSidebar extends StatelessWidget {
           FSidebarItem(
             icon: const Icon(FLucideIcons.settings),
             label: Text(l10n?.desktopSidebarSettings ?? '设置'),
-            onPress: () => context.push(AppRoutes.settings),
+            onPress: () => context.push(Routes.settings),
           ),
           FSidebarItem(
             icon: const Icon(FLucideIcons.circleHelp),
             label: Text(l10n?.desktopSidebarHelp ?? '帮助'),
-            onPress: () => context.push(AppRoutes.assistant),
+            onPress: () => context.push(Routes.assistant),
           ),
         ],
       ),

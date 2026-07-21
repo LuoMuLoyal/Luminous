@@ -10,7 +10,7 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppToast.show — graceful degradation', () {
+  group('Toast.show — graceful degradation', () {
     testWidgets('returns false when no FToaster ancestor exists', (
       tester,
     ) async {
@@ -21,7 +21,7 @@ void main() {
             builder: (context) {
               return ElevatedButton(
                 onPressed: () async {
-                  result = await AppToast.show(context, 'Test message');
+                  result = await Toast.show(context, 'Test message');
                 },
                 child: const Text('Show'),
               );
@@ -49,7 +49,7 @@ void main() {
               builder: (context) {
                 return GestureDetector(
                   onTap: () async {
-                    result = await AppToast.show(context, 'No overlay');
+                    result = await Toast.show(context, 'No overlay');
                   },
                   child: const Text('Tap'),
                 );

@@ -8,11 +8,11 @@ class MedicineRiskCheckLoading extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: Spacing.level4),
-      child: AppInlineSkeletonSection(
+      child: InlineSkeletonSection(
         children: [
-          AppInlineSkeletonBlock(height: 96),
-          AppInlineSkeletonBlock(height: 220),
-          AppInlineSkeletonBlock(height: 140),
+          InlineSkeletonBlock(height: 96),
+          InlineSkeletonBlock(height: 220),
+          InlineSkeletonBlock(height: 140),
         ],
       ),
     );

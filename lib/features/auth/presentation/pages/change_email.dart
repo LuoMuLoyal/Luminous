@@ -112,11 +112,11 @@ class ChangeEmailPage extends HookConsumerWidget {
                                     ? accountState.errorMessage!
                                     : null;
                                 if (msg != null) {
-                                  await AppToast.show(context, msg);
+                                  await Toast.show(context, msg);
                                 }
                               }
                               if (ok && context.mounted) {
-                                await AppToast.show(
+                                await Toast.show(
                                   context,
                                   l10n.authChangeEmailSuccess,
                                 );
@@ -151,7 +151,7 @@ class ChangeEmailPage extends HookConsumerWidget {
                         size: FButtonSizeVariant.sm,
                         mainAxisSize: MainAxisSize.min,
                         onPress: () => context.push(
-                          !isSignedIn ? AppRoutes.login : AppRoutes.home,
+                          !isSignedIn ? Routes.login : Routes.home,
                         ),
                         child: Text(
                           !isSignedIn
@@ -173,11 +173,11 @@ class _ChangeEmailLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeleton(
+    return const InlineSkeleton(
       children: [
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
       ],
     );
   }

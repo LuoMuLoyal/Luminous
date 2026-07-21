@@ -278,7 +278,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     required Future<void> Function() apply,
   }) async {
     if (!signedIn) {
-      unawaited(pushAuthRequiredRoute(context, AppRoutes.settingsAi));
+      unawaited(pushAuthRequiredRoute(context, Routes.settingsAi));
       return;
     }
     if (_isPatching) return;
@@ -291,7 +291,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
       );
       if (result case Failure(:final error)) {
         if (!context.mounted) return;
-        await AppToast.show(
+        await Toast.show(
           context,
           error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
         );
@@ -310,7 +310,7 @@ class _AiSettingsPageState extends ConsumerState<AiSettingsPage> {
     required _AssistantContextField field,
   }) async {
     if (!signedIn) {
-      unawaited(pushAuthRequiredRoute(context, AppRoutes.settingsAi));
+      unawaited(pushAuthRequiredRoute(context, Routes.settingsAi));
       return;
     }
     // Read the freshest snapshot at click time. Combined with the

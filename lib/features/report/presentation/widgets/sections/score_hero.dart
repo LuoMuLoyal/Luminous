@@ -65,8 +65,8 @@ class ReportScoreHero extends StatelessWidget {
                     spacing: Spacing.level3,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      AppSkeletonSlot(
-                        skeleton: const AppInlineSkeletonBlock(
+                      SkeletonSlot(
+                        skeleton: const InlineSkeletonBlock(
                           height: 58,
                           width: 76,
                           radius: RadiusTokens.level3,
@@ -92,8 +92,8 @@ class ReportScoreHero extends StatelessWidget {
                             .body(context)
                             .copyWith(color: colors.mutedForeground),
                       ),
-                      AppSkeletonSlot(
-                        skeleton: const AppInlineSkeletonBlock(
+                      SkeletonSlot(
+                        skeleton: const InlineSkeletonBlock(
                           height: 22,
                           width: 64,
                           radius: RadiusTokens.level2,
@@ -106,7 +106,7 @@ class ReportScoreHero extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: Spacing.level5),
-                  AppSkeletonText(
+                  SkeletonText(
                     text: score.summary,
                     style: TypographyToken.level4
                         .body(context)

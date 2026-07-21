@@ -48,7 +48,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
         ? _buildDesktopLayout(l10n: l10n, nextDose: nextDose, alerts: alerts)
         : _buildMobileLayout(l10n: l10n, nextDose: nextDose, alerts: alerts);
 
-    return AppSkeletonScope(isLoading: isLoading, child: content);
+    return SkeletonScope(isLoading: isLoading, child: content);
   }
 
   Widget _buildMobileLayout({

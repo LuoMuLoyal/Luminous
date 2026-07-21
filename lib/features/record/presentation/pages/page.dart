@@ -46,7 +46,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     } catch (_) {
       if (!context.mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      await AppToast.show(context, l10n.recordRefreshErrorToast);
+      await Toast.show(context, l10n.recordRefreshErrorToast);
     }
   }
 
@@ -147,13 +147,13 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final pageStateContent = PageStateSwitch<RecordDashboard>(
       state: resolvePageViewState(session: session, data: dashboardAsync),
       loadingBuilder: () => const RecordSkeletonView(),
-      fatalErrorBuilder: (error) => AppStateErrorView(
+      fatalErrorBuilder: (error) => StateErrorView(
         title: l10n.recordErrorTitle,
         description: l10n.recordErrorDescription,
         icon: FLucideIcons.notebookPen,
         actionLabel: l10n.todayRetryAction,
         onAction: () => ref.invalidate(recordDashboardProvider),
-        tone: AppStateTone.warning,
+        tone: StateTone.warning,
       ),
       readyBuilder: (dashboard, isPreview) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,7 +322,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final today = _dateOnly(clock.now());
     final picked = await showFDialog<DateTime?>(
       context: context,
-      builder: (dialogContext, style, animation) => AppDialogShell(
+      builder: (dialogContext, style, animation) => DialogShell(
         maxWidth: LayoutScaleResolver.dialogMaxWidth,
         padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(

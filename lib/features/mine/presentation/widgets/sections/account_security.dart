@@ -52,7 +52,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => pushAuthRequiredRoute(context, AppRoutes.account),
+              onPress: () => pushAuthRequiredRoute(context, Routes.account),
             ),
             FTile(
               key: const Key('mine-security-pin-tile'),
@@ -69,7 +69,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
               onPress: () =>
-                  pushAuthRequiredRoute(context, AppRoutes.settingsSecurityPin),
+                  pushAuthRequiredRoute(context, Routes.settingsSecurityPin),
             ),
             FTile(
               key: const Key('mine-sign-out-tile'),
@@ -105,7 +105,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
                       if (!confirmed || !context.mounted) return;
                       await ref.read(authSessionProvider.notifier).logout();
                       if (!context.mounted) return;
-                      context.go(AppRoutes.login);
+                      context.go(Routes.login);
                     },
             ),
           ],

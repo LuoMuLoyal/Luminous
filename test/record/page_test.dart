@@ -532,7 +532,7 @@ void main() {
 
     expect(find.text(l10n.tabRecord), findsOneWidget);
     expect(find.byType(RecordSkeletonView), findsOneWidget);
-    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.byType(InlineSkeletonBlock), findsWidgets);
     expect(find.text(l10n.recordQuickSectionTitle), findsNothing);
   });
 
@@ -1790,7 +1790,7 @@ void main() {
     expect(find.byKey(const Key('record-new-entry-panel')), findsOneWidget);
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
   });
-  testWidgets('Record error state shows AppStateErrorView with retry', (
+  testWidgets('Record error state shows StateErrorView with retry', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -1816,7 +1816,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.byType(StateErrorView), findsOneWidget);
     expect(find.text(l10n.recordErrorTitle), findsOneWidget);
     expect(find.text(l10n.recordErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);

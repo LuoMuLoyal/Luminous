@@ -413,10 +413,10 @@ class _RecordItem {
 
 String? _fallbackRouteFor(MineCopyKey titleKey) {
   return switch (titleKey) {
-    MineCopyKey.archiveBasicTitle => AppRoutes.mineProfileEdit,
-    MineCopyKey.archiveAllergyTitle => AppRoutes.mineAllergyNew,
-    MineCopyKey.archiveConditionTitle => AppRoutes.mineConditionNew,
-    MineCopyKey.archiveMedicineTitle => AppRoutes.mineMedicineNew,
+    MineCopyKey.archiveBasicTitle => Routes.mineProfileEdit,
+    MineCopyKey.archiveAllergyTitle => Routes.mineAllergyNew,
+    MineCopyKey.archiveConditionTitle => Routes.mineConditionNew,
+    MineCopyKey.archiveMedicineTitle => Routes.mineMedicineNew,
     _ => null,
   };
 }

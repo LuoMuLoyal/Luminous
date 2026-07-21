@@ -13,7 +13,7 @@ class ReportSkeletonView extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: isDesktop
           ? const _DesktopReportSkeleton()
           : const _MobileReportSkeleton(),
@@ -103,20 +103,20 @@ class _ScoreHeroPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppInlineSkeletonBlock(height: 20, widthFactor: 0.45),
-            AppInlineSkeletonCircle(size: 24),
+            InlineSkeletonBlock(height: 20, widthFactor: 0.45),
+            InlineSkeletonCircle(size: 24),
           ],
         ),
         SizedBox(height: Spacing.level4),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            AppInlineSkeletonBlock(
+            InlineSkeletonBlock(
               height: 56,
               width: 80,
               radius: RadiusTokens.level3,
@@ -124,10 +124,10 @@ class _ScoreHeroPlaceholder extends StatelessWidget {
             SizedBox(width: Spacing.level3),
             Padding(
               padding: EdgeInsets.only(bottom: Spacing.level2),
-              child: AppInlineSkeletonBlock(height: 18, width: 48),
+              child: InlineSkeletonBlock(height: 18, width: 48),
             ),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(
+            InlineSkeletonBlock(
               height: 24,
               width: 64,
               radius: RadiusTokens.levelFull,
@@ -153,10 +153,8 @@ class _MetricsGridPlaceholder extends StatelessWidget {
       childAspectRatio: 1.55,
       children: List.generate(
         4,
-        (_) => const AppInlineSkeletonBlock(
-          height: 96,
-          radius: RadiusTokens.level4,
-        ),
+        (_) =>
+            const InlineSkeletonBlock(height: 96, radius: RadiusTokens.level4),
       ),
     );
   }
@@ -167,17 +165,17 @@ class _TrendPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
-            AppInlineSkeletonBlock(height: 14, width: 72),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.35),
+            InlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
         const SizedBox(height: Spacing.level4),
-        const AppInlineSkeletonBlock(height: 160),
+        const InlineSkeletonBlock(height: 160),
         const SizedBox(height: Spacing.level3),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +183,7 @@ class _TrendPlaceholder extends StatelessWidget {
             4,
             (_) => const Padding(
               padding: EdgeInsets.symmetric(horizontal: Spacing.level2),
-              child: AppInlineSkeletonBlock(
+              child: InlineSkeletonBlock(
                 height: 8,
                 width: 24,
                 radius: RadiusTokens.levelFull,
@@ -203,24 +201,24 @@ class _FindingsPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.4),
         const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 3; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AppInlineSkeletonCircle(size: 28),
+              const InlineSkeletonCircle(size: 28),
               const SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppInlineSkeletonBlock(height: 16, widthFactor: 0.7),
+                    const InlineSkeletonBlock(height: 16, widthFactor: 0.7),
                     const SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(
+                    InlineSkeletonBlock(
                       height: 14,
                       widthFactor: i == 2 ? 0.45 : 0.85,
                     ),
@@ -240,23 +238,23 @@ class _AiSummaryPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
         Row(
           children: [
-            AppInlineSkeletonCircle(size: 32),
+            InlineSkeletonCircle(size: 32),
             SizedBox(width: Spacing.level3),
-            Expanded(child: AppInlineSkeletonBlock(height: 18)),
+            Expanded(child: InlineSkeletonBlock(height: 18)),
           ],
         ),
         SizedBox(height: Spacing.level4),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.92),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.92),
         SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.84),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.84),
         SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.78),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.78),
         SizedBox(height: Spacing.level3),
-        AppInlineSkeletonBlock(
+        InlineSkeletonBlock(
           height: 36,
           widthFactor: 0.5,
           radius: RadiusTokens.levelFull,
@@ -271,16 +269,16 @@ class _ExportPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.35),
         const SizedBox(height: Spacing.level4),
         Row(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
               if (i > 0) const SizedBox(width: Spacing.level3),
               const Expanded(
-                child: AppInlineSkeletonBlock(
+                child: InlineSkeletonBlock(
                   height: 80,
                   radius: RadiusTokens.level4,
                 ),
@@ -298,23 +296,23 @@ class _PatternsPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.4),
         const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 2; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
-              AppInlineSkeletonCircle(size: 32),
+              InlineSkeletonCircle(size: 32),
               SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.65),
+                    InlineSkeletonBlock(height: 16, widthFactor: 0.65),
                     SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
+                    InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
@@ -331,11 +329,11 @@ class _ReferenceNoticePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
-        AppInlineSkeletonBlock(height: 14, widthFactor: 0.92),
+        InlineSkeletonBlock(height: 14, widthFactor: 0.92),
         SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 14, widthFactor: 0.78),
+        InlineSkeletonBlock(height: 14, widthFactor: 0.78),
       ],
     );
   }

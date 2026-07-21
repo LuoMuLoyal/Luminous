@@ -19,7 +19,7 @@ Future<DateTime?> showForuiDatePicker(
   required DateTime last,
 }) => showFDialog<DateTime?>(
   context: context,
-  builder: (dialogContext, style, animation) => AppDialogShell(
+  builder: (dialogContext, style, animation) => DialogShell(
     maxWidth: LayoutScaleResolver.dialogMaxWidth,
     padding: const EdgeInsets.all(Spacing.level4),
     builder: (_) => SizedBox(

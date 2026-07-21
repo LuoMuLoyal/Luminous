@@ -61,21 +61,21 @@ class AssistantConversationDrawer extends StatelessWidget {
                 child: Builder(
                   builder: (context) {
                     if (state.isLoadingRecentConversations && items.isEmpty) {
-                      return const AppStateSkeletonView(
-                        blocks: <AppStateSkeletonBlock>[
-                          AppStateSkeletonBlock(height: 72),
-                          AppStateSkeletonBlock(height: 72),
-                          AppStateSkeletonBlock(height: 72),
+                      return const StateSkeletonView(
+                        blocks: <StateSkeletonBlock>[
+                          StateSkeletonBlock(height: 72),
+                          StateSkeletonBlock(height: 72),
+                          StateSkeletonBlock(height: 72),
                         ],
                       );
                     }
                     if (state.recentConversationError != null &&
                         items.isEmpty) {
-                      return AppStateMessageView(
+                      return StateMessageView(
                         title: title,
                         description: state.recentConversationError!,
                         icon: FLucideIcons.clock4,
-                        tone: AppStateTone.warning,
+                        tone: StateTone.warning,
                         actionLabel: AppLocalizations.of(
                           context,
                         )!.todayRetryAction,
@@ -83,7 +83,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                       );
                     }
                     if (items.isEmpty) {
-                      return AppStateMessageView(
+                      return StateMessageView(
                         title: emptyTitle,
                         description: emptyDescription,
                         icon: FLucideIcons.messageSquareMore,

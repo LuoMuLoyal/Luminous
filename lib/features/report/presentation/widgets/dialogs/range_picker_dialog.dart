@@ -242,7 +242,7 @@ Future<ReportDashboardQuery?> _showCalendarDialog(
 
   final picked = await showFDialog<(DateTime, DateTime)?>(
     context: context,
-    builder: (calendarContext, style, animation) => AppDialogShell(
+    builder: (calendarContext, style, animation) => DialogShell(
       maxWidth: LayoutScaleResolver.dialogMaxWidth,
       padding: const EdgeInsets.all(Spacing.level4),
       builder: (_) => Column(

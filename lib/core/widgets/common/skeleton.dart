@@ -4,14 +4,14 @@ import 'package:luminous/core/design/design.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// 全页骨架屏，展示一组垂直排列的 shimmer 块。
-class AppStateSkeletonView extends StatelessWidget {
-  const AppStateSkeletonView({
+class StateSkeletonView extends StatelessWidget {
+  const StateSkeletonView({
     super.key,
     required this.blocks,
     this.padding = const EdgeInsets.all(Spacing.level4),
   });
 
-  final List<AppStateSkeletonBlock> blocks;
+  final List<StateSkeletonBlock> blocks;
   final EdgeInsetsGeometry padding;
 
   @override
@@ -36,9 +36,9 @@ class AppStateSkeletonView extends StatelessWidget {
   }
 }
 
-/// 垂直排列的 inline shimmer 块，自动包裹 [AppSkeletonShimmer]。
-class AppInlineSkeleton extends StatelessWidget {
-  const AppInlineSkeleton({
+/// 垂直排列的 inline shimmer 块，自动包裹 [SkeletonShimmer]。
+class InlineSkeleton extends StatelessWidget {
+  const InlineSkeleton({
     super.key,
     required this.children,
     this.spacing = Spacing.level3,
@@ -49,7 +49,7 @@ class AppInlineSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,9 +63,9 @@ class AppInlineSkeleton extends StatelessWidget {
   }
 }
 
-/// 在子树中透传加载状态，配合 [AppSkeletonSlot] 使用。
-class AppSkeletonScope extends InheritedWidget {
-  const AppSkeletonScope({
+/// 在子树中透传加载状态，配合 [SkeletonSlot] 使用。
+class SkeletonScope extends InheritedWidget {
+  const SkeletonScope({
     super.key,
     required this.isLoading,
     required super.child,
@@ -75,20 +75,20 @@ class AppSkeletonScope extends InheritedWidget {
 
   static bool isLoadingOf(BuildContext context) {
     return context
-            .dependOnInheritedWidgetOfExactType<AppSkeletonScope>()
+            .dependOnInheritedWidgetOfExactType<SkeletonScope>()
             ?.isLoading ??
         false;
   }
 
   @override
-  bool updateShouldNotify(AppSkeletonScope oldWidget) {
+  bool updateShouldNotify(SkeletonScope oldWidget) {
     return isLoading != oldWidget.isLoading;
   }
 }
 
-/// 根据 [isLoading] 或上层 [AppSkeletonScope] 切换子视图与骨架屏。
-class AppSkeletonSlot extends StatelessWidget {
-  const AppSkeletonSlot({
+/// 根据 [isLoading] 或上层 [SkeletonScope] 切换子视图与骨架屏。
+class SkeletonSlot extends StatelessWidget {
+  const SkeletonSlot({
     super.key,
     required this.child,
     required this.skeleton,
@@ -101,19 +101,19 @@ class AppSkeletonSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loading = isLoading ?? AppSkeletonScope.isLoadingOf(context);
+    final loading = isLoading ?? SkeletonScope.isLoadingOf(context);
 
     if (!loading) {
       return child;
     }
 
-    return AppSkeletonShimmer(child: skeleton);
+    return SkeletonShimmer(child: skeleton);
   }
 }
 
 /// 将 [text] 在加载态下替换为 shimmer 块的文本占位组件。
-class AppSkeletonText extends StatelessWidget {
-  const AppSkeletonText({
+class SkeletonText extends StatelessWidget {
+  const SkeletonText({
     super.key,
     required this.text,
     this.style,
@@ -153,9 +153,9 @@ class AppSkeletonText extends StatelessWidget {
         ? fontSize * 1.18
         : fontSize * resolvedStyle.height!;
 
-    return AppSkeletonSlot(
+    return SkeletonSlot(
       isLoading: isLoading,
-      skeleton: AppInlineSkeletonBlock(
+      skeleton: InlineSkeletonBlock(
         height: height ?? lineHeight,
         width: width,
         widthFactor: widthFactor,
@@ -167,8 +167,8 @@ class AppSkeletonText extends StatelessWidget {
 }
 
 /// 给子树添加 shimmer 效果的包装组件。
-class AppSkeletonShimmer extends StatelessWidget {
-  const AppSkeletonShimmer({super.key, required this.child});
+class SkeletonShimmer extends StatelessWidget {
+  const SkeletonShimmer({super.key, required this.child});
 
   final Widget child;
 
@@ -189,8 +189,8 @@ class AppSkeletonShimmer extends StatelessWidget {
 }
 
 /// 矩形 shimmer 占位块。
-class AppInlineSkeletonBlock extends StatelessWidget {
-  const AppInlineSkeletonBlock({
+class InlineSkeletonBlock extends StatelessWidget {
+  const InlineSkeletonBlock({
     super.key,
     required this.height,
     this.width,
@@ -240,10 +240,10 @@ class AppInlineSkeletonBlock extends StatelessWidget {
 
 /// 圆形 shimmer 占位块。
 ///
-/// 已自动包裹 [AppSkeletonShimmer]，可独立使用；若放在已有的 shimmer 作用域内，
+/// 已自动包裹 [SkeletonShimmer]，可独立使用；若放在已有的 shimmer 作用域内，
 /// 外层 shimmer 的视觉效果会覆盖（无负作用）。
-class AppInlineSkeletonCircle extends StatelessWidget {
-  const AppInlineSkeletonCircle({super.key, required this.size});
+class InlineSkeletonCircle extends StatelessWidget {
+  const InlineSkeletonCircle({super.key, required this.size});
 
   final double size;
 
@@ -251,7 +251,7 @@ class AppInlineSkeletonCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.background,
@@ -264,12 +264,8 @@ class AppInlineSkeletonCircle extends StatelessWidget {
 }
 
 /// 带边框和背景的 shimmer 面板，内部垂直排列 [children]。
-class AppInlineSkeletonSection extends StatelessWidget {
-  const AppInlineSkeletonSection({
-    super.key,
-    required this.children,
-    this.height,
-  });
+class InlineSkeletonSection extends StatelessWidget {
+  const InlineSkeletonSection({super.key, required this.children, this.height});
 
   final List<Widget> children;
   final double? height;
@@ -288,7 +284,7 @@ class AppInlineSkeletonSection extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.level5),
         child: SizedBox(
           height: height,
-          child: AppInlineSkeleton(children: children),
+          child: InlineSkeleton(children: children),
         ),
       ),
     );
@@ -296,8 +292,8 @@ class AppInlineSkeletonSection extends StatelessWidget {
 }
 
 /// 全页骨架屏中单个 shimmer 块的数据描述。
-class AppStateSkeletonBlock {
-  const AppStateSkeletonBlock({
+class StateSkeletonBlock {
+  const StateSkeletonBlock({
     required this.height,
     this.radius = RadiusTokens.level5,
     this.widthFactor = 1,
@@ -311,7 +307,7 @@ class AppStateSkeletonBlock {
 class _SkeletonBlock extends StatelessWidget {
   const _SkeletonBlock({required this.data});
 
-  final AppStateSkeletonBlock data;
+  final StateSkeletonBlock data;
 
   @override
   Widget build(BuildContext context) {

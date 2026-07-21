@@ -20,8 +20,8 @@ class ThemeSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final currentPreference =
-        ref.watch(appThemeControllerProvider).asData?.value ??
-        const AppThemePreference();
+        ref.watch(themeControllerProvider).asData?.value ??
+        const ThemePreference();
 
     return PageScaffold(
       title: l10n.mineSettingsThemeTitle,
@@ -111,11 +111,11 @@ Future<void> _handleThemeModeTap(
   WidgetRef ref,
   AppThemeModePreference preference,
 ) async {
-  await ref.read(appThemeControllerProvider.notifier).setMode(preference);
+  await ref.read(themeControllerProvider.notifier).setMode(preference);
 }
 
 Future<void> _handleThemeFamilyTap(WidgetRef ref, AppThemeFamily family) async {
-  await ref.read(appThemeControllerProvider.notifier).setFamily(family);
+  await ref.read(themeControllerProvider.notifier).setFamily(family);
 }
 
 /// 主题色系的预览色点，使用对应 family 的 light 主题 primary 色。

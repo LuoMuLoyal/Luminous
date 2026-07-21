@@ -79,10 +79,7 @@ class ReportDashboardView extends StatelessWidget {
         ? _buildDesktopLayout(l10n: l10n)
         : _buildMobileLayout(l10n: l10n);
 
-    final scopedContent = AppSkeletonScope(
-      isLoading: isLoading,
-      child: content,
-    );
+    final scopedContent = SkeletonScope(isLoading: isLoading, child: content);
     if (isLoading) {
       return scopedContent;
     }

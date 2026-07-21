@@ -208,7 +208,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     bool? aiSummariesEnabled,
   ) async {
     if (aiSummariesEnabled == false) {
-      unawaited(context.push(AppRoutes.settings));
+      unawaited(context.push(Routes.settings));
       return;
     }
 
@@ -224,7 +224,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
     if (result.status == TodayAiAnalysisCardStatus.error &&
         errorMessage != null &&
         errorMessage.isNotEmpty) {
-      await AppToast.show(context, errorMessage);
+      await Toast.show(context, errorMessage);
     }
   }
 }

@@ -168,7 +168,7 @@ class _SafetySummaryBanner extends StatelessWidget {
               variant: FButtonVariant.ghost,
               size: FButtonSizeVariant.xs,
               mainAxisSize: MainAxisSize.min,
-              onPress: () => context.push(AppRoutes.medicineRiskCheck),
+              onPress: () => context.push(Routes.medicineRiskCheck),
               child: Text(l10n.medicineRiskCheckViewAction),
             ),
           ],
@@ -220,7 +220,7 @@ class _SafetyAlertRow extends StatelessWidget {
     final colors = context.theme.colors;
 
     return FTappable(
-      onPress: () => context.push(AppRoutes.medicineRiskCheck),
+      onPress: () => context.push(Routes.medicineRiskCheck),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
         child: Row(

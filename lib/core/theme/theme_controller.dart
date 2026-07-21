@@ -4,8 +4,8 @@ import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppThemePreference {
-  const AppThemePreference({
+class ThemePreference {
+  const ThemePreference({
     this.mode = AppThemeModePreference.system,
     this.family = appDefaultThemeFamily,
   });
@@ -13,11 +13,11 @@ class AppThemePreference {
   final AppThemeModePreference mode;
   final AppThemeFamily family;
 
-  AppThemePreference copyWith({
+  ThemePreference copyWith({
     AppThemeModePreference? mode,
     AppThemeFamily? family,
   }) {
-    return AppThemePreference(
+    return ThemePreference(
       mode: mode ?? this.mode,
       family: family ?? this.family,
     );
@@ -26,7 +26,7 @@ class AppThemePreference {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AppThemePreference &&
+      other is ThemePreference &&
           runtimeType == other.runtimeType &&
           mode == other.mode &&
           family == other.family;
@@ -60,14 +60,14 @@ enum AppThemeModePreference {
   }
 }
 
-class AppThemeController extends AsyncNotifier<AppThemePreference> {
+class ThemeController extends AsyncNotifier<ThemePreference> {
   static const _modeStorageKey = PrefKeys.themeMode;
   static const _familyStorageKey = PrefKeys.themeFamily;
 
   @override
-  Future<AppThemePreference> build() async {
+  Future<ThemePreference> build() async {
     final preferences = await SharedPreferences.getInstance();
-    return AppThemePreference(
+    return ThemePreference(
       mode: AppThemeModePreference.fromStorage(
         preferences.getString(_modeStorageKey),
       ),
@@ -89,11 +89,11 @@ class AppThemeController extends AsyncNotifier<AppThemePreference> {
     await preferences.setString(_familyStorageKey, family.storageValue);
   }
 
-  AppThemePreference get _currentPreference =>
-      state.asData?.value ?? const AppThemePreference();
+  ThemePreference get _currentPreference =>
+      state.asData?.value ?? const ThemePreference();
 }
 
-final appThemeControllerProvider =
-    AsyncNotifierProvider<AppThemeController, AppThemePreference>(
-      AppThemeController.new,
+final themeControllerProvider =
+    AsyncNotifierProvider<ThemeController, ThemePreference>(
+      ThemeController.new,
     );

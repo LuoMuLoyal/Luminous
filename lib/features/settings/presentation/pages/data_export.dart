@@ -181,12 +181,12 @@ class DataExportPage extends ConsumerWidget {
       case Success(:final value):
         switch (dataExportUiStatusForRequest(value)) {
           case DataExportUiStatus.completed:
-            await AppToast.show(context, l10n.mineExportStatusCompleted);
+            await Toast.show(context, l10n.mineExportStatusCompleted);
           case DataExportUiStatus.completedLinkMissing:
-            await AppToast.show(context, l10n.reportExportLinkMissingToast);
+            await Toast.show(context, l10n.reportExportLinkMissingToast);
           case DataExportUiStatus.failed:
           case DataExportUiStatus.unavailable:
-            await AppToast.show(
+            await Toast.show(
               context,
               value?.errorMessage?.isNotEmpty == true
                   ? value?.errorMessage ?? ''
@@ -196,14 +196,14 @@ class DataExportPage extends ConsumerWidget {
                   : l10n.mineExportStatusFailed,
             );
           case DataExportUiStatus.requested:
-            await AppToast.show(context, l10n.mineExportRequested);
+            await Toast.show(context, l10n.mineExportRequested);
           case DataExportUiStatus.processing:
-            await AppToast.show(context, l10n.mineExportStatusPending);
+            await Toast.show(context, l10n.mineExportStatusPending);
           case DataExportUiStatus.idle:
-            await AppToast.show(context, l10n.mineExportStatusFailed);
+            await Toast.show(context, l10n.mineExportStatusFailed);
         }
       case Failure(:final error):
-        await AppToast.show(
+        await Toast.show(
           context,
           '${l10n.mineExportStatusFailed}: ${error.message}',
         );

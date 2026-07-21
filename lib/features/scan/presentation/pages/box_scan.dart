@@ -148,7 +148,7 @@ Future<void> _showScanFailureDialog(
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
-                context.push(AppRoutes.medicineSearch);
+                context.push(Routes.medicineSearch);
               },
               child: Text(l10n.scanManualSearchAction),
             ),
@@ -218,7 +218,7 @@ Future<List<MedicineMatchResult>> _processPhoto(
     return results;
   } else {
     final rawBytes = await File(photo.path).readAsBytes();
-    final bytes = await AppImageCompressor.compressForAiRecognition(rawBytes);
+    final bytes = await ImageCompressor.compressForAiRecognition(rawBytes);
     final imageUrl = await repo.uploadImage(
       bytes: bytes,
       contentType: 'image/jpeg',

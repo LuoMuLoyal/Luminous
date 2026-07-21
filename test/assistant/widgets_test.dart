@@ -59,7 +59,7 @@ void main() {
     testWidgets('renders title and description with maxWidth', (tester) async {
       await tester.pumpWidget(
         _shell(
-          const AppStateMessageView(
+          const StateMessageView(
             maxWidth: 560,
             title: 'Ready',
             description: 'Assistant is active',
@@ -74,14 +74,14 @@ void main() {
     testWidgets('renders action button', (tester) async {
       await tester.pumpWidget(
         _shell(
-          AppStateMessageView(
+          StateMessageView(
             maxWidth: 560,
             title: 'Error',
             description: 'Something went wrong',
             icon: FLucideIcons.circleAlert,
             actionLabel: 'Retry',
             onAction: () {},
-            tone: AppStateTone.danger,
+            tone: StateTone.danger,
           ),
         ),
       );

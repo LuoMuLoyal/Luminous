@@ -81,12 +81,12 @@ class ReminderFormBody extends StatelessWidget {
         .firstOrNull;
 
     if (medicines.isEmpty) {
-      return AppStateErrorView(
+      return StateErrorView(
         title: l10n.medicineNoMedicineTitle,
         description: l10n.medicineNoMedicineBody,
         icon: FLucideIcons.pill,
         actionLabel: l10n.medicineQuickAddTitle,
-        onAction: () => context.push(AppRoutes.medicineSearch),
+        onAction: () => context.push(Routes.medicineSearch),
       );
     }
 

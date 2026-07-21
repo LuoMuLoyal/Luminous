@@ -76,7 +76,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         AppLocalizations.of(context)!.mineEditFieldDisplayNameRequired,
       );
       if (displayNameError != null) {
-        AppToast.show(context, displayNameError);
+        Toast.show(context, displayNameError);
         return;
       }
 
@@ -151,7 +151,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
     ) {
       if (next.saved && prev?.saved != true) {
         unawaited(
-          AppToast.show(
+          Toast.show(
             context,
             next.deleted ? l10n.mineEditDeletedToast : l10n.mineEditSavedToast,
           ),
@@ -160,7 +160,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
       }
       final error = next.errorMessage;
       if (error != null && error != prev?.errorMessage) {
-        unawaited(AppToast.show(context, error));
+        unawaited(Toast.show(context, error));
       }
     });
 
@@ -206,7 +206,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppStateErrorView(
+                StateErrorView(
                   title: l10n.mineEditRecordNotFoundTitle,
                   description: l10n.mineEditRecordNotFoundDescription,
                   icon: FLucideIcons.circleAlert,

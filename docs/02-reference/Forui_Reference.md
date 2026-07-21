@@ -41,7 +41,7 @@
 - **页面 header**：
   - 子页（有返回按钮的 drill-down 页面）统一用 `lib/core/widgets/layout/page_scaffold.dart` 的 `PageScaffold`。
   - Tab 根页统一用 Forui 的 `FHeader.nested`。
-- **返回按钮**：统一 `lib/core/widgets/common/app_back_button.dart` 的 `AppBackButton`。
+- **返回按钮**：统一 `lib/core/widgets/common/back_button.dart` 的 `AppBackButton`（保留 App 前缀以避免与 Flutter BackButton 冲突）。
 - **图标**：优先用 Forui 自带的 `FLucideIcons.*`，不再使用 Material `Icons.*`。
 - **字体**：
   - 正文/默认：`_token.body(context)`

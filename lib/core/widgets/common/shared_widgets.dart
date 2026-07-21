@@ -75,10 +75,8 @@ class MineEditFormLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
-      children: [
-        for (final h in blockHeights) AppInlineSkeletonBlock(height: h),
-      ],
+    return InlineSkeletonSection(
+      children: [for (final h in blockHeights) InlineSkeletonBlock(height: h)],
     );
   }
 }

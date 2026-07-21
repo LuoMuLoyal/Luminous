@@ -21,7 +21,7 @@ class MineSkeletonView extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: isDesktop
           ? const _DesktopMineSkeleton()
           : const _MobileMineSkeleton(),
@@ -114,11 +114,11 @@ class _SyncBannerPlaceholder extends StatelessWidget {
         padding: EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
-            AppInlineSkeletonCircle(size: 24),
+            InlineSkeletonCircle(size: 24),
             SizedBox(width: Spacing.level3),
-            Expanded(child: AppInlineSkeletonBlock(height: 14)),
+            Expanded(child: InlineSkeletonBlock(height: 14)),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 56),
+            InlineSkeletonBlock(height: 14, width: 56),
           ],
         ),
       ),
@@ -131,11 +131,11 @@ class _AccountHeroPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
         Row(
           children: [
-            AppInlineSkeletonCircle(size: 64),
+            InlineSkeletonCircle(size: 64),
             SizedBox(width: Spacing.level5),
             Expanded(
               child: Column(
@@ -143,9 +143,9 @@ class _AccountHeroPlaceholder extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      AppInlineSkeletonBlock(height: 28, widthFactor: 0.45),
+                      InlineSkeletonBlock(height: 28, widthFactor: 0.45),
                       SizedBox(width: Spacing.level3),
-                      AppInlineSkeletonBlock(
+                      InlineSkeletonBlock(
                         height: 18,
                         width: 56,
                         radius: RadiusTokens.levelFull,
@@ -153,14 +153,14 @@ class _AccountHeroPlaceholder extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: Spacing.level2),
-                  AppInlineSkeletonBlock(height: 14, widthFactor: 0.65),
+                  InlineSkeletonBlock(height: 14, widthFactor: 0.65),
                 ],
               ),
             ),
           ],
         ),
         SizedBox(height: Spacing.level4),
-        AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
+        InlineSkeletonBlock(height: 14, widthFactor: 0.55),
       ],
     );
   }
@@ -174,23 +174,23 @@ class _ArchivePlaceholder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.3),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
         const SizedBox(height: Spacing.level3),
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
             for (var i = 0; i < 4; i += 1) ...[
               if (i > 0) const SizedBox(height: Spacing.level4),
               const Row(
                 children: [
-                  AppInlineSkeletonCircle(size: 40),
+                  InlineSkeletonCircle(size: 40),
                   SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppInlineSkeletonBlock(height: 16, widthFactor: 0.55),
+                        InlineSkeletonBlock(height: 16, widthFactor: 0.55),
                         SizedBox(height: Spacing.level2),
-                        AppInlineSkeletonBlock(height: 14, widthFactor: 0.72),
+                        InlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
                   ),
@@ -225,11 +225,11 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
         padding: EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
-            AppInlineSkeletonCircle(size: 24),
+            InlineSkeletonCircle(size: 24),
             SizedBox(width: Spacing.level3),
-            Expanded(child: AppInlineSkeletonBlock(height: 14)),
+            Expanded(child: InlineSkeletonBlock(height: 14)),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 56),
+            InlineSkeletonBlock(height: 14, width: 56),
             Icon(
               FLucideIcons.chevronRight,
               color: Colors.transparent,
@@ -250,23 +250,23 @@ class _NotificationsRemindersPlaceholder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.35),
         const SizedBox(height: Spacing.level3),
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
               if (i > 0) const SizedBox(height: Spacing.level4),
               const Row(
                 children: [
-                  AppInlineSkeletonCircle(size: 40),
+                  InlineSkeletonCircle(size: 40),
                   SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppInlineSkeletonBlock(height: 16, widthFactor: 0.5),
+                        InlineSkeletonBlock(height: 16, widthFactor: 0.5),
                         SizedBox(height: Spacing.level2),
-                        AppInlineSkeletonBlock(height: 14, widthFactor: 0.72),
+                        InlineSkeletonBlock(height: 14, widthFactor: 0.72),
                       ],
                     ),
                   ),
@@ -293,23 +293,23 @@ class _AccountSecurityPlaceholder extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.3),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.3),
         const SizedBox(height: Spacing.level3),
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
             for (var i = 0; i < 3; i += 1) ...[
               if (i > 0) const SizedBox(height: Spacing.level4),
               const Row(
                 children: [
-                  AppInlineSkeletonCircle(size: 40),
+                  InlineSkeletonCircle(size: 40),
                   SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppInlineSkeletonBlock(height: 16, widthFactor: 0.45),
+                        InlineSkeletonBlock(height: 16, widthFactor: 0.45),
                         SizedBox(height: Spacing.level2),
-                        AppInlineSkeletonBlock(height: 14, widthFactor: 0.6),
+                        InlineSkeletonBlock(height: 14, widthFactor: 0.6),
                       ],
                     ),
                   ),

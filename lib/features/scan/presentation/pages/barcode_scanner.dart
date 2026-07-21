@@ -106,7 +106,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
 
       if (items.isEmpty) {
         unawaited(
-          AppToast.show(
+          Toast.show(
             context,
             AppLocalizations.of(context)!.scanBarcodeNotFoundToast,
           ),
@@ -129,7 +129,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
           .error('BarcodeScannerPage._handleDetect: failed: $e');
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        unawaited(AppToast.show(context, l10n.scanRecognitionFailedToast));
+        unawaited(Toast.show(context, l10n.scanRecognitionFailedToast));
         _resetScanning();
       }
     } finally {
@@ -228,7 +228,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   }
 
   void _goToManualSearch() {
-    context.push(AppRoutes.medicineSearch);
+    context.push(Routes.medicineSearch);
   }
 
   @override
@@ -240,13 +240,13 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
       return PageScaffold(
         title: l10n.medicineQuickActionBarcodeTitle,
         useSafeArea: false,
-        child: AppStateErrorView(
+        child: StateErrorView(
           title: l10n.scanPermissionDeniedTitle,
           description: l10n.scanPermissionDeniedHint,
           icon: FLucideIcons.cameraOff,
           actionLabel: l10n.scanPermissionOpenSettings,
           onAction: () => openAppSettings(),
-          tone: AppStateTone.warning,
+          tone: StateTone.warning,
         ),
       );
     }

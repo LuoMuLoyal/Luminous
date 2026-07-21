@@ -29,7 +29,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return AppDialogShell(
+    return DialogShell(
       maxWidth: 480,
       maxHeight: 640,
       padding: const EdgeInsets.all(Spacing.level4),

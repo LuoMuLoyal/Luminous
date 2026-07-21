@@ -156,11 +156,11 @@ class PageStateSwitch<T> extends StatelessWidget {
   final Widget Function()? loadingBuilder;
 
   /// Builder for the [PageViewStateFatalError] state.
-  /// Defaults to [AppStateErrorView] using l10n copy.
+  /// Defaults to [StateErrorView] using l10n copy.
   final Widget Function(PageViewStateFatalError<T> error)? fatalErrorBuilder;
 
   /// Builder for the [PageViewStateEmptyInsufficient] state.
-  /// Defaults to [AppStateMessageView] using l10n copy.
+  /// Defaults to [StateMessageView] using l10n copy.
   final Widget Function(PageViewStateEmptyInsufficient<T> empty)?
   emptyInsufficientBuilder;
 
@@ -276,7 +276,7 @@ class _DefaultFatalErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return AppStateErrorView(
+    return StateErrorView(
       title: title.isEmpty ? l10n.stateFatalErrorTitle : title,
       description: description.isEmpty
           ? l10n.stateFatalErrorDescription
@@ -284,7 +284,7 @@ class _DefaultFatalErrorView extends StatelessWidget {
       icon: icon,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
-      tone: AppStateTone.warning,
+      tone: StateTone.warning,
     );
   }
 }
@@ -307,7 +307,7 @@ class _DefaultEmptyInsufficientView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return AppStateMessageView(
+    return StateMessageView(
       title: title.isEmpty ? l10n.stateEmptyDefaultTitle : title,
       description: description.isEmpty
           ? l10n.stateEmptyDefaultDescription
@@ -315,7 +315,7 @@ class _DefaultEmptyInsufficientView extends StatelessWidget {
       icon: icon ?? FLucideIcons.info,
       actionLabel: actionLabel,
       onAction: onAction,
-      tone: AppStateTone.neutral,
+      tone: StateTone.neutral,
     );
   }
 }

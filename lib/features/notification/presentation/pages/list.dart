@@ -35,7 +35,7 @@ class NotificationListPage extends ConsumerWidget {
             await controller.markAllAsRead();
             if (context.mounted) {
               unawaited(
-                AppToast.show(context, l10n.notificationMarkAllReadSuccess),
+                Toast.show(context, l10n.notificationMarkAllReadSuccess),
               );
             }
           },
@@ -78,7 +78,7 @@ class NotificationListPage extends ConsumerWidget {
                   await controller.deleteNotification(item.id);
                   if (context.mounted) {
                     unawaited(
-                      AppToast.show(context, l10n.notificationDeleteSuccess),
+                      Toast.show(context, l10n.notificationDeleteSuccess),
                     );
                   }
                 },
@@ -89,7 +89,7 @@ class NotificationListPage extends ConsumerWidget {
                   await controller.toggleReadStatus(item.id);
                   if (context.mounted) {
                     unawaited(
-                      AppToast.show(
+                      Toast.show(
                         context,
                         item.isRead
                             ? l10n.notificationMarkUnreadSuccess
@@ -113,26 +113,26 @@ class NotificationListPage extends ConsumerWidget {
         loading: () => const Center(
           child: Padding(
             padding: EdgeInsets.all(Spacing.level10),
-            child: AppSkeletonShimmer(
+            child: SkeletonShimmer(
               child: Column(
                 children: [
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                   SizedBox(height: Spacing.level4),
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                   SizedBox(height: Spacing.level4),
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                   SizedBox(height: Spacing.level4),
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                   SizedBox(height: Spacing.level4),
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                   SizedBox(height: Spacing.level4),
-                  AppInlineSkeletonBlock(height: 64, widthFactor: 1),
+                  InlineSkeletonBlock(height: 64, widthFactor: 1),
                 ],
               ),
             ),
           ),
         ),
-        error: (error, _) => AppStateErrorView(
+        error: (error, _) => StateErrorView(
           title: l10n.notificationErrorTitle,
           description: userMessageFromError(
             error,
@@ -359,11 +359,11 @@ class _EmptyView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.only(top: Spacing.level10),
-      child: AppStateMessageView(
+      child: StateMessageView(
         title: l10n.notificationEmptyTitle,
         description: l10n.notificationEmptyDescription,
         icon: FLucideIcons.messageSquareMore,
-        tone: AppStateTone.neutral,
+        tone: StateTone.neutral,
       ),
     );
   }

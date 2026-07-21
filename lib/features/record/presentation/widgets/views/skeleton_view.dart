@@ -14,7 +14,7 @@ class RecordSkeletonView extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: isDesktop
           ? const _DesktopRecordSkeleton()
           : const _MobileRecordSkeleton(),
@@ -55,14 +55,14 @@ class _DesktopRecordSkeleton extends StatelessWidget {
         // Left rail: calendar + filter
         SizedBox(
           width: ResponsiveSizing.sidebarWidth(context),
-          child: const AppInlineSkeletonSection(
+          child: const InlineSkeletonSection(
             height: 420,
             children: [
-              AppInlineSkeletonBlock(height: 18, widthFactor: 0.6),
+              InlineSkeletonBlock(height: 18, widthFactor: 0.6),
               SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(height: 280),
+              InlineSkeletonBlock(height: 280),
               SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(height: 72),
+              InlineSkeletonBlock(height: 72),
             ],
           ),
         ),
@@ -73,7 +73,7 @@ class _DesktopRecordSkeleton extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppInlineSkeletonBlock(height: 120, radius: RadiusTokens.level4),
+              InlineSkeletonBlock(height: 120, radius: RadiusTokens.level4),
               SizedBox(height: Spacing.level4),
               _TimelinePlaceholder(itemCount: 6),
             ],
@@ -86,7 +86,7 @@ class _DesktopRecordSkeleton extends StatelessWidget {
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppInlineSkeletonBlock(height: 200, radius: RadiusTokens.level4),
+              InlineSkeletonBlock(height: 200, radius: RadiusTokens.level4),
             ],
           ),
         ),
@@ -102,20 +102,20 @@ class _DateBarPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        AppInlineSkeletonBlock(
+        InlineSkeletonBlock(
           height: 40,
           width: 40,
           radius: RadiusTokens.levelFull,
         ),
         SizedBox(width: Spacing.level2),
         Expanded(
-          child: AppInlineSkeletonBlock(
+          child: InlineSkeletonBlock(
             height: 44,
             radius: RadiusTokens.levelFull,
           ),
         ),
         SizedBox(width: Spacing.level2),
-        AppInlineSkeletonBlock(
+        InlineSkeletonBlock(
           height: 40,
           width: 40,
           radius: RadiusTokens.levelFull,
@@ -130,10 +130,7 @@ class _AiInputPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonBlock(
-      height: 52,
-      radius: RadiusTokens.level4,
-    );
+    return const InlineSkeletonBlock(height: 52, radius: RadiusTokens.level4);
   }
 }
 
@@ -147,10 +144,7 @@ class _QuickEntryPlaceholder extends StatelessWidget {
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
           const Expanded(
-            child: AppInlineSkeletonBlock(
-              height: 72,
-              radius: RadiusTokens.level4,
-            ),
+            child: InlineSkeletonBlock(height: 72, radius: RadiusTokens.level4),
           ),
         ],
       ],
@@ -168,7 +162,7 @@ class _FilterPlaceholder extends StatelessWidget {
       runSpacing: Spacing.level3,
       children: List.generate(
         5,
-        (_) => const AppInlineSkeletonBlock(
+        (_) => const InlineSkeletonBlock(
           height: 36,
           width: 72,
           radius: RadiusTokens.levelFull,
@@ -185,25 +179,25 @@ class _TimelinePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 20, widthFactor: 0.45),
+        const InlineSkeletonBlock(height: 20, widthFactor: 0.45),
         const SizedBox(height: Spacing.level3),
         for (var i = 0; i < itemCount; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
           Row(
             children: [
-              const AppInlineSkeletonBlock(height: 14, width: 40),
+              const InlineSkeletonBlock(height: 14, width: 40),
               const SizedBox(width: Spacing.level4),
-              const AppInlineSkeletonCircle(size: Spacing.level3),
+              const InlineSkeletonCircle(size: Spacing.level3),
               const SizedBox(width: Spacing.level4),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppInlineSkeletonBlock(height: 16, widthFactor: 0.55),
+                    const InlineSkeletonBlock(height: 16, widthFactor: 0.55),
                     const SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(
+                    InlineSkeletonBlock(
                       height: 14,
                       widthFactor: i == itemCount - 1 ? 0.4 : 0.72,
                     ),

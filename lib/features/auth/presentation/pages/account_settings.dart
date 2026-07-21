@@ -69,8 +69,8 @@ class AccountSettingsPage extends HookConsumerWidget {
           .completeWechatWebIdentityLink(code: code, state: state);
       if (!context.mounted) return;
       if (ok) {
-        await AppToast.show(context, l10n.authIdentityLinkSuccess);
-        if (context.mounted) context.go(AppRoutes.account);
+        await Toast.show(context, l10n.authIdentityLinkSuccess);
+        if (context.mounted) context.go(Routes.account);
       }
     }
 
@@ -159,7 +159,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 avatar: avatarController.text,
                               );
                               if (ok && context.mounted) {
-                                await AppToast.show(
+                                await Toast.show(
                                   context,
                                   l10n.authProfileSaveSuccess,
                                 );
@@ -171,7 +171,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                             user: user,
                             emailController: emailController,
                             onChangeEmail: () =>
-                                context.push(AppRoutes.accountChangeEmail),
+                                context.push(Routes.accountChangeEmail),
                           ),
                           const SizedBox(height: Spacing.level6),
                           LinkedIdentitiesSection(
@@ -190,7 +190,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                                 identityId: identity.id,
                               );
                               if (ok && context.mounted) {
-                                await AppToast.show(
+                                await Toast.show(
                                   context,
                                   l10n.authIdentityUnlinkSuccess,
                                 );
@@ -229,16 +229,16 @@ class AccountSettingsPage extends HookConsumerWidget {
                                     ? accountState.errorMessage!
                                     : null;
                                 if (msg != null) {
-                                  await AppToast.show(ctx, msg);
+                                  await Toast.show(ctx, msg);
                                 }
                                 return;
                               }
                               if (!ok || !ctx.mounted) return;
-                              await AppToast.show(
+                              await Toast.show(
                                 ctx,
                                 l10n.authChangePasswordSuccess,
                               );
-                              if (ctx.mounted) router.go(AppRoutes.login);
+                              if (ctx.mounted) router.go(Routes.login);
                             },
                           ),
                           const SizedBox(height: Spacing.level6),
@@ -252,7 +252,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                             onSendCode: () async {
                               if (user.email == null ||
                                   user.email!.trim().isEmpty) {
-                                await AppToast.show(
+                                await Toast.show(
                                   context,
                                   l10n.authDeleteAccountEmailRequiredHint,
                                 );
@@ -277,16 +277,16 @@ class AccountSettingsPage extends HookConsumerWidget {
                                       ? accountState.errorMessage!
                                       : null;
                                   if (msg != null) {
-                                    await AppToast.show(ctx, msg);
+                                    await Toast.show(ctx, msg);
                                   }
                                   return;
                                 }
                                 if (!ok || !ctx.mounted) return;
-                                await AppToast.show(
+                                await Toast.show(
                                   ctx,
                                   l10n.authDeleteAccountSuccess,
                                 );
-                                if (ctx.mounted) router.go(AppRoutes.login);
+                                if (ctx.mounted) router.go(Routes.login);
                               } else {
                                 final ok = await accountNotifier.deleteAccount(
                                   code: deleteCodeController.text,
@@ -298,16 +298,16 @@ class AccountSettingsPage extends HookConsumerWidget {
                                       ? accountState.errorMessage!
                                       : null;
                                   if (msg != null) {
-                                    await AppToast.show(ctx, msg);
+                                    await Toast.show(ctx, msg);
                                   }
                                   return;
                                 }
                                 if (!ok || !ctx.mounted) return;
-                                await AppToast.show(
+                                await Toast.show(
                                   ctx,
                                   l10n.authDeleteAccountSuccess,
                                 );
-                                if (ctx.mounted) router.go(AppRoutes.login);
+                                if (ctx.mounted) router.go(Routes.login);
                               }
                             },
                           ),
@@ -336,11 +336,11 @@ Future<void> _startWechatIdentityLink(
   if (!context.mounted || result == null) return;
   switch (result) {
     case WechatIdentityLinkResult.completed:
-      await AppToast.show(context, l10n.authIdentityLinkSuccess);
+      await Toast.show(context, l10n.authIdentityLinkSuccess);
     case WechatIdentityLinkResult.opened:
-      await AppToast.show(context, l10n.authWechatAuthorizeOpened);
+      await Toast.show(context, l10n.authWechatAuthorizeOpened);
     case WechatIdentityLinkResult.unsupported:
-      await AppToast.show(context, l10n.authIdentityLinkUnsupported);
+      await Toast.show(context, l10n.authIdentityLinkUnsupported);
   }
 }
 
@@ -425,11 +425,11 @@ Future<void> _verifyEmailFlow(
     final msg = state.errorMessage?.isNotEmpty == true
         ? state.errorMessage!
         : l10n.authEmailRequiredError;
-    await AppToast.show(context, msg);
+    await Toast.show(context, msg);
     return;
   }
 
-  await AppToast.show(context, l10n.authSendCode);
+  await Toast.show(context, l10n.authSendCode);
   if (!context.mounted) return;
 
   final code = await _showVerifyEmailDialog(context, l10n);
@@ -438,13 +438,13 @@ Future<void> _verifyEmailFlow(
   final ok = await notifier.verifyEmail(email: email, code: code);
   if (!context.mounted) return;
   if (ok) {
-    await AppToast.show(context, l10n.authEmailVerifiedAt(email));
+    await Toast.show(context, l10n.authEmailVerifiedAt(email));
   } else {
     final state = ref.read(authAccountProvider);
     final msg = state.errorMessage?.isNotEmpty == true
         ? state.errorMessage!
         : l10n.authCodeRequiredError;
-    await AppToast.show(context, msg);
+    await Toast.show(context, msg);
   }
 }
 

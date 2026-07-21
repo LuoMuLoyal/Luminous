@@ -12,13 +12,13 @@ class MedicineErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateErrorView(
+    return StateErrorView(
       title: l10n.medicineErrorTitle,
       description: l10n.medicineErrorDescription,
       icon: FLucideIcons.pillBottle,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
-      tone: AppStateTone.warning,
+      tone: StateTone.warning,
     );
   }
 }

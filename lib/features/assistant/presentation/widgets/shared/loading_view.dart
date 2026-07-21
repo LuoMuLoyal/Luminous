@@ -10,18 +10,18 @@ class AssistantLoadingView extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
-            AppInlineSkeletonBlock(height: 28, widthFactor: 0.3),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.52),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
+            InlineSkeletonBlock(height: 28, widthFactor: 0.3),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.52),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.74),
           ],
         ),
         SizedBox(height: Spacing.level4),
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
-            AppInlineSkeletonBlock(height: 240),
-            AppInlineSkeletonBlock(height: 56),
+            InlineSkeletonBlock(height: 240),
+            InlineSkeletonBlock(height: 56),
           ],
         ),
       ],

@@ -92,39 +92,39 @@ class AboutSettingsPage extends ConsumerWidget {
                 FTile(
                   title: Text(l10n.settingsAboutPrivacyPolicy),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('${AppRoutes.legal}/privacy'),
+                  onPress: () => context.push('${Routes.legal}/privacy'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutTermsOfService),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('${AppRoutes.legal}/terms'),
+                  onPress: () => context.push('${Routes.legal}/terms'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutDisclaimer),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('${AppRoutes.legal}/disclaimer'),
+                  onPress: () => context.push('${Routes.legal}/disclaimer'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutMinorProtection),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () =>
-                      context.push('${AppRoutes.legal}/minor-protection'),
+                      context.push('${Routes.legal}/minor-protection'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutSdkList),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('${AppRoutes.legal}/sdk-list'),
+                  onPress: () => context.push('${Routes.legal}/sdk-list'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutPermissions),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () => context.push('${AppRoutes.legal}/permissions'),
+                  onPress: () => context.push('${Routes.legal}/permissions'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutAccountCancellation),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () =>
-                      context.push('${AppRoutes.legal}/account-cancellation'),
+                      context.push('${Routes.legal}/account-cancellation'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutLicenses),

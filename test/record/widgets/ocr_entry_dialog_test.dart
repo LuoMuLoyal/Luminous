@@ -166,7 +166,7 @@ void main() {
     await tester.tap(find.text(l10n.recordOcrCameraAction));
     await tester.pumpAndSettle();
 
-    // Empty recognition result shows a toast (AppToast.show), which
+    // Empty recognition result shows a toast (Toast.show), which
     // requires an FToaster ancestor — not available in this test harness.
     // Verify the flow completed without crashing instead.
   });

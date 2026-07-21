@@ -12,14 +12,14 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppStateSkeletonView', () {
+  group('StateSkeletonView', () {
     testWidgets('renders shimmer blocks', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateSkeletonView(
+          const StateSkeletonView(
             blocks: [
-              AppStateSkeletonBlock(height: 80),
-              AppStateSkeletonBlock(height: 40),
+              StateSkeletonBlock(height: 80),
+              StateSkeletonBlock(height: 40),
             ],
           ),
         ),
@@ -30,14 +30,14 @@ void main() {
     });
   });
 
-  group('AppInlineSkeleton', () {
+  group('InlineSkeleton', () {
     testWidgets('wraps children in shimmer column', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppInlineSkeleton(
+          const InlineSkeleton(
             children: [
-              AppInlineSkeletonBlock(height: 20),
-              AppInlineSkeletonBlock(height: 20),
+              InlineSkeletonBlock(height: 20),
+              InlineSkeletonBlock(height: 20),
             ],
           ),
         ),
@@ -48,11 +48,11 @@ void main() {
     });
   });
 
-  group('AppSkeletonSlot', () {
+  group('SkeletonSlot', () {
     testWidgets('shows child when isLoading is false', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppSkeletonSlot(
+          const SkeletonSlot(
             isLoading: false,
             skeleton: Text('Skeleton'),
             child: Text('Real content'),
@@ -67,7 +67,7 @@ void main() {
     testWidgets('shows skeleton when isLoading is true', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppSkeletonSlot(
+          const SkeletonSlot(
             isLoading: true,
             skeleton: Text('Skeleton'),
             child: Text('Real content'),
@@ -79,12 +79,12 @@ void main() {
       expect(find.text('Skeleton'), findsOneWidget);
     });
 
-    testWidgets('inherits loading state from AppSkeletonScope', (tester) async {
+    testWidgets('inherits loading state from SkeletonScope', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppSkeletonScope(
+          const SkeletonScope(
             isLoading: true,
-            child: AppSkeletonSlot(
+            child: SkeletonSlot(
               skeleton: Text('From scope'),
               child: Text('Hidden'),
             ),
@@ -97,10 +97,10 @@ void main() {
     });
   });
 
-  group('AppSkeletonText', () {
+  group('SkeletonText', () {
     testWidgets('shows text when not loading', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppSkeletonText(isLoading: false, text: 'Hello')),
+        _appShell(const SkeletonText(isLoading: false, text: 'Hello')),
       );
 
       expect(find.text('Hello'), findsOneWidget);
@@ -108,41 +108,39 @@ void main() {
 
     testWidgets('shows skeleton block when loading', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppSkeletonText(isLoading: true, text: 'Hello')),
+        _appShell(const SkeletonText(isLoading: true, text: 'Hello')),
       );
 
       expect(find.text('Hello'), findsNothing);
-      expect(find.byType(AppInlineSkeletonBlock), findsOneWidget);
+      expect(find.byType(InlineSkeletonBlock), findsOneWidget);
     });
   });
 
-  group('AppInlineSkeletonBlock', () {
+  group('InlineSkeletonBlock', () {
     testWidgets('renders with explicit width', (tester) async {
       await tester.pumpWidget(
-        _appShell(const AppInlineSkeletonBlock(height: 20, width: 100)),
+        _appShell(const InlineSkeletonBlock(height: 20, width: 100)),
       );
 
       expect(find.byType(DecoratedBox), findsOneWidget);
     });
   });
 
-  group('AppInlineSkeletonCircle', () {
+  group('InlineSkeletonCircle', () {
     testWidgets('renders circle and is shimmered', (tester) async {
-      await tester.pumpWidget(
-        _appShell(const AppInlineSkeletonCircle(size: 40)),
-      );
+      await tester.pumpWidget(_appShell(const InlineSkeletonCircle(size: 40)));
 
       expect(find.byType(Shimmer), findsOneWidget);
       expect(find.byType(DecoratedBox), findsOneWidget);
     });
   });
 
-  group('AppInlineSkeletonSection', () {
+  group('InlineSkeletonSection', () {
     testWidgets('renders bordered panel with shimmer children', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppInlineSkeletonSection(
-            children: [AppInlineSkeletonBlock(height: 20)],
+          const InlineSkeletonSection(
+            children: [InlineSkeletonBlock(height: 20)],
           ),
         ),
       );

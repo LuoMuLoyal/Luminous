@@ -27,7 +27,7 @@ class MineSyncFailedBanner extends ConsumerWidget {
           actionLabel: l10n.mineSyncFailedAction,
           onTap: () {
             ref.read(syncWorkerProvider).flush();
-            AppToast.show(context, l10n.mineSyncFailedAction);
+            Toast.show(context, l10n.mineSyncFailedAction);
           },
         );
       },

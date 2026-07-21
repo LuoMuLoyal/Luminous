@@ -113,7 +113,7 @@ String loginRouteForReturnTo(String returnTo) {
 String loginRouteForCurrentLocation(BuildContext context) {
   final location = GoRouterState.of(context).uri.toString();
   if (location.isEmpty || !location.startsWith('/')) {
-    return loginRouteForReturnTo(AppRoutes.home);
+    return loginRouteForReturnTo(Routes.home);
   }
   return loginRouteForReturnTo(location);
 }

@@ -62,7 +62,7 @@ class SuggestionSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: Container(
         decoration: BoxDecoration(
           color: colors.card,
@@ -265,7 +265,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
 
     return TodaySection(
       title: AppLocalizations.of(context)!.todaySecondarySuggestionSectionTitle,
-      child: AppSkeletonShimmer(
+      child: SkeletonShimmer(
         child: Column(
           children: [
             for (var i = 0; i < 2; i++) ...[

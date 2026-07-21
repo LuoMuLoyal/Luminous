@@ -23,10 +23,7 @@ class MineDashboardView extends StatelessWidget {
 
     final content = isDesktop ? _buildDesktopLayout() : _buildMobileLayout();
 
-    final scopedContent = AppSkeletonScope(
-      isLoading: isLoading,
-      child: content,
-    );
+    final scopedContent = SkeletonScope(isLoading: isLoading, child: content);
     if (isLoading) {
       return scopedContent;
     }

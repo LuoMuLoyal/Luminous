@@ -195,7 +195,7 @@ class RecordCreatePage extends HookConsumerWidget {
         final contentType = resolveImageContentType(image);
         if (contentType == null) {
           if (context.mounted) {
-            await AppToast.show(
+            await Toast.show(
               context,
               AppLocalizations.of(context)!.recordImageUnsupportedToast,
             );
@@ -205,7 +205,7 @@ class RecordCreatePage extends HookConsumerWidget {
 
         final rawBytes = await image.readAsBytes();
         if (!context.mounted) return;
-        final compressedBytes = await AppImageCompressor.compressForUpload(
+        final compressedBytes = await ImageCompressor.compressForUpload(
           rawBytes,
         );
         selectedImage.value = _PendingDailyRecordImage(
@@ -218,7 +218,7 @@ class RecordCreatePage extends HookConsumerWidget {
             .read(talkerProvider)
             .error('RecordCreatePage.pickAndProcessImage: failed: $e');
         if (context.mounted) {
-          await AppToast.show(
+          await Toast.show(
             context,
             AppLocalizations.of(context)!.recordImagePickFailedToast,
           );
@@ -253,7 +253,7 @@ class RecordCreatePage extends HookConsumerWidget {
     Future<void> onSave(String dateStr) async {
       if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
         unawaited(
-          AppToast.show(
+          Toast.show(
             context,
             AppLocalizations.of(context)!.recordSleepInvalidValueToast,
           ),
@@ -317,7 +317,7 @@ class RecordCreatePage extends HookConsumerWidget {
             .emit(DataChangeTopic.dailyRecords);
         if (context.mounted) {
           unawaited(
-            AppToast.show(
+            Toast.show(
               context,
               AppLocalizations.of(context)!.recordCreateSavedToast,
             ),
@@ -328,7 +328,7 @@ class RecordCreatePage extends HookConsumerWidget {
         ref.read(talkerProvider).error('RecordCreatePage.onSave: failed: $e');
         if (context.mounted) {
           unawaited(
-            AppToast.show(
+            Toast.show(
               context,
               AppLocalizations.of(context)!.recordCreateFailedToast,
             ),
@@ -568,13 +568,13 @@ class _RecordFormLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 96),
-        AppInlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 96),
+        InlineSkeletonBlock(height: 56),
       ],
     );
   }

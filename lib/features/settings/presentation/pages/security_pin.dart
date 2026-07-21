@@ -423,9 +423,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
-        await AppToast.show(context, l10n.settingsSecurityPinEnableSuccess);
+        await Toast.show(context, l10n.settingsSecurityPinEnableSuccess);
       case Failure(:final error):
-        await AppToast.show(
+        await Toast.show(
           context,
           error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
         );
@@ -468,9 +468,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
-        await AppToast.show(context, l10n.settingsSecurityPinChangeSuccess);
+        await Toast.show(context, l10n.settingsSecurityPinChangeSuccess);
       case Failure(:final error):
-        await AppToast.show(
+        await Toast.show(
           context,
           error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
         );
@@ -501,9 +501,9 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
-        await AppToast.show(context, l10n.settingsSecurityPinDisableSuccess);
+        await Toast.show(context, l10n.settingsSecurityPinDisableSuccess);
       case Failure(:final error):
-        await AppToast.show(
+        await Toast.show(
           context,
           error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
         );

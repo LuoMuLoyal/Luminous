@@ -111,14 +111,14 @@ class MedicinePage extends ConsumerWidget {
                     const _MedicineMobileSearchBar(),
                     const SizedBox(height: Spacing.level4),
                     Expanded(
-                      child: AppStateMessageView(
+                      child: StateMessageView(
                         title: l10n.medicineEmptyAddFirstTitle,
                         description: l10n.medicineEmptyAddFirstDescription,
                         icon: FLucideIcons.pillBottle,
                         actionLabel: l10n.medicineQuickAddTitle,
                         onAction: () => pushAuthRequiredRoute(
                           context,
-                          AppRoutes.medicineSearch,
+                          Routes.medicineSearch,
                         ),
                       ),
                     ),
@@ -126,13 +126,13 @@ class MedicinePage extends ConsumerWidget {
                 ),
               )
             : _MedicineMobileShell(
-                child: AppStateMessageView(
+                child: StateMessageView(
                   title: l10n.medicineEmptyAddFirstTitle,
                   description: l10n.medicineEmptyAddFirstDescription,
                   icon: FLucideIcons.pillBottle,
                   actionLabel: l10n.medicineQuickAddTitle,
                   onAction: () =>
-                      pushAuthRequiredRoute(context, AppRoutes.medicineSearch),
+                      pushAuthRequiredRoute(context, Routes.medicineSearch),
                 ),
               ),
         readyBuilder: (workspace, isPreview) {
@@ -216,12 +216,12 @@ Future<void> _markDose(
         );
     ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.doseLogs);
     if (context.mounted) {
-      unawaited(AppToast.show(context, l10n.medicineDoseActionSavedToast));
+      unawaited(Toast.show(context, l10n.medicineDoseActionSavedToast));
     }
   } catch (error) {
     ref.read(talkerProvider).error('_markDose: failed: $error');
     if (context.mounted) {
-      unawaited(AppToast.show(context, l10n.medicineDoseActionFailedToast));
+      unawaited(Toast.show(context, l10n.medicineDoseActionFailedToast));
     }
   }
 }
@@ -320,12 +320,12 @@ class _MedicineSafeGuardPill extends StatelessWidget {
       tipBuilder: (context, controller) => Text(l10n.medicineSafetyGuardLabel),
       child: isNarrow
           ? FButton.icon(
-              onPress: () => context.push(AppRoutes.medicineRiskCheck),
+              onPress: () => context.push(Routes.medicineRiskCheck),
               variant: FButtonVariant.ghost,
               child: shieldIcon,
             )
           : FButton(
-              onPress: () => context.push(AppRoutes.medicineRiskCheck),
+              onPress: () => context.push(Routes.medicineRiskCheck),
               variant: FButtonVariant.ghost,
               mainAxisSize: MainAxisSize.min,
               style: const .delta(
@@ -372,8 +372,7 @@ class _MedicineNotificationButton extends ConsumerWidget {
         clipBehavior: Clip.none,
         children: [
           FButton.icon(
-            onPress: () =>
-                pushAuthRequiredRoute(context, AppRoutes.notifications),
+            onPress: () => pushAuthRequiredRoute(context, Routes.notifications),
             variant: FButtonVariant.ghost,
             child: Icon(FLucideIcons.bell, color: colors.foreground),
           ),
@@ -410,7 +409,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
       key: const Key('medicine-home-search-bar'),
       constraints: const BoxConstraints(minHeight: 56),
       child: FButton.raw(
-        onPress: () => context.push(AppRoutes.medicineSearch),
+        onPress: () => context.push(Routes.medicineSearch),
         variant: FButtonVariant.ghost,
         style: .delta(
           decoration: .delta([

@@ -202,14 +202,14 @@ class _LoadingList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppSkeletonShimmer(
+    return const SkeletonShimmer(
       child: Column(
         children: [
-          AppInlineSkeletonBlock(height: 72, widthFactor: 1),
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
           SizedBox(height: Spacing.level3),
-          AppInlineSkeletonBlock(height: 72, widthFactor: 1),
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
           SizedBox(height: Spacing.level3),
-          AppInlineSkeletonBlock(height: 72, widthFactor: 1),
+          InlineSkeletonBlock(height: 72, widthFactor: 1),
         ],
       ),
     );

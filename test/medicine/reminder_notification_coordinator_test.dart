@@ -139,7 +139,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          appLocaleControllerProvider.overrideWith(
+          localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
           localNotificationGatewayProvider.overrideWithValue(gateway),
@@ -156,7 +156,7 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
       await container.read(notificationSettingsControllerProvider.future);
       await container.read(medicineReminderSoundProvider.future);
       final syncSub = _keepSyncProviderAlive(container);
@@ -196,7 +196,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          appLocaleControllerProvider.overrideWith(
+          localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
           localNotificationGatewayProvider.overrideWithValue(gateway),
@@ -213,7 +213,7 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
       await container.read(notificationSettingsControllerProvider.future);
       await container.read(medicineReminderSoundProvider.future);
       final syncSub = _keepSyncProviderAlive(container);
@@ -246,7 +246,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
-          appLocaleControllerProvider.overrideWith(
+          localeControllerProvider.overrideWith(
             () => _StaticLocaleController(),
           ),
           localNotificationGatewayProvider.overrideWithValue(gateway),
@@ -263,7 +263,7 @@ void main() {
       );
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
       await container.read(notificationSettingsControllerProvider.future);
       await container.read(medicineReminderSoundProvider.future);
       final syncSub = _keepSyncProviderAlive(container);
@@ -425,7 +425,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   Future<void> restore() async {}
 }
 
-class _StaticLocaleController extends AppLocaleController {
+class _StaticLocaleController extends LocaleController {
   @override
   Future<AppLocale> build() async => AppLocale.zhCn;
 }

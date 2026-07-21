@@ -307,7 +307,7 @@ class RecordEditPage extends HookConsumerWidget {
 
     Future<void> onSave() async {
       if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
-        unawaited(AppToast.show(context, l10n.recordSleepInvalidValueToast));
+        unawaited(Toast.show(context, l10n.recordSleepInvalidValueToast));
         return;
       }
       saving.value = true;
@@ -331,14 +331,14 @@ class RecordEditPage extends HookConsumerWidget {
         );
         invalidateProviders();
         if (context.mounted) {
-          await AppToast.show(context, l10n.mineEditSavedToast);
+          await Toast.show(context, l10n.mineEditSavedToast);
           if (!context.mounted) return;
           context.pop();
         }
       } catch (e) {
         ref.read(talkerProvider).error('RecordEditPage.onSave: failed: $e');
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordCreateFailedToast);
+          await Toast.show(context, l10n.recordCreateFailedToast);
         }
       } finally {
         if (context.mounted) saving.value = false;
@@ -390,7 +390,7 @@ class RecordEditPage extends HookConsumerWidget {
         await repo.delete(recordId);
         invalidateProviders();
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordDeletedToast);
+          await Toast.show(context, l10n.recordDeletedToast);
           if (!context.mounted) return;
           context.pop();
           context.pop();
@@ -398,7 +398,7 @@ class RecordEditPage extends HookConsumerWidget {
       } catch (e) {
         ref.read(talkerProvider).error('RecordEditPage.onDelete: failed: $e');
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordDeleteFailedToast);
+          await Toast.show(context, l10n.recordDeleteFailedToast);
         }
       } finally {
         if (context.mounted) deleting.value = false;
@@ -415,13 +415,13 @@ class RecordEditPage extends HookConsumerWidget {
         final contentType = RecordEditPage.resolveImageContentType(image);
         if (contentType == null) {
           if (context.mounted) {
-            await AppToast.show(context, l10n.recordImageUnsupportedToast);
+            await Toast.show(context, l10n.recordImageUnsupportedToast);
           }
           return;
         }
         final rawBytes = await image.readAsBytes();
         if (!context.mounted) return;
-        final compressedBytes = await AppImageCompressor.compressForUpload(
+        final compressedBytes = await ImageCompressor.compressForUpload(
           rawBytes,
         );
         selectedImage.value = _PendingDailyRecordImage(
@@ -435,7 +435,7 @@ class RecordEditPage extends HookConsumerWidget {
             .read(talkerProvider)
             .error('RecordEditPage.onPickImage: failed: $e');
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordImagePickFailedToast);
+          await Toast.show(context, l10n.recordImagePickFailedToast);
         }
       }
     }
@@ -491,7 +491,7 @@ class RecordEditPage extends HookConsumerWidget {
                 ? Spacing.level6
                 : Spacing.level7,
           ),
-          child: AppStateErrorView(
+          child: StateErrorView(
             title: l10n.recordDetailErrorTitle,
             description: l10n.recordErrorDescription,
             icon: FLucideIcons.notebookPen,
@@ -500,7 +500,7 @@ class RecordEditPage extends HookConsumerWidget {
               loadError.value = false;
               loaded.value = false;
             },
-            tone: AppStateTone.warning,
+            tone: StateTone.warning,
           ),
         ),
       );
@@ -710,14 +710,14 @@ class _RecordEditLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 96),
-        AppInlineSkeletonBlock(height: 56),
-        AppInlineSkeletonBlock(height: 44),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 96),
+        InlineSkeletonBlock(height: 56),
+        InlineSkeletonBlock(height: 44),
       ],
     );
   }

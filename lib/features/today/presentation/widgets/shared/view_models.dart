@@ -303,7 +303,7 @@ TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
 /// are "secondary" and should be displayed under a "more" toggle.
 ///
 /// Navigation semantics:
-/// - Actions targeting a tab root (e.g. [AppRoutes.medicine]) use
+/// - Actions targeting a tab root (e.g. [Routes.medicine]) use
 ///   `usePush: false` → `context.go`, which replaces the current route so
 ///   the user lands on the tab's home screen.
 /// - Actions targeting a sub-page (e.g. record create) use `usePush: true`
@@ -327,34 +327,34 @@ List<TodayQuickActionItem> buildQuickActionItems(
       icon: FLucideIcons.badgeCheck,
       title: l10n.todayQuickActionConfirmTitle,
       subtitle: confirmSubtitle,
-      route: AppRoutes.medicine,
+      route: Routes.medicine,
       badge: confirmBadge,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.filePenLine,
       title: l10n.todayQuickActionRecordTitle,
       subtitle: l10n.todayQuickActionRecordSubtitle,
-      route: '${AppRoutes.recordCreate}?kind=water',
+      route: '${Routes.recordCreate}?kind=water',
       usePush: true,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.shieldPlus,
       title: l10n.todayQuickActionExplainTitle,
       subtitle: l10n.todayQuickActionExplainSubtitle,
-      route: AppRoutes.medicineRiskCheck,
+      route: Routes.medicineRiskCheck,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.alarmClockCheck,
       title: l10n.todayQuickActionReminderTitle,
       subtitle: l10n.todayQuickActionReminderSubtitle,
-      route: AppRoutes.medicineRemindersNew,
+      route: Routes.medicineRemindersNew,
       usePush: true,
     ),
     TodayQuickActionItem(
       icon: FLucideIcons.userRound,
       title: l10n.todayQuickActionProfileTitle,
       subtitle: l10n.todayQuickActionProfileSubtitle,
-      route: AppRoutes.mine,
+      route: Routes.mine,
     ),
   ];
 }

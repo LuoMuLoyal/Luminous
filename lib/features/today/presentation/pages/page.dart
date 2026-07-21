@@ -30,7 +30,7 @@ class TodayPage extends ConsumerWidget {
     } catch (_) {
       if (!context.mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      await AppToast.show(context, l10n.todayRefreshErrorToast);
+      await Toast.show(context, l10n.todayRefreshErrorToast);
     }
   }
 

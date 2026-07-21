@@ -23,7 +23,7 @@ class _SignedOutSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() => const AuthSessionState();
 }
 
-class _FakeLocaleController extends AppLocaleController {
+class _FakeLocaleController extends LocaleController {
   AppLocale _locale = AppLocale.system;
   bool setLocaleCalled = false;
   List<AppLocale> setLocaleHistory = [];
@@ -79,7 +79,7 @@ void main() {
               ? _SignedInSessionNotifier()
               : _SignedOutSessionNotifier(),
         ),
-        appLocaleControllerProvider.overrideWith(() => localeController),
+        localeControllerProvider.overrideWith(() => localeController),
         settingsProfileRemoteDataSourceProvider.overrideWithValue(
           mockDataSource,
         ),

@@ -51,11 +51,11 @@ class _QuickActionButton extends StatelessWidget {
       onPress: () {
         switch (action.type) {
           case MedicineSearchActionType.barcode:
-            context.push(AppRoutes.scanBarcode);
+            context.push(Routes.scanBarcode);
           case MedicineSearchActionType.photo:
             unawaited(showMedicineBoxScanSheet(context));
           default:
-            AppToast.show(context, actionToast(l10n, action.type));
+            Toast.show(context, actionToast(l10n, action.type));
         }
       },
       child: Padding(

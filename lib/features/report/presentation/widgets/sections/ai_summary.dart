@@ -172,7 +172,7 @@ class ReportAiSummarySection extends StatelessWidget {
                     ),
                     const SizedBox(width: Spacing.level3),
                     Expanded(
-                      child: AppSkeletonText(
+                      child: SkeletonText(
                         text: content.bullets[index].text,
                         style: TypographyToken.level3
                             .body(context)

@@ -151,7 +151,7 @@ class _FindingCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.level4),
-            AppSkeletonText(
+            SkeletonText(
               text: finding.title,
               style: TypographyToken.level5
                   .body(context)
@@ -159,7 +159,7 @@ class _FindingCard extends StatelessWidget {
               widthFactor: 0.7,
             ),
             const SizedBox(height: Spacing.level3),
-            AppSkeletonText(
+            SkeletonText(
               text: finding.body,
               style: TypographyToken.level3
                   .body(context)

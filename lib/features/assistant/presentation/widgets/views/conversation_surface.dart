@@ -98,7 +98,7 @@ class AssistantConversationSurface extends ConsumerWidget {
             ),
             if (sendError != null) ...[
               const SizedBox(height: Spacing.level4),
-              AppStateMessageView(
+              StateMessageView(
                 title: l10n.assistantSendErrorTitle,
                 description: sendErrorDescription(
                   l10n,
@@ -106,7 +106,7 @@ class AssistantConversationSurface extends ConsumerWidget {
                   sendError,
                 ),
                 icon: sendErrorIcon(sendErrorType),
-                tone: AppStateTone.warning,
+                tone: StateTone.warning,
                 actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
                 onAction: onRetry,
                 actionKey: const Key('assistant-retry-action'),
@@ -165,16 +165,16 @@ class _ConversationView extends ConsumerWidget {
     if (!capabilities.canSendMessages &&
         messages.isEmpty &&
         streamingDraft.isEmpty) {
-      return AppStateMessageView(
+      return StateMessageView(
         title: l10n.assistantConversationDisabledTitle,
         description: _disabledDescription(l10n, capabilities),
         icon: FLucideIcons.circlePause,
-        tone: AppStateTone.warning,
+        tone: StateTone.warning,
       );
     }
 
     if (messages.isEmpty && streamingDraft.isEmpty) {
-      return AppStateMessageView(
+      return StateMessageView(
         title: l10n.assistantConversationEmptyTitle,
         description: l10n.assistantConversationEmptyDescription,
         icon: FLucideIcons.messageSquareMore,

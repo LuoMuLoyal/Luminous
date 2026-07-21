@@ -28,7 +28,7 @@ Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
   if (isDesktop) {
     return showFDialog<void>(
       context: context,
-      builder: (dialogContext, _, __) => AppDialogShell(
+      builder: (dialogContext, _, __) => DialogShell(
         maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
         builder: (_) => const _ClinicSummaryPreviewContent(),
       ),
@@ -129,9 +129,9 @@ class _ClinicSummaryPreviewContentState
           case PdfDownloadResult.success:
             break;
           case PdfDownloadResult.empty:
-            await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
+            await Toast.show(context, l10n.reportClinicSummaryPdfEmpty);
           case PdfDownloadResult.failed:
-            await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+            await Toast.show(context, l10n.reportClinicSummaryPdfFailed);
         }
       }
     } finally {
@@ -159,7 +159,7 @@ class _ClinicSummaryPreviewContentState
           final shareUrl = response.shareUrl;
           if (shareUrl.isEmpty) {
             if (mounted) {
-              await AppToast.show(context, l10n.reportExportFailedToast);
+              await Toast.show(context, l10n.reportExportFailedToast);
             }
             return false;
           }
@@ -177,7 +177,7 @@ class _ClinicSummaryPreviewContentState
           break;
         case Failure(:final error):
           if (mounted) {
-            await AppToast.show(
+            await Toast.show(
               context,
               l10n.reportExportFailedWithReason(error.message),
             );

@@ -123,7 +123,7 @@ class SearchPage extends ConsumerWidget {
           orElse: () => updatedSnapshot.currentMedicines.last,
         );
         unawaited(
-          AppToast.showWithAction(
+          Toast.showWithAction(
             context,
             l10n.medicineSearchAddedToBoxToast,
             l10n.medicineSearchGoToReminderAction,
@@ -139,7 +139,7 @@ class SearchPage extends ConsumerWidget {
           .error('SearchPage._addToCurrentMedicines: failed: $e');
       if (context.mounted) {
         unawaited(
-          AppToast.show(
+          Toast.show(
             context,
             userMessageFromError(
               e,

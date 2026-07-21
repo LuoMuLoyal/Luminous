@@ -156,7 +156,7 @@ class AssistantPage extends HookConsumerWidget {
       );
       if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, error.message);
+        await Toast.show(ctx, error.message);
       }
     }
 
@@ -178,7 +178,7 @@ class AssistantPage extends HookConsumerWidget {
       );
       if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, error.message);
+        await Toast.show(ctx, error.message);
       }
     }
 
@@ -217,7 +217,7 @@ class AssistantPage extends HookConsumerWidget {
         );
         if (result case Failure(:final error)) {
           if (!ctx.mounted) return;
-          await AppToast.show(ctx, error.message);
+          await Toast.show(ctx, error.message);
         }
         return;
       }
@@ -243,7 +243,7 @@ class AssistantPage extends HookConsumerWidget {
       );
       if (result case Failure(:final error)) {
         if (!ctx.mounted) return;
-        await AppToast.show(ctx, error.message);
+        await Toast.show(ctx, error.message);
       }
     }
 
@@ -278,10 +278,10 @@ class AssistantPage extends HookConsumerWidget {
       switch (result) {
         case Success():
           if (!ctx.mounted) return;
-          await AppToast.show(ctx, l.assistantProposalConfirmedToast);
+          await Toast.show(ctx, l.assistantProposalConfirmedToast);
         case Failure(:final error):
           if (!ctx.mounted) return;
-          await AppToast.show(ctx, error.message);
+          await Toast.show(ctx, error.message);
       }
     }
 
@@ -397,7 +397,7 @@ class AssistantPage extends HookConsumerWidget {
               if (session.isRestoring) ...[
                 const AssistantLoadingView(),
               ] else if (!session.canAccessProtectedData) ...[
-                AppStateMessageView(
+                StateMessageView(
                   maxWidth: Breakpoints.assistantContent,
                   title: l10n.authNotSignedIn,
                   description: l10n.assistantSignedOutDescription,
@@ -414,13 +414,13 @@ class AssistantPage extends HookConsumerWidget {
               ] else if (isLoadingConversation && !hasConversation) ...[
                 const AssistantLoadingView(),
               ] else if (capabilities == null) ...[
-                AppStateMessageView(
+                StateMessageView(
                   maxWidth: Breakpoints.assistantContent,
                   title: l10n.assistantLoadErrorTitle,
                   description:
                       capabilityError ?? l10n.assistantLoadErrorFallback,
                   icon: FLucideIcons.circleAlert,
-                  tone: AppStateTone.warning,
+                  tone: StateTone.warning,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () => ref
                       .read(assistantControllerProvider.notifier)
@@ -442,11 +442,11 @@ class AssistantPage extends HookConsumerWidget {
                 ),
                 if (conversationError != null) ...[
                   const SizedBox(height: Spacing.level4),
-                  AppStateMessageView(
+                  StateMessageView(
                     title: l10n.assistantLoadErrorTitle,
                     description: conversationError,
                     icon: FLucideIcons.circleAlert,
-                    tone: AppStateTone.warning,
+                    tone: StateTone.warning,
                     actionLabel: l10n.todayRetryAction,
                     onAction: () => ref
                         .read(assistantControllerProvider.notifier)

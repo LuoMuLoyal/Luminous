@@ -54,7 +54,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       onPress: () async {
                         imageCache.clear();
                         imageCache.clearLiveImages();
-                        await AppToast.show(
+                        await Toast.show(
                           context,
                           l10n.settingsAdvancedCacheCleared,
                         );
@@ -90,10 +90,10 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         );
                         if (!confirmed || !context.mounted) return;
                         await ref
-                            .read(appThemeControllerProvider.notifier)
+                            .read(themeControllerProvider.notifier)
                             .setMode(AppThemeModePreference.system);
                         await ref
-                            .read(appThemeControllerProvider.notifier)
+                            .read(themeControllerProvider.notifier)
                             .setFamily(appDefaultThemeFamily);
                         try {
                           await ref
@@ -106,7 +106,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                                 'AdvancedSettingsPage: resetProfilePreferences failed: $e',
                               );
                           await ref
-                              .read(appLocaleControllerProvider.notifier)
+                              .read(localeControllerProvider.notifier)
                               .setLocale(AppLocale.system);
                         }
                         await ref
@@ -137,7 +137,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                         if (!context.mounted) {
                           return;
                         }
-                        await AppToast.show(
+                        await Toast.show(
                           context,
                           l10n.settingsAdvancedDefaultsReset,
                         );
@@ -230,7 +230,7 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
           // Log out to clear stale session for the previous endpoint.
           await ref.read(authSessionProvider.notifier).logout();
           if (context.mounted) {
-            await AppToast.show(context, l10n.settingsDevApiEndpointSwitched);
+            await Toast.show(context, l10n.settingsDevApiEndpointSwitched);
           }
         },
         onCustomUrlChanged: (url) {

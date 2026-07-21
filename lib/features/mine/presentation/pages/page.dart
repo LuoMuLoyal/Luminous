@@ -64,14 +64,14 @@ class MinePage extends ConsumerWidget {
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,
                   icon: FLucideIcons.bell,
-                  onTap: () => context.push(AppRoutes.notifications),
+                  onTap: () => context.push(Routes.notifications),
                   showBadge: hasUnread,
                 ),
                 IconActionButton(
                   key: const Key('mine-settings-action'),
                   tooltip: l10n.mineHeaderSettings,
                   icon: FLucideIcons.settings,
-                  onTap: () => context.push(AppRoutes.settings),
+                  onTap: () => context.push(Routes.settings),
                 ),
               ],
               onRefresh: () => _refreshDashboard(ref),
@@ -86,8 +86,8 @@ class MinePage extends ConsumerWidget {
                   children: [
                     MineTopBar(
                       onNotificationsTap: () =>
-                          context.push(AppRoutes.notifications),
-                      onSettingsTap: () => context.push(AppRoutes.settings),
+                          context.push(Routes.notifications),
+                      onSettingsTap: () => context.push(Routes.settings),
                     ),
                     Expanded(
                       child: RefreshIndicator(
@@ -124,13 +124,13 @@ class MineErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateErrorView(
+    return StateErrorView(
       title: l10n.mineErrorTitle,
       description: l10n.mineErrorDescription,
       icon: FLucideIcons.searchX,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
-      tone: AppStateTone.warning,
+      tone: StateTone.warning,
     );
   }
 }

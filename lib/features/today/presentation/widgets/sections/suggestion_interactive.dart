@@ -51,12 +51,12 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
           );
       if (mounted) {
         setState(() => _submittedFeedback = feedback);
-        unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackSuccess));
+        unawaited(Toast.show(context, l10n.todaySuggestionFeedbackSuccess));
       }
     } catch (e, st) {
       appTalker.error('submitFeedback failed: $e', e, st);
       if (mounted) {
-        unawaited(AppToast.show(context, l10n.todaySuggestionFeedbackError));
+        unawaited(Toast.show(context, l10n.todaySuggestionFeedbackError));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);

@@ -49,7 +49,7 @@ class _ClinicSummarySharedPageState
           final appError = LucentErrorMapper.toAppError(error);
           final isNetworkError = appError.kind == AppErrorKind.network;
 
-          return AppStateErrorView(
+          return StateErrorView(
             title: isNetworkError
                 ? l10n.reportClinicSummarySharedNetworkError
                 : l10n.reportClinicSummarySharedExpired,
@@ -57,7 +57,7 @@ class _ClinicSummarySharedPageState
             icon: isNetworkError
                 ? FLucideIcons.wifiOff
                 : FLucideIcons.triangleAlert,
-            tone: AppStateTone.warning,
+            tone: StateTone.warning,
             actionLabel: isNetworkError ? l10n.todayRetryAction : null,
             onAction: isNetworkError
                 ? () =>
@@ -97,9 +97,9 @@ class _ClinicSummarySharedPageState
           case PdfDownloadResult.success:
             break;
           case PdfDownloadResult.empty:
-            await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
+            await Toast.show(context, l10n.reportClinicSummaryPdfEmpty);
           case PdfDownloadResult.failed:
-            await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+            await Toast.show(context, l10n.reportClinicSummaryPdfFailed);
         }
       }
     } finally {

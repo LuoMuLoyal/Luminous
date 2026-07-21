@@ -39,7 +39,7 @@ class HelpSettingsPage extends ConsumerWidget {
               data: (resources) {
                 final actionable = resources.where(_isActionable).toList();
                 if (actionable.isEmpty) {
-                  return AppStateMessageView(
+                  return StateMessageView(
                     title: l10n.settingsHelpEmpty,
                     icon: FLucideIcons.circleHelp,
                   );
@@ -60,17 +60,17 @@ class HelpSettingsPage extends ConsumerWidget {
                   ],
                 );
               },
-              loading: () => const AppInlineSkeleton(
+              loading: () => const InlineSkeleton(
                 children: [
-                  AppInlineSkeletonBlock(height: 56),
-                  AppInlineSkeletonBlock(height: 56),
-                  AppInlineSkeletonBlock(height: 56),
+                  InlineSkeletonBlock(height: 56),
+                  InlineSkeletonBlock(height: 56),
+                  InlineSkeletonBlock(height: 56),
                 ],
               ),
-              error: (error, _) => AppStateMessageView(
+              error: (error, _) => StateMessageView(
                 title: l10n.settingsHelpError,
                 icon: FLucideIcons.circleAlert,
-                tone: AppStateTone.danger,
+                tone: StateTone.danger,
                 actionLabel: l10n.settingsHelpRetryAction,
                 onAction: () =>
                     ref.invalidate(supportResourcesProvider('help')),

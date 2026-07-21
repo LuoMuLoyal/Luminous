@@ -176,7 +176,7 @@ class _ObservationLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppSkeletonShimmer(
+    return const SkeletonShimmer(
       child: Padding(
         padding: EdgeInsets.all(Spacing.level4),
         child: Column(

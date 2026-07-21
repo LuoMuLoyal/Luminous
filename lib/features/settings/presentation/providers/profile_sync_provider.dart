@@ -17,10 +17,10 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
   }) async {
     final hasLocaleChange = locale != null;
     final previousLocale =
-        ref.read(appLocaleControllerProvider).asData?.value ?? AppLocale.system;
+        ref.read(localeControllerProvider).asData?.value ?? AppLocale.system;
 
     if (hasLocaleChange) {
-      await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
+      await ref.read(localeControllerProvider.notifier).setLocale(locale);
     }
 
     try {
@@ -36,7 +36,7 @@ class SettingsProfileSyncNotifier extends Notifier<void> {
           .error('SettingsProfileSyncNotifier.syncPreferences: failed: $error');
       if (hasLocaleChange) {
         await ref
-            .read(appLocaleControllerProvider.notifier)
+            .read(localeControllerProvider.notifier)
             .setLocale(previousLocale);
       }
       rethrow;

@@ -117,7 +117,7 @@ class ReportPage extends ConsumerWidget {
         );
       case Failure(:final error):
         if (!context.mounted) return;
-        await AppToast.show(
+        await Toast.show(
           context,
           '${l10n.reportExportFailedToast}: ${error.message}',
         );
@@ -133,7 +133,7 @@ class ReportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     switch (dataExportUiStatusForRequest(request)) {
       case DataExportUiStatus.idle:
-        await AppToast.show(context, l10n.reportExportFailedToast);
+        await Toast.show(context, l10n.reportExportFailedToast);
         return;
       case DataExportUiStatus.completed:
       case DataExportUiStatus.completedLinkMissing:
@@ -145,12 +145,12 @@ class ReportPage extends ConsumerWidget {
         }
         final completedRequest = latest ?? request;
         if (completedRequest == null) {
-          await AppToast.show(context, l10n.reportExportFailedToast);
+          await Toast.show(context, l10n.reportExportFailedToast);
           return;
         }
         final downloadUrl = completedRequest.downloadUrl;
         if (downloadUrl == null || downloadUrl.isEmpty) {
-          await AppToast.show(context, l10n.reportExportLinkMissingToast);
+          await Toast.show(context, l10n.reportExportLinkMissingToast);
           return;
         }
 
@@ -158,7 +158,7 @@ class ReportPage extends ConsumerWidget {
         if (!context.mounted) {
           return;
         }
-        await AppToast.show(
+        await Toast.show(
           context,
           opened
               ? l10n.reportExportReadyToast
@@ -166,14 +166,14 @@ class ReportPage extends ConsumerWidget {
         );
         return;
       case DataExportUiStatus.requested:
-        await AppToast.show(context, l10n.reportExportRequestedToast);
+        await Toast.show(context, l10n.reportExportRequestedToast);
         return;
       case DataExportUiStatus.processing:
-        await AppToast.show(context, l10n.reportExportProcessingToast);
+        await Toast.show(context, l10n.reportExportProcessingToast);
         return;
       case DataExportUiStatus.failed:
       case DataExportUiStatus.unavailable:
-        await AppToast.show(
+        await Toast.show(
           context,
           request?.errorMessage?.isNotEmpty == true
               ? request?.errorMessage ?? ''
@@ -241,7 +241,7 @@ class ReportPage extends ConsumerWidget {
         fatalErrorBuilder: (error) => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabReport,
-                child: AppStateErrorView(
+                child: StateErrorView(
                   title: l10n.reportErrorTitle,
                   description: l10n.reportErrorDescription,
                   icon: FLucideIcons.chartColumnBig,
@@ -249,14 +249,14 @@ class ReportPage extends ConsumerWidget {
                   onAction: () => ref.invalidate(
                     reportDashboardProvider(selectedDashboardQuery),
                   ),
-                  tone: AppStateTone.warning,
+                  tone: StateTone.warning,
                 ),
               )
             : DecoratedBox(
                 decoration: BoxDecoration(color: colors.background),
                 child: SafeArea(
                   bottom: false,
-                  child: AppStateErrorView(
+                  child: StateErrorView(
                     title: l10n.reportErrorTitle,
                     description: l10n.reportErrorDescription,
                     icon: FLucideIcons.chartColumnBig,
@@ -264,7 +264,7 @@ class ReportPage extends ConsumerWidget {
                     onAction: () => ref.invalidate(
                       reportDashboardProvider(selectedDashboardQuery),
                     ),
-                    tone: AppStateTone.warning,
+                    tone: StateTone.warning,
                   ),
                 ),
               ),

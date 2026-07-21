@@ -12,11 +12,11 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppStateMessageView', () {
+  group('StateMessageView', () {
     testWidgets('renders title, description and icon', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateMessageView(
+          const StateMessageView(
             title: 'No data',
             description: 'Nothing to show yet.',
             icon: FLucideIcons.inbox,
@@ -33,7 +33,7 @@ void main() {
     testWidgets('renders action button when provided', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          AppStateMessageView(
+          StateMessageView(
             title: 'Error',
             description: 'Tap to retry',
             icon: FLucideIcons.triangleAlert,
@@ -51,7 +51,7 @@ void main() {
       bool tapped = false;
       await tester.pumpWidget(
         _appShell(
-          AppStateMessageView(
+          StateMessageView(
             title: 'Network error',
             description: 'Check connection',
             icon: FLucideIcons.wifiOff,
@@ -69,7 +69,7 @@ void main() {
     testWidgets('applies maxWidth via ConstrainedBox', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateMessageView(
+          const StateMessageView(
             maxWidth: 560,
             title: 'Limited',
             description: 'Width is constrained.',
@@ -80,7 +80,7 @@ void main() {
 
       final constrainedBox = tester.widget<ConstrainedBox>(
         find.descendant(
-          of: find.byType(AppStateMessageView),
+          of: find.byType(StateMessageView),
           matching: find.byType(ConstrainedBox),
         ),
       );
@@ -92,7 +92,7 @@ void main() {
     ) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateMessageView(
+          const StateMessageView(
             title: 'Full',
             description: 'No width limit.',
             icon: FLucideIcons.info,
@@ -102,7 +102,7 @@ void main() {
 
       expect(
         find.descendant(
-          of: find.byType(AppStateMessageView),
+          of: find.byType(StateMessageView),
           matching: find.byType(ConstrainedBox),
         ),
         findsNothing,
@@ -115,7 +115,7 @@ void main() {
           const SizedBox(
             width: 320,
             height: 72,
-            child: AppStateMessageView(
+            child: StateMessageView(
               title: 'Need retry',
               description: 'The response did not finish.',
               icon: FLucideIcons.triangleAlert,
@@ -129,11 +129,11 @@ void main() {
     });
   });
 
-  group('AppStateErrorView', () {
+  group('StateErrorView', () {
     testWidgets('renders title and description', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateErrorView(
+          const StateErrorView(
             title: 'Something went wrong',
             description: 'Please try again later.',
             icon: FLucideIcons.circleAlert,
@@ -148,7 +148,7 @@ void main() {
     testWidgets('uses compact padding when compact is true', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateErrorView(
+          const StateErrorView(
             title: 'Compact',
             description: 'Small error view',
             icon: FLucideIcons.info,
@@ -162,15 +162,15 @@ void main() {
     });
   });
 
-  group('AppStateTone', () {
+  group('StateTone', () {
     testWidgets('neutral uses primary accent', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateMessageView(
+          const StateMessageView(
             title: 'Neutral',
             description: 'Primary accent',
             icon: FLucideIcons.info,
-            tone: AppStateTone.neutral,
+            tone: StateTone.neutral,
           ),
         ),
       );
@@ -183,11 +183,11 @@ void main() {
     testWidgets('danger uses destructive accent', (tester) async {
       await tester.pumpWidget(
         _appShell(
-          const AppStateMessageView(
+          const StateMessageView(
             title: 'Danger',
             description: 'Destructive accent',
             icon: FLucideIcons.circleAlert,
-            tone: AppStateTone.danger,
+            tone: StateTone.danger,
           ),
         ),
       );

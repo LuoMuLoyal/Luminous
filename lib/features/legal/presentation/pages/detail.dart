@@ -27,12 +27,12 @@ class LegalDetailPage extends ConsumerWidget {
     if (parsedType == null) {
       return PageScaffold(
         title: l10n.legalDetailTitle,
-        child: AppStateErrorView(
+        child: StateErrorView(
           title: l10n.legalNotFoundTitle,
           description: l10n.legalNotFoundDescription,
           icon: FLucideIcons.fileQuestion,
           actionLabel: l10n.legalBackToListAction,
-          onAction: () => context.go(AppRoutes.legal),
+          onAction: () => context.go(Routes.legal),
         ),
       );
     }
@@ -49,7 +49,7 @@ class LegalDetailPage extends ConsumerWidget {
       title: pageTitle,
       child: asyncDoc.when(
         loading: () => const _LegalDetailSkeleton(),
-        error: (_, __) => AppStateErrorView(
+        error: (_, __) => StateErrorView(
           title: l10n.legalLoadErrorTitle,
           description: l10n.legalLoadErrorDescription,
           icon: FLucideIcons.circleAlert,
@@ -118,15 +118,15 @@ class _LegalDetailSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ResponsiveContentFrame(
-      child: AppStateSkeletonView(
+      child: StateSkeletonView(
         blocks: [
-          AppStateSkeletonBlock(height: 32, widthFactor: 0.6),
-          AppStateSkeletonBlock(height: 16, widthFactor: 0.9),
-          AppStateSkeletonBlock(height: 16, widthFactor: 0.85),
-          AppStateSkeletonBlock(height: 16, widthFactor: 0.7),
-          AppStateSkeletonBlock(height: 24, widthFactor: 0.4),
-          AppStateSkeletonBlock(height: 16, widthFactor: 0.8),
-          AppStateSkeletonBlock(height: 16, widthFactor: 0.75),
+          StateSkeletonBlock(height: 32, widthFactor: 0.6),
+          StateSkeletonBlock(height: 16, widthFactor: 0.9),
+          StateSkeletonBlock(height: 16, widthFactor: 0.85),
+          StateSkeletonBlock(height: 16, widthFactor: 0.7),
+          StateSkeletonBlock(height: 24, widthFactor: 0.4),
+          StateSkeletonBlock(height: 16, widthFactor: 0.8),
+          StateSkeletonBlock(height: 16, widthFactor: 0.75),
         ],
       ),
     );

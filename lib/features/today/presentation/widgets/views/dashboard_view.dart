@@ -47,7 +47,7 @@ class TodayDashboardView extends ConsumerWidget {
             onRefresh: onRefresh,
           );
 
-    return AppSkeletonScope(isLoading: isLoading, child: content);
+    return SkeletonScope(isLoading: isLoading, child: content);
   }
 }
 
@@ -60,13 +60,13 @@ class TodayErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateErrorView(
+    return StateErrorView(
       title: l10n.todayErrorTitle,
       description: l10n.todayErrorDescription,
       icon: FLucideIcons.circleHelp,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
-      tone: AppStateTone.danger,
+      tone: StateTone.danger,
     );
   }
 }

@@ -83,7 +83,7 @@ Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
 - `go_router_builder ^4.3.0`，8 个 feature 各自 `presentation/routes.dart` 使用 `@TypedGoRoute` 注解（共 42 条路由）。
 - `router.dart` 通过 `...feature_routes.$appRoutes` spread 聚合。
 - 5 个 shell tab 路由保持手写（`StatefulShellRoute.indexedStack`）。
-- `AppRoutes` 常量集中管理所有路由路径字符串，已移除死路由 `medicineReminders`（无对应页面）。
+- `Routes` 常量集中管理所有路由路径字符串，已移除死路由 `medicineReminders`（无对应页面）。
 
 ## 国际化
 
@@ -107,10 +107,10 @@ Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
 ## 页面脚手架
 
 - 子页直接组合 `FScaffold` + `FHeader` + `ResponsiveContentFrame`。
-- 骨架屏通过 `AppSkeletonScope`/`AppSkeletonSlot`/`AppSkeletonText` 细粒度行内骨架，不造假数据。
-- 页面级错误使用 `AppStateErrorView`，加载态使用 shimmer 骨架屏。
-- `AppStateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
-- 轻量反馈使用 `AppToast`（`lib/core/feedback/app_toast.dart`），不用页面级 `SnackBar`。
+- 骨架屏通过 `SkeletonScope`/`SkeletonSlot`/`SkeletonText` 细粒度行内骨架，不造假数据。
+- 页面级错误使用 `StateErrorView`，加载态使用 shimmer 骨架屏。
+- `StateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
+- 轻量反馈使用 `Toast`（`lib/core/feedback/toast.dart`），不用页面级 `SnackBar`。
 - Today 未登录态使用预览 dashboard，不显示“今天还没有记录”引导；摘要指标和快捷入口由前端 view model 基于 dashboard 数据组装。
 
 ## ARB 编辑流程（2026-07-20 更新）

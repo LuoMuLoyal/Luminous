@@ -65,15 +65,15 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       next,
     ) {
       if (next.deleted && previous?.deleted != true) {
-        AppToast.show(context, l10n.medicineReminderDeletedToast);
+        Toast.show(context, l10n.medicineReminderDeletedToast);
         if (context.mounted) context.pop();
       } else if (next.saved && previous?.saved != true) {
-        AppToast.show(context, l10n.medicineReminderSavedToast);
+        Toast.show(context, l10n.medicineReminderSavedToast);
         if (context.mounted) context.pop();
       }
       final error = next.errorMessage;
       if (error != null && error != previous?.errorMessage) {
-        AppToast.show(context, l10n.medicineReminderSaveFailedToast);
+        Toast.show(context, l10n.medicineReminderSaveFailedToast);
       }
     });
 
@@ -149,7 +149,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       required DateTime last,
     }) => showFDialog<DateTime?>(
       context: context,
-      builder: (dialogContext, style, animation) => AppDialogShell(
+      builder: (dialogContext, style, animation) => DialogShell(
         maxWidth: LayoutScaleResolver.dialogMaxWidth,
         padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(
@@ -211,9 +211,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       );
       if (isDuplicate) {
         if (!context.mounted) return;
-        unawaited(
-          AppToast.show(context, l10n.medicineReminderDuplicateTimeToast),
-        );
+        unawaited(Toast.show(context, l10n.medicineReminderDuplicateTimeToast));
         return;
       }
       final updated = [
@@ -240,13 +238,13 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         l10n.medicineReminderMedicineRequiredToast,
       );
       if (medIdError != null) {
-        AppToast.show(context, medIdError);
+        Toast.show(context, medIdError);
         return;
       }
       final effectiveMedId = medId!;
 
       if (times.value.isEmpty) {
-        AppToast.show(context, l10n.medicineReminderTimeRequiredToast);
+        Toast.show(context, l10n.medicineReminderTimeRequiredToast);
         return;
       }
 
@@ -254,7 +252,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           .where((item) => item.id == effectiveMedId)
           .firstOrNull;
       if (medicine == null) {
-        AppToast.show(context, l10n.medicineReminderMedicineRequiredToast);
+        Toast.show(context, l10n.medicineReminderMedicineRequiredToast);
         return;
       }
 
@@ -263,14 +261,14 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           : (selectedWeekdays.value.toList()..sort());
       if (frequency.value != ReminderFrequency.daily &&
           (daysOfWeek?.isEmpty ?? true)) {
-        AppToast.show(context, l10n.medicineReminderWeekdayRequiredToast);
+        Toast.show(context, l10n.medicineReminderWeekdayRequiredToast);
         return;
       }
 
       final start = startDate.value;
       final end2 = endDate.value;
       if (start != null && end2 != null && end2.isBefore(start)) {
-        AppToast.show(context, l10n.medicineReminderDateRangeInvalidToast);
+        Toast.show(context, l10n.medicineReminderDateRangeInvalidToast);
         return;
       }
 
@@ -357,7 +355,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (hasError)
-                AppStateErrorView(
+                StateErrorView(
                   title: l10n.medicineReminderNotFoundTitle,
                   description: l10n.medicineReminderNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
@@ -371,7 +369,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                 const ReminderLoading()
               else if (!isEdit && selectedMedicineId.value == null)
                 _MedicineSelectorPrompt(
-                  onSelect: () => context.push(AppRoutes.medicineSearch),
+                  onSelect: () => context.push(Routes.medicineSearch),
                 )
               else
                 Builder(
@@ -408,7 +406,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                         if (value == ReminderFrequency.daily) {
                           selectedWeekdays.value = <int>{};
                           if (hadWeekdays) {
-                            AppToast.show(
+                            Toast.show(
                               context,
                               l10n.medicineReminderFrequencyDailyClearedWeekdays,
                             );

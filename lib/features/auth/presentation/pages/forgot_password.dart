@@ -32,7 +32,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
       title: l10n.authResetPasswordAction,
       subtitle: l10n.authForgotPasswordSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: AppRoutes.home),
+      leading: const AppBackButton(fallbackRoute: Routes.home),
       centerTitle: true,
       form: Form(
         key: formKey,
@@ -82,7 +82,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                             .read(passwordResetProvider)
                             .errorMessage;
                         if (msg != null && msg.isNotEmpty) {
-                          await AppToast.show(context, msg);
+                          await Toast.show(context, msg);
                         }
                       }
                     },
@@ -147,11 +147,11 @@ class ForgotPasswordPage extends HookConsumerWidget {
                               ? ref.read(passwordResetProvider).errorMessage!
                               : null;
                           if (msg != null) {
-                            await AppToast.show(context, msg);
+                            await Toast.show(context, msg);
                           }
                         }
                         if (ok && context.mounted) {
-                          await AppToast.show(
+                          await Toast.show(
                             context,
                             l10n.authResetPasswordSuccess,
                           );
@@ -183,7 +183,7 @@ class ForgotPasswordPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(AppRoutes.login),
+                  onPress: () => context.push(Routes.login),
                   child: Text(
                     l10n.authSignIn,
                     style: TypographyToken.level2.body(context),

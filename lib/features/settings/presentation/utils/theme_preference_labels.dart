@@ -30,7 +30,7 @@ String themeFamilyLabel(AppLocalizations l10n, AppThemeFamily family) {
 
 String themePreferenceSummary(
   AppLocalizations l10n,
-  AppThemePreference preference,
+  ThemePreference preference,
 ) {
   return '${themeModeLabel(l10n, preference.mode)} · ${themeFamilyLabel(l10n, preference.family)}';
 }

@@ -49,7 +49,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => context.push(AppRoutes.settingsNotifications),
+              onPress: () => context.push(Routes.settingsNotifications),
             ),
             FTile(
               key: const Key('mine-dnd-settings-tile'),
@@ -64,7 +64,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () => context.push(AppRoutes.settingsNotificationsDnd),
+              onPress: () => context.push(Routes.settingsNotificationsDnd),
             ),
             FTile(
               key: const Key('mine-notification-inbox-tile'),
@@ -80,7 +80,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
               onPress: () =>
-                  pushAuthRequiredRoute(context, AppRoutes.notifications),
+                  pushAuthRequiredRoute(context, Routes.notifications),
             ),
           ],
         ),

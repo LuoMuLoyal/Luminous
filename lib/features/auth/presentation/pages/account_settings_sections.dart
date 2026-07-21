@@ -12,12 +12,12 @@ class AccountSettingsLoading extends StatelessWidget {
   const AccountSettingsLoading({super.key});
 
   @override
-  Widget build(BuildContext context) => const AppInlineSkeleton(
+  Widget build(BuildContext context) => const InlineSkeleton(
     children: [
-      AppInlineSkeletonBlock(height: 96),
-      AppInlineSkeletonBlock(height: 132),
-      AppInlineSkeletonBlock(height: 96),
-      AppInlineSkeletonBlock(height: 116),
+      InlineSkeletonBlock(height: 96),
+      InlineSkeletonBlock(height: 132),
+      InlineSkeletonBlock(height: 96),
+      InlineSkeletonBlock(height: 116),
     ],
   );
 }
@@ -381,8 +381,7 @@ class _DeleteAccountSectionState extends State<DeleteAccountSection> {
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
             mainAxisSize: MainAxisSize.min,
-            onPress: () =>
-                context.push('${AppRoutes.legal}/account-cancellation'),
+            onPress: () => context.push('${Routes.legal}/account-cancellation'),
             child: Text(l10n.authDeleteAccountPolicyAction),
           ),
         ),

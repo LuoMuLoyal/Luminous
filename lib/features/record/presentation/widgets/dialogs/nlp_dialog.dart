@@ -28,12 +28,12 @@ class RecordNlpDialog extends HookConsumerWidget {
       if (msg == null || msg == previous?.errorMessage) {
         return;
       }
-      AppToast.show(context, msg);
+      Toast.show(context, msg);
     });
 
     Future<void> handleGenerate() async {
       if (controller.text.trim().isEmpty) {
-        await AppToast.show(context, l10n.recordNlpInputRequiredToast);
+        await Toast.show(context, l10n.recordNlpInputRequiredToast);
         return;
       }
       final nextState = await ref
@@ -41,7 +41,7 @@ class RecordNlpDialog extends HookConsumerWidget {
           .generate(occurredAt: occurredAt);
       if (!context.mounted) return;
       if (nextState.hasResult && nextState.candidates.isEmpty) {
-        await AppToast.show(context, l10n.recordNlpEmptyCandidatesToast);
+        await Toast.show(context, l10n.recordNlpEmptyCandidatesToast);
       }
     }
 
@@ -53,13 +53,13 @@ class RecordNlpDialog extends HookConsumerWidget {
 
       switch (outcome.kind) {
         case RecordNlpSaveOutcomeKind.saved:
-          await AppToast.show(
+          await Toast.show(
             context,
             l10n.recordNlpSavedToast(outcome.savedCount ?? 0),
           );
           if (context.mounted) Navigator.of(context).pop();
         case RecordNlpSaveOutcomeKind.partial:
-          await AppToast.show(
+          await Toast.show(
             context,
             l10n.recordNlpPartialSavedToast(
               outcome.savedCount ?? 0,
@@ -67,11 +67,11 @@ class RecordNlpDialog extends HookConsumerWidget {
             ),
           );
         case RecordNlpSaveOutcomeKind.empty:
-          await AppToast.show(context, l10n.recordNlpNoCandidatesSelectedToast);
+          await Toast.show(context, l10n.recordNlpNoCandidatesSelectedToast);
         case RecordNlpSaveOutcomeKind.authRequired:
-          await AppToast.show(context, l10n.authLoginRequiredPrompt);
+          await Toast.show(context, l10n.authLoginRequiredPrompt);
         case RecordNlpSaveOutcomeKind.error:
-          await AppToast.show(
+          await Toast.show(
             context,
             outcome.message ?? l10n.recordCreateFailedToast,
           );
@@ -86,7 +86,7 @@ class RecordNlpDialog extends HookConsumerWidget {
 
       switch (outcome.kind) {
         case RecordNlpSaveOutcomeKind.saved:
-          await AppToast.show(
+          await Toast.show(
             context,
             l10n.recordNlpRetrySavedToast(outcome.savedCount ?? 0),
           );
@@ -95,7 +95,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             Navigator.of(context).pop();
           }
         case RecordNlpSaveOutcomeKind.partial:
-          await AppToast.show(
+          await Toast.show(
             context,
             l10n.recordNlpPartialSavedToast(
               outcome.savedCount ?? 0,
@@ -103,11 +103,11 @@ class RecordNlpDialog extends HookConsumerWidget {
             ),
           );
         case RecordNlpSaveOutcomeKind.empty:
-          await AppToast.show(context, l10n.recordNlpNoFailedCandidatesToast);
+          await Toast.show(context, l10n.recordNlpNoFailedCandidatesToast);
         case RecordNlpSaveOutcomeKind.authRequired:
-          await AppToast.show(context, l10n.authLoginRequiredPrompt);
+          await Toast.show(context, l10n.authLoginRequiredPrompt);
         case RecordNlpSaveOutcomeKind.error:
-          await AppToast.show(
+          await Toast.show(
             context,
             outcome.message ?? l10n.recordCreateFailedToast,
           );
@@ -117,7 +117,7 @@ class RecordNlpDialog extends HookConsumerWidget {
     Future<void> handleReset() async {
       final confirmed = await showFDialog<bool>(
         context: context,
-        builder: (dialogContext, style, animation) => AppDialogShell(
+        builder: (dialogContext, style, animation) => DialogShell(
           maxWidth: 360,
           padding: const EdgeInsets.all(Spacing.level4),
           scrollable: false,
@@ -164,7 +164,7 @@ class RecordNlpDialog extends HookConsumerWidget {
       ref.read(recordNlpControllerProvider.notifier).reset();
     }
 
-    return AppDialogShell(
+    return DialogShell(
       scrollable: true,
       builder: (context) => Column(
         mainAxisSize: MainAxisSize.min,

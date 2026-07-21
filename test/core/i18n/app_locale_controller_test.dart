@@ -5,14 +5,14 @@ import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  group('AppLocaleController', () {
+  group('LocaleController', () {
     test('build returns system locale when nothing is stored', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
 
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final locale = await container.read(appLocaleControllerProvider.future);
+      final locale = await container.read(localeControllerProvider.future);
 
       expect(locale, equals(AppLocale.system));
     });
@@ -25,7 +25,7 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final locale = await container.read(appLocaleControllerProvider.future);
+      final locale = await container.read(localeControllerProvider.future);
 
       expect(locale, equals(AppLocale.zhCn));
     });
@@ -36,13 +36,13 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
 
       await container
-          .read(appLocaleControllerProvider.notifier)
+          .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.en);
 
-      final locale = container.read(appLocaleControllerProvider).asData?.value;
+      final locale = container.read(localeControllerProvider).asData?.value;
       expect(locale, equals(AppLocale.en));
     });
 
@@ -52,10 +52,10 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
 
       await container
-          .read(appLocaleControllerProvider.notifier)
+          .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.zhCn);
 
       final prefs = await SharedPreferences.getInstance();
@@ -68,29 +68,29 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      await container.read(appLocaleControllerProvider.future);
+      await container.read(localeControllerProvider.future);
 
       await container
-          .read(appLocaleControllerProvider.notifier)
+          .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.en);
       expect(
-        container.read(appLocaleControllerProvider).asData?.value,
+        container.read(localeControllerProvider).asData?.value,
         equals(AppLocale.en),
       );
 
       await container
-          .read(appLocaleControllerProvider.notifier)
+          .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.zhCn);
       expect(
-        container.read(appLocaleControllerProvider).asData?.value,
+        container.read(localeControllerProvider).asData?.value,
         equals(AppLocale.zhCn),
       );
 
       await container
-          .read(appLocaleControllerProvider.notifier)
+          .read(localeControllerProvider.notifier)
           .setLocale(AppLocale.system);
       expect(
-        container.read(appLocaleControllerProvider).asData?.value,
+        container.read(localeControllerProvider).asData?.value,
         equals(AppLocale.system),
       );
     });

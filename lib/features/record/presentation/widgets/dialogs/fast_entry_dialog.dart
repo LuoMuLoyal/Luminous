@@ -141,7 +141,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
 
       if (!mounted) return;
       unawaited(
-        AppToast.show(
+        Toast.show(
           context,
           AppLocalizations.of(context)!.recordCreateSavedToast,
         ),
@@ -153,7 +153,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
           .error('RecordFastEntryDialog._saveChoice: failed: $e');
       if (!mounted) return;
       unawaited(
-        AppToast.show(
+        Toast.show(
           context,
           AppLocalizations.of(context)!.recordCreateFailedToast,
         ),

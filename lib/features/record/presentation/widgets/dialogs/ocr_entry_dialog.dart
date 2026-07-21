@@ -84,7 +84,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
             .read(talkerProvider)
             .error('RecordOcrEntryDialog: recognizeText failed: $e');
         if (context.mounted) {
-          await AppToast.show(context, l10n.recordOcrRecognitionFailed);
+          await Toast.show(context, l10n.recordOcrRecognitionFailed);
         }
       } finally {
         isRecognizing.value = false;

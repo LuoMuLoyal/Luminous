@@ -43,13 +43,13 @@ class MedicineRiskCheckPage extends ConsumerWidget {
           return _MedicineRiskCheckBody(result: result, redFlagAlerts: alerts);
         },
         loading: () => const MedicineRiskCheckLoading(),
-        error: (_, __) => AppStateErrorView(
+        error: (_, __) => StateErrorView(
           title: l10n.medicineErrorTitle,
           description: l10n.medicineErrorDescription,
           icon: FLucideIcons.shieldAlert,
           actionLabel: l10n.todayRetryAction,
           onAction: () => ref.invalidate(medicineRiskCheckProvider),
-          tone: AppStateTone.warning,
+          tone: StateTone.warning,
         ),
       );
     }
@@ -109,21 +109,21 @@ class _TierBanner extends StatelessWidget {
     required this.title,
     required this.icon,
     this.body,
-    this.tone = AppStateTone.neutral,
+    this.tone = StateTone.neutral,
   });
 
   final String title;
   final IconData icon;
   final String? body;
-  final AppStateTone tone;
+  final StateTone tone;
 
   @override
   Widget build(BuildContext context) {
     final accent = switch (tone) {
-      AppStateTone.neutral => SemanticColor.primary,
-      AppStateTone.success => SemanticColor.success,
-      AppStateTone.warning => SemanticColor.warning,
-      AppStateTone.danger => SemanticColor.destructive,
+      StateTone.neutral => SemanticColor.primary,
+      StateTone.success => SemanticColor.success,
+      StateTone.warning => SemanticColor.warning,
+      StateTone.danger => SemanticColor.destructive,
     };
 
     return Container(
@@ -273,7 +273,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
           _TierBanner(
             title: l10n.medicineRiskCheckTierConfirmedRisk,
             icon: FLucideIcons.triangleAlert,
-            tone: AppStateTone.danger,
+            tone: StateTone.danger,
           ),
           const SizedBox(height: Spacing.level3),
           _RiskCheckSectionCard(
@@ -331,7 +331,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
             body: l10n.medicineRiskCheckTierSafeBody(
               result.checkedMedicineCount,
             ),
-            tone: AppStateTone.success,
+            tone: StateTone.success,
           ),
           const SizedBox(height: Spacing.level3),
           Container(
@@ -369,7 +369,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
               title: l10n.medicineRiskCheckTierUncovered,
               icon: FLucideIcons.circleAlert,
               body: l10n.medicineRiskCheckTierUncoveredDisclaimer,
-              tone: AppStateTone.warning,
+              tone: StateTone.warning,
             ),
             const SizedBox(height: Spacing.level3),
           ],

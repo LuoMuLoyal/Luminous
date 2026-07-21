@@ -330,7 +330,7 @@ void main() {
 
     expect(find.text(l10n.tabMine), findsOneWidget);
     expect(find.byType(MineSkeletonView), findsOneWidget);
-    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.byType(InlineSkeletonBlock), findsWidgets);
 
     expect(find.byKey(const Key('mine-privacy-section')), findsNothing);
     expect(find.byKey(const Key('mine-reminder-section')), findsNothing);
@@ -720,7 +720,7 @@ void main() {
     expect(find.byKey(const Key('mine-campus-section')), findsNothing);
     expect(find.byKey(const Key('mine-campus-surface')), findsNothing);
   });
-  testWidgets('Mine error state shows AppStateErrorView with retry', (
+  testWidgets('Mine error state shows StateErrorView with retry', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -746,7 +746,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.byType(StateErrorView), findsOneWidget);
     expect(find.text(l10n.mineErrorTitle), findsOneWidget);
     expect(find.text(l10n.mineErrorDescription), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);

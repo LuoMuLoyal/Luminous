@@ -91,7 +91,7 @@ void main() {
     await tester.pump();
 
     expect(find.byType(TodaySkeletonView), findsOneWidget);
-    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.byType(InlineSkeletonBlock), findsWidgets);
   });
 
   testWidgets('Today page shows low-data dashboard without crashing', (
@@ -331,7 +331,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.byType(StateErrorView), findsOneWidget);
     expect(find.text(l10n.todayErrorTitle), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });

@@ -17,8 +17,7 @@ LegalRepository legalRepository(Ref ref) {
   return LucentLegalRepository(
     api: ref.watch(lucentClientProvider).legalDocuments,
     localeResolver: () =>
-        (ref.read(appLocaleControllerProvider).asData?.value ??
-                AppLocale.system)
+        (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
             .acceptLanguage
             .startsWith('en')
         ? Lang.en

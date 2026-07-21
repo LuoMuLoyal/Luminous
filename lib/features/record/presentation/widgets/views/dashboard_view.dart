@@ -66,7 +66,7 @@ class RecordDashboardView extends StatelessWidget {
             onDateSelected: onDateSelected,
           );
 
-    return AppSkeletonScope(isLoading: isLoading, child: content);
+    return SkeletonScope(isLoading: isLoading, child: content);
   }
 }
 

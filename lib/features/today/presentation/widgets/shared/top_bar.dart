@@ -44,7 +44,7 @@ class _AssistantEntryButton extends ConsumerWidget {
         key: const Key('today-assistant-entry'),
         onPress: () async {
           if (session.canAccessProtectedData) {
-            unawaited(context.push(AppRoutes.assistant));
+            unawaited(context.push(Routes.assistant));
             return;
           }
           if (session.isLoading) {
@@ -87,7 +87,7 @@ class _NotificationButton extends ConsumerWidget {
             size: FButtonSizeVariant.sm,
             onPress: () async {
               if (session.canAccessProtectedData) {
-                unawaited(context.push(AppRoutes.notifications));
+                unawaited(context.push(Routes.notifications));
                 return;
               }
               if (session.isLoading) {
@@ -95,9 +95,8 @@ class _NotificationButton extends ConsumerWidget {
               }
               await showAuthRequiredDialog(
                 context,
-                onLogin: () => context.push(
-                  loginRouteForReturnTo(AppRoutes.notifications),
-                ),
+                onLogin: () =>
+                    context.push(loginRouteForReturnTo(Routes.notifications)),
               );
             },
             child: Semantics(

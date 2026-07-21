@@ -196,7 +196,7 @@ class _MetricCard extends StatelessWidget {
                 spacing: Spacing.level1,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  AppSkeletonText(
+                  SkeletonText(
                     text: metric.value,
                     style: TypographyToken.level8
                         .display(context)
@@ -221,8 +221,8 @@ class _MetricCard extends StatelessWidget {
               const SizedBox(height: Spacing.level1),
               Row(
                 children: [
-                  AppSkeletonSlot(
-                    skeleton: const AppInlineSkeletonBlock(
+                  SkeletonSlot(
+                    skeleton: const InlineSkeletonBlock(
                       height: 20,
                       widthFactor: 0.36,
                       radius: RadiusTokens.level2,
@@ -236,7 +236,7 @@ class _MetricCard extends StatelessWidget {
                   Icon(directionIcon, size: 14, color: directionColor),
                   const SizedBox(width: Spacing.level1),
                   Expanded(
-                    child: AppSkeletonText(
+                    child: SkeletonText(
                       text: metric.delta,
                       style: TypographyToken.level3
                           .body(context)
@@ -249,8 +249,8 @@ class _MetricCard extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              AppSkeletonSlot(
-                skeleton: const AppInlineSkeletonBlock(
+              SkeletonSlot(
+                skeleton: const InlineSkeletonBlock(
                   height: 22,
                   radius: RadiusTokens.level2,
                 ),

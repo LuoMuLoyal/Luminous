@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/logger/logger.dart';
 
-class AppToast {
-  const AppToast._();
+class Toast {
+  const Toast._();
 
   static FToasterEntry? _currentEntry;
   static Timer? _currentTimer;
@@ -83,7 +83,7 @@ class AppToast {
         },
       );
     } catch (e) {
-      appTalker.error('AppToast.show: FToaster unavailable: $e');
+      appTalker.error('Toast.show: FToaster unavailable: $e');
       _reset();
       return false;
     }

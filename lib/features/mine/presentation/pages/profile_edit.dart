@@ -104,12 +104,12 @@ class ProfileEditPage extends HookConsumerWidget {
         next,
       ) {
         if (next.saved && prev?.saved != true) {
-          unawaited(AppToast.show(context, l10n.mineEditSavedToast));
+          unawaited(Toast.show(context, l10n.mineEditSavedToast));
           if (context.mounted) context.pop();
         }
         final error = next.errorMessage;
         if (error != null && error != prev?.errorMessage) {
-          unawaited(AppToast.show(context, error));
+          unawaited(Toast.show(context, error));
         }
       });
 
@@ -195,7 +195,7 @@ class ProfileEditPage extends HookConsumerWidget {
                   );
                 },
                 loading: () => const MineEditFormLoading(),
-                error: (_, __) => AppStateErrorView(
+                error: (_, __) => StateErrorView(
                   title: l10n.mineErrorTitle,
                   description: l10n.mineErrorDescription,
                   icon: FLucideIcons.badge,
@@ -203,7 +203,7 @@ class ProfileEditPage extends HookConsumerWidget {
                   onAction: () => ref
                       .read(dataChangeBusProvider.notifier)
                       .emit(DataChangeTopic.healthContext),
-                  tone: AppStateTone.warning,
+                  tone: StateTone.warning,
                 ),
               ),
             ],

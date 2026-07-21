@@ -34,7 +34,7 @@ class RegisterPage extends HookConsumerWidget {
       title: l10n.authCreateAccountAction,
       subtitle: l10n.authRegisterSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: AppRoutes.home),
+      leading: const AppBackButton(fallbackRoute: Routes.home),
       centerTitle: true,
       form: Form(
         key: formKey,
@@ -82,7 +82,7 @@ class RegisterPage extends HookConsumerWidget {
                       if (!ok && context.mounted) {
                         final msg = ref.read(registerFormProvider).errorMessage;
                         if (msg != null && msg.isNotEmpty) {
-                          await AppToast.show(context, msg);
+                          await Toast.show(context, msg);
                         }
                       }
                     },
@@ -144,8 +144,8 @@ class RegisterPage extends HookConsumerWidget {
                 ),
               ),
               description: _TermsLinks(
-                onTerms: () => context.push('${AppRoutes.legal}/terms'),
-                onPrivacy: () => context.push('${AppRoutes.legal}/privacy'),
+                onTerms: () => context.push('${Routes.legal}/terms'),
+                onPrivacy: () => context.push('${Routes.legal}/privacy'),
               ),
             ),
             if (!acceptedTerms.value)
@@ -186,18 +186,15 @@ class RegisterPage extends HookConsumerWidget {
                               ? ref.read(registerFormProvider).errorMessage!
                               : null;
                           if (msg != null) {
-                            await AppToast.show(context, msg);
+                            await Toast.show(context, msg);
                           }
                         }
                         if (ok && context.mounted) {
-                          await AppToast.show(
-                            context,
-                            l10n.authRegisterSuccess,
-                          );
+                          await Toast.show(context, l10n.authRegisterSuccess);
                           if (!context.mounted) {
                             return;
                           }
-                          context.go(AppRoutes.login);
+                          context.go(Routes.login);
                         }
                       },
                 child: state.isSubmitting
@@ -226,7 +223,7 @@ class RegisterPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(AppRoutes.login),
+                  onPress: () => context.push(Routes.login),
                   child: Text(
                     l10n.authSignIn,
                     style: TypographyToken.level2.body(context),

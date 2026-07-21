@@ -167,7 +167,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       statusKey: profile.allergyCount > 0
           ? MineCopyKey.archiveCompleted
           : MineCopyKey.archiveNeedsFill,
-      route: AppRoutes.mineAllergyNew,
+      route: Routes.mineAllergyNew,
     ),
     MineArchiveEntry(
       icon: FLucideIcons.heartPulse,
@@ -177,7 +177,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       statusKey: profile.conditionCount > 0
           ? MineCopyKey.archiveCompleted
           : MineCopyKey.archiveNeedsFill,
-      route: AppRoutes.mineConditionNew,
+      route: Routes.mineConditionNew,
     ),
     MineArchiveEntry(
       icon: FLucideIcons.pill,
@@ -187,7 +187,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       statusKey: profile.currentMedicineCount > 0
           ? MineCopyKey.archiveCompleted
           : MineCopyKey.archiveNeedsFill,
-      route: AppRoutes.mineMedicineNew,
+      route: Routes.mineMedicineNew,
     ),
   ];
 }

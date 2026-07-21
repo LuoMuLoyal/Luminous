@@ -56,9 +56,9 @@ class LoginPage extends HookConsumerWidget {
       final trimmed = value?.trim();
       if (trimmed == null || trimmed.isEmpty) return null;
       if (!trimmed.startsWith('/') || trimmed.startsWith('//')) return null;
-      if (trimmed == AppRoutes.login ||
-          trimmed.startsWith('${AppRoutes.login}?') ||
-          trimmed.startsWith('${AppRoutes.login}/')) {
+      if (trimmed == Routes.login ||
+          trimmed.startsWith('${Routes.login}?') ||
+          trimmed.startsWith('${Routes.login}/')) {
         return null;
       }
       return trimmed;
@@ -70,7 +70,7 @@ class LoginPage extends HookConsumerWidget {
         context.go(target);
         return;
       }
-      if (fallbackHome) context.go(AppRoutes.home);
+      if (fallbackHome) context.go(Routes.home);
     }
 
     String? webWechatCallbackUri() {
@@ -81,7 +81,7 @@ class LoginPage extends HookConsumerWidget {
         scheme: base.scheme,
         host: base.host,
         port: base.hasPort ? base.port : null,
-        path: AppRoutes.loginOauthWechat,
+        path: Routes.loginOauthWechat,
         queryParameters: rt == null ? null : {'returnTo': rt},
       ).toString();
     }
@@ -94,7 +94,7 @@ class LoginPage extends HookConsumerWidget {
         scheme: base.scheme,
         host: base.host,
         port: base.hasPort ? base.port : null,
-        path: AppRoutes.loginOauthQq,
+        path: Routes.loginOauthQq,
         queryParameters: rt == null ? null : {'returnTo': rt},
       ).toString();
     }
@@ -116,10 +116,10 @@ class LoginPage extends HookConsumerWidget {
               .open(Uri.parse(authorizeUrl));
           if (!context.mounted) return;
           if (!opened) {
-            await AppToast.show(context, l10n.authWechatBrowserOpenFailed);
+            await Toast.show(context, l10n.authWechatBrowserOpenFailed);
             return;
           }
-          await AppToast.show(context, l10n.authWechatAuthorizeOpened);
+          await Toast.show(context, l10n.authWechatAuthorizeOpened);
         case WechatLoginFailed():
           // Error is in oauthState.errorMessage — toast is shown via state
           break;
@@ -135,7 +135,7 @@ class LoginPage extends HookConsumerWidget {
         final message = wechatCallbackController.text.trim().isEmpty
             ? l10n.authWechatCallbackRequiredToast
             : l10n.authWechatCallbackInvalidToast;
-        await AppToast.show(context, message);
+        await Toast.show(context, message);
         return;
       }
       final session = await oauthController.completeWechatLogin(
@@ -157,10 +157,10 @@ class LoginPage extends HookConsumerWidget {
           .open(Uri.parse(authorizeUrl));
       if (!context.mounted) return;
       if (!opened) {
-        await AppToast.show(context, l10n.authQqBrowserOpenFailed);
+        await Toast.show(context, l10n.authQqBrowserOpenFailed);
         return;
       }
-      await AppToast.show(context, l10n.authQqAuthorizeOpened);
+      await Toast.show(context, l10n.authQqAuthorizeOpened);
     }
 
     Future<void> completeQqLoginFromInput() async {
@@ -172,7 +172,7 @@ class LoginPage extends HookConsumerWidget {
         final message = qqCallbackController.text.trim().isEmpty
             ? l10n.authQqCallbackRequiredToast
             : l10n.authQqCallbackInvalidToast;
-        await AppToast.show(context, message);
+        await Toast.show(context, message);
         return;
       }
       final session = await oauthController.completeQqLogin(
@@ -203,7 +203,7 @@ class LoginPage extends HookConsumerWidget {
         if (session == null || !context.mounted) return;
         goAfterLogin(fallbackHome: true);
       } catch (e) {
-        if (context.mounted) await AppToast.show(context, failMessage);
+        if (context.mounted) await Toast.show(context, failMessage);
       }
     }
 
@@ -241,7 +241,7 @@ class LoginPage extends HookConsumerWidget {
       title: l10n.authWelcomeBack,
       subtitle: l10n.authLoginSubtitle,
       logo: const AuthBrandLogo(),
-      leading: const AppBackButton(fallbackRoute: AppRoutes.home),
+      leading: const AppBackButton(fallbackRoute: Routes.home),
       centerTitle: true,
       formModeSelector: FTabs(
         key: const ValueKey('auth-login-mode-tabs'),
@@ -324,7 +324,7 @@ class LoginPage extends HookConsumerWidget {
                         if (!ok && context.mounted) {
                           final msg = ref.read(loginFormProvider).errorMessage;
                           if (msg != null && msg.isNotEmpty) {
-                            await AppToast.show(context, msg);
+                            await Toast.show(context, msg);
                           }
                         }
                       },
@@ -353,7 +353,7 @@ class LoginPage extends HookConsumerWidget {
                               ? oauth.errorMessage!
                               : null;
                           if (msg != null) {
-                            await AppToast.show(context, msg);
+                            await Toast.show(context, msg);
                           }
                         }
                         if (session != null && context.mounted) {
@@ -386,7 +386,7 @@ class LoginPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(AppRoutes.register),
+                  onPress: () => context.push(Routes.register),
                   child: Text(
                     l10n.authRegisterNowAction,
                     style: TypographyToken.level2.body(context),
@@ -396,7 +396,7 @@ class LoginPage extends HookConsumerWidget {
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(AppRoutes.forgotPassword),
+                  onPress: () => context.push(Routes.forgotPassword),
                   child: Text(
                     l10n.authForgotPasswordPrompt,
                     style: TypographyToken.level2.body(context),

@@ -177,7 +177,7 @@ void main() {
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[0].icon, FLucideIcons.badgeCheck);
       expect(items[0].badge, '2');
-      expect(items[0].route, AppRoutes.medicine);
+      expect(items[0].route, Routes.medicine);
     });
 
     test('first item has no badge when pendingCount is 0', () async {
@@ -200,7 +200,7 @@ void main() {
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[1].icon, FLucideIcons.filePenLine);
       expect(items[1].usePush, isTrue);
-      expect(items[1].route, contains(AppRoutes.recordCreate));
+      expect(items[1].route, contains(Routes.recordCreate));
     });
 
     test('third item is explain', () async {
@@ -208,7 +208,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[2].icon, FLucideIcons.shieldPlus);
-      expect(items[2].route, AppRoutes.medicineRiskCheck);
+      expect(items[2].route, Routes.medicineRiskCheck);
     });
 
     test('fourth item is reminder', () async {
@@ -216,7 +216,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[3].icon, FLucideIcons.alarmClockCheck);
-      expect(items[3].route, AppRoutes.medicineRemindersNew);
+      expect(items[3].route, Routes.medicineRemindersNew);
     });
 
     test('fifth item is profile', () async {
@@ -224,7 +224,7 @@ void main() {
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
       expect(items[4].icon, FLucideIcons.userRound);
-      expect(items[4].route, AppRoutes.mine);
+      expect(items[4].route, Routes.mine);
     });
 
     test('all items have non-empty titles and subtitles', () async {

@@ -177,7 +177,7 @@ class _TimelineRow extends StatelessWidget {
         children: [
           SizedBox(
             width: Spacing.level8,
-            child: AppSkeletonText(
+            child: SkeletonText(
               text: entry.time,
               style: TypographyToken.level3
                   .body(context)
@@ -235,7 +235,7 @@ class _TimelineRow extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AppSkeletonText(
+                          SkeletonText(
                             text: label,
                             style: TypographyToken.level4
                                 .body(context)
@@ -246,7 +246,7 @@ class _TimelineRow extends StatelessWidget {
                           ),
                           if (subtitle.isNotEmpty) ...[
                             const SizedBox(height: Spacing.level1),
-                            AppSkeletonText(
+                            SkeletonText(
                               text: subtitle,
                               style: TypographyToken.level3
                                   .body(context)
@@ -261,8 +261,8 @@ class _TimelineRow extends StatelessWidget {
                     ),
                     if (entry.badgeKey != null) ...[
                       const SizedBox(width: Spacing.level2),
-                      AppSkeletonSlot(
-                        skeleton: AppInlineSkeletonBlock(
+                      SkeletonSlot(
+                        skeleton: InlineSkeletonBlock(
                           height:
                               (TypographyToken.level3.body(context).fontSize ??
                                   14) +

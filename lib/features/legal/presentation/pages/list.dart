@@ -23,15 +23,15 @@ class LegalListPage extends ConsumerWidget {
     return PageScaffold(
       title: l10n.legalListTitle,
       child: asyncList.when(
-        loading: () => const AppStateSkeletonView(
+        loading: () => const StateSkeletonView(
           blocks: [
-            AppStateSkeletonBlock(height: 56, widthFactor: 1),
-            AppStateSkeletonBlock(height: 56, widthFactor: 1),
-            AppStateSkeletonBlock(height: 56, widthFactor: 1),
-            AppStateSkeletonBlock(height: 56, widthFactor: 1),
+            StateSkeletonBlock(height: 56, widthFactor: 1),
+            StateSkeletonBlock(height: 56, widthFactor: 1),
+            StateSkeletonBlock(height: 56, widthFactor: 1),
+            StateSkeletonBlock(height: 56, widthFactor: 1),
           ],
         ),
-        error: (_, __) => AppStateErrorView(
+        error: (_, __) => StateErrorView(
           title: l10n.legalLoadErrorTitle,
           description: l10n.legalLoadErrorDescription,
           icon: FLucideIcons.circleAlert,
@@ -40,7 +40,7 @@ class LegalListPage extends ConsumerWidget {
         ),
         data: (docs) {
           if (docs.isEmpty) {
-            return AppStateMessageView(
+            return StateMessageView(
               title: l10n.legalListEmptyTitle,
               description: l10n.legalListEmptyDescription,
               icon: FLucideIcons.fileText,

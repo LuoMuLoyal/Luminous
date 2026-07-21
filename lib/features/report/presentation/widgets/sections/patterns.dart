@@ -105,7 +105,7 @@ class _PatternCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.level4),
-            AppSkeletonText(
+            SkeletonText(
               text: reportStatusLabel(l10n, pattern.status),
               style: TypographyToken.level4
                   .body(context)
@@ -115,7 +115,7 @@ class _PatternCard extends StatelessWidget {
               widthFactor: 0.74,
             ),
             const SizedBox(height: Spacing.level1),
-            AppSkeletonText(
+            SkeletonText(
               text: pattern.body,
               style: TypographyToken.level3
                   .body(context)
@@ -128,8 +128,8 @@ class _PatternCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: AppSkeletonSlot(
-                    skeleton: const AppInlineSkeletonBlock(
+                  child: SkeletonSlot(
+                    skeleton: const InlineSkeletonBlock(
                       height: 22,
                       radius: RadiusTokens.level2,
                     ),

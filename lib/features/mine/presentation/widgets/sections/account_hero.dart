@@ -116,8 +116,8 @@ class MineAccountHero extends StatelessWidget {
                       .copyWith(color: colors.mutedForeground),
                 ),
                 const SizedBox(width: Spacing.level2),
-                AppSkeletonSlot(
-                  skeleton: const AppInlineSkeletonBlock(
+                SkeletonSlot(
+                  skeleton: const InlineSkeletonBlock(
                     height: 22,
                     width: 42,
                     radius: RadiusTokens.level2,
@@ -135,8 +135,8 @@ class MineAccountHero extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.level2),
-            AppSkeletonSlot(
-              skeleton: const AppInlineSkeletonBlock(
+            SkeletonSlot(
+              skeleton: const InlineSkeletonBlock(
                 height: 8,
                 radius: RadiusTokens.levelFull,
               ),
@@ -193,9 +193,7 @@ class MineAccountHero extends StatelessWidget {
       context.push(loginRouteForCurrentLocation(context));
       return;
     }
-    final route = gaps.isNotEmpty
-        ? gaps.first.route
-        : AppRoutes.mineProfileEdit;
+    final route = gaps.isNotEmpty ? gaps.first.route : Routes.mineProfileEdit;
     pushAuthRequiredRoute(context, route);
   }
 }
@@ -293,17 +291,17 @@ List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
     if (!profile.basicInfoCompleted)
       const _ReadinessGap(
         type: _ReadinessGapType.basicInfo,
-        route: AppRoutes.mineProfileEdit,
+        route: Routes.mineProfileEdit,
       ),
     if (profile.allergyCount == 0)
       const _ReadinessGap(
         type: _ReadinessGapType.allergy,
-        route: AppRoutes.mineAllergyNew,
+        route: Routes.mineAllergyNew,
       ),
     if (profile.currentMedicineCount == 0)
       const _ReadinessGap(
         type: _ReadinessGapType.medicine,
-        route: AppRoutes.mineMedicineNew,
+        route: Routes.mineMedicineNew,
       ),
   ];
 }

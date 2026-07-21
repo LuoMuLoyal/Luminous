@@ -127,7 +127,7 @@ class _DrugBoxHeader extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           onPress: () => pushAuthRequiredRoute(
             context,
-            hasMedicines ? AppRoutes.mineMedicineNew : AppRoutes.medicineSearch,
+            hasMedicines ? Routes.mineMedicineNew : Routes.medicineSearch,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -217,7 +217,7 @@ class _DrugBoxCountSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppSkeletonText(
+          SkeletonText(
             text: l10n.medicineDrugboxTotal(count),
             style: TypographyToken.level8
                 .display(context)
@@ -390,7 +390,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             ],
           ),
           const SizedBox(height: Spacing.level1),
-          AppSkeletonText(
+          SkeletonText(
             text: value,
             style: TypographyToken.level5
                 .body(context)
@@ -403,7 +403,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             widthFactor: 0.76,
           ),
           const SizedBox(height: Spacing.level1),
-          AppSkeletonText(
+          SkeletonText(
             text: detail,
             style: TypographyToken.level3
                 .body(context)
@@ -502,7 +502,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     return FTappable(
       onPress: () {
         if (currentMedicineId == null) {
-          AppToast.show(context, l10n.medicineOpenPlanItemToast);
+          Toast.show(context, l10n.medicineOpenPlanItemToast);
           return;
         }
         if (onOpenReminder != null) {
@@ -526,7 +526,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSkeletonText(
+                  SkeletonText(
                     text: name,
                     style: TypographyToken.level4
                         .body(context)
@@ -541,7 +541,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                     runSpacing: Spacing.level1,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      AppSkeletonText(
+                      SkeletonText(
                         text: '$dosage · ${_compactRouteOrSchedule(schedule)}',
                         style: TypographyToken.level3
                             .body(context)
@@ -550,8 +550,8 @@ class _DrugBoxMedicationRow extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         widthFactor: 0.66,
                       ),
-                      AppSkeletonSlot(
-                        skeleton: const AppInlineSkeletonBlock(
+                      SkeletonSlot(
+                        skeleton: const InlineSkeletonBlock(
                           height: 22,
                           width: 54,
                           radius: RadiusTokens.levelFull,

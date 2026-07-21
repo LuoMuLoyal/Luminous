@@ -185,7 +185,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                   ),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () =>
-                      context.push(AppRoutes.settingsNotificationsSleep),
+                      context.push(Routes.settingsNotificationsSleep),
                 ),
                 FTile(
                   title: Text(l10n.settingsNotificationsDndTitle),
@@ -197,8 +197,7 @@ class NotificationSettingsPage extends ConsumerWidget {
                     ),
                   ),
                   suffix: const Icon(FLucideIcons.chevronRight),
-                  onPress: () =>
-                      context.push(AppRoutes.settingsNotificationsDnd),
+                  onPress: () => context.push(Routes.settingsNotificationsDnd),
                 ),
                 FTile(
                   title: Text(l10n.settingsNotificationsAdvance),

@@ -180,7 +180,7 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
           },
           onEditTap: () {
             if (prefs.dynamicSortEnabled) {
-              AppToast.show(context, l10n.recordQuickSortDisableDynamicFirst);
+              Toast.show(context, l10n.recordQuickSortDisableDynamicFirst);
               return;
             }
             setState(() {

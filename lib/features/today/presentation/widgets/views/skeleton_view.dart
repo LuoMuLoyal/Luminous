@@ -52,7 +52,7 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
     final verticalPadding = isDesktop ? Spacing.level6 : Spacing.level4;
     final l10n = AppLocalizations.of(context)!;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: ListView(
         key: const PageStorageKey<String>('today-dashboard-skeleton-scroll'),
         physics: const AlwaysScrollableScrollPhysics(),
@@ -139,19 +139,19 @@ class _TopBarPlaceholder extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppInlineSkeletonBlock(
+              InlineSkeletonBlock(
                 height: isDesktop ? 48 : 40,
                 widthFactor: 0.55,
               ),
               const SizedBox(height: Spacing.level2),
-              const AppInlineSkeletonBlock(height: 18, widthFactor: 0.64),
+              const InlineSkeletonBlock(height: 18, widthFactor: 0.64),
             ],
           ),
         ),
         const SizedBox(width: Spacing.level4),
-        AppInlineSkeletonCircle(size: isDesktop ? 44 : 40),
+        InlineSkeletonCircle(size: isDesktop ? 44 : 40),
         const SizedBox(width: Spacing.level2),
-        AppInlineSkeletonCircle(size: isDesktop ? 44 : 40),
+        InlineSkeletonCircle(size: isDesktop ? 44 : 40),
       ],
     );
   }
@@ -160,17 +160,15 @@ class _TopBarPlaceholder extends StatelessWidget {
 class _RecordHintPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
         Row(
           children: [
-            AppInlineSkeletonCircle(size: 32),
+            InlineSkeletonCircle(size: 32),
             SizedBox(width: Spacing.level3),
-            Expanded(
-              child: AppInlineSkeletonBlock(height: 16, widthFactor: 0.7),
-            ),
+            Expanded(child: InlineSkeletonBlock(height: 16, widthFactor: 0.7)),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 64),
+            InlineSkeletonBlock(height: 14, width: 64),
           ],
         ),
       ],
@@ -181,33 +179,33 @@ class _RecordHintPlaceholder extends StatelessWidget {
 class _PrimarySuggestionPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
         Row(
           children: [
-            AppInlineSkeletonCircle(size: 40),
+            InlineSkeletonCircle(size: 40),
             SizedBox(width: Spacing.level3),
-            Expanded(child: AppInlineSkeletonBlock(height: 18)),
+            Expanded(child: InlineSkeletonBlock(height: 18)),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 72),
+            InlineSkeletonBlock(height: 14, width: 72),
           ],
         ),
         SizedBox(height: Spacing.level4),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.92),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.92),
         SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.78),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.78),
         SizedBox(height: Spacing.level2),
-        AppInlineSkeletonBlock(height: 16, widthFactor: 0.84),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.84),
         SizedBox(height: Spacing.level4),
         Row(
           children: [
-            AppInlineSkeletonBlock(
+            InlineSkeletonBlock(
               height: 32,
               width: 80,
               radius: RadiusTokens.levelFull,
             ),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(
+            InlineSkeletonBlock(
               height: 32,
               width: 80,
               radius: RadiusTokens.levelFull,
@@ -222,23 +220,23 @@ class _PrimarySuggestionPlaceholder extends StatelessWidget {
 class _SecondarySuggestionsPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.4),
         const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 2; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
-              AppInlineSkeletonCircle(size: 32),
+              InlineSkeletonCircle(size: 32),
               SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.7),
+                    InlineSkeletonBlock(height: 16, widthFactor: 0.7),
                     SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
+                    InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
@@ -253,28 +251,28 @@ class _SecondarySuggestionsPlaceholder extends StatelessWidget {
 class _SummaryPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const AppInlineSkeletonSection(
+    return const InlineSkeletonSection(
       children: [
-        AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
+        InlineSkeletonBlock(height: 18, widthFactor: 0.35),
         SizedBox(height: Spacing.level4),
         Row(
           children: [
             Expanded(
-              child: AppInlineSkeletonBlock(
+              child: InlineSkeletonBlock(
                 height: 56,
                 radius: RadiusTokens.level4,
               ),
             ),
             SizedBox(width: Spacing.level3),
             Expanded(
-              child: AppInlineSkeletonBlock(
+              child: InlineSkeletonBlock(
                 height: 56,
                 radius: RadiusTokens.level4,
               ),
             ),
             SizedBox(width: Spacing.level3),
             Expanded(
-              child: AppInlineSkeletonBlock(
+              child: InlineSkeletonBlock(
                 height: 56,
                 radius: RadiusTokens.level4,
               ),
@@ -289,23 +287,23 @@ class _SummaryPlaceholder extends StatelessWidget {
 class _ObservationPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
-        const AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
+        const InlineSkeletonBlock(height: 18, widthFactor: 0.35),
         const SizedBox(height: Spacing.level4),
         for (var i = 0; i < 2; i += 1) ...[
           if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
-              AppInlineSkeletonCircle(size: 32),
+              InlineSkeletonCircle(size: 32),
               SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.65),
+                    InlineSkeletonBlock(height: 16, widthFactor: 0.65),
                     SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
+                    InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
@@ -325,10 +323,7 @@ class _QuickActionsPlaceholder extends StatelessWidget {
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
           const Expanded(
-            child: AppInlineSkeletonBlock(
-              height: 80,
-              radius: RadiusTokens.level4,
-            ),
+            child: InlineSkeletonBlock(height: 80, radius: RadiusTokens.level4),
           ),
         ],
       ],

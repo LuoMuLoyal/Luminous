@@ -124,7 +124,7 @@ class MockMineRepository implements MineRepository {
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
-      route: AppRoutes.mineMedicineNew,
+      route: Routes.mineMedicineNew,
     ),
     const MineArchiveEntry(
       icon: FLucideIcons.contact,

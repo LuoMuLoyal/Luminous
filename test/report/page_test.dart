@@ -126,11 +126,11 @@ void main() {
     await tester.pump();
 
     expect(repo.fetchCalled, isTrue);
-    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.byType(InlineSkeletonBlock), findsWidgets);
 
     repo.complete(MockReportRepository.previewDashboard);
     await tester.pumpAndSettle();
-    expect(find.byType(AppInlineSkeletonBlock), findsNothing);
+    expect(find.byType(InlineSkeletonBlock), findsNothing);
   });
 
   testWidgets(
@@ -184,7 +184,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('report-export-section')), findsOneWidget);
-      expect(find.byType(AppStateErrorView), findsNothing);
+      expect(find.byType(StateErrorView), findsNothing);
     },
   );
 
@@ -425,7 +425,7 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('Error state shows AppStateErrorView with retry', (tester) async {
+  testWidgets('Error state shows StateErrorView with retry', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
     addTearDown(() {
@@ -454,7 +454,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(AppStateErrorView), findsOneWidget);
+    expect(find.byType(StateErrorView), findsOneWidget);
     expect(find.text(l10n.todayRetryAction), findsOneWidget);
   });
 

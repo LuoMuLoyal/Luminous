@@ -210,7 +210,7 @@ class AssistantMessageBubble extends StatelessWidget {
       if (value == 'copy' && context.mounted) {
         await Clipboard.setData(ClipboardData(text: content));
         if (context.mounted) {
-          await AppToast.show(context, l10n.assistantCopySuccess);
+          await Toast.show(context, l10n.assistantCopySuccess);
         }
       }
     });

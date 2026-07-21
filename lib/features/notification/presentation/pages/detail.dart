@@ -41,11 +41,11 @@ class NotificationDetailPage extends ConsumerWidget {
             detailAsync.when(
               data: (detail) {
                 if (detail == null) {
-                  return AppStateMessageView(
+                  return StateMessageView(
                     title: l10n.notificationNotFoundTitle,
                     description: l10n.notificationNotFoundDescription,
                     icon: FLucideIcons.bellOff,
-                    tone: AppStateTone.neutral,
+                    tone: StateTone.neutral,
                   );
                 }
                 return _DetailBody(detail: detail);
@@ -53,12 +53,12 @@ class NotificationDetailPage extends ConsumerWidget {
               loading: () => const Center(
                 child: Padding(
                   padding: EdgeInsets.all(Spacing.level10),
-                  child: AppSkeletonShimmer(
-                    child: AppInlineSkeletonBlock(height: 120, widthFactor: 1),
+                  child: SkeletonShimmer(
+                    child: InlineSkeletonBlock(height: 120, widthFactor: 1),
                   ),
                 ),
               ),
-              error: (error, _) => AppStateErrorView(
+              error: (error, _) => StateErrorView(
                 title: l10n.notificationErrorTitle,
                 description: userMessageFromError(
                   error,
@@ -157,9 +157,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             ref.invalidate(notificationListControllerProvider);
             ref.invalidate(notificationDetailProvider(detail.id));
             if (context.mounted) {
-              unawaited(
-                AppToast.show(context, l10n.notificationMarkReadSuccess),
-              );
+              unawaited(Toast.show(context, l10n.notificationMarkReadSuccess));
               context.pop();
             }
           },
@@ -170,7 +168,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             ref.invalidate(notificationListControllerProvider);
             if (context.mounted) {
               unawaited(
-                AppToast.show(context, l10n.notificationMarkUnreadSuccess),
+                Toast.show(context, l10n.notificationMarkUnreadSuccess),
               );
               context.pop();
             }
@@ -181,7 +179,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
             );
             await controller.deleteNotification(detail.id);
             if (context.mounted) {
-              unawaited(AppToast.show(context, l10n.notificationDeleteSuccess));
+              unawaited(Toast.show(context, l10n.notificationDeleteSuccess));
               context.pop();
             }
           },

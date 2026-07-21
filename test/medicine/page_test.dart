@@ -127,7 +127,7 @@ void main() {
     expect(find.text(l10n.tabMedicine), findsOneWidget);
     expect(find.text(l10n.medicineHomeSearchHint), findsOneWidget);
     expect(find.byType(MedicineSkeletonView), findsOneWidget);
-    expect(find.byType(AppInlineSkeletonBlock), findsWidgets);
+    expect(find.byType(InlineSkeletonBlock), findsWidgets);
     expect(find.text(l10n.medicineDrugboxTitle), findsNothing);
   });
 

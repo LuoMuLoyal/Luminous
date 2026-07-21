@@ -3,7 +3,7 @@ import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AppLocaleController extends AsyncNotifier<AppLocale> {
+class LocaleController extends AsyncNotifier<AppLocale> {
   static const _storageKey = PrefKeys.appLocale;
 
   @override
@@ -19,7 +19,5 @@ class AppLocaleController extends AsyncNotifier<AppLocale> {
   }
 }
 
-final appLocaleControllerProvider =
-    AsyncNotifierProvider<AppLocaleController, AppLocale>(
-      AppLocaleController.new,
-    );
+final localeControllerProvider =
+    AsyncNotifierProvider<LocaleController, AppLocale>(LocaleController.new);

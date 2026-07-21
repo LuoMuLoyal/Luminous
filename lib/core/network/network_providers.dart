@@ -53,8 +53,7 @@ LucentDioClient lucentDioClient(Ref ref) {
     baseUrl: ref.watch(lucentBaseUrlProvider),
     sessionStore: ref.watch(lucentSessionStoreProvider),
     localeResolver: () =>
-        (ref.read(appLocaleControllerProvider).asData?.value ??
-                AppLocale.system)
+        (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
             .acceptLanguage,
   );
   ref.onDispose(client.dispose);

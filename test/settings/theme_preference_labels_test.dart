@@ -90,7 +90,7 @@ void main() {
       tester,
     ) async {
       final l10n = await loadL10n(const Locale('zh'));
-      const preference = AppThemePreference(
+      const preference = ThemePreference(
         mode: AppThemeModePreference.dark,
         family: AppThemeFamily.blue,
       );
@@ -103,7 +103,7 @@ void main() {
 
     testWidgets('combines system mode and neutral family (en)', (tester) async {
       final l10n = await loadL10n(const Locale('en'));
-      const preference = AppThemePreference(
+      const preference = ThemePreference(
         mode: AppThemeModePreference.system,
         family: AppThemeFamily.neutral,
       );

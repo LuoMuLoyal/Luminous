@@ -21,8 +21,7 @@ class LanguageSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final currentLocale =
-        ref.watch(appLocaleControllerProvider).asData?.value ??
-        AppLocale.system;
+        ref.watch(localeControllerProvider).asData?.value ?? AppLocale.system;
 
     final width = MediaQuery.sizeOf(context).width;
     final content = ResponsiveContentFrame(
@@ -98,7 +97,7 @@ Future<void> _handleLocaleTap(
   );
   if (result case Failure(:final error)) {
     if (!context.mounted) return;
-    await AppToast.show(
+    await Toast.show(
       context,
       error.message.isNotEmpty ? error.message : l10n.settingsSyncFailed,
     );

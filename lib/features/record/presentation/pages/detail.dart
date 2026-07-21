@@ -77,14 +77,14 @@ class RecordDetailPage extends ConsumerWidget {
               detail.when(
                 data: (record) => _RecordDetailBody(record: record),
                 loading: () => const _RecordDetailLoading(),
-                error: (_, __) => AppStateErrorView(
+                error: (_, __) => StateErrorView(
                   title: l10n.recordDetailErrorTitle,
                   description: l10n.recordErrorDescription,
                   icon: FLucideIcons.notebookPen,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () =>
                       ref.invalidate(dailyRecordDetailProvider(recordId)),
-                  tone: AppStateTone.warning,
+                  tone: StateTone.warning,
                 ),
               ),
             ],
@@ -437,12 +437,12 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
           .read(dataChangeBusProvider.notifier)
           .emit(DataChangeTopic.dailyRecords);
       if (!context.mounted) return;
-      await AppToast.show(context, l10n.mineEditDeletedToast);
+      await Toast.show(context, l10n.mineEditDeletedToast);
       if (context.mounted) context.pop();
     } catch (e) {
       ref.read(talkerProvider).error('RecordDetailPage.onDelete: failed: $e');
       if (context.mounted) {
-        await AppToast.show(context, l10n.recordDeleteFailedToast);
+        await Toast.show(context, l10n.recordDeleteFailedToast);
       }
     }
   }
@@ -621,18 +621,18 @@ class _RecordDetailLoading extends StatelessWidget {
     return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.34),
-            AppInlineSkeletonBlock(height: 42),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.74),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.34),
+            InlineSkeletonBlock(height: 42),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.74),
           ],
         ),
         SizedBox(height: Spacing.level4),
-        AppInlineSkeletonSection(
+        InlineSkeletonSection(
           children: [
-            AppInlineSkeletonBlock(height: 160),
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.42),
+            InlineSkeletonBlock(height: 160),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.42),
           ],
         ),
       ],

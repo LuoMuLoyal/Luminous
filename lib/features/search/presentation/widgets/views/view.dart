@@ -107,13 +107,13 @@ class MedicineSearchLoadingView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              AppInlineSkeletonBlock(height: 48),
+              InlineSkeletonBlock(height: 48),
               SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(height: 160),
+              InlineSkeletonBlock(height: 160),
               SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(height: 160),
+              InlineSkeletonBlock(height: 160),
               SizedBox(height: Spacing.level4),
-              AppInlineSkeletonBlock(height: 160),
+              InlineSkeletonBlock(height: 160),
             ],
           ),
         ),
@@ -131,13 +131,13 @@ class MedicineSearchErrorView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppStateErrorView(
+    return StateErrorView(
       title: l10n.medicineSearchErrorTitle,
       description: l10n.medicineSearchErrorDescription,
       icon: FLucideIcons.searchX,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
-      tone: AppStateTone.warning,
+      tone: StateTone.warning,
     );
   }
 }

@@ -197,7 +197,7 @@ Future<void> medicineReminderNotificationSync(Ref ref) async {
 
 MedicineReminderNotificationTexts _notificationTexts(Ref ref) {
   final currentLocale =
-      ref.watch(appLocaleControllerProvider).asData?.value ?? AppLocale.system;
+      ref.watch(localeControllerProvider).asData?.value ?? AppLocale.system;
   final locale =
       currentLocale.flutterLocale ?? ui.PlatformDispatcher.instance.locale;
   final l10n = lookupAppLocalizations(locale);

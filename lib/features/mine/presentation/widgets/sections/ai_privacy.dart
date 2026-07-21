@@ -37,8 +37,7 @@ class MineAiPrivacySection extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
-              onPress: () =>
-                  pushAuthRequiredRoute(context, AppRoutes.settingsAi),
+              onPress: () => pushAuthRequiredRoute(context, Routes.settingsAi),
             ),
             FTile(
               key: const Key('mine-privacy-report-tile'),
@@ -55,7 +54,7 @@ class MineAiPrivacySection extends StatelessWidget {
               ),
               suffix: const Icon(FLucideIcons.chevronRight),
               onPress: () =>
-                  pushAuthRequiredRoute(context, AppRoutes.settingsExport),
+                  pushAuthRequiredRoute(context, Routes.settingsExport),
             ),
           ],
         ),

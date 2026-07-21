@@ -48,8 +48,7 @@ class SettingsPage extends ConsumerWidget {
                 _AccountHeader(
                   session: session,
                   signedIn: signedIn,
-                  onTap: () =>
-                      pushAuthRequiredRoute(context, AppRoutes.account),
+                  onTap: () => pushAuthRequiredRoute(context, Routes.account),
                 ),
                 const SizedBox(height: _kGroupSpacing),
 
@@ -67,7 +66,7 @@ class SettingsPage extends ConsumerWidget {
                       icon: FLucideIcons.shieldCheck,
                       title: l10n.mineSettingsAccountTitle,
                       onTap: () =>
-                          pushAuthRequiredRoute(context, AppRoutes.account),
+                          pushAuthRequiredRoute(context, Routes.account),
                     ),
                     _SettingsNavigationTile(
                       tileKey: const Key('settings-row-security-pin'),
@@ -76,10 +75,10 @@ class SettingsPage extends ConsumerWidget {
                       subtitle: l10n.settingsSecurityPinSubtitle,
                       onTap: () {
                         if (!signedIn) {
-                          pushAuthRequiredRoute(context, AppRoutes.settings);
+                          pushAuthRequiredRoute(context, Routes.settings);
                           return;
                         }
-                        context.push(AppRoutes.settingsSecurityPin);
+                        context.push(Routes.settingsSecurityPin);
                       },
                     ),
                     _SettingsNavigationTile(
@@ -89,10 +88,10 @@ class SettingsPage extends ConsumerWidget {
                       subtitle: l10n.settingsHealthProfileSubtitle,
                       onTap: () {
                         if (!signedIn) {
-                          pushAuthRequiredRoute(context, AppRoutes.settings);
+                          pushAuthRequiredRoute(context, Routes.settings);
                           return;
                         }
-                        context.go(AppRoutes.mine);
+                        context.go(Routes.mine);
                       },
                     ),
                   ],
@@ -133,7 +132,7 @@ class SettingsPage extends ConsumerWidget {
                     if (!confirmed || !context.mounted) return;
                     await ref.read(authSessionProvider.notifier).logout();
                     if (!context.mounted) return;
-                    context.go(AppRoutes.login);
+                    context.go(Routes.login);
                   },
                 ),
               ],
@@ -218,10 +217,10 @@ class _PrivacySection extends ConsumerWidget {
               subtitle: l10n.settingsAiSubtitle,
               onTap: () {
                 if (!signedIn) {
-                  pushAuthRequiredRoute(context, AppRoutes.settings);
+                  pushAuthRequiredRoute(context, Routes.settings);
                   return;
                 }
-                context.push(AppRoutes.settingsAi);
+                context.push(Routes.settingsAi);
               },
             ),
             FTile(
@@ -233,9 +232,7 @@ class _PrivacySection extends ConsumerWidget {
                 value: settings?.dataSharingConsent ?? false,
                 onChange: (value) async {
                   if (!signedIn) {
-                    unawaited(
-                      pushAuthRequiredRoute(context, AppRoutes.settings),
-                    );
+                    unawaited(pushAuthRequiredRoute(context, Routes.settings));
                     return;
                   }
                   final confirmed = await _showDataSharingConfirmation(
@@ -255,7 +252,7 @@ class _PrivacySection extends ConsumerWidget {
               onPress: () async {
                 final currentValue = settings?.dataSharingConsent ?? false;
                 if (!signedIn) {
-                  unawaited(pushAuthRequiredRoute(context, AppRoutes.settings));
+                  unawaited(pushAuthRequiredRoute(context, Routes.settings));
                   return;
                 }
                 final confirmed = await _showDataSharingConfirmation(
@@ -278,10 +275,10 @@ class _PrivacySection extends ConsumerWidget {
               title: l10n.mineSettingExportTitle,
               onTap: () {
                 if (!signedIn) {
-                  pushAuthRequiredRoute(context, AppRoutes.settings);
+                  pushAuthRequiredRoute(context, Routes.settings);
                   return;
                 }
-                context.push(AppRoutes.settingsExport);
+                context.push(Routes.settingsExport);
               },
             ),
           ],
@@ -346,13 +343,11 @@ class _GeneralSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final themePref =
-        ref.watch(appThemeControllerProvider).value ??
-        const AppThemePreference();
+        ref.watch(themeControllerProvider).value ?? const ThemePreference();
     final currentTheme = themePref.mode;
     final currentFamily = themePref.family;
     final currentLocale =
-        ref.watch(appLocaleControllerProvider).asData?.value ??
-        AppLocale.system;
+        ref.watch(localeControllerProvider).asData?.value ?? AppLocale.system;
     final dataStorageAsync = ref.watch(dataStorageSettingsControllerProvider);
     final dataStorage =
         dataStorageAsync.asData?.value ?? const DataStorageSettingsState();
@@ -371,14 +366,14 @@ class _GeneralSection extends ConsumerWidget {
               icon: FLucideIcons.palette,
               title: l10n.mineSettingsThemeTitle,
               value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
-              onTap: () => context.push(AppRoutes.settingsTheme),
+              onTap: () => context.push(Routes.settingsTheme),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-language'),
               icon: FLucideIcons.globe,
               title: l10n.mineSettingsLanguageTitle,
               value: _languageLabel(l10n, currentLocale),
-              onTap: () => context.push(AppRoutes.settingsLanguage),
+              onTap: () => context.push(Routes.settingsLanguage),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-data-storage'),
@@ -386,27 +381,27 @@ class _GeneralSection extends ConsumerWidget {
               title: l10n.settingsDataStorageTitle,
               subtitle: l10n.settingsDataStorageSubtitle,
               value: _retentionLabel(l10n, dataStorage.retentionPeriod),
-              onTap: () => context.push(AppRoutes.settingsDataStorage),
+              onTap: () => context.push(Routes.settingsDataStorage),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-advanced'),
               icon: FLucideIcons.slidersHorizontal,
               title: l10n.mineSettingsAdvancedTitle,
-              onTap: () => context.push(AppRoutes.settingsMore),
+              onTap: () => context.push(Routes.settingsMore),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-accessibility'),
               icon: FLucideIcons.accessibility,
               title: l10n.settingsAccessibilityTitle,
               subtitle: l10n.settingsAccessibilitySubtitle,
-              onTap: () => context.push(AppRoutes.settingsAccessibility),
+              onTap: () => context.push(Routes.settingsAccessibility),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-notifications'),
               icon: FLucideIcons.bell,
               title: l10n.mineSettingsNotificationsTitle,
               value: _notificationSummary(l10n, ref),
-              onTap: () => context.push(AppRoutes.settingsNotifications),
+              onTap: () => context.push(Routes.settingsNotifications),
             ),
           ],
         ),
@@ -559,13 +554,13 @@ class _AboutSection extends ConsumerWidget {
               tileKey: const Key('settings-row-help'),
               icon: FLucideIcons.circleHelp,
               title: l10n.mineSettingHelpTitle,
-              onTap: () => context.push(AppRoutes.settingsHelp),
+              onTap: () => context.push(Routes.settingsHelp),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-about'),
               icon: FLucideIcons.info,
               title: l10n.mineSettingAboutTitle,
-              onTap: () => context.push(AppRoutes.settingsAbout),
+              onTap: () => context.push(Routes.settingsAbout),
             ),
           ],
         ),

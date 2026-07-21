@@ -35,8 +35,8 @@ part 'router.g.dart';
 /// For routes with path parameters (e.g. `/record/:id`), use the typed
 /// route class (e.g. `RecordDetailRoute(id: id).push(context)`) instead
 /// of interpolating path strings.
-class AppRoutes {
-  const AppRoutes._();
+class Routes {
+  const Routes._();
 
   // -- Shell tabs (kept for tab switching via context.go) --
   static const home = '/';
@@ -110,13 +110,13 @@ const _publicRoutePrefixes = <String>['/legal', '/report/clinic-summary'];
 /// render their own sign-in prompts when needed. Any other route requires
 /// authentication.
 const _publicRootRoutes = <String>[
-  AppRoutes.home,
-  AppRoutes.record,
-  AppRoutes.medicine,
-  AppRoutes.report,
-  AppRoutes.mine,
-  AppRoutes.settings,
-  AppRoutes.assistant,
+  Routes.home,
+  Routes.record,
+  Routes.medicine,
+  Routes.report,
+  Routes.mine,
+  Routes.settings,
+  Routes.assistant,
 ];
 
 /// The main application router.
@@ -137,7 +137,7 @@ const _publicRootRoutes = <String>[
 /// listener) to re-evaluate the redirect after authentication state changes.
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) => GoRouter(
-  initialLocation: AppRoutes.home,
+  initialLocation: Routes.home,
   redirect: (context, state) {
     final session = ref.read(authSessionProvider);
 
@@ -157,11 +157,11 @@ GoRouter appRouter(Ref ref) => GoRouter(
     // signing in so the app opens in preview mode. All other routes require
     // authentication.
     if (!session.isAuthenticated && !isAuthRoute && !isPublicRoute) {
-      return AppRoutes.login;
+      return Routes.login;
     }
     // Authenticated users have no reason to stay on auth pages.
     if (session.isAuthenticated && isAuthRoute) {
-      return AppRoutes.home;
+      return Routes.home;
     }
     return null;
   },
@@ -173,7 +173,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.home,
+              path: Routes.home,
               pageBuilder: (context, state) =>
                   tabFadePage(key: state.pageKey, child: const TodayPage()),
             ),
@@ -182,7 +182,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.record,
+              path: Routes.record,
               pageBuilder: (context, state) =>
                   tabFadePage(key: state.pageKey, child: const RecordPage()),
             ),
@@ -191,7 +191,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.medicine,
+              path: Routes.medicine,
               pageBuilder: (context, state) =>
                   tabFadePage(key: state.pageKey, child: const MedicinePage()),
             ),
@@ -200,7 +200,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.report,
+              path: Routes.report,
               pageBuilder: (context, state) =>
                   tabFadePage(key: state.pageKey, child: const ReportPage()),
             ),
@@ -209,7 +209,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutes.mine,
+              path: Routes.mine,
               pageBuilder: (context, state) =>
                   tabFadePage(key: state.pageKey, child: const MinePage()),
             ),
@@ -230,7 +230,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ...legal_routes.$appRoutes,
     // -- public shared clinic summary (deep link, no auth required) --
     GoRoute(
-      path: AppRoutes.reportClinicSummaryShared,
+      path: Routes.reportClinicSummaryShared,
       pageBuilder: (context, state) => slidePage(
         key: state.pageKey,
         child: ClinicSummarySharedPage(token: state.pathParameters['token']!),

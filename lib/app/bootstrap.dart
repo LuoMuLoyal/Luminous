@@ -75,15 +75,15 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
     );
 
     final themePreference = ref
-        .watch(appThemeControllerProvider)
+        .watch(themeControllerProvider)
         .maybeWhen(
           data: (preference) => preference,
-          orElse: () => const AppThemePreference(),
+          orElse: () => const ThemePreference(),
         );
     final themeMode = themePreference.mode.themeMode;
     var lightTheme = appThemeData(themePreference.family, Brightness.light);
     var darkTheme = appThemeData(themePreference.family, Brightness.dark);
-    final locale = ref.watch(appLocaleControllerProvider).asData?.value;
+    final locale = ref.watch(localeControllerProvider).asData?.value;
 
     final accessibility = ref
         .watch(accessibilitySettingsControllerProvider)
@@ -142,12 +142,12 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
         return;
       }
 
-      final currentLocale = ref.read(appLocaleControllerProvider).asData?.value;
+      final currentLocale = ref.read(localeControllerProvider).asData?.value;
       if (currentLocale == locale) {
         return;
       }
 
-      await ref.read(appLocaleControllerProvider.notifier).setLocale(locale);
+      await ref.read(localeControllerProvider.notifier).setLocale(locale);
     } catch (e) {
       ref
           .read(talkerProvider)

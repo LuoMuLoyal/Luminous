@@ -172,7 +172,7 @@ class _CalendarPickerButton extends StatelessWidget {
   Future<void> _showCalendarPicker(BuildContext context) async {
     final picked = await showFDialog<DateTime?>(
       context: context,
-      builder: (dialogContext, style, animation) => AppDialogShell(
+      builder: (dialogContext, style, animation) => DialogShell(
         maxWidth: LayoutScaleResolver.dialogMaxWidth,
         padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(

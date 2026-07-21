@@ -15,7 +15,7 @@ class MedicineSkeletonView extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
-    return AppSkeletonShimmer(
+    return SkeletonShimmer(
       child: isDesktop
           ? const _DesktopMedicineSkeleton()
           : const _MobileMedicineSkeleton(),
@@ -82,26 +82,24 @@ class _DrugBoxPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
         const Row(
           children: [
-            AppInlineSkeletonCircle(size: 40),
+            InlineSkeletonCircle(size: 40),
             SizedBox(width: Spacing.level3),
-            Expanded(
-              child: AppInlineSkeletonBlock(height: 18, widthFactor: 0.45),
-            ),
+            Expanded(child: InlineSkeletonBlock(height: 18, widthFactor: 0.45)),
             SizedBox(width: Spacing.level3),
-            AppInlineSkeletonBlock(height: 14, width: 80),
+            InlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
         const SizedBox(height: Spacing.level2),
-        const AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
+        const InlineSkeletonBlock(height: 14, widthFactor: 0.55),
         const SizedBox(height: Spacing.level4),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppInlineSkeletonBlock(height: 64, width: 64),
+            const InlineSkeletonBlock(height: 64, width: 64),
             const SizedBox(width: Spacing.level3),
             Container(width: 1, height: 64, color: context.theme.colors.border),
             const SizedBox(width: Spacing.level3),
@@ -109,11 +107,11 @@ class _DrugBoxPlaceholder extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppInlineSkeletonBlock(height: 16, widthFactor: 0.8),
+                  InlineSkeletonBlock(height: 16, widthFactor: 0.8),
                   SizedBox(height: Spacing.level2),
-                  AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
+                  InlineSkeletonBlock(height: 14, widthFactor: 0.55),
                   SizedBox(height: Spacing.level3),
-                  AppInlineSkeletonBlock(height: 14, widthFactor: 0.7),
+                  InlineSkeletonBlock(height: 14, widthFactor: 0.7),
                 ],
               ),
             ),
@@ -124,19 +122,19 @@ class _DrugBoxPlaceholder extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         const Row(
           children: [
-            AppInlineSkeletonCircle(size: 32),
+            InlineSkeletonCircle(size: 32),
             SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppInlineSkeletonBlock(height: 14, widthFactor: 0.6),
+                  InlineSkeletonBlock(height: 14, widthFactor: 0.6),
                   SizedBox(height: Spacing.level2),
-                  AppInlineSkeletonBlock(height: 12, widthFactor: 0.45),
+                  InlineSkeletonBlock(height: 12, widthFactor: 0.45),
                 ],
               ),
             ),
-            AppInlineSkeletonBlock(
+            InlineSkeletonBlock(
               height: 32,
               width: 72,
               radius: RadiusTokens.levelFull,
@@ -153,13 +151,13 @@ class _SafetyEnginePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.4),
-            AppInlineSkeletonBlock(height: 14, width: 80),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.4),
+            InlineSkeletonBlock(height: 14, width: 80),
           ],
         ),
         const SizedBox(height: Spacing.level3),
@@ -167,15 +165,15 @@ class _SafetyEnginePlaceholder extends StatelessWidget {
           if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
-              AppInlineSkeletonCircle(size: 40),
+              InlineSkeletonCircle(size: 40),
               SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.72),
+                    InlineSkeletonBlock(height: 16, widthFactor: 0.72),
                     SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.55),
+                    InlineSkeletonBlock(height: 14, widthFactor: 0.55),
                   ],
                 ),
               ),
@@ -197,10 +195,7 @@ class _QuickOperationsPlaceholder extends StatelessWidget {
         for (var i = 0; i < 4; i += 1) ...[
           if (i > 0) const SizedBox(width: Spacing.level3),
           const Expanded(
-            child: AppInlineSkeletonBlock(
-              height: 80,
-              radius: RadiusTokens.level4,
-            ),
+            child: InlineSkeletonBlock(height: 80, radius: RadiusTokens.level4),
           ),
         ],
       ],
@@ -213,13 +208,13 @@ class _RecordsPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppInlineSkeletonSection(
+    return InlineSkeletonSection(
       children: [
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppInlineSkeletonBlock(height: 18, widthFactor: 0.35),
-            AppInlineSkeletonBlock(height: 14, width: 120),
+            InlineSkeletonBlock(height: 18, widthFactor: 0.35),
+            InlineSkeletonBlock(height: 14, width: 120),
           ],
         ),
         const SizedBox(height: Spacing.level4),
@@ -227,20 +222,20 @@ class _RecordsPlaceholder extends StatelessWidget {
           if (i > 0) const SizedBox(height: Spacing.level4),
           const Row(
             children: [
-              AppInlineSkeletonCircle(size: 40),
+              InlineSkeletonCircle(size: 40),
               SizedBox(width: Spacing.level3),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppInlineSkeletonBlock(height: 16, widthFactor: 0.65),
+                    InlineSkeletonBlock(height: 16, widthFactor: 0.65),
                     SizedBox(height: Spacing.level2),
-                    AppInlineSkeletonBlock(height: 14, widthFactor: 0.5),
+                    InlineSkeletonBlock(height: 14, widthFactor: 0.5),
                   ],
                 ),
               ),
               SizedBox(width: Spacing.level3),
-              AppInlineSkeletonBlock(
+              InlineSkeletonBlock(
                 height: 28,
                 width: 56,
                 radius: RadiusTokens.levelFull,

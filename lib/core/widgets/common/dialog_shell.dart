@@ -4,8 +4,8 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class AppDialogShell extends StatelessWidget {
-  const AppDialogShell({
+class DialogShell extends StatelessWidget {
+  const DialogShell({
     super.key,
     required this.builder,
     this.animation,
@@ -61,7 +61,7 @@ Future<T?> showAppDialog<T>({
 }) {
   return showFDialog<T>(
     context: context,
-    builder: (context, style, animation) => AppDialogShell(
+    builder: (context, style, animation) => DialogShell(
       animation: animation,
       maxWidth: maxWidth,
       maxHeight: maxHeight,

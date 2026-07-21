@@ -59,7 +59,7 @@ class _CategoryItem extends StatelessWidget {
     return FButton.raw(
       onPress:
           onTap ??
-          () => AppToast.show(context, categoryLabel(l10n, category.type)),
+          () => Toast.show(context, categoryLabel(l10n, category.type)),
       variant: FButtonVariant.ghost,
       style: const .delta(
         contentStyle: .delta(

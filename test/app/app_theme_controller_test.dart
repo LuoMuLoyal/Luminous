@@ -33,9 +33,9 @@ void main() {
       addTearDown(container.dispose);
 
       await expectLater(
-        container.read(appThemeControllerProvider.future),
+        container.read(themeControllerProvider.future),
         completion(
-          const AppThemePreference(
+          const ThemePreference(
             mode: AppThemeModePreference.dark,
             family: AppThemeFamily.green,
           ),
@@ -43,15 +43,15 @@ void main() {
       );
 
       await container
-          .read(appThemeControllerProvider.notifier)
+          .read(themeControllerProvider.notifier)
           .setMode(AppThemeModePreference.light);
       await container
-          .read(appThemeControllerProvider.notifier)
+          .read(themeControllerProvider.notifier)
           .setFamily(AppThemeFamily.violet);
 
       expect(
-        container.read(appThemeControllerProvider).requireValue,
-        const AppThemePreference(
+        container.read(themeControllerProvider).requireValue,
+        const ThemePreference(
           mode: AppThemeModePreference.light,
           family: AppThemeFamily.violet,
         ),

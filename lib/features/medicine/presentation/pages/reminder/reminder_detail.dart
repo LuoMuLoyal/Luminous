@@ -81,7 +81,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
                   final isNotFound =
                       error is StateError &&
                       error.message == 'Medicine not found.';
-                  return AppStateErrorView(
+                  return StateErrorView(
                     title: isNotFound
                         ? l10n.medicineReminderNotFoundTitle
                         : l10n.medicineReminderGenericErrorTitle,
@@ -374,15 +374,12 @@ class _ReminderDetailBody extends ConsumerWidget {
                     .deleteGroup(reminders);
                 if (deleted && context.mounted) {
                   unawaited(
-                    AppToast.show(context, l10n.medicineReminderDeletedToast),
+                    Toast.show(context, l10n.medicineReminderDeletedToast),
                   );
                   context.pop();
                 } else if (context.mounted) {
                   unawaited(
-                    AppToast.show(
-                      context,
-                      l10n.medicineReminderDeleteFailedToast,
-                    ),
+                    Toast.show(context, l10n.medicineReminderDeleteFailedToast),
                   );
                 }
               },
@@ -426,7 +423,7 @@ class _ReminderDetailBody extends ConsumerWidget {
         .saveGroup(existingReminders: reminders, input: input);
     if (context.mounted) {
       unawaited(
-        AppToast.show(
+        Toast.show(
           context,
           success
               ? l10n.medicineReminderSavedToast

@@ -76,7 +76,7 @@ class AllergyEditPage extends HookConsumerWidget {
         AppLocalizations.of(context)!.mineEditFieldLabelRequired,
       );
       if (labelError != null) {
-        AppToast.show(context, labelError);
+        Toast.show(context, labelError);
         return;
       }
 
@@ -123,7 +123,7 @@ class AllergyEditPage extends HookConsumerWidget {
     ref.listen<AllergyFormState>(allergyFormProvider, (prev, next) {
       if (next.saved && prev?.saved != true) {
         unawaited(
-          AppToast.show(
+          Toast.show(
             context,
             next.deleted ? l10n.mineEditDeletedToast : l10n.mineEditSavedToast,
           ),
@@ -132,7 +132,7 @@ class AllergyEditPage extends HookConsumerWidget {
       }
       final error = next.errorMessage;
       if (error != null && error != prev?.errorMessage) {
-        unawaited(AppToast.show(context, error));
+        unawaited(Toast.show(context, error));
       }
     });
 
@@ -178,7 +178,7 @@ class AllergyEditPage extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppStateErrorView(
+                StateErrorView(
                   title: l10n.mineEditRecordNotFoundTitle,
                   description: l10n.mineEditRecordNotFoundDescription,
                   icon: FLucideIcons.circleAlert,
