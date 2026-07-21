@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:intl/intl.dart';
 import 'package:lucent_api/api/export.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Renders the full content of a [ClinicSummaryDto] — used by both the
@@ -33,6 +34,7 @@ class ClinicSummaryContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -43,11 +45,11 @@ class ClinicSummaryContent extends StatelessWidget {
           const Center(child: SheetDragHandle()),
 
         // Meta info.
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryGeneratedAt,
-          value: _formatDateTime(context, dto.generatedAt),
+          value: formatDateTimeFull(dto.generatedAt, locale),
         ),
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryDataRange,
           value: _dataRangeLabel(dto.dataRange, l10n),
         ),
@@ -59,21 +61,21 @@ class ClinicSummaryContent extends StatelessWidget {
         // Profile section.
         _SectionTitle(text: l10n.reportClinicSummaryProfileSection),
         const SizedBox(height: Spacing.level2),
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryProfileNickname,
           value: dto.profile.nickname,
         ),
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryProfileAge,
           value: dto.profile.age != null
               ? dto.profile.age!.toInt().toString()
               : l10n.reportClinicSummaryNotSet,
         ),
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryProfileSex,
           value: dto.profile.sexAtBirth ?? l10n.reportClinicSummaryNotSet,
         ),
-        _MetaRow(
+        MetaRow(
           label: l10n.reportClinicSummaryProfileBloodType,
           value: dto.profile.bloodType ?? l10n.reportClinicSummaryNotSet,
         ),
@@ -184,13 +186,6 @@ class ClinicSummaryContent extends StatelessWidget {
       _ => dataRange,
     };
   }
-
-  String _formatDateTime(BuildContext context, String iso8601) {
-    final dateTime = DateTime.tryParse(iso8601)?.toLocal();
-    if (dateTime == null) return iso8601;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    return DateFormat.yMd(locale).add_Hm().format(dateTime);
-  }
 }
 
 // ── Sub-widgets ─────────────────────────────────────────────────────────────
@@ -207,40 +202,6 @@ class _SectionTitle extends StatelessWidget {
       style: TypographyToken.level4
           .body(context)
           .copyWith(fontWeight: FontWeight.w700),
-    );
-  }
-}
-
-class _MetaRow extends StatelessWidget {
-  const _MetaRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
-          ),
-          const SizedBox(width: Spacing.level3),
-          Expanded(
-            child: Text(value, style: TypographyToken.level3.body(context)),
-          ),
-        ],
-      ),
     );
   }
 }

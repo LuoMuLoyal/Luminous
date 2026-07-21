@@ -193,3 +193,7 @@ Last updated: 2026-07-20
 - **垂直 padding helper 统一到全部子页**：`dnd.dart`、`sleep_reminder.dart`、`ai.dart`、`accessibility.dart`、`advanced.dart`、`data_storage.dart`、`feature_flags.dart`、`security_pin.dart`、`theme.dart` 共 9 个子页的内联三元表达式替换为 `settingsPageVerticalPadding(context)` 共享函数。
 - **验证码冷却期禁用**：`change_email.dart` 的 `onSendCode` 在 `lastCooldownSeconds != null`（冷却中）时设为 `null`，防止冷却期间重复点击发送。
 - **助手 provider 硬编码文案清理**：`conversation.dart` 的 `sendError` 从硬编码中文改为 `null`；`LucentApiException` 消息从中文改为英文。
+
+## 2026-07-21 审查修复
+
+- **通知列表 hover 性能优化**：`list_item.dart` 的 `_isHovered` 从 `bool` + `setState` 改为 `ValueNotifier<bool>` + `ValueListenableBuilder`。鼠标 hover/退出时仅重建操作按钮区域，不再触发整个列表项 widget 的 `build`，减少快速滚动时的不必要的重建开销。

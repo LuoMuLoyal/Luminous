@@ -28,7 +28,13 @@ class NotificationListItemWidget extends StatefulWidget {
 
 class _NotificationListItemWidgetState
     extends State<NotificationListItemWidget> {
-  bool _isHovered = false;
+  final ValueNotifier<bool> _isHovered = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _isHovered.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +58,8 @@ class _NotificationListItemWidgetState
     // buttons that appear on hover. Slidable remains on mobile/touch.
     if (isDesktop) {
       return MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
+        onEnter: (_) => _isHovered.value = true,
+        onExit: (_) => _isHovered.value = false,
         child: FCard.raw(
           child: FTappable(
             onPress: widget.onTap,
@@ -125,22 +131,31 @@ class _NotificationListItemWidgetState
                     ),
                   ),
                   // Hover action buttons
-                  if (_isHovered) ...[
-                    const SizedBox(width: Spacing.level3),
-                    _HoverActionButton(
-                      icon: toggleIcon,
-                      color: toggleColor,
-                      tooltip: toggleLabel,
-                      onPressed: widget.onToggleRead,
-                    ),
-                    const SizedBox(width: Spacing.level2),
-                    _HoverActionButton(
-                      icon: FLucideIcons.trash2,
-                      color: colors.destructive,
-                      tooltip: l10n.notificationActionDelete,
-                      onPressed: widget.onDismiss,
-                    ),
-                  ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isHovered,
+                    builder: (context, isHovered, _) {
+                      if (!isHovered) return const SizedBox.shrink();
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(width: Spacing.level3),
+                          _HoverActionButton(
+                            icon: toggleIcon,
+                            color: toggleColor,
+                            tooltip: toggleLabel,
+                            onPressed: widget.onToggleRead,
+                          ),
+                          const SizedBox(width: Spacing.level2),
+                          _HoverActionButton(
+                            icon: FLucideIcons.trash2,
+                            color: colors.destructive,
+                            tooltip: l10n.notificationActionDelete,
+                            onPressed: widget.onDismiss,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -284,10 +299,7 @@ class _HoverActionButton extends StatelessWidget {
           icon: Icon(icon, size: 16),
           color: color,
           padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: 32,
-            minHeight: 32,
-          ),
+          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
           onPressed: onPressed,
         ),
       ),

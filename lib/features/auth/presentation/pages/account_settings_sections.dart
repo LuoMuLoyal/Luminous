@@ -283,8 +283,7 @@ class _PasswordSectionState extends State<PasswordSection> {
                   label: Text(l10n.authCurrentPasswordLabel),
                   hint: l10n.authPasswordHint,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      (value == null || value.trim().isEmpty)
+                  validator: (value) => (value == null || value.trim().isEmpty)
                       ? l10n.authCurrentPasswordRequiredToast
                       : null,
                 ),
@@ -296,8 +295,7 @@ class _PasswordSectionState extends State<PasswordSection> {
                   label: Text(l10n.authNewPasswordLabel),
                   hint: l10n.authPasswordHint,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      (value == null || value.trim().isEmpty)
+                  validator: (value) => (value == null || value.trim().isEmpty)
                       ? l10n.authNewPasswordRequiredToast
                       : null,
                 ),
@@ -384,8 +382,7 @@ class _DeleteAccountSectionState extends State<DeleteAccountSection> {
                   label: Text(l10n.authCurrentPasswordLabel),
                   hint: l10n.authDeleteAccountHint,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) =>
-                      (value == null || value.trim().isEmpty)
+                  validator: (value) => (value == null || value.trim().isEmpty)
                       ? l10n.authCurrentPasswordRequiredToast
                       : null,
                 )
@@ -405,9 +402,10 @@ class _DeleteAccountSectionState extends State<DeleteAccountSection> {
                           ? l10n.authSendCode
                           : l10n.authSendCodeAgain(widget.cooldownSeconds!),
                       isLoading: widget.isSendingCode,
-                      onSendCode: widget.isSendingCode ||
-                          (widget.cooldownSeconds != null &&
-                              widget.cooldownSeconds! > 0)
+                      onSendCode:
+                          widget.isSendingCode ||
+                              (widget.cooldownSeconds != null &&
+                                  widget.cooldownSeconds! > 0)
                           ? null
                           : () => widget.onSendCode(),
                     ),

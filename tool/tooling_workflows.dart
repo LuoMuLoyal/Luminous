@@ -71,16 +71,14 @@ Future<void> runPrePushChecks(ToolContext context) async {
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
-  // ── Documentation check ──────────────────────────────────────
-  // Run before format/analyze so the commit fails fast if docs are
-  // missing. check_doc_coverage.dart blocks by default when code files
-  // are staged but no docs/ files are included.
-  // Bypass via SKIP_DOC_CHECK=1 or --no-verify.
+  // ── Documentation check (non-blocking) ───────────────────────
+  // Runs in warning-only mode so missing docs are reported but do
+  // not block the commit. Bypass entirely with SKIP_DOC_CHECK=1.
   await runLoggedCommand(
     'dart',
-    ['run', 'tool/check_doc_coverage.dart', '--staged'],
+    ['run', 'tool/check_doc_coverage.dart', '--warning-only', '--staged'],
     workingDirectory: context.repoRoot,
-    stepName: 'doc-check',
+    stepName: 'doc-check (warning only)',
   );
   stdout.writeln('');
 

@@ -2,6 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
+/// A label-value row with a fixed-width label, used in clinic summary
+/// and suggestion history detail layouts.
+///
+/// The label column is 80px wide with muted foreground color; the value
+/// expands to fill the remaining space.
+class MetaRow extends StatelessWidget {
+  const MetaRow({super.key, required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              label,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ),
+          const SizedBox(width: Spacing.level3),
+          Expanded(
+            child: Text(value, style: TypographyToken.level3.body(context)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ReportMetricTrack extends StatelessWidget {
   const ReportMetricTrack({
     super.key,

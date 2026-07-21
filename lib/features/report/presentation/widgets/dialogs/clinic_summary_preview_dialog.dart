@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:luminous/core/design/design.dart';
@@ -16,6 +12,7 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';
+import 'package:luminous/features/report/presentation/utils/pdf_download.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -121,33 +118,21 @@ class _ClinicSummaryPreviewContentState
 
     setState(() => _isPdfDownloading = true);
     try {
-      final response = await dio.get<List<int>>(
-        LucentApiPaths.clinicSummaryPreviewPdf,
-        options: Options(responseType: ResponseType.bytes),
+      final result = await downloadAndSharePdf(
+        dio: dio,
+        path: LucentApiPaths.clinicSummaryPreviewPdf,
+        fileNamePrefix: 'clinic-summary',
+        shareSubject: l10n.reportExportClinicShareTitle,
       );
-      final bytes = response.data ?? <int>[];
-      if (bytes.isEmpty) {
-        if (mounted) {
-          await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
-        }
-        return;
-      }
-
-      final dir = await getTemporaryDirectory();
-      final file = File(
-        '${dir.path}/clinic-summary-${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-      await file.writeAsBytes(bytes);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          subject: l10n.reportExportClinicShareTitle,
-        ),
-      );
-    } catch (e) {
       if (mounted) {
-        await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+        switch (result) {
+          case PdfDownloadResult.success:
+            break;
+          case PdfDownloadResult.empty:
+            await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
+          case PdfDownloadResult.failed:
+            await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+        }
       }
     } finally {
       if (mounted) {
@@ -194,7 +179,7 @@ class _ClinicSummaryPreviewContentState
           if (mounted) {
             await AppToast.show(
               context,
-              '${l10n.reportExportFailedToast}: ${error.message}',
+              l10n.reportExportFailedWithReason(error.message),
             );
           }
       }

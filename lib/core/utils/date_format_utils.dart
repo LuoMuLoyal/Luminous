@@ -44,6 +44,17 @@ String formatDateTimeLabel(String iso8601, Locale locale, {String? fallback}) {
   ).add_Hm().format(dt.toLocal());
 }
 
+/// Formats a date-time string (ISO-8601) as a locale-aware full date + time.
+///
+/// Uses `yMd` + `Hm` pattern, e.g. "2026/7/18 14:30" (zh) /
+/// "7/18/2026 14:30" (en).
+/// Returns [fallback] (defaults to the raw input) if parsing fails.
+String formatDateTimeFull(String iso8601, Locale locale, {String? fallback}) {
+  final dt = DateTime.tryParse(iso8601)?.toLocal();
+  if (dt == null) return fallback ?? iso8601;
+  return intl.DateFormat.yMd(locale.toLanguageTag()).add_Hm().format(dt);
+}
+
 /// Formats a date-time string (ISO-8601) as a locale-aware time if the date
 /// is today, otherwise as a locale-aware short date.
 ///

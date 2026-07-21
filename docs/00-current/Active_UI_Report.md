@@ -133,3 +133,10 @@ Last updated: 2026-07-20
 - **诊所摘要公开分享页**：新增 `clinic_summary_shared.dart` 页面和 `/report/clinic-summary/:token` 路由（公开路由，无需认证）。页面调用 `GET /reports/clinic-summary/shared/:token` 展示分享的摘要内容，底部含 [下载 PDF] 按钮（调用 `shared/:token/pdf`，`extra: {skipAuthorization: true}`）。
 - **诊所摘要 Provider**：新增 `clinic_summary.dart` provider 文件，包含 `clinicSummaryPreviewProvider`（autoDispose FutureProvider）和 `clinicSummarySharedProvider`（autoDispose family FutureProvider）。
 - **诊所摘要共享内容组件**：新增 `clinic_summary_content.dart`，`ClinicSummaryContent` widget 复用于预览弹窗和公开分享页，展示生成时间、数据范围、脱敏个人信息、过敏/疾病/用药列表、关键发现、免责声明，底部可选 [下载 PDF] / [分享] 按钮。
+
+## 2026-07-21 审查修复
+
+- **公开分享页错误区分**：`clinic_summary_shared.dart` 的错误回调从统一显示"链接已过期"改为通过 `LucentErrorMapper.toAppError` 区分网络错误（`AppErrorKind.network`）和链接失效。网络错误显示"网络连接失败"+ `wifiOff` 图标 + 重试按钮；其他错误仍显示"链接已过期" + `triangleAlert` 图标。
+- **PDF 下载逻辑提取**：新增 `pdf_download.dart` 工具文件，`downloadAndSharePdf()` 函数封装 Dio 二进制下载 → 写临时文件 → SharePlus 分享的完整流程。预览弹窗和公开分享页均改为调用此函数，消除重复代码。
+- **MetaRow / formatDateTimeFull 提取**：`_MetaRow` widget 提取为 `components.dart` 中的公共 `MetaRow`；`_formatDateTime` 方法提取为 `date_format_utils.dart` 中的 `formatDateTimeFull()`。`clinic_summary_content.dart` 和 `suggestion_history_detail_sheet.dart` 均改用公共组件。
+- **分享失败错误消息格式**：硬拼接 `'${l10n.reportExportFailedToast}: ${error.message}'` 改为 l10n 参数化字符串 `reportExportFailedWithReason(reason)`，中英文冒号格式由 ARB 模板控制。

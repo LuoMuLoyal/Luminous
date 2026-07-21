@@ -1,19 +1,17 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
+import 'package:luminous/features/report/presentation/utils/pdf_download.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -47,12 +45,26 @@ class _ClinicSummarySharedPageState
       title: l10n.reportClinicSummarySharedTitle,
       child: async.when(
         loading: () => const Center(child: FCircularProgress()),
-        error: (_, __) => AppStateErrorView(
-          title: l10n.reportClinicSummarySharedExpired,
-          description: l10n.reportClinicSummaryLoadFailed,
-          icon: FLucideIcons.triangleAlert,
-          tone: AppStateTone.warning,
-        ),
+        error: (error, _) {
+          final appError = LucentErrorMapper.toAppError(error);
+          final isNetworkError = appError.kind == AppErrorKind.network;
+
+          return AppStateErrorView(
+            title: isNetworkError
+                ? l10n.reportClinicSummarySharedNetworkError
+                : l10n.reportClinicSummarySharedExpired,
+            description: l10n.reportClinicSummaryLoadFailed,
+            icon: isNetworkError
+                ? FLucideIcons.wifiOff
+                : FLucideIcons.triangleAlert,
+            tone: AppStateTone.warning,
+            actionLabel: isNetworkError ? l10n.todayRetryAction : null,
+            onAction: isNetworkError
+                ? () =>
+                      ref.invalidate(clinicSummarySharedProvider(widget.token))
+                : null,
+          );
+        },
         data: (dto) => SingleChildScrollView(
           padding: const EdgeInsets.all(Spacing.level5),
           child: ClinicSummaryContent(
@@ -73,36 +85,22 @@ class _ClinicSummarySharedPageState
 
     setState(() => _isPdfDownloading = true);
     try {
-      final response = await dio.get<List<int>>(
-        LucentApiPaths.clinicSummarySharedPdf(widget.token),
-        options: Options(
-          responseType: ResponseType.bytes,
-          extra: const {'skipAuthorization': true},
-        ),
+      final result = await downloadAndSharePdf(
+        dio: dio,
+        path: LucentApiPaths.clinicSummarySharedPdf(widget.token),
+        fileNamePrefix: 'clinic-summary-shared',
+        shareSubject: l10n.reportClinicSummarySharedTitle,
+        skipAuth: true,
       );
-      final bytes = response.data ?? <int>[];
-      if (bytes.isEmpty) {
-        if (mounted) {
-          await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
-        }
-        return;
-      }
-
-      final dir = await getTemporaryDirectory();
-      final file = File(
-        '${dir.path}/clinic-summary-shared-${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-      await file.writeAsBytes(bytes);
-
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          subject: l10n.reportClinicSummarySharedTitle,
-        ),
-      );
-    } catch (e) {
       if (mounted) {
-        await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+        switch (result) {
+          case PdfDownloadResult.success:
+            break;
+          case PdfDownloadResult.empty:
+            await AppToast.show(context, l10n.reportClinicSummaryPdfEmpty);
+          case PdfDownloadResult.failed:
+            await AppToast.show(context, l10n.reportClinicSummaryPdfFailed);
+        }
       }
     } finally {
       if (mounted) {

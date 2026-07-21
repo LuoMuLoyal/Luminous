@@ -94,8 +94,10 @@ class AssistantMessageBubble extends StatelessWidget {
                     MarkdownBody(
                       data: content,
                       selectable: true,
-                      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                          .copyWith(
+                      styleSheet:
+                          MarkdownStyleSheet.fromTheme(
+                            Theme.of(context),
+                          ).copyWith(
                             p: TypographyToken.level4
                                 .body(context)
                                 .copyWith(color: foreground),
@@ -135,7 +137,9 @@ class AssistantMessageBubble extends StatelessWidget {
                   ],
                   if (!isStreaming &&
                       !isUser &&
-                      proposedActions.any((proposal) => proposal.isVisible)) ...[
+                      proposedActions.any(
+                        (proposal) => proposal.isVisible,
+                      )) ...[
                     const SizedBox(height: Spacing.level4),
                     for (final proposal in proposedActions.where(
                       (proposal) => proposal.isVisible,
@@ -178,7 +182,9 @@ class AssistantMessageBubble extends StatelessWidget {
     final renderBox = context.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
-    final position = renderBox.localToGlobal(renderBox.size.bottomLeft(Offset.zero));
+    final position = renderBox.localToGlobal(
+      renderBox.size.bottomLeft(Offset.zero),
+    );
 
     showMenu<String>(
       context: context,
@@ -225,26 +231,28 @@ class _AnimatedDots extends StatelessWidget {
       children: List.generate(3, (index) {
         return Padding(
           padding: EdgeInsets.only(right: index < 2 ? 3.0 : 0),
-          child: Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          )
-              .animate(
-                onPlay: (controller) => controller.repeat(),
-              )
-              .scale(
-                duration: 600.ms,
-                delay: (index * 200).ms,
-                begin: Offset.zero,
-                end: const Offset(1, 1),
-              )
-              .then()
-              .scale(
-                duration: 600.ms,
-                begin: const Offset(1, 1),
-                end: Offset.zero,
-              ),
+          child:
+              Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                  .animate(onPlay: (controller) => controller.repeat())
+                  .scale(
+                    duration: 600.ms,
+                    delay: (index * 200).ms,
+                    begin: Offset.zero,
+                    end: const Offset(1, 1),
+                  )
+                  .then()
+                  .scale(
+                    duration: 600.ms,
+                    begin: const Offset(1, 1),
+                    end: Offset.zero,
+                  ),
         );
       }),
     );

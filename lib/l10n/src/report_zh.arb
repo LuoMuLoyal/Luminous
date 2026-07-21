@@ -200,5 +200,14 @@
   "reportClinicSummaryProfileBloodType": "血型",
   "reportClinicSummaryNotSet": "未设置",
   "reportClinicSummaryLoading": "正在生成诊所摘要…",
-  "reportClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试"
+  "reportClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试",
+  "reportClinicSummarySharedNetworkError": "网络连接失败，请检查网络后重试",
+  "reportExportFailedWithReason": "导出失败：{reason}",
+  "@reportExportFailedWithReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -71,10 +71,10 @@ class AssistantConversationSurface extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: FCircularProgress(),
-                    )
+                          width: 16,
+                          height: 16,
+                          child: FCircularProgress(),
+                        )
                         .animate(onPlay: (c) => c.repeat())
                         .rotate(duration: 800.ms),
                     const SizedBox(width: Spacing.level2),

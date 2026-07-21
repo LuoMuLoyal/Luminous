@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:intl/intl.dart';
 
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -59,6 +60,7 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(Spacing.level5),
@@ -106,42 +108,42 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
           const SizedBox(height: Spacing.level5),
 
           // Meta fields.
-          _MetaRow(
+          MetaRow(
             label: l10n.reportSuggestionHistoryDetailRuleId,
             value: suggestion.ruleId,
           ),
-          _MetaRow(
+          MetaRow(
             label: l10n.reportSuggestionHistoryDetailRuleVersion,
             value: suggestion.ruleVersion,
           ),
-          _MetaRow(
+          MetaRow(
             label: l10n.reportSuggestionHistoryDetailTriggerType,
             value: _triggerTypeLabel(suggestion.triggerType, l10n),
           ),
-          _MetaRow(
+          MetaRow(
             label: l10n.reportSuggestionHistoryDetailConfidence,
             value: _confidenceLabel(suggestion.confidence, l10n),
           ),
-          _MetaRow(
+          MetaRow(
             label: l10n.reportSuggestionHistoryDetailGeneratedAt,
-            value: _formatDateTime(context, suggestion.generatedAt),
+            value: formatDateTimeFull(suggestion.generatedAt, locale),
           ),
 
           // Feedback (optional).
           if (suggestion.feedback != null) ...[
             const SizedBox(height: Spacing.level4),
-            _MetaRow(
+            MetaRow(
               label: l10n.reportSuggestionHistoryDetailFeedback,
               value: _feedbackLabel(suggestion.feedback!, l10n),
             ),
             if (suggestion.feedbackAt != null)
-              _MetaRow(
+              MetaRow(
                 label: l10n.reportSuggestionHistoryDetailFeedbackAt,
-                value: _formatDateTime(context, suggestion.feedbackAt!),
+                value: formatDateTimeFull(suggestion.feedbackAt!, locale),
               ),
           ] else ...[
             const SizedBox(height: Spacing.level4),
-            _MetaRow(
+            MetaRow(
               label: l10n.reportSuggestionHistoryDetailFeedback,
               value: l10n.reportSuggestionHistoryDetailNoFeedback,
             ),
@@ -150,9 +152,9 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
           // Expiry (optional).
           if (suggestion.expiredAt != null) ...[
             const SizedBox(height: Spacing.level4),
-            _MetaRow(
+            MetaRow(
               label: l10n.reportSuggestionHistoryDetailExpiredAt,
-              value: _formatDateTime(context, suggestion.expiredAt!),
+              value: formatDateTimeFull(suggestion.expiredAt!, locale),
             ),
           ],
 
@@ -214,50 +216,9 @@ class _SuggestionHistoryDetailContent extends StatelessWidget {
       TodaySuggestionFeedback.suppress => l10n.todaySuggestionSuppressAction,
     };
   }
-
-  String _formatDateTime(BuildContext context, String iso8601) {
-    final dateTime = DateTime.tryParse(iso8601)?.toLocal();
-    if (dateTime == null) return iso8601;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    return DateFormat.yMd(locale).add_Hm().format(dateTime);
-  }
 }
 
 // ── Sub-widgets ─────────────────────────────────────────────────────────────
-
-class _MetaRow extends StatelessWidget {
-  const _MetaRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.level1),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              label,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
-          ),
-          const SizedBox(width: Spacing.level3),
-          Expanded(
-            child: Text(value, style: TypographyToken.level3.body(context)),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _LifecycleBadge extends StatelessWidget {
   const _LifecycleBadge({required this.lifecycleState, required this.l10n});

@@ -534,10 +534,10 @@ class _ProfileSection extends StatelessWidget {
           valueListenable: avatarController,
           builder: (context, value, _) {
             final url = value.text.trim();
-            final isValidUrl = url.isEmpty ||
+            final isValidUrl =
+                url.isEmpty ||
                 (Uri.tryParse(url)?.hasAbsolutePath == true &&
-                    (url.startsWith('http://') ||
-                        url.startsWith('https://')));
+                    (url.startsWith('http://') || url.startsWith('https://')));
             return Row(
               children: [
                 FAvatar.raw(
@@ -549,10 +549,8 @@ class _ProfileSection extends StatelessWidget {
                             fit: BoxFit.cover,
                             width: 56,
                             height: 56,
-                            errorBuilder: (_, __, ___) => const Icon(
-                              FLucideIcons.userRound,
-                              size: 28,
-                            ),
+                            errorBuilder: (_, __, ___) =>
+                                const Icon(FLucideIcons.userRound, size: 28),
                           ),
                         )
                       : const Icon(FLucideIcons.userRound, size: 28),
@@ -565,11 +563,13 @@ class _ProfileSection extends StatelessWidget {
                         : isValidUrl
                         ? l10n.authAvatarPreviewReady
                         : l10n.authAvatarPreviewInvalid,
-                    style: TypographyToken.level3.body(context).copyWith(
-                      color: url.isEmpty || isValidUrl
-                          ? colors.mutedForeground
-                          : colors.destructive,
-                    ),
+                    style: TypographyToken.level3
+                        .body(context)
+                        .copyWith(
+                          color: url.isEmpty || isValidUrl
+                              ? colors.mutedForeground
+                              : colors.destructive,
+                        ),
                   ),
                 ),
               ],

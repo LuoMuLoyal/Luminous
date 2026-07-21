@@ -406,8 +406,7 @@ class _GeneralSection extends ConsumerWidget {
               icon: FLucideIcons.bell,
               title: l10n.mineSettingsNotificationsTitle,
               value: _notificationSummary(l10n, ref),
-              onTap: () =>
-                  context.push(AppRoutes.settingsNotifications),
+              onTap: () => context.push(AppRoutes.settingsNotifications),
             ),
           ],
         ),

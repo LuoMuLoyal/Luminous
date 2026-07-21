@@ -193,5 +193,14 @@
   "reportClinicSummaryProfileBloodType": "Blood Type",
   "reportClinicSummaryNotSet": "Not set",
   "reportClinicSummaryLoading": "Generating clinic summary…",
-  "reportClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later"
+  "reportClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later",
+  "reportClinicSummarySharedNetworkError": "Network connection failed, please check your network and try again",
+  "reportExportFailedWithReason": "Export failed: {reason}",
+  "@reportExportFailedWithReason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }
