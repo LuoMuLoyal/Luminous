@@ -44,7 +44,8 @@ class MedicinePage extends ConsumerWidget {
     final pageState = resolvePageViewState<MedicineWorkspace>(
       session: session,
       data: workspaceAsync,
-      isInsufficient: (workspace) => workspace.plan.items.isEmpty,
+      isInsufficient: (workspace) =>
+          session.isAuthenticated && workspace.plan.items.isEmpty,
     );
 
     return ShellDeferredContent(
@@ -425,6 +426,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
         ),
         child: Row(
           children: [
+            const SizedBox(width: Spacing.level2),
             Icon(
               FLucideIcons.search,
               color: colors.mutedForeground,

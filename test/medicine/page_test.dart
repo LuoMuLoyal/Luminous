@@ -1,4 +1,5 @@
 import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/spacing.dart';
 import '../helpers/feature_mocks.dart';
 import 'dart:async';
 
@@ -550,6 +551,155 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('Medicine search bar icon is offset by Spacing.level2', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          notificationUnreadCountProvider.overrideWith((ref) async => 0),
+          medicineWorkspaceRepositoryProvider.overrideWithValue(
+            const MockMedicineWorkspaceRepository(),
+          ),
+        ],
+        child: const TestForuiApp(home: MedicinePage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    final row = tester.widget<Row>(
+      find
+          .descendant(
+            of: find.byKey(const Key('medicine-home-search-bar')),
+            matching: find.byType(Row),
+          )
+          .first,
+    );
+
+    expect(row.children.first, isA<SizedBox>());
+    expect((row.children.first as SizedBox).width, Spacing.level2);
+    expect(row.children[1], isA<Icon>());
+  });
+
+  testWidgets(
+    'Medicine signed-out preview with empty plan shows full dashboard empty states',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedOutAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
+            medicineWorkspaceRepositoryProvider.overrideWithValue(
+              const _EmptyPreviewWorkspaceRepository(),
+            ),
+          ],
+          child: const TestForuiApp(home: MedicinePage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.byType(SignInHintBanner), findsOneWidget);
+      expect(find.text(l10n.medicineEmptyAddFirstTitle), findsNothing);
+
+      for (final key in <String>[
+        'medicine-current-medications',
+        'medicine-today-plan',
+        'medicine-safety-summary',
+        'medicine-action-hub',
+      ]) {
+        final finder = find.byKey(Key(key));
+        await tester.scrollUntilVisible(
+          finder,
+          240,
+          scrollable: _medicineMobileScrollable(),
+        );
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(finder, findsOneWidget);
+      }
+
+      expect(find.text(l10n.medicineNoMedicineTitle), findsOneWidget);
+      expect(find.text(l10n.medicineTodayPlanEmpty), findsOneWidget);
+      expect(find.text(l10n.medicineSafetyPanelEmptyTitle), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'Medicine signed-in empty workspace keeps add-first empty state',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      const emptyWorkspace = MedicineWorkspace(
+        hero: MedicineHero(
+          metricDosesToday: '0',
+          metricAdherence: '--',
+          metricNextDose: '--',
+        ),
+        quickActions: <MedicineQuickAction>[],
+        plan: MedicinePlanSurface(items: <MedicinePlanItem>[]),
+        alerts: <MedicineAlert>[],
+        promisePoints: <MedicinePromisePoint>[],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            notificationUnreadCountProvider.overrideWith((ref) async => 0),
+            medicineWorkspaceRepositoryProvider.overrideWithValue(
+              const _StaticMedicineWorkspaceRepository(emptyWorkspace),
+            ),
+          ],
+          child: const TestForuiApp(home: MedicinePage()),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(find.text(l10n.medicineEmptyAddFirstTitle), findsOneWidget);
+      expect(find.byType(SignInHintBanner), findsNothing);
+    },
+  );
+}
+
+class _EmptyPreviewWorkspaceRepository implements MedicineWorkspaceRepository {
+  const _EmptyPreviewWorkspaceRepository();
+
+  @override
+  Future<MedicineWorkspace> fetchWorkspace() async =>
+      MedicineWorkspace.signedOut();
+
+  @override
+  Future<MedicineWorkspace> get signedOutWorkspace =>
+      Future.value(MedicineWorkspace.signedOut());
 }
 
 class _EmptySafetyTipListNotifier extends MedicineSafetyTipListNotifier {

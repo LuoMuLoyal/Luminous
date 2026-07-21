@@ -157,3 +157,12 @@ Last updated: 2026-07-20
 - **指标 chip 联动**：`MedicineRiskMetricChip` 新增 `onTap` 参数，有对应列表段时点击用 `Scrollable.ensureVisible` 滚动到 findings/coverage 段。`_RiskCheckSectionCard` 构造函数加 `super.key` 接受 `GlobalKey`。
 - **桌面预览空态改结构化**：搜索 `PreviewPanel` 的 `preview == null` 空态从一行小字改为带图标+居中文案的结构化空态。
 
+## 2026-07-21 Medicine 主页空态与搜索栏微调
+
+- **搜索栏图标偏移**：`_MedicineMobileSearchBar` 的放大镜左侧增加 `SizedBox(width: Spacing.level2)`，让图标与左边框保持 6px 呼吸间距。
+- **未登录 preview 空态完整化**：`MedicinePage` 的 `isInsufficient` 判断增加 `session.isAuthenticated` 前缀；未登录时空计划不再进入"添加你的第一个药品"全屏空态，而是走 `readyBuilder` 并在顶部显示 `SignInHintBanner`，下方完整渲染当前用药盒、今日服用计划、用药安全摘要、用药操作四个 section 的空态。
+- **已登录空计划保持不变**：仍显示 `AppStateMessageView`（"添加你的第一个药品"）。
+- **今日服用计划空态文案**：`mobile_records.dart` 使用独立 `_TodayPlanEmpty`，文案键 `medicineTodayPlanEmpty`（"No doses scheduled today" / "今日暂无服药计划"）。
+- **用药安全空态卡片**：`mobile_safety.dart` 在 `result == null` 时渲染 `_SafetyEngineEmpty` 显式空态卡片，文案键 `medicineSafetyPanelEmptyTitle` / `medicineSafetyPanelEmptyBody`。
+- **测试**：新增/更新 `test/medicine/page_test.dart` 红测试先行，覆盖搜索栏偏移、未登录空 dashboard、已登录空计划三个场景；`flutter test test/medicine` 全部通过。
+

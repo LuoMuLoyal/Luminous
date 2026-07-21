@@ -76,6 +76,9 @@ Persisted preference keys:
    (`medicineReminderToggleFailedToast`) are owned by the Medicine feature ARB entries.
 - Medicine add-before-save risk precheck strings such as confirmation sheet title, warning
    description, confirm action, and failure toast are owned by the Medicine/Search ARB entries.
+- Medicine dashboard empty-state copy (`medicineTodayPlanEmpty`,
+  `medicineSafetyPanelEmptyTitle`, `medicineSafetyPanelEmptyBody`) is owned by the Medicine
+  feature ARB entries.
 - Search result "already added" label (`medicineSearchAlreadyAddedLabel`) is owned by the
   Medicine/Search ARB entries.
 - Sleep structured-record strings such as bedtime/wake-time labels, duration, quality, and

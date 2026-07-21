@@ -45,7 +45,7 @@ class _MedicineRecordsSection extends StatelessWidget {
                 const AppDivider(),
                 const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
-                  _DrugBoxEmpty(l10n: l10n)
+                  _TodayPlanEmpty(l10n: l10n)
                 else
                   Column(
                     children: [
@@ -215,5 +215,53 @@ class _TodayPlanRow extends StatelessWidget {
         .map((slot) => _slotTimeLabel(l10n, slot))
         .where((value) => value.trim().isNotEmpty)
         .join(' · ');
+  }
+}
+
+class _TodayPlanEmpty extends StatelessWidget {
+  const _TodayPlanEmpty({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+      child: Row(
+        children: [
+          FAvatar.raw(
+            size: Spacing.level8,
+            child: Icon(
+              FLucideIcons.calendarCheck,
+              color: SemanticColor.primary.solid(context),
+              size: Spacing.level5,
+            ),
+          ),
+          const SizedBox(width: Spacing.level4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.medicineTodayPlanEmpty,
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: Spacing.level1),
+                Text(
+                  l10n.medicineNoMedicineBody,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

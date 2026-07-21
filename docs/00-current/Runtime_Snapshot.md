@@ -89,6 +89,7 @@ Last updated: 2026-07-21 (Today compact summary)
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`（10 个 fragment × 2 locale = 20 文件）。
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
+- Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - 日期格式化通过 `lib/core/utils/date_format_utils.dart`（locale 感知 `intl.DateFormat` 封装）。
 
 ## 测试与验证
