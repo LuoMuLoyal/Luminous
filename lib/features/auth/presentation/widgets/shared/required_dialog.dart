@@ -40,7 +40,7 @@ class _AuthRequiredDialogGateState extends State<AuthRequiredDialogGate> {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.shrink(key: Key('auth-required-dialog-gate'));
+    return const SizedBox.shrink();
   }
 }
 
@@ -56,7 +56,12 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
     return;
   }
 
-  await showAuthRequiredDialog(context, onLogin: () => context.push(route));
+  // When not signed in, show login dialog and return to current location
+  // after login. The user can then retry navigating to the target route.
+  await showAuthRequiredDialog(
+    context,
+    onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+  );
 }
 
 Future<void> showAuthRequiredDialog(
@@ -68,6 +73,7 @@ Future<void> showAuthRequiredDialog(
     context: context,
     scrollable: false,
     builder: (dialogContext) => Column(
+      key: const Key('auth-required-dialog'),
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

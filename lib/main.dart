@@ -11,22 +11,20 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 Future<void> main() async {
   await _initSentry();
 
-  unawaited(
-    runZonedGuarded(
-      () async {
-        WidgetsFlutterBinding.ensureInitialized();
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-        FlutterError.onError = (details) {
-          FlutterError.presentError(details);
-          Sentry.captureException(details.exception, stackTrace: details.stack);
-        };
+      FlutterError.onError = (details) {
+        FlutterError.presentError(details);
+        Sentry.captureException(details.exception, stackTrace: details.stack);
+      };
 
-        runApp(const ProviderScope(child: LuminousApp()));
-      },
-      (error, stackTrace) {
-        Sentry.captureException(error, stackTrace: stackTrace);
-      },
-    ),
+      runApp(const ProviderScope(child: LuminousApp()));
+    },
+    (error, stackTrace) {
+      Sentry.captureException(error, stackTrace: stackTrace);
+    },
   );
 }
 

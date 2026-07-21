@@ -329,8 +329,8 @@ class ReportPage extends ConsumerWidget {
             ),
           )
         : _ReportMobileShell(
-            isGenerating: false,
-            isSyncing: false,
+            isGenerating: true,
+            isSyncing: true,
             onGenerate: () {},
             onSync: () {},
             onRefresh: () async {},
@@ -473,7 +473,8 @@ class ReportPage extends ConsumerWidget {
               isSyncing: isRefreshing,
             ),
             const SizedBox(height: Spacing.level4),
-            Expanded(child: dashboardView),
+            // dashboardView 内部处理滚动，不需要 Expanded
+            dashboardView,
           ],
         ),
       );

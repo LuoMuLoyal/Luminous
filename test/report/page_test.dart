@@ -418,7 +418,8 @@ void main() {
     await tester.pump();
     expect(repo.fetchCount, 1);
     expect(find.byType(ReportSkeletonView), findsOneWidget);
-    expect(find.byKey(const Key('report-top-generate-action')), findsNothing);
+    // Action bar is shown but buttons are disabled during loading
+    expect(find.byKey(const Key('report-top-generate-action')), findsOneWidget);
     expect(repo.fetchCount, 1);
 
     repo.complete(MockReportRepository.previewDashboard);

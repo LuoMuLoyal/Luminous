@@ -549,7 +549,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     await tester.tap(basicTile.hitTestable());
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
 
     expect(find.byType(MinePage), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);
@@ -559,20 +559,19 @@ void main() {
     expect(find.text('login-page:/'), findsNothing);
 
     await tester.tap(find.byKey(const Key('auth-required-cancel-action')));
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('auth-required-dialog')), findsNothing);
     expect(find.byType(MinePage), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);
 
     await tester.ensureVisible(basicInfo);
-    await tester.pump(const Duration(milliseconds: 200));
+    await tester.pumpAndSettle();
     await tester.tap(basicTile.hitTestable());
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
     expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
     await tester.tap(find.byKey(const Key('auth-required-login-action')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
 
     expect(find.text('login-page:/'), findsOneWidget);
     expect(find.byType(ProfileEditPage), findsNothing);

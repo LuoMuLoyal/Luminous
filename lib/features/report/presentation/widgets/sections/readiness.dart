@@ -134,7 +134,7 @@ class ReportReadinessSection extends StatelessWidget {
                   const SizedBox(width: Spacing.level3),
                   Expanded(
                     child: FButton(
-                      key: const Key('report-top-sync-action'),
+                      key: const Key('report-readiness-sync-action'),
                       onPress: onSync,
                       variant: FButtonVariant.outline,
                       prefix: const Icon(FLucideIcons.refreshCw, size: 16),
@@ -209,7 +209,7 @@ class _PrimaryAction extends StatelessWidget {
         child: Text(section.l10n.reportContinueRecordAction),
       ),
       ReportReadinessStatus.ready => FButton(
-        key: const Key('report-top-generate-action'),
+        key: const Key('report-readiness-generate-action'),
         onPress: section.isGenerating ? null : section.onGenerate,
         prefix: section.isGenerating
             ? const SizedBox(
