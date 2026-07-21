@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -372,6 +374,18 @@ class _DeleteAccountSectionState extends State<DeleteAccountSection> {
       title: l10n.authDeleteAccountSectionTitle,
       dangerLabel: l10n.authDeleteAccountDangerZoneLabel,
       children: [
+        _MutedText(l10n.authDeleteAccountPolicyHint),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: FButton(
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            mainAxisSize: MainAxisSize.min,
+            onPress: () =>
+                context.push('${AppRoutes.legal}/account-cancellation'),
+            child: Text(l10n.authDeleteAccountPolicyAction),
+          ),
+        ),
         Form(
           key: _formKey,
           child: widget.user.hasPassword

@@ -180,5 +180,7 @@
   "authAppleSignInFailed": "Apple Sign In failed.",
   "authRegisterTermsRequiredHint": "Please read and accept the Terms of Service and Privacy Policy first",
   "authEmailVerifyAction": "Verify now",
-  "authDeleteAccountDangerZoneLabel": "Danger zone"
+  "authDeleteAccountDangerZoneLabel": "Danger zone",
+  "authDeleteAccountPolicyHint": "Account data will be permanently deleted within 30 days. See the cancellation policy for details.",
+  "authDeleteAccountPolicyAction": "View cancellation policy"
 }

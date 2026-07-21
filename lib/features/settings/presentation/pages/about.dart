@@ -100,6 +100,33 @@ class AboutSettingsPage extends ConsumerWidget {
                   onPress: () => context.push('${AppRoutes.legal}/terms'),
                 ),
                 FTile(
+                  title: Text(l10n.settingsAboutDisclaimer),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push('${AppRoutes.legal}/disclaimer'),
+                ),
+                FTile(
+                  title: Text(l10n.settingsAboutMinorProtection),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () =>
+                      context.push('${AppRoutes.legal}/minor-protection'),
+                ),
+                FTile(
+                  title: Text(l10n.settingsAboutSdkList),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push('${AppRoutes.legal}/sdk-list'),
+                ),
+                FTile(
+                  title: Text(l10n.settingsAboutPermissions),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () => context.push('${AppRoutes.legal}/permissions'),
+                ),
+                FTile(
+                  title: Text(l10n.settingsAboutAccountCancellation),
+                  suffix: const Icon(FLucideIcons.chevronRight),
+                  onPress: () =>
+                      context.push('${AppRoutes.legal}/account-cancellation'),
+                ),
+                FTile(
                   title: Text(l10n.settingsAboutLicenses),
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => showLicensePage(

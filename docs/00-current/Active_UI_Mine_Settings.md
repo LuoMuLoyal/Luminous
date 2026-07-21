@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-21
+Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施）
 
 ## Mine 根页结构
 
@@ -92,6 +92,7 @@ Last updated: 2026-07-21
 - 退出登录 tile（`ConsumerWidget` + `authSessionProvider`），未登录时使用 `primary` 色而非 `error` 色（登录引导不被渲染成危险操作）。
 - 退出登录接入 `showDangerConfirmationDialog` 二次确认。
 - 账号注销支持密码和邮箱验证码两种确认方式（OAuth-only 用户通过验证码注销）。
+- 注销区域顶部显示注销政策提示文字 + ghost 按钮跳转 `/legal/account-cancellation`（2026-07-21 P1）。
 - `AuthAccountNotifier` 接入 `CooldownTimerMixin` 实现验证码发送倒计时。
 
 ## 助手入口
@@ -155,6 +156,7 @@ Last updated: 2026-07-21
 
 ## 法律文档
 
+- About 页法律入口完整覆盖 7 种文档类型（2026-07-21 P0 补全 + P1）：隐私政策、服务条款、医疗免责声明、未成年人保护、第三方 SDK、权限使用说明、账号注销政策，均跳转 App 内 `/legal/:docType`。
 - 列表页展示 7 种文档类型（条款/隐私/免责/未成年人保护/SDK 列表/权限/账号注销），每项带类型图标 + 标题 + 更新时间。
 - 详情页从滚动 `Markdown` 改为 `MarkdownBody` + `SingleChildScrollView`，支持文本选择（`selectable: true`）。
 - 正文字号从 `TypographyToken.level3`（14px）升级为 `level4`（16px），行高 `1.7`，长文阅读更舒适。

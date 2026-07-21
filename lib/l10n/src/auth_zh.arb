@@ -180,5 +180,7 @@
   "authAppleSignInFailed": "Apple 登录失败。",
   "authRegisterTermsRequiredHint": "请先阅读并同意服务条款与隐私政策",
   "authEmailVerifyAction": "去验证",
-  "authDeleteAccountDangerZoneLabel": "危险操作"
+  "authDeleteAccountDangerZoneLabel": "危险操作",
+  "authDeleteAccountPolicyHint": "注销后账户数据将在 30 天内永久删除，详见注销政策。",
+  "authDeleteAccountPolicyAction": "查看注销政策"
 }
