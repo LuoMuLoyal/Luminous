@@ -56,10 +56,7 @@ Future<void> pushAuthRequiredRoute(BuildContext context, String route) async {
     return;
   }
 
-  await showAuthRequiredDialog(
-    context,
-    onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-  );
+  await showAuthRequiredDialog(context, onLogin: () => context.push(route));
 }
 
 Future<void> showAuthRequiredDialog(
@@ -88,19 +85,19 @@ Future<void> showAuthRequiredDialog(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FButton(
+              variant: FButtonVariant.ghost,
+              key: const Key('auth-required-cancel-action'),
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.authCancelAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
               key: const Key('auth-required-login-action'),
               onPress: () {
                 Navigator.of(dialogContext).pop();
                 onLogin();
               },
               child: Text(l10n.authGoLogin),
-            ),
-            const SizedBox(width: Spacing.level3),
-            FButton(
-              variant: FButtonVariant.ghost,
-              key: const Key('auth-required-cancel-action'),
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.authCancelAction),
             ),
           ],
         ),

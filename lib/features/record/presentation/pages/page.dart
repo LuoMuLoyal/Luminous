@@ -169,8 +169,16 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           RecordDashboardView(
             dashboard: dashboard,
             isPreview: isPreview,
-            onFilterSelected: (type) =>
-                ref.read(selectedRecordFilterProvider.notifier).setFilter(type),
+            onFilterSelected: (type) {
+              // Defer provider modification to avoid "modified while
+              // widget tree was building" errors when filter chips
+              // rebuild during tap handling.
+              Future(
+                () => ref
+                    .read(selectedRecordFilterProvider.notifier)
+                    .setFilter(type),
+              );
+            },
             onDateSelected: (date) => _setSelectedDate(date),
             onQuickAction: (action) {
               // Defer provider modification to avoid "modified while

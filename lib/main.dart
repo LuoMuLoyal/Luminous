@@ -9,12 +9,13 @@ import 'package:luminous/core/config/env_keys.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await _initSentry();
 
   unawaited(
     runZonedGuarded(
       () async {
+        WidgetsFlutterBinding.ensureInitialized();
+
         FlutterError.onError = (details) {
           FlutterError.presentError(details);
           Sentry.captureException(details.exception, stackTrace: details.stack);

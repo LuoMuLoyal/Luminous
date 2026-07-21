@@ -50,7 +50,7 @@ class AppTopBar extends StatelessWidget {
 
     final children = <Widget>[
       Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Column(

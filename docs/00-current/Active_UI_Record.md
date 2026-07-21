@@ -131,3 +131,10 @@ Last updated: 2026-07-20 (P1 record)
 - **图标统一**：未登录与登录后的静态 quick actions 使用同一套图标（`briefcaseMedical` / `pill` / `droplets` / `utensils` / `moon` / `smile` / `notebookPen`），登录态原本深色的 `primary` softColor 改为 `neutral`，避免图标和背景融为一体。
 - **图标尺寸与背景**：`quick_entry_panel.dart` 的 `FAvatar` 背景从 `softColor.solid(context)` 改为 `softColor.subtle(context)`，去掉过深的圆形底色；头像容器从 `level6–level7`（20–28px）放大到 `level6–level7`（28–36px）；内部图标从 `Spacing.level4` 放大到 `Spacing.level5`（约 20px）。
 - **筛选条同步**：底部筛选 chip 同步显示 7 个类型，与快速记录入口一致。
+
+## 2026-07-21 筛选 Provider 修改延迟模式
+
+- **问题**：点击筛选 chip 时 `onFilterSelected` 回调在 widget build 生命周期内直接修改 `selectedRecordFilterProvider`，触发 `FlutterError: Tried to modify a provider while the widget tree was building`。
+- **修复**：`RecordPage` 向 `RecordDashboardView` 传递的 `onFilterSelected` 回调使用 `Future(() => ...)` 延迟 provider 修改，使其在 widget tree 构建完成后执行。此模式与 `onQuickAction` 中已有的 `quickEntryPreferencesProvider` 延迟修改保持一致。
+- **影响范围**：移动端 `RecordMobileFilter` 的 chip 点击、桌面端 `RecordFilterPanel` 的 `_FilterRow` 点击均通过此回调间接受益。
+
