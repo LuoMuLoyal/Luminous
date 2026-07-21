@@ -94,6 +94,20 @@ Accepted provider values today:
 - `gen_ui`
 - `custom`
 
+## CI/CD Environment Variables
+
+GitHub Actions CD workflow (`.github/workflows/luminous-cd.yml`) uses `--dart-define` to inject environment variables at build time:
+
+| Variable | Source | Description |
+|----------|--------|-------------|
+| `LUCENT_BASE_URL` | GitHub Secrets | Backend API base URL |
+| `SENTRY_DSN` | GitHub Secrets | Sentry error tracking DSN |
+| `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` | GitHub Variables | Enable experimental AI runtime (default: `false`) |
+| `LUMINOUS_AI_RUNTIME_PROVIDER` | GitHub Variables | AI runtime provider (default: `openai`) |
+| `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | Enable GenUI features (default: `false`) |
+
+Configure these in: Repository Settings → Secrets and variables → Actions
+
 ## GenUI / AI Toolkit Status
 
 - `AI Toolkit` is an allowed future direction for app-side experiments.

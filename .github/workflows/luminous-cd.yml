@@ -49,8 +49,15 @@ jobs:
       - name: Compile drift web worker
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
-      - name: Build Web (release)
-        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+      - name: Build Web (release) with env
+        run: |
+          flutter build web --release \
+            --base-href "/${{ github.event.repository.name }}/" \
+            --dart-define=LUCENT_BASE_URL=${{ secrets.LUCENT_BASE_URL }} \
+            --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
+            --dart-define=LUMINOUS_EXPERIMENTAL_AI_RUNTIME=${{ vars.LUMINOUS_EXPERIMENTAL_AI_RUNTIME || 'false' }} \
+            --dart-define=LUMINOUS_AI_RUNTIME_PROVIDER=${{ vars.LUMINOUS_AI_RUNTIME_PROVIDER || 'openai' }} \
+            --dart-define=LUMINOUS_ENABLE_GEN_UI=${{ vars.LUMINOUS_ENABLE_GEN_UI || 'false' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
