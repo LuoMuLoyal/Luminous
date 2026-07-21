@@ -65,7 +65,7 @@ class FakeNotificationsApi implements NotificationsApi {
           detail ??
           NotificationDetailDto(
             id: id,
-            type: UserNotificationType.systemAnnouncement,
+            type: UserNotificationType.medicineReminder,
             title: '',
             content: '',
             isRead: false,
@@ -106,7 +106,7 @@ class FakeNotificationsApi implements NotificationsApi {
           detail ??
           NotificationDetailDto(
             id: id,
-            type: UserNotificationType.systemAnnouncement,
+            type: UserNotificationType.medicineReminder,
             title: '',
             content: '',
             isRead: true,
@@ -126,7 +126,7 @@ class FakeNotificationsApi implements NotificationsApi {
           detail ??
           NotificationDetailDto(
             id: id,
-            type: UserNotificationType.systemAnnouncement,
+            type: UserNotificationType.medicineReminder,
             title: '',
             content: '',
             isRead: false,
@@ -172,7 +172,7 @@ NotificationListItemDto _item({
 }) {
   return NotificationListItemDto(
     id: id,
-    type: UserNotificationType.systemAnnouncement,
+    type: UserNotificationType.medicineReminder,
     title: title,
     content: content,
     isRead: isRead,
@@ -222,7 +222,7 @@ void main() {
       final api = FakeNotificationsApi(
         detail: const NotificationDetailDto(
           id: 'notif-1',
-          type: UserNotificationType.systemAnnouncement,
+          type: UserNotificationType.medicineReminder,
           title: 'Missed dose',
           content: 'You missed a dose.',
           isRead: false,

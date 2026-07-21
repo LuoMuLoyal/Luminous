@@ -39,8 +39,6 @@ class LucentSupportRepository implements SupportRepository {
       buildDate: d.buildDate,
       minClientVersion: d.minClientVersion,
       supportEmail: d.supportEmail,
-      privacyPolicyUrl: d.privacyPolicyUrl,
-      termsOfServiceUrl: d.termsOfServiceUrl,
     );
   }
 

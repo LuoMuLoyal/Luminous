@@ -10,12 +10,15 @@ part 'dose_log_list_data_dto.g.dart';
 
 @JsonSerializable()
 class DoseLogListDataDto {
-  const DoseLogListDataDto({required this.items});
+  const DoseLogListDataDto({required this.items, required this.total});
 
   factory DoseLogListDataDto.fromJson(Map<String, Object?> json) =>
       _$DoseLogListDataDtoFromJson(json);
 
   final List<DoseLogItemDto> items;
+
+  /// Total count of dose logs for the date.
+  final num total;
 
   Map<String, Object?> toJson() => _$DoseLogListDataDtoToJson(this);
 }

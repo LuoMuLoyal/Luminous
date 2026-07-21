@@ -170,16 +170,29 @@ void main() {
     await tester.tap(find.text(l10n.authPasswordSectionTitle));
     await tester.pumpAndSettle();
 
-    final passwordFields = find.byType(EditableText).hitTestable();
+    // FTabs only renders the active tab, so EditableText finds only the
+    // password tab's fields.  We avoid hitTestable() because the on-screen
+    // keyboard from the first enterText can shrink the viewport and cause
+    // subsequent hitTestable evaluations to return zero results.
+    final passwordFields = find.byType(EditableText);
     final oldPasswordField = passwordFields.at(0);
     await tester.ensureVisible(oldPasswordField);
     await tester.enterText(oldPasswordField, 'old-password');
-    await tester.enterText(passwordFields.at(1), 'new-password');
+    final newPasswordField = passwordFields.at(1);
+    await tester.ensureVisible(newPasswordField);
+    await tester.enterText(newPasswordField, 'new-password');
+
+    // Dismiss the keyboard so the FButton is not blocked by an
+    // AbsorbPointer from the active EditableText connection.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump();
+
     final changePasswordButton = find.widgetWithText(
       FButton,
       l10n.authChangePasswordAction,
     );
     await tester.ensureVisible(changePasswordButton);
+    await tester.pumpAndSettle();
     await tester.tap(changePasswordButton);
     await tester.pumpAndSettle();
 

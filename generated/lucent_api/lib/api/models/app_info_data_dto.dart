@@ -15,8 +15,6 @@ class AppInfoDataDto {
     required this.buildDate,
     this.minClientVersion,
     this.supportEmail,
-    this.privacyPolicyUrl,
-    this.termsOfServiceUrl,
   });
 
   factory AppInfoDataDto.fromJson(Map<String, Object?> json) =>
@@ -30,8 +28,6 @@ class AppInfoDataDto {
   final String buildDate;
   final String? minClientVersion;
   final String? supportEmail;
-  final String? privacyPolicyUrl;
-  final String? termsOfServiceUrl;
 
   Map<String, Object?> toJson() => _$AppInfoDataDtoToJson(this);
 }

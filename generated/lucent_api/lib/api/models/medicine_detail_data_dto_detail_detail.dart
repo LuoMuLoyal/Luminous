@@ -113,7 +113,6 @@ class MedicineDetailDataDtoDetailDetailCnMedicineDetailDto {
   final String? nationalDrugCode;
   final String? sourceUrl;
   final String? imageUrl;
-  final List<String>? drugbankIds;
 
   const MedicineDetailDataDtoDetailDetailCnMedicineDetailDto({
     required this.kind,
@@ -138,7 +137,6 @@ class MedicineDetailDataDtoDetailDetailCnMedicineDetailDto {
     required this.nationalDrugCode,
     required this.sourceUrl,
     required this.imageUrl,
-    required this.drugbankIds,
   });
 
   factory MedicineDetailDataDtoDetailDetailCnMedicineDetailDto.fromJson(

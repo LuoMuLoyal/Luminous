@@ -11,6 +11,7 @@ import '../models/suggestion_explanation_response_dto.dart';
 import '../models/suggestion_feedback_dto.dart';
 import '../models/suggestion_feedback_response_dto.dart';
 import '../models/suggestion_history_response_dto.dart';
+import '../models/today_suggestion_controller_explain_suggestion_async_v1_response.dart';
 import '../models/today_suggestions_response_dto.dart';
 import '../models/type.dart';
 
@@ -48,6 +49,20 @@ abstract class TodaySuggestionApi {
   todaySuggestionControllerExplainSuggestionV1({
     @Path('id') required String id,
     @Header('accept-language') required String acceptLanguage,
+  });
+
+  /// Enqueue async AI explanation for a suggestion card
+  @POST('/api/v1/user/today/suggestions/{id}/explain/async')
+  Future<TodaySuggestionControllerExplainSuggestionAsyncV1Response>
+  todaySuggestionControllerExplainSuggestionAsyncV1({
+    @Path('id') required String id,
+    @Header('accept-language') required String acceptLanguage,
+  });
+
+  /// Poll async suggestion explanation status
+  @GET('/api/v1/user/today/suggestions/explain/status/{jobId}')
+  Future<void> todaySuggestionControllerExplainSuggestionStatusV1({
+    @Path('jobId') required String jobId,
   });
 
   /// Get suggestion history for the Report page.

@@ -5,6 +5,7 @@
 import 'package:dio/dio.dart' hide Headers;
 
 import 'clients/health_api.dart';
+import 'clients/user_devices_api.dart';
 import 'clients/auth_api.dart';
 import 'clients/notifications_api.dart';
 import 'clients/account_api.dart';
@@ -37,6 +38,7 @@ class LucentClient {
   static String get version => '1.0';
 
   HealthApi? _health;
+  UserDevicesApi? _userDevices;
   AuthApi? _auth;
   NotificationsApi? _notifications;
   AccountApi? _account;
@@ -58,6 +60,9 @@ class LucentClient {
   FilesApi? _files;
 
   HealthApi get health => _health ??= HealthApi(_dio, baseUrl: _baseUrl);
+
+  UserDevicesApi get userDevices =>
+      _userDevices ??= UserDevicesApi(_dio, baseUrl: _baseUrl);
 
   AuthApi get auth => _auth ??= AuthApi(_dio, baseUrl: _baseUrl);
 

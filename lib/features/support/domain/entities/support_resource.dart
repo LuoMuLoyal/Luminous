@@ -51,8 +51,6 @@ class AppInfo {
     required this.buildDate,
     this.minClientVersion,
     this.supportEmail,
-    this.privacyPolicyUrl,
-    this.termsOfServiceUrl,
   });
 
   final String name;
@@ -63,8 +61,6 @@ class AppInfo {
   final String buildDate;
   final String? minClientVersion;
   final String? supportEmail;
-  final String? privacyPolicyUrl;
-  final String? termsOfServiceUrl;
 }
 
 /// Fallback support URL used when no support email is configured in [AppInfo].

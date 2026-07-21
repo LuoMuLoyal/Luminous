@@ -21,6 +21,7 @@ class CreateNotificationDto {
   factory CreateNotificationDto.fromJson(Map<String, Object?> json) =>
       _$CreateNotificationDtoFromJson(json);
 
+  /// Notification type. System-level types (e.g. system_announcement) are not allowed for user-created notifications.
   final UserNotificationType type;
 
   /// Notification title.

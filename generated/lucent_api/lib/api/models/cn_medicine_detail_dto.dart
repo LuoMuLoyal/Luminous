@@ -31,7 +31,6 @@ class CnMedicineDetailDto {
     this.nationalDrugCode,
     this.sourceUrl,
     this.imageUrl,
-    this.drugbankIds,
   });
 
   factory CnMedicineDetailDto.fromJson(Map<String, Object?> json) =>
@@ -59,9 +58,6 @@ class CnMedicineDetailDto {
   final String? nationalDrugCode;
   final String? sourceUrl;
   final String? imageUrl;
-
-  /// Optional mapped DrugBank IDs used for interaction checking.
-  final List<String>? drugbankIds;
 
   Map<String, Object?> toJson() => _$CnMedicineDetailDtoToJson(this);
 }

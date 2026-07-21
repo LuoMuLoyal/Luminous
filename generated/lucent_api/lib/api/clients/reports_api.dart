@@ -12,6 +12,8 @@ import '../models/generate_report_summary_dto.dart';
 import '../models/range.dart';
 import '../models/report_dashboard_response_dto.dart';
 import '../models/report_summary_response_dto.dart';
+import '../models/reports_controller_export_clinic_summary_pdf_async_v1_response.dart';
+import '../models/reports_controller_generate_summary_async_v1_response.dart';
 
 part 'reports_api.g.dart';
 
@@ -41,6 +43,21 @@ abstract class ReportsApi {
     @Body() required GenerateReportSummaryDto body,
   });
 
+  /// Enqueue async AI summary generation for report.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/user/reports/summary/generate/async')
+  Future<ReportsControllerGenerateSummaryAsyncV1Response>
+  reportsControllerGenerateSummaryAsyncV1({
+    @Body() required GenerateReportSummaryDto body,
+  });
+
+  /// Poll async report AI summary generation status
+  @GET('/api/v1/user/reports/summary/generate/status/{jobId}')
+  Future<void> reportsControllerGenerateSummaryStatusV1({
+    @Path('jobId') required String jobId,
+  });
+
   /// Stream authenticated user AI summary generation for report.
   ///
   /// [body] - Name not received - field will be skipped.
@@ -61,6 +78,17 @@ abstract class ReportsApi {
   @GET('/api/v1/user/reports/clinic-summary/shared/{token}')
   Future<ClinicSummaryDto> reportsControllerGetSharedClinicSummaryV1({
     @Path('token') required String token,
+  });
+
+  /// Enqueue async clinic summary PDF export
+  @POST('/api/v1/user/reports/clinic-summary/export/async')
+  Future<ReportsControllerExportClinicSummaryPdfAsyncV1Response>
+  reportsControllerExportClinicSummaryPdfAsyncV1();
+
+  /// Poll async clinic summary PDF export status
+  @GET('/api/v1/user/reports/clinic-summary/export/status/{jobId}')
+  Future<void> reportsControllerExportClinicSummaryPdfStatusV1({
+    @Path('jobId') required String jobId,
   });
 
   /// Download a de-identified clinic summary as PDF (auth required)

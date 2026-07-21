@@ -22,8 +22,6 @@ void main() {
               description: 'Test description',
               buildDate: '2026-06-28T00:00:00Z',
               supportEmail: 'support@example.com',
-              privacyPolicyUrl: 'https://example.com/privacy',
-              termsOfServiceUrl: 'https://example.com/terms',
             ),
           ),
         ],

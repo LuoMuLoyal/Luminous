@@ -23,6 +23,8 @@ abstract class MedicineDoseLogsApi {
   @GET('/api/v1/user/medicine-dose-logs')
   Future<DoseLogListResponseDto> medicineDoseLogsControllerListV1({
     @Query('date') required String date,
+    @Query('page') num? page,
+    @Query('pageSize') num? pageSize,
   });
 
   /// Create a dose log.

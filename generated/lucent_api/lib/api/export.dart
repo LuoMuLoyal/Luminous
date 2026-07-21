@@ -4,6 +4,7 @@
 
 // Clients
 export 'clients/health_api.dart';
+export 'clients/user_devices_api.dart';
 export 'clients/auth_api.dart';
 export 'clients/notifications_api.dart';
 export 'clients/account_api.dart';
@@ -32,6 +33,11 @@ export 'models/health_component_status.dart';
 export 'models/health_component_dto.dart';
 export 'models/health_probe_dto.dart';
 export 'models/health_response_dto.dart';
+export 'models/user_device_platform.dart';
+export 'models/register_device_dto.dart';
+export 'models/device_response_dto.dart';
+export 'models/device_item_dto.dart';
+export 'models/device_list_response_dto.dart';
 export 'models/register_dto.dart';
 export 'models/user_brief_dto.dart';
 export 'models/tokens_dto.dart';
@@ -234,6 +240,16 @@ export 'models/data_export_request_data_dto.dart';
 export 'models/data_export_request_response_dto.dart';
 export 'models/data_export_latest_response_dto.dart';
 export 'models/create_file_upload_dto.dart';
+export 'models/medicines_controller_recognize_async_v1_response_data.dart';
+export 'models/medicines_controller_recognize_async_v1_response.dart';
+export 'models/reports_controller_generate_summary_async_v1_response_data.dart';
+export 'models/reports_controller_generate_summary_async_v1_response.dart';
+export 'models/reports_controller_export_clinic_summary_pdf_async_v1_response_data.dart';
+export 'models/reports_controller_export_clinic_summary_pdf_async_v1_response.dart';
+export 'models/today_analysis_controller_generate_async_v1_response_data.dart';
+export 'models/today_analysis_controller_generate_async_v1_response.dart';
+export 'models/today_suggestion_controller_explain_suggestion_async_v1_response_data.dart';
+export 'models/today_suggestion_controller_explain_suggestion_async_v1_response.dart';
 export 'models/medicine_detail_data_dto_detail_detail.dart';
 export 'models/source.dart';
 export 'models/range.dart';

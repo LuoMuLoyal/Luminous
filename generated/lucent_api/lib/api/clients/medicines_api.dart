@@ -9,6 +9,7 @@ import 'package:retrofit/error_logger.dart';
 import '../models/medicine_detail_response_dto.dart';
 import '../models/medicine_safety_tip_response_dto.dart';
 import '../models/medicine_search_response_dto.dart';
+import '../models/medicines_controller_recognize_async_v1_response.dart';
 import '../models/recognize_medicine_dto.dart';
 import '../models/source.dart';
 
@@ -65,5 +66,20 @@ abstract class MedicinesApi {
   @POST('/api/v1/medicines/recognize')
   Future<void> medicinesControllerRecognizeV1({
     @Body() required RecognizeMedicineDto body,
+  });
+
+  /// Enqueue async medicine box image recognition.
+  ///
+  /// [body] - Name not received - field will be skipped.
+  @POST('/api/v1/medicines/recognize/async')
+  Future<MedicinesControllerRecognizeAsyncV1Response>
+  medicinesControllerRecognizeAsyncV1({
+    @Body() required RecognizeMedicineDto body,
+  });
+
+  /// Poll async medicine recognition status
+  @GET('/api/v1/medicines/recognize/status/{jobId}')
+  Future<void> medicinesControllerRecognizeStatusV1({
+    @Path('jobId') required String jobId,
   });
 }
