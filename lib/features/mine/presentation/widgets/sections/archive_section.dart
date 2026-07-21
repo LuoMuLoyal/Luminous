@@ -27,26 +27,78 @@ class MineArchiveSection extends StatelessWidget {
     final meta = _profileMeta(l10n, dashboard.profile);
 
     return Column(
+      key: const Key('mine-archive-section'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MineSectionTitle(title: l10n.mineProfileTitle),
         const SizedBox(height: Spacing.level3),
-        FTileGroup(
-          key: const Key('mine-archive-section'),
-          divider: FItemDivider.full,
+        if (dashboard.archiveEntries.isEmpty)
+          const _ArchiveEmpty()
+        else
+          FTileGroup(
+            divider: FItemDivider.full,
+            children: [
+              for (final entry in dashboard.archiveEntries)
+                _ArchiveRow(
+                  entry: entry,
+                  dashboard: dashboard,
+                  subtitleOverride:
+                      entry.titleKey == MineCopyKey.archiveBasicTitle
+                      ? meta
+                      : null,
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _ArchiveEmpty extends StatelessWidget {
+  const _ArchiveEmpty();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
+
+    return FCard.raw(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: Row(
           children: [
-            for (final entry in dashboard.archiveEntries)
-              _ArchiveRow(
-                entry: entry,
-                dashboard: dashboard,
-                subtitleOverride:
-                    entry.titleKey == MineCopyKey.archiveBasicTitle
-                    ? meta
-                    : null,
+            FAvatar.raw(
+              size: Spacing.level8,
+              child: Icon(
+                FLucideIcons.clipboardList,
+                color: SemanticColor.primary.solid(context),
+                size: Spacing.level5,
               ),
+            ),
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.mineArchiveEmptyTitle,
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: Spacing.level1),
+                  Text(
+                    l10n.mineArchiveEmptyDescription,
+                    style: TypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

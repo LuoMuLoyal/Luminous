@@ -55,10 +55,7 @@ class MineDashboardView extends StatelessWidget {
           dashboard: dashboard,
         ),
         const SizedBox(height: Spacing.level5),
-        MineArchiveSection(
-          key: const Key('mine-archive-section'),
-          dashboard: dashboard,
-        ),
+        MineArchiveSection(dashboard: dashboard),
         const SizedBox(height: Spacing.level5),
         const MineAiPrivacySection(),
         const SizedBox(height: Spacing.level5),
@@ -85,10 +82,7 @@ class MineDashboardView extends StatelessWidget {
                 dashboard: dashboard,
               ),
               const SizedBox(height: Spacing.level5),
-              MineArchiveSection(
-                key: const Key('mine-archive-section'),
-                dashboard: dashboard,
-              ),
+              MineArchiveSection(dashboard: dashboard),
               const SizedBox(height: Spacing.level5),
               const MineNotificationsReminderSection(),
             ],

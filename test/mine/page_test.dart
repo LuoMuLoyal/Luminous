@@ -14,6 +14,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
@@ -272,7 +273,9 @@ void main() {
           healthContextSnapshotProvider.overrideWith(
             (ref) async => throw Exception('should not fetch when signed out'),
           ),
-          mineRepositoryProvider.overrideWithValue(const MockMineRepository()),
+          mineRepositoryProvider.overrideWithValue(
+            const _EmptyPreviewMineRepository(),
+          ),
         ],
         child: const TestForuiApp(home: MinePage()),
       ),
@@ -283,16 +286,18 @@ void main() {
 
     expect(find.text(l10n.mineReadinessPreviewTitle), findsOneWidget);
     expect(find.text(l10n.mineAccountGuestDisplayName), findsOneWidget);
-    // authGoLogin appears in both the hero CTA and the sign-out tile.
+    // Login CTAs: hero card + account security tile.
     expect(find.text(l10n.authGoLogin), findsNWidgets(2));
-    expect(find.byType(SignInHintBanner), findsOneWidget);
+    expect(find.byType(SignInHintBanner), findsNothing);
     expect(find.text(l10n.mineErrorTitle), findsNothing);
     expect(find.byKey(const Key('mine-status-overview')), findsNothing);
 
-    final basicSubtitle = find.text(l10n.mineArchiveBasicSubtitle);
-    await tester.ensureVisible(basicSubtitle);
+    final archiveSection = find.byKey(const Key('mine-archive-section'));
+    await tester.ensureVisible(archiveSection);
     await tester.pump();
-    expect(basicSubtitle, findsOneWidget);
+    expect(archiveSection, findsOneWidget);
+    expect(find.text(l10n.mineArchiveEmptyTitle), findsOneWidget);
+    expect(find.text(l10n.mineArchiveEmptyDescription), findsOneWidget);
     expect(find.text(l10n.mineProfileMeta('--', '--')), findsNothing);
   });
 
@@ -791,6 +796,17 @@ Future<void> _pumpMinePage(WidgetTester tester) async {
       child: const TestForuiApp(home: MinePage()),
     ),
   );
+}
+
+class _EmptyPreviewMineRepository implements MineRepository {
+  const _EmptyPreviewMineRepository();
+
+  @override
+  Future<MineDashboard> fetchDashboard() async => MineDashboard.signedOut();
+
+  @override
+  Future<MineDashboard> get signedOutDashboard =>
+      Future.value(MineDashboard.signedOut());
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {

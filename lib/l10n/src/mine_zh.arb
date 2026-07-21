@@ -269,6 +269,8 @@
   "mineMedicineSourceManual": "手动",
   "mineArchiveRecordListTitle": "记录列表",
   "mineArchiveAddNewAction": "添加新记录",
+  "mineArchiveEmptyTitle": "健康数据需登录后查看",
+  "mineArchiveEmptyDescription": "登录后同步基础信息、过敏史、疾病和用药记录。",
   "mineEditFieldBloodTypeHint": "选择血型",
   "mineEditFieldStrengthTextHint": "如 500mg、10ml",
   "mineEditFieldDoseTextHint": "如 1片、5ml",

@@ -269,6 +269,8 @@
   "mineMedicineSourceManual": "Manual",
   "mineArchiveRecordListTitle": "Records",
   "mineArchiveAddNewAction": "Add new record",
+  "mineArchiveEmptyTitle": "Health data available after sign in",
+  "mineArchiveEmptyDescription": "Sign in to sync your basic info, allergies, conditions, and medications.",
   "mineEditFieldBloodTypeHint": "Select blood type",
   "mineEditFieldStrengthTextHint": "e.g. 500mg, 10ml",
   "mineEditFieldDoseTextHint": "e.g. 1 tablet, 5ml",

@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 ## Mine 根页结构
 
@@ -8,7 +8,8 @@ Last updated: 2026-07-20
 
 桌面端双栏：`Row[左7: AccountHero+Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]`，顶部可选 `MineSyncFailedBanner`。
 
-- 未登录时登录门槛、preview 说明和主 CTA 并入 Mine 主卡，不显示独立顶部登录提示条。
+- 未登录时登录门槛、preview 说明和主 CTA 并入 Mine 主卡，顶部独立的 `SignInHintBanner` 已移除，避免与 Hero 卡重复。
+- 健康档案分组在未登录 preview 数据为空时，不再渲染空 `FTileGroup`，而是显示 `_ArchiveEmpty` 结构化空态卡片（图标 + 标题 + 描述）。
 - 健康档案入口使用 Forui `FTileGroup + FTile`，状态通过明确文字表达。
 - `通知与提醒` 分组只承接状态摘要与跳转（提醒设置/免打扰/通知收件箱），收件箱未读数来自真实后端。
 - `AI 与隐私` 分组：`AI 设置` → `/settings/ai`，`报告分享` → `/settings`。
@@ -26,6 +27,7 @@ Last updated: 2026-07-20
 - 过敏史编辑（预填充+更新+删除）。
 - 当前用药。
 - 疾病史编辑（预填充+更新+删除）。
+- 未登录 preview 状态下 `MineArchiveSection` 显示显式空态：`mineArchiveEmptyTitle`（"健康数据需登录后查看" / "Health data available after sign in"）+ `mineArchiveEmptyDescription`，不再留空白区域。
 - 身高字段从 `int.tryParse` 改为 `num.tryParse`，修复 double 身高值丢数据。
 - 健康表单枚举使用 `health_enum_l10n.dart` 提供 l10n 映射。
 - 删除操作接入 `showDangerConfirmationDialog` 二次确认（allergy/condition/medicine 三处编辑页）。

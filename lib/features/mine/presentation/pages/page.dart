@@ -7,7 +7,6 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/shared_widgets.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
@@ -53,19 +52,7 @@ class MinePage extends ConsumerWidget {
       fatalErrorBuilder: (error) =>
           MineErrorView(onRetry: () => ref.invalidate(mineDashboardProvider)),
       readyBuilder: (dashboard, isPreview) {
-        final content = MineDashboardView(dashboard: dashboard);
-        if (!isPreview) return content;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SignInHintBanner(
-              onSignIn: () =>
-                  context.push(loginRouteForCurrentLocation(context)),
-            ),
-            const SizedBox(height: Spacing.level4),
-            content,
-          ],
-        );
+        return MineDashboardView(dashboard: dashboard);
       },
     );
 

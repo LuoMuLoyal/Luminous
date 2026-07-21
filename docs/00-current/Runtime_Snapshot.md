@@ -90,6 +90,7 @@ Last updated: 2026-07-21 (Today compact summary)
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
+- Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。
 - 日期格式化通过 `lib/core/utils/date_format_utils.dart`（locale 感知 `intl.DateFormat` 封装）。
 
 ## 测试与验证
