@@ -73,7 +73,7 @@ Last updated: 2026-07-20 (notification types oauth_login/identity_linked)
 - 认证/会话状态：恢复中 / 确认已登出 / 已登录。
 - `AuthRepository` 接口（22 个方法）+ `LucentAuthRepository` 实现。
 - `OAuthLoginController` 统管 WeChat/QQ/Apple 三方登录。
-- GoRouter 全局 `redirect` 守卫：未认证访问受保护路由 → `/login`；`/legal` 和 `/report/clinic-summary` 为公开路由。
+- GoRouter 全局 `redirect` 守卫：未认证用户可以访问主 tab 预览页（`/`、`/record`、`/medicine`、`/report`、`/mine`）以及 `/settings`、`/assistant`、`/legal`、`/report/clinic-summary`；其他受保护路由才重定向到 `/login`。已认证用户访问 `/login`、`/register`、`/forgot-password` 时会被送回首页。
 - 受保护 provider 在认证恢复或确认登出时不调用 Lucent。
 - 受保护入口点击在当前页弹出登录提示（`AuthRequiredDialogGate` 带 returnTo）。
 

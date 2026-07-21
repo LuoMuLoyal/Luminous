@@ -76,7 +76,15 @@ class ForgotPasswordPage extends HookConsumerWidget {
                         return;
                       }
                       notifier.updateEmail(emailController.text);
-                      await notifier.sendResetCode();
+                      final ok = await notifier.sendResetCode();
+                      if (!ok && context.mounted) {
+                        final msg = ref
+                            .read(passwordResetProvider)
+                            .errorMessage;
+                        if (msg != null && msg.isNotEmpty) {
+                          await AppToast.show(context, msg);
+                        }
+                      }
                     },
             ),
             const SizedBox(height: Spacing.level4),
@@ -130,8 +138,13 @@ class ForgotPasswordPage extends HookConsumerWidget {
                         );
                         final ok = await notifier.resetPassword();
                         if (!ok && context.mounted) {
-                          final msg = state.errorMessage?.isNotEmpty == true
-                              ? state.errorMessage!
+                          final msg =
+                              ref
+                                      .read(passwordResetProvider)
+                                      .errorMessage
+                                      ?.isNotEmpty ==
+                                  true
+                              ? ref.read(passwordResetProvider).errorMessage!
                               : null;
                           if (msg != null) {
                             await AppToast.show(context, msg);

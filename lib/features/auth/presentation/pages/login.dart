@@ -320,7 +320,13 @@ class LoginPage extends HookConsumerWidget {
                           return;
                         }
                         notifier.updateEmail(emailController.text);
-                        await notifier.sendCode();
+                        final ok = await notifier.sendCode();
+                        if (!ok && context.mounted) {
+                          final msg = ref.read(loginFormProvider).errorMessage;
+                          if (msg != null && msg.isNotEmpty) {
+                            await AppToast.show(context, msg);
+                          }
+                        }
                       },
               ),
             const SizedBox(height: Spacing.level6),
@@ -339,10 +345,12 @@ class LoginPage extends HookConsumerWidget {
                         notifier.updateCode(codeController.text);
                         final session = await notifier.submit();
                         if (session == null && context.mounted) {
-                          final msg = state.errorMessage?.isNotEmpty == true
-                              ? state.errorMessage!
-                              : oauthState.errorMessage?.isNotEmpty == true
-                              ? oauthState.errorMessage!
+                          final formState = ref.read(loginFormProvider);
+                          final oauth = ref.read(oauthLoginProvider);
+                          final msg = formState.errorMessage?.isNotEmpty == true
+                              ? formState.errorMessage!
+                              : oauth.errorMessage?.isNotEmpty == true
+                              ? oauth.errorMessage!
                               : null;
                           if (msg != null) {
                             await AppToast.show(context, msg);

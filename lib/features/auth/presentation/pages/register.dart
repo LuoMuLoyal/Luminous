@@ -78,7 +78,13 @@ class RegisterPage extends HookConsumerWidget {
                         return;
                       }
                       notifier.updateEmail(emailController.text);
-                      await notifier.sendCode();
+                      final ok = await notifier.sendCode();
+                      if (!ok && context.mounted) {
+                        final msg = ref.read(registerFormProvider).errorMessage;
+                        if (msg != null && msg.isNotEmpty) {
+                          await AppToast.show(context, msg);
+                        }
+                      }
                     },
             ),
             const SizedBox(height: Spacing.level4),
@@ -171,8 +177,13 @@ class RegisterPage extends HookConsumerWidget {
                         notifier.updateNickname(nicknameController.text);
                         final ok = await notifier.submit();
                         if (!ok && context.mounted) {
-                          final msg = state.errorMessage?.isNotEmpty == true
-                              ? state.errorMessage!
+                          final msg =
+                              ref
+                                      .read(registerFormProvider)
+                                      .errorMessage
+                                      ?.isNotEmpty ==
+                                  true
+                              ? ref.read(registerFormProvider).errorMessage!
                               : null;
                           if (msg != null) {
                             await AppToast.show(context, msg);

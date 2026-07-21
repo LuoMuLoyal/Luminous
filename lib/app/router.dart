@@ -100,8 +100,24 @@ class AppRoutes {
 /// Auth routes (`/login`, `/register`, `/forgot-password`) are handled
 /// separately in the redirect guard. Add new public route prefixes here
 /// when introducing pages that should be viewable while signed out
-/// (e.g. help center, about page if made public).
+/// (e.g. shared clinic summaries, legal documents).
 const _publicRoutePrefixes = <String>['/legal', '/report/clinic-summary'];
+
+/// Top-level routes that can be visited while signed out so the user can
+/// preview the app before deciding to sign in.
+///
+/// These include the five main shell tabs plus standalone pages that already
+/// render their own sign-in prompts when needed. Any other route requires
+/// authentication.
+const _publicRootRoutes = <String>[
+  AppRoutes.home,
+  AppRoutes.record,
+  AppRoutes.medicine,
+  AppRoutes.report,
+  AppRoutes.mine,
+  AppRoutes.settings,
+  AppRoutes.assistant,
+];
 
 /// The main application router.
 ///
@@ -113,8 +129,10 @@ const _publicRoutePrefixes = <String>['/legal', '/report/clinic-summary'];
 /// `go_router_builder`) so they hide the tab chrome and can be pushed
 /// and popped naturally.
 ///
-/// A global `redirect` guard prevents unauthenticated users from accessing
-/// protected routes and redirects authenticated users away from auth pages.
+/// The `redirect` guard sends authenticated users away from auth pages and
+/// requires authentication for any route that is not explicitly public.
+/// Unauthenticated users can still browse the public preview routes (main
+/// tabs, settings, assistant, etc.) and decide when to sign in.
 /// Call `appRouterProvider`'s `refresh()` (e.g. from an auth session
 /// listener) to re-evaluate the redirect after authentication state changes.
 @Riverpod(keepAlive: true)
@@ -131,13 +149,17 @@ GoRouter appRouter(Ref ref) => GoRouter(
         location.startsWith('/login') ||
         location.startsWith('/register') ||
         location.startsWith('/forgot-password');
-    final isPublicRoute = _publicRoutePrefixes.any(
-      (prefix) => location.startsWith(prefix),
-    );
+    final isPublicRoute =
+        _publicRoutePrefixes.any((prefix) => location.startsWith(prefix)) ||
+        _publicRootRoutes.contains(location);
 
+    // Public routes (including the main shell tabs) are accessible without
+    // signing in so the app opens in preview mode. All other routes require
+    // authentication.
     if (!session.isAuthenticated && !isAuthRoute && !isPublicRoute) {
       return AppRoutes.login;
     }
+    // Authenticated users have no reason to stay on auth pages.
     if (session.isAuthenticated && isAuthRoute) {
       return AppRoutes.home;
     }

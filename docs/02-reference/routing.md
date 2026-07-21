@@ -84,6 +84,16 @@ class AppRoutes {
 - Dead routes must be removed from `AppRoutes` immediately — there is no "placeholder"
   route constant. `medicineReminders` was removed because it had no corresponding page.
 
+### Public Preview Routes
+
+The following routes are accessible without signing in so the app can be opened in preview mode:
+
+- `/`, `/record`, `/medicine`, `/report`, `/mine` — the five shell tabs.
+- `/settings`, `/assistant` — standalone pages that render their own sign-in prompts when needed.
+- `/legal`, `/report/clinic-summary` — shared/legal content.
+
+All other routes require an authenticated session. The redirect guard sends unauthenticated users to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users away from `/login`, `/register`, `/forgot-password`.
+
 ### Why GoRouter
 
 See [ADR-0002: GoRouter Navigation](adr/0002-gorouter-navigation.md).
