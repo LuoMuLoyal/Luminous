@@ -93,7 +93,12 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
         key: const Key('today-summary-card'),
         style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level3),
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.level3,
+            Spacing.level4,
+            Spacing.level3,
+            Spacing.level3,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

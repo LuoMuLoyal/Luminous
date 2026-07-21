@@ -1,6 +1,6 @@
 # Active UI — Report
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21
 
 ## 页面结构
 
@@ -11,15 +11,16 @@ Last updated: 2026-07-20
   - 首屏单一 `readiness` 主卡合并登录门槛、数据不足、生成总结、同步、数据更新时间。
   - `generatedAt` 从 Lucent report dashboard DTO 映射到前端 domain，显示"当前显示的数据更新于 …"。
 - 桌面端与移动端对齐到同一回顾语义：顶部移除旧 snapshot 状态块，主内容首块为 `readiness` 主卡。
-- 移动端预览层只保留：报告预览评分、健康趋势预览、重点发现。
+- 未登录 preview 态：顶部显示与其他 tab 一致的轻量 `SignInHintBanner`；下方用显式空态卡片展示 Report 页职责范围（健康趋势、重点发现、历史建议回顾、导出预览），不再显示巨大的 readiness 锁定卡或灰色空白占位块。
 - `历史建议回顾` 数据源从通知接口切换到 `GET /today/suggestions/history` API，展示建议生命周期状态（进行中/已过期/已忽略）和按类型映射的图标。
 - 移动端完整层仅在 `已登录 + 数据足够` 时显示：AI 总结、导出摘要、健康模式分析、医疗免责声明。
-- 未登录态返回真实前端预览 dashboard，不用大型登录提示块拦截整页。
+
 - 移动端下拉刷新 + readiness 主卡内显式同步操作。
 
 ## 评分与指标
 
-- `ReportScoreHero` 区分预览态/真实态文案（`isPreview` 参数）：预览显示"报告预览评分"，真实显示"健康评分"。
+- `ReportScoreHero` 已移除：健康评分计算不透明，0 分 preview 无信息价值，且产品文档未将评分列为 Report 页核心组件。
+- 登录后 `dashboard.score.summary` 作为一句话摘要展示在 `ReportReadinessSection` 描述下方，保留评分结论但不独占首屏。
 - `ReportMetricsGrid` 在移动端和桌面端均渲染，桌面端位于右栏。
 - 指标卡 2 列网格，含 sparkline 趋势条、状态徽章、方向箭头。
 
@@ -140,3 +141,10 @@ Last updated: 2026-07-20
 - **PDF 下载逻辑提取**：新增 `pdf_download.dart` 工具文件，`downloadAndSharePdf()` 函数封装 Dio 二进制下载 → 写临时文件 → SharePlus 分享的完整流程。预览弹窗和公开分享页均改为调用此函数，消除重复代码。
 - **MetaRow / formatDateTimeFull 提取**：`_MetaRow` widget 提取为 `components.dart` 中的公共 `MetaRow`；`_formatDateTime` 方法提取为 `date_format_utils.dart` 中的 `formatDateTimeFull()`。`clinic_summary_content.dart` 和 `suggestion_history_detail_sheet.dart` 均改用公共组件。
 - **分享失败错误消息格式**：硬拼接 `'${l10n.reportExportFailedToast}: ${error.message}'` 改为 l10n 参数化字符串 `reportExportFailedWithReason(reason)`，中英文冒号格式由 ARB 模板控制。
+
+## 2026-07-21 Report 页 UI 修正
+
+- **未登录 preview 顶部提示统一**：删除巨大的 `ReportReadinessSection` 锁定卡，改为与其他 tab 一致的轻量 `SignInHintBanner`，文案走 `reportPreviewBannerMessage`。
+- **移除无意义的大分数卡**：未登录态不再显示 `ReportScoreHero`；登录后也移除独立的分数英雄卡，将 `score.summary` 作为一句话摘要收进 `ReportReadinessSection`。
+- **显式 preview 空态**：未登录时趋势、发现、历史建议、导出四个区域分别展示 `ReportPreviewEmptySection` 卡片，明确告知用户“登录后查看”，替代原先灰色空白占位块。
+- **新增组件**：`lib/features/report/presentation/widgets/sections/preview_empty.dart` 提供复用的 preview 空态卡片；`readiness.dart` 新增 `scoreSummary` 参数用于展示评分摘要。

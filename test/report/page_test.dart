@@ -72,12 +72,11 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('report-top-sync-action')), findsOneWidget);
-      expect(find.text(l10n.reportScoreTitle), findsOneWidget);
+      expect(find.byKey(const Key('report-score-hero')), findsNothing);
 
       final scrollable = find.byType(Scrollable).first;
       final keys = <String>[
         'report-readiness-card',
-        'report-score-hero',
         'report-trend-section',
         'report-findings-section',
         'report-suggestion-history-section',
@@ -135,7 +134,7 @@ void main() {
   });
 
   testWidgets(
-    'Report page renders signed-out mobile preview without full locked sections',
+    'Report page renders signed-out mobile preview with lightweight banner and explicit empty states',
     (tester) async {
       tester.view.devicePixelRatio = 1;
       tester.view.physicalSize = const Size(390, 844);
@@ -162,17 +161,29 @@ void main() {
       // Ensure metric cards and other sections fit within the viewport without overflow.
       expect(tester.takeException(), isNull);
 
-      expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+      expect(find.byType(SignInHintBanner), findsOneWidget);
+      expect(find.text(l10n.reportPreviewBannerMessage), findsOneWidget);
+      expect(find.byKey(const Key('report-readiness-card')), findsNothing);
       expect(find.byKey(const Key('report-signed-out-notice')), findsNothing);
       expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
-      expect(find.text(l10n.reportScoreTitlePreview), findsOneWidget);
+      expect(find.byKey(const Key('report-score-hero')), findsNothing);
+      expect(find.text(l10n.reportScoreTitlePreview), findsNothing);
       expect(find.byKey(const Key('report-ai-summary-section')), findsNothing);
-      expect(find.byKey(const Key('report-export-section')), findsNothing);
       expect(find.byKey(const Key('report-patterns-section')), findsNothing);
       expect(
         find.byKey(const Key('report-suggestion-history-section')),
         findsNothing,
       );
+      expect(find.byKey(const Key('report-trend-section')), findsOneWidget);
+      expect(
+        find.byKey(const Key('report-findings-preview-locked')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('report-suggestion-history-preview-locked')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const Key('report-export-section')), findsOneWidget);
       expect(find.byType(AppStateErrorView), findsNothing);
     },
   );
@@ -209,7 +220,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
-      expect(find.byKey(const Key('report-score-hero')), findsOneWidget);
+      expect(find.byKey(const Key('report-score-hero')), findsNothing);
       expect(find.byKey(const Key('report-trend-section')), findsOneWidget);
       expect(find.byKey(const Key('report-findings-section')), findsOneWidget);
       expect(

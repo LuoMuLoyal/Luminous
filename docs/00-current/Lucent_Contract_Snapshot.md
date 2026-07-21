@@ -26,7 +26,7 @@ Last updated: 2026-07-21 (Today compact summary)
 - user settings / preferences
 - support resources / app info
 - data export requests
-- report dashboard（聚合 + findings + patterns + trends）
+- report dashboard（聚合 + score + findings + patterns + trends）
 - report AI summary（增量流）
 - clinic summary（脱敏摘要 + PDF + 分享链接）
 - notifications（列表/详情/已读/删除）

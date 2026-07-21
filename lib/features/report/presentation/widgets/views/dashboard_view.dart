@@ -6,6 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/preview_empty.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -103,6 +104,10 @@ class ReportDashboardView extends StatelessWidget {
     final readinessStatus = _readinessStatus();
     final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
 
+    if (isPreview || !canAccessProtectedData) {
+      return _buildMobilePreviewLayout(l10n: l10n);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,6 +117,7 @@ class ReportDashboardView extends StatelessWidget {
           insufficientMetricCount: _insufficientMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
+          scoreSummary: dashboard.score.summary,
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
@@ -122,13 +128,6 @@ class ReportDashboardView extends StatelessWidget {
           onSync: onSync,
           isGenerating:
               aiSummaryState.status == ReportAiSummaryCardStatus.loading,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportScoreHero(
-          key: const Key('report-score-hero'),
-          dashboard: dashboard,
-          l10n: l10n,
-          isPreview: isPreview,
         ),
         const SizedBox(height: Spacing.level4),
         ReportMetricsGrid(
@@ -210,8 +209,59 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
+  Widget _buildMobilePreviewLayout({required AppLocalizations l10n}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SignInHintBanner(
+          onSignIn: onSignIn,
+          message: l10n.reportPreviewBannerMessage,
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportTrendSection(
+          key: const Key('report-trend-section'),
+          trends: _previewTrends,
+          selectedQuery: dashboardQuery,
+          onQueryChanged: onDashboardQueryChanged ?? (_) {},
+          l10n: l10n,
+          startDate: dashboard.startDate,
+          showRangePill: false,
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportPreviewLockedSection(
+          key: const Key('report-findings-preview-locked'),
+          icon: FLucideIcons.lightbulb,
+          title: l10n.reportFindingsPreviewTitle,
+          body: l10n.reportFindingsPreviewBody,
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportPreviewLockedSection(
+          key: const Key('report-suggestion-history-preview-locked'),
+          icon: FLucideIcons.history,
+          title: l10n.reportSuggestionHistoryPreviewTitle,
+          body: l10n.reportSuggestionHistoryPreviewBody,
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportExportSection(
+          key: const Key('report-export-section'),
+          actions: _previewExportActions,
+          latestRequest: null,
+          requestInFlight: const DataExportRequestInFlightState(
+            inFlight: false,
+          ),
+          l10n: l10n,
+          onActionTap: null,
+        ),
+      ],
+    );
+  }
+
   Widget _buildDesktopLayout({required AppLocalizations l10n}) {
     final readinessStatus = _readinessStatus();
+
+    if (isPreview || !canAccessProtectedData) {
+      return _buildDesktopPreviewLayout(l10n: l10n);
+    }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,6 +277,7 @@ class ReportDashboardView extends StatelessWidget {
                 insufficientMetricCount: _insufficientMetricCount(),
                 l10n: l10n,
                 rangeLabel: _rangeLabel(l10n),
+                scoreSummary: dashboard.score.summary,
                 onSignIn: onSignIn,
                 onContinueRecord: onContinueRecord,
                 onGenerate: onGenerateAiSummary == null
@@ -237,13 +288,6 @@ class ReportDashboardView extends StatelessWidget {
                 onSync: onSync,
                 isGenerating:
                     aiSummaryState.status == ReportAiSummaryCardStatus.loading,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportScoreHero(
-                key: const Key('report-score-hero'),
-                dashboard: dashboard,
-                l10n: l10n,
-                isPreview: isPreview,
               ),
               const SizedBox(height: Spacing.level5),
               ReportTrendSection(
@@ -328,6 +372,62 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
+  Widget _buildDesktopPreviewLayout({required AppLocalizations l10n}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SignInHintBanner(
+          onSignIn: onSignIn,
+          message: l10n.reportPreviewBannerMessage,
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportTrendSection(
+          key: const Key('report-trend-section'),
+          trends: _previewTrends,
+          selectedQuery: dashboardQuery,
+          onQueryChanged: onDashboardQueryChanged ?? (_) {},
+          l10n: l10n,
+          startDate: dashboard.startDate,
+          showRangePill: false,
+        ),
+        const SizedBox(height: Spacing.level4),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ReportPreviewLockedSection(
+                key: const Key('report-findings-preview-locked'),
+                icon: FLucideIcons.lightbulb,
+                title: l10n.reportFindingsPreviewTitle,
+                body: l10n.reportFindingsPreviewBody,
+              ),
+            ),
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: ReportPreviewLockedSection(
+                key: const Key('report-suggestion-history-preview-locked'),
+                icon: FLucideIcons.history,
+                title: l10n.reportSuggestionHistoryPreviewTitle,
+                body: l10n.reportSuggestionHistoryPreviewBody,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: Spacing.level4),
+        ReportExportSection(
+          key: const Key('report-export-section'),
+          actions: _previewExportActions,
+          latestRequest: null,
+          requestInFlight: const DataExportRequestInFlightState(
+            inFlight: false,
+          ),
+          l10n: l10n,
+          onActionTap: null,
+        ),
+      ],
+    );
+  }
+
   int _insufficientMetricCount() {
     return dashboard.metrics
         .where((metric) => metric.status == ReportStatus.insufficientData)
@@ -351,6 +451,53 @@ class ReportDashboardView extends StatelessWidget {
     ReportDashboardRange.last30Days => l10n.reportRangeLast30Days,
     ReportDashboardRange.custom => l10n.reportRangeCustom,
   };
+
+  List<ReportExportAction> get _previewExportActions => const [
+    ReportExportAction(
+      kind: ReportExportKind.hospital,
+      icon: FLucideIcons.hospital,
+      color: SemanticColor.primary,
+    ),
+    ReportExportAction(
+      kind: ReportExportKind.monthly,
+      icon: FLucideIcons.barChart,
+      color: SemanticColor.primary,
+    ),
+    ReportExportAction(
+      kind: ReportExportKind.print,
+      icon: FLucideIcons.printer,
+      color: SemanticColor.primary,
+    ),
+    ReportExportAction(
+      kind: ReportExportKind.clinicShare,
+      icon: FLucideIcons.share2,
+      color: SemanticColor.primary,
+    ),
+  ];
+
+  List<ReportTrendSeries> get _previewTrends => const [
+    ReportTrendSeries(
+      kind: ReportDataKind.medication,
+      color: SemanticColor.primary,
+      unit: '%',
+      values: [],
+      currentValue: '--',
+    ),
+    ReportTrendSeries(
+      kind: ReportDataKind.water,
+      color: SemanticColor.info,
+      unit: 'L',
+      values: [],
+      currentValue: '--',
+    ),
+    ReportTrendSeries(
+      kind: ReportDataKind.sleep,
+      color: SemanticColor.warning,
+      unit: 'h',
+      values: [],
+      currentValue: '--',
+    ),
+  ];
 }
 
 class _ReportLockedFeaturesHint extends StatelessWidget {

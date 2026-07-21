@@ -168,7 +168,7 @@ class _TrendChart extends StatelessWidget {
     return FCard.raw(
       child: Container(
         decoration: BoxDecoration(
-          color: SemanticColor.neutral.subtle(context),
+          color: colors.background,
           borderRadius: BorderRadius.circular(RadiusTokens.level4),
           border: Border.all(color: colors.border),
         ),
@@ -184,6 +184,8 @@ class _TrendChart extends StatelessWidget {
               ),
               child: LineChart(
                 LineChartData(
+                  minX: 0,
+                  maxX: (dayCount - 1).toDouble(),
                   minY: -0.1,
                   maxY: 1.1,
                   gridData: FlGridData(
