@@ -278,7 +278,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.medication,
@@ -286,7 +286,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     // Lightweight mood self-check-in quick action.
     const RecordQuickAction(
@@ -295,7 +295,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.meal,
@@ -303,7 +303,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
@@ -311,7 +311,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.vitals,
@@ -319,7 +319,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
@@ -327,7 +327,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
@@ -335,7 +335,7 @@ class LucentRecordRepository implements RecordRepository {
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
-      softColor: SemanticColor.primary,
+      softColor: SemanticColor.neutral,
     ),
   ];
 

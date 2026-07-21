@@ -64,16 +64,18 @@ void main() {
       expect(dashboard.monthDays, isEmpty);
     });
 
-    test('has 5 default quick actions', () {
+    test('has 7 default quick actions', () {
       final dashboard = RecordDashboard.signedOut(testDate);
 
-      expect(dashboard.quickActions.length, 5);
-      final types = dashboard.quickActions.map((a) => a.type).toList();
-      expect(types, contains(RecordEntryType.meal));
-      expect(types, contains(RecordEntryType.water));
+      expect(dashboard.quickActions.length, 7);
+      final types = dashboard.quickActions.map((a) => a.type).toSet();
       expect(types, contains(RecordEntryType.symptom));
-      expect(types, contains(RecordEntryType.note));
+      expect(types, contains(RecordEntryType.medication));
+      expect(types, contains(RecordEntryType.water));
+      expect(types, contains(RecordEntryType.meal));
       expect(types, contains(RecordEntryType.sleep));
+      expect(types, contains(RecordEntryType.mood));
+      expect(types, contains(RecordEntryType.note));
     });
 
     test('quick actions are not locked by default', () {
@@ -84,10 +86,10 @@ void main() {
       }
     });
 
-    test('has 5 default filters', () {
+    test('has 7 default filters', () {
       final dashboard = RecordDashboard.signedOut(testDate);
 
-      expect(dashboard.filters.length, 5);
+      expect(dashboard.filters.length, 7);
       for (final filter in dashboard.filters) {
         expect(filter.selected, isFalse);
         expect(filter.locked, isFalse);
@@ -151,6 +153,7 @@ void main() {
           RecordEntryType.water,
           RecordEntryType.sleep,
           RecordEntryType.medication,
+          RecordEntryType.mood,
           RecordEntryType.note,
         ]),
       );

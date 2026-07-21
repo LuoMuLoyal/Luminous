@@ -462,11 +462,11 @@ class _ReorderableTile extends StatelessWidget {
           const SizedBox(width: Spacing.level4),
           FAvatar.raw(
             size: metrics.avatarSize,
-            style: .delta(backgroundColor: action.softColor.solid(context)),
+            style: .delta(backgroundColor: action.softColor.subtle(context)),
             child: Icon(
               action.icon,
               color: action.accent.solid(context),
-              size: Spacing.level4,
+              size: Spacing.level5,
             ),
           ),
           const SizedBox(width: Spacing.level4),
@@ -502,7 +502,7 @@ class _QuickRecordMetrics {
     return _QuickRecordMetrics(
       sectionGap: _lerpDouble(Spacing.level2, Spacing.level3, scale),
       tileVerticalPadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
-      avatarSize: _lerpDouble(Spacing.level5, Spacing.level6, scale),
+      avatarSize: _lerpDouble(Spacing.level6, Spacing.level7, scale),
       notePadding: _lerpDouble(Spacing.level2, Spacing.level4, scale),
       dividerHeight: _lerpDouble(Spacing.level6, Spacing.level8, scale),
     );
@@ -618,12 +618,12 @@ class _QuickRecordTile extends StatelessWidget {
                 FAvatar.raw(
                   size: metrics.avatarSize,
                   style: .delta(
-                    backgroundColor: action.softColor.solid(context),
+                    backgroundColor: action.softColor.subtle(context),
                   ),
                   child: Icon(
                     isLocked ? FLucideIcons.lock : action.icon,
                     color: action.accent.solid(context),
-                    size: Spacing.level4,
+                    size: Spacing.level5,
                   ),
                 ),
                 const SizedBox(height: Spacing.level2),
@@ -663,24 +663,48 @@ class _QuickRecordNoteButton extends StatelessWidget {
     final isLocked = action.locked;
     final label = recordCopy(l10n, action.titleKey);
 
-    return FButton(
+    return FTappable(
       key: const Key('record-quick-note'),
       onPress: (onTap == null || isLocked) ? null : () => onTap!(action),
-      variant: FButtonVariant.ghost,
-      mainAxisSize: MainAxisSize.max,
-      style: .delta(
-        decoration: .delta([
-          .all(.shapeDelta(color: SemanticColor.neutral.border(context))),
-        ]),
-        contentStyle: .delta(
-          padding: .value(EdgeInsets.all(metrics.notePadding)),
+      child: Semantics(
+        button: true,
+        label: isLocked ? '$label ${l10n.recordNotEnabledLabel}' : label,
+        child: Opacity(
+          opacity: isLocked ? 0.76 : 1,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.level4,
+              vertical: Spacing.level2,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FAvatar.raw(
+                  size: metrics.avatarSize,
+                  style: .delta(
+                    backgroundColor: action.softColor.subtle(context),
+                  ),
+                  child: Icon(
+                    isLocked ? FLucideIcons.lock : action.icon,
+                    color: action.accent.solid(context),
+                    size: Spacing.level5,
+                  ),
+                ),
+                const SizedBox(width: Spacing.level3),
+                Text(
+                  label,
+                  style: TypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      prefix: Icon(
-        isLocked ? FLucideIcons.lock : action.icon,
-        color: action.accent.solid(context),
-      ),
-      child: Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
 }

@@ -87,10 +87,11 @@ RecordEntryType? _tryParseRecordEntryType(String name) {
 List<RecordFilter> buildMobileFilters(List<RecordFilter> filters) {
   const preferredTypes = <RecordEntryType>[
     RecordEntryType.symptom,
+    RecordEntryType.medication,
     RecordEntryType.water,
     RecordEntryType.meal,
     RecordEntryType.sleep,
-    RecordEntryType.medication,
+    RecordEntryType.mood,
     RecordEntryType.note,
   ];
   // Hide locked filters on mobile — they add visual noise without value.

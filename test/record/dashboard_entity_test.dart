@@ -46,15 +46,18 @@ void main() {
         }
       });
 
-      test('has 5 default quick actions', () {
+      test('has 7 default quick actions', () {
         final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 11));
 
-        expect(dashboard.quickActions.length, 5);
-        expect(dashboard.quickActions[0].type, RecordEntryType.meal);
-        expect(dashboard.quickActions[1].type, RecordEntryType.water);
-        expect(dashboard.quickActions[2].type, RecordEntryType.symptom);
-        expect(dashboard.quickActions[3].type, RecordEntryType.note);
-        expect(dashboard.quickActions[4].type, RecordEntryType.sleep);
+        expect(dashboard.quickActions.length, 7);
+        final types = dashboard.quickActions.map((a) => a.type).toSet();
+        expect(types, contains(RecordEntryType.symptom));
+        expect(types, contains(RecordEntryType.medication));
+        expect(types, contains(RecordEntryType.water));
+        expect(types, contains(RecordEntryType.meal));
+        expect(types, contains(RecordEntryType.sleep));
+        expect(types, contains(RecordEntryType.mood));
+        expect(types, contains(RecordEntryType.note));
       });
 
       test('quick actions use neutral softColor and primary accent', () {
@@ -67,10 +70,10 @@ void main() {
         }
       });
 
-      test('has 5 default filters', () {
+      test('has 7 default filters', () {
         final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 11));
 
-        expect(dashboard.filters.length, 5);
+        expect(dashboard.filters.length, 7);
         for (final filter in dashboard.filters) {
           expect(filter.selected, isFalse);
           expect(filter.locked, isFalse);
@@ -82,10 +85,12 @@ void main() {
         final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 11));
 
         final types = dashboard.filters.map((f) => f.type).toSet();
+        expect(types.contains(RecordEntryType.symptom), isTrue);
+        expect(types.contains(RecordEntryType.medication), isTrue);
         expect(types.contains(RecordEntryType.water), isTrue);
         expect(types.contains(RecordEntryType.meal), isTrue);
-        expect(types.contains(RecordEntryType.symptom), isTrue);
         expect(types.contains(RecordEntryType.sleep), isTrue);
+        expect(types.contains(RecordEntryType.mood), isTrue);
         expect(types.contains(RecordEntryType.note), isTrue);
       });
 
@@ -225,6 +230,8 @@ void main() {
           RecordEntryType.meal,
           RecordEntryType.water,
           RecordEntryType.sleep,
+          RecordEntryType.medication,
+          RecordEntryType.mood,
           RecordEntryType.note,
         ]),
       );

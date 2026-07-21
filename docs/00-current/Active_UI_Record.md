@@ -123,3 +123,11 @@ Last updated: 2026-07-20 (P1 record)
 - **图片附件拍照入口**：新增可选 `onCameraPick` 回调，有值时显示"拍照"按钮。
 - **脏状态返回确认**：新增 `PopScope` + `_isDirty` + `_confirmDiscardChanges`，表单有未保存内容时返回弹出确认。
 - **NLP 候选睡眠时间选择器**：分钟数文本输入改为就寝/起床 `FTimeField.picker`，自动计算时长。
+
+## 2026-07-21 快速记录区补齐与视觉优化
+
+- **补齐七个入口**：移动端 `Quick record` 在未登录/静态 dashboard 下从 5 个补齐到 7 个，顺序为 Symptom、Medication、Water、Meal、Sleep、Mood、Note。缺口的 Medication / Mood 已加入 `RecordDashboard.signedOut` 的 `_defaultQuickActions` 和 `_defaultFilters`，以及 `dashboard_tokens.dart` 的 `defaultQuickActionOrder` / `buildMobileFilters` preferred order。
+- **Note 与其他入口统一**：移除 `quick_entry_panel.dart` 中 Note 的独立灰色 `FButton`，改为和网格 tile 一致的圆形 `FAvatar` + label 样式；上面 6 个入口保持 3 列网格，Note 独占底部一行，且为左图标右文字的横向布局，垂直内边距减小，整体高度更低。
+- **图标统一**：未登录与登录后的静态 quick actions 使用同一套图标（`briefcaseMedical` / `pill` / `droplets` / `utensils` / `moon` / `smile` / `notebookPen`），登录态原本深色的 `primary` softColor 改为 `neutral`，避免图标和背景融为一体。
+- **图标尺寸与背景**：`quick_entry_panel.dart` 的 `FAvatar` 背景从 `softColor.solid(context)` 改为 `softColor.subtle(context)`，去掉过深的圆形底色；头像容器从 `level6–level7`（20–28px）放大到 `level6–level7`（28–36px）；内部图标从 `Spacing.level4` 放大到 `Spacing.level5`（约 20px）。
+- **筛选条同步**：底部筛选 chip 同步显示 7 个类型，与快速记录入口一致。
