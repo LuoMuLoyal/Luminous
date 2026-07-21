@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
@@ -510,21 +511,38 @@ class RecordCreatePage extends HookConsumerWidget {
 
   static Future<bool> _confirmDiscardChanges(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
-    final result = await showFDialog<bool>(
+    final result = await showAppDialog<bool>(
       context: context,
-      builder: (dialogContext, style, animation) => FDialog(
-        title: Text(l10n.recordDiscardChangesTitle),
-        body: Text(l10n.recordDiscardChangesMessage),
-        actions: [
-          FButton(
-            variant: FButtonVariant.ghost,
-            onPress: () => Navigator.of(dialogContext).pop(false),
-            child: Text(l10n.authCancelAction),
+      scrollable: false,
+      builder: (dialogContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.recordDiscardChangesTitle,
+            style: dialogContext.theme.dialogStyle.titleTextStyle,
           ),
-          FButton(
-            variant: FButtonVariant.destructive,
-            onPress: () => Navigator.of(dialogContext).pop(true),
-            child: Text(l10n.recordDiscardChangesAction),
+          const SizedBox(height: Spacing.level2),
+          Text(
+            l10n.recordDiscardChangesMessage,
+            style: dialogContext.theme.dialogStyle.bodyTextStyle,
+          ),
+          const SizedBox(height: Spacing.level5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FButton(
+                variant: FButtonVariant.ghost,
+                onPress: () => Navigator.of(dialogContext).pop(false),
+                child: Text(l10n.authCancelAction),
+              ),
+              const SizedBox(width: Spacing.level3),
+              FButton(
+                variant: FButtonVariant.destructive,
+                onPress: () => Navigator.of(dialogContext).pop(true),
+                child: Text(l10n.recordDiscardChangesAction),
+              ),
+            ],
           ),
         ],
       ),

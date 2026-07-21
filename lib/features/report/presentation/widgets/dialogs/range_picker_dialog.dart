@@ -19,13 +19,19 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
     return _showMobileRangePicker(context, l10n, selectedQuery);
   }
 
-  return showFDialog<ReportDashboardQuery>(
+  return showAppDialog<ReportDashboardQuery>(
     context: context,
-    builder: (dialogContext, style, animation) {
-      return FDialog(
-        title: Text(l10n.reportRangePickerTitle),
-        actions: const [],
-        body: Column(
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.reportRangePickerTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level4),
+        Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _RangeOptionTile(
@@ -62,8 +68,8 @@ Future<ReportDashboardQuery?> showReportRangePickerDialog(
             ),
           ],
         ),
-      );
-    },
+      ],
+    ),
   );
 }
 

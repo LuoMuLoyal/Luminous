@@ -35,7 +35,7 @@ class DataExportPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FCard.raw(
+            FCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

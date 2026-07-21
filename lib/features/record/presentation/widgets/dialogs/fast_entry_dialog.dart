@@ -23,12 +23,14 @@ class RecordFastEntryDialog extends ConsumerStatefulWidget {
     required this.occurredAt,
     required this.currentDateTime,
     required this.moreRoute,
+    this.animation,
   });
 
   final DailyRecordKind kind;
   final String occurredAt;
   final DateTime currentDateTime;
   final String moreRoute;
+  final Animation<double>? animation;
 
   @override
   ConsumerState<RecordFastEntryDialog> createState() =>
@@ -46,53 +48,66 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
 
     return FDialog(
       key: Key('record-fast-entry-${widget.kind.name}'),
-      title: Text(l10n.recordFastEntryTitle(typeLabel)),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.recordFastEntryDateHint(widget.occurredAt),
-            style: context.theme.typography.body.sm.copyWith(
-              color: context.theme.colors.mutedForeground,
+      animation: widget.animation,
+      builder: (context, style) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.recordFastEntryTitle(typeLabel),
+              style: style.titleTextStyle,
             ),
-          ),
-          const SizedBox(height: Spacing.level4),
-          Wrap(
-            spacing: Spacing.level3,
-            runSpacing: Spacing.level3,
-            children: [
-              for (var index = 0; index < choices.length; index += 1)
-                _QuickChoiceChip(
-                  key: Key(
-                    'record-fast-entry-choice-${widget.kind.name}-$index',
-                  ),
-                  label: choices[index].label,
-                  prefix: choices[index].prefix,
-                  enabled: !_saving,
-                  onTap: () => _saveChoice(choices[index]),
-                ),
-            ],
-          ),
-          if (_saving) ...[
+            const SizedBox(height: Spacing.level2),
+            Text(
+              l10n.recordFastEntryDateHint(widget.occurredAt),
+              style: context.theme.typography.body.sm.copyWith(
+                color: context.theme.colors.mutedForeground,
+              ),
+            ),
             const SizedBox(height: Spacing.level4),
-            const Center(child: FProgress()),
+            Wrap(
+              spacing: Spacing.level3,
+              runSpacing: Spacing.level3,
+              children: [
+                for (var index = 0; index < choices.length; index += 1)
+                  _QuickChoiceChip(
+                    key: Key(
+                      'record-fast-entry-choice-${widget.kind.name}-$index',
+                    ),
+                    label: choices[index].label,
+                    prefix: choices[index].prefix,
+                    enabled: !_saving,
+                    onTap: () => _saveChoice(choices[index]),
+                  ),
+              ],
+            ),
+            if (_saving) ...[
+              const SizedBox(height: Spacing.level4),
+              const Center(child: FProgress()),
+            ],
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  key: const Key('record-fast-entry-more-action'),
+                  onPress: _saving ? null : _openMore,
+                  child: Text(l10n.recordFastEntryMoreAction),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: _saving ? null : () => Navigator.of(context).pop(),
+                  child: Text(l10n.commonCancel),
+                ),
+              ],
+            ),
           ],
-        ],
+        ),
       ),
-      actions: [
-        FButton(
-          variant: FButtonVariant.ghost,
-          key: const Key('record-fast-entry-more-action'),
-          onPress: _saving ? null : _openMore,
-          child: Text(l10n.recordFastEntryMoreAction),
-        ),
-        FButton(
-          variant: FButtonVariant.ghost,
-          onPress: _saving ? null : () => Navigator.of(context).pop(),
-          child: Text(l10n.commonCancel),
-        ),
-      ],
     );
   }
 

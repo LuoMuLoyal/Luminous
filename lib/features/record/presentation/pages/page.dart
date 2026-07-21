@@ -300,6 +300,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         occurredAt: date,
         currentDateTime: now,
         moreRoute: route,
+        animation: animation,
       ),
     );
   }

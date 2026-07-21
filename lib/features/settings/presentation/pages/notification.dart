@@ -329,7 +329,7 @@ class _PermissionCard extends StatelessWidget {
       ),
     };
 
-    return FCard.raw(
+    return FCard(
       child: FTile(
         key: key,
         prefix: Icon(icon, color: color),

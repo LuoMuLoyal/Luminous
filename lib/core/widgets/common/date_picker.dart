@@ -26,9 +26,10 @@ Future<DateTime?> showForuiDatePicker(
       height: 360,
       child: FCalendar.grid(
         control: FGridCalendarControl(start: first, end: last),
-        selectionControl: FDateSelectionControl.lifted(
-          selected: (date) => _dateOnly(date) == _dateOnly(initial),
-          select: (date) => Navigator.of(dialogContext).pop(_dateOnly(date)),
+        selectionControl: FDateSelectionControl.liftedSingle(
+          value: _dateOnly(initial),
+          onChange: (date) => Navigator.of(dialogContext).pop(date),
+          toggleable: false,
         ),
       ),
     ),

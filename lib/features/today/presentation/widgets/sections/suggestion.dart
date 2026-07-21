@@ -68,7 +68,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
             children: [
               for (var index = 0; index < visible.length; index += 1) ...[
                 if (index > 0) const SizedBox(height: Spacing.level3),
-                FCard.raw(
+                FCard(
                   key: Key('today-secondary-suggestion-$index'),
                   style: todayCardStyle(context, tone: TodayCardTone.soft),
                   child: FTappable(

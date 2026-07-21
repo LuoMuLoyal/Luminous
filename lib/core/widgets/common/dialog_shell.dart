@@ -28,7 +28,7 @@ class AppDialogShell extends StatelessWidget {
       bottom: padding.bottom + MediaQuery.viewInsetsOf(context).bottom,
     );
 
-    return FDialog.raw(
+    return FDialog(
       constraints: BoxConstraints(
         minWidth: 0,
         maxWidth: maxWidth,

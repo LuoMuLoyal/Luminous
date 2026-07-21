@@ -156,7 +156,7 @@ class _AuthFormPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final panel = FCard.raw(
+    final panel = FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level6),
         child: form,

@@ -20,9 +20,7 @@ class AssistantToolChip extends StatelessWidget {
             borderRadius: context.theme.style.borderRadius.pill,
           ),
         ),
-        contentStyle: .delta(
-          labelTextStyle: .delta(color: colors.mutedForeground),
-        ),
+        labelTextStyle: .delta(color: colors.mutedForeground),
       ),
       child: Text(label),
     );

@@ -10,7 +10,7 @@ class ReportReferenceNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FCard.raw(
+    return FCard(
       child: Container(
         decoration: BoxDecoration(
           color: SemanticColor.primary.muted(context),

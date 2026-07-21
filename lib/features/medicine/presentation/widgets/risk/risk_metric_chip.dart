@@ -19,7 +19,7 @@ class MedicineRiskMetricChip extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    final card = FCard.raw(
+    final card = FCard(
       style: .delta(
         decoration: .shapeDelta(
           color: SemanticColor.neutral.muted(context),

@@ -142,7 +142,7 @@ class _AuthShellPreview extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: Spacing.level6),
-                    FCard.raw(
+                    FCard(
                       child: Padding(
                         padding: const EdgeInsets.all(Spacing.level6),
                         child: Column(

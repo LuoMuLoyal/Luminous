@@ -29,7 +29,7 @@ class ReportScoreHero extends StatelessWidget {
         ? l10n.reportScoreOutOfPreview(score.maxValue)
         : l10n.reportScoreOutOf(score.maxValue);
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: Row(

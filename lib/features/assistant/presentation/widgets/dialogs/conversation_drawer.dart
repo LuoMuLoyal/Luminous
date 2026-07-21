@@ -108,7 +108,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                           onPress: state.isOpeningConversation
                               ? null
                               : () => onSelect(item.id),
-                          child: FCard.raw(
+                          child: FCard(
                             style: .delta(
                               decoration: .shapeDelta(
                                 color: backgroundColor,

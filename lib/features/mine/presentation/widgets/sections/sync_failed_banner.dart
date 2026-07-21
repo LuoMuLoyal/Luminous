@@ -51,7 +51,7 @@ class _Banner extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       child: FTappable(
         onPress: onTap,
         child: Container(

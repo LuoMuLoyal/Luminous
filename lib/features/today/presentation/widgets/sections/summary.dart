@@ -89,7 +89,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
 
     return TodaySection(
       title: l10n.todayHealthSummaryCardTitle,
-      child: FCard.raw(
+      child: FCard(
         key: const Key('today-summary-card'),
         style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: Padding(

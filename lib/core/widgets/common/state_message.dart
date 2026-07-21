@@ -14,7 +14,7 @@ enum AppStateTone { neutral, success, warning, danger }
 
 /// 用于展示空状态、错误提示或操作引导的卡片视图。
 ///
-/// 默认以 [FCard.raw] 包裹，图标、标题、描述垂直居中，并可附带一个轮廓按钮。
+/// 默认以 [FCard] 包裹，图标、标题、描述垂直居中，并可附带一个轮廓按钮。
 /// 通过 [maxWidth] 可限制卡片最大宽度，常用于居中的弹窗式提示。
 class AppStateMessageView extends StatelessWidget {
   const AppStateMessageView({
@@ -51,7 +51,7 @@ class AppStateMessageView extends StatelessWidget {
       AppStateTone.danger => SemanticColor.destructive,
     };
 
-    Widget message = FCard.raw(
+    Widget message = FCard(
       child: Padding(
         padding: padding,
         child: SingleChildScrollView(

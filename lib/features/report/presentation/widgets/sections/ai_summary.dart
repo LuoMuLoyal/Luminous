@@ -49,7 +49,7 @@ class ReportAiSummarySection extends StatelessWidget {
     final action = aiState.summary?.action;
     final actionLabel = aiState.summary?.actionLabel;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
         child: Column(

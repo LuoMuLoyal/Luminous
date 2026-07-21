@@ -152,7 +152,7 @@ class _MetricCard extends StatelessWidget {
       style: const .delta(
         contentStyle: .delta(padding: .value(EdgeInsets.zero)),
       ),
-      child: FCard.raw(
+      child: FCard(
         child: Padding(
           padding: const EdgeInsets.all(Spacing.level4),
           child: Column(

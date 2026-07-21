@@ -137,7 +137,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
               .copyWith(color: colors.mutedForeground),
         ),
         const SizedBox(height: Spacing.level5),
-        FCard.raw(
+        FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(

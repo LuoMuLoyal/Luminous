@@ -164,7 +164,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
       RecordCopyKey.weekdaySat,
     ];
 
-    return FCard.raw(
+    return FCard(
       key: const Key('record-calendar-panel'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
@@ -250,7 +250,7 @@ class RecordFilterPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return FCard.raw(
+    return FCard(
       key: const Key('record-filter-panel'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),

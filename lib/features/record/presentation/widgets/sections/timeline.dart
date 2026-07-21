@@ -28,7 +28,7 @@ class RecordTimelinePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    return FCard.raw(
+    return FCard(
       key: const Key('record-timeline'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
@@ -233,7 +233,7 @@ class _TimelineCard extends StatelessWidget {
               context,
               '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
             ),
-      child: FCard.raw(
+      child: FCard(
         style: .delta(
           decoration: .shapeDelta(
             color: colors.background,
@@ -364,7 +364,7 @@ class _TimelineCard extends StatelessWidget {
                 ),
               ] else if (entry.imagePlaceholderKey != null && !dense) ...[
                 const SizedBox(width: Spacing.level4),
-                FCard.raw(
+                FCard(
                   child: SizedBox(
                     width: 96,
                     height: 72,

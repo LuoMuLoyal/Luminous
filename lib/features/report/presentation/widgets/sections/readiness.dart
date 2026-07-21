@@ -45,7 +45,7 @@ class ReportReadinessSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       key: const Key('report-readiness-card'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),

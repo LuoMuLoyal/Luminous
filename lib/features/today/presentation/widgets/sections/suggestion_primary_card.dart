@@ -74,7 +74,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
       // AI explain on a card that is about to disappear.
       child: IgnorePointer(
         ignoring: isFading,
-        child: FCard.raw(
+        child: FCard(
           key: const Key('today-primary-suggestion-card'),
           style: todayCardStyle(context, tone: cardTone),
           child: Padding(

@@ -79,7 +79,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // -- Status card --
-                FCard.raw(
+                FCard(
                   child: Padding(
                     padding: const EdgeInsets.all(Spacing.level5),
                     child: Row(
@@ -144,7 +144,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                     label: l10n.settingsSecurityPinEnableSection,
                   ),
                   const SizedBox(height: Spacing.level3),
-                  FCard.raw(
+                  FCard(
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(
@@ -218,7 +218,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                     label: l10n.settingsSecurityPinChangeSection,
                   ),
                   const SizedBox(height: Spacing.level3),
-                  FCard.raw(
+                  FCard(
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(
@@ -314,7 +314,7 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                     label: l10n.settingsSecurityPinDisableSection,
                   ),
                   const SizedBox(height: Spacing.level3),
-                  FCard.raw(
+                  FCard(
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.level5),
                       child: Column(

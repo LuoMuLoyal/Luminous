@@ -325,7 +325,7 @@ class _DesktopSearchPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level6),
         child: ListView(

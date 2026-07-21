@@ -28,7 +28,7 @@ class _MedicineRecordsSection extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
+        FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.level4),
             child: Column(

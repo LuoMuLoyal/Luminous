@@ -32,6 +32,7 @@ custom widget stack to direct Forui composition. It is meant to be reused by lat
 - Replaced old submit-only validation with real `Form` + `GlobalKey<FormState>`.
 - Replaced page-local custom section stacks with direct `FCard`, `FTabs`, `FButton`, `FCheckbox`,
    `FToast`, and `FDialog`.
+- **Forui 0.24.x note**：`FDialog` 构造函数已从声明式（`title`/`body`/`actions`）改为 `builder: (context, style) => ...` 模式。Auth 对话框（如 `required_dialog.dart`）已迁移到 `showAppDialog` + `Column` builder，使用 `dialogContext.theme.dialogStyle.titleTextStyle` / `bodyTextStyle` 获取文本样式。
 
 ## Stable Pattern
 
@@ -81,7 +82,7 @@ custom widget stack to direct Forui composition. It is meant to be reused by lat
 ## Theme Rules
 
 - Prefer fixing theme issues at the shared root theme layer.
-- Current root preset is Forui `neutral`.
+- Current root preset is Forui `neutral`，非 neutral 主题族通过 `_familyColorOverride()` 在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 模拟（Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案）。
 - Avoid page-local forced theme overrides unless debugging; remove them after the real source is
    identified.
 

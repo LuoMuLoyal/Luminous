@@ -35,7 +35,7 @@ void main() {
   });
 
   group('medicineSafetyTipColor', () {
-    final colors = FThemes.neutral.light.touch.colors;
+    final colors = FTheme.neutral.light.touch.colors;
     test('returns primary for alcohol', () {
       expect(medicineSafetyTipColor('alcohol', colors), SemanticColor.primary);
     });

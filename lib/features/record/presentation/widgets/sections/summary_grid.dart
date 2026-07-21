@@ -19,7 +19,7 @@ class RecordSummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FCard.raw(
+    return FCard(
       key: const Key('record-summary'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
@@ -76,7 +76,7 @@ class _SummaryTile extends StatelessWidget {
 
     return FTappable(
       onPress: onTap == null ? null : () => onTap!(item.type),
-      child: FCard.raw(
+      child: FCard(
         style: .delta(
           decoration: .shapeDelta(
             color: colors.background,

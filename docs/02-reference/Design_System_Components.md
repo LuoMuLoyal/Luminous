@@ -37,6 +37,7 @@
 
 - 共享对话框 helper：`showAppDialog` / `AppDialogShell`（`lib/core/widgets/common/app_dialog_shell.dart`）。
 - `RecordNlpDialog` 与 `MedicineAddPrecheckDialog` 已使用它。
+- **Forui 0.24.x**：`FCard.raw` / `FDialog.raw` 已移除，API 合并到 `FCard` / `FDialog`。`FDialog` 构造函数从声明式改为 `builder` 模式，调用方需自行用 `Column` + `Row` 构建布局。
 
 ## 反馈与通用 widget
 
@@ -52,8 +53,9 @@
 
 ## 对话框基础设施
 
-- `lib/core/widgets/common/app_dialog_shell.dart` 正在重建为薄 Forui-first 布局 helper。
-- 它在 `showFDialog + FDialog.raw` 之上集中 `maxWidth/maxHeight`、共享 padding、滚动行为与键盘 inset 处理。
+- `lib/core/widgets/common/app_dialog_shell.dart` 是薄 Forui-first 布局 helper。
+- 它在 `showFDialog + FDialog` 之上集中 `maxWidth/maxHeight`、共享 padding、滚动行为与键盘 inset 处理。
+- **Forui 0.24.x 变更**：`FDialog.raw` 构造函数已移除，API 合并到 `FDialog`。`FDialog` 构造函数从声明式（`title`/`body`/`actions`）改为 `builder: (context, style) => ...` 模式。`style` 类型为 `FDialogStyle`，提供 `titleTextStyle` / `bodyTextStyle`。简单对话框优先迁移到 `showAppDialog`，在 builder 中用 `dialogContext.theme.dialogStyle.titleTextStyle` / `bodyTextStyle` 获取文本样式。
 
 ## Auth surface
 

@@ -248,7 +248,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
               children: [
                 // Group 1 — 药品信息
                 SettingsSectionLabel(label: l10n.mineEditMedicineSectionInfo),
-                FCard.raw(
+                FCard(
                   child: Padding(
                     padding: const EdgeInsets.all(Spacing.level4),
                     child: Column(
@@ -277,7 +277,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
 
                 // Group 2 — 用法用量
                 SettingsSectionLabel(label: l10n.mineEditMedicineSectionDosage),
-                FCard.raw(
+                FCard(
                   child: Padding(
                     padding: const EdgeInsets.all(Spacing.level4),
                     child: Column(
@@ -342,7 +342,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
                 SettingsSectionLabel(
                   label: l10n.mineEditMedicineSectionTimeline,
                 ),
-                FCard.raw(
+                FCard(
                   child: Padding(
                     padding: const EdgeInsets.all(Spacing.level4),
                     child: Column(

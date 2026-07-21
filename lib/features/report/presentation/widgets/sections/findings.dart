@@ -110,7 +110,7 @@ class _FindingCard extends StatelessWidget {
 
     final palette = finding.color.palette(context);
 
-    return FCard.raw(
+    return FCard(
       style: .delta(
         decoration: .shapeDelta(
           color: palette.muted,

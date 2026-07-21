@@ -132,7 +132,7 @@ class AccountSettingsPage extends HookConsumerWidget {
               children: [
                 FTabEntry(
                   label: Text(l10n.authAccountOverviewTitle),
-                  child: FCard.raw(
+                  child: FCard(
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.level6),
                       child: Column(
@@ -204,7 +204,7 @@ class AccountSettingsPage extends HookConsumerWidget {
                 ),
                 FTabEntry(
                   label: Text(l10n.authPasswordSectionTitle),
-                  child: FCard.raw(
+                  child: FCard(
                     child: Padding(
                       padding: const EdgeInsets.all(Spacing.level6),
                       child: Column(

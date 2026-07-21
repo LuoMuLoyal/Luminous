@@ -170,7 +170,7 @@ class _AccountHeader extends StatelessWidget {
     final subtitle =
         session.user?.email ?? (signedIn ? '' : l10n.mineAccountSignedOutMeta);
 
-    return FCard.raw(
+    return FCard(
       child: FTile(
         title: Text(displayName),
         subtitle: subtitle.isEmpty ? null : Text(subtitle),

@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -345,22 +346,39 @@ class RecordEditPage extends HookConsumerWidget {
     }
 
     Future<void> onDelete() async {
-      final confirmed = await showFDialog<bool>(
+      final confirmed = await showAppDialog<bool>(
         context: context,
-        builder: (dialogContext, style, animation) => FDialog(
-          title: Text(l10n.recordDeleteConfirmTitle),
-          body: Text(l10n.recordDeleteConfirmMessage),
-          actions: [
-            FButton(
-              variant: FButtonVariant.ghost,
-              onPress: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.authCancelAction),
+        scrollable: false,
+        builder: (dialogContext) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.recordDeleteConfirmTitle,
+              style: dialogContext.theme.dialogStyle.titleTextStyle,
             ),
-            FButton(
-              key: const Key('record-delete-confirm-action'),
-              variant: FButtonVariant.destructive,
-              onPress: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.recordDeleteAction),
+            const SizedBox(height: Spacing.level2),
+            Text(
+              l10n.recordDeleteConfirmMessage,
+              style: dialogContext.theme.dialogStyle.bodyTextStyle,
+            ),
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(dialogContext).pop(false),
+                  child: Text(l10n.authCancelAction),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  key: const Key('record-delete-confirm-action'),
+                  variant: FButtonVariant.destructive,
+                  onPress: () => Navigator.of(dialogContext).pop(true),
+                  child: Text(l10n.recordDeleteAction),
+                ),
+              ],
             ),
           ],
         ),

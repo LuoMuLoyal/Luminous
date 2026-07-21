@@ -38,7 +38,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
         existingAttachment?.objectKey.isNotEmpty == true;
     final fileName = selectedFileName ?? existingAttachment?.fileName;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
         child: Column(

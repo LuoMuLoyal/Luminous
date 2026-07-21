@@ -165,7 +165,7 @@ class _TrendChart extends StatelessWidget {
     // For 30-day range, only show every Nth label to avoid crowding.
     final labelInterval = dayCount <= 7 ? 1.0 : (dayCount / 6).ceilToDouble();
 
-    return FCard.raw(
+    return FCard(
       child: Container(
         decoration: BoxDecoration(
           color: colors.background,

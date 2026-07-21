@@ -87,7 +87,7 @@ class _RiskCheckSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: Column(

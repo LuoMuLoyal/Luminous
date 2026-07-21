@@ -35,7 +35,7 @@ class _DrugBoxSection extends StatelessWidget {
               .copyWith(color: context.theme.colors.mutedForeground),
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
+        FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.level4),
             child: Column(

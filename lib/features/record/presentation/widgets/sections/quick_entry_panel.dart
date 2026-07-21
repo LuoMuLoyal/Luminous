@@ -37,7 +37,7 @@ class RecordAiInputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       key: const Key('record-ai-input'),
       style: .delta(
         decoration: .shapeDelta(
@@ -210,7 +210,7 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
         ),
         SizedBox(height: metrics.sectionGap),
         if (!prefs.collapsed || _reorderMode)
-          FCard.raw(
+          FCard(
             child: Column(
               children: [
                 if (_reorderMode)

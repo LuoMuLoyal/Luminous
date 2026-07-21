@@ -22,7 +22,7 @@ class QuickActions extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level3),
         child: Row(

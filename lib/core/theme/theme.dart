@@ -34,28 +34,76 @@ enum AppThemeFamily {
 
 /// Returns the base [FThemeData] for a given family and brightness, before
 /// semantic color extensions are injected.
+///
+/// Forui 0.24.0 removed all predefined color schemes except neutral. Non-neutral
+/// families are emulated by overriding [FColors.primary] / [FColors.primaryForeground]
+/// on the neutral base, preserving the color variety the app has always offered.
 FThemeData _baseThemeData(AppThemeFamily family, Brightness brightness) {
-  return switch ((family, brightness)) {
-    (AppThemeFamily.blue, Brightness.light) => FThemes.blue.light.touch,
-    (AppThemeFamily.blue, Brightness.dark) => FThemes.blue.dark.touch,
-    (AppThemeFamily.green, Brightness.light) => FThemes.green.light.touch,
-    (AppThemeFamily.green, Brightness.dark) => FThemes.green.dark.touch,
-    (AppThemeFamily.neutral, Brightness.light) => FThemes.neutral.light.touch,
-    (AppThemeFamily.neutral, Brightness.dark) => FThemes.neutral.dark.touch,
-    (AppThemeFamily.orange, Brightness.light) => FThemes.orange.light.touch,
-    (AppThemeFamily.orange, Brightness.dark) => FThemes.orange.dark.touch,
-    (AppThemeFamily.red, Brightness.light) => FThemes.red.light.touch,
-    (AppThemeFamily.red, Brightness.dark) => FThemes.red.dark.touch,
-    (AppThemeFamily.rose, Brightness.light) => FThemes.rose.light.touch,
-    (AppThemeFamily.rose, Brightness.dark) => FThemes.rose.dark.touch,
-    (AppThemeFamily.slate, Brightness.light) => FThemes.slate.light.touch,
-    (AppThemeFamily.slate, Brightness.dark) => FThemes.slate.dark.touch,
-    (AppThemeFamily.violet, Brightness.light) => FThemes.violet.light.touch,
-    (AppThemeFamily.violet, Brightness.dark) => FThemes.violet.dark.touch,
-    (AppThemeFamily.yellow, Brightness.light) => FThemes.yellow.light.touch,
-    (AppThemeFamily.yellow, Brightness.dark) => FThemes.yellow.dark.touch,
-    (AppThemeFamily.zinc, Brightness.light) => FThemes.zinc.light.touch,
-    (AppThemeFamily.zinc, Brightness.dark) => FThemes.zinc.dark.touch,
+  final isDark = brightness == Brightness.dark;
+  final base = isDark ? FTheme.neutral.dark.touch : FTheme.neutral.light.touch;
+  final override = _familyColorOverride(family, isDark);
+
+  if (override == null) return base;
+
+  return FThemeData(
+    touch: true,
+    debugLabel: '${family.storageValue} ${isDark ? 'Dark' : 'Light'} Touch',
+    colors: base.colors.copyWith(
+      primary: override.primary,
+      primaryForeground: override.primaryForeground,
+    ),
+  );
+}
+
+/// Primary color override for each non-neutral family.
+///
+/// Color values are taken from the Forui 0.23.x predefined schemes that were
+/// removed in 0.24.0. Returns `null` for neutral (no override needed).
+class _ColorOverride {
+  final Color primary;
+  final Color primaryForeground;
+  const _ColorOverride(this.primary, this.primaryForeground);
+}
+
+_ColorOverride? _familyColorOverride(AppThemeFamily family, bool isDark) {
+  return switch (family) {
+    AppThemeFamily.neutral => null,
+    AppThemeFamily.blue => const _ColorOverride(
+      Color(0xFF1447E6),
+      Color(0xFFEFF6FF),
+    ),
+    AppThemeFamily.green => const _ColorOverride(
+      Color(0xFF5EA500),
+      Color(0xFFF7FEE7),
+    ),
+    AppThemeFamily.orange => _ColorOverride(
+      isDark ? const Color(0xFFFF6900) : const Color(0xFFF54A00),
+      const Color(0xFFFFF7ED),
+    ),
+    AppThemeFamily.red => _ColorOverride(
+      isDark ? const Color(0xFFFB2C36) : const Color(0xFFE7000B),
+      const Color(0xFFFEF2F2),
+    ),
+    AppThemeFamily.rose => _ColorOverride(
+      isDark ? const Color(0xFFFF2056) : const Color(0xFFEC003F),
+      const Color(0xFFFFF1F2),
+    ),
+    AppThemeFamily.slate => _ColorOverride(
+      isDark ? const Color(0xFFE2E8F0) : const Color(0xFF0F172B),
+      const Color(0xFFF8FAFC),
+    ),
+    AppThemeFamily.violet => _ColorOverride(
+      isDark ? const Color(0xFF8E51FF) : const Color(0xFF7F22FE),
+      const Color(0xFFF5F3FF),
+    ),
+    AppThemeFamily.yellow => _ColorOverride(
+      isDark ? const Color(0xFFEFB100) : const Color(0xFFFCC800),
+      const Color(0xFF733E0A),
+    ),
+    AppThemeFamily.zinc => _ColorOverride(
+      isDark ? const Color(0xFFE4E4E7) : const Color(0xFF18181B),
+      const Color(0xFFFAFAFA),
+    ),
   };
 }
 

@@ -29,7 +29,7 @@ class SearchResultTile extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    final card = FCard.raw(
+    final card = FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
@@ -157,7 +157,7 @@ class _TagPill extends StatelessWidget {
           color: SemanticColor.primary.muted(context),
           borderRadius: BorderRadius.circular(RadiusTokens.level2),
         ),
-        contentStyle: .delta(labelTextStyle: .delta(color: colors.primary)),
+        labelTextStyle: .delta(color: colors.primary),
       ),
       child: Text(label),
     );
@@ -176,7 +176,7 @@ class PreviewPanel extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level6),
         child: SingleChildScrollView(
@@ -313,7 +313,7 @@ class NoResultTools extends StatelessWidget {
     ];
     final typography = context.theme.typography;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: Column(

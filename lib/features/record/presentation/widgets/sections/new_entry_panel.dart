@@ -23,7 +23,7 @@ class RecordNewEntryPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       key: const Key('record-new-entry-panel'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),

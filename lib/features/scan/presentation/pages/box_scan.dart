@@ -13,6 +13,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:luminous/features/scan/data/scan_repository.dart';
 import 'package:luminous/features/scan/domain/services/ocr_service.dart';
@@ -25,29 +26,32 @@ enum _ScanMethod { ocr, ai }
 /// then launches the camera, processes the photo, and shows the result dialog.
 Future<void> showMedicineBoxScanSheet(BuildContext context) async {
   final l10n = AppLocalizations.of(context)!;
-  final method = await showFDialog<_ScanMethod>(
+  final method = await showAppDialog<_ScanMethod>(
     context: context,
-    builder: (dialogContext, style, animation) => FDialog(
-      title: Text(l10n.scanMethodPickerTitle),
-      actions: const [],
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _MethodTile(
-            icon: FLucideIcons.camera,
-            title: l10n.scanMethodOcrTitle,
-            subtitle: l10n.scanMethodOcrSubtitle,
-            onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
-          ),
-          const SizedBox(height: Spacing.level3),
-          _MethodTile(
-            icon: FLucideIcons.sparkles,
-            title: l10n.scanMethodAiTitle,
-            subtitle: l10n.scanMethodAiSubtitle,
-            onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
-          ),
-        ],
-      ),
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.scanMethodPickerTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level4),
+        _MethodTile(
+          icon: FLucideIcons.camera,
+          title: l10n.scanMethodOcrTitle,
+          subtitle: l10n.scanMethodOcrSubtitle,
+          onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
+        ),
+        const SizedBox(height: Spacing.level3),
+        _MethodTile(
+          icon: FLucideIcons.sparkles,
+          title: l10n.scanMethodAiTitle,
+          subtitle: l10n.scanMethodAiSubtitle,
+          onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
+        ),
+      ],
     ),
   );
 
@@ -84,6 +88,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
             // Re-show the scan sheet after dismiss
             showMedicineBoxScanSheet(context);
           },
+          animation: animation,
         ),
       ),
     );
@@ -111,26 +116,43 @@ Future<void> _showScanFailureDialog(
   BuildContext context,
   AppLocalizations l10n,
 ) async {
-  await showFDialog<void>(
+  await showAppDialog<void>(
     context: context,
-    builder: (dialogContext, style, animation) => FDialog(
-      title: Text(l10n.scanRecognitionFailedToast),
-      body: Text(l10n.scanManualSearchToast),
-      actions: [
-        FButton(
-          variant: FButtonVariant.outline,
-          onPress: () {
-            Navigator.of(dialogContext).pop();
-            showMedicineBoxScanSheet(context);
-          },
-          child: Text(l10n.scanRetakeAction),
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.scanRecognitionFailedToast,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        FButton(
-          onPress: () {
-            Navigator.of(dialogContext).pop();
-            context.push(AppRoutes.medicineSearch);
-          },
-          child: Text(l10n.scanManualSearchAction),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.scanManualSearchToast,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () {
+                Navigator.of(dialogContext).pop();
+                showMedicineBoxScanSheet(context);
+              },
+              child: Text(l10n.scanRetakeAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              onPress: () {
+                Navigator.of(dialogContext).pop();
+                context.push(AppRoutes.medicineSearch);
+              },
+              child: Text(l10n.scanManualSearchAction),
+            ),
+          ],
         ),
       ],
     ),
@@ -145,18 +167,21 @@ void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
     builder: (_, style, animation) => PopScope(
       canPop: false,
       child: FDialog(
-        actions: const [],
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const FCircularProgress(),
-            const SizedBox(height: Spacing.level4),
-            Text(
-              method == _ScanMethod.ocr
-                  ? l10n.scanProcessingOcr
-                  : l10n.scanProcessingAi,
-            ),
-          ],
+        animation: animation,
+        builder: (context, style) => Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const FCircularProgress(),
+              const SizedBox(height: Spacing.level4),
+              Text(
+                method == _ScanMethod.ocr
+                    ? l10n.scanProcessingOcr
+                    : l10n.scanProcessingAi,
+              ),
+            ],
+          ),
         ),
       ),
     ),
@@ -237,7 +262,7 @@ class _MethodTile extends StatelessWidget {
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    return FCard.raw(
+    return FCard(
       style: .delta(
         decoration: .shapeDelta(
           color: colors.background,

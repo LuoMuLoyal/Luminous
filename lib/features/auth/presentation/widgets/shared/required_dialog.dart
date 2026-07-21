@@ -5,6 +5,8 @@ import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/routes.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -65,27 +67,42 @@ Future<void> showAuthRequiredDialog(
   required VoidCallback onLogin,
 }) async {
   final l10n = AppLocalizations.of(context)!;
-  await showFDialog<void>(
+  await showAppDialog<void>(
     context: context,
-    builder: (dialogContext, style, animation) => FDialog(
-      key: const Key('auth-required-dialog'),
-      direction: Axis.horizontal,
-      title: Text(l10n.authNotSignedIn),
-      body: Text(l10n.authLoginRequiredPrompt),
-      actions: [
-        FButton(
-          key: const Key('auth-required-login-action'),
-          onPress: () {
-            Navigator.of(dialogContext).pop();
-            onLogin();
-          },
-          child: Text(l10n.authGoLogin),
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.authNotSignedIn,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
         ),
-        FButton(
-          variant: FButtonVariant.ghost,
-          key: const Key('auth-required-cancel-action'),
-          onPress: () => Navigator.of(dialogContext).pop(),
-          child: Text(l10n.authCancelAction),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.authLoginRequiredPrompt,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              key: const Key('auth-required-login-action'),
+              onPress: () {
+                Navigator.of(dialogContext).pop();
+                onLogin();
+              },
+              child: Text(l10n.authGoLogin),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              variant: FButtonVariant.ghost,
+              key: const Key('auth-required-cancel-action'),
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.authCancelAction),
+            ),
+          ],
         ),
       ],
     ),

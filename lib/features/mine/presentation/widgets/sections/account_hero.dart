@@ -44,7 +44,7 @@ class MineAccountHero extends StatelessWidget {
         ? l10n.mineCompletenessGapAction
         : l10n.mineReadinessManageAction;
 
-    return FCard.raw(
+    return FCard(
       key: const Key('mine-account-manage-link'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),

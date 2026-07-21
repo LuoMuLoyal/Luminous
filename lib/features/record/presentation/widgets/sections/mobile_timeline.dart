@@ -113,7 +113,7 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
             onClearFilter: widget.onClearFilter,
           )
         else
-          FCard.raw(
+          FCard(
             child: Column(
               children: [
                 for (var index = 0; index < visibleEntries.length; index += 1)
@@ -362,7 +362,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: Spacing.level6,

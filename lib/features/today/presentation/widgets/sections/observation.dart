@@ -26,7 +26,7 @@ class TodayObservationSection extends ConsumerWidget {
     return TodaySection(
       title: l10n.todayObservationSectionTitle,
       subtitle: l10n.todayObservationSubtitle,
-      child: FCard.raw(
+      child: FCard(
         key: const Key('today-observation-card'),
         style: todayCardStyle(context),
         child: suggestionAsync.when(

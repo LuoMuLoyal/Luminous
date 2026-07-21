@@ -31,7 +31,7 @@ void main() {
   });
 
   group('deliveryStatusColor', () {
-    final colors = FThemes.neutral.light.touch.colors;
+    final colors = FTheme.neutral.light.touch.colors;
     test('delivered returns primary', () {
       expect(deliveryStatusColor('delivered', colors), SemanticColor.primary);
     });

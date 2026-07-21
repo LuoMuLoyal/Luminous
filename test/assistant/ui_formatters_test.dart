@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -34,7 +34,7 @@ AssistantProposedAction _p(AssistantProposalExecutionState s) {
 
 void main() {
   group('proposalStateColor', () {
-    final colors = FThemes.neutral.light.touch.colors;
+    final colors = FTheme.neutral.light.touch.colors;
     test('pending → primary', () {
       expect(
         proposalStateColor(colors, _p(AssistantProposalExecutionState.pending)),

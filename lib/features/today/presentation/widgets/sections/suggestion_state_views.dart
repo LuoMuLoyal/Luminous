@@ -270,7 +270,7 @@ class SecondarySuggestionSkeleton extends StatelessWidget {
           children: [
             for (var i = 0; i < 2; i++) ...[
               if (i > 0) const SizedBox(height: Spacing.level3),
-              FCard.raw(
+              FCard(
                 style: todayCardStyle(context, tone: TodayCardTone.soft),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.level4),

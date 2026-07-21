@@ -64,7 +64,7 @@ class _QuickOperationSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
+        FCard(
           child: Column(
             children: [
               for (var index = 0; index < operations.length; index += 1) ...[

@@ -58,7 +58,7 @@ class AssistantConversationSurface extends ConsumerWidget {
       assistantControllerProvider.select((s) => s.isSending),
     );
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: Column(

@@ -35,7 +35,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
+        FCard(
           child: visibleLogs.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(Spacing.level4),
@@ -119,7 +119,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
           ),
         ),
         const SizedBox(height: Spacing.level3),
-        FCard.raw(
+        FCard(
           child: visibleLogs.isEmpty
               ? Padding(
                   padding: const EdgeInsets.all(Spacing.level4),

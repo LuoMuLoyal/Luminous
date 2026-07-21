@@ -274,7 +274,7 @@ class _FormCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FCard.raw(child: child);
+    return FCard(child: child);
   }
 }
 

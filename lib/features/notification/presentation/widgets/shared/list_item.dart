@@ -60,7 +60,7 @@ class _NotificationListItemWidgetState
       return MouseRegion(
         onEnter: (_) => _isHovered.value = true,
         onExit: (_) => _isHovered.value = false,
-        child: FCard.raw(
+        child: FCard(
           child: FTappable(
             onPress: widget.onTap,
             child: Padding(
@@ -191,7 +191,7 @@ class _NotificationListItemWidgetState
           ),
         ],
       ),
-      child: FCard.raw(
+      child: FCard(
         child: FTappable(
           onPress: widget.onTap,
           child: Padding(

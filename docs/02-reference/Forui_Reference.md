@@ -1,6 +1,8 @@
 # Forui 参考（项目版）
 
-> 版本：`forui: 0.23.0`，`forui_hooks: 0.23.0`。
+> 版本：`forui: 0.24.1`，`forui_hooks: 0.24.0`。
+>
+> **0.24.x Breaking Changes**：`FThemes` 类被移除（仅保留 `FTheme.neutral`）；`FCard.raw` / `FDialog.raw` 构造函数被移除（API 合并到 `FCard` / `FDialog`）；`FDialog` 构造函数从声明式（`title`/`body`/`actions`）改为 `builder` 模式；`FDateSelectionControl.lifted` 改为 `liftedSingle`；`FBadgeStyle.contentStyle` 被移除（`labelTextStyle` 提升到顶层）。
 
 ## 给 AI 读文档的最佳选择
 
@@ -21,7 +23,7 @@
 
 推荐顺序：
 1. 需要了解某个组件怎么用 → 优先看 `llms-full.txt` 里对应章节。
-2. 需要确认 API 参数或默认样式 → 看 `Pub/Cache/hosted/pub.dev/forui-0.23.0/lib/src/widgets/...`。
+2. 需要确认 API 参数或默认样式 → 看 `Pub/Cache/hosted/pub.dev/forui-0.24.1/lib/src/widgets/...`。
 3. 需要项目实际用法 → 看本文件和 `lib/core/widgets` 里的封装。
 
 官方地址：
@@ -31,9 +33,10 @@
 
 ## 项目级使用约定
 
-- **根主题**：`lib/core/theme/theme.dart` 维护 Luminous 可选的 Forui 内置主题族目录，当前直接映射
-   `FThemes.blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc` 的 touch
-   light/dark 变体；`lib/app/bootstrap.dart` 根据持久化的 `theme.family` + `theme.mode` 派生 `ThemeData`，
+- **根主题**：`lib/core/theme/theme.dart` 维护 Luminous 可选的主题族目录。Forui 0.24.0 移除了除 `neutral` 外的所有
+   预定义颜色方案（原 `FThemes.blue / green / orange / red / rose / slate / violet / yellow / zinc`），
+   现通过 `_familyColorOverride()` 函数在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 来
+   模拟原有主题族的颜色变体；`lib/app/bootstrap.dart` 根据持久化的 `theme.family` + `theme.mode` 派生 `ThemeData`，
    再用 `FTheme` 包裹整棵树。
 - **页面 header**：
   - 子页（有返回按钮的 drill-down 页面）统一用 `lib/core/widgets/layout/page_scaffold.dart` 的 `PageScaffold`。
@@ -128,7 +131,7 @@ FTileGroup(
 ### FCard
 
 ```dart
-FCard.raw(
+FCard(
   style: .delta(
     decoration: .shapeDelta(
       color: colors.card,
@@ -141,6 +144,8 @@ FCard.raw(
   child: Padding(padding: const EdgeInsets.all(Spacing.level4), child: content),
 )
 ```
+
+> **0.24.x**：`FCard.raw` 已移除，API 直接合并到 `FCard`。旧代码只需将 `FCard.raw(` 替换为 `FCard(`。
 
 ### FTextField / FTextFormField
 
@@ -166,6 +171,15 @@ FTextField(
 - 底层：`showFDialog<T>(...)`, `showFSheet<T>(side: FLayout.btt / FLayout.rtl, ...)`。
 - 项目封装：`lib/core/widgets/common/app_dialog_shell.dart` 的 `showAppDialog` / `AppDialogShell`，统一处理
    `maxWidth`、padding、滚动、键盘 inset。
+
+> **0.24.x FDialog 构造函数变更**：`FDialog` 移除了 `title` / `body` / `actions` 命名参数，改为 `builder: (context, style) => ...`
+> 模式。`style` 类型为 `FDialogStyle`，提供 `titleTextStyle` / `bodyTextStyle`。调用方需自行用 `Column` + `Row` 构建布局。
+>
+> 迁移模式：
+> - 简单对话框优先迁移到 `showAppDialog`，在 builder 中用 `dialogContext.theme.dialogStyle.titleTextStyle` /
+>   `bodyTextStyle` 获取文本样式。
+> - 需要直接使用 `showFDialog` 的对话框用 `FDialog(builder: (context, style) => Padding(...))`，
+>   通过 `style.titleTextStyle` / `style.bodyTextStyle` 获取样式。
 
 ### 反馈
 

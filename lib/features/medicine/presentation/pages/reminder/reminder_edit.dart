@@ -156,9 +156,10 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           height: 360,
           child: FCalendar.grid(
             control: FGridCalendarControl(start: first, end: last),
-            selectionControl: FDateSelectionControl.lifted(
-              selected: (date) => dateOnly(date) == dateOnly(initial),
-              select: (date) => Navigator.of(dialogContext).pop(dateOnly(date)),
+            selectionControl: FDateSelectionControl.liftedSingle(
+              value: dateOnly(initial),
+              onChange: (date) => Navigator.of(dialogContext).pop(date),
+              toggleable: false,
             ),
           ),
         ),
@@ -483,7 +484,7 @@ class _MedicineSelectorPrompt extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return FCard.raw(
+    return FCard(
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
         child: Column(

@@ -144,8 +144,8 @@
 ## 2026-07-03 跟进
 
 - **本地 surface 替换**：验证 `today_top_bar`、`medicine_page`、`mine_top_bar`、report sections 中剩余的手建
-   chip/card/badge/avatar surface 已使用原生 Forui widgets（`FButton.raw`、`FCard.raw`、`FBadge.raw`、
-   `FAvatar.raw`）。
+   chip/card/badge/avatar surface 已使用原生 Forui widgets（`FButton`、`FCard`、`FBadge`、
+   `FAvatar`）。
 - **Phase 1 icon cleanup**：运行时 `lib/` 中所有 Material3 `Icons.*`（含数据/领域 repositories 与 entities）已替换为
    `FLucideIcons.*` 等价物。剩余 `Icons.*` 引用仅在生成的 `*.g.dart` / `*.freezed.dart` 文件中。
 - **Phase 3 wrapper inlining**：薄视觉别名 wrapper（`app_header_action_chip`、`app_icon_badge`、
@@ -166,7 +166,7 @@
 ## 最终清理
 
 - 从运行时 `lib/` 移除 `Material(color: Colors.transparent)` wrapper。
-- 它们之前的子节点（可滚动页面 body、`FTappable` tiles、`FCard.raw` surfaces、dialog content）现在直接渲染，因为所有后代已使用 Forui
+- 它们之前的子节点（可滚动页面 body、`FTappable` tiles、`FCard` surfaces、dialog content）现在直接渲染，因为所有后代已使用 Forui
    组件。
 - Material `Scaffold` / `AppBar` / `Drawer` 已在运行时 `lib/` 中完全替换为 Forui 等价物。
 - 所有页面使用 `FScaffold` + `FHeader`。
@@ -175,6 +175,15 @@
 - `lib/core/network/map_utils.dart` 中的共享工具 `coerceToStringMap` 去重 5 份相同的 `_coerceToMap` helper。
 - `compareReminderTime` 从 3 份副本去重到 `medicine_reminder_formatters.dart` 中的 1 个公共版本。
 - 登录页 password/code 模式切换使用 `flutter_animate` 的 `.fadeIn().slideX()`，匹配项目范围的进入动画模式。
+
+## Forui 0.24.x 升级（2026-07-21）
+
+- **`FThemes` 移除**：Forui 0.24.0 移除了除 `neutral` 外的所有预定义颜色方案。`lib/core/theme/theme.dart` 新增 `_familyColorOverride()` 函数，在 `FTheme.neutral` 基础上覆盖 `primary` / `primaryForeground` 模拟原有 `blue / green / orange / red / rose / slate / violet / yellow / zinc` 主题族。颜色值取自 Forui 0.23.x 预定义方案。
+- **`FCard.raw` / `FDialog.raw` 移除**：API 合并到 `FCard` / `FDialog`。约 60 个文件的 `FCard.raw(` 批量替换为 `FCard(`，`AppDialogShell` 中的 `FDialog.raw` 替换为 `FDialog`。
+- **`FDialog` 构造函数重构**：从声明式（`title`/`body`/`actions`）改为 `builder: (context, style) => ...` 模式。调用方需自行用 `Column` + `Row` 构建布局，通过 `style.titleTextStyle` / `style.bodyTextStyle` 或 `dialogContext.theme.dialogStyle.titleTextStyle` / `bodyTextStyle` 获取文本样式。简单对话框优先迁移到 `showAppDialog`。
+- **`FDateSelectionControl.lifted` → `liftedSingle`**：API 从 `selected`/`select` 回调改为 `value`/`onChange`/`toggleable` 参数。
+- **`FBadgeStyle.contentStyle` 移除**：`labelTextStyle` 从嵌套的 `contentStyle.delta(...)` 提升到 `FBadgeStyleDelta` 顶层。
+- **验证**：`flutter analyze` 零问题。
 
 
 相关子文档：

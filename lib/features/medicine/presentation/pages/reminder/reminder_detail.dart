@@ -146,7 +146,7 @@ class _ReminderDetailBody extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          FCard.raw(
+          FCard(
             child: Row(
               children: [
                 FAvatar.raw(
@@ -231,7 +231,7 @@ class _ReminderDetailBody extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.level4),
           // Active/inactive toggle — allows switching without entering edit page.
-          FCard.raw(
+          FCard(
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: Spacing.level4,
@@ -284,7 +284,7 @@ class _ReminderDetailBody extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: Spacing.level4),
-          FCard.raw(
+          FCard(
             child: Column(
               children: [
                 ReminderInfoRow(

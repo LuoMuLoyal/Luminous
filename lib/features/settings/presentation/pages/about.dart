@@ -37,7 +37,7 @@ class AboutSettingsPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FCard.raw(
+            FCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
