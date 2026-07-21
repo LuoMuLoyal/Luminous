@@ -269,14 +269,7 @@ class _MedicineMobileShell extends StatelessWidget {
       decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
-        child: ListView(
-          key: const PageStorageKey<String>('medicine-mobile-scroll'),
-          padding: const EdgeInsets.fromLTRB(
-            Spacing.level4,
-            Spacing.level4,
-            Spacing.level4,
-            Spacing.level10,
-          ),
+        child: Column(
           children: [
             FHeader.nested(
               title: Text(l10n.tabMedicine),
@@ -285,10 +278,22 @@ class _MedicineMobileShell extends StatelessWidget {
                 _MedicineNotificationButton(),
               ],
             ),
-            const SizedBox(height: Spacing.level4),
-            const _MedicineMobileSearchBar(),
-            const SizedBox(height: Spacing.level4),
-            child,
+            Expanded(
+              child: ListView(
+                key: const PageStorageKey<String>('medicine-mobile-scroll'),
+                padding: const EdgeInsets.fromLTRB(
+                  Spacing.level4,
+                  Spacing.level4,
+                  Spacing.level4,
+                  Spacing.level10,
+                ),
+                children: [
+                  const _MedicineMobileSearchBar(),
+                  const SizedBox(height: Spacing.level4),
+                  child,
+                ],
+              ),
+            ),
           ],
         ),
       ),

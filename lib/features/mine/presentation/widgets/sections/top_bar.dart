@@ -5,7 +5,8 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Mine 页面顶栏，使用 FHeader.nested。
+/// Mine 页面顶栏。使用 [FHeader.nested]，放在 [Column] 顶部而非
+/// [ListView] 中以避免 tight width 约束崩溃（Forui 0.24.x 已知问题）。
 class MineTopBar extends ConsumerWidget {
   const MineTopBar({
     super.key,

@@ -89,7 +89,6 @@ class _MobileTodayDashboard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
     final sections = <Widget>[
-      const TodayTopBar(),
       // 问候语从 Header 拆分，放到内容区
       Text(
         greetingSubtitle(l10n, dashboard),
@@ -111,22 +110,29 @@ class _MobileTodayDashboard extends StatelessWidget {
       TodayQuickActionsSection(dashboard: dashboard),
     ];
 
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView.separated(
-        key: const PageStorageKey<String>('today-dashboard-scroll'),
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(
-          Spacing.level4,
-          Spacing.level4,
-          Spacing.level4,
-          Spacing.level10 + MediaQuery.paddingOf(context).bottom,
+    return Column(
+      children: [
+        const TodayTopBar(),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView.separated(
+              key: const PageStorageKey<String>('today-dashboard-scroll'),
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+                Spacing.level4,
+                Spacing.level4,
+                Spacing.level4,
+                Spacing.level10 + MediaQuery.paddingOf(context).bottom,
+              ),
+              itemBuilder: (context, index) => sections[index],
+              separatorBuilder: (context, index) =>
+                  const SizedBox(height: Spacing.level5),
+              itemCount: sections.length,
+            ),
+          ),
         ),
-        itemBuilder: (context, index) => sections[index],
-        separatorBuilder: (context, index) =>
-            const SizedBox(height: Spacing.level5),
-        itemCount: sections.length,
-      ),
+      ],
     );
   }
 }
@@ -148,63 +154,71 @@ class _DesktopTodayDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: ListView(
-        key: const PageStorageKey<String>('today-dashboard-desktop-scroll'),
-        physics: const AlwaysScrollableScrollPhysics(),
-        // Horizontal padding is provided by DesktopTabShell's content area.
-        // Only add bottom padding for nav bar clearance.
-        padding: const EdgeInsets.only(bottom: Spacing.level10),
-        children: [
-          const TodayTopBar(),
-          // 问候语从 Header 拆分，放到内容区
-          Text(
-            greetingSubtitle(l10n, dashboard),
-            style: TypographyToken.level4
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
-          ),
-          if (isPreview) ...[
-            const SizedBox(height: Spacing.level3),
-            SignInHintBanner(
-              onSignIn: onSignIn,
-              message: l10n.todayPreviewBannerMessage,
-            ),
-          ],
-          const SizedBox(height: Spacing.level6),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 7,
-                child: Column(
-                  children: [
-                    TodayPrimarySuggestionSection(dashboard: dashboard),
-                    const SizedBox(height: Spacing.level6),
-                    TodaySummarySection(dashboard: dashboard),
-                  ],
-                ),
+    return Column(
+      children: [
+        const TodayTopBar(),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: onRefresh,
+            child: ListView(
+              key: const PageStorageKey<String>(
+                'today-dashboard-desktop-scroll',
               ),
-              const SizedBox(width: Spacing.level6),
-              Expanded(
-                flex: 5,
-                child: Column(
+              physics: const AlwaysScrollableScrollPhysics(),
+              // Horizontal padding is provided by DesktopTabShell's content area.
+              // Only add bottom padding for nav bar clearance.
+              padding: const EdgeInsets.only(bottom: Spacing.level10),
+              children: [
+                // 问候语从 Header 拆分，放到内容区
+                Text(
+                  greetingSubtitle(l10n, dashboard),
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+                if (isPreview) ...[
+                  const SizedBox(height: Spacing.level3),
+                  SignInHintBanner(
+                    onSignIn: onSignIn,
+                    message: l10n.todayPreviewBannerMessage,
+                  ),
+                ],
+                const SizedBox(height: Spacing.level6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const TodaySecondarySuggestionsSection(
-                      key: Key('today-secondary-suggestions-card'),
+                    Expanded(
+                      flex: 7,
+                      child: Column(
+                        children: [
+                          TodayPrimarySuggestionSection(dashboard: dashboard),
+                          const SizedBox(height: Spacing.level6),
+                          TodaySummarySection(dashboard: dashboard),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: Spacing.level6),
-                    TodayObservationSection(dashboard: dashboard),
+                    const SizedBox(width: Spacing.level6),
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        children: [
+                          const TodaySecondarySuggestionsSection(
+                            key: Key('today-secondary-suggestions-card'),
+                          ),
+                          const SizedBox(height: Spacing.level6),
+                          TodayObservationSection(dashboard: dashboard),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
+                const SizedBox(height: Spacing.level6),
+                TodayQuickActionsSection(dashboard: dashboard),
+              ],
+            ),
           ),
-          const SizedBox(height: Spacing.level6),
-          TodayQuickActionsSection(dashboard: dashboard),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

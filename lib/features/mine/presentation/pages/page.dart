@@ -82,27 +82,32 @@ class MinePage extends ConsumerWidget {
               decoration: BoxDecoration(color: colors.background),
               child: SafeArea(
                 bottom: false,
-                child: RefreshIndicator(
-                  onRefresh: () => _refreshDashboard(ref),
-                  child: ListView(
-                    key: const PageStorageKey<String>('mine-mobile-scroll'),
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      Spacing.level4,
-                      Spacing.level4,
-                      Spacing.level4,
-                      Spacing.level10,
+                child: Column(
+                  children: [
+                    MineTopBar(
+                      onNotificationsTap: () =>
+                          context.push(AppRoutes.notifications),
+                      onSettingsTap: () => context.push(AppRoutes.settings),
                     ),
-                    children: [
-                      MineTopBar(
-                        onNotificationsTap: () =>
-                            context.push(AppRoutes.notifications),
-                        onSettingsTap: () => context.push(AppRoutes.settings),
+                    Expanded(
+                      child: RefreshIndicator(
+                        onRefresh: () => _refreshDashboard(ref),
+                        child: ListView(
+                          key: const PageStorageKey<String>(
+                            'mine-mobile-scroll',
+                          ),
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.fromLTRB(
+                            Spacing.level4,
+                            Spacing.level4,
+                            Spacing.level4,
+                            Spacing.level10,
+                          ),
+                          children: [body],
+                        ),
                       ),
-                      const SizedBox(height: Spacing.level4),
-                      body,
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -183,6 +183,7 @@
 - **`FDialog` 构造函数重构**：从声明式（`title`/`body`/`actions`）改为 `builder: (context, style) => ...` 模式。调用方需自行用 `Column` + `Row` 构建布局，通过 `style.titleTextStyle` / `style.bodyTextStyle` 或 `dialogContext.theme.dialogStyle.titleTextStyle` / `bodyTextStyle` 获取文本样式。简单对话框优先迁移到 `showAppDialog`。
 - **`FDateSelectionControl.lifted` → `liftedSingle`**：API 从 `selected`/`select` 回调改为 `value`/`onChange`/`toggleable` 参数。
 - **`FBadgeStyle.contentStyle` 移除**：`labelTextStyle` 从嵌套的 `contentStyle.delta(...)` 提升到 `FBadgeStyleDelta` 顶层。
+- **`FHeader.nested` 布局修复**：`FHeader.nested` 不能放在 `ListView` 中（`_RenderNestedHeader` 在 tight width 约束下产出无效 `BoxConstraints` 崩溃）。所有 Tab 根页（Today/Report/Mine/Medicine 移动端）从 `ListView(FHeader.nested + ...)` 重构为 `Column(FHeader.nested + Expanded(ListView(...)))`。临时替代组件 `TabTopBar` 已删除。
 - **验证**：`flutter analyze` 零问题。
 
 

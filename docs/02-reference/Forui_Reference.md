@@ -76,6 +76,7 @@ FScaffold(
 
 - `FHeader(...)`：标题左对齐，用于导航栈根页。
 - `FHeader.nested(...)`：标题居中，默认用于非根页。
+- **⚠️ 布局约束**：`FHeader.nested` 必须放在 `Column` 顶部或 `FScaffold.header` 中，**不能放在 `ListView`/`GridView` 等提供 tight width 约束的滚动视图中**。Forui 0.24.x 的 `_RenderNestedHeader.performLayout()` 在 tight width 下会产出 `BoxConstraints(minWidth > maxWidth)` 的无效约束导致崩溃。Tab 根页的正确布局模式是 `Column(FHeader.nested + Expanded(ListView(...)))`。
 - `childPad: false` 是项目约定，避免 `FScaffold` 默认 padding 和 `ResponsiveContentFrame` 叠加。
 
 ### FButton

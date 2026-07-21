@@ -5,10 +5,11 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Report 页面顶栏，使用 FHeader.nested。
+/// Report 页面顶栏。
 ///
 /// 注意：日期范围标签（subtitle）和操作按钮区（bottom）已从 Header 中拆分，
-/// 放到页面内容区显示。
+/// 放到页面内容区显示。使用 [FHeader.nested]，放在 [Column] 顶部而非
+/// [ListView] 中以避免 tight width 约束崩溃（Forui 0.24.x 已知问题）。
 class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
     super.key,

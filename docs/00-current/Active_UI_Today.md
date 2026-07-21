@@ -92,6 +92,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - observation 骨架行包 `AppSkeletonShimmer`。
 - 次要操作标题改为正常前景色，仅图标保持 muted。
 - `TodayTopBar` 改为 `FHeader.nested`，问候语从 Header 拆分到内容区。
+- `FHeader.nested` 从 `ListView` 中拆出放到 `Column` 顶部，避免 Forui 0.24.x tight width 约束崩溃。布局模式为 `Column(FHeader.nested + Expanded(RefreshIndicator(ListView(...))))`。
 - `DesktopTabShell` 新增 `showHeader` 参数（Today 页面设为 false，由内容区 `TodayTopBar` 提供唯一标题）。
 - 桌面端 ListView 移除水平 padding，由 `DesktopTabShell` 内容区统一提供。
 

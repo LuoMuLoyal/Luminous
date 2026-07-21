@@ -536,39 +536,45 @@ class _ReportMobileShell extends StatelessWidget {
       decoration: BoxDecoration(color: colors.background),
       child: SafeArea(
         bottom: false,
-        child: RefreshIndicator(
-          onRefresh: onRefresh,
-          child: ListView(
-            key: const PageStorageKey<String>('report-mobile-scroll'),
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.level4,
-              Spacing.level4,
-              Spacing.level4,
-              Spacing.level10,
+        child: Column(
+          children: [
+            header,
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: onRefresh,
+                child: ListView(
+                  key: const PageStorageKey<String>('report-mobile-scroll'),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.level4,
+                    Spacing.level4,
+                    Spacing.level4,
+                    Spacing.level10,
+                  ),
+                  children: [
+                    // 日期范围标签从 Header 拆分，放到内容区
+                    const SizedBox(height: Spacing.level2),
+                    Text(
+                      dateRangeLabel,
+                      style: TypographyToken.level4
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                    const SizedBox(height: Spacing.level4),
+                    // 操作按钮区从 Header 拆分，放到内容区
+                    ReportActionBar(
+                      onGenerate: onGenerate,
+                      onSync: onSync,
+                      isGenerating: isGenerating,
+                      isSyncing: isSyncing,
+                    ),
+                    const SizedBox(height: Spacing.level4),
+                    child,
+                  ],
+                ),
+              ),
             ),
-            children: [
-              header,
-              // 日期范围标签从 Header 拆分，放到内容区
-              const SizedBox(height: Spacing.level2),
-              Text(
-                dateRangeLabel,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
-              ),
-              const SizedBox(height: Spacing.level4),
-              // 操作按钮区从 Header 拆分，放到内容区
-              ReportActionBar(
-                onGenerate: onGenerate,
-                onSync: onSync,
-                isGenerating: isGenerating,
-                isSyncing: isSyncing,
-              ),
-              const SizedBox(height: Spacing.level4),
-              child,
-            ],
-          ),
+          ],
         ),
       ),
     );
