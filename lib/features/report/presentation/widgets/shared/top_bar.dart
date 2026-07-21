@@ -1,54 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Report 页面顶栏，使用 FHeader.nested。
+///
+/// 注意：日期范围标签（subtitle）和操作按钮区（bottom）已从 Header 中拆分，
+/// 放到页面内容区显示。
 class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
     super.key,
-    required this.dateRangeLabel,
     required this.selectedQuery,
     required this.onQueryChanged,
-    required this.onGenerate,
-    required this.onSync,
-    this.isGenerating = false,
-    this.isSyncing = false,
-    this.showActionBar = true,
   });
 
-  final String dateRangeLabel;
   final ReportDashboardQuery selectedQuery;
   final ValueChanged<ReportDashboardQuery> onQueryChanged;
-  final VoidCallback onGenerate;
-  final VoidCallback onSync;
-  final bool isGenerating;
-  final bool isSyncing;
-  final bool showActionBar;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return AppTopBar(
-      title: l10n.tabReport,
-      subtitle: Text(dateRangeLabel),
-      trailing: [
+    return FHeader.nested(
+      title: Text(l10n.tabReport),
+      suffixes: [
         ReportPeriodPill(
           range: selectedQuery.range,
           onTap: () => _showRangePicker(context),
         ),
       ],
-      bottom: showActionBar
-          ? ReportActionBar(
-              onGenerate: onGenerate,
-              onSync: onSync,
-              isGenerating: isGenerating,
-              isSyncing: isSyncing,
-            )
-          : null,
     );
   }
 

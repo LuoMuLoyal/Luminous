@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-20 (P1 record)
+Last updated: 2026-07-21 (P1 header migration)
 
 ## 支持的记录类型
 

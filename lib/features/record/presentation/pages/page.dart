@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
@@ -219,7 +218,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return ShellDeferredContent(
         child: DesktopTabShell(
           title: l10n.tabRecord,
-          trailing: headerActions,
+          suffixes: headerActions,
           scrollStorageKey: 'record-desktop-scroll',
           onRefresh: () => _refreshAll(context),
           child: pageStateContent,
@@ -246,7 +245,10 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
     return ShellDeferredContent(
       child: FScaffold(
-        header: AppTopBar(title: l10n.tabRecord, trailing: headerActions),
+        header: FHeader.nested(
+          title: Text(l10n.tabRecord),
+          suffixes: headerActions,
+        ),
         child: scaffoldBody,
       ),
     );

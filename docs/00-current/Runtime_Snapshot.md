@@ -34,8 +34,8 @@ Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
 ## 响应式布局
 
 - `ResponsiveContentFrame` 从 `tablet`(960px) 起应用 `maxContentWidth` 约束（平板 1040px / 桌面 1400px），移动端不限宽。
-- `DesktopTabShell` 统一桌面端外壳（AppTopBar + maxWidth 约束 + muted 背景 + 可选 RefreshIndicator）。
-- 5 个 Tab 页面全部迁移到 `DesktopTabShell`。
+- `DesktopTabShell` 统一桌面端外壳（FHeader.nested + maxWidth 约束 + muted 背景 + 可选 RefreshIndicator）。
+- 5 个 Tab 页面全部迁移到 `DesktopTabShell`，顶栏统一使用 `FHeader.nested` 替代自定义 `AppTopBar`。
 
 ## 网络层
 

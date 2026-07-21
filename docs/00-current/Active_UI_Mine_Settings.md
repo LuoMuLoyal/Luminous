@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施）
+Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration）
 
 ## Mine 根页结构
 

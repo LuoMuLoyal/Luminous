@@ -9,6 +9,7 @@ import 'package:luminous/features/today/presentation/widgets/sections/quick_acti
 import 'package:luminous/features/today/presentation/widgets/sections/summary.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class TodayDashboardView extends ConsumerWidget {
@@ -85,12 +86,21 @@ class _MobileTodayDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
     final sections = <Widget>[
-      TodayTopBar(dashboard: dashboard),
+      const TodayTopBar(),
+      // 问候语从 Header 拆分，放到内容区
+      Text(
+        greetingSubtitle(l10n, dashboard),
+        style: TypographyToken.level4
+            .body(context)
+            .copyWith(color: colors.mutedForeground),
+      ),
       if (isPreview)
         SignInHintBanner(
           onSignIn: onSignIn,
-          message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
+          message: l10n.todayPreviewBannerMessage,
         ),
       TodayPrimarySuggestionSection(dashboard: dashboard),
       const TodaySecondarySuggestionsSection(
@@ -136,6 +146,8 @@ class _DesktopTodayDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final colors = context.theme.colors;
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView(
@@ -145,12 +157,19 @@ class _DesktopTodayDashboard extends StatelessWidget {
         // Only add bottom padding for nav bar clearance.
         padding: const EdgeInsets.only(bottom: Spacing.level10),
         children: [
-          TodayTopBar(dashboard: dashboard),
+          const TodayTopBar(),
+          // 问候语从 Header 拆分，放到内容区
+          Text(
+            greetingSubtitle(l10n, dashboard),
+            style: TypographyToken.level4
+                .body(context)
+                .copyWith(color: colors.mutedForeground),
+          ),
           if (isPreview) ...[
             const SizedBox(height: Spacing.level3),
             SignInHintBanner(
               onSignIn: onSignIn,
-              message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
+              message: l10n.todayPreviewBannerMessage,
             ),
           ],
           const SizedBox(height: Spacing.level6),

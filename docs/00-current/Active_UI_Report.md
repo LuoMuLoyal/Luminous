@@ -1,6 +1,6 @@
 # Active UI — Report
 
-Last updated: 2026-07-21
+Last updated: 2026-07-21 (header migration)
 
 ## 页面结构
 
@@ -27,7 +27,7 @@ Last updated: 2026-07-21
 ## 趋势与发现
 
 - 趋势区使用 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。各序列按自身 min/max 独立归一化到 [0, 1]，避免不同量纲（% / ml / h）共用 Y 轴压成平线；Y 轴不显示数值，tooltip 仍显示原始值+单位。
-- 桌面端趋势区位于左栏（`showRangePill: false`，范围 pill 由外壳 trailing 提供），移动端位于指标卡下方。
+- 桌面端趋势区位于左栏（`showRangePill: false`，范围 pill 由外壳 suffixes 提供），移动端位于指标卡下方。
 - findings 卡片为信息展示型（非导航型），已移除装饰性 chevron，桌面端使用 `Wrap` 自动换行排列。
 - patterns 卡片同样为信息展示型，已移除装饰性 chevron。
 
@@ -107,7 +107,7 @@ Last updated: 2026-07-21
 - 同步按钮 `isSyncing` 接入 `dashboardAsync.isLoading`（`isRefreshing`），同步进行中显示进度态。
 - 桌面 findings 从横向滚动 `Row` 改为 `Wrap` 自动换行。
 - `range_picker_dialog` 日历弹窗新增"取消"按钮（ghost 样式 + `Navigator.pop(null)`）。
-- 桌面端趋势区传 `showRangePill: false`，避免与 `DesktopTabShell` trailing pill 重复。
+- 桌面端趋势区传 `showRangePill: false`，避免与 `DesktopTabShell` suffixes pill 重复。
 
 ## 2026-07-20 P1 修复
 

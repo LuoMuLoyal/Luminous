@@ -1,6 +1,6 @@
 # Active UI — Today
 
-Last updated: 2026-07-21 (P1)
+Last updated: 2026-07-21 (P1 header migration)
 
 ## 页面结构
 
@@ -91,7 +91,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - 置信度标签从 `TypographyToken.level1` 升级为 `level2`。
 - observation 骨架行包 `AppSkeletonShimmer`。
 - 次要操作标题改为正常前景色，仅图标保持 muted。
-- `AppTopBar` 新增 `disableSafeAreaAndPadding` 参数（`TodayTopBar` 设为 true）。
+- `TodayTopBar` 改为 `FHeader.nested`，问候语从 Header 拆分到内容区。
 - `DesktopTabShell` 新增 `showHeader` 参数（Today 页面设为 false，由内容区 `TodayTopBar` 提供唯一标题）。
 - 桌面端 ListView 移除水平 padding，由 `DesktopTabShell` 内容区统一提供。
 

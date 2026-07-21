@@ -40,7 +40,7 @@
    再用 `FTheme` 包裹整棵树。
 - **页面 header**：
   - 子页（有返回按钮的 drill-down 页面）统一用 `lib/core/widgets/layout/page_scaffold.dart` 的 `PageScaffold`。
-  - Tab 根页统一用 `lib/core/widgets/common/app_top_bar.dart` 的 `AppTopBar`。
+  - Tab 根页统一用 Forui 的 `FHeader.nested`。
 - **返回按钮**：统一 `lib/core/widgets/common/app_back_button.dart` 的 `AppBackButton`。
 - **图标**：优先用 Forui 自带的 `FLucideIcons.*`，不再使用 Material `Icons.*`。
 - **字体**：

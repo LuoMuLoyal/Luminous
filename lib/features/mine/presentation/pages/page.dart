@@ -60,7 +60,7 @@ class MinePage extends ConsumerWidget {
       child: isDesktop
           ? DesktopTabShell(
               title: l10n.tabMine,
-              trailing: [
+              suffixes: [
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,
                   icon: FLucideIcons.bell,

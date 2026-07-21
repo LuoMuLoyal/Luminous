@@ -1,44 +1,29 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
-import 'package:luminous/features/today/domain/entities/dashboard.dart';
-import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Today 页面顶栏，使用 FHeader.nested。
+///
+/// 注意：问候语（subtitle）已从 Header 中拆分，放到页面内容区显示。
 class TodayTopBar extends StatelessWidget {
-  const TodayTopBar({super.key, required this.dashboard});
-
-  final TodayDashboard dashboard;
+  const TodayTopBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = context.theme.colors;
 
-    return AppTopBar(
-      title: l10n.todayHeroTitle,
-      subtitle: AppSkeletonText(
-        text: greetingSubtitle(l10n, dashboard),
-        style: TypographyToken.level4
-            .body(context)
-            .copyWith(color: colors.mutedForeground),
-        widthFactor: 0.64,
-      ),
-      trailing: const [_AssistantEntryButton(), _NotificationButton()],
-      // TodayTopBar is always rendered inside a ListView that already
-      // provides horizontal padding and SafeArea, so skip the built-in
-      // wrappers to avoid double padding / double SafeArea.
-      disableSafeAreaAndPadding: true,
+    return FHeader.nested(
+      title: Text(l10n.todayHeroTitle),
+      suffixes: const [_AssistantEntryButton(), _NotificationButton()],
     );
   }
 }

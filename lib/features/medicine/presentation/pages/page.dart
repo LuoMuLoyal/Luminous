@@ -20,7 +20,6 @@ import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_v
 import 'package:luminous/features/medicine/presentation/widgets/shared/workspace_parts.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
@@ -54,7 +53,7 @@ class MedicinePage extends ConsumerWidget {
         loadingBuilder: () => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
-                trailing: const [
+                suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
                 ],
@@ -72,7 +71,7 @@ class MedicinePage extends ConsumerWidget {
         fatalErrorBuilder: (error) => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
-                trailing: const [
+                suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
                 ],
@@ -102,7 +101,7 @@ class MedicinePage extends ConsumerWidget {
         emptyInsufficientBuilder: (empty) => isDesktop
             ? DesktopTabShell(
                 title: l10n.tabMedicine,
-                trailing: const [
+                suffixes: const [
                   _MedicineSafeGuardPill(),
                   _MedicineNotificationButton(),
                 ],
@@ -160,7 +159,7 @@ class MedicinePage extends ConsumerWidget {
           return isDesktop
               ? DesktopTabShell(
                   title: l10n.tabMedicine,
-                  trailing: const [
+                  suffixes: const [
                     _MedicineSafeGuardPill(),
                     _MedicineNotificationButton(),
                   ],
@@ -279,9 +278,9 @@ class _MedicineMobileShell extends StatelessWidget {
             Spacing.level10,
           ),
           children: [
-            AppTopBar(
-              title: l10n.tabMedicine,
-              trailing: const [
+            FHeader.nested(
+              title: Text(l10n.tabMedicine),
+              suffixes: const [
                 _MedicineSafeGuardPill(),
                 _MedicineNotificationButton(),
               ],

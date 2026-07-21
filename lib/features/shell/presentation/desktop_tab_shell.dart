@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/top_bar.dart';
 
 /// 桌面端 Tab 页面统一外壳。
 ///
 /// 由 [ShellPage] 在桌面端使用，为所有 Tab 页面提供统一的：
-/// - AppTopBar（标题 + trailing actions + 可选 bottom）
-/// - 内容区最大宽度约束（TopBar 与内容区共享同一约束，水平对齐）
+/// - FHeader.nested（标题 + suffixes）
+/// - 内容区最大宽度约束（Header 与内容区共享同一约束，水平对齐）
 /// - 内容区背景色（muted，与侧边栏区分）
 /// - 统一 padding
 /// - 可选下拉刷新（onRefresh）和滚动位置保持（scrollStorageKey）
@@ -15,9 +15,7 @@ class DesktopTabShell extends StatelessWidget {
   const DesktopTabShell({
     super.key,
     required this.title,
-    this.subtitle,
-    this.trailing = const [],
-    this.bottom,
+    this.suffixes = const [],
     required this.child,
     this.scrollable = true,
     this.onRefresh,
@@ -25,17 +23,11 @@ class DesktopTabShell extends StatelessWidget {
     this.showHeader = true,
   });
 
-  /// 主标题，显示在 AppTopBar 中。
+  /// 主标题，显示在 FHeader 中。
   final String title;
 
-  /// 副标题，位于主标题下方。
-  final Widget? subtitle;
-
-  /// 右侧操作按钮列表。
-  final List<Widget> trailing;
-
-  /// 标题行下方的额外内容（如报告页的操作按钮区）。
-  final Widget? bottom;
+  /// 右侧操作按钮列表（FHeader.suffixes）。
+  final List<Widget> suffixes;
 
   /// 内容 Widget。
   final Widget child;
@@ -52,7 +44,7 @@ class DesktopTabShell extends StatelessWidget {
   /// 确保 Tab 切换后滚动位置不丢失。
   final String? scrollStorageKey;
 
-  /// 是否渲染外壳的 AppTopBar。默认 true。
+  /// 是否渲染外壳的 FHeader。默认 true。
   ///
   /// 某些页面（如 Today）在内容区自带顶栏（含标题 + trailing 按钮），
   /// 设为 false 可避免桌面端出现双重标题。
@@ -63,19 +55,13 @@ class DesktopTabShell extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final layout = LayoutScaleResolver.resolve(width);
 
-    // TopBar 与内容区共享同一个 maxWidth 约束，确保水平对齐
+    // Header 与内容区共享同一个 maxWidth 约束，确保水平对齐
     final constrained = ConstrainedBox(
       constraints: BoxConstraints(maxWidth: layout.maxContentWidth),
       child: Column(
         children: [
           if (showHeader)
-            // AppTopBar 内部已自带 SafeArea(bottom: false)
-            AppTopBar(
-              title: title,
-              subtitle: subtitle,
-              trailing: trailing,
-              bottom: bottom,
-            ),
+            FHeader.nested(title: Text(title), suffixes: suffixes),
           // 内容区
           Expanded(child: _buildContent(layout)),
         ],

@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-20
+Last updated: 2026-07-21 (header migration)
 
 ## 页面结构
 
