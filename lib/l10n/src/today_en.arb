@@ -82,7 +82,7 @@
   },
   "todayMedicationNameAtorvastatin": "Atorvastatin",
   "todayMedicationNameVitaminBComplex": "Vitamin B complex",
-  "todayHealthSummaryCardTitle": "Today at a glance",
+  "todayHealthSummaryCardTitle": "Today summary",
   "todayVitalHeartRateLabel": "Heart rate",
   "todayVitalHeartRateUnit": "bpm",
   "todayVitalBloodPressureLabel": "Blood pressure",
@@ -316,9 +316,6 @@
   "todaySuggestionSecondaryErrorHint": "Failed to load more suggestions",
   "todaySuggestionAiExplainMaxRetry": "AI explanation is temporarily unavailable, please try again later",
   "todaySuggestionFeedbackSubmitted": "Submitted",
-  "todayRecordHintTitle": "No records yet today",
-  "todayRecordHintBody": "Log water or a symptom to get more relevant suggestions",
-  "todayRecordHintAction": "Log now",
   "todayGreetingMorningPending": "{count, plural, =1{Good morning, 1 medication item to confirm} other{Good morning, {count} medication items to confirm}}",
   "@todayGreetingMorningPending": {
     "placeholders": {

@@ -114,53 +114,6 @@ void main() {
     });
   });
 
-  // ── shouldShowRecordHint ──────────────────────────────────────
-
-  group('shouldShowRecordHint', () {
-    test('returns true when all data is empty', () {
-      final dashboard = TodayDashboard.signedOut();
-      expect(shouldShowRecordHint(dashboard), isTrue);
-    });
-
-    test('returns false when water completedCount > 0', () {
-      final dashboard = TodayDashboard.signedOut().copyWith(
-        water: const TodayWaterSummary(completedCount: 1, targetCount: 8),
-      );
-      expect(shouldShowRecordHint(dashboard), isFalse);
-    });
-
-    test('returns false when medication medicineCount > 0', () {
-      final dashboard = TodayDashboard.signedOut().copyWith(
-        medication: const TodayMedicationSummary(
-          medicineCount: 2,
-          pendingCount: 1,
-          nextDoseTimeLabel: '--',
-          nextMedicine: TodayMedicationKind.atorvastatin,
-        ),
-      );
-      expect(shouldShowRecordHint(dashboard), isFalse);
-    });
-
-    test('returns false when vitals list is non-empty', () {
-      final dashboard = TodayDashboard.signedOut().copyWith(
-        vitals: const [
-          TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '7h'),
-        ],
-      );
-      expect(shouldShowRecordHint(dashboard), isFalse);
-    });
-
-    test('returns true when vitals exist but all are "--"', () {
-      final dashboard = TodayDashboard.signedOut().copyWith(
-        vitals: const [
-          TodayVitalSummary(type: TodayVitalType.sleep, valueLabel: '--'),
-        ],
-      );
-      // shouldShowRecordHint only checks vitals.isNotEmpty, not meaningful values
-      expect(shouldShowRecordHint(dashboard), isFalse);
-    });
-  });
-
   // ── mapAiBullet ───────────────────────────────────────────────
 
   group('mapAiBullet', () {

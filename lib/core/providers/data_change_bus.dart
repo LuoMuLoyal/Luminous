@@ -21,6 +21,7 @@ part 'data_change_bus.g.dart';
 /// | [currentMedicines] | mine (current medicine add/remove), search (add to current medicines) | medicineWorkspace, todayDashboard, healthContextSnapshot |
 /// | [doseLogs] | medicine (mark dose) | medicineWorkspace, todayDashboard |
 /// | [medicineReminders] | medicine (reminder create/update/delete) | medicineWorkspace, todayDashboard |
+/// | [userSettings] | settings (water target, AI toggles) | todayDashboard |
 abstract final class DataChangeTopic {
   DataChangeTopic._();
 
@@ -38,6 +39,9 @@ abstract final class DataChangeTopic {
 
   /// Medicine reminders changed (create/update/delete).
   static const medicineReminders = 'medicineReminders';
+
+  /// User settings changed (water target, AI toggles, etc.).
+  static const userSettings = 'userSettings';
 }
 
 /// A lightweight event bus for cross-feature data invalidation.

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:luminous/core/providers/data_change_bus.dart';
 import '../../data/repositories/lucent.dart';
 import '../../domain/entities/user_settings.dart';
 
@@ -62,6 +63,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
       assistantContext: assistantContext,
     );
     state = AsyncData(updated);
+    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.userSettings);
   }
 
   // -- Security PIN --
@@ -116,6 +118,7 @@ class UserSettingsController extends AsyncNotifier<UserSettings> {
           ),
     );
     state = AsyncData(updated);
+    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.userSettings);
   }
 }
 

@@ -16,6 +16,9 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/settings/data/repositories/lucent.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/data/providers/repository.dart';
 
 void main() {
@@ -62,6 +65,9 @@ void main() {
               ),
             ]),
           ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
+          ),
         ],
       );
       addTearDown(container.dispose);
@@ -97,6 +103,9 @@ void main() {
           }),
           medicineReminderRemoteDataSourceProvider.overrideWithValue(
             _ThrowingReminderDataSource(),
+          ),
+          userSettingsRepositoryProvider.overrideWithValue(
+            _FakeUserSettingsRepository(),
           ),
         ],
       );
@@ -204,6 +213,44 @@ class _ThrowingReminderDataSource extends _FakeReminderDataSource {
   Future<List<MedicineReminderItem>> fetchActive() async {
     throw StateError('reminders unavailable');
   }
+}
+
+class _FakeUserSettingsRepository implements UserSettingsRepository {
+  @override
+  Future<UserSettings> getSettings() async => const UserSettings(
+    aiSummariesEnabled: true,
+    dataSharingConsent: false,
+    assistantEnabled: true,
+    assistantMemoryEnabled: false,
+    waterTargetCount: 8,
+    assistantContext: AssistantContextSettings(
+      healthProfile: false,
+      dailyRecords: false,
+      sleepRecords: false,
+      currentMedicines: false,
+    ),
+    securityPin: SecurityPinSettings(enabled: false),
+  );
+
+  @override
+  Future<UserSettings> updateSettings({
+    required bool aiSummariesEnabled,
+    required bool dataSharingConsent,
+    required bool assistantEnabled,
+    required bool assistantMemoryEnabled,
+    required int waterTargetCount,
+    required AssistantContextPatch assistantContext,
+  }) async => getSettings();
+
+  @override
+  Future<UserSettings> enableSecurityPin(String pin) async => getSettings();
+
+  @override
+  Future<UserSettings> changeSecurityPin(String oldPin, String newPin) async =>
+      getSettings();
+
+  @override
+  Future<UserSettings> disableSecurityPin(String pin) async => getSettings();
 }
 
 MedicineReminderItem _reminder({

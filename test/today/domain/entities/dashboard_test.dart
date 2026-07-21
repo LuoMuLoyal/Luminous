@@ -56,11 +56,26 @@ void main() {
       const summary = TodayWaterSummary(completedCount: 0, targetCount: 8);
       expect(summary.remainingCount, 8);
     });
+
+    test('returns 0 when target is 0', () {
+      const summary = TodayWaterSummary(completedCount: 0, targetCount: 0);
+      expect(summary.remainingCount, 0);
+    });
   });
 
   group('TodayWaterSummary.progress', () {
     test('returns 0.0 when completed is 0', () {
       const summary = TodayWaterSummary(completedCount: 0, targetCount: 8);
+      expect(summary.progress, 0.0);
+    });
+
+    test('returns 0.0 when target is 0', () {
+      const summary = TodayWaterSummary(completedCount: 0, targetCount: 0);
+      expect(summary.progress, 0.0);
+    });
+
+    test('returns 0.0 when target is negative', () {
+      const summary = TodayWaterSummary(completedCount: 3, targetCount: -1);
       expect(summary.progress, 0.0);
     });
 
@@ -86,10 +101,10 @@ void main() {
       expect(TodayDashboard.signedOut().user.moment, expected);
     });
 
-    test('has zero water completed', () {
+    test('has zero water completed and no fake target', () {
       final dashboard = TodayDashboard.signedOut();
       expect(dashboard.water.completedCount, 0);
-      expect(dashboard.water.targetCount, 8);
+      expect(dashboard.water.targetCount, 0);
     });
 
     test('has zero medication', () {

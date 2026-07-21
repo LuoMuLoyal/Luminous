@@ -151,4 +151,6 @@ Future<MineDashboard> mineDashboard(MineDashboardRef ref) {
 - 存量 provider 不强制一次性迁移；新代码必须使用注解形式，触碰旧文件时逐步迁移。
 - `network_providers.dart` 中的 15+ API provider 可通过注解简化，但不优先（它们已经能工作）。
 - `authGuardedFutureProvider` 消除至少 5 处重复 auth guard 逻辑。
+- 受保护的 dashboard provider 通过 `dataChangeVersionProvider`（来自
+  `lib/core/providers/data_change_bus.dart`）监听跨 feature 数据变更，实现自动刷新。
 - Provider 选型标准写入本文档作为 ADR 引用，不再在 TODO 中追踪。

@@ -93,50 +93,47 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
         key: const Key('today-summary-card'),
         style: todayCardStyle(context, tone: TodayCardTone.soft),
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level4),
+          padding: const EdgeInsets.all(Spacing.level3),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- Metrics row (compact) ---
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   for (var index = 0; index < metrics.length; index += 1) ...[
-                    Expanded(child: _SummaryMetric(item: metrics[index])),
+                    Expanded(
+                      child: _CompactSummaryMetric(item: metrics[index]),
+                    ),
                     if (index < metrics.length - 1)
                       const SizedBox(width: Spacing.level3),
                   ],
                 ],
               ),
-              // --- Divider ---
-              const SizedBox(height: Spacing.level4),
-              const FDivider(),
-              const SizedBox(height: Spacing.level4),
-              // --- AI narrative (collapsible) ---
+              const SizedBox(height: Spacing.level3),
               if (content.summary != null) ...[
                 MarkdownBody(
                   data: content.summary!,
                   selectable: true,
                   styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
                       .copyWith(
-                        p: TypographyToken.level4
+                        p: TypographyToken.level3
                             .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
+                            .copyWith(fontWeight: FontWeight.w600),
                       ),
                 ),
               ] else if (!isPreview) ...[
                 Text(
                   l10n.todaySummaryFallbackNarrative,
-                  style: TypographyToken.level4
+                  style: TypographyToken.level3
                       .body(context)
                       .copyWith(
                         color: colors.mutedForeground,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                 ),
               ],
               if (hasAiContent && !_aiExpanded) ...[
-                const SizedBox(height: Spacing.level2),
+                const SizedBox(height: Spacing.level1),
                 _AiExpandButton(onTap: _toggleAi, l10n: l10n),
               ],
               AnimatedBuilder(
@@ -146,10 +143,10 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: Spacing.level3),
+                    const SizedBox(height: Spacing.level2),
                     for (final bullet in content.bullets.take(3))
                       Padding(
-                        padding: const EdgeInsets.only(bottom: Spacing.level2),
+                        padding: const EdgeInsets.only(bottom: Spacing.level1),
                         child: _SummaryBullet(item: bullet),
                       ),
                     if (content.footer case final footer?)
@@ -175,7 +172,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
               ),
               // --- AI action button ---
               if (!isPreview) ...[
-                const SizedBox(height: Spacing.level3),
+                const SizedBox(height: Spacing.level2),
                 Align(
                   alignment: Alignment.centerRight,
                   child: FButton(
@@ -274,8 +271,8 @@ class _AiExpandButton extends StatelessWidget {
   }
 }
 
-class _SummaryMetric extends StatelessWidget {
-  const _SummaryMetric({required this.item});
+class _CompactSummaryMetric extends StatelessWidget {
+  const _CompactSummaryMetric({required this.item});
 
   final TodayOverviewItem item;
 
@@ -283,46 +280,43 @@ class _SummaryMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.secondary,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level3,
-          vertical: Spacing.level3,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(item.icon, color: item.color.solid(context), size: Spacing.level5),
+        const SizedBox(width: Spacing.level2),
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item.label,
+                style: TypographyToken.level2
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                item.value,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      fontWeight: item.isFallback
+                          ? FontWeight.w500
+                          : FontWeight.w700,
+                      color: item.isFallback ? colors.mutedForeground : null,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              item.icon,
-              color: item.color.solid(context),
-              size: Spacing.level4,
-            ),
-            const SizedBox(height: Spacing.level2),
-            Text(
-              item.label,
-              style: TypographyToken.level2
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
-            const SizedBox(height: Spacing.level1),
-            Text(
-              item.value,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(
-                    fontWeight: item.isFallback
-                        ? FontWeight.w500
-                        : FontWeight.w800,
-                    color: item.isFallback ? colors.mutedForeground : null,
-                  ),
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }

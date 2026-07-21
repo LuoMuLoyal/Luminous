@@ -24,6 +24,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) {
   ref.watch(dataChangeVersionProvider(DataChangeTopic.currentMedicines));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.userSettings));
 
   return authGuarded(
     ref: ref,

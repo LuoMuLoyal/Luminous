@@ -106,6 +106,7 @@ Last updated: 2026-07-20
 - `SettingsProfileRemoteDataSource` 通过 `generated/lucent_api` Retrofit 客户端访问。
 - `updatePreferences` 接受 `Object?` 类型参数（sentinel 区分"不修改"与"设为 null"）。
 - `UserSettingsController` 状态类型从 DTO 改为 domain `UserSettings` 实体。
+- 设置写入成功后发射 `DataChangeTopic.userSettings`，`todayDashboardProvider` 监听该事件，因此修改饮水目标、AI 摘要开关等设置后今日页会自动刷新。
 - 日期格式化通过 `lib/core/utils/date_format_utils.dart`，不使用手写 `padLeft` 拼接。
 
 ## 2026-07-19 补充

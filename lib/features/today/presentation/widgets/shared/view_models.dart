@@ -359,14 +359,6 @@ List<TodayQuickActionItem> buildQuickActionItems(
   ];
 }
 
-/// Determine whether the "no records" hint should be shown.
-bool shouldShowRecordHint(TodayDashboard dashboard) {
-  final hasWater = dashboard.water.completedCount > 0;
-  final hasMeds = dashboard.medication.medicineCount > 0;
-  final hasVitals = dashboard.vitals.isNotEmpty;
-  return !hasWater && !hasMeds && !hasVitals;
-}
-
 /// Pushes [route] onto the navigation stack.
 ///
 /// Always uses [context.push] so the user can navigate back from the

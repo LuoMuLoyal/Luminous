@@ -115,9 +115,26 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     await _scrollToSummaryCard(tester);
 
-    await tester.tap(
-      find.widgetWithText(FButton, l10n.todayAiSummaryGenerateAction),
+    final generateButton = find.widgetWithText(
+      FButton,
+      l10n.todayAiSummaryGenerateAction,
+      skipOffstage: false,
     );
+    await tester.scrollUntilVisible(
+      generateButton,
+      220,
+      scrollable: find
+          .descendant(
+            of: find.byKey(
+              const PageStorageKey<String>('today-dashboard-scroll'),
+            ),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await tester.tap(generateButton);
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(

@@ -168,8 +168,8 @@ Instead, cross-feature refresh is mediated by a lightweight **invalidation bus**
 `lib/core/providers/data_change_bus.dart`:
 
 - `DataChangeBus` — a keepAlive `Notifier` holding a `Map<String, int>` version counter.
-- `DataChangeTopic` — constants for the 5 domain topics: `dailyRecords`, `healthContext`,
-  `currentMedicines`, `doseLogs`, `medicineReminders`.
+- `DataChangeTopic` — constants for the 6 domain topics: `dailyRecords`, `healthContext`,
+  `currentMedicines`, `doseLogs`, `medicineReminders`, `userSettings`.
 - `dataChangeVersionProvider(topic)` — a family provider; watch it inside a dashboard/workspace
   provider to trigger an automatic rebuild when the topic's version increments.
 
@@ -188,6 +188,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) async {
   ref.watch(dataChangeVersionProvider(DataChangeTopic.currentMedicines));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.medicineReminders));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.userSettings));
   return authGuarded(ref: ref, fetch: () => ...);
 }
 ```
@@ -199,6 +200,7 @@ Future<TodayDashboard> todayDashboard(Ref ref) async {
 | `currentMedicines` | mine (current medicine add/remove), search (add to current medicines) | medicineWorkspace, todayDashboard, healthContextSnapshot |
 | `doseLogs` | medicine (mark dose) | medicineWorkspace, todayDashboard |
 | `medicineReminders` | medicine (reminder create/update/delete) | medicineWorkspace, todayDashboard |
+| `userSettings` | settings (water target, AI toggles) | todayDashboard |
 
 > **Note**: `ref.invalidate()` is still appropriate for **same-feature** retry/refresh (e.g. an error
 > state's retry button invalidating its own feature's providers) and for **app-level** lifecycle

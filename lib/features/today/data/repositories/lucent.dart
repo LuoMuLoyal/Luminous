@@ -7,6 +7,7 @@ import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 
@@ -23,6 +24,10 @@ class LucentTodayRepository implements TodayRepository {
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
+
+    // Resolve the user's preferred water target; fall back to the default if
+    // settings are temporarily unavailable so the overview still renders.
+    final waterTargetCount = await _waterTargetCount();
 
     // Fetch daily record summary for today
     final today = clock.now();
@@ -108,7 +113,10 @@ class LucentTodayRepository implements TodayRepository {
         hasUnreadNotifications: false,
         updatedAtLabel: _formatTimeLabel(today),
       ),
-      water: TodayWaterSummary(completedCount: waterCount, targetCount: 8),
+      water: TodayWaterSummary(
+        completedCount: waterCount,
+        targetCount: waterTargetCount,
+      ),
       medication: TodayMedicationSummary(
         medicineCount: todayMedicineCount,
         pendingCount: pendingMedicines.length,
@@ -166,6 +174,24 @@ class LucentTodayRepository implements TodayRepository {
   static const _staticLumiSuggestion = TodayLumiSuggestion(
     type: TodayLumiSuggestionType.pollenProtection,
   );
+
+  /// Reads the authenticated user's water target from settings.
+  ///
+  /// Falls back to [TodayDashboard.defaultWaterTargetCount] if the settings
+  /// endpoint fails, so a network blip does not break the overview.
+  Future<int> _waterTargetCount() async {
+    try {
+      final settings = await ref
+          .read(userSettingsRepositoryProvider)
+          .getSettings();
+      return settings.waterTargetCount;
+    } catch (e) {
+      ref
+          .read(talkerProvider)
+          .error('LucentTodayRepository._waterTargetCount: failed: $e');
+      return TodayDashboard.defaultWaterTargetCount;
+    }
+  }
 
   /// Returns the set of medicine IDs that have at least one active
   /// reminder matching [today].

@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-20 (notification types oauth_login/identity_linked)
+Last updated: 2026-07-21 (Today compact summary)
 
 ## 技术栈
 
@@ -107,6 +107,7 @@ Last updated: 2026-07-20 (notification types oauth_login/identity_linked)
 - 页面级错误使用 `AppStateErrorView`，加载态使用 shimmer 骨架屏。
 - `AppStateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
 - 轻量反馈使用 `AppToast`（`lib/core/feedback/app_toast.dart`），不用页面级 `SnackBar`。
+- Today 未登录态使用预览 dashboard，不显示“今天还没有记录”引导；摘要指标和快捷入口由前端 view model 基于 dashboard 数据组装。
 
 ## ARB 编辑流程（2026-07-20 更新）
 

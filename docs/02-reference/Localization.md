@@ -69,6 +69,8 @@ Persisted preference keys:
   owned by the Record ARB entries.
 - Today root-page action-panel copy such as primary-suggestion titles, evidence/boundary labels,
   observation wording, and quick-action labels is owned by the Today ARB entries.
+- Today root page no longer owns a standalone "no records yet" banner; keep the active surface
+  compact and avoid reintroducing preview-only record prompts there.
 - Reminder UI strings for date windows, local sound preference, SMS unavailable state, delivery
    history, on-device notification title/body/channel labels, and reminder toggle failure toast
    (`medicineReminderToggleFailedToast`) are owned by the Medicine feature ARB entries.

@@ -40,6 +40,12 @@ abstract class TodayDashboard with _$TodayDashboard {
     required TodayLumiSuggestion lumiSuggestion,
   }) = _TodayDashboard;
 
+  /// Default daily water target used when no user preference is available.
+  ///
+  /// We use 0 instead of a made-up number like 8 so that empty / signed-out
+  /// states show `0/0` rather than a fake goal.
+  static const defaultWaterTargetCount = 0;
+
   /// A minimal dashboard for signed-out users with no real or mock data.
   ///
   /// The day moment is derived from the current device hour so the preview
@@ -50,7 +56,10 @@ abstract class TodayDashboard with _$TodayDashboard {
       hasUnreadNotifications: false,
       updatedAtLabel: '--',
     ),
-    water: const TodayWaterSummary(completedCount: 0, targetCount: 8),
+    water: const TodayWaterSummary(
+      completedCount: 0,
+      targetCount: defaultWaterTargetCount,
+    ),
     medication: const TodayMedicationSummary(
       medicineCount: 0,
       pendingCount: 0,
@@ -94,6 +103,7 @@ abstract class TodayWaterSummary with _$TodayWaterSummary {
   }
 
   double get progress {
+    if (targetCount <= 0) return 0.0;
     final ratio = completedCount / targetCount;
     return ratio.clamp(0, 1).toDouble();
   }

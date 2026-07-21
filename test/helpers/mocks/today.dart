@@ -18,7 +18,10 @@ class MockTodayRepository implements TodayRepository {
       hasUnreadNotifications: false,
       updatedAtLabel: '--:--',
     ),
-    water: TodayWaterSummary(completedCount: 0, targetCount: 8),
+    water: TodayWaterSummary(
+      completedCount: 0,
+      targetCount: TodayDashboard.defaultWaterTargetCount,
+    ),
     medication: TodayMedicationSummary(
       medicineCount: 0,
       pendingCount: 0,

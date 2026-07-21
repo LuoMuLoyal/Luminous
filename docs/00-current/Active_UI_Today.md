@@ -1,12 +1,12 @@
 # Active UI — Today
 
-Last updated: 2026-07-20 (P1)
+Last updated: 2026-07-21 (P1)
 
 ## 页面结构
 
 Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作`。
 
-桌面端双栏布局：`TopBar → RecordHint → Row[左7: Primary+Summary | 右5: Secondary+Observation] → QuickActions`。
+桌面端双栏布局：`TopBar → Row[左7: Primary+Summary | 右5: Secondary+Observation] → QuickActions`。
 
 旧的 `TodayOverviewSection / TodayPrioritySection / TodayAiSummarySection / TodayRecommendationSection / TodayTodoSection` 已整体下线。
 
@@ -29,9 +29,10 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 
 ## 今日摘要
 
-- 概览指标和 AI 解释收拢到同一张低权重卡。
-- AI 叙述默认折叠（最多 2 行 + 省略号），点击展开 bullets 和 confidenceNote。
-- 生成按钮移至卡片右下角。
+- 概览指标改成更轻的横排 compact 样式，减少首屏垂直占用。
+- 指标不再使用摘要卡内的背景盒子，避免卡片套卡片；层级只由外层容器、图标和文字区分。
+- AI 叙述保持轻量，默认只展示短总结和折叠入口。
+- 生成按钮保留在卡片右下角，但卡片本体不再使用大块分割线和高内边距。
 - AI 摘要文本使用 `MarkdownBody` 渲染。
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
 - 睡眠概览值不再追加单位（后端 `valueLabel` 已含单位）。
@@ -53,12 +54,11 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 
 ## 空态与提示
 
-- 记录密度提示条：当用户无任何记录时显示 `FAlert` + `FButton(ghost)` CTA 按钮（`todayRecordHintAction` "去记录" → `/record/create`）。
 - 顶栏动态问候语根据用药待确认数和饮水剩余数动态生成。
 
 ## 骨架屏
 
-- 移动端按真实 section 顺序：TopBar → RecordHint → PrimarySuggestion → SecondarySuggestions → Summary → Observation → QuickActions。
+- 移动端按真实 section 顺序：TopBar → PrimarySuggestion → SecondarySuggestions → Summary → Observation → QuickActions。
 - 桌面端双栏 `Row[左7: Primary+Summary | 右5: Secondary+Observation] + QuickActions`。
 
 ## 数据层

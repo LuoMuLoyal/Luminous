@@ -82,7 +82,7 @@
   },
   "todayMedicationNameAtorvastatin": "阿托伐他汀",
   "todayMedicationNameVitaminBComplex": "维生素B族",
-  "todayHealthSummaryCardTitle": "今天概览",
+  "todayHealthSummaryCardTitle": "今日摘要",
   "todayVitalHeartRateLabel": "心率",
   "todayVitalHeartRateUnit": "次/分",
   "todayVitalBloodPressureLabel": "血压",
@@ -316,9 +316,6 @@
   "todaySuggestionSecondaryErrorHint": "更多建议加载失败",
   "todaySuggestionAiExplainMaxRetry": "AI 解释暂时不可用，请稍后再试",
   "todaySuggestionFeedbackSubmitted": "已反馈",
-  "todayRecordHintTitle": "今天还没有记录",
-  "todayRecordHintBody": "先记一条饮水或症状，建议会更贴合你的情况",
-  "todayRecordHintAction": "去记录",
   "todayGreetingMorningPending": "早上好，今天有 {count} 条用药待确认",
   "@todayGreetingMorningPending": {
     "placeholders": {

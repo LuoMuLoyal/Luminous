@@ -6,7 +6,6 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/record_hint.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/summary.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
@@ -93,7 +92,6 @@ class _MobileTodayDashboard extends StatelessWidget {
           onSignIn: onSignIn,
           message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
         ),
-      TodayRecordHintSection(dashboard: dashboard),
       TodayPrimarySuggestionSection(dashboard: dashboard),
       const TodaySecondarySuggestionsSection(
         key: Key('today-secondary-suggestions-card'),
@@ -155,8 +153,6 @@ class _DesktopTodayDashboard extends StatelessWidget {
               message: AppLocalizations.of(context)!.todayPreviewBannerMessage,
             ),
           ],
-          const SizedBox(height: Spacing.level6),
-          TodayRecordHintSection(dashboard: dashboard),
           const SizedBox(height: Spacing.level6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
