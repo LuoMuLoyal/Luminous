@@ -371,7 +371,7 @@ class LoginPage extends HookConsumerWidget {
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(
-              alignment: WrapAlignment.spaceBetween,
+              alignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: Spacing.level2,
               runSpacing: Spacing.level1,
@@ -392,17 +392,17 @@ class LoginPage extends HookConsumerWidget {
                     style: TypographyToken.level2.body(context),
                   ),
                 ),
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(Routes.forgotPassword),
-                  child: Text(
-                    l10n.authForgotPasswordPrompt,
-                    style: TypographyToken.level2.body(context),
-                  ),
-                ),
               ],
+            ),
+            FButton(
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.sm,
+              mainAxisSize: MainAxisSize.min,
+              onPress: () => context.push(Routes.forgotPassword),
+              child: Text(
+                l10n.authForgotPasswordPrompt,
+                style: TypographyToken.level2.body(context),
+              ),
             ),
             const SizedBox(height: Spacing.level5),
             WechatOAuthPanel(

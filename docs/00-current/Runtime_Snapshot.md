@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-22 (审查报告修复)
+Last updated: 2026-07-22 (Android 模拟器网络连接修复)
 
 ## 技术栈
 
@@ -42,9 +42,11 @@ Last updated: 2026-07-22 (审查报告修复)
 - 拦截器链：`AuthInterceptor`（token 注入 + 401 刷新）→ `RetryInterceptor`（5xx/超时重试）→ `ErrorInterceptor`（DioException → LucentApiException 映射）。
 - `LucentDioClient` 仅负责 Dio 实例配置 + interceptor 注册。
 - `lucentClientProvider`（keepAlive）是全部 feature 的统一 API 访问入口。
+- Base URL 解析：debug 模式下 `DeveloperSettingsController.resolvedBaseUrl` 对 `ApiEndpoint.local` 做平台适配——Android 模拟器使用 `10.0.2.2`（因为 `127.0.0.1` 指向模拟器自身），其他平台使用 `127.0.0.1`。`LucentBaseUrl.value` 的 debug 回退同理。Release 模式强制使用 `.env` 注入的 `LUCENT_BASE_URL`。
 - `LucentSseClient` 支持 `reconnect` 自动重连；SSE 请求单独覆盖 `receiveTimeout: Duration.zero`（不限超时），避免 AI 生成慢时主 Dio 的 10s `receiveTimeout` 导致流提前中断。
 - `LucentApiPaths` 常量注册表集中管理所有 API 路径字符串。
 - `LucentErrorMapper.toAppError()` 将任意异常转换为 `AppError`（5 分类：network/auth/server/business/unknown）。网络层 fallback 消息为英文（locale-neutral），业务错误消息由服务端按 locale 返回。
+- Android debug 构建通过 `debug/AndroidManifest.xml` 的 `android:usesCleartextTraffic="true"` 允许明文 HTTP 流量；release 构建不受影响（使用 HTTPS）。
 
 ## 错误处理
 

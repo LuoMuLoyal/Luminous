@@ -13,14 +13,14 @@ part 'user_health_profile_dto.g.dart';
 class UserHealthProfileDto {
   const UserHealthProfileDto({
     required this.birthDate,
-    required this.sexAtBirth,
     required this.heightCm,
     required this.bloodType,
     required this.locale,
     required this.timezone,
-    required this.unitSystem,
     required this.onboardingCompletedAt,
     required this.extras,
+    this.sexAtBirth,
+    this.unitSystem,
   });
 
   factory UserHealthProfileDto.fromJson(Map<String, Object?> json) =>
@@ -30,7 +30,7 @@ class UserHealthProfileDto {
   final String? birthDate;
 
   /// Sex assigned at birth.
-  final SexAtBirth sexAtBirth;
+  final SexAtBirth? sexAtBirth;
 
   /// Height in centimeters.
   final num? heightCm;
@@ -45,7 +45,7 @@ class UserHealthProfileDto {
   final String? timezone;
 
   /// Preferred unit system.
-  final UnitSystem unitSystem;
+  final UnitSystem? unitSystem;
 
   /// When the onboarding flow was completed.
   final String? onboardingCompletedAt;

@@ -112,3 +112,9 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 ### Assistant 模块
 
 - `AssistantContextAccess` 新增 `total` getter（值固定为 4），`hero.dart` 状态 chip 从硬编码 `/4` 改为动态 `/${capabilities.assistantContext.total}`。
+
+## 2026-07-22 今日摘要卡片调整
+
+- **按钮对齐**：`Show basis` / `Hide` 展开按钮与右下角 `Generate` 操作按钮放入同一 `Row`，`crossAxisAlignment: CrossAxisAlignment.center`，消除原先不在同一水平线的问题。
+- **动画简化**：移除 `AnimationController` + `CurvedAnimation` + `AnimatedBuilder` + `FCollapsible` 的复杂组合，改用 `AnimatedSwitcher`（`duration: DurationTokens.widgetQuick`）实现展开/收起的简单淡入淡出切换。
+- **状态管理简化**：`_TodaySummarySectionState` 移除 `SingleTickerProviderStateMixin` 和动画控制器，仅保留 `_aiExpanded` bool 状态。

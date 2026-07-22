@@ -16,13 +16,13 @@ class UserAllergyItemDto {
     required this.kind,
     required this.label,
     required this.reaction,
-    required this.severity,
     required this.isActive,
     required this.note,
     required this.extras,
     required this.recordedAt,
     required this.createdAt,
     required this.updatedAt,
+    this.severity,
   });
 
   factory UserAllergyItemDto.fromJson(Map<String, Object?> json) =>
@@ -41,7 +41,7 @@ class UserAllergyItemDto {
   final String? reaction;
 
   /// Severity level.
-  final UserAllergySeverity severity;
+  final UserAllergySeverity? severity;
 
   /// Whether the allergy is currently active.
   final bool isActive;

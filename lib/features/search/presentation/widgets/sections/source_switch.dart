@@ -20,57 +20,53 @@ class SourceSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Row(
+    return Wrap(
+      spacing: Spacing.level3,
+      runSpacing: Spacing.level3,
       children: MedicineSearchSource.values
           .map(
-            (source) => Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: source == MedicineSearchSource.values.last
-                      ? 0
-                      : Spacing.level3,
-                ),
-                child: FButton.raw(
-                  onPress: () => onChanged(source),
-                  variant: FButtonVariant.outline,
-                  style: .delta(
-                    decoration: .delta([
-                      .all(
-                        .shapeDelta(
-                          color: source == selectedSource
-                              ? SemanticColor.primary.muted(context)
-                              : colors.background,
-                          shape: RoundedSuperellipseBorder(
-                            side: BorderSide(
-                              color: source == selectedSource
-                                  ? colors.primary
-                                  : colors.border,
-                            ),
+            (source) => ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 120),
+              child: FButton.raw(
+                onPress: () => onChanged(source),
+                variant: FButtonVariant.outline,
+                style: .delta(
+                  decoration: .delta([
+                    .all(
+                      .shapeDelta(
+                        color: source == selectedSource
+                            ? SemanticColor.primary.muted(context)
+                            : colors.background,
+                        shape: RoundedSuperellipseBorder(
+                          side: BorderSide(
+                            color: source == selectedSource
+                                ? colors.primary
+                                : colors.border,
                           ),
                         ),
                       ),
-                    ]),
-                    contentStyle: const .delta(
-                      padding: .value(
-                        EdgeInsets.symmetric(
-                          horizontal: Spacing.level4,
-                          vertical: Spacing.level3,
-                        ),
+                    ),
+                  ]),
+                  contentStyle: const .delta(
+                    padding: .value(
+                      EdgeInsets.symmetric(
+                        horizontal: Spacing.level4,
+                        vertical: Spacing.level3,
                       ),
                     ),
                   ),
-                  child: Text(
-                    sourceLabel(l10n, source),
-                    textAlign: TextAlign.center,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(
-                          color: source == selectedSource
-                              ? colors.primary
-                              : colors.foreground,
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
+                ),
+                child: Text(
+                  sourceLabel(l10n, source),
+                  textAlign: TextAlign.center,
+                  style: TypographyToken.level5
+                      .body(context)
+                      .copyWith(
+                        color: source == selectedSource
+                            ? colors.primary
+                            : colors.foreground,
+                        fontWeight: FontWeight.w700,
+                      ),
                 ),
               ),
             ),

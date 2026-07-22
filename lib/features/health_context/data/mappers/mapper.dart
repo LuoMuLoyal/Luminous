@@ -27,12 +27,12 @@ class HealthContextMapper {
   HealthProfile _mapProfile(UserHealthProfileDto p) {
     return HealthProfile(
       birthDate: p.birthDate?.toString(),
-      sexAtBirth: p.sexAtBirth.name,
+      sexAtBirth: p.sexAtBirth?.name,
       heightCm: p.heightCm is num ? (p.heightCm as num).toDouble() : null,
       bloodType: p.bloodType?.toString(),
       locale: p.locale?.toString(),
       timezone: p.timezone?.toString(),
-      unitSystem: p.unitSystem.name,
+      unitSystem: p.unitSystem?.name,
       onboardingCompletedAt: p.onboardingCompletedAt?.toString(),
       extras: Map<String, dynamic>.from(p.extras ?? const {}),
     );
@@ -44,7 +44,7 @@ class HealthContextMapper {
       kind: a.kind.name,
       label: a.label,
       reaction: a.reaction?.toString(),
-      severity: a.severity.name,
+      severity: a.severity?.name,
       isActive: a.isActive,
       note: a.note?.toString(),
       createdAt: a.createdAt,

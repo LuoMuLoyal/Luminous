@@ -51,11 +51,19 @@ abstract class DeveloperSettingsState with _$DeveloperSettingsState {
   ///
   /// For [ApiEndpoint.custom], returns [customApiUrl] if non-empty,
   /// otherwise falls back to the compile-time default.
+  ///
+  /// For [ApiEndpoint.local], uses `10.0.2.2` on Android emulators (where
+  /// `127.0.0.1` refers to the emulator itself) and `127.0.0.1` elsewhere.
   String get resolvedBaseUrl {
     if (apiEndpoint == ApiEndpoint.custom) {
       final custom = customApiUrl.trim();
       if (custom.isNotEmpty) return custom;
       return LucentBaseUrl.value;
+    }
+    if (apiEndpoint == ApiEndpoint.local) {
+      return defaultTargetPlatform == TargetPlatform.android
+          ? 'http://10.0.2.2:3000'
+          : 'http://127.0.0.1:3000';
     }
     return apiEndpoint.defaultUrl;
   }

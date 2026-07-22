@@ -14,8 +14,12 @@ abstract final class LucentBaseUrl {
           'LUCENT_BASE_URL must be configured in release builds.',
         );
       }
-      // Debug fallback to local development server
-      return 'http://127.0.0.1:3000';
+      // Debug fallback to local development server.
+      // On Android emulators, 127.0.0.1 refers to the emulator itself;
+      // use 10.0.2.2 to reach the host machine's loopback interface.
+      return defaultTargetPlatform == TargetPlatform.android
+          ? 'http://10.0.2.2:3000'
+          : 'http://127.0.0.1:3000';
     }
     return normalized;
   }

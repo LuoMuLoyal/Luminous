@@ -4,4 +4,8 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Allow cleartext HTTP traffic in debug builds so the app can reach
+         the local Lucent backend (http://10.0.2.2:3000) during development.
+         Release builds use HTTPS and are unaffected. -->
+    <application android:usesCleartextTraffic="true"/>
 </manifest>

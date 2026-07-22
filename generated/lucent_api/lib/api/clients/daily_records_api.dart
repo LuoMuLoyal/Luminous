@@ -33,9 +33,9 @@ abstract class DailyRecordsApi {
   @GET('/api/v1/user/daily-records')
   Future<DailyRecordListResponseDto> dailyRecordsControllerListV1({
     @Query('date') required String date,
+    @Query('page') num? page = 1,
+    @Query('pageSize') num? pageSize = 50,
     @Query('kind') DailyRecordKind? kind,
-    @Query('page') num? page,
-    @Query('pageSize') num? pageSize,
   });
 
   /// Create a daily record.

@@ -16,15 +16,9 @@ class StateSkeletonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-
     return Shimmer.fromColors(
-      baseColor: SemanticColor.neutral
-          .solid(context)
-          .withValues(alpha: isDark ? 0.42 : 1),
-      highlightColor: SemanticColor.neutral
-          .muted(context)
-          .withValues(alpha: 0.55),
+      baseColor: context.theme.colors.border,
+      highlightColor: context.theme.colors.background,
       child: ListView.separated(
         padding: padding,
         itemBuilder: (context, index) => _SkeletonBlock(data: blocks[index]),
@@ -174,15 +168,9 @@ class SkeletonShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
-
     return Shimmer.fromColors(
-      baseColor: SemanticColor.neutral
-          .solid(context)
-          .withValues(alpha: isDark ? 0.42 : 1),
-      highlightColor: SemanticColor.neutral
-          .muted(context)
-          .withValues(alpha: 0.55),
+      baseColor: context.theme.colors.border,
+      highlightColor: context.theme.colors.background,
       child: child,
     );
   }

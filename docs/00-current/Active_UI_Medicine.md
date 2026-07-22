@@ -167,3 +167,8 @@ Last updated: 2026-07-22 (扫码对话框封装统一)
 - **用药安全空态卡片**：`mobile_safety.dart` 在 `result == null` 时渲染 `_SafetyEngineEmpty` 显式空态卡片，文案键 `medicineSafetyPanelEmptyTitle` / `medicineSafetyPanelEmptyBody`。
 - **测试**：新增/更新 `test/medicine/page_test.dart` 红测试先行，覆盖搜索栏偏移、未登录空 dashboard、已登录空计划三个场景；`flutter test test/medicine` 全部通过。
 
+## 2026-07-22 搜索页 SourceSwitch 防溢出
+
+- `SourceSwitch` 从 `Row` + `Expanded` 改为 `Wrap` + `ConstrainedBox(minWidth: 120)`，消除窄屏下"国内药品"/"DrugBank" 双按钮文字溢出。
+- 按钮间距由 `Wrap.spacing` / `runSpacing` 统一控制，移除原先最后一个元素特殊判空的 `Padding` 逻辑。
+

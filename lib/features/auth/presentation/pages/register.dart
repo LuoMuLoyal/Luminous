@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -130,23 +131,27 @@ class RegisterPage extends HookConsumerWidget {
               autovalidateMode: AutovalidateMode.onUserInteraction,
             ),
             const SizedBox(height: Spacing.level4),
-            FCheckbox(
-              value: acceptedTerms.value,
-              onChange: (value) => acceptedTerms.value = value,
-              semanticsLabel: l10n.authTermsAgreement(
-                l10n.authTermsOfService,
-                l10n.authPrivacyPolicy,
-              ),
-              label: Text(
-                l10n.authTermsAgreement(
-                  l10n.authTermsOfService,
-                  l10n.authPrivacyPolicy,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FCheckbox(
+                  value: acceptedTerms.value,
+                  onChange: (value) => acceptedTerms.value = value,
+                  semanticsLabel: l10n.authTermsAgreement(
+                    l10n.authTermsOfService,
+                    l10n.authPrivacyPolicy,
+                  ),
                 ),
-              ),
-              description: _TermsLinks(
-                onTerms: () => context.push('${Routes.legal}/terms'),
-                onPrivacy: () => context.push('${Routes.legal}/privacy'),
-              ),
+                const SizedBox(width: Spacing.level3),
+                Expanded(
+                  child: _TermsAgreementText(
+                    terms: l10n.authTermsOfService,
+                    privacy: l10n.authPrivacyPolicy,
+                    onTerms: () => context.push('${Routes.legal}/terms'),
+                    onPrivacy: () => context.push('${Routes.legal}/privacy'),
+                  ),
+                ),
+              ],
             ),
             if (!acceptedTerms.value)
               Padding(
@@ -238,47 +243,50 @@ class RegisterPage extends HookConsumerWidget {
   }
 }
 
-class _TermsLinks extends StatelessWidget {
-  const _TermsLinks({required this.onTerms, required this.onPrivacy});
+class _TermsAgreementText extends StatelessWidget {
+  const _TermsAgreementText({
+    required this.terms,
+    required this.privacy,
+    required this.onTerms,
+    required this.onPrivacy,
+  });
 
+  final String terms;
+  final String privacy;
   final VoidCallback onTerms;
   final VoidCallback onPrivacy;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-
+    final baseStyle = TypographyToken.level3.body(context);
+    final linkStyle = baseStyle.copyWith(
+      color: colors.primary,
+      fontWeight: FontWeight.w600,
+    );
     final l10n = AppLocalizations.of(context)!;
-    final linkStyle = TypographyToken.level3
-        .body(context)
-        .copyWith(color: colors.primary, fontWeight: FontWeight.w600);
 
-    return Wrap(
-      spacing: Spacing.level2,
-      runSpacing: Spacing.level1,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        FButton(
-          variant: FButtonVariant.ghost,
-          size: FButtonSizeVariant.sm,
-          mainAxisSize: MainAxisSize.min,
-          onPress: onTerms,
-          child: Text(l10n.authTermsOfService, style: linkStyle),
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Text.rich(
+        TextSpan(
+          style: baseStyle,
+          children: [
+            TextSpan(text: l10n.authTermsAgreement('', '')),
+            TextSpan(
+              text: terms,
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()..onTap = onTerms,
+            ),
+            const TextSpan(text: ' / '),
+            TextSpan(
+              text: privacy,
+              style: linkStyle,
+              recognizer: TapGestureRecognizer()..onTap = onPrivacy,
+            ),
+          ],
         ),
-        Text(
-          '/',
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
-        ),
-        FButton(
-          variant: FButtonVariant.ghost,
-          size: FButtonSizeVariant.sm,
-          mainAxisSize: MainAxisSize.min,
-          onPress: onPrivacy,
-          child: Text(l10n.authPrivacyPolicy, style: linkStyle),
-        ),
-      ],
+      ),
     );
   }
 }
