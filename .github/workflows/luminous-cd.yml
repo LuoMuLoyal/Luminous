@@ -32,9 +32,17 @@ jobs:
             echo "::error::Secret LUCENT_BASE_URL is not set. The web build would inject an empty API base URL."
             exit 1
           fi
-          if [ -z "${{ secrets.SENTRY_DSN }}" ]; then
-            echo "::error::Secret SENTRY_DSN is not set. The web build would skip Sentry initialization."
-            exit 1
+          # SENTRY_DSN is optional — if unset or empty, the app skips Sentry
+          # initialization at runtime (see _initSentry in lib/main.dart).
+          if [ -n "${{ secrets.SENTRY_DSN }}" ]; then
+            if ! echo "${{ secrets.SENTRY_DSN }}" | grep -qP '^https?://[^/]+@[^/]+/.+'; then
+              echo "::error::Secret SENTRY_DSN is set but is not a valid Sentry DSN."
+              echo "Expected format: https://<public_key>@<host>/<project_id>"
+              echo "To disable Sentry, remove the secret entirely instead of using a placeholder."
+              exit 1
+            fi
+          else
+            echo "::warning::SENTRY_DSN is not set — Sentry will be disabled for this build."
           fi
 
       - name: Setup Flutter

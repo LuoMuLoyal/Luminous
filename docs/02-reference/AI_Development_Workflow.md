@@ -101,14 +101,14 @@ GitHub Actions CD workflow (`.github/workflows/luminous-cd.yml`) uses `--dart-de
 | Variable | Source | Description |
 |----------|--------|-------------|
 | `LUCENT_BASE_URL` | GitHub Secrets | Backend API base URL |
-| `SENTRY_DSN` | GitHub Secrets | Sentry error tracking DSN |
+| `SENTRY_DSN` | GitHub Secrets | Sentry error tracking DSN (optional — omit to disable Sentry) |
 | `LUMINOUS_EXPERIMENTAL_AI_RUNTIME` | GitHub Variables | Enable experimental AI runtime (default: `false`) |
 | `LUMINOUS_AI_RUNTIME_PROVIDER` | GitHub Variables | AI runtime provider (default: `openai`) |
 | `LUMINOUS_ENABLE_GEN_UI` | GitHub Variables | Enable GenUI features (default: `false`) |
 
 Configure these in: Repository Settings → Secrets and variables → Actions
 
-The CD workflow includes a pre-build validation step that fails the pipeline if `LUCENT_BASE_URL` or `SENTRY_DSN` secrets are not configured, preventing empty-string injection into `--dart-define`.
+`LUCENT_BASE_URL` is required and validated as non-empty. `SENTRY_DSN` is **optional** — if the secret is unset, the build proceeds with Sentry disabled at runtime. If the secret is set but does not match the required DSN format (`https://<public_key>@<host>/<project_id>`), the pipeline fails with a clear error.
 
 ## GenUI / AI Toolkit Status
 

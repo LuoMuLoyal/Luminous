@@ -35,14 +35,25 @@ Future<void> main() async {
 /// the entire [SentryFlutter.init] call is skipped to avoid any SDK
 /// overhead. All [Sentry.captureException] calls are safe no-ops when
 /// the SDK has not been initialized.
+///
+/// If the DSN is non-empty but invalid (e.g. a placeholder URL was
+/// accidentally injected), the error is caught and logged so the app
+/// can still start — Sentry simply won't be active.
 Future<void> _initSentry() async {
   final dsn = EnvReader.string(EnvKey.sentryDsn);
   if (dsn.isEmpty) return;
 
-  await SentryFlutter.init((options) {
-    options.dsn = dsn;
-    options.tracesSampleRate = kReleaseMode ? 0.2 : 1.0;
-    options.attachStacktrace = true;
-    options.sendDefaultPii = false;
-  });
+  try {
+    await SentryFlutter.init((options) {
+      options.dsn = dsn;
+      options.tracesSampleRate = kReleaseMode ? 0.2 : 1.0;
+      options.attachStacktrace = true;
+      options.sendDefaultPii = false;
+    });
+  } catch (e, st) {
+    debugPrint(
+      '⚠️ Sentry initialization failed (DSN invalid?), '
+      'Sentry disabled for this session.\n  Error: $e\n  Stack: $st',
+    );
+  }
 }
