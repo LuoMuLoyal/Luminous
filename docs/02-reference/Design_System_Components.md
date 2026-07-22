@@ -35,7 +35,7 @@
 
 ## 对话框
 
-- 共享对话框 helper：`showAppDialog` / `DialogShell`（`lib/core/widgets/common/dialog_shell.dart`）。
+- 共享对话框 helper：`showAppDialog` / `DialogShell`（`lib/core/widgets/common/dialog_shell.dart`）。`showAppDialog` 支持 `barrierDismissible` 参数（默认 `true`），需要不可点击遮罩关闭的场景（如扫码处理遮罩）传 `false`。
 - `RecordNlpDialog` 与 `MedicineAddPrecheckDialog` 已使用它。
 - **Forui 0.24.x**：`FCard.raw` / `FDialog.raw` 已移除，API 合并到 `FCard` / `FDialog`。`FDialog` 构造函数从声明式改为 `builder` 模式，调用方需自行用 `Column` + `Row` 构建布局。
 

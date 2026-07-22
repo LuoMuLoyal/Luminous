@@ -10,7 +10,7 @@ Widget _appShell(Widget child) {
 }
 
 void main() {
-  group('AppDialogShell', () {
+  group('DialogShell', () {
     testWidgets('renders dialog with child content', (tester) async {
       await tester.pumpWidget(
         _appShell(

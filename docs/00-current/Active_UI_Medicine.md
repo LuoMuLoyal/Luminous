@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-21 (header migration)
+Last updated: 2026-07-22 (扫码对话框封装统一)
 
 ## 页面结构
 
@@ -53,6 +53,7 @@ Last updated: 2026-07-21 (header migration)
 - 处方导入/OCR 处方识别仍延后（底层枚举保留但仅 Toast 提示）。
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。
+- 扫码结果对话框和处理遮罩统一使用 `showAppDialog(barrierDismissible: false)` 调用，不再直接使用底层 `showFDialog`；`MedicineRecognizeDialog` 移除 `FDialog` 包装层和 `animation` 参数，由 `DialogShell` 统一管理对话框框架。
 
 ## 提醒
 

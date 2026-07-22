@@ -105,6 +105,9 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not describe the Android emulator + Lucent test-runtime lane as already covered by GitHub
    Actions. The current CI boundary is repo-safe Flutter checks only; full-stack E2E remains a
    local/manual gate through `tool/run_fullstack_checks.dart`.
+- `luminous-cd.yml` validates required GitHub secrets (`LUCENT_BASE_URL`, `SENTRY_DSN`) before
+   the Flutter Web build; missing secrets fail the pipeline early instead of injecting empty
+   strings into `--dart-define`.
 
 ## Verification
 

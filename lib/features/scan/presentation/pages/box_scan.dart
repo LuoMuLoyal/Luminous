@@ -74,10 +74,11 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
     _dismissOverlay(context);
 
     unawaited(
-      showFDialog(
+      showAppDialog<void>(
         context: context,
         barrierDismissible: false,
-        builder: (dialogContext, style, animation) => MedicineRecognizeDialog(
+        scrollable: false,
+        builder: (dialogContext) => MedicineRecognizeDialog(
           imagePath: photo.path,
           methodLabel: method == _ScanMethod.ocr
               ? l10n.scanMethodOcrLabel
@@ -88,7 +89,6 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
             // Re-show the scan sheet after dismiss
             showMedicineBoxScanSheet(context);
           },
-          animation: animation,
         ),
       ),
     );
@@ -161,28 +161,23 @@ Future<void> _showScanFailureDialog(
 
 void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
   final l10n = AppLocalizations.of(context)!;
-  showFDialog(
+  showAppDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (_, style, animation) => PopScope(
+    scrollable: false,
+    builder: (_) => PopScope(
       canPop: false,
-      child: FDialog(
-        animation: animation,
-        builder: (context, style) => Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const FCircularProgress(),
-              const SizedBox(height: Spacing.level4),
-              Text(
-                method == _ScanMethod.ocr
-                    ? l10n.scanProcessingOcr
-                    : l10n.scanProcessingAi,
-              ),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const FCircularProgress(),
+          const SizedBox(height: Spacing.level4),
+          Text(
+            method == _ScanMethod.ocr
+                ? l10n.scanProcessingOcr
+                : l10n.scanProcessingAi,
           ),
-        ),
+        ],
       ),
     ),
   );

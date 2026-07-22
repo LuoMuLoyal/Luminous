@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
+Last updated: 2026-07-22 (审查报告修复)
 
 ## 技术栈
 
@@ -102,6 +102,7 @@ Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
 - 全栈移动 E2E 当前为本地/手动，不属于 GitHub Actions 流水线。
 - 本地验证入口：`tool/check_doc_coverage.dart`、`tool/run_daily_checks.dart`、`tool/run_fullstack_checks.dart`、`tool/verify_lucent_openapi_sync.dart`。
 - GitHub Actions 在构建 APK 前检查生成客户端漂移。
+- `luminous-cd.yml` 在 Flutter Web 构建前校验 `LUCENT_BASE_URL` 和 `SENTRY_DSN` secrets 存在性，防止空字符串注入 `--dart-define`。
 - Mock repositories 仅存在于 `test/helpers/mocks/`，生产代码使用 repository `signedOut()` 工厂返回静态预览数据。
 
 ## 页面脚手架
@@ -111,6 +112,7 @@ Last updated: 2026-07-21 (Forui 0.24.1 upgrade)
 - 页面级错误使用 `StateErrorView`，加载态使用 shimmer 骨架屏。
 - `StateMessageView` 的 `description` 参数为可选（`String?`），仅需标题+图标的场景不再需要传入重复文案。
 - 轻量反馈使用 `Toast`（`lib/core/feedback/toast.dart`），不用页面级 `SnackBar`。
+- `showAppDialog` 支持 `barrierDismissible` 参数（默认 `true`），需要不可点击遮罩关闭的对话框（如扫码处理遮罩）统一通过 `showAppDialog(barrierDismissible: false)` 调用，不再直接使用底层 `showFDialog`。
 - Today 未登录态使用预览 dashboard，不显示“今天还没有记录”引导；摘要指标和快捷入口由前端 view model 基于 dashboard 数据组装。
 
 ## ARB 编辑流程（2026-07-20 更新）

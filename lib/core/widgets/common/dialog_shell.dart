@@ -58,9 +58,11 @@ Future<T?> showAppDialog<T>({
   double? maxHeight,
   EdgeInsets padding = const EdgeInsets.all(Spacing.level5),
   bool scrollable = true,
+  bool barrierDismissible = true,
 }) {
   return showFDialog<T>(
     context: context,
+    barrierDismissible: barrierDismissible,
     builder: (context, style, animation) => DialogShell(
       animation: animation,
       maxWidth: maxWidth,

@@ -11,10 +11,14 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 Future<void> main() async {
   await _initSentry();
 
+  // Keep binding initialization outside the zone so that a synchronous
+  // failure during init crashes visibly instead of being silently swallowed
+  // by the zone's onError handler (which would leave the app in a limbo
+  // state with no UI and no crash).
+  WidgetsFlutterBinding.ensureInitialized();
+
   await runZonedGuarded(
     () async {
-      WidgetsFlutterBinding.ensureInitialized();
-
       FlutterError.onError = (details) {
         FlutterError.presentError(details);
         Sentry.captureException(details.exception, stackTrace: details.stack);

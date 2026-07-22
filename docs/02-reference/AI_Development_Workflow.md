@@ -108,6 +108,8 @@ GitHub Actions CD workflow (`.github/workflows/luminous-cd.yml`) uses `--dart-de
 
 Configure these in: Repository Settings → Secrets and variables → Actions
 
+The CD workflow includes a pre-build validation step that fails the pipeline if `LUCENT_BASE_URL` or `SENTRY_DSN` secrets are not configured, preventing empty-string injection into `--dart-define`.
+
 ## GenUI / AI Toolkit Status
 
 - `AI Toolkit` is an allowed future direction for app-side experiments.

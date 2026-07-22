@@ -15,7 +15,6 @@ class MedicineRecognizeDialog extends StatefulWidget {
     required this.results,
     required this.onRetake,
     this.onClose,
-    this.animation,
   });
 
   final String imagePath;
@@ -23,7 +22,6 @@ class MedicineRecognizeDialog extends StatefulWidget {
   final List<MedicineMatchResult> results;
   final VoidCallback onRetake;
   final VoidCallback? onClose;
-  final Animation<double>? animation;
 
   @override
   State<MedicineRecognizeDialog> createState() =>
@@ -51,239 +49,229 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
     final top = _topResult;
     final sorted = _sortedResults;
 
-    return FDialog(
-      animation: widget.animation,
-      builder: (context, style) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.scanResultTitle,
-              style: style.titleTextStyle,
-            ),
-            const SizedBox(height: Spacing.level2),
-            ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: LayoutScaleResolver.dialogMaxWidth,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+    final dialogStyle = context.theme.dialogStyle;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          AppLocalizations.of(context)!.scanResultTitle,
+          style: dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level2),
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: LayoutScaleResolver.dialogMaxWidth,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
                 children: [
-                  // Header
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          RadiusTokens.level2,
-                        ),
-                        child: Image.file(
-                          File(widget.imagePath),
-                          width: 60,
-                          height: 60,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            width: 60,
-                            height: 60,
-                            color: colors.muted,
-                            child: Icon(
-                              FLucideIcons.imageOff,
-                              size: Spacing.level5,
-                              color: colors.mutedForeground,
-                            ),
-                          ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusTokens.level2),
+                    child: Image.file(
+                      File(widget.imagePath),
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 60,
+                        height: 60,
+                        color: colors.muted,
+                        child: Icon(
+                          FLucideIcons.imageOff,
+                          size: Spacing.level5,
+                          color: colors.mutedForeground,
                         ),
                       ),
-                      const SizedBox(width: Spacing.level4),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.scanResultTitle,
-                              style: typography.body.md,
-                            ),
-                            Text(
-                              l10n.scanResultSourceLabel(widget.methodLabel),
-                              style: typography.body.sm.copyWith(
-                                color: colors.primary,
-                              ),
-                            ),
-                          ],
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.level4),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.scanResultTitle,
+                          style: typography.body.md,
+                        ),
+                        Text(
+                          l10n.scanResultSourceLabel(widget.methodLabel),
+                          style: typography.body.sm.copyWith(
+                            color: colors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level5),
+
+              if (top != null) ...[
+                // Top result card
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(Spacing.level4),
+                  decoration: BoxDecoration(
+                    color: colors.background,
+                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _infoRow(l10n.scanResultMedicineLabel, top.name),
+                      if (top.approvalNumber != null)
+                        _infoRow(
+                          l10n.scanResultApprovalNumberLabel,
+                          top.approvalNumber!,
+                        ),
+                      const SizedBox(height: Spacing.level2),
+                      FTooltip(
+                        tipBuilder: (context, controller) =>
+                            Text(l10n.scanResultConfidenceExplanation),
+                        child: Text(
+                          l10n.scanResultConfidenceLabel(
+                            (top.confidence * 100).toInt(),
+                          ),
+                          style: typography.body.sm.copyWith(
+                            color: colors.primary,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: Spacing.level5),
-
-                  if (top != null) ...[
-                    // Top result card
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(Spacing.level4),
-                      decoration: BoxDecoration(
-                        color: colors.background,
-                        borderRadius: BorderRadius.circular(
-                          RadiusTokens.level3,
-                        ),
-                        border: Border.all(color: colors.border),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _infoRow(l10n.scanResultMedicineLabel, top.name),
-                          if (top.approvalNumber != null)
-                            _infoRow(
-                              l10n.scanResultApprovalNumberLabel,
-                              top.approvalNumber!,
-                            ),
-                          const SizedBox(height: Spacing.level2),
-                          FTooltip(
-                            tipBuilder: (context, controller) =>
-                                Text(l10n.scanResultConfidenceExplanation),
-                            child: Text(
-                              l10n.scanResultConfidenceLabel(
-                                (top.confidence * 100).toInt(),
-                              ),
-                              style: typography.body.sm.copyWith(
-                                color: colors.primary,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ] else ...[
-                    Text(
-                      AppLocalizations.of(context)!.scanNoResultTitle,
-                      style: typography.body.md,
-                    ),
-                  ],
-
-                  const SizedBox(height: Spacing.level4),
-
-                  // Candidate list expander
-                  if (sorted.length > 1)
-                    FTappable(
-                      onPress: () => setState(
-                        () => _showCandidateList = !_showCandidateList,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.level3,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              _showCandidateList
-                                  ? FLucideIcons.chevronUp
-                                  : FLucideIcons.chevronDown,
-                              size: 20,
-                              color: colors.primary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              l10n.scanResultOtherMatches(sorted.length),
-                              style: typography.body.md.copyWith(
-                                color: colors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  if (_showCandidateList && sorted.length > 1)
-                    Container(
-                      constraints: const BoxConstraints(maxHeight: 200),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: sorted.length,
-                        itemBuilder: (_, i) {
-                          final r = sorted[i];
-                          return FTappable(
-                            onPress: () => setState(() => _selectedIndex = i),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Spacing.level2,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    _selectedIndex == i
-                                        ? FLucideIcons.checkCircle2
-                                        : FLucideIcons.circle,
-                                    color: colors.primary,
-                                    size: 20,
-                                  ),
-                                  const SizedBox(width: Spacing.level3),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(r.name, style: typography.body.md),
-                                        Text(
-                                          '${_matchTypeLabel(r.matchType, l10n)} · ${(r.confidence * 100).toInt()}%',
-                                          style: typography.body.sm.copyWith(
-                                            color: colors.mutedForeground,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: Spacing.level5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: widget.onClose ?? () => Navigator.of(context).pop(),
-                  child: Text(AppLocalizations.of(context)!.scanCloseAction),
                 ),
-                const SizedBox(width: Spacing.level3),
-                FButton(
-                  variant: FButtonVariant.outline,
-                  onPress: widget.onRetake,
-                  child: Text(AppLocalizations.of(context)!.scanRetakeAction),
-                ),
-                const SizedBox(width: Spacing.level3),
-                FButton(
-                  onPress: top != null || _selectedIndex != null
-                      ? () {
-                          final res = _selectedIndex != null
-                              ? sorted[_selectedIndex!]
-                              : top;
-                          final id = res?.id;
-                          if (id != null) {
-                            Navigator.of(context).pop();
-                            MedicineReminderDetailRoute(
-                              medicineId: id,
-                            ).push(context);
-                          }
-                        }
-                      : null,
-                  child: Text(
-                    AppLocalizations.of(context)!.scanConfirmDetailAction,
-                  ),
+              ] else ...[
+                Text(
+                  AppLocalizations.of(context)!.scanNoResultTitle,
+                  style: typography.body.md,
                 ),
               ],
+
+              const SizedBox(height: Spacing.level4),
+
+              // Candidate list expander
+              if (sorted.length > 1)
+                FTappable(
+                  onPress: () =>
+                      setState(() => _showCandidateList = !_showCandidateList),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Spacing.level3,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          _showCandidateList
+                              ? FLucideIcons.chevronUp
+                              : FLucideIcons.chevronDown,
+                          size: 20,
+                          color: colors.primary,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          l10n.scanResultOtherMatches(sorted.length),
+                          style: typography.body.md.copyWith(
+                            color: colors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              if (_showCandidateList && sorted.length > 1)
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: sorted.length,
+                    itemBuilder: (_, i) {
+                      final r = sorted[i];
+                      return FTappable(
+                        onPress: () => setState(() => _selectedIndex = i),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: Spacing.level2,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _selectedIndex == i
+                                    ? FLucideIcons.checkCircle2
+                                    : FLucideIcons.circle,
+                                color: colors.primary,
+                                size: 20,
+                              ),
+                              const SizedBox(width: Spacing.level3),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(r.name, style: typography.body.md),
+                                    Text(
+                                      '${_matchTypeLabel(r.matchType, l10n)} · ${(r.confidence * 100).toInt()}%',
+                                      style: typography.body.sm.copyWith(
+                                        color: colors.mutedForeground,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: widget.onClose ?? () => Navigator.of(context).pop(),
+              child: Text(AppLocalizations.of(context)!.scanCloseAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: widget.onRetake,
+              child: Text(AppLocalizations.of(context)!.scanRetakeAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              onPress: top != null || _selectedIndex != null
+                  ? () {
+                      final res = _selectedIndex != null
+                          ? sorted[_selectedIndex!]
+                          : top;
+                      final id = res?.id;
+                      if (id != null) {
+                        Navigator.of(context).pop();
+                        MedicineReminderDetailRoute(
+                          medicineId: id,
+                        ).push(context);
+                      }
+                    }
+                  : null,
+              child: Text(
+                AppLocalizations.of(context)!.scanConfirmDetailAction,
+              ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 
