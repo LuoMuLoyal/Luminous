@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,27 +7,26 @@ import 'package:luminous/core/config/env_keys.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
-  await _initSentry();
-
-  // Keep binding initialization outside the zone so that a synchronous
-  // failure during init crashes visibly instead of being silently swallowed
-  // by the zone's onError handler (which would leave the app in a limbo
-  // state with no UI and no crash).
+  // Keep binding initialization in the root zone so that a synchronous
+  // failure during init crashes visibly instead of being silently swallowed.
   WidgetsFlutterBinding.ensureInitialized();
 
-  await runZonedGuarded(
-    () async {
-      FlutterError.onError = (details) {
-        FlutterError.presentError(details);
-        Sentry.captureException(details.exception, stackTrace: details.stack);
-      };
+  await _initSentry();
 
-      runApp(const ProviderScope(child: LuminousApp()));
-    },
-    (error, stackTrace) {
-      Sentry.captureException(error, stackTrace: stackTrace);
-    },
-  );
+  // Catch framework errors (sync errors in widget build / layout / paint).
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    Sentry.captureException(details.exception, stackTrace: details.stack);
+  };
+
+  // Catch uncaught async errors without creating a new zone — avoids
+  // "Zone mismatch" between binding init and runApp.
+  PlatformDispatcher.instance.onError = (error, stack) {
+    Sentry.captureException(error, stackTrace: stack);
+    return true;
+  };
+
+  runApp(const ProviderScope(child: LuminousApp()));
 }
 
 /// Initializes Sentry if a DSN is configured.
