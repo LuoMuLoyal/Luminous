@@ -279,7 +279,7 @@ class _CompactStatusDot extends StatelessWidget {
       message: _statusTooltip(AppLocalizations.of(context)!, capabilities),
       child: DecoratedBox(
         decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        child: const SizedBox(width: 8, height: 8),
+        child: const SizedBox(width: Spacing.level2, height: Spacing.level2),
       ),
     );
   }

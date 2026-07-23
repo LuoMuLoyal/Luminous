@@ -305,12 +305,12 @@ class _PrivacySection extends ConsumerWidget {
                 l10n.settingsDataSharingConfirmTitle,
                 style: TypographyToken.level6.body(context),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: Spacing.level3),
               Text(
                 l10n.settingsDataSharingConfirmDescription,
                 style: TypographyToken.level4.body(context),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: Spacing.level5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -319,7 +319,7 @@ class _PrivacySection extends ConsumerWidget {
                     onPress: () => Navigator.of(context).pop(false),
                     child: Text(l10n.settingsDataSharingCancelAction),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: Spacing.level2),
                   FButton(
                     onPress: () => Navigator.of(context).pop(true),
                     child: Text(l10n.settingsDataSharingConfirmAction),

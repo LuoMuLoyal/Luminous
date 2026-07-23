@@ -172,7 +172,7 @@ class _ProposalMetaSection extends StatelessWidget {
           children: [
             for (final row in metaRows)
               Padding(
-                padding: const EdgeInsets.only(bottom: 2),
+                padding: const EdgeInsets.only(bottom: Spacing.level1),
                 child: Text(
                   row,
                   style: typography.body.sm.copyWith(
@@ -186,10 +186,10 @@ class _ProposalMetaSection extends StatelessWidget {
                 l10n.assistantProposalConstraintsLabel,
                 style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: Spacing.level1),
               for (final constraint in proposal.constraints)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
+                  padding: const EdgeInsets.only(bottom: Spacing.level1),
                   child: Text(
                     '• $constraint',
                     style: typography.body.sm.copyWith(

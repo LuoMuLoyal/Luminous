@@ -46,7 +46,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                         size: 16,
                         color: context.theme.colors.primary,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: Spacing.level2),
                       Expanded(
                         child: Text(
                           l10n.settingsFeatureFlagsWarning,

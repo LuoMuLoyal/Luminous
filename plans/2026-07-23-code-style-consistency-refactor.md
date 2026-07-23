@@ -499,12 +499,12 @@ null-safe 模式处理，而非硬编码中文 fallback。
 
 ### P2 验证
 
-- [ ] `AppDivider` 保留/移除决策已记录
-- [ ] 无 `EdgeInsets.(all|symmetric|only)(\d+)` 硬编码间距
-- [ ] 无 `SizedBox(width: \d+)` / `SizedBox(height: \d+)` 硬编码尺寸
-- [ ] `shell/page.dart` 无硬编码中文 fallback
-- [ ] `flutter analyze` + `flutter test` 通过
-- [ ] 文档检查通过
+- [x] `AppDivider` 保留/移除决策已记录
+- [x] 无 `EdgeInsets.(all|symmetric|only)(\d+)` 硬编码间距
+- [x] 无 `SizedBox(width: \d+)` / `SizedBox(height: \d+)` 硬编码尺寸
+- [x] `shell/page.dart` 无硬编码中文 fallback
+- [x] `flutter analyze` + `flutter test` 通过
+- [x] 文档检查通过
 
 ---
 

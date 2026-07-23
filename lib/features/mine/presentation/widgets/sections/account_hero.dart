@@ -234,7 +234,7 @@ class _AvatarPlaceholder extends StatelessWidget {
                 border: Border.all(color: colors.background, width: 2),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(Spacing.level1),
                 child: Icon(
                   FLucideIcons.pencil,
                   color: colors.primaryForeground,

@@ -1,6 +1,7 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 void main() {
   group('ShellTab', () {
@@ -47,12 +48,24 @@ void main() {
   });
 
   group('ShellTab.label', () {
-    test('returns fallback string when l10n is null', () {
-      expect(ShellTab.today.label(null), 'Today');
-      expect(ShellTab.record.label(null), 'Record');
-      expect(ShellTab.medicine.label(null), 'Medicine');
-      expect(ShellTab.report.label(null), 'Report');
-      expect(ShellTab.mine.label(null), 'Mine');
+    testWidgets('returns localized string from AppLocalizations', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: SizedBox.shrink(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final l10n = AppLocalizations.of(tester.element(find.byType(SizedBox)))!;
+
+      expect(ShellTab.today.label(l10n), l10n.tabToday);
+      expect(ShellTab.record.label(l10n), l10n.tabRecord);
+      expect(ShellTab.medicine.label(l10n), l10n.tabMedicine);
+      expect(ShellTab.report.label(l10n), l10n.tabReport);
+      expect(ShellTab.mine.label(l10n), l10n.tabMine);
     });
   });
 }

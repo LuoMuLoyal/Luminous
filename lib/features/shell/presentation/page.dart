@@ -19,7 +19,7 @@ class ShellPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final currentIndex = navigationShell.currentIndex;
     final width = MediaQuery.sizeOf(context).width;
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final isDesktop = width >= Breakpoints.desktop;
     final content = navigationShell;
 
@@ -70,7 +70,7 @@ class _MobileBottomNavigationBar extends StatelessWidget {
   });
 
   final int currentIndex;
-  final AppLocalizations? l10n;
+  final AppLocalizations l10n;
   final ValueChanged<int> onSelectTab;
 
   @override
@@ -104,7 +104,7 @@ class _DesktopSidebar extends StatelessWidget {
   });
 
   final int currentIndex;
-  final AppLocalizations? l10n;
+  final AppLocalizations l10n;
   final ValueChanged<int> onSelectTab;
 
   @override
@@ -136,9 +136,9 @@ class _DesktopSidebar extends StatelessWidget {
               size: 18,
               color: theme.colors.primary,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: Spacing.level2),
             Text(
-              l10n?.appTitle ?? 'Luminous',
+              l10n.appTitle,
               overflow: TextOverflow.ellipsis,
               style: theme.typography.body.sm.copyWith(
                 color: theme.colors.foreground,
@@ -153,12 +153,12 @@ class _DesktopSidebar extends StatelessWidget {
         children: [
           FSidebarItem(
             icon: const Icon(FLucideIcons.settings),
-            label: Text(l10n?.desktopSidebarSettings ?? '设置'),
+            label: Text(l10n.desktopSidebarSettings),
             onPress: () => context.push(Routes.settings),
           ),
           FSidebarItem(
             icon: const Icon(FLucideIcons.circleHelp),
-            label: Text(l10n?.desktopSidebarHelp ?? '帮助'),
+            label: Text(l10n.desktopSidebarHelp),
             onPress: () => context.push(Routes.assistant),
           ),
         ],

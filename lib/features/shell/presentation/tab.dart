@@ -16,13 +16,13 @@ enum ShellTab {
 
   ValueKey<String> testKey() => ValueKey<String>('shell-tab-$name');
 
-  String label(AppLocalizations? l10n) {
+  String label(AppLocalizations l10n) {
     return switch (this) {
-      ShellTab.today => l10n?.tabToday ?? 'Today',
-      ShellTab.record => l10n?.tabRecord ?? 'Record',
-      ShellTab.medicine => l10n?.tabMedicine ?? 'Medicine',
-      ShellTab.report => l10n?.tabReport ?? 'Report',
-      ShellTab.mine => l10n?.tabMine ?? 'Mine',
+      ShellTab.today => l10n.tabToday,
+      ShellTab.record => l10n.tabRecord,
+      ShellTab.medicine => l10n.tabMedicine,
+      ShellTab.report => l10n.tabReport,
+      ShellTab.mine => l10n.tabMine,
     };
   }
 }

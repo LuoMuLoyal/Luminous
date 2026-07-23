@@ -50,7 +50,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       key: Key('record-fast-entry-${widget.kind.name}'),
       animation: widget.animation,
       builder: (context, style) => Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(Spacing.level5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
