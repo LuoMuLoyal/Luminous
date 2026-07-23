@@ -154,7 +154,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
     final l10n = widget.l10n;
     final viewedDays = _buildViewedDays();
 
-    final weekdayKeys = const <RecordCopyKey>[
+    const weekdayKeys = <RecordCopyKey>[
       RecordCopyKey.weekdaySun,
       RecordCopyKey.weekdayMon,
       RecordCopyKey.weekdayTue,
@@ -360,7 +360,9 @@ class _MonthDayCell extends StatelessWidget {
             dimension: 30,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: day.selected ? colors.foreground : Colors.transparent,
+                color: day.selected
+                    ? colors.foreground
+                    : const Color(0x00000000),
                 shape: BoxShape.circle,
               ),
               child: Center(

@@ -7,9 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/features/record/domain/services/voice_recording.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 
 /// Shows a bottom sheet for voice input and returns the recognized text.
 ///
@@ -247,7 +247,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   border: Border.all(color: colors.border),
                 ),
                 child: Material(
-                  color: Colors.transparent,
+                  color: const Color(0x00000000),
                   child: TextField(
                     controller: textController,
                     maxLines: null,

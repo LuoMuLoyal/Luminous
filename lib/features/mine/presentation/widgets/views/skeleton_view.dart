@@ -12,7 +12,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 /// → NotificationsReminders → AccountSecurity
 ///
 /// **Desktop:** MineSyncFailedBanner → AccountHero →
-/// Row[左7: Archive+NotificationsReminders | 右5: AiPrivacy+AccountSecurity]
+/// Row[7: Archive+NotificationsReminders | 5: AiPrivacy+AccountSecurity]
 class MineSkeletonView extends StatelessWidget {
   const MineSkeletonView({super.key});
 
@@ -196,7 +196,7 @@ class _ArchivePlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     FLucideIcons.chevronRight,
-                    color: Colors.transparent,
+                    color: Color(0x00000000),
                     size: Spacing.level5,
                   ),
                 ],
@@ -232,7 +232,7 @@ class _AiPrivacyPlaceholder extends StatelessWidget {
             InlineSkeletonBlock(height: 14, width: 56),
             Icon(
               FLucideIcons.chevronRight,
-              color: Colors.transparent,
+              color: Color(0x00000000),
               size: Spacing.level5,
             ),
           ],
@@ -272,7 +272,7 @@ class _NotificationsRemindersPlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     FLucideIcons.chevronRight,
-                    color: Colors.transparent,
+                    color: Color(0x00000000),
                     size: Spacing.level5,
                   ),
                 ],
@@ -315,7 +315,7 @@ class _AccountSecurityPlaceholder extends StatelessWidget {
                   ),
                   Icon(
                     FLucideIcons.chevronRight,
-                    color: Colors.transparent,
+                    color: Color(0x00000000),
                     size: Spacing.level5,
                   ),
                 ],

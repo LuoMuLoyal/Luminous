@@ -2,22 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
-import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 const _scanFrameWidth = 280.0;
 const _scanFrameHeight = 120.0;
@@ -273,17 +272,22 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
           : Stack(
               children: [
                 MobileScanner(controller: _controller!, onDetect: _onDetect),
-                // Darkened overlay with scan frame cutout
+                // Camera overlay — uses literal colors because the camera
+                // preview is always dark, regardless of the app theme.
+                // Colors.red here is a blend-mode cutout color (actual hue
+                // is irrelevant; only opacity matters for dstOut).
                 ColorFiltered(
                   colorFilter: ColorFilter.mode(
-                    Colors.black.withValues(alpha: 0.45),
+                    const Color(0xFF000000).withValues(alpha: 0.45),
                     BlendMode.srcOut,
                   ),
                   child: Stack(
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.45),
+                          color: const Color(
+                            0xFF000000,
+                          ).withValues(alpha: 0.45),
                           backgroundBlendMode: BlendMode.dstOut,
                         ),
                       ),
@@ -292,7 +296,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                           width: _scanFrameWidth,
                           height: _scanFrameHeight,
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: const Color(0xFFFF0000),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -332,7 +336,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                             textAlign: TextAlign.center,
                             style: TypographyToken.level4
                                 .body(context)
-                                .copyWith(color: Colors.white),
+                                .copyWith(color: const Color(0xFFFFFFFF)),
                           ),
                           if (_isSearching) ...[
                             const SizedBox(height: Spacing.level3),
@@ -352,12 +356,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                                 const Icon(
                                   FLucideIcons.search,
                                   size: 16,
-                                  color: Colors.white,
+                                  color: Color(0xFFFFFFFF),
                                 ),
                                 const SizedBox(width: Spacing.level2),
                                 Text(
                                   l10n.scanManualSearchAction,
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(
+                                    color: Color(0xFFFFFFFF),
+                                  ),
                                 ),
                               ],
                             ),
