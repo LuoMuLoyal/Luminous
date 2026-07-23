@@ -3,9 +3,10 @@ library;
 
 import 'package:alchemist/alchemist.dart';
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+
 import '../helpers/test_forui_app.dart';
 
 /// Golden tests for auth-related widgets.
