@@ -5,7 +5,7 @@ import 'package:luminous/features/medicine/domain/services/red_flag_evaluator.da
 
 void main() {
   test('Rule 1: severe allergy match triggers red flag', () {
-    final snapshot = const HealthContextSnapshot(
+    const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: 30,
         onboardingCompleted: true,
@@ -69,7 +69,7 @@ void main() {
       ],
     );
 
-    final result = const MedicineRiskCheckResult(
+    const result = MedicineRiskCheckResult(
       currentMedicineCount: 1,
       checkedMedicineCount: 1,
       findings: [
@@ -85,7 +85,7 @@ void main() {
       coverageIssues: [],
     );
 
-    final evaluator = const RedFlagEvaluator();
+    const evaluator = RedFlagEvaluator();
     final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
 
     expect(alerts, hasLength(1));
@@ -94,7 +94,7 @@ void main() {
   });
 
   test('Rule 1: mild allergy does NOT trigger red flag', () {
-    final snapshot = const HealthContextSnapshot(
+    const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: 30,
         onboardingCompleted: true,
@@ -147,7 +147,7 @@ void main() {
       ],
     );
 
-    final result = const MedicineRiskCheckResult(
+    const result = MedicineRiskCheckResult(
       currentMedicineCount: 1,
       checkedMedicineCount: 1,
       findings: [
@@ -163,7 +163,7 @@ void main() {
       coverageIssues: [],
     );
 
-    final evaluator = const RedFlagEvaluator();
+    const evaluator = RedFlagEvaluator();
     final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
 
     expect(alerts, isEmpty);
@@ -172,7 +172,7 @@ void main() {
   test(
     'Rule 1: missing severity with anaphylaxis reaction still triggers red flag',
     () {
-      final snapshot = const HealthContextSnapshot(
+      const snapshot = HealthContextSnapshot(
         summary: HealthSummary(
           age: 30,
           onboardingCompleted: true,
@@ -225,7 +225,7 @@ void main() {
         ],
       );
 
-      final result = const MedicineRiskCheckResult(
+      const result = MedicineRiskCheckResult(
         currentMedicineCount: 1,
         checkedMedicineCount: 1,
         findings: [
@@ -241,7 +241,7 @@ void main() {
         coverageIssues: [],
       );
 
-      final evaluator = const RedFlagEvaluator();
+      const evaluator = RedFlagEvaluator();
       final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
 
       expect(alerts, hasLength(1));
@@ -250,7 +250,7 @@ void main() {
   );
 
   test('Rule 3: information gap for high-risk user triggers red flag', () {
-    final snapshot = const HealthContextSnapshot(
+    const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: 28,
         onboardingCompleted: true,
@@ -318,7 +318,7 @@ void main() {
       ],
     );
 
-    final result = const MedicineRiskCheckResult(
+    const result = MedicineRiskCheckResult(
       currentMedicineCount: 2,
       checkedMedicineCount: 1,
       findings: [],
@@ -330,7 +330,7 @@ void main() {
       ],
     );
 
-    final evaluator = const RedFlagEvaluator();
+    const evaluator = RedFlagEvaluator();
     final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
 
     expect(alerts, hasLength(1));
@@ -338,7 +338,7 @@ void main() {
   });
 
   test('Rule 3: no red flag for low-risk user with coverage gaps', () {
-    final snapshot = const HealthContextSnapshot(
+    const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: 30,
         onboardingCompleted: true,
@@ -379,7 +379,7 @@ void main() {
       ],
     );
 
-    final result = const MedicineRiskCheckResult(
+    const result = MedicineRiskCheckResult(
       currentMedicineCount: 1,
       checkedMedicineCount: 0,
       findings: [],
@@ -391,7 +391,7 @@ void main() {
       ],
     );
 
-    final evaluator = const RedFlagEvaluator();
+    const evaluator = RedFlagEvaluator();
     final alerts = evaluator.evaluate(snapshot: snapshot, result: result);
 
     expect(alerts, isEmpty);

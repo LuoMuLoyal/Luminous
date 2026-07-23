@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -57,7 +57,7 @@ void main() {
       'app.locale': 'en',
     });
 
-    final snapshot = const HealthContextSnapshot(
+    const snapshot = HealthContextSnapshot(
       summary: HealthSummary(
         age: null,
         onboardingCompleted: false,

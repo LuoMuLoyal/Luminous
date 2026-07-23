@@ -19,18 +19,16 @@ import '../helpers/test_forui_app.dart';
 // -- Stub controllers --------------------------------------------------
 
 class _StubSettingsController extends UserSettingsController {
-  final UserSettings data;
-
   _StubSettingsController(this.data);
+  final UserSettings data;
 
   @override
   Future<UserSettings> build() async => data;
 }
 
 class _StubExportController extends DataExportController {
-  final DataExportRequestDataDto? exportData;
-
   _StubExportController(this.exportData);
+  final DataExportRequestDataDto? exportData;
 
   @override
   Future<DataExportRequestDataDto?> build() async => exportData;

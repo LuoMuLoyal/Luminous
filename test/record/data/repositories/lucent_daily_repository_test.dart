@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
@@ -127,7 +127,7 @@ void main() {
 
   group('LucentDailyRecordRepository — uploadImage', () {
     test('delegates to data source', () async {
-      final input = const DailyRecordImageUploadInput(
+      const input = DailyRecordImageUploadInput(
         bytes: [0, 1, 2],
         contentType: 'image/jpeg',
         sizeBytes: 3,
@@ -492,7 +492,7 @@ DailyRecordItem _makeItem({required String id, String? source}) {
   );
 }
 
-final _dummyCreateInput = const DailyRecordCreateInput(
+const _dummyCreateInput = DailyRecordCreateInput(
   kind: DailyRecordKind.water,
   occurredAt: '2026-07-12',
   title: '喝水',
@@ -500,9 +500,9 @@ final _dummyCreateInput = const DailyRecordCreateInput(
   unit: 'ml',
 );
 
-final _dummyUpdateInput = const DailyRecordUpdateInput(title: 'Updated title');
+const _dummyUpdateInput = DailyRecordUpdateInput(title: 'Updated title');
 
-final _dummyImageUploadInput = const DailyRecordImageUploadInput(
+const _dummyImageUploadInput = DailyRecordImageUploadInput(
   bytes: [0, 1, 2],
   contentType: 'image/jpeg',
   sizeBytes: 3,

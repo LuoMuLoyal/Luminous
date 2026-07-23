@@ -6,7 +6,7 @@ import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dar
 void main() {
   group('AssistantModels', () {
     test('AssistantToolCapability creates with required fields', () {
-      final capability = const AssistantToolCapability(
+      const capability = AssistantToolCapability(
         id: 'get_today_records',
         requiredContextSources: <String>['daily_records'],
         permittedByUser: true,

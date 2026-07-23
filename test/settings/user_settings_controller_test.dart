@@ -293,7 +293,7 @@ void main() {
 
         await container.read(userSettingsControllerProvider.future);
 
-        final nextContext = const AssistantContextPatch(
+        const nextContext = AssistantContextPatch(
           healthProfile: false,
           dailyRecords: true,
           sleepRecords: false,

@@ -133,7 +133,7 @@ void main() {
         publicUrl: 'https://cdn.example.com/photo.jpg',
         createdAt: '2026-07-14T10:00:00Z',
       );
-      final item = const DailyRecordItem(
+      const item = DailyRecordItem(
         id: 'rec-2',
         kind: DailyRecordKind.meal,
         occurredAt: '2026-07-14',
@@ -194,7 +194,7 @@ void main() {
         createdAt: '2026-07-14T10:00:00Z',
         updatedAt: '2026-07-14T10:00:00Z',
       );
-      final summary = const DailyRecordSummary(
+      const summary = DailyRecordSummary(
         kind: DailyRecordKind.water,
         count: 1,
         latest: item,

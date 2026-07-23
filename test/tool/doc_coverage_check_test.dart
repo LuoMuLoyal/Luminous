@@ -36,7 +36,7 @@ rules:
 
   group('buildDocCoverageReport', () {
     test('reports missing required docs for matched code changes', () {
-      final config = const DocCoverageConfig([
+      const config = DocCoverageConfig([
         DocCoverageRule(
           name: 'auth',
           codePatterns: ['lib/features/auth/**'],
@@ -61,7 +61,7 @@ rules:
     });
 
     test('ignores doc-only changes', () {
-      final config = const DocCoverageConfig([
+      const config = DocCoverageConfig([
         DocCoverageRule(
           name: 'routing',
           codePatterns: ['lib/app/router.dart'],
@@ -82,7 +82,7 @@ rules:
 
   group('renderDocCoverageReport', () {
     test('renders a readable warning summary', () {
-      final report = const DocCoverageReport([
+      const report = DocCoverageReport([
         DocCoverageMatch(
           ruleName: 'auth',
           touchedCodeFiles: ['lib/features/auth/presentation/login_page.dart'],

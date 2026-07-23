@@ -87,7 +87,7 @@ void main() {
     });
 
     test('returns empty list when API returns empty data', () async {
-      final emptyResponse = const MedicineSearchResponseDto(
+      const emptyResponse = MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
         data: [],

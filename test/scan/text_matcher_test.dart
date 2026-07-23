@@ -3,7 +3,7 @@ import 'package:luminous/features/scan/domain/services/text_matcher.dart';
 
 void main() {
   group('MedicineTextMatcher', () {
-    final matcher = const MedicineTextMatcher();
+    const matcher = MedicineTextMatcher();
 
     group('extractCandidates – approval number strategy', () {
       test('extracts 国药准字H approval number', () {

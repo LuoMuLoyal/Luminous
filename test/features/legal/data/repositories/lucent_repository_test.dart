@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
@@ -31,7 +31,7 @@ void main() {
 
     group('findAll', () {
       test('maps API items to LegalDocumentSummary list', () async {
-        final response = const LegalDocumentListResponseDto(
+        const response = LegalDocumentListResponseDto(
           code: 0,
           message: 'ok',
           data: LegalDocumentListDataDto(
@@ -66,7 +66,7 @@ void main() {
       });
 
       test('defaults to terms for unknown docType', () async {
-        final response = const LegalDocumentListResponseDto(
+        const response = LegalDocumentListResponseDto(
           code: 0,
           message: 'ok',
           data: LegalDocumentListDataDto(
@@ -92,7 +92,7 @@ void main() {
       });
 
       test('returns empty list when API returns no items', () async {
-        final response = const LegalDocumentListResponseDto(
+        const response = LegalDocumentListResponseDto(
           code: 0,
           message: 'ok',
           data: LegalDocumentListDataDto(items: [], updatedAt: ''),
@@ -130,7 +130,7 @@ void main() {
           localeResolver: () => resolvedLang,
         );
 
-        final response = const LegalDocumentListResponseDto(
+        const response = LegalDocumentListResponseDto(
           code: 0,
           message: 'ok',
           data: LegalDocumentListDataDto(items: [], updatedAt: ''),
@@ -151,7 +151,7 @@ void main() {
 
     group('findOne', () {
       test('maps API response to LegalDocument', () async {
-        final response = const LegalDocumentDetailResponseDto(
+        const response = LegalDocumentDetailResponseDto(
           code: 0,
           message: 'ok',
           data: LegalDocumentDetailDto(
@@ -264,7 +264,7 @@ void main() {
     });
 
     test('passes Lang.en to findAll', () async {
-      final response = const LegalDocumentListResponseDto(
+      const response = LegalDocumentListResponseDto(
         code: 0,
         message: 'ok',
         data: LegalDocumentListDataDto(items: [], updatedAt: ''),
@@ -282,7 +282,7 @@ void main() {
     });
 
     test('passes Lang.en to findOne', () async {
-      final response = const LegalDocumentDetailResponseDto(
+      const response = LegalDocumentDetailResponseDto(
         code: 0,
         message: 'ok',
         data: LegalDocumentDetailDto(

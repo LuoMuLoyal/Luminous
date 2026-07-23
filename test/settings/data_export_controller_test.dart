@@ -1,4 +1,4 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
@@ -360,7 +360,7 @@ void main() {
     test(
       'maps completed request without download url to completedLinkMissing',
       () {
-        final request = const DataExportRequestDataDto(
+        const request = DataExportRequestDataDto(
           id: 'req-link-missing',
           kind: DataExportKind.hospital,
           format: DataExportFormat.pdf,

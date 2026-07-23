@@ -56,7 +56,7 @@ void main() {
   // ── reportAiSummaryFallbackBullets ────────────────────────────
   group('reportAiSummaryFallbackBullets', () {
     test('returns score bullet plus findings when dashboard has findings', () {
-      final dashboard = const ReportDashboard(
+      const dashboard = ReportDashboard(
         range: ReportDashboardRange.last7Days,
         startDate: '2026-07-08',
         endDate: '2026-07-14',
@@ -106,7 +106,7 @@ void main() {
     });
 
     test('takes at most 3 findings', () {
-      final dashboard = const ReportDashboard(
+      const dashboard = ReportDashboard(
         range: ReportDashboardRange.last7Days,
         startDate: '2026-07-08',
         endDate: '2026-07-14',
@@ -165,7 +165,7 @@ void main() {
     });
 
     test('returns only score bullet when findings is empty', () {
-      final dashboard = const ReportDashboard(
+      const dashboard = ReportDashboard(
         range: ReportDashboardRange.last7Days,
         startDate: '2026-07-08',
         endDate: '2026-07-14',

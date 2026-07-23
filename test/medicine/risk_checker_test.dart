@@ -62,7 +62,7 @@ void main() {
       ],
     );
 
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -115,7 +115,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -148,7 +148,7 @@ void main() {
 
   test('detects CN duplicate ingredient and food interaction', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 2);
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -204,7 +204,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -241,7 +241,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     // Drug allergy labeled "penicillin", but CN drug ingredient uses "青霉素"
     final result = checker.evaluate(
       snapshot: snapshot,
@@ -275,7 +275,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -294,7 +294,7 @@ void main() {
 
   test('detects DrugBank-DrugBank duplicate via synonyms', () {
     final snapshot = _dbSnapshot(medicineCount: 2);
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -341,7 +341,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -383,7 +383,7 @@ void main() {
           ),
         ],
       );
-      final checker = const MedicineRiskChecker();
+      const checker = MedicineRiskChecker();
       final result1 = checker.evaluate(
         snapshot: snapshot1,
         medicines: [
@@ -452,7 +452,7 @@ void main() {
         ),
       ],
     );
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -478,7 +478,7 @@ void main() {
     'duplicate does NOT fire for CN medicines with disjoint ingredients',
     () {
       final snapshot = _basicSnapshot(age: 30, medicineCount: 2);
-      final checker = const MedicineRiskChecker();
+      const checker = MedicineRiskChecker();
       final result = checker.evaluate(
         snapshot: snapshot,
         medicines: [
@@ -510,7 +510,7 @@ void main() {
     'duplicate does NOT fire for DrugBank medicines with disjoint synonyms',
     () {
       final snapshot = _dbSnapshot(medicineCount: 2);
-      final checker = const MedicineRiskChecker();
+      const checker = MedicineRiskChecker();
       final result = checker.evaluate(
         snapshot: snapshot,
         medicines: [
@@ -583,7 +583,7 @@ void main() {
         ],
       );
 
-      final checker = const MedicineRiskChecker();
+      const checker = MedicineRiskChecker();
       final result = checker.evaluate(snapshot: snapshot, medicines: const []);
 
       expect(result.checkedMedicineCount, 0);
@@ -642,7 +642,7 @@ void main() {
         ],
       );
 
-      final checker = const MedicineRiskChecker();
+      const checker = MedicineRiskChecker();
       final result = checker.evaluate(
         snapshot: snapshot,
         medicines: [
@@ -674,7 +674,7 @@ void main() {
 
   test('findings only, no coverage → summary empty, coverageIssues empty', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 2);
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: [
@@ -698,7 +698,7 @@ void main() {
 
   test('coverage only, no findings → summary non-empty, findings empty', () {
     final snapshot = _basicSnapshot(age: 30, medicineCount: 2);
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(
       snapshot: snapshot,
       medicines: const [], // no medicine details provided
@@ -750,7 +750,7 @@ void main() {
       ],
     );
 
-    final checker = const MedicineRiskChecker();
+    const checker = MedicineRiskChecker();
     final result = checker.evaluate(snapshot: snapshot, medicines: const []);
 
     // 1 manual + 1 missingSourceRef → two separate clauses in summary

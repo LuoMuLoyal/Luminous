@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -258,9 +258,8 @@ void main() {
 
 /// A simple session notifier that returns a fixed state.
 class _FakeSessionNotifier extends AuthSessionNotifier {
-  final AuthSessionState _initialState;
-
   _FakeSessionNotifier(this._initialState);
+  final AuthSessionState _initialState;
 
   @override
   AuthSessionState build() => _initialState;

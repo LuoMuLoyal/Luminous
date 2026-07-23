@@ -82,7 +82,7 @@ void main() {
 
     group('itemToJson / itemFromJson round-trip', () {
       test('round-trips a minimal item with only required fields', () {
-        final item = const DailyRecordItem(
+        const item = DailyRecordItem(
           id: 'rec-minimal',
           kind: DailyRecordKind.note,
           occurredAt: '2026-07-10',
@@ -252,7 +252,7 @@ void main() {
       });
 
       test('round-trips a minimal attachment with only required fields', () {
-        final attachment = const DailyRecordAttachment(
+        const attachment = DailyRecordAttachment(
           id: 'att-min',
           kind: DailyRecordAttachmentKind.image,
           objectKey: 'img/key',

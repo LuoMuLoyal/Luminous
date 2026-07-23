@@ -1,4 +1,3 @@
-﻿import '../helpers/test_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/network/api_exception.dart';
@@ -10,6 +9,7 @@ import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
 import 'package:luminous/features/today/presentation/providers/ai_analysis.dart';
 
+import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
 
 void main() {
@@ -162,7 +162,7 @@ void main() {
   );
 
   test('Today AI provider maps forbidden error to disabled state', () async {
-    final repository = const _ThrowingTodayAiRepository(
+    const repository = _ThrowingTodayAiRepository(
       LucentApiException(
         message: 'AI summaries are disabled for this user',
         code: LucentResultCode.forbidden,
@@ -190,7 +190,7 @@ void main() {
   });
 
   test('Today AI provider maps generic error to error state', () async {
-    final repository = const _ThrowingTodayAiRepository(
+    const repository = _ThrowingTodayAiRepository(
       LucentApiException(message: 'Network request failed.'),
     );
 

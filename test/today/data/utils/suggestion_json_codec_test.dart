@@ -108,7 +108,7 @@ void main() {
       });
 
       test('round-trips a bundle with null primary and empty lists', () {
-        final bundle = const TodaySuggestionBundle(
+        const bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T08:00:00Z',
           primary: null,
           secondary: [],
@@ -206,7 +206,7 @@ void main() {
       });
 
       test('round-trips evidence with all optional fields', () {
-        final card = const TodaySuggestionCard(
+        const card = TodaySuggestionCard(
           id: 'evidence-card',
           type: TodaySuggestionType.behaviorAdvice,
           cardTone: TodaySuggestionCardTone.soft,
@@ -243,7 +243,7 @@ void main() {
           lifecycleState: TodaySuggestionLifecycleState.generated,
         );
 
-        final bundle = TodaySuggestionBundle(
+        const bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
           primary: card,
         );
@@ -267,7 +267,7 @@ void main() {
       });
 
       test('round-trips card with null optional fields', () {
-        final card = const TodaySuggestionCard(
+        const card = TodaySuggestionCard(
           id: 'minimal',
           type: TodaySuggestionType.coverage,
           cardTone: TodaySuggestionCardTone.neutral,
@@ -293,7 +293,7 @@ void main() {
           subtype: null,
         );
 
-        final bundle = TodaySuggestionBundle(
+        const bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
           primary: card,
         );
@@ -373,7 +373,7 @@ void main() {
 
     group('JSON structure verification', () {
       test('produces valid JSON with expected top-level keys', () {
-        final bundle = const TodaySuggestionBundle(
+        const bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T00:00:00Z',
         );
 
