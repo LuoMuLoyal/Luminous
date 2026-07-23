@@ -1,36 +1,37 @@
-/// 网络层错误码，用于在表示层映射 l10n 字符串。
+/// Network-layer error codes used to map l10n strings in the presentation layer.
 ///
-/// 网络层抛出 [LucentApiException] 时携带此枚举而非硬编码消息文本。
-/// 表示层通过 [NetworkErrorL10n] 将此枚举映射为本地化字符串。
+/// The network layer carries this enum (not hardcoded message text) when throwing
+/// [LucentApiException]. The presentation layer maps it to a localized string via
+/// [NetworkErrorL10n].
 enum NetworkErrorCode {
-  /// 业务码非零（{code, message, data} envelope 的 code != 0）
+  /// Business code is non-zero ({code, message, data} envelope code != 0)
   businessFailure,
 
-  /// 流式响应为空
+  /// Stream response is empty
   emptyStreamResponse,
 
-  /// SSE payload 无法解析为 Map
+  /// SSE payload cannot be parsed as a Map
   invalidSsePayload,
 
-  /// 响应体为空
+  /// Response body is empty
   emptyResponse,
 
-  /// 连接超时
+  /// Connection timeout
   connectionTimeout,
 
-  /// 请求发送超时
+  /// Request send timeout
   sendTimeout,
 
-  /// 响应接收超时
+  /// Response receive timeout
   receiveTimeout,
 
-  /// 服务器证书校验失败
+  /// Server certificate validation failed
   badCertificate,
 
-  /// 网络连接失败
+  /// Network connection failed
   connectionError,
 
-  /// 请求已取消
+  /// Request cancelled
   cancelled,
 
   /// HTTP 状态码错误

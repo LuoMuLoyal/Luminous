@@ -3,19 +3,20 @@ import 'package:forui/forui.dart';
 
 import 'package:luminous/core/design/design.dart';
 
-/// 空状态/提示视图的情绪色调。
+/// Emotional tone for empty-state / message views.
 ///
-/// 当前主题仅提供 `primary` 与 `destructive` 两组语义色，因此：
-/// - [neutral] 与 [success] 使用主色；
-/// - [warning] 与 [danger] 使用破坏色（红色系）。
+/// The current theme only provides `primary` and `destructive` semantic colors, so:
+/// - [neutral] and [success] use the primary color;
+/// - [warning] and [danger] use the destructive color (red family).
 ///
-/// 未来若设计系统新增成功/警告语义色，应在此处同步更新。
+/// Update this when the design system adds success/warning semantic colors.
 enum StateTone { neutral, success, warning, danger }
 
-/// 用于展示空状态、错误提示或操作引导的卡片视图。
+/// Card view for displaying empty states, error messages, or action prompts.
 ///
-/// 默认以 [FCard] 包裹，图标、标题、描述垂直居中，并可附带一个轮廓按钮。
-/// 通过 [maxWidth] 可限制卡片最大宽度，常用于居中的弹窗式提示。
+/// Wrapped in [FCard] by default, with icon, title, and description vertically
+/// centered, and an optional outline button.
+/// Use [maxWidth] to constrain the card width, commonly used for centered popup-style prompts.
 class StateMessageView extends StatelessWidget {
   const StateMessageView({
     super.key,
@@ -114,9 +115,9 @@ class StateMessageView extends StatelessWidget {
   }
 }
 
-/// 全页错误视图，在 [StateMessageView] 基础上增加居中与最大宽度约束。
+/// Full-page error view, extends [StateMessageView] with centering and max-width constraints.
 ///
-/// 用于页面级错误状态（如请求失败、骨架屏超时）。
+/// Used for page-level error states (e.g. request failure, skeleton timeout).
 class StateErrorView extends StatelessWidget {
   const StateErrorView({
     super.key,

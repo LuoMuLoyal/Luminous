@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 响应式内容容器。
+/// Responsive content container.
 ///
-/// - 在桌面端（宽度 >= [Breakpoints.desktop]）限制内容最大宽度为
-///   [LayoutScaleResolver.maxContentWidth]。
-/// - 默认应用水平方向页面内边距 [LayoutScaleResolver.pageHorizontalPadding]。
-/// - 通过 [padding] 可完全覆盖默认内边距；通过 [expand] 可让内容撑满可用空间。
+/// - On desktop (width >= [Breakpoints.desktop]) constrains content max width to
+///   [LayoutScaleResolver.maxContentWidth].
+/// - Applies horizontal page padding [LayoutScaleResolver.pageHorizontalPadding] by default.
+/// - Use [padding] to fully override default padding; use [expand] to fill available space.
 class ResponsiveContentFrame extends StatelessWidget {
   const ResponsiveContentFrame({
     super.key,

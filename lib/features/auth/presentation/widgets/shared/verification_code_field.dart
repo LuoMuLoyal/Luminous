@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 验证码输入 + 发送按钮的行布局，用于登录、注册、忘记密码、修改邮箱等页面。
+/// Verification code input + send button row layout, used in login, register,
+/// forgot password, and change email pages.
 class VerificationCodeField extends StatelessWidget {
   const VerificationCodeField({
     super.key,

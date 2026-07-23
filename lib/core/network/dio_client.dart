@@ -7,10 +7,10 @@ import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
 
-/// Luminous 对 Lucent API 客户端的统一封装入口。
+/// Unified entry point for the Luminous Lucent API client.
 ///
-/// 纯 Dio 实例配置 + interceptor 注册，不包含业务逻辑。
-/// 认证刷新、错误映射、重试策略分别由独立的 interceptor 处理。
+/// Pure Dio instance configuration + interceptor registration; no business logic.
+/// Auth refresh, error mapping, and retry strategy are handled by independent interceptors.
 class LucentDioClient {
   LucentDioClient({
     required String baseUrl,

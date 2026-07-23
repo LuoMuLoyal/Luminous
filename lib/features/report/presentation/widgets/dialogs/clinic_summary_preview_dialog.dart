@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:share_plus/share_plus.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -15,13 +13,14 @@ import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/utils/pdf_download.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/clinic_summary_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 
 /// Shows a dialog (desktop) or bottom sheet (mobile) that previews the
 /// authenticated user's de-identified clinic summary.
 ///
 /// The preview is fetched on-demand from
 /// `POST /api/v1/user/reports/clinic-summary/preview`. The dialog includes
-/// [下载 PDF] and [分享给医生] action buttons.
+/// [Download PDF] and [Share with Doctor] action buttons.
 Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
   final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
 

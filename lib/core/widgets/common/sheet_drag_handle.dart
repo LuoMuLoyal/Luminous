@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 底部弹窗的拖拽手柄。
+/// Drag handle for bottom sheets.
 class SheetDragHandle extends StatelessWidget {
   const SheetDragHandle({super.key});
 

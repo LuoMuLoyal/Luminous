@@ -15,7 +15,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// → Summary → Observation → QuickActions
 ///
 /// **Desktop:** TopBar → RecordHint →
-/// Row[左7: PrimarySuggestion+Summary | 右5: SecondarySuggestions+Observation]
+/// Row[7: PrimarySuggestion+Summary | 5: SecondarySuggestions+Observation]
 /// → QuickActions
 class TodaySkeletonView extends StatefulWidget {
   const TodaySkeletonView({super.key});

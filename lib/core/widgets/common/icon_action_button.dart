@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 带 Tooltip 的图标按钮，用于页面顶栏的紧凑操作入口。
+/// Icon button with tooltip, used for compact action entries in page top bars.
 ///
-/// 当 [showBadge] 为 true 时，在按钮右上角叠加一个红色小圆点（用于
-/// 未读消息提醒等场景）。
+/// When [showBadge] is true, overlays a red dot on the top-right corner (for
+/// unread message notifications and similar scenarios).
 class IconActionButton extends StatelessWidget {
   const IconActionButton({
     super.key,

@@ -25,7 +25,8 @@ class AuthBrandLogo extends StatelessWidget {
   }
 }
 
-/// 注册页底部服务条款提示。当前用 toast 占位,未来可替换为真实跳转。
+/// Terms notice at the bottom of the register page. Currently uses a toast
+/// placeholder; can be replaced with real navigation in the future.
 class AuthTermsNotice extends StatelessWidget {
   const AuthTermsNotice({
     super.key,

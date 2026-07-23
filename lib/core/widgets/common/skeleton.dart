@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:shimmer/shimmer.dart';
 
-/// 全页骨架屏，展示一组垂直排列的 shimmer 块。
+/// Full-page skeleton showing a vertical list of shimmer blocks.
 class StateSkeletonView extends StatelessWidget {
   const StateSkeletonView({
     super.key,
@@ -30,7 +30,7 @@ class StateSkeletonView extends StatelessWidget {
   }
 }
 
-/// 垂直排列的 inline shimmer 块，自动包裹 [SkeletonShimmer]。
+/// Vertically arranged inline shimmer blocks, auto-wrapped with [SkeletonShimmer].
 class InlineSkeleton extends StatelessWidget {
   const InlineSkeleton({
     super.key,
@@ -57,7 +57,7 @@ class InlineSkeleton extends StatelessWidget {
   }
 }
 
-/// 在子树中透传加载状态，配合 [SkeletonSlot] 使用。
+/// Propagates loading state through the subtree, used with [SkeletonSlot].
 class SkeletonScope extends InheritedWidget {
   const SkeletonScope({
     super.key,
@@ -80,7 +80,7 @@ class SkeletonScope extends InheritedWidget {
   }
 }
 
-/// 根据 [isLoading] 或上层 [SkeletonScope] 切换子视图与骨架屏。
+/// Switches between child view and skeleton based on [isLoading] or ancestor [SkeletonScope].
 class SkeletonSlot extends StatelessWidget {
   const SkeletonSlot({
     super.key,
@@ -105,7 +105,7 @@ class SkeletonSlot extends StatelessWidget {
   }
 }
 
-/// 将 [text] 在加载态下替换为 shimmer 块的文本占位组件。
+/// Text placeholder that replaces [text] with a shimmer block when loading.
 class SkeletonText extends StatelessWidget {
   const SkeletonText({
     super.key,
@@ -160,7 +160,7 @@ class SkeletonText extends StatelessWidget {
   }
 }
 
-/// 给子树添加 shimmer 效果的包装组件。
+/// Wrapper that applies shimmer effect to its subtree.
 class SkeletonShimmer extends StatelessWidget {
   const SkeletonShimmer({super.key, required this.child});
 
@@ -176,7 +176,7 @@ class SkeletonShimmer extends StatelessWidget {
   }
 }
 
-/// 矩形 shimmer 占位块。
+/// Rectangular shimmer placeholder block.
 class InlineSkeletonBlock extends StatelessWidget {
   const InlineSkeletonBlock({
     super.key,
@@ -226,10 +226,10 @@ class InlineSkeletonBlock extends StatelessWidget {
   }
 }
 
-/// 圆形 shimmer 占位块。
+/// Circular shimmer placeholder block.
 ///
-/// 已自动包裹 [SkeletonShimmer]，可独立使用；若放在已有的 shimmer 作用域内，
-/// 外层 shimmer 的视觉效果会覆盖（无负作用）。
+/// Auto-wrapped with [SkeletonShimmer]; can be used standalone. If placed
+/// inside an existing shimmer scope, the outer shimmer visually overrides (no side effects).
 class InlineSkeletonCircle extends StatelessWidget {
   const InlineSkeletonCircle({super.key, required this.size});
 
@@ -251,7 +251,7 @@ class InlineSkeletonCircle extends StatelessWidget {
   }
 }
 
-/// 带边框和背景的 shimmer 面板，内部垂直排列 [children]。
+/// Shimmer panel with border and background, vertically arranging [children].
 class InlineSkeletonSection extends StatelessWidget {
   const InlineSkeletonSection({super.key, required this.children, this.height});
 
@@ -279,7 +279,7 @@ class InlineSkeletonSection extends StatelessWidget {
   }
 }
 
-/// 全页骨架屏中单个 shimmer 块的数据描述。
+/// Data model for a single shimmer block in a full-page skeleton.
 class StateSkeletonBlock {
   const StateSkeletonBlock({
     required this.height,

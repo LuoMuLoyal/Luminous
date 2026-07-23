@@ -5,11 +5,12 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Report 页面顶栏。
+/// Report page top bar.
 ///
-/// 注意：日期范围标签（subtitle）和操作按钮区（bottom）已从 Header 中拆分，
-/// 放到页面内容区显示。使用 [FHeader.nested]，放在 [Column] 顶部而非
-/// [ListView] 中以避免 tight width 约束崩溃（Forui 0.24.x 已知问题）。
+/// Note: the date range label (subtitle) and action button area (bottom) have been
+/// extracted from the Header and moved to the page content area. Uses [FHeader.nested],
+/// placed at the top of a [Column] rather than inside a [ListView] to avoid tight
+/// width constraint crash (Forui 0.24.x known issue).
 class ReportTopBar extends StatelessWidget {
   const ReportTopBar({
     super.key,

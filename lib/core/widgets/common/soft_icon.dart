@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 柔和色调的图标容器，用于 mine 模块的归档/状态行。
+/// Soft-tinted icon container, used in mine module's archive/status rows.
 class SoftIcon extends StatelessWidget {
   const SoftIcon({
     super.key,

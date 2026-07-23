@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-/// 桌面端 Tab 页面统一外壳。
+/// Desktop tab page unified shell.
 ///
-/// 由 [ShellPage] 在桌面端使用，为所有 Tab 页面提供统一的：
-/// - FHeader.nested（标题 + suffixes）
-/// - 内容区最大宽度约束（Header 与内容区共享同一约束，水平对齐）
-/// - 内容区背景色（muted，与侧边栏区分）
-/// - 统一 padding
-/// - 可选下拉刷新（onRefresh）和滚动位置保持（scrollStorageKey）
+/// Used by [ShellPage] on desktop, providing all tab pages with:
+/// - FHeader.nested (title + suffixes)
+/// - Content area max-width constraint (shared with header for horizontal alignment)
+/// - Content area background color (muted, to distinguish from sidebar)
+/// - Unified padding
+/// - Optional pull-to-refresh (onRefresh) and scroll position preservation (scrollStorageKey)
 class DesktopTabShell extends StatelessWidget {
   const DesktopTabShell({
     super.key,

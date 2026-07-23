@@ -53,9 +53,10 @@ MedicineDoseSlot? _firstPendingSlot(MedicinePlanItem item) {
   return null;
 }
 
-/// 彩色文字 + 同色浅底的状态徽标，用于用药状态、配送状态等。
+/// Colored text + same-color light-background status badge, used for medication
+/// status, delivery status, etc.
 ///
-/// 文字颜色为 [color] 全不透明，背景为 [color] 的 12% 透明度。
+/// Text color is [color] at full opacity; background is [color] at 12% opacity.
 class TintedStatusBadge extends StatelessWidget {
   const TintedStatusBadge({
     super.key,

@@ -11,11 +11,12 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// Today 页面顶栏。
+/// Today page top bar.
 ///
-/// 注意：问候语（subtitle）已从 Header 中拆分，放到页面内容区显示。
-/// 使用 [FHeader.nested]，放在 [Column] 顶部而非 [ListView] 中以避免
-/// tight width 约束崩溃（Forui 0.24.x 已知问题）。
+/// Note: the greeting subtitle has been extracted from the Header and moved to
+/// the page content area. Uses [FHeader.nested], placed at the top of a [Column]
+/// rather than inside a [ListView] to avoid tight width constraint crash
+/// (Forui 0.24.x known issue).
 class TodayTopBar extends StatelessWidget {
   const TodayTopBar({super.key});
 

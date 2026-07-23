@@ -1,12 +1,13 @@
-/// 状态视图与骨架屏组件的 barrel export。
+/// Barrel export for state views and skeleton components.
 ///
-/// 历史原因：这些组件曾全部实现在本文件中。现已拆分为：
-/// - [state_message.dart] — 空状态/错误提示视图
-/// - [skeleton.dart] — shimmer 骨架屏相关组件
+/// Historical note: these components were originally all in this file. They have
+/// been split into:
+/// - [state_message.dart] — empty state / error message views
+/// - [skeleton.dart] — shimmer skeleton components
 ///
-/// 建议新代码直接导入具体文件，避免依赖本 barrel。
+/// New code should import specific files directly rather than relying on this barrel.
 library;
 
 export 'page_state.dart';
-export 'state_message.dart';
 export 'skeleton.dart';
+export 'state_message.dart';

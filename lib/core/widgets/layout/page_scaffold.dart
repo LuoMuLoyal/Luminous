@@ -3,15 +3,15 @@ import 'package:forui/forui.dart';
 
 import 'package:luminous/core/widgets/common/back_button.dart';
 
-/// 统一子页 scaffold。
+/// Unified sub-page scaffold.
 ///
-/// 封装了 Forui 子页最常见的结构：
-/// - [FScaffold] 关闭默认的 [FScaffold.childPad]，由 body 自行决定内边距。
-/// - [FHeader.nested] 作为顶部标题栏，标题居中，左侧默认 [AppBackButton]。
-/// - body 顶部关闭 [SafeArea]，避免与 header 的 SafeArea 重复计算。
+/// Encapsulates the most common Forui sub-page structure:
+/// - [FScaffold] with default [FScaffold.childPad] disabled; body manages its own padding.
+/// - [FHeader.nested] as the top title bar, centered title, [AppBackButton] on the left by default.
+/// - [SafeArea] disabled at the top of body to avoid duplicate calculation with header's SafeArea.
 ///
-/// 视觉边界：header 与 body 共享同一背景，不额外添加底部分割线或背景色。
-/// 如需分割线在调用处自行包装 [header] 或在 [FScaffold] 的 headerDecoration 中设置。
+/// Visual boundary: header and body share the same background; no extra bottom divider or
+/// background color. For a divider, wrap [header] at the call site or set [FScaffold]'s headerDecoration.
 class PageScaffold extends StatelessWidget {
   const PageScaffold({
     super.key,

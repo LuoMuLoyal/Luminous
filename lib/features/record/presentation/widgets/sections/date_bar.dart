@@ -7,11 +7,11 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-/// 日历项星期文字字号（紧凑设计，对应 TypographyToken.level2）。
+/// Calendar item weekday text font size (compact design, maps to TypographyToken.level2).
 double _weekdayFontSize(BuildContext context) =>
     TypographyToken.level2.body(context).fontSize!;
 
-/// 日历项日期数字字号（对应 TypographyToken.level3）。
+/// Calendar item date number font size (maps to TypographyToken.level3).
 double _dateFontSize(BuildContext context) =>
     TypographyToken.level3.body(context).fontSize!;
 

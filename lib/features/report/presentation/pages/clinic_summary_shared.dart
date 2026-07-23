@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/api_paths.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -21,7 +20,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// The page fetches the shared summary via
 /// `GET /api/v1/user/reports/clinic-summary/shared/{token}` and renders
 /// the same [ClinicSummaryContent] used by the preview dialog, but with
-/// only a [下载 PDF] button (no share button).
+/// only a [Download PDF] button (no share button).
 class ClinicSummarySharedPage extends ConsumerStatefulWidget {
   const ClinicSummarySharedPage({super.key, required this.token});
 
