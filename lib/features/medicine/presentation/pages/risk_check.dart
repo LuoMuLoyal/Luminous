@@ -4,17 +4,17 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/risk_check_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_coverage_issue_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_metric_chip.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_check_loading.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {

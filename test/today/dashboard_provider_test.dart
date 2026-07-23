@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../helpers/feature_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/today/data/providers/repository.dart';
+import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+
+import '../helpers/feature_mocks.dart';
 
 void main() {
   test('returns placeholderDashboard when signed out', () async {

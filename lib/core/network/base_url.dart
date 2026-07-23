@@ -1,5 +1,5 @@
-import 'package:luminous/core/config/env_keys.dart';
 import 'package:flutter/foundation.dart';
+import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 
 abstract final class LucentBaseUrl {

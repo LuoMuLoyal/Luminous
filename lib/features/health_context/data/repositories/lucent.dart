@@ -11,7 +11,7 @@ import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
-import 'package:luminous/features/health_context/data/mappers/mapper.dart';
+import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/utils/health_context_snapshot_codec.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';

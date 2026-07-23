@@ -1,7 +1,7 @@
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -101,7 +101,7 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
 }
 
 MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
-  final total = 5;
+  const total = 5;
   final completed =
       (snapshot.summary.onboardingCompleted ? 1 : 0) +
       (snapshot.summary.activeAllergyCount > 0 ? 1 : 0) +
@@ -119,7 +119,7 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
 
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
-    MineStatusCard(
+    const MineStatusCard(
       icon: FLucideIcons.triangleAlert,
       accent: _red,
       titleKey: MineCopyKey.alertAllergyTitle,
@@ -135,7 +135,7 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
           ? MineCopyKey.alertMedicineBadge
           : MineCopyKey.archiveNeedsFill,
     ),
-    MineStatusCard(
+    const MineStatusCard(
       icon: FLucideIcons.userCheck,
       accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
@@ -192,7 +192,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
   ];
 }
 
-final _green = SemanticColor.neutral;
-final _pink = SemanticColor.neutral;
-final _red = SemanticColor.destructive;
-final _blue = SemanticColor.primary;
+const _green = SemanticColor.neutral;
+const _pink = SemanticColor.neutral;
+const _red = SemanticColor.destructive;
+const _blue = SemanticColor.primary;

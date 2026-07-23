@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/today/data/providers/repository.dart';
+import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

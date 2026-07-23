@@ -6,8 +6,8 @@
 /// definitions; after the mock-removal refactor they live here exclusively.
 library;
 
-export 'mocks/today.dart';
-export 'mocks/report.dart';
-export 'mocks/record.dart';
-export 'mocks/mine.dart';
 export 'mocks/medicine.dart';
+export 'mocks/mine.dart';
+export 'mocks/record.dart';
+export 'mocks/report.dart';
+export 'mocks/today.dart';

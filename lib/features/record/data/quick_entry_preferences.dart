@@ -1,8 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/config/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// SharedPreferences keys for quick-entry preferences.
 const _kDynamicSortEnabled = PrefKeys.recordQuickEntryDynamicSort;

@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_final_locals, prefer_const_constructors
 
 import 'package:flutter/foundation.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/network/base_url.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'network_providers.g.dart';

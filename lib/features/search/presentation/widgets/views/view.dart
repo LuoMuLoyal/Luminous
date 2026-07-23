@@ -6,12 +6,12 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/header_widgets.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/result_widgets.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/headers.dart';
+import 'package:luminous/features/search/presentation/widgets/shared/results.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:shimmer/shimmer.dart';
 
 final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
     ? <MedicineSearchQuickAction>[

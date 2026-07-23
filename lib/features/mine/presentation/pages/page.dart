@@ -9,13 +9,13 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
-import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MinePage extends ConsumerWidget {
@@ -46,7 +46,7 @@ class MinePage extends ConsumerWidget {
       data: dashboardAsync,
     );
 
-    Widget body = PageStateSwitch<MineDashboard>(
+    final Widget body = PageStateSwitch<MineDashboard>(
       state: pageState,
       loadingBuilder: () => const MineSkeletonView(),
       fatalErrorBuilder: (error) =>

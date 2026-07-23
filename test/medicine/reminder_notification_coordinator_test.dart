@@ -14,7 +14,7 @@ import 'package:luminous/features/medicine/domain/services/reminder_notification
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/data/services/notification_permission.dart';
+import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,18 +1,17 @@
 import 'dart:async';
-import '../helpers/feature_mocks.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/report/data/providers/repository.dart';
+import 'package:luminous/features/report/data/providers/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
@@ -21,6 +20,8 @@ import 'package:luminous/features/settings/presentation/providers/user_settings.
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+
+import '../helpers/feature_mocks.dart';
 import '../helpers/test_forui_app.dart';
 import '../today/test_helpers.dart';
 

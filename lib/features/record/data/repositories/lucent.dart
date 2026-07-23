@@ -1,14 +1,14 @@
-import 'package:luminous/core/design/semantic_color.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/logger/logger.dart';
 import 'package:collection/collection.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:forui/forui.dart';
+import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
-import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 
 /// Lucent-backed implementation of [RecordRepository] that maps real daily
 /// records into the timeline while keeping other dashboard sections as static
@@ -76,8 +76,8 @@ class LucentRecordRepository implements RecordRepository {
     final kind = record.kind;
     final timeStr = formatRecordTimeLabel(record.occurredTime);
 
-    final accent = SemanticColor.primary;
-    final soft = SemanticColor.neutral;
+    const accent = SemanticColor.primary;
+    const soft = SemanticColor.neutral;
 
     final icon = switch (kind) {
       DailyRecordKind.water => FLucideIcons.droplets,

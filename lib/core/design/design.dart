@@ -1,33 +1,31 @@
 // Design system barrel — export all design tokens and helpers.
 //
-// Files are organized by concern:
-//   color/   — semantic color system (SemanticColor, SemanticColorPalette,
-//              SemanticColors ThemeExtension)
-//   layout/  — breakpoints, responsive sizing, layout scale
-//   motion/  — animation durations
-//   shape/   — radius tokens
-//   space/   — spacing tokens
-//   type/    — typography tokens
-
-// Color
-export 'semantic_color.dart';
-export 'semantic_color_palette.dart';
-export 'semantic_colors.dart';
-export 'high_contrast.dart';
+// All token files are flat in this directory:
+//   semantic_color*.dart   — semantic color system (SemanticColor,
+//                            SemanticColorPalette, SemanticColors)
+//   high_contrast.dart     — high-contrast color constants
+//   breakpoints.dart       — responsive breakpoints
+//   layout_scale.dart      — layout scale helpers
+//   responsive_sizing.dart — responsive sizing utilities
+//   durations.dart         — animation duration tokens
+//   radius.dart            — radius tokens (RadiusTokens)
+//   spacing.dart           — spacing tokens (Spacing)
+//   typography.dart        — typography tokens (TypographyToken)
 
 // Layout
 export 'breakpoints.dart';
-export 'layout_scale.dart';
-export 'responsive_sizing.dart';
-
 // Motion
 export 'durations.dart';
-
+// Color
+export 'high_contrast.dart';
+export 'layout_scale.dart';
 // Shape
 export 'radius.dart';
-
+export 'responsive_sizing.dart';
+export 'semantic_color.dart';
+export 'semantic_color_palette.dart';
+export 'semantic_colors.dart';
 // Space
 export 'spacing.dart';
-
 // Type
 export 'typography.dart';

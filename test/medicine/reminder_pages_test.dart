@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../helpers/feature_mocks.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,17 +11,18 @@ import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
-
-import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
-import 'package:luminous/features/medicine/presentation/pages/reminder_pages.dart';
+import 'package:luminous/features/medicine/presentation/pages/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/feature_mocks.dart';
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('Medicine reminder detail renders schedule and dose logs', (

@@ -1,7 +1,8 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../data/repositories/lucent.dart';
 import '../../domain/entities/doc_type.dart';
 import '../../domain/entities/document.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// Re-export so presentation code can import from one place.
 export '../../data/repositories/lucent.dart' show legalRepositoryProvider;

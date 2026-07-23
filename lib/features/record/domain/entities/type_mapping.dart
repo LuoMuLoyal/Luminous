@@ -1,5 +1,5 @@
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 
 DailyRecordKind? dailyRecordKindForEntryType(RecordEntryType type) {
   return switch (type) {

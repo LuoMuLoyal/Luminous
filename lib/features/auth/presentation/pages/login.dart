@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
-import 'package:luminous/core/widgets/common/back_button.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_callback_parser.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 

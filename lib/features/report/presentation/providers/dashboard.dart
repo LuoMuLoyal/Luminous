@@ -4,7 +4,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/features/report/data/providers/repository.dart';
+import 'package:luminous/features/report/data/providers/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

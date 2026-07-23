@@ -3,18 +3,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/skeleton.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
   const HelpSettingsPage({super.key});

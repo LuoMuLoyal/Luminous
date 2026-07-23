@@ -1,9 +1,11 @@
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/routes.dart' as auth_routes;
+import 'package:luminous/features/legal/presentation/routes.dart'
+    as legal_routes;
 import 'package:luminous/features/medicine/presentation/pages/page.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart'
     as medicine_routes;
@@ -16,14 +18,12 @@ import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
 import 'package:luminous/features/report/presentation/pages/clinic_summary_shared.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
-import 'package:luminous/features/legal/presentation/routes.dart'
-    as legal_routes;
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
     as settings_routes;
 import 'package:luminous/features/shell/presentation/page.dart';
-import 'package:luminous/app/router/helpers.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router.g.dart';
 

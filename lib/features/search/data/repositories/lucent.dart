@@ -1,7 +1,7 @@
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
-import 'package:luminous/features/search/data/mappers/mapper.dart';
+import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

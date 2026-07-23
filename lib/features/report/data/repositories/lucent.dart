@@ -1,7 +1,7 @@
-import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';

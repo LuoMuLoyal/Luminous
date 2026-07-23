@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/network/network_providers.dart';
-import 'package:lucent_api/api/export.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/entities/doc_type.dart';

@@ -1,9 +1,8 @@
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
+import 'package:luminous/features/support/domain/repositories/support.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../domain/entities/support_resource.dart';
-import '../../domain/repositories/support.dart';
 
 part 'lucent.g.dart';
 

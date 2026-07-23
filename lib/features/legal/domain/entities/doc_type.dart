@@ -11,8 +11,9 @@ enum LegalDocType {
   permissions('permissions'),
   accountCancellation('account-cancellation');
 
-  final String pathSegment;
   const LegalDocType(this.pathSegment);
+
+  final String pathSegment;
 
   /// O(1) lookup map from path segment to [LegalDocType].
   static final Map<String, LegalDocType> _byPathSegment = {

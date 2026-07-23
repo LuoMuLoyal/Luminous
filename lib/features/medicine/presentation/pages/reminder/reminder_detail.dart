@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -18,7 +19,6 @@ import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/log_panels.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {

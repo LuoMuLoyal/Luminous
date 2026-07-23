@@ -1,4 +1,4 @@
-import '../entities/user_settings.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
 /// Repository interface for reading and updating user settings.
 ///

@@ -1,5 +1,5 @@
-import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 
 enum ReportAiSummaryRange {
   last7Days('last_7_days'),

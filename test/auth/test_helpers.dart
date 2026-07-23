@@ -6,8 +6,8 @@ import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
-import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 import '../helpers/test_forui_app.dart';

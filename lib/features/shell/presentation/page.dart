@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 const _shellInset = 16.0;

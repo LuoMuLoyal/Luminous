@@ -1,8 +1,8 @@
-import 'package:luminous/core/design/semantic_color.dart';
-import 'package:luminous/app/router.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';

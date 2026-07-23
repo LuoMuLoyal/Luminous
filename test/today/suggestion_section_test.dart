@@ -1,4 +1,4 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +18,7 @@ import 'test_helpers.dart';
 const _testLanguage = 'zh';
 
 /// The params used to override [suggestionExplanationProvider] in tests.
-final _explainParams = (suggestionId: 'sug_test_001', language: _testLanguage);
+const _explainParams = (suggestionId: 'sug_test_001', language: _testLanguage);
 
 void main() {
   // ── Helpers ───────────────────────────────────────────────────────────

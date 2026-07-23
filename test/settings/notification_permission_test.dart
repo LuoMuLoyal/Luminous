@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/settings/data/services/notification_permission.dart';
+import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockFlutterLocalNotificationsPlugin extends Mock

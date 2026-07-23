@@ -169,7 +169,7 @@ class PageStateSwitch<T> extends StatelessWidget {
     return switch (state) {
       PageViewStateLoading<T>() =>
         loadingBuilder?.call() ?? const _DefaultLoadingView(),
-      PageViewStateFatalError<T> error =>
+      final PageViewStateFatalError<T> error =>
         fatalErrorBuilder?.call(error) ??
             _DefaultFatalErrorView(
               title: error.title,
@@ -177,7 +177,7 @@ class PageStateSwitch<T> extends StatelessWidget {
               icon: error.icon,
               onRetry: error.onRetry,
             ),
-      PageViewStateEmptyInsufficient<T> empty =>
+      final PageViewStateEmptyInsufficient<T> empty =>
         emptyInsufficientBuilder?.call(empty) ??
             _DefaultEmptyInsufficientView(
               title: empty.title,

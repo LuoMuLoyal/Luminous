@@ -34,8 +34,8 @@ class LucentTodayRepository implements TodayRepository {
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
-    Map<String, num> recordCounts = {};
-    Map<String, String?> recordLatest = {};
+    final Map<String, num> recordCounts = {};
+    final Map<String, String?> recordLatest = {};
     Map<String, dynamic>? sleepPayload;
     try {
       final summary = await ref

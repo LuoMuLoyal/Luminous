@@ -1,6 +1,6 @@
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 
 abstract class DailyRecordRepository {
   Future<DailyRecordListData> fetchRecords(

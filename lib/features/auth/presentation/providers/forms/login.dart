@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
-import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
+import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
+import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
 
 part 'login.freezed.dart';

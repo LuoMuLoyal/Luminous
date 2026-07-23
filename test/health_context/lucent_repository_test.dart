@@ -6,7 +6,7 @@ import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
-import 'package:luminous/features/health_context/data/mappers/mapper.dart';
+import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:mocktail/mocktail.dart';
@@ -283,7 +283,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.updateProfileResult = _buildDto(age: 25);
 
-      final input = const HealthProfileUpdateInput();
+      const input = HealthProfileUpdateInput();
       final result = await repo.updateProfile(input);
 
       expect(result.summary.age, 25);
@@ -295,7 +295,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.createAllergyResult = _buildDto(activeAllergyCount: 1);
 
-      final input = const HealthAllergyWriteInput(
+      const input = HealthAllergyWriteInput(
         kind: HealthAllergyKind.food,
         label: 'Peanuts',
       );
@@ -310,7 +310,7 @@ void main() {
     test('calls dataSource with id and caches result', () async {
       dataSource.updateAllergyResult = _buildDto(activeAllergyCount: 1);
 
-      final input = const HealthAllergyUpdateInput();
+      const input = HealthAllergyUpdateInput();
       final result = await repo.updateAllergy('allergy-1', input);
 
       expect(result.summary.activeAllergyCount, 1);
@@ -333,7 +333,7 @@ void main() {
     test('calls dataSource and caches result', () async {
       dataSource.createConditionResult = _buildDto(conditionCount: 1);
 
-      final input = const HealthConditionWriteInput(label: 'Hypertension');
+      const input = HealthConditionWriteInput(label: 'Hypertension');
       final result = await repo.createCondition(input);
 
       expect(result.summary.conditionCount, 1);
@@ -345,7 +345,7 @@ void main() {
     test('calls dataSource with id and caches result', () async {
       dataSource.updateConditionResult = _buildDto(conditionCount: 1);
 
-      final input = const HealthConditionUpdateInput();
+      const input = HealthConditionUpdateInput();
       final result = await repo.updateCondition('cond-1', input);
 
       expect(result.summary.conditionCount, 1);
@@ -370,7 +370,7 @@ void main() {
         currentMedicineCount: 1,
       );
 
-      final input = const CurrentMedicineWriteInput(
+      const input = CurrentMedicineWriteInput(
         source: HealthMedicineSource.cn,
         displayName: 'Aspirin',
       );
@@ -387,7 +387,7 @@ void main() {
         currentMedicineCount: 1,
       );
 
-      final input = const CurrentMedicineUpdateInput();
+      const input = CurrentMedicineUpdateInput();
       final result = await repo.updateCurrentMedicine('med-1', input);
 
       expect(result.summary.currentMedicineCount, 1);

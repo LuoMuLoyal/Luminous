@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:luminous/core/logger/sentry_talker_observer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
-
-import 'package:luminous/core/logger/sentry_talker_observer.dart';
 
 part 'logger.g.dart';
 

@@ -9,7 +9,7 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
-import 'package:luminous/features/health_context/data/mappers/mapper.dart';
+import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 import 'package:luminous/features/health_context/data/repositories/lucent.dart';
 import 'package:luminous/features/health_context/data/utils/health_context_snapshot_codec.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../helpers/feature_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -11,7 +10,7 @@ import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/mine/data/providers/repository.dart';
+import 'package:luminous/features/mine/data/providers/mine.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
@@ -19,10 +18,12 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
-import 'package:luminous/features/today/data/providers/repository.dart';
+import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
+
+import '../helpers/feature_mocks.dart';
 
 void main() {
   test(
@@ -305,7 +306,7 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-final _snapshot = const HealthContextSnapshot(
+const _snapshot = HealthContextSnapshot(
   summary: HealthSummary(
     age: 27,
     onboardingCompleted: true,

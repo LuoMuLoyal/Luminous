@@ -3,6 +3,22 @@ import 'error_code.dart';
 import 'map_utils.dart';
 
 class LucentEnvelope<T> {
+  factory LucentEnvelope.fromJson(
+    Map<String, dynamic> json, {
+    T Function(Object? rawData)? dataDecoder,
+  }) {
+    final codeValue = json['code'];
+    final messageValue = json['message'];
+    final rawData = json['data'];
+    final metaValue = json['meta'];
+
+    return LucentEnvelope<T>(
+      code: _parseCode(codeValue),
+      message: messageValue?.toString() ?? '',
+      data: dataDecoder == null ? rawData as T? : dataDecoder(rawData),
+      meta: coerceToStringMap(metaValue),
+    );
+  }
   const LucentEnvelope({
     required this.code,
     required this.message,
@@ -40,23 +56,6 @@ class LucentEnvelope<T> {
   T unwrapOrThrow() {
     throwIfFailed();
     return data as T;
-  }
-
-  factory LucentEnvelope.fromJson(
-    Map<String, dynamic> json, {
-    T Function(Object? rawData)? dataDecoder,
-  }) {
-    final codeValue = json['code'];
-    final messageValue = json['message'];
-    final rawData = json['data'];
-    final metaValue = json['meta'];
-
-    return LucentEnvelope<T>(
-      code: _parseCode(codeValue),
-      message: messageValue?.toString() ?? '',
-      data: dataDecoder == null ? rawData as T? : dataDecoder(rawData),
-      meta: coerceToStringMap(metaValue),
-    );
   }
 
   static int _parseCode(Object? value) {

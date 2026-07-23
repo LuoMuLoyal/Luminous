@@ -1,5 +1,3 @@
-import 'package:luminous/core/design/semantic_color.dart';
-import '../helpers/feature_mocks.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -7,31 +5,33 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
-import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
-import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';
+import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
-import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/feature_mocks.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {

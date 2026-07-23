@@ -60,9 +60,9 @@ FThemeData _baseThemeData(AppThemeFamily family, Brightness brightness) {
 /// Color values are taken from the Forui 0.23.x predefined schemes that were
 /// removed in 0.24.0. Returns `null` for neutral (no override needed).
 class _ColorOverride {
+  const _ColorOverride(this.primary, this.primaryForeground);
   final Color primary;
   final Color primaryForeground;
-  const _ColorOverride(this.primary, this.primaryForeground);
 }
 
 _ColorOverride? _familyColorOverride(AppThemeFamily family, bool isDark) {

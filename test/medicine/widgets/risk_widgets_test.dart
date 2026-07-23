@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_coverage_issue_tile.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/risk_finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_metric_chip.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

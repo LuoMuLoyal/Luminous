@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -16,7 +16,7 @@ class _SignedOut extends AuthSessionNotifier {
   }
 }
 
-final _mockSnapshot = const HealthContextSnapshot(
+const _mockSnapshot = HealthContextSnapshot(
   summary: HealthSummary(
     age: 27,
     onboardingCompleted: true,

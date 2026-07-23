@@ -1,9 +1,9 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:luminous/features/medicine/data/datasources/safety_tips_remote.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
+import 'package:mocktail/mocktail.dart';
 
 class _MockSafetyTipsRemoteDataSource extends Mock
     implements SafetyTipsRemoteDataSource {}
@@ -11,9 +11,9 @@ class _MockSafetyTipsRemoteDataSource extends Mock
 void main() {
   late _MockSafetyTipsRemoteDataSource mockDataSource;
 
-  final tipA = const MedicineSafetyTip(id: 'a', text: 'Tip A', category: 'c1');
-  final tipB = const MedicineSafetyTip(id: 'b', text: 'Tip B', category: 'c2');
-  final tipC = const MedicineSafetyTip(id: 'c', text: 'Tip C', category: 'c1');
+  const tipA = MedicineSafetyTip(id: 'a', text: 'Tip A', category: 'c1');
+  const tipB = MedicineSafetyTip(id: 'b', text: 'Tip B', category: 'c2');
+  const tipC = MedicineSafetyTip(id: 'c', text: 'Tip C', category: 'c1');
 
   ProviderContainer buildContainer() {
     final c = ProviderContainer(

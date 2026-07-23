@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
+import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
+import 'package:mocktail/mocktail.dart';
 
 class _MockRemoteDataSource extends Mock
     implements TodaySuggestionRemoteDataSource {}

@@ -7,16 +7,6 @@ part 'dose_log_remote.g.dart';
 enum DoseLogStatus { taken, skipped, missed, planned }
 
 class DoseLogItem {
-  final String id;
-  final String? currentMedicineId;
-  final String? reminderId;
-  final DoseLogStatus status;
-  final String scheduledFor;
-  final String? scheduledTime;
-  final String? doseText;
-  final String? note;
-  final String createdAt;
-  final String updatedAt;
   const DoseLogItem({
     required this.id,
     this.currentMedicineId,
@@ -29,6 +19,16 @@ class DoseLogItem {
     required this.createdAt,
     required this.updatedAt,
   });
+  final String id;
+  final String? currentMedicineId;
+  final String? reminderId;
+  final DoseLogStatus status;
+  final String scheduledFor;
+  final String? scheduledTime;
+  final String? doseText;
+  final String? note;
+  final String createdAt;
+  final String updatedAt;
 }
 
 class DoseLogRemoteDataSource {

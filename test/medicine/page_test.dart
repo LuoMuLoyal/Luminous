@@ -1,6 +1,3 @@
-import 'package:luminous/core/design/semantic_color.dart';
-import 'package:luminous/core/design/spacing.dart';
-import '../helpers/feature_mocks.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,26 +5,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/spacing.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/medicine/presentation/pages/page.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
-import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
-import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
+import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/feature_mocks.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
@@ -180,7 +180,7 @@ void main() {
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
-            _StaticMedicineWorkspaceRepository(_completedWorkspace),
+            const _StaticMedicineWorkspaceRepository(_completedWorkspace),
           ),
         ],
         child: const TestForuiApp(home: MedicinePage()),
@@ -404,7 +404,7 @@ void main() {
         tester.view.resetPhysicalSize();
       });
 
-      final severeAllergyAlert = const RedFlagAlert(
+      const severeAllergyAlert = RedFlagAlert(
         rule: RedFlagRule.severeAllergy,
         primaryMedicineName: '阿莫西林',
         relatedLabel: '青霉素',
@@ -747,7 +747,7 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-final _completedWorkspace = const MedicineWorkspace(
+const _completedWorkspace = MedicineWorkspace(
   hero: MedicineHero(
     metricDosesToday: '1/1',
     metricAdherence: '100%',

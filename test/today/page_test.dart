@@ -1,6 +1,3 @@
-import '../helpers/test_forui_app.dart';
-import '../helpers/feature_mocks.dart';
-import '../helpers/test_helpers.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -10,7 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/today/data/providers/repository.dart';
+import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
@@ -19,6 +16,9 @@ import 'package:luminous/features/today/presentation/widgets/views/dashboard_vie
 import 'package:luminous/features/today/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+import '../helpers/feature_mocks.dart';
+import '../helpers/test_forui_app.dart';
+import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
 
 void main() {
@@ -99,7 +99,7 @@ void main() {
   ) async {
     _setMobileViewport(tester);
 
-    final emptyDashboard = const TodayDashboard(
+    const emptyDashboard = TodayDashboard(
       user: TodayUserSnapshot(
         moment: TodayDayMoment.morning,
         hasUnreadNotifications: false,
@@ -129,7 +129,7 @@ void main() {
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
           todayRepositoryProvider.overrideWithValue(
-            StaticTodayRepository(emptyDashboard),
+            const StaticTodayRepository(emptyDashboard),
           ),
           todaySuggestionProvider.overrideWith(
             StaticTodaySuggestionNotifier.new,

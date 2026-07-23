@@ -3,15 +3,16 @@ import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../data/repositories/lucent.dart';
 import '../../data/providers/unread_count.dart';
+import '../../data/repositories/lucent.dart';
 import '../../domain/entities/notification.dart';
+
+export '../../data/providers/unread_count.dart'
+    show notificationUnreadCountProvider;
 
 /// Re-export so presentation code can import from one place.
 export '../../data/repositories/lucent.dart'
     show notificationRepositoryProvider;
-export '../../data/providers/unread_count.dart'
-    show notificationUnreadCountProvider;
 
 part 'notification.g.dart';
 

@@ -5,6 +5,8 @@ part 'session.g.dart';
 
 @freezed
 abstract class AuthUser with _$AuthUser {
+  factory AuthUser.fromJson(Map<String, Object?> json) =>
+      _$AuthUserFromJson(json);
   const AuthUser._();
 
   const factory AuthUser({
@@ -21,9 +23,6 @@ abstract class AuthUser with _$AuthUser {
   }) = _AuthUser;
 
   bool get emailVerified => emailVerifiedAt != null;
-
-  factory AuthUser.fromJson(Map<String, Object?> json) =>
-      _$AuthUserFromJson(json);
 }
 
 @freezed

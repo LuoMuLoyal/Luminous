@@ -4,37 +4,37 @@ import 'dart:typed_data';
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart'
     show
         DailyRecordAttachmentInput,
         DailyRecordImageUploadInput,
         DailyRecordUpdateInput,
         dailyRecordNoChange;
-import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordEditPage extends HookConsumerWidget {

@@ -1,6 +1,6 @@
-import 'package:luminous/core/design/semantic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 
 IconData medicineSafetyTipIcon(String category) {
   return switch (category) {

@@ -1,6 +1,6 @@
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/session_store.dart';
-import 'package:luminous/features/auth/data/mappers/mapper.dart';
+import 'package:luminous/features/auth/data/mappers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';

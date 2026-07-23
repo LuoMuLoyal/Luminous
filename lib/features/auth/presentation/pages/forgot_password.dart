@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:luminous/app/router.dart';
 import 'package:forui/forui.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
-import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
+import 'package:luminous/features/auth/presentation/providers/forms/password_reset.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class ForgotPasswordPage extends HookConsumerWidget {

@@ -1,4 +1,4 @@
-﻿/// Mocktail-based mocks for commonly tested interfaces.
+/// Mocktail-based mocks for commonly tested interfaces.
 ///
 /// Usage:
 /// ```dart
@@ -26,7 +26,6 @@
 /// interaction verification (`verify`) or fine-grained stub control.
 library;
 
-import 'package:mocktail/mocktail.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
@@ -35,6 +34,7 @@ import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
+import 'package:mocktail/mocktail.dart';
 
 // ── Session Store ─────────────────────────────────────────────
 

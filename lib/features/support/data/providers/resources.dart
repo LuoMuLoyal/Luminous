@@ -1,9 +1,10 @@
-import '../../data/repositories/lucent.dart';
-import '../../domain/entities/support_resource.dart';
+import 'package:luminous/features/support/data/repositories/lucent.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// Re-export so consumers can import from one place.
-export '../../data/repositories/lucent.dart' show supportRepositoryProvider;
+export 'package:luminous/features/support/data/repositories/lucent.dart'
+    show supportRepositoryProvider;
 
 part 'resources.g.dart';
 

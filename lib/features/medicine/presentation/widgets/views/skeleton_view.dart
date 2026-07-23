@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
+import 'package:luminous/core/widgets/common/state_views.dart';
 
 /// Skeleton placeholder for the Medicine tab loading state.
 ///

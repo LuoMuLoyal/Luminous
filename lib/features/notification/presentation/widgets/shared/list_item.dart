@@ -3,9 +3,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
-import 'package:luminous/l10n/app_localizations.dart';
-
 import 'package:luminous/features/notification/domain/entities/notification.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 class NotificationListItemWidget extends StatefulWidget {
   const NotificationListItemWidget({

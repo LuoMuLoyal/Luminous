@@ -1,28 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/layout/page_scaffold.dart';
+import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
-import 'package:luminous/core/widgets/layout/page_scaffold.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
-import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/utils/page_padding.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-
-import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/settings/presentation/widgets/shared/settings_section_label.dart';
-import 'package:luminous/features/settings/presentation/utils/settings_page_padding.dart';
 
 const _kGroupSpacing = 20.0;
 

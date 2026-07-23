@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/suggestion_icon_mapping.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
-import 'package:luminous/features/today/presentation/widgets/sections/suggestion_interactive.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The primary suggestion card with expandable evidence, AI explain,

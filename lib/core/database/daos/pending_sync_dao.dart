@@ -8,15 +8,6 @@ part 'pending_sync_dao.g.dart';
 
 /// Pending sync item with decoded fields for the SyncWorker.
 class PendingSyncEntry {
-  final String id;
-  final String entityType;
-  final String? entityId;
-  final String operation;
-  final String payload;
-  final DateTime createdAt;
-  final int retryCount;
-  final int maxRetry;
-
   PendingSyncEntry({
     required this.id,
     required this.entityType,
@@ -27,6 +18,14 @@ class PendingSyncEntry {
     required this.retryCount,
     required this.maxRetry,
   });
+  final String id;
+  final String entityType;
+  final String? entityId;
+  final String operation;
+  final String payload;
+  final DateTime createdAt;
+  final int retryCount;
+  final int maxRetry;
 
   /// Whether this entry has exceeded the max retry count.
   bool get isPermanentlyFailed => retryCount >= maxRetry;

@@ -1,5 +1,5 @@
-import 'package:luminous/core/design/semantic_color.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 

@@ -1,4 +1,4 @@
-import '../entities/support_resource.dart';
+import 'package:luminous/features/support/domain/entities/support_resource.dart';
 
 /// Repository interface for public support resources and app metadata.
 ///

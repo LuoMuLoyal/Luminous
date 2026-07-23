@@ -33,9 +33,9 @@ flutter test
 
 - `lib/core/` — shared design system, theme, feedback, network, widgets.
 - `lib/features/{feature}/` — per-feature vertical slices:
-  - `data/` — repositories, data sources, providers
-  - `domain/` — entities, repository interfaces, services
-  - `presentation/` — pages, widgets, controllers, providers
+  - `data/` — repositories, data sources, providers, mappers, utils
+  - `domain/` — entities, repository interfaces, services, constants
+  - `presentation/` — pages, widgets, controllers, providers, utils, models, services
 
 ## File Naming Rules
 
@@ -69,7 +69,8 @@ Forui-led theming. Details in `docs/02-reference/Design_System.md` and
 `docs/02-reference/Forui_Reference.md`.
 
 - `SemanticColor`, `Spacing`, `RadiusTokens`, `TypographyToken` — design tokens.
-- Prefer Forui primitives directly over new `App*` wrappers.
+- Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
+  existing wrappers (`AppBackButton`, `AppDivider`, etc.) are kept as-is.
 - Prefer `FLucideIcons` over Material icons (treat `Icons.*` as migration debt).
 - Evaluate `forui_hooks` before writing manual controller plumbing.
 - Use Forui CLI (`dart run forui style create`) for custom styling scaffolds.

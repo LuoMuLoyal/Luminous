@@ -1,15 +1,15 @@
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:timeline_tile/timeline_tile.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:clock/clock.dart';
-import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class RecordMobileTimeline extends StatefulWidget {
   const RecordMobileTimeline({

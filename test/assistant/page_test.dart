@@ -7,22 +7,22 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
-import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
-import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-
-import '../helpers/test_forui_app.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
+import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/pages/page.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/test_forui_app.dart';
 
 void main() {
   testWidgets('AI chat page shows sign-in gate when signed out', (
