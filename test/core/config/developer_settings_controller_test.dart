@@ -1,4 +1,5 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+﻿import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/developer_settings_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
@@ -20,8 +21,18 @@ void main() {
     return c;
   }
 
+  TargetPlatform? originalPlatform;
+
   setUp(() {
+    originalPlatform = debugDefaultTargetPlatformOverride;
+    // Force a non-Android platform so local endpoint URLs use 127.0.0.1,
+    // not 10.0.2.2 (which is only correct for Android emulators).
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
     testTalker = talker.Talker();
+  });
+
+  tearDown(() {
+    debugDefaultTargetPlatformOverride = originalPlatform;
   });
 
   group('ApiEndpoint', () {

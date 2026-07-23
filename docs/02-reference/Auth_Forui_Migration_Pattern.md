@@ -67,6 +67,7 @@ custom widget stack to direct Forui composition. It is meant to be reused by lat
 - Registration terms consent now uses `FCheckbox`.
 - Submit stays disabled until consent is accepted.
 - Terms/privacy links should open real destinations instead of placeholder toasts when possible.
+- `TapGestureRecognizer` instances used in `Text.rich` link spans must be created in `initState()` and disposed in `dispose()` — use `StatefulWidget`, never `StatelessWidget`, for widgets that contain gesture recognizers.
 
 ## Auth Shell Rules
 

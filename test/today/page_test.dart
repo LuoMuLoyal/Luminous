@@ -309,6 +309,16 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 200));
 
+    // AI bullets are collapsed by default — expand before asserting on text.
+    final expandButton = find.text(l10n.todaySuggestionShowEvidence);
+    await tester.scrollUntilVisible(
+      expandButton,
+      220,
+      scrollable: _todayDashboardScrollable(),
+    );
+    await tester.tap(expandButton);
+    await tester.pump(const Duration(milliseconds: 300));
+
     expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
     expect(find.text(l10n.todayAiSummaryGenerateAction), findsNothing);
   });
@@ -408,10 +418,14 @@ void _setMobileViewport(WidgetTester tester) {
 Future<void> _settleDashboard(WidgetTester tester) async {
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 400));
+  await tester.pump();
 }
 
 Finder _todayDashboardScrollable() {
   return find
-      .descendant(of: find.byType(ListView), matching: find.byType(Scrollable))
+      .descendant(
+        of: find.byType(CustomScrollView),
+        matching: find.byType(Scrollable),
+      )
       .first;
 }

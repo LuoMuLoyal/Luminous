@@ -41,6 +41,7 @@ void main() {
 
       await tester.pump(const Duration(milliseconds: 500));
       await _scrollToSummaryCard(tester);
+      await _expandAiBullets(tester, l10n);
 
       expect(find.text(l10n.todayAiSummaryPreviewHint), findsOneWidget);
       expect(
@@ -77,6 +78,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
       await _scrollToSummaryCard(tester);
+      await _expandAiBullets(tester, l10n);
 
       expect(find.text(l10n.todayAiSummaryDisabledHint), findsOneWidget);
       expect(
@@ -165,6 +167,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text('今天的节奏基本稳定，先把剩余饮水和待确认用药处理掉。'), findsOneWidget);
+    await _expandAiBullets(tester, l10n);
     expect(find.text('还有 1 项今日用药待确认，先核对是否已经服用。'), findsOneWidget);
     expect(find.text('饮水距离目标还差 2 次，下午和晚间各补一次。'), findsOneWidget);
     expect(find.text('仅基于今日已记录数据生成，不构成诊断或治疗建议。'), findsOneWidget);
@@ -172,6 +175,10 @@ void main() {
 }
 
 Future<void> _scrollToSummaryCard(WidgetTester tester) async {
+  // ShellDeferredContent defers content to the next frame; after the content
+  // is built, async providers (todayDashboardProvider) start and need one
+  // more frame for their data to propagate to the widget tree.
+  await tester.pump();
   await tester.scrollUntilVisible(
     find.byKey(const Key('today-summary-card')),
     220,
@@ -185,4 +192,29 @@ Future<void> _scrollToSummaryCard(WidgetTester tester) async {
         .first,
   );
   await tester.pump(const Duration(milliseconds: 200));
+}
+
+/// Taps the AI bullets expand button so bullet text becomes visible.
+///
+/// The [TodaySummarySection] collapses AI bullets by default; tests that
+/// assert on bullet text must expand first.
+Future<void> _expandAiBullets(
+  WidgetTester tester,
+  AppLocalizations l10n,
+) async {
+  final expandButton = find.text(l10n.todaySuggestionShowEvidence);
+  await tester.scrollUntilVisible(
+    expandButton,
+    220,
+    scrollable: find
+        .descendant(
+          of: find.byKey(
+            const PageStorageKey<String>('today-dashboard-scroll'),
+          ),
+          matching: find.byType(Scrollable),
+        )
+        .first,
+  );
+  await tester.tap(expandButton);
+  await tester.pump(const Duration(milliseconds: 300));
 }

@@ -1,9 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/network/base_url.dart';
 
 void main() {
+  TargetPlatform? originalPlatform;
+
+  setUp(() {
+    originalPlatform = debugDefaultTargetPlatformOverride;
+    // Force a non-Android platform so the dev fallback URL is 127.0.0.1,
+    // not 10.0.2.2 (which is only correct for Android emulators).
+    debugDefaultTargetPlatformOverride = TargetPlatform.windows;
+  });
+
+  tearDown(() {
+    debugDefaultTargetPlatformOverride = originalPlatform;
+    EnvReader.clearTestValues();
+  });
+
   group('LucentBaseUrl', () {
     tearDown(EnvReader.clearTestValues);
 

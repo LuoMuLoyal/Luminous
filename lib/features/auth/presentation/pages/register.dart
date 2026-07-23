@@ -243,7 +243,7 @@ class RegisterPage extends HookConsumerWidget {
   }
 }
 
-class _TermsAgreementText extends StatelessWidget {
+class _TermsAgreementText extends StatefulWidget {
   const _TermsAgreementText({
     required this.terms,
     required this.privacy,
@@ -255,6 +255,39 @@ class _TermsAgreementText extends StatelessWidget {
   final String privacy;
   final VoidCallback onTerms;
   final VoidCallback onPrivacy;
+
+  @override
+  State<_TermsAgreementText> createState() => _TermsAgreementTextState();
+}
+
+class _TermsAgreementTextState extends State<_TermsAgreementText> {
+  late final TapGestureRecognizer _termsRecognizer;
+  late final TapGestureRecognizer _privacyRecognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsRecognizer = TapGestureRecognizer()..onTap = widget.onTerms;
+    _privacyRecognizer = TapGestureRecognizer()..onTap = widget.onPrivacy;
+  }
+
+  @override
+  void didUpdateWidget(covariant _TermsAgreementText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.onTerms != widget.onTerms) {
+      _termsRecognizer.onTap = widget.onTerms;
+    }
+    if (oldWidget.onPrivacy != widget.onPrivacy) {
+      _privacyRecognizer.onTap = widget.onPrivacy;
+    }
+  }
+
+  @override
+  void dispose() {
+    _termsRecognizer.dispose();
+    _privacyRecognizer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -274,15 +307,15 @@ class _TermsAgreementText extends StatelessWidget {
           children: [
             TextSpan(text: l10n.authTermsAgreement('', '')),
             TextSpan(
-              text: terms,
+              text: widget.terms,
               style: linkStyle,
-              recognizer: TapGestureRecognizer()..onTap = onTerms,
+              recognizer: _termsRecognizer,
             ),
             const TextSpan(text: ' / '),
             TextSpan(
-              text: privacy,
+              text: widget.privacy,
               style: linkStyle,
-              recognizer: TapGestureRecognizer()..onTap = onPrivacy,
+              recognizer: _privacyRecognizer,
             ),
           ],
         ),

@@ -71,6 +71,7 @@ jobs:
       - name: Build Web (release) with env
         run: |
           flutter build web --release \
+            --wasm \
             --base-href "/${{ github.event.repository.name }}/" \
             --dart-define=LUCENT_BASE_URL=${{ secrets.LUCENT_BASE_URL }} \
             --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
