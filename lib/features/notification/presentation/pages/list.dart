@@ -137,6 +137,7 @@ class NotificationListPage extends ConsumerWidget {
           description: userMessageFromError(
             error,
             fallback: l10n.notificationErrorTitle,
+            l10n: l10n,
           ),
           icon: FLucideIcons.circleAlert,
           actionLabel: l10n.notificationRetryAction,

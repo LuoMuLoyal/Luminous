@@ -1,3 +1,5 @@
+import 'package:luminous/core/network/error_code.dart';
+
 /// Categorization of application errors for differentiated handling.
 ///
 /// Used by [AppError] to let callers dispatch on error kind without
@@ -37,10 +39,15 @@ class AppError {
     this.code,
     this.statusCode,
     this.requestId,
+    this.networkErrorCode,
     this.cause,
   });
 
   /// Human-readable error message, suitable for display to the user.
+  ///
+  /// When [networkErrorCode] is non-null, callers should prefer
+  /// [NetworkErrorL10n.map] to get a localized message instead of using
+  /// this field directly.
   final String message;
 
   /// Categorized error kind for differentiated handling.
@@ -59,6 +66,13 @@ class AppError {
   /// Lucent request ID (`X-Request-Id` header), if available.
   final String? requestId;
 
+  /// Network-layer error code for l10n mapping.
+  ///
+  /// When non-null, the presentation layer should use
+  /// [NetworkErrorL10n.map] to produce a localized message instead of
+  /// relying on [message] (which may be a developer-facing string).
+  final NetworkErrorCode? networkErrorCode;
+
   /// The original thrown object, preserved for logging / crash reporting.
   final Object? cause;
 
@@ -70,6 +84,7 @@ class AppError {
       if (code != null) ', code: $code',
       if (statusCode != null) ', statusCode: $statusCode',
       if (requestId != null && requestId!.isNotEmpty) ', requestId: $requestId',
+      if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
       ')',
     ];
     return parts.join();

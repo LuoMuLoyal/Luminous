@@ -595,51 +595,60 @@ void main() {
       }
     }
 
-    test('maps connectionTimeout to Chinese message', () async {
+    test('maps connectionTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.connectionTimeout,
-        '连接超时，请稍后再试。',
+        'Connection timed out. Please try again later.',
       );
     });
 
-    test('maps sendTimeout to Chinese message', () async {
+    test('maps sendTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.sendTimeout,
-        '请求发送超时，请稍后再试。',
+        'Request timed out. Please try again later.',
       );
     });
 
-    test('maps receiveTimeout to Chinese message', () async {
+    test('maps receiveTimeout to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.receiveTimeout,
-        '响应接收超时，请稍后再试。',
+        'Response timed out. Please try again later.',
       );
     });
 
-    test('maps badCertificate to Chinese message', () async {
+    test('maps badCertificate to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.badCertificate,
-        '服务器证书校验失败。',
+        'Server certificate verification failed.',
       );
     });
 
-    test('maps connectionError to Chinese message', () async {
+    test('maps connectionError to fallback message', () async {
       await expectFallbackMessage(
         DioExceptionType.connectionError,
-        '网络请求失败，请检查当前连接。',
+        'Network request failed. Please check your connection.',
       );
     });
 
-    test('maps cancel to Chinese message', () async {
-      await expectFallbackMessage(DioExceptionType.cancel, '请求已取消。');
+    test('maps cancel to fallback message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.cancel,
+        'Request was cancelled.',
+      );
     });
 
-    test('maps badResponse to Chinese message', () async {
-      await expectFallbackMessage(DioExceptionType.badResponse, '请求失败，请稍后再试。');
+    test('maps badResponse to fallback message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.badResponse,
+        'Request failed. Please try again later.',
+      );
     });
 
-    test('maps unknown to Chinese message', () async {
-      await expectFallbackMessage(DioExceptionType.unknown, '发生了未预期的网络错误。');
+    test('maps unknown to fallback message', () async {
+      await expectFallbackMessage(
+        DioExceptionType.unknown,
+        'An unexpected network error occurred.',
+      );
     });
 
     test(
@@ -701,7 +710,10 @@ void main() {
         expect(error, isA<DioException>());
         final mapped = (error as DioException).error;
         expect(mapped, isA<LucentApiException>());
-        expect((mapped as LucentApiException).message, '网络请求失败，请检查当前连接。');
+        expect(
+          (mapped as LucentApiException).message,
+          'Network request failed. Please check your connection.',
+        );
       }
     });
   });

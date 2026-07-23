@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_code.dart';
 
 /// Coerces a JSON-decoded value into a `Map<String, dynamic>`.
 ///
@@ -37,7 +38,10 @@ Map<String, dynamic> requireBody(
 Map<String, dynamic> requireMap(Object? data) {
   final map = coerceToStringMap(data);
   if (map == null) {
-    throw const LucentApiException(message: 'Lucent SSE payload is invalid.');
+    throw const LucentApiException(
+      message: 'Lucent SSE payload is invalid.',
+      networkErrorCode: NetworkErrorCode.invalidSsePayload,
+    );
   }
   return map;
 }
@@ -46,9 +50,10 @@ Map<String, dynamic> requireMap(Object? data) {
 LucentApiException mapSseStreamError(Object? data) {
   final json = requireMap(data);
   return LucentApiException(
-    message: json['message']?.toString() ?? '请求失败，请稍后再试。',
+    message: json['message']?.toString() ?? 'Request failed.',
     code: json['code'] is int ? json['code'] as int : null,
     statusCode: json['statusCode'] is int ? json['statusCode'] as int : null,
     data: json,
+    networkErrorCode: NetworkErrorCode.businessFailure,
   );
 }

@@ -1,4 +1,5 @@
 import 'api_exception.dart';
+import 'error_code.dart';
 import 'map_utils.dart';
 
 class LucentEnvelope<T> {
@@ -23,8 +24,11 @@ class LucentEnvelope<T> {
   void throwIfFailed() {
     if (!isSuccess) {
       throw LucentApiException(
-        message: message.isNotEmpty ? message : '请求失败（code: $code）',
+        message: message.isNotEmpty
+            ? message
+            : 'Business failure (code: $code)',
         code: code,
+        networkErrorCode: NetworkErrorCode.businessFailure,
       );
     }
   }
@@ -74,8 +78,11 @@ void ensureEnvelopeSuccess({required num code, required String message}) {
   if (code != 0) {
     final intCode = code is int ? code : code.toInt();
     throw LucentApiException(
-      message: message.isNotEmpty ? message : '请求失败（code: $intCode）',
+      message: message.isNotEmpty
+          ? message
+          : 'Business failure (code: $intCode)',
       code: intCode,
+      networkErrorCode: NetworkErrorCode.businessFailure,
     );
   }
 }

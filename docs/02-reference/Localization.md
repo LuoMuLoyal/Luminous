@@ -8,7 +8,7 @@ current string.
 ## Files
 
 - Config: `l10n.yaml`
-- ARB source fragments: `lib/l10n/src/{fragment}_{locale}.arb` (10 fragments × 2 locales)
+- ARB source fragments: `lib/l10n/src/{fragment}_{locale}.arb` (11 fragments × 2 locales)
 - Merged ARB (generated, gitignored): `lib/l10n/app_zh.arb`, `lib/l10n/app_en.arb`
 - Generated Dart output (gitignored): `lib/l10n/app_localizations*.dart`
 - Merge/split tool: `scripts/arb_tools.dart`
@@ -27,6 +27,7 @@ current string.
 | `mine` | `mine*` | Mine feature |
 | `assistant` | `assistant*` | AI assistant feature |
 | `notification` | `notification*` | Notification feature |
+| `network` | `network*` | Network layer error messages |
 
 New feature modules should add a row to `fragmentRules` in `scripts/arb_tools.dart`.
 

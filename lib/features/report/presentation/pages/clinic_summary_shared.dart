@@ -44,7 +44,17 @@ class _ClinicSummarySharedPageState
     return PageScaffold(
       title: l10n.reportClinicSummarySharedTitle,
       child: async.when(
-        loading: () => const Center(child: FCircularProgress()),
+        loading: () => const StateSkeletonView(
+          blocks: [
+            StateSkeletonBlock(height: 16, widthFactor: 0.5),
+            StateSkeletonBlock(height: 16, widthFactor: 0.7),
+            StateSkeletonBlock(height: 28, widthFactor: 0.9),
+            StateSkeletonBlock(height: 16, widthFactor: 0.6),
+            StateSkeletonBlock(height: 16, widthFactor: 0.8),
+            StateSkeletonBlock(height: 28, widthFactor: 0.9),
+            StateSkeletonBlock(height: 16, widthFactor: 0.4),
+          ],
+        ),
         error: (error, _) {
           final appError = LucentErrorMapper.toAppError(error);
           final isNetworkError = appError.kind == AppErrorKind.network;

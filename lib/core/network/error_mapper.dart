@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/result_code.dart';
 
 abstract final class LucentErrorMapper {
@@ -14,10 +15,16 @@ abstract final class LucentErrorMapper {
     }
 
     if (error is DioException) {
-      return LucentApiException(message: _fallbackMessage(error));
+      return LucentApiException(
+        message: _fallbackMessage(error),
+        networkErrorCode: _errorCodeFromDioType(error.type),
+      );
     }
 
-    return const LucentApiException(message: 'An unexpected error occurred.');
+    return const LucentApiException(
+      message: 'An unexpected error occurred.',
+      networkErrorCode: NetworkErrorCode.unknown,
+    );
   }
 
   /// Converts any thrown object into a structured [AppError].
@@ -39,6 +46,7 @@ abstract final class LucentErrorMapper {
       code: apiException.code,
       statusCode: apiException.statusCode,
       requestId: apiException.requestId,
+      networkErrorCode: apiException.networkErrorCode,
       cause: error,
     );
   }
@@ -115,6 +123,19 @@ abstract final class LucentErrorMapper {
       DioExceptionType.cancel => 'Request was cancelled.',
       DioExceptionType.badResponse => 'Request failed. Please try again later.',
       DioExceptionType.unknown => 'An unexpected network error occurred.',
+    };
+  }
+
+  static NetworkErrorCode _errorCodeFromDioType(DioExceptionType type) {
+    return switch (type) {
+      DioExceptionType.connectionTimeout => NetworkErrorCode.connectionTimeout,
+      DioExceptionType.sendTimeout => NetworkErrorCode.sendTimeout,
+      DioExceptionType.receiveTimeout => NetworkErrorCode.receiveTimeout,
+      DioExceptionType.badCertificate => NetworkErrorCode.badCertificate,
+      DioExceptionType.connectionError => NetworkErrorCode.connectionError,
+      DioExceptionType.cancel => NetworkErrorCode.cancelled,
+      DioExceptionType.badResponse => NetworkErrorCode.badResponse,
+      DioExceptionType.unknown => NetworkErrorCode.unknown,
     };
   }
 }

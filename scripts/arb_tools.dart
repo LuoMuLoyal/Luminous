@@ -18,6 +18,7 @@ import 'dart:io';
 /// 新增功能模块时，在此处添加一行即可。
 const Map<String, List<String>> fragmentRules = {
   'common': ['app', 'tab', 'desktop', 'state', 'placeholder', 'legal'],
+  'network': ['network'],
   'record': ['record'],
   'medicine': ['medicine', 'scan'],
   'today': ['today'],

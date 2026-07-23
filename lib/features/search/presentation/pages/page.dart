@@ -144,6 +144,7 @@ class SearchPage extends ConsumerWidget {
             userMessageFromError(
               e,
               fallback: l10n.medicineSearchPrecheckFailedToast,
+              l10n: l10n,
             ),
           ),
         );

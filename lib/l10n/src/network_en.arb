@@ -1,0 +1,14 @@
+{
+  "networkErrorBusinessFailure": "Request failed. Please try again later.",
+  "networkErrorEmptyStream": "Stream response is empty. Please try again later.",
+  "networkErrorInvalidSsePayload": "Invalid data format. Please try again later.",
+  "networkErrorEmptyResponse": "Response is empty. Please try again later.",
+  "networkErrorConnectionTimeout": "Connection timed out. Please try again later.",
+  "networkErrorSendTimeout": "Request timed out. Please try again later.",
+  "networkErrorReceiveTimeout": "Response timed out. Please try again later.",
+  "networkErrorBadCertificate": "Server certificate verification failed.",
+  "networkErrorConnectionError": "Network request failed. Please check your connection.",
+  "networkErrorCancelled": "Request was cancelled.",
+  "networkErrorBadResponse": "Request failed. Please try again later.",
+  "networkErrorUnknown": "An unexpected network error occurred."
+}

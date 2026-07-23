@@ -152,7 +152,7 @@ class PageStateSwitch<T> extends StatelessWidget {
   final Widget Function(T data, bool isPreview) readyBuilder;
 
   /// Builder for the [PageViewStateLoading] state.
-  /// Defaults to a centered [FCircularProgress].
+  /// Defaults to a [StateSkeletonView] with generic shimmer blocks.
   final Widget Function()? loadingBuilder;
 
   /// Builder for the [PageViewStateFatalError] state.
@@ -256,7 +256,15 @@ class _DefaultLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: FCircularProgress());
+    return const StateSkeletonView(
+      blocks: [
+        StateSkeletonBlock(height: 28, widthFactor: 0.6),
+        StateSkeletonBlock(height: 16, widthFactor: 0.9),
+        StateSkeletonBlock(height: 16, widthFactor: 0.8),
+        StateSkeletonBlock(height: 28, widthFactor: 0.5),
+        StateSkeletonBlock(height: 16, widthFactor: 0.7),
+      ],
+    );
   }
 }
 

@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/envelope.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Error interceptor: maps `DioException` → `LucentApiException`.
@@ -41,6 +42,9 @@ class ErrorInterceptor extends Interceptor {
         statusCode: response?.statusCode,
         requestId: requestId,
         data: json,
+        networkErrorCode: envelope != null && !envelope.isSuccess
+            ? NetworkErrorCode.businessFailure
+            : _errorCodeFromDioType(err.type),
       ),
       stackTrace: err.stackTrace,
     );
@@ -48,14 +52,32 @@ class ErrorInterceptor extends Interceptor {
 
   static String _fallbackMessage(DioException err) {
     return switch (err.type) {
-      DioExceptionType.connectionTimeout => '连接超时，请稍后再试。',
-      DioExceptionType.sendTimeout => '请求发送超时，请稍后再试。',
-      DioExceptionType.receiveTimeout => '响应接收超时，请稍后再试。',
-      DioExceptionType.badCertificate => '服务器证书校验失败。',
-      DioExceptionType.connectionError => '网络请求失败，请检查当前连接。',
-      DioExceptionType.cancel => '请求已取消。',
-      DioExceptionType.badResponse => '请求失败，请稍后再试。',
-      DioExceptionType.unknown => '发生了未预期的网络错误。',
+      DioExceptionType.connectionTimeout =>
+        'Connection timed out. Please try again later.',
+      DioExceptionType.sendTimeout =>
+        'Request timed out. Please try again later.',
+      DioExceptionType.receiveTimeout =>
+        'Response timed out. Please try again later.',
+      DioExceptionType.badCertificate =>
+        'Server certificate verification failed.',
+      DioExceptionType.connectionError =>
+        'Network request failed. Please check your connection.',
+      DioExceptionType.cancel => 'Request was cancelled.',
+      DioExceptionType.badResponse => 'Request failed. Please try again later.',
+      DioExceptionType.unknown => 'An unexpected network error occurred.',
+    };
+  }
+
+  static NetworkErrorCode _errorCodeFromDioType(DioExceptionType type) {
+    return switch (type) {
+      DioExceptionType.connectionTimeout => NetworkErrorCode.connectionTimeout,
+      DioExceptionType.sendTimeout => NetworkErrorCode.sendTimeout,
+      DioExceptionType.receiveTimeout => NetworkErrorCode.receiveTimeout,
+      DioExceptionType.badCertificate => NetworkErrorCode.badCertificate,
+      DioExceptionType.connectionError => NetworkErrorCode.connectionError,
+      DioExceptionType.cancel => NetworkErrorCode.cancelled,
+      DioExceptionType.badResponse => NetworkErrorCode.badResponse,
+      DioExceptionType.unknown => NetworkErrorCode.unknown,
     };
   }
 }

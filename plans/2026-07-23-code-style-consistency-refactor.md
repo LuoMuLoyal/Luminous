@@ -228,9 +228,8 @@ AGENTS.md "Loading states use shimmer skeletons" 的规则。
 | --- | ---------------------------------------------------------------- | -------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
 | 1   | `core/widgets/common/page_state.dart`                            | 259      | `_DefaultLoadingView` — `PageStateSwitch` 默认 loading | 提供基于 skeleton 的默认 loading，或要求各页面自行提供 `loadingBuilder` |
 | 2   | `report/presentation/pages/clinic_summary_shared.dart`           | 47       | `loading: () => FCircularProgress()`                   | → skeleton view                                                         |
-| 3   | `report/presentation/widgets/shared/clinic_summary_content.dart` | 152, 168 | 内容区 loading                                         | → `SkeletonSlot` 或 `InlineSkeleton`                                    |
-| 4   | `report/presentation/widgets/sections/readiness.dart`            | 218      | 指标卡 loading                                         | → skeleton                                                              |
-| 5   | `settings/presentation/pages/data_export.dart`                   | 92       | 导出页面 loading                                       | → skeleton                                                              |
+
+**修正说明**：原计划中 #3–#5 经代码审查确认为**按钮级加载**（`FCircularProgress` 在 `FButton` 内作为 `prefix`/`child`），属于可接受用法，无需修改。
 
 #### 可接受的用法（保留不动）
 

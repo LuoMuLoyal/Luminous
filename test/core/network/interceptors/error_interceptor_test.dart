@@ -205,7 +205,10 @@ void main() {
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
         expect(apiError, isNotNull);
-        expect(apiError!.message, '连接超时，请稍后再试。');
+        expect(
+          apiError!.message,
+          'Connection timed out. Please try again later.',
+        );
       }
     });
 
@@ -227,7 +230,7 @@ void main() {
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
         expect(apiError, isNotNull);
-        expect(apiError!.message, '请求发送超时，请稍后再试。');
+        expect(apiError!.message, 'Request timed out. Please try again later.');
       }
     });
 
@@ -249,7 +252,10 @@ void main() {
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
         expect(apiError, isNotNull);
-        expect(apiError!.message, '网络请求失败，请检查当前连接。');
+        expect(
+          apiError!.message,
+          'Network request failed. Please check your connection.',
+        );
       }
     });
 
@@ -271,7 +277,7 @@ void main() {
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
         expect(apiError, isNotNull);
-        expect(apiError!.message, '请求已取消。');
+        expect(apiError!.message, 'Request was cancelled.');
       }
     });
 
@@ -284,7 +290,7 @@ void main() {
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
         expect(apiError, isNotNull);
-        expect(apiError!.message, '请求失败，请稍后再试。');
+        expect(apiError!.message, 'Request failed. Please try again later.');
       }
     });
 
@@ -300,7 +306,7 @@ void main() {
         await dio.get('/api/v1/test');
       } on DioException catch (e) {
         final apiError = _extractApiException(e);
-        expect(apiError!.message, '请求失败，请稍后再试。');
+        expect(apiError!.message, 'Request failed. Please try again later.');
       }
     });
   });

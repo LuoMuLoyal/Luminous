@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -244,7 +244,9 @@ void main() {
         expect(
           () => ds.generateStream(ReportAiSummaryRange.last7Days).toList(),
           throwsA(
-            predicate<LucentApiException>((e) => e.message == '请求失败，请稍后再试。'),
+            predicate<LucentApiException>(
+              (e) => e.message == 'Request failed.',
+            ),
           ),
         );
       },

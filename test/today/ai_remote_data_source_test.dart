@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -259,7 +259,7 @@ void main() {
           isA<LucentApiException>().having(
             (e) => e.message,
             'message',
-            '请求失败，请稍后再试。',
+            'Request failed.',
           ),
         ),
       );
