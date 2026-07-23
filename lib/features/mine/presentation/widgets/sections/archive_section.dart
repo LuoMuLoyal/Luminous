@@ -6,7 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/soft_icon.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';

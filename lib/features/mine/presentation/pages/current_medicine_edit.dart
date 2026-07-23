@@ -19,7 +19,8 @@ import 'package:luminous/features/health_context/domain/entities/write_inputs.da
 import 'package:luminous/features/mine/presentation/providers/health_edit_forms.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/mine_edit_form_loading.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/settings_section_label.dart';
 
 class CurrentMedicineEditPage extends HookConsumerWidget {
   const CurrentMedicineEditPage({super.key, this.medicineId});

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
+import 'package:luminous/features/record/domain/services/voice_recording.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 

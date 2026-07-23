@@ -8,7 +8,8 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/settings_section_label.dart';
+import 'package:luminous/features/settings/presentation/utils/settings_page_padding.dart';
 
 class AccessibilitySettingsPage extends ConsumerWidget {
   const AccessibilitySettingsPage({super.key});

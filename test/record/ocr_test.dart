@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:luminous/features/scan/domain/services/ocr_service.dart';
+import 'package:luminous/features/scan/domain/services/ocr.dart';
 
 void main() {
   group('ocrScriptForLocale', () {

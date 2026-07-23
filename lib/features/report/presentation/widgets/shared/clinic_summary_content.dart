@@ -5,7 +5,7 @@ import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

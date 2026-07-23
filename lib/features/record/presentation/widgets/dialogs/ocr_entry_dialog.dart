@@ -8,9 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/features/scan/domain/services/ocr_service.dart';
+import 'package:luminous/features/scan/domain/services/ocr.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 
 /// Shows a bottom sheet for photo-based text recognition and returns the
 /// recognized text.

@@ -9,7 +9,7 @@ import 'package:luminous/features/medicine/data/datasources/reminder_local_prefe
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
-import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/settings/data/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

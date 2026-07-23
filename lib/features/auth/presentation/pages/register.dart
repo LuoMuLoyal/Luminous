@@ -10,7 +10,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/register.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/verification_code_field.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

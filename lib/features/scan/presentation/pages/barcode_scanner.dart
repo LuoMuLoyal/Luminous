@@ -15,7 +15,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/features/scan/data/scan_repository.dart';
+import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:forui/forui.dart';
 

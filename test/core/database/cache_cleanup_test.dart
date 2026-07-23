@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/database/cache_cleanup_provider.dart'
-    as cache_cleanup;
+import 'package:luminous/core/database/cache_cleanup.dart' as cache_cleanup;
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/database_providers.dart';

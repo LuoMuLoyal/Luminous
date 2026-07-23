@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/theme/theme_controller.dart';
+import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/utils/theme_preference_labels.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/selection_icon.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/settings_section_label.dart';
+import 'package:luminous/features/settings/presentation/utils/settings_page_padding.dart';
 import 'package:luminous/core/theme/theme.dart';
 
 import 'package:luminous/core/design/design.dart';

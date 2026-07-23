@@ -15,8 +15,8 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/features/scan/data/scan_repository.dart';
-import 'package:luminous/features/scan/domain/services/ocr_service.dart';
+import 'package:luminous/features/scan/data/repositories/scan.dart';
+import 'package:luminous/features/scan/domain/services/ocr.dart';
 import 'package:luminous/features/scan/domain/services/text_matcher.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 

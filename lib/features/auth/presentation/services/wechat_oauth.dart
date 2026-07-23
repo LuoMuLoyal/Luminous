@@ -3,7 +3,7 @@ import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'wechat_oauth_service.g.dart';
+part 'wechat_oauth.g.dart';
 
 /// A code+state pair returned from a completed OAuth callback.
 typedef OAuthCodeState = ({String code, String state});

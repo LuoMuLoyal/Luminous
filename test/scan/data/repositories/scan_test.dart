@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
-import 'package:luminous/features/scan/data/scan_repository.dart';
+import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:mocktail/mocktail.dart';
 

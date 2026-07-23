@@ -7,9 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/speech_locale_resolver.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/features/record/domain/services/voice_recording_service.dart';
+import 'package:luminous/features/record/domain/services/voice_recording.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 
 /// Shows a bottom sheet for voice input and returns the recognized text.
 ///

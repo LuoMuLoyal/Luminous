@@ -15,7 +15,7 @@ import 'package:luminous/features/auth/presentation/pages/login.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
-import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/settings/data/services/notification_permission.dart';
 import 'package:luminous/features/settings/presentation/pages/about.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';

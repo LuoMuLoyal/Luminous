@@ -3,7 +3,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'cache_cleanup_provider.g.dart';
+part 'cache_cleanup.g.dart';
 
 /// Performs cache cleanup based on the user's data retention preference.
 ///

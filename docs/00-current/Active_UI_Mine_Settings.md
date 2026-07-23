@@ -45,8 +45,8 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 
 ### 设置模块细化（2026-07-19 追加）
 
-- **垂直 padding 统一**：新增 `settingsPageVerticalPadding(BuildContext)` 函数（`shared_widgets.dart`），统一响应式 `Spacing.level6`/`level7` 逻辑，`page.dart` 使用该函数替代固定 24。
-- **分组标题统一**：删除 `page.dart` 内部 `_SettingsGroup` 自定义实现，统一使用 `SettingsSectionLabel`（`shared_widgets.dart`），所有分组改为 `SettingsSectionLabel` + `FTileGroup` 标准模式。
+- **垂直 padding 统一**：新增 `settingsPageVerticalPadding(BuildContext)` 函数（`settings/presentation/utils/settings_page_padding.dart`），统一响应式 `Spacing.level6`/`level7` 逻辑，`page.dart` 使用该函数替代固定 24。
+- **分组标题统一**：删除 `page.dart` 内部 `_SettingsGroup` 自定义实现，统一使用 `SettingsSectionLabel`（`settings/presentation/widgets/shared/settings_section_label.dart`），所有分组改为 `SettingsSectionLabel` + `FTileGroup` 标准模式。
 - **选中勾选图标统一**：`advanced.dart`、`feature_flags.dart` 的内联 `Icon(FLucideIcons.check, ...)` 统一替换为 `const SettingsSelectionIcon(selected: true)`，消除未选中时行宽跳变。
 - **开关 tile 统一**：删除 `_SettingsSwitchTile`（开关不可键盘聚焦），"隐私报告"行改用标准 `FTile` + `suffix: FSwitch` 模式。
 - **健康档案入口移位**：从"通用"组移至"账号与安全"组，返回栈不再混乱。
@@ -139,7 +139,7 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 
 ### 表单输入细化（2026-07-19 追加）
 
-- **IconActionButton 统一**：`mine/top_bar.dart` 的同名实现合并到 `core/shared_widgets.dart`，扩展 `showBadge` 参数支持红色小圆点未读提醒。
+- **IconActionButton 统一**：`mine/top_bar.dart` 的同名实现合并到 `core/widgets/common/icon_action_button.dart`，扩展 `showBadge` 参数支持红色小圆点未读提醒。
 - **Mine 移动端底色**：从 `SemanticColor.neutral.muted` 改为 `colors.background`，与 today tab 一致。
 - **缺口徽章 "+N"**：`gapCount > 2` 时显示 `mineReadinessGapMore`（"还有 N 项"）。
 - **身高解析**：`profile_edit.dart` 从 `int.tryParse` 改为 `num.tryParse`，接受小数身高。

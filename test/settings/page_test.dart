@@ -7,7 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/settings/data/services/notification_permission.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';

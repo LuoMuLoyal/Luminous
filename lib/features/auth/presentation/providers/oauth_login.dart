@@ -5,7 +5,7 @@ import 'package:luminous/features/auth/domain/repositories/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/auth/presentation/services/wechat_oauth_service.dart';
+import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
 
 /// State for OAuth login flows (WeChat, QQ, Apple).
 ///

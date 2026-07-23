@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/voice_entry_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

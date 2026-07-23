@@ -20,7 +20,7 @@ import 'package:luminous/features/mine/presentation/providers/health_edit_forms.
 import 'package:luminous/features/mine/presentation/utils/health_enum_l10n.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/mine/presentation/widgets/shared/mine_edit_form_loading.dart';
 
 class ConditionEditPage extends HookConsumerWidget {
   const ConditionEditPage({super.key, this.conditionId});

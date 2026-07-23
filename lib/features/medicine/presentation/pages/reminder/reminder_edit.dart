@@ -24,7 +24,7 @@ import 'package:luminous/features/medicine/presentation/utils/reminder_formatter
 import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/l10n/app_localizations.dart';

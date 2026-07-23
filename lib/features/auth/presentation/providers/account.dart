@@ -10,7 +10,7 @@ import 'package:luminous/features/auth/domain/entities/auth_verification_scene.d
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/providers/shared/form_mixin.dart';
-import 'package:luminous/features/auth/presentation/services/wechat_oauth_service.dart';
+import 'package:luminous/features/auth/presentation/services/wechat_oauth.dart';
 
 part 'account.freezed.dart';
 

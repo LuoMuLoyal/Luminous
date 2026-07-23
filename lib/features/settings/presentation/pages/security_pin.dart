@@ -10,7 +10,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:luminous/core/widgets/common/shared_widgets.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/settings_section_label.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';

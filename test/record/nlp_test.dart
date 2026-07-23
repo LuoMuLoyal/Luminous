@@ -1,4 +1,4 @@
-﻿import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -8,7 +8,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
-import 'package:luminous/features/record/presentation/controllers/nlp_controller.dart';
+import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 
 void main() {
   test(

@@ -10,7 +10,7 @@ import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 
-part 'nlp_controller.freezed.dart';
+part 'nlp.freezed.dart';
 
 class RecordNlpController extends Notifier<RecordNlpState> {
   @override

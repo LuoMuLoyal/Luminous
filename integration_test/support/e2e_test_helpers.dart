@@ -51,7 +51,7 @@ import 'package:luminous/features/search/data/repositories/lucent.dart'
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/domain/repositories/search.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
-import 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+import 'package:luminous/features/settings/data/services/notification_permission.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/providers/repository.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart'
@@ -79,7 +79,7 @@ export 'package:luminous/features/record/domain/entities/record.dart'
 export '../../test/helpers/feature_mocks.dart' show MockReportRepository;
 export 'package:luminous/features/report/data/providers/repository.dart'
     show reportRepositoryProvider;
-export 'package:luminous/features/settings/data/services/notification_permission_service.dart';
+export 'package:luminous/features/settings/data/services/notification_permission.dart';
 export 'package:luminous/features/legal/data/repositories/lucent.dart'
     show legalRepositoryProvider;
 export 'package:luminous/features/legal/domain/entities/doc_type.dart';

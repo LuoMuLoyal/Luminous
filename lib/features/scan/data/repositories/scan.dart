@@ -7,7 +7,7 @@ import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'scan_repository.g.dart';
+part 'scan.g.dart';
 
 class LucentScanRepository implements ScanRepository {
   const LucentScanRepository({
