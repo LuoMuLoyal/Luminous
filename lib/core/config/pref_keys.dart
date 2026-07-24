@@ -16,6 +16,9 @@ abstract final class PrefKeys {
 
   static const appLocale = 'app.locale';
 
+  /// Whether the desktop sidebar is collapsed (icon-only rail mode).
+  static const sidebarCollapsed = 'app.sidebar.collapsed';
+
   // ── Theme ──────────────────────────────────────────────────────────────
 
   static const themeMode = 'theme.mode';

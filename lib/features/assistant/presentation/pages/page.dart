@@ -350,37 +350,49 @@ class AssistantPage extends HookConsumerWidget {
     final scaffoldBody = PageScaffold(
       title: l10n.assistantPageTitle,
       actions: [
-        FButton.icon(
-          key: const Key('assistant-recent-conversations-action'),
-          variant: FButtonVariant.ghost,
-          onPress:
-              !session.canAccessProtectedData ||
-                  isLoadingRecentConversations ||
-                  isOpeningConversation
-              ? null
-              : openRecentConversationsDrawer,
-          child: const Icon(FLucideIcons.clock4),
+        FTooltip(
+          tipBuilder: (context, controller) =>
+              Text(l10n.assistantRecentConversationsAction),
+          child: FButton.icon(
+            key: const Key('assistant-recent-conversations-action'),
+            variant: FButtonVariant.ghost,
+            onPress:
+                !session.canAccessProtectedData ||
+                    isLoadingRecentConversations ||
+                    isOpeningConversation
+                ? null
+                : openRecentConversationsDrawer,
+            child: const Icon(FLucideIcons.clock4),
+          ),
         ),
-        FButton.icon(
-          key: const Key('assistant-new-conversation-action'),
-          variant: FButtonVariant.ghost,
-          onPress:
-              !session.canAccessProtectedData ||
-                  isLoadingConversation ||
-                  // `isSending` is read via provider so we don't resubscribe
-                  // here; we intentionally keep this single bool slice.
-                  ref.read(assistantControllerProvider).isSending ||
-                  isOpeningConversation
-              ? null
-              : handleStartNewConversation,
-          child: const Icon(FLucideIcons.plus),
+        FTooltip(
+          tipBuilder: (context, controller) =>
+              Text(l10n.assistantNewConversationAction),
+          child: FButton.icon(
+            key: const Key('assistant-new-conversation-action'),
+            variant: FButtonVariant.ghost,
+            onPress:
+                !session.canAccessProtectedData ||
+                    isLoadingConversation ||
+                    // `isSending` is read via provider so we don't resubscribe
+                    // here; we intentionally keep this single bool slice.
+                    ref.read(assistantControllerProvider).isSending ||
+                    isOpeningConversation
+                ? null
+                : handleStartNewConversation,
+            child: const Icon(FLucideIcons.plus),
+          ),
         ),
         if (session.canAccessProtectedData && capabilities != null)
-          FButton.icon(
-            key: const Key('assistant-controls-action'),
-            variant: FButtonVariant.ghost,
-            onPress: openControlsDrawer,
-            child: const Icon(FLucideIcons.settings2),
+          FTooltip(
+            tipBuilder: (context, controller) =>
+                Text(l10n.assistantControlsDrawerTitle),
+            child: FButton.icon(
+              key: const Key('assistant-controls-action'),
+              variant: FButtonVariant.ghost,
+              onPress: openControlsDrawer,
+              child: const Icon(FLucideIcons.settings2),
+            ),
           ),
       ],
       child: ResponsiveContentFrame(

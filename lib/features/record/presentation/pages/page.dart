@@ -323,7 +323,9 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final picked = await showFDialog<DateTime?>(
       context: context,
       builder: (dialogContext, style, animation) => DialogShell(
-        maxWidth: LayoutScaleResolver.dialogMaxWidth,
+        maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
+          MediaQuery.sizeOf(context).width,
+        ),
         padding: const EdgeInsets.all(Spacing.level4),
         builder: (_) => SizedBox(
           height: 400,

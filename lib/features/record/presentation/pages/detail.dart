@@ -95,13 +95,16 @@ class RecordDetailPage extends ConsumerWidget {
 
     final actions = <Widget>[
       if (session.canAccessProtectedData)
-        FButton.icon(
-          variant: FButtonVariant.ghost,
-          onPress: () => pushAuthRequiredRoute(
-            context,
-            RecordEditRoute(id: recordId).location,
+        FTooltip(
+          tipBuilder: (context, controller) => Text(l10n.recordEditAction),
+          child: FButton.icon(
+            variant: FButtonVariant.ghost,
+            onPress: () => pushAuthRequiredRoute(
+              context,
+              RecordEditRoute(id: recordId).location,
+            ),
+            child: const Icon(FLucideIcons.pencil),
           ),
-          child: const Icon(FLucideIcons.pencil),
         ),
     ];
 

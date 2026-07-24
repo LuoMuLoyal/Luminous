@@ -25,7 +25,9 @@ Future<void> showSuggestionHistoryDetailSheet(
     return showFDialog<void>(
       context: context,
       builder: (_, __, ___) => DialogShell(
-        maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
+        maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
+          MediaQuery.sizeOf(context).width,
+        ),
         builder: (_) => _SuggestionHistoryDetailContent(suggestion: suggestion),
       ),
     );

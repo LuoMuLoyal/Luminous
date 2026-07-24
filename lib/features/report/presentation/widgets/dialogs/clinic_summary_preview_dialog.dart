@@ -28,7 +28,9 @@ Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
     return showFDialog<void>(
       context: context,
       builder: (dialogContext, _, __) => DialogShell(
-        maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
+        maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
+          MediaQuery.sizeOf(context).width,
+        ),
         builder: (_) => const _ClinicSummaryPreviewContent(),
       ),
     );

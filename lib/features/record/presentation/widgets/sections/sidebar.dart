@@ -484,7 +484,10 @@ class _CalendarIconActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FButton.icon(onPress: onTap, child: Icon(icon, size: 18));
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(label),
+      child: FButton.icon(onPress: onTap, child: Icon(icon, size: 18)),
+    );
   }
 }
 

@@ -38,6 +38,27 @@ abstract final class LayoutScaleResolver {
   /// Wider dialog max width (confirmations, account settings).
   static const double wideDialogMaxWidth = 420;
 
+  /// Resolves a dialog max width based on the current screen width.
+  ///
+  /// On desktop (>= 1200) dialogs are wider for comfortable reading; on
+  /// tablet (>= 960) they are slightly wider than mobile; on mobile the
+  /// fixed [dialogMaxWidth] is used.
+  static double dialogMaxWidthFor(double screenWidth) {
+    if (screenWidth >= Breakpoints.desktop) return 560;
+    if (screenWidth >= Breakpoints.tablet) return 480;
+    return dialogMaxWidth;
+  }
+
+  /// Resolves a wider dialog max width based on the current screen width.
+  ///
+  /// Used for confirmation dialogs and account settings that benefit from
+  /// extra horizontal space on larger screens.
+  static double wideDialogMaxWidthFor(double screenWidth) {
+    if (screenWidth >= Breakpoints.desktop) return 640;
+    if (screenWidth >= Breakpoints.tablet) return 520;
+    return wideDialogMaxWidth;
+  }
+
   static LayoutScale resolve(double width) {
     if (width < Breakpoints.mobile) {
       return const LayoutScale(

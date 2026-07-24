@@ -362,7 +362,9 @@ Future<bool> _confirmUnlinkIdentity(
 ) async {
   final result = await showAppDialog<bool>(
     context: context,
-    maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
+    maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
+      MediaQuery.sizeOf(context).width,
+    ),
     scrollable: false,
     builder: (context) => Column(
       mainAxisSize: MainAxisSize.min,
@@ -455,7 +457,9 @@ Future<String?> _showVerifyEmailDialog(
   final controller = TextEditingController();
   final result = await showAppDialog<String>(
     context: context,
-    maxWidth: LayoutScaleResolver.wideDialogMaxWidth,
+    maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
+      MediaQuery.sizeOf(context).width,
+    ),
     builder: (dialogContext) => Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

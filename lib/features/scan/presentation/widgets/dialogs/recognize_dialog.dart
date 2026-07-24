@@ -61,8 +61,10 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
         ),
         const SizedBox(height: Spacing.level2),
         ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: LayoutScaleResolver.dialogMaxWidth,
+          constraints: BoxConstraints(
+            maxWidth: LayoutScaleResolver.dialogMaxWidthFor(
+              MediaQuery.sizeOf(context).width,
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,

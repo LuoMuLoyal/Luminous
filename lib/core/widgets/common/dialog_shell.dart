@@ -54,18 +54,26 @@ class DialogShell extends StatelessWidget {
 Future<T?> showAppDialog<T>({
   required BuildContext context,
   required WidgetBuilder builder,
-  double maxWidth = 560,
+  double? maxWidth,
   double? maxHeight,
   EdgeInsets padding = const EdgeInsets.all(Spacing.level5),
   bool scrollable = true,
   bool barrierDismissible = true,
 }) {
+  // Resolve adaptive dialog width: desktop gets 560px, tablet 480px, mobile
+  // falls back to the DialogShell default (560px). When an explicit [maxWidth]
+  // is passed (e.g. 440 for confirmation dialogs), it overrides the adaptive
+  // resolution but is still clamped to the screen width on very small screens.
+  final screenWidth = MediaQuery.sizeOf(context).width;
+  final effectiveMaxWidth =
+      maxWidth ?? LayoutScaleResolver.dialogMaxWidthFor(screenWidth);
+
   return showFDialog<T>(
     context: context,
     barrierDismissible: barrierDismissible,
     builder: (context, style, animation) => DialogShell(
       animation: animation,
-      maxWidth: maxWidth,
+      maxWidth: effectiveMaxWidth,
       maxHeight: maxHeight,
       padding: padding,
       scrollable: scrollable,
@@ -86,9 +94,10 @@ Future<bool> showDangerConfirmationDialog({
   String? cancelLabel,
 }) async {
   final l10n = AppLocalizations.of(context)!;
+  final screenWidth = MediaQuery.sizeOf(context).width;
   final result = await showAppDialog<bool>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(screenWidth),
     scrollable: false,
     builder: (context) => Column(
       mainAxisSize: MainAxisSize.min,

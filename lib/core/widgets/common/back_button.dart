@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Unified back button.
 ///
@@ -21,11 +22,15 @@ class AppBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FButton.icon(
-      onPress: onPressed ?? () => _handleBack(context),
-      variant: FButtonVariant.ghost,
-      size: FButtonSizeVariant.sm,
-      child: const Icon(FLucideIcons.chevronLeft),
+    final l10n = AppLocalizations.of(context)!;
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(l10n.commonBack),
+      child: FButton.icon(
+        onPress: onPressed ?? () => _handleBack(context),
+        variant: FButtonVariant.ghost,
+        size: FButtonSizeVariant.sm,
+        child: const Icon(FLucideIcons.chevronLeft),
+      ),
     );
   }
 

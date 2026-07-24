@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/app/bootstrap.dart';
+import 'package:luminous/app/window_manager_setup.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -10,6 +11,9 @@ Future<void> main() async {
   // Keep binding initialization in the root zone so that a synchronous
   // failure during init crashes visibly instead of being silently swallowed.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize desktop window management (no-op on web/mobile).
+  await initDesktopWindow();
 
   await _initSentry();
 

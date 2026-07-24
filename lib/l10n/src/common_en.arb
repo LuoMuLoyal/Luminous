@@ -8,6 +8,12 @@
   "desktopSidebarSettings": "Settings",
   "desktopSidebarHelp": "Help",
   "desktopSidebarHelpToast": "This will open help and support.",
+  "desktopSidebarCollapse": "Collapse sidebar",
+  "desktopSidebarExpand": "Expand sidebar",
+  "desktopSidebarThemeToggle": "Toggle theme",
+  "desktopSidebarNotifications": "Notifications",
+  "desktopSidebarSignedOut": "Tap to sign in",
+  "commonBack": "Back",
   "placeholderSoon": "{label} · Coming Soon",
   "@placeholderSoon": {
     "placeholders": {
