@@ -1,35 +1,37 @@
 // ignore_for_file: avoid_print
 
+import 'package:integration_test/integration_test.dart';
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  patrolTest('app smoke: renders shell with all five tabs', ($) async {
-    await pumpOfflineApp($);
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('app smoke: renders shell with all five tabs', (tester) async {
+    await pumpOfflineApp(tester);
 
     // Verify all five tab keys are visible.
-    expect($(const Key('shell-tab-today')).exists, true);
-    expect($(const Key('shell-tab-record')).exists, true);
-    expect($(const Key('shell-tab-medicine')).exists, true);
-    expect($(const Key('shell-tab-report')).exists, true);
-    expect($(const Key('shell-tab-mine')).exists, true);
+    expect(find.byKey(const Key('shell-tab-today')), findsOneWidget);
+    expect(find.byKey(const Key('shell-tab-record')), findsOneWidget);
+    expect(find.byKey(const Key('shell-tab-medicine')), findsOneWidget);
+    expect(find.byKey(const Key('shell-tab-report')), findsOneWidget);
+    expect(find.byKey(const Key('shell-tab-mine')), findsOneWidget);
 
     // Navigate through tabs.
-    await $(const Key('shell-tab-record')).tap();
-    await $.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shell-tab-record')));
+    await tester.pumpAndSettle();
 
-    await $(const Key('shell-tab-medicine')).tap();
-    await $.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shell-tab-medicine')));
+    await tester.pumpAndSettle();
 
-    await $(const Key('shell-tab-report')).tap();
-    await $.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shell-tab-report')));
+    await tester.pumpAndSettle();
 
-    await $(const Key('shell-tab-mine')).tap();
-    await $.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shell-tab-mine')));
+    await tester.pumpAndSettle();
 
     // Return to today.
-    await $(const Key('shell-tab-today')).tap();
-    await $.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('shell-tab-today')));
+    await tester.pumpAndSettle();
 
-    print('Patrol smoke test passed — all tabs navigable.');
+    print('Integration test smoke test passed — all tabs navigable.');
   });
 }

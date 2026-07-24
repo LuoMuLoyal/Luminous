@@ -1,77 +1,86 @@
+import 'package:integration_test/integration_test.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 
 import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';
 
 void main() {
-  patrolTest('full-stack sleep lane: create sleep via structured fields', (
-    $,
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('full-stack sleep lane: create sleep via structured fields', (
+    tester,
   ) async {
     final config = FullstackE2eConfig.fromEnvironment();
     final targetDate = parseRecordDate(config.recordDate);
 
     await prepareFullstackRecordLane(config);
-    final container = await pumpFullstackApp($, config: config);
+    final container = await pumpFullstackApp(tester, config: config);
 
-    await signInThroughUi($, config: config);
-    await waitForAuthenticatedSession($, container);
+    await signInThroughUi(tester, config: config);
+    await waitForAuthenticatedSession(tester, container);
     expect(container.read(authSessionProvider).isAuthenticated, isTrue);
 
     // ── Record tab: create a sleep record ──────────────────────────
 
-    await openRecordTabForDate($, container, targetDate: targetDate);
+    await openRecordTabForDate(tester, container, targetDate: targetDate);
 
-    await tapVisible($, find.byKey(const Key('record-quick-sleep')));
+    await tapVisible(tester, find.byKey(const Key('record-quick-sleep')));
     await pumpUntilFound(
-      $,
+      tester,
       find.byKey(const Key('record-fast-entry-sleep')),
       timeout: const Duration(seconds: 10),
     );
-    await tapVisible($, find.byKey(const Key('record-fast-entry-more-action')));
+    await tapVisible(
+      tester,
+      find.byKey(const Key('record-fast-entry-more-action')),
+    );
     await pumpUntilFound(
-      $,
+      tester,
       find.byKey(const Key('sleep-quality-field')),
       timeout: const Duration(seconds: 10),
     );
     expect(find.byKey(const Key('sleep-quality-field')), findsOneWidget);
 
     // Bedtime: 23:00 (11:00 PM).
-    await $.tester.tap(find.byKey(const Key('sleep-bedtime-picker')));
-    await settleE2e($);
-    await _confirmTimePicker($, hour: 23, minute: 0);
+    await tester.tap(find.byKey(const Key('sleep-bedtime-picker')));
+    await settleE2e(tester);
+    await _confirmTimePicker(tester, hour: 23, minute: 0);
 
     // Wake time: 07:00.
-    await $.tester.tap(find.byKey(const Key('sleep-waketime-picker')));
-    await settleE2e($);
-    await _enterTimeAndConfirm($, hour: 7, minute: 0);
+    await tester.tap(find.byKey(const Key('sleep-waketime-picker')));
+    await settleE2e(tester);
+    await _enterTimeAndConfirm(tester, hour: 7, minute: 0);
 
     // Quality: select "good".
-    await $.tester.tap(find.byKey(const Key('sleep-quality-field')));
-    await settleE2e($);
+    await tester.tap(find.byKey(const Key('sleep-quality-field')));
+    await settleE2e(tester);
     final goodOption = find.text('良好').evaluate().isNotEmpty
         ? find.text('良好')
         : find.text('Good');
-    await $.tester.tap(goodOption.last);
-    await settleE2e($);
+    await tester.tap(goodOption.last);
+    await settleE2e(tester);
 
     // Save.
-    await $.tester.tap(find.byKey(const Key('record-create-save-action')));
-    await settleE2e($);
+    await tester.tap(find.byKey(const Key('record-create-save-action')));
+    await settleE2e(tester);
 
     await waitForRoute(
-      $,
+      tester,
       container: container,
       predicate: (uri) => uri.path == '/',
       description: 'return to shell after saving sleep record',
       timeout: const Duration(seconds: 15),
     );
-    await openRecordTabForDate($, container, targetDate: targetDate);
+    await openRecordTabForDate(tester, container, targetDate: targetDate);
 
     // ── Today tab: health summary renders ──────────────────────────
 
-    await openShellTab($, ShellTab.today, timeout: const Duration(seconds: 15));
+    await openShellTab(
+      tester,
+      ShellTab.today,
+      timeout: const Duration(seconds: 15),
+    );
     await pumpUntilFound(
-      $,
+      tester,
       find.byKey(const Key('today-summary-card')),
       timeout: const Duration(seconds: 15),
     );
@@ -80,12 +89,12 @@ void main() {
     // ── Report tab: trend section renders ──────────────────────────
 
     await openShellTab(
-      $,
+      tester,
       ShellTab.report,
       timeout: const Duration(seconds: 15),
     );
     await pumpUntilFound(
-      $,
+      tester,
       find.byKey(const Key('report-snapshot-status')),
       timeout: const Duration(seconds: 15),
     );
@@ -93,7 +102,7 @@ void main() {
     // Scroll to the trend section.
     final reportScrollable = find.byType(Scrollable).first;
     final trendSection = find.byKey(const Key('report-trend-section'));
-    await $.tester.scrollUntilVisible(
+    await tester.scrollUntilVisible(
       trendSection,
       260,
       scrollable: reportScrollable,
@@ -119,25 +128,25 @@ void main() {
 const _itemExtent = 40.0;
 
 Future<void> _confirmTimePicker(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required int hour,
   required int minute,
 }) async {
-  await _scrollTimePickerWheels($, hour: hour, minute: minute);
-  await _closePopover($);
+  await _scrollTimePickerWheels(tester, hour: hour, minute: minute);
+  await _closePopover(tester);
 }
 
 Future<void> _enterTimeAndConfirm(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required int hour,
   required int minute,
 }) async {
-  await _scrollTimePickerWheels($, hour: hour, minute: minute);
-  await _closePopover($);
+  await _scrollTimePickerWheels(tester, hour: hour, minute: minute);
+  await _closePopover(tester);
 }
 
 Future<void> _scrollTimePickerWheels(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required int hour,
   required int minute,
 }) async {
@@ -166,19 +175,19 @@ Future<void> _scrollTimePickerWheels(
   // The picker opens at 12:00 AM (FTime(0, 0)) by default.
   // Period wheel: AM=0 (current), PM=1. Scroll to PM if hour >= 12.
   final targetPeriod = hour < 12 ? 0 : 1;
-  await _dragWheel($, periodWheel, 0, targetPeriod);
+  await _dragWheel(tester, periodWheel, 0, targetPeriod);
 
   // Hour wheel: 12-hour format, index 0→12, 1→1, …, 11→11.
   // The hour value in 12-hour mode: hour % 12 (but 0 maps to 12 on display).
   final targetHourIndex = hour % 12;
-  await _dragWheel($, hourWheel, 0, targetHourIndex);
+  await _dragWheel(tester, hourWheel, 0, targetHourIndex);
 
   // Minute wheel: 0-59, index = minute / minuteInterval (interval = 1).
-  await _dragWheel($, minuteWheel, 0, minute);
+  await _dragWheel(tester, minuteWheel, 0, minute);
 }
 
 Future<void> _dragWheel(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   Finder wheel,
   int fromIndex,
   int toIndex,
@@ -186,13 +195,13 @@ Future<void> _dragWheel(
   if (fromIndex == toIndex) return;
   final delta = toIndex - fromIndex;
   // Drag up (negative Y) to increase the index.
-  await $.tester.drag(wheel, Offset(0, -delta * _itemExtent));
-  await $.tester.pumpAndSettle(const Duration(milliseconds: 300));
+  await tester.drag(wheel, Offset(0, -delta * _itemExtent));
+  await tester.pumpAndSettle(const Duration(milliseconds: 300));
 }
 
-Future<void> _closePopover(PatrolIntegrationTester $) async {
+Future<void> _closePopover(WidgetTester tester) async {
   // Tap outside the popover content to dismiss it.
   // FPopover with hideRegion.excludeChild hides when tapping outside.
-  await $.tester.tapAt(const Offset(10, 10));
-  await $.tester.pumpAndSettle(const Duration(milliseconds: 300));
+  await tester.tapAt(const Offset(10, 10));
+  await tester.pumpAndSettle(const Duration(milliseconds: 300));
 }

@@ -67,9 +67,6 @@ web/drift_worker.js.deps
 web/drift_worker.js.map
 web/sqlite3.wasm
 
-# Patrol — generated test entrypoint (DO NOT COMMIT)
-/patrol_test/
-
 # Symbolication related
 app.*.symbols
 

@@ -1,12 +1,14 @@
+import 'package:integration_test/integration_test.dart';
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  patrolTest('report signed-out shows readiness card with sign-in action', (
-    $,
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('report signed-out shows readiness card with sign-in action', (
+    tester,
   ) async {
-    await pumpOfflineApp($);
+    await pumpOfflineApp(tester);
 
-    await openTab($, '报告');
+    await openTab(tester, '报告');
 
     // Readiness card should be visible with sign-in action (signed out).
     expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
@@ -31,30 +33,32 @@ void main() {
     expect(find.byKey(const Key('report-patterns-section')), findsNothing);
   });
 
-  patrolTest('report readiness sign-in action routes to login', ($) async {
-    await pumpOfflineApp($);
+  testWidgets('report readiness sign-in action routes to login', (
+    tester,
+  ) async {
+    await pumpOfflineApp(tester);
 
-    await openTab($, '报告');
+    await openTab(tester, '报告');
 
     final signInAction = find.byKey(
       const Key('report-readiness-sign-in-action'),
     );
-    await tapVisible($, signInAction);
+    await tapVisible(tester, signInAction);
 
-    expect($('邮箱').exists, true);
+    expect(find.text('邮箱'), findsWidgets);
     expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
   });
 
-  patrolTest(
+  testWidgets(
     'report signed-in renders score hero, trend section, and findings',
-    ($) async {
+    (tester) async {
       await pumpOfflineApp(
-        $,
+        tester,
         authSessionOverride: SignedInAuthSessionNotifier.new,
         reportRepository: const MockReportRepository(),
       );
 
-      await openTab($, '报告');
+      await openTab(tester, '报告');
 
       // Readiness card should be visible with record action (insufficient
       // data because the mock sleep metric has insufficientData status).
@@ -83,40 +87,42 @@ void main() {
     },
   );
 
-  patrolTest('report readiness record action routes to record create page', (
-    $,
+  testWidgets('report readiness record action routes to record create page', (
+    tester,
   ) async {
     await pumpOfflineApp(
-      $,
+      tester,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       reportRepository: const MockReportRepository(),
     );
 
-    await openTab($, '报告');
+    await openTab(tester, '报告');
 
     final recordAction = find.byKey(
       const Key('report-readiness-record-action'),
     );
-    await tapVisible($, recordAction);
+    await tapVisible(tester, recordAction);
 
     // Should navigate to the record create page.
     expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
   });
 
-  patrolTest('report tab navigation round-trip preserves state', ($) async {
-    await pumpOfflineApp($);
+  testWidgets('report tab navigation round-trip preserves state', (
+    tester,
+  ) async {
+    await pumpOfflineApp(tester);
 
     // Start on Report tab.
-    await openTab($, '报告');
+    await openTab(tester, '报告');
     expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
 
     // Navigate away and back — state should be preserved.
-    await openTab($, '记录');
-    await settleE2e($);
+    await openTab(tester, '记录');
+    await settleE2e(tester);
     expect(find.byKey(const Key('record-timeline')), findsOneWidget);
 
-    await openTab($, '报告');
-    await settleE2e($);
+    await openTab(tester, '报告');
+    await settleE2e(tester);
     expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
   });
 }

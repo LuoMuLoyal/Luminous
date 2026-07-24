@@ -1,3 +1,4 @@
+import 'package:integration_test/integration_test.dart';
 import '../support/e2e_test_helpers.dart';
 import '../support/fullstack_e2e_helpers.dart';
 
@@ -15,13 +16,15 @@ import '../support/fullstack_e2e_helpers.dart';
 ///
 /// Or standalone (e.g. for debugging a single lane):
 ///   cd Luminous
-///   dart pub global run patrol_cli:main test \
+///   flutter test \
 ///     --target integration_test/record/fullstack_quick_choice_time_lane_test.dart \
 ///     --dart-define=LUCENT_BASE_URL=http://10.0.2.2:3000 \
 ///     --dart-define=E2E_TEST_EMAIL=test@example.com \
 ///     --dart-define=E2E_TEST_PASSWORD=your-password \
 ///     --dart-define=E2E_RECORD_DATE=2026-06-22
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
   /// Matches a time label like "14:30" — two digits, colon, two digits.
   /// Must NOT be "--:--" (the fallback placeholder).
   final timeLabelPattern = RegExp(r'^\d{2}:\d{2}$');
@@ -31,21 +34,21 @@ void main() {
     return timeLabelPattern.hasMatch(visibleText.trim());
   }
 
-  patrolTest(
+  testWidgets(
     'full-stack quick-choice lane: water / meal / symptom / note / sleep '
     'display real HH:mm and preserve occurredTime through edit',
-    ($) async {
+    (tester) async {
       final config = FullstackE2eConfig.fromEnvironment();
       final targetDate = parseRecordDate(config.recordDate);
 
       await prepareFullstackRecordLane(config);
-      final container = await pumpFullstackApp($, config: config);
+      final container = await pumpFullstackApp(tester, config: config);
 
-      await signInThroughUi($, config: config);
-      await waitForAuthenticatedSession($, container);
+      await signInThroughUi(tester, config: config);
+      await waitForAuthenticatedSession(tester, container);
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
 
-      await openRecordTabForDate($, container, targetDate: targetDate);
+      await openRecordTabForDate(tester, container, targetDate: targetDate);
 
       const kinds = <String>['water', 'meal', 'symptom', 'note', 'sleep'];
 
@@ -56,48 +59,52 @@ void main() {
       for (final kind in kinds) {
         // 1. Open the quick-action bottom sheet
         final actionKey = Key('record-quick-$kind');
-        await tapVisible($, find.byKey(actionKey));
+        await tapVisible(tester, find.byKey(actionKey));
 
         // 2. Wait for the fast-entry sheet to appear, then read the
         //    first chip's label so we can verify it lands in the
         //    timeline entry after save.
         final sheetKey = Key('record-fast-entry-$kind');
         await pumpUntilFound(
-          $,
+          tester,
           find.byKey(sheetKey),
           timeout: const Duration(seconds: 10),
         );
 
         final chipKey = Key('record-fast-entry-choice-$kind-0');
-        await pumpUntilFound($, find.byKey(chipKey));
+        await pumpUntilFound(tester, find.byKey(chipKey));
         final chipLabelFinder = find.descendant(
           of: find.byKey(chipKey),
           matching: find.byType(Text),
         );
-        await pumpUntilFound($, chipLabelFinder);
-        final chipLabel = $.tester.widget<Text>(chipLabelFinder.first).data!;
+        await pumpUntilFound(tester, chipLabelFinder);
+        final chipLabel = tester.widget<Text>(chipLabelFinder.first).data!;
 
         // 3. Tap the chip — this calls Navigator.pop() after saving,
         //    NOT a route change. The route stays at /.
-        await tapVisible($, find.byKey(chipKey));
+        await tapVisible(tester, find.byKey(chipKey));
 
         // 4. Wait for the bottom sheet to actually disappear.
-        await _waitForSheetDismissed($, kind);
+        await _waitForSheetDismissed(tester, kind);
 
         // 5. Find the newest timeline entry and verify it contains
         //    the chip label (proves it's the entry we just created,
         //    not a stale one from a prior kind).
         final entry = find.byKey(const Key('record-timeline-entry-index-0'));
-        await pumpUntilFound($, entry, timeout: const Duration(seconds: 15));
-        await $.tester.ensureVisible(entry.first);
-        await settleE2e($, frames: 4);
+        await pumpUntilFound(
+          tester,
+          entry,
+          timeout: const Duration(seconds: 15),
+        );
+        await tester.ensureVisible(entry.first);
+        await settleE2e(tester, frames: 4);
 
         final chipLabelInEntry = find.descendant(
           of: entry,
           matching: find.textContaining(chipLabel),
         );
         expect(
-          $.tester.any(chipLabelInEntry),
+          tester.any(chipLabelInEntry),
           isTrue,
           reason:
               'timeline entry for $kind should contain chip label "$chipLabel"',
@@ -111,12 +118,12 @@ void main() {
           ),
         );
         expect(
-          $.tester.any(timeFinder),
+          tester.any(timeFinder),
           isTrue,
           reason: 'timeline entry for $kind should display a real HH:mm time',
         );
 
-        final timeWidget = $.tester.widget<Text>(timeFinder.first);
+        final timeWidget = tester.widget<Text>(timeFinder.first);
         final timeText = timeWidget.data!.trim();
         expect(isRealTime(timeText), isTrue);
 
@@ -130,7 +137,7 @@ void main() {
 
       // The latest entry (index 0) is sleep, the last kind created.
       final sleepTime = createdTimes['sleep']!;
-      await _tapTimelineEntry($, 0);
+      await _tapTimelineEntry(tester, 0);
 
       expect(
         find.textContaining(sleepTime),
@@ -140,9 +147,12 @@ void main() {
 
       // ── Phase 3: edit preserves occurredTime, no day-crossing ───
 
-      await tapVisible($, find.byKey(const Key('record-detail-edit-action')));
+      await tapVisible(
+        tester,
+        find.byKey(const Key('record-detail-edit-action')),
+      );
 
-      await pumpUntilFound($, find.byKey(const Key('record-time-field')));
+      await pumpUntilFound(tester, find.byKey(const Key('record-time-field')));
       expect(
         find.textContaining(sleepTime),
         findsWidgets,
@@ -151,14 +161,17 @@ void main() {
 
       // Change the note field only (don't touch time)
       final noteField = find.byKey(const Key('daily-record-note-field'));
-      if ($.tester.any(noteField)) {
-        await $.tester.enterText(noteField, 'edit-preserve-time');
+      if (tester.any(noteField)) {
+        await tester.enterText(noteField, 'edit-preserve-time');
       }
 
-      await tapVisible($, find.byKey(const Key('record-edit-save-action')));
+      await tapVisible(
+        tester,
+        find.byKey(const Key('record-edit-save-action')),
+      );
 
       await pumpUntilFound(
-        $,
+        tester,
         find.byKey(const Key('record-detail-edit-action')),
         timeout: const Duration(seconds: 10),
       );
@@ -188,29 +201,29 @@ void main() {
 
 /// Poll until the fast-entry bottom sheet for [kind] is gone.
 Future<void> _waitForSheetDismissed(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   String kind, {
   Duration timeout = const Duration(seconds: 10),
   Duration step = const Duration(milliseconds: 100),
 }) async {
   final sheetKey = Key('record-fast-entry-$kind');
-  final endTime = $.tester.binding.clock.fromNowBy(timeout);
+  final endTime = tester.binding.clock.fromNowBy(timeout);
 
   do {
-    await $.pump(step);
-    if (!$.tester.any(find.byKey(sheetKey))) {
+    await tester.pump(step);
+    if (!tester.any(find.byKey(sheetKey))) {
       return;
     }
-  } while ($.tester.binding.clock.now().isBefore(endTime));
+  } while (tester.binding.clock.now().isBefore(endTime));
 
   throw TestFailure('Timed out waiting for fast-entry sheet $kind to dismiss');
 }
 
-Future<void> _tapTimelineEntry(PatrolIntegrationTester $, int index) async {
+Future<void> _tapTimelineEntry(WidgetTester tester, int index) async {
   final entry = find.byKey(Key('record-timeline-entry-index-$index'));
-  await pumpUntilFound($, entry);
-  await $.tester.ensureVisible(entry.first);
-  await settleE2e($, frames: 4);
-  await $.tester.tap(entry.first);
-  await settleE2e($, frames: 6);
+  await pumpUntilFound(tester, entry);
+  await tester.ensureVisible(entry.first);
+  await settleE2e(tester, frames: 4);
+  await tester.tap(entry.first);
+  await settleE2e(tester, frames: 6);
 }

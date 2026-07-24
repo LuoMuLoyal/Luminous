@@ -58,7 +58,6 @@ import 'package:luminous/features/settings/data/providers/notification_permissio
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
-import 'package:patrol/patrol.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../test/helpers/feature_mocks.dart';
@@ -84,13 +83,12 @@ export 'package:luminous/features/record/domain/entities/record.dart'
 export 'package:luminous/features/report/data/providers/report.dart'
     show reportRepositoryProvider;
 export 'package:luminous/features/settings/domain/services/notification_permission.dart';
-export 'package:patrol/patrol.dart' hide Notification;
 export 'package:shared_preferences/shared_preferences.dart';
 
 export '../../test/helpers/feature_mocks.dart' show MockReportRepository;
 
 Future<ProviderContainer> pumpOfflineApp(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   AuthSessionNotifier Function()? authSessionOverride,
   AuthRepository? authRepository,
   HealthContextRepository? healthContextRepository,
@@ -158,46 +156,46 @@ Future<ProviderContainer> pumpOfflineApp(
 
   container.read(appRouterProvider).go('/');
 
-  await $.pumpWidget(
+  await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),
   );
 
-  await settleE2e($);
+  await settleE2e(tester);
   return container;
 }
 
 Future<void> settleE2e(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   Duration duration = const Duration(milliseconds: 100),
   int frames = 6,
 }) async {
   for (var i = 0; i < frames; i += 1) {
-    await $.pump(duration);
+    await tester.pump(duration);
   }
 }
 
 Future<void> pumpUntilFound(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   Finder finder, {
   Duration timeout = const Duration(seconds: 5),
   Duration step = const Duration(milliseconds: 100),
 }) async {
-  final endTime = $.tester.binding.clock.fromNowBy(timeout);
+  final endTime = tester.binding.clock.fromNowBy(timeout);
 
   do {
-    await $.pump(step);
-    if ($.tester.any(finder)) {
+    await tester.pump(step);
+    if (tester.any(finder)) {
       return;
     }
-  } while ($.tester.binding.clock.now().isBefore(endTime));
+  } while (tester.binding.clock.now().isBefore(endTime));
 
   fail('Timed out waiting for $finder');
 }
 
-Future<void> openTab(PatrolIntegrationTester $, String label) async {
+Future<void> openTab(WidgetTester tester, String label) async {
   final shellTab = _shellTabForLabel(label);
   if (shellTab != null) {
-    await openShellTab($, shellTab);
+    await openShellTab(tester, shellTab);
     return;
   }
 
@@ -205,66 +203,63 @@ Future<void> openTab(PatrolIntegrationTester $, String label) async {
     of: find.byType(NavigationBar),
     matching: find.text(label),
   );
-  await $.tester.tap(tab);
-  await settleE2e($);
+  await tester.tap(tab);
+  await settleE2e(tester);
 }
 
 Future<void> openShellTab(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   ShellTab tab, {
   Duration timeout = const Duration(seconds: 5),
 }) async {
   final tabFinder = find.byKey(tab.testKey());
-  await pumpUntilFound($, tabFinder, timeout: timeout);
-  await $.tester.ensureVisible(tabFinder);
-  await settleE2e($);
-  await $.tester.tap(tabFinder);
-  await settleE2e($);
+  await pumpUntilFound(tester, tabFinder, timeout: timeout);
+  await tester.ensureVisible(tabFinder);
+  await settleE2e(tester);
+  await tester.tap(tabFinder);
+  await settleE2e(tester);
 }
 
-Future<void> openSettings(PatrolIntegrationTester $) async {
-  await openShellTab($, ShellTab.mine);
-  await $.tester.tap(find.byKey(const Key('mine-settings-action')));
-  await settleE2e($);
-  expect($('设置').exists, true);
+Future<void> openSettings(WidgetTester tester) async {
+  await openShellTab(tester, ShellTab.mine);
+  await tester.tap(find.byKey(const Key('mine-settings-action')));
+  await settleE2e(tester);
+  expect(find.text('设置'), findsWidgets);
 }
 
-Future<void> tapSettingsFooterAction(PatrolIntegrationTester $) async {
-  await tapVisible($, find.byKey(const Key('settings-footer-action')));
+Future<void> tapSettingsFooterAction(WidgetTester tester) async {
+  await tapVisible(tester, find.byKey(const Key('settings-footer-action')));
 }
 
-Future<void> tapVisible(PatrolIntegrationTester $, Finder finder) async {
-  await pumpUntilFound($, finder);
-  await $.tester.ensureVisible(finder);
-  await settleE2e($);
-  await $.tester.tap(finder);
-  await settleE2e($);
+Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+  await pumpUntilFound(tester, finder);
+  await tester.ensureVisible(finder);
+  await settleE2e(tester);
+  await tester.tap(finder);
+  await settleE2e(tester);
 }
 
-Future<void> openLoginFromSignedOutMine(PatrolIntegrationTester $) async {
-  await openShellTab($, ShellTab.mine);
+Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
+  await openShellTab(tester, ShellTab.mine);
 
   final loginAction = find.byKey(const Key('mine-signed-out-login-action'));
-  await tapVisible($, loginAction);
+  await tapVisible(tester, loginAction);
 
-  expect($('邮箱').exists, true);
+  expect(find.text('邮箱'), findsWidgets);
   expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
 }
 
-Future<void> tapMedicineDoseAction(
-  PatrolIntegrationTester $,
-  String label,
-) async {
+Future<void> tapMedicineDoseAction(WidgetTester tester, String label) async {
   final actionKey = switch (label) {
     '跳过' || 'Skipped' => 'medicine-next-dose-action-skipped',
     _ => 'medicine-next-dose-action-taken',
   };
   final action = find.byKey(Key(actionKey));
-  await pumpUntilFound($, action);
-  await $.tester.ensureVisible(action);
-  await settleE2e($);
-  await $.tester.tap(action);
-  await settleE2e($);
+  await pumpUntilFound(tester, action);
+  await tester.ensureVisible(action);
+  await settleE2e(tester);
+  await tester.tap(action);
+  await settleE2e(tester);
 }
 
 String todayDateString() {
@@ -276,24 +271,21 @@ Finder switchIn(Finder parent) {
   return find.descendant(of: parent, matching: find.byType(Switch)).first;
 }
 
-bool readSwitchValue(PatrolIntegrationTester $, Finder finder) {
+bool readSwitchValue(WidgetTester tester, Finder finder) {
   final switchFinder = finder.evaluate().first.widget is Switch
       ? finder
       : find.descendant(of: finder, matching: find.byType(Switch)).first;
-  return $.tester.widget<Switch>(switchFinder).value;
+  return tester.widget<Switch>(switchFinder).value;
 }
 
-Future<void> openMineProfileEntry(
-  PatrolIntegrationTester $,
-  String label,
-) async {
-  await openShellTab($, ShellTab.mine);
+Future<void> openMineProfileEntry(WidgetTester tester, String label) async {
+  await openShellTab(tester, ShellTab.mine);
   final archiveSection = find.byKey(const Key('mine-archive-section'));
-  await pumpUntilFound($, archiveSection);
+  await pumpUntilFound(tester, archiveSection);
   expect(archiveSection, findsOneWidget);
 
   final entry = find.descendant(of: archiveSection, matching: find.text(label));
-  await tapVisible($, entry);
+  await tapVisible(tester, entry);
 }
 
 ShellTab? _shellTabForLabel(String label) {

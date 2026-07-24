@@ -1,66 +1,76 @@
+import 'package:integration_test/integration_test.dart';
 import '../support/e2e_test_helpers.dart';
 
 void main() {
-  patrolTest('legal list renders documents from mock repository', ($) async {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  testWidgets('legal list renders documents from mock repository', (
+    tester,
+  ) async {
     final container = await pumpOfflineApp(
-      $,
+      tester,
       legalRepository: E2eLegalRepository(),
     );
     container.read(appRouterProvider).go('/legal');
-    await settleE2e($, frames: 10);
+    await settleE2e(tester, frames: 10);
 
     // Verify all three mock documents appear.
-    expect($('E2E 服务条款').exists, true);
-    expect($('E2E 隐私政策').exists, true);
-    expect($('E2E 免责声明').exists, true);
+    expect(find.text('E2E 服务条款'), findsWidgets);
+    expect(find.text('E2E 隐私政策'), findsWidgets);
+    expect(find.text('E2E 免责声明'), findsWidgets);
   });
 
-  patrolTest('legal list tap navigates to detail page with content', ($) async {
+  testWidgets('legal list tap navigates to detail page with content', (
+    tester,
+  ) async {
     final container = await pumpOfflineApp(
-      $,
+      tester,
       legalRepository: E2eLegalRepository(),
     );
     container.read(appRouterProvider).go('/legal');
-    await settleE2e($, frames: 10);
+    await settleE2e(tester, frames: 10);
 
     // Tap on the first document.
     final termsTile = find.text('E2E 服务条款');
-    await pumpUntilFound($, termsTile);
-    await $.tester.ensureVisible(termsTile);
-    await $.tester.tap(termsTile);
-    await settleE2e($, frames: 10);
+    await pumpUntilFound(tester, termsTile);
+    await tester.ensureVisible(termsTile);
+    await tester.tap(termsTile);
+    await settleE2e(tester, frames: 10);
 
     // Verify the detail page renders the Markdown content.
-    expect($('E2E terms').exists, true);
-    expect($('This is a test document.').exists, true);
+    expect(find.text('E2E terms'), findsWidgets);
+    expect(find.text('This is a test document.'), findsWidgets);
   });
 
-  patrolTest('legal detail with invalid docType shows error view', ($) async {
+  testWidgets('legal detail with invalid docType shows error view', (
+    tester,
+  ) async {
     final container = await pumpOfflineApp(
-      $,
+      tester,
       legalRepository: E2eLegalRepository(),
     );
     container.read(appRouterProvider).go('/legal/invalid-type');
-    await settleE2e($, frames: 10);
+    await settleE2e(tester, frames: 10);
 
     // The detail page should show a not-found error view with a back action.
     expect(find.byType(BackButton), findsWidgets);
   });
 
-  patrolTest('legal list back action returns to previous page', ($) async {
+  testWidgets('legal list back action returns to previous page', (
+    tester,
+  ) async {
     final container = await pumpOfflineApp(
-      $,
+      tester,
       legalRepository: E2eLegalRepository(),
     );
 
     // Start from home, navigate to legal.
     container.read(appRouterProvider).go('/legal');
-    await settleE2e($, frames: 10);
-    expect($('E2E 服务条款').exists, true);
+    await settleE2e(tester, frames: 10);
+    expect(find.text('E2E 服务条款'), findsWidgets);
 
     // Press back.
-    await $.tester.tap(find.byType(BackButton).first);
-    await settleE2e($, frames: 10);
+    await tester.tap(find.byType(BackButton).first);
+    await settleE2e(tester, frames: 10);
 
     // Should return to the previous page (home/today).
     expect(find.byKey(const Key('shell-tab-today')), findsOneWidget);

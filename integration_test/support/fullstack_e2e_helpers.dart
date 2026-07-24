@@ -151,7 +151,7 @@ Future<void> prepareFullstackRecordLane(FullstackE2eConfig config) async {
 }
 
 Future<ProviderContainer> pumpFullstackApp(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required FullstackE2eConfig config,
   MemoryLucentSessionStore? sessionStore,
 }) async {
@@ -170,56 +170,56 @@ Future<ProviderContainer> pumpFullstackApp(
 
   container.read(appRouterProvider).go('/');
 
-  await $.pumpWidget(
+  await tester.pumpWidget(
     UncontrolledProviderScope(container: container, child: const LuminousApp()),
   );
-  await settleE2e($, frames: 8);
+  await settleE2e(tester, frames: 8);
   return container;
 }
 
 Future<void> signInThroughUi(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required FullstackE2eConfig config,
 }) async {
-  await openLoginFromSignedOutMine($);
+  await openLoginFromSignedOutMine(tester);
   await pumpUntilFound(
-    $,
+    tester,
     find.byKey(const Key('auth-login-submit-action')),
     timeout: const Duration(seconds: 10),
   );
 
-  await $.tester.enterText(
+  await tester.enterText(
     _editableTextIn(const Key('auth-login-email-field')),
     config.email,
   );
-  await settleE2e($, frames: 4);
-  await $.tester.enterText(
+  await settleE2e(tester, frames: 4);
+  await tester.enterText(
     _editableTextIn(const ValueKey<String>('password-login-field')),
     config.password,
   );
-  await settleE2e($, frames: 4);
+  await settleE2e(tester, frames: 4);
 
   final submitButton = find.byKey(const Key('auth-login-submit-action'));
-  await $.tester.ensureVisible(submitButton);
-  await settleE2e($, frames: 4);
-  await $.tester.tap(submitButton);
-  await settleE2e($, frames: 12);
+  await tester.ensureVisible(submitButton);
+  await settleE2e(tester, frames: 4);
+  await tester.tap(submitButton);
+  await settleE2e(tester, frames: 12);
 }
 
 Future<void> waitForAuthenticatedSession(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   ProviderContainer container, {
   Duration timeout = const Duration(seconds: 30),
   Duration step = const Duration(milliseconds: 100),
 }) async {
-  final endTime = $.tester.binding.clock.fromNowBy(timeout);
+  final endTime = tester.binding.clock.fromNowBy(timeout);
 
   do {
-    await $.pump(step);
+    await tester.pump(step);
     if (container.read(authSessionProvider).isAuthenticated) {
       return;
     }
-  } while ($.tester.binding.clock.now().isBefore(endTime));
+  } while (tester.binding.clock.now().isBefore(endTime));
 
   final state = container.read(authSessionProvider);
   final loginForm = container.read(loginFormProvider);
@@ -232,17 +232,17 @@ Future<void> waitForAuthenticatedSession(
 }
 
 Future<void> waitForRoute(
-  PatrolIntegrationTester $, {
+  WidgetTester tester, {
   required ProviderContainer container,
   required bool Function(Uri uri) predicate,
   required String description,
   Duration timeout = const Duration(seconds: 15),
   Duration step = const Duration(milliseconds: 100),
 }) async {
-  final endTime = $.tester.binding.clock.fromNowBy(timeout);
+  final endTime = tester.binding.clock.fromNowBy(timeout);
 
   do {
-    await $.pump(step);
+    await tester.pump(step);
     final currentRoute = container
         .read(appRouterProvider)
         .routeInformationProvider
@@ -251,7 +251,7 @@ Future<void> waitForRoute(
     if (predicate(currentRoute)) {
       return;
     }
-  } while ($.tester.binding.clock.now().isBefore(endTime));
+  } while (tester.binding.clock.now().isBefore(endTime));
 
   throw TestFailure(
     'Timed out waiting for route: $description. '
@@ -268,13 +268,17 @@ DateTime parseRecordDate(String value) {
 }
 
 Future<void> openRecordTabForDate(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   ProviderContainer container, {
   required DateTime targetDate,
 }) async {
-  await openShellTab($, ShellTab.record, timeout: const Duration(seconds: 15));
+  await openShellTab(
+    tester,
+    ShellTab.record,
+    timeout: const Duration(seconds: 15),
+  );
   await pumpUntilFound(
-    $,
+    tester,
     find.byKey(const Key('record-timeline')),
     timeout: const Duration(seconds: 15),
   );
@@ -284,9 +288,9 @@ Future<void> openRecordTabForDate(
     final actionKey = current.isBefore(targetDate)
         ? const Key('record-date-next-action')
         : const Key('record-date-previous-action');
-    await tapVisible($, find.byKey(actionKey));
+    await tapVisible(tester, find.byKey(actionKey));
     await _waitForRecordDate(
-      $,
+      tester,
       container,
       targetDate: _stepDate(current, targetDate),
     );
@@ -294,20 +298,20 @@ Future<void> openRecordTabForDate(
 }
 
 Future<void> _waitForRecordDate(
-  PatrolIntegrationTester $,
+  WidgetTester tester,
   ProviderContainer container, {
   required DateTime targetDate,
   Duration timeout = const Duration(seconds: 10),
   Duration step = const Duration(milliseconds: 100),
 }) async {
-  final endTime = $.tester.binding.clock.fromNowBy(timeout);
+  final endTime = tester.binding.clock.fromNowBy(timeout);
 
   do {
-    await $.pump(step);
+    await tester.pump(step);
     if (_isSameDate(container.read(selectedRecordDateProvider), targetDate)) {
       return;
     }
-  } while ($.tester.binding.clock.now().isBefore(endTime));
+  } while (tester.binding.clock.now().isBefore(endTime));
 
   throw TestFailure(
     'Timed out waiting for record date ${targetDate.toIso8601String()}',
