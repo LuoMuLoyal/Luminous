@@ -120,7 +120,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
     final colors = context.theme.colors;
     final statusKey = entry.statusKey ?? _derivedStatusKey();
 
-    return FTile(
+    final tile = FTile(
       prefix: SoftIcon(icon: entry.icon, color: entry.accent),
       title: Text(
         mineCopy(l10n, entry.titleKey),
@@ -153,6 +153,29 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
       onPress: () {
         unawaited(_handleTap(context, ref));
       },
+    );
+
+    final editRoute = entry.route ?? _fallbackRouteFor(entry.titleKey);
+
+    return FContextMenu.tiles(
+      // ignore: sort_child_properties_last
+      child: tile,
+      menu: [
+        FTileGroup(
+          children: [
+            FTile(
+              title: Text(l10n.mineArchiveViewDetailAction),
+              onPress: () => unawaited(_handleTap(context, ref)),
+            ),
+            if (editRoute != null)
+              FTile(
+                title: Text(l10n.mineArchiveEditAction),
+                onPress: () =>
+                    unawaited(pushAuthRequiredRoute(context, editRoute)),
+              ),
+          ],
+        ),
+      ],
     );
   }
 

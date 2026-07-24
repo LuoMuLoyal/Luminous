@@ -304,5 +304,7 @@
   "mineEditDoseQuick1Tablet": "1 tablet",
   "mineEditDoseQuick2Tablets": "2 tablets",
   "mineEditDoseQuick5ml": "5ml",
-  "mineEditDoseQuick10ml": "10ml"
+  "mineEditDoseQuick10ml": "10ml",
+  "mineArchiveViewDetailAction": "View details",
+  "mineArchiveEditAction": "Edit"
 }

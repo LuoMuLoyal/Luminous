@@ -304,5 +304,7 @@
   "mineEditDoseQuick1Tablet": "1片",
   "mineEditDoseQuick2Tablets": "2片",
   "mineEditDoseQuick5ml": "5ml",
-  "mineEditDoseQuick10ml": "10ml"
+  "mineEditDoseQuick10ml": "10ml",
+  "mineArchiveViewDetailAction": "查看详情",
+  "mineArchiveEditAction": "编辑"
 }

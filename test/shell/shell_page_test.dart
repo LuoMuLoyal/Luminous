@@ -180,8 +180,8 @@ void main() {
       expect(find.byType(FSidebar), findsOneWidget);
       expect(
         find.byType(FSidebarItem),
-        findsNWidgets(7),
-      ); // 5 tabs + settings + help
+        findsNWidgets(9),
+      ); // 5 tabs + notifications + theme toggle + settings + help
     });
 
     testWidgets('renders tab labels in sidebar', (tester) async {

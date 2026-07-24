@@ -25,6 +25,13 @@
   - 子页直接组合 `FScaffold` / `FHeader`
   - `AppBackButton` 使用 Forui 图标按钮
   - 共享状态/对话框壳使用 `FCard` / `FButton` / `FDialog`
+- **窗口标题栏自定义**：`window_manager` 设置 `TitleBarStyle.hidden` 隐藏原生标题栏；侧边栏 header 集成 `DragToMoveArea`（拖拽移动窗口）+ Windows/Linux 自定义窗口控制按钮（最小化/最大化/关闭，hover 态反馈）；macOS 系统红绿灯按钮自动叠加，header 左侧加 70px padding 避免重叠。
+- **桌面端 CRUD 路由侧面板化**：Record create/detail/edit 和 Medicine reminder new/detail/edit 路由在桌面端使用 `sidePanelPage`（右侧滑入面板，maxWidth 560，半透明遮罩，`barrierDismissible`），移动端降级为 `slidePage`（全屏）。
+- **桌面端拖拽支持**：Record 时间线卡片包裹 `Draggable<TimelineDragData>`（仅 `recordId != null` 且桌面端），可拖拽到日历日期单元格（`DragTarget`）改变记录日期；源卡片半透明，目标日期高亮，成功后 `DataChangeTopic.dailyRecords` 触发看板刷新。移动端不启用拖拽。
+- **桌面端右键上下文菜单**：Record 时间线卡片、Medicine 用药记录项、Mine 归档项均接入 `FContextMenu.tiles`（桌面端右键触发，移动端长按触发），提供"查看详情"/"编辑"等操作。
+- **桌面端 Hover 态**：`DesktopHoverCard` 通过 `MouseRegion` + `AnimatedContainer` 追踪 hover，悬浮时背景/边框变为 primary 色调；移动端 pass-through。
+- **桌面端 Settings 主-从布局**：≥1200 使用 `_SettingsMasterDetail`（左导航 260px 高亮当前分组 + 右内容滚动），移动端保持单列长滚动。
+- **断点体系**：`compact=360` / `mobile=600` / `tablet=960` / `smallDesktop=1080` / `desktop=1200` / `wide=1400` / `ultrawide=1920`。`LayoutScale` 在 1200–1400 和 ≥1400 使用不同 `maxContentWidth`。`gridCrossAxisCount` 在 ≥1920 使用 6 列。
 
 ## Token 清理
 

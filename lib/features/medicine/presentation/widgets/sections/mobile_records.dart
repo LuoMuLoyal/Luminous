@@ -92,8 +92,9 @@ class _TodayPlanRow extends StatelessWidget {
     );
     final canMark =
         onMarkDose != null && takenRequest != null && skippedRequest != null;
+    final hasReminder = item.currentMedicineId != null;
 
-    return Padding(
+    final rowContent = Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,6 +190,35 @@ class _TodayPlanRow extends StatelessWidget {
           ],
         ],
       ),
+    );
+
+    if (!hasReminder) {
+      return rowContent;
+    }
+
+    return FContextMenu.tiles(
+      // ignore: sort_child_properties_last
+      child: rowContent,
+      menu: [
+        FTileGroup(
+          children: [
+            FTile(
+              title: Text(l10n.medicineReminderDetailTitle),
+              onPress: () => pushAuthRequiredRoute(
+                context,
+                '/medicine/reminders/${item.currentMedicineId}',
+              ),
+            ),
+            FTile(
+              title: Text(l10n.medicineReminderEditTitle),
+              onPress: () => pushAuthRequiredRoute(
+                context,
+                '/medicine/reminders/${item.currentMedicineId}/edit',
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

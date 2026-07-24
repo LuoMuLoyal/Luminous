@@ -11,6 +11,7 @@ import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -119,15 +120,97 @@ class SettingsPage extends ConsumerWidget {
     return PageScaffold(
       title: l10n.desktopSidebarSettings,
       child: isDesktop
-          ? SingleChildScrollView(
-              child: ResponsiveContentFrame(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: settingsPageVerticalPadding(context),
-                  ),
-                  child: _buildDesktopTwoColumn(sections),
-                ),
+          ? _SettingsMasterDetail(
+              accountHeader: _AccountHeader(
+                session: session,
+                signedIn: signedIn,
+                onTap: () => pushAuthRequiredRoute(context, Routes.account),
               ),
+              signOutTile: _SignOutTile(
+                signedIn: signedIn,
+                isLoading: session.isLoading,
+                onTap: () async {
+                  if (!session.canAccessProtectedData) {
+                    context.go(loginRouteForCurrentLocation(context));
+                    return;
+                  }
+                  final confirmed = await showDangerConfirmationDialog(
+                    context: context,
+                    title: l10n.authSignOutConfirmTitle,
+                    message: l10n.authSignOutConfirmMessage,
+                    confirmLabel: l10n.authSignOutConfirmAction,
+                  );
+                  if (!confirmed || !context.mounted) return;
+                  await ref.read(authSessionProvider.notifier).logout();
+                  if (!context.mounted) return;
+                  context.go(Routes.login);
+                },
+              ),
+              groups: [
+                _SettingsGroup(
+                  label: l10n.settingsAccountSecuritySectionTitle,
+                  icon: FLucideIcons.shieldCheck,
+                  body: FTileGroup(
+                    physics: const NeverScrollableScrollPhysics(),
+                    divider: FItemDivider.full,
+                    children: [
+                      _SettingsNavigationTile(
+                        tileKey: const Key('settings-row-account-security'),
+                        icon: FLucideIcons.shieldCheck,
+                        title: l10n.mineSettingsAccountTitle,
+                        onTap: () =>
+                            pushAuthRequiredRoute(context, Routes.account),
+                      ),
+                      _SettingsNavigationTile(
+                        tileKey: const Key('settings-row-security-pin'),
+                        icon: FLucideIcons.lockKeyhole,
+                        title: l10n.settingsSecurityPinTitle,
+                        subtitle: l10n.settingsSecurityPinSubtitle,
+                        onTap: () {
+                          if (!signedIn) {
+                            pushAuthRequiredRoute(context, Routes.settings);
+                            return;
+                          }
+                          context.push(Routes.settingsSecurityPin);
+                        },
+                      ),
+                      _SettingsNavigationTile(
+                        tileKey: const Key('settings-row-health-profile'),
+                        icon: FLucideIcons.heartPulse,
+                        title: l10n.settingsHealthProfileTitle,
+                        subtitle: l10n.settingsHealthProfileSubtitle,
+                        onTap: () {
+                          if (!signedIn) {
+                            pushAuthRequiredRoute(context, Routes.settings);
+                            return;
+                          }
+                          context.go(Routes.mine);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                _SettingsGroup(
+                  label: l10n.settingsGeneralSectionTitle,
+                  icon: FLucideIcons.slidersHorizontal,
+                  body: const _GeneralSection(),
+                ),
+                _SettingsGroup(
+                  label: l10n.settingsQuickEntrySection,
+                  icon: FLucideIcons.zap,
+                  body: const _QuickEntrySection(),
+                ),
+                _SettingsGroup(
+                  label: l10n.settingsPrivacySectionTitle,
+                  icon: FLucideIcons.lock,
+                  body: _PrivacySection(signedIn: signedIn),
+                ),
+                _SettingsGroup(
+                  label: l10n.settingsAboutSectionTitle,
+                  icon: FLucideIcons.info,
+                  body: _AboutSection(signedIn: signedIn),
+                ),
+              ],
             )
           : SingleChildScrollView(
               child: ResponsiveContentFrame(
@@ -144,33 +227,163 @@ class SettingsPage extends ConsumerWidget {
             ),
     );
   }
+}
 
-  Widget _buildDesktopTwoColumn(List<Widget> sections) {
-    // Split sections into left (account+security+general) and
-    // right (quick entry+privacy+about+sign out) for balanced height.
-    const splitIndex = 10; // after _GeneralSection + spacing
-    final left = sections.sublist(0, splitIndex);
-    final right = sections.sublist(splitIndex);
+/// Data model for a settings group in the master-detail layout.
+class _SettingsGroup {
+  const _SettingsGroup({
+    required this.label,
+    required this.icon,
+    required this.body,
+  });
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: left,
-          ),
+  final String label;
+  final IconData icon;
+  final Widget body;
+}
+
+/// Desktop master-detail layout for the settings page.
+///
+/// Left column (~280px): section navigation with icons + labels, highlighting
+/// the currently selected group.
+/// Right column (flex): the selected group's settings content.
+/// Account header is always shown above the master-detail area.
+/// Sign-out tile is always shown below.
+class _SettingsMasterDetail extends StatefulWidget {
+  const _SettingsMasterDetail({
+    required this.accountHeader,
+    required this.signOutTile,
+    required this.groups,
+  });
+
+  final Widget accountHeader;
+  final Widget signOutTile;
+  final List<_SettingsGroup> groups;
+
+  @override
+  State<_SettingsMasterDetail> createState() => _SettingsMasterDetailState();
+}
+
+class _SettingsMasterDetailState extends State<_SettingsMasterDetail> {
+  int _selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveContentFrame(
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: settingsPageVerticalPadding(context),
         ),
-        const SizedBox(width: Spacing.level6),
-        Expanded(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: right,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            widget.accountHeader,
+            const SizedBox(height: _kGroupSpacing),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Left navigation column.
+                  SizedBox(
+                    width: 260,
+                    child: FCard(
+                      child: Padding(
+                        padding: const EdgeInsets.all(Spacing.level2),
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < widget.groups.length; i++) ...[
+                              _MasterNavItem(
+                                icon: widget.groups[i].icon,
+                                label: widget.groups[i].label,
+                                selected: i == _selectedIndex,
+                                onTap: () => setState(() => _selectedIndex = i),
+                              ),
+                              if (i < widget.groups.length - 1)
+                                const AppDivider(),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.level6),
+                  // Right content column.
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: widget.groups[_selectedIndex].body,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: _kGroupSpacing),
+            widget.signOutTile,
+          ],
         ),
-      ],
+      ),
+    );
+  }
+}
+
+/// A single navigation item in the settings master column.
+class _MasterNavItem extends StatelessWidget {
+  const _MasterNavItem({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final colors = theme.colors;
+
+    return FTappable(
+      onPress: onTap,
+      child: AnimatedContainer(
+        duration: DurationTokens.widgetQuick,
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level3,
+          vertical: Spacing.level3,
+        ),
+        decoration: BoxDecoration(
+          color: selected
+              ? colors.primary.withValues(alpha: 0.08)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: selected ? colors.primary : colors.mutedForeground,
+            ),
+            const SizedBox(width: Spacing.level3),
+            Expanded(
+              child: Text(
+                label,
+                style: TypographyToken.level4
+                    .body(context)
+                    .copyWith(
+                      color: selected
+                          ? colors.foreground
+                          : colors.mutedForeground,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                    ),
+              ),
+            ),
+            if (selected)
+              Icon(FLucideIcons.chevronRight, size: 16, color: colors.primary),
+          ],
+        ),
+      ),
     );
   }
 }
