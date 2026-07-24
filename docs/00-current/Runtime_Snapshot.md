@@ -40,6 +40,10 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n �
 - 侧边栏 header 显示用户头像+昵称（已登录）或 app Logo（未登录）；footer 包含通知入口（带红点）、主题快切（system/light/dark 三态循环）、设置、帮助。
 - 桌面端窗口通过 `window_manager` 设置最小尺寸 480×720 + 窗口标题（Web/移动端为 no-op）。
 - 对话框宽度自适应屏宽：`LayoutScaleResolver.dialogMaxWidthFor()` 桌面 560 / 平板 480 / 移动 360；`wideDialogMaxWidthFor()` 桌面 640 / 平板 520 / 移动 420。
+- 全局键盘快捷键通过 `AppShortcuts`（ConsumerWidget）注入到 `FToaster` 内层，组合 Flutter 原生 `Shortcuts` + `Actions`。快捷键：Ctrl/Cmd+K（命令面板）、+N（新建记录）、+B（侧边栏折叠）、+,（设置）、+Shift+A（助手）、+1-5（切换 Tab）。
+- 命令面板（Ctrl+K）提供模糊搜索 + Tab 导航 + 常用操作，桌面端自动包含折叠侧边栏操作。
+- 桌面端 Hover 态：`DesktopHoverCard` 通过 `MouseRegion` 追踪 hover，悬浮时背景/边框变为 primary 色调；移动端 pass-through。
+- 右键上下文菜单使用 Forui `FContextMenu.tiles`，桌面端右键触发，移动端长按触发。时间线卡片已接入。
 
 ## 网络层
 

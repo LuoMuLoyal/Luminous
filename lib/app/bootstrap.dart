@@ -11,6 +11,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/shortcuts/app_shortcuts.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -118,7 +119,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
               textScaler: textScaler,
               accessibleNavigation: reduceAnimations,
             ),
-            child: FToaster(child: child ?? const SizedBox.shrink()),
+            child: FToaster(
+              child: AppShortcuts(child: child ?? const SizedBox.shrink()),
+            ),
           ),
         );
       },

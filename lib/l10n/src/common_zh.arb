@@ -14,6 +14,11 @@
   "desktopSidebarNotifications": "通知",
   "desktopSidebarSignedOut": "点击登录",
   "commonBack": "返回",
+  "commandPaletteTitle": "快速操作",
+  "commandPaletteSearchHint": "搜索命令或页面…",
+  "commandPaletteEmpty": "未找到匹配的命令",
+  "commandPaletteNavigateTo": "跳转到",
+  "commandPaletteActions": "操作",
   "placeholderSoon": "{label} · 即将上线",
   "@placeholderSoon": {
     "placeholders": {
