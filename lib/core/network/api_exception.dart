@@ -31,8 +31,7 @@ class LucentApiException implements Exception {
       'LucentApiException(message: $message',
       if (code != null) ', code: $code',
       if (statusCode != null) ', statusCode: $statusCode',
-      if (requestId != null && (requestId?.isNotEmpty ?? false))
-        ', requestId: $requestId',
+      if (requestId != null && requestId!.isNotEmpty) ', requestId: $requestId',
       if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
       ')',
     ];

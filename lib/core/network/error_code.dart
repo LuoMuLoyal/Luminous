@@ -34,9 +34,9 @@ enum NetworkErrorCode {
   /// Request cancelled
   cancelled,
 
-  /// HTTP 状态码错误
+  /// HTTP status code error
   badResponse,
 
-  /// 未知网络错误
+  /// Unknown network error
   unknown,
 }
