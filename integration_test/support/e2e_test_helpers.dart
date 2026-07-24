@@ -298,7 +298,7 @@ Future<void> openMineProfileEntry(
 
 ShellTab? _shellTabForLabel(String label) {
   return switch (label.trim().toLowerCase()) {
-    'today' || '今天' => ShellTab.today,
+    'today' || '今天' || '今日' => ShellTab.today,
     'record' || '记录' => ShellTab.record,
     'medicine' || '用药' => ShellTab.medicine,
     'report' || '报告' => ShellTab.report,

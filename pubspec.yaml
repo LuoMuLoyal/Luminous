@@ -96,7 +96,7 @@ dev_dependencies:
   mocktail: ^1.0.5
   network_image_mock: ^2.1.1
   alchemist: ^0.14.0
-  patrol: ^4.6.1
+  patrol: ^4.7.1
   riverpod_generator: ^4.0.4
   drift_dev: ^2.20.0
   go_router_builder: ^4.3.0

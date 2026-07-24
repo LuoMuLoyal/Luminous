@@ -69,7 +69,7 @@
   "reportUnitHour": "hours",
   "reportUnitLiter": "L",
   "reportStatusGood": "Good",
-  "reportStatusNeedsImprove": "Needs lift",
+  "reportStatusNeedsImprove": "Needs improvement",
   "reportStatusStable": "Stable",
   "reportDeltaMedication": "9%",
   "reportDeltaSleep": "0.6",

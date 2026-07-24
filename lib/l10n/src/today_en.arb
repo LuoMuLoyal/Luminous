@@ -134,7 +134,7 @@
       "total": {"type": "int"}
     }
   },
-  "todayStatusNeedsImprovement": "Needs lift",
+  "todayStatusNeedsImprovement": "Needs improvement",
   "todayStatusCompleted": "Completed",
   "todayMedicationPendingStatus": "Pending",
   "todayPrioritySectionTitle": "Today's priorities",
@@ -267,10 +267,10 @@
   "todayObservationErrorTitle": "Observations are unavailable for the moment",
   "todayObservationSleepMissingTitle": "Recent sleep data is still missing",
   "todayObservationSleepMissingSubtitle": "Sleep trends are still unclear. Add one record and the picture will get sharper.",
-  "todayObservationLowConfidenceTag": "FYI",
+  "todayObservationLowConfidenceTag": "For reference",
   "todayObservationMediumConfidenceTag": "Worth noting",
   "todayObservationReviewTag": "Take a look",
-  "todayObservationMedicineNote": "This is a lightweight hint. Open the medicine page for the actual risk and coverage boundary.",
+  "todayObservationMedicineNote": "This is a reference hint. Open the medicine page for the actual risk and coverage boundary.",
   "todayObservationSleepNote": "Treat this as something to watch, not as a must-do task for today.",
   "todayObservationRecordNote": "If you log one more fact, later suggestions will line up better with reality.",
   "todayObservationReportNote": "This fits better in a retrospective report than in today's top action slot.",

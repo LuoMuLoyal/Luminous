@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-22 (Android 模拟器网络连接修复)
+Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n 翻译质量优化)
 
 ## 技术栈
 
@@ -89,9 +89,10 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复)
 
 ## 国际化
 
-- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`（10 个 fragment × 2 locale = 20 文件）。
+- ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`（11 个 fragment × 2 locale = 22 文件）。
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
+- 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。
 - Report 预览空态新增文案键：`reportPreviewBannerMessage`、`reportTrendPreviewTitle/Body`、`reportFindingsPreviewTitle/Body`、`reportSuggestionHistoryPreviewTitle/Body`、`reportExportPreviewTitle/Body`（位于 `report_*` 分片）。

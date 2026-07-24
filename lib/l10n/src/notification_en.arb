@@ -10,7 +10,7 @@
   "notificationMarkUnreadSuccess": "Marked as unread",
   "notificationMarkReadSuccess": "Marked as read",
   "notificationDeleteSuccess": "Deleted",
-  "notificationActionNavigate": "Go to handle",
+  "notificationActionNavigate": "Take action",
   "notificationActionMarkRead": "Mark as read",
   "notificationActionMarkUnread": "Mark as unread",
   "notificationActionDelete": "Delete",
@@ -32,7 +32,7 @@
   "notificationTypeMedicineReminder": "Reminder",
   "notificationTypeSystemAnnouncement": "System",
   "notificationTypeOauthLogin": "Login",
-  "notificationTypeIdentityLinked": "Linkage",
+  "notificationTypeIdentityLinked": "Account linked",
   "notificationTypeUnknown": "Notification",
   "notificationUnreadSemantics": "Unread"
 }

@@ -1,6 +1,6 @@
 {
   "medicineHeaderAddToast": "This will open medicine addition and recognition.",
-  "medicineSafetyGuardLabel": "Safe guard",
+  "medicineSafetyGuardLabel": "Safety guard",
   "medicineNotificationsTooltip": "Medication reminders",
   "medicineHomeSearchHint": "Search medicine or symptom",
   "medicineManageMedicinesAction": "Manage meds",
@@ -329,7 +329,7 @@
   "medicineNoPendingDose": "Today's medicines are done",
   "medicineNoPendingDoseDetail": "No pending dose reminders",
   "medicineStatusStable": "Stable routine",
-  "medicineStatusNeedsCheckin": "Stable routine",
+  "medicineStatusNeedsCheckin": "Needs check-in",
   "medicineSafetyPanelTitle": "Medication safety",
   "medicineSafetyPanelSubtitle": "High-risk alerts and adherence risk collect here.",
   "medicineSafetyPanelEmptyTitle": "No safety data yet",
