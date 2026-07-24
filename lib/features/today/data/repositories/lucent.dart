@@ -1,27 +1,42 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/data/providers/workspace.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/settings/data/repositories/lucent.dart';
+import 'package:luminous/features/record/domain/repositories/daily.dart';
+import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/repositories/dashboard.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 /// Lucent-backed [TodayRepository] that merges real health-context and
 /// daily-record signals with static mock sections for unsupported surfaces.
 class LucentTodayRepository implements TodayRepository {
-  LucentTodayRepository({required this.ref});
+  LucentTodayRepository({
+    required this.fetchHealthContextSnapshot,
+    required this.dailyRecordRepository,
+    required this.cachedDoseLogDataSource,
+    required this.userSettingsRepository,
+    required this.medicineReminderRemoteDataSource,
+    required this.talker,
+  });
 
-  final Ref ref;
+  /// Lazily fetches the current health-context snapshot.
+  ///
+  /// Passed as a callback so each [fetchDashboard] call reads the latest
+  /// pending future, preserving the original behaviour where the snapshot
+  /// is resolved at call time (not construction time).
+  final Future<HealthContextSnapshot> Function() fetchHealthContextSnapshot;
+  final DailyRecordRepository dailyRecordRepository;
+  final CachedDoseLogDataSource cachedDoseLogDataSource;
+  final UserSettingsRepository userSettingsRepository;
+  final MedicineReminderRemoteDataSource medicineReminderRemoteDataSource;
+  final Talker talker;
 
   @override
   Future<TodayDashboard> fetchDashboard() async {
-    final snapshot = await ref.read(healthContextSnapshotProvider.future);
+    final snapshot = await fetchHealthContextSnapshot();
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
@@ -39,9 +54,7 @@ class LucentTodayRepository implements TodayRepository {
     final Map<String, String?> recordLatest = {};
     Map<String, dynamic>? sleepPayload;
     try {
-      final summary = await ref
-          .read(dailyRecordRepositoryProvider)
-          .fetchSummary(dateStr);
+      final summary = await dailyRecordRepository.fetchSummary(dateStr);
       for (final s in summary.summaries) {
         recordCounts[s.kind.name] = s.count;
         recordLatest[s.kind.name] = s.latest?.value;
@@ -50,17 +63,13 @@ class LucentTodayRepository implements TodayRepository {
         }
       }
     } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error('LucentTodayRepository: fetchSummary failed: $e');
+      talker.error('LucentTodayRepository: fetchSummary failed: $e');
     }
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};
     try {
-      final doseLogs = await ref
-          .read(cachedDoseLogDataSourceProvider)
-          .fetchForDate(dateStr);
+      final doseLogs = await cachedDoseLogDataSource.fetchForDate(dateStr);
       for (final log in doseLogs) {
         final medicineId = log.currentMedicineId;
         if (medicineId != null &&
@@ -70,9 +79,7 @@ class LucentTodayRepository implements TodayRepository {
         }
       }
     } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error('LucentTodayRepository: dose logs failed: $e');
+      talker.error('LucentTodayRepository: dose logs failed: $e');
     }
     final pendingMedicines = medicines
         .where((m) => m.isCurrent && !completedMedicineIds.contains(m.id))
@@ -182,14 +189,10 @@ class LucentTodayRepository implements TodayRepository {
   /// endpoint fails, so a network blip does not break the overview.
   Future<int> _waterTargetCount() async {
     try {
-      final settings = await ref
-          .read(userSettingsRepositoryProvider)
-          .getSettings();
+      final settings = await userSettingsRepository.getSettings();
       return settings.waterTargetCount;
     } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error('LucentTodayRepository._waterTargetCount: failed: $e');
+      talker.error('LucentTodayRepository._waterTargetCount: failed: $e');
       return TodayDashboard.defaultWaterTargetCount;
     }
   }
@@ -206,9 +209,7 @@ class LucentTodayRepository implements TodayRepository {
   ) async {
     if (allMedicineIds.isEmpty) return {};
     try {
-      final reminders = await ref
-          .read(medicineReminderRemoteDataSourceProvider)
-          .fetchActive();
+      final reminders = await medicineReminderRemoteDataSource.fetchActive();
       return reminders
           .where((reminder) {
             final medicineId = reminder.currentMedicineId;
@@ -219,11 +220,9 @@ class LucentTodayRepository implements TodayRepository {
           .map((reminder) => reminder.currentMedicineId!)
           .toSet();
     } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error(
-            'LucentTodayRepository._todayScheduledMedicineIds: failed: $e',
-          );
+      talker.error(
+        'LucentTodayRepository._todayScheduledMedicineIds: failed: $e',
+      );
       return {};
     }
   }
@@ -234,9 +233,7 @@ class LucentTodayRepository implements TodayRepository {
   ) async {
     if (pendingMedicineIds.isEmpty) return null;
     try {
-      final reminders = await ref
-          .read(medicineReminderRemoteDataSourceProvider)
-          .fetchActive();
+      final reminders = await medicineReminderRemoteDataSource.fetchActive();
       final todayReminders =
           reminders
               .where((reminder) {
@@ -249,9 +246,7 @@ class LucentTodayRepository implements TodayRepository {
             ..sort(_compareReminderTime);
       return todayReminders.firstOrNull;
     } catch (e) {
-      ref
-          .read(talkerProvider)
-          .error('LucentTodayRepository._nextReminderFor: failed: $e');
+      talker.error('LucentTodayRepository._nextReminderFor: failed: $e');
       return null;
     }
   }
