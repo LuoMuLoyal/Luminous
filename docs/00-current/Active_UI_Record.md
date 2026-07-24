@@ -42,6 +42,7 @@ Last updated: 2026-07-21 (P1 header migration)
 - 时间线项可点击跳转详情，保留骨架屏加载态。
 - 移动端首屏默认展示前 7 条；超过 7 条显示"查看全部记录/收起"切换。
 - **空态**：`entries.isEmpty` 时渲染图标+标题+描述+CTA 结构化空态，CTA 跳 `/record/create?date=<选中日期>`。桌面端额外附"清除筛选"按钮。
+- **桌面端拖拽改日期**：时间线卡片（仅 `recordId != null` 的真实记录）包裹 `Draggable<TimelineDragData>`，可拖拽到日历日期单元格（`DragTarget`）改变记录日期。拖拽时源卡片半透明（opacity 0.4），拖拽预览为紧凑浮动卡片（图标+标题+日历图标）。目标日历日期悬浮高亮（primary 色调背景+边框）。成功后调用 `dailyRecordRepositoryProvider.update()` 更新 `occurredAt`，发射 `DataChangeTopic.dailyRecords` 触发看板刷新，自动导航到新日期，Toast 反馈结果。移动端不启用拖拽。
 
 ## 创建与快捷操作
 

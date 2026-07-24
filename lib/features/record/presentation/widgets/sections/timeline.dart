@@ -7,6 +7,7 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -18,6 +19,7 @@ class RecordTimelinePanel extends StatelessWidget {
     this.dense = false,
     this.onClearFilter,
     this.selectedDate,
+    this.onRecordDateChange,
   });
 
   final List<RecordTimelineEntry> entries;
@@ -25,6 +27,11 @@ class RecordTimelinePanel extends StatelessWidget {
   final bool dense;
   final VoidCallback? onClearFilter;
   final DateTime? selectedDate;
+
+  /// Called when the user drags a timeline card onto a calendar day.
+  /// Receives the record ID and the new target date.
+  /// Only invoked on desktop layouts; mobile uses tap-to-navigate.
+  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +104,7 @@ class RecordTimelinePanel extends StatelessWidget {
                       isLast: index == entries.length - 1,
                       dense: dense,
                       selectedDate: selectedDate,
+                      onRecordDateChange: onRecordDateChange,
                     ),
                 ],
               ),
@@ -115,6 +123,7 @@ class _TimelineEntryRow extends StatelessWidget {
     required this.isLast,
     required this.dense,
     this.selectedDate,
+    this.onRecordDateChange,
   });
 
   final int index;
@@ -123,6 +132,7 @@ class _TimelineEntryRow extends StatelessWidget {
   final bool isLast;
   final bool dense;
   final DateTime? selectedDate;
+  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -162,6 +172,7 @@ class _TimelineEntryRow extends StatelessWidget {
                 l10n: l10n,
                 dense: dense,
                 selectedDate: selectedDate,
+                onRecordDateChange: onRecordDateChange,
               ),
             ),
           ),
@@ -203,6 +214,7 @@ class _TimelineCard extends StatelessWidget {
     required this.l10n,
     required this.dense,
     this.selectedDate,
+    this.onRecordDateChange,
   });
 
   final RecordTimelineEntry entry;
@@ -210,9 +222,56 @@ class _TimelineCard extends StatelessWidget {
   final AppLocalizations l10n;
   final bool dense;
   final DateTime? selectedDate;
+  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+    final canDrag =
+        isDesktop && entry.recordId != null && onRecordDateChange != null;
+
+    final cardWidget = _buildCard(context);
+
+    if (!canDrag) {
+      return FContextMenu.tiles(
+        // ignore: sort_child_properties_last
+        child: _buildTappable(context, cardWidget),
+        menu: _buildContextMenu(context),
+      );
+    }
+
+    return FContextMenu.tiles(
+      // ignore: sort_child_properties_last
+      child: Draggable<TimelineDragData>(
+        data: TimelineDragData(recordId: entry.recordId!, entry: entry),
+        affinity: Axis.vertical,
+        feedback: _DragFeedback(
+          entry: entry,
+          l10n: l10n,
+          maxWidth: width * 0.4,
+        ),
+        childWhenDragging: Opacity(opacity: 0.4, child: cardWidget),
+        child: _buildTappable(context, cardWidget),
+      ),
+      menu: _buildContextMenu(context),
+    );
+  }
+
+  Widget _buildTappable(BuildContext context, Widget child) {
+    return FTappable(
+      key: Key('record-timeline-entry-index-$index'),
+      onPress: entry.recordId != null
+          ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
+          : () => pushAuthRequiredRoute(
+              context,
+              '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
+            ),
+      child: DesktopHoverCard(child: child),
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
     final colors = context.theme.colors;
 
     final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
@@ -226,222 +285,202 @@ class _TimelineCard extends StatelessWidget {
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
-    return FContextMenu.tiles(
-      // ignore: sort_child_properties_last
-      child: FTappable(
-        key: Key('record-timeline-entry-index-$index'),
-        onPress: entry.recordId != null
-            ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
-            : () => pushAuthRequiredRoute(
-                context,
-                '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
-              ),
-        child: DesktopHoverCard(
-          child: FCard(
-            style: .delta(
-              decoration: .shapeDelta(
-                color: colors.background,
-                shape: RoundedSuperellipseBorder(
-                  side: BorderSide(color: colors.border),
-                  borderRadius: context.theme.style.borderRadius.lg,
-                ),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: entry.softColor.solid(context),
-                      borderRadius: BorderRadius.circular(RadiusTokens.level4),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        entry.icon,
-                        color: entry.accent.solid(context),
-                        size: 19,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: Spacing.level4),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Flexible(
-                              child: Text(
-                                label,
-                                style: TypographyToken.level3
-                                    .body(context)
-                                    .copyWith(color: colors.mutedForeground),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            if (entry.badgeKey != null) ...[
-                              const SizedBox(width: Spacing.level3),
-                              FBadge.raw(
-                                builder: (context, style) {
-                                  return DecoratedBox(
-                                    decoration: ShapeDecoration(
-                                      color: colors.secondary,
-                                      shape: RoundedSuperellipseBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          RadiusTokens.level2,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: Spacing.level2,
-                                        vertical: Spacing.level1,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            recordCopy(l10n, entry.badgeKey!),
-                                            style: TypographyToken.level3
-                                                .body(context)
-                                                .copyWith(
-                                                  color: colors.foreground,
-                                                  fontWeight: FontWeight.w700,
-                                                  letterSpacing: 0,
-                                                ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ],
-                        ),
-                        if (value != null && value.isNotEmpty) ...[
-                          const SizedBox(height: Spacing.level2),
-                          Text.rich(
-                            TextSpan(
-                              style: TypographyToken.level4
-                                  .body(context)
-                                  .copyWith(
-                                    color: colors.foreground,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                              children: [
-                                TextSpan(text: value),
-                                if (unit != null)
-                                  TextSpan(
-                                    text: ' $unit',
-                                    style: TypographyToken.level3
-                                        .body(context)
-                                        .copyWith(
-                                          color: colors.mutedForeground,
-                                        ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        if (detail != null) ...[
-                          const SizedBox(height: Spacing.level2),
-                          Text(
-                            detail,
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(color: colors.mutedForeground),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  if (entry.imageUrl != null && !dense) ...[
-                    const SizedBox(width: Spacing.level4),
-                    _TimelineImageThumbnail(
-                      imageUrl: entry.imageUrl!,
-                      label: label,
-                    ),
-                  ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-                    const SizedBox(width: Spacing.level4),
-                    FCard(
-                      child: SizedBox(
-                        width: 96,
-                        height: 72,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Spacing.level3,
-                              vertical: Spacing.level2,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  FLucideIcons.utensils,
-                                  size: 22,
-                                  color: colors.mutedForeground,
-                                ),
-                                const SizedBox(height: Spacing.level1),
-                                Text(
-                                  recordCopy(l10n, entry.imagePlaceholderKey!),
-                                  style: TypographyToken.level3
-                                      .body(context)
-                                      .copyWith(color: colors.foreground),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  const SizedBox(width: Spacing.level3),
-                  Icon(
-                    _trailingIcon(),
-                    color: _trailingColor(colors),
-                    size: 18,
-                  ),
-                ],
-              ),
-            ),
+    return FCard(
+      style: .delta(
+        decoration: .shapeDelta(
+          color: colors.background,
+          shape: RoundedSuperellipseBorder(
+            side: BorderSide(color: colors.border),
+            borderRadius: context.theme.style.borderRadius.lg,
           ),
         ),
       ),
-      menu: [
-        FTileGroup(
+      child: Padding(
+        padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FTile(
-              title: Text(l10n.recordDetailTitle),
-              onPress: entry.recordId != null
-                  ? () => pushAuthRequiredRoute(
-                      context,
-                      '/record/${entry.recordId}',
-                    )
-                  : null,
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: entry.softColor.solid(context),
+                borderRadius: BorderRadius.circular(RadiusTokens.level4),
+              ),
+              child: Center(
+                child: Icon(
+                  entry.icon,
+                  color: entry.accent.solid(context),
+                  size: 19,
+                ),
+              ),
             ),
-            FTile(
-              title: Text(l10n.recordEditAction),
-              onPress: entry.recordId != null
-                  ? () => pushAuthRequiredRoute(
-                      context,
-                      '/record/${entry.recordId}?edit=true',
-                    )
-                  : null,
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          label,
+                          style: TypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (entry.badgeKey != null) ...[
+                        const SizedBox(width: Spacing.level3),
+                        FBadge.raw(
+                          builder: (context, style) {
+                            return DecoratedBox(
+                              decoration: ShapeDecoration(
+                                color: colors.secondary,
+                                shape: RoundedSuperellipseBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    RadiusTokens.level2,
+                                  ),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Spacing.level2,
+                                  vertical: Spacing.level1,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      recordCopy(l10n, entry.badgeKey!),
+                                      style: TypographyToken.level3
+                                          .body(context)
+                                          .copyWith(
+                                            color: colors.foreground,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: 0,
+                                          ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (value != null && value.isNotEmpty) ...[
+                    const SizedBox(height: Spacing.level2),
+                    Text.rich(
+                      TextSpan(
+                        style: TypographyToken.level4
+                            .body(context)
+                            .copyWith(
+                              color: colors.foreground,
+                              fontWeight: FontWeight.w700,
+                            ),
+                        children: [
+                          TextSpan(text: value),
+                          if (unit != null)
+                            TextSpan(
+                              text: ' $unit',
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.mutedForeground),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  if (detail != null) ...[
+                    const SizedBox(height: Spacing.level2),
+                    Text(
+                      detail,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ],
+                ],
+              ),
             ),
+            if (entry.imageUrl != null && !dense) ...[
+              const SizedBox(width: Spacing.level4),
+              _TimelineImageThumbnail(imageUrl: entry.imageUrl!, label: label),
+            ] else if (entry.imagePlaceholderKey != null && !dense) ...[
+              const SizedBox(width: Spacing.level4),
+              FCard(
+                child: SizedBox(
+                  width: 96,
+                  height: 72,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.level3,
+                        vertical: Spacing.level2,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            FLucideIcons.utensils,
+                            size: 22,
+                            color: colors.mutedForeground,
+                          ),
+                          const SizedBox(height: Spacing.level1),
+                          Text(
+                            recordCopy(l10n, entry.imagePlaceholderKey!),
+                            style: TypographyToken.level3
+                                .body(context)
+                                .copyWith(color: colors.foreground),
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(width: Spacing.level3),
+            Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
           ],
         ),
-      ],
+      ),
     );
+  }
+
+  List<FTileGroup> _buildContextMenu(BuildContext context) {
+    return [
+      FTileGroup(
+        children: [
+          FTile(
+            title: Text(l10n.recordDetailTitle),
+            onPress: entry.recordId != null
+                ? () => pushAuthRequiredRoute(
+                    context,
+                    '/record/${entry.recordId}',
+                  )
+                : null,
+          ),
+          FTile(
+            title: Text(l10n.recordEditAction),
+            onPress: entry.recordId != null
+                ? () => pushAuthRequiredRoute(
+                    context,
+                    '/record/${entry.recordId}?edit=true',
+                  )
+                : null,
+          ),
+        ],
+      ),
+    ];
   }
 
   IconData _trailingIcon() {
@@ -508,6 +547,79 @@ class _TimelineImageFallback extends StatelessWidget {
         border: Border.all(color: colors.border),
       ),
       child: Center(child: Icon(icon, color: colors.mutedForeground, size: 22)),
+    );
+  }
+}
+
+/// Compact floating feedback widget shown while dragging a timeline card.
+///
+/// Renders a small card with the entry icon and title so the user can see
+/// what they're dragging. The [maxWidth] prevents the feedback from
+/// spanning the entire screen on wide monitors.
+class _DragFeedback extends StatelessWidget {
+  const _DragFeedback({
+    required this.entry,
+    required this.l10n,
+    required this.maxWidth,
+  });
+
+  final RecordTimelineEntry entry;
+  final AppLocalizations l10n;
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final label = entry.rawTitle ?? recordCopy(l10n, entry.titleKey);
+
+    return Material(
+      color: Colors.transparent,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.background,
+            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.3)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.level4,
+              vertical: Spacing.level3,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(entry.icon, color: entry.accent.solid(context), size: 18),
+                const SizedBox(width: Spacing.level3),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: TypographyToken.level3
+                        .body(context)
+                        .copyWith(color: colors.foreground),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+                const SizedBox(width: Spacing.level3),
+                Icon(
+                  FLucideIcons.calendarDays,
+                  color: colors.mutedForeground,
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

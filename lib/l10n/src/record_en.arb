@@ -429,5 +429,7 @@
   "recordDiscardChangesAction": "Discard",
   "recordImageCameraAction": "Take photo",
   "recordCreateSectionBasicTitle": "Basic info",
-  "recordCreateSectionDetailsTitle": "Record details"
+  "recordCreateSectionDetailsTitle": "Record details",
+  "recordDragDateChanged": "Record date updated",
+  "recordDragDateError": "Failed to update date. Please try again."
 }

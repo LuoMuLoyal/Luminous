@@ -27,6 +27,7 @@ class RecordDashboardView extends StatelessWidget {
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
+    this.onRecordDateChange,
   });
 
   final RecordDashboard dashboard;
@@ -39,6 +40,10 @@ class RecordDashboardView extends StatelessWidget {
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
+
+  /// Called when a timeline card is dragged onto a calendar day.
+  /// Receives the record ID and the new target date.
+  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,7 @@ class RecordDashboardView extends StatelessWidget {
             onFilterSelected: onFilterSelected,
             onQuickAction: onQuickAction,
             onNewEntry: onNewEntry,
+            onRecordDateChange: onRecordDateChange,
           )
         : _MobileRecordDashboard(
             dashboard: dashboard,
@@ -155,6 +161,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
     this.onFilterSelected,
     this.onQuickAction,
     this.onNewEntry,
+    this.onRecordDateChange,
   });
 
   final RecordDashboard dashboard;
@@ -163,6 +170,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<RecordQuickAction>? onQuickAction;
   final VoidCallback? onNewEntry;
+  final void Function(String recordId, DateTime newDate)? onRecordDateChange;
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +186,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 selectedDate: dashboard.selectedDate,
                 l10n: l10n,
                 onDateSelected: onDateSelected,
+                onRecordDropped: onRecordDateChange,
                 // Month navigation is handled internally by the panel's
                 // _viewedMonth state — no parent callback needed.
               ),
@@ -206,6 +215,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
                 l10n: l10n,
                 onClearFilter: () => onFilterSelected?.call(null),
                 selectedDate: dashboard.selectedDate,
+                onRecordDateChange: onRecordDateChange,
               ),
             ],
           ),

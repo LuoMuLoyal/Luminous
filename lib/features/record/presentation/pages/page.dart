@@ -7,13 +7,16 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
@@ -179,6 +182,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               );
             },
             onDateSelected: (date) => _setSelectedDate(date),
+            onRecordDateChange: (recordId, newDate) =>
+                _changeRecordDate(context, recordId, newDate),
             onQuickAction: (action) {
               // Defer provider modification to avoid "modified while
               // widget tree was building" errors when the quick entry
@@ -256,6 +261,35 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   void _setSelectedDate(DateTime date) {
     ref.read(selectedRecordDateProvider.notifier).setDate(date);
+  }
+
+  Future<void> _changeRecordDate(
+    BuildContext context,
+    String recordId,
+    DateTime newDate,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final dateStr = formatRecordDate(newDate);
+
+    try {
+      await ref
+          .read(dailyRecordRepositoryProvider)
+          .update(recordId, DailyRecordUpdateInput(occurredAt: dateStr));
+
+      // Notify cross-feature data change bus so dashboards refresh.
+      ref
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.dailyRecords);
+
+      // Navigate to the new date so the user sees the moved record.
+      _setSelectedDate(newDate);
+
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordDragDateChanged);
+    } catch (e) {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordDragDateError);
+    }
   }
 
   void _openRecordCreate(BuildContext context) {

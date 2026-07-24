@@ -44,7 +44,7 @@ Routes are split by feature into `lib/app/router/`:
 lib/app/
 ├── router.dart                         # Main entry: shell branches + feature route spread
 └── router/
-    ├── router_helpers.dart             # fadePage / slidePage transitions
+    ├── router_helpers.dart             # fadePage / slidePage / sidePanelPage transitions
     ├── router_settings.dart            # /settings + 8 sub-routes
     ├── router_auth.dart                # /login ×3 + /forgot-password + /register
     ├── router_account.dart             # /account ×3

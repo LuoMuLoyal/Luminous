@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 
 import 'package:luminous/features/record/presentation/pages/create.dart';
@@ -22,8 +23,10 @@ class RecordCreateRoute extends GoRouteData with $RecordCreateRoute {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: RecordCreatePage(
         initialKind: kind,
         initialDate: parseRecordDate(date),
@@ -41,8 +44,10 @@ class RecordDetailRoute extends GoRouteData with $RecordDetailRoute {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: RecordDetailPage(recordId: id),
     );
   }
@@ -56,8 +61,10 @@ class RecordEditRoute extends GoRouteData with $RecordEditRoute {
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: RecordEditPage(recordId: id),
     );
   }

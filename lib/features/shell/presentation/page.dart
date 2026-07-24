@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +13,7 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:window_manager/window_manager.dart';
 
 const _shellInset = 16.0;
 const _collapsedSidebarWidth = 64.0;
@@ -140,7 +143,7 @@ class _DesktopSidebar extends ConsumerWidget {
           decoration: BoxDecoration(color: theme.colors.background),
           groupStyle: theme.sidebarStyle.groupStyle,
         ),
-        header: _SidebarHeader(collapsed: collapsed, session: session),
+        header: _WindowTitleBar(collapsed: collapsed, session: session),
         footer: _SidebarFooter(collapsed: collapsed),
         children: [
           tabItem(ShellTab.today),
@@ -154,9 +157,213 @@ class _DesktopSidebar extends ConsumerWidget {
   }
 }
 
-/// Sidebar header showing the app logo (expanded) or just the icon (collapsed).
-class _SidebarHeader extends StatelessWidget {
-  const _SidebarHeader({required this.collapsed, required this.session});
+/// Window title bar that wraps the sidebar header.
+///
+/// On desktop, this widget:
+/// - Wraps the header content with [DragToMoveArea] so the user can drag
+///   the sidebar header to move the window.
+/// - On Windows/Linux, renders custom min/max/close buttons at the top.
+/// - On macOS, the system renders the traffic-light buttons automatically;
+///   we add left padding so the header content doesn't overlap them.
+class _WindowTitleBar extends StatefulWidget {
+  const _WindowTitleBar({required this.collapsed, required this.session});
+
+  final bool collapsed;
+  final AuthSessionState session;
+
+  @override
+  State<_WindowTitleBar> createState() => _WindowTitleBarState();
+}
+
+class _WindowTitleBarState extends State<_WindowTitleBar> {
+  bool _isMaximized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkMaximized();
+  }
+
+  Future<void> _checkMaximized() async {
+    if (!Platform.isWindows && !Platform.isLinux) return;
+    final maximized = await windowManager.isMaximized();
+    if (mounted && maximized != _isMaximized) {
+      setState(() => _isMaximized = maximized);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    // Build the header content (logo or user info).
+    final headerContent = _SidebarHeaderContent(
+      collapsed: widget.collapsed,
+      session: widget.session,
+    );
+
+    // On macOS, the traffic lights are at the top-left and overlap the
+    // sidebar. Add left padding so the header content is not hidden.
+    final isMacOS = Platform.isMacOS;
+    final macPadding = isMacOS
+        ? const EdgeInsets.only(left: 70)
+        : EdgeInsets.zero;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Window control buttons (Windows/Linux only).
+        if (Platform.isWindows || Platform.isLinux)
+          _WindowControlButtons(
+            isMaximized: _isMaximized,
+            l10n: l10n,
+            onMinimize: () => windowManager.minimize(),
+            onMaximizeToggle: () async {
+              if (_isMaximized) {
+                await windowManager.unmaximize();
+              } else {
+                await windowManager.maximize();
+              }
+              await _checkMaximized();
+            },
+            onClose: () => windowManager.close(),
+          ),
+        // Draggable header area.
+        DragToMoveArea(
+          child: Padding(padding: macPadding, child: headerContent),
+        ),
+        // Listen for window state changes (maximize/unmaximize).
+        // Using a Listener to detect focus changes which triggers re-check.
+      ],
+    );
+  }
+}
+
+/// Window control buttons for Windows/Linux (min/max/close).
+class _WindowControlButtons extends StatelessWidget {
+  const _WindowControlButtons({
+    required this.isMaximized,
+    required this.l10n,
+    required this.onMinimize,
+    required this.onMaximizeToggle,
+    required this.onClose,
+  });
+
+  final bool isMaximized;
+  final AppLocalizations l10n;
+  final VoidCallback onMinimize;
+  final VoidCallback onMaximizeToggle;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final iconColor = theme.colors.mutedForeground;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 4, top: 2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _WindowButton(
+            icon: FLucideIcons.minus,
+            tooltip: l10n.desktopWindowMinimize,
+            iconColor: iconColor,
+            onPressed: onMinimize,
+          ),
+          _WindowButton(
+            icon: isMaximized ? FLucideIcons.copy : FLucideIcons.square,
+            iconSize: 14,
+            tooltip: isMaximized
+                ? l10n.desktopWindowRestore
+                : l10n.desktopWindowMaximize,
+            iconColor: iconColor,
+            onPressed: onMaximizeToggle,
+          ),
+          _WindowButton(
+            icon: FLucideIcons.x,
+            tooltip: l10n.desktopWindowClose,
+            iconColor: iconColor,
+            hoverColor: theme.colors.destructive,
+            hoverIconColor: theme.colors.background,
+            onPressed: onClose,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A single window control button.
+class _WindowButton extends StatefulWidget {
+  const _WindowButton({
+    required this.icon,
+    required this.tooltip,
+    required this.iconColor,
+    required this.onPressed,
+    this.iconSize = 16,
+    this.hoverColor,
+    this.hoverIconColor,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final Color iconColor;
+  final VoidCallback onPressed;
+  final double iconSize;
+  final Color? hoverColor;
+  final Color? hoverIconColor;
+
+  @override
+  State<_WindowButton> createState() => _WindowButtonState();
+}
+
+class _WindowButtonState extends State<_WindowButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+    final effectiveHoverColor =
+        widget.hoverColor ??
+        theme.colors.mutedForeground.withValues(alpha: 0.1);
+    final effectiveHoverIconColor = widget.hoverIconColor ?? widget.iconColor;
+
+    return FTooltip(
+      tipBuilder: (context, controller) => Text(widget.tooltip),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.onPressed,
+          child: AnimatedContainer(
+            duration: DurationTokens.widgetQuick,
+            width: 36,
+            height: 28,
+            decoration: BoxDecoration(
+              color: _isHovered ? effectiveHoverColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(RadiusTokens.level1),
+            ),
+            child: Center(
+              child: Icon(
+                widget.icon,
+                size: widget.iconSize,
+                color: _isHovered ? effectiveHoverIconColor : widget.iconColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The sidebar header content (logo or user info), extracted from the
+/// original _SidebarHeader for reuse inside _WindowTitleBar.
+class _SidebarHeaderContent extends StatelessWidget {
+  const _SidebarHeaderContent({required this.collapsed, required this.session});
 
   final bool collapsed;
   final AuthSessionState session;

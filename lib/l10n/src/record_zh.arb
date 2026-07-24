@@ -429,5 +429,7 @@
   "recordDiscardChangesAction": "放弃",
   "recordImageCameraAction": "拍照",
   "recordCreateSectionBasicTitle": "基本信息",
-  "recordCreateSectionDetailsTitle": "记录内容"
+  "recordCreateSectionDetailsTitle": "记录内容",
+  "recordDragDateChanged": "记录日期已更新",
+  "recordDragDateError": "日期更新失败，请重试"
 }

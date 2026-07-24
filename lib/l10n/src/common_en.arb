@@ -60,5 +60,9 @@
   },
   "commonCancel": "Cancel",
   "commonConfirm": "Confirm",
-  "commonClose": "Close"
+  "commonClose": "Close",
+  "desktopWindowMinimize": "Minimize",
+  "desktopWindowMaximize": "Maximize",
+  "desktopWindowRestore": "Restore",
+  "desktopWindowClose": "Close window"
 }

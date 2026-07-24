@@ -10,6 +10,7 @@ import 'package:window_manager/window_manager.dart';
 /// - Ensures the window manager is initialized.
 /// - Sets a minimum window size so the app cannot be resized to an unusable state.
 /// - Sets the window title to "Luminous".
+/// - Hides the native title bar so a custom one can be rendered in the sidebar.
 ///
 /// Call this before [runApp] in `main.dart`, after [WidgetsFlutterBinding.ensureInitialized].
 Future<void> initDesktopWindow() async {
@@ -20,4 +21,9 @@ Future<void> initDesktopWindow() async {
 
   await windowManager.setMinimumSize(const Size(480, 720));
   await windowManager.setTitle('Luminous');
+
+  // Hide the native title bar so we can render a custom one in the sidebar.
+  // On macOS, the traffic-light buttons are still overlaid by the system.
+  // On Windows/Linux, we render our own min/max/close buttons.
+  await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
 }

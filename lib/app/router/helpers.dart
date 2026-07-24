@@ -56,3 +56,51 @@ CustomTransitionPage<T> slidePage<T>({
     reverseTransitionDuration: DurationTokens.crudPageTransitionOut,
   );
 }
+
+/// Desktop side-panel transition helper.
+///
+/// On desktop, CRUD pages (record create/edit, medicine reminder edit, etc.)
+/// slide in from the right edge as a panel constrained to [maxWidth] (default
+/// 560), keeping the shell sidebar visible underneath a semi-transparent
+/// barrier. Tapping the barrier dismisses the panel.
+///
+/// The [isDesktop] flag is resolved by the caller via
+/// `MediaQuery.sizeOf(context).width >= Breakpoints.desktop`.
+CustomTransitionPage<T> sidePanelPage<T>({
+  required LocalKey key,
+  required Widget child,
+  required bool isDesktop,
+  double maxWidth = 560,
+}) {
+  if (!isDesktop) {
+    return slidePage<T>(key: key, child: child);
+  }
+
+  return CustomTransitionPage<T>(
+    key: key,
+    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierDismissible: true,
+    opaque: false,
+    child: Align(
+      alignment: Alignment.centerRight,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: Material(color: const Color(0x00000000), child: child),
+      ),
+    ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(1, 0),
+          end: Offset.zero,
+        ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(animation),
+        child: FadeTransition(
+          opacity: Tween<double>(begin: 0, end: 1).animate(animation),
+          child: child,
+        ),
+      );
+    },
+    transitionDuration: DurationTokens.crudPageTransitionIn,
+    reverseTransitionDuration: DurationTokens.crudPageTransitionOut,
+  );
+}

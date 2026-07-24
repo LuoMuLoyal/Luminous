@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/timeline_drag_data.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Desktop-side month calendar with decoupled month navigation.
@@ -27,6 +28,7 @@ class RecordMonthCalendarPanel extends StatefulWidget {
     required this.l10n,
     this.onDateSelected,
     this.onMonthChanged,
+    this.onRecordDropped,
   });
 
   final List<RecordCalendarDay> days;
@@ -34,6 +36,11 @@ class RecordMonthCalendarPanel extends StatefulWidget {
   final AppLocalizations l10n;
   final ValueChanged<DateTime>? onDateSelected;
   final ValueChanged<DateTime>? onMonthChanged;
+
+  /// Called when a timeline card is dragged onto a calendar day.
+  /// Receives the record ID and the target date.
+  /// Only invoked on desktop layouts.
+  final void Function(String recordId, DateTime newDate)? onRecordDropped;
 
   @override
   State<RecordMonthCalendarPanel> createState() =>
@@ -226,6 +233,7 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                 viewedMonth: _viewedMonth,
                 l10n: l10n,
                 onTap: widget.onDateSelected,
+                onRecordDropped: widget.onRecordDropped,
               ),
             ),
           ],
@@ -323,12 +331,13 @@ class RecordFilterPanel extends StatelessWidget {
   }
 }
 
-class _MonthDayCell extends StatelessWidget {
+class _MonthDayCell extends StatefulWidget {
   const _MonthDayCell({
     required this.day,
     required this.viewedMonth,
     required this.l10n,
     this.onTap,
+    this.onRecordDropped,
   });
 
   final RecordCalendarDay day;
@@ -340,19 +349,36 @@ class _MonthDayCell extends StatelessWidget {
   final AppLocalizations l10n;
   final ValueChanged<DateTime>? onTap;
 
+  /// Called when a timeline card is dragged onto this day cell.
+  /// Only invoked on desktop layouts.
+  final void Function(String recordId, DateTime newDate)? onRecordDropped;
+
+  @override
+  State<_MonthDayCell> createState() => _MonthDayCellState();
+}
+
+class _MonthDayCellState extends State<_MonthDayCell> {
+  bool _isDragHovering = false;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+    final canAcceptDrag =
+        isDesktop && widget.onRecordDropped != null && widget.day.inMonth;
 
-    final color = day.inMonth ? colors.foreground : colors.mutedForeground;
-    final markerColors = day.hasAlert
-        ? [...day.markers.resolveAll(colors), colors.primary]
-        : day.markers.resolveAll(colors);
+    final color = widget.day.inMonth
+        ? colors.foreground
+        : colors.mutedForeground;
+    final markerColors = widget.day.hasAlert
+        ? [...widget.day.markers.resolveAll(colors), colors.primary]
+        : widget.day.markers.resolveAll(colors);
 
-    return FTappable(
-      onPress: onTap == null
+    final cellContent = FTappable(
+      onPress: widget.onTap == null
           ? null
-          : () => onTap!(_dateForDay(day, viewedMonth)),
+          : () => widget.onTap!(_dateForDay(widget.day, widget.viewedMonth)),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -360,19 +386,33 @@ class _MonthDayCell extends StatelessWidget {
             dimension: 30,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: day.selected
+                color: widget.day.selected
                     ? colors.foreground
+                    : _isDragHovering
+                    ? colors.primary.withValues(alpha: 0.15)
                     : const Color(0x00000000),
                 shape: BoxShape.circle,
+                border: _isDragHovering && !widget.day.selected
+                    ? Border.all(
+                        color: colors.primary.withValues(alpha: 0.4),
+                        width: 1.5,
+                      )
+                    : null,
               ),
               child: Center(
                 child: Text(
-                  '${day.day}',
+                  '${widget.day.day}',
                   style: TypographyToken.level4
                       .body(context)
                       .copyWith(
-                        color: day.selected ? colors.background : color,
-                        fontWeight: day.selected
+                        color: widget.day.selected
+                            ? colors.background
+                            : _isDragHovering
+                            ? colors.primary
+                            : color,
+                        fontWeight: widget.day.selected
+                            ? FontWeight.w700
+                            : _isDragHovering
                             ? FontWeight.w700
                             : FontWeight.w400,
                       ),
@@ -406,6 +446,28 @@ class _MonthDayCell extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (!canAcceptDrag) {
+      return cellContent;
+    }
+
+    return DragTarget<TimelineDragData>(
+      onWillAcceptWithDetails: (details) {
+        setState(() => _isDragHovering = true);
+        return true;
+      },
+      onLeave: (_) {
+        setState(() => _isDragHovering = false);
+      },
+      onAcceptWithDetails: (details) {
+        setState(() => _isDragHovering = false);
+        final targetDate = _dateForDay(widget.day, widget.viewedMonth);
+        widget.onRecordDropped!(details.data.recordId, targetDate);
+      },
+      builder: (context, candidateData, rejectedData) {
+        return cellContent;
+      },
     );
   }
 }

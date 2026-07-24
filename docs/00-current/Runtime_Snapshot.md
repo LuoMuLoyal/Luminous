@@ -38,12 +38,14 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n �
 - 5 个 Tab 页面全部迁移到 `DesktopTabShell`，顶栏统一使用 `FHeader.nested` 替代自定义 `AppTopBar`。
 - 桌面端侧边栏可折叠（展开态显示图标+文字，折叠态仅图标 rail 模式），状态通过 `SidebarPreferenceController` 持久化到 SharedPreferences。
 - 侧边栏 header 显示用户头像+昵称（已登录）或 app Logo（未登录）；footer 包含通知入口（带红点）、主题快切（system/light/dark 三态循环）、设置、帮助。
-- 桌面端窗口通过 `window_manager` 设置最小尺寸 480×720 + 窗口标题（Web/移动端为 no-op）。
+- 桌面端窗口通过 `window_manager` 设置最小尺寸 480×720 + 窗口标题 + 隐藏原生标题栏（`TitleBarStyle.hidden`）（Web/移动端为 no-op）。自定义标题栏集成在侧边栏头部：`DragToMoveArea` 支持拖拽移动窗口，Windows/Linux 渲染自定义最小化/最大化/关闭按钮（hover 态反馈），macOS 系统红绿灯按钮自动叠加。
 - 对话框宽度自适应屏宽：`LayoutScaleResolver.dialogMaxWidthFor()` 桌面 560 / 平板 480 / 移动 360；`wideDialogMaxWidthFor()` 桌面 640 / 平板 520 / 移动 420。
 - 全局键盘快捷键通过 `AppShortcuts`（ConsumerWidget）注入到 `FToaster` 内层，组合 Flutter 原生 `Shortcuts` + `Actions`。快捷键：Ctrl/Cmd+K（命令面板）、+N（新建记录）、+B（侧边栏折叠）、+,（设置）、+Shift+A（助手）、+1-5（切换 Tab）。
 - 命令面板（Ctrl+K）提供模糊搜索 + Tab 导航 + 常用操作，桌面端自动包含折叠侧边栏操作。
 - 桌面端 Hover 态：`DesktopHoverCard` 通过 `MouseRegion` 追踪 hover，悬浮时背景/边框变为 primary 色调；移动端 pass-through。
 - 右键上下文菜单使用 Forui `FContextMenu.tiles`，桌面端右键触发，移动端长按触发。时间线卡片已接入。
+- 桌面端拖拽支持：Record 时间线卡片包裹 `Draggable<TimelineDragData>`（仅 `recordId != null` 且桌面端），可拖拽到日历日期单元格（`DragTarget`）改变记录日期。拖拽时源卡片半透明，目标日期高亮反馈，成功后 `DataChangeTopic.dailyRecords` 触发看板刷新。移动端不启用拖拽。
+- 桌面端 CRUD 路由侧面板化：Record create/detail/edit 和 Medicine reminder new/detail/edit 路由在桌面端使用 `sidePanelPage`（右侧滑入面板，maxWidth 560，半透明遮罩，`barrierDismissible`），移动端降级为 `slidePage`（全屏）。
 - 断点体系：`compact=360` / `mobile=600` / `tablet=960` / `smallDesktop=1080` / `desktop=1200` / `wide=1400` / `ultrawide=1920`。`LayoutScale` 在 1200–1400 和 ≥1400 使用不同 `maxContentWidth`（1400 vs 1600）。`gridCrossAxisCount` 在 ≥1920 使用 6 列。
 - Medicine 页桌面布局：≥1400 三列（药盒 | 记录+安全 | 操作），1200–1400 双列（药盒+记录 | 安全+操作）。
 - Report 页桌面布局：顶部全宽（就绪+指标+导出）+ 下方双列（趋势+发现+历史 | AI摘要+模式+免责）。

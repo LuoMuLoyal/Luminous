@@ -63,6 +63,7 @@ Last updated: 2026-07-22 (扫码对话框封装统一)
 - 按提醒计划同步的本地通知调度。
 - SMS 不可用状态。
 - 只读提醒投递历史展示。
+- 桌面端提醒 new/detail/edit 路由使用 `sidePanelPage`（右侧滑入面板），移动端使用 `slidePage`（全屏）。
 - 通知权限 `permanentlyDenied` 状态时自动调用 `openAppSettings()` 跳转系统设置。
 
 ## 数据层

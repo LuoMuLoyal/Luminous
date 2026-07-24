@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/reminder_detail.dart';
 import 'package:luminous/features/medicine/presentation/pages/reminder/reminder_edit.dart';
 import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
@@ -37,8 +38,10 @@ class MedicineRemindersNewRoute extends GoRouteData
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: MedicineReminderEditPage(initialMedicineId: medicineId),
     );
   }
@@ -55,8 +58,10 @@ class MedicineReminderDetailRoute extends GoRouteData
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: MedicineReminderDetailPage(currentMedicineId: medicineId),
     );
   }
@@ -73,8 +78,10 @@ class MedicineReminderEditRoute extends GoRouteData
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return slidePage(
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
       key: state.pageKey,
+      isDesktop: isDesktop,
       child: MedicineReminderEditPage(currentMedicineId: medicineId),
     );
   }

@@ -60,5 +60,9 @@
   },
   "commonCancel": "取消",
   "commonConfirm": "确认",
-  "commonClose": "关闭"
+  "commonClose": "关闭",
+  "desktopWindowMinimize": "最小化",
+  "desktopWindowMaximize": "最大化",
+  "desktopWindowRestore": "向下还原",
+  "desktopWindowClose": "关闭窗口"
 }
