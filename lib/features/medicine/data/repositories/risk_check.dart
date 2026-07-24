@@ -2,6 +2,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';

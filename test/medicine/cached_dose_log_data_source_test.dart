@@ -7,6 +7,7 @@ import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 

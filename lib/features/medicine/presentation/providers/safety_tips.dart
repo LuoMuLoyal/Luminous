@@ -4,8 +4,6 @@ import 'package:luminous/features/medicine/data/datasources/safety_tips_remote.d
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/features/medicine/presentation/utils/safety_tip_style.dart';
-
 part 'safety_tips.g.dart';
 
 @riverpod

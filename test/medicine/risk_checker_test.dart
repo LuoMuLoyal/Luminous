@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/api/export.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 
 void main() {

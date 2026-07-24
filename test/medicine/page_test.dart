@@ -24,7 +24,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_fl
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/notification/presentation/providers/notification.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';

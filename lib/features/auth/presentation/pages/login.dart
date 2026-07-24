@@ -12,6 +12,7 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/presentation/providers/forms/login.dart';
 import 'package:luminous/features/auth/presentation/providers/oauth_login.dart';
+import 'package:luminous/features/auth/presentation/widgets/shared/branding.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_callback_parser.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';

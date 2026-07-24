@@ -20,8 +20,6 @@ import 'package:luminous/features/auth/presentation/widgets/shared/required_dial
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-export 'account_settings_sections.dart';
-
 class AccountSettingsPage extends HookConsumerWidget {
   const AccountSettingsPage({
     super.key,

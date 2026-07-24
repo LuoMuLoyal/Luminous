@@ -4,10 +4,6 @@ import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
-/// Re-export so presentation code can import from one place.
-export 'package:luminous/features/settings/data/repositories/lucent.dart'
-    show userSettingsRepositoryProvider;
-
 /// Remote-backed controller for the authenticated user's privacy/AI settings.
 ///
 /// Reads from `GET /api/v1/user/settings` and patches individual toggles via

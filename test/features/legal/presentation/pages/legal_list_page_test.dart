@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:luminous/features/legal/domain/entities/document.dart';
 import 'package:luminous/features/legal/domain/repositories/documents.dart';
 import 'package:luminous/features/legal/presentation/pages/list.dart';
-import 'package:luminous/features/legal/presentation/providers/legal.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../../../helpers/test_forui_app.dart';

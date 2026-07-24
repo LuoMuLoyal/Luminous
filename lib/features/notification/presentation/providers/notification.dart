@@ -7,13 +7,6 @@ import '../../data/providers/unread_count.dart';
 import '../../data/repositories/lucent.dart';
 import '../../domain/entities/notification.dart';
 
-export '../../data/providers/unread_count.dart'
-    show notificationUnreadCountProvider;
-
-/// Re-export so presentation code can import from one place.
-export '../../data/repositories/lucent.dart'
-    show notificationRepositoryProvider;
-
 part 'notification.g.dart';
 
 const _notificationPageSize = 20;

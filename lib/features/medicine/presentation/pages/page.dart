@@ -21,7 +21,7 @@ import 'package:luminous/features/medicine/presentation/widgets/shared/workspace
 import 'package:luminous/features/medicine/presentation/widgets/views/mobile_dashboard_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';
-import 'package:luminous/features/notification/presentation/providers/notification.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';

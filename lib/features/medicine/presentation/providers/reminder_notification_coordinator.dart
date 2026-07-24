@@ -7,6 +7,7 @@ import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/features/medicine/domain/services/reminder_notification_planner.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/settings/domain/services/notification_permission.dart';

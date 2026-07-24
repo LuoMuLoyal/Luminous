@@ -8,7 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/notification/presentation/providers/notification.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Today page top bar.

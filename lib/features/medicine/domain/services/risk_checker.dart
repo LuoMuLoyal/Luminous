@@ -5,8 +5,6 @@ import 'package:luminous/features/medicine/domain/services/allergy_severity_help
 import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker_utils.dart';
 
-export 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
-
 class MedicineRiskChecker {
   const MedicineRiskChecker();
 

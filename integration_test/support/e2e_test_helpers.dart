@@ -37,7 +37,7 @@ import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 import 'package:luminous/features/mine/data/providers/mine.dart'
     show mineRepositoryProvider;
-import 'package:luminous/features/notification/presentation/providers/notification.dart'
+import 'package:luminous/features/notification/data/providers/unread_count.dart'
     show notificationUnreadCountProvider;
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';

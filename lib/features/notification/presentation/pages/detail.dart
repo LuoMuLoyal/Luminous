@@ -13,6 +13,8 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
+import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/domain/entities/notification.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';

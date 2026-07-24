@@ -5,6 +5,7 @@ import 'package:lucent_api/api/export.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/notification/data/repositories/lucent.dart';
 import 'package:luminous/features/notification/presentation/providers/notification.dart';
 

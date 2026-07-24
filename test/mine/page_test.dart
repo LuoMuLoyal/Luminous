@@ -19,7 +19,7 @@ import 'package:luminous/features/mine/presentation/pages/page.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
-import 'package:luminous/features/notification/presentation/providers/notification.dart';
+import 'package:luminous/features/notification/data/providers/unread_count.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 

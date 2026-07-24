@@ -5,7 +5,7 @@ import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder_sound_preference.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------------------

@@ -12,8 +12,6 @@ import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-export 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-
 part 'dose_log_cached.g.dart';
 
 /// Cache-first wrapper around [DoseLogRemoteDataSource].

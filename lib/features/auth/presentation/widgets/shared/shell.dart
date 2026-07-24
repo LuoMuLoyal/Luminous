@@ -3,8 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
-export 'branding.dart';
-
 class AuthShell extends StatelessWidget {
   const AuthShell({
     super.key,
