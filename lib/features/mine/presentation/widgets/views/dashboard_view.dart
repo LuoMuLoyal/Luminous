@@ -3,8 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account_hero.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/account_security.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/ai_privacy.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/archive.dart';
+import 'package:luminous/features/mine/presentation/widgets/sections/notifications_reminders.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/sync_failed_banner.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 
 class MineDashboardView extends StatelessWidget {
   const MineDashboardView({

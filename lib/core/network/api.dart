@@ -1,3 +1,6 @@
+// Re-export of the generated API client: 10+ datasources/repositories import api.dart
+// and use lucent_api types (LucentClient, *Api) alongside local network symbols.
+// Removing this would force every consumer to add a separate lucent_api import.
 export 'package:lucent_api/api/export.dart';
 export 'api_exception.dart';
 export 'api_paths.dart';

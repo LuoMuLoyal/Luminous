@@ -6,11 +6,12 @@ import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/date_bar.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/mobile_filter.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/mobile_timeline.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/new_entry_panel.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/quick_entry_panel.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/sidebar.dart';
+import 'package:luminous/features/record/presentation/widgets/sections/summary_grid.dart';
 import 'package:luminous/features/record/presentation/widgets/sections/timeline.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
-import 'package:luminous/features/record/presentation/widgets/shared/overview.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDashboardView extends StatelessWidget {

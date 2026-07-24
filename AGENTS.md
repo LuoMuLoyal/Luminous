@@ -37,6 +37,18 @@ flutter test
   - `domain/` — entities, repository interfaces, services, constants
   - `presentation/` — pages, widgets, controllers, providers, utils, models, services
 
+## Barrel Exports
+
+- `core/` cross-cutting barrels (`design.dart`, `api.dart`, `state_views.dart`) are the
+  only legitimate barrel files — they aggregate design tokens, network symbols, and
+  state views consumed by all features.
+- No feature-level barrel files — cross-feature imports use full `package:` paths:
+  - ❌ `export '../sections/ai_summary.dart';` in a `shared/sections.dart` barrel
+  - ✅ `import 'package:luminous/features/report/presentation/widgets/sections/ai_summary.dart';`
+- No cross-layer re-exports — a provider file must not `export` a repository or entity;
+  consumers import from the correct layer directly.
+- Platform conditional exports (`if (dart.library.io)`) are exempt.
+
 ## File Naming Rules
 
 **Core principle**: File name = responsibility, not location.

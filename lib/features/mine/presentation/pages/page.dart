@@ -10,7 +10,6 @@ import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';
 import 'package:luminous/features/mine/presentation/widgets/sections/top_bar.dart';
-import 'package:luminous/features/mine/presentation/widgets/shared/sections.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/mine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';

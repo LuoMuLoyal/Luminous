@@ -3,7 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
-import 'package:luminous/features/search/presentation/widgets/shared/headers.dart';
+import 'package:luminous/features/search/presentation/widgets/sections/source_switch.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class SearchResultTile extends StatelessWidget {
