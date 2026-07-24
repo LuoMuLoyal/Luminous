@@ -44,6 +44,11 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n �
 - 命令面板（Ctrl+K）提供模糊搜索 + Tab 导航 + 常用操作，桌面端自动包含折叠侧边栏操作。
 - 桌面端 Hover 态：`DesktopHoverCard` 通过 `MouseRegion` 追踪 hover，悬浮时背景/边框变为 primary 色调；移动端 pass-through。
 - 右键上下文菜单使用 Forui `FContextMenu.tiles`，桌面端右键触发，移动端长按触发。时间线卡片已接入。
+- 断点体系：`compact=360` / `mobile=600` / `tablet=960` / `smallDesktop=1080` / `desktop=1200` / `wide=1400` / `ultrawide=1920`。`LayoutScale` 在 1200–1400 和 ≥1400 使用不同 `maxContentWidth`（1400 vs 1600）。`gridCrossAxisCount` 在 ≥1920 使用 6 列。
+- Medicine 页桌面布局：≥1400 三列（药盒 | 记录+安全 | 操作），1200–1400 双列（药盒+记录 | 安全+操作）。
+- Report 页桌面布局：顶部全宽（就绪+指标+导出）+ 下方双列（趋势+发现+历史 | AI摘要+模式+免责）。
+- Mine 页桌面布局：6:4 双列（同步+账号+归档+通知 | AI隐私+安全）。
+- Settings 页桌面布局：≥1200 双列（账号+安全+通用 | 快速记录+隐私+关于+退出），移动端单列。
 
 ## 网络层
 

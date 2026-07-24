@@ -267,110 +267,132 @@ class ReportDashboardView extends StatelessWidget {
       return _buildDesktopPreviewLayout(l10n: l10n);
     }
 
-    return Row(
+    final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          flex: 7,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ReportReadinessSection(
-                status: readinessStatus,
-                generatedAtLabel: generatedAtLabel,
-                insufficientMetricCount: _insufficientMetricCount(),
-                l10n: l10n,
-                rangeLabel: _rangeLabel(l10n),
-                scoreSummary: dashboard.score.summary,
-                onSignIn: onSignIn,
-                onContinueRecord: onContinueRecord,
-                onGenerate: onGenerateAiSummary == null
-                    ? null
-                    : () {
-                        onGenerateAiSummary!();
-                      },
-                onSync: onSync,
-                isGenerating:
-                    aiSummaryState.status == ReportAiSummaryCardStatus.loading,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportTrendSection(
-                key: const Key('report-trend-section'),
-                trends: dashboard.trends,
-                selectedQuery: dashboardQuery,
-                onQueryChanged: onDashboardQueryChanged ?? (_) {},
-                l10n: l10n,
-                startDate: dashboard.startDate,
-                showRangePill: false,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportFindingsSection(
-                key: const Key('report-findings-section'),
-                findings: dashboard.findings,
-                l10n: l10n,
-              ),
-              if (canAccessProtectedData) ...[
-                const SizedBox(height: Spacing.level5),
-                ReportSuggestionHistorySection(
-                  suggestions: suggestionHistory,
-                  isLoading: isSuggestionHistoryLoading,
-                  onSuggestionTap: onSuggestionTap,
-                  l10n: l10n,
-                ),
-              ],
-            ],
-          ),
+        // Top full-width: readiness + metrics + export actions.
+        ReportReadinessSection(
+          status: readinessStatus,
+          generatedAtLabel: generatedAtLabel,
+          insufficientMetricCount: _insufficientMetricCount(),
+          l10n: l10n,
+          rangeLabel: _rangeLabel(l10n),
+          scoreSummary: dashboard.score.summary,
+          onSignIn: onSignIn,
+          onContinueRecord: onContinueRecord,
+          onGenerate: onGenerateAiSummary == null
+              ? null
+              : () {
+                  onGenerateAiSummary!();
+                },
+          onSync: onSync,
+          isGenerating:
+              aiSummaryState.status == ReportAiSummaryCardStatus.loading,
         ),
-        const SizedBox(width: Spacing.level5),
-        Expanded(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ReportMetricsGrid(
-                key: const Key('report-metrics-grid'),
-                dashboard: dashboard,
-                metrics: dashboard.metrics,
-                l10n: l10n,
-                onMetricSelected: onMetricSelected,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportExportSection(
-                key: const Key('report-export-section'),
-                actions: dashboard.exportActions,
-                latestRequest: latestExportRequest,
-                requestInFlight: exportRequestInFlight,
-                clinicShareInFlight: clinicShareInFlight,
-                onActionTap: onExportActionTap,
-                l10n: l10n,
-                isDataInsufficient:
-                    readinessStatus == ReportReadinessStatus.insufficient,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportAiSummarySection(
-                key: const Key('report-ai-summary-section'),
-                dashboard: dashboard,
-                canAccessProtectedData: canAccessProtectedData,
-                aiSummariesEnabled: aiSummariesEnabled,
-                aiState: aiSummaryState,
-                selectedRange: aiSummaryRange,
-                onRangeChanged: onAiSummaryRangeChanged,
-                onGenerate: onGenerateAiSummary,
-                l10n: l10n,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportPatternsSection(
-                key: const Key('report-patterns-section'),
-                patterns: dashboard.patterns,
-                l10n: l10n,
-              ),
-              const SizedBox(height: Spacing.level5),
-              ReportReferenceNotice(
-                key: const Key('report-reference-notice'),
-                l10n: l10n,
-              ),
-            ],
+        const SizedBox(height: Spacing.level5),
+        ReportMetricsGrid(
+          key: const Key('report-metrics-grid'),
+          dashboard: dashboard,
+          metrics: dashboard.metrics,
+          l10n: l10n,
+          onMetricSelected: onMetricSelected,
+        ),
+        if (canShowFullReport) ...[
+          const SizedBox(height: Spacing.level5),
+          ReportExportSection(
+            key: const Key('report-export-section'),
+            actions: dashboard.exportActions,
+            latestRequest: latestExportRequest,
+            requestInFlight: exportRequestInFlight,
+            clinicShareInFlight: clinicShareInFlight,
+            onActionTap: onExportActionTap,
+            l10n: l10n,
+            isDataInsufficient:
+                readinessStatus == ReportReadinessStatus.insufficient,
           ),
+        ],
+        const SizedBox(height: Spacing.level5),
+        // Dual-column body: left (trend + findings + history) | right (AI + patterns)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ReportTrendSection(
+                    key: const Key('report-trend-section'),
+                    trends: dashboard.trends,
+                    selectedQuery: dashboardQuery,
+                    onQueryChanged: onDashboardQueryChanged ?? (_) {},
+                    l10n: l10n,
+                    startDate: dashboard.startDate,
+                    showRangePill: false,
+                  ),
+                  const SizedBox(height: Spacing.level5),
+                  ReportFindingsSection(
+                    key: const Key('report-findings-section'),
+                    findings: dashboard.findings,
+                    l10n: l10n,
+                  ),
+                  if (canAccessProtectedData) ...[
+                    const SizedBox(height: Spacing.level5),
+                    ReportSuggestionHistorySection(
+                      suggestions: suggestionHistory,
+                      isLoading: isSuggestionHistoryLoading,
+                      onSuggestionTap: onSuggestionTap,
+                      l10n: l10n,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: Spacing.level5),
+            Expanded(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (canShowFullReport) ...[
+                    ReportAiSummarySection(
+                      key: const Key('report-ai-summary-section'),
+                      dashboard: dashboard,
+                      canAccessProtectedData: canAccessProtectedData,
+                      aiSummariesEnabled: aiSummariesEnabled,
+                      aiState: aiSummaryState,
+                      selectedRange: aiSummaryRange,
+                      onRangeChanged: onAiSummaryRangeChanged,
+                      onGenerate: onGenerateAiSummary,
+                      l10n: l10n,
+                    ),
+                    const SizedBox(height: Spacing.level5),
+                    ReportPatternsSection(
+                      key: const Key('report-patterns-section'),
+                      patterns: dashboard.patterns,
+                      l10n: l10n,
+                    ),
+                    const SizedBox(height: Spacing.level5),
+                    ReportReferenceNotice(
+                      key: const Key('report-reference-notice'),
+                      l10n: l10n,
+                    ),
+                  ],
+                  if (!canShowFullReport) ...[
+                    const SizedBox(height: Spacing.level4),
+                    _ReportLockedFeaturesHint(
+                      message:
+                          readinessStatus == ReportReadinessStatus.signedOut
+                          ? l10n.reportLockedFeaturesSignedOutHint
+                          : l10n.reportLockedFeaturesInsufficientHint,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );

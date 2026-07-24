@@ -33,113 +33,144 @@ class SettingsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authSessionProvider);
     final signedIn = session.canAccessProtectedData;
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+
+    final sections = <Widget>[
+      _AccountHeader(
+        session: session,
+        signedIn: signedIn,
+        onTap: () => pushAuthRequiredRoute(context, Routes.account),
+      ),
+      const SizedBox(height: _kGroupSpacing),
+
+      // -- 账号与安全 --
+      SettingsSectionLabel(label: l10n.settingsAccountSecuritySectionTitle),
+      const SizedBox(height: Spacing.level3),
+      FTileGroup(
+        physics: const NeverScrollableScrollPhysics(),
+        divider: FItemDivider.full,
+        children: [
+          _SettingsNavigationTile(
+            tileKey: const Key('settings-row-account-security'),
+            icon: FLucideIcons.shieldCheck,
+            title: l10n.mineSettingsAccountTitle,
+            onTap: () => pushAuthRequiredRoute(context, Routes.account),
+          ),
+          _SettingsNavigationTile(
+            tileKey: const Key('settings-row-security-pin'),
+            icon: FLucideIcons.lockKeyhole,
+            title: l10n.settingsSecurityPinTitle,
+            subtitle: l10n.settingsSecurityPinSubtitle,
+            onTap: () {
+              if (!signedIn) {
+                pushAuthRequiredRoute(context, Routes.settings);
+                return;
+              }
+              context.push(Routes.settingsSecurityPin);
+            },
+          ),
+          _SettingsNavigationTile(
+            tileKey: const Key('settings-row-health-profile'),
+            icon: FLucideIcons.heartPulse,
+            title: l10n.settingsHealthProfileTitle,
+            subtitle: l10n.settingsHealthProfileSubtitle,
+            onTap: () {
+              if (!signedIn) {
+                pushAuthRequiredRoute(context, Routes.settings);
+                return;
+              }
+              context.go(Routes.mine);
+            },
+          ),
+        ],
+      ),
+      const SizedBox(height: _kGroupSpacing),
+      const _GeneralSection(),
+      const SizedBox(height: _kGroupSpacing),
+      const _QuickEntrySection(),
+      const SizedBox(height: _kGroupSpacing),
+      _PrivacySection(signedIn: signedIn),
+      const SizedBox(height: _kGroupSpacing),
+      _AboutSection(signedIn: signedIn),
+      const SizedBox(height: _kGroupSpacing),
+      _SignOutTile(
+        signedIn: signedIn,
+        isLoading: session.isLoading,
+        onTap: () async {
+          if (!session.canAccessProtectedData) {
+            context.go(loginRouteForCurrentLocation(context));
+            return;
+          }
+          final confirmed = await showDangerConfirmationDialog(
+            context: context,
+            title: l10n.authSignOutConfirmTitle,
+            message: l10n.authSignOutConfirmMessage,
+            confirmLabel: l10n.authSignOutConfirmAction,
+          );
+          if (!confirmed || !context.mounted) return;
+          await ref.read(authSessionProvider.notifier).logout();
+          if (!context.mounted) return;
+          context.go(Routes.login);
+        },
+      ),
+    ];
 
     return PageScaffold(
       title: l10n.desktopSidebarSettings,
-      child: SingleChildScrollView(
-        child: ResponsiveContentFrame(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: settingsPageVerticalPadding(context),
+      child: isDesktop
+          ? SingleChildScrollView(
+              child: ResponsiveContentFrame(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: settingsPageVerticalPadding(context),
+                  ),
+                  child: _buildDesktopTwoColumn(sections),
+                ),
+              ),
+            )
+          : SingleChildScrollView(
+              child: ResponsiveContentFrame(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: settingsPageVerticalPadding(context),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: sections,
+                  ),
+                ),
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _AccountHeader(
-                  session: session,
-                  signedIn: signedIn,
-                  onTap: () => pushAuthRequiredRoute(context, Routes.account),
-                ),
-                const SizedBox(height: _kGroupSpacing),
+    );
+  }
 
-                // -- 账号与安全 --
-                SettingsSectionLabel(
-                  label: l10n.settingsAccountSecuritySectionTitle,
-                ),
-                const SizedBox(height: Spacing.level3),
-                FTileGroup(
-                  physics: const NeverScrollableScrollPhysics(),
-                  divider: FItemDivider.full,
-                  children: [
-                    _SettingsNavigationTile(
-                      tileKey: const Key('settings-row-account-security'),
-                      icon: FLucideIcons.shieldCheck,
-                      title: l10n.mineSettingsAccountTitle,
-                      onTap: () =>
-                          pushAuthRequiredRoute(context, Routes.account),
-                    ),
-                    _SettingsNavigationTile(
-                      tileKey: const Key('settings-row-security-pin'),
-                      icon: FLucideIcons.lockKeyhole,
-                      title: l10n.settingsSecurityPinTitle,
-                      subtitle: l10n.settingsSecurityPinSubtitle,
-                      onTap: () {
-                        if (!signedIn) {
-                          pushAuthRequiredRoute(context, Routes.settings);
-                          return;
-                        }
-                        context.push(Routes.settingsSecurityPin);
-                      },
-                    ),
-                    _SettingsNavigationTile(
-                      tileKey: const Key('settings-row-health-profile'),
-                      icon: FLucideIcons.heartPulse,
-                      title: l10n.settingsHealthProfileTitle,
-                      subtitle: l10n.settingsHealthProfileSubtitle,
-                      onTap: () {
-                        if (!signedIn) {
-                          pushAuthRequiredRoute(context, Routes.settings);
-                          return;
-                        }
-                        context.go(Routes.mine);
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: _kGroupSpacing),
+  Widget _buildDesktopTwoColumn(List<Widget> sections) {
+    // Split sections into left (account+security+general) and
+    // right (quick entry+privacy+about+sign out) for balanced height.
+    const splitIndex = 10; // after _GeneralSection + spacing
+    final left = sections.sublist(0, splitIndex);
+    final right = sections.sublist(splitIndex);
 
-                // -- 通用（含数据与存储）--
-                const _GeneralSection(),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- 快速记录 --
-                const _QuickEntrySection(),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- AI 与隐私 --
-                _PrivacySection(signedIn: signedIn),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- 关于与帮助 --
-                _AboutSection(signedIn: signedIn),
-                const SizedBox(height: _kGroupSpacing),
-
-                // -- 退出登录 --
-                _SignOutTile(
-                  signedIn: signedIn,
-                  isLoading: session.isLoading,
-                  onTap: () async {
-                    if (!session.canAccessProtectedData) {
-                      context.go(loginRouteForCurrentLocation(context));
-                      return;
-                    }
-                    final confirmed = await showDangerConfirmationDialog(
-                      context: context,
-                      title: l10n.authSignOutConfirmTitle,
-                      message: l10n.authSignOutConfirmMessage,
-                      confirmLabel: l10n.authSignOutConfirmAction,
-                    );
-                    if (!confirmed || !context.mounted) return;
-                    await ref.read(authSessionProvider.notifier).logout();
-                    if (!context.mounted) return;
-                    context.go(Routes.login);
-                  },
-                ),
-              ],
-            ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: left,
           ),
         ),
-      ),
+        const SizedBox(width: Spacing.level6),
+        Expanded(
+          flex: 5,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: right,
+          ),
+        ),
+      ],
     );
   }
 }

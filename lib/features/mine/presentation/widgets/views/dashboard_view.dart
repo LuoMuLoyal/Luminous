@@ -71,8 +71,9 @@ class MineDashboardView extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Left: sync banner + account hero + archive + notifications.
         Expanded(
-          flex: 7,
+          flex: 6,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,8 +91,9 @@ class MineDashboardView extends StatelessWidget {
           ),
         ),
         const SizedBox(width: Spacing.level5),
+        // Right: AI privacy + account security.
         Expanded(
-          flex: 5,
+          flex: 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

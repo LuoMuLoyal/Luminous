@@ -45,7 +45,12 @@ class MedicineMobileDashboardView extends StatelessWidget {
     final isDesktop = width >= Breakpoints.desktop;
 
     final content = isDesktop
-        ? _buildDesktopLayout(l10n: l10n, nextDose: nextDose, alerts: alerts)
+        ? _buildDesktopLayout(
+            l10n: l10n,
+            nextDose: nextDose,
+            alerts: alerts,
+            isWide: width >= Breakpoints.wide,
+          )
         : _buildMobileLayout(l10n: l10n, nextDose: nextDose, alerts: alerts);
 
     return SkeletonScope(isLoading: isLoading, child: content);
@@ -87,7 +92,68 @@ class MedicineMobileDashboardView extends StatelessWidget {
     required AppLocalizations l10n,
     required _NextDose? nextDose,
     required List<MedicineAlert> alerts,
+    required bool isWide,
   }) {
+    // Wide screens (≥1400): three columns — drugbox | records+safety | quick ops
+    if (isWide) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left: drug box.
+          Expanded(
+            flex: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _DrugBoxSection(
+                  workspace: workspace,
+                  l10n: l10n,
+                  onOpenReminder: onOpenReminder,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.level5),
+          // Center: records + safety.
+          Expanded(
+            flex: 6,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _MedicineRecordsSection(
+                  workspace: workspace,
+                  nextDose: nextDose,
+                  l10n: l10n,
+                  onMarkDose: onMarkDose,
+                ),
+                const SizedBox(height: Spacing.level5),
+                _SafetyEngineSection(
+                  result: workspace.riskCheckResult,
+                  alerts: alerts.take(4).toList(growable: false),
+                  l10n: l10n,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: Spacing.level5),
+          // Right: quick operations.
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _QuickOperationSection(
+                  l10n: l10n,
+                  onCreateReminder: onCreateReminder,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Standard desktop (1200–1400): two columns — drugbox+records | safety+ops
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -108,12 +174,6 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 l10n: l10n,
                 onMarkDose: onMarkDose,
               ),
-              const SizedBox(height: Spacing.level5),
-              _SafetyEngineSection(
-                result: workspace.riskCheckResult,
-                alerts: alerts.take(4).toList(growable: false),
-                l10n: l10n,
-              ),
             ],
           ),
         ),
@@ -123,11 +183,16 @@ class MedicineMobileDashboardView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              _SafetyEngineSection(
+                result: workspace.riskCheckResult,
+                alerts: alerts.take(4).toList(growable: false),
+                l10n: l10n,
+              ),
+              const SizedBox(height: Spacing.level5),
               _QuickOperationSection(
                 l10n: l10n,
                 onCreateReminder: onCreateReminder,
               ),
-              const SizedBox(height: Spacing.level5),
             ],
           ),
         ),

@@ -84,6 +84,8 @@ abstract final class LayoutScaleResolver {
       );
     }
 
+    // 960–1200: transitional "small desktop" — wider padding + 2-col grid
+    // maxContentWidth, but not full dual-pane.
     if (width < Breakpoints.desktop) {
       return const LayoutScale(
         pageHorizontalPadding: Spacing.level6,
@@ -96,14 +98,28 @@ abstract final class LayoutScaleResolver {
       );
     }
 
+    // 1200–1400: standard desktop dual-pane.
+    if (width < Breakpoints.wide) {
+      return const LayoutScale(
+        pageHorizontalPadding: Spacing.level6,
+        sectionVerticalPadding: Spacing.level10,
+        heroVerticalPadding: Spacing.level12,
+        cardPadding: Spacing.level5,
+        cardPaddingLarge: Spacing.level6,
+        componentGap: Spacing.level5,
+        maxContentWidth: 1400,
+      );
+    }
+
+    // ≥1400: wide desktop — same spacing, wider content allowance.
     return const LayoutScale(
-      pageHorizontalPadding: Spacing.level6,
+      pageHorizontalPadding: Spacing.level7,
       sectionVerticalPadding: Spacing.level10,
       heroVerticalPadding: Spacing.level12,
       cardPadding: Spacing.level5,
       cardPaddingLarge: Spacing.level6,
       componentGap: Spacing.level5,
-      maxContentWidth: 1400,
+      maxContentWidth: 1600,
     );
   }
 }
