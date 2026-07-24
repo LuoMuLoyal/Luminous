@@ -34,7 +34,7 @@ class LucentMedicineSearchRepository implements MedicineSearchRepository {
 
     ensureEnvelopeSuccess(code: response.code, message: response.message);
 
-    return response.data.map(mapper.dtoToResult).toList();
+    return response.data.items.map(mapper.dtoToResult).toList();
   }
 
   @override

@@ -29,6 +29,7 @@ abstract class TodaySuggestionApi {
   @GET('/api/v1/user/today/suggestions')
   Future<TodaySuggestionsResponseDto>
   todaySuggestionControllerGetSuggestionsV1({
+    @Header('accept-language') required String acceptLanguage,
     @Query('date') String? date,
     @Query('excludeIds') List<String>? excludeIds,
   });

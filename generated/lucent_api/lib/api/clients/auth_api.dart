@@ -35,7 +35,7 @@ part 'auth_api.g.dart';
 abstract class AuthApi {
   factory AuthApi(Dio dio, {String? baseUrl}) = _AuthApi;
 
-  /// 用户注册.
+  /// User registration.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/register')
@@ -43,7 +43,7 @@ abstract class AuthApi {
     @Body() required RegisterDto body,
   });
 
-  /// 用户登录.
+  /// User login.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/login')
@@ -51,7 +51,7 @@ abstract class AuthApi {
     @Body() required LoginDto body,
   });
 
-  /// 发送邮箱验证码.
+  /// Send email verification code.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/send-verification-code')
@@ -60,7 +60,7 @@ abstract class AuthApi {
     @Body() required SendVerificationCodeDto body,
   });
 
-  /// 验证邮箱.
+  /// Verify email.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/verify-email')
@@ -68,7 +68,7 @@ abstract class AuthApi {
     @Body() required VerifyEmailDto body,
   });
 
-  /// 忘记密码.
+  /// Forgot password.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/forgot-password')
@@ -76,7 +76,7 @@ abstract class AuthApi {
     @Body() required ForgotPasswordDto body,
   });
 
-  /// 重置密码.
+  /// Reset password.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/reset-password')
@@ -84,7 +84,7 @@ abstract class AuthApi {
     @Body() required ResetPasswordDto body,
   });
 
-  /// 创建微信网页登录授权地址.
+  /// Create WeChat web OAuth authorize URL.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-web/authorize')
@@ -93,7 +93,7 @@ abstract class AuthApi {
     @Body() OAuthAuthorizeDto? body,
   });
 
-  /// 微信网页登录回调登录.
+  /// WeChat web OAuth callback login.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-web/callback')
@@ -101,7 +101,7 @@ abstract class AuthApi {
     @Body() required OAuthCallbackDto body,
   });
 
-  /// 微信网页登录浏览器回跳.
+  /// WeChat web OAuth browser redirect.
   ///
   /// [code] - OAuth 授权码.
   ///
@@ -112,7 +112,7 @@ abstract class AuthApi {
     @Query('state') required String state,
   });
 
-  /// 微信移动端登录回调.
+  /// WeChat mobile OAuth callback login.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/wechat-mobile/callback')
@@ -120,7 +120,7 @@ abstract class AuthApi {
     @Body() required OAuthCodeCallbackDto body,
   });
 
-  /// Apple 登录回调.
+  /// Apple Sign-In callback.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/apple/callback')
@@ -128,7 +128,7 @@ abstract class AuthApi {
     @Body() required AppleOAuthCallbackDto body,
   });
 
-  /// 创建 QQ 登录授权地址.
+  /// Create QQ OAuth authorize URL.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/qq/authorize')
@@ -136,7 +136,7 @@ abstract class AuthApi {
     @Body() QqOAuthAuthorizeDto? body,
   });
 
-  /// QQ 登录回调.
+  /// QQ OAuth callback login.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/oauth/qq/callback')
@@ -144,7 +144,7 @@ abstract class AuthApi {
     @Body() required QqOAuthCallbackDto body,
   });
 
-  /// 用户登出.
+  /// User logout.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/logout')
@@ -152,17 +152,17 @@ abstract class AuthApi {
     @Body() required LogoutDto body,
   });
 
-  /// 列出当前用户的活跃会话
+  /// List active sessions for the current user
   @GET('/api/v1/auth/sessions')
   Future<void> sessionControllerListSessionsV1();
 
-  /// 撤销指定会话
+  /// Revoke a specific session
   @DELETE('/api/v1/auth/sessions/{sessionId}')
   Future<void> sessionControllerRevokeSessionV1({
     @Path('sessionId') required String sessionId,
   });
 
-  /// 刷新令牌.
+  /// Refresh token.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/auth/refresh')

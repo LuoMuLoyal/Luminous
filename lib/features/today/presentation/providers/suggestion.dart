@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/database_providers.dart';
+import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
@@ -51,6 +53,10 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
 
     try {
       final bundle = await ds.fetchSuggestions(
+        language:
+            (ref.read(localeControllerProvider).asData?.value ??
+                    AppLocale.system)
+                .acceptLanguage,
         excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
       );
       // Persist to cache

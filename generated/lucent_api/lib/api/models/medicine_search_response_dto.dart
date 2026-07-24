@@ -4,8 +4,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-import 'medicine_search_item_dto.dart';
-import 'medicine_search_meta_dto.dart';
+import 'medicine_search_data_dto.dart';
 
 part 'medicine_search_response_dto.g.dart';
 
@@ -15,7 +14,6 @@ class MedicineSearchResponseDto {
     required this.code,
     required this.message,
     required this.data,
-    required this.meta,
   });
 
   factory MedicineSearchResponseDto.fromJson(Map<String, Object?> json) =>
@@ -23,8 +21,7 @@ class MedicineSearchResponseDto {
 
   final num code;
   final String message;
-  final List<MedicineSearchItemDto> data;
-  final MedicineSearchMetaDto meta;
+  final MedicineSearchDataDto data;
 
   Map<String, Object?> toJson() => _$MedicineSearchResponseDtoToJson(this);
 }

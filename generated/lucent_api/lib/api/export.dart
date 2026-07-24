@@ -90,7 +90,7 @@ export 'models/cn_medicine_detail_dto.dart';
 export 'models/medicine_safety_tip_response_dto.dart';
 export 'models/medicine_search_item_dto.dart';
 export 'models/medicine_pagination_dto.dart';
-export 'models/medicine_search_meta_dto.dart';
+export 'models/medicine_search_data_dto.dart';
 export 'models/medicine_search_response_dto.dart';
 export 'models/medicine_detail_data_dto.dart';
 export 'models/medicine_detail_response_dto.dart';

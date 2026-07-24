@@ -46,14 +46,16 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   }
 }
 
-MedicineSearchMetaDto _defaultMeta() => const MedicineSearchMetaDto(
-  pagination: MedicinePaginationDto(
-    page: 1,
-    pageSize: 20,
-    total: 0,
-    totalPages: 0,
-  ),
-);
+MedicineSearchDataDto _defaultData([List<MedicineSearchItemDto>? items]) =>
+    MedicineSearchDataDto(
+      items: items ?? [],
+      pagination: const MedicinePaginationDto(
+        page: 1,
+        pageSize: 20,
+        total: 0,
+        totalPages: 0,
+      ),
+    );
 
 MedicineSearchResponseDto _okSearchResponse([
   List<MedicineSearchItemDto>? items,
@@ -61,8 +63,7 @@ MedicineSearchResponseDto _okSearchResponse([
   return MedicineSearchResponseDto(
     code: 0,
     message: '',
-    data: items ?? [],
-    meta: _defaultMeta(),
+    data: _defaultData(items),
   );
 }
 
@@ -156,8 +157,7 @@ void main() {
         dataSource.searchResponse = MedicineSearchResponseDto(
           code: 1001,
           message: '参数错误',
-          data: [],
-          meta: _defaultMeta(),
+          data: _defaultData(),
         );
 
         expect(
@@ -172,8 +172,7 @@ void main() {
           dataSource.searchResponse = MedicineSearchResponseDto(
             code: 500,
             message: '',
-            data: [],
-            meta: _defaultMeta(),
+            data: _defaultData(),
           );
 
           expect(

@@ -15,10 +15,12 @@ class TodaySuggestionRemoteDataSource {
 
   /// GET /api/v1/user/today/suggestions
   Future<TodaySuggestionBundle> fetchSuggestions({
+    required String language,
     String? date,
     List<String>? excludeIds,
   }) async {
     final response = await api.todaySuggestionControllerGetSuggestionsV1(
+      acceptLanguage: language,
       date: date,
       excludeIds: excludeIds,
     );

@@ -40,9 +40,9 @@ abstract class TodayAnalysisApi {
     @Path('jobId') required String jobId,
   });
 
-  /// 随机返回今日健康推荐.
+  /// Get random daily health recommendations.
   ///
-  /// [exclude] - 上一次返回的推荐 id 列表，用于相邻两次去重.
+  /// [exclude] - Recommendation IDs from the last response, used for deduplication.
   @GET('/api/v1/user/today-analysis/recommendations')
   Future<List<TodayRecommendationResponseDto>>
   todayAnalysisControllerGetRecommendationsV1({

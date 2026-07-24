@@ -49,9 +49,9 @@ void main() {
       final searchResponse = MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
-        data: items,
-        meta: const MedicineSearchMetaDto(
-          pagination: MedicinePaginationDto(
+        data: MedicineSearchDataDto(
+          items: items,
+          pagination: const MedicinePaginationDto(
             page: 1,
             pageSize: 20,
             total: 1,
@@ -90,8 +90,8 @@ void main() {
       const emptyResponse = MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
-        data: [],
-        meta: MedicineSearchMetaDto(
+        data: MedicineSearchDataDto(
+          items: [],
           pagination: MedicinePaginationDto(
             page: 1,
             pageSize: 20,

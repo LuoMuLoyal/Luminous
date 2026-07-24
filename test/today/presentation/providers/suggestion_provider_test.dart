@@ -97,6 +97,7 @@ void main() {
       final bundle = _bundle(primaryId: 's1');
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -119,6 +120,7 @@ void main() {
       expect(result, isNull);
       verifyNever(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -128,6 +130,7 @@ void main() {
     test('falls back to cache when network fails', () async {
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -150,6 +153,7 @@ void main() {
       () async {
         when(
           () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
             date: any(named: 'date'),
             excludeIds: any(named: 'excludeIds'),
           ),
@@ -179,6 +183,7 @@ void main() {
 
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -191,6 +196,7 @@ void main() {
       // Now stub the next call to return bundle2
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -209,6 +215,7 @@ void main() {
 
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -233,6 +240,7 @@ void main() {
       // Next fetch should exclude 's1'
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -256,6 +264,7 @@ void main() {
 
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -267,6 +276,7 @@ void main() {
 
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),
@@ -283,6 +293,7 @@ void main() {
       final bundle = _bundle(primaryId: 's1');
       when(
         () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
           date: any(named: 'date'),
           excludeIds: any(named: 'excludeIds'),
         ),

@@ -19,9 +19,9 @@ part 'medicines_api.g.dart';
 abstract class MedicinesApi {
   factory MedicinesApi(Dio dio, {String? baseUrl}) = _MedicinesApi;
 
-  /// 随机返回用药安全提示.
+  /// Get random medication safety tips.
   ///
-  /// [exclude] - 上一次返回的提示 id 列表，用于相邻两次去重.
+  /// [exclude] - Safety tip IDs from the last response, used for deduplication.
   @GET('/api/v1/medicines/safety-tips')
   Future<List<MedicineSafetyTipResponseDto>>
   medicinesControllerGetSafetyTipsV1({@Query('exclude') List<String>? exclude});
@@ -60,7 +60,7 @@ abstract class MedicinesApi {
     @Query('source') Source? source = Source.drugbank,
   });
 
-  /// AI识别药盒图片，提取药品信息.
+  /// AI recognize medicine box image and extract medicine info.
   ///
   /// [body] - Name not received - field will be skipped.
   @POST('/api/v1/medicines/recognize')

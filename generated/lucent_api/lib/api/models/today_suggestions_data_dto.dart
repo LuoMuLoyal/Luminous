@@ -15,6 +15,7 @@ class TodaySuggestionsDataDto {
     this.primary,
     this.secondary,
     this.observations,
+    this.degraded,
   });
 
   factory TodaySuggestionsDataDto.fromJson(Map<String, Object?> json) =>
@@ -31,6 +32,9 @@ class TodaySuggestionsDataDto {
 
   /// Low-confidence observations
   final List<SuggestionItemDto>? observations;
+
+  /// When true, one or more suggestion rules threw an error during evaluation — the returned list may be incomplete.
+  final dynamic degraded;
 
   Map<String, Object?> toJson() => _$TodaySuggestionsDataDtoToJson(this);
 }

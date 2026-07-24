@@ -90,7 +90,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions();
+      final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.generatedAt, '2026-07-11T08:00:00.000Z');
       expect(result.primary, isNotNull);
@@ -122,7 +122,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions();
+      final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.primary, isNull);
       expect(result.secondary, isNull);
@@ -183,7 +183,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions();
+      final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.secondary!.length, 1);
       expect(result.secondary![0].type, TodaySuggestionType.behaviorAdvice);
@@ -245,7 +245,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions();
+      final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.primary!.evidence.length, 2);
       expect(result.primary!.evidence[0].label, 'Aspirin');
@@ -442,7 +442,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchSuggestions();
+      final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.primary!.confidence, TodaySuggestionConfidence.medium);
       expect(result.primary!.triggerType, TodaySuggestionTriggerType.timer);
