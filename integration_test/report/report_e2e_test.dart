@@ -46,7 +46,7 @@ void main() {
     await tapVisible(tester, signInAction);
 
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets(

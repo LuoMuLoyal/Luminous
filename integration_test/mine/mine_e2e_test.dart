@@ -17,7 +17,7 @@ void main() {
     await settleE2e(tester);
 
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets('mine profile edit saves health context and returns', (

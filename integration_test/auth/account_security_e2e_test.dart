@@ -26,7 +26,7 @@ void main() {
       'https://example.com/e2e-avatar.png',
     );
 
-    final saveButton = find.widgetWithText(FilledButton, '保存资料');
+    final saveButton = find.widgetWithText(FButton, '保存资料');
     await tester.ensureVisible(saveButton);
     await tester.tap(saveButton);
     await settleE2e(tester);
@@ -62,7 +62,7 @@ void main() {
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
     await settleE2e(tester);
 
-    final changeEmailButton = find.widgetWithText(FilledButton, '更换邮箱');
+    final changeEmailButton = find.widgetWithText(FButton, '更换邮箱');
     await tester.scrollUntilVisible(
       changeEmailButton,
       240,
@@ -78,7 +78,7 @@ void main() {
       'next-e2e@example.com',
     );
     await tester.enterText(find.byType(EditableText).at(1), '246810');
-    await tester.tap(find.widgetWithText(FilledButton, '更新邮箱'));
+    await tester.tap(find.widgetWithText(FButton, '更新邮箱'));
     await settleE2e(tester);
 
     expect(remote.changeEmailNewEmail, 'next-e2e@example.com');
@@ -107,7 +107,7 @@ void main() {
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
     await settleE2e(tester);
 
-    final changeEmailButton = find.widgetWithText(FilledButton, '更换邮箱');
+    final changeEmailButton = find.widgetWithText(FButton, '更换邮箱');
     await tester.scrollUntilVisible(
       changeEmailButton,
       240,
@@ -150,7 +150,7 @@ void main() {
     await tester.enterText(oldPasswordField, 'old-password-e2e');
     await tester.enterText(find.byType(EditableText).at(4), 'new-password-e2e');
 
-    final changePasswordButton = find.widgetWithText(FilledButton, '更新密码');
+    final changePasswordButton = find.widgetWithText(FButton, '更新密码');
     await tester.ensureVisible(changePasswordButton);
     await tester.tap(changePasswordButton);
     await settleE2e(tester);
@@ -159,7 +159,7 @@ void main() {
     expect(remote.changePasswordNewPassword, 'new-password-e2e');
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets('account delete clears session and routes to login', (
@@ -184,7 +184,7 @@ void main() {
     );
     await tester.enterText(deletePasswordField, 'delete-password-e2e');
 
-    final deleteButton = find.widgetWithText(FilledButton, '注销账号');
+    final deleteButton = find.widgetWithText(FButton, '注销账号');
     await tester.ensureVisible(deleteButton);
     await tester.tap(deleteButton);
     await settleE2e(tester);
@@ -192,7 +192,7 @@ void main() {
     expect(remote.deleteAccountPassword, 'delete-password-e2e');
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets('account unlink identity updates global session', (tester) async {
@@ -207,7 +207,7 @@ void main() {
     await tester.tap(find.byKey(const Key('mine-account-manage-link')));
     await settleE2e(tester);
 
-    final unlinkButton = find.widgetWithText(TextButton, '解绑');
+    final unlinkButton = find.widgetWithText(FButton, '解绑');
     await tester.scrollUntilVisible(
       unlinkButton,
       240,
@@ -216,10 +216,8 @@ void main() {
     await tester.tap(unlinkButton);
     await settleE2e(tester);
 
-    final confirmButton = find.descendant(
-      of: find.byType(AlertDialog),
-      matching: find.widgetWithText(FilledButton, '解绑'),
-    );
+    // The confirmation dialog uses showAppDialog (FDialog), not AlertDialog.
+    final confirmButton = find.widgetWithText(FButton, '解绑').at(1);
     await tester.tap(confirmButton);
     await settleE2e(tester);
 

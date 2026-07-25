@@ -15,7 +15,7 @@ void main() {
 
     await tester.enterText(find.byType(EditableText).at(0), 'e2e@example.com');
     await tester.enterText(find.byType(EditableText).at(1), 'Password123');
-    await tester.tap(find.widgetWithText(FilledButton, '登录'));
+    await tester.tap(find.widgetWithText(FButton, '登录'));
     await settleE2e(tester);
 
     expect(remote.loginEmail, 'e2e@example.com');
@@ -54,7 +54,7 @@ void main() {
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
     await tester.enterText(inputs.at(4), 'Register E2E');
-    await tester.tap(find.widgetWithText(FilledButton, '创建账号'));
+    await tester.tap(find.widgetWithText(FButton, '创建账号'));
     await tester.pumpAndSettle();
 
     expect(remote.registerEmail, 'register-e2e@example.com');
@@ -122,7 +122,7 @@ void main() {
     await tester.enterText(inputs.at(1), '654321');
     await tester.enterText(inputs.at(2), 'Password123');
     await tester.enterText(inputs.at(3), 'Password123');
-    await tester.tap(find.widgetWithText(FilledButton, '重置密码'));
+    await tester.tap(find.widgetWithText(FButton, '重置密码'));
     await settleE2e(tester);
 
     expect(remote.resetPasswordEmail, 'reset-e2e@example.com');

@@ -76,7 +76,7 @@ void main() {
     await tapSettingsFooterAction(tester);
 
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets('settings footer sign out clears session and routes to login', (
@@ -96,7 +96,7 @@ void main() {
     expect(remote.logoutCalled, isTrue);
     expect(container.read(authSessionProvider).isAuthenticated, isFalse);
     expect(find.text('邮箱'), findsWidgets);
-    expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
   });
 
   testWidgets('settings notification toggle persists preference', (

@@ -73,7 +73,7 @@ void main() {
 
     final confirmButton = find.descendant(
       of: find.byType(AlertDialog),
-      matching: find.widgetWithText(FilledButton, '删除'),
+      matching: find.widgetWithText(FButton, '删除'),
     );
     await tester.tap(confirmButton);
     await settleE2e(tester);

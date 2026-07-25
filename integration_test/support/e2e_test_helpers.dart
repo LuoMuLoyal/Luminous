@@ -8,8 +8,12 @@ import 'package:lucent_api/api/export.dart'
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart'
-    show lucentBaseUrlProvider, lucentSessionStoreProvider;
+    show
+        lucentBaseUrlProvider,
+        lucentDioClientProvider,
+        lucentSessionStoreProvider;
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
@@ -105,23 +109,43 @@ Future<ProviderContainer> pumpOfflineApp(
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
   await prefs.setString('app.locale', 'zh-CN');
+  final sessionStore = _MemorySessionStore();
   final container = ProviderContainer(
     overrides: [
       authSessionProvider.overrideWith(
         authSessionOverride ?? _NoopRestoreAuthSessionNotifier.new,
       ),
       lucentBaseUrlProvider.overrideWithValue('http://localhost'),
-      lucentSessionStoreProvider.overrideWithValue(_MemorySessionStore()),
+      lucentSessionStoreProvider.overrideWithValue(sessionStore),
+      // Override the Dio client to clear interceptors on disposal. This
+      // prevents UnmountedRefException (AuthInterceptor using a disposed
+      // ref) when the ProviderContainer is disposed between tests.
+      lucentDioClientProvider.overrideWith((ref) {
+        final client = LucentDioClient(
+          baseUrl: 'http://localhost',
+          sessionStore: sessionStore,
+          localeResolver: () => 'zh-CN',
+        );
+        ref.onDispose(() {
+          client.dio.interceptors.clear();
+        });
+        return client;
+      }),
       notificationUnreadCountProvider.overrideWith((ref) => Future.value(0)),
       if (authRepository != null)
         authRepositoryProvider.overrideWithValue(authRepository),
-      healthContextSnapshotProvider.overrideWith(
-        (ref) => Future.value(_emptyHealthContextSnapshot),
-      ),
-      if (healthContextRepository != null)
+      if (healthContextRepository != null) ...[
         healthContextRepositoryProvider.overrideWithValue(
           healthContextRepository,
         ),
+        healthContextSnapshotProvider.overrideWith(
+          (ref) async => healthContextRepository.fetchHealthContext(),
+        ),
+      ] else ...[
+        healthContextSnapshotProvider.overrideWith(
+          (ref) => Future.value(_emptyHealthContextSnapshot),
+        ),
+      ],
       medicineRiskCheckRepositoryProvider.overrideWithValue(
         medicineRiskCheckRepository ?? const E2eMedicineRiskCheckRepository(),
       ),
@@ -242,11 +266,11 @@ Future<void> tapVisible(WidgetTester tester, Finder finder) async {
 Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
   await openShellTab(tester, ShellTab.mine);
 
-  final loginAction = find.byKey(const Key('mine-signed-out-login-action'));
+  final loginAction = find.byKey(const Key('mine-readiness-action'));
   await tapVisible(tester, loginAction);
 
   expect(find.text('邮箱'), findsWidgets);
-  expect(find.widgetWithText(FilledButton, '登录'), findsOneWidget);
+  expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
 }
 
 Future<void> tapMedicineDoseAction(WidgetTester tester, String label) async {
