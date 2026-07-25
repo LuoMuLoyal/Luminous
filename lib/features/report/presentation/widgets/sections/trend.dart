@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
-import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -45,9 +44,9 @@ class ReportTrendSection extends StatelessWidget {
               ),
             ),
             if (showRangePill)
-              ReportPeriodPill(
-                range: selectedQuery.range,
-                onTap: () => _showRangePicker(context),
+              ReportRangeMenu(
+                selectedQuery: selectedQuery,
+                onQueryChanged: onQueryChanged,
               ),
           ],
         ),
@@ -74,16 +73,6 @@ class ReportTrendSection extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showReportRangePickerDialog(
-      context,
-      selectedQuery: selectedQuery,
-    );
-    if (selected != null && selected != selectedQuery) {
-      onQueryChanged(selected);
-    }
   }
 
   String _buildSemanticsLabel(AppLocalizations l10n) {

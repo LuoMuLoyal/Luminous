@@ -1,11 +1,12 @@
 # Active UI — Report
 
-Last updated: 2026-07-21 (header migration)
+Last updated: 2026-07-25 (range popover menu)
 
 ## 页面结构
 
 - Lucent-backed report dashboard，真实 medication / water / sleep 聚合。
 - 用户可选范围：`last_7_days` / `last_30_days` / `custom`（Forui `FCalendar.grid` 日期范围选择器）。
+- 时间范围选择器使用 Forui `FPopoverMenu`（`ReportRangeMenu`），从右上角 pill 按钮下方弹出，替代旧版底部弹出 bottom sheet。
 - 移动端报告页为 readiness-first 状态页：
   - 顶部只保留标题 + 时间范围。
   - 首屏单一 `readiness` 主卡合并登录门槛、数据不足、生成总结、同步、数据更新时间。

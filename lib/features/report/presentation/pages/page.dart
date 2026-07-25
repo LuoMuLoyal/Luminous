@@ -19,7 +19,6 @@ import 'package:luminous/features/report/presentation/providers/ai_summary.dart'
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
-import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/suggestion_history_detail_sheet.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
@@ -44,22 +43,6 @@ class ReportPage extends ConsumerWidget {
     final query = ref.read(reportDashboardSelectedQueryProvider);
     ref.invalidate(reportDashboardProvider(query));
     await ref.read(reportDashboardProvider(query).future);
-  }
-
-  Future<void> _showRangePicker(
-    BuildContext context, {
-    required ReportDashboardQuery selectedQuery,
-    required WidgetRef ref,
-  }) async {
-    final selected = await showReportRangePickerDialog(
-      context,
-      selectedQuery: selectedQuery,
-    );
-    if (selected != null && selected != selectedQuery) {
-      ref
-          .read(reportDashboardSelectedQueryProvider.notifier)
-          .setQuery(selected);
-    }
   }
 
   void _openRecordFilter(
@@ -297,13 +280,13 @@ class ReportPage extends ConsumerWidget {
         ? DesktopTabShell(
             title: l10n.tabReport,
             suffixes: [
-              ReportPeriodPill(
-                range: selectedDashboardQuery.range,
-                onTap: () => _showRangePicker(
-                  context,
-                  selectedQuery: selectedDashboardQuery,
-                  ref: ref,
-                ),
+              ReportRangeMenu(
+                selectedQuery: selectedDashboardQuery,
+                onQueryChanged: (query) {
+                  ref
+                      .read(reportDashboardSelectedQueryProvider.notifier)
+                      .setQuery(query);
+                },
               ),
             ],
             child: Column(
@@ -436,13 +419,13 @@ class ReportPage extends ConsumerWidget {
       return DesktopTabShell(
         title: l10n.tabReport,
         suffixes: [
-          ReportPeriodPill(
-            range: selectedDashboardQuery.range,
-            onTap: () => _showRangePicker(
-              context,
-              selectedQuery: selectedDashboardQuery,
-              ref: ref,
-            ),
+          ReportRangeMenu(
+            selectedQuery: selectedDashboardQuery,
+            onQueryChanged: (query) {
+              ref
+                  .read(reportDashboardSelectedQueryProvider.notifier)
+                  .setQuery(query);
+            },
           ),
         ],
         onRefresh: () => _refreshDashboard(ref),

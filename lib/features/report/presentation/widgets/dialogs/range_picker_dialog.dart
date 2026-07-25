@@ -6,6 +6,21 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// Shows the calendar date-range picker.
+///
+/// On mobile this opens as a bottom sheet; on desktop as a centered dialog.
+/// Used by [ReportRangeMenu] when the user selects the "custom" option.
+Future<ReportDashboardQuery?> showReportCalendarPicker(
+  BuildContext context, {
+  required ReportDashboardQuery selectedQuery,
+}) {
+  final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+  final l10n = AppLocalizations.of(context)!;
+  return isDesktop
+      ? _showCalendarDialog(context, l10n, selectedQuery)
+      : _showCalendarBottomSheet(context, l10n, selectedQuery);
+}
+
 Future<ReportDashboardQuery?> showReportRangePickerDialog(
   BuildContext context, {
   required ReportDashboardQuery selectedQuery,

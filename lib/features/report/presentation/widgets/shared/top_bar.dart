@@ -5,6 +5,13 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
+/// A popover-based range selector for the report page.
+///
+/// Replaces the previous bottom-sheet/dialog approach with a Forui
+/// [FPopoverMenu] anchored to the top-right of the trigger pill.
+/// Preset ranges (近7天 / 近30天) switch immediately; the "custom" option
+/// closes the popover and opens the calendar picker.
+
 /// Report page top bar.
 ///
 /// Note: the date range label (subtitle) and action button area (bottom) have been
@@ -28,22 +35,88 @@ class ReportTopBar extends StatelessWidget {
     return FHeader.nested(
       title: Text(l10n.tabReport),
       suffixes: [
-        ReportPeriodPill(
-          range: selectedQuery.range,
-          onTap: () => _showRangePicker(context),
+        ReportRangeMenu(
+          selectedQuery: selectedQuery,
+          onQueryChanged: onQueryChanged,
         ),
       ],
     );
   }
+}
 
-  Future<void> _showRangePicker(BuildContext context) async {
-    final selected = await showReportRangePickerDialog(
-      context,
-      selectedQuery: selectedQuery,
+/// Forui [FPopoverMenu]-based range selector.
+///
+/// The trigger is a compact pill showing the current range label.
+/// Tapping it opens a popover anchored to the bottom-right of the pill,
+/// listing the three range options. The currently selected option is
+/// marked with a check icon via [FItem.selected].
+class ReportRangeMenu extends StatelessWidget {
+  const ReportRangeMenu({
+    super.key,
+    required this.selectedQuery,
+    required this.onQueryChanged,
+  });
+
+  final ReportDashboardQuery selectedQuery;
+  final ValueChanged<ReportDashboardQuery> onQueryChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return FPopoverMenu(
+      menuAnchor: Alignment.topRight,
+      childAnchor: Alignment.bottomRight,
+      menuBuilder: (context, controller, _) => [
+        FItemGroupMixin.group(
+          children: [
+            FItemMixin.item(
+              title: Text(l10n.reportRangeLast7Days),
+              selected: selectedQuery.range == ReportDashboardRange.last7Days,
+              onPress: () {
+                controller.hide();
+                onQueryChanged(
+                  const ReportDashboardQuery(
+                    range: ReportDashboardRange.last7Days,
+                  ),
+                );
+              },
+            ),
+            FItemMixin.item(
+              title: Text(l10n.reportRangeLast30Days),
+              selected: selectedQuery.range == ReportDashboardRange.last30Days,
+              onPress: () {
+                controller.hide();
+                onQueryChanged(
+                  const ReportDashboardQuery(
+                    range: ReportDashboardRange.last30Days,
+                  ),
+                );
+              },
+            ),
+            FItemMixin.item(
+              title: Text(l10n.reportRangeCustom),
+              selected: selectedQuery.range == ReportDashboardRange.custom,
+              onPress: () async {
+                await controller.hide();
+                if (!context.mounted) return;
+                final picked = await showReportCalendarPicker(
+                  context,
+                  selectedQuery: selectedQuery,
+                );
+                if (picked != null && picked != selectedQuery) {
+                  onQueryChanged(picked);
+                }
+              },
+            ),
+          ],
+        ),
+      ],
+      builder: (_, controller, _) => ReportPeriodPill(
+        range: selectedQuery.range,
+        onTap: controller.toggle,
+      ),
     );
-    if (selected != null && selected != selectedQuery) {
-      onQueryChanged(selected);
-    }
   }
 }
 
