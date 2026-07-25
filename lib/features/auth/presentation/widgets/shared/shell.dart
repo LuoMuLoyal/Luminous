@@ -2,10 +2,313 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 class AuthShell extends StatelessWidget {
   const AuthShell({
     super.key,
+    required this.title,
+    required this.form,
+    this.formModeSelector,
+    this.enableFormAnimation = true,
+    this.leading,
+    this.centerTitle = false,
+    this.logo,
+    this.subtitle,
+  });
+
+  final String title;
+  final Widget form;
+  final Widget? formModeSelector;
+  final bool enableFormAnimation;
+  final Widget? leading;
+  final bool centerTitle;
+  final Widget? logo;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+
+    if (isDesktop) {
+      return _DesktopAuthShell(
+        title: title,
+        subtitle: subtitle,
+        logo: logo,
+        leading: leading,
+        centerTitle: centerTitle,
+        formModeSelector: formModeSelector,
+        form: form,
+        enableFormAnimation: enableFormAnimation,
+      );
+    }
+
+    return _MobileAuthShell(
+      title: title,
+      subtitle: subtitle,
+      logo: logo,
+      leading: leading,
+      centerTitle: centerTitle,
+      formModeSelector: formModeSelector,
+      form: form,
+      enableFormAnimation: enableFormAnimation,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Desktop layout — split: left brand panel + right form.
+// ---------------------------------------------------------------------------
+class _DesktopAuthShell extends StatelessWidget {
+  const _DesktopAuthShell({
+    required this.title,
+    required this.form,
+    this.formModeSelector,
+    this.enableFormAnimation = true,
+    this.leading,
+    this.centerTitle = false,
+    this.logo,
+    this.subtitle,
+  });
+
+  final String title;
+  final Widget form;
+  final Widget? formModeSelector;
+  final bool enableFormAnimation;
+  final Widget? leading;
+  final bool centerTitle;
+  final Widget? logo;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return FScaffold(
+      childPad: false,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: GradientTokens.tintFade(
+            const Color(0xFFF5F8FF),
+            colors.background,
+          ),
+        ),
+        child: Stack(
+          children: [
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1280),
+                child: Row(
+                  children: [
+                    const Expanded(flex: 5, child: _DesktopBrandPanel()),
+                    const SizedBox(width: Spacing.level6),
+                    Expanded(
+                      flex: 4,
+                      child: SafeArea(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Spacing.level8,
+                            vertical: Spacing.level6,
+                          ),
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 420),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  _AuthPageHeader(
+                                    title: title,
+                                    leading: null,
+                                    centerTitle: centerTitle,
+                                    logo: logo,
+                                    subtitle: subtitle,
+                                  ),
+                                  if (formModeSelector != null) ...[
+                                    const SizedBox(height: Spacing.level6),
+                                    formModeSelector!,
+                                  ],
+                                  const SizedBox(height: Spacing.level6),
+                                  _AuthFormPanel(
+                                    form: form,
+                                    enableAnimation: enableFormAnimation,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (leading != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.level4),
+                    child: leading,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Desktop brand panel — gradient background + logo + tagline + features.
+// ---------------------------------------------------------------------------
+class _DesktopBrandPanel extends StatelessWidget {
+  const _DesktopBrandPanel();
+
+  static const _transparentLogoPath = 'assets/icon/app_icon_transparent.png';
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level10,
+          vertical: Spacing.level8,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo
+            Image.asset(
+              _transparentLogoPath,
+              width: 80,
+              height: 80,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                FLucideIcons.shieldPlus,
+                color: colors.primary,
+                size: 80,
+              ),
+            ),
+            const SizedBox(height: Spacing.level6),
+            // Tagline
+            Text(
+              l10n.authBrandTagline,
+              style: TypographyToken.level9
+                  .display(context)
+                  .copyWith(
+                    color: colors.foreground,
+                    fontWeight: FontWeight.w800,
+                  ),
+            ),
+            const SizedBox(height: Spacing.level4),
+            // Description
+            Text(
+              l10n.authBrandDescription,
+              style: TypographyToken.level5
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+            const SizedBox(height: Spacing.level9),
+            // Feature list
+            _BrandFeatureItem(
+              icon: FLucideIcons.layoutList,
+              title: l10n.authBrandFeatureRecords,
+              description: l10n.authBrandFeatureRecordsDesc,
+            ),
+            const SizedBox(height: Spacing.level5),
+            _BrandFeatureItem(
+              icon: FLucideIcons.sparkles,
+              title: l10n.authBrandFeatureAnalysis,
+              description: l10n.authBrandFeatureAnalysisDesc,
+            ),
+            const SizedBox(height: Spacing.level5),
+            _BrandFeatureItem(
+              icon: FLucideIcons.shieldCheck,
+              title: l10n.authBrandFeaturePrivacy,
+              description: l10n.authBrandFeaturePrivacyDesc,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BrandFeatureItem extends StatelessWidget {
+  const _BrandFeatureItem({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  final IconData icon;
+  final String title;
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: SemanticColor.primary.subtle(context),
+            borderRadius: BorderRadius.circular(RadiusTokens.level4),
+          ),
+          child: Center(
+            child: Icon(
+              icon,
+              color: colors.primary,
+              size: IconSizeTokens.level4,
+            ),
+          ),
+        ),
+        const SizedBox(width: Spacing.level4),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(
+                      color: colors.foreground,
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                description,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Mobile layout — unchanged single-column centered form.
+// ---------------------------------------------------------------------------
+class _MobileAuthShell extends StatelessWidget {
+  const _MobileAuthShell({
     required this.title,
     required this.form,
     this.formModeSelector,

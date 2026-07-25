@@ -144,6 +144,7 @@ flutter:
   assets:
     - assets/
     - assets/icon/app_icon.png
+    - assets/icon/app_icon_transparent.png
     - assets/legal/
 
 melos:

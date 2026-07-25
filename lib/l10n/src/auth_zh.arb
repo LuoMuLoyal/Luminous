@@ -182,5 +182,13 @@
   "authEmailVerifyAction": "去验证",
   "authDeleteAccountDangerZoneLabel": "危险操作",
   "authDeleteAccountPolicyHint": "注销后账户数据将在 30 天内永久删除，详见注销政策。",
-  "authDeleteAccountPolicyAction": "查看注销政策"
+  "authDeleteAccountPolicyAction": "查看注销政策",
+  "authBrandTagline": "你的健康，一目了然",
+  "authBrandDescription": "记录每日健康数据，AI 智能分析趋势，让健康管理变得简单而高效。",
+  "authBrandFeatureRecords": "结构化记录",
+  "authBrandFeatureRecordsDesc": "症状、用药、饮食、睡眠，一目了然",
+  "authBrandFeatureAnalysis": "AI 趋势分析",
+  "authBrandFeatureAnalysisDesc": "智能识别健康趋势，提前预警",
+  "authBrandFeaturePrivacy": "隐私优先",
+  "authBrandFeaturePrivacyDesc": "端到端加密，数据完全由你掌控"
 }

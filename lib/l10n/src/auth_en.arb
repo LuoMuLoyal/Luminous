@@ -182,5 +182,13 @@
   "authEmailVerifyAction": "Verify now",
   "authDeleteAccountDangerZoneLabel": "Danger zone",
   "authDeleteAccountPolicyHint": "Account data will be permanently deleted within 30 days. See the cancellation policy for details.",
-  "authDeleteAccountPolicyAction": "View cancellation policy"
+  "authDeleteAccountPolicyAction": "View cancellation policy",
+  "authBrandTagline": "Your health, at a glance",
+  "authBrandDescription": "Track daily health data with AI-powered trend analysis. Make health management simple and efficient.",
+  "authBrandFeatureRecords": "Structured records",
+  "authBrandFeatureRecordsDesc": "Symptoms, medications, meals, sleep — all in one place",
+  "authBrandFeatureAnalysis": "AI trend analysis",
+  "authBrandFeatureAnalysisDesc": "Smart health trend detection with early warnings",
+  "authBrandFeaturePrivacy": "Privacy first",
+  "authBrandFeaturePrivacyDesc": "End-to-end encryption, your data stays yours"
 }

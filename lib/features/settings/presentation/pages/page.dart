@@ -11,7 +11,6 @@ import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
-import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -298,8 +297,6 @@ class _SettingsMasterDetailState extends State<_SettingsMasterDetail> {
                                 selected: i == _selectedIndex,
                                 onTap: () => setState(() => _selectedIndex = i),
                               ),
-                              if (i < widget.groups.length - 1)
-                                const AppDivider(),
                             ],
                           ],
                         ),
