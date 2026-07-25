@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,6 +15,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/shortcuts/app_shortcuts.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
+import 'package:luminous/core/widgets/common/desktop_window_chrome.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
@@ -120,7 +122,9 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
               accessibleNavigation: reduceAnimations,
             ),
             child: FToaster(
-              child: AppShortcuts(child: child ?? const SizedBox.shrink()),
+              child: _withDesktopChrome(
+                AppShortcuts(child: child ?? const SizedBox.shrink()),
+              ),
             ),
           ),
         );
@@ -159,6 +163,19 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
           );
     }
   }
+}
+
+/// Wraps [child] with [DesktopWindowChrome] on Windows/Linux desktop,
+/// adding a full-width drag area and window control buttons at the top.
+/// On other platforms, returns [child] unchanged.
+Widget _withDesktopChrome(Widget child) {
+  if (!Platform.isWindows && !Platform.isLinux) return child;
+  return Column(
+    children: [
+      const DesktopWindowChrome(),
+      Expanded(child: child),
+    ],
+  );
 }
 
 /// Creates a high-contrast variant of [theme] by maximizing foreground/

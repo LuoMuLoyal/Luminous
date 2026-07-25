@@ -25,7 +25,7 @@
   - 子页直接组合 `FScaffold` / `FHeader`
   - `AppBackButton` 使用 Forui 图标按钮
   - 共享状态/对话框壳使用 `FCard` / `FButton` / `FDialog`
-- **窗口标题栏自定义**：`window_manager` 设置 `TitleBarStyle.hidden` 隐藏原生标题栏；侧边栏 header 集成 `DragToMoveArea`（拖拽移动窗口）+ Windows/Linux 自定义窗口控制按钮（最小化/最大化/关闭，hover 态反馈）；macOS 系统红绿灯按钮自动叠加，header 左侧加 70px padding 避免重叠。
+- **窗口标题栏自定义**：`window_manager` 设置 `TitleBarStyle.hidden` 隐藏原生标题栏；`DesktopWindowChrome`（`lib/core/widgets/common/desktop_window_chrome.dart`）在应用顶部渲染 32px 全宽拖拽区 + 窗口控制按钮（Windows/Linux），位于 `bootstrap.dart` 的 app builder 中以 `Column` 布局包裹整个应用；侧边栏 header 保留 `DragToMoveArea` 作为额外拖拽区；macOS 系统红绿灯按钮自动叠加，sidebar header 左侧加 70px padding 避免重叠。
 - **桌面端 CRUD 路由侧面板化**：Record create/detail/edit 和 Medicine reminder new/detail/edit 路由在桌面端使用 `sidePanelPage`（右侧滑入面板，maxWidth 560，半透明遮罩，`barrierDismissible`），移动端降级为 `slidePage`（全屏）。
 - **桌面端拖拽支持**：Record 时间线卡片包裹 `Draggable<TimelineDragData>`（仅 `recordId != null` 且桌面端），可拖拽到日历日期单元格（`DragTarget`）改变记录日期；源卡片半透明，目标日期高亮，成功后 `DataChangeTopic.dailyRecords` 触发看板刷新。移动端不启用拖拽。
 - **桌面端右键上下文菜单**：Record 时间线卡片、Medicine 用药记录项、Mine 归档项均接入 `FContextMenu.tiles`（桌面端右键触发，移动端长按触发），提供"查看详情"/"编辑"等操作。
