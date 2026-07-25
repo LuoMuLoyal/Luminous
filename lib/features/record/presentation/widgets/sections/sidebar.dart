@@ -454,7 +454,9 @@ class _MonthDayCellState extends State<_MonthDayCell> {
 
     return DragTarget<TimelineDragData>(
       onWillAcceptWithDetails: (details) {
-        setState(() => _isDragHovering = true);
+        // 泛型 DragTarget<TimelineDragData> 已约束数据类型，
+        // 此处返回 true 让 DragTarget 接受拖拽；悬停状态由 builder
+        // 中 candidateData.isNotEmpty 驱动，避免无条件 setState。
         return true;
       },
       onLeave: (_) {
@@ -466,6 +468,9 @@ class _MonthDayCellState extends State<_MonthDayCell> {
         widget.onRecordDropped!(details.data.recordId, targetDate);
       },
       builder: (context, candidateData, rejectedData) {
+        if (candidateData.isNotEmpty && !_isDragHovering) {
+          setState(() => _isDragHovering = true);
+        }
         return cellContent;
       },
     );

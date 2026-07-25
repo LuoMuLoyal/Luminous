@@ -24,12 +24,14 @@ class _CommandPaletteState extends State<CommandPalette> {
   final _focusNode = FocusNode();
   int _selectedIndex = 0;
   List<_Command> _filtered = [];
+  List<_Command> _allCommands = [];
 
   @override
   void initState() {
     super.initState();
     _controller.addListener(_onQueryChanged);
-    _filtered = _buildCommands(context);
+    _allCommands = _buildCommands(context);
+    _filtered = _allCommands;
   }
 
   @override
@@ -42,7 +44,7 @@ class _CommandPaletteState extends State<CommandPalette> {
   void _onQueryChanged() {
     final query = _controller.text.toLowerCase().trim();
     setState(() {
-      _filtered = _buildCommands(context).where((cmd) {
+      _filtered = _allCommands.where((cmd) {
         if (query.isEmpty) return true;
         // Match against all searchable strings (label, keywords, aliases).
         return cmd.searchStrings.any((s) => s.toLowerCase().contains(query));

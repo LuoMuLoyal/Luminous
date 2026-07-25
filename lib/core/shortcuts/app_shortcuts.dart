@@ -85,7 +85,7 @@ class AppShortcuts extends ConsumerWidget {
           ),
           CreateRecordIntent: CallbackAction<CreateRecordIntent>(
             onInvoke: (_) {
-              GoRouter.of(context).push(Routes.recordCreate);
+              context.push(Routes.recordCreate);
               return null;
             },
           ),
@@ -97,13 +97,13 @@ class AppShortcuts extends ConsumerWidget {
           ),
           OpenSettingsIntent: CallbackAction<OpenSettingsIntent>(
             onInvoke: (_) {
-              GoRouter.of(context).push(Routes.settings);
+              context.push(Routes.settings);
               return null;
             },
           ),
           OpenAssistantIntent: CallbackAction<OpenAssistantIntent>(
             onInvoke: (_) {
-              GoRouter.of(context).push(Routes.assistant);
+              context.push(Routes.assistant);
               return null;
             },
           ),
@@ -120,7 +120,7 @@ class AppShortcuts extends ConsumerWidget {
               ];
               final index = intent.index;
               if (index >= 0 && index < tabRoutes.length) {
-                GoRouter.of(context).go(tabRoutes[index]);
+                context.go(tabRoutes[index]);
               }
               return null;
             },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
@@ -13,6 +14,29 @@ import '../helpers/test_forui_app.dart';
 void main() {
   setUpAll(() {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    // Mock window_manager MethodChannel so tests are stable across platforms.
+    // ShellPage → _WindowTitleBar → windowManager.isMaximized() calls into
+    // this channel on Windows/Linux; without a mock, tests fail on those
+    // platforms with MissingPluginException.
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(const MethodChannel('window_manager'), (
+          call,
+        ) async {
+          switch (call.method) {
+            case 'isMaximized':
+              return false;
+            case 'ensureInitialized':
+              return null;
+            default:
+              return null;
+          }
+        });
+  });
+
+  tearDownAll(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(const MethodChannel('window_manager'), null);
   });
 
   GoRouter buildRouter() {
@@ -150,8 +174,7 @@ void main() {
       await pumpShell(tester, router: buildRouter());
 
       // The window title bar should contain a DragToMoveArea.
-      // This import is from window_manager, which may not be available
-      // in test environment — so we verify the header content instead.
+      // window_manager is mocked via MethodChannel in setUpAll.
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       expect(find.text(l10n.appTitle), findsOneWidget);
     });
