@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/desktop_hover.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -45,14 +46,24 @@ class RecordTimelinePanel extends StatelessWidget {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: Text(
-                    l10n.recordTimelineSectionTitle,
-                    style: TypographyToken.level5
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w700),
-                  ),
+                Text(
+                  l10n.recordTimelineSectionTitle,
+                  style: TypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
                 ),
+                if (selectedDate != null) ...[
+                  const SizedBox(width: Spacing.level3),
+                  Text(
+                    DateFormat.yMd(
+                      Localizations.localeOf(context).toString(),
+                    ).format(selectedDate!),
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(color: colors.mutedForeground),
+                  ),
+                ],
+                const Spacer(),
                 if (onClearFilter != null)
                   FButton(
                     variant: FButtonVariant.ghost,
@@ -285,14 +296,15 @@ class _TimelineCard extends StatelessWidget {
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
-    return FCard(
-      style: .delta(
-        decoration: .shapeDelta(
-          color: colors.background,
-          shape: RoundedSuperellipseBorder(
-            side: BorderSide(color: colors.border),
-            borderRadius: context.theme.style.borderRadius.lg,
-          ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.background,
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+        border: Border(
+          left: BorderSide(color: entry.accent.solid(context), width: 3),
+          top: BorderSide(color: colors.border),
+          right: BorderSide(color: colors.border),
+          bottom: BorderSide(color: colors.border),
         ),
       ),
       child: Padding(
@@ -413,7 +425,12 @@ class _TimelineCard extends StatelessWidget {
               _TimelineImageThumbnail(imageUrl: entry.imageUrl!, label: label),
             ] else if (entry.imagePlaceholderKey != null && !dense) ...[
               const SizedBox(width: Spacing.level4),
-              FCard(
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: SemanticColor.neutral.subtle(context),
+                  borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                  border: Border.all(color: colors.border),
+                ),
                 child: SizedBox(
                   width: 96,
                   height: 72,
@@ -641,64 +658,69 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.level4,
-        vertical: Spacing.level8,
-      ),
-      child: Column(
-        children: [
-          Icon(
-            FLucideIcons.filePlus2,
-            size: Spacing.level8,
-            color: colors.mutedForeground,
-          ),
-          const SizedBox(height: Spacing.level4),
-          Text(
-            l10n.recordTimelineEmptyTitle,
-            style: TypographyToken.level5
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: Spacing.level1),
-          Text(
-            l10n.recordTimelineEmptyDescription,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: Spacing.level5),
-          Wrap(
-            spacing: Spacing.level3,
-            runSpacing: Spacing.level2,
-            alignment: WrapAlignment.center,
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 320),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.level8),
+          child: Column(
             children: [
-              FButton(
-                variant: FButtonVariant.primary,
-                size: FButtonSizeVariant.sm,
-                mainAxisSize: MainAxisSize.min,
-                onPress: onCreate,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
-                    const SizedBox(width: Spacing.level2),
-                    Text(l10n.recordTimelineEmptyAction),
-                  ],
-                ),
+              Icon(
+                FLucideIcons.filePlus2,
+                size: Spacing.level8,
+                color: colors.mutedForeground,
               ),
-              if (onClearFilter != null)
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  size: FButtonSizeVariant.sm,
-                  mainAxisSize: MainAxisSize.min,
-                  onPress: onClearFilter,
-                  child: Text(l10n.recordTimelineClearFilter),
-                ),
+              const SizedBox(height: Spacing.level4),
+              Text(
+                l10n.recordTimelineEmptyTitle,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                l10n.recordTimelineEmptyDescription,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: Spacing.level5),
+              Wrap(
+                spacing: Spacing.level3,
+                runSpacing: Spacing.level2,
+                alignment: WrapAlignment.center,
+                children: [
+                  FButton(
+                    variant: FButtonVariant.primary,
+                    size: FButtonSizeVariant.sm,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: onCreate,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          FLucideIcons.plus,
+                          size: IconSizeTokens.level2,
+                        ),
+                        const SizedBox(width: Spacing.level2),
+                        Text(l10n.recordTimelineEmptyAction),
+                      ],
+                    ),
+                  ),
+                  if (onClearFilter != null)
+                    FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.sm,
+                      mainAxisSize: MainAxisSize.min,
+                      onPress: onClearFilter,
+                      child: Text(l10n.recordTimelineClearFilter),
+                    ),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

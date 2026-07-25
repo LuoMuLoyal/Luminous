@@ -19,18 +19,26 @@ class RecordSummaryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (summary.items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final width = MediaQuery.sizeOf(context).width;
+    final isDesktop = width >= Breakpoints.desktop;
+
     return FCard(
       key: const Key('record-summary'),
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level5),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            const minTileWidth = 140.0;
+            const minTileWidth = 160.0;
             const spacing = Spacing.level3;
-            final maxColumns =
-                ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
-                    .floor()
-                    .clamp(1, 5);
+            final maxColumns = isDesktop
+                ? 4
+                : ((constraints.maxWidth + spacing) / (minTileWidth + spacing))
+                      .floor()
+                      .clamp(1, 5);
             final tileWidth =
                 (constraints.maxWidth - spacing * (maxColumns - 1)) /
                 maxColumns;
@@ -94,18 +102,8 @@ class _SummaryTile extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    width: ResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.072,
-                      minValue: 24,
-                      maxValue: 32,
-                    ),
-                    height: ResponsiveSizing.scaleByWidth(
-                      context,
-                      fraction: 0.072,
-                      minValue: 24,
-                      maxValue: 32,
-                    ),
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: item.softColor.solid(context),
                       borderRadius: BorderRadius.circular(RadiusTokens.level4),
@@ -114,12 +112,7 @@ class _SummaryTile extends StatelessWidget {
                       child: Icon(
                         item.icon,
                         color: item.accent.solid(context),
-                        size: ResponsiveSizing.scaleByWidth(
-                          context,
-                          fraction: 0.042,
-                          minValue: 14,
-                          maxValue: 18,
-                        ),
+                        size: IconSizeTokens.level2,
                       ),
                     ),
                   ),
@@ -141,7 +134,7 @@ class _SummaryTile extends StatelessWidget {
               if (item.value.isNotEmpty)
                 RichText(
                   text: TextSpan(
-                    style: TypographyToken.level7
+                    style: TypographyToken.level6
                         .display(context)
                         .copyWith(
                           color: colors.foreground,

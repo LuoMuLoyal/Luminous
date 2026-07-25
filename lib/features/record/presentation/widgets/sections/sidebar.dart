@@ -223,9 +223,9 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
-                childAspectRatio: 0.86,
-                mainAxisSpacing: Spacing.level2,
-                crossAxisSpacing: Spacing.level2,
+                childAspectRatio: 0.95,
+                mainAxisSpacing: Spacing.level1,
+                crossAxisSpacing: Spacing.level1,
               ),
               itemCount: viewedDays.length,
               itemBuilder: (context, index) => _MonthDayCell(
@@ -296,8 +296,8 @@ class RecordFilterPanel extends StatelessWidget {
                         ),
                         const SizedBox(width: Spacing.level1),
                         Icon(
-                          FLucideIcons.chevronRight,
-                          size: Spacing.level4,
+                          FLucideIcons.checkCheck,
+                          size: IconSizeTokens.level2,
                           color: colors.foreground,
                         ),
                       ],
@@ -555,7 +555,8 @@ class _CalendarIconActionButton extends StatelessWidget {
       tipBuilder: (context, controller) => Text(label),
       child: FButton.icon(
         onPress: onTap,
-        child: Icon(icon, size: IconSizeTokens.level3),
+        size: FButtonSizeVariant.xs,
+        child: Icon(icon, size: IconSizeTokens.level2),
       ),
     );
   }

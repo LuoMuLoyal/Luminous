@@ -178,7 +178,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          width: ResponsiveSizing.sidebarWidth(context),
+          width: 260,
           child: Column(
             children: [
               RecordMonthCalendarPanel(
@@ -201,7 +201,6 @@ class _DesktopRecordDashboard extends StatelessWidget {
         ),
         const SizedBox(width: Spacing.level5),
         Expanded(
-          flex: 6,
           child: Column(
             children: [
               RecordSummaryGrid(
@@ -222,7 +221,7 @@ class _DesktopRecordDashboard extends StatelessWidget {
         ),
         const SizedBox(width: Spacing.level5),
         SizedBox(
-          width: ResponsiveSizing.sidebarWidth(context),
+          width: 220,
           child: Column(
             children: [
               RecordNewEntryPanel(

@@ -139,3 +139,37 @@ Last updated: 2026-07-21 (P1 header migration)
 - **修复**：`RecordPage` 向 `RecordDashboardView` 传递的 `onFilterSelected` 回调使用 `Future(() => ...)` 延迟 provider 修改，使其在 widget tree 构建完成后执行。此模式与 `onQuickAction` 中已有的 `quickEntryPreferencesProvider` 延迟修改保持一致。
 - **影响范围**：移动端 `RecordMobileFilter` 的 chip 点击、桌面端 `RecordFilterPanel` 的 `_FilterRow` 点击均通过此回调间接受益。
 
+## 2026-07-25 桌面端记录页 UI 优化
+
+### 三栏布局
+
+- 左栏（**260px 固定**）：月历 + 筛选面板，更紧凑
+- 中间（**Expanded 自适应**）：摘要网格 + 时间线
+- 右栏（**220px 固定**）：新建记录面板
+
+### 新建记录面板（桌面端）
+
+- `RecordNewEntryPanel` 根据 `width >= Breakpoints.desktop` 切换桌面/移动布局
+- 桌面端使用垂直列表布局（`_DesktopEntryButton`）：32px 圆形图标 + 文字标签占满面板宽度
+- hover 状态使用 `SemanticColor.neutral.subtle(context)` 背景变化
+- 底部主按钮使用 `FButtonVariant.primary`，占满宽度
+
+### 日历面板
+
+- 月份导航按钮使用 `FButtonSizeVariant.xs`，图标 16px（`IconSizeTokens.level2`）
+- 日历网格 `childAspectRatio: 0.95`，间距 `Spacing.level1`
+- 筛选面板「全选」按钮图标为 `checkCheck`（语义：全选，非导航）
+
+### 时间线面板
+
+- 标题右侧显示当前选中日期（`DateFormat.yMd(locale)`）
+- 空状态使用 `Center` + `ConstrainedBox(maxWidth: 320)` 居中
+- 时间线卡片使用 `DecoratedBox` + 左侧 3px 色条（`entry.accent.solid`）区分记录类型，不再使用嵌套 `FCard`
+
+### 摘要网格
+
+- 桌面端固定 4 列，`minTileWidth: 160px`
+- 图标容器固定 28px，图标 16px
+- 数值字体 `TypographyToken.level6`
+
+
