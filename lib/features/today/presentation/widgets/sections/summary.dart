@@ -28,11 +28,35 @@ class TodaySummarySection extends ConsumerStatefulWidget {
       _TodaySummarySectionState();
 }
 
-class _TodaySummarySectionState extends ConsumerState<TodaySummarySection> {
+class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final CurvedAnimation _animation;
   bool _aiExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: DurationTokens.widgetExpand,
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: MotionTokens.standard,
+    );
+  }
+
+  @override
+  void dispose() {
+    _animation.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
 
   void _toggleAi() {
     setState(() => _aiExpanded = !_aiExpanded);
+    _controller.toggle();
   }
 
   @override
@@ -163,36 +187,31 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection> {
                   ),
                 ),
               ],
-              AnimatedSwitcher(
-                duration: DurationTokens.widgetQuick,
-                child: _aiExpanded
-                    ? Column(
-                        key: const ValueKey('ai-expanded'),
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: Spacing.level2),
-                          for (final bullet in content.bullets.take(3))
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: Spacing.level1,
-                              ),
-                              child: _SummaryBullet(item: bullet),
-                            ),
-                          if (content.footer case final footer?)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: Spacing.level1,
-                              ),
-                              child: Text(
-                                footer,
-                                style: TypographyToken.level3
-                                    .body(context)
-                                    .copyWith(color: colors.mutedForeground),
-                              ),
-                            ),
-                        ],
-                      )
-                    : const SizedBox.shrink(key: ValueKey('ai-collapsed')),
+              AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) =>
+                    FCollapsible(value: _animation.value, child: child!),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: Spacing.level2),
+                    for (final bullet in content.bullets.take(3))
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: Spacing.level1),
+                        child: _SummaryBullet(item: bullet),
+                      ),
+                    if (content.footer case final footer?)
+                      Padding(
+                        padding: const EdgeInsets.only(top: Spacing.level1),
+                        child: Text(
+                          footer,
+                          style: TypographyToken.level3
+                              .body(context)
+                              .copyWith(color: colors.mutedForeground),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           ),

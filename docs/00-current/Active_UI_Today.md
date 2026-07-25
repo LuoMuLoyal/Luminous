@@ -1,6 +1,6 @@
 # Active UI — Today
 
-Last updated: 2026-07-21 (P1 header migration)
+Last updated: 2026-07-25 (summary FCollapsible)
 
 ## 页面结构
 
@@ -32,6 +32,7 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - 概览指标改成更轻的横排 compact 样式，减少首屏垂直占用。
 - 指标不再使用摘要卡内的背景盒子，避免卡片套卡片；层级只由外层容器、图标和文字区分。
 - AI 叙述保持轻量，默认只展示短总结和折叠入口。
+- 「查看依据」展开/收起使用 Forui `FCollapsible`（`AnimationController` + `CurvedAnimation` + `AnimatedBuilder`），与主建议卡证据折叠区动画模式一致。
 - 生成按钮保留在卡片右下角，但卡片本体不再使用大块分割线和高内边距。
 - AI 摘要文本使用 `MarkdownBody` 渲染。
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
@@ -116,5 +117,3 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 ## 2026-07-22 今日摘要卡片调整
 
 - **按钮对齐**：`Show basis` / `Hide` 展开按钮与右下角 `Generate` 操作按钮放入同一 `Row`，`crossAxisAlignment: CrossAxisAlignment.center`，消除原先不在同一水平线的问题。
-- **动画简化**：移除 `AnimationController` + `CurvedAnimation` + `AnimatedBuilder` + `FCollapsible` 的复杂组合，改用 `AnimatedSwitcher`（`duration: DurationTokens.widgetQuick`）实现展开/收起的简单淡入淡出切换。
-- **状态管理简化**：`_TodaySummarySectionState` 移除 `SingleTickerProviderStateMixin` 和动画控制器，仅保留 `_aiExpanded` bool 状态。
