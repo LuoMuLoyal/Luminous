@@ -1,5 +1,6 @@
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -183,7 +184,7 @@ class _WindowTitleBar extends StatelessWidget {
 
     // On macOS, the traffic lights are at the top-left and overlap the
     // sidebar. Add left padding so the header content is not hidden.
-    final macPadding = Platform.isMacOS
+    final macPadding = !kIsWeb && Platform.isMacOS
         ? const EdgeInsets.only(left: 70)
         : EdgeInsets.zero;
 
@@ -207,14 +208,14 @@ class _SidebarHeaderContent extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     if (collapsed) {
-      // Collapsed: just the logo icon, centered.
+      // Collapsed: just the app icon, centered.
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
         child: Center(
-          child: Icon(
-            FLucideIcons.heartPulse,
-            size: IconSizeTokens.level3,
-            color: theme.colors.primary,
+          child: Image.asset(
+            'assets/icon/app_icon.png',
+            width: IconSizeTokens.level4,
+            height: IconSizeTokens.level4,
           ),
         ),
       );
@@ -258,10 +259,10 @@ class _SidebarHeaderContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-          Icon(
-            FLucideIcons.heartPulse,
-            size: IconSizeTokens.level3,
-            color: theme.colors.primary,
+          Image.asset(
+            'assets/icon/app_icon.png',
+            width: IconSizeTokens.level4,
+            height: IconSizeTokens.level4,
           ),
           const SizedBox(width: Spacing.level2),
           Expanded(

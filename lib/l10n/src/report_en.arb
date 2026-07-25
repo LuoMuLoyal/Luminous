@@ -204,6 +204,8 @@
   "reportClinicSummaryLoading": "Generating clinic summary…",
   "reportClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later",
   "reportClinicSummarySharedNetworkError": "Network connection failed, please check your network and try again",
+  "reportTrendEmptyTitle": "No trend data yet",
+  "reportTrendEmptyBody": "Log water, medication, or sleep to see your health trends here.",
   "reportExportFailedWithReason": "Export failed: {reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {

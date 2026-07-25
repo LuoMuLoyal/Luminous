@@ -70,7 +70,7 @@ class ReportTrendSection extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
         Semantics(
           label: _buildSemanticsLabel(l10n),
-          child: _TrendChart(trends: trends, startDate: startDate),
+          child: _TrendChart(trends: trends, startDate: startDate, l10n: l10n),
         ),
       ],
     );
@@ -100,10 +100,15 @@ class ReportTrendSection extends StatelessWidget {
 // ---------------------------------------------------------------------------
 
 class _TrendChart extends StatelessWidget {
-  const _TrendChart({required this.trends, required this.startDate});
+  const _TrendChart({
+    required this.trends,
+    required this.startDate,
+    required this.l10n,
+  });
 
   final List<ReportTrendSeries> trends;
   final String startDate;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +118,46 @@ class _TrendChart extends StatelessWidget {
     final dayCount = trends.isEmpty || trends.first.values.isEmpty
         ? 7
         : trends.first.values.length;
+
+    // Show graceful empty state when there is no real data to render.
+    if (trends.isEmpty || _allSeriesEmpty(trends)) {
+      return FCard(
+        child: SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.level4,
+              vertical: Spacing.level8,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  FLucideIcons.chartLine,
+                  size: Spacing.level8,
+                  color: colors.mutedForeground,
+                ),
+                const SizedBox(height: Spacing.level3),
+                Text(
+                  l10n.reportTrendEmptyTitle,
+                  style: TypographyToken.level5
+                      .body(context)
+                      .copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: Spacing.level1),
+                Text(
+                  l10n.reportTrendEmptyBody,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
 
     // Normalize each series independently to [0, 1] so that different
     // units (e.g. %, ml, h) don't squash each other on a shared Y axis.
@@ -299,6 +344,14 @@ class _TrendChart extends StatelessWidget {
     if (parsed == null || index < 0) return '';
     final date = parsed.add(Duration(days: index));
     return DateFormat.MMMEd(locale).format(date);
+  }
+
+  /// Checks whether all trend series have no meaningful data (empty values).
+  static bool _allSeriesEmpty(List<ReportTrendSeries> trends) {
+    if (trends.isEmpty) return true;
+    return trends.every(
+      (series) => series.values.isEmpty || series.values.every((v) => v == 0),
+    );
   }
 }
 

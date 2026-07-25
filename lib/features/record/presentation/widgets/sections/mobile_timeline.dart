@@ -363,59 +363,62 @@ class _MobileTimelineEmptyState extends StatelessWidget {
     final colors = context.theme.colors;
 
     return FCard(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level6,
-          vertical: Spacing.level8,
-        ),
-        child: Column(
-          children: [
-            Icon(
-              FLucideIcons.filePlus2,
-              size: Spacing.level8,
-              color: colors.mutedForeground,
-            ),
-            const SizedBox(height: Spacing.level4),
-            Text(
-              l10n.recordTimelineEmptyTitle,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: Spacing.level1),
-            Text(
-              l10n.recordTimelineEmptyDescription,
-              style: TypographyToken.level3
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: Spacing.level5),
-            FButton(
-              variant: FButtonVariant.outline,
-              size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
-              onPress: onCreate,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
-                  const SizedBox(width: Spacing.level2),
-                  Text(l10n.recordTimelineEmptyAction),
-                ],
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level6,
+            vertical: Spacing.level8,
+          ),
+          child: Column(
+            children: [
+              Icon(
+                FLucideIcons.filePlus2,
+                size: Spacing.level8,
+                color: colors.mutedForeground,
               ),
-            ),
-            if (hasActiveFilter && onClearFilter != null) ...[
-              const SizedBox(height: Spacing.level3),
+              const SizedBox(height: Spacing.level4),
+              Text(
+                l10n.recordTimelineEmptyTitle,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                l10n.recordTimelineEmptyDescription,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: Spacing.level5),
               FButton(
-                variant: FButtonVariant.ghost,
+                variant: FButtonVariant.outline,
                 size: FButtonSizeVariant.sm,
                 mainAxisSize: MainAxisSize.min,
-                onPress: onClearFilter,
-                child: Text(l10n.recordTimelineClearFilter),
+                onPress: onCreate,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
+                    const SizedBox(width: Spacing.level2),
+                    Text(l10n.recordTimelineEmptyAction),
+                  ],
+                ),
               ),
+              if (hasActiveFilter && onClearFilter != null) ...[
+                const SizedBox(height: Spacing.level3),
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  onPress: onClearFilter,
+                  child: Text(l10n.recordTimelineClearFilter),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

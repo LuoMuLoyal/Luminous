@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -169,6 +171,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 /// adding a full-width drag area and window control buttons at the top.
 /// On other platforms, returns [child] unchanged.
 Widget _withDesktopChrome(Widget child) {
+  if (kIsWeb) return child;
   if (!Platform.isWindows && !Platform.isLinux) return child;
   return Column(
     children: [
