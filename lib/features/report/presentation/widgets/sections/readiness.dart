@@ -137,7 +137,10 @@ class ReportReadinessSection extends StatelessWidget {
                       key: const Key('report-readiness-sync-action'),
                       onPress: onSync,
                       variant: FButtonVariant.outline,
-                      prefix: const Icon(FLucideIcons.refreshCw, size: 16),
+                      prefix: const Icon(
+                        FLucideIcons.refreshCw,
+                        size: IconSizeTokens.level2,
+                      ),
                       child: Text(l10n.reportSyncAction),
                     ),
                   ),
@@ -199,13 +202,19 @@ class _PrimaryAction extends StatelessWidget {
       ReportReadinessStatus.signedOut => FButton(
         key: const Key('report-readiness-sign-in-action'),
         onPress: section.onSignIn,
-        prefix: const Icon(FLucideIcons.lockKeyhole, size: 16),
+        prefix: const Icon(
+          FLucideIcons.lockKeyhole,
+          size: IconSizeTokens.level2,
+        ),
         child: Text(section.l10n.authGoLogin),
       ),
       ReportReadinessStatus.insufficient => FButton(
         key: const Key('report-readiness-record-action'),
         onPress: section.onContinueRecord,
-        prefix: const Icon(FLucideIcons.notebookPen, size: 16),
+        prefix: const Icon(
+          FLucideIcons.notebookPen,
+          size: IconSizeTokens.level2,
+        ),
         child: Text(section.l10n.reportContinueRecordAction),
       ),
       ReportReadinessStatus.ready => FButton(

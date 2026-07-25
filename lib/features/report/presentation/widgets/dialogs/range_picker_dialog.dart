@@ -104,7 +104,10 @@ Future<ReportDashboardQuery?> _showMobileRangePicker(
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(FLucideIcons.x, size: 20),
+                    icon: const Icon(
+                      FLucideIcons.x,
+                      size: IconSizeTokens.level3,
+                    ),
                     onPressed: () => Navigator.of(sheetContext).pop(),
                   ),
                 ],
@@ -318,7 +321,11 @@ class _RangeOptionTile extends StatelessWidget {
           children: [
             Expanded(child: Text(label, style: typography.body.md)),
             if (selected)
-              Icon(FLucideIcons.check, color: colors.primary, size: 20),
+              Icon(
+                FLucideIcons.check,
+                color: colors.primary,
+                size: IconSizeTokens.level3,
+              ),
           ],
         ),
       ),

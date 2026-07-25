@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
+import 'package:luminous/core/design/elevation.dart';
 import 'package:luminous/core/design/semantic_color_palette.dart';
 import 'package:luminous/core/design/semantic_colors.dart';
 
@@ -226,8 +227,6 @@ ThemeData foruiMaterialTheme(FThemeData theme) {
     canvasColor: theme.colors.background,
     cardColor: theme.colors.card,
     dividerColor: theme.colors.border,
-    shadowColor: theme.colors.foreground.withValues(
-      alpha: theme.colors.brightness == Brightness.dark ? 0.16 : 0.06,
-    ),
+    shadowColor: ElevationTokens.shadowColor(theme.colors),
   );
 }

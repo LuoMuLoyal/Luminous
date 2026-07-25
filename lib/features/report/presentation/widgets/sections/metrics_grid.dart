@@ -233,7 +233,11 @@ class _MetricCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: Spacing.level2),
-                  Icon(directionIcon, size: 14, color: directionColor),
+                  Icon(
+                    directionIcon,
+                    size: IconSizeTokens.level2,
+                    color: directionColor,
+                  ),
                   const SizedBox(width: Spacing.level1),
                   Expanded(
                     child: SkeletonText(

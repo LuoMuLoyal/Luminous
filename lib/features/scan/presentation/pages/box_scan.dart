@@ -267,7 +267,7 @@ class _MethodTile extends StatelessWidget {
       ),
       child: FTile(
         onPress: onTap,
-        prefix: Icon(icon, color: colors.primary, size: 32),
+        prefix: Icon(icon, color: colors.primary, size: IconSizeTokens.level5),
         title: Text(title),
         subtitle: Text(
           subtitle,

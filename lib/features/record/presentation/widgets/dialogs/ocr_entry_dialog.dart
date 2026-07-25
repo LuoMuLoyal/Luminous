@@ -191,7 +191,10 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         child: FButton(
                           variant: FButtonVariant.ghost,
                           onPress: isRecognizing.value ? null : handleRetake,
-                          prefix: const Icon(FLucideIcons.refreshCw, size: 16),
+                          prefix: const Icon(
+                            FLucideIcons.refreshCw,
+                            size: IconSizeTokens.level2,
+                          ),
                           child: Text(l10n.recordOcrRetakeAction),
                         ),
                       ),
@@ -315,7 +318,7 @@ class _OptionCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, size: 36, color: colors.primary),
+          Icon(icon, size: IconSizeTokens.level5, color: colors.primary),
           const SizedBox(height: Spacing.level3),
           Text(
             label,

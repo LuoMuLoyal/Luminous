@@ -303,17 +303,11 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                           color: isListening.value
                               ? primaryColor
                               : colors.secondary,
-                          boxShadow: [
-                            BoxShadow(
-                              color: (isListening.value
-                                  ? SemanticColor.primary.borderStrong(context)
-                                  : SemanticColor.neutral.borderStrong(
-                                      context,
-                                    )),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                          boxShadow: ElevationTokens.glow(
+                            isListening.value
+                                ? SemanticColor.primary.borderStrong(context)
+                                : SemanticColor.neutral.borderStrong(context),
+                          ),
                         ),
                         child: Icon(
                           isListening.value

@@ -546,7 +546,13 @@ class _TimelineImageFallback extends StatelessWidget {
         color: SemanticColor.neutral.subtle(context),
         border: Border.all(color: colors.border),
       ),
-      child: Center(child: Icon(icon, color: colors.mutedForeground, size: 22)),
+      child: Center(
+        child: Icon(
+          icon,
+          color: colors.mutedForeground,
+          size: IconSizeTokens.level4,
+        ),
+      ),
     );
   }
 }
@@ -583,13 +589,7 @@ class _DragFeedback extends StatelessWidget {
             border: Border.all(
               color: SemanticColor.primary.borderStrong(context),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            boxShadow: ElevationTokens.raised(colors),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -682,7 +682,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(FLucideIcons.plus, size: 16),
+                    const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
                     const SizedBox(width: Spacing.level2),
                     Text(l10n.recordTimelineEmptyAction),
                   ],

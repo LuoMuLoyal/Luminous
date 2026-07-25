@@ -1,3 +1,41 @@
+import 'package:flutter/animation.dart';
+
+/// Motion token system — curves and durations unified.
+///
+/// All animation curves and durations live here so they can be audited and
+/// tuned in one place. [MotionTokens] holds curve constants; [DurationTokens]
+/// (migrated from `durations.dart`) holds duration constants.
+///
+/// ## Curves
+///
+/// | Token      | Curve            | Use case                              |
+/// |------------|------------------|---------------------------------------|
+/// | [entrance] | `easeOutCubic`   | Route slide-in, panel expand          |
+/// | [exit]     | `easeInCubic`    | Route slide-out, panel collapse        |
+/// | [standard] | `easeInOut`      | Expand/collapse, bidirectional         |
+/// | [snappy]   | `easeOut`        | Tab switch, hover feedback             |
+abstract final class MotionTokens {
+  /// Entrance animation — route slide-in, panel expand.
+  ///
+  /// `easeOutCubic` starts fast and decelerates, giving a "settling" feel.
+  static const entrance = Curves.easeOutCubic;
+
+  /// Exit animation — route slide-out, panel collapse.
+  ///
+  /// `easeInCubic` starts slow and accelerates, giving a "leaving" feel.
+  static const exit = Curves.easeInCubic;
+
+  /// Standard bidirectional animation — expand/collapse, toggle.
+  ///
+  /// `easeInOut` accelerates then decelerates, symmetric.
+  static const standard = Curves.easeInOut;
+
+  /// Snappy one-directional animation — tab switch, hover feedback.
+  ///
+  /// `easeOut` decelerates quickly, feeling responsive.
+  static const snappy = Curves.easeOut;
+}
+
 /// Centralized animation duration tokens.
 ///
 /// All animation durations — route transitions and in-widget effects —

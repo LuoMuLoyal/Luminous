@@ -380,7 +380,11 @@ class _MasterNavItem extends StatelessWidget {
               ),
             ),
             if (selected)
-              Icon(FLucideIcons.chevronRight, size: 16, color: colors.primary),
+              Icon(
+                FLucideIcons.chevronRight,
+                size: IconSizeTokens.level2,
+                color: colors.primary,
+              ),
           ],
         ),
       ),
@@ -419,7 +423,10 @@ class _AccountHeader extends StatelessWidget {
         subtitle: subtitle.isEmpty ? null : Text(subtitle),
         prefix: FAvatar.raw(
           size: 64,
-          child: const Icon(FLucideIcons.userRound, size: 32),
+          child: const Icon(
+            FLucideIcons.userRound,
+            size: IconSizeTokens.level5,
+          ),
         ),
         suffix: const Icon(FLucideIcons.chevronRight),
         onPress: onTap,
@@ -471,7 +478,10 @@ class _PrivacySection extends ConsumerWidget {
               key: const Key('settings-row-privacy-report'),
               title: Text(l10n.minePrivacyReportTitle),
               subtitle: Text(l10n.minePrivacyReportSubtitle),
-              prefix: const Icon(FLucideIcons.share2, size: 20),
+              prefix: const Icon(
+                FLucideIcons.share2,
+                size: IconSizeTokens.level3,
+              ),
               suffix: FSwitch(
                 value: settings?.dataSharingConsent ?? false,
                 onChange: (value) async {
@@ -888,7 +898,7 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
         final s = subtitle;
         return s == null || s.isEmpty ? null : Text(s);
       }(),
-      prefix: icon != null ? Icon(icon, size: 20) : null,
+      prefix: icon != null ? Icon(icon, size: IconSizeTokens.level3) : null,
       details: () {
         final v = value;
         return v == null || v.isEmpty ? null : Text(v);

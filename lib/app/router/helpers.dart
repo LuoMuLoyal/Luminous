@@ -46,7 +46,7 @@ CustomTransitionPage<T> slidePage<T>({
           position: Tween<Offset>(
             begin: const Offset(0.15, 0),
             end: Offset.zero,
-          ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(animation),
+          ).chain(CurveTween(curve: MotionTokens.entrance)).animate(animation),
           child: FadeTransition(
             opacity: Tween<double>(begin: 0, end: 1).animate(animation),
             child: child,
@@ -93,7 +93,7 @@ CustomTransitionPage<T> sidePanelPage<T>({
         position: Tween<Offset>(
           begin: const Offset(1, 0),
           end: Offset.zero,
-        ).chain(CurveTween(curve: Curves.easeOutCubic)).animate(animation),
+        ).chain(CurveTween(curve: MotionTokens.entrance)).animate(animation),
         child: FadeTransition(
           opacity: Tween<double>(begin: 0, end: 1).animate(animation),
           child: child,

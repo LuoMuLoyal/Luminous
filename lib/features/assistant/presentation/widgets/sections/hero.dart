@@ -63,11 +63,7 @@ class _FullHero extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [SemanticColor.primary.border(context), colors.background],
-        ),
+        color: SemanticColor.primary.subtle(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level5),
         border: Border.all(color: colors.border),
       ),
@@ -85,7 +81,7 @@ class _FullHero extends StatelessWidget {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(Spacing.level3),
-                    child: Icon(FLucideIcons.bot, size: 20),
+                    child: Icon(FLucideIcons.bot, size: IconSizeTokens.level3),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -106,7 +102,10 @@ class _FullHero extends StatelessWidget {
                       child: FButton.icon(
                         variant: FButtonVariant.ghost,
                         onPress: onToggleCompact,
-                        child: const Icon(FLucideIcons.chevronsUp, size: 16),
+                        child: const Icon(
+                          FLucideIcons.chevronsUp,
+                          size: IconSizeTokens.level2,
+                        ),
                       ),
                     ),
                   ),
@@ -171,11 +170,7 @@ class _CompactHero extends StatelessWidget {
     // status summary (muted, one line, ellipsized) + expand chevron.
     final card = DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [SemanticColor.primary.border(context), colors.background],
-        ),
+        color: SemanticColor.primary.subtle(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level4),
         border: Border.all(color: colors.border),
       ),
@@ -193,7 +188,7 @@ class _CompactHero extends StatelessWidget {
               ),
               child: const Padding(
                 padding: EdgeInsets.all(Spacing.level2),
-                child: Icon(FLucideIcons.bot, size: 14),
+                child: Icon(FLucideIcons.bot, size: IconSizeTokens.level2),
               ),
             ),
             const SizedBox(width: Spacing.level3),
@@ -236,7 +231,10 @@ class _CompactHero extends StatelessWidget {
                   child: FButton.icon(
                     variant: FButtonVariant.ghost,
                     onPress: onToggleCompact,
-                    child: const Icon(FLucideIcons.chevronsDown, size: 16),
+                    child: const Icon(
+                      FLucideIcons.chevronsDown,
+                      size: IconSizeTokens.level2,
+                    ),
                   ),
                 ),
               ),

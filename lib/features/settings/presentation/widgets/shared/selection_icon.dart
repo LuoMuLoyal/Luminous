@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 
+import 'package:luminous/core/design/design.dart';
+
 /// A checkmark or empty circle used to indicate selection in settings lists.
 ///
 /// Used by theme/language settings and other single-selection pages.
@@ -14,7 +16,11 @@ class SettingsSelectionIcon extends StatelessWidget {
     final colors = context.theme.colors;
     return Opacity(
       opacity: selected ? 1 : 0,
-      child: Icon(FLucideIcons.check, size: 18, color: colors.primary),
+      child: Icon(
+        FLucideIcons.check,
+        size: IconSizeTokens.level3,
+        color: colors.primary,
+      ),
     );
   }
 }

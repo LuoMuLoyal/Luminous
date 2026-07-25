@@ -172,7 +172,10 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     variant: FButtonVariant.ghost,
                     size: FButtonSizeVariant.sm,
                     onPress: () => Navigator.pop(ctx),
-                    child: const Icon(FLucideIcons.x, size: 18),
+                    child: const Icon(
+                      FLucideIcons.x,
+                      size: IconSizeTokens.level3,
+                    ),
                   ),
                 ],
               ),

@@ -91,7 +91,7 @@ class AssistantPage extends HookConsumerWidget {
       scrollController.animateTo(
         scrollController.position.maxScrollExtent,
         duration: DurationTokens.widgetQuick,
-        curve: Curves.easeOut,
+        curve: MotionTokens.snappy,
       );
     }
 
@@ -440,7 +440,7 @@ class AssistantPage extends HookConsumerWidget {
               ] else ...[
                 AnimatedSize(
                   duration: DurationTokens.widgetStandard,
-                  curve: Curves.easeInOut,
+                  curve: MotionTokens.standard,
                   alignment: Alignment.topCenter,
                   child: AssistantHero(
                     capabilities: capabilities,

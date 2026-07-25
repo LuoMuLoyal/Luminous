@@ -399,7 +399,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(FLucideIcons.plus, size: 16),
+                  const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
                   const SizedBox(width: Spacing.level2),
                   Text(l10n.recordTimelineEmptyAction),
                 ],

@@ -136,7 +136,7 @@ class _DesktopSidebar extends ConsumerWidget {
 
     return AnimatedContainer(
       duration: DurationTokens.widgetQuick,
-      curve: Curves.easeOut,
+      curve: MotionTokens.snappy,
       width: collapsed ? _collapsedSidebarWidth : null,
       child: FSidebar(
         style: FSidebarStyle(
@@ -295,7 +295,7 @@ class _WindowControlButtons extends StatelessWidget {
           ),
           _WindowButton(
             icon: isMaximized ? FLucideIcons.copy : FLucideIcons.square,
-            iconSize: 14,
+            iconSize: IconSizeTokens.level2,
             tooltip: isMaximized
                 ? l10n.desktopWindowRestore
                 : l10n.desktopWindowMaximize,
@@ -418,7 +418,10 @@ class _SidebarHeaderContent extends StatelessWidget {
             children: [
               FAvatar.raw(
                 size: 28,
-                child: const Icon(FLucideIcons.userRound, size: 16),
+                child: const Icon(
+                  FLucideIcons.userRound,
+                  size: IconSizeTokens.level2,
+                ),
               ),
               const SizedBox(width: Spacing.level2),
               Expanded(
@@ -441,7 +444,11 @@ class _SidebarHeaderContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-          Icon(FLucideIcons.heartPulse, size: 18, color: theme.colors.primary),
+          Icon(
+            FLucideIcons.heartPulse,
+            size: IconSizeTokens.level3,
+            color: theme.colors.primary,
+          ),
           const SizedBox(width: Spacing.level2),
           Expanded(
             child: Text(

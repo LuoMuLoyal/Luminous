@@ -302,7 +302,10 @@ class _ActionBar extends StatelessWidget {
       if (detail.action?.isNotEmpty ?? false)
         FButton(
           onPress: onNavigate,
-          prefix: const Icon(FLucideIcons.externalLink, size: 18),
+          prefix: const Icon(
+            FLucideIcons.externalLink,
+            size: IconSizeTokens.level3,
+          ),
           child: Text(l10n.notificationActionNavigate),
         ),
       if (detail.action?.isNotEmpty ?? false)
@@ -324,7 +327,7 @@ class _ActionBar extends StatelessWidget {
       FButton(
         variant: FButtonVariant.destructive,
         onPress: () => _showDeleteConfirm(context, onDelete),
-        prefix: const Icon(FLucideIcons.trash2, size: 18),
+        prefix: const Icon(FLucideIcons.trash2, size: IconSizeTokens.level3),
         child: Text(l10n.notificationActionDelete),
       ),
     ];

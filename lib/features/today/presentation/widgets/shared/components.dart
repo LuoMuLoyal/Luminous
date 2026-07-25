@@ -9,31 +9,27 @@ class TodayGlyphTile extends StatelessWidget {
     required this.color,
     this.size = Spacing.level8 + Spacing.level2,
     this.radius = RadiusTokens.level3,
-    this.gradient = true,
+    this.filled = false,
   });
 
   final IconData icon;
   final SemanticColor color;
   final double size;
   final double radius;
-  final bool gradient;
+
+  /// When `true`, uses [GradientTokens.semanticFill] for a rich, visually
+  /// weighted fill (primary suggestion cards). When `false`, uses
+  /// [SemanticColorPalette.muted] for a light tint (secondary suggestions).
+  final bool filled;
 
   @override
   Widget build(BuildContext context) {
     final palette = color.palette(context);
-    final decoration = gradient
-        ? BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [palette.fillStrong, palette.solid],
-            ),
-            borderRadius: BorderRadius.circular(radius),
-          )
-        : BoxDecoration(
-            color: palette.muted,
-            borderRadius: BorderRadius.circular(radius),
-          );
+    final decoration = BoxDecoration(
+      gradient: filled ? GradientTokens.semanticFill(palette) : null,
+      color: filled ? null : palette.muted,
+      borderRadius: BorderRadius.circular(radius),
+    );
 
     return DecoratedBox(
       decoration: decoration,
@@ -41,10 +37,7 @@ class TodayGlyphTile extends StatelessWidget {
         dimension: size,
         child: Icon(
           icon,
-          // On a gradient/solid fill use the palette's on-color (foreground)
-          // so the icon reads against its tinted background; on a muted
-          // chip use the full-saturation solid.
-          color: gradient ? palette.foreground : palette.solid,
+          color: filled ? palette.foreground : palette.solid,
           size: size * 0.5,
         ),
       ),

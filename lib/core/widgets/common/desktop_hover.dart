@@ -55,7 +55,7 @@ class _DesktopHoverCardState extends State<DesktopHoverCard> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: DurationTokens.widgetQuick,
-          curve: Curves.easeOut,
+          curve: MotionTokens.snappy,
           decoration: BoxDecoration(
             color: _isHovered
                 ? SemanticColor.primary.subtle(context)

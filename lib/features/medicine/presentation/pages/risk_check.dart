@@ -195,7 +195,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
       Scrollable.ensureVisible(
         ctx,
         duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
+        curve: MotionTokens.standard,
         alignment: 0.1,
       );
     }

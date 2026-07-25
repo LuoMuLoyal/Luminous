@@ -213,7 +213,10 @@ class PreviewPanel extends StatelessWidget {
                         children: [
                           const Padding(
                             padding: EdgeInsets.only(top: 6),
-                            child: Icon(FLucideIcons.dot, size: 12),
+                            child: Icon(
+                              FLucideIcons.dot,
+                              size: IconSizeTokens.level1,
+                            ),
                           ),
                           const SizedBox(width: Spacing.level3),
                           Expanded(

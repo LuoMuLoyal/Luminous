@@ -245,7 +245,11 @@ class _ScopeRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: Spacing.level2),
       child: Row(
         children: [
-          Icon(icon, color: colors.mutedForeground, size: 16),
+          Icon(
+            icon,
+            color: colors.mutedForeground,
+            size: IconSizeTokens.level2,
+          ),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
@@ -255,7 +259,11 @@ class _ScopeRow extends StatelessWidget {
                   .copyWith(color: colors.foreground),
             ),
           ),
-          Icon(FLucideIcons.check, color: colors.primary, size: 16),
+          Icon(
+            FLucideIcons.check,
+            color: colors.primary,
+            size: IconSizeTokens.level2,
+          ),
         ],
       ),
     );
@@ -283,7 +291,11 @@ class _PrecheckCoverageRow extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(FLucideIcons.circleAlert, color: colors.secondary, size: 18),
+            Icon(
+              FLucideIcons.circleAlert,
+              color: colors.secondary,
+              size: IconSizeTokens.level3,
+            ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(

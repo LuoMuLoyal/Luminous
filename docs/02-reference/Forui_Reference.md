@@ -49,6 +49,11 @@
   - Tab 根页大标题：`TypographyToken.level9.display(context).copyWith(fontWeight: FontWeight.w800)`
 - **间距**：`Spacing.level1`（4）到 `level12`（128）。
 - **圆角**：`RadiusTokens.level0` 到 `level9` 及 `levelFull`。
+- **图标大小**：`IconSizeTokens.level1`（12）到 `level5`（32），不硬编码 `size: N`。
+- **动画曲线**：`MotionTokens.entrance` / `exit` / `standard` / `snappy`，不硬编码 `Curves.*`。
+- **动画时长**：`DurationTokens.authPageTransitionIn` 等（与 `MotionTokens` 同在 `motion.dart`）。
+- **阴影**：`ElevationTokens.raised(colors)` / `glow(color)` / `shadowColor(colors)`，不内联 `BoxShadow`。
+- **渐变色**：通过 `GradientTokens.semanticFill(palette)` / `tintFade(from, to)` 使用，不内联 `LinearGradient`。
 - **颜色**：
   - Widget 层直接读 `context.theme.colors.*`。
   - 数据/领域层用语义枚举 `SemanticColor`，在 widget 处通过 `semanticColor.palette(context)` 解析。

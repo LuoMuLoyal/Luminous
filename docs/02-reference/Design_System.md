@@ -39,11 +39,12 @@
 - `AppShadowTokens` 也已删除且未替换：
   - 其 level1/level2 值先内联，后从 `app_toast.dart`、`app_state_views.dart`、`today_components.dart` 完全移除，
      以匹配更平的 Forui-first 视觉方向。
+  - 后重新引入为 `ElevationTokens`（`lib/core/design/elevation.dart`），提供 `raised` / `glow` / `shadowColor` 三个方法，暗色模式 alpha 自动补偿。
 - 所有 `App*` 前缀已移除（2026-07-09）：
   - `AppSpacingTokens` → `Spacing`
   - `AppRadiusTokens` → `RadiusTokens`（避免与 Flutter `Radius` 冲突）
   - `AppTypographyToken` → `TypographyToken`
-  - `AppAnimationDurations` → `DurationTokens`（`abstract final class`，避免与 Flutter `Durations` 冲突）
+  - `AppAnimationDurations` → `DurationTokens`（`abstract final class`，避免与 Flutter `Durations` 冲突；现位于 `motion.dart`）
   - `AppBreakpoints` → `Breakpoints`
   - `AppResponsiveSizing` → `ResponsiveSizing`
   - `AppLayoutScale` → `LayoutScale`（值对象）+ `AppLayoutTokens` → `LayoutScaleResolver`（静态工具）
@@ -56,8 +57,12 @@
 ## 命名
 
 - 所有 token 类名无 `App` 前缀，通过 barrel `design.dart` 统一导出。
-- `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
-- `DurationTokens` 为 `abstract final class`（非 `class + const _()`）。
+- `Spacing` / `RadiusTokens` / `TypographyToken` / `DurationTokens` / `IconSizeTokens` / `Breakpoints` / `ResponsiveSizing` 均暴露 `level*` 主命名。
+- `DurationTokens` 和 `MotionTokens` 为 `abstract final class`（非 `class + const _()`），位于 `motion.dart`。
+- `MotionTokens` 提供 4 个 curve token：`entrance`（easeOutCubic）、`exit`（easeInCubic）、`standard`（easeInOut）、`snappy`（easeOut）。
+- `IconSizeTokens`（`icon_size.dart`）提供 5 级 icon size：level1=12, level2=16, level3=20, level4=24, level5=32。
+- `ElevationTokens`（`elevation.dart`）提供 `raised(FColors)` / `glow(Color)` / `shadowColor(FColors)` 方法。
+- `GradientTokens`（`gradient.dart`）提供 `semanticFill(SemanticColorPalette)` / `tintFade(Color, Color)` 两个命名渐变模式；禁止内联 `LinearGradient`，必须走 token。
 - 旧的 `xxs/xs/...` 与 `xs/sm/...` 别名在所有调用点迁移后被移除。
 
 ## 主题偏好

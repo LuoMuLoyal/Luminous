@@ -109,7 +109,7 @@ class DataExportPage extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(FLucideIcons.chevronDown, size: 18),
+              const Icon(FLucideIcons.chevronDown, size: IconSizeTokens.level3),
               const SizedBox(width: Spacing.level2),
               Text(l10n.mineExportDownloadButton),
             ],
@@ -128,7 +128,10 @@ class DataExportPage extends ConsumerWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(FLucideIcons.chevronsUpDown, size: 18),
+              const Icon(
+                FLucideIcons.chevronsUpDown,
+                size: IconSizeTokens.level3,
+              ),
               const SizedBox(width: Spacing.level2),
               Text(l10n.mineExportRegenerateButton),
             ],

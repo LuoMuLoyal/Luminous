@@ -90,7 +90,10 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                           FButton(
                             variant: FButtonVariant.outline,
                             onPress: enabled ? onPick : null,
-                            prefix: const Icon(FLucideIcons.image, size: 18),
+                            prefix: const Icon(
+                              FLucideIcons.image,
+                              size: IconSizeTokens.level3,
+                            ),
                             child: Text(
                               hasAttachment
                                   ? l10n.recordImageReplaceAction
@@ -101,14 +104,20 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                             FButton(
                               variant: FButtonVariant.outline,
                               onPress: enabled ? onCameraPick : null,
-                              prefix: const Icon(FLucideIcons.camera, size: 18),
+                              prefix: const Icon(
+                                FLucideIcons.camera,
+                                size: IconSizeTokens.level3,
+                              ),
                               child: Text(l10n.recordImageCameraAction),
                             ),
                           if (hasAttachment)
                             FButton(
                               variant: FButtonVariant.ghost,
                               onPress: enabled ? onRemove : null,
-                              prefix: const Icon(FLucideIcons.x, size: 18),
+                              prefix: const Icon(
+                                FLucideIcons.x,
+                                size: IconSizeTokens.level3,
+                              ),
                               child: Text(l10n.recordImageRemoveAction),
                             ),
                         ],
@@ -182,7 +191,11 @@ class _PreviewFallback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Icon(icon, color: context.theme.colors.mutedForeground, size: 24),
+      child: Icon(
+        icon,
+        color: context.theme.colors.mutedForeground,
+        size: IconSizeTokens.level4,
+      ),
     );
   }
 }

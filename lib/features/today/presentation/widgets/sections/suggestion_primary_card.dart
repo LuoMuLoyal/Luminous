@@ -42,7 +42,10 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
       duration: DurationTokens.widgetExpand,
       vsync: this,
     );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: MotionTokens.standard,
+    );
   }
 
   @override
@@ -88,7 +91,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
                       color: colorFor(card.cardTone),
                       size: Spacing.level8,
                       radius: RadiusTokens.level3,
-                      gradient: true,
+                      filled: true,
                     ),
                     const Spacer(),
                     FButton(

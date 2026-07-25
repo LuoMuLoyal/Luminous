@@ -17,7 +17,11 @@ class DesktopTabs extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(FLucideIcons.heartPulse, color: colors.primary, size: 18),
+            Icon(
+              FLucideIcons.heartPulse,
+              color: colors.primary,
+              size: IconSizeTokens.level3,
+            ),
             const SizedBox(width: Spacing.level3),
             Text(
               l10n.medicineSearchAssistantTitle,
@@ -35,7 +39,7 @@ class DesktopTabs extends StatelessWidget {
           child: const SizedBox(
             width: 28,
             height: 28,
-            child: Icon(FLucideIcons.userRound, size: 16),
+            child: Icon(FLucideIcons.userRound, size: IconSizeTokens.level2),
           ),
         ),
       ],
