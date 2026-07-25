@@ -1,6 +1,6 @@
 # Active UI — Report
 
-Last updated: 2026-07-25 (range popover menu)
+Last updated: 2026-07-25 (trend FTabs)
 
 ## 页面结构
 
@@ -27,7 +27,7 @@ Last updated: 2026-07-25 (range popover menu)
 
 ## 趋势与发现
 
-- 趋势区使用 `fl_chart` 多线折线图，日期标签从 `dashboard.startDate` 动态生成。各序列按自身 min/max 独立归一化到 [0, 1]，避免不同量纲（% / ml / h）共用 Y 轴压成平线；Y 轴不显示数值，tooltip 仍显示原始值+单位。
+- 趋势区使用 `fl_chart` 单线折线图 + Forui `FTabs` 指标切换。每个 tab 对应一个指标（用药/饮水/睡眠），选中 tab 时只渲染该指标的单条折线，Y 轴显示真实值（不再归一化），图表上方显示当前值摘要。日期标签从 `dashboard.startDate` 动态生成。
 - 桌面端趋势区位于左栏（`showRangePill: false`，范围 pill 由外壳 suffixes 提供），移动端位于指标卡下方。
 - findings 卡片为信息展示型（非导航型），已移除装饰性 chevron，桌面端使用 `Wrap` 自动换行排列。
 - patterns 卡片同样为信息展示型，已移除装饰性 chevron。

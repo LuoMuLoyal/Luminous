@@ -8,8 +8,6 @@
   "desktopSidebarSettings": "设置",
   "desktopSidebarHelp": "帮助",
   "desktopSidebarHelpToast": "会打开帮助与支持。",
-  "desktopSidebarCollapse": "折叠侧边栏",
-  "desktopSidebarExpand": "展开侧边栏",
   "desktopSidebarThemeToggle": "切换主题",
   "desktopSidebarNotifications": "通知",
   "desktopSidebarSignedOut": "点击登录",

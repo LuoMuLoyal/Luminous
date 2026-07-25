@@ -1,26 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/providers/sidebar_preference.dart';
 import 'package:luminous/core/shortcuts/intents.dart';
 import 'package:luminous/core/widgets/command_palette/command_palette.dart';
 
 /// Wraps the app with global keyboard shortcuts and actions.
 ///
-/// This is a [ConsumerWidget] (not a bare [Shortcuts]) because several
-/// actions need [WidgetRef] — e.g. sidebar toggle calls
-/// [SidebarPreferenceController].
-///
 /// Internally it composes the native Flutter [Shortcuts] + [Actions] widgets.
-class AppShortcuts extends ConsumerWidget {
+class AppShortcuts extends StatelessWidget {
   const AppShortcuts({super.key, required this.child});
 
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Shortcuts(
       shortcuts: <ShortcutActivator, Intent>{
         // ── Ctrl/Cmd+K → Command palette ──
@@ -34,12 +28,6 @@ class AppShortcuts extends ConsumerWidget {
             const CreateRecordIntent(),
         const SingleActivator(LogicalKeyboardKey.keyN, meta: true):
             const CreateRecordIntent(),
-
-        // ── Ctrl/Cmd+B → Toggle sidebar ──
-        const SingleActivator(LogicalKeyboardKey.keyB, control: true):
-            const ToggleSidebarIntent(),
-        const SingleActivator(LogicalKeyboardKey.keyB, meta: true):
-            const ToggleSidebarIntent(),
 
         // ── Ctrl/Cmd+, → Settings ──
         const SingleActivator(LogicalKeyboardKey.comma, control: true):
@@ -86,12 +74,6 @@ class AppShortcuts extends ConsumerWidget {
           CreateRecordIntent: CallbackAction<CreateRecordIntent>(
             onInvoke: (_) {
               context.push(Routes.recordCreate);
-              return null;
-            },
-          ),
-          ToggleSidebarIntent: CallbackAction<ToggleSidebarIntent>(
-            onInvoke: (_) {
-              ref.read(sidebarPreferenceProvider.notifier).toggle();
               return null;
             },
           ),

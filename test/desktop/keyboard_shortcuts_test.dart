@@ -166,11 +166,6 @@ void main() {
       expect(intent, isA<Intent>());
     });
 
-    test('ToggleSidebarIntent is a valid Intent', () {
-      const intent = ToggleSidebarIntent();
-      expect(intent, isA<Intent>());
-    });
-
     test('OpenSettingsIntent is a valid Intent', () {
       const intent = OpenSettingsIntent();
       expect(intent, isA<Intent>());
@@ -209,11 +204,6 @@ void main() {
         LogicalKeyboardKey.comma,
         control: true,
       );
-      expect(activator, isA<ShortcutActivator>());
-    });
-
-    test('Ctrl+B activator is constructible', () {
-      const activator = SingleActivator(LogicalKeyboardKey.keyB, control: true);
       expect(activator, isA<ShortcutActivator>());
     });
 

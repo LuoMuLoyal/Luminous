@@ -20,13 +20,12 @@
 
 ### 侧边栏
 
-- `FSidebar` 固定宽度，可折叠（展开态图标+文字，折叠态仅图标 rail 模式，64px 宽）
-- 折叠状态通过 `SidebarPreferenceController` 持久化到 SharedPreferences
+- `FSidebar` 固定宽度，始终展开（图标 + 文字）
 - **Header**：`_WindowTitleBar` 包裹 `DragToMoveArea`（拖拽移动窗口）
   - Windows/Linux：自定义 `_WindowControlButtons`（最小化/最大化/关闭，hover 态反馈，关闭按钮 hover 变红）
   - macOS：系统红绿灯按钮自动叠加，header 左侧加 70px padding
   - 未登录时显示 Logo + 标题；已登录显示用户头像 + 昵称
-- **Footer**：通知入口（带红点）、主题快切（system/light/dark 三态循环）、设置、帮助、折叠/展开按钮
+- **Footer**：通知入口（带红点）、主题快切（system/light/dark 三态循环）、设置、帮助
 
 ### DesktopTabShell
 
@@ -35,7 +34,7 @@
 
 ### 键盘快捷键
 
-通过 `AppShortcuts`（ConsumerWidget）注入到 `FToaster` 内层：
+通过 `AppShortcuts`（StatelessWidget）注入到 `FToaster` 内层：
 
 | 快捷键 | 动作 |
 |--------|------|
@@ -44,12 +43,11 @@
 | Ctrl/Cmd+1..5 | 切换 Tab |
 | Ctrl/Cmd+, | 打开设置 |
 | Ctrl/Cmd+Shift+A | 打开助手 |
-| Ctrl/Cmd+B | 折叠/展开侧边栏 |
 
 ### 命令面板（Ctrl+K）
 
 - 模态搜索框 + `ListView` 实时过滤
-- 导航命令（5 个 Tab + Settings + Assistant）+ 操作命令（新建记录等）
+- 导航命令（5 个 Tab + Settings + Assistant）+ 操作命令
 - 中英文模糊搜索，`ArrowUp`/`ArrowDown` 键盘导航，`Enter` 执行，`Escape` 关闭
 
 ## 桌面端交互

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
@@ -29,6 +28,8 @@ class ReportTrendSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allEmpty = trends.isEmpty || _allSeriesEmpty(trends);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -50,26 +51,12 @@ class ReportTrendSection extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: Spacing.level3),
-        const AppDivider(),
-        const SizedBox(height: Spacing.level4),
-        Wrap(
-          spacing: Spacing.level4,
-          runSpacing: Spacing.level2,
-          children: [
-            for (final series in trends)
-              _LegendDot(
-                color: series.color,
-                label: reportMetricTitle(l10n, series.kind),
-                currentValue: series.currentValue,
-                unit: series.unit,
-              ),
-          ],
-        ),
         const SizedBox(height: Spacing.level4),
         Semantics(
           label: _buildSemanticsLabel(l10n),
-          child: _TrendChart(trends: trends, startDate: startDate, l10n: l10n),
+          child: allEmpty
+              ? _TrendEmptyState(l10n: l10n)
+              : _TrendTabs(trends: trends, startDate: startDate, l10n: l10n),
         ),
       ],
     );
@@ -87,9 +74,10 @@ class ReportTrendSection extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
+// Tabs-based metric selector + single-line chart
 
-class _TrendChart extends StatelessWidget {
-  const _TrendChart({
+class _TrendTabs extends StatelessWidget {
+  const _TrendTabs({
     required this.trends,
     required this.startDate,
     required this.l10n,
@@ -101,102 +89,68 @@ class _TrendChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FTabs(
+      children: [
+        for (final series in trends)
+          FTabEntry(
+            label: Text(reportMetricTitle(l10n, series.kind)),
+            child: _SingleTrendChart(
+              series: series,
+              startDate: startDate,
+              l10n: l10n,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Single-line chart for one metric — shows actual Y-axis values
+
+class _SingleTrendChart extends StatelessWidget {
+  const _SingleTrendChart({
+    required this.series,
+    required this.startDate,
+    required this.l10n,
+  });
+
+  final ReportTrendSeries series;
+  final String startDate;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final values = series.values;
 
-    // All series share the same x-axis length.
-    final dayCount = trends.isEmpty || trends.first.values.isEmpty
-        ? 7
-        : trends.first.values.length;
-
-    // Show graceful empty state when there is no real data to render.
-    if (trends.isEmpty || _allSeriesEmpty(trends)) {
-      return FCard(
-        child: SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.level4,
-              vertical: Spacing.level8,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  FLucideIcons.chartLine,
-                  size: Spacing.level8,
-                  color: colors.mutedForeground,
-                ),
-                const SizedBox(height: Spacing.level3),
-                Text(
-                  l10n.reportTrendEmptyTitle,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: Spacing.level1),
-                Text(
-                  l10n.reportTrendEmptyBody,
-                  style: TypographyToken.level3
-                      .body(context)
-                      .copyWith(color: colors.mutedForeground),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+    // Empty state for this specific metric.
+    if (values.isEmpty || values.every((v) => v == 0)) {
+      return _TrendEmptyState(l10n: l10n);
     }
 
-    // Normalize each series independently to [0, 1] so that different
-    // units (e.g. %, ml, h) don't squash each other on a shared Y axis.
-    // Tooltip still shows the original value + unit.
-    final normalizedBars = <LineChartBarData>[];
-    for (final series in trends) {
-      final resolvedColor = series.color.solid(context);
-      final seriesValues = series.values;
-      final seriesMin = seriesValues.isEmpty
-          ? 0.0
-          : seriesValues.reduce((a, b) => a < b ? a : b);
-      final seriesMax = seriesValues.isEmpty
-          ? 1.0
-          : seriesValues.reduce((a, b) => a > b ? a : b);
-      final seriesSpan = (seriesMax - seriesMin).abs() < 0.001
-          ? 1.0
-          : (seriesMax - seriesMin);
-      final spots = seriesValues.isEmpty
-          ? const <FlSpot>[]
-          : seriesValues
-                .asMap()
-                .entries
-                .map(
-                  (e) => FlSpot(
-                    e.key.toDouble(),
-                    (e.value - seriesMin) / seriesSpan,
-                  ),
-                )
-                .toList();
-      normalizedBars.add(
-        LineChartBarData(
-          spots: spots,
-          color: resolvedColor,
-          barWidth: 2,
-          dotData: FlDotData(
-            show: dayCount <= 10,
-            getDotPainter: (spot, percent, bar, index) =>
-                FlDotCirclePainter(radius: 3, color: resolvedColor),
-          ),
-          belowBarData: BarAreaData(show: false),
-          isCurved: dayCount > 10,
-          curveSmoothness: 0.3,
-        ),
-      );
-    }
+    final resolvedColor = series.color.solid(context);
+    final dayCount = values.length;
 
-    // Generate x-axis labels from startDate.
+    final spots = values
+        .asMap()
+        .entries
+        .map((e) => FlSpot(e.key.toDouble(), e.value))
+        .toList();
+
+    // Use actual data range for Y axis with a small padding.
+    final dataMin = values.reduce((a, b) => a < b ? a : b);
+    final dataMax = values.reduce((a, b) => a > b ? a : b);
+    final dataSpan = (dataMax - dataMin).abs() < 0.001
+        ? dataMax.abs() < 0.001
+              ? 1.0
+              : dataMax
+        : (dataMax - dataMin);
+    final yPadding = dataSpan * 0.15;
+    final minY = (dataMin - yPadding).clamp(0.0, double.infinity);
+    final maxY = dataMax + yPadding;
+
     final labels = _generateDateLabels(dayCount, context);
-
-    // For 30-day range, only show every Nth label to avoid crowding.
     final labelInterval = dayCount <= 7 ? 1.0 : (dayCount / 6).ceilToDouble();
 
     return FCard(
@@ -208,7 +162,25 @@ class _TrendChart extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(Spacing.level4),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Current value summary row
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '${series.currentValue}${series.unit}',
+                  style: TypographyToken.level7
+                      .display(context)
+                      .copyWith(
+                        color: resolvedColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level3),
             SizedBox(
               height: ResponsiveSizing.scaleByHeight(
                 context,
@@ -220,14 +192,14 @@ class _TrendChart extends StatelessWidget {
                 LineChartData(
                   minX: 0,
                   maxX: (dayCount - 1).toDouble(),
-                  minY: -0.1,
-                  maxY: 1.1,
+                  minY: minY,
+                  maxY: maxY,
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
                     getDrawingHorizontalLine: (_) =>
                         FlLine(color: colors.border, strokeWidth: 0.5),
-                    horizontalInterval: 0.25,
+                    horizontalInterval: dataSpan < 0.001 ? 1.0 : dataSpan / 4,
                   ),
                   borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
@@ -251,7 +223,6 @@ class _TrendChart extends StatelessWidget {
                           if (index < 0 || index >= labels.length) {
                             return const SizedBox.shrink();
                           }
-                          // Skip labels that don't fall on the interval.
                           if (labelInterval > 1 &&
                               index % labelInterval.round() != 0 &&
                               index != labels.length - 1) {
@@ -278,11 +249,9 @@ class _TrendChart extends StatelessWidget {
                       getTooltipColor: (_) => colors.card,
                       getTooltipItems: (touchedSpots) {
                         return touchedSpots.map((spot) {
-                          final series = trends[spot.barIndex];
                           final index = spot.spotIndex;
-                          final value =
-                              index >= 0 && index < series.values.length
-                              ? series.values[index]
+                          final value = index >= 0 && index < values.length
+                              ? values[index]
                               : null;
                           final dateLabel = _dateLabelForIndex(index, context);
                           final valueText = value != null
@@ -293,7 +262,7 @@ class _TrendChart extends StatelessWidget {
                             TypographyToken.level3
                                 .body(context)
                                 .copyWith(
-                                  color: series.color.solid(context),
+                                  color: resolvedColor,
                                   fontWeight: FontWeight.w600,
                                 ),
                           );
@@ -301,7 +270,24 @@ class _TrendChart extends StatelessWidget {
                       },
                     ),
                   ),
-                  lineBarsData: normalizedBars,
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      color: resolvedColor,
+                      barWidth: 2,
+                      dotData: FlDotData(
+                        show: dayCount <= 10,
+                        getDotPainter: (spot, percent, bar, index) =>
+                            FlDotCirclePainter(radius: 3, color: resolvedColor),
+                      ),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: resolvedColor.withValues(alpha: 0.08),
+                      ),
+                      isCurved: dayCount > 10,
+                      curveSmoothness: 0.3,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -316,7 +302,6 @@ class _TrendChart extends StatelessWidget {
     final locale = Localizations.localeOf(context).languageCode;
     final parsed = DateTime.tryParse(startDate);
     if (parsed == null) {
-      // Fallback: use day offsets (1, 2, 3, ...).
       return List.generate(count, (i) => '${i + 1}');
     }
     final formatter = DateFormat.Md(locale);
@@ -334,63 +319,66 @@ class _TrendChart extends StatelessWidget {
     final date = parsed.add(Duration(days: index));
     return DateFormat.MMMEd(locale).format(date);
   }
-
-  /// Checks whether all trend series have no meaningful data (empty values).
-  static bool _allSeriesEmpty(List<ReportTrendSeries> trends) {
-    if (trends.isEmpty) return true;
-    return trends.every(
-      (series) => series.values.isEmpty || series.values.every((v) => v == 0),
-    );
-  }
 }
 
 // ---------------------------------------------------------------------------
+// Shared empty-state card
 
-class _LegendDot extends StatelessWidget {
-  const _LegendDot({
-    required this.color,
-    required this.label,
-    required this.currentValue,
-    required this.unit,
-  });
+class _TrendEmptyState extends StatelessWidget {
+  const _TrendEmptyState({required this.l10n});
 
-  final SemanticColor color;
-  final String label;
-  final String currentValue;
-  final String unit;
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: color.solid(context),
-            shape: BoxShape.circle,
+    return FCard(
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Spacing.level4,
+            vertical: Spacing.level8,
           ),
-          child: const SizedBox.square(dimension: Spacing.level3),
-        ),
-        const SizedBox(width: Spacing.level2),
-        Text(
-          label,
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(color: colors.mutedForeground),
-        ),
-        const SizedBox(width: Spacing.level1),
-        Text(
-          '$currentValue$unit',
-          style: TypographyToken.level3
-              .body(context)
-              .copyWith(
-                color: color.solid(context),
-                fontWeight: FontWeight.w600,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                FLucideIcons.chartLine,
+                size: Spacing.level8,
+                color: colors.mutedForeground,
               ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.reportTrendEmptyTitle,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                l10n.reportTrendEmptyBody,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+
+/// Checks whether all trend series have no meaningful data (empty values).
+bool _allSeriesEmpty(List<ReportTrendSeries> trends) {
+  if (trends.isEmpty) return true;
+  return trends.every(
+    (series) => series.values.isEmpty || series.values.every((v) => v == 0),
+  );
 }

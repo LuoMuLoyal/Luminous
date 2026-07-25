@@ -10,11 +10,6 @@ class CreateRecordIntent extends Intent {
   const CreateRecordIntent();
 }
 
-/// Intent to toggle the sidebar collapse state (Ctrl/Cmd+B).
-class ToggleSidebarIntent extends Intent {
-  const ToggleSidebarIntent();
-}
-
 /// Intent to open settings (Ctrl/Cmd+,).
 class OpenSettingsIntent extends Intent {
   const OpenSettingsIntent();

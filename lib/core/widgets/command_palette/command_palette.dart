@@ -4,7 +4,6 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/shortcuts/intents.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// A command palette dialog triggered by Ctrl/Cmd+K.
@@ -55,7 +54,6 @@ class _CommandPaletteState extends State<CommandPalette> {
 
   List<_Command> _buildCommands(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
 
     return [
       // ── Navigation ──
@@ -109,20 +107,6 @@ class _CommandPaletteState extends State<CommandPalette> {
         category: l10n.commandPaletteActions,
         onExecute: () => context.push(Routes.assistant),
       ),
-      if (isDesktop)
-        _Command(
-          label: l10n.desktopSidebarCollapse,
-          icon: FLucideIcons.panelLeftClose,
-          keywords: [
-            'sidebar',
-            'collapse',
-            '侧边栏',
-            '折叠',
-            l10n.desktopSidebarCollapse,
-          ],
-          category: l10n.commandPaletteActions,
-          onExecute: () => Actions.invoke(context, const ToggleSidebarIntent()),
-        ),
     ];
   }
 
