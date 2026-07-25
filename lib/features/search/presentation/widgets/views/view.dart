@@ -105,7 +105,7 @@ class MedicineSearchLoadingView extends StatelessWidget {
     final colors = context.theme.colors;
 
     return Shimmer.fromColors(
-      baseColor: SemanticColor.neutral.muted(context).withValues(alpha: 0.35),
+      baseColor: SemanticColor.neutral.shimmerBase(context),
       highlightColor: colors.background,
       child: const Padding(
         padding: EdgeInsets.all(Spacing.level4),

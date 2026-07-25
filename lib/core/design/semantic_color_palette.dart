@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 /// | [muted]     | `color.withValues(alpha: 0.08~0.12)` | Chip/badge/tag backgrounds       |
 /// | [subtle]    | `color.withValues(alpha: 0.04~0.06)` | Container/empty-state backgrounds|
 /// | [border]    | `color.withValues(alpha: 0.18~0.25)` | Colored container borders        |
+/// | [shimmerBase]| `muted.withValues(alpha: 0.32~0.35)` | Skeleton/shimmer base color     |
+/// | [disabled]  | `color.withValues(alpha: 0.5)`       | Disabled button foreground      |
 @immutable
 class SemanticColorPalette {
   const SemanticColorPalette({
@@ -23,6 +25,8 @@ class SemanticColorPalette {
     required this.muted,
     required this.subtle,
     required this.border,
+    required this.shimmerBase,
+    required this.disabled,
   });
 
   /// Full-saturation color — buttons, active indicators, icon main color.
@@ -40,6 +44,18 @@ class SemanticColorPalette {
   /// Colored border for emphasized containers.
   final Color border;
 
+  /// Skeleton/shimmer base color — loading placeholders.
+  ///
+  /// Pre-computed from [muted] with reduced alpha so shimmer
+  /// animations have a consistent base across light/dark modes.
+  final Color shimmerBase;
+
+  /// Disabled state — muted but distinguishable.
+  ///
+  /// Used for disabled button foregrounds where the full [solid]
+  /// would be too prominent.
+  final Color disabled;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -48,13 +64,24 @@ class SemanticColorPalette {
           foreground == other.foreground &&
           muted == other.muted &&
           subtle == other.subtle &&
-          border == other.border;
+          border == other.border &&
+          shimmerBase == other.shimmerBase &&
+          disabled == other.disabled;
 
   @override
-  int get hashCode => Object.hash(solid, foreground, muted, subtle, border);
+  int get hashCode => Object.hash(
+    solid,
+    foreground,
+    muted,
+    subtle,
+    border,
+    shimmerBase,
+    disabled,
+  );
 
   @override
   String toString() =>
       'SemanticColorPalette(solid: $solid, foreground: $foreground, '
-      'muted: $muted, subtle: $subtle, border: $border)';
+      'muted: $muted, subtle: $subtle, border: $border, '
+      'shimmerBase: $shimmerBase, disabled: $disabled)';
 }

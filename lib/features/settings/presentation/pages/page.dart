@@ -354,7 +354,7 @@ class _MasterNavItem extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: selected
-              ? colors.primary.withValues(alpha: 0.08)
+              ? SemanticColor.primary.muted(context)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(RadiusTokens.level3),
         ),

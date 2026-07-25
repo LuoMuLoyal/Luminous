@@ -43,7 +43,7 @@ class _ShellDeferredContentState extends State<ShellDeferredContent> {
 
     return widget.placeholder ??
         ColoredBox(
-          color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
+          color: SemanticColor.neutral.shimmerBase(context),
           child: const SizedBox.expand(),
         );
   }

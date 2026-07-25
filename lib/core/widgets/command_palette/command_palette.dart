@@ -273,7 +273,7 @@ class _CommandTileState extends State<_CommandTile> {
           ),
           decoration: BoxDecoration(
             color: widget.selected
-                ? theme.colors.primary.withValues(alpha: 0.08)
+                ? SemanticColor.primary.muted(context)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(RadiusTokens.level3),
           ),

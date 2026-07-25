@@ -70,7 +70,7 @@ class DesktopTabShell extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: SemanticColor.neutral.muted(context).withValues(alpha: 0.32),
+        color: SemanticColor.neutral.shimmerBase(context),
       ),
       // showHeader=false 时顶部 SafeArea 由内容区自行处理
       child: SafeArea(

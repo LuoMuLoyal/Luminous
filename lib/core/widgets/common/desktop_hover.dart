@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 
 /// A wrapper that provides hover feedback on desktop layouts.
@@ -44,8 +43,6 @@ class _DesktopHoverCardState extends State<DesktopHoverCard> {
       return widget.child;
     }
 
-    final theme = context.theme;
-    final colors = theme.colors;
     final radius = widget.borderRadius ?? RadiusTokens.level5;
 
     return MouseRegion(
@@ -61,12 +58,12 @@ class _DesktopHoverCardState extends State<DesktopHoverCard> {
           curve: Curves.easeOut,
           decoration: BoxDecoration(
             color: _isHovered
-                ? colors.primary.withValues(alpha: 0.04)
+                ? SemanticColor.primary.subtle(context)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(radius),
             border: _isHovered
                 ? Border.all(
-                    color: colors.primary.withValues(alpha: 0.15),
+                    color: SemanticColor.primary.border(context),
                     width: 1,
                   )
                 : Border.all(color: Colors.transparent, width: 1),

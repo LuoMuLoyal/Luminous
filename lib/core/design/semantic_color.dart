@@ -41,6 +41,12 @@ extension SemanticColorResolution on SemanticColor {
 
   /// Colored border for emphasized containers.
   Color border(BuildContext context) => palette(context).border;
+
+  /// Skeleton/shimmer base color for loading placeholders.
+  Color shimmerBase(BuildContext context) => palette(context).shimmerBase;
+
+  /// Disabled state — muted but distinguishable.
+  Color disabled(BuildContext context) => palette(context).disabled;
 }
 
 extension SemanticColorListResolution on List<SemanticColor> {
