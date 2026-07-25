@@ -26,7 +26,7 @@ class TodayGlyphTile extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [palette.solid.withValues(alpha: 0.92), palette.solid],
+              colors: [palette.fillStrong, palette.solid],
             ),
             borderRadius: BorderRadius.circular(radius),
           )
@@ -87,7 +87,7 @@ class TodayMiniTrendChart extends StatelessWidget {
                 child: Center(
                   child: Icon(
                     FLucideIcons.chartLine,
-                    color: palette.solid.withValues(alpha: 0.74),
+                    color: palette.fillStrong,
                     size: Spacing.level5,
                   ),
                 ),

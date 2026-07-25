@@ -395,7 +395,7 @@ class _DrugBoxMetricItem extends StatelessWidget {
             style: TypographyToken.level5
                 .body(context)
                 .copyWith(
-                  color: color.solid(context).withValues(alpha: 0.92),
+                  color: color.fillStrong(context),
                   fontWeight: FontWeight.w800,
                 ),
             maxLines: 1,

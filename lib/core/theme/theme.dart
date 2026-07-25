@@ -151,6 +151,11 @@ SemanticColors _semanticColorsFor(Brightness brightness, FColors fColors) {
         alpha: isDark ? 0.06 : 0.03,
       ),
       disabled: fColors.mutedForeground.withValues(alpha: 0.5),
+      borderStrong: fColors.mutedForeground.withValues(
+        alpha: isDark ? 0.40 : 0.30,
+      ),
+      fill: fColors.mutedForeground.withValues(alpha: 0.55),
+      fillStrong: fColors.mutedForeground.withValues(alpha: 0.80),
     ),
     success: _fixedPalette(
       solid: isDark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A),
@@ -189,6 +194,9 @@ SemanticColorPalette _paletteFromFColor(
 /// | border  | 0.20  | 0.35  | Semantic border visibility (non-text) | 0.35 in dark creates clearly visible colored borders on dark backgrounds. 0.20 in light is sufficient on light backgrounds. |
 /// | shimmerBase| 0.03 | 0.06  | Skeleton/shimmer base | Derived from muted × 0.32. Very faint so shimmer animation is subtle. |
 /// | disabled | 0.50  | 0.50  | Disabled foreground | Uniform across modes — disabled state should be clearly distinguishable but muted. |
+/// | borderStrong | 0.30 | 0.40 | Emphasized borders/shadows | Higher than border for drag, destructive, shadow. |
+/// | fill | 0.55 | 0.55 | Semi-transparent icons/circles | Uniform — decorative, non-text. |
+/// | fillStrong | 0.80 | 0.80 | Buttons/sparklines/overlays/text | High opacity fill, covers 0.68–0.92 range. |
 ///
 /// The `foreground` color is used for text/icons placed on top of `solid`
 /// (e.g. white on green). Those pairs are chosen by the Forui theme system
@@ -206,6 +214,9 @@ SemanticColorPalette _fixedPalette({
   // shimmerBase ≈ muted × 0.32, pre-computed to avoid runtime alpha arithmetic.
   shimmerBase: solid.withValues(alpha: isDark ? 0.06 : 0.03),
   disabled: solid.withValues(alpha: 0.5),
+  borderStrong: solid.withValues(alpha: isDark ? 0.40 : 0.30),
+  fill: solid.withValues(alpha: 0.55),
+  fillStrong: solid.withValues(alpha: 0.80),
 );
 
 ThemeData foruiMaterialTheme(FThemeData theme) {

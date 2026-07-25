@@ -345,10 +345,8 @@ class _WindowButtonState extends State<_WindowButton> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
     final effectiveHoverColor =
-        widget.hoverColor ??
-        theme.colors.mutedForeground.withValues(alpha: 0.1);
+        widget.hoverColor ?? SemanticColor.neutral.muted(context);
     final effectiveHoverIconColor = widget.hoverIconColor ?? widget.iconColor;
 
     return FTooltip(

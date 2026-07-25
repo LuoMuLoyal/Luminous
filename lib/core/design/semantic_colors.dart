@@ -96,6 +96,9 @@ class SemanticColors extends ThemeExtension<SemanticColors> {
     border: Color.lerp(a.border, b.border, t)!,
     shimmerBase: Color.lerp(a.shimmerBase, b.shimmerBase, t)!,
     disabled: Color.lerp(a.disabled, b.disabled, t)!,
+    borderStrong: Color.lerp(a.borderStrong, b.borderStrong, t)!,
+    fill: Color.lerp(a.fill, b.fill, t)!,
+    fillStrong: Color.lerp(a.fillStrong, b.fillStrong, t)!,
   );
 
   @override

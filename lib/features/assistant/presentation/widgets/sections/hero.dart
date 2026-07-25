@@ -315,7 +315,7 @@ class _StatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
         border: Border.all(
           color: enabled
-              ? SemanticColor.primary.solid(context).withValues(alpha: 0.24)
+              ? SemanticColor.primary.borderStrong(context)
               : colors.border,
         ),
       ),

@@ -580,7 +580,9 @@ class _DragFeedback extends StatelessWidget {
           decoration: BoxDecoration(
             color: colors.background,
             borderRadius: BorderRadius.circular(RadiusTokens.level4),
-            border: Border.all(color: colors.primary.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: SemanticColor.primary.borderStrong(context),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.12),

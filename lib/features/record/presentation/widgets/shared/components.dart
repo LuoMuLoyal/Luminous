@@ -164,7 +164,7 @@ class RecordBarChart extends StatelessWidget {
   });
 
   final List<double> values;
-  final Color color;
+  final SemanticColor color;
   final Color gridColor;
   final double height;
 
@@ -193,7 +193,7 @@ class RecordBarChart extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                   toY: e.value.clamp(0.0, 1.0),
-                  color: color.withValues(alpha: 0.7),
+                  color: color.fillStrong(context),
                   width: 12,
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(RadiusTokens.level1),

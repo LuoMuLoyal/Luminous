@@ -492,7 +492,9 @@ class _DangerZoneSection extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        border: Border.all(color: colors.destructive.withValues(alpha: 0.4)),
+        border: Border.all(
+          color: SemanticColor.destructive.borderStrong(context),
+        ),
         borderRadius: BorderRadius.circular(RadiusTokens.level3),
       ),
       child: Padding(

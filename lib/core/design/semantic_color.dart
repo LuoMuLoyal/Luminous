@@ -47,6 +47,15 @@ extension SemanticColorResolution on SemanticColor {
 
   /// Disabled state — muted but distinguishable.
   Color disabled(BuildContext context) => palette(context).disabled;
+
+  /// Strong border / shadow tone — emphasized borders, drag indicators, shadows.
+  Color borderStrong(BuildContext context) => palette(context).borderStrong;
+
+  /// Medium fill — semi-transparent icons, circular decoration backgrounds.
+  Color fill(BuildContext context) => palette(context).fill;
+
+  /// Strong fill — buttons, sparklines, icons, overlays, gradient stops, text.
+  Color fillStrong(BuildContext context) => palette(context).fillStrong;
 }
 
 extension SemanticColorListResolution on List<SemanticColor> {

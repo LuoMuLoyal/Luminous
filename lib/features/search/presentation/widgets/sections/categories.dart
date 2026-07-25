@@ -71,9 +71,7 @@ class _CategoryItem extends StatelessWidget {
           FAvatar.raw(
             size: 48,
             style: .delta(
-              backgroundColor: category.softColor
-                  .solid(context)
-                  .withValues(alpha: 0.74),
+              backgroundColor: category.softColor.fillStrong(context),
             ),
             child: Icon(category.icon, color: category.accent.solid(context)),
           ),

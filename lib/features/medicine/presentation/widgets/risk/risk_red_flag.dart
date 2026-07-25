@@ -74,7 +74,7 @@ class MedicineRiskRedFlagAlertRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.level3),
       decoration: BoxDecoration(
-        color: colors.background.withValues(alpha: 0.84),
+        color: SemanticColor.neutral.fillStrong(context),
         borderRadius: BorderRadius.circular(RadiusTokens.level2),
       ),
       child: Row(

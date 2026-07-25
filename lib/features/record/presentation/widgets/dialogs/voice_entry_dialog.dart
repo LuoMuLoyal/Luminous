@@ -175,7 +175,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
     final primaryColor = colors.primary;
     final micColor = isListening.value
         ? primaryColor
-        : SemanticColor.neutral.solid(context).withValues(alpha: 0.55);
+        : SemanticColor.neutral.fill(context);
 
     return Padding(
       padding: EdgeInsets.only(
@@ -305,11 +305,11 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                               : colors.secondary,
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  (isListening.value
-                                          ? primaryColor
-                                          : colors.foreground)
-                                      .withValues(alpha: 0.2),
+                              color: (isListening.value
+                                  ? SemanticColor.primary.borderStrong(context)
+                                  : SemanticColor.neutral.borderStrong(
+                                      context,
+                                    )),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),

@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 
 import '../../../helpers/test_forui_app.dart';
@@ -157,7 +158,7 @@ void main() {
           home: Scaffold(
             body: RecordBarChart(
               values: values,
-              color: Colors.blue,
+              color: SemanticColor.primary,
               gridColor: Colors.grey,
             ),
           ),
@@ -178,7 +179,7 @@ void main() {
           home: Scaffold(
             body: RecordBarChart(
               values: [0.5],
-              color: Colors.blue,
+              color: SemanticColor.primary,
               gridColor: Colors.grey,
               height: 150,
             ),

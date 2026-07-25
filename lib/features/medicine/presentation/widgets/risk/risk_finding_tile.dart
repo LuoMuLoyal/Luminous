@@ -34,7 +34,7 @@ class MedicineRiskFindingTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: medicineRiskSeveritySoftColor(
                 finding.severity,
-              ).solid(context).withValues(alpha: 0.56),
+              ).fill(context),
               shape: BoxShape.circle,
             ),
             child: SizedBox.square(

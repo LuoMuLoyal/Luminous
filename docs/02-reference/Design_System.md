@@ -49,9 +49,9 @@
   - `AppLayoutScale` → `LayoutScale`（值对象）+ `AppLayoutTokens` → `LayoutScaleResolver`（静态工具）
 - `lib/core/design/semantic_color.dart` 中 `SemanticColor` enum：
   - 6 个语义色：`primary`、`success`、`warning`、`info`、`destructive`、`neutral`
-  - 每个 `SemanticColor` 解析为 `SemanticColorPalette`（7 个预计算 tone：`solid`/`foreground`/`muted`/`subtle`/`border`/`shimmerBase`/`disabled`）
+  - 每个 `SemanticColor` 解析为 `SemanticColorPalette`（10 个预计算 tone：`solid`/`foreground`/`muted`/`subtle`/`border`/`shimmerBase`/`disabled`/`borderStrong`/`fill`/`fillStrong`）
   - `SemanticColors` 通过 `FColors.extensions` 注入，暗色模式 alpha 自动补偿
-  - 数据/领域层使用 `SemanticColor`；widget 通过 `palette(context)` 或 `solid/muted/subtle/border/shimmerBase/disabled(context)` 解析
+  - 数据/领域层使用 `SemanticColor`；widget 通过 `palette(context)` 或 `solid/muted/subtle/border/shimmerBase/disabled/borderStrong/fill/fillStrong(context)` 解析
 
 ## 命名
 
