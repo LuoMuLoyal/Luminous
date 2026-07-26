@@ -220,7 +220,7 @@
   "reportClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试",
   "reportClinicSummarySharedNetworkError": "网络连接失败，请检查网络后重试",
   "reportTrendEmptyTitle": "暂无趋势数据",
-  "reportTrendEmptyBody": "记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
+  "reportTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
   "reportExportFailedWithReason": "导出失败：{reason}",
   "@reportExportFailedWithReason": {
     "placeholders": {
