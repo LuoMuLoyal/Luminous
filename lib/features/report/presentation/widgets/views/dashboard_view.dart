@@ -121,7 +121,9 @@ class ReportDashboardView extends StatelessWidget {
           insufficientMetricCount: _insufficientMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
-          scoreSummary: dashboard.score.summary,
+          scoreSummary: readinessStatus == ReportReadinessStatus.ready
+              ? dashboard.score.summary
+              : '',
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
@@ -279,7 +281,9 @@ class ReportDashboardView extends StatelessWidget {
           insufficientMetricCount: _insufficientMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
-          scoreSummary: dashboard.score.summary,
+          scoreSummary: readinessStatus == ReportReadinessStatus.ready
+              ? dashboard.score.summary
+              : '',
           onSignIn: onSignIn,
           onContinueRecord: onContinueRecord,
           onGenerate: onGenerateAiSummary == null
