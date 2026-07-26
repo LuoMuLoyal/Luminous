@@ -30,13 +30,19 @@ Widget
 ### Generated API Client
 
 `generated/lucent_api/` is auto-generated from `../Lucent/docs/openapi.json` via
-`openapi_retrofit_generator` (Retrofit + json_serializable). Regenerate with:
+`@openapitools/openapi-generator-cli` (generator `dart-dio`, `serializationLibrary=json_serializable`,
+`enumUnknownDefaultCase=true`). Regenerate with:
 
 ```bash
-cd generated/lucent_api && dart run build_runner build
+cd ../Lucent
+pnpm export:openapi
+cd ../Luminous
+openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c /path/to/openapi_gen_config.json
+dart run tool/bootstrap_generated_sources.dart
 ```
 
-This script normalizes generated pubspec constraints and fixes broken nullable `*.g.dart` entries.
+`bootstrap_generated_sources.dart` runs `flutter pub get`, `dart pub get` in the generated package,
+`build_runner` for both the generated package and the root app, and `flutter gen-l10n`.
 Do not use ad-hoc `npx` / `build_runner` commands.
 
 ### Repository Pattern

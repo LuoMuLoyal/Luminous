@@ -104,6 +104,7 @@ export 'package:lucent_api/src/model/dose_log_list_data_dto.dart';
 export 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 export 'package:lucent_api/src/model/dose_log_response_dto.dart';
 export 'package:lucent_api/src/model/dose_log_status.dart';
+export 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
 export 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
 export 'package:lucent_api/src/model/enable_security_pin_dto.dart';
 export 'package:lucent_api/src/model/environment_data_source.dart';

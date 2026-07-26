@@ -17,17 +17,10 @@ part 'create_data_export_request_dto.g.dart';
 )
 class CreateDataExportRequestDto {
   /// Returns a new [CreateDataExportRequestDto] instance.
-  CreateDataExportRequestDto({
-    this.kind = CreateDataExportRequestDtoKindEnum.hospital,
-
-    this.format = CreateDataExportRequestDtoFormatEnum.pdf,
-
-    this.range = CreateDataExportRequestDtoRangeEnum.last7Days,
-  });
+  CreateDataExportRequestDto({this.kind, this.format, this.range});
 
   /// Requested export kind.
   @JsonKey(
-    defaultValue: 'hospital',
     name: r'kind',
     required: false,
     includeIfNull: false,
@@ -37,7 +30,6 @@ class CreateDataExportRequestDto {
 
   /// Requested export format.
   @JsonKey(
-    defaultValue: 'pdf',
     name: r'format',
     required: false,
     includeIfNull: false,
@@ -48,7 +40,6 @@ class CreateDataExportRequestDto {
 
   /// Requested report range.
   @JsonKey(
-    defaultValue: 'last_7_days',
     name: r'range',
     required: false,
     includeIfNull: false,

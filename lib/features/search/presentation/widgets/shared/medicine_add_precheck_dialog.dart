@@ -79,7 +79,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                     icon: FLucideIcons.fileText,
                     label: l10n.medicineSearchPrecheckScopeContraindication,
                   ),
-                  if (result.coverageSummary.isNotEmpty) ...[
+                  if (result.coverageIssues.isNotEmpty) ...[
                     const SizedBox(height: Spacing.level4),
                     Container(
                       padding: const EdgeInsets.all(Spacing.level3),
@@ -103,7 +103,10 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                           const SizedBox(width: Spacing.level3),
                           Expanded(
                             child: Text(
-                              result.coverageSummary,
+                              medicineRiskCheckCoverageSummary(
+                                l10n,
+                                result.coverageIssues,
+                              ),
                               style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.foreground),

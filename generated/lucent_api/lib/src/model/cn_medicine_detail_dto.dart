@@ -44,8 +44,6 @@ class CnMedicineDetailDto {
 
     this.pharmacologyToxicology,
 
-    this.drugInteractions,
-
     this.pharmacokinetics,
 
     this.overdose,
@@ -106,9 +104,6 @@ class CnMedicineDetailDto {
   )
   final String? pharmacologyToxicology;
 
-  @JsonKey(name: r'drugInteractions', required: false, includeIfNull: false)
-  final String? drugInteractions;
-
   @JsonKey(name: r'pharmacokinetics', required: false, includeIfNull: false)
   final String? pharmacokinetics;
 
@@ -150,7 +145,6 @@ class CnMedicineDetailDto {
           other.contraindications == contraindications &&
           other.precautions == precautions &&
           other.pharmacologyToxicology == pharmacologyToxicology &&
-          other.drugInteractions == drugInteractions &&
           other.pharmacokinetics == pharmacokinetics &&
           other.overdose == overdose &&
           other.storage == storage &&
@@ -175,7 +169,6 @@ class CnMedicineDetailDto {
       (contraindications == null ? 0 : contraindications.hashCode) +
       (precautions == null ? 0 : precautions.hashCode) +
       (pharmacologyToxicology == null ? 0 : pharmacologyToxicology.hashCode) +
-      (drugInteractions == null ? 0 : drugInteractions.hashCode) +
       (pharmacokinetics == null ? 0 : pharmacokinetics.hashCode) +
       (overdose == null ? 0 : overdose.hashCode) +
       (storage == null ? 0 : storage.hashCode) +

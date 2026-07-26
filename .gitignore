@@ -60,6 +60,10 @@ packages/
 !generated/lucent_api/lib/api/**
 generated/lucent_api/lib/api/**/*.g.dart
 generated/lucent_api/pubspec.lock
+# OpenAPI generator-generated docs and scaffolding (not tracked)
+generated/lucent_api/doc/
+generated/lucent_api/.openapi-generator/
+generated/lucent_api/README.md
 
 # Drift web worker — compiled from web/drift_worker.dart
 web/drift_worker.js

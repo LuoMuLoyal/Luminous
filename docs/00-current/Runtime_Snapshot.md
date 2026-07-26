@@ -139,3 +139,16 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n �
 - 正确流程：编辑 `lib/l10n/src/` 下分片 → `dart scripts/arb_tools.dart merge` → `flutter gen-l10n`。
 - `lib/l10n/AGENTS.md` 是 l10n 目录的专用规则文件，详细记录了分片映射表和新模块添加流程。
 - 全部 9 个设置子页统一使用 `settingsPageVerticalPadding(context)` 共享函数，不再各自内联响应式三元表达式。
+
+## 2026-07-26 更新
+
+### 网络层 / OpenAPI 客户端
+
+- 官方生成器从 `openapi_retrofit_generator` 切换为 `@openapitools/openapi-generator-cli` 7.22.0 `dart-dio` + `json_serializable` + `copy_with_extension`。
+- 生成命令：`openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c config.json`（配置含 `enumUnknownDefaultCase=true`）。
+- 药品详情 `drugInteractions` 合同改为 `List<DrugbankDrugInteractionDto>`；`CreateDataExportRequestDto` 枚举字段移除 `default`。
+- 生成后需运行 `dart run tool/bootstrap_generated_sources.dart` 生成 `.g.dart` 和 root 代码。
+
+### 国际化
+
+- 新增 `medicineRiskCheckCoverageSummaryManual` / `medicineRiskCheckCoverageSummaryUnavailable`（`medicine_*` 分片），风险检查 coverage 摘要不再硬编码中文。

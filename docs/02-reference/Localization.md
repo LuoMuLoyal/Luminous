@@ -181,3 +181,13 @@ flutter test
    `profile.locale` when the value maps to `zh-CN`, `en`, or `system`.
 - Notification type l10n includes `oauth_login`（登录提醒）and `identity_linked`（绑定提醒）,
   added 2026-07-20 to match Lucent `UserNotificationType` enum.
+
+## 2026-07-26 Medicine risk-check coverage summary
+
+- Added `medicineRiskCheckCoverageSummaryManual` and `medicineRiskCheckCoverageSummaryUnavailable` to
+  `lib/l10n/src/medicine_en.arb` and `medicine_zh.arb`.
+- Coverage summary strings are now composed in the presentation layer via
+  `medicineRiskCheckCoverageSummary(l10n, coverageIssues)` instead of hardcoded Chinese in the
+  domain service.
+- The medicine fragment owns these keys; they are merged into `app_zh.arb` / `app_en.arb` by
+  `dart scripts/arb_tools.dart merge` and then into Dart code by `flutter gen-l10n`.

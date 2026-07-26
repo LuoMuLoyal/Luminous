@@ -92,7 +92,6 @@ void main() {
       result.coverageIssues.single.reason,
       MedicineRiskCoverageReason.manualEntry,
     );
-    expect(result.coverageSummary, contains('手动录入'));
     expect(result.hasCoverageGaps, isTrue);
     expect(
       result.findings.any((f) => f.type == MedicineRiskFindingType.interaction),
@@ -590,8 +589,23 @@ void main() {
 
       expect(result.checkedMedicineCount, 0);
       expect(result.coverageIssues, hasLength(2));
-      expect(result.coverageSummary, contains('手动录入'));
-      expect(result.coverageSummary, contains('药品详情不可用'));
+      expect(
+        result.coverageIssues
+            .where(
+              (issue) => issue.reason == MedicineRiskCoverageReason.manualEntry,
+            )
+            .length,
+        1,
+      );
+      expect(
+        result.coverageIssues
+            .where(
+              (issue) =>
+                  issue.reason == MedicineRiskCoverageReason.detailUnavailable,
+            )
+            .length,
+        1,
+      );
     },
   );
 
@@ -669,8 +683,12 @@ void main() {
       expect(result.hasCoverageGaps, isTrue);
       expect(result.findingCount, greaterThan(0));
       expect(result.coverageCount, greaterThan(0));
-      expect(result.coverageSummary, isNotEmpty);
-      expect(result.coverageSummary, contains('手动录入'));
+      expect(
+        result.coverageIssues.any(
+          (issue) => issue.reason == MedicineRiskCoverageReason.manualEntry,
+        ),
+        isTrue,
+      );
     },
   );
 
@@ -710,7 +728,6 @@ void main() {
     expect(result.findings, isEmpty);
     expect(result.hasCoverageGaps, isTrue);
     expect(result.coverageCount, greaterThan(0));
-    expect(result.coverageSummary, isNotEmpty);
   });
 
   test('coverageSummary combines mixed reason counts correctly', () {
@@ -755,11 +772,25 @@ void main() {
     const checker = MedicineRiskChecker();
     final result = checker.evaluate(snapshot: snapshot, medicines: const []);
 
-    // 1 manual + 1 missingSourceRef → two separate clauses in summary
-    expect(result.coverageSummary, contains('1 种手动录入'));
-    expect(result.coverageSummary, contains('1 种药品详情不可用'));
-    // Separator between clauses
-    expect(result.coverageSummary, contains('；'));
+    // 1 manual + 1 missingSourceRef → two separate coverage issues
+    expect(result.coverageIssues, hasLength(2));
+    expect(
+      result.coverageIssues
+          .where(
+            (issue) => issue.reason == MedicineRiskCoverageReason.manualEntry,
+          )
+          .length,
+      1,
+    );
+    expect(
+      result.coverageIssues
+          .where(
+            (issue) =>
+                issue.reason == MedicineRiskCoverageReason.missingSourceRef,
+          )
+          .length,
+      1,
+    );
   });
 }
 

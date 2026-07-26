@@ -72,11 +72,6 @@ void main() {
       // TODO
     });
 
-    // String drugInteractions
-    test('to test the property `drugInteractions`', () async {
-      // TODO
-    });
-
     // String pharmacokinetics
     test('to test the property `pharmacokinetics`', () async {
       // TODO

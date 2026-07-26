@@ -479,7 +479,7 @@ void main() {
 
       expect(alerts, hasLength(2));
       expect(
-        alerts.any((alert) => (alert.rawTitle ?? '').contains('缺少可检查资料')),
+        alerts.any((alert) => (alert.rawTitle ?? '').contains('手动录入药品')),
         isTrue,
       );
     },

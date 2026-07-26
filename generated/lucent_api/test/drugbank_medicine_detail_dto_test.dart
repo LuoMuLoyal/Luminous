@@ -108,8 +108,8 @@ void main() {
       // TODO
     });
 
-    // Raw source interaction payload.
-    // Map<String, Object> drugInteractions
+    // DrugBank interaction entries used for interaction checking.
+    // List<DrugbankDrugInteractionDto> drugInteractions
     test('to test the property `drugInteractions`', () async {
       // TODO
     });

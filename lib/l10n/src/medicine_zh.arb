@@ -176,6 +176,22 @@
   "medicineRiskCheckCoverageReasonManualEntry": "手动录入，暂无标准药品资料",
   "medicineRiskCheckCoverageReasonMissingSourceRef": "缺少来源编号，无法拉取药品详情",
   "medicineRiskCheckCoverageReasonDetailUnavailable": "药品详情暂时不可用",
+  "medicineRiskCheckCoverageSummaryManual": "{count} 种手动录入药品无法自动检查",
+  "@medicineRiskCheckCoverageSummaryManual": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageSummaryUnavailable": "{count} 种药品详情不可用",
+  "@medicineRiskCheckCoverageSummaryUnavailable": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "medicineRiskCheckSeverityHigh": "高风险",
   "medicineRiskCheckSeverityMedium": "待复核",
   "medicineRiskCheckSeverityInfo": "提示",

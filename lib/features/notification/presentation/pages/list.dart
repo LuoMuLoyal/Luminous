@@ -110,27 +110,16 @@ class NotificationListPage extends ConsumerWidget {
             ),
           );
         },
-        loading: () => const Center(
-          child: Padding(
-            padding: EdgeInsets.all(Spacing.level10),
-            child: SkeletonShimmer(
-              child: Column(
-                children: [
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                  SizedBox(height: Spacing.level4),
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                  SizedBox(height: Spacing.level4),
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                  SizedBox(height: Spacing.level4),
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                  SizedBox(height: Spacing.level4),
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                  SizedBox(height: Spacing.level4),
-                  InlineSkeletonBlock(height: 64, widthFactor: 1),
-                ],
-              ),
-            ),
-          ),
+        loading: () => const StateSkeletonView(
+          padding: EdgeInsets.symmetric(vertical: Spacing.level6),
+          blocks: [
+            StateSkeletonBlock(height: 64),
+            StateSkeletonBlock(height: 64),
+            StateSkeletonBlock(height: 64),
+            StateSkeletonBlock(height: 64),
+            StateSkeletonBlock(height: 64),
+            StateSkeletonBlock(height: 64),
+          ],
         ),
         error: (error, _) => StateErrorView(
           title: l10n.notificationErrorTitle,

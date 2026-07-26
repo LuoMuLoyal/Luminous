@@ -15,6 +15,7 @@ import 'package:luminous/features/medicine/presentation/widgets/risk/risk_covera
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_finding_tile.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_metric_chip.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerWidget {
@@ -260,6 +261,10 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
     final result = widget.result;
     final hasFindings = result.hasFindings;
     final hasCoverageGaps = result.hasCoverageGaps;
+    final coverageSummary = medicineRiskCheckCoverageSummary(
+      l10n,
+      result.coverageIssues,
+    );
 
     // Tier 1: Confirmed Risk (red) — findings exist
     // Tier 2: Confirmed Safe (green) — no findings AND no coverage gaps
@@ -373,7 +378,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
             ),
             const SizedBox(height: Spacing.level3),
           ],
-          if (result.coverageSummary.isNotEmpty) ...[
+          if (coverageSummary.trim().isNotEmpty) ...[
             Container(
               padding: const EdgeInsets.all(Spacing.level4),
               decoration: BoxDecoration(
@@ -394,7 +399,7 @@ class _MedicineRiskCheckBodyState extends State<_MedicineRiskCheckBody> {
                   const SizedBox(width: Spacing.level3),
                   Expanded(
                     child: Text(
-                      result.coverageSummary,
+                      coverageSummary,
                       style: TypographyToken.level3
                           .body(context)
                           .copyWith(

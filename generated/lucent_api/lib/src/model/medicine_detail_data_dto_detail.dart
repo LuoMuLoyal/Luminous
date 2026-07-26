@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
 import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
@@ -167,8 +168,9 @@ class MedicineDetailDataDtoDetail {
   @JsonKey(name: r'foodInteractions', required: true, includeIfNull: false)
   final List<String> foodInteractions;
 
+  /// DrugBank interaction entries used for interaction checking.
   @JsonKey(name: r'drugInteractions', required: false, includeIfNull: false)
-  final String? drugInteractions;
+  final List<DrugbankDrugInteractionDto>? drugInteractions;
 
   /// Raw source external identifier payload.
   @JsonKey(name: r'externalIdentifiers', required: false, includeIfNull: false)

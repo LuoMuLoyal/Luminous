@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-22 (扫码对话框封装统一)
+Last updated: 2026-07-26 (搜索页布局修复：间距、Tabs、溢出)
 
 ## 页面结构
 
@@ -168,8 +168,39 @@ Last updated: 2026-07-22 (扫码对话框封装统一)
 - **用药安全空态卡片**：`mobile_safety.dart` 在 `result == null` 时渲染 `_SafetyEngineEmpty` 显式空态卡片，文案键 `medicineSafetyPanelEmptyTitle` / `medicineSafetyPanelEmptyBody`。
 - **测试**：新增/更新 `test/medicine/page_test.dart` 红测试先行，覆盖搜索栏偏移、未登录空 dashboard、已登录空计划三个场景；`flutter test test/medicine` 全部通过。
 
+## 2026-07-26 搜索页布局修复
+
+- **搜索框与标题间距**：`lib/features/search/presentation/widgets/views/view.dart` 移动端内容顶部内边距从 `Spacing.level4` 降至 `Spacing.level3`，桌面端保持 `Spacing.level5`。
+- **来源切换改为 Forui Tabs**：`lib/features/search/presentation/widgets/sections/source_switch.dart` 从 `Wrap` + `FButton.raw` 按钮改为 `FTabs` + `FTabControl.lifted` + `FTabEntry`（子内容使用 `SizedBox.shrink()`），与登录页模式切换风格一致。
+- **快捷操作防溢出**：`lib/features/search/presentation/widgets/sections/quick_actions.dart` 的 `_QuickActionButton` 内行文字包裹 `FittedBox(BoxFit.scaleDown)`，窄屏下"Scan barcode" / "Photo recognition" 双按钮不再溢出 14px。
+
 ## 2026-07-22 搜索页 SourceSwitch 防溢出
 
 - `SourceSwitch` 从 `Row` + `Expanded` 改为 `Wrap` + `ConstrainedBox(minWidth: 120)`，消除窄屏下"国内药品"/"DrugBank" 双按钮文字溢出。
 - 按钮间距由 `Wrap.spacing` / `runSpacing` 统一控制，移除原先最后一个元素特殊判空的 `Padding` 逻辑。
 
+
+## 2026-07-26 P0 药品数据与风险检查修复
+
+### 药品详情 `drugInteractions` 类型对齐
+
+- 后端新增 `DrugbankDrugInteractionDto`（`drugbankId` + `description`），`DrugbankMedicineDetailDto.drugInteractions` 改为数组；CN 详情不再携带该字段。
+- 重新生成 `generated/lucent_api/` 后，`MedicineDetailDataDtoDetail.drugInteractions` 为 `List<DrugbankDrugInteractionDto>?`，消除 `List<dynamic> is not a subtype of String?` 运行时异常。
+- 风险检查链路（`risk_checker.dart`、`risk_medicine_detail.dart`）通过 `toJson()` 读取列表，无需改动。
+
+### 风险检查 coverage 文案去中文硬编码
+
+- 移除 `risk_checker.dart` 中的硬编码中文覆盖摘要。
+- 新增 l10n 键 `medicineRiskCheckCoverageSummaryManual` / `medicineRiskCheckCoverageSummaryUnavailable`。
+- 英文环境下显示英文摘要，不再混入中文。
+
+### 用药搜索页布局
+
+- 搜索框与顶部标题间距：移动端顶部内边距从 `Spacing.level4` 降至 `Spacing.level3`。
+- 来源切换：改为 `FTabs` + `FTabControl.lifted`。
+- 快捷操作：`_QuickActionButton` 内部包裹 `FittedBox(BoxFit.scaleDown)`，修复 14px 溢出。
+
+### 数据导出枚举默认值修复（关联生成器 bug）
+
+- 后端 `CreateDataExportRequestDto` 移除枚举字段 `default`，默认值由 service 层兜底。
+- 避免 `openapi-generator` 生成非法 `const Enum._('value')` 构造函数与 `.g.dart` 中 `?? 'value'` 类型错误，确保 `flutter test` 编译通过。

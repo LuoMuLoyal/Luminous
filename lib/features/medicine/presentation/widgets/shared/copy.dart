@@ -79,6 +79,27 @@ String medicineCopy(AppLocalizations l10n, MedicineCopyKey key) {
   };
 }
 
+String medicineRiskCheckCoverageSummary(
+  AppLocalizations l10n,
+  List<MedicineRiskCoverageIssue> coverageIssues,
+) {
+  if (coverageIssues.isEmpty) return '';
+  final manualCount = coverageIssues
+      .where((issue) => issue.reason == MedicineRiskCoverageReason.manualEntry)
+      .length;
+  final unavailableCount = coverageIssues.length - manualCount;
+  final parts = <String>[];
+  if (manualCount > 0) {
+    parts.add(l10n.medicineRiskCheckCoverageSummaryManual(manualCount));
+  }
+  if (unavailableCount > 0) {
+    parts.add(
+      l10n.medicineRiskCheckCoverageSummaryUnavailable(unavailableCount),
+    );
+  }
+  return parts.join('；');
+}
+
 String medicineAlertTitle(AppLocalizations l10n, MedicineAlert alert) {
   final raw = alert.rawTitle?.trim();
   if (raw != null && raw.isNotEmpty) return raw;
@@ -139,9 +160,11 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
         : result.coverageIssues.length > names.length
         ? l10n.medicineRiskCheckCoverageAlertDetailWithMore(names.join('、'))
         : l10n.medicineRiskCheckCoverageAlertDetail(names.join('、'));
-    final summaryLine = result.coverageSummary.isNotEmpty
-        ? result.coverageSummary
-        : null;
+    final summaryText = medicineRiskCheckCoverageSummary(
+      l10n,
+      result.coverageIssues,
+    );
+    final summaryLine = summaryText.trim().isNotEmpty ? summaryText : null;
     final coverageAlert = MedicineAlert(
       icon: FLucideIcons.info,
       color: SemanticColor.neutral,

@@ -108,7 +108,8 @@ void main() {
       // TODO
     });
 
-    // String drugInteractions
+    // DrugBank interaction entries used for interaction checking.
+    // List<DrugbankDrugInteractionDto> drugInteractions
     test('to test the property `drugInteractions`', () async {
       // TODO
     });

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -18,60 +17,21 @@ class SourceSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
+    const sources = MedicineSearchSource.values;
 
-    return Wrap(
-      spacing: Spacing.level3,
-      runSpacing: Spacing.level3,
-      children: MedicineSearchSource.values
-          .map(
-            (source) => ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 120),
-              child: FButton.raw(
-                onPress: () => onChanged(source),
-                variant: FButtonVariant.outline,
-                style: .delta(
-                  decoration: .delta([
-                    .all(
-                      .shapeDelta(
-                        color: source == selectedSource
-                            ? SemanticColor.primary.muted(context)
-                            : colors.background,
-                        shape: RoundedSuperellipseBorder(
-                          side: BorderSide(
-                            color: source == selectedSource
-                                ? colors.primary
-                                : colors.border,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ]),
-                  contentStyle: const .delta(
-                    padding: .value(
-                      EdgeInsets.symmetric(
-                        horizontal: Spacing.level4,
-                        vertical: Spacing.level3,
-                      ),
-                    ),
-                  ),
-                ),
-                child: Text(
-                  sourceLabel(l10n, source),
-                  textAlign: TextAlign.center,
-                  style: TypographyToken.level5
-                      .body(context)
-                      .copyWith(
-                        color: source == selectedSource
-                            ? colors.primary
-                            : colors.foreground,
-                        fontWeight: FontWeight.w700,
-                      ),
-                ),
-              ),
-            ),
-          )
-          .toList(),
+    return FTabs(
+      key: const ValueKey('medicine-search-source-tabs'),
+      control: FTabControl.lifted(
+        index: sources.indexOf(selectedSource),
+        onChange: (index) => onChanged(sources[index]),
+      ),
+      children: [
+        for (final source in sources)
+          FTabEntry(
+            label: Text(sourceLabel(l10n, source)),
+            child: const SizedBox.shrink(),
+          ),
+      ],
     );
   }
 }

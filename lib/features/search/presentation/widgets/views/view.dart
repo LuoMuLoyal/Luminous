@@ -66,8 +66,9 @@ class MedicineSearchView extends StatelessWidget {
         child: ResponsiveContentFrame(
           expand: true,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: isDesktop ? Spacing.level5 : Spacing.level4,
+            padding: EdgeInsets.only(
+              bottom: isDesktop ? Spacing.level5 : Spacing.level4,
+              top: isDesktop ? Spacing.level5 : Spacing.level3,
             ),
             child: isDesktop
                 ? _DesktopSearchLayout(

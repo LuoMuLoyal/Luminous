@@ -176,6 +176,22 @@
   "medicineRiskCheckCoverageReasonManualEntry": "Manual entry without standard medicine detail",
   "medicineRiskCheckCoverageReasonMissingSourceRef": "Missing source reference, so detail cannot be fetched",
   "medicineRiskCheckCoverageReasonDetailUnavailable": "Medicine detail is currently unavailable",
+  "medicineRiskCheckCoverageSummaryManual": "{count, plural, one{# manually entered medicine cannot be auto-checked} other{# manually entered medicines cannot be auto-checked}}",
+  "@medicineRiskCheckCoverageSummaryManual": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
+  "medicineRiskCheckCoverageSummaryUnavailable": "{count, plural, one{# medicine has unavailable detail} other{# medicines have unavailable detail}}",
+  "@medicineRiskCheckCoverageSummaryUnavailable": {
+    "placeholders": {
+      "count": {
+        "type": "num"
+      }
+    }
+  },
   "medicineRiskCheckSeverityHigh": "High risk",
   "medicineRiskCheckSeverityMedium": "Needs review",
   "medicineRiskCheckSeverityInfo": "Note",

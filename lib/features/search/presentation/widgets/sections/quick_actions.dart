@@ -60,18 +60,21 @@ class _QuickActionButton extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.all(Spacing.level4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(action.icon, color: action.accent.solid(context)),
-            const SizedBox(width: Spacing.level3),
-            Text(
-              actionLabel(l10n, action.type),
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(fontWeight: FontWeight.w700),
-            ),
-          ],
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(action.icon, color: action.accent.solid(context)),
+              const SizedBox(width: Spacing.level3),
+              Text(
+                actionLabel(l10n, action.type),
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
         ),
       ),
     );

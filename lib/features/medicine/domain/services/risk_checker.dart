@@ -54,12 +54,7 @@ class MedicineRiskChecker {
       checkedMedicineCount: medicines.length,
       findings: findings,
       coverageIssues: coverageIssues,
-      coverageSummary: _buildCoverageSummary(
-        currentMedicineCount: currentMedicines.length,
-        checkedMedicineCount: medicines.length,
-        coverageIssues: coverageIssues,
-        medicines: medicines,
-      ),
+      coverageSummary: _buildCoverageSummary(),
     );
   }
 
@@ -268,23 +263,9 @@ class MedicineRiskChecker {
     return null;
   }
 
-  String _buildCoverageSummary({
-    required int currentMedicineCount,
-    required int checkedMedicineCount,
-    required List<MedicineRiskCoverageIssue> coverageIssues,
-    required List<MedicineRiskMedicineDetail> medicines,
-  }) {
-    if (currentMedicineCount == 0) return '';
-    if (coverageIssues.isEmpty) return '';
-    final manualCount = coverageIssues
-        .where(
-          (issue) => issue.reason == MedicineRiskCoverageReason.manualEntry,
-        )
-        .length;
-    final unavailableCount = coverageIssues.length - manualCount;
-    final parts = <String>[];
-    if (manualCount > 0) parts.add('$manualCount 种手动录入药品无法自动检查');
-    if (unavailableCount > 0) parts.add('$unavailableCount 种药品详情不可用');
-    return parts.join('；');
+  String _buildCoverageSummary() {
+    // Coverage summary is now formatted in the presentation layer using l10n,
+    // so the domain layer only signals that gaps exist via coverageIssues.
+    return '';
   }
 }

@@ -347,10 +347,14 @@ class _SafetySummary {
     }
 
     if (result.hasCoverageGaps) {
+      final summary = medicineRiskCheckCoverageSummary(
+        l10n,
+        result.coverageIssues,
+      );
       return _SafetySummary(
         title: l10n.medicineRiskCheckTierUncovered,
-        body: result.coverageSummary.isNotEmpty
-            ? result.coverageSummary
+        body: summary.trim().isNotEmpty
+            ? summary
             : l10n.medicineRiskCheckTierUncoveredDisclaimer,
         icon: FLucideIcons.circleAlert,
         color: SemanticColor.neutral,
