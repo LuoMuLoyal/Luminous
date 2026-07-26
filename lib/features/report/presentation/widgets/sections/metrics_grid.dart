@@ -221,15 +221,17 @@ class _MetricCard extends StatelessWidget {
               const SizedBox(height: Spacing.level1),
               Row(
                 children: [
-                  SkeletonSlot(
-                    skeleton: const InlineSkeletonBlock(
-                      height: 20,
-                      widthFactor: 0.36,
-                      radius: RadiusTokens.level2,
-                    ),
-                    child: _MetricBadge(
-                      label: reportStatusLabel(l10n, metric.status),
-                      color: reportStatusColor(metric.status),
+                  Flexible(
+                    child: SkeletonSlot(
+                      skeleton: const InlineSkeletonBlock(
+                        height: 20,
+                        widthFactor: 0.36,
+                        radius: RadiusTokens.level2,
+                      ),
+                      child: _MetricBadge(
+                        label: reportStatusLabel(l10n, metric.status),
+                        color: reportStatusColor(metric.status),
+                      ),
                     ),
                   ),
                   const SizedBox(width: Spacing.level2),
