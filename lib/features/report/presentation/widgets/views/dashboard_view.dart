@@ -119,6 +119,7 @@ class ReportDashboardView extends StatelessWidget {
           status: readinessStatus,
           generatedAtLabel: generatedAtLabel,
           insufficientMetricCount: _insufficientMetricCount(),
+          needsAttentionMetricCount: _needsAttentionMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
           scoreSummary: readinessStatus == ReportReadinessStatus.ready
@@ -279,6 +280,7 @@ class ReportDashboardView extends StatelessWidget {
           status: readinessStatus,
           generatedAtLabel: generatedAtLabel,
           insufficientMetricCount: _insufficientMetricCount(),
+          needsAttentionMetricCount: _needsAttentionMetricCount(),
           l10n: l10n,
           rangeLabel: _rangeLabel(l10n),
           scoreSummary: readinessStatus == ReportReadinessStatus.ready
@@ -461,6 +463,12 @@ class ReportDashboardView extends StatelessWidget {
   int _insufficientMetricCount() {
     return dashboard.metrics
         .where((metric) => metric.status == ReportStatus.insufficientData)
+        .length;
+  }
+
+  int _needsAttentionMetricCount() {
+    return dashboard.metrics
+        .where((metric) => metric.status == ReportStatus.needsAttention)
         .length;
   }
 

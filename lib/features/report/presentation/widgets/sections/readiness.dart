@@ -12,6 +12,7 @@ class ReportReadinessSection extends StatelessWidget {
     required this.generatedAtLabel,
     required this.l10n,
     this.insufficientMetricCount = 0,
+    this.needsAttentionMetricCount = 0,
     this.rangeLabel = '',
     this.scoreSummary = '',
     this.onSignIn,
@@ -25,6 +26,7 @@ class ReportReadinessSection extends StatelessWidget {
   final String generatedAtLabel;
   final AppLocalizations l10n;
   final int insufficientMetricCount;
+  final int needsAttentionMetricCount;
 
   /// Localized label for the selected date range (e.g. "近 7 天").
   /// Used in the ready title so it reflects the actual selected range.
@@ -114,15 +116,29 @@ class ReportReadinessSection extends StatelessWidget {
                 ],
               ),
             ],
-            if (status == ReportReadinessStatus.insufficient &&
-                insufficientMetricCount > 0) ...[
-              const SizedBox(height: Spacing.level3),
-              Text(
-                l10n.reportReadinessMissingMetricsHint(insufficientMetricCount),
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: colors.mutedForeground),
-              ),
+            if (status == ReportReadinessStatus.insufficient) ...[
+              if (insufficientMetricCount > 0) ...[
+                const SizedBox(height: Spacing.level3),
+                Text(
+                  l10n.reportReadinessMissingMetricsHint(
+                    insufficientMetricCount,
+                  ),
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
+              if (needsAttentionMetricCount > 0) ...[
+                const SizedBox(height: Spacing.level3),
+                Text(
+                  l10n.reportReadinessNeedsAttentionMetricsHint(
+                    needsAttentionMetricCount,
+                  ),
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ],
             ],
             const SizedBox(height: Spacing.level4),
             Row(

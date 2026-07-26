@@ -39,6 +39,14 @@
       }
     }
   },
+  "reportReadinessNeedsAttentionMetricsHint": "{count} 项指标需要改善。",
+  "@reportReadinessNeedsAttentionMetricsHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "reportScoreHelpTooltip": "基于近期记录、用药依从性和生命体征趋势的综合评分。",
   "reportScoreTitle": "健康评分",
   "reportScoreOutOf": "/ {max}",
