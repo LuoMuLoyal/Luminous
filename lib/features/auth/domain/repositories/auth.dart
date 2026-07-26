@@ -21,6 +21,8 @@ abstract interface class AuthRepository {
 
   Future<AuthUser> fetchAccount();
 
+  Future<AuthSession> refreshSession({required String refreshToken});
+
   Future<OAuthAuthorizeData> createWechatWebAuthorizeUrl({String? callbackUri});
 
   Future<OAuthAuthorizeData> createWechatWebIdentityLinkAuthorizeUrl({

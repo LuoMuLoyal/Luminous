@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/result_code.dart';
 
 abstract final class LucentErrorMapper {
@@ -15,9 +17,33 @@ abstract final class LucentErrorMapper {
     }
 
     if (error is DioException) {
+      final embedded = error.error;
+      if (embedded is LucentApiException) {
+        return embedded;
+      }
+
+      final response = error.response;
+      final json = coerceToStringMap(response?.data);
+      final envelope = json == null
+          ? null
+          : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
+      final requestId = response?.headers.value('X-Request-Id');
+
       return LucentApiException(
-        message: _fallbackMessage(error),
-        networkErrorCode: _errorCodeFromDioType(error.type),
+        message: () {
+          final env = envelope;
+          if (env != null && env.message.isNotEmpty) {
+            return env.message;
+          }
+          return _fallbackMessage(error);
+        }(),
+        code: envelope?.code,
+        statusCode: response?.statusCode,
+        requestId: requestId,
+        data: json,
+        networkErrorCode: envelope != null && !envelope.isSuccess
+            ? NetworkErrorCode.businessFailure
+            : _errorCodeFromDioType(error.type),
       );
     }
 

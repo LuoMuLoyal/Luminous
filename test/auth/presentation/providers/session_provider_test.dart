@@ -134,13 +134,54 @@ void main() {
     );
 
     test(
-      'clears session and sets errorMessage when fetchAccount fails',
+      'refreshes session when fetchAccount fails with an auth error and refresh succeeds',
       () async {
         sessionStore.tokens = const LucentSessionTokens(
           accessToken: 'expired-token',
-          refreshToken: 'expired-refresh',
+          refreshToken: 'refresh-token',
         );
         remote.fetchAccountShouldFail = true;
+
+        await container.read(authSessionProvider.notifier).restore();
+
+        final state = container.read(authSessionProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.isAuthenticated, isTrue);
+        expect(state.user, isNotNull);
+        expect(remote.refreshSessionCalled, isTrue);
+      },
+    );
+
+    test(
+      'clears session when fetchAccount fails with an auth error but refresh also fails',
+      () async {
+        sessionStore.tokens = const LucentSessionTokens(
+          accessToken: 'expired-token',
+          refreshToken: 'refresh-token',
+        );
+        remote.fetchAccountShouldFail = true;
+        remote.refreshSessionShouldFail = true;
+
+        await container.read(authSessionProvider.notifier).restore();
+
+        final state = container.read(authSessionProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.isAuthenticated, isFalse);
+        expect(state.user, isNull);
+        expect(state.errorMessage, isNotNull);
+        expect(sessionStore.tokens, isNull);
+      },
+    );
+
+    test(
+      'clears session and sets errorMessage when fetchAccount fails with a non-auth error',
+      () async {
+        sessionStore.tokens = const LucentSessionTokens(
+          accessToken: 'valid-token',
+          refreshToken: 'refresh-token',
+        );
+        remote.fetchAccountShouldFail = true;
+        remote.fetchAccountFailureIsAuth = false;
 
         await container.read(authSessionProvider.notifier).restore();
 
@@ -154,18 +195,23 @@ void main() {
       },
     );
 
-    test('sets signed-out state when token is empty string', () async {
-      sessionStore.tokens = const LucentSessionTokens(
-        accessToken: '',
-        refreshToken: 'refresh',
-      );
+    test(
+      'refreshes session when access token is empty but refresh token is present',
+      () async {
+        sessionStore.tokens = const LucentSessionTokens(
+          accessToken: '',
+          refreshToken: 'refresh-token',
+        );
+        remote.fetchAccountShouldFail = true;
 
-      await container.read(authSessionProvider.notifier).restore();
+        await container.read(authSessionProvider.notifier).restore();
 
-      final state = container.read(authSessionProvider);
-      expect(state.isAuthenticated, isFalse);
-      expect(state.isLoading, isFalse);
-    });
+        final state = container.read(authSessionProvider);
+        expect(state.isAuthenticated, isTrue);
+        expect(state.isLoading, isFalse);
+        expect(remote.refreshSessionCalled, isTrue);
+      },
+    );
   });
 
   group('AuthSessionNotifier — applySession', () {
@@ -293,11 +339,14 @@ void main() {
   });
 }
 
-/// Fake with fetchAccount + logout overrides for session provider tests.
+/// Fake with fetchAccount + logout + refreshSession overrides for session provider tests.
 class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   bool logoutCalled = false;
   bool logoutShouldFail = false;
   bool fetchAccountShouldFail = false;
+  bool fetchAccountFailureIsAuth = true;
+  bool refreshSessionShouldFail = false;
+  bool refreshSessionCalled = false;
 
   @override
   Future<AuthUser> fetchAccount() async {
@@ -307,8 +356,12 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
         type: DioExceptionType.badResponse,
         response: Response(
           requestOptions: RequestOptions(path: '/account'),
-          statusCode: 401,
-          data: {'code': 401001, 'message': 'token已过期', 'data': null},
+          statusCode: fetchAccountFailureIsAuth ? 401 : 500,
+          data: {
+            'code': fetchAccountFailureIsAuth ? 401001 : 500,
+            'message': 'token已过期',
+            'data': null,
+          },
         ),
       );
     }
@@ -320,6 +373,40 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
       emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
       createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
       updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+    );
+  }
+
+  @override
+  Future<AuthSession> refreshSession({required String refreshToken}) async {
+    refreshSessionCalled = true;
+    if (refreshSessionShouldFail) {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/auth/refresh'),
+        type: DioExceptionType.badResponse,
+        response: Response(
+          requestOptions: RequestOptions(path: '/auth/refresh'),
+          statusCode: 401,
+          data: {
+            'code': 401003,
+            'message': 'refresh token invalid',
+            'data': null,
+          },
+        ),
+      );
+    }
+    return AuthSession(
+      user: AuthUser(
+        id: 'user-1',
+        email: 'refreshed@example.com',
+        nickname: 'Refreshed',
+        avatar: null,
+        emailVerifiedAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        createdAt: DateTime.parse('2026-01-01T00:00:00Z'),
+        updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
+      ),
+      accessToken: 'new-access-token',
+      refreshToken: 'new-refresh-token',
+      expiresInSeconds: 3600,
     );
   }
 

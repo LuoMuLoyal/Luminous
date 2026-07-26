@@ -235,6 +235,27 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<AuthSession> refreshSession({required String refreshToken}) async {
+    final response = await _client.auth.sessionControllerRefreshV1(
+      refreshDto: RefreshDto(refreshToken: refreshToken.trim()),
+    );
+    final tokens = response.data!.data;
+    await _sessionStore.write(
+      LucentSessionTokens(
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+      ),
+    );
+    final user = await fetchAccount();
+    return AuthSession(
+      user: user,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      expiresInSeconds: tokens.expiresIn.toInt(),
+    );
+  }
+
+  @override
   Future<VerificationCooldown> sendVerificationCode({
     required String email,
     required AuthVerificationScene scene,

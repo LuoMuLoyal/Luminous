@@ -56,18 +56,48 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
 
   Future<void> restore() async {
     state = state.copyWith(isLoading: true, errorMessage: null);
+    final store = ref.read(lucentSessionStoreProvider);
     try {
-      final token = await ref
-          .read(lucentSessionStoreProvider)
-          .readAccessToken();
-      if (token == null || token.isEmpty) {
+      final refreshToken = await store.readRefreshToken();
+      if (refreshToken == null || refreshToken.isEmpty) {
         state = const AuthSessionState();
         return;
       }
 
-      final user = await ref.read(authRepositoryProvider).fetchAccount();
+      // Attempt a quick restore with the current access token. If that fails
+      // with an auth error (expired/invalid access token), fall back to the
+      // refresh flow so cold starts don't force the user to log in again.
+      try {
+        final user = await ref.read(authRepositoryProvider).fetchAccount();
+        state = AuthSessionState(
+          user: user,
+          isLoading: false,
+          isAuthenticated: true,
+        );
+        return;
+      } catch (error) {
+        final apiError = LucentErrorMapper.fromObject(error);
+        final isAuthError =
+            apiError.statusCode == 401 ||
+            apiError.statusCode == 403 ||
+            apiError.isTokenExpired ||
+            apiError.isRefreshTokenInvalid;
+        if (!isAuthError) {
+          await store.clear();
+          state = AuthSessionState(
+            isAuthenticated: false,
+            errorMessage: apiError.message,
+          );
+          return;
+        }
+        // Continue with refresh below.
+      }
+
+      final session = await ref
+          .read(authRepositoryProvider)
+          .refreshSession(refreshToken: refreshToken);
       state = AuthSessionState(
-        user: user,
+        user: session.user,
         isLoading: false,
         isAuthenticated: true,
       );
@@ -76,7 +106,7 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
           .read(talkerProvider)
           .error('AuthSessionNotifier.restore: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
-      await ref.read(lucentSessionStoreProvider).clear();
+      await store.clear();
       state = AuthSessionState(
         isAuthenticated: false,
         errorMessage: apiError.message,

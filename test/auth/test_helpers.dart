@@ -141,6 +141,11 @@ class FakeLucentAuthRepository extends LucentAuthRepository {
   }
 
   @override
+  Future<AuthSession> refreshSession({required String refreshToken}) async {
+    return testSession(email: 'refresh@example.com', nickname: 'Refreshed');
+  }
+
+  @override
   Future<AuthSession> register({
     required String email,
     required String password,
