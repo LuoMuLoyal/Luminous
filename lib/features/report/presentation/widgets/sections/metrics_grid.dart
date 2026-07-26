@@ -206,7 +206,9 @@ class _MetricCard extends StatelessWidget {
                         ),
                     widthFactor: 0.32,
                   ),
-                  if (metric.unit.isNotEmpty)
+                  if (metric.unit.isNotEmpty &&
+                      metric.value != '--' &&
+                      metric.value != l10n.placeholderNoData)
                     Padding(
                       padding: const EdgeInsets.only(bottom: Spacing.level1),
                       child: Text(
