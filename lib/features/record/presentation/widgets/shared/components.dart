@@ -46,6 +46,7 @@ class RecordHeaderActionChip extends StatelessWidget {
                 vertical: Spacing.level3,
               ),
             ),
+            spacing: iconOnly ? 0 : null,
           ),
         ),
         prefix: Icon(icon, size: IconSizeTokens.level3),

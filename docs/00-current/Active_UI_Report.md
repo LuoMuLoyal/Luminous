@@ -1,6 +1,6 @@
 # Active UI — Report
 
-Last updated: 2026-07-25 (trend FTabs)
+Last updated: 2026-07-26 (report UX 瘦身)
 
 ## 页面结构
 
@@ -11,10 +11,15 @@ Last updated: 2026-07-25 (trend FTabs)
   - 顶部只保留标题 + 时间范围。
   - 首屏单一 `readiness` 主卡合并登录门槛、数据不足、生成总结、同步、数据更新时间。
   - `generatedAt` 从 Lucent report dashboard DTO 映射到前端 domain，显示"当前显示的数据更新于 …"。
+  - 生成总结与同步操作仅在 readiness 主卡内提供，不再在内容区重复 `ReportActionBar`。
+  - 时间范围由 Header `ReportRangeMenu` 表达，内容区不再重复日期范围文本。
 - 桌面端与移动端对齐到同一回顾语义：顶部移除旧 snapshot 状态块，主内容首块为 `readiness` 主卡。
 - 未登录 preview 态：顶部显示与其他 tab 一致的轻量 `SignInHintBanner`；下方用显式空态卡片展示 Report 页职责范围（健康趋势、重点发现、历史建议回顾、导出预览），不再显示巨大的 readiness 锁定卡或灰色空白占位块。
 - `历史建议回顾` 数据源从通知接口切换到 `GET /today/suggestions/history` API，展示建议生命周期状态（进行中/已过期/已忽略）和按类型映射的图标。
-- 移动端完整层仅在 `已登录 + 数据足够` 时显示：AI 总结、导出摘要、健康模式分析、医疗免责声明。
+- 移动端完整层仅在 `已登录 + 数据足够` 时显示：AI 总结、健康模式分析、导出摘要、医疗免责声明。
+  - section 顺序：readiness → metrics → trend → findings → suggestionHistory → aiSummary → patterns → export → reference。
+  - 导出区移至页面末尾（规律分析之后），引导用户先阅读分析再导出。
+  - 各 section 间距统一 `Spacing.level5`。
 
 - 移动端下拉刷新 + readiness 主卡内显式同步操作。
 
@@ -71,8 +76,8 @@ Last updated: 2026-07-25 (trend FTabs)
 
 ## 骨架屏
 
-- 桌面端双栏布局对齐真实页面：左7 `Trend+Findings`，右5 `MetricsGrid+Export+AiSummary+Patterns+ReferenceNotice`。
-- 移动端按真实 section 顺序排列。
+- 桌面端双栏布局对齐真实页面：左7 `Trend+Findings`，右5 `MetricsGrid+AiSummary+Patterns+ReferenceNotice`；导出区移至双栏之后全宽展示。
+- 移动端按真实 section 顺序排列（导出在末尾）。
 
 ## 数据层
 
@@ -143,9 +148,10 @@ Last updated: 2026-07-25 (trend FTabs)
 - **MetaRow / formatDateTimeFull 提取**：`_MetaRow` widget 提取为 `components.dart` 中的公共 `MetaRow`；`_formatDateTime` 方法提取为 `date_format_utils.dart` 中的 `formatDateTimeFull()`。`clinic_summary_content.dart` 和 `suggestion_history_detail_sheet.dart` 均改用公共组件。
 - **分享失败错误消息格式**：硬拼接 `'${l10n.reportExportFailedToast}: ${error.message}'` 改为 l10n 参数化字符串 `reportExportFailedWithReason(reason)`，中英文冒号格式由 ARB 模板控制。
 
-## 2026-07-21 Report 页 UI 修正
+## 2026-07-26 Report UX 瘦身
 
-- **未登录 preview 顶部提示统一**：删除巨大的 `ReportReadinessSection` 锁定卡，改为与其他 tab 一致的轻量 `SignInHintBanner`，文案走 `reportPreviewBannerMessage`。
-- **移除无意义的大分数卡**：未登录态不再显示 `ReportScoreHero`；登录后也移除独立的分数英雄卡，将 `score.summary` 作为一句话摘要收进 `ReportReadinessSection`。
-- **显式 preview 空态**：未登录时趋势、发现、历史建议、导出四个区域分别展示 `ReportPreviewEmptySection` 卡片，明确告知用户“登录后查看”，替代原先灰色空白占位块。
-- **新增组件**：`lib/features/report/presentation/widgets/sections/preview_empty.dart` 提供复用的 preview 空态卡片；`readiness.dart` 新增 `scoreSummary` 参数用于展示评分摘要。
+- **移除 `ReportActionBar`**：内容区不再重复生成总结/同步按钮，操作统一由 readiness 主卡提供，消除重复 CTA。
+- **移除日期范围文本标签**：时间范围已由 Header `ReportRangeMenu` 表达，内容区不再重复展示。
+- **section 重排**：导出区从 AI 总结后移至页面末尾（规律分析之后），引导先阅读再导出。桌面端导出从双栏上方移至双栏之后全宽展示。
+- **间距统一**：移动端各 section 间距从 `Spacing.level4` 统一为 `Spacing.level5`，视觉节奏一致。
+- **Findings 分隔线移除**：`findings.dart` 去掉标题与内容间的 `AppDivider`，与其他 section 头部风格统一。

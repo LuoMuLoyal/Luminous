@@ -277,7 +277,6 @@ class ReportPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
-    final dateRangeLabel = l10n.placeholderLoading;
 
     return isDesktop
         ? DesktopTabShell(
@@ -292,40 +291,14 @@ class ReportPage extends ConsumerWidget {
                 },
               ),
             ],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 日期范围标签从 Header 拆分，放到内容区
-                Text(
-                  dateRangeLabel,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
-                ),
-                const SizedBox(height: Spacing.level4),
-                // 操作按钮区从 Header 拆分，放到内容区
-                ReportActionBar(
-                  onGenerate: () {},
-                  onSync: () {},
-                  isGenerating: true,
-                  isSyncing: true,
-                ),
-                const SizedBox(height: Spacing.level4),
-                const Expanded(child: ReportSkeletonView()),
-              ],
-            ),
+            child: const Expanded(child: ReportSkeletonView()),
           )
         : _ReportMobileShell(
-            isGenerating: true,
-            isSyncing: true,
-            onGenerate: () {},
-            onSync: () {},
             onRefresh: () async {},
             header: ReportTopBar(
               selectedQuery: selectedDashboardQuery,
               onQueryChanged: (_) {},
             ),
-            dateRangeLabel: dateRangeLabel,
             child: const ReportSkeletonView(),
           );
   }
@@ -370,11 +343,6 @@ class ReportPage extends ConsumerWidget {
             .toList(growable: false) ??
         const <TodaySuggestionHistoryItem>[];
 
-    final dateRangeLabel = reportDashboardDateRangeLabel(
-      context,
-      dashboard.startDate,
-      dashboard.endDate,
-    );
     final generatedAtLabel = reportDashboardGeneratedAtLabel(
       context,
       dashboard.generatedAt,
@@ -433,54 +401,12 @@ class ReportPage extends ConsumerWidget {
         ],
         onRefresh: () => _refreshDashboard(ref),
         scrollStorageKey: 'report-desktop-scroll',
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 日期范围标签从 Header 拆分，放到内容区
-            Text(
-              dateRangeLabel,
-              style: TypographyToken.level4
-                  .body(context)
-                  .copyWith(color: context.theme.colors.mutedForeground),
-            ),
-            const SizedBox(height: Spacing.level4),
-            // 操作按钮区从 Header 拆分，放到内容区
-            ReportActionBar(
-              onGenerate: () {
-                ref
-                    .read(
-                      reportAiSummaryControllerProvider(
-                        selectedAiSummaryRange,
-                      ).notifier,
-                    )
-                    .generate();
-              },
-              onSync: () => _refreshDashboard(ref),
-              isGenerating: aiSummaryState.isLoading,
-              isSyncing: isRefreshing,
-            ),
-            const SizedBox(height: Spacing.level4),
-            // dashboardView 内部处理滚动，不需要 Expanded
-            dashboardView,
-          ],
-        ),
+        child: dashboardView,
       );
     }
 
     return _ReportMobileShell(
-      onGenerate: () {
-        ref
-            .read(
-              reportAiSummaryControllerProvider(
-                selectedAiSummaryRange,
-              ).notifier,
-            )
-            .generate();
-      },
-      onSync: () => _refreshDashboard(ref),
       onRefresh: () => _refreshDashboard(ref),
-      isGenerating: aiSummaryState.isLoading,
-      isSyncing: isRefreshing,
       header: ReportTopBar(
         selectedQuery: selectedDashboardQuery,
         onQueryChanged: (query) {
@@ -489,7 +415,6 @@ class ReportPage extends ConsumerWidget {
               .setQuery(query);
         },
       ),
-      dateRangeLabel: dateRangeLabel,
       child: dashboardView,
     );
   }
@@ -499,22 +424,12 @@ class _ReportMobileShell extends StatelessWidget {
   const _ReportMobileShell({
     required this.child,
     required this.header,
-    required this.dateRangeLabel,
-    required this.onGenerate,
-    required this.onSync,
     required this.onRefresh,
-    this.isGenerating = false,
-    this.isSyncing = false,
   });
 
   final Widget child;
   final Widget header;
-  final String dateRangeLabel;
-  final VoidCallback onGenerate;
-  final VoidCallback onSync;
   final Future<void> Function() onRefresh;
-  final bool isGenerating;
-  final bool isSyncing;
 
   @override
   Widget build(BuildContext context) {
@@ -539,26 +454,7 @@ class _ReportMobileShell extends StatelessWidget {
                     Spacing.level4,
                     Spacing.level10,
                   ),
-                  children: [
-                    // 日期范围标签从 Header 拆分，放到内容区
-                    const SizedBox(height: Spacing.level2),
-                    Text(
-                      dateRangeLabel,
-                      style: TypographyToken.level4
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                    ),
-                    const SizedBox(height: Spacing.level4),
-                    // 操作按钮区从 Header 拆分，放到内容区
-                    ReportActionBar(
-                      onGenerate: onGenerate,
-                      onSync: onSync,
-                      isGenerating: isGenerating,
-                      isSyncing: isSyncing,
-                    ),
-                    const SizedBox(height: Spacing.level4),
-                    child,
-                  ],
+                  children: [child],
                 ),
               ),
             ),

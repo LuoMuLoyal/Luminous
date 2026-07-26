@@ -56,10 +56,10 @@ class _AssistantEntryButton extends ConsumerWidget {
             onLogin: () => context.push(loginRouteForReturnTo('/assistant')),
           );
         },
-        variant: FButtonVariant.secondary,
+        variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        prefix: const Icon(FLucideIcons.sparkles, size: Spacing.level4),
+        prefix: const Icon(FLucideIcons.sparkles, size: IconSizeTokens.level3),
         child: Text(l10n.assistantEntryTitle),
       ),
     );
@@ -83,9 +83,8 @@ class _NotificationButton extends ConsumerWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          FButton(
-            variant: FButtonVariant.outline,
-            size: FButtonSizeVariant.sm,
+          FButton.icon(
+            variant: FButtonVariant.ghost,
             onPress: () async {
               if (session.canAccessProtectedData) {
                 unawaited(context.push(Routes.notifications));
@@ -103,16 +102,12 @@ class _NotificationButton extends ConsumerWidget {
             child: Semantics(
               label: l10n.todayNotificationsTooltip,
               button: true,
-              child: Icon(
-                FLucideIcons.bell,
-                size: Spacing.level5 + Spacing.level1,
-                color: colors.foreground,
-              ),
+              child: Icon(FLucideIcons.bell, color: colors.foreground),
             ),
           ),
           if (hasUnread)
             Positioned(
-              right: Spacing.level3,
+              right: Spacing.level2,
               top: Spacing.level2,
               child: Semantics(
                 label: l10n.todayNotificationsUnreadLabel,

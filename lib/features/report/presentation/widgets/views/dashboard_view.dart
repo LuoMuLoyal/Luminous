@@ -133,7 +133,7 @@ class ReportDashboardView extends StatelessWidget {
           isGenerating:
               aiSummaryState.status == ReportAiSummaryCardStatus.loading,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.level5),
         ReportMetricsGrid(
           key: const Key('report-metrics-grid'),
           dashboard: dashboard,
@@ -141,7 +141,7 @@ class ReportDashboardView extends StatelessWidget {
           l10n: l10n,
           onMetricSelected: onMetricSelected,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.level5),
         ReportTrendSection(
           key: const Key('report-trend-section'),
           trends: dashboard.trends,
@@ -151,14 +151,14 @@ class ReportDashboardView extends StatelessWidget {
           startDate: dashboard.startDate,
           showRangePill: false,
         ),
-        const SizedBox(height: Spacing.level4),
+        const SizedBox(height: Spacing.level5),
         ReportFindingsSection(
           key: const Key('report-findings-section'),
           findings: dashboard.findings,
           l10n: l10n,
         ),
         if (canAccessProtectedData) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.level5),
           ReportSuggestionHistorySection(
             suggestions: suggestionHistory,
             isLoading: isSuggestionHistoryLoading,
@@ -167,7 +167,7 @@ class ReportDashboardView extends StatelessWidget {
           ),
         ],
         if (!canShowFullReport) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.level5),
           _ReportLockedFeaturesHint(
             message: readinessStatus == ReportReadinessStatus.signedOut
                 ? l10n.reportLockedFeaturesSignedOutHint
@@ -175,7 +175,7 @@ class ReportDashboardView extends StatelessWidget {
           ),
         ],
         if (canShowFullReport) ...[
-          const SizedBox(height: Spacing.level4),
+          const SizedBox(height: Spacing.level5),
           ReportAiSummarySection(
             key: const Key('report-ai-summary-section'),
             dashboard: dashboard,
@@ -188,6 +188,12 @@ class ReportDashboardView extends StatelessWidget {
             l10n: l10n,
           ),
           const SizedBox(height: Spacing.level5),
+          ReportPatternsSection(
+            key: const Key('report-patterns-section'),
+            patterns: dashboard.patterns,
+            l10n: l10n,
+          ),
+          const SizedBox(height: Spacing.level5),
           ReportExportSection(
             key: const Key('report-export-section'),
             actions: dashboard.exportActions,
@@ -195,12 +201,6 @@ class ReportDashboardView extends StatelessWidget {
             requestInFlight: exportRequestInFlight,
             clinicShareInFlight: clinicShareInFlight,
             onActionTap: onExportActionTap,
-            l10n: l10n,
-          ),
-          const SizedBox(height: Spacing.level5),
-          ReportPatternsSection(
-            key: const Key('report-patterns-section'),
-            patterns: dashboard.patterns,
             l10n: l10n,
           ),
           const SizedBox(height: Spacing.level5),
@@ -299,20 +299,6 @@ class ReportDashboardView extends StatelessWidget {
           l10n: l10n,
           onMetricSelected: onMetricSelected,
         ),
-        if (canShowFullReport) ...[
-          const SizedBox(height: Spacing.level5),
-          ReportExportSection(
-            key: const Key('report-export-section'),
-            actions: dashboard.exportActions,
-            latestRequest: latestExportRequest,
-            requestInFlight: exportRequestInFlight,
-            clinicShareInFlight: clinicShareInFlight,
-            onActionTap: onExportActionTap,
-            l10n: l10n,
-            isDataInsufficient:
-                readinessStatus == ReportReadinessStatus.insufficient,
-          ),
-        ],
         const SizedBox(height: Spacing.level5),
         // Dual-column body: left (trend + findings + history) | right (AI + patterns)
         Row(
@@ -394,6 +380,20 @@ class ReportDashboardView extends StatelessWidget {
             ),
           ],
         ),
+        if (canShowFullReport) ...[
+          const SizedBox(height: Spacing.level5),
+          ReportExportSection(
+            key: const Key('report-export-section'),
+            actions: dashboard.exportActions,
+            latestRequest: latestExportRequest,
+            requestInFlight: exportRequestInFlight,
+            clinicShareInFlight: clinicShareInFlight,
+            onActionTap: onExportActionTap,
+            l10n: l10n,
+            isDataInsufficient:
+                readinessStatus == ReportReadinessStatus.insufficient,
+          ),
+        ],
       ],
     );
   }

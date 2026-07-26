@@ -38,6 +38,7 @@ class MineTopBar extends ConsumerWidget {
             children: [
               FButton.icon(
                 onPress: onNotificationsTap,
+                variant: FButtonVariant.ghost,
                 child: Icon(FLucideIcons.bell, color: colors.foreground),
               ),
               if (hasUnread)
@@ -63,6 +64,7 @@ class MineTopBar extends ConsumerWidget {
           child: FButton.icon(
             key: const Key('mine-settings-action'),
             onPress: onSettingsTap,
+            variant: FButtonVariant.ghost,
             child: Icon(FLucideIcons.settings, color: colors.foreground),
           ),
         ),
