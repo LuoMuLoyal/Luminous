@@ -82,13 +82,16 @@ class ReportPage extends ConsumerWidget {
       return;
     }
 
+    final input = _exportInputForKind(kind);
+    if (input == null) return;
+
     final controller = ref.read(dataExportControllerProvider.notifier);
     final launcher = ref.read(externalUrlLauncherProvider);
 
     final result = await runGuarded(
       ref: ref,
       tag: 'ReportPage._handleExportAction',
-      action: () => controller.requestExport(_exportInputForKind(kind)!),
+      action: () => controller.requestExport(input),
     );
     switch (result) {
       case Success(:final value):
