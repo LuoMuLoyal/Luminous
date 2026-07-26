@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/section_models.dart';
@@ -11,25 +11,25 @@ void main() {
     test('returns hospital request for hospital kind', () {
       final input = reportExportInputForKind(ReportExportKind.hospital);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindKind.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last7Days);
+      expect(input!.kind, CreateDataExportRequestDtoKindEnum.hospital);
+      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
 
     test('returns monthly request for monthly kind', () {
       final input = reportExportInputForKind(ReportExportKind.monthly);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindKind.monthly);
-      expect(input.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last30Days);
+      expect(input!.kind, CreateDataExportRequestDtoKindEnum.monthly);
+      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last30Days);
     });
 
     test('returns print request for print kind', () {
       final input = reportExportInputForKind(ReportExportKind.print);
       expect(input, isNotNull);
-      expect(input!.kind, CreateDataExportRequestDtoKindKind.print);
-      expect(input.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last7Days);
+      expect(input!.kind, CreateDataExportRequestDtoKindEnum.print);
+      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
 
     test('returns null for clinicShare kind', () {

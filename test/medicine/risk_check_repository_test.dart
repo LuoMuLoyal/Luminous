@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
@@ -8,6 +8,7 @@ import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
+import '../helpers/mocks/medicine_detail.dart';
 
 class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
   _FakeSearchDataSource();
@@ -41,10 +42,10 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
           message: '',
           data: MedicineDetailDataDto(
             id: id,
-            source: lucent.MedicineDetailDataDtoSourceSource.cn,
+            source_: lucent.MedicineDetailDataDtoSource_Enum.cn,
             name: 'Unknown',
             subtitle: null,
-            detail: const lucent.MedicineDetailDataDtoDetailDetail({}),
+            detail: TestMedicineDetailDataDtoDetail({}),
           ),
         );
   }
@@ -116,12 +117,10 @@ MedicineDetailResponseDto _detailResponse({
     message: '',
     data: MedicineDetailDataDto(
       id: id,
-      source: lucent.MedicineDetailDataDtoSourceSource.cn,
+      source_: lucent.MedicineDetailDataDtoSource_Enum.cn,
       name: name,
       subtitle: subtitle,
-      detail: lucent.MedicineDetailDataDtoDetailDetail.fromJson(
-        detailJson ?? {},
-      ),
+      detail: TestMedicineDetailDataDtoDetail(detailJson ?? {}),
     ),
   );
 }
@@ -338,18 +337,17 @@ void main() {
       });
 
       test('returns coverage issue when API returns non-zero code', () async {
-        remoteDataSource.detailResponses['cn-1'] =
-            const MedicineDetailResponseDto(
-              code: 1001,
-              message: 'Not found',
-              data: MedicineDetailDataDto(
-                id: 'cn-1',
-                source: lucent.MedicineDetailDataDtoSourceSource.cn,
-                name: '',
-                subtitle: null,
-                detail: lucent.MedicineDetailDataDtoDetailDetail({}),
-              ),
-            );
+        remoteDataSource.detailResponses['cn-1'] = MedicineDetailResponseDto(
+          code: 1001,
+          message: 'Not found',
+          data: MedicineDetailDataDto(
+            id: 'cn-1',
+            source_: lucent.MedicineDetailDataDtoSource_Enum.cn,
+            name: '',
+            subtitle: null,
+            detail: TestMedicineDetailDataDtoDetail({}),
+          ),
+        );
 
         final snapshot = _buildSnapshot(
           currentMedicines: [
@@ -421,18 +419,17 @@ void main() {
         // returns a default response with code 0, so it will succeed but
         // with the "Unknown" name).
         // Let's make cn-2 return a non-zero code to simulate failure.
-        remoteDataSource.detailResponses['cn-2'] =
-            const MedicineDetailResponseDto(
-              code: 1001,
-              message: 'Not found',
-              data: MedicineDetailDataDto(
-                id: 'cn-2',
-                source: lucent.MedicineDetailDataDtoSourceSource.cn,
-                name: '',
-                subtitle: null,
-                detail: lucent.MedicineDetailDataDtoDetailDetail({}),
-              ),
-            );
+        remoteDataSource.detailResponses['cn-2'] = MedicineDetailResponseDto(
+          code: 1001,
+          message: 'Not found',
+          data: MedicineDetailDataDto(
+            id: 'cn-2',
+            source_: lucent.MedicineDetailDataDtoSource_Enum.cn,
+            name: '',
+            subtitle: null,
+            detail: TestMedicineDetailDataDtoDetail({}),
+          ),
+        );
 
         final result = await repo.fetchForSnapshot(snapshot);
 

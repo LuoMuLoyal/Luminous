@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/features/support/domain/repositories/support.dart';
@@ -22,15 +22,15 @@ class LucentSupportRepository implements SupportRepository {
   @override
   Future<List<SupportResource>> getResources(String scope) async {
     final response = await api.supportResourcesControllerGetResourcesV1(
-      scope: Scope.fromJson(scope),
+      scope: scope,
     );
-    return response.data.items.map(_mapResource).toList();
+    return response.data!.data.items.map(_mapResource).toList();
   }
 
   @override
   Future<AppInfo?> getAppInfo() async {
     final response = await api.supportResourcesControllerGetAppInfoV1();
-    final d = response.data;
+    final d = response.data!.data;
     return AppInfo(
       name: d.name,
       version: d.version,
@@ -50,7 +50,7 @@ class LucentSupportRepository implements SupportRepository {
       subtitleKey: dto.subtitleKey,
       icon: dto.icon,
       actionUrl: dto.actionUrl,
-      actionType: SupportResourceAction.fromJson(dto.actionType?.json),
+      actionType: SupportResourceAction.fromJson(dto.actionType?.value),
       available: dto.available,
     );
   }

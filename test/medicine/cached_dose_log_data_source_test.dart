@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' hide DoseLogStatus;
+import 'package:lucent_api/lucent_api.dart' hide DoseLogStatus;
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
@@ -28,9 +28,9 @@ class TodayAiRemoteDataSource {
 
   Future<lucent.TodayAnalysisDataDto> generate({String? date}) async {
     final response = await api.todayAnalysisControllerGenerateV1(
-      body: lucent.GenerateTodayAnalysisDto(date: date),
+      generateTodayAnalysisDto: lucent.GenerateTodayAnalysisDto(date: date),
     );
-    return response.data;
+    return response.data!.data;
   }
 
   Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {

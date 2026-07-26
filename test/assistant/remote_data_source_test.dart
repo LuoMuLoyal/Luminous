@@ -1,8 +1,8 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 
 /// Adapter that returns a JSON response with configurable body.
@@ -142,7 +142,10 @@ void main() {
     });
 
     test('clearLatestConversation returns cleared flag', () async {
-      adapter.responseBody = {'cleared': true};
+      adapter.responseBody = {
+        'cleared': true,
+        'archivedConversationId': 'conv-archived-1',
+      };
 
       final ds = AssistantRemoteDataSource(api: api, dio: dio);
       final result = await ds.clearLatestConversation();

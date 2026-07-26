@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,6 +19,12 @@ DioException _dioException({int? statusCode}) {
   );
 }
 
+Response<T> _response<T>(T data) => Response<T>(
+  data: data,
+  requestOptions: RequestOptions(path: ''),
+  statusCode: 200,
+);
+
 void main() {
   group('LucentLegalRepository', () {
     late _MockLegalDocumentsApi api;
@@ -26,28 +32,30 @@ void main() {
 
     setUp(() {
       api = _MockLegalDocumentsApi();
-      repo = LucentLegalRepository(api: api, localeResolver: () => Lang.zh);
+      repo = LucentLegalRepository(api: api, localeResolver: () => 'zh');
     });
 
     group('findAll', () {
       test('maps API items to LegalDocumentSummary list', () async {
-        const response = LegalDocumentListResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentListDataDto(
-            items: [
-              LegalDocumentListItemDto(
-                docType: 'terms',
-                title: '服务条款',
-                updatedAt: '2026-07-01T00:00:00Z',
-              ),
-              LegalDocumentListItemDto(
-                docType: 'privacy',
-                title: '隐私政策',
-                updatedAt: '2026-07-02T00:00:00Z',
-              ),
-            ],
-            updatedAt: '2026-07-02T00:00:00Z',
+        final response = _response(
+          LegalDocumentListResponseDto(
+            code: 0,
+            message: 'ok',
+            data: LegalDocumentListDataDto(
+              items: [
+                LegalDocumentListItemDto(
+                  docType: 'terms',
+                  title: '服务条款',
+                  updatedAt: '2026-07-01T00:00:00Z',
+                ),
+                LegalDocumentListItemDto(
+                  docType: 'privacy',
+                  title: '隐私政策',
+                  updatedAt: '2026-07-02T00:00:00Z',
+                ),
+              ],
+              updatedAt: '2026-07-02T00:00:00Z',
+            ),
           ),
         );
 
@@ -66,18 +74,20 @@ void main() {
       });
 
       test('defaults to terms for unknown docType', () async {
-        const response = LegalDocumentListResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentListDataDto(
-            items: [
-              LegalDocumentListItemDto(
-                docType: 'unknown-type',
-                title: 'Unknown',
-                updatedAt: '',
-              ),
-            ],
-            updatedAt: '',
+        final response = _response(
+          LegalDocumentListResponseDto(
+            code: 0,
+            message: 'ok',
+            data: LegalDocumentListDataDto(
+              items: [
+                LegalDocumentListItemDto(
+                  docType: 'unknown-type',
+                  title: 'Unknown',
+                  updatedAt: '',
+                ),
+              ],
+              updatedAt: '',
+            ),
           ),
         );
 
@@ -92,10 +102,12 @@ void main() {
       });
 
       test('returns empty list when API returns no items', () async {
-        const response = LegalDocumentListResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+        final response = _response(
+          LegalDocumentListResponseDto(
+            code: 0,
+            message: 'ok',
+            data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+          ),
         );
 
         when(
@@ -124,41 +136,45 @@ void main() {
       });
 
       test('uses localeResolver for lang parameter', () async {
-        var resolvedLang = Lang.zh;
+        var resolvedLang = 'zh';
         repo = LucentLegalRepository(
           api: api,
           localeResolver: () => resolvedLang,
         );
 
-        const response = LegalDocumentListResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+        final response = _response(
+          LegalDocumentListResponseDto(
+            code: 0,
+            message: 'ok',
+            data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+          ),
         );
 
         when(
           () => api.legalDocumentsControllerFindAllV1(lang: any(named: 'lang')),
         ).thenAnswer((_) async => response);
 
-        resolvedLang = Lang.en;
+        resolvedLang = 'en';
         await repo.findAll();
 
         verify(
-          () => api.legalDocumentsControllerFindAllV1(lang: Lang.en),
+          () => api.legalDocumentsControllerFindAllV1(lang: 'en'),
         ).called(1);
       });
     });
 
     group('findOne', () {
       test('maps API response to LegalDocument', () async {
-        const response = LegalDocumentDetailResponseDto(
-          code: 0,
-          message: 'ok',
-          data: LegalDocumentDetailDto(
-            docType: 'terms',
-            title: '服务条款',
-            content: '# 服务条款\n\n正文内容',
-            updatedAt: '2026-07-01T00:00:00Z',
+        final response = _response(
+          LegalDocumentDetailResponseDto(
+            code: 0,
+            message: 'ok',
+            data: LegalDocumentDetailDto(
+              docType: 'terms',
+              title: '服务条款',
+              content: '# 服务条款\n\n正文内容',
+              updatedAt: '2026-07-01T00:00:00Z',
+            ),
           ),
         );
 
@@ -179,14 +195,16 @@ void main() {
 
       test('passes correct pathSegment for each docType', () async {
         for (final type in LegalDocType.values) {
-          final response = LegalDocumentDetailResponseDto(
-            code: 0,
-            message: 'ok',
-            data: LegalDocumentDetailDto(
-              docType: type.pathSegment,
-              title: 'T',
-              content: 'C',
-              updatedAt: '',
+          final response = _response(
+            LegalDocumentDetailResponseDto(
+              code: 0,
+              message: 'ok',
+              data: LegalDocumentDetailDto(
+                docType: type.pathSegment,
+                title: 'T',
+                content: 'C',
+                updatedAt: '',
+              ),
             ),
           );
 
@@ -260,14 +278,16 @@ void main() {
 
     setUp(() {
       api = _MockLegalDocumentsApi();
-      repo = LucentLegalRepository(api: api, localeResolver: () => Lang.en);
+      repo = LucentLegalRepository(api: api, localeResolver: () => 'en');
     });
 
-    test('passes Lang.en to findAll', () async {
-      const response = LegalDocumentListResponseDto(
-        code: 0,
-        message: 'ok',
-        data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+    test("passes 'en' to findAll", () async {
+      final response = _response(
+        LegalDocumentListResponseDto(
+          code: 0,
+          message: 'ok',
+          data: LegalDocumentListDataDto(items: [], updatedAt: ''),
+        ),
       );
 
       when(
@@ -276,20 +296,20 @@ void main() {
 
       await repo.findAll();
 
-      verify(
-        () => api.legalDocumentsControllerFindAllV1(lang: Lang.en),
-      ).called(1);
+      verify(() => api.legalDocumentsControllerFindAllV1(lang: 'en')).called(1);
     });
 
-    test('passes Lang.en to findOne', () async {
-      const response = LegalDocumentDetailResponseDto(
-        code: 0,
-        message: 'ok',
-        data: LegalDocumentDetailDto(
-          docType: 'privacy',
-          title: 'Privacy Policy',
-          content: '# Privacy',
-          updatedAt: '',
+    test("passes 'en' to findOne", () async {
+      final response = _response(
+        LegalDocumentDetailResponseDto(
+          code: 0,
+          message: 'ok',
+          data: LegalDocumentDetailDto(
+            docType: 'privacy',
+            title: 'Privacy Policy',
+            content: '# Privacy',
+            updatedAt: '',
+          ),
         ),
       );
 
@@ -305,7 +325,7 @@ void main() {
       verify(
         () => api.legalDocumentsControllerFindOneV1(
           docType: 'privacy',
-          lang: Lang.en,
+          lang: 'en',
         ),
       ).called(1);
     });

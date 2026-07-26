@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 class ReportRemoteDataSource {
@@ -15,12 +15,12 @@ class ReportRemoteDataSource {
     ReportDashboardQuery query,
   ) async {
     final response = await api.reportsControllerGetDashboardV1(
-      range: lucent.Range.fromJson(query.range.apiValue),
+      range: query.range.apiValue,
       startDate: query.isCustom
           ? _dateOnlyFormat.format(query.startDate!)
           : null,
       endDate: query.isCustom ? _dateOnlyFormat.format(query.endDate!) : null,
     );
-    return response.data;
+    return response.data!.data;
   }
 }

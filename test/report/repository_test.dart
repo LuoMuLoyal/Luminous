@@ -1,6 +1,6 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/data/repositories/lucent.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
@@ -14,38 +14,38 @@ void main() {
           _dashboardDto(
             aiSummaryEnabled: false,
             findings: [
-              const lucent.ReportFindingDto(
-                kind: lucent.ReportFindingDtoKindKind.sleep,
+              lucent.ReportFindingDto(
+                kind: lucent.ReportFindingDtoKindEnum.sleep,
                 title: '睡眠数据不足',
                 body: '最近 7 天还没有睡眠记录。',
               ),
             ],
             metrics: [
-              const lucent.ReportMetricDto(
-                kind: lucent.ReportMetricDtoKindKind.sleep,
+              lucent.ReportMetricDto(
+                kind: lucent.ReportMetricDtoKindEnum.sleep,
                 value: '--',
                 unit: 'h',
-                status: lucent.ReportMetricDtoStatusStatus.insufficientData,
+                status: lucent.ReportMetricDtoStatusEnum.insufficientData,
                 delta: '--',
-                direction: lucent.ReportMetricDtoDirectionDirection.flat,
+                direction: lucent.ReportMetricDtoDirectionEnum.flat,
                 sparkline: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
             patterns: [
-              const lucent.ReportPatternDto(
-                kind: lucent.ReportPatternDtoKindKind.sleep,
+              lucent.ReportPatternDto(
+                kind: lucent.ReportPatternDtoKindEnum.sleep,
                 title: '等待睡眠数据',
-                status: lucent.ReportPatternDtoStatusStatus.insufficientData,
+                status: lucent.ReportPatternDtoStatusEnum.insufficientData,
                 body: '补齐睡眠合同后再输出睡眠模式。',
                 sparkline: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
             trends: [
-              const lucent.ReportTrendDto(
-                kind: lucent.ReportTrendDtoKindKind.sleep,
+              lucent.ReportTrendDto(
+                kind: lucent.ReportTrendDtoKindEnum.sleep,
                 unit: 'h',
                 currentValue: '--',
-                valuesField: [0, 0, 0, 0, 0, 0, 0],
+                values: [0, 0, 0, 0, 0, 0, 0],
               ),
             ],
           ),
@@ -78,37 +78,37 @@ void main() {
             findings: [
               for (var index = 1; index <= 4; index += 1)
                 lucent.ReportFindingDto(
-                  kind: lucent.ReportFindingDtoKindKind.hydration,
+                  kind: lucent.ReportFindingDtoKindEnum.hydration,
                   title: '发现$index',
                   body: '正文$index',
                 ),
             ],
             metrics: [
-              const lucent.ReportMetricDto(
-                kind: lucent.ReportMetricDtoKindKind.medication,
+              lucent.ReportMetricDto(
+                kind: lucent.ReportMetricDtoKindEnum.medication,
                 value: '93',
                 unit: '%',
-                status: lucent.ReportMetricDtoStatusStatus.good,
+                status: lucent.ReportMetricDtoStatusEnum.good,
                 delta: '9%',
-                direction: lucent.ReportMetricDtoDirectionDirection.up,
+                direction: lucent.ReportMetricDtoDirectionEnum.up,
                 sparkline: [80, 88, 92, 89, 93, 88, 93],
               ),
             ],
             patterns: [
-              const lucent.ReportPatternDto(
-                kind: lucent.ReportPatternDtoKindKind.medication,
+              lucent.ReportPatternDto(
+                kind: lucent.ReportPatternDtoKindEnum.medication,
                 title: '用药依从性稳定',
-                status: lucent.ReportPatternDtoStatusStatus.good,
+                status: lucent.ReportPatternDtoStatusEnum.good,
                 body: '近 7 天按计划完成率较高。',
                 sparkline: [48, 50, 47, 52, 49, 51, 58],
               ),
             ],
             trends: [
-              const lucent.ReportTrendDto(
-                kind: lucent.ReportTrendDtoKindKind.medication,
+              lucent.ReportTrendDto(
+                kind: lucent.ReportTrendDtoKindEnum.medication,
                 unit: '%',
                 currentValue: '93%',
-                valuesField: [80, 88, 92, 89, 93, 88, 93],
+                values: [80, 88, 92, 89, 93, 88, 93],
               ),
             ],
           ),
@@ -159,14 +159,14 @@ lucent.ReportDashboardDataDto _dashboardDto({
   required List<lucent.ReportPatternDto> patterns,
 }) {
   return lucent.ReportDashboardDataDto(
-    range: lucent.ReportDashboardDataDtoRangeRange.last7Days,
+    range: lucent.ReportDashboardDataDtoRangeEnum.last7Days,
     startDate: '2026-06-06',
     endDate: '2026-06-12',
     generatedAt: '2026-06-12T10:00:00.000Z',
-    score: const lucent.ReportDashboardScoreDto(
+    score: lucent.ReportDashboardScoreDto(
       value: 78,
       maxValue: 100,
-      status: lucent.ReportDashboardScoreDtoStatusStatus.stable,
+      status: lucent.ReportDashboardScoreDtoStatusEnum.stable,
       summary: '本周整体稳定，睡眠暂缺真实数据。',
     ),
     metrics: metrics,

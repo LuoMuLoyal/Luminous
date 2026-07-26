@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
@@ -34,21 +34,21 @@ class ReportAiSummaryRemoteDataSource {
   }) async {
     final dtoRange = switch (range) {
       ReportAiSummaryRange.last7Days =>
-        lucent.GenerateReportSummaryDtoRangeRange.last7Days,
+        lucent.GenerateReportSummaryDtoRangeEnum.last7Days,
       ReportAiSummaryRange.last30Days =>
-        lucent.GenerateReportSummaryDtoRangeRange.last30Days,
+        lucent.GenerateReportSummaryDtoRangeEnum.last30Days,
       ReportAiSummaryRange.custom =>
-        lucent.GenerateReportSummaryDtoRangeRange.custom,
+        lucent.GenerateReportSummaryDtoRangeEnum.custom,
     };
 
     final response = await api.reportsControllerGenerateSummaryV1(
-      body: lucent.GenerateReportSummaryDto(
+      generateReportSummaryDto: lucent.GenerateReportSummaryDto(
         range: dtoRange,
         startDate: startDate,
         endDate: endDate,
       ),
     );
-    return response.data;
+    return response.data!.data;
   }
 
   Stream<ReportAiRemoteEvent> generateStream(

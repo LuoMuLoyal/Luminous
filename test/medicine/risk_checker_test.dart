@@ -1,9 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
+import '../helpers/mocks/medicine_detail.dart';
 
 void main() {
   test('detects interaction and coverage issues (DB-DB)', () {
@@ -873,12 +874,12 @@ MedicineDetailDataDto _detail({
 }) {
   return MedicineDetailDataDto(
     id: id,
-    source: id.startsWith('DB')
-        ? MedicineDetailDataDtoSourceSource.drugbank
-        : MedicineDetailDataDtoSourceSource.cn,
+    source_: id.startsWith('DB')
+        ? MedicineDetailDataDtoSource_Enum.drugbank
+        : MedicineDetailDataDtoSource_Enum.cn,
     name: name,
     subtitle: null,
-    detail: MedicineDetailDataDtoDetailDetail({
+    detail: TestMedicineDetailDataDtoDetail({
       'kind': 'generic',
       'groups': const [],
       'categories': const [],

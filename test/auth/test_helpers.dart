@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -26,7 +27,9 @@ class TestAuthApp extends StatelessWidget {
 class FakeLucentAuthRepository extends LucentAuthRepository {
   FakeLucentAuthRepository()
     : super(
-        LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        LucentClient(
+          LucentApi(dio: Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        ),
         _MemorySessionStore(),
       );
 

@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -16,7 +17,7 @@ void main() {
     final c = ProviderContainer(
       overrides: [
         lucentClientProvider.overrideWithValue(
-          _FakeLucentClient(userSettingsApi: fake),
+          LucentClient(_FakeLucentApi(userSettingsApi: fake)),
         ),
       ],
     );
@@ -237,7 +238,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: false,
-          assistantContext: const AssistantContextSettingsDto(
+          assistantContext: AssistantContextSettingsDto(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -268,7 +269,7 @@ void main() {
           dataSharingConsent: true,
           assistantEnabled: true,
           assistantMemoryEnabled: true,
-          assistantContext: const AssistantContextSettingsDto(
+          assistantContext: AssistantContextSettingsDto(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
@@ -304,7 +305,7 @@ void main() {
           aiSummariesEnabled: false,
           dataSharingConsent: true,
           assistantEnabled: true,
-          assistantContext: const AssistantContextSettingsDto(
+          assistantContext: AssistantContextSettingsDto(
             healthProfile: false,
             dailyRecords: true,
             sleepRecords: false,
@@ -316,16 +317,18 @@ void main() {
             .read(userSettingsControllerProvider.notifier)
             .setAssistantContext(nextContext);
 
-        final state = container.read(userSettingsControllerProvider);
-        expect(state.value?.assistantContext.healthProfile, isFalse);
-        expect(state.value?.assistantContext.dailyRecords, isTrue);
-        expect(state.value?.assistantContext.sleepRecords, isFalse);
-        expect(state.value?.assistantContext.currentMedicines, isTrue);
-        expect(fakeApi.lastPatchDto?.assistantEnabled, isTrue);
-        expect(fakeApi.lastPatchDto?.assistantContext.healthProfile, isFalse);
-        expect(fakeApi.lastPatchDto?.assistantContext.dailyRecords, isTrue);
-        expect(fakeApi.lastPatchDto?.assistantContext.sleepRecords, isFalse);
-        expect(fakeApi.lastPatchDto?.assistantContext.currentMedicines, isTrue);
+        final state = container.read(userSettingsControllerProvider).value!;
+        expect(state.assistantContext.healthProfile, isFalse);
+        expect(state.assistantContext.dailyRecords, isTrue);
+        expect(state.assistantContext.sleepRecords, isFalse);
+        expect(state.assistantContext.currentMedicines, isTrue);
+
+        final patchDto = fakeApi.lastPatchDto!;
+        expect(patchDto.assistantEnabled, isTrue);
+        expect(patchDto.assistantContext!.healthProfile, isFalse);
+        expect(patchDto.assistantContext!.dailyRecords, isTrue);
+        expect(patchDto.assistantContext!.sleepRecords, isFalse);
+        expect(patchDto.assistantContext!.currentMedicines, isTrue);
       },
     );
   });
@@ -427,6 +430,12 @@ void main() {
 // Helpers
 // ---------------------------------------------------------------------------
 
+Response<T> _response<T>(T data) => Response<T>(
+  data: data,
+  requestOptions: RequestOptions(path: ''),
+  statusCode: 200,
+);
+
 UserSettingsResponseDto _buildResponse({
   bool aiSummariesEnabled = false,
   bool dataSharingConsent = false,
@@ -445,17 +454,14 @@ UserSettingsResponseDto _buildResponse({
       waterTargetCount: 8,
       assistantContext:
           assistantContext ??
-          const AssistantContextSettingsDto(
+          AssistantContextSettingsDto(
             healthProfile: true,
             dailyRecords: true,
             sleepRecords: true,
             currentMedicines: true,
           ),
       updatedAt: '2026-06-12T00:00:00.000Z',
-      securityPin: const SecurityPinSettingsDto(
-        enabled: false,
-        lastChangedAt: null,
-      ),
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
     ),
   );
 }
@@ -470,29 +476,25 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     this.getException,
   }) : _getResponseData = responseData;
 
-  static UserSettingsResponseDto _defaultResponse() =>
-      const UserSettingsResponseDto(
-        code: 0,
-        message: 'ok',
-        data: UserSettingsDataDto(
-          aiSummariesEnabled: false,
-          dataSharingConsent: true,
-          assistantEnabled: true,
-          assistantMemoryEnabled: false,
-          waterTargetCount: 8,
-          assistantContext: AssistantContextSettingsDto(
-            healthProfile: true,
-            dailyRecords: true,
-            sleepRecords: true,
-            currentMedicines: true,
-          ),
-          updatedAt: '2026-06-12T00:00:00.000Z',
-          securityPin: SecurityPinSettingsDto(
-            enabled: false,
-            lastChangedAt: null,
-          ),
-        ),
-      );
+  static UserSettingsResponseDto _defaultResponse() => UserSettingsResponseDto(
+    code: 0,
+    message: 'ok',
+    data: UserSettingsDataDto(
+      aiSummariesEnabled: false,
+      dataSharingConsent: true,
+      assistantEnabled: true,
+      assistantMemoryEnabled: false,
+      waterTargetCount: 8,
+      assistantContext: AssistantContextSettingsDto(
+        healthProfile: true,
+        dailyRecords: true,
+        sleepRecords: true,
+        currentMedicines: true,
+      ),
+      updatedAt: '2026-06-12T00:00:00.000Z',
+      securityPin: SecurityPinSettingsDto(enabled: false, lastChangedAt: null),
+    ),
+  );
 
   // GET state.
   int getCallCount = 0;
@@ -508,7 +510,15 @@ class _FakeUserSettingsApi implements UserSettingsApi {
   UpdateUserSettingsDto? lastPatchDto;
 
   @override
-  Future<UserSettingsResponseDto> userSettingsControllerGetSettingsV1() async {
+  Future<Response<UserSettingsResponseDto>>
+  userSettingsControllerGetSettingsV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     getCallCount++;
     if (getException != null) {
       throw getException!;
@@ -518,15 +528,22 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         requestOptions: RequestOptions(path: '/api/v1/user/settings'),
       );
     }
-    return _getResponseData ?? _defaultResponse();
+    return _response(_getResponseData ?? _defaultResponse());
   }
 
   @override
-  Future<UserSettingsResponseDto> userSettingsControllerUpdateSettingsV1({
-    required UpdateUserSettingsDto body,
+  Future<Response<UserSettingsResponseDto>>
+  userSettingsControllerUpdateSettingsV1({
+    required UpdateUserSettingsDto updateUserSettingsDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
     patchCallCount++;
-    lastPatchDto = body;
+    lastPatchDto = updateUserSettingsDto;
     if (patchException != null) {
       throw patchException!;
     }
@@ -535,40 +552,68 @@ class _FakeUserSettingsApi implements UserSettingsApi {
         requestOptions: RequestOptions(path: '/api/v1/user/settings'),
       );
     }
-    return patchResponse;
+    return _response(patchResponse);
   }
 
   @override
-  Future<UserSettingsResponseDto> userSettingsControllerEnableSecurityPinV1({
-    required EnableSecurityPinDto body,
-  }) async => _defaultResponse();
+  Future<Response<UserSettingsResponseDto>>
+  userSettingsControllerEnableSecurityPinV1({
+    required EnableSecurityPinDto enableSecurityPinDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async => _response(_defaultResponse());
 
   @override
-  Future<SecurityPinElevationResponseDto>
+  Future<Response<SecurityPinElevationResponseDto>>
   userSettingsControllerVerifySecurityPinV1({
-    required VerifySecurityPinDto body,
-  }) async => const SecurityPinElevationResponseDto(
-    elevationToken: 'token',
-    expiresAt: '2026-06-12T01:00:00.000Z',
+    required VerifySecurityPinDto verifySecurityPinDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async => _response(
+    SecurityPinElevationResponseDto(
+      elevationToken: 'token',
+      expiresAt: '2026-06-12T01:00:00.000Z',
+    ),
   );
 
   @override
-  Future<UserSettingsResponseDto> userSettingsControllerChangeSecurityPinV1({
-    required ChangeSecurityPinDto body,
-  }) async => _defaultResponse();
+  Future<Response<UserSettingsResponseDto>>
+  userSettingsControllerChangeSecurityPinV1({
+    required ChangeSecurityPinDto changeSecurityPinDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async => _response(_defaultResponse());
 
   @override
-  Future<UserSettingsResponseDto> userSettingsControllerDisableSecurityPinV1({
-    required DisableSecurityPinDto body,
-  }) async => _defaultResponse();
+  Future<Response<UserSettingsResponseDto>>
+  userSettingsControllerDisableSecurityPinV1({
+    required DisableSecurityPinDto disableSecurityPinDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async => _response(_defaultResponse());
 }
 
-/// A [LucentClient] subclass that returns a fake [UserSettingsApi].
-class _FakeLucentClient extends LucentClient {
-  _FakeLucentClient({required this.userSettingsApi}) : super(Dio());
+class _FakeLucentApi extends LucentApi {
+  _FakeLucentApi({required this.userSettingsApi}) : super();
 
   final UserSettingsApi userSettingsApi;
 
   @override
-  UserSettingsApi get userSettings => userSettingsApi;
+  UserSettingsApi getUserSettingsApi() => userSettingsApi;
 }

@@ -17,11 +17,11 @@ void main() {
       });
 
       final file = File(
-        '${tempRoot.path}${Platform.pathSeparator}ci-openapi.json',
+        '${tempRoot.path}${Platform.pathSeparator}ci-openapi.value',
       )..writeAsStringSync('{}');
 
       final resolved = resolveRequiredOpenApiFile(
-        'ci-openapi.json',
+        'ci-openapi.value',
         defaultLucentRoot: Directory(
           '${tempRoot.path}${Platform.pathSeparator}missing-lucent',
         ),
@@ -31,7 +31,7 @@ void main() {
       expect(resolved.path, file.absolute.path);
     });
 
-    test('falls back to default Lucent docs/openapi.json path', () {
+    test('falls back to default Lucent docs/openapi.value path', () {
       final tempRoot = Directory.systemTemp.createTempSync(
         'luminous-openapi-test-',
       );
@@ -48,7 +48,7 @@ void main() {
         '${lucentRoot.path}${Platform.pathSeparator}docs',
       )..createSync(recursive: true);
       final openApiFile = File(
-        '${docsDir.path}${Platform.pathSeparator}openapi.json',
+        '${docsDir.path}${Platform.pathSeparator}openapi.value',
       )..writeAsStringSync('{}');
 
       final resolved = resolveRequiredOpenApiFile(
@@ -72,7 +72,7 @@ void main() {
 
       expect(
         () => resolveRequiredOpenApiFile(
-          'missing-openapi.json',
+          'missing-openapi.value',
           defaultLucentRoot: Directory(
             '${tempRoot.path}${Platform.pathSeparator}missing-lucent',
           ),

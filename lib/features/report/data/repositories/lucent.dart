@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
@@ -18,7 +18,7 @@ class LucentReportRepository implements ReportRepository {
     final score = _mapScore(dto.score);
 
     return ReportDashboard(
-      range: _mapRange(dto.range.json ?? ''),
+      range: _mapRange(dto.range.value),
       startDate: dto.startDate,
       endDate: dto.endDate,
       generatedAt: dto.generatedAt,
@@ -36,39 +36,39 @@ class LucentReportRepository implements ReportRepository {
     return ReportHealthScore(
       value: dto.value.round(),
       maxValue: dto.maxValue.round(),
-      status: _mapStatus(dto.status.json ?? ''),
+      status: _mapStatus(dto.status.value),
       summary: dto.summary,
     );
   }
 
   ReportMetric _mapMetric(lucent.ReportMetricDto dto) {
-    final kind = _mapDataKind(dto.kind.json ?? '');
+    final kind = _mapDataKind(dto.kind.value);
     return ReportMetric(
       kind: kind,
       icon: _metricIcon(kind),
       color: _metricColor(kind),
       value: dto.value,
       unit: dto.unit,
-      status: _mapStatus(dto.status.json ?? ''),
+      status: _mapStatus(dto.status.value),
       delta: dto.delta,
-      direction: _mapDirection(dto.direction.json ?? ''),
+      direction: _mapDirection(dto.direction.value),
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
     );
   }
 
   ReportTrendSeries _mapTrend(lucent.ReportTrendDto dto) {
-    final kind = _mapDataKind(dto.kind.json ?? '');
+    final kind = _mapDataKind(dto.kind.value);
     return ReportTrendSeries(
       kind: kind,
       color: _metricColor(kind),
       unit: dto.unit,
-      values: dto.valuesField.map((value) => value.toDouble()).toList(),
+      values: dto.values.map((value) => value.toDouble()).toList(),
       currentValue: dto.currentValue,
     );
   }
 
   ReportFinding _mapFinding(lucent.ReportFindingDto dto) {
-    final kind = _mapInsightKind(dto.kind.json ?? '');
+    final kind = _mapInsightKind(dto.kind.value);
     return ReportFinding(
       kind: kind,
       icon: _insightIcon(kind),
@@ -79,13 +79,13 @@ class LucentReportRepository implements ReportRepository {
   }
 
   ReportPatternCard _mapPattern(lucent.ReportPatternDto dto) {
-    final kind = _mapInsightKind(dto.kind.json ?? '');
+    final kind = _mapInsightKind(dto.kind.value);
     return ReportPatternCard(
       kind: kind,
       icon: _insightIcon(kind),
       color: _insightColor(kind),
       title: dto.title,
-      status: _mapStatus(dto.status.json ?? ''),
+      status: _mapStatus(dto.status.value),
       body: dto.body,
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
     );

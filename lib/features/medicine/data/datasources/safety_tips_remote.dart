@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 
 class SafetyTipsRemoteDataSource {
@@ -10,7 +10,7 @@ class SafetyTipsRemoteDataSource {
     final response = await api.medicinesControllerGetSafetyTipsV1(
       exclude: excludeIds,
     );
-    final dtos = response;
+    final dtos = response.data!;
     return dtos
         .map(
           (dto) => MedicineSafetyTip(

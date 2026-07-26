@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 
 void main() {
@@ -9,7 +9,7 @@ void main() {
     });
 
     test('returns requested when status is requested', () {
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.requested,
         kind: DataExportKind.hospital,
@@ -21,7 +21,7 @@ void main() {
     });
 
     test('returns processing when status is processing', () {
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.processing,
         kind: DataExportKind.hospital,
@@ -35,7 +35,7 @@ void main() {
     test(
       'returns completed when status is completed and downloadUrl exists',
       () {
-        const dto = DataExportRequestDataDto(
+        final dto = DataExportRequestDataDto(
           id: 'req-1',
           status: DataExportStatus.completed,
           downloadUrl: 'https://example.com/export.pdf',
@@ -51,7 +51,7 @@ void main() {
     test(
       'returns completedLinkMissing when status is completed but downloadUrl is null',
       () {
-        const dto = DataExportRequestDataDto(
+        final dto = DataExportRequestDataDto(
           id: 'req-1',
           status: DataExportStatus.completed,
           downloadUrl: null,
@@ -70,7 +70,7 @@ void main() {
     test(
       'returns completedLinkMissing when status is completed but downloadUrl is empty',
       () {
-        const dto = DataExportRequestDataDto(
+        final dto = DataExportRequestDataDto(
           id: 'req-1',
           status: DataExportStatus.completed,
           downloadUrl: '',
@@ -87,7 +87,7 @@ void main() {
     );
 
     test('returns failed when status is failed', () {
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.failed,
         kind: DataExportKind.hospital,
@@ -99,7 +99,7 @@ void main() {
     });
 
     test('returns unavailable when status is unavailable', () {
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.unavailable,
         kind: DataExportKind.hospital,
@@ -111,9 +111,9 @@ void main() {
     });
 
     test('returns failed when status is unknown', () {
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
-        status: DataExportStatus.$unknown,
+        status: DataExportStatus.unknownDefaultOpenApi,
         kind: DataExportKind.hospital,
         format: DataExportFormat.pdf,
         range: DataExportRange.last7Days,
@@ -151,9 +151,9 @@ void main() {
   group('DataExportRequestInput', () {
     test('default values are hospital/pdf/last7Days', () {
       const input = DataExportRequestInput();
-      expect(input.kind, CreateDataExportRequestDtoKindKind.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last7Days);
+      expect(input.kind, CreateDataExportRequestDtoKindEnum.hospital);
+      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
 
     test('equality works correctly', () {
@@ -166,14 +166,14 @@ void main() {
     test('different inputs are not equal', () {
       const a = DataExportRequestInput();
       const b = DataExportRequestInput(
-        kind: CreateDataExportRequestDtoKindKind.monthly,
+        kind: CreateDataExportRequestDtoKindEnum.monthly,
       );
       expect(a == b, isFalse);
     });
 
     test('matches returns true for matching request', () {
       const input = DataExportRequestInput();
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.completed,
         kind: DataExportKind.hospital,
@@ -186,7 +186,7 @@ void main() {
 
     test('matches returns false for non-matching request', () {
       const input = DataExportRequestInput();
-      const dto = DataExportRequestDataDto(
+      final dto = DataExportRequestDataDto(
         id: 'req-1',
         status: DataExportStatus.completed,
         kind: DataExportKind.monthly,
@@ -205,9 +205,9 @@ void main() {
     test('toDto creates correct DTO', () {
       const input = DataExportRequestInput();
       final dto = input.toDto();
-      expect(dto.kind, CreateDataExportRequestDtoKindKind.hospital);
-      expect(dto.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(dto.range, CreateDataExportRequestDtoRangeRange.last7Days);
+      expect(dto.kind, CreateDataExportRequestDtoKindEnum.hospital);
+      expect(dto.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(dto.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
   });
 
@@ -237,7 +237,7 @@ void main() {
       const state = DataExportRequestInFlightState(
         inFlight: true,
         input: DataExportRequestInput(
-          kind: CreateDataExportRequestDtoKindKind.monthly,
+          kind: CreateDataExportRequestDtoKindEnum.monthly,
         ),
       );
       const other = DataExportRequestInput();
@@ -248,20 +248,20 @@ void main() {
   group('Predefined export request constants', () {
     test('reportHospitalPdfLast7DaysExportRequest has correct defaults', () {
       const input = reportHospitalPdfLast7DaysExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindKind.hospital);
-      expect(input.format, CreateDataExportRequestDtoFormatFormat.pdf);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last7Days);
+      expect(input.kind, CreateDataExportRequestDtoKindEnum.hospital);
+      expect(input.format, CreateDataExportRequestDtoFormatEnum.pdf);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last7Days);
     });
 
     test('reportMonthlyPdfExportRequest has monthly kind', () {
       const input = reportMonthlyPdfExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindKind.monthly);
-      expect(input.range, CreateDataExportRequestDtoRangeRange.last30Days);
+      expect(input.kind, CreateDataExportRequestDtoKindEnum.monthly);
+      expect(input.range, CreateDataExportRequestDtoRangeEnum.last30Days);
     });
 
     test('reportPrintPdfExportRequest has print kind', () {
       const input = reportPrintPdfExportRequest;
-      expect(input.kind, CreateDataExportRequestDtoKindKind.print);
+      expect(input.kind, CreateDataExportRequestDtoKindEnum.print);
     });
   });
 }

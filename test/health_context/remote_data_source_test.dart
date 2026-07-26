@@ -1,9 +1,9 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' show UserHealthContextApi;
+import 'package:lucent_api/lucent_api.dart' show UserHealthContextApi;
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 

@@ -157,7 +157,7 @@ class _ClinicSummaryPreviewContentState
           final reportsApi = ref.read(lucentClientProvider).reports;
           final response = await reportsApi
               .reportsControllerShareClinicSummaryV1();
-          final shareUrl = response.shareUrl;
+          final shareUrl = response.data!.shareUrl;
           if (shareUrl.isEmpty) {
             if (mounted) {
               await Toast.show(context, l10n.reportExportFailedToast);

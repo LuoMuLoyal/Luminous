@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart'
-    show LucentClient, MedicineDoseLogsApi;
+import 'package:lucent_api/lucent_api.dart' show LucentApi, MedicineDoseLogsApi;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/semantic_color.dart';
@@ -392,7 +391,9 @@ class SignedInWithWechatIdentityAuthSessionNotifier
 class E2eLucentAuthRepository extends LucentAuthRepository {
   E2eLucentAuthRepository()
     : super(
-        LucentClient(Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        LucentClient(
+          LucentApi(dio: Dio(BaseOptions(baseUrl: 'http://localhost'))),
+        ),
         _MemorySessionStore(),
       );
 

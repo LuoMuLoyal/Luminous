@@ -1,5 +1,5 @@
 import 'package:clock/clock.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -67,9 +67,9 @@ class LucentAssistantRepository implements AssistantRepository {
           (message) => lucent.AssistantInputMessageDto(
             role: switch (message.role) {
               AssistantMessageRole.user =>
-                lucent.AssistantInputMessageDtoRoleRole.user,
+                lucent.AssistantInputMessageDtoRoleEnum.user,
               AssistantMessageRole.assistant =>
-                lucent.AssistantInputMessageDtoRoleRole.assistant,
+                lucent.AssistantInputMessageDtoRoleEnum.assistant,
             },
             content: message.content,
           ),
@@ -123,12 +123,18 @@ class LucentAssistantRepository implements AssistantRepository {
       tools: dto.tools
           .map(
             (tool) => AssistantToolCapability(
-              id: tool.name.json ?? '',
+              id:
+                  tool.name ==
+                      lucent
+                          .AssistantToolCapabilityDtoNameEnum
+                          .unknownDefaultOpenApi
+                  ? ''
+                  : tool.name.value,
               requiredContextSources: tool.requiredContextSources,
               permittedByUser: tool.permittedByUser,
               enabled: tool.enabled,
               implemented: tool.implemented,
-              disabledReason: tool.disabledReason?.json,
+              disabledReason: tool.disabledReason?.value,
             ),
           )
           .toList(growable: false),
@@ -142,7 +148,7 @@ class LucentAssistantRepository implements AssistantRepository {
     return AssistantConversation(
       id: dto.id,
       title: dto.title?.toString(),
-      status: dto.status.json ?? '',
+      status: dto.status.value,
       messages: dto.messages
           .map(_mapConversationMessage)
           .toList(growable: false),
@@ -158,7 +164,7 @@ class LucentAssistantRepository implements AssistantRepository {
     return AssistantConversationSummary(
       id: dto.id,
       title: dto.title?.toString(),
-      status: dto.status.json ?? '',
+      status: dto.status.value,
       lastMessageAt: _parseDateTime(dto.lastMessageAt),
       createdAt: _parseDateTime(dto.createdAt) ?? clock.now(),
       updatedAt: _parseDateTime(dto.updatedAt) ?? clock.now(),
@@ -170,11 +176,11 @@ class LucentAssistantRepository implements AssistantRepository {
   ) {
     return AssistantMessage(
       role: switch (dto.role) {
-        lucent.AssistantConversationMessageDtoRoleRole.user =>
+        lucent.AssistantConversationMessageDtoRoleEnum.user =>
           AssistantMessageRole.user,
-        lucent.AssistantConversationMessageDtoRoleRole.assistant =>
+        lucent.AssistantConversationMessageDtoRoleEnum.assistant =>
           AssistantMessageRole.assistant,
-        lucent.AssistantConversationMessageDtoRoleRole.$unknown =>
+        lucent.AssistantConversationMessageDtoRoleEnum.unknownDefaultOpenApi =>
           AssistantMessageRole.assistant,
       },
       content: dto.content,

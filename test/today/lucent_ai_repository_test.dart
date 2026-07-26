@@ -1,6 +1,6 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
@@ -59,10 +59,10 @@ lucent.TodayAnalysisBulletDto _bullet({
   required String kind,
   required String text,
 }) {
-  return lucent.TodayAnalysisBulletDto(
-    kind: lucent.TodayAnalysisBulletDtoKindKind.fromJson(kind),
-    text: text,
-  );
+  return lucent.TodayAnalysisBulletDto.fromJson(<String, Object?>{
+    'kind': kind,
+    'text': text,
+  });
 }
 
 void main() {

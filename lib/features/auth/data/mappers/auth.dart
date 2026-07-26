@@ -1,14 +1,14 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 abstract final class AuthMapper {
-  static AuthSession toSessionFromLogin(LoginResponseDto response) {
-    return _toSession(user: response.data.user, tokens: response.data.tokens);
+  static AuthSession toSessionFromLogin(LoginDataDto data) {
+    return _toSession(user: data.user, tokens: data.tokens);
   }
 
-  static AuthSession toSessionFromRegister(RegisterResponseDto response) {
-    final user = response.data.user;
-    final tokens = response.data.tokens;
+  static AuthSession toSessionFromRegister(RegisterDataDto data) {
+    final user = data.user;
+    final tokens = data.tokens;
     return AuthSession(
       user: AuthUser(
         id: user.id,

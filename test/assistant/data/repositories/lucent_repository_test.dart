@@ -1,7 +1,7 @@
-﻿import 'package:clock/clock.dart';
+import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
@@ -92,15 +92,15 @@ lucent.AssistantContextSettingsDto _context({
 }
 
 lucent.AssistantToolCapabilityDto _tool({
-  lucent.AssistantToolCapabilityDtoNameName? name,
+  lucent.AssistantToolCapabilityDtoNameEnum? name,
   bool enabled = true,
   bool implemented = true,
   bool permitted = true,
   List<String>? required,
-  lucent.AssistantToolCapabilityDtoDisabledReasonDisabledReason? disabledReason,
+  lucent.AssistantToolCapabilityDtoDisabledReasonEnum? disabledReason,
 }) {
   return lucent.AssistantToolCapabilityDto(
-    name: name ?? lucent.AssistantToolCapabilityDtoNameName.getTodayRecords,
+    name: name ?? lucent.AssistantToolCapabilityDtoNameEnum.getTodayRecords,
     requiredContextSources: required ?? const ['health_profile'],
     permittedByUser: permitted,
     enabled: enabled,
@@ -141,13 +141,13 @@ lucent.AssistantCapabilitiesDataDto _capabilitiesDto({
 }
 
 lucent.AssistantConversationMessageDto _messageDto({
-  lucent.AssistantConversationMessageDtoRoleRole? role,
+  lucent.AssistantConversationMessageDtoRoleEnum? role,
   String content = 'hello',
   List<String>? usedTools,
   String? createdAt,
 }) {
   return lucent.AssistantConversationMessageDto(
-    role: role ?? lucent.AssistantConversationMessageDtoRoleRole.user,
+    role: role ?? lucent.AssistantConversationMessageDtoRoleEnum.user,
     content: content,
     usedTools: usedTools ?? const [],
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
@@ -157,7 +157,7 @@ lucent.AssistantConversationMessageDto _messageDto({
 lucent.AssistantConversationDataDto _conversationDto({
   String id = 'conv-1',
   String? title = 'Test Conversation',
-  lucent.AssistantConversationDataDtoStatusStatus? status,
+  lucent.AssistantConversationDataDtoStatusEnum? status,
   List<lucent.AssistantConversationMessageDto>? messages,
   String? lastMessageAt,
   String? createdAt,
@@ -166,7 +166,7 @@ lucent.AssistantConversationDataDto _conversationDto({
   return lucent.AssistantConversationDataDto(
     id: id,
     title: title,
-    status: status ?? lucent.AssistantConversationDataDtoStatusStatus.active,
+    status: status ?? lucent.AssistantConversationDataDtoStatusEnum.active,
     messages: messages ?? [_messageDto()],
     lastMessageAt: lastMessageAt ?? '2026-07-01T10:30:00Z',
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
@@ -177,7 +177,7 @@ lucent.AssistantConversationDataDto _conversationDto({
 lucent.AssistantConversationSummaryDto _summaryDto({
   String id = 'conv-1',
   String? title = 'Summary',
-  lucent.AssistantConversationSummaryDtoStatusStatus? status,
+  lucent.AssistantConversationSummaryDtoStatusEnum? status,
   String? lastMessageAt,
   String? createdAt,
   String? updatedAt,
@@ -185,7 +185,7 @@ lucent.AssistantConversationSummaryDto _summaryDto({
   return lucent.AssistantConversationSummaryDto(
     id: id,
     title: title,
-    status: status ?? lucent.AssistantConversationSummaryDtoStatusStatus.active,
+    status: status ?? lucent.AssistantConversationSummaryDtoStatusEnum.active,
     lastMessageAt: lastMessageAt,
     createdAt: createdAt ?? '2026-07-01T10:00:00Z',
     updatedAt: updatedAt ?? '2026-07-01T10:30:00Z',
@@ -211,20 +211,20 @@ void main() {
             rag: true,
             tools: [
               _tool(
-                name: lucent.AssistantToolCapabilityDtoNameName.getUserProfile,
+                name: lucent.AssistantToolCapabilityDtoNameEnum.getUserProfile,
                 enabled: true,
                 implemented: true,
                 required: const ['health_profile'],
               ),
               _tool(
                 name: lucent
-                    .AssistantToolCapabilityDtoNameName
+                    .AssistantToolCapabilityDtoNameEnum
                     .getCurrentMedicines,
                 enabled: false,
                 implemented: false,
                 permitted: false,
                 disabledReason: lucent
-                    .AssistantToolCapabilityDtoDisabledReasonDisabledReason
+                    .AssistantToolCapabilityDtoDisabledReasonEnum
                     .notImplemented,
               ),
             ],
@@ -301,7 +301,11 @@ void main() {
         dataSource: _FakeAssistantRemoteDataSource(
           capabilities: _capabilitiesDto(
             tools: [
-              _tool(name: lucent.AssistantToolCapabilityDtoNameName.$unknown),
+              _tool(
+                name: lucent
+                    .AssistantToolCapabilityDtoNameEnum
+                    .unknownDefaultOpenApi,
+              ),
             ],
           ),
         ),
@@ -327,12 +331,12 @@ void main() {
             title: 'Chat About Meds',
             messages: [
               _messageDto(
-                role: lucent.AssistantConversationMessageDtoRoleRole.user,
+                role: lucent.AssistantConversationMessageDtoRoleEnum.user,
                 content: 'What is atorvastatin?',
                 createdAt: '2026-07-01T10:00:00Z',
               ),
               _messageDto(
-                role: lucent.AssistantConversationMessageDtoRoleRole.assistant,
+                role: lucent.AssistantConversationMessageDtoRoleEnum.assistant,
                 content: 'It is a statin.',
                 usedTools: const ['get_current_medicines'],
                 createdAt: '2026-07-01T10:00:05Z',
@@ -380,7 +384,9 @@ void main() {
           latestConversation: _conversationDto(
             messages: [
               _messageDto(
-                role: lucent.AssistantConversationMessageDtoRoleRole.$unknown,
+                role: lucent
+                    .AssistantConversationMessageDtoRoleEnum
+                    .unknownDefaultOpenApi,
               ),
             ],
           ),
@@ -400,8 +406,7 @@ void main() {
             _summaryDto(
               id: 'c2',
               title: 'Second',
-              status:
-                  lucent.AssistantConversationSummaryDtoStatusStatus.archived,
+              status: lucent.AssistantConversationSummaryDtoStatusEnum.archived,
             ),
             _summaryDto(id: 'c3', title: null, lastMessageAt: null),
           ],

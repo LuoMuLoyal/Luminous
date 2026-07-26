@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/core/network/sse.dart';
 
@@ -38,18 +38,18 @@ class AssistantRemoteDataSource {
 
   Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
     final response = await api.assistantControllerGetCapabilitiesV1();
-    return response.data;
+    return response.data!.data;
   }
 
   Future<lucent.AssistantConversationDataDto?> getLatestConversation() async {
     final response = await api.assistantControllerGetLatestConversationV1();
-    return response.data;
+    return response.data?.data;
   }
 
   Future<List<lucent.AssistantConversationSummaryDto>>
   listRecentConversations() async {
     final response = await api.assistantControllerListRecentConversationsV1();
-    return response.data;
+    return response.data!.data;
   }
 
   Future<lucent.AssistantConversationDataDto> openConversation(
@@ -58,12 +58,12 @@ class AssistantRemoteDataSource {
     final response = await api.assistantControllerOpenConversationV1(
       conversationId: conversationId,
     );
-    return response.data;
+    return response.data!.data!;
   }
 
   Future<bool> clearLatestConversation() async {
     final response = await api.assistantControllerClearLatestConversationV1();
-    return response.data.cleared;
+    return response.data!.data.cleared;
   }
 
   Stream<AssistantRemoteEvent> streamMessages({

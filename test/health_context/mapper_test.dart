@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';
 
 UserHealthSummaryDto _s({
@@ -101,7 +101,7 @@ void main() {
         summary: _s(),
         profile: _p(),
         allergies: [
-          const UserAllergyItemDto(
+          UserAllergyItemDto(
             id: 'a1',
             kind: UserAllergyKind.drug,
             label: 'Penicillin',
@@ -140,7 +140,7 @@ void main() {
         summary: _s(age: 42),
         profile: _p(h: 165, sx: SexAtBirth.female),
         allergies: [
-          const UserAllergyItemDto(
+          UserAllergyItemDto(
             id: 'a1',
             kind: UserAllergyKind.drug,
             label: 'P',
@@ -155,7 +155,7 @@ void main() {
           ),
         ],
         conditions: [
-          const UserConditionItemDto(
+          UserConditionItemDto(
             id: 'c1',
             label: 'H',
             status: UserConditionStatus.active,
@@ -168,9 +168,9 @@ void main() {
           ),
         ],
         currentMedicines: [
-          const UserCurrentMedicineItemDto(
+          UserCurrentMedicineItemDto(
             id: 'm1',
-            source: MedicineSource.manual,
+            source_: MedicineSource.manual,
             sourceRefId: null,
             displayName: 'Aspirin',
             strengthText: null,

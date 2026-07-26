@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -101,7 +101,7 @@ void main() {
 
       final result = await ds.generate(ReportAiSummaryRange.last7Days);
 
-      expect(result.range.json, 'last_7_days');
+      expect(result.range.value, 'last_7_days');
       expect(result.startDate, '2026-07-05');
       expect(result.endDate, '2026-07-11');
       expect(result.summary, '本周记录良好');
@@ -126,7 +126,7 @@ void main() {
         endDate: '2026-07-10',
       );
 
-      expect(result.range.json, 'custom');
+      expect(result.range.value, 'custom');
       expect(result.startDate, '2026-07-01');
       expect(result.endDate, '2026-07-10');
     });
@@ -146,7 +146,7 @@ void main() {
 
       final result = await ds.generate(ReportAiSummaryRange.last30Days);
 
-      expect(result.range.json, 'last_30_days');
+      expect(result.range.value, 'last_30_days');
     });
   });
 

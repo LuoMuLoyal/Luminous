@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 
@@ -9,9 +9,9 @@ void main() {
       final mapper = MedicineSearchMapper();
 
       final result = mapper.dtoToResult(
-        const MedicineSearchItemDto(
+        MedicineSearchItemDto(
           id: 'cn_1',
-          source: MedicineSearchItemDtoSourceSource.cn,
+          source_: MedicineSearchItemDtoSource_Enum.cn,
           name: '硫酸镁注射液',
           subtitle: '10ml:2.5g · 杭州民生药业股份有限公司',
           summary: '用于妊娠高血压、先兆子痫和子痫等。',
@@ -34,9 +34,9 @@ void main() {
       final mapper = MedicineSearchMapper();
 
       final result = mapper.dtoToResult(
-        const MedicineSearchItemDto(
+        MedicineSearchItemDto(
           id: 'DB01050',
-          source: MedicineSearchItemDtoSourceSource.drugbank,
+          source_: MedicineSearchItemDtoSource_Enum.drugbank,
           name: 'Ibuprofen',
           subtitle: 'Small molecule',
           summary: 'A nonsteroidal anti-inflammatory drug.',

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
@@ -183,7 +183,7 @@ HealthContextDataDto _buildDto({
       currentMedicineCount: currentMedicineCount,
       missingCoreProfileFields: [],
     ),
-    profile: const UserHealthProfileDto(
+    profile: UserHealthProfileDto(
       birthDate: null,
       sexAtBirth: SexAtBirth.unknown,
       heightCm: null,
@@ -530,7 +530,7 @@ void main() {
 
   group('cache JSON round-trip', () {
     test('snapshot with allergies survives cache round-trip', () async {
-      dataSource.createAllergyResult = const HealthContextDataDto(
+      dataSource.createAllergyResult = HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: 30,
           onboardingCompleted: true,
@@ -588,7 +588,7 @@ void main() {
     });
 
     test('snapshot with conditions survives cache round-trip', () async {
-      dataSource.createConditionResult = const HealthContextDataDto(
+      dataSource.createConditionResult = HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -640,7 +640,7 @@ void main() {
     });
 
     test('snapshot with currentMedicines survives cache round-trip', () async {
-      dataSource.createCurrentMedicineResult = const HealthContextDataDto(
+      dataSource.createCurrentMedicineResult = HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: null,
           onboardingCompleted: true,
@@ -665,7 +665,7 @@ void main() {
         currentMedicines: [
           UserCurrentMedicineItemDto(
             id: 'med-1',
-            source: MedicineSource.cn,
+            source_: MedicineSource.cn,
             sourceRefId: 'ref-1',
             displayName: 'Aspirin',
             strengthText: '100mg',
@@ -700,7 +700,7 @@ void main() {
     });
 
     test('snapshot with profile extras survives cache round-trip', () async {
-      dataSource.updateProfileResult = const HealthContextDataDto(
+      dataSource.updateProfileResult = HealthContextDataDto(
         summary: UserHealthSummaryDto(
           age: 35,
           onboardingCompleted: true,

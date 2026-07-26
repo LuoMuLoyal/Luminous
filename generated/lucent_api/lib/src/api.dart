@@ -1,0 +1,280 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+import 'package:dio/dio.dart';
+import 'package:lucent_api/src/auth/api_key_auth.dart';
+import 'package:lucent_api/src/auth/basic_auth.dart';
+import 'package:lucent_api/src/auth/bearer_auth.dart';
+import 'package:lucent_api/src/auth/oauth.dart';
+import 'package:lucent_api/src/api/account_api.dart';
+import 'package:lucent_api/src/api/assistant_api.dart';
+import 'package:lucent_api/src/api/auth_api.dart';
+import 'package:lucent_api/src/api/daily_records_api.dart';
+import 'package:lucent_api/src/api/data_export_api.dart';
+import 'package:lucent_api/src/api/environment_api.dart';
+import 'package:lucent_api/src/api/files_api.dart';
+import 'package:lucent_api/src/api/health_api.dart';
+import 'package:lucent_api/src/api/legal_documents_api.dart';
+import 'package:lucent_api/src/api/medicine_dose_logs_api.dart';
+import 'package:lucent_api/src/api/medicine_reminders_api.dart';
+import 'package:lucent_api/src/api/medicines_api.dart';
+import 'package:lucent_api/src/api/notifications_api.dart';
+import 'package:lucent_api/src/api/reminder_deliveries_api.dart';
+import 'package:lucent_api/src/api/reports_api.dart';
+import 'package:lucent_api/src/api/support_resources_api.dart';
+import 'package:lucent_api/src/api/today_analysis_api.dart';
+import 'package:lucent_api/src/api/today_suggestion_api.dart';
+import 'package:lucent_api/src/api/user_devices_api.dart';
+import 'package:lucent_api/src/api/user_health_context_api.dart';
+import 'package:lucent_api/src/api/user_settings_api.dart';
+
+class LucentApi {
+  static const String basePath = r'http://localhost';
+
+  final Dio dio;
+  LucentApi({
+    Dio? dio,
+    String? basePathOverride,
+    List<Interceptor>? interceptors,
+  }) : this.dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               baseUrl: basePathOverride ?? basePath,
+               connectTimeout: const Duration(milliseconds: 5000),
+               receiveTimeout: const Duration(milliseconds: 3000),
+             ),
+           ) {
+    if (interceptors == null) {
+      this.dio.interceptors.addAll([
+        OAuthInterceptor(),
+        BasicAuthInterceptor(),
+        BearerAuthInterceptor(),
+        ApiKeyAuthInterceptor(),
+      ]);
+    } else {
+      this.dio.interceptors.addAll(interceptors);
+    }
+  }
+
+  void setOAuthToken(String name, String token) {
+    if (this.dio.interceptors.any((i) => i is OAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is OAuthInterceptor)
+                  as OAuthInterceptor)
+              .tokens[name] =
+          token;
+    }
+  }
+
+  /// Removes the OAuth token associated with the given [name].
+  ///
+  /// If no [OAuthInterceptor] is registered or no token exists for the given
+  /// [name], this method has no effect.
+  void removeOAuthToken(String name) {
+    if (this.dio.interceptors.any((i) => i is OAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is OAuthInterceptor)
+              as OAuthInterceptor)
+          .tokens
+          .remove(name);
+    }
+  }
+
+  void setBearerAuth(String name, String token) {
+    if (this.dio.interceptors.any((i) => i is BearerAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is BearerAuthInterceptor)
+                  as BearerAuthInterceptor)
+              .tokens[name] =
+          token;
+    }
+  }
+
+  /// Removes the bearer authentication token associated with the given [name].
+  ///
+  /// If no [BearerAuthInterceptor] is registered or no token exists for the
+  /// given [name], this method has no effect.
+  void removeBearerAuth(String name) {
+    if (this.dio.interceptors.any((i) => i is BearerAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is BearerAuthInterceptor)
+              as BearerAuthInterceptor)
+          .tokens
+          .remove(name);
+    }
+  }
+
+  void setBasicAuth(String name, String username, String password) {
+    if (this.dio.interceptors.any((i) => i is BasicAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is BasicAuthInterceptor)
+              as BasicAuthInterceptor)
+          .authInfo[name] = BasicAuthInfo(
+        username,
+        password,
+      );
+    }
+  }
+
+  /// Removes the basic authentication credentials associated with the given [name].
+  ///
+  /// If no [BasicAuthInterceptor] is registered or no credentials exist for the
+  /// given [name], this method has no effect.
+  void removeBasicAuth(String name) {
+    if (this.dio.interceptors.any((i) => i is BasicAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere((i) => i is BasicAuthInterceptor)
+              as BasicAuthInterceptor)
+          .authInfo
+          .remove(name);
+    }
+  }
+
+  void setApiKey(String name, String apiKey) {
+    if (this.dio.interceptors.any((i) => i is ApiKeyAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere(
+                    (element) => element is ApiKeyAuthInterceptor,
+                  )
+                  as ApiKeyAuthInterceptor)
+              .apiKeys[name] =
+          apiKey;
+    }
+  }
+
+  /// Removes the API key associated with the given [name].
+  ///
+  /// If no [ApiKeyAuthInterceptor] is registered or no API key exists for the
+  /// given [name], this method has no effect.
+  void removeApiKey(String name) {
+    if (this.dio.interceptors.any((i) => i is ApiKeyAuthInterceptor)) {
+      (this.dio.interceptors.firstWhere(
+                (element) => element is ApiKeyAuthInterceptor,
+              )
+              as ApiKeyAuthInterceptor)
+          .apiKeys
+          .remove(name);
+    }
+  }
+
+  /// Get AccountApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AccountApi getAccountApi() {
+    return AccountApi(dio);
+  }
+
+  /// Get AssistantApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AssistantApi getAssistantApi() {
+    return AssistantApi(dio);
+  }
+
+  /// Get AuthApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  AuthApi getAuthApi() {
+    return AuthApi(dio);
+  }
+
+  /// Get DailyRecordsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  DailyRecordsApi getDailyRecordsApi() {
+    return DailyRecordsApi(dio);
+  }
+
+  /// Get DataExportApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  DataExportApi getDataExportApi() {
+    return DataExportApi(dio);
+  }
+
+  /// Get EnvironmentApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  EnvironmentApi getEnvironmentApi() {
+    return EnvironmentApi(dio);
+  }
+
+  /// Get FilesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  FilesApi getFilesApi() {
+    return FilesApi(dio);
+  }
+
+  /// Get HealthApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  HealthApi getHealthApi() {
+    return HealthApi(dio);
+  }
+
+  /// Get LegalDocumentsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  LegalDocumentsApi getLegalDocumentsApi() {
+    return LegalDocumentsApi(dio);
+  }
+
+  /// Get MedicineDoseLogsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  MedicineDoseLogsApi getMedicineDoseLogsApi() {
+    return MedicineDoseLogsApi(dio);
+  }
+
+  /// Get MedicineRemindersApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  MedicineRemindersApi getMedicineRemindersApi() {
+    return MedicineRemindersApi(dio);
+  }
+
+  /// Get MedicinesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  MedicinesApi getMedicinesApi() {
+    return MedicinesApi(dio);
+  }
+
+  /// Get NotificationsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  NotificationsApi getNotificationsApi() {
+    return NotificationsApi(dio);
+  }
+
+  /// Get ReminderDeliveriesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  ReminderDeliveriesApi getReminderDeliveriesApi() {
+    return ReminderDeliveriesApi(dio);
+  }
+
+  /// Get ReportsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  ReportsApi getReportsApi() {
+    return ReportsApi(dio);
+  }
+
+  /// Get SupportResourcesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  SupportResourcesApi getSupportResourcesApi() {
+    return SupportResourcesApi(dio);
+  }
+
+  /// Get TodayAnalysisApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  TodayAnalysisApi getTodayAnalysisApi() {
+    return TodayAnalysisApi(dio);
+  }
+
+  /// Get TodaySuggestionApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  TodaySuggestionApi getTodaySuggestionApi() {
+    return TodaySuggestionApi(dio);
+  }
+
+  /// Get UserDevicesApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  UserDevicesApi getUserDevicesApi() {
+    return UserDevicesApi(dio);
+  }
+
+  /// Get UserHealthContextApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  UserHealthContextApi getUserHealthContextApi() {
+    return UserHealthContextApi(dio);
+  }
+
+  /// Get UserSettingsApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  UserSettingsApi getUserSettingsApi() {
+    return UserSettingsApi(dio);
+  }
+}

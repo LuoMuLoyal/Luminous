@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -40,7 +40,7 @@ class _FakeLocaleController extends LocaleController {
   }
 }
 
-HealthContextDataDto _testDto() => const HealthContextDataDto(
+HealthContextDataDto _testDto() => HealthContextDataDto(
   summary: UserHealthSummaryDto(
     age: null,
     onboardingCompleted: false,
@@ -51,12 +51,12 @@ HealthContextDataDto _testDto() => const HealthContextDataDto(
   ),
   profile: UserHealthProfileDto(
     birthDate: null,
-    sexAtBirth: SexAtBirth.$unknown,
+    sexAtBirth: SexAtBirth.unknownDefaultOpenApi,
     heightCm: null,
     bloodType: null,
     locale: null,
     timezone: null,
-    unitSystem: UnitSystem.$unknown,
+    unitSystem: UnitSystem.unknownDefaultOpenApi,
     onboardingCompletedAt: null,
     extras: null,
   ),

@@ -1,11 +1,43 @@
 // ignore_for_file: prefer_initializing_formals
 
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
 import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
+
+/// Thin wrapper over the generated [LucentApi] that exposes individual API
+/// clients as property getters, preserving the `.assistant`, `.medicines` etc.
+/// access pattern used throughout feature datasources.
+class LucentClient {
+  LucentClient(this._api);
+
+  final LucentApi _api;
+
+  AccountApi get account => _api.getAccountApi();
+  AssistantApi get assistant => _api.getAssistantApi();
+  AuthApi get auth => _api.getAuthApi();
+  DailyRecordsApi get dailyRecords => _api.getDailyRecordsApi();
+  DataExportApi get dataExport => _api.getDataExportApi();
+  EnvironmentApi get environment => _api.getEnvironmentApi();
+  FilesApi get files => _api.getFilesApi();
+  HealthApi get health => _api.getHealthApi();
+  LegalDocumentsApi get legalDocuments => _api.getLegalDocumentsApi();
+  MedicineDoseLogsApi get medicineDoseLogs => _api.getMedicineDoseLogsApi();
+  MedicineRemindersApi get medicineReminders => _api.getMedicineRemindersApi();
+  MedicinesApi get medicines => _api.getMedicinesApi();
+  NotificationsApi get notifications => _api.getNotificationsApi();
+  ReminderDeliveriesApi get reminderDeliveries =>
+      _api.getReminderDeliveriesApi();
+  ReportsApi get reports => _api.getReportsApi();
+  SupportResourcesApi get supportResources => _api.getSupportResourcesApi();
+  TodayAnalysisApi get todayAnalysis => _api.getTodayAnalysisApi();
+  TodaySuggestionApi get todaySuggestion => _api.getTodaySuggestionApi();
+  UserDevicesApi get userDevices => _api.getUserDevicesApi();
+  UserHealthContextApi get userHealthContext => _api.getUserHealthContextApi();
+  UserSettingsApi get userSettings => _api.getUserSettingsApi();
+}
 
 /// Unified entry point for the Luminous Lucent API client.
 ///
@@ -37,7 +69,7 @@ class LucentDioClient {
       _dio.httpClientAdapter = httpClientAdapter;
     }
 
-    _client = LucentClient(_dio, baseUrl: baseUrl);
+    _client = LucentClient(LucentApi(dio: _dio));
     final refreshDio = Dio(
       _createBaseOptions(
         baseUrl: baseUrl,

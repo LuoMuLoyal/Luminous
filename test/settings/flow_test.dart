@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -363,7 +363,7 @@ class _FakeSettingsProfileRemoteDataSource
     lastTimezone = timezone;
     lastUnitSystem = unitSystem;
     return HealthContextDataDto(
-      summary: const UserHealthSummaryDto(
+      summary: UserHealthSummaryDto(
         age: null,
         onboardingCompleted: false,
         activeAllergyCount: 0,
@@ -373,7 +373,7 @@ class _FakeSettingsProfileRemoteDataSource
       ),
       profile: UserHealthProfileDto(
         birthDate: null,
-        sexAtBirth: SexAtBirth.$unknown,
+        sexAtBirth: SexAtBirth.unknownDefaultOpenApi,
         heightCm: null,
         bloodType: null,
         locale: identical(locale, settingsProfileNoChange)
@@ -383,8 +383,8 @@ class _FakeSettingsProfileRemoteDataSource
             ? null
             : timezone as String?,
         unitSystem: identical(unitSystem, settingsProfileNoChange)
-            ? UnitSystem.$unknown
-            : (unitSystem as UnitSystem?) ?? UnitSystem.$unknown,
+            ? UnitSystem.unknownDefaultOpenApi
+            : (unitSystem as UnitSystem?) ?? UnitSystem.unknownDefaultOpenApi,
         onboardingCompletedAt: null,
         extras: const <String, Object>{},
       ),

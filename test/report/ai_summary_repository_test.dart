@@ -1,6 +1,6 @@
-﻿import 'package:dio/dio.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -9,23 +9,23 @@ void main() {
   test('Lucent report ai summary repository maps summary dto', () async {
     final repository = LucentReportAiSummaryRepository(
       dataSource: _FakeReportAiSummaryRemoteDataSource(
-        const lucent.ReportSummaryDataDto(
-          range: lucent.ReportSummaryDataDtoRangeRange.last30Days,
+        lucent.ReportSummaryDataDto(
+          range: lucent.ReportSummaryDataDtoRangeEnum.last30Days,
           startDate: '2026-06-06',
           endDate: '2026-06-12',
           generatedAt: '2026-06-12T10:00:00.000Z',
           summary: '本周用药记录整体稳定，饮水仍有少数低点。',
           bullets: [
             lucent.ReportSummaryBulletDto(
-              kind: lucent.ReportSummaryBulletDtoKindKind.medication,
+              kind: lucent.ReportSummaryBulletDtoKindEnum.medication,
               text: '本周大多数天都有用药记录。',
             ),
             lucent.ReportSummaryBulletDto(
-              kind: lucent.ReportSummaryBulletDtoKindKind.hydration,
+              kind: lucent.ReportSummaryBulletDtoKindEnum.hydration,
               text: '饮水均值接近目标线。',
             ),
             lucent.ReportSummaryBulletDto(
-              kind: lucent.ReportSummaryBulletDtoKindKind.sleep,
+              kind: lucent.ReportSummaryBulletDtoKindEnum.sleep,
               text: '睡眠数据仍待补充。',
             ),
           ],

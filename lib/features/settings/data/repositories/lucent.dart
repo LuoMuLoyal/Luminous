@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
@@ -22,7 +22,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
   @override
   Future<UserSettings> getSettings() async {
     final response = await api.userSettingsControllerGetSettingsV1();
-    return _mapSettings(response.data);
+    return _mapSettings(response.data!.data);
   }
 
   @override
@@ -35,7 +35,7 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
     required AssistantContextPatch assistantContext,
   }) async {
     final response = await api.userSettingsControllerUpdateSettingsV1(
-      body: UpdateUserSettingsDto(
+      updateUserSettingsDto: UpdateUserSettingsDto(
         aiSummariesEnabled: aiSummariesEnabled,
         dataSharingConsent: dataSharingConsent,
         assistantEnabled: assistantEnabled,
@@ -49,31 +49,34 @@ class LucentUserSettingsRepository implements UserSettingsRepository {
         ),
       ),
     );
-    return _mapSettings(response.data);
+    return _mapSettings(response.data!.data);
   }
 
   @override
   Future<UserSettings> enableSecurityPin(String pin) async {
     final response = await api.userSettingsControllerEnableSecurityPinV1(
-      body: EnableSecurityPinDto(pin: pin),
+      enableSecurityPinDto: EnableSecurityPinDto(pin: pin),
     );
-    return _mapSettings(response.data);
+    return _mapSettings(response.data!.data);
   }
 
   @override
   Future<UserSettings> changeSecurityPin(String oldPin, String newPin) async {
     final response = await api.userSettingsControllerChangeSecurityPinV1(
-      body: ChangeSecurityPinDto(oldPin: oldPin, newPin: newPin),
+      changeSecurityPinDto: ChangeSecurityPinDto(
+        oldPin: oldPin,
+        newPin: newPin,
+      ),
     );
-    return _mapSettings(response.data);
+    return _mapSettings(response.data!.data);
   }
 
   @override
   Future<UserSettings> disableSecurityPin(String pin) async {
     final response = await api.userSettingsControllerDisableSecurityPinV1(
-      body: DisableSecurityPinDto(pin: pin),
+      disableSecurityPinDto: DisableSecurityPinDto(pin: pin),
     );
-    return _mapSettings(response.data);
+    return _mapSettings(response.data!.data);
   }
 
   UserSettings _mapSettings(UserSettingsDataDto dto) {

@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 
 /// Maps Lucent OpenAPI DTOs to domain entities.
@@ -68,7 +68,7 @@ class HealthContextMapper {
   CurrentMedicineItem _mapCurrentMedicine(UserCurrentMedicineItemDto m) {
     return CurrentMedicineItem(
       id: m.id,
-      source: m.source.name,
+      source: m.source_.value,
       sourceRefId: m.sourceRefId?.toString(),
       displayName: m.displayName,
       strengthText: m.strengthText?.toString(),

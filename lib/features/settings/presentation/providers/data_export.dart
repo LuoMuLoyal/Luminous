@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/network_providers.dart';
 
 class DataExportRequestInFlightState {
@@ -15,14 +15,14 @@ class DataExportRequestInFlightState {
 
 class DataExportRequestInput {
   const DataExportRequestInput({
-    this.kind = CreateDataExportRequestDtoKindKind.hospital,
-    this.format = CreateDataExportRequestDtoFormatFormat.pdf,
-    this.range = CreateDataExportRequestDtoRangeRange.last7Days,
+    this.kind = CreateDataExportRequestDtoKindEnum.hospital,
+    this.format = CreateDataExportRequestDtoFormatEnum.pdf,
+    this.range = CreateDataExportRequestDtoRangeEnum.last7Days,
   });
 
-  final CreateDataExportRequestDtoKindKind kind;
-  final CreateDataExportRequestDtoFormatFormat format;
-  final CreateDataExportRequestDtoRangeRange range;
+  final CreateDataExportRequestDtoKindEnum kind;
+  final CreateDataExportRequestDtoFormatEnum format;
+  final CreateDataExportRequestDtoRangeEnum range;
 
   @override
   bool operator ==(Object other) {
@@ -50,32 +50,34 @@ class DataExportRequestInput {
         request.range == _rangeToResponse(range);
   }
 
-  DataExportKind _kindToResponse(CreateDataExportRequestDtoKindKind value) {
+  DataExportKind _kindToResponse(CreateDataExportRequestDtoKindEnum value) {
     return switch (value) {
-      CreateDataExportRequestDtoKindKind.hospital => DataExportKind.hospital,
-      CreateDataExportRequestDtoKindKind.monthly => DataExportKind.monthly,
-      CreateDataExportRequestDtoKindKind.print => DataExportKind.print,
-      CreateDataExportRequestDtoKindKind.$unknown => DataExportKind.$unknown,
+      CreateDataExportRequestDtoKindEnum.hospital => DataExportKind.hospital,
+      CreateDataExportRequestDtoKindEnum.monthly => DataExportKind.monthly,
+      CreateDataExportRequestDtoKindEnum.print => DataExportKind.print,
+      CreateDataExportRequestDtoKindEnum.unknownDefaultOpenApi =>
+        DataExportKind.unknownDefaultOpenApi,
     };
   }
 
   DataExportFormat _formatToResponse(
-    CreateDataExportRequestDtoFormatFormat value,
+    CreateDataExportRequestDtoFormatEnum value,
   ) {
     return switch (value) {
-      CreateDataExportRequestDtoFormatFormat.pdf => DataExportFormat.pdf,
-      CreateDataExportRequestDtoFormatFormat.$unknown =>
-        DataExportFormat.$unknown,
+      CreateDataExportRequestDtoFormatEnum.pdf => DataExportFormat.pdf,
+      CreateDataExportRequestDtoFormatEnum.unknownDefaultOpenApi =>
+        DataExportFormat.unknownDefaultOpenApi,
     };
   }
 
-  DataExportRange _rangeToResponse(CreateDataExportRequestDtoRangeRange value) {
+  DataExportRange _rangeToResponse(CreateDataExportRequestDtoRangeEnum value) {
     return switch (value) {
-      CreateDataExportRequestDtoRangeRange.last7Days =>
+      CreateDataExportRequestDtoRangeEnum.last7Days =>
         DataExportRange.last7Days,
-      CreateDataExportRequestDtoRangeRange.last30Days =>
+      CreateDataExportRequestDtoRangeEnum.last30Days =>
         DataExportRange.last30Days,
-      CreateDataExportRequestDtoRangeRange.$unknown => DataExportRange.$unknown,
+      CreateDataExportRequestDtoRangeEnum.unknownDefaultOpenApi =>
+        DataExportRange.unknownDefaultOpenApi,
     };
   }
 }
@@ -106,22 +108,22 @@ DataExportUiStatus dataExportUiStatusForRequest(
           : DataExportUiStatus.completed,
     DataExportStatus.failed => DataExportUiStatus.failed,
     DataExportStatus.unavailable => DataExportUiStatus.unavailable,
-    DataExportStatus.$unknown => DataExportUiStatus.failed,
+    DataExportStatus.unknownDefaultOpenApi => DataExportUiStatus.failed,
   };
 }
 
 const reportHospitalPdfLast7DaysExportRequest = DataExportRequestInput();
 
 const reportMonthlyPdfExportRequest = DataExportRequestInput(
-  kind: CreateDataExportRequestDtoKindKind.monthly,
-  format: CreateDataExportRequestDtoFormatFormat.pdf,
-  range: CreateDataExportRequestDtoRangeRange.last30Days,
+  kind: CreateDataExportRequestDtoKindEnum.monthly,
+  format: CreateDataExportRequestDtoFormatEnum.pdf,
+  range: CreateDataExportRequestDtoRangeEnum.last30Days,
 );
 
 const reportPrintPdfExportRequest = DataExportRequestInput(
-  kind: CreateDataExportRequestDtoKindKind.print,
-  format: CreateDataExportRequestDtoFormatFormat.pdf,
-  range: CreateDataExportRequestDtoRangeRange.last7Days,
+  kind: CreateDataExportRequestDtoKindEnum.print,
+  format: CreateDataExportRequestDtoFormatEnum.pdf,
+  range: CreateDataExportRequestDtoRangeEnum.last7Days,
 );
 
 /// Controller for the data-export feature.
@@ -148,9 +150,9 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
     final api = ref.read(lucentClientProvider).dataExport;
     try {
       final response = await api.dataExportControllerCreateRequestV1(
-        body: input.toDto(),
+        createDataExportRequestDto: input.toDto(),
       );
-      final data = response.data;
+      final data = response.data!.data;
       state = AsyncData(data);
       return data;
     } finally {
@@ -168,7 +170,7 @@ class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   Future<DataExportRequestDataDto?> _fetchLatest() async {
     final api = ref.read(lucentClientProvider).dataExport;
     final response = await api.dataExportControllerGetLatestRequestV1();
-    return response.data;
+    return response.data!.data;
   }
 }
 

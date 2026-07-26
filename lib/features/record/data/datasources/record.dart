@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api.dart'
     hide DailyRecordKind, DailyRecordAttachmentKind;
 import 'package:luminous/core/network/map_utils.dart';
@@ -26,14 +26,14 @@ class DailyRecordRemoteDataSource {
       date: date,
       kind: kind != null
           ? lucent.DailyRecordKind.values.firstWhere(
-              (k) => k.json == kind,
-              orElse: () => lucent.DailyRecordKind.$unknown,
+              (k) => k.value == kind,
+              orElse: () => lucent.DailyRecordKind.unknownDefaultOpenApi,
             )
           : null,
       page: page,
       pageSize: pageSize,
     );
-    final dto = response.data;
+    final dto = response.data!.data;
     return DailyRecordListData(
       items: dto.items.map(_toItem).toList(growable: false),
       total: dto.total,
@@ -42,12 +42,12 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
     final response = await api.dailyRecordsControllerSummaryV1(date: date);
-    final dto = response.data;
+    final dto = response.data!.data;
     return DailyRecordSummaryData(
       summaries: dto.summaries
           .mapIndexed(
             (_, s) => DailyRecordSummary(
-              kind: _parseKind(s.kind.json ?? ''),
+              kind: _parseKind(s.kind.value),
               count: s.count,
               latest: s.latest != null ? _toItem(s.latest!) : null,
             ),
@@ -58,20 +58,20 @@ class DailyRecordRemoteDataSource {
 
   Future<DailyRecordItem> get(String id) async {
     final response = await api.dailyRecordsControllerGetV1(id: id);
-    return _toItem(response.data);
+    return _toItem(response.data!.data);
   }
 
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   ) async {
     final presignResponse = await api.dailyRecordsControllerCreateImageUploadV1(
-      body: lucent.CreateDailyRecordImageUploadDto(
+      createDailyRecordImageUploadDto: lucent.CreateDailyRecordImageUploadDto(
         contentType: input.contentType,
         sizeBytes: input.sizeBytes,
         fileName: input.fileName,
       ),
     );
-    final upload = presignResponse.data;
+    final upload = presignResponse.data!.data;
     final headers = _coerceToStringMap(upload.headers);
 
     await dio.put<Object>(
@@ -106,12 +106,12 @@ class DailyRecordRemoteDataSource {
     required String occurredAt,
   }) async {
     final response = await api.dailyRecordsControllerGenerateCandidatesV1(
-      body: lucent.GenerateDailyRecordCandidatesDto(
+      generateDailyRecordCandidatesDto: lucent.GenerateDailyRecordCandidatesDto(
         text: text,
         occurredAt: occurredAt,
       ),
     );
-    final dto = response.data;
+    final dto = response.data!.data;
     return DailyRecordCandidateResult(
       locale: dto.locale,
       generatedAt: dto.generatedAt,
@@ -227,14 +227,14 @@ class DailyRecordRemoteDataSource {
   DailyRecordItem _toItem(lucent.DailyRecordItemDto item) {
     return DailyRecordItem(
       id: item.id,
-      kind: _parseKind(item.kind.json ?? ''),
+      kind: _parseKind(item.kind.value),
       occurredAt: item.occurredAt,
       occurredTime: _asStringOrNull(item.occurredTime),
       title: item.title,
       value: item.value,
       unit: item.unit,
       note: item.note,
-      source: item.source,
+      source: item.source_,
       payload: _parsePayload(item.payload),
       mealAnalysisStatus: _asStringOrNull(item.mealAnalysisStatus),
       mealAnalysisCoverage: _asStringOrNull(item.mealAnalysisCoverage),
@@ -253,7 +253,7 @@ class DailyRecordRemoteDataSource {
   DailyRecordAttachment _toAttachment(lucent.DailyRecordAttachmentDto item) {
     return DailyRecordAttachment(
       id: item.id,
-      kind: _parseAttachmentKind(item.kind.json ?? ''),
+      kind: _parseAttachmentKind(item.kind.value),
       objectKey: item.objectKey,
       bucket: _asStringOrNull(item.bucket),
       provider: _asStringOrNull(item.provider),
@@ -271,7 +271,7 @@ class DailyRecordRemoteDataSource {
     lucent.DailyRecordCandidateItemDto item,
   ) {
     return DailyRecordCandidateItem(
-      kind: _parseKind(item.kind.json ?? ''),
+      kind: _parseKind(item.kind.value),
       occurredAt: item.occurredAt,
       title: _asStringOrNull(item.title),
       value: _asStringOrNull(item.value),

@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/mine/presentation/pages/profile_edit.dart';

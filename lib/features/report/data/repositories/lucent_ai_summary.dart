@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
@@ -80,18 +80,18 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
     );
   }
 
-  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeRange range) {
+  ReportAiSummaryRange _mapRange(lucent.ReportSummaryDataDtoRangeEnum range) {
     return switch (range) {
-      lucent.ReportSummaryDataDtoRangeRange.last30Days =>
+      lucent.ReportSummaryDataDtoRangeEnum.last30Days =>
         ReportAiSummaryRange.last30Days,
-      lucent.ReportSummaryDataDtoRangeRange.custom =>
+      lucent.ReportSummaryDataDtoRangeEnum.custom =>
         ReportAiSummaryRange.custom,
       _ => ReportAiSummaryRange.last7Days,
     };
   }
 
   ReportAiSummaryBullet _mapBullet(lucent.ReportSummaryBulletDto dto) {
-    final kind = switch (dto.kind.json ?? '') {
+    final kind = switch (dto.kind.value) {
       'medication' => ReportAiSummaryBulletKind.medication,
       'hydration' => ReportAiSummaryBulletKind.hydration,
       'sleep' => ReportAiSummaryBulletKind.sleep,

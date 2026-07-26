@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' show MedicineRemindersApi;
+import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';

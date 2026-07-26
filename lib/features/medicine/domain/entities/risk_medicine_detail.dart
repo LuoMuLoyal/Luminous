@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/services/ingredient_canonicalizer.dart';
 import 'package:luminous/features/medicine/domain/services/risk_checker_utils.dart';

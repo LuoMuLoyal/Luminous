@@ -23,12 +23,12 @@ class LucentScanRepository implements ScanRepository {
   @override
   Future<List<ScanSearchResult>> search(String query) async {
     final response = await api.medicinesControllerSearchV1(
-      source: Source.cn,
+      source_: 'cn',
       q: query,
       page: 1,
       pageSize: 20,
     );
-    return response.data.items
+    return response.data!.data.items
         .map(
           (item) => ScanSearchResult(
             id: item.id,

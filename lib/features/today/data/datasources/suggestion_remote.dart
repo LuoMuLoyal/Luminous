@@ -1,4 +1,4 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 
 /// Remote data source for the Today suggestion engine.
@@ -24,7 +24,7 @@ class TodaySuggestionRemoteDataSource {
       date: date,
       excludeIds: excludeIds,
     );
-    return _mapBundle(response.data);
+    return _mapBundle(response.data!.data);
   }
 
   // ── Feedback ───────────────────────────────────────────────────────────
@@ -36,14 +36,16 @@ class TodaySuggestionRemoteDataSource {
   }) async {
     final response = await api.todaySuggestionControllerSubmitFeedbackV1(
       id: id,
-      body: SuggestionFeedbackDto(feedback: _mapFeedbackToDto(feedback)),
+      suggestionFeedbackDto: SuggestionFeedbackDto(
+        feedback: _mapFeedbackToDto(feedback),
+      ),
     );
-    final data = response.data;
+    final data = response.data!.data;
     return TodaySuggestionFeedbackResult(
       suggestionId: data.suggestionId,
-      feedback: _mapFeedbackFromString(data.feedback.json ?? 'later'),
+      feedback: _mapFeedbackFromString(data.feedback.value),
       appliedEffect: TodaySuggestionFeedbackEffect.fromJson(
-        data.appliedEffect.json ?? 'noted',
+        data.appliedEffect.value,
       ),
       expiresAt: data.expiresAt,
     );
@@ -60,7 +62,7 @@ class TodaySuggestionRemoteDataSource {
       id: id,
       acceptLanguage: language,
     );
-    final data = response.data;
+    final data = response.data!.data;
     return TodaySuggestionExplanation(
       suggestionId: data.suggestionId,
       reason: data.reason,
@@ -83,13 +85,11 @@ class TodaySuggestionRemoteDataSource {
     final response = await api.todaySuggestionControllerGetHistoryV1(
       startDate: startDate,
       endDate: endDate,
-      lifecycleState: lifecycleState != null
-          ? LifecycleState.fromJson(lifecycleState)
-          : null,
-      type: type != null ? Type.fromJson(type) : null,
+      lifecycleState: lifecycleState,
+      type: type,
       limit: limit,
     );
-    final data = response.data;
+    final data = response.data!.data;
     return TodaySuggestionHistory(
       items: data.items.map(_mapHistoryItem).toList(growable: false),
       total: data.total.toInt(),
@@ -112,8 +112,8 @@ class TodaySuggestionRemoteDataSource {
   TodaySuggestionCard _mapCard(SuggestionItemDto dto) {
     return TodaySuggestionCard(
       id: dto.id,
-      type: TodaySuggestionType.fromJson(dto.type.json ?? 'behavior_advice'),
-      cardTone: TodaySuggestionCardTone.fromJson(dto.cardTone.json ?? 'soft'),
+      type: TodaySuggestionType.fromJson(dto.type.value),
+      cardTone: TodaySuggestionCardTone.fromJson(dto.cardTone.value),
       icon: dto.icon,
       title: dto.title,
       reason: dto.reason,
@@ -121,12 +121,12 @@ class TodaySuggestionRemoteDataSource {
       boundary: dto.boundary,
       primaryAction: _mapAction(dto.primaryAction),
       secondaryActions: dto.secondaryActions?.map(_mapAction).toList(),
-      confidence: _mapConfidenceFromString(dto.confidence.json ?? 'medium'),
+      confidence: _mapConfidenceFromString(dto.confidence.value),
       ruleId: dto.ruleId,
       ruleVersion: dto.ruleVersion,
-      triggerType: _mapTriggerTypeFromString(dto.triggerType.json ?? 'timer'),
+      triggerType: _mapTriggerTypeFromString(dto.triggerType.value),
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
-        dto.lifecycleState.json ?? 'active',
+        dto.lifecycleState.value,
       ),
       notificationEligible: dto.notificationEligible is bool
           ? dto.notificationEligible as bool
@@ -140,7 +140,7 @@ class TodaySuggestionRemoteDataSource {
 
   TodaySuggestionEvidence _mapEvidence(EvidenceItemDto dto) {
     return TodaySuggestionEvidence(
-      kind: TodaySuggestionEvidenceKind.fromJson(dto.kind.json ?? 'record'),
+      kind: TodaySuggestionEvidenceKind.fromJson(dto.kind.value),
       label: dto.label,
       value: dto.value,
       recordId: dto.recordId is String ? dto.recordId as String : null,
@@ -161,20 +161,20 @@ class TodaySuggestionRemoteDataSource {
     return TodaySuggestionHistoryItem(
       id: dto.id,
       date: dto.date,
-      type: TodaySuggestionType.fromJson(dto.type.json ?? 'behavior_advice'),
+      type: TodaySuggestionType.fromJson(dto.type.value),
       title: dto.title,
       reason: dto.reason,
       ruleId: dto.ruleId,
       ruleVersion: dto.ruleVersion,
-      triggerType: _mapTriggerTypeFromString(dto.triggerType.json ?? 'timer'),
+      triggerType: _mapTriggerTypeFromString(dto.triggerType.value),
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
-        dto.lifecycleState.json ?? 'active',
+        dto.lifecycleState.value,
       ),
-      confidence: _mapConfidenceFromString(dto.confidence.json ?? 'medium'),
+      confidence: _mapConfidenceFromString(dto.confidence.value),
       generatedAt: dto.generatedAt,
       subtype: dto.subtype is String ? dto.subtype as String : null,
       feedback: dto.feedback != null
-          ? _mapFeedbackFromString(dto.feedback!.json ?? 'later')
+          ? _mapFeedbackFromString(dto.feedback!.value)
           : null,
       feedbackAt: dto.feedbackAt is String ? dto.feedbackAt as String : null,
       expiredAt: dto.expiredAt is String ? dto.expiredAt as String : null,
@@ -210,18 +210,17 @@ class TodaySuggestionRemoteDataSource {
     };
   }
 
-  SuggestionFeedbackDtoFeedbackFeedback _mapFeedbackToDto(
+  SuggestionFeedbackDtoFeedbackEnum _mapFeedbackToDto(
     TodaySuggestionFeedback feedback,
   ) {
     return switch (feedback) {
       TodaySuggestionFeedback.accepted =>
-        SuggestionFeedbackDtoFeedbackFeedback.accepted,
-      TodaySuggestionFeedback.later =>
-        SuggestionFeedbackDtoFeedbackFeedback.later,
+        SuggestionFeedbackDtoFeedbackEnum.accepted,
+      TodaySuggestionFeedback.later => SuggestionFeedbackDtoFeedbackEnum.later,
       TodaySuggestionFeedback.notApplicable =>
-        SuggestionFeedbackDtoFeedbackFeedback.notApplicable,
+        SuggestionFeedbackDtoFeedbackEnum.notApplicable,
       TodaySuggestionFeedback.suppress =>
-        SuggestionFeedbackDtoFeedbackFeedback.suppress,
+        SuggestionFeedbackDtoFeedbackEnum.suppress,
     };
   }
 }

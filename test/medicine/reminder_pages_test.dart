@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucent_api/api/export.dart'
+import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/database_providers.dart';

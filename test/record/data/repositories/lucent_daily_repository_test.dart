@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart' as lucent;
+import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/sync_worker.dart';
@@ -341,9 +341,9 @@ void main() {
 class _FakeDailyRecordRemoteDataSource extends DailyRecordRemoteDataSource {
   _FakeDailyRecordRemoteDataSource()
     : super(
-        api: lucent.LucentClient(
-          Dio(BaseOptions(baseUrl: 'http://localhost')),
-        ).dailyRecords,
+        api: lucent.LucentApi(
+          dio: Dio(BaseOptions(baseUrl: 'http://localhost')),
+        ).getDailyRecordsApi(),
         dio: Dio(),
       );
 

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_initializing_formals
 
 import 'package:dio/dio.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/map_utils.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 
@@ -20,7 +20,7 @@ class HealthContextRemoteDataSource {
   Future<HealthContextDataDto> fetchHealthContext() async {
     final response = await _api
         .userHealthContextControllerGetUserHealthContextV1();
-    return response.data;
+    return response.data!.data;
   }
 
   /// Calls PATCH /api/v1/user/health-context/profile and returns the parsed DTO.

@@ -28,10 +28,11 @@ class LucentNotificationRepository implements NotificationRepository {
       page: page,
       pageSize: pageSize,
     );
-    ensureEnvelopeSuccess(code: response.code, message: response.message);
+    final dto = response.data!;
+    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
     return NotificationPage(
-      items: response.items.map(_mapItem).toList(),
-      total: response.total.toInt(),
+      items: dto.items.map(_mapItem).toList(),
+      total: dto.total.toInt(),
       page: page,
       pageSize: pageSize,
     );
@@ -40,11 +41,12 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   Future<NotificationDetail?> findOne(String id) async {
     final response = await api.notificationsControllerFindOneV1(id: id);
-    ensureEnvelopeSuccess(code: response.code, message: response.message);
-    final d = response.data;
+    final dto = response.data!;
+    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+    final d = dto.data!;
     return NotificationDetail(
       id: d.id,
-      type: NotificationType.fromJson(d.type.json),
+      type: NotificationType.fromJson(d.type.value),
       title: d.title,
       content: d.content,
       action: d.action,
@@ -58,8 +60,9 @@ class LucentNotificationRepository implements NotificationRepository {
   @override
   Future<int> getUnreadCount() async {
     final response = await api.notificationsControllerGetUnreadCountV1();
-    ensureEnvelopeSuccess(code: response.code, message: response.message);
-    return response.count.toInt();
+    final dto = response.data!;
+    ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+    return dto.count.toInt();
   }
 
   @override
@@ -85,7 +88,7 @@ class LucentNotificationRepository implements NotificationRepository {
   NotificationItem _mapItem(NotificationListItemDto dto) {
     return NotificationItem(
       id: dto.id,
-      type: NotificationType.fromJson(dto.type.json),
+      type: NotificationType.fromJson(dto.type.value),
       title: dto.title,
       content: dto.content,
       action: dto.action,

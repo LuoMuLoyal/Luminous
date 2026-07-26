@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/search/data/datasources/medicine_search.dart';
 import 'package:luminous/features/search/data/mappers/medicine_search.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart';
@@ -49,7 +49,7 @@ class _FakeSearchDataSource implements MedicineSearchRemoteDataSource {
 MedicineSearchDataDto _defaultData([List<MedicineSearchItemDto>? items]) =>
     MedicineSearchDataDto(
       items: items ?? [],
-      pagination: const MedicinePaginationDto(
+      pagination: MedicinePaginationDto(
         page: 1,
         pageSize: 20,
         total: 0,
@@ -67,20 +67,28 @@ MedicineSearchResponseDto _okSearchResponse([
   );
 }
 
+MedicineDetailDataDtoDetail _minimalDetail() => MedicineDetailDataDtoDetail(
+  kind: '',
+  groups: [],
+  categories: [],
+  atcCodes: [],
+  synonyms: [],
+  foodInteractions: [],
+);
+
 MedicineDetailResponseDto _okDetailResponse({
   String name = 'Test Medicine',
   String? subtitle,
-  Map<String, dynamic>? detailJson,
 }) {
   return MedicineDetailResponseDto(
     code: 0,
     message: '',
     data: MedicineDetailDataDto(
       id: 'med-1',
-      source: MedicineDetailDataDtoSourceSource.cn,
+      source_: MedicineDetailDataDtoSource_Enum.cn,
       name: name,
       subtitle: subtitle,
-      detail: MedicineDetailDataDtoDetailDetail.fromJson(detailJson ?? {}),
+      detail: _minimalDetail(),
     ),
   );
 }
@@ -104,9 +112,9 @@ void main() {
     group('search', () {
       test('returns mapped results on success', () async {
         dataSource.searchResponse = _okSearchResponse([
-          const MedicineSearchItemDto(
+          MedicineSearchItemDto(
             id: 'med-1',
-            source: MedicineSearchItemDtoSourceSource.cn,
+            source_: MedicineSearchItemDtoSource_Enum.cn,
             name: 'Aspirin',
             subtitle: 'Pain reliever',
             summary: 'NSAID',
@@ -114,9 +122,9 @@ void main() {
             imageUrl: null,
             matchedBy: ['name'],
           ),
-          const MedicineSearchItemDto(
+          MedicineSearchItemDto(
             id: 'med-2',
-            source: MedicineSearchItemDtoSourceSource.drugbank,
+            source_: MedicineSearchItemDtoSource_Enum.drugbank,
             name: 'Ibuprofen',
             subtitle: 'NSAID',
             summary: 'Anti-inflammatory',
@@ -235,9 +243,9 @@ void main() {
 
       test('maps subtitle to empty string when null', () async {
         dataSource.searchResponse = _okSearchResponse([
-          const MedicineSearchItemDto(
+          MedicineSearchItemDto(
             id: 'med-1',
-            source: MedicineSearchItemDtoSourceSource.cn,
+            source_: MedicineSearchItemDtoSource_Enum.cn,
             name: 'Test',
             subtitle: null,
             summary: null,
@@ -276,15 +284,15 @@ void main() {
       });
 
       test('returns null on non-zero business code', () async {
-        dataSource.detailResponse = const MedicineDetailResponseDto(
+        dataSource.detailResponse = MedicineDetailResponseDto(
           code: 1002,
           message: 'Not found',
           data: MedicineDetailDataDto(
             id: 'med-x',
-            source: MedicineDetailDataDtoSourceSource.cn,
+            source_: MedicineDetailDataDtoSource_Enum.cn,
             name: '',
             subtitle: null,
-            detail: MedicineDetailDataDtoDetailDetail({}),
+            detail: _minimalDetail(),
           ),
         );
 

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
 import 'package:luminous/features/scan/domain/repositories/scan.dart';
 import 'package:mocktail/mocktail.dart';
@@ -35,9 +35,9 @@ void main() {
   group('LucentScanRepository.search', () {
     test('returns response data from API', () async {
       final items = [
-        const MedicineSearchItemDto(
+        MedicineSearchItemDto(
           id: 'med-1',
-          source: MedicineSearchItemDtoSourceSource.cn,
+          source_: MedicineSearchItemDtoSource_Enum.cn,
           name: '阿莫西林胶囊',
           subtitle: '抗生素',
           summary: '用于敏感菌所致感染',
@@ -51,7 +51,7 @@ void main() {
         message: 'ok',
         data: MedicineSearchDataDto(
           items: items,
-          pagination: const MedicinePaginationDto(
+          pagination: MedicinePaginationDto(
             page: 1,
             pageSize: 20,
             total: 1,
@@ -62,12 +62,18 @@ void main() {
 
       when(
         () => mockApi.medicinesControllerSearchV1(
-          source: any(named: 'source'),
+          source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
           pageSize: any(named: 'pageSize'),
         ),
-      ).thenAnswer((_) async => searchResponse);
+      ).thenAnswer(
+        (_) async => Response<MedicineSearchResponseDto>(
+          data: searchResponse,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       final result = await repo.search('阿莫西林');
 
@@ -78,7 +84,7 @@ void main() {
 
       verify(
         () => mockApi.medicinesControllerSearchV1(
-          source: Source.cn,
+          source_: 'cn',
           q: '阿莫西林',
           page: 1,
           pageSize: 20,
@@ -87,7 +93,7 @@ void main() {
     });
 
     test('returns empty list when API returns empty data', () async {
-      const emptyResponse = MedicineSearchResponseDto(
+      final emptyResponse = MedicineSearchResponseDto(
         code: 0,
         message: 'ok',
         data: MedicineSearchDataDto(
@@ -103,12 +109,18 @@ void main() {
 
       when(
         () => mockApi.medicinesControllerSearchV1(
-          source: any(named: 'source'),
+          source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
           pageSize: any(named: 'pageSize'),
         ),
-      ).thenAnswer((_) async => emptyResponse);
+      ).thenAnswer(
+        (_) async => Response<MedicineSearchResponseDto>(
+          data: emptyResponse,
+          statusCode: 200,
+          requestOptions: RequestOptions(path: ''),
+        ),
+      );
 
       final result = await repo.search('nonexistent');
 
@@ -118,7 +130,7 @@ void main() {
     test('propagates API errors', () async {
       when(
         () => mockApi.medicinesControllerSearchV1(
-          source: any(named: 'source'),
+          source_: any(named: 'source_'),
           q: any(named: 'q'),
           page: any(named: 'page'),
           pageSize: any(named: 'pageSize'),

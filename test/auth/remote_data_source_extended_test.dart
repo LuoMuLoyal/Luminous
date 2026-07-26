@@ -3,7 +3,8 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -24,9 +25,11 @@ class _MockAdapter implements HttpClientAdapter {
     Future<dynamic>? cancelFuture,
   ) async {
     lastPath = options.path;
-    lastBody = options.data is Map
-        ? Map<String, dynamic>.from(options.data as Map)
-        : null;
+    lastBody = switch (options.data) {
+      final Map<String, dynamic> map => Map<String, dynamic>.from(map),
+      final String json => jsonDecode(json) as Map<String, dynamic>?,
+      _ => null,
+    };
 
     final json = body != null ? utf8.encode(jsonEncode(body)) : <int>[];
     return ResponseBody(
@@ -129,7 +132,7 @@ void main() {
       store = _MemStore();
       final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'))
         ..httpClientAdapter = adapter;
-      client = LucentClient(dio, baseUrl: 'http://localhost:3000');
+      client = LucentClient(LucentApi(dio: dio));
       dataSource = LucentAuthRepository(client, store);
     });
 
@@ -734,7 +737,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          SendVerificationCodeDtoSceneScene.resetPassword.json,
+          SendVerificationCodeDtoSceneEnum.resetPassword.value,
         );
       });
 
@@ -752,7 +755,7 @@ void main() {
 
         expect(
           adapter.lastBody?['scene'],
-          SendVerificationCodeDtoSceneScene.changeEmail.json,
+          SendVerificationCodeDtoSceneEnum.changeEmail.value,
         );
       });
     });

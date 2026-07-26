@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/notification/data/providers/unread_count.dart';
@@ -11,7 +12,15 @@ import 'package:luminous/features/notification/presentation/providers/notificati
 
 import '../auth/test_helpers.dart' as auth_helpers;
 
-// ── Fake NotificationsApi ───────────────────────────────────────────────────
+// ── Response helper ─────────────────────────────────────────────────────────
+
+Response<T> _response<T>(T data) => Response<T>(
+  data: data,
+  requestOptions: RequestOptions(path: ''),
+  statusCode: 200,
+);
+
+// ── Fake NotificationsApi ─────────────────────────────────────────────────────
 
 class FakeNotificationsApi implements NotificationsApi {
   FakeNotificationsApi({
@@ -28,112 +37,182 @@ class FakeNotificationsApi implements NotificationsApi {
   int findAllCallCount = 0;
 
   @override
-  Future<UnreadCountResponseDto>
-  notificationsControllerGetUnreadCountV1() async {
+  Future<Response<UnreadCountResponseDto>>
+  notificationsControllerGetUnreadCountV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     if (shouldThrow) {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
-    return UnreadCountResponseDto(code: 0, message: '', count: unreadCount);
+    return _response(
+      UnreadCountResponseDto(code: 0, message: '', count: unreadCount),
+    );
   }
 
   @override
-  Future<NotificationListResponseDto> notificationsControllerFindAllV1({
+  Future<Response<NotificationListResponseDto>>
+  notificationsControllerFindAllV1({
     required num page,
     required num pageSize,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
     findAllCallCount++;
     if (shouldThrow) {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
-    return NotificationListResponseDto(
-      code: 0,
-      message: '',
-      items: notifications,
-      total: notifications.length,
+    return _response(
+      NotificationListResponseDto(
+        code: 0,
+        message: '',
+        items: notifications,
+        total: notifications.length,
+      ),
     );
   }
 
   @override
-  Future<NotificationDetailResponseDto> notificationsControllerFindOneV1({
+  Future<Response<NotificationDetailResponseDto>>
+  notificationsControllerFindOneV1({
     required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
     if (shouldThrow) {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
-    return NotificationDetailResponseDto(
-      code: 0,
-      message: '',
-      data:
-          detail ??
-          NotificationDetailDto(
-            id: id,
-            type: UserNotificationType.medicineReminder,
-            title: '',
-            content: '',
-            isRead: false,
-            createdAt: '2026-06-10T08:00:00.000Z',
-          ),
+    return _response(
+      NotificationDetailResponseDto(
+        code: 0,
+        message: '',
+        data:
+            detail ??
+            NotificationDetailDto(
+              id: id,
+              type: UserNotificationType.medicineReminder,
+              title: '',
+              content: '',
+              isRead: false,
+              createdAt: '2026-06-10T08:00:00.000Z',
+            ),
+      ),
     );
   }
 
   @override
-  Future<void> notificationsControllerRemoveV1({required String id}) async {}
-
-  @override
-  Future<UnreadCountResponseDto>
-  notificationsControllerMarkAllAsReadV1() async {
-    return const UnreadCountResponseDto(code: 0, message: '', count: 0);
-  }
-
-  @override
-  Future<NotificationListResponseDto> notificationsControllerCreateV1({
-    required CreateNotificationDto body,
-  }) async {
-    return const NotificationListResponseDto(
-      code: 0,
-      message: '',
-      items: [],
-      total: 0,
-    );
-  }
-
-  @override
-  Future<NotificationDetailResponseDto> notificationsControllerMarkAsReadV1({
+  Future<Response<void>> notificationsControllerRemoveV1({
     required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
-    return NotificationDetailResponseDto(
-      code: 0,
-      message: '',
-      data:
-          detail ??
-          NotificationDetailDto(
-            id: id,
-            type: UserNotificationType.medicineReminder,
-            title: '',
-            content: '',
-            isRead: true,
-            createdAt: '2026-06-10T08:00:00.000Z',
-          ),
+    return Response<void>(
+      data: null,
+      requestOptions: RequestOptions(path: ''),
+      statusCode: 200,
     );
   }
 
   @override
-  Future<NotificationDetailResponseDto> notificationsControllerMarkAsUnreadV1({
-    required String id,
+  Future<Response<UnreadCountResponseDto>>
+  notificationsControllerMarkAllAsReadV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
   }) async {
-    return NotificationDetailResponseDto(
-      code: 0,
-      message: '',
-      data:
-          detail ??
-          NotificationDetailDto(
-            id: id,
-            type: UserNotificationType.medicineReminder,
-            title: '',
-            content: '',
-            isRead: false,
-            createdAt: '2026-06-10T08:00:00.000Z',
-          ),
+    return _response(UnreadCountResponseDto(code: 0, message: '', count: 0));
+  }
+
+  @override
+  Future<Response<NotificationListResponseDto>>
+  notificationsControllerCreateV1({
+    required CreateNotificationDto createNotificationDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return _response(
+      NotificationListResponseDto(code: 0, message: '', items: [], total: 0),
+    );
+  }
+
+  @override
+  Future<Response<NotificationDetailResponseDto>>
+  notificationsControllerMarkAsReadV1({
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return _response(
+      NotificationDetailResponseDto(
+        code: 0,
+        message: '',
+        data:
+            detail ??
+            NotificationDetailDto(
+              id: id,
+              type: UserNotificationType.medicineReminder,
+              title: '',
+              content: '',
+              isRead: true,
+              createdAt: '2026-06-10T08:00:00.000Z',
+            ),
+      ),
+    );
+  }
+
+  @override
+  Future<Response<NotificationDetailResponseDto>>
+  notificationsControllerMarkAsUnreadV1({
+    required String id,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return _response(
+      NotificationDetailResponseDto(
+        code: 0,
+        message: '',
+        data:
+            detail ??
+            NotificationDetailDto(
+              id: id,
+              type: UserNotificationType.medicineReminder,
+              title: '',
+              content: '',
+              isRead: false,
+              createdAt: '2026-06-10T08:00:00.000Z',
+            ),
+      ),
     );
   }
 }
@@ -142,7 +221,8 @@ class FakeNotificationsApi implements NotificationsApi {
 
 /// A [LucentClient] subclass that returns a fake [NotificationsApi].
 class _FakeLucentClient extends LucentClient {
-  _FakeLucentClient({required this.notificationsApi}) : super(Dio());
+  _FakeLucentClient({required this.notificationsApi})
+    : super(LucentApi(dio: Dio()));
 
   final NotificationsApi notificationsApi;
 
@@ -154,12 +234,17 @@ class _ErrorUnreadCountApi extends FakeNotificationsApi {
   _ErrorUnreadCountApi() : super(unreadCount: 0);
 
   @override
-  Future<UnreadCountResponseDto>
-  notificationsControllerGetUnreadCountV1() async {
-    return const UnreadCountResponseDto(
-      code: 500001,
-      message: 'Server error',
-      count: 0,
+  Future<Response<UnreadCountResponseDto>>
+  notificationsControllerGetUnreadCountV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    return _response(
+      UnreadCountResponseDto(code: 500001, message: 'Server error', count: 0),
     );
   }
 }
@@ -222,7 +307,7 @@ void main() {
   group('notificationDetailProvider', () {
     test('returns notification detail', () async {
       final api = FakeNotificationsApi(
-        detail: const NotificationDetailDto(
+        detail: NotificationDetailDto(
           id: 'notif-1',
           type: UserNotificationType.medicineReminder,
           title: 'Missed dose',

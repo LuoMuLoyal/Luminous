@@ -1,4 +1,5 @@
-import 'package:lucent_api/api/export.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
@@ -27,17 +28,17 @@ class LucentAuthRepository implements AuthRepository {
     );
   }
 
-  SendVerificationCodeDtoSceneScene _toDtoScene(AuthVerificationScene scene) {
+  SendVerificationCodeDtoSceneEnum _toDtoScene(AuthVerificationScene scene) {
     return switch (scene) {
       AuthVerificationScene.register =>
-        SendVerificationCodeDtoSceneScene.register,
-      AuthVerificationScene.login => SendVerificationCodeDtoSceneScene.login,
+        SendVerificationCodeDtoSceneEnum.register,
+      AuthVerificationScene.login => SendVerificationCodeDtoSceneEnum.login,
       AuthVerificationScene.resetPassword =>
-        SendVerificationCodeDtoSceneScene.resetPassword,
+        SendVerificationCodeDtoSceneEnum.resetPassword,
       AuthVerificationScene.changeEmail =>
-        SendVerificationCodeDtoSceneScene.changeEmail,
+        SendVerificationCodeDtoSceneEnum.changeEmail,
       AuthVerificationScene.deleteAccount =>
-        SendVerificationCodeDtoSceneScene.deleteAccount,
+        SendVerificationCodeDtoSceneEnum.deleteAccount,
     };
   }
 
@@ -50,7 +51,7 @@ class LucentAuthRepository implements AuthRepository {
     final trimmedPassword = password?.trim();
     final trimmedCode = code?.trim();
     final response = await _client.auth.localControllerLoginV1(
-      body: LoginDto(
+      loginDto: LoginDto(
         email: email.trim(),
         password: trimmedPassword == null || trimmedPassword.isEmpty
             ? null
@@ -58,7 +59,7 @@ class LucentAuthRepository implements AuthRepository {
         code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response);
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
     await _persistSession(session);
     return session;
   }
@@ -70,11 +71,12 @@ class LucentAuthRepository implements AuthRepository {
     final trimmedCallbackUri = callbackUri?.trim();
     final response = await _client.auth
         .oAuthControllerCreateWechatWebAuthorizeUrlV1(
-          body: trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
+          oAuthAuthorizeDto:
+              trimmedCallbackUri != null && trimmedCallbackUri.isNotEmpty
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data);
+    return _mapAuthorizeData(response.data!.data);
   }
 
   @override
@@ -84,13 +86,13 @@ class LucentAuthRepository implements AuthRepository {
     final trimmedIdentityCallbackUri = callbackUri?.trim();
     final response = await _client.account
         .accountControllerCreateWechatWebIdentityLinkAuthorizeUrlV1(
-          body:
+          oAuthAuthorizeDto:
               trimmedIdentityCallbackUri != null &&
                   trimmedIdentityCallbackUri.isNotEmpty
               ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data);
+    return _mapAuthorizeData(response.data!.data);
   }
 
   @override
@@ -99,9 +101,12 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) async {
     final response = await _client.auth.oAuthControllerLoginWithWechatWebV1(
-      body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
+      oAuthCallbackDto: OAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
     );
-    final session = AuthMapper.toSessionFromLogin(response);
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
     await _persistSession(session);
     return session;
   }
@@ -109,9 +114,9 @@ class LucentAuthRepository implements AuthRepository {
   @override
   Future<AuthSession> loginWithWechatMobile({required String code}) async {
     final response = await _client.auth.oAuthControllerLoginWithWechatMobileV1(
-      body: OAuthCodeCallbackDto(code: code.trim()),
+      oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
     );
-    final session = AuthMapper.toSessionFromLogin(response);
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
     await _persistSession(session);
     return session;
   }
@@ -124,14 +129,14 @@ class LucentAuthRepository implements AuthRepository {
     String? familyName,
   }) async {
     final response = await _client.auth.oAuthControllerLoginWithAppleV1(
-      body: AppleOAuthCallbackDto(
+      appleOAuthCallbackDto: AppleOAuthCallbackDto(
         identityToken: identityToken,
         authorizationCode: authorizationCode,
         givenName: givenName,
         familyName: familyName,
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response);
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
     await _persistSession(session);
     return session;
   }
@@ -140,11 +145,12 @@ class LucentAuthRepository implements AuthRepository {
   Future<OAuthAuthorizeData> createQqAuthorizeUrl({String? callbackUri}) async {
     final trimmedQqCallbackUri = callbackUri?.trim();
     final response = await _client.auth.oAuthControllerCreateQqAuthorizeUrlV1(
-      body: trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
+      qqOAuthAuthorizeDto:
+          trimmedQqCallbackUri != null && trimmedQqCallbackUri.isNotEmpty
           ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
           : null,
     );
-    return _mapAuthorizeData(response.data);
+    return _mapAuthorizeData(response.data!.data);
   }
 
   @override
@@ -153,9 +159,12 @@ class LucentAuthRepository implements AuthRepository {
     required String state,
   }) async {
     final response = await _client.auth.oAuthControllerLoginWithQqV1(
-      body: QqOAuthCallbackDto(code: code.trim(), state: state.trim()),
+      qqOAuthCallbackDto: QqOAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
     );
-    final session = AuthMapper.toSessionFromLogin(response);
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
     await _persistSession(session);
     return session;
   }
@@ -167,18 +176,21 @@ class LucentAuthRepository implements AuthRepository {
   }) async {
     final response = await _client.account
         .accountControllerLinkWechatWebIdentityV1(
-          body: OAuthCallbackDto(code: code.trim(), state: state.trim()),
+          oAuthCallbackDto: OAuthCallbackDto(
+            code: code.trim(),
+            state: state.trim(),
+          ),
         );
-    return _authUserFromAccount(response.data);
+    return _authUserFromAccount(response.data!.data);
   }
 
   @override
   Future<AuthUser> linkWechatMobileIdentity({required String code}) async {
     final response = await _client.account
         .accountControllerLinkWechatMobileIdentityV1(
-          body: OAuthCodeCallbackDto(code: code.trim()),
+          oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
         );
-    return _authUserFromAccount(response.data);
+    return _authUserFromAccount(response.data!.data);
   }
 
   @override
@@ -190,7 +202,7 @@ class LucentAuthRepository implements AuthRepository {
   }) async {
     final trimmedNickname = nickname?.trim();
     final response = await _client.auth.localControllerRegisterV1(
-      body: RegisterDto(
+      registerDto: RegisterDto(
         email: email.trim(),
         password: password.trim(),
         code: code.trim(),
@@ -199,7 +211,7 @@ class LucentAuthRepository implements AuthRepository {
             : trimmedNickname,
       ),
     );
-    return AuthMapper.toSessionFromRegister(response);
+    return AuthMapper.toSessionFromRegister(response.data!.data);
   }
 
   @override
@@ -211,7 +223,7 @@ class LucentAuthRepository implements AuthRepository {
     }
 
     await _client.auth.sessionControllerLogoutV1(
-      body: LogoutDto(refreshToken: refreshToken),
+      logoutDto: LogoutDto(refreshToken: refreshToken),
     );
     await _sessionStore.clear();
   }
@@ -219,7 +231,7 @@ class LucentAuthRepository implements AuthRepository {
   @override
   Future<AuthUser> fetchAccount() async {
     final response = await _client.account.accountControllerGetAccountV1();
-    return _authUserFromAccount(response.data);
+    return _authUserFromAccount(response.data!.data);
   }
 
   @override
@@ -228,12 +240,12 @@ class LucentAuthRepository implements AuthRepository {
     required AuthVerificationScene scene,
   }) async {
     final response = await _client.auth.localControllerSendVerificationCodeV1(
-      body: SendVerificationCodeDto(
+      sendVerificationCodeDto: SendVerificationCodeDto(
         email: email.trim(),
         scene: _toDtoScene(scene),
       ),
     );
-    return _mapCooldown(response.data);
+    return _mapCooldown(response.data!.data);
   }
 
   @override
@@ -243,7 +255,7 @@ class LucentAuthRepository implements AuthRepository {
     required String password,
   }) async {
     await _client.auth.localControllerResetPasswordV1(
-      body: ResetPasswordDto(
+      resetPasswordDto: ResetPasswordDto(
         email: email.trim(),
         code: code.trim(),
         password: password.trim(),
@@ -254,9 +266,9 @@ class LucentAuthRepository implements AuthRepository {
   @override
   Future<VerificationCooldown> forgotPassword({required String email}) async {
     final response = await _client.auth.localControllerForgotPasswordV1(
-      body: ForgotPasswordDto(email: email.trim()),
+      forgotPasswordDto: ForgotPasswordDto(email: email.trim()),
     );
-    return _mapCooldown(response.data);
+    return _mapCooldown(response.data!.data);
   }
 
   @override
@@ -265,7 +277,7 @@ class LucentAuthRepository implements AuthRepository {
     required String code,
   }) async {
     await _client.auth.localControllerVerifyEmailV1(
-      body: VerifyEmailDto(email: email.trim(), code: code.trim()),
+      verifyEmailDto: VerifyEmailDto(email: email.trim(), code: code.trim()),
     );
   }
 
@@ -275,12 +287,12 @@ class LucentAuthRepository implements AuthRepository {
     String? avatar,
   }) async {
     final response = await _client.account.accountControllerUpdateAccountV1(
-      body: UpdateAccountDto(
+      updateAccountDto: UpdateAccountDto(
         nickname: nickname?.trim(),
         avatar: avatar?.trim(),
       ),
     );
-    return _authUserFromAccount(response.data);
+    return _authUserFromAccount(response.data!.data);
   }
 
   @override
@@ -289,7 +301,7 @@ class LucentAuthRepository implements AuthRepository {
     required String newPassword,
   }) async {
     await _client.account.accountControllerChangePasswordV1(
-      body: ChangePasswordDto(
+      changePasswordDto: ChangePasswordDto(
         oldPassword: oldPassword.trim(),
         newPassword: newPassword.trim(),
       ),
@@ -304,11 +316,14 @@ class LucentAuthRepository implements AuthRepository {
     required AuthUser currentUser,
   }) async {
     final response = await _client.account.accountControllerChangeEmailV1(
-      body: ChangeEmailDto(newEmail: newEmail.trim(), code: code.trim()),
+      changeEmailDto: ChangeEmailDto(
+        newEmail: newEmail.trim(),
+        code: code.trim(),
+      ),
     );
     return currentUser.copyWith(
-      email: response.data.email,
-      emailVerifiedAt: DateTime.parse(response.data.emailVerifiedAt),
+      email: response.data!.data.email,
+      emailVerifiedAt: DateTime.parse(response.data!.data.emailVerifiedAt),
     );
   }
 
@@ -317,7 +332,7 @@ class LucentAuthRepository implements AuthRepository {
     final trimmedPassword = password?.trim();
     final trimmedCode = code?.trim();
     await _client.account.accountControllerDeleteAccountV1(
-      body: DeleteAccountDto(
+      deleteAccountDto: DeleteAccountDto(
         password: trimmedPassword == null || trimmedPassword.isEmpty
             ? null
             : trimmedPassword,
@@ -332,7 +347,7 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.account.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
-    return _authUserFromAccount(response.data);
+    return _authUserFromAccount(response.data!.data);
   }
 
   AuthUser _authUserFromAccount(AccountDto user) {
