@@ -72,7 +72,7 @@
   "reportMetricSleepTitle": "Sleep",
   "reportMetricWaterTitle": "Water",
   "reportMetricOverallTitle": "Overall status",
-  "reportMetricOverallDelta": "Combined last 7 days",
+  "reportMetricOverallDelta": "Combined",
   "reportUnitPercent": "%",
   "reportUnitHour": "hours",
   "reportUnitLiter": "L",
