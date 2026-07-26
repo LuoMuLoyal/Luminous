@@ -339,6 +339,17 @@ class ReportPage extends ConsumerWidget {
     final isDesktop = width >= Breakpoints.desktop;
     final suggestionHistory =
         suggestionHistoryAsync?.asData?.value?.items
+            .fold<Map<String, TodaySuggestionHistoryItem>>({}, (map, item) {
+              final key = '${item.title}|${item.reason}|${item.type.name}';
+              final existing = map[key];
+              if (existing == null ||
+                  _suggestionLifecycleRank(item.lifecycleState) >
+                      _suggestionLifecycleRank(existing.lifecycleState)) {
+                map[key] = item;
+              }
+              return map;
+            })
+            .values
             .take(3)
             .toList(growable: false) ??
         const <TodaySuggestionHistoryItem>[];
@@ -464,3 +475,12 @@ class _ReportMobileShell extends StatelessWidget {
     );
   }
 }
+
+int _suggestionLifecycleRank(TodaySuggestionLifecycleState state) =>
+    switch (state) {
+      TodaySuggestionLifecycleState.active => 3,
+      TodaySuggestionLifecycleState.generated => 2,
+      TodaySuggestionLifecycleState.fading => 1,
+      TodaySuggestionLifecycleState.dismissed => 0,
+      TodaySuggestionLifecycleState.expired => -1,
+    };
