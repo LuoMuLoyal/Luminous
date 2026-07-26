@@ -13,7 +13,6 @@ import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/providers/ai_summary.dart';
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';
@@ -43,25 +42,6 @@ class ReportPage extends ConsumerWidget {
     final query = ref.read(reportDashboardSelectedQueryProvider);
     ref.invalidate(reportDashboardProvider(query));
     await ref.read(reportDashboardProvider(query).future);
-  }
-
-  void _openRecordFilter(
-    BuildContext context,
-    WidgetRef ref,
-    ReportDataKind kind,
-  ) {
-    final filterType = switch (kind) {
-      ReportDataKind.medication => RecordEntryType.medication,
-      ReportDataKind.water => RecordEntryType.water,
-      ReportDataKind.sleep => RecordEntryType.sleep,
-      ReportDataKind.general => null,
-    };
-    if (context.mounted) {
-      final route = filterType != null
-          ? '/record?filter=${Uri.encodeComponent(filterType.name)}'
-          : '/record';
-      context.push(route);
-    }
   }
 
   Future<void> _handleExportAction(
@@ -394,7 +374,6 @@ class ReportPage extends ConsumerWidget {
             .generate();
       },
       onExportActionTap: (kind) => _handleExportAction(context, ref, kind),
-      onMetricSelected: (kind) => _openRecordFilter(context, ref, kind),
     );
 
     if (isDesktop) {

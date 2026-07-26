@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/intl.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart';
@@ -60,20 +59,16 @@ void main() {
       await tester.pump(const Duration(milliseconds: 400));
 
       expect(find.text(l10n.tabReport), findsOneWidget);
-      final now = DateTime.now();
-      final startLabel = DateFormat(
-        'M月d日',
-        'zh',
-      ).format(now.subtract(const Duration(days: 7)));
-      final endLabel = DateFormat('M月d日', 'zh').format(now);
-      expect(find.text('$startLabel - $endLabel'), findsOneWidget);
       expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
       expect(find.byKey(const Key('report-snapshot-status')), findsNothing);
       expect(
-        find.byKey(const Key('report-top-generate-action')),
+        find.byKey(const Key('report-readiness-generate-action')),
         findsOneWidget,
       );
-      expect(find.byKey(const Key('report-top-sync-action')), findsOneWidget);
+      expect(
+        find.byKey(const Key('report-readiness-sync-action')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('report-score-hero')), findsNothing);
 
       final scrollable = find.byType(Scrollable).first;
@@ -83,8 +78,8 @@ void main() {
         'report-findings-section',
         'report-suggestion-history-section',
         'report-ai-summary-section',
-        'report-export-section',
         'report-patterns-section',
+        'report-export-section',
       ];
 
       for (final key in keys) {
@@ -420,8 +415,11 @@ void main() {
     await tester.pump();
     expect(repo.fetchCount, 1);
     expect(find.byType(ReportSkeletonView), findsOneWidget);
-    // Action bar is shown but buttons are disabled during loading
-    expect(find.byKey(const Key('report-top-generate-action')), findsOneWidget);
+    // During loading the skeleton is shown; action buttons are not rendered.
+    expect(
+      find.byKey(const Key('report-readiness-generate-action')),
+      findsNothing,
+    );
     expect(repo.fetchCount, 1);
 
     repo.complete(MockReportRepository.previewDashboard);
@@ -526,7 +524,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(repo.fetchCount, 1);
 
-    await tester.tap(find.byKey(const Key('report-top-sync-action')));
+    await tester.tap(find.byKey(const Key('report-readiness-sync-action')));
     await tester.pumpAndSettle();
     expect(repo.fetchCount, 2);
   });

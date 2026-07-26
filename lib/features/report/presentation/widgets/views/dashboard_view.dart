@@ -9,7 +9,6 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/ai_summary.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/findings.dart';
-import 'package:luminous/features/report/presentation/widgets/sections/metrics_grid.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/patterns.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/preview_empty.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
@@ -36,7 +35,6 @@ class ReportDashboardView extends StatelessWidget {
     this.onAiSummaryRangeChanged,
     this.onGenerateAiSummary,
     this.onExportActionTap,
-    this.onMetricSelected,
     this.latestExportRequest,
     this.exportRequestInFlight = const DataExportRequestInFlightState(
       inFlight: false,
@@ -63,7 +61,6 @@ class ReportDashboardView extends StatelessWidget {
   final ValueChanged<ReportAiSummaryRange>? onAiSummaryRangeChanged;
   final Future<void> Function()? onGenerateAiSummary;
   final Future<void> Function(ReportExportKind kind)? onExportActionTap;
-  final ValueChanged<ReportDataKind>? onMetricSelected;
   final DataExportRequestDataDto? latestExportRequest;
   final DataExportRequestInFlightState exportRequestInFlight;
   final bool clinicShareInFlight;
@@ -135,14 +132,6 @@ class ReportDashboardView extends StatelessWidget {
           onSync: onSync,
           isGenerating:
               aiSummaryState.status == ReportAiSummaryCardStatus.loading,
-        ),
-        const SizedBox(height: Spacing.level5),
-        ReportMetricsGrid(
-          key: const Key('report-metrics-grid'),
-          dashboard: dashboard,
-          metrics: dashboard.metrics,
-          l10n: l10n,
-          onMetricSelected: onMetricSelected,
         ),
         const SizedBox(height: Spacing.level5),
         ReportTrendSection(
@@ -296,14 +285,6 @@ class ReportDashboardView extends StatelessWidget {
           onSync: onSync,
           isGenerating:
               aiSummaryState.status == ReportAiSummaryCardStatus.loading,
-        ),
-        const SizedBox(height: Spacing.level5),
-        ReportMetricsGrid(
-          key: const Key('report-metrics-grid'),
-          dashboard: dashboard,
-          metrics: dashboard.metrics,
-          l10n: l10n,
-          onMetricSelected: onMetricSelected,
         ),
         const SizedBox(height: Spacing.level5),
         // Dual-column body: left (trend + findings + history) | right (AI + patterns)
