@@ -87,13 +87,8 @@ class _DesktopAuthShell extends StatelessWidget {
 
     return FScaffold(
       childPad: false,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: GradientTokens.tintFade(
-            const Color(0xFFF5F8FF),
-            colors.background,
-          ),
-        ),
+      child: ColoredBox(
+        color: colors.background,
         child: Stack(
           children: [
             Center(
@@ -121,7 +116,7 @@ class _DesktopAuthShell extends StatelessWidget {
                                     title: title,
                                     leading: null,
                                     centerTitle: centerTitle,
-                                    logo: logo,
+                                    logo: null,
                                     subtitle: subtitle,
                                   ),
                                   if (formModeSelector != null) ...[
@@ -168,75 +163,95 @@ class _DesktopAuthShell extends StatelessWidget {
 class _DesktopBrandPanel extends StatelessWidget {
   const _DesktopBrandPanel();
 
-  static const _transparentLogoPath = 'assets/icon/app_icon_transparent.png';
-
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
     final l10n = AppLocalizations.of(context)!;
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.level10,
-          vertical: Spacing.level8,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo
-            Image.asset(
-              _transparentLogoPath,
-              width: 80,
-              height: 80,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                FLucideIcons.shieldPlus,
-                color: colors.primary,
-                size: 80,
-              ),
-            ),
-            const SizedBox(height: Spacing.level6),
-            // Tagline
-            Text(
-              l10n.authBrandTagline,
-              style: TypographyToken.level9
-                  .display(context)
-                  .copyWith(
-                    color: colors.foreground,
-                    fontWeight: FontWeight.w800,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final logoSize = constraints.maxWidth * 1.4;
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Faded logo watermark — adaptive size, centered behind text.
+              // OverflowBox bypasses Align's loose constraints so the image
+              // can render larger than the Stack's own bounds.
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: OverflowBox(
+                    maxWidth: logoSize,
+                    maxHeight: logoSize,
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        colors.foreground.withValues(alpha: 0.03),
+                        BlendMode.srcIn,
+                      ),
+                      child: Image.asset(
+                        'assets/icon/app_icon.png',
+                        width: logoSize,
+                        height: logoSize,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
-            ),
-            const SizedBox(height: Spacing.level4),
-            // Description
-            Text(
-              l10n.authBrandDescription,
-              style: TypographyToken.level5
-                  .body(context)
-                  .copyWith(color: colors.mutedForeground),
-            ),
-            const SizedBox(height: Spacing.level9),
-            // Feature list
-            _BrandFeatureItem(
-              icon: FLucideIcons.layoutList,
-              title: l10n.authBrandFeatureRecords,
-              description: l10n.authBrandFeatureRecordsDesc,
-            ),
-            const SizedBox(height: Spacing.level5),
-            _BrandFeatureItem(
-              icon: FLucideIcons.sparkles,
-              title: l10n.authBrandFeatureAnalysis,
-              description: l10n.authBrandFeatureAnalysisDesc,
-            ),
-            const SizedBox(height: Spacing.level5),
-            _BrandFeatureItem(
-              icon: FLucideIcons.shieldCheck,
-              title: l10n.authBrandFeaturePrivacy,
-              description: l10n.authBrandFeaturePrivacyDesc,
-            ),
-          ],
-        ),
+                ),
+              ),
+              // Brand content.
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.level10,
+                  vertical: Spacing.level8,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Tagline
+                    Text(
+                      l10n.authBrandTagline,
+                      style: TypographyToken.level9
+                          .display(context)
+                          .copyWith(
+                            color: colors.foreground,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                    const SizedBox(height: Spacing.level4),
+                    // Description
+                    Text(
+                      l10n.authBrandDescription,
+                      style: TypographyToken.level5
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                    const SizedBox(height: Spacing.level9),
+                    // Feature list
+                    _BrandFeatureItem(
+                      icon: FLucideIcons.layoutList,
+                      title: l10n.authBrandFeatureRecords,
+                      description: l10n.authBrandFeatureRecordsDesc,
+                    ),
+                    const SizedBox(height: Spacing.level5),
+                    _BrandFeatureItem(
+                      icon: FLucideIcons.sparkles,
+                      title: l10n.authBrandFeatureAnalysis,
+                      description: l10n.authBrandFeatureAnalysisDesc,
+                    ),
+                    const SizedBox(height: Spacing.level5),
+                    _BrandFeatureItem(
+                      icon: FLucideIcons.shieldCheck,
+                      title: l10n.authBrandFeaturePrivacy,
+                      description: l10n.authBrandFeaturePrivacyDesc,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

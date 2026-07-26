@@ -372,59 +372,122 @@ class LoginPage extends HookConsumerWidget {
             ),
             const SizedBox(height: Spacing.level4),
             Wrap(
-              alignment: WrapAlignment.start,
+              alignment: WrapAlignment.spaceBetween,
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: Spacing.level2,
-              runSpacing: Spacing.level1,
+              runSpacing: Spacing.level2,
               children: [
-                Text(
-                  l10n.authNeedAccountPrompt,
-                  style: TypographyToken.level2
-                      .body(context)
-                      .copyWith(color: context.theme.colors.mutedForeground),
+                // Group: "需要账号？" + "立即注册"
+                Wrap(
+                  alignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: Spacing.level2,
+                  children: [
+                    Text(
+                      l10n.authNeedAccountPrompt,
+                      style: TypographyToken.level2
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                    ),
+                    FButton(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.sm,
+                      mainAxisSize: MainAxisSize.min,
+                      onPress: () => context.push(Routes.register),
+                      child: Text(
+                        l10n.authRegisterNowAction,
+                        style: TypographyToken.level2.body(context),
+                      ),
+                    ),
+                  ],
                 ),
+                // "忘记密码"
                 FButton(
                   variant: FButtonVariant.ghost,
                   size: FButtonSizeVariant.sm,
                   mainAxisSize: MainAxisSize.min,
-                  onPress: () => context.push(Routes.register),
+                  onPress: () => context.push(Routes.forgotPassword),
                   child: Text(
-                    l10n.authRegisterNowAction,
+                    l10n.authForgotPasswordPrompt,
                     style: TypographyToken.level2.body(context),
                   ),
                 ),
               ],
             ),
-            FButton(
-              variant: FButtonVariant.ghost,
-              size: FButtonSizeVariant.sm,
-              mainAxisSize: MainAxisSize.min,
-              onPress: () => context.push(Routes.forgotPassword),
-              child: Text(
-                l10n.authForgotPasswordPrompt,
-                style: TypographyToken.level2.body(context),
+            // Terms notice — passive, non-blocking.
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: Spacing.level1,
+                runSpacing: Spacing.level1,
+                children: [
+                  Text(
+                    l10n
+                        .authLoginTermsAgreement('', '')
+                        .trimRight()
+                        .replaceAll(RegExp(r'\s+(and|与)\s*$'), ''),
+                    style: TypographyToken.level2
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
+                  ),
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.sm,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: () => context.push('${Routes.legal}/terms'),
+                    child: Text(
+                      l10n.authTermsOfService,
+                      style: TypographyToken.level2
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                  Text(
+                    l10n.localeName.startsWith('zh') ? '与' : 'and',
+                    style: TypographyToken.level2
+                        .body(context)
+                        .copyWith(color: context.theme.colors.mutedForeground),
+                  ),
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    size: FButtonSizeVariant.sm,
+                    mainAxisSize: MainAxisSize.min,
+                    onPress: () => context.push('${Routes.legal}/privacy'),
+                    child: Text(
+                      l10n.authPrivacyPolicy,
+                      style: TypographyToken.level2
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: Spacing.level5),
-            WechatOAuthPanel(
-              callbackController: wechatCallbackController,
-              isStarting: oauthState.isStartingWechat,
-              isCompleting: oauthState.isCompletingWechat,
-              authorizeUrl: oauthState.wechatAuthorizeUrl,
-              onStart: startWechatLogin,
-              onComplete: completeWechatLoginFromInput,
-            ),
-            QqOAuthPanel(
-              callbackController: qqCallbackController,
-              isStarting: oauthState.isStartingQq,
-              isCompleting: oauthState.isCompletingQq,
-              authorizeUrl: oauthState.qqAuthorizeUrl,
-              onStart: startQqLogin,
-              onComplete: completeQqLoginFromInput,
-            ),
-            AppleOAuthPanel(
-              isLoading: oauthState.isStartingApple,
-              onSignIn: startAppleLogin,
+            OAuthButtonRow(
+              wechatCallbackController: wechatCallbackController,
+              isStartingWechat: oauthState.isStartingWechat,
+              isCompletingWechat: oauthState.isCompletingWechat,
+              wechatAuthorizeUrl: oauthState.wechatAuthorizeUrl,
+              onWechatStart: startWechatLogin,
+              onWechatComplete: completeWechatLoginFromInput,
+              qqCallbackController: qqCallbackController,
+              isStartingQq: oauthState.isStartingQq,
+              isCompletingQq: oauthState.isCompletingQq,
+              qqAuthorizeUrl: oauthState.qqAuthorizeUrl,
+              onQqStart: startQqLogin,
+              onQqComplete: completeQqLoginFromInput,
+              isStartingApple: oauthState.isStartingApple,
+              onAppleSignIn: startAppleLogin,
             ),
           ],
         ),

@@ -74,6 +74,18 @@
       }
     }
   },
+  "authLoginTermsAgreement": "登录即代表同意{terms}与{privacy}",
+  "authOrOtherLogin": "其他方式登录",
+  "@authLoginTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
   "authTermsOfService": "服务条款",
   "authPrivacyPolicy": "隐私政策",
   "authTermsComingSoonToast": "服务条款与隐私政策即将上线。",

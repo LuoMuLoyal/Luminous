@@ -72,6 +72,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.15.1
   speech_to_text: ^7.4.0
   sign_in_with_apple: ^8.1.0
+  flutter_svg: ^2.1.0
   share_plus: ^13.2.0
   forui: ^0.24.1
   forui_hooks: ^0.24.0
@@ -144,7 +145,7 @@ flutter:
   assets:
     - assets/
     - assets/icon/app_icon.png
-    - assets/icon/app_icon_transparent.png
+    - assets/icon/oauth/
     - assets/legal/
 
 melos:

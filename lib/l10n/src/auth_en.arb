@@ -74,6 +74,18 @@
       }
     }
   },
+  "authLoginTermsAgreement": "By signing in, you agree to the {terms} and {privacy}",
+  "authOrOtherLogin": "or continue with",
+  "@authLoginTermsAgreement": {
+    "placeholders": {
+      "terms": {
+        "type": "String"
+      },
+      "privacy": {
+        "type": "String"
+      }
+    }
+  },
   "authTermsOfService": "Terms of Service",
   "authPrivacyPolicy": "Privacy Policy",
   "authTermsComingSoonToast": "Terms and privacy policy will be available soon.",

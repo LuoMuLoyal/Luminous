@@ -5,19 +5,63 @@ import 'package:luminous/features/auth/presentation/widgets/shared/oauth_panels.
 
 import '../helpers/test_forui_app.dart';
 
+/// Helper to build an [OAuthButtonRow] with dummy values for the
+/// providers not under test.
+OAuthButtonRow _buildRow({
+  required TextEditingController wechatCallbackController,
+  required bool isStartingWechat,
+  required bool isCompletingWechat,
+  required String? wechatAuthorizeUrl,
+  required VoidCallback onWechatStart,
+  required VoidCallback onWechatComplete,
+  required TextEditingController qqCallbackController,
+  required bool isStartingQq,
+  required bool isCompletingQq,
+  required String? qqAuthorizeUrl,
+  required VoidCallback onQqStart,
+  required VoidCallback onQqComplete,
+  required bool isStartingApple,
+  required VoidCallback onAppleSignIn,
+}) {
+  return OAuthButtonRow(
+    wechatCallbackController: wechatCallbackController,
+    isStartingWechat: isStartingWechat,
+    isCompletingWechat: isCompletingWechat,
+    wechatAuthorizeUrl: wechatAuthorizeUrl,
+    onWechatStart: onWechatStart,
+    onWechatComplete: onWechatComplete,
+    qqCallbackController: qqCallbackController,
+    isStartingQq: isStartingQq,
+    isCompletingQq: isCompletingQq,
+    qqAuthorizeUrl: qqAuthorizeUrl,
+    onQqStart: onQqStart,
+    onQqComplete: onQqComplete,
+    isStartingApple: isStartingApple,
+    onAppleSignIn: onAppleSignIn,
+  );
+}
+
 void main() {
-  group('WechatOAuthPanel', () {
+  group('OAuthButtonRow — WeChat', () {
     testWidgets('renders start button when not loading', (tester) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -33,44 +77,60 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: true,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: true,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
       );
 
-      final button = tester.widget<FButton>(
+      final button = tester.widget<GestureDetector>(
         find.byKey(const Key('wechat-login-start-button')),
       );
-      expect(button.onPress, isNull);
+      expect(button.onTap, isNull);
     });
 
     testWidgets('start button disabled when isCompleting', (tester) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: true,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: true,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
       );
 
-      final button = tester.widget<FButton>(
+      final button = tester.widget<GestureDetector>(
         find.byKey(const Key('wechat-login-start-button')),
       );
-      expect(button.onPress, isNull);
+      expect(button.onTap, isNull);
     });
 
     testWidgets('shows callback input when authorizeUrl is set', (
@@ -79,14 +139,22 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl:
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl:
                   'https://open.weixin.qq.com/connect/oauth2/authorize',
-              onStart: () {},
-              onComplete: () {},
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -101,13 +169,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -122,13 +198,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: '',
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: '',
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -141,22 +225,30 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: true,
-              authorizeUrl: 'https://example.com',
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: true,
+              wechatAuthorizeUrl: 'https://example.com',
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
       );
 
-      // Find the complete button (second FButton)
-      final buttons = find.byType(FButton);
-      final completeButton = tester.widget<FButton>(buttons.at(1));
-      expect(completeButton.onPress, isNull);
+      final button = tester.widget<FButton>(
+        find.byKey(const Key('wechat-complete-button')),
+      );
+      expect(button.onPress, isNull);
     });
 
     testWidgets('onStart is called when start button tapped', (tester) async {
@@ -164,13 +256,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: WechatOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () => startCalled = true,
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () => startCalled = true,
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -183,18 +283,26 @@ void main() {
     });
   });
 
-  group('QqOAuthPanel', () {
+  group('OAuthButtonRow — QQ', () {
     testWidgets('renders start button', (tester) async {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: QqOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -207,22 +315,30 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: QqOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: true,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: true,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
       );
 
-      final button = tester.widget<FButton>(
+      final button = tester.widget<GestureDetector>(
         find.byKey(const Key('qq-login-start-button')),
       );
-      expect(button.onPress, isNull);
+      expect(button.onTap, isNull);
     });
 
     testWidgets('shows callback input when authorizeUrl is set', (
@@ -231,13 +347,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: QqOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: 'https://graph.qq.com/oauth2.0/authorize',
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: 'https://graph.qq.com/oauth2.0/authorize',
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -252,13 +376,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: QqOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () {},
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () {},
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),
@@ -272,13 +404,21 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: Scaffold(
-            body: QqOAuthPanel(
-              callbackController: TextEditingController(),
-              isStarting: false,
-              isCompleting: false,
-              authorizeUrl: null,
-              onStart: () => startCalled = true,
-              onComplete: () {},
+            body: _buildRow(
+              wechatCallbackController: TextEditingController(),
+              isStartingWechat: false,
+              isCompletingWechat: false,
+              wechatAuthorizeUrl: null,
+              onWechatStart: () {},
+              onWechatComplete: () {},
+              qqCallbackController: TextEditingController(),
+              isStartingQq: false,
+              isCompletingQq: false,
+              qqAuthorizeUrl: null,
+              onQqStart: () => startCalled = true,
+              onQqComplete: () {},
+              isStartingApple: false,
+              onAppleSignIn: () {},
             ),
           ),
         ),

@@ -1,188 +1,261 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-/// WeChat OAuth panel: start button + manual callback input.
+/// Brand identity colors for OAuth providers.
 ///
-/// Watches [isStarting] / [isCompleting] for loading state and
-/// [authorizeUrl] for showing the callback input field.
-class WechatOAuthPanel extends StatelessWidget {
-  const WechatOAuthPanel({
-    super.key,
-    required this.callbackController,
-    required this.isStarting,
-    required this.isCompleting,
-    required this.authorizeUrl,
-    required this.onStart,
-    required this.onComplete,
-  });
+/// These are fixed brand colors, not theme-adaptive — they represent
+/// each provider's official brand guideline and must not change with
+/// the app theme.
+abstract final class OAuthBrandColors {
+  /// WeChat green — #07C160.
+  static const Color wechat = Color(0xFF07C160);
 
-  final TextEditingController callbackController;
-  final bool isStarting;
-  final bool isCompleting;
-  final String? authorizeUrl;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
+  /// Tencent QQ blue — #12B7F5.
+  static const Color qq = Color(0xFF12B7F5);
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        FButton(
-          key: const Key('wechat-login-start-button'),
-          variant: FButtonVariant.outline,
-          onPress: isStarting || isCompleting ? null : onStart,
-          child: isStarting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: FCircularProgress(),
-                )
-              : Text(l10n.authWechatSignIn),
-        ),
-        if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
-          FTextField(
-            key: const Key('wechat-callback-input'),
-            control: FTextFieldControl.managed(controller: callbackController),
-            label: Text(l10n.authWechatCallbackLabel),
-            hint: l10n.authWechatCallbackHint,
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: Spacing.level4),
-          SizedBox(
-            width: double.infinity,
-            child: FButton(
-              onPress: isCompleting ? null : onComplete,
-              child: isCompleting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(l10n.authWechatCompleteAction),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
+  /// Apple black — #000000.
+  static const Color apple = Color(0xFF000000);
 }
 
-/// QQ OAuth panel: start button + manual callback input.
-class QqOAuthPanel extends StatelessWidget {
-  const QqOAuthPanel({
+/// OAuth login section: "其他方式登录" divider + row of circular
+/// brand-colored icon buttons + optional callback input fields.
+class OAuthButtonRow extends StatefulWidget {
+  const OAuthButtonRow({
     super.key,
-    required this.callbackController,
-    required this.isStarting,
-    required this.isCompleting,
-    required this.authorizeUrl,
-    required this.onStart,
-    required this.onComplete,
+    required this.wechatCallbackController,
+    required this.isStartingWechat,
+    required this.isCompletingWechat,
+    required this.wechatAuthorizeUrl,
+    required this.onWechatStart,
+    required this.onWechatComplete,
+    required this.qqCallbackController,
+    required this.isStartingQq,
+    required this.isCompletingQq,
+    required this.qqAuthorizeUrl,
+    required this.onQqStart,
+    required this.onQqComplete,
+    required this.isStartingApple,
+    required this.onAppleSignIn,
   });
 
-  final TextEditingController callbackController;
-  final bool isStarting;
-  final bool isCompleting;
-  final String? authorizeUrl;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
+  // WeChat
+  final TextEditingController wechatCallbackController;
+  final bool isStartingWechat;
+  final bool isCompletingWechat;
+  final String? wechatAuthorizeUrl;
+  final VoidCallback onWechatStart;
+  final VoidCallback onWechatComplete;
+
+  // QQ
+  final TextEditingController qqCallbackController;
+  final bool isStartingQq;
+  final bool isCompletingQq;
+  final String? qqAuthorizeUrl;
+  final VoidCallback onQqStart;
+  final VoidCallback onQqComplete;
+
+  // Apple
+  final bool isStartingApple;
+  final VoidCallback onAppleSignIn;
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: Spacing.level4),
-        FButton(
-          key: const Key('qq-login-start-button'),
-          variant: FButtonVariant.outline,
-          onPress: isStarting || isCompleting ? null : onStart,
-          child: isStarting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: FCircularProgress(),
-                )
-              : Text(l10n.authQqSignIn),
-        ),
-        if (authorizeUrl?.isNotEmpty == true) ...[
-          const SizedBox(height: Spacing.level4),
-          FTextField(
-            key: const Key('qq-callback-input'),
-            control: FTextFieldControl.managed(controller: callbackController),
-            label: Text(l10n.authQqCallbackLabel),
-            hint: l10n.authQqCallbackHint,
-            keyboardType: TextInputType.url,
-          ),
-          const SizedBox(height: Spacing.level4),
-          SizedBox(
-            width: double.infinity,
-            child: FButton(
-              onPress: isCompleting ? null : onComplete,
-              child: isCompleting
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: FCircularProgress(),
-                    )
-                  : Text(l10n.authQqCompleteAction),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
+  State<OAuthButtonRow> createState() => _OAuthButtonRowState();
 }
 
-/// Apple Sign In panel. Auto-hides when Apple Sign In is unavailable.
-class AppleOAuthPanel extends StatefulWidget {
-  const AppleOAuthPanel({
-    super.key,
-    required this.isLoading,
-    required this.onSignIn,
-  });
-
-  final bool isLoading;
-  final VoidCallback onSignIn;
-
-  @override
-  State<AppleOAuthPanel> createState() => _AppleOAuthPanelState();
-}
-
-class _AppleOAuthPanelState extends State<AppleOAuthPanel> {
-  bool _isAvailable = false;
+class _OAuthButtonRowState extends State<OAuthButtonRow> {
+  bool _appleAvailable = false;
 
   @override
   void initState() {
     super.initState();
-    _checkAvailability();
+    _checkAppleAvailability();
   }
 
-  Future<void> _checkAvailability() async {
-    final available = await SignInWithApple.isAvailable();
-    if (mounted) {
-      setState(() => _isAvailable = available);
+  Future<void> _checkAppleAvailability() async {
+    try {
+      final available = await SignInWithApple.isAvailable();
+      if (mounted) setState(() => _appleAvailable = available);
+    } catch (_) {
+      // Platform channel unavailable — Apple Sign In not supported.
+      if (mounted) setState(() => _appleAvailable = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isAvailable) {
-      return const SizedBox.shrink();
-    }
+    final colors = context.theme.colors;
+    final l10n = AppLocalizations.of(context)!;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.level4),
-      child: AbsorbPointer(
-        absorbing: widget.isLoading,
-        child: SignInWithAppleButton(onPressed: widget.onSignIn),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // "其他方式登录" divider
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.level5),
+          child: Row(
+            children: [
+              Expanded(child: Divider(color: colors.border)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                child: Text(
+                  l10n.authOrOtherLogin,
+                  style: TypographyToken.level2
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
+                ),
+              ),
+              Expanded(child: Divider(color: colors.border)),
+            ],
+          ),
+        ),
+        // Circular brand-colored button row
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _OAuthCircleButton(
+                buttonKey: const Key('wechat-login-start-button'),
+                assetPath: 'assets/icon/oauth/wechat.svg',
+                backgroundColor: OAuthBrandColors.wechat,
+                isLoading: widget.isStartingWechat,
+                disabled: widget.isStartingWechat || widget.isCompletingWechat,
+                onPressed: widget.onWechatStart,
+              ),
+              const SizedBox(width: Spacing.level4),
+              _OAuthCircleButton(
+                buttonKey: const Key('qq-login-start-button'),
+                assetPath: 'assets/icon/oauth/qq.svg',
+                backgroundColor: OAuthBrandColors.qq,
+                isLoading: widget.isStartingQq,
+                disabled: widget.isStartingQq || widget.isCompletingQq,
+                onPressed: widget.onQqStart,
+              ),
+              if (_appleAvailable) ...[
+                const SizedBox(width: Spacing.level4),
+                _OAuthCircleButton(
+                  buttonKey: const Key('apple-login-start-button'),
+                  assetPath: 'assets/icon/oauth/apple.svg',
+                  backgroundColor: OAuthBrandColors.apple,
+                  isLoading: widget.isStartingApple,
+                  disabled: widget.isStartingApple,
+                  onPressed: widget.onAppleSignIn,
+                ),
+              ],
+            ],
+          ),
+        ),
+        // WeChat callback input (shown when authorizeUrl is set)
+        if (widget.wechatAuthorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: Spacing.level4),
+          FTextField(
+            key: const Key('wechat-callback-input'),
+            control: FTextFieldControl.managed(
+              controller: widget.wechatCallbackController,
+            ),
+            label: Text(l10n.authWechatCallbackLabel),
+            hint: l10n.authWechatCallbackHint,
+            keyboardType: TextInputType.url,
+          ),
+          const SizedBox(height: Spacing.level3),
+          FButton(
+            key: const Key('wechat-complete-button'),
+            onPress: widget.isCompletingWechat ? null : widget.onWechatComplete,
+            size: FButtonSizeVariant.sm,
+            child: widget.isCompletingWechat
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authWechatCompleteAction),
+          ),
+        ],
+        // QQ callback input (shown when authorizeUrl is set)
+        if (widget.qqAuthorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: Spacing.level4),
+          FTextField(
+            key: const Key('qq-callback-input'),
+            control: FTextFieldControl.managed(
+              controller: widget.qqCallbackController,
+            ),
+            label: Text(l10n.authQqCallbackLabel),
+            hint: l10n.authQqCallbackHint,
+            keyboardType: TextInputType.url,
+          ),
+          const SizedBox(height: Spacing.level3),
+          FButton(
+            key: const Key('qq-complete-button'),
+            onPress: widget.isCompletingQq ? null : widget.onQqComplete,
+            size: FButtonSizeVariant.sm,
+            child: widget.isCompletingQq
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authQqCompleteAction),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// A single circular OAuth provider button with brand color background
+/// and white SVG icon. Shows a loading spinner when [isLoading] is true.
+class _OAuthCircleButton extends StatelessWidget {
+  const _OAuthCircleButton({
+    this.buttonKey,
+    required this.assetPath,
+    required this.backgroundColor,
+    required this.isLoading,
+    required this.disabled,
+    required this.onPressed,
+  });
+
+  final Key? buttonKey;
+  final String assetPath;
+  final Color backgroundColor;
+  final bool isLoading;
+  final bool disabled;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      key: buttonKey,
+      onTap: disabled ? null : onPressed,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: backgroundColor.withValues(alpha: disabled ? 0.4 : 1.0),
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: isLoading
+              ? const ColorFiltered(
+                  colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: FCircularProgress(),
+                  ),
+                )
+              : SvgPicture.asset(
+                  assetPath,
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+        ),
       ),
     );
   }
