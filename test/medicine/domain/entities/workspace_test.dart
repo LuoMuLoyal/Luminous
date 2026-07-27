@@ -55,7 +55,7 @@ void main() {
     test('has no risk check result', () {
       final ws = MedicineWorkspace.signedOut();
 
-      expect(ws.riskCheckResult, isNull);
+      expect(ws.riskCheckRecords, isNull);
     });
   });
 

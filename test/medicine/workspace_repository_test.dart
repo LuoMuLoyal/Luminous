@@ -241,16 +241,25 @@ class _FakeReminderDataSource extends MedicineReminderRemoteDataSource {
 
 class _FakeRiskCheckRepository implements MedicineRiskCheckRepository {
   @override
-  Future<MedicineRiskCheckResult> fetchForSnapshot(
-    HealthContextSnapshot snapshot,
-  ) async {
-    return MedicineRiskCheckResult(
-      currentMedicineCount: snapshot.currentMedicines
-          .where((item) => item.isCurrent)
-          .length,
-      checkedMedicineCount: 0,
-      findings: const [],
-      coverageIssues: const [],
+  Future<MedicineRiskCheckRecords> getRecords() async {
+    return const MedicineRiskCheckRecords();
+  }
+
+  @override
+  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
+    return MedicineRiskCheckRecord(
+      checkType: type,
+      result: const MedicineRiskCheckResult(
+        currentMedicineCount: 0,
+        checkedMedicineCount: 0,
+        findings: [],
+        coverageIssues: [],
+      ),
+      riskScore: 0,
+      riskLevel: MedicineRiskLevel.safe,
+      stale: false,
+      createdAt: DateTime(2026, 7, 27),
+      updatedAt: DateTime(2026, 7, 27),
     );
   }
 

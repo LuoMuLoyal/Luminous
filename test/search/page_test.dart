@@ -577,9 +577,30 @@ class _FakeMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   final MedicineRiskCheckResult result;
 
   @override
-  Future<MedicineRiskCheckResult> fetchForSnapshot(
-    HealthContextSnapshot snapshot,
-  ) async => result;
+  Future<MedicineRiskCheckRecords> getRecords() async =>
+      MedicineRiskCheckRecords(
+        staticRecord: MedicineRiskCheckRecord(
+          checkType: MedicineRiskCheckType.static_,
+          result: result,
+          riskScore: 0,
+          riskLevel: result.overallRiskLevel,
+          stale: false,
+          createdAt: DateTime(2026, 7, 27),
+          updatedAt: DateTime(2026, 7, 27),
+        ),
+      );
+
+  @override
+  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async =>
+      MedicineRiskCheckRecord(
+        checkType: type,
+        result: result,
+        riskScore: 0,
+        riskLevel: result.overallRiskLevel,
+        stale: false,
+        createdAt: DateTime(2026, 7, 27),
+        updatedAt: DateTime(2026, 7, 27),
+      );
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

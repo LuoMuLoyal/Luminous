@@ -621,14 +621,25 @@ class E2eMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
   const E2eMedicineRiskCheckRepository();
 
   @override
-  Future<MedicineRiskCheckResult> fetchForSnapshot(
-    HealthContextSnapshot snapshot,
-  ) async {
-    return const MedicineRiskCheckResult(
-      currentMedicineCount: 0,
-      checkedMedicineCount: 0,
-      findings: [],
-      coverageIssues: [],
+  Future<MedicineRiskCheckRecords> getRecords() async {
+    return const MedicineRiskCheckRecords();
+  }
+
+  @override
+  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
+    return MedicineRiskCheckRecord(
+      checkType: type,
+      result: const MedicineRiskCheckResult(
+        currentMedicineCount: 0,
+        checkedMedicineCount: 0,
+        findings: [],
+        coverageIssues: [],
+      ),
+      riskScore: 0,
+      riskLevel: MedicineRiskLevel.safe,
+      stale: false,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 }

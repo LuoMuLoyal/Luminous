@@ -377,7 +377,7 @@ void main() {
           authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
           notificationUnreadCountProvider.overrideWith((ref) async => 0),
           medicineWorkspaceRepositoryProvider.overrideWithValue(
-            const _StaticMedicineWorkspaceRepository(_coverageGapWorkspace),
+            _StaticMedicineWorkspaceRepository(_coverageGapWorkspace),
           ),
         ],
         child: const TestForuiApp(home: MedicinePage()),
@@ -472,7 +472,6 @@ void main() {
             reason: MedicineRiskCoverageReason.manualEntry,
           ),
         ],
-        coverageSummary: '还有 1 种药品缺少可检查资料。',
       );
 
       final alerts = medicineAlertsFromRiskCheck(l10n, result);
@@ -782,14 +781,14 @@ const _completedWorkspace = MedicineWorkspace(
   promisePoints: <MedicinePromisePoint>[],
 );
 
-const _coverageGapWorkspace = MedicineWorkspace(
-  hero: MedicineHero(
+final _coverageGapWorkspace = MedicineWorkspace(
+  hero: const MedicineHero(
     metricDosesToday: '3',
     metricAdherence: '--',
     metricNextDose: '20:00',
   ),
   quickActions: <MedicineQuickAction>[],
-  plan: MedicinePlanSurface(
+  plan: const MedicinePlanSurface(
     items: <MedicinePlanItem>[
       MedicinePlanItem(
         color: SemanticColor.primary,
@@ -816,17 +815,26 @@ const _coverageGapWorkspace = MedicineWorkspace(
   ),
   alerts: <MedicineAlert>[],
   promisePoints: <MedicinePromisePoint>[],
-  riskCheckResult: MedicineRiskCheckResult(
-    currentMedicineCount: 1,
-    checkedMedicineCount: 0,
-    findings: <MedicineRiskFinding>[],
-    coverageIssues: <MedicineRiskCoverageIssue>[
-      MedicineRiskCoverageIssue(
-        medicineName: 'Metformin',
-        reason: MedicineRiskCoverageReason.manualEntry,
+  riskCheckRecords: MedicineRiskCheckRecords(
+    staticRecord: MedicineRiskCheckRecord(
+      checkType: MedicineRiskCheckType.static_,
+      result: const MedicineRiskCheckResult(
+        currentMedicineCount: 1,
+        checkedMedicineCount: 0,
+        findings: <MedicineRiskFinding>[],
+        coverageIssues: <MedicineRiskCoverageIssue>[
+          MedicineRiskCoverageIssue(
+            medicineName: 'Metformin',
+            reason: MedicineRiskCoverageReason.manualEntry,
+          ),
+        ],
       ),
-    ],
-    coverageSummary: '以下药品缺少可检查资料，无法自动确认安全性。',
+      riskScore: 0,
+      riskLevel: MedicineRiskLevel.safe,
+      stale: false,
+      createdAt: DateTime(2026, 7, 27, 10, 0),
+      updatedAt: DateTime(2026, 7, 27, 10, 0),
+    ),
   ),
 );
 
