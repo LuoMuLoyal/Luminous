@@ -33,10 +33,13 @@ abstract class MineDashboard with _$MineDashboard {
     profile: MineProfileSnapshot(
       age: null,
       heightCm: null,
+      weightKg: null,
+      sexAtBirth: null,
       allergyCount: 0,
       conditionCount: 0,
       currentMedicineCount: 0,
       basicInfoCompleted: false,
+      hasEmergencyContact: false,
     ),
     alerts: <MineStatusCard>[],
     archiveEntries: <MineArchiveEntry>[],
@@ -53,10 +56,13 @@ abstract class MineProfileSnapshot with _$MineProfileSnapshot {
   const factory MineProfileSnapshot({
     required int? age,
     required double? heightCm,
+    required double? weightKg,
+    required String? sexAtBirth,
     required int allergyCount,
     required int conditionCount,
     required int currentMedicineCount,
     required bool basicInfoCompleted,
+    required bool hasEmergencyContact,
   }) = _MineProfileSnapshot;
 }
 

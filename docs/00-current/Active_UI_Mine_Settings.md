@@ -15,6 +15,12 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 - `AI 与隐私` 分组：`AI 设置` → `/settings/ai`，`报告分享` → `/settings`。
 - `账号与安全` 分组：`账号与安全` → `/account`，`安全 PIN 码` → `/settings/security-pin`。
 - Mine 主卡文案区分 `preview / 缺失关键信息 / 基本就绪` 三种 readiness 语义。
+- Hero 描述文案动态化：根据 `_deriveGaps` 返回的缺失字段类型生成针对性描述（单缺口显示具体说明，多缺口显示汇总）。
+- 缺口检测 6 项：`basicInfo` / `sexAtBirth` / `weight` / `allergy` / `medicine` / `emergencyContact`。
+- 角色文字"用户"已移除，Hero 不再显示角色胶囊。
+- 登录胶囊替换为邮箱验证状态：已验证 → `primary` 蓝色白字；未验证 → `secondary` + warning 色；preview → `secondary` 灰色。
+- 完整度计算 7 项：`onboardingCompleted` / `allergyCount` / `currentMedicineCount` / `birthDate` / `heightCm` / `sexAtBirth` / `weightKg`。
+- 资料编辑页新增：生理性别下拉、体重输入、紧急联系人姓名/电话。
 
 ## 同步失败警告
 
@@ -192,7 +198,7 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 
 ## 2026-07-20 P2 我的/设置模块打磨
 
-- **角色文案中性化**：`mineAccountStudentRole` 从"大学生"/"Student" 改为"用户"/"User"。
+- **角色文案移除**：Hero 区域不再显示角色胶囊（原 `mineAccountStudentRole` "用户"/"User" 已移除），替换为邮箱验证状态徽章。
 - **无引用残留清理**：删除 `health_enum_l10n.dart` 中零引用的 `medicineSourceLabel` 函数；删除 `MineCopyKey.archiveRecordListTitle` 枚举值及 `copy.dart` 对应映射。
 - **SyncBanner 注释修正**：`skeleton_view.dart` 类文档注释从 `SyncBanner` 改为 `MineSyncFailedBanner`。
 - **免打扰 subtitle→details**：`notification.dart` 的 DnD tile 从 `subtitle:` 改为 `details:`，与同组其余 tile 一致。

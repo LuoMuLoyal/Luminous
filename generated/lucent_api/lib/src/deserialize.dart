@@ -65,6 +65,7 @@ import 'package:lucent_api/src/model/dose_log_list_response_dto.dart';
 import 'package:lucent_api/src/model/dose_log_response_dto.dart';
 import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
 import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
+import 'package:lucent_api/src/model/emergency_contact_dto.dart';
 import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
@@ -457,6 +458,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'DrugbankMedicineDetailDto':
       return DrugbankMedicineDetailDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EmergencyContactDto':
+      return EmergencyContactDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'EnableSecurityPinDto':
       return EnableSecurityPinDto.fromJson(value as Map<String, dynamic>)

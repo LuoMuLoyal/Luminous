@@ -85,6 +85,16 @@ Future<void> bootstrapGeneratedSources(
           '(generated/lucent_api)',
     );
     stdout.writeln('');
+
+    // Format generated code so that diffs only show semantic changes,
+    // not formatting drift from the generator.
+    await runLoggedCommand(
+      'dart',
+      ['format', generatedClientRoot.path],
+      workingDirectory: context.repoRoot,
+      stepName: 'dart format generated/lucent_api',
+    );
+    stdout.writeln('');
   }
 
   if (skipAppCodegen) {

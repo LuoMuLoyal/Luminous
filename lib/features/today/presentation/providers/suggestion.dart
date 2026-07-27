@@ -124,7 +124,13 @@ Future<TodaySuggestionHistory?> suggestionHistory(Ref ref) async {
     ref: ref,
     fetch: () {
       final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      return ds.fetchHistory(limit: 20);
+      return ds.fetchHistory(
+        language:
+            (ref.read(localeControllerProvider).asData?.value ??
+                    AppLocale.system)
+                .acceptLanguage,
+        limit: 20,
+      );
     },
     signedOutFallback: () async => null,
   );

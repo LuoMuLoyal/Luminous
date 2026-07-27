@@ -28,11 +28,13 @@ UserHealthProfileDto _p({
     heightCm: h as num?,
     birthDate: bd as String?,
     sexAtBirth: sx,
+    weightKg: null,
     bloodType: null,
     locale: null,
     timezone: null,
     unitSystem: UnitSystem.metric,
     onboardingCompletedAt: null,
+    emergencyContact: null,
     extras: null,
   );
 }

@@ -85,29 +85,36 @@ MineProfileSnapshot _buildProfile(HealthContextSnapshot snapshot) {
   final summary = snapshot.summary;
   final profile = snapshot.profile;
   final hasBasicInfo =
-      profile.birthDate?.isNotEmpty == true && profile.heightCm != null;
-  // Deferred by Product_Vision MVP: keep pregnancy/lactation status because it
-  // is useful for medication safety, but do not surface it as a standalone
-  // women-health or period-management module.
+      profile.birthDate?.isNotEmpty == true &&
+      profile.heightCm != null &&
+      profile.sexAtBirth != null;
+  final hasEmergencyContact =
+      (profile.emergencyContactName?.isNotEmpty == true) ||
+      (profile.emergencyContactPhone?.isNotEmpty == true);
 
   return MineProfileSnapshot(
     age: summary.age,
     heightCm: profile.heightCm,
+    weightKg: profile.weightKg,
+    sexAtBirth: profile.sexAtBirth,
     allergyCount: summary.activeAllergyCount,
     conditionCount: summary.conditionCount,
     currentMedicineCount: summary.currentMedicineCount,
     basicInfoCompleted: hasBasicInfo,
+    hasEmergencyContact: hasEmergencyContact,
   );
 }
 
 MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
-  const total = 5;
+  const total = 7;
   final completed =
       (snapshot.summary.onboardingCompleted ? 1 : 0) +
       (snapshot.summary.activeAllergyCount > 0 ? 1 : 0) +
       (snapshot.summary.currentMedicineCount > 0 ? 1 : 0) +
       (snapshot.profile.birthDate?.isNotEmpty == true ? 1 : 0) +
-      (snapshot.profile.heightCm != null ? 1 : 0);
+      (snapshot.profile.heightCm != null ? 1 : 0) +
+      (snapshot.profile.sexAtBirth != null ? 1 : 0) +
+      (snapshot.profile.weightKg != null ? 1 : 0);
   final progress = (completed / total).clamp(0.0, 1.0);
 
   return MineCompletion(

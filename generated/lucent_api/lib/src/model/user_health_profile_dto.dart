@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/emergency_contact_dto.dart';
 import 'package:lucent_api/src/model/sex_at_birth.dart';
 import 'package:lucent_api/src/model/unit_system.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
@@ -26,6 +27,8 @@ class UserHealthProfileDto {
 
     required this.heightCm,
 
+    required this.weightKg,
+
     required this.bloodType,
 
     required this.locale,
@@ -35,6 +38,8 @@ class UserHealthProfileDto {
     this.unitSystem,
 
     required this.onboardingCompletedAt,
+
+    required this.emergencyContact,
 
     required this.extras,
   });
@@ -55,6 +60,10 @@ class UserHealthProfileDto {
   /// Height in centimeters.
   @JsonKey(name: r'heightCm', required: true, includeIfNull: true)
   final num? heightCm;
+
+  /// Weight in kilograms. Extracted from extras JSONB.
+  @JsonKey(name: r'weightKg', required: true, includeIfNull: true)
+  final num? weightKg;
 
   /// Blood type.
   @JsonKey(name: r'bloodType', required: true, includeIfNull: true)
@@ -81,6 +90,10 @@ class UserHealthProfileDto {
   @JsonKey(name: r'onboardingCompletedAt', required: true, includeIfNull: true)
   final String? onboardingCompletedAt;
 
+  /// Emergency contact extracted from extras JSONB.
+  @JsonKey(name: r'emergencyContact', required: true, includeIfNull: true)
+  final EmergencyContactDto? emergencyContact;
+
   /// Sparse profile extensions stored in jsonb.
   @JsonKey(name: r'extras', required: true, includeIfNull: true)
   final Map<String, Object>? extras;
@@ -92,11 +105,13 @@ class UserHealthProfileDto {
           other.birthDate == birthDate &&
           other.sexAtBirth == sexAtBirth &&
           other.heightCm == heightCm &&
+          other.weightKg == weightKg &&
           other.bloodType == bloodType &&
           other.locale == locale &&
           other.timezone == timezone &&
           other.unitSystem == unitSystem &&
           other.onboardingCompletedAt == onboardingCompletedAt &&
+          other.emergencyContact == emergencyContact &&
           other.extras == extras;
 
   @override
@@ -104,11 +119,13 @@ class UserHealthProfileDto {
       (birthDate == null ? 0 : birthDate.hashCode) +
       sexAtBirth.hashCode +
       (heightCm == null ? 0 : heightCm.hashCode) +
+      (weightKg == null ? 0 : weightKg.hashCode) +
       (bloodType == null ? 0 : bloodType.hashCode) +
       (locale == null ? 0 : locale.hashCode) +
       (timezone == null ? 0 : timezone.hashCode) +
       unitSystem.hashCode +
       (onboardingCompletedAt == null ? 0 : onboardingCompletedAt.hashCode) +
+      (emergencyContact == null ? 0 : emergencyContact.hashCode) +
       (extras == null ? 0 : extras.hashCode);
 
   factory UserHealthProfileDto.fromJson(Map<String, dynamic> json) =>

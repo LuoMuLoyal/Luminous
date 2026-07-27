@@ -449,6 +449,8 @@ String _profileMeta(AppLocalizations l10n, MineProfileSnapshot profile) {
     if (profile.age != null) l10n.mineProfileAgeYears(profile.age!),
     if (profile.heightCm != null)
       l10n.mineProfileHeightCm(profile.heightCm?.round() ?? 0),
+    if (profile.weightKg != null)
+      l10n.mineProfileWeightKg(profile.weightKg?.round() ?? 0),
   ];
   if (parts.isEmpty) return l10n.mineArchiveBasicSubtitle;
   return parts.join(' · ');

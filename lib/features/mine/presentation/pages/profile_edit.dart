@@ -44,9 +44,13 @@ class ProfileEditPage extends HookConsumerWidget {
     final session = ref.watch(authSessionProvider);
 
     final heightCmController = useTextEditingController();
+    final weightKgController = useTextEditingController();
     final birthDate = useState<DateTime?>(null);
     final bloodType = useState<String?>(null);
     final unitSystem = useState<HealthUnitSystem?>(null);
+    final sexAtBirth = useState<HealthSexAtBirth?>(null);
+    final emergencyContactNameController = useTextEditingController();
+    final emergencyContactPhoneController = useTextEditingController();
     final initialized = useRef(false);
 
     void initFromSnapshot(HealthProfile profile) {
@@ -54,9 +58,14 @@ class ProfileEditPage extends HookConsumerWidget {
       initialized.value = true;
 
       heightCmController.text = profile.heightCm?.toString() ?? '';
+      weightKgController.text = profile.weightKg?.toString() ?? '';
       birthDate.value = _tryParseDate(profile.birthDate);
       bloodType.value = profile.bloodType;
       unitSystem.value = HealthUnitSystem.fromValue(profile.unitSystem);
+      sexAtBirth.value = HealthSexAtBirth.fromValue(profile.sexAtBirth);
+      emergencyContactNameController.text = profile.emergencyContactName ?? '';
+      emergencyContactPhoneController.text =
+          profile.emergencyContactPhone ?? '';
     }
 
     void onSave() {
@@ -65,8 +74,12 @@ class ProfileEditPage extends HookConsumerWidget {
             ? _formatDate(birthDate.value!)
             : null,
         heightCm: num.tryParse(heightCmController.text),
+        weightKg: num.tryParse(weightKgController.text),
         bloodType: bloodType.value,
         unitSystem: unitSystem.value,
+        sexAtBirth: sexAtBirth.value,
+        emergencyContactName: emergencyContactNameController.text.trim(),
+        emergencyContactPhone: emergencyContactPhoneController.text.trim(),
       );
 
       ref.read(healthProfileFormProvider.notifier).save(input);
@@ -144,12 +157,38 @@ class ProfileEditPage extends HookConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: Spacing.level3),
+                        _enumDropdown<HealthSexAtBirth>(
+                          label: l10n.mineEditFieldSexAtBirth,
+                          value: sexAtBirth.value,
+                          values: HealthSexAtBirth.values,
+                          onChanged: (v) => sexAtBirth.value = v,
+                          labelBuilder: (v) => switch (v) {
+                            HealthSexAtBirth.female =>
+                              l10n.mineEditSexAtBirthFemale,
+                            HealthSexAtBirth.male =>
+                              l10n.mineEditSexAtBirthMale,
+                            HealthSexAtBirth.intersex =>
+                              l10n.mineEditSexAtBirthIntersex,
+                            HealthSexAtBirth.unknown =>
+                              l10n.mineEditSexAtBirthUnknown,
+                          },
+                        ),
+                        const SizedBox(height: Spacing.level3),
                         FTextField(
                           key: const Key('profile-height-field'),
                           control: FTextFieldControl.managed(
                             controller: heightCmController,
                           ),
                           label: Text(l10n.mineEditFieldHeightCm),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        FTextField(
+                          key: const Key('profile-weight-field'),
+                          control: FTextFieldControl.managed(
+                            controller: weightKgController,
+                          ),
+                          label: Text(l10n.mineEditFieldWeightKg),
                           keyboardType: TextInputType.number,
                         ),
                         const SizedBox(height: Spacing.level3),
@@ -179,7 +218,37 @@ class ProfileEditPage extends HookConsumerWidget {
                               : l10n.mineEditUnitSystemImperial,
                         ),
                         const SizedBox(height: Spacing.level5),
+                        Text(
+                          l10n.mineEditFieldEmergencyContactName,
+                          style: TypographyToken.level4
+                              .body(context)
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: Spacing.level2),
+                        FTextField(
+                          key: const Key('profile-emergency-contact-name'),
+                          control: FTextFieldControl.managed(
+                            controller: emergencyContactNameController,
+                          ),
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        Text(
+                          l10n.mineEditFieldEmergencyContactPhone,
+                          style: TypographyToken.level4
+                              .body(context)
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: Spacing.level2),
+                        FTextField(
+                          key: const Key('profile-emergency-contact-phone'),
+                          control: FTextFieldControl.managed(
+                            controller: emergencyContactPhoneController,
+                          ),
+                          keyboardType: TextInputType.phone,
+                        ),
+                        const SizedBox(height: Spacing.level5),
                         FButton(
+                          key: const Key('profile-save-button'),
                           onPress: formState.isSaving ? null : onSave,
                           prefix: formState.isSaving
                               ? const SizedBox(

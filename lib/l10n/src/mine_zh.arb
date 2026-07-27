@@ -61,10 +61,27 @@
   "mineCompletenessGapSubtitle": "以下信息缺失可能影响安全检查精度",
   "mineCompletenessGapBasicInfo": "基础信息",
   "mineCompletenessGapBasicInfoDesc": "出生日期与身高用于剂量计算",
+  "mineCompletenessGapSexAtBirth": "生理性别",
+  "mineCompletenessGapWeight": "体重",
   "mineCompletenessGapAllergy": "过敏史",
   "mineCompletenessGapAllergyDesc": "缺失可能影响用药安全提醒",
   "mineCompletenessGapMedicine": "当前用药",
   "mineCompletenessGapMedicineDesc": "缺失将影响药物相互作用检查",
+  "mineCompletenessGapEmergencyContact": "紧急联系人",
+  "mineReadinessGapDescBasicInfo": "出生日期和身高是剂量计算的基础",
+  "mineReadinessGapDescSexAtBirth": "生理性别影响药物选择和安全剂量",
+  "mineReadinessGapDescWeight": "体重是剂量计算的关键参数",
+  "mineReadinessGapDescAllergy": "过敏史缺失可能影响用药安全提醒",
+  "mineReadinessGapDescMedicine": "当前用药记录缺失将影响药物相互作用检查",
+  "mineReadinessGapDescEmergencyContact": "紧急联系人信息尚未填写",
+  "mineReadinessGapDescMultiple": "{items}待补充，完善后可提升安全提醒精度",
+  "@mineReadinessGapDescMultiple": {
+    "placeholders": {
+      "items": {
+        "type": "String"
+      }
+    }
+  },
   "mineCompletenessGapAction": "去完善",
   "minePrivacyReportTitle": "报告分享",
   "minePrivacyReportSubtitle": "健康报告、趋势分析",
@@ -126,6 +143,14 @@
   "@mineProfileHeightCm": {
     "placeholders": {
       "height": {
+        "type": "int"
+      }
+    }
+  },
+  "mineProfileWeightKg": "{weight}kg",
+  "@mineProfileWeightKg": {
+    "placeholders": {
+      "weight": {
         "type": "int"
       }
     }
@@ -212,6 +237,14 @@
   "mineEditFieldLocale": "语言",
   "mineEditFieldTimezone": "时区",
   "mineEditFieldUnitSystem": "单位制",
+  "mineEditFieldSexAtBirth": "生理性别",
+  "mineEditFieldWeightKg": "体重 (kg)",
+  "mineEditFieldEmergencyContactName": "紧急联系人姓名",
+  "mineEditFieldEmergencyContactPhone": "紧急联系人电话",
+  "mineEditSexAtBirthFemale": "女",
+  "mineEditSexAtBirthMale": "男",
+  "mineEditSexAtBirthIntersex": "间性",
+  "mineEditSexAtBirthUnknown": "未知",
   "mineEditUnitSystemMetric": "公制",
   "mineEditUnitSystemImperial": "英制",
   "mineEditFieldOnboardingCompleted": "完成新手引导",

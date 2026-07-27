@@ -242,6 +242,7 @@ class TodaySuggestionApi {
   ///
   ///
   /// Parameters:
+  /// * [acceptLanguage]
   /// * [startDate] - Start date (YYYY-MM-DD). Defaults to 30 days ago.
   /// * [endDate] - End date (YYYY-MM-DD). Defaults to today.
   /// * [lifecycleState] - Filter by lifecycle state.
@@ -258,6 +259,7 @@ class TodaySuggestionApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<SuggestionHistoryResponseDto>>
   todaySuggestionControllerGetHistoryV1({
+    required String acceptLanguage,
     String? startDate,
     String? endDate,
     String? lifecycleState,
@@ -273,7 +275,10 @@ class TodaySuggestionApi {
     final _path = r'/api/v1/user/today/suggestions/history';
     final _options = Options(
       method: r'GET',
-      headers: <String, dynamic>{...?headers},
+      headers: <String, dynamic>{
+        r'accept-language': acceptLanguage,
+        ...?headers,
+      },
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
       validateStatus: validateStatus,
     );

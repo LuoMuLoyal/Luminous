@@ -375,6 +375,7 @@ class _FakeSettingsProfileRemoteDataSource
         birthDate: null,
         sexAtBirth: SexAtBirth.unknownDefaultOpenApi,
         heightCm: null,
+        weightKg: null,
         bloodType: null,
         locale: identical(locale, settingsProfileNoChange)
             ? null
@@ -386,6 +387,7 @@ class _FakeSettingsProfileRemoteDataSource
             ? UnitSystem.unknownDefaultOpenApi
             : (unitSystem as UnitSystem?) ?? UnitSystem.unknownDefaultOpenApi,
         onboardingCompletedAt: null,
+        emergencyContact: null,
         extras: const <String, Object>{},
       ),
       allergies: const [],

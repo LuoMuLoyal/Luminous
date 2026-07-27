@@ -423,7 +423,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(find.text('Lumi'), findsOneWidget);
-    expect(find.text(l10n.mineAccountStudentRole), findsOneWidget);
+    expect(find.text(l10n.mineAccountEmailVerified), findsOneWidget);
 
     // Hero card is no longer entirely tappable — the action button is the
     // sole navigation entry point.
@@ -599,7 +599,7 @@ void main() {
     expect(dashboard.profile.age, 27);
     expect(dashboard.profile.allergyCount, 2);
     expect(dashboard.profile.currentMedicineCount, 3);
-    expect(dashboard.completion.percentLabel, '80%');
+    expect(dashboard.completion.percentLabel, '57%');
     expect(
       dashboard.account.lastLoginAt,
       DateTime.parse('2026-01-02T08:30:00Z'),
@@ -874,11 +874,14 @@ const _mockSnapshot = HealthContextSnapshot(
     birthDate: '1999-01-15',
     sexAtBirth: null,
     heightCm: null,
+    weightKg: null,
     bloodType: null,
     locale: null,
     timezone: null,
     unitSystem: null,
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    emergencyContactName: null,
+    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [],
@@ -897,13 +900,16 @@ const _completeSnapshot = HealthContextSnapshot(
   ),
   profile: HealthProfile(
     birthDate: '1999-01-15',
-    sexAtBirth: null,
+    sexAtBirth: 'female',
     heightCm: 170.0,
+    weightKg: 60.0,
     bloodType: null,
     locale: null,
     timezone: null,
     unitSystem: null,
     onboardingCompletedAt: '2026-01-01T00:00:00Z',
+    emergencyContactName: '张三',
+    emergencyContactPhone: '13800000000',
     extras: {},
   ),
   allergies: [],

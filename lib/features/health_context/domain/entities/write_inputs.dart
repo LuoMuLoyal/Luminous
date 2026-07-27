@@ -113,7 +113,10 @@ class HealthProfileUpdateInput {
     this.birthDate = healthContextNoChange,
     this.sexAtBirth = healthContextNoChange,
     this.heightCm = healthContextNoChange,
+    this.weightKg = healthContextNoChange,
     this.bloodType = healthContextNoChange,
+    this.emergencyContactName = healthContextNoChange,
+    this.emergencyContactPhone = healthContextNoChange,
     this.onboardingCompleted = healthContextNoChange,
   });
 
@@ -123,7 +126,10 @@ class HealthProfileUpdateInput {
   final Object? birthDate;
   final Object? sexAtBirth;
   final Object? heightCm;
+  final Object? weightKg;
   final Object? bloodType;
+  final Object? emergencyContactName;
+  final Object? emergencyContactPhone;
   final Object? onboardingCompleted;
 }
 

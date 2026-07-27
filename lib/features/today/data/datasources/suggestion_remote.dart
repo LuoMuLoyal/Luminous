@@ -76,6 +76,7 @@ class TodaySuggestionRemoteDataSource {
 
   /// GET /api/v1/user/today/suggestions/history
   Future<TodaySuggestionHistory> fetchHistory({
+    required String language,
     String? startDate,
     String? endDate,
     String? lifecycleState,
@@ -83,6 +84,7 @@ class TodaySuggestionRemoteDataSource {
     int? limit,
   }) async {
     final response = await api.todaySuggestionControllerGetHistoryV1(
+      acceptLanguage: language,
       startDate: startDate,
       endDate: endDate,
       lifecycleState: lifecycleState,

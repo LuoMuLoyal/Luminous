@@ -29,11 +29,14 @@ class HealthContextMapper {
       birthDate: p.birthDate?.toString(),
       sexAtBirth: p.sexAtBirth?.name,
       heightCm: p.heightCm is num ? (p.heightCm as num).toDouble() : null,
+      weightKg: p.weightKg is num ? (p.weightKg as num).toDouble() : null,
       bloodType: p.bloodType?.toString(),
       locale: p.locale?.toString(),
       timezone: p.timezone?.toString(),
       unitSystem: p.unitSystem?.name,
       onboardingCompletedAt: p.onboardingCompletedAt?.toString(),
+      emergencyContactName: p.emergencyContact?.name?.toString(),
+      emergencyContactPhone: p.emergencyContact?.phone?.toString(),
       extras: Map<String, dynamic>.from(p.extras ?? const {}),
     );
   }

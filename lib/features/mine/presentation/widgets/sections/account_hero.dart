@@ -33,11 +33,7 @@ class MineAccountHero extends StatelessWidget {
         : isIncomplete
         ? l10n.mineReadinessIncompleteTitle(gapCount)
         : l10n.mineReadinessReadyTitle;
-    final description = isPreview
-        ? l10n.mineReadinessPreviewDescription
-        : isIncomplete
-        ? l10n.mineReadinessIncompleteDescription
-        : l10n.mineReadinessReadyDescription;
+    final description = _buildDescription(l10n, isPreview, isIncomplete, gaps);
     final actionLabel = isPreview
         ? l10n.authGoLogin
         : isIncomplete
@@ -76,14 +72,11 @@ class MineAccountHero extends StatelessWidget {
                           _StateBadge(
                             label: isPreview
                                 ? l10n.mineReadinessPreviewBadge
-                                : l10n.mineReadinessSignedInBadge,
+                                : account.emailVerified
+                                ? l10n.mineAccountEmailVerified
+                                : l10n.mineAccountEmailUnverified,
                             preview: isPreview,
-                          ),
-                          Text(
-                            mineCopy(l10n, account.roleKey),
-                            style: TypographyToken.level3
-                                .body(context)
-                                .copyWith(color: colors.mutedForeground),
+                            verified: account.emailVerified,
                           ),
                         ],
                       ),
@@ -184,6 +177,43 @@ class MineAccountHero extends StatelessWidget {
     );
   }
 
+  /// Builds a dynamic description based on which specific gaps exist.
+  String _buildDescription(
+    AppLocalizations l10n,
+    bool isPreview,
+    bool isIncomplete,
+    List<_ReadinessGap> gaps,
+  ) {
+    if (isPreview) {
+      return l10n.mineReadinessPreviewDescription;
+    }
+    if (!isIncomplete) {
+      return l10n.mineReadinessReadyDescription;
+    }
+
+    // If only one gap, show its specific description
+    if (gaps.length == 1) {
+      return switch (gaps.first.type) {
+        _ReadinessGapType.basicInfo => l10n.mineReadinessGapDescBasicInfo,
+        _ReadinessGapType.sexAtBirth => l10n.mineReadinessGapDescSexAtBirth,
+        _ReadinessGapType.weight => l10n.mineReadinessGapDescWeight,
+        _ReadinessGapType.allergy => l10n.mineReadinessGapDescAllergy,
+        _ReadinessGapType.medicine => l10n.mineReadinessGapDescMedicine,
+        _ReadinessGapType.emergencyContact =>
+          l10n.mineReadinessGapDescEmergencyContact,
+      };
+    }
+
+    // Multiple gaps — show a combined summary
+    final labels = gaps.map((g) => g.label(l10n)).toList();
+    if (labels.length <= 3) {
+      return l10n.mineReadinessGapDescMultiple(labels.join('、'));
+    }
+    return l10n.mineReadinessGapDescMultiple(
+      '${labels.sublist(0, 3).join('、')}等',
+    );
+  }
+
   void _handlePrimaryAction(
     BuildContext context,
     bool isPreview,
@@ -250,26 +280,74 @@ class _AvatarPlaceholder extends StatelessWidget {
 }
 
 class _StateBadge extends StatelessWidget {
-  const _StateBadge({required this.label, required this.preview});
+  const _StateBadge({
+    required this.label,
+    required this.preview,
+    required this.verified,
+  });
 
   final String label;
   final bool preview;
+  final bool verified;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    // Preview badge: secondary variant (grey)
+    if (preview) {
+      return FBadge(
+        variant: FBadgeVariant.secondary,
+        child: Text(
+          label,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w700),
+        ),
+      );
+    }
+
+    // Authenticated: show email verification status
+    // Verified: primary (blue) with white text
+    // Unverified: secondary with warning color text
+    if (verified) {
+      return FBadge(
+        variant: FBadgeVariant.primary,
+        child: Text(
+          label,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(
+                fontWeight: FontWeight.w700,
+                color: colors.primaryForeground,
+              ),
+        ),
+      );
+    }
+
     return FBadge(
-      variant: preview ? FBadgeVariant.secondary : FBadgeVariant.primary,
+      variant: FBadgeVariant.secondary,
       child: Text(
         label,
         style: TypographyToken.level3
             .body(context)
-            .copyWith(fontWeight: FontWeight.w700),
+            .copyWith(
+              fontWeight: FontWeight.w700,
+              color: SemanticColor.warning.solid(context),
+            ),
       ),
     );
   }
 }
 
-enum _ReadinessGapType { basicInfo, allergy, medicine }
+enum _ReadinessGapType {
+  basicInfo,
+  sexAtBirth,
+  weight,
+  allergy,
+  medicine,
+  emergencyContact,
+}
 
 class _ReadinessGap {
   const _ReadinessGap({required this.type, required this.route});
@@ -280,8 +358,12 @@ class _ReadinessGap {
   String label(AppLocalizations l10n) {
     return switch (type) {
       _ReadinessGapType.basicInfo => l10n.mineCompletenessGapBasicInfo,
+      _ReadinessGapType.sexAtBirth => l10n.mineCompletenessGapSexAtBirth,
+      _ReadinessGapType.weight => l10n.mineCompletenessGapWeight,
       _ReadinessGapType.allergy => l10n.mineCompletenessGapAllergy,
       _ReadinessGapType.medicine => l10n.mineCompletenessGapMedicine,
+      _ReadinessGapType.emergencyContact =>
+        l10n.mineCompletenessGapEmergencyContact,
     };
   }
 }
@@ -293,6 +375,16 @@ List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
         type: _ReadinessGapType.basicInfo,
         route: Routes.mineProfileEdit,
       ),
+    if (profile.sexAtBirth == null)
+      const _ReadinessGap(
+        type: _ReadinessGapType.sexAtBirth,
+        route: Routes.mineProfileEdit,
+      ),
+    if (profile.weightKg == null)
+      const _ReadinessGap(
+        type: _ReadinessGapType.weight,
+        route: Routes.mineProfileEdit,
+      ),
     if (profile.allergyCount == 0)
       const _ReadinessGap(
         type: _ReadinessGapType.allergy,
@@ -302,6 +394,11 @@ List<_ReadinessGap> _deriveGaps(MineProfileSnapshot profile) {
       const _ReadinessGap(
         type: _ReadinessGapType.medicine,
         route: Routes.mineMedicineNew,
+      ),
+    if (!profile.hasEmergencyContact)
+      const _ReadinessGap(
+        type: _ReadinessGapType.emergencyContact,
+        route: Routes.mineProfileEdit,
       ),
   ];
 }

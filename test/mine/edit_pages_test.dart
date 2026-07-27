@@ -37,8 +37,10 @@ void main() {
       find.byKey(const Key('profile-height-field')),
       '170',
     );
-    await _scrollToSave(tester);
-    await tester.tap(find.text('保存'));
+    final saveButton = find.byKey(const Key('profile-save-button'));
+    await tester.ensureVisible(saveButton);
+    await tester.pumpAndSettle();
+    await tester.tap(saveButton);
     await tester.pump(const Duration(seconds: 2));
 
     final input = fakeRepo.profileUpdate;
@@ -294,9 +296,10 @@ void main() {
 
 // ── Helpers ──
 
-Future<void> _scrollToSave(WidgetTester tester) async {
+Future<void> _scrollToSave(WidgetTester tester, [Finder? target]) async {
   final scrollable = find.byType(Scrollable).first;
-  await tester.scrollUntilVisible(find.text('保存'), 220, scrollable: scrollable);
+  final finder = target ?? find.text('保存');
+  await tester.scrollUntilVisible(finder, 220, scrollable: scrollable);
   await tester.pump();
 }
 
@@ -471,11 +474,14 @@ const _snapshot = HealthContextSnapshot(
     birthDate: '1999-01-01',
     sexAtBirth: 'female',
     heightCm: 168,
+    weightKg: null,
     bloodType: 'O+',
     locale: null,
     timezone: null,
     unitSystem: 'metric',
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
+    emergencyContactName: null,
+    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [],
@@ -496,11 +502,14 @@ const _snapshotWithItems = HealthContextSnapshot(
     birthDate: '1999-01-01',
     sexAtBirth: 'female',
     heightCm: 168,
+    weightKg: null,
     bloodType: 'O+',
     locale: null,
     timezone: null,
     unitSystem: 'metric',
     onboardingCompletedAt: '2026-01-01T00:00:00.000Z',
+    emergencyContactName: null,
+    emergencyContactPhone: null,
     extras: {},
   ),
   allergies: [

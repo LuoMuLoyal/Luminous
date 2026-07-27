@@ -359,6 +359,7 @@ void main() {
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
       final result = await ds.fetchHistory(
+        language: 'zh-CN',
         startDate: '2026-07-01',
         endDate: '2026-07-10',
       );
@@ -402,7 +403,7 @@ void main() {
       dio.httpClientAdapter = adapter;
 
       final ds = TodaySuggestionRemoteDataSource(api: api);
-      final result = await ds.fetchHistory();
+      final result = await ds.fetchHistory(language: 'zh-CN');
 
       expect(result.items[0].feedback, isNull);
       expect(result.items[0].feedbackAt, isNull);
