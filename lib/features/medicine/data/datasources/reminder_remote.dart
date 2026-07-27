@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/map_utils.dart';
 
 class MedicineReminderWriteInput {
   const MedicineReminderWriteInput({
@@ -215,29 +217,37 @@ class MedicineReminderRemoteDataSource {
     if (items is List) {
       return items
           .map((item) {
-            if (item is Map<String, dynamic>) return item;
-            if (item is Map) {
-              return item.map((key, val) => MapEntry('$key', val));
+            final map = coerceToStringMap(item);
+            if (map == null) {
+              throw const LucentApiException(
+                message: '用药提醒项格式异常',
+                networkErrorCode: NetworkErrorCode.emptyResponse,
+              );
             }
-            throw StateError('Unexpected medicine reminder item body.');
+            return map;
           })
           .toList(growable: false);
     }
-    throw StateError('Unexpected medicine reminder list body.');
+    throw const LucentApiException(
+      message: '用药提醒列表格式异常',
+      networkErrorCode: NetworkErrorCode.emptyResponse,
+    );
   }
 
   Map<String, dynamic> _responseData(Object? value) {
-    final body = _coerce(value);
-    final data = body['data'];
-    if (data is Map<String, dynamic>) return data;
-    if (data is Map) return data.map((key, val) => MapEntry('$key', val));
-    throw StateError('Unexpected medicine reminder response body.');
-  }
-
-  Map<String, dynamic> _coerce(Object? value) {
-    if (value is Map<String, dynamic>) return value;
-    if (value is Map) return value.map((key, val) => MapEntry('$key', val));
-    throw StateError('Unexpected medicine reminder response body.');
+    final body = coerceToStringMap(value);
+    if (body == null) {
+      throw const LucentApiException(
+        message: '用药提醒响应体为空',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    final data = coerceToStringMap(body['data']);
+    if (data != null) return data;
+    throw const LucentApiException(
+      message: '用药提醒响应数据为空',
+      networkErrorCode: NetworkErrorCode.emptyResponse,
+    );
   }
 
   String? _optionalString(Object? value) {

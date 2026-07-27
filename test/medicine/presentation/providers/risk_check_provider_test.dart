@@ -6,52 +6,78 @@ import 'package:luminous/features/medicine/presentation/providers/risk_check.dar
 
 void main() {
   group('redFlagAlertsProvider', () {
-    test('returns empty list when medicineRiskCheck has no findings', () async {
+    test('returns empty list when result has no red flags', () async {
       const riskResult = MedicineRiskCheckResult(
-        currentMedicineCount: 0,
-        checkedMedicineCount: 0,
+        currentMedicineCount: 3,
+        checkedMedicineCount: 3,
         findings: [],
         coverageIssues: [],
+        redFlags: [],
       );
 
       final c = ProviderContainer(
         overrides: [
           authSessionProvider.overrideWith(() => _SignedOutSessionNotifier()),
           medicineRiskCheckProvider.overrideWith((ref) async => riskResult),
-          // healthContextSnapshotProvider is used by redFlagAlertsProvider
-          // but RedFlagEvaluator.evaluate handles null snapshot gracefully
         ],
       );
       addTearDown(c.dispose);
 
-      // Override healthContextSnapshotProvider to avoid real network call
-      // The redFlagAlertsProvider watches both medicineRiskCheckProvider
-      // and healthContextSnapshotProvider
+      final result = await c.read(redFlagAlertsProvider.future);
+      expect(result, isEmpty);
+    });
+
+    test('returns red flags when result has red flags', () async {
+      const redFlags = [
+        RedFlagAlert(
+          rule: RedFlagRule.severeAllergy,
+          primaryMedicineName: '阿莫西林',
+          relatedLabel: '青霉素',
+        ),
+        RedFlagAlert(
+          rule: RedFlagRule.informationGap,
+          primaryMedicineName: '未知药品',
+        ),
+      ];
+      const riskResult = MedicineRiskCheckResult(
+        currentMedicineCount: 2,
+        checkedMedicineCount: 2,
+        redFlags: redFlags,
+      );
+
+      final c = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(() => _SignedOutSessionNotifier()),
+          medicineRiskCheckProvider.overrideWith((ref) async => riskResult),
+        ],
+      );
+      addTearDown(c.dispose);
+
+      final result = await c.read(redFlagAlertsProvider.future);
+      expect(result, hasLength(2));
+      expect(result.first.rule, RedFlagRule.severeAllergy);
+      expect(result.first.primaryMedicineName, '阿莫西林');
+      expect(result[1].rule, RedFlagRule.informationGap);
     });
   });
 
   group('medicineRiskCheckProvider signed-out behavior', () {
-    test('throws AuthRequiredException when signed out (no fallback)', () async {
-      final c = ProviderContainer(
-        overrides: [
-          authSessionProvider.overrideWith(() => _SignedOutSessionNotifier()),
-        ],
-      );
-      addTearDown(c.dispose);
+    test(
+      'throws AuthRequiredException when signed out (no fallback)',
+      () async {
+        final c = ProviderContainer(
+          overrides: [
+            authSessionProvider.overrideWith(() => _SignedOutSessionNotifier()),
+          ],
+        );
+        addTearDown(c.dispose);
 
-      // Test the root of the chain — authGuarded throws synchronously
-      // in medicineRiskCheckRecordsProvider when signed out.
-      final state = c.read(medicineRiskCheckRecordsProvider);
-      // print for debugging
-      // ignore: avoid_print
-      print(
-        'state: $state, hasError: ${state.hasError}, isLoading: ${state.isLoading}',
-      );
+        final state = c.read(medicineRiskCheckRecordsProvider);
 
-      // If the provider threw synchronously, the state should be AsyncError.
-      expect(state.hasError, isTrue);
-      expect(state.error, isA<AuthRequiredException>());
-    });
+        expect(state.hasError, isTrue);
+        expect(state.error, isA<AuthRequiredException>());
+      },
+    );
   });
 }
 

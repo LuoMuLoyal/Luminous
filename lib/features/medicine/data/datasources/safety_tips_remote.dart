@@ -1,4 +1,6 @@
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/api_exception.dart';
+import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/features/medicine/domain/entities/safety_tip.dart';
 
 class SafetyTipsRemoteDataSource {
@@ -10,14 +12,18 @@ class SafetyTipsRemoteDataSource {
     final response = await api.medicinesControllerGetSafetyTipsV1(
       exclude: excludeIds,
     );
-    final dtos = response.data!.data;
+    final dto = response.data;
+    if (dto == null) {
+      throw const LucentApiException(
+        message: '用药安全提示响应体为空',
+        networkErrorCode: NetworkErrorCode.emptyResponse,
+      );
+    }
+    final dtos = dto.data;
     return dtos
         .map(
-          (dto) => MedicineSafetyTip(
-            id: dto.id,
-            text: dto.text,
-            category: dto.category,
-          ),
+          (d) =>
+              MedicineSafetyTip(id: d.id, text: d.text, category: d.category),
         )
         .toList(growable: false);
   }
