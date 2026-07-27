@@ -152,3 +152,13 @@ Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n �
 ### 国际化
 
 - 新增 `medicineRiskCheckCoverageSummaryManual` / `medicineRiskCheckCoverageSummaryUnavailable`（`medicine_*` 分片），风险检查 coverage 摘要不再硬编码中文。
+
+## 2026-07-27 更新
+
+### 用药风险检查迁移到后端 API
+
+- 客户端风险检查逻辑全部删除（`risk_checker.dart` 等 6 个文件），改为消费后端 API `GET/POST /api/v1/medicines/risk-check`。
+- 生成客户端新增 7 个 risk check DTO 文件，`MedicinesApi` 新增 `medicinesControllerGetRiskCheckV1` / `medicinesControllerRunRiskCheckV1` 方法。
+- `MedicineRiskCheckResult` 实体增加 `overallRiskLevel` / `overallRiskScore` / `redFlags` / `overallRecommendation` 字段；新增 `MedicineRiskCheckRecord` / `MedicineRiskCheckRecords` 包装实体。
+- 用药安全卡片（`mobile_safety.dart`）重写：消除 FCard 嵌套，改为单一 `FTappable` → `DecoratedBox`；新增最后检查时间显示和 stale 状态指示。
+- OpenAPI 导出更新为 104 paths / 224 schemas。

@@ -1,6 +1,6 @@
 # Lucent OpenAPI Client
 
-Last updated: 2026-07-26
+Last updated: 2026-07-27
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -15,7 +15,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 103 paths / 216 schemas.
+- Last known Lucent export: 104 paths / 224 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -24,7 +24,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
   schedule-only medicine reminders, read-only reminder delivery history, user settings, assistant
   capability/conversation, report dashboard, Today AI analysis, report AI summary, public support
   resources/app info, data export requests, notifications, legal documents, and assistant streaming
-  REST DTOs.
+  REST DTOs, and medicine risk check (static + LLM) DTOs.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay
   under `/api/v1/account/*`.
 

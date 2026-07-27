@@ -97,10 +97,16 @@ import 'package:lucent_api/src/model/medicine_detail_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_detail_data_dto_detail.dart';
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_pagination_dto.dart';
+import 'package:lucent_api/src/model/medicine_red_flag_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_item_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_coverage_issue_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_finding_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
@@ -140,6 +146,7 @@ import 'package:lucent_api/src/model/report_summary_data_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/report_trend_dto.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
+import 'package:lucent_api/src/model/run_risk_check_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
 import 'package:lucent_api/src/model/security_pin_settings_dto.dart';
 import 'package:lucent_api/src/model/send_verification_code_dto.dart';
@@ -564,6 +571,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'MedicinePaginationDto':
       return MedicinePaginationDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'MedicineRedFlagDto':
+      return MedicineRedFlagDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'MedicineReminderItemDto':
       return MedicineReminderItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -577,6 +587,25 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineReminderResponseDto':
       return MedicineReminderResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineRiskCheckRecordDto':
+      return MedicineRiskCheckRecordDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineRiskCheckRecordsDto':
+      return MedicineRiskCheckRecordsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineRiskCheckResponseDto':
+      return MedicineRiskCheckResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskCoverageIssueDto':
+      return MedicineRiskCoverageIssueDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'MedicineRiskFindingDto':
+      return MedicineRiskFindingDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineSafetyTipResponseDto':
       return MedicineSafetyTipResponseDto.fromJson(
@@ -704,6 +733,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ResetPasswordDto':
       return ResetPasswordDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'RunRiskCheckDto':
+      return RunRiskCheckDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'SecurityPinElevationResponseDto':
       return SecurityPinElevationResponseDto.fromJson(

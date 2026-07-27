@@ -1,0 +1,6 @@
+{
+  "pubName": "lucent_api",
+  "serializationLibrary": "json_serializable",
+  "pubDescription": "Generated Lucent API client (openapi_generator dart-dio)",
+  "enumUnknownDefaultCase": true
+}
