@@ -71,7 +71,11 @@ class _SafetyHeader extends StatelessWidget {
         ),
         const Spacer(),
         if (hasData)
-          _LastCheckedLabel(isStale: isStale, lastChecked: lastChecked)
+          _LastCheckedLabel(
+            l10n: l10n,
+            isStale: isStale,
+            lastChecked: lastChecked,
+          )
         else
           Text(
             l10n.medicineSafetyPanelEmptyBody,
@@ -85,8 +89,13 @@ class _SafetyHeader extends StatelessWidget {
 }
 
 class _LastCheckedLabel extends StatelessWidget {
-  const _LastCheckedLabel({required this.isStale, required this.lastChecked});
+  const _LastCheckedLabel({
+    required this.l10n,
+    required this.isStale,
+    required this.lastChecked,
+  });
 
+  final AppLocalizations l10n;
   final bool isStale;
   final DateTime? lastChecked;
 
@@ -103,7 +112,7 @@ class _LastCheckedLabel extends StatelessWidget {
           ),
           const SizedBox(width: Spacing.level1),
           Text(
-            '可能已过期',
+            l10n.medicineRiskCheckStale,
             style: TypographyToken.level3
                 .body(context)
                 .copyWith(color: SemanticColor.warning.solid(context)),
@@ -112,9 +121,7 @@ class _LastCheckedLabel extends StatelessWidget {
       );
     }
 
-    final time = lastChecked != null
-        ? '${lastChecked!.hour.toString().padLeft(2, '0')}:${lastChecked!.minute.toString().padLeft(2, '0')}'
-        : '--';
+    final time = medicineRiskCheckFormatTime(lastChecked);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -126,7 +133,7 @@ class _LastCheckedLabel extends StatelessWidget {
         ),
         const SizedBox(width: Spacing.level1),
         Text(
-          '上次检查: $time',
+          l10n.medicineRiskCheckLastUpdated(time),
           style: TypographyToken.level3
               .body(context)
               .copyWith(color: context.theme.colors.mutedForeground),
@@ -210,12 +217,7 @@ class _SafetyCard extends StatelessWidget {
   }
 
   SemanticColor _riskLevelPalette(MedicineRiskLevel level) {
-    return switch (level) {
-      MedicineRiskLevel.safe => SemanticColor.success,
-      MedicineRiskLevel.caution => SemanticColor.warning,
-      MedicineRiskLevel.risk => SemanticColor.destructive,
-      MedicineRiskLevel.danger => SemanticColor.destructive,
-    };
+    return medicineRiskLevelColor(level);
   }
 }
 
@@ -245,6 +247,7 @@ class _RiskSummary extends StatelessWidget {
             shape: const CircleBorder(),
           ),
           child: Icon(
+            key: const Key('medicine-safety-summary-icon'),
             summary.icon,
             color: palette.solid(context),
             size: IconSizeTokens.level4,
@@ -283,12 +286,7 @@ class _RiskSummary extends StatelessWidget {
   }
 
   SemanticColor _riskLevelPalette(MedicineRiskLevel level) {
-    return switch (level) {
-      MedicineRiskLevel.safe => SemanticColor.success,
-      MedicineRiskLevel.caution => SemanticColor.warning,
-      MedicineRiskLevel.risk => SemanticColor.destructive,
-      MedicineRiskLevel.danger => SemanticColor.destructive,
-    };
+    return medicineRiskLevelColor(level);
   }
 }
 
@@ -414,7 +412,9 @@ class _AlertChip extends StatelessWidget {
             ),
           ),
           child: Text(
-            alert.color == SemanticColor.destructive ? '高' : '中',
+            alert.color == SemanticColor.destructive
+                ? l10n.medicineRiskCheckSeverityHigh
+                : l10n.medicineRiskCheckSeverityMedium,
             style: TypographyToken.level1
                 .body(context)
                 .copyWith(color: alert.color.solid(context)),

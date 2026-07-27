@@ -6,8 +6,10 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class MedicineRiskCoverageIssueTile extends StatelessWidget {
-  const MedicineRiskCoverageIssueTile({
+/// A single coverage-gap item — icon + medicine name + reason label.
+/// No [FCard] wrapper; items are separated by [AppDivider].
+class RiskCoverageItem extends StatelessWidget {
+  const RiskCoverageItem({
     super.key,
     required this.issue,
     required this.isLast,
@@ -20,17 +22,14 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
     final tile = Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             FLucideIcons.circleAlert,
             color: SemanticColor.warning.solid(context),
-            size: Spacing.level5,
+            size: IconSizeTokens.level3,
           ),
           const SizedBox(width: Spacing.level3),
           Expanded(
@@ -48,7 +47,7 @@ class MedicineRiskCoverageIssueTile extends StatelessWidget {
                   medicineRiskCoverageReasonLabel(l10n, issue.reason),
                   style: TypographyToken.level3
                       .body(context)
-                      .copyWith(color: colors.mutedForeground),
+                      .copyWith(color: context.theme.colors.mutedForeground),
                 ),
               ],
             ),

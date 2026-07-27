@@ -559,5 +559,77 @@
   "scanCandidateSheetTitle": "Select medicine",
   "scanManualSearchAction": "Search manually",
   "medicineEmptyAddFirstTitle": "Add your first medication",
-  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks."
+  "medicineEmptyAddFirstDescription": "Add a medication to enable reminders, dose logs, and safety checks.",
+  "medicineRiskCheckTabStatic": "System Check",
+  "medicineRiskCheckTabLlm": "AI Analysis",
+  "medicineRiskScoreTitle": "Risk Score",
+  "medicineRiskLevelSafe": "Safe",
+  "medicineRiskLevelCaution": "Caution",
+  "medicineRiskLevelRisk": "At Risk",
+  "medicineRiskLevelDanger": "Danger",
+  "medicineRiskScoreSafeDescription": "No safety risks found in current medicine combination",
+  "medicineRiskScoreCautionDescription": "{count} caution-level findings detected",
+  "@medicineRiskScoreCautionDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskScoreRiskDescription": "{count} risk findings detected. Please review details.",
+  "@medicineRiskScoreRiskDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskScoreDangerDescription": "Critical risks detected. Please take action immediately.",
+  "medicineRiskFindingRecommendation": "Recommendation",
+  "medicineRiskOverallRecommendation": "Overall Recommendation",
+  "medicineRiskCheckLastUpdated": "Last updated: {time}",
+  "@medicineRiskCheckLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckStale": "May be outdated",
+  "medicineRiskCheckStaleBanner": "Medicines or reminders have changed, results may be outdated",
+  "medicineRiskCheckRunStatic": "Run Check",
+  "medicineRiskCheckRunLlm": "Run AI Analysis",
+  "medicineRiskCheckLlmEmptyTitle": "No AI risk analysis yet",
+  "medicineRiskCheckLlmEmptyBody": "AI analysis can identify long-term use risks, addiction potential, and special population contraindications that static checks cannot detect",
+  "medicineRiskCheckLlmUnavailable": "AI analysis is not configured",
+  "medicineRiskCheckNeverChecked": "Tap to start check",
+  "medicineRiskCheckFindingTitleLongTermUse": "Long-term use risk",
+  "medicineRiskCheckFindingBodyLongTermUse": "{primary} has a long-term use risk",
+  "@medicineRiskCheckFindingBodyLongTermUse": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingTitleSchedulingConflict": "Scheduling conflict",
+  "medicineRiskCheckFindingBodySchedulingConflict": "{primary} and {secondary} have a scheduling conflict",
+  "@medicineRiskCheckFindingBodySchedulingConflict": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodySchedulingConflictSingle": "{primary} has a scheduling conflict",
+  "@medicineRiskCheckFindingBodySchedulingConflictSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  }
 }

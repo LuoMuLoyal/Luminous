@@ -1,4 +1,5 @@
 import 'package:luminous/core/network/api.dart';
+import 'package:luminous/features/medicine/data/datasources/risk_check_remote.dart';
 import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
@@ -8,35 +9,31 @@ part 'risk_check.g.dart';
 
 /// Lucent-backed risk check repository.
 ///
-/// Uses the generated [MedicinesApi] to call GET/POST /api/v1/medicines/risk-check
-/// and maps the response DTOs to domain entities via [MedicineRiskCheckMapper].
+/// Thin wrapper around [MedicineRiskCheckRemoteDataSource] — all API calls and
+/// DTO-to-domain mapping live in the data source; the repository only exposes
+/// the domain-facing [MedicineRiskCheckRepository] interface.
 class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
-  LucentMedicineRiskCheckRepository({required this.api, required this.mapper});
+  LucentMedicineRiskCheckRepository({required this.remoteDataSource});
 
-  final MedicinesApi api;
-  final MedicineRiskCheckMapper mapper;
+  final MedicineRiskCheckRemoteDataSource remoteDataSource;
 
   @override
-  Future<MedicineRiskCheckRecords> getRecords() async {
-    final response = await api.medicinesControllerGetRiskCheckV1();
-    return mapper.recordsDtoToDomain(response.data!);
+  Future<MedicineRiskCheckRecords> getRecords() {
+    return remoteDataSource.fetchRecords();
   }
 
   @override
-  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
-    final dto = mapper.checkTypeToDto(type);
-    final response = await api.medicinesControllerRunRiskCheckV1(
-      runRiskCheckDto: dto,
-    );
-    return mapper.recordDtoToDomain(response.data!);
+  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) {
+    return remoteDataSource.runCheck(type);
   }
 }
 
 @riverpod
 MedicineRiskCheckRepository medicineRiskCheckRepository(Ref ref) {
   final client = ref.watch(lucentClientProvider);
-  return LucentMedicineRiskCheckRepository(
+  final remoteDataSource = MedicineRiskCheckRemoteDataSource(
     api: client.medicines,
     mapper: const MedicineRiskCheckMapper(),
   );
+  return LucentMedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
 }

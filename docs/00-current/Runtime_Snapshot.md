@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-22 (Android 模拟器网络连接修复; 2026-07-24 l10n 翻译质量优化)
+Last updated: 2026-07-27 (风险检查页面重构：FTabs + 环形进度条 + 27 个新 l10n 键)
 
 ## 技术栈
 

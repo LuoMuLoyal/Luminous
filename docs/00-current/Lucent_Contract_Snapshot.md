@@ -48,4 +48,4 @@ Last updated: 2026-07-27
 - **Today 摘要展示**：后端返回 `TodayDashboard` 的饮水、用药、生命体征等数据，前端 `view_models.dart` 组装摘要指标和五个快捷入口；合同不返回可直接渲染的 UI 条目数组。AI 摘要正文通过上述 Today AI SSE 按需生成。
 - **公开路由**：`/legal` 和 `/reports/clinic-summary/shared/:token` 为公开访问（`@Public()` 装饰器）。
 - **API 路径常量**：`core/network/api_paths.dart`（`LucentApiPaths`）集中管理所有 `/api/v1/...` 路径字符串。
-- **用药风险检查**：`GET /api/v1/medicines/risk-check` 获取最新 static + llm 检查记录；`POST /api/v1/medicines/risk-check` 触发检查（body: `{ type: 'static' | 'llm' }`）。后端 `MedicineRiskCheckListener` 监听健康上下文/提醒变更事件自动 mark stale + debounce 静态检查。前端通过 `LucentClient.medicines.medicinesControllerGetRiskCheckV1()` 调用。
+- **用药风险检查**：`GET /api/v1/medicines/risk-check` 获取最新 static + llm 检查记录；`POST /api/v1/medicines/risk-check` 触发检查（body: `{ type: 'static' | 'llm' }`）。后端 `MedicineRiskCheckListener` 监听健康上下文/提醒变更事件自动 mark stale + debounce 静态检查。前端通过 `MedicineRiskCheckRemoteDataSource`（`data/datasources/risk_check_remote.dart`）封装 `LucentClient.medicines` API 调用 + `MedicineRiskCheckMapper` DTO 映射，repository 仅作薄包装委托。

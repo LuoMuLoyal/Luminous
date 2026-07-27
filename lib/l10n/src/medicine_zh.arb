@@ -566,5 +566,77 @@
   "scanCandidateSheetTitle": "选择药品",
   "scanManualSearchAction": "手动搜索",
   "medicineEmptyAddFirstTitle": "添加你的第一个药品",
-  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。"
+  "medicineEmptyAddFirstDescription": "添加药品后即可启用提醒、记录和安全检查。",
+  "medicineRiskCheckTabStatic": "系统检查",
+  "medicineRiskCheckTabLlm": "AI 分析",
+  "medicineRiskScoreTitle": "风险评分",
+  "medicineRiskLevelSafe": "安全",
+  "medicineRiskLevelCaution": "需注意",
+  "medicineRiskLevelRisk": "有风险",
+  "medicineRiskLevelDanger": "高风险",
+  "medicineRiskScoreSafeDescription": "当前用药组合未发现安全风险",
+  "medicineRiskScoreCautionDescription": "发现 {count} 项需注意的风险",
+  "@medicineRiskScoreCautionDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskScoreRiskDescription": "发现 {count} 项风险发现，请查看详情",
+  "@medicineRiskScoreRiskDescription": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineRiskScoreDangerDescription": "检测到严重风险，请立即处理",
+  "medicineRiskFindingRecommendation": "建议",
+  "medicineRiskOverallRecommendation": "总体建议",
+  "medicineRiskCheckLastUpdated": "最后更新: {time}",
+  "@medicineRiskCheckLastUpdated": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckStale": "可能已过期",
+  "medicineRiskCheckStaleBanner": "药品/提醒已变更，以上结果可能已过期",
+  "medicineRiskCheckRunStatic": "运行检查",
+  "medicineRiskCheckRunLlm": "运行 AI 分析",
+  "medicineRiskCheckLlmEmptyTitle": "尚未进行 AI 风险分析",
+  "medicineRiskCheckLlmEmptyBody": "AI 分析可以识别长期用药风险、成瘾性、特殊人群禁忌等静态检查无法发现的问题",
+  "medicineRiskCheckLlmUnavailable": "AI 分析功能未配置",
+  "medicineRiskCheckNeverChecked": "点击开始检查",
+  "medicineRiskCheckFindingTitleLongTermUse": "长期用药风险",
+  "medicineRiskCheckFindingBodyLongTermUse": "{primary} 存在长期使用风险",
+  "@medicineRiskCheckFindingBodyLongTermUse": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingTitleSchedulingConflict": "用药计划冲突",
+  "medicineRiskCheckFindingBodySchedulingConflict": "{primary} 与 {secondary} 存在用药时间冲突",
+  "@medicineRiskCheckFindingBodySchedulingConflict": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      },
+      "secondary": {
+        "type": "String"
+      }
+    }
+  },
+  "medicineRiskCheckFindingBodySchedulingConflictSingle": "{primary} 存在用药计划冲突",
+  "@medicineRiskCheckFindingBodySchedulingConflictSingle": {
+    "placeholders": {
+      "primary": {
+        "type": "String"
+      }
+    }
+  }
 }

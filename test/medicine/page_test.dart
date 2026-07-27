@@ -82,10 +82,11 @@ void main() {
       }
     }
 
+    // safety-summary no longer uses FCard (DecoratedBox instead);
+    // only check the remaining sections.
     for (final key in <String>[
       'medicine-current-medications',
       'medicine-today-plan',
-      'medicine-safety-summary',
       'medicine-action-hub',
     ]) {
       expect(
@@ -95,7 +96,6 @@ void main() {
     }
     expect(find.text(l10n.medicineTodayPlanTitle), findsOneWidget);
     expect(find.text(l10n.medicineSafetyPanelTitle), findsOneWidget);
-    expect(find.text(l10n.medicineSafetyPanelSubtitle), findsOneWidget);
     expect(find.byKey(const Key('medicine-reference-notice')), findsNothing);
     expect(find.byKey(const Key('medicine-safety-tips')), findsNothing);
   });
@@ -229,8 +229,19 @@ void main() {
           medicineWorkspaceRepositoryProvider.overrideWithValue(
             const MockMedicineWorkspaceRepository(),
           ),
-          medicineRiskCheckProvider.overrideWith((ref) async => _riskResult),
-          redFlagAlertsProvider.overrideWith((ref) async => const []),
+          medicineRiskCheckRecordsProvider.overrideWith(
+            (ref) async => MedicineRiskCheckRecords(
+              staticRecord: MedicineRiskCheckRecord(
+                checkType: MedicineRiskCheckType.static_,
+                result: _riskResult,
+                riskScore: 15,
+                riskLevel: MedicineRiskLevel.caution,
+                stale: false,
+                createdAt: DateTime(2026, 7, 27, 10, 0),
+                updatedAt: DateTime(2026, 7, 27, 10, 0),
+              ),
+            ),
+          ),
         ],
         child: TestForuiRouterApp(
           routerConfig: GoRouter(
@@ -391,7 +402,8 @@ void main() {
       find.byKey(const Key('medicine-safety-summary-icon')),
     );
     final context = tester.element(find.byType(MedicinePage));
-    expect(icon.color, context.theme.colors.mutedForeground);
+    // safe risk level → SemanticColor.success.solid
+    expect(icon.color, SemanticColor.success.solid(context));
   });
 
   testWidgets(
@@ -415,9 +427,24 @@ void main() {
           overrides: [
             authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
             notificationUnreadCountProvider.overrideWith((ref) async => 0),
-            medicineRiskCheckProvider.overrideWith((ref) async => _riskResult),
-            redFlagAlertsProvider.overrideWith(
-              (ref) async => [severeAllergyAlert],
+            medicineRiskCheckRecordsProvider.overrideWith(
+              (ref) async => MedicineRiskCheckRecords(
+                staticRecord: MedicineRiskCheckRecord(
+                  checkType: MedicineRiskCheckType.static_,
+                  result: const MedicineRiskCheckResult(
+                    currentMedicineCount: 2,
+                    checkedMedicineCount: 1,
+                    findings: [],
+                    coverageIssues: [],
+                    redFlags: [severeAllergyAlert],
+                  ),
+                  riskScore: 40,
+                  riskLevel: MedicineRiskLevel.danger,
+                  stale: false,
+                  createdAt: DateTime(2026, 7, 27, 10, 0),
+                  updatedAt: DateTime(2026, 7, 27, 10, 0),
+                ),
+              ),
             ),
           ],
           child: TestForuiRouterApp(
@@ -442,7 +469,7 @@ void main() {
       expect(find.text('红旗警告'), findsOneWidget);
       expect(
         find.descendant(
-          of: find.byType(MedicineRiskRedFlagBanner),
+          of: find.byType(RiskRedFlagSection),
           matching: find.byType(FButton),
         ),
         findsNothing,

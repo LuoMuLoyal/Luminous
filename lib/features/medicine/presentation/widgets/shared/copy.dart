@@ -265,9 +265,9 @@ String medicineRiskFindingTitle(
     MedicineRiskFindingType.specialGroup =>
       l10n.medicineRiskCheckFindingTitleSpecialGroup,
     MedicineRiskFindingType.longTermUse =>
-      l10n.medicineRiskCheckFindingTitleFoodInteraction,
+      l10n.medicineRiskCheckFindingTitleLongTermUse,
     MedicineRiskFindingType.schedulingConflict =>
-      l10n.medicineRiskCheckFindingTitleInteraction,
+      l10n.medicineRiskCheckFindingTitleSchedulingConflict,
   };
 }
 
@@ -302,12 +302,62 @@ String medicineRiskFindingBody(
     MedicineRiskFindingType.foodInteraction =>
       l10n.medicineRiskCheckFindingBodyFoodInteraction(primary),
     MedicineRiskFindingType.longTermUse =>
-      l10n.medicineRiskCheckFindingBodyFoodInteraction(primary),
+      l10n.medicineRiskCheckFindingBodyLongTermUse(primary),
     MedicineRiskFindingType.schedulingConflict =>
       secondary != null && secondary.isNotEmpty
-          ? l10n.medicineRiskCheckFindingBodyInteraction(primary, secondary)
-          : l10n.medicineRiskCheckFindingBodyInteractionSingle(primary),
+          ? l10n.medicineRiskCheckFindingBodySchedulingConflict(
+              primary,
+              secondary,
+            )
+          : l10n.medicineRiskCheckFindingBodySchedulingConflictSingle(primary),
   };
+}
+
+// ─── Risk level helpers ───────────────────────────────────────────────────────
+
+/// Returns the localized label for a [MedicineRiskLevel].
+String medicineRiskLevelLabel(AppLocalizations l10n, MedicineRiskLevel level) {
+  return switch (level) {
+    MedicineRiskLevel.safe => l10n.medicineRiskLevelSafe,
+    MedicineRiskLevel.caution => l10n.medicineRiskLevelCaution,
+    MedicineRiskLevel.risk => l10n.medicineRiskLevelRisk,
+    MedicineRiskLevel.danger => l10n.medicineRiskLevelDanger,
+  };
+}
+
+/// Returns the [SemanticColor] for a [MedicineRiskLevel].
+SemanticColor medicineRiskLevelColor(MedicineRiskLevel level) {
+  return switch (level) {
+    MedicineRiskLevel.safe => SemanticColor.success,
+    MedicineRiskLevel.caution => SemanticColor.warning,
+    MedicineRiskLevel.risk => SemanticColor.destructive,
+    MedicineRiskLevel.danger => SemanticColor.destructive,
+  };
+}
+
+/// Returns the localized description for a risk score hero, based on the
+/// [MedicineRiskLevel] and the number of findings.
+String medicineRiskLevelDescription(
+  AppLocalizations l10n,
+  MedicineRiskLevel level,
+  int findingCount,
+) {
+  return switch (level) {
+    MedicineRiskLevel.safe => l10n.medicineRiskScoreSafeDescription,
+    MedicineRiskLevel.caution => l10n.medicineRiskScoreCautionDescription(
+      findingCount,
+    ),
+    MedicineRiskLevel.risk => l10n.medicineRiskScoreRiskDescription(
+      findingCount,
+    ),
+    MedicineRiskLevel.danger => l10n.medicineRiskScoreDangerDescription,
+  };
+}
+
+/// Formats a [DateTime] as `HH:mm` for display in last-checked labels.
+String medicineRiskCheckFormatTime(DateTime? time) {
+  if (time == null) return '--';
+  return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
 }
 
 String medicineRiskFindingEvidence(

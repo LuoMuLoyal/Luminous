@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-24
+Last updated: 2026-07-27 (风险检查页面重构 l10n 新增 27 个 medicine 键)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.

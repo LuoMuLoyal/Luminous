@@ -17,12 +17,20 @@ void main() {
     l10n = await AppLocalizations.delegate.load(const Locale('zh'));
   });
 
-  group('MedicineRiskMetricChip', () {
+  group('RiskMetricCell', () {
     Future<void> pumpChip(WidgetTester tester) async {
       await tester.pumpWidget(
         const TestForuiApp(
           home: Scaffold(
-            body: MedicineRiskMetricChip(label: '检测药品', value: '5'),
+            body: Row(
+              children: [
+                RiskMetricCell(
+                  label: '检测药品',
+                  value: '5',
+                  showRightDivider: false,
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -40,13 +48,13 @@ void main() {
       expect(find.text('5'), findsOneWidget);
     });
 
-    testWidgets('renders FCard', (tester) async {
+    testWidgets('does not render FCard', (tester) async {
       await pumpChip(tester);
-      expect(find.byType(FCard), findsOneWidget);
+      expect(find.byType(FCard), findsNothing);
     });
   });
 
-  group('MedicineRiskFindingTile', () {
+  group('RiskFindingItem', () {
     Future<void> pumpTile(
       WidgetTester tester, {
       required MedicineRiskFinding finding,
@@ -55,7 +63,7 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: SingleChildScrollView(
-            child: MedicineRiskFindingTile(
+            child: RiskFindingItem(
               finding: finding,
               isLast: isLast,
               l10n: l10n,
@@ -217,7 +225,7 @@ void main() {
     });
   });
 
-  group('MedicineRiskCoverageIssueTile', () {
+  group('RiskCoverageItem', () {
     Future<void> pumpTile(
       WidgetTester tester, {
       required MedicineRiskCoverageIssue issue,
@@ -226,11 +234,7 @@ void main() {
       await tester.pumpWidget(
         TestForuiApp(
           home: SingleChildScrollView(
-            child: MedicineRiskCoverageIssueTile(
-              issue: issue,
-              isLast: isLast,
-              l10n: l10n,
-            ),
+            child: RiskCoverageItem(issue: issue, isLast: isLast, l10n: l10n),
           ),
         ),
       );

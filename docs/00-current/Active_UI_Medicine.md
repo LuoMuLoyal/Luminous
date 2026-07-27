@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-26 (搜索页布局修复：间距、Tabs、溢出)
+Last updated: 2026-07-27 (风险检查页面重构：FTabs + 环形进度条 + 组件重写)
 
 ## 页面结构
 
@@ -30,12 +30,12 @@ Last updated: 2026-07-26 (搜索页布局修复：间距、Tabs、溢出)
 ## 用药安全摘要
 
 - 风险检查逻辑已从客户端迁移到后端 API（`GET/POST /api/v1/medicines/risk-check`），前端只消费 API 返回的 `MedicineRiskCheckRecords`。
-- 安全卡片（`mobile_safety.dart`）使用单一 `FTappable` → `DecoratedBox` 容器，不再嵌套 `FCard`。
-- 显示最后检查时间："上次检查: HH:mm"（正常）/ "可能已过期"（stale=true）。
+- 安全卡片（`mobile_safety.dart`）使用单一 `FTappable` → `DecoratedBox` 容器，不再嵌套 `FCard`。所有硬编码中文（"可能已过期"、"上次检查: HH:mm"、"高"/"中"）已迁入 l10n 键。
+- 显示最后检查时间：`medicineRiskCheckLastUpdated` l10n 键（正常）/ `medicineRiskCheckStale`（stale=true）。
 - 三个指标横向排列（用药数 / 发现数 / 覆盖缺口），竖线分隔，语义着色。
-- 紧凑型 `_AlertChip` 替代原来的 `FAvatar` alert 行，最多显示 2 条 + "+N"。
+- 紧凑型 `_AlertChip` 替代原来的 `FAvatar` alert 行，最多显示 2 条 + "+N"。severity 标签使用 `medicineRiskCheckSeverityHigh` / `Medium` l10n 键。
 - 空状态为盾牌图标 + "暂无风险数据" 文案，整体可点击跳转。
-- 红旗横幅（`risk_red_flag.dart`）全部使用 `SemanticColor.destructive`。
+- 红旗组件（`risk_red_flag.dart`）重构为 `RiskRedFlagItem` + `RiskRedFlagSection`，移除 Container 嵌套，改为左侧 4px destructive 色条 + `DecoratedBox(destructive.subtle)` 单容器。
 - 红旗升级使用显式线下就医操作文案：`severeAllergy` → 立即拨打急救电话；`informationGap` → 尽快线下核实。
 
 ## 风险检查边界
@@ -45,7 +45,11 @@ Last updated: 2026-07-26 (搜索页布局修复：间距、Tabs、溢出)
 - 前端通过 `LucentClient.medicines.medicinesControllerGetRiskCheckV1()` 获取记录，通过 `medicinesControllerRunRiskCheckV1()` 触发检查。
 - 前端 `MedicineRiskCheckMapper` 将生成 DTO 映射到 domain entity。
 - `MedicineRiskCheckResult` 包含 `overallRiskLevel`（safe/caution/risk/danger）、`overallRiskScore`（0-100）、`findings`、`coverageIssues`、`redFlags`、`overallRecommendation`（LLM only）。
-- `MedicineRiskFinding` 新增 `recommendation` 字段（LLM only）和 `longTermUse` / `schedulingConflict` 类型。
+- `MedicineRiskFinding` 新增 `recommendation` 字段（LLM only）和 `longTermUse` / `schedulingConflict` 类型。`copy.dart` 中 `longTermUse` 和 `schedulingConflict` 的 title/body 映射已从 fallback 改为专用 l10n 键。
+- 风险检查页面（`risk_check.dart`）重构为 `FTabs(expands: true)` 双 tab 布局："系统检查" tab 展示静态检查记录，"AI 分析" tab 展示 LLM 检查记录。每个 tab 内 `CheckTabContent` 组件渲染：风险评分英雄区（`RiskScoreRing` CustomPaint 环形进度条 + 等级标签 + 描述文案）、红旗区、指标网格、发现列表（折叠/展开）、覆盖缺口列表、安全状态卡片。LLM tab 额外处理空状态 CTA、过期横幅、总体建议卡片和不可用状态。
+- 组件类名统一重命名：`MedicineRiskFindingTile` → `RiskFindingItem`（移除 FCard，改为左侧色条布局，显示 LLM recommendation）；`MedicineRiskCoverageIssueTile` → `RiskCoverageItem`；`MedicineRiskMetricChip` → `RiskMetricCell`（移除 FCard，改为 Expanded + 右边框网格单元格）；`MedicineRiskRedFlagBanner` → `RiskRedFlagItem` / `RiskRedFlagSection`。
+- `copy.dart` 新增辅助函数：`medicineRiskLevelLabel`、`medicineRiskLevelColor`、`medicineRiskLevelDescription`、`medicineRiskCheckFormatTime`。
+- 新增 27 个 l10n 键（zh + en）：风险检查 tab 标签、风险评分标题/等级/描述、建议/总体建议、最后更新/过期/过期横幅、运行检查/运行 AI 分析、LLM 空状态/不可用、从未检查、长期用药风险标题/描述、用药计划冲突标题/描述。
 
 ## 药品搜索与扫描
 
