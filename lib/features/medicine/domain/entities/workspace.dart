@@ -14,7 +14,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     required MedicinePlanSurface plan,
     required List<MedicineAlert> alerts,
     required List<MedicinePromisePoint> promisePoints,
-    MedicineRiskCheckResult? riskCheckResult,
+    MedicineRiskCheckRecords? riskCheckRecords,
   }) = _MedicineWorkspace;
 
   /// A minimal workspace for signed-out users with no real or mock data.

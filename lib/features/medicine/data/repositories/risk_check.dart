@@ -1,65 +1,42 @@
-import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api.dart';
-import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/data/mappers/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/domain/entities/risk_medicine_detail.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
-import 'package:luminous/features/medicine/domain/services/risk_checker.dart';
-import 'package:luminous/features/search/data/datasources/medicine_search.dart';
-import 'package:luminous/features/search/data/repositories/lucent.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'risk_check.g.dart';
 
+/// Lucent-backed risk check repository.
+///
+/// Uses the generated [MedicinesApi] to call GET/POST /api/v1/medicines/risk-check
+/// and maps the response DTOs to domain entities via [MedicineRiskCheckMapper].
 class LucentMedicineRiskCheckRepository implements MedicineRiskCheckRepository {
-  LucentMedicineRiskCheckRepository({
-    required this.remoteDataSource,
-    this.checker = const MedicineRiskChecker(),
-  });
+  LucentMedicineRiskCheckRepository({required this.api, required this.mapper});
 
-  final MedicineSearchRemoteDataSource remoteDataSource;
-  final MedicineRiskChecker checker;
+  final MedicinesApi api;
+  final MedicineRiskCheckMapper mapper;
 
   @override
-  Future<MedicineRiskCheckResult> fetchForSnapshot(
-    HealthContextSnapshot snapshot,
-  ) async {
-    final currentMedicines = snapshot.currentMedicines
-        .where((item) => item.isCurrent)
-        .toList(growable: false);
-    final details = <MedicineRiskMedicineDetail>[];
+  Future<MedicineRiskCheckRecords> getRecords() async {
+    final response = await api.medicinesControllerGetRiskCheckV1();
+    return mapper.recordsDtoToDomain(response.data!);
+  }
 
-    for (final item in currentMedicines) {
-      final source = item.source;
-      final sourceRefId = item.sourceRefId?.trim();
-      if ((source != 'cn' && source != 'drugbank') ||
-          sourceRefId == null ||
-          sourceRefId.isEmpty) {
-        continue;
-      }
-
-      try {
-        final response = await remoteDataSource.getDetail(
-          id: sourceRefId,
-          source: source,
-        );
-        ensureEnvelopeSuccess(code: response.code, message: response.message);
-        details.add(
-          MedicineRiskMedicineDetail(item: item, detail: response.data),
-        );
-      } catch (e) {
-        appTalker.error(
-          'MedicineRiskCheckRepository: risk detail fetch failed: $e',
-        );
-      }
-    }
-
-    return checker.evaluate(snapshot: snapshot, medicines: details);
+  @override
+  Future<MedicineRiskCheckRecord> runCheck(MedicineRiskCheckType type) async {
+    final dto = mapper.checkTypeToDto(type);
+    final response = await api.medicinesControllerRunRiskCheckV1(
+      runRiskCheckDto: dto,
+    );
+    return mapper.recordDtoToDomain(response.data!);
   }
 }
 
 @riverpod
 MedicineRiskCheckRepository medicineRiskCheckRepository(Ref ref) {
-  final remoteDataSource = ref.watch(medicineSearchRemoteDataSourceProvider);
-  return LucentMedicineRiskCheckRepository(remoteDataSource: remoteDataSource);
+  final client = ref.watch(lucentClientProvider);
+  return LucentMedicineRiskCheckRepository(
+    api: client.medicines,
+    mapper: const MedicineRiskCheckMapper(),
+  );
 }

@@ -1,0 +1,190 @@
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
+
+/// Maps generated OpenAPI DTOs to domain entities for the risk check feature.
+class MedicineRiskCheckMapper {
+  const MedicineRiskCheckMapper();
+
+  MedicineRiskCheckRecords recordsDtoToDomain(MedicineRiskCheckRecordsDto dto) {
+    return MedicineRiskCheckRecords(
+      staticRecord: dto.static_ != null
+          ? recordDtoToDomain(dto.static_!)
+          : null,
+      llmRecord: dto.llm != null ? recordDtoToDomain(dto.llm!) : null,
+    );
+  }
+
+  MedicineRiskCheckRecord recordDtoToDomain(MedicineRiskCheckRecordDto dto) {
+    return MedicineRiskCheckRecord(
+      checkType: _mapCheckType(dto.checkType),
+      result: responseDtoToDomain(dto.result),
+      riskScore: dto.riskScore.toInt(),
+      riskLevel: _mapRiskLevelFromRecord(dto.riskLevel),
+      stale: dto.stale,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
+    );
+  }
+
+  MedicineRiskCheckResult responseDtoToDomain(
+    MedicineRiskCheckResponseDto dto,
+  ) {
+    return MedicineRiskCheckResult(
+      overallRiskLevel: _mapRiskLevel(dto.overallRiskLevel),
+      overallRiskScore: dto.overallRiskScore.toInt(),
+      currentMedicineCount: dto.currentMedicineCount.toInt(),
+      checkedMedicineCount: dto.checkedMedicineCount.toInt(),
+      findings: dto.findings.map(findingDtoToDomain).toList(),
+      coverageIssues: dto.coverageIssues.map(coverageIssueDtoToDomain).toList(),
+      redFlags: dto.redFlags.map(redFlagDtoToDomain).toList(),
+      overallRecommendation: dto.overallRecommendation,
+    );
+  }
+
+  MedicineRiskFinding findingDtoToDomain(MedicineRiskFindingDto dto) {
+    return MedicineRiskFinding(
+      type: _mapFindingType(dto.type),
+      severity: _mapSeverity(dto.severity),
+      context: _mapFindingContext(dto.context),
+      primaryMedicineName: dto.primaryMedicineName,
+      secondaryMedicineName: dto.secondaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+      evidence: dto.evidence,
+      recommendation: dto.recommendation,
+    );
+  }
+
+  MedicineRiskCoverageIssue coverageIssueDtoToDomain(
+    MedicineRiskCoverageIssueDto dto,
+  ) {
+    return MedicineRiskCoverageIssue(
+      medicineName: dto.medicineName,
+      reason: _mapCoverageReason(dto.reason),
+    );
+  }
+
+  RedFlagAlert redFlagDtoToDomain(MedicineRedFlagDto dto) {
+    return RedFlagAlert(
+      rule: _mapRedFlagRule(dto.rule),
+      primaryMedicineName: dto.primaryMedicineName,
+      relatedLabel: dto.relatedLabel,
+    );
+  }
+
+  RunRiskCheckDto checkTypeToDto(MedicineRiskCheckType type) {
+    return RunRiskCheckDto(
+      type: switch (type) {
+        MedicineRiskCheckType.static_ => RunRiskCheckDtoTypeEnum.static_,
+        MedicineRiskCheckType.llm => RunRiskCheckDtoTypeEnum.llm,
+      },
+    );
+  }
+
+  // ─── Enum mappers ────────────────────────────────────────────────────────
+
+  MedicineRiskLevel _mapRiskLevel(
+    MedicineRiskCheckResponseDtoOverallRiskLevelEnum level,
+  ) {
+    return switch (level) {
+      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.safe =>
+        MedicineRiskLevel.safe,
+      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.caution =>
+        MedicineRiskLevel.caution,
+      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.risk =>
+        MedicineRiskLevel.risk,
+      MedicineRiskCheckResponseDtoOverallRiskLevelEnum.danger =>
+        MedicineRiskLevel.danger,
+      _ => MedicineRiskLevel.safe,
+    };
+  }
+
+  MedicineRiskLevel _mapRiskLevelFromRecord(
+    MedicineRiskCheckRecordDtoRiskLevelEnum level,
+  ) {
+    return switch (level) {
+      MedicineRiskCheckRecordDtoRiskLevelEnum.safe => MedicineRiskLevel.safe,
+      MedicineRiskCheckRecordDtoRiskLevelEnum.caution =>
+        MedicineRiskLevel.caution,
+      MedicineRiskCheckRecordDtoRiskLevelEnum.risk => MedicineRiskLevel.risk,
+      MedicineRiskCheckRecordDtoRiskLevelEnum.danger =>
+        MedicineRiskLevel.danger,
+      _ => MedicineRiskLevel.safe,
+    };
+  }
+
+  MedicineRiskCheckType _mapCheckType(
+    MedicineRiskCheckRecordDtoCheckTypeEnum type,
+  ) {
+    return switch (type) {
+      MedicineRiskCheckRecordDtoCheckTypeEnum.static_ =>
+        MedicineRiskCheckType.static_,
+      MedicineRiskCheckRecordDtoCheckTypeEnum.llm => MedicineRiskCheckType.llm,
+      _ => MedicineRiskCheckType.static_,
+    };
+  }
+
+  MedicineRiskFindingType _mapFindingType(MedicineRiskFindingDtoTypeEnum type) {
+    return switch (type) {
+      MedicineRiskFindingDtoTypeEnum.interaction =>
+        MedicineRiskFindingType.interaction,
+      MedicineRiskFindingDtoTypeEnum.duplicateIngredient =>
+        MedicineRiskFindingType.duplicateIngredient,
+      MedicineRiskFindingDtoTypeEnum.allergy => MedicineRiskFindingType.allergy,
+      MedicineRiskFindingDtoTypeEnum.foodInteraction =>
+        MedicineRiskFindingType.foodInteraction,
+      MedicineRiskFindingDtoTypeEnum.longTermUse =>
+        MedicineRiskFindingType.longTermUse,
+      MedicineRiskFindingDtoTypeEnum.schedulingConflict =>
+        MedicineRiskFindingType.schedulingConflict,
+      MedicineRiskFindingDtoTypeEnum.specialGroup =>
+        MedicineRiskFindingType.specialGroup,
+      _ => MedicineRiskFindingType.specialGroup,
+    };
+  }
+
+  MedicineRiskSeverity _mapSeverity(
+    MedicineRiskFindingDtoSeverityEnum severity,
+  ) {
+    return switch (severity) {
+      MedicineRiskFindingDtoSeverityEnum.high => MedicineRiskSeverity.high,
+      MedicineRiskFindingDtoSeverityEnum.medium => MedicineRiskSeverity.medium,
+      MedicineRiskFindingDtoSeverityEnum.info => MedicineRiskSeverity.info,
+      _ => MedicineRiskSeverity.info,
+    };
+  }
+
+  MedicineRiskFindingContext _mapFindingContext(
+    MedicineRiskFindingDtoContextEnum context,
+  ) {
+    return switch (context) {
+      MedicineRiskFindingDtoContextEnum.none => MedicineRiskFindingContext.none,
+      MedicineRiskFindingDtoContextEnum.alcohol =>
+        MedicineRiskFindingContext.alcohol,
+      MedicineRiskFindingDtoContextEnum.caffeine =>
+        MedicineRiskFindingContext.caffeine,
+      _ => MedicineRiskFindingContext.none,
+    };
+  }
+
+  MedicineRiskCoverageReason _mapCoverageReason(
+    MedicineRiskCoverageIssueDtoReasonEnum reason,
+  ) {
+    return switch (reason) {
+      MedicineRiskCoverageIssueDtoReasonEnum.manualEntry =>
+        MedicineRiskCoverageReason.manualEntry,
+      MedicineRiskCoverageIssueDtoReasonEnum.missingSourceRef =>
+        MedicineRiskCoverageReason.missingSourceRef,
+      MedicineRiskCoverageIssueDtoReasonEnum.detailUnavailable =>
+        MedicineRiskCoverageReason.detailUnavailable,
+      _ => MedicineRiskCoverageReason.detailUnavailable,
+    };
+  }
+
+  RedFlagRule _mapRedFlagRule(MedicineRedFlagDtoRuleEnum rule) {
+    return switch (rule) {
+      MedicineRedFlagDtoRuleEnum.severeAllergy => RedFlagRule.severeAllergy,
+      MedicineRedFlagDtoRuleEnum.informationGap => RedFlagRule.informationGap,
+      _ => RedFlagRule.informationGap,
+    };
+  }
+}

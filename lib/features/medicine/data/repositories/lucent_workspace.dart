@@ -32,9 +32,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
-    final riskCheckResult = await riskCheckRepository.fetchForSnapshot(
-      snapshot,
-    );
+    final riskRecords = await riskCheckRepository.getRecords();
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);
@@ -146,7 +144,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
       plan: MedicinePlanSurface(items: planItems),
       alerts: const [],
       promisePoints: _defaultPromisePoints(),
-      riskCheckResult: riskCheckResult,
+      riskCheckRecords: riskRecords,
     );
   }
 

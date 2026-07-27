@@ -29,20 +29,23 @@ Last updated: 2026-07-26 (搜索页布局修复：间距、Tabs、溢出)
 
 ## 用药安全摘要
 
-- 使用三层语义：已确认风险 / 已确认安全但非绝对安全 / 未覆盖或不确定。
-- 风险检查页 `_TierBanner` 三级颜色：warning 档 `SemanticColor.warning`（黄）、success 档 `SemanticColor.success`（绿）、destructive 档 `SemanticColor.destructive`（红）。
-- 红旗横幅（`risk_red_flag.dart`）全部使用 `SemanticColor.destructive`（背景/边框/图标/标题/action 文案 5 处）。
+- 风险检查逻辑已从客户端迁移到后端 API（`GET/POST /api/v1/medicines/risk-check`），前端只消费 API 返回的 `MedicineRiskCheckRecords`。
+- 安全卡片（`mobile_safety.dart`）使用单一 `FTappable` → `DecoratedBox` 容器，不再嵌套 `FCard`。
+- 显示最后检查时间："上次检查: HH:mm"（正常）/ "可能已过期"（stale=true）。
+- 三个指标横向排列（用药数 / 发现数 / 覆盖缺口），竖线分隔，语义着色。
+- 紧凑型 `_AlertChip` 替代原来的 `FAvatar` alert 行，最多显示 2 条 + "+N"。
+- 空状态为盾牌图标 + "暂无风险数据" 文案，整体可点击跳转。
+- 红旗横幅（`risk_red_flag.dart`）全部使用 `SemanticColor.destructive`。
 - 红旗升级使用显式线下就医操作文案：`severeAllergy` → 立即拨打急救电话；`informationGap` → 尽快线下核实。
 
 ## 风险检查边界
 
-- 评估当前用药 + 待添加候选，仅使用现有药品详情数据。
-- 应用有界限的审核规则集进行过敏匹配（8 组跨语言 token map）。
-- 对审核过的 `cn` 成分字符串做重复成分检查 + DrugBank 同义词重叠检测。
-- 食物相互作用检测（酒精/咖啡因）。
-- DrugBank 来源的相互作用对检测。
-- 风险结果携带 `coverageSummary` 字符串，严重级别从结论层级派生。
-- 两层展示：结构化结论标签（标题）+ context + medicine（正文）+ 来源证据文本（详情）。
+- 风险检查由后端 `MedicineRiskCheckService` 执行，支持 static（规则引擎）和 llm（LLM 结构化输出）两种检查类型。
+- 后端 `MedicineRiskCheckListener` 监听健康上下文/提醒变更事件，自动标记 stale 并 debounce 5 秒触发静态检查。
+- 前端通过 `LucentClient.medicines.medicinesControllerGetRiskCheckV1()` 获取记录，通过 `medicinesControllerRunRiskCheckV1()` 触发检查。
+- 前端 `MedicineRiskCheckMapper` 将生成 DTO 映射到 domain entity。
+- `MedicineRiskCheckResult` 包含 `overallRiskLevel`（safe/caution/risk/danger）、`overallRiskScore`（0-100）、`findings`、`coverageIssues`、`redFlags`、`overallRecommendation`（LLM only）。
+- `MedicineRiskFinding` 新增 `recommendation` 字段（LLM only）和 `longTermUse` / `schedulingConflict` 类型。
 
 ## 药品搜索与扫描
 
