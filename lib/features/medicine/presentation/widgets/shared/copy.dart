@@ -218,6 +218,8 @@ IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
     MedicineRiskFindingType.allergy => FLucideIcons.triangleAlert,
     MedicineRiskFindingType.specialGroup => FLucideIcons.shieldCheck,
     MedicineRiskFindingType.foodInteraction => FLucideIcons.utensils,
+    MedicineRiskFindingType.longTermUse => FLucideIcons.clock,
+    MedicineRiskFindingType.schedulingConflict => FLucideIcons.calendarClock,
   };
 }
 
@@ -262,6 +264,10 @@ String medicineRiskFindingTitle(
       l10n.medicineRiskCheckFindingTitleFoodInteraction,
     MedicineRiskFindingType.specialGroup =>
       l10n.medicineRiskCheckFindingTitleSpecialGroup,
+    MedicineRiskFindingType.longTermUse =>
+      l10n.medicineRiskCheckFindingTitleFoodInteraction,
+    MedicineRiskFindingType.schedulingConflict =>
+      l10n.medicineRiskCheckFindingTitleInteraction,
   };
 }
 
@@ -295,6 +301,12 @@ String medicineRiskFindingBody(
     }(),
     MedicineRiskFindingType.foodInteraction =>
       l10n.medicineRiskCheckFindingBodyFoodInteraction(primary),
+    MedicineRiskFindingType.longTermUse =>
+      l10n.medicineRiskCheckFindingBodyFoodInteraction(primary),
+    MedicineRiskFindingType.schedulingConflict =>
+      secondary != null && secondary.isNotEmpty
+          ? l10n.medicineRiskCheckFindingBodyInteraction(primary, secondary)
+          : l10n.medicineRiskCheckFindingBodyInteractionSingle(primary),
   };
 }
 

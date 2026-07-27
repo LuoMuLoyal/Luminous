@@ -40,7 +40,11 @@ class MedicineMobileDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final nextDose = _nextDoseFor(workspace);
-    final alerts = medicineAlertsFromRiskCheck(l10n, workspace.riskCheckResult);
+    final alerts = medicineAlertsFromRiskCheck(
+      l10n,
+      workspace.riskCheckRecords?.bestRecord?.result ??
+          const MedicineRiskCheckResult(),
+    );
     final width = MediaQuery.sizeOf(context).width;
     final isDesktop = width >= Breakpoints.desktop;
 
@@ -78,7 +82,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
         ),
         const SizedBox(height: Spacing.level4),
         _SafetyEngineSection(
-          result: workspace.riskCheckResult,
+          records: workspace.riskCheckRecords,
           alerts: alerts.take(4).toList(growable: false),
           l10n: l10n,
         ),
@@ -128,7 +132,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
                 ),
                 const SizedBox(height: Spacing.level5),
                 _SafetyEngineSection(
-                  result: workspace.riskCheckResult,
+                  records: workspace.riskCheckRecords,
                   alerts: alerts.take(4).toList(growable: false),
                   l10n: l10n,
                 ),
@@ -184,7 +188,7 @@ class MedicineMobileDashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _SafetyEngineSection(
-                result: workspace.riskCheckResult,
+                records: workspace.riskCheckRecords,
                 alerts: alerts.take(4).toList(growable: false),
                 l10n: l10n,
               ),
