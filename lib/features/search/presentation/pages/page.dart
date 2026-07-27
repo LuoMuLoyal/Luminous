@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,9 +13,9 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
-import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/medicine/data/repositories/risk_check.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/search/domain/entities/entities.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
 import 'package:luminous/features/search/presentation/widgets/shared/medicine_add_precheck_dialog.dart';
@@ -95,10 +94,9 @@ class SearchPage extends ConsumerWidget {
     );
 
     try {
-      final snapshot = await ref.read(healthContextSnapshotProvider.future);
-      final previewResult = await riskCheckRepository.fetchForSnapshot(
-        _snapshotWithCandidate(snapshot, result),
-      );
+      final riskRecords = await riskCheckRepository.getRecords();
+      final previewResult =
+          riskRecords.bestRecord?.result ?? const MedicineRiskCheckResult();
 
       if (context.mounted &&
           (previewResult.findings.isNotEmpty ||
@@ -151,31 +149,4 @@ class SearchPage extends ConsumerWidget {
       }
     }
   }
-}
-
-HealthContextSnapshot _snapshotWithCandidate(
-  HealthContextSnapshot snapshot,
-  MedicineSearchResult result,
-) {
-  final now = clock.now().toIso8601String();
-  return snapshot.copyWith(
-    currentMedicines: [
-      ...snapshot.currentMedicines,
-      CurrentMedicineItem(
-        id: '__candidate__${result.source.name}_${result.id}',
-        source: result.source.name,
-        sourceRefId: result.id,
-        displayName: result.name,
-        strengthText: null,
-        doseText: null,
-        route: null,
-        startedAt: null,
-        endedAt: null,
-        isCurrent: true,
-        note: null,
-        createdAt: now,
-        updatedAt: now,
-      ),
-    ],
-  );
 }
