@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -19,7 +20,7 @@ import 'package:luminous/features/medicine/presentation/utils/reminder_formatter
 import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/log_panels.dart';
-import 'package:luminous/features/medicine/presentation/widgets/reminder/rows.dart';
+import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderDetailPage extends ConsumerWidget {
@@ -148,213 +149,290 @@ class _ReminderDetailBody extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           FCard(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                FAvatar.raw(
-                  size: Spacing.level9,
-                  child: Icon(
-                    FLucideIcons.pillBottle,
-                    color: SemanticColor.primary.solid(context),
-                    size: Spacing.level6,
-                  ),
-                ),
-                const SizedBox(width: Spacing.level4),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.level4),
+                  child: Row(
                     children: [
-                      Text(
-                        data.medicine.displayName,
-                        style: TypographyToken.level5
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w800),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: Spacing.level1),
-                      Text(
-                        medicineDoseText(l10n, data.medicine),
-                        style: TypographyToken.level3
-                            .body(context)
-                            .copyWith(color: colors.mutedForeground),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: Spacing.level3),
-                FBadge.raw(
-                  builder: (context, style) {
-                    final pillColor = isActive
-                        ? SemanticColor.primary
-                        : SemanticColor.neutral;
-                    final foreground = pillColor.solid(context);
-                    return DecoratedBox(
-                      decoration: ShapeDecoration(
-                        color: pillColor.muted(context),
-                        shape: RoundedSuperellipseBorder(
-                          borderRadius: BorderRadius.circular(
-                            RadiusTokens.level2,
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.level2,
-                          vertical: Spacing.level1,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isActive
-                                  ? l10n.medicineReminderEnabledStatus
-                                  : l10n.medicineReminderDisabledStatus,
+                              data.medicine.displayName,
+                              style: TypographyToken.level5
+                                  .body(context)
+                                  .copyWith(fontWeight: FontWeight.w800),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: Spacing.level1),
+                            Text(
+                              medicineDoseText(l10n, data.medicine),
                               style: TypographyToken.level3
                                   .body(context)
-                                  .copyWith(
-                                    color: foreground,
-                                    fontWeight: FontWeight.w700,
-                                    letterSpacing: 0,
-                                  ),
+                                  .copyWith(color: colors.mutedForeground),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
+                      const SizedBox(width: Spacing.level3),
+                      FBadge.raw(
+                        builder: (context, style) {
+                          final pillColor = isActive
+                              ? SemanticColor.primary
+                              : SemanticColor.neutral;
+                          final foreground = pillColor.solid(context);
+                          return DecoratedBox(
+                            decoration: ShapeDecoration(
+                              color: pillColor.muted(context),
+                              shape: RoundedSuperellipseBorder(
+                                borderRadius: BorderRadius.circular(
+                                  RadiusTokens.level2,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: Spacing.level2,
+                                vertical: Spacing.level1,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    isActive
+                                        ? l10n.medicineReminderEnabledStatus
+                                        : l10n.medicineReminderDisabledStatus,
+                                    style: TypographyToken.level3
+                                        .body(context)
+                                        .copyWith(
+                                          color: foreground,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0,
+                                        ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const AppDivider(),
+                // Active/inactive toggle — allows switching without entering edit page.
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.level4,
+                    vertical: Spacing.level3,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FLucideIcons.power,
+                        color: isActive
+                            ? SemanticColor.primary.solid(context)
+                            : colors.mutedForeground,
+                        size: Spacing.level5,
+                      ),
+                      const SizedBox(width: Spacing.level4),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.medicineReminderToggleActiveLabel,
+                              style: context.theme.typography.body.sm.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: Spacing.level1),
+                            Text(
+                              isActive
+                                  ? l10n.medicineReminderEnabledStatus
+                                  : l10n.medicineReminderDisabledStatus,
+                              style: context.theme.typography.body.sm.copyWith(
+                                color: colors.mutedForeground,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      FSwitch(
+                        value: isActive,
+                        onChange: (value) => _toggleReminderActive(
+                          ref,
+                          context,
+                          l10n,
+                          reminders,
+                          value,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: Spacing.level4),
-          // Active/inactive toggle — allows switching without entering edit page.
-          FCard(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.level4,
-                vertical: Spacing.level3,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    FLucideIcons.power,
-                    color: isActive
-                        ? SemanticColor.primary.solid(context)
-                        : colors.mutedForeground,
-                    size: Spacing.level5,
-                  ),
-                  const SizedBox(width: Spacing.level4),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.medicineReminderToggleActiveLabel,
-                          style: context.theme.typography.body.sm.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.level1),
-                        Text(
-                          isActive
-                              ? l10n.medicineReminderEnabledStatus
-                              : l10n.medicineReminderDisabledStatus,
-                          style: context.theme.typography.body.sm.copyWith(
-                            color: colors.mutedForeground,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FSwitch(
-                    value: isActive,
-                    onChange: (value) => _toggleReminderActive(
-                      ref,
-                      context,
-                      l10n,
-                      reminders,
-                      value,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: Spacing.level4),
-          FCard(
-            child: Column(
-              children: [
-                ReminderInfoRow(
-                  icon: FLucideIcons.repeat2,
-                  label: l10n.medicineReminderFrequencyLabel,
-                  value: frequencyLabel(l10n, reminders),
-                  showDivider: true,
+          FTileGroup(
+            style: settingsSubpageTileGroupStyle(context.theme),
+            physics: const NeverScrollableScrollPhysics(),
+            divider: FItemDivider.full,
+            children: [
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.repeat2,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.clock3,
-                  label: l10n.medicineReminderTimesLabel,
-                  value: reminders.isEmpty
+                title: Text(l10n.medicineReminderFrequencyLabel),
+                details: Text(
+                  frequencyLabel(l10n, reminders),
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
+                ),
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.clock3,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
+                ),
+                title: Text(l10n.medicineReminderTimesLabel),
+                details: Text(
+                  reminders.isEmpty
                       ? l10n.medicineScheduleNotSet
                       : reminders.map((item) => item.timeLabel).join(' · '),
-                  showDivider: true,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.pillBottle,
-                  label: l10n.medicineReminderDoseLabel,
-                  value: medicineDoseText(l10n, data.medicine),
-                  showDivider: true,
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.pillBottle,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.calendar,
-                  label: l10n.medicineReminderStartDateLabel,
-                  value:
-                      firstReminder?.startDate ??
-                      l10n.medicineReminderDateNotSet,
-                  showDivider: true,
+                title: Text(l10n.medicineReminderDoseLabel),
+                details: Text(
+                  medicineDoseText(l10n, data.medicine),
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.calendarX2,
-                  label: l10n.medicineReminderEndDateLabel,
-                  value:
-                      firstReminder?.endDate ?? l10n.medicineReminderDateNotSet,
-                  showDivider: true,
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.calendar,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.bell,
-                  label: l10n.medicineReminderMethodLabel,
-                  value: isActive
+                title: Text(l10n.medicineReminderStartDateLabel),
+                details: Text(
+                  firstReminder?.startDate ?? l10n.medicineReminderDateNotSet,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
+                ),
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.calendarX2,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
+                ),
+                title: Text(l10n.medicineReminderEndDateLabel),
+                details: Text(
+                  firstReminder?.endDate ?? l10n.medicineReminderDateNotSet,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
+                ),
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.bell,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
+                ),
+                title: Text(l10n.medicineReminderMethodLabel),
+                details: Text(
+                  isActive
                       ? l10n.medicineReminderNotificationOn
                       : l10n.medicineReminderNotificationOff,
-                  showDivider: true,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.messageSquare,
-                  label: l10n.medicineReminderSmsLabel,
-                  value: l10n.medicineReminderSmsOff,
-                  showDivider: true,
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.messageSquare,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
                 ),
-                ReminderInfoRow(
-                  icon: FLucideIcons.volume2,
-                  label: l10n.medicineReminderSoundLabel,
-                  value: soundPreferenceLabel(l10n, soundPreference),
-                  showDivider: hasNote,
+                title: Text(l10n.medicineReminderSmsLabel),
+                details: Text(
+                  l10n.medicineReminderSmsOff,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
                 ),
-                if (hasNote)
-                  ReminderInfoRow(
-                    icon: FLucideIcons.notebookPen,
-                    label: l10n.medicineReminderNoteLabel,
-                    value: data.reminders
+              ),
+              FTile(
+                prefix: Icon(
+                  FLucideIcons.volume2,
+                  color: colors.mutedForeground,
+                  size: Spacing.level5,
+                ),
+                title: Text(l10n.medicineReminderSoundLabel),
+                details: Text(
+                  soundPreferenceLabel(l10n, soundPreference),
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: colors.mutedForeground),
+                ),
+              ),
+              if (hasNote)
+                FTile(
+                  prefix: Icon(
+                    FLucideIcons.notebookPen,
+                    color: colors.mutedForeground,
+                    size: Spacing.level5,
+                  ),
+                  title: Text(l10n.medicineReminderNoteLabel),
+                  details: Text(
+                    data.reminders
                         .map((item) => item.note?.trim())
                         .whereType<String>()
                         .where((item) => item.isNotEmpty)
                         .first,
+                    textAlign: TextAlign.right,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: colors.mutedForeground),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
           const SizedBox(height: Spacing.level4),
           ReminderTodayLogPanel(logs: data.todayLogs),

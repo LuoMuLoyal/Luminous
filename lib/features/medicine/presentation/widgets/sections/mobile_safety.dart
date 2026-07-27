@@ -63,13 +63,17 @@ class _SafetyHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text(
-          l10n.medicineSafetyPanelTitle,
-          style: TypographyToken.level7
-              .display(context)
-              .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
+        Expanded(
+          child: Text(
+            l10n.medicineSafetyPanelTitle,
+            style: TypographyToken.level7
+                .display(context)
+                .copyWith(fontWeight: FontWeight.w600, letterSpacing: 0),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
-        const Spacer(),
+        const SizedBox(width: Spacing.level2),
         if (hasData)
           _LastCheckedLabel(
             l10n: l10n,
@@ -77,11 +81,16 @@ class _SafetyHeader extends StatelessWidget {
             lastChecked: lastChecked,
           )
         else
-          Text(
-            l10n.medicineSafetyPanelEmptyBody,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: context.theme.colors.mutedForeground),
+          Flexible(
+            child: Text(
+              l10n.medicineSafetyPanelEmptyBody,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: context.theme.colors.mutedForeground),
+              textAlign: TextAlign.end,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
       ],
     );

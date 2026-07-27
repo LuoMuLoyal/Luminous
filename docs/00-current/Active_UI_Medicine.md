@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-27 (风险检查页面重构：FTabs + 环形进度条 + 组件重写)
+Last updated: 2026-07-27 (用药提醒详情页：FTileGroup 分组 + 圆角矩形药品图标)
 
 ## 页面结构
 
@@ -72,6 +72,7 @@ Last updated: 2026-07-27 (风险检查页面重构：FTabs + 环形进度条 + �
 - 只读提醒投递历史展示。
 - 桌面端提醒 new/detail/edit 路由使用 `sidePanelPage`（右侧滑入面板），移动端使用 `slidePage`（全屏）。
 - 通知权限 `permanentlyDenied` 状态时自动调用 `openAppSettings()` 跳转系统设置。
+- 提醒详情页中间信息列表使用 `FTileGroup` 分组（`FItemDivider.full`），消除独立 `FTile` 造成的行间距；顶部药品图标衬底改为圆角矩形（`RadiusTokens.level2`）。
 
 ## 数据层
 

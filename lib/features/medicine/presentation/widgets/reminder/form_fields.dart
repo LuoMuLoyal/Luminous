@@ -23,7 +23,9 @@ class FrequencySegments extends StatelessWidget {
     return FSelectGroup<ReminderFrequency>(
       control: FMultiValueControl.lifted(
         value: {frequency},
-        onChange: (value) => onChanged(value.single),
+        onChange: (value) {
+          if (value.isNotEmpty) onChanged(value.first);
+        },
       ),
       children: [
         FSelectGroupItemMixin.radio(

@@ -13,7 +13,6 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
-import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -202,11 +201,10 @@ class MedicineReminderEditPage extends HookConsumerWidget {
     Future<void> addTime() async {
       final latest = times.value.isEmpty ? null : times.value.last;
       final initial = FTime(latest?.hour ?? 8, latest?.minute ?? 0);
-      final picked = await showFSheet<FTime?>(
+      final picked = await showAppDialog<FTime?>(
         context: context,
-        side: FLayout.btt,
-        useSafeArea: true,
-        builder: (sheetContext) => _ReminderTimePickerSheet(initial: initial),
+        scrollable: false,
+        builder: (_) => _ReminderTimePickerDialog(initial: initial),
       );
       if (picked == null) return;
       final isDuplicate = times.value.any(
@@ -508,14 +506,14 @@ class _MedicineSelectorPrompt extends StatelessWidget {
   }
 }
 
-/// Bottom sheet for picking a reminder time.
+/// Centered dialog for picking a reminder time.
 ///
-/// Shows a title, drag handle, live preview of the selected time, the
+/// Shows a title, live preview of the selected time, the
 /// [FTimePicker] wheel, and explicit cancel/confirm action buttons.
-class _ReminderTimePickerSheet extends HookWidget {
-  const _ReminderTimePickerSheet({required this.initial});
+class _ReminderTimePickerDialog extends HookWidget {
+  const _ReminderTimePickerDialog({required this.initial});
 
-  /// The time pre-selected when the sheet opens.
+  /// The time pre-selected when the dialog opens.
   final FTime initial;
 
   @override
@@ -529,87 +527,76 @@ class _ReminderTimePickerSheet extends HookWidget {
     );
     useEffect(() => timeController.dispose, [timeController]);
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Title row with close button
+        Row(
           children: [
-            const SheetDragHandle(),
-
-            // Title row with close button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.level1),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.medicineReminderTimePickerTitle,
-                      style: typography.body.xl2.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  FButton.icon(
-                    onPress: () => Navigator.of(context).pop(),
-                    variant: FButtonVariant.ghost,
-                    child: const Icon(FLucideIcons.x),
-                  ),
-                ],
+            Expanded(
+              child: Text(
+                l10n.medicineReminderTimePickerTitle,
+                style: typography.body.xl2.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            const SizedBox(height: Spacing.level2),
-
-            // Live preview of the currently selected time
-            ValueListenableBuilder<FTime>(
-              valueListenable: timeController,
-              builder: (context, time, _) {
-                return Text(
-                  formatTimeOfDay(
-                    TimeOfDay(hour: time.hour, minute: time.minute),
-                    locale,
-                  ),
-                  style: typography.body.xl3.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: context.theme.colors.primary,
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: Spacing.level4),
-
-            // Time picker wheel
-            SizedBox(
-              height: 240,
-              child: FTimePicker(
-                control: FTimePickerControl.managed(controller: timeController),
-              ),
-            ),
-            const SizedBox(height: Spacing.level4),
-
-            // Cancel + Confirm action buttons
-            Row(
-              children: [
-                Expanded(
-                  child: FButton(
-                    onPress: () => Navigator.of(context).pop(),
-                    variant: FButtonVariant.outline,
-                    child: Text(l10n.commonCancel),
-                  ),
-                ),
-                const SizedBox(width: Spacing.level3),
-                Expanded(
-                  child: FButton(
-                    onPress: () =>
-                        Navigator.of(context).pop(timeController.value),
-                    child: Text(l10n.commonConfirm),
-                  ),
-                ),
-              ],
+            FButton.icon(
+              onPress: () => Navigator.of(context).pop(),
+              variant: FButtonVariant.ghost,
+              child: const Icon(FLucideIcons.x),
             ),
           ],
         ),
-      ),
+        const SizedBox(height: Spacing.level2),
+
+        // Live preview of the currently selected time
+        ValueListenableBuilder<FTime>(
+          valueListenable: timeController,
+          builder: (context, time, _) {
+            return Text(
+              formatTimeOfDay(
+                TimeOfDay(hour: time.hour, minute: time.minute),
+                locale,
+              ),
+              style: typography.body.xl3.copyWith(
+                fontWeight: FontWeight.w800,
+                color: context.theme.colors.primary,
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: Spacing.level4),
+
+        // Time picker wheel
+        SizedBox(
+          height: 200,
+          child: FTimePicker(
+            control: FTimePickerControl.managed(controller: timeController),
+          ),
+        ),
+        const SizedBox(height: Spacing.level4),
+
+        // Cancel + Confirm action buttons
+        Row(
+          children: [
+            Expanded(
+              child: FButton(
+                onPress: () => Navigator.of(context).pop(),
+                variant: FButtonVariant.outline,
+                child: Text(l10n.commonCancel),
+              ),
+            ),
+            const SizedBox(width: Spacing.level3),
+            Expanded(
+              child: FButton(
+                onPress: () => Navigator.of(context).pop(timeController.value),
+                child: Text(l10n.commonConfirm),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
