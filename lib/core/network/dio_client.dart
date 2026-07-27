@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
+import 'package:luminous/core/network/interceptors/envelope_interceptor.dart';
 import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
@@ -97,6 +98,7 @@ class LucentDioClient {
       _authInterceptor,
       RetryInterceptor(dio: _dio),
       ErrorInterceptor(),
+      EnvelopeInterceptor(),
     ]);
   }
 

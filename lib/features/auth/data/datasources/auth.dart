@@ -344,7 +344,9 @@ class LucentAuthRepository implements AuthRepository {
     );
     return currentUser.copyWith(
       email: response.data!.data.email,
-      emailVerifiedAt: DateTime.parse(response.data!.data.emailVerifiedAt),
+      emailVerifiedAt: _parseOptionalDateTime(
+        response.data!.data.emailVerifiedAt,
+      ),
     );
   }
 
@@ -416,6 +418,10 @@ class LucentAuthRepository implements AuthRepository {
     if (raw == null || raw.isEmpty) {
       return null;
     }
-    return DateTime.parse(raw);
+    try {
+      return DateTime.parse(raw);
+    } on FormatException {
+      return null;
+    }
   }
 }

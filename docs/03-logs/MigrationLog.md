@@ -1,6 +1,6 @@
 # Luminous Migration Log
 
-Last updated: 2026-07-18
+Last updated: 2026-07-27
 
 Records changes after the full reset only. Detailed entries are split by date under
 `docs/03-logs/migration-log/`. Pre-2026-07 entries are archived under `docs/04-archive/migration-log/`.
@@ -18,6 +18,7 @@ under the `docs-archive/2026-06-06-doc-cleanup` folder.
 
 ## Active Entries
 
+- [2026-07-27](migration-log/2026-07-27.md) — 7-26 审查修复（_parseOptionalDateTime 防御性 FormatException 捕获 + changeEmail 复用 _parseOptionalDateTime + 网络错误时保留 session store）+ EnvelopeInterceptor 拦截器层统一校验业务 envelope
 - [2026-07-18](migration-log/2026-07-18.md) — 审查修复（PrefKeys 遗漏 key 补齐 + SuggestionJsonCodec 缓存反序列化容错 + isPublicRoute 硬编码提取为常量集合）
 - [2026-07-17](migration-log/2026-07-17.md) — 审查回查验证（luminous-review-2026-07-17.md 全部 5 项问题已修复验证）
 - [2026-07-16](migration-log/2026-07-16.md) — SSE 错误映射去重 + 测试断言修复 + SemanticColor 暗色对比度 + Drift 缓存一致性

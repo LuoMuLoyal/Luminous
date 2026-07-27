@@ -196,6 +196,28 @@ void main() {
     );
 
     test(
+      'preserves session store when fetchAccount fails with a network error',
+      () async {
+        sessionStore.tokens = const LucentSessionTokens(
+          accessToken: 'valid-token',
+          refreshToken: 'refresh-token',
+        );
+        remote.fetchAccountShouldFail = true;
+        remote.fetchAccountFailureIsNetworkError = true;
+
+        await container.read(authSessionProvider.notifier).restore();
+
+        final state = container.read(authSessionProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.isAuthenticated, isFalse);
+        expect(state.user, isNull);
+        expect(state.errorMessage, isNotNull);
+        // Session store should be preserved for network errors
+        expect(sessionStore.tokens, isNotNull);
+      },
+    );
+
+    test(
       'refreshes session when access token is empty but refresh token is present',
       () async {
         sessionStore.tokens = const LucentSessionTokens(
@@ -345,12 +367,19 @@ class _SessionTestRemoteDataSource extends FakeLucentAuthRepository {
   bool logoutShouldFail = false;
   bool fetchAccountShouldFail = false;
   bool fetchAccountFailureIsAuth = true;
+  bool fetchAccountFailureIsNetworkError = false;
   bool refreshSessionShouldFail = false;
   bool refreshSessionCalled = false;
 
   @override
   Future<AuthUser> fetchAccount() async {
     if (fetchAccountShouldFail) {
+      if (fetchAccountFailureIsNetworkError) {
+        throw DioException(
+          requestOptions: RequestOptions(path: '/account'),
+          type: DioExceptionType.connectionTimeout,
+        );
+      }
       throw DioException(
         requestOptions: RequestOptions(path: '/account'),
         type: DioExceptionType.badResponse,

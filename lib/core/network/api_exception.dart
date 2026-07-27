@@ -25,6 +25,19 @@ class LucentApiException implements Exception {
 
   bool get isRefreshTokenInvalid => code == 401003;
 
+  /// True when the error stems from a network connectivity issue
+  /// (timeout, connection refused, DNS failure, bad certificate) rather
+  /// than an authentication, business, or server-side error.
+  ///
+  /// Callers should preserve the session store when this is `true` so the
+  /// user can retry once connectivity is restored.
+  bool get isNetworkConnectivityError =>
+      networkErrorCode == NetworkErrorCode.connectionTimeout ||
+      networkErrorCode == NetworkErrorCode.sendTimeout ||
+      networkErrorCode == NetworkErrorCode.receiveTimeout ||
+      networkErrorCode == NetworkErrorCode.connectionError ||
+      networkErrorCode == NetworkErrorCode.badCertificate;
+
   @override
   String toString() {
     final parts = <String>[

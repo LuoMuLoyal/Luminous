@@ -83,6 +83,16 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
             apiError.isTokenExpired ||
             apiError.isRefreshTokenInvalid;
         if (!isAuthError) {
+          // Network connectivity errors (timeout, connection refused, etc.)
+          // must NOT clear the session store — the token may still be valid
+          // and the user should be able to retry once connectivity is restored.
+          if (apiError.isNetworkConnectivityError) {
+            state = AuthSessionState(
+              isAuthenticated: false,
+              errorMessage: apiError.message,
+            );
+            return;
+          }
           await store.clear();
           state = AuthSessionState(
             isAuthenticated: false,
@@ -106,7 +116,11 @@ class AuthSessionNotifier extends Notifier<AuthSessionState> {
           .read(talkerProvider)
           .error('AuthSessionNotifier.restore: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
-      await store.clear();
+      // Preserve the session store for network connectivity errors so the
+      // user can retry restore() once the network recovers.
+      if (!apiError.isNetworkConnectivityError) {
+        await store.clear();
+      }
       state = AuthSessionState(
         isAuthenticated: false,
         errorMessage: apiError.message,

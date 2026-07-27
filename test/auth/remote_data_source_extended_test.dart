@@ -1001,6 +1001,66 @@ void main() {
         expect(adapter.lastBody?['newEmail'], 'new@example.com');
         expect(adapter.lastBody?['code'], '123456');
       });
+
+      test('returns null emailVerifiedAt when date is malformed', () async {
+        adapter.body = <String, dynamic>{
+          'code': 0,
+          'message': '',
+          'data': <String, dynamic>{
+            'email': 'new@example.com',
+            'emailVerifiedAt': 'not-a-date',
+          },
+        };
+
+        final currentUser = AuthUser(
+          id: 'u-1',
+          email: 'old@example.com',
+          nickname: 'TestUser',
+          avatar: null,
+          emailVerifiedAt: null,
+          createdAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
+          updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
+        );
+
+        final result = await dataSource.changeEmail(
+          newEmail: 'new@example.com',
+          code: '123456',
+          currentUser: currentUser,
+        );
+
+        expect(result.email, 'new@example.com');
+        expect(result.emailVerifiedAt, isNull);
+      });
+
+      test('returns null emailVerifiedAt when date is empty string', () async {
+        adapter.body = <String, dynamic>{
+          'code': 0,
+          'message': '',
+          'data': <String, dynamic>{
+            'email': 'new@example.com',
+            'emailVerifiedAt': '',
+          },
+        };
+
+        final currentUser = AuthUser(
+          id: 'u-1',
+          email: 'old@example.com',
+          nickname: 'TestUser',
+          avatar: null,
+          emailVerifiedAt: null,
+          createdAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
+          updatedAt: DateTime.parse('2026-06-10T08:00:00.000Z'),
+        );
+
+        final result = await dataSource.changeEmail(
+          newEmail: 'new@example.com',
+          code: '123456',
+          currentUser: currentUser,
+        );
+
+        expect(result.email, 'new@example.com');
+        expect(result.emailVerifiedAt, isNull);
+      });
     });
 
     // ─── deleteAccount ───────────────────────────────────────────────
@@ -1078,6 +1138,20 @@ void main() {
           user.emailVerifiedAt,
           equals(DateTime.parse('2026-07-01T12:30:00.000Z')),
         );
+      });
+
+      test('returns null emailVerifiedAt when date is malformed', () async {
+        adapter.body = _accountDto(emailVerifiedAt: 'invalid-date');
+
+        final user = await dataSource.fetchAccount();
+        expect(user.emailVerifiedAt, isNull);
+      });
+
+      test('returns null lastLoginAt when date is malformed', () async {
+        adapter.body = _accountDto(lastLoginAt: 'not-a-date');
+
+        final user = await dataSource.fetchAccount();
+        expect(user.lastLoginAt, isNull);
       });
     });
 
