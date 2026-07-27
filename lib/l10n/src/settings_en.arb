@@ -84,12 +84,19 @@
   "settingsDataSharingConfirmDescription": "When enabled, your health reports and trend analysis may be used to improve services. Continue?",
   "settingsDataSharingConfirmAction": "Confirm",
   "settingsDataSharingCancelAction": "Cancel",
-  "settingsAboutBuildNumberLabel": "Build {buildNumber}",
-  "@settingsAboutBuildNumberLabel": {
+  "settingsAboutVersionLabel": "Version {version}",
+  "@settingsAboutVersionLabel": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "settingsAboutBuildLabel": "Build {buildNumber}",
+  "@settingsAboutBuildLabel": {
     "placeholders": {
       "buildNumber": {}
     }
   },
+  "settingsAboutTagline": "Your personal medication health companion",
   "settingsAiContextSectionTitle": "Assistant Data Access",
   "settingsAiContextSectionSubtitle": "Control what data the AI assistant can read",
   "settingsAiContextHealthProfile": "Health Profile",

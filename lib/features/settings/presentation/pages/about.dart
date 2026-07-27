@@ -7,6 +7,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
+import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
@@ -21,9 +22,13 @@ class AboutSettingsPage extends ConsumerWidget {
     final colors = context.theme.colors;
 
     final infoAsync = ref.watch(appInfoProvider);
-    final description = infoAsync.asData?.value?.description;
     final supportEmail = infoAsync.asData?.value?.supportEmail;
-    final buildDate = infoAsync.asData?.value?.buildDate;
+
+    final pkgAsync = ref.watch(packageInfoProvider);
+    final pkg = pkgAsync.asData?.value;
+    final appName = pkg?.appName.isNotEmpty == true ? pkg!.appName : 'Luminous';
+    final version = pkg?.version ?? '';
+    final buildNumber = pkg?.buildNumber ?? '';
 
     final width = MediaQuery.sizeOf(context).width;
     final content = ResponsiveContentFrame(
@@ -37,51 +42,49 @@ class AboutSettingsPage extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  FAvatar.raw(
-                    size: 80,
-                    child: Icon(
-                      FLucideIcons.heartPulse,
-                      size: 36,
-                      color: colors.primary,
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.level5),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/icon/app_icon.png',
+                      width: 64,
+                      height: 64,
                     ),
-                  ),
-                  const SizedBox(height: Spacing.level4),
-                  Text(
-                    infoAsync.asData?.value?.name ?? 'Luminous',
-                    style: TypographyToken.level6
-                        .body(context)
-                        .copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: Spacing.level2),
-                  Text(
-                    '${l10n.mineSettingAboutValue} ${infoAsync.asData?.value?.version ?? ''}',
-                    style: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
-                  if (buildDate != null && buildDate.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level1),
-                    Text(
-                      l10n.settingsAboutBuildNumberLabel(buildDate),
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                    ),
-                  ],
-                  if (description != null && description.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level3),
-                    Text(
-                      description,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.foreground),
-                      textAlign: TextAlign.center,
+                    const SizedBox(width: Spacing.level4),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            appName,
+                            style: TypographyToken.level6
+                                .body(context)
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          if (version.isNotEmpty) ...[
+                            const SizedBox(height: Spacing.level1),
+                            Text(
+                              buildNumber.isNotEmpty
+                                  ? '${l10n.settingsAboutVersionLabel(version)} · ${l10n.settingsAboutBuildLabel(buildNumber)}'
+                                  : l10n.settingsAboutVersionLabel(version),
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.mutedForeground),
+                            ),
+                          ],
+                          const SizedBox(height: Spacing.level1),
+                          Text(
+                            l10n.settingsAboutTagline,
+                            style: TypographyToken.level3
+                                .body(context)
+                                .copyWith(color: colors.mutedForeground),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
             const SizedBox(height: Spacing.level5),
@@ -130,8 +133,7 @@ class AboutSettingsPage extends ConsumerWidget {
                   suffix: const Icon(FLucideIcons.chevronRight),
                   onPress: () => showLicensePage(
                     context: context,
-                    applicationName:
-                        infoAsync.asData?.value?.name ?? 'Luminous',
+                    applicationName: appName,
                   ),
                 ),
                 FTile(

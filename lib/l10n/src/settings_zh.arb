@@ -84,12 +84,19 @@
   "settingsDataSharingConfirmDescription": "开启后，你的健康报告和趋势分析可能会被用于改进服务。是否继续？",
   "settingsDataSharingConfirmAction": "确认",
   "settingsDataSharingCancelAction": "取消",
-  "settingsAboutBuildNumberLabel": "Build {buildNumber}",
-  "@settingsAboutBuildNumberLabel": {
+  "settingsAboutVersionLabel": "版本 {version}",
+  "@settingsAboutVersionLabel": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "settingsAboutBuildLabel": "Build {buildNumber}",
+  "@settingsAboutBuildLabel": {
     "placeholders": {
       "buildNumber": {}
     }
   },
+  "settingsAboutTagline": "您的个人用药健康管理助手",
   "settingsAiContextSectionTitle": "助手数据访问权限",
   "settingsAiContextSectionSubtitle": "控制 AI 助手可以读取哪些数据",
   "settingsAiContextHealthProfile": "健康档案",

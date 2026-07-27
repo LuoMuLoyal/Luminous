@@ -209,3 +209,11 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 ## 2026-07-21 审查修复
 
 - **通知列表 hover 性能优化**：`list_item.dart` 的 `_isHovered` 从 `bool` + `setState` 改为 `ValueNotifier<bool>` + `ValueListenableBuilder`。鼠标 hover/退出时仅重建操作按钮区域，不再触发整个列表项 widget 的 `build`，减少快速滚动时的不必要的重建开销。
+
+## 2026-07-27 About 页面重构
+
+- **App 元数据来源切换**：About 页面不再从 `GET /api/v1/public/app-info` 获取 App 名称/版本/描述/构建日期（那些是后端 `package.json` 的值），改为使用 `package_info_plus` 获取客户端自身的 App 名称、版本号和构建号。
+- **横向布局**：顶部卡片从居中垂直排列改为横向 `Row`：左侧 App 图标 (`assets/icon/app_icon.png`，64x64) + 右侧 App 名称、版本号 (`版本 x.y.z · Build n`)、tagline。
+- **Tagline**：新增 `settingsAboutTagline` ARB key，展示一句话产品描述。
+- **API 精简**：后端 `app-info` 端点移除 `name`/`version`/`description`/`buildDate` 字段，只返回 `supportEmail` 和 `minClientVersion`（通过环境变量配置）。
+- **l10n 清理**：移除不再使用的 `settingsAboutBuildNumberLabel` 和 `mineSettingAboutValue`；新增 `settingsAboutVersionLabel`（带 `{version}` 占位符）和 `settingsAboutBuildLabel`（带 `{buildNumber}` 占位符）。

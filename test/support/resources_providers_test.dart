@@ -157,13 +157,7 @@ void main() {
         appInfoResponse: AppInfoResponseDto(
           code: 0,
           message: '',
-          data: AppInfoDataDto(
-            name: 'Lumos',
-            version: '1.0.0',
-            description: 'Health tracking platform',
-            buildDate: '2026-06-01T00:00:00.000Z',
-            supportEmail: 'support@lumos.app',
-          ),
+          data: AppInfoDataDto(supportEmail: 'support@lumos.app'),
         ),
       );
 
@@ -179,9 +173,7 @@ void main() {
       final result = await container.read(appInfoProvider.future);
 
       expect(result, isNotNull);
-      expect(result!.name, equals('Lumos'));
-      expect(result.version, equals('1.0.0'));
-      expect(result.supportEmail, equals('support@lumos.app'));
+      expect(result!.supportEmail, equals('support@lumos.app'));
     });
 
     test('throws when response data is null', () async {

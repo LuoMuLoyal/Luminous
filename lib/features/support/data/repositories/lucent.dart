@@ -32,10 +32,6 @@ class LucentSupportRepository implements SupportRepository {
     final response = await api.supportResourcesControllerGetAppInfoV1();
     final d = response.data!.data;
     return AppInfo(
-      name: d.name,
-      version: d.version,
-      description: d.description,
-      buildDate: d.buildDate,
       minClientVersion: d.minClientVersion,
       supportEmail: d.supportEmail,
     );

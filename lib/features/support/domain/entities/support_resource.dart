@@ -43,22 +43,13 @@ class SupportResource {
 }
 
 /// Application metadata shown in the about page.
+///
+/// Only contains fields that come from the backend (runtime config).
+/// App name, version, and build number are obtained locally via
+/// `package_info_plus`.
 class AppInfo {
-  const AppInfo({
-    required this.name,
-    required this.version,
-    required this.description,
-    required this.buildDate,
-    this.minClientVersion,
-    this.supportEmail,
-  });
+  const AppInfo({this.minClientVersion, this.supportEmail});
 
-  final String name;
-  final String version;
-  final String description;
-
-  /// ISO-8601 build/publish timestamp.
-  final String buildDate;
   final String? minClientVersion;
   final String? supportEmail;
 }
