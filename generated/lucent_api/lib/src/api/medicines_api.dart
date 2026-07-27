@@ -10,9 +10,9 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/medicine_detail_response_dto.dart';
-import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
-import 'package:lucent_api/src/model/medicine_risk_check_records_dto.dart';
-import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
+import 'package:lucent_api/src/model/medicine_safety_tip_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
 import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1200_response.dart';
 import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
@@ -123,9 +123,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordsDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordsResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineRiskCheckRecordsDto>>
+  Future<Response<MedicineRiskCheckRecordsResponseDto>>
   medicinesControllerGetRiskCheckV1({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -150,16 +150,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineRiskCheckRecordsDto? _responseData;
+    MedicineRiskCheckRecordsResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicineRiskCheckRecordsDto,
-              MedicineRiskCheckRecordsDto
-            >(rawData, 'MedicineRiskCheckRecordsDto', growable: true);
+              MedicineRiskCheckRecordsResponseDto,
+              MedicineRiskCheckRecordsResponseDto
+            >(rawData, 'MedicineRiskCheckRecordsResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -170,7 +170,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineRiskCheckRecordsDto>(
+    return Response<MedicineRiskCheckRecordsResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -194,9 +194,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [List<MedicineSafetyTipResponseDto>] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineSafetyTipListResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<List<MedicineSafetyTipResponseDto>>>
+  Future<Response<MedicineSafetyTipListResponseDto>>
   medicinesControllerGetSafetyTipsV1({
     List<String>? exclude,
     CancelToken? cancelToken,
@@ -227,16 +227,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    List<MedicineSafetyTipResponseDto>? _responseData;
+    MedicineSafetyTipListResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              List<MedicineSafetyTipResponseDto>,
-              MedicineSafetyTipResponseDto
-            >(rawData, 'List<MedicineSafetyTipResponseDto>', growable: true);
+              MedicineSafetyTipListResponseDto,
+              MedicineSafetyTipListResponseDto
+            >(rawData, 'MedicineSafetyTipListResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -247,7 +247,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<List<MedicineSafetyTipResponseDto>>(
+    return Response<MedicineSafetyTipListResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -466,9 +466,9 @@ class MedicinesApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordDto] as data
+  /// Returns a [Future] containing a [Response] with a [MedicineRiskCheckRecordResponseDto] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicineRiskCheckRecordDto>>
+  Future<Response<MedicineRiskCheckRecordResponseDto>>
   medicinesControllerRunRiskCheckV1({
     required RunRiskCheckDto runRiskCheckDto,
     CancelToken? cancelToken,
@@ -509,17 +509,16 @@ class MedicinesApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicineRiskCheckRecordDto? _responseData;
+    MedicineRiskCheckRecordResponseDto? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
-          : deserialize<MedicineRiskCheckRecordDto, MedicineRiskCheckRecordDto>(
-              rawData,
-              'MedicineRiskCheckRecordDto',
-              growable: true,
-            );
+          : deserialize<
+              MedicineRiskCheckRecordResponseDto,
+              MedicineRiskCheckRecordResponseDto
+            >(rawData, 'MedicineRiskCheckRecordResponseDto', growable: true);
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -530,7 +529,7 @@ class MedicinesApi {
       );
     }
 
-    return Response<MedicineRiskCheckRecordDto>(
+    return Response<MedicineRiskCheckRecordResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

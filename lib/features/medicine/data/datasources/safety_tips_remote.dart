@@ -10,7 +10,7 @@ class SafetyTipsRemoteDataSource {
     final response = await api.medicinesControllerGetSafetyTipsV1(
       exclude: excludeIds,
     );
-    final dtos = response.data!;
+    final dtos = response.data!.data;
     return dtos
         .map(
           (dto) => MedicineSafetyTip(

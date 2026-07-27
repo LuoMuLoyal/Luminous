@@ -103,10 +103,13 @@ import 'package:lucent_api/src/model/medicine_reminder_list_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_reminder_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_record_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_record_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_records_dto.dart';
+import 'package:lucent_api/src/model/medicine_risk_check_records_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_check_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_coverage_issue_dto.dart';
 import 'package:lucent_api/src/model/medicine_risk_finding_dto.dart';
+import 'package:lucent_api/src/model/medicine_safety_tip_list_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
@@ -591,8 +594,18 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'MedicineRiskCheckRecordDto':
       return MedicineRiskCheckRecordDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'MedicineRiskCheckRecordResponseDto':
+      return MedicineRiskCheckRecordResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'MedicineRiskCheckRecordsDto':
       return MedicineRiskCheckRecordsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineRiskCheckRecordsResponseDto':
+      return MedicineRiskCheckRecordsResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'MedicineRiskCheckResponseDto':
       return MedicineRiskCheckResponseDto.fromJson(
@@ -606,6 +619,11 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'MedicineRiskFindingDto':
       return MedicineRiskFindingDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'MedicineSafetyTipListResponseDto':
+      return MedicineSafetyTipListResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'MedicineSafetyTipResponseDto':
       return MedicineSafetyTipResponseDto.fromJson(
