@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (帮助页面 FAQ + 反馈 l10n 键新增)
+Last updated: 2026-07-28 (About 页面版本检查 l10n 键 + 帮助页面 FAQ + 反馈 l10n 键)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -95,6 +95,11 @@ Persisted preference keys:
   `settingsHelpFeedbackSectionTitle`, `settingsHelpFeedbackSubject`, `settingsHelpFeedbackUnavailable`,
   `settingsHelpFeedbackOpenFailed`) are owned by the Settings ARB entries. The `mineHelpFaqTitle` /
   `mineHelpFaqSubtitle` keys have been removed (unused after help page self-containment).
+- Settings About page version-check strings (`settingsAboutCheckUpdate`, `settingsAboutCheckUpdateChecking`,
+  `settingsAboutCheckUpdateUpToDate`, `settingsAboutCheckUpdateAvailable` with `{version}` placeholder,
+  `settingsAboutCheckUpdateFailed`) are owned by the Settings ARB entries. The About page uses
+  `compareSemver()` to compare the local `package_info_plus` version against the backend-provided
+  `latestVersion` from `GET /api/v1/public/app-info`.
 - Mine root-page readiness copy such as preview/signed-in badges, locked/incomplete/ready titles,
   readiness descriptions, primary CTA labels, and the account/privacy section title is owned by
   the Mine ARB entries.

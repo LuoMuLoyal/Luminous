@@ -1,6 +1,6 @@
 # Lucent Contract Snapshot
 
-Last updated: 2026-07-27
+Last updated: 2026-07-28
 
 ## 基础
 
@@ -16,6 +16,8 @@ Last updated: 2026-07-27
 - **药品详情 `drugInteractions`**：后端返回 `DrugbankDrugInteractionDto[]`（`drugbankId` + `description`），生成客户端 `MedicineDetailDataDtoDetail.drugInteractions` 为 `List<DrugbankDrugInteractionDto>?`。
 - **数据导出创建 DTO**：`CreateDataExportRequestDto` 的 `kind`/`format`/`range` 枚举字段不再带 `default`，业务默认值由 `DataExportService` 层兜底；避免生成器生成非法枚举默认构造。
 - **枚举未知值**：生成器开启 `enumUnknownDefaultCase=true`，所有枚举均含 `unknownDefaultOpenApi` fallback。
+- **app-info 扩展**：`AppInfoDataDto` 新增 `latestVersion: string | null` 和 `downloadUrl: string | null` 字段，通过 `LATEST_VERSION` 和 `DOWNLOAD_URL` 环境变量配置。前端 About 页使用 `compareSemver()` 比较本地版本与 `latestVersion`，发现新版本时自动打开 `downloadUrl`。
+
 ## Luminous 已使用的后端领域
 
 - auth / account（含 OAuth: WeChat / QQ / Apple）

@@ -17,6 +17,7 @@ import 'package:luminous/core/widgets/common/skeleton.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
+import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class HelpSettingsPage extends ConsumerWidget {
@@ -342,15 +343,19 @@ class _FaqError extends StatelessWidget {
 // Feedback section — mailto via EnvReader.
 // ---------------------------------------------------------------------------
 
-class _FeedbackSection extends StatelessWidget {
+class _FeedbackSection extends ConsumerWidget {
   const _FeedbackSection({required this.l10n});
 
   final AppLocalizations l10n;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
-    final supportEmail = EnvReader.string(EnvKey.supportEmail);
+
+    // Prefer backend supportEmail; fall back to compile-time env.
+    final appInfo = ref.watch(appInfoProvider).asData?.value;
+    final supportEmail =
+        appInfo?.supportEmail ?? EnvReader.string(EnvKey.supportEmail);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

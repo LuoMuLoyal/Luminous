@@ -53,11 +53,8 @@ void main() {
 
     test('defaultUrl values are correct', () {
       expect(ApiEndpoint.local.defaultUrl, 'http://127.0.0.1:3000');
-      expect(
-        ApiEndpoint.staging.defaultUrl,
-        'https://staging-api.luminous.app',
-      );
-      expect(ApiEndpoint.production.defaultUrl, 'https://api.luminous.app');
+      expect(ApiEndpoint.staging.defaultUrl, 'http://127.0.0.1:3000');
+      expect(ApiEndpoint.production.defaultUrl, 'http://127.0.0.1:3000');
       expect(ApiEndpoint.custom.defaultUrl, '');
     });
 
@@ -77,12 +74,12 @@ void main() {
 
     test('returns defaultUrl for staging endpoint', () {
       const state = DeveloperSettingsState(apiEndpoint: ApiEndpoint.staging);
-      expect(state.resolvedBaseUrl, 'https://staging-api.luminous.app');
+      expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
     });
 
     test('returns defaultUrl for production endpoint', () {
       const state = DeveloperSettingsState(apiEndpoint: ApiEndpoint.production);
-      expect(state.resolvedBaseUrl, 'https://api.luminous.app');
+      expect(state.resolvedBaseUrl, 'http://127.0.0.1:3000');
     });
 
     test('returns customApiUrl when non-empty for custom endpoint', () {

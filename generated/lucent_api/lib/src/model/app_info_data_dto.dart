@@ -17,10 +17,21 @@ part 'app_info_data_dto.g.dart';
 )
 class AppInfoDataDto {
   /// Returns a new [AppInfoDataDto] instance.
-  AppInfoDataDto({this.minClientVersion, this.supportEmail});
+  AppInfoDataDto({
+    this.minClientVersion,
+    this.latestVersion,
+    this.downloadUrl,
+    this.supportEmail,
+  });
 
   @JsonKey(name: r'minClientVersion', required: false, includeIfNull: false)
   final String? minClientVersion;
+
+  @JsonKey(name: r'latestVersion', required: false, includeIfNull: false)
+  final String? latestVersion;
+
+  @JsonKey(name: r'downloadUrl', required: false, includeIfNull: false)
+  final String? downloadUrl;
 
   @JsonKey(name: r'supportEmail', required: false, includeIfNull: false)
   final String? supportEmail;
@@ -30,11 +41,15 @@ class AppInfoDataDto {
       identical(this, other) ||
       other is AppInfoDataDto &&
           other.minClientVersion == minClientVersion &&
+          other.latestVersion == latestVersion &&
+          other.downloadUrl == downloadUrl &&
           other.supportEmail == supportEmail;
 
   @override
   int get hashCode =>
       (minClientVersion == null ? 0 : minClientVersion.hashCode) +
+      (latestVersion == null ? 0 : latestVersion.hashCode) +
+      (downloadUrl == null ? 0 : downloadUrl.hashCode) +
       (supportEmail == null ? 0 : supportEmail.hashCode);
 
   factory AppInfoDataDto.fromJson(Map<String, dynamic> json) =>

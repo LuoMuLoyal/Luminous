@@ -33,6 +33,8 @@ class LucentSupportRepository implements SupportRepository {
     final d = response.data!.data;
     return AppInfo(
       minClientVersion: d.minClientVersion,
+      latestVersion: d.latestVersion,
+      downloadUrl: d.downloadUrl,
       supportEmail: d.supportEmail,
     );
   }

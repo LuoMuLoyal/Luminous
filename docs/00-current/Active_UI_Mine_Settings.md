@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-28（帮助页面自包含重构：本地 FAQ Markdown + 环境变量反馈邮箱）
+Last updated: 2026-07-28（About 页面版本检查 + 帮助页面自包含重构：本地 FAQ Markdown + 环境变量反馈邮箱）
 
 ## Mine 根页结构
 
@@ -218,6 +218,15 @@ Last updated: 2026-07-28（帮助页面自包含重构：本地 FAQ Markdown + �
 - **API 精简**：后端 `app-info` 端点移除 `name`/`version`/`description`/`buildDate` 字段，只返回 `supportEmail` 和 `minClientVersion`（通过环境变量配置）。
 - **l10n 清理**：移除不再使用的 `settingsAboutBuildNumberLabel` 和 `mineSettingAboutValue`；新增 `settingsAboutVersionLabel`（带 `{version}` 占位符）和 `settingsAboutBuildLabel`（带 `{buildNumber}` 占位符）。
 
+## 2026-07-28 About 页面版本检查
+
+- **检查更新 tile**：About 页新增“检查更新” tile，点击后通过 `ref.invalidate(appInfoProvider)` 强制刷新后端 `GET /api/v1/public/app-info`，获取 `latestVersion` 和 `downloadUrl`，与本地 `package_info_plus` 版本通过 `compareSemver()` 比较。
+- **状态机**：`idle → checking → upToDate / updateAvailable / checkFailed`。各状态在 tile subtitle 中显示对应文案（success/warning/destructive 色）。checking 态在 suffix 位置显示 `CircularProgressIndicator`，其余态显示 `SemanticIcons.actionRefresh`。
+- **自动打开下载页**：发现新版本时自动通过 `ExternalUrlLauncher` 打开 `downloadUrl`（如果后端配置了）。
+- **后端字段**：`AppInfoDataDto` 新增 `latestVersion` 和 `downloadUrl`，通过 `LATEST_VERSION` 和 `DOWNLOAD_URL` 环境变量配置。
+- **`kFallbackSupportUrl`**：从 `https://luminous.app/support` 修正为 `https://github.com/LuoMuLoyal/Luminous`。
+- **l10n**：新增 `settingsAboutCheckUpdate` / `settingsAboutCheckUpdateChecking` / `settingsAboutCheckUpdateUpToDate` / `settingsAboutCheckUpdateAvailable`（带 `{version}` 占位符）/ `settingsAboutCheckUpdateFailed`。
+
 ## 2026-07-28 帮助页面自包含重构
 
 - **后端依赖移除**：帮助页面不再消费 `supportResourcesProvider('help')`，FAQ 和反馈入口全部前端自包含。
@@ -225,3 +234,4 @@ Last updated: 2026-07-28（帮助页面自包含重构：本地 FAQ Markdown + �
 - **反馈入口环境变量**：反馈 tile 通过 `EnvReader.string(EnvKey.supportEmail)` 获取 `SUPPORT_EMAIL` 环境变量，构造 `mailto:` URI 唤起邮件客户端。邮箱未配置时 toast 提示，打开失败时也 toast 提示。
 - **l10n 变更**：新增 6 个 settings 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`）；删除 mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - **后端回退**：Lucent `SupportResourcesService.getResources()` 回退为静态列表，不再动态注入 mailto。
+- **反馈邮箱优先级**：`_FeedbackSection` 优先读后端 `appInfoProvider` 的 `supportEmail`，回退到编译期 `SUPPORT_EMAIL` 环境变量。

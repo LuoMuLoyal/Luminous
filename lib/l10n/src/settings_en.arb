@@ -67,6 +67,16 @@
   "settingsAboutTermsOfService": "Terms of Service",
   "settingsAboutLicenses": "Open Source Licenses",
   "settingsAboutSupport": "Help & Support",
+  "settingsAboutCheckUpdate": "Check for Updates",
+  "settingsAboutCheckUpdateChecking": "Checking…",
+  "settingsAboutCheckUpdateUpToDate": "Up to date",
+  "settingsAboutCheckUpdateAvailable": "New version {version} available",
+  "@settingsAboutCheckUpdateAvailable": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "settingsAboutCheckUpdateFailed": "Check failed, please try again later",
   "settingsAboutDisclaimer": "Medical Disclaimer",
   "settingsAboutMinorProtection": "Minor Protection",
   "settingsAboutSdkList": "Third-Party SDKs",

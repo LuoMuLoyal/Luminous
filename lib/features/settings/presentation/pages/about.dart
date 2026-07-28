@@ -9,15 +9,67 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/package_info.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/subpage_tile_group_style.dart';
+import 'package:luminous/features/settings/utils/version_check.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
-class AboutSettingsPage extends ConsumerWidget {
+class AboutSettingsPage extends ConsumerStatefulWidget {
   const AboutSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AboutSettingsPage> createState() => _AboutSettingsPageState();
+}
+
+/// State for the check-update tile.
+///
+/// idle → checking → upToDate / updateAvailable / checkFailed
+enum _CheckState { idle, checking, upToDate, updateAvailable, checkFailed }
+
+class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
+  _CheckState _checkState = _CheckState.idle;
+  String? _latestVersion;
+
+  Future<void> _checkForUpdate() async {
+    setState(() => _checkState = _CheckState.checking);
+
+    try {
+      // Invalidate to force a fresh fetch.
+      ref.invalidate(appInfoProvider);
+      final appInfo = await ref.read(appInfoProvider.future);
+      final latestVersion = appInfo?.latestVersion;
+      final downloadUrl = appInfo?.downloadUrl;
+
+      if (latestVersion == null || latestVersion.isEmpty) {
+        setState(() => _checkState = _CheckState.checkFailed);
+        return;
+      }
+
+      final pkg = await ref.read(packageInfoProvider.future);
+      final currentVersion = pkg.version;
+
+      if (compareSemver(currentVersion, latestVersion) < 0) {
+        _latestVersion = latestVersion;
+        setState(() => _checkState = _CheckState.updateAvailable);
+        // Open the download URL if available.
+        if (downloadUrl != null && downloadUrl.isNotEmpty) {
+          final uri = Uri.tryParse(downloadUrl);
+          if (uri != null) {
+            await const ExternalUrlLauncher().open(uri);
+          }
+        }
+      } else {
+        setState(() => _checkState = _CheckState.upToDate);
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _checkState = _CheckState.checkFailed);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
@@ -29,6 +81,30 @@ class AboutSettingsPage extends ConsumerWidget {
     final appName = pkg?.appName.isNotEmpty == true ? pkg!.appName : 'Luminous';
     final version = pkg?.version ?? '';
     final buildNumber = pkg?.buildNumber ?? '';
+
+    // Resolve the subtitle for the check-update tile.
+    Widget? checkUpdateSubtitle;
+    switch (_checkState) {
+      case _CheckState.idle:
+        checkUpdateSubtitle = null;
+      case _CheckState.checking:
+        checkUpdateSubtitle = Text(l10n.settingsAboutCheckUpdateChecking);
+      case _CheckState.upToDate:
+        checkUpdateSubtitle = Text(
+          l10n.settingsAboutCheckUpdateUpToDate,
+          style: TextStyle(color: SemanticColor.success.solid(context)),
+        );
+      case _CheckState.updateAvailable:
+        checkUpdateSubtitle = Text(
+          l10n.settingsAboutCheckUpdateAvailable(_latestVersion ?? ''),
+          style: TextStyle(color: SemanticColor.warning.solid(context)),
+        );
+      case _CheckState.checkFailed:
+        checkUpdateSubtitle = Text(
+          l10n.settingsAboutCheckUpdateFailed,
+          style: TextStyle(color: SemanticColor.destructive.solid(context)),
+        );
+    }
 
     final width = MediaQuery.sizeOf(context).width;
     final content = ResponsiveContentFrame(
@@ -135,6 +211,23 @@ class AboutSettingsPage extends ConsumerWidget {
                     context: context,
                     applicationName: appName,
                   ),
+                ),
+                FTile(
+                  title: Text(l10n.settingsAboutCheckUpdate),
+                  subtitle: checkUpdateSubtitle,
+                  suffix: _checkState == _CheckState.checking
+                      ? SizedBox(
+                          width: IconSizeTokens.level3,
+                          height: IconSizeTokens.level3,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: colors.mutedForeground,
+                          ),
+                        )
+                      : const Icon(SemanticIcons.actionRefresh),
+                  onPress: _checkState == _CheckState.checking
+                      ? null
+                      : _checkForUpdate,
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutSupport),

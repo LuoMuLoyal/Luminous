@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (帮助页面重构：本地 FAQ Markdown + 环境变量反馈邮箱)
+Last updated: 2026-07-28 (About 页面版本检查 + 帮助页面重构：本地 FAQ Markdown + 环境变量反馈邮箱)
 
 ## 技术栈
 
@@ -107,7 +107,7 @@ Last updated: 2026-07-28 (帮助页面重构：本地 FAQ Markdown + 环境变�
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`（11 个 fragment × 2 locale = 22 文件）。
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
-- 2026-07-28：帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
+- 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。
@@ -161,6 +161,14 @@ Last updated: 2026-07-28 (帮助页面重构：本地 FAQ Markdown + 环境变�
 - 帮助页面不再依赖后端 `support-resources` API，FAQ 内容由本地 Markdown 文件提供（`assets/faq/faq_{zh,en}.md`），按 `## ` 标题切分为多个可折叠 Q&A 项。
 - 反馈入口改为前端直接通过 `mailto:` 唤起邮件客户端，邮箱地址通过 `SUPPORT_EMAIL` 环境变量注入。
 - 新增 `SUPPORT_EMAIL` 到 `EnvKey` 枚举和 `EnvReader`。
+- 帮助页 `_FeedbackSection` 优先读后端 `appInfoProvider` 的 `supportEmail`，回退到编译期 `SUPPORT_EMAIL` 环境变量。
+
+### About 页面版本检查
+
+- About 页新增“检查更新” tile，点击后从 `GET /api/v1/public/app-info` 获取 `latestVersion` 和 `downloadUrl`，与本地 `package_info_plus` 版本通过 `compareSemver()` 比较。
+- 状态机：`idle → checking → upToDate / updateAvailable / checkFailed`。发现新版本时自动打开 `downloadUrl`。
+- 后端 `AppInfoDataDto` 新增 `latestVersion` 和 `downloadUrl` 字段，通过 `LATEST_VERSION` 和 `DOWNLOAD_URL` 环境变量配置。
+- `kFallbackSupportUrl` 从 `https://luminous.app/support` 修正为 `https://github.com/LuoMuLoyal/Luminous`。
 
 ## 2026-07-27 更新
 

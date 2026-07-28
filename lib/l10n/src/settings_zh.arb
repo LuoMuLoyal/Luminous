@@ -67,6 +67,16 @@
   "settingsAboutTermsOfService": "服务条款",
   "settingsAboutLicenses": "开源许可",
   "settingsAboutSupport": "帮助与反馈",
+  "settingsAboutCheckUpdate": "检查更新",
+  "settingsAboutCheckUpdateChecking": "检查中…",
+  "settingsAboutCheckUpdateUpToDate": "已是最新版本",
+  "settingsAboutCheckUpdateAvailable": "发现新版本 {version}",
+  "@settingsAboutCheckUpdateAvailable": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "settingsAboutCheckUpdateFailed": "检查失败，请稍后重试",
   "settingsAboutDisclaimer": "医疗免责声明",
   "settingsAboutMinorProtection": "未成年人保护",
   "settingsAboutSdkList": "第三方 SDK",

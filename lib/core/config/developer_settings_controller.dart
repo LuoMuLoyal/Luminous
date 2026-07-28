@@ -15,8 +15,8 @@ part 'developer_settings_controller.freezed.dart';
 /// is always used regardless of the stored preference.
 enum ApiEndpoint {
   local('local', 'http://127.0.0.1:3000'),
-  staging('staging', 'https://staging-api.luminous.app'),
-  production('production', 'https://api.luminous.app'),
+  staging('staging', 'http://127.0.0.1:3000'),
+  production('production', 'http://127.0.0.1:3000'),
   custom('custom', '');
 
   const ApiEndpoint(this.storageValue, this.defaultUrl);

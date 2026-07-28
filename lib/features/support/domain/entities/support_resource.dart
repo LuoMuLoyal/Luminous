@@ -48,12 +48,19 @@ class SupportResource {
 /// App name, version, and build number are obtained locally via
 /// `package_info_plus`.
 class AppInfo {
-  const AppInfo({this.minClientVersion, this.supportEmail});
+  const AppInfo({
+    this.minClientVersion,
+    this.latestVersion,
+    this.downloadUrl,
+    this.supportEmail,
+  });
 
   final String? minClientVersion;
+  final String? latestVersion;
+  final String? downloadUrl;
   final String? supportEmail;
 }
 
 /// Fallback support URL used when no support email is configured in [AppInfo].
 /// Only used as a last-resort link in the About page.
-const kFallbackSupportUrl = 'https://luminous.app/support';
+const kFallbackSupportUrl = 'https://github.com/LuoMuLoyal/Luminous';

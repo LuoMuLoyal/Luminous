@@ -45,6 +45,10 @@ dart run tool/bootstrap_generated_sources.dart
 `build_runner` for both the generated package and the root app, and `flutter gen-l10n`.
 Do not use ad-hoc `npx` / `build_runner` commands.
 
+The generated client includes `AppInfoDataDto` with `minClientVersion`, `latestVersion`,
+`downloadUrl`, and `supportEmail` fields, consumed by the About page's "Check for Updates" feature
+and the Help page's feedback email resolution.
+
 ### Repository Pattern
 
 Feature modules access data through repository interfaces defined in `domain/repositories/`, with a
