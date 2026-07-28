@@ -73,6 +73,8 @@ class Routes {
   static const settingsFeatureFlags = '/settings/more/feature-flags';
 
   static const recordCreate = '/record/create';
+  static const recordQuickEntrySettings = '/record/quick-entry-settings';
+  static const recordQuickEntryReorder = '/record/quick-entry-settings/reorder';
 
   static const medicineSearch = '/medicine/search';
   static const medicineRiskCheck = '/medicine/risk-check';

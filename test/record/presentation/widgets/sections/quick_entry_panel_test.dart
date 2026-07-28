@@ -42,6 +42,9 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(find.byKey(const Key('record-quick-help-action')), findsOneWidget);
+      expect(find.byKey(const Key('record-quick-dynamic-sort')), findsNothing);
+
       final gridTileKeys = <String>[
         'record-quick-symptom',
         'record-quick-medication',

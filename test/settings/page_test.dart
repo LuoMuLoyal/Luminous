@@ -55,6 +55,15 @@ void main() {
     expect(find.byKey(const Key('settings-row-theme')), findsOneWidget);
     expect(find.byKey(const Key('settings-row-language')), findsOneWidget);
     expect(find.byKey(const Key('settings-row-advanced')), findsOneWidget);
+    expect(find.byKey(const Key('settings-row-quick-entry')), findsOneWidget);
+    expect(
+      find.byKey(const Key('settings-row-quick-entry-dynamic-sort')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const Key('settings-row-quick-entry-collapse')),
+      findsNothing,
+    );
     expect(find.byKey(const Key('settings-row-help')), findsOneWidget);
     expect(find.byKey(const Key('settings-row-about')), findsOneWidget);
     expect(find.byKey(const Key('settings-row-export')), findsOneWidget);
@@ -64,6 +73,7 @@ void main() {
     expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
     expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);
+    expect(find.text(l10n.settingsQuickEntrySection), findsWidgets);
     expect(find.text(l10n.minePrivacyReportTitle), findsOneWidget);
     expect(find.text(l10n.settingsAiTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsNotificationsTitle), findsOneWidget);

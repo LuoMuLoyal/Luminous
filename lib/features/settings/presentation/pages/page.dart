@@ -15,7 +15,6 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
-import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/settings/presentation/providers/data_storage.dart';
 import 'package:luminous/features/settings/presentation/providers/notification.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
@@ -728,19 +727,15 @@ class _GeneralSection extends ConsumerWidget {
 }
 
 // ---------------------------------------------------------------------------
-// Quick entry section (dynamic sort + collapse)
+// Quick entry section
 // ---------------------------------------------------------------------------
 
-class _QuickEntrySection extends ConsumerWidget {
+class _QuickEntrySection extends StatelessWidget {
   const _QuickEntrySection();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final prefs =
-        ref.watch(quickEntryPreferencesProvider).asData?.value ??
-        const QuickEntryPreferences();
-    final controller = ref.read(quickEntryPreferencesProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -751,26 +746,12 @@ class _QuickEntrySection extends ConsumerWidget {
           physics: const NeverScrollableScrollPhysics(),
           divider: FItemDivider.full,
           children: [
-            FTile(
-              key: const Key('settings-row-quick-entry-dynamic-sort'),
-              title: Text(l10n.settingsQuickEntryDynamicSortTitle),
-              subtitle: Text(l10n.settingsQuickEntryDynamicSortSubtitle),
-              suffix: FSwitch(
-                value: prefs.dynamicSortEnabled,
-                onChange: (value) => controller.setDynamicSortEnabled(value),
-              ),
-              onPress: () =>
-                  controller.setDynamicSortEnabled(!prefs.dynamicSortEnabled),
-            ),
-            FTile(
-              key: const Key('settings-row-quick-entry-collapse'),
-              title: Text(l10n.settingsQuickEntryCollapseTitle),
-              subtitle: Text(l10n.settingsQuickEntryCollapseSubtitle),
-              suffix: FSwitch(
-                value: prefs.collapsed,
-                onChange: (value) => controller.setCollapsed(value),
-              ),
-              onPress: () => controller.setCollapsed(!prefs.collapsed),
+            _SettingsNavigationTile(
+              tileKey: const Key('settings-row-quick-entry'),
+              icon: SemanticIcons.tabRecord,
+              title: l10n.settingsQuickEntrySection,
+              subtitle: l10n.settingsQuickEntrySubtitle,
+              onTap: () => context.push(Routes.recordQuickEntrySettings),
             ),
           ],
         ),

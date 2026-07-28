@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-28（About 页面版本检查 + 帮助页面自包含重构：本地 FAQ Markdown + 环境变量反馈邮箱）
+Last updated: 2026-07-28（快速记录设置入口迁移）
 
 ## Mine 根页结构
 
@@ -48,6 +48,8 @@ Last updated: 2026-07-28（About 页面版本检查 + 帮助页面自包含重�
 - 保留期缩短确认：若新期限短于当前期限（含 forever→有限），弹出 `showDangerConfirmationDialog` 二次确认。
 - 恢复默认设置接入 `showDangerConfirmationDialog` 二次确认，使用 `destructive` 红色样式 + 副标题提示。
 - 通知 key 统一通过 `PrefKeys` 管理。
+- 快速记录分组现在只保留 `settings-row-quick-entry` 次入口，跳转到
+  `/record/quick-entry-settings`。动态排序、手动排序、饮水默认量、饮水角标和睡眠进行中标记由 Record 的快速记录设置页承载，不再在 Settings 根页直接显示开关。
 
 ### 设置模块细化（2026-07-19 追加）
 

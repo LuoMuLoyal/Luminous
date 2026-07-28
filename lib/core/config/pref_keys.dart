@@ -56,6 +56,12 @@ abstract final class PrefKeys {
       'record.quickEntry.dynamicSortEnabled';
   static const recordQuickEntryCustomOrder = 'record.quickEntry.customOrder';
   static const recordQuickEntryCollapsed = 'record.quickEntry.collapsed';
+  static const recordQuickEntryWaterDefaultAmountMl =
+      'record.quickEntry.water.defaultAmountMl';
+  static const recordQuickEntryWaterBadgeMode =
+      'record.quickEntry.water.badgeMode';
+  static const recordQuickEntrySleepInProgressBadgeEnabled =
+      'record.quickEntry.sleep.inProgressBadgeEnabled';
 
   /// Prefix for frequency-count keys: `record.quickEntry.freq.<type>`.
   static const recordQuickEntryFrequencyPrefix = 'record.quickEntry.freq.';

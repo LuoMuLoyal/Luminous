@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (Record NLP header action key + 语音/OCR l10n keys orphaned)
+Last updated: 2026-07-28 (Record quick-entry settings strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -69,6 +69,9 @@ Persisted preference keys:
 - Record NLP header action label (`recordNlpHeaderAction`) is owned by the Record ARB entries.
   The mobile header NLP entry button uses `SemanticIcons.aiEntry` (sparkles) and triggers
   `_openNlpDialog` directly from the header, replacing the old `RecordAiInputBar` top input bar.
+- Record quick-entry settings strings (`recordQuickSettings*`) and quick panel help copy
+  (`recordQuickHelpTooltip`) are owned by the Record ARB entries. Settings only owns the secondary
+  entry subtitle (`settingsQuickEntrySubtitle`) because that row lives on the Settings page.
 - Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is
   owned by the Record ARB entries.
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate

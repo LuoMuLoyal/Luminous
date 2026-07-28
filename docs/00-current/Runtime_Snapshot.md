@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
+Last updated: 2026-07-28 (Record quick-entry settings foundation)
 
 ## 技术栈
 
@@ -75,7 +75,8 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 - 手写 `NotifierProvider`/`AsyncNotifierProvider` 用于表单、分页、复杂交互状态（因 riverpod_generator 命名不匹配项目约定）。
 - `authGuarded` helper 封装 auth session 检查模式。
 - `DataChangeBus`（keepAlive Notifier）解耦跨 feature invalidation——`DataChangeTopic` 定义 5 个领域事件，消费方 watch `dataChangeVersionProvider(topic)`。
-- `PrefKeys`（`core/config/pref_keys.dart`）集中管理 34 个 SharedPreferences key。
+- `PrefKeys`（`core/config/pref_keys.dart`）集中管理 SharedPreferences key。Record quick-entry
+  偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量、饮水角标模式和睡眠进行中标记。
 
 ## 本地持久化
 
@@ -101,6 +102,9 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 - `router.dart` 通过 `...feature_routes.$appRoutes` spread 聚合。
 - 5 个 shell tab 路由保持手写（`StatefulShellRoute.indexedStack`）。
 - `Routes` 常量集中管理所有路由路径字符串，已移除死路由 `medicineReminders`（无对应页面）。
+- Record quick-entry settings 新增 `/record/quick-entry-settings` 和
+  `/record/quick-entry-settings/reorder`，属于 shell 外的 Record typed routes，桌面端使用
+  `sidePanelPage`。
 
 ## 国际化
 
@@ -110,6 +114,8 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 - 2026-07-28：Record 页面移除语音（`speech_to_text`）和 OCR 功能，删除 `voice_entry_dialog.dart` / `ocr_entry_dialog.dart` / `voice_recording.dart` / `speech_locale_resolver.dart` 及关联测试。`pubspec.yaml` 移除 `speech_to_text` 依赖，SDK 列表同步更新。
 - 2026-07-28：Record 移动端 header 右上角 `+` 按钮替换为 sparkles 图标 NLP 入口（`SemanticIcons.aiEntry` + `recordNlpHeaderAction` l10n 键），删除原 `RecordAiInputBar` 顶部输入条。NLP 入口直接从 header 调用 `_openNlpDialog`，不再经 `RecordDashboardView` 回调传递。
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
+- 2026-07-28：Record quick-entry settings 新增 `recordQuickSettings*` 和
+  `recordQuickHelpTooltip` 键，Settings 根页新增 `settingsQuickEntrySubtitle` 次入口文案。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

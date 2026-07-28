@@ -14,6 +14,9 @@ void main() {
       expect(prefs.customOrder, isEmpty);
       expect(prefs.collapsed, isFalse);
       expect(prefs.frequency, isEmpty);
+      expect(prefs.waterDefaultAmountMl, 250);
+      expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
+      expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('copyWith creates new instance with updated values', () {
@@ -23,18 +26,27 @@ void main() {
         customOrder: const ['meal', 'water'],
         collapsed: true,
         frequency: const {'meal': 5},
+        waterDefaultAmountMl: 500,
+        waterBadgeMode: QuickEntryWaterBadgeMode.dailyCount,
+        sleepInProgressBadgeEnabled: false,
       );
 
       expect(updated.dynamicSortEnabled, isTrue);
       expect(updated.customOrder, ['meal', 'water']);
       expect(updated.collapsed, isTrue);
       expect(updated.frequency, {'meal': 5});
+      expect(updated.waterDefaultAmountMl, 500);
+      expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
+      expect(updated.sleepInProgressBadgeEnabled, isFalse);
 
       // Original unchanged
       expect(original.dynamicSortEnabled, isFalse);
       expect(original.customOrder, isEmpty);
       expect(original.collapsed, isFalse);
       expect(original.frequency, isEmpty);
+      expect(original.waterDefaultAmountMl, 250);
+      expect(original.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
+      expect(original.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('copyWith partial update preserves other fields', () {
@@ -43,6 +55,9 @@ void main() {
         customOrder: ['water'],
         collapsed: true,
         frequency: {'water': 3},
+        waterDefaultAmountMl: 500,
+        waterBadgeMode: QuickEntryWaterBadgeMode.hidden,
+        sleepInProgressBadgeEnabled: false,
       );
 
       final updated = original.copyWith(collapsed: false);
@@ -51,6 +66,9 @@ void main() {
       expect(updated.customOrder, ['water']);
       expect(updated.collapsed, isFalse);
       expect(updated.frequency, {'water': 3});
+      expect(updated.waterDefaultAmountMl, 500);
+      expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.hidden);
+      expect(updated.sleepInProgressBadgeEnabled, isFalse);
     });
   });
 
@@ -74,6 +92,9 @@ void main() {
       expect(prefs.customOrder, isEmpty);
       expect(prefs.collapsed, isFalse);
       expect(prefs.frequency, isEmpty);
+      expect(prefs.waterDefaultAmountMl, 250);
+      expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
+      expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
 
     test('build loads stored values from SharedPreferences', () async {
@@ -83,6 +104,9 @@ void main() {
         'record.quickEntry.collapsed': true,
         'record.quickEntry.freq.meal': 5,
         'record.quickEntry.freq.water': 3,
+        'record.quickEntry.water.defaultAmountMl': 500,
+        'record.quickEntry.water.badgeMode': 'dailyCount',
+        'record.quickEntry.sleep.inProgressBadgeEnabled': false,
       });
 
       final c = ProviderContainer();
@@ -94,6 +118,9 @@ void main() {
       expect(prefs.customOrder, ['meal', 'water']);
       expect(prefs.collapsed, isTrue);
       expect(prefs.frequency, {'meal': 5, 'water': 3});
+      expect(prefs.waterDefaultAmountMl, 500);
+      expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
+      expect(prefs.sleepInProgressBadgeEnabled, isFalse);
     });
 
     test('setDynamicSortEnabled updates state and persists', () async {
@@ -164,6 +191,75 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getInt('record.quickEntry.freq.mood'), 1);
     });
+
+    test('setWaterDefaultAmountMl updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
+      await controller.setWaterDefaultAmountMl(500);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.waterDefaultAmountMl, 500);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt('record.quickEntry.water.defaultAmountMl'), 500);
+    });
+
+    test('setWaterBadgeMode updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
+      await controller.setWaterBadgeMode(QuickEntryWaterBadgeMode.dailyCount);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getString('record.quickEntry.water.badgeMode'),
+        'dailyCount',
+      );
+    });
+
+    test('setSleepInProgressBadgeEnabled updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
+      await controller.setSleepInProgressBadgeEnabled(false);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.sleepInProgressBadgeEnabled, isFalse);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getBool('record.quickEntry.sleep.inProgressBadgeEnabled'),
+        isFalse,
+      );
+    });
+
+    test(
+      'resetCustomOrder clears custom order without resetting defaults',
+      () async {
+        await readPrefs();
+
+        final controller = container.read(
+          quickEntryPreferencesProvider.notifier,
+        );
+        await controller.setCustomOrder(['water', 'meal']);
+        await controller.setWaterDefaultAmountMl(500);
+        await controller.resetCustomOrder();
+
+        final state = container
+            .read(quickEntryPreferencesProvider)
+            .requireValue;
+        expect(state.customOrder, isEmpty);
+        expect(state.waterDefaultAmountMl, 500);
+
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
+        expect(prefs.getInt('record.quickEntry.water.defaultAmountMl'), 500);
+      },
+    );
 
     test('recordTap trims proportionally when total exceeds 50', () async {
       await readPrefs();

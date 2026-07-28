@@ -4,6 +4,7 @@
   "settingsQuickEntryCollapseSubtitle": "在记录页收起快速记录区域，仅显示标题",
   "settingsQuickEntryDynamicSortTitle": "动态排序",
   "settingsQuickEntryDynamicSortSubtitle": "按使用频率自动排列快捷入口",
+  "settingsQuickEntrySubtitle": "默认动作、排序和快捷入口显示",
   "settingsLanguageSystemLabel": "跟随系统",
   "settingsLanguageChineseLabel": "简体中文",
   "settingsLanguageEnglishLabel": "English",

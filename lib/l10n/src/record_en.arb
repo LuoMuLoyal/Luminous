@@ -109,6 +109,36 @@
   "recordQuickReorderHint": "Long press and drag to reorder",
   "recordQuickReorderDone": "Done",
   "recordQuickReorderCancel": "Cancel",
+  "recordQuickHelpTooltip": "Quick record help",
+  "recordQuickSettingsTitle": "Quick record settings",
+  "recordQuickSettingsSorting": "Sorting",
+  "recordQuickSettingsManualOrder": "Manual order",
+  "recordQuickSettingsManualOrderHint": "Turn off dynamic sorting to edit quick-entry order.",
+  "recordQuickSettingsResetOrder": "Reset to default order",
+  "recordQuickSettingsResetOrderHint": "Only clears manual order; other quick settings stay unchanged.",
+  "recordQuickSettingsDefaults": "Default actions",
+  "recordQuickSettingsWaterDefault": "Water default amount",
+  "recordQuickSettingsWaterAmount": "{amount} ml",
+  "@recordQuickSettingsWaterAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickSettingsDisplay": "Display",
+  "recordQuickSettingsWaterBadge": "Water badge",
+  "recordQuickSettingsWaterBadgeDailyTotal": "Daily total",
+  "recordQuickSettingsWaterBadgeDailyCount": "Daily count",
+  "recordQuickSettingsWaterBadgeHidden": "Hidden",
+  "recordQuickSettingsSleepBadge": "Sleep in-progress badge",
+  "recordQuickSettingsSleepBadgeHint": "Show an in-progress marker on the sleep quick-entry tile.",
+  "recordQuickSettingsRules": "Rules",
+  "recordQuickSettingsMedicationRule": "Medication: smart selection from medicine box and nearby reminder slots.",
+  "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",
+  "recordQuickSettingsSymptomRule": "Symptom: single select saves; multi-select confirms.",
+  "recordQuickSettingsMoodRule": "Mood: selecting one mood saves immediately.",
+  "recordQuickSettingsSleepRule": "Sleep: single tap starts or ends a sleep record.",
   "recordFastEntryTitle": "Quick {type}",
   "@recordFastEntryTitle": {
     "placeholders": {

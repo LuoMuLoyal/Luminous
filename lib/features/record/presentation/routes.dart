@@ -7,6 +7,8 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/pages/create.dart';
 import 'package:luminous/features/record/presentation/pages/detail.dart';
 import 'package:luminous/features/record/presentation/pages/edit.dart';
+import 'package:luminous/features/record/presentation/pages/quick_entry_reorder.dart';
+import 'package:luminous/features/record/presentation/pages/quick_entry_settings.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 
 part 'routes.g.dart';
@@ -32,6 +34,42 @@ class RecordCreateRoute extends GoRouteData with $RecordCreateRoute {
         initialDate: parseRecordDate(date),
         initialTime: time,
       ),
+    );
+  }
+}
+
+@TypedGoRoute<RecordQuickEntrySettingsRoute>(
+  path: '/record/quick-entry-settings',
+)
+class RecordQuickEntrySettingsRoute extends GoRouteData
+    with $RecordQuickEntrySettingsRoute {
+  const RecordQuickEntrySettingsRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
+      key: state.pageKey,
+      isDesktop: isDesktop,
+      child: const QuickEntrySettingsPage(),
+    );
+  }
+}
+
+@TypedGoRoute<RecordQuickEntryReorderRoute>(
+  path: '/record/quick-entry-settings/reorder',
+)
+class RecordQuickEntryReorderRoute extends GoRouteData
+    with $RecordQuickEntryReorderRoute {
+  const RecordQuickEntryReorderRoute();
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+    return sidePanelPage(
+      key: state.pageKey,
+      isDesktop: isDesktop,
+      child: const QuickEntryReorderPage(),
     );
   }
 }

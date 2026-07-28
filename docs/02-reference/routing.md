@@ -1,6 +1,6 @@
 # Routing (GoRouter)
 
-Last updated: 2026-07-10
+Last updated: 2026-07-28
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -27,6 +27,7 @@ hides the bottom navigation bar and desktop sidebar:
 ```
 GoRoute (top-level, no shell)
 ├── /record/create, /record/:id, /record/:id/edit
+├── /record/quick-entry-settings, /record/quick-entry-settings/reorder
 ├── /medicine/search, /medicine/risk-check, /medicine/reminders/*
 ├── /settings, /settings/*
 ├── /assistant
@@ -93,6 +94,14 @@ The following routes are accessible without signing in so the app can be opened 
 - `/legal`, `/report/clinic-summary` — shared/legal content.
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users away from `/login`, `/register`, `/forgot-password`.
+
+### Record Quick-Entry Settings
+
+- `/record/quick-entry-settings` hosts the dedicated quick-entry settings page.
+- `/record/quick-entry-settings/reorder` hosts the focused manual ordering surface.
+- Both are top-level Record feature routes generated from
+  `lib/features/record/presentation/routes.dart`, so they hide shell chrome like other Record
+  sub-pages and use the desktop side-panel transition on wide screens.
 
 ### Why GoRouter
 

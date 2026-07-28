@@ -7,10 +7,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 const _kDynamicSortEnabled = PrefKeys.recordQuickEntryDynamicSort;
 const _kCustomOrder = PrefKeys.recordQuickEntryCustomOrder;
 const _kCollapsed = PrefKeys.recordQuickEntryCollapsed;
+const _kWaterDefaultAmountMl = PrefKeys.recordQuickEntryWaterDefaultAmountMl;
+const _kWaterBadgeMode = PrefKeys.recordQuickEntryWaterBadgeMode;
+const _kSleepInProgressBadgeEnabled =
+    PrefKeys.recordQuickEntrySleepInProgressBadgeEnabled;
 const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 
 /// Maximum number of recent taps to keep for frequency-based sorting.
 const _maxFrequencyEntries = 50;
+
+enum QuickEntryWaterBadgeMode { dailyTotal, dailyCount, hidden }
 
 /// State for quick-entry preferences.
 class QuickEntryPreferences {
@@ -19,6 +25,9 @@ class QuickEntryPreferences {
     this.customOrder = const [],
     this.collapsed = false,
     this.frequency = const {},
+    this.waterDefaultAmountMl = 250,
+    this.waterBadgeMode = QuickEntryWaterBadgeMode.dailyTotal,
+    this.sleepInProgressBadgeEnabled = true,
   });
 
   /// Whether dynamic frequency-based sorting is enabled.
@@ -34,17 +43,33 @@ class QuickEntryPreferences {
   /// Frequency map: entry type name → tap count.
   final Map<String, int> frequency;
 
+  /// Default amount created by a single water quick-entry tap.
+  final int waterDefaultAmountMl;
+
+  /// How the water quick-entry tile should summarize today's water.
+  final QuickEntryWaterBadgeMode waterBadgeMode;
+
+  /// Whether the sleep tile should show an in-progress badge.
+  final bool sleepInProgressBadgeEnabled;
+
   QuickEntryPreferences copyWith({
     bool? dynamicSortEnabled,
     List<String>? customOrder,
     bool? collapsed,
     Map<String, int>? frequency,
+    int? waterDefaultAmountMl,
+    QuickEntryWaterBadgeMode? waterBadgeMode,
+    bool? sleepInProgressBadgeEnabled,
   }) {
     return QuickEntryPreferences(
       dynamicSortEnabled: dynamicSortEnabled ?? this.dynamicSortEnabled,
       customOrder: customOrder ?? this.customOrder,
       collapsed: collapsed ?? this.collapsed,
       frequency: frequency ?? this.frequency,
+      waterDefaultAmountMl: waterDefaultAmountMl ?? this.waterDefaultAmountMl,
+      waterBadgeMode: waterBadgeMode ?? this.waterBadgeMode,
+      sleepInProgressBadgeEnabled:
+          sleepInProgressBadgeEnabled ?? this.sleepInProgressBadgeEnabled,
     );
   }
 }
@@ -66,6 +91,12 @@ class QuickEntryPreferencesController
     final dynamicSortEnabled = prefs.getBool(_kDynamicSortEnabled) ?? false;
     final customOrder = prefs.getStringList(_kCustomOrder) ?? const [];
     final collapsed = prefs.getBool(_kCollapsed) ?? false;
+    final waterDefaultAmountMl = prefs.getInt(_kWaterDefaultAmountMl) ?? 250;
+    final waterBadgeMode = _parseWaterBadgeMode(
+      prefs.getString(_kWaterBadgeMode),
+    );
+    final sleepInProgressBadgeEnabled =
+        prefs.getBool(_kSleepInProgressBadgeEnabled) ?? true;
 
     // Load frequency counts for all known entry types.
     final frequency = <String, int>{};
@@ -81,6 +112,16 @@ class QuickEntryPreferencesController
       customOrder: customOrder,
       collapsed: collapsed,
       frequency: frequency,
+      waterDefaultAmountMl: waterDefaultAmountMl,
+      waterBadgeMode: waterBadgeMode,
+      sleepInProgressBadgeEnabled: sleepInProgressBadgeEnabled,
+    );
+  }
+
+  QuickEntryWaterBadgeMode _parseWaterBadgeMode(String? value) {
+    return QuickEntryWaterBadgeMode.values.firstWhere(
+      (mode) => mode.name == value,
+      orElse: () => QuickEntryWaterBadgeMode.dailyTotal,
     );
   }
 
@@ -98,11 +139,39 @@ class QuickEntryPreferencesController
     await prefs.setStringList(_kCustomOrder, order);
   }
 
+  Future<void> resetCustomOrder() async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(customOrder: const []));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kCustomOrder);
+  }
+
   Future<void> setCollapsed(bool collapsed) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(collapsed: collapsed));
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kCollapsed, collapsed);
+  }
+
+  Future<void> setWaterDefaultAmountMl(int amountMl) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(waterDefaultAmountMl: amountMl));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kWaterDefaultAmountMl, amountMl);
+  }
+
+  Future<void> setWaterBadgeMode(QuickEntryWaterBadgeMode mode) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(waterBadgeMode: mode));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kWaterBadgeMode, mode.name);
+  }
+
+  Future<void> setSleepInProgressBadgeEnabled(bool enabled) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(sleepInProgressBadgeEnabled: enabled));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kSleepInProgressBadgeEnabled, enabled);
   }
 
   /// Records a tap on the given [type] for frequency-based sorting.
@@ -134,6 +203,9 @@ class QuickEntryPreferencesController
     await prefs.remove(_kDynamicSortEnabled);
     await prefs.remove(_kCustomOrder);
     await prefs.remove(_kCollapsed);
+    await prefs.remove(_kWaterDefaultAmountMl);
+    await prefs.remove(_kWaterBadgeMode);
+    await prefs.remove(_kSleepInProgressBadgeEnabled);
     for (final type in RecordEntryType.values) {
       await prefs.remove('$_kFrequencyPrefix${type.name}');
     }

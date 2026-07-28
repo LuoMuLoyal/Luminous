@@ -4,6 +4,7 @@
   "settingsQuickEntryCollapseSubtitle": "Collapse the quick record section on the record page, showing only the title",
   "settingsQuickEntryDynamicSortTitle": "Dynamic sorting",
   "settingsQuickEntryDynamicSortSubtitle": "Automatically sort quick entries by usage frequency",
+  "settingsQuickEntrySubtitle": "Default actions, sorting, and quick-entry display",
   "settingsLanguageSystemLabel": "Follow system",
   "settingsLanguageChineseLabel": "Simplified Chinese",
   "settingsLanguageEnglishLabel": "English",

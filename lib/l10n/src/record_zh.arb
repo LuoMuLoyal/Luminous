@@ -109,6 +109,36 @@
   "recordQuickReorderHint": "长按拖拽调整顺序",
   "recordQuickReorderDone": "完成",
   "recordQuickReorderCancel": "取消",
+  "recordQuickHelpTooltip": "快速记录说明",
+  "recordQuickSettingsTitle": "快速记录设置",
+  "recordQuickSettingsSorting": "排序",
+  "recordQuickSettingsManualOrder": "手动排序",
+  "recordQuickSettingsManualOrderHint": "关闭动态排序后可调整快捷入口顺序",
+  "recordQuickSettingsResetOrder": "重置为默认顺序",
+  "recordQuickSettingsResetOrderHint": "仅清除手动顺序，不影响其他快捷设置",
+  "recordQuickSettingsDefaults": "默认动作",
+  "recordQuickSettingsWaterDefault": "饮水默认量",
+  "recordQuickSettingsWaterAmount": "{amount} ml",
+  "@recordQuickSettingsWaterAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickSettingsDisplay": "显示",
+  "recordQuickSettingsWaterBadge": "饮水角标",
+  "recordQuickSettingsWaterBadgeDailyTotal": "今日累计量",
+  "recordQuickSettingsWaterBadgeDailyCount": "今日次数",
+  "recordQuickSettingsWaterBadgeHidden": "不显示",
+  "recordQuickSettingsSleepBadge": "睡眠进行中标记",
+  "recordQuickSettingsSleepBadgeHint": "开启后，睡眠快捷入口会显示正在记录状态",
+  "recordQuickSettingsRules": "规则",
+  "recordQuickSettingsMedicationRule": "用药：按药箱和当前时间附近提醒智能选择",
+  "recordQuickSettingsMealRule": "餐食：单击打开相机，确认后保存",
+  "recordQuickSettingsSymptomRule": "症状：单选立即保存，多选确认保存",
+  "recordQuickSettingsMoodRule": "情绪：点选一个情绪立即保存",
+  "recordQuickSettingsSleepRule": "睡眠：单击开始或结束睡眠记录",
   "recordFastEntryTitle": "快速记录{type}",
   "@recordFastEntryTitle": {
     "placeholders": {

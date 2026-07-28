@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header + NLP 弹窗改为 bottom sheet + 时间线修复)
+Last updated: 2026-07-28 (快速记录 UX 重构阶段 1 foundation)
 
 ## 支持的记录类型
 
@@ -52,6 +52,15 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header + NLP 弹�
 - 快速选项点击立即保存（选中日期 + 真实当前 `HH:mm`），`more` 打开完整创建表单。
 - 快捷选项 label/unit 从硬编码改为 l10n 取值。
 - **必填校验**：`onSave` 新增前端校验——value 字段必填（空值拦截+内联 error），water 额外校验数值有效性，title 字段必填（内联 error）。校验消息通过 `FTextField.error` 在字段下方内联显示，不再走 toast。
+
+## 快速记录 UX 重构
+
+- 阶段 1 已建立 quick-entry foundation：
+  - Record header 新增 `record-quick-settings-action`，进入 `/record/quick-entry-settings`。
+  - Settings 页保留快速记录次入口 `settings-row-quick-entry`，不再直接承载动态排序/收起开关。
+  - `quick_entry_panel.dart` 回归展示职责：渲染网格、Note 独立入口和 help affordance；动态排序开关与手动排序入口迁入专门设置页。
+  - `QuickEntryExecutor` 作为兼容执行边界，当前仍复用旧 `RecordFastEntryDialog` / 创建页 fallback；后续阶段按类型替换为 water/symptom/mood/medication/sleep/meal flows。
+  - `QuickEntryPreferences` 新增饮水默认量、饮水角标模式、睡眠进行中标记偏好，并保留动态排序和自定义顺序。
 
 ## 骨架屏
 
@@ -173,5 +182,4 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header + NLP 弹�
 - 桌面端固定 4 列，`minTileWidth: 160px`
 - 图标容器固定 28px，图标 16px
 - 数值字体 `TypographyToken.level6`
-
 

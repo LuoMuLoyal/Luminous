@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
@@ -17,13 +18,13 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
+import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
+import 'package:luminous/features/record/presentation/services/quick_entry_executor.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';
@@ -87,6 +88,13 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final headerActions = isMobileLayout
         ? [
             RecordHeaderActionChip(
+              key: const Key('record-quick-settings-action'),
+              label: l10n.recordQuickSettingsTitle,
+              icon: SemanticIcons.actionSettings,
+              onTap: () => context.push(Routes.recordQuickEntrySettings),
+              iconOnly: true,
+            ),
+            RecordHeaderActionChip(
               key: const Key('record-nlp-action'),
               label: l10n.recordNlpHeaderAction,
               icon: SemanticIcons.aiEntry,
@@ -129,6 +137,13 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               label: l10n.recordPickDateAction,
               icon: SemanticIcons.actionCalendar,
               onTap: () => _pickSelectedDate(context, selectedDate),
+              iconOnly: true,
+            ),
+            RecordHeaderActionChip(
+              key: const Key('record-quick-settings-action'),
+              label: l10n.recordQuickSettingsTitle,
+              icon: SemanticIcons.actionSettings,
+              onTap: () => context.push(Routes.recordQuickEntrySettings),
               iconOnly: true,
             ),
             RecordHeaderActionChip(
@@ -291,41 +306,18 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final now = ref.read(currentRecordDateTimeProvider);
     final date = formatRecordDate(selectedDate);
     final currentTime = formatRecordTimeValue(now);
-    final kind = dailyRecordKindForEntryType(action.type);
-    final route = kind == null
-        ? '/record/create?date=${Uri.encodeComponent(date)}'
-        : '/record/create?kind=${Uri.encodeComponent(kind.name)}'
-              '&date=${Uri.encodeComponent(date)}'
-              '&time=${Uri.encodeComponent(currentTime)}';
     final session = ref.read(authSessionProvider);
 
-    if (!session.canAccessProtectedData) {
-      if (session.isLoading) {
-        return;
-      }
-      await showAuthRequiredDialog(
-        context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-      );
-      return;
-    }
-
-    if (kind == null || !_usesFastEntry(kind)) {
-      if (!context.mounted) {
-        return;
-      }
-      unawaited(context.push(route));
-      return;
-    }
-
-    await showFDialog<void>(
-      context: context,
-      builder: (dialogContext, style, animation) => RecordFastEntryDialog(
-        kind: kind,
+    await const QuickEntryExecutor().execute(
+      QuickEntryExecutionContext(
+        buildContext: context,
+        action: action,
+        selectedDate: selectedDate,
+        now: now,
         occurredAt: date,
-        currentDateTime: now,
-        moreRoute: route,
-        animation: animation,
+        occurredTime: currentTime,
+        canAccessProtectedData: session.canAccessProtectedData,
+        isAuthLoading: session.isLoading,
       ),
     );
   }
@@ -369,18 +361,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   DateTime _dateOnly(DateTime value) {
     return DateTime(value.year, value.month, value.day);
-  }
-
-  bool _usesFastEntry(DailyRecordKind kind) {
-    return switch (kind) {
-      DailyRecordKind.water ||
-      DailyRecordKind.meal ||
-      DailyRecordKind.symptom ||
-      DailyRecordKind.mood ||
-      DailyRecordKind.note ||
-      DailyRecordKind.sleep => true,
-      _ => false,
-    };
   }
 
   Future<void> _openNlpSheet(

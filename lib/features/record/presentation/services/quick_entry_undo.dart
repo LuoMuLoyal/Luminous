@@ -1,0 +1,3 @@
+class QuickEntryUndoService {
+  const QuickEntryUndoService();
+}
