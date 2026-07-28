@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry sleep l10n/runtime)
+Last updated: 2026-07-28 (Record quick-entry meal l10n/runtime)
 
 ## 技术栈
 
@@ -127,6 +127,10 @@ Last updated: 2026-07-28 (Record quick-entry sleep l10n/runtime)
   多 start 选择、合并确认和保持分离/合并操作。运行时通过 `dailyRecordRepositoryProvider`
   拉取前一天与当天的 sleep records，识别 `payload.sleepEvent=start/wake` 临时事实，并在确认合并后写入标准
   `durationMinutes/startAt/endAt` sleep payload。
+- 2026-07-28：Record quick meal 新增 `recordQuickMealConfirmTitle`。运行时通过
+  `mealQuickImagePickerProvider` 封装 `ImagePicker` + `ImageCompressor`，单击餐食先调用相机，拍照后在
+  Record 页确认对话框中补充标题/描述/备注，确认后复用 `dailyRecordRepository.uploadImage` 和
+  `DailyRecordCreateInput.attachments` 创建 meal daily record。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (快速记录 UX 重构阶段 4 sleep flow)
+Last updated: 2026-07-28 (快速记录 UX 重构阶段 5 meal flow)
 
 ## 支持的记录类型
 
@@ -80,6 +80,12 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 4 sleep flow)
   - 若前一天或当天存在一个未被 wake fact 关联的 start fact，再次单击先创建 wake fact：`payload.sleepEvent=wake`、`payload.eventAt=<UTC ISO>`、`payload.startedRecordId=<start id>`，随后展示合并确认。
   - 合并确认展示入睡、醒来和总时长；确认后创建标准 sleep payload（`durationMinutes/startAt/endAt`），再删除 start/wake 临时事实。取消则保留两条事实。
   - 若发现多个未结束 start，弹出选择对话框，由用户选择要结束哪一段；不自动猜测。
+- 阶段 5 已接入餐食快速记录：
+  - 餐食入口单击不再打开旧的早/中/晚餐 fast-entry 弹窗，而是优先调用相机。
+  - 相机取消时不写入、不 toast。
+  - 拍照成功后弹出轻量确认对话框，展示图片并允许补充标题、名称/描述和备注；默认标题按当前时间预填早餐/午餐/晚餐/加餐。
+  - 用户确认后才上传图片并创建 `DailyRecordKind.meal` daily record，attachments 继续复用既有 `uploadImage` + `DailyRecordCreateInput.attachments` 链路，因此可进入后端 meal analysis 流程。
+  - 餐食确认保存属于显式确认写入，成功后显示普通保存反馈，不显示撤销 toast。
 
 ## 骨架屏
 

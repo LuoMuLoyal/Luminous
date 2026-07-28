@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +32,7 @@ import 'package:luminous/features/record/presentation/pages/edit.dart';
 import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
+import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -227,6 +229,79 @@ void main() {
     expect(doseLogs.markInputs.single.reminderId, 'rem-1');
     expect(doseLogs.markInputs.single.scheduledTime, '08:00');
     expect(doseLogs.markInputs.single.status, 'taken');
+  });
+
+  testWidgets('Record meal quick action confirms camera image and saves', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(480, 1200);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      selectedDate: DateTime(2026, 7, 28),
+      currentDateTime: DateTime(2026, 7, 28, 12, 30),
+      mealQuickImagePicker: (_) async => MealQuickImage(
+        bytes: _tinyPngBytes(),
+        fileName: 'meal.jpg',
+        contentType: 'image/jpeg',
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-meal')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('确认餐食记录'), findsOneWidget);
+    await tester.enterText(
+      find.byKey(const Key('record-quick-meal-value-field')),
+      '番茄炒蛋',
+    );
+    await tester.tap(find.byKey(const Key('record-quick-meal-confirm-action')));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(dailyRepo.uploadedImages, hasLength(1));
+    expect(dailyRepo.createdInputs, hasLength(1));
+    final input = dailyRepo.createdInputs.single;
+    expect(input.kind, DailyRecordKind.meal);
+    expect(input.occurredAt, '2026-07-28');
+    expect(input.occurredTime, '12:30');
+    expect(input.title, '午餐');
+    expect(input.value, '番茄炒蛋');
+    expect(input.attachments, hasLength(1));
+  });
+
+  testWidgets('Record meal quick action camera cancel writes nothing', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(480, 1200);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final dailyRepo = _FakeDailyRecordRepository();
+
+    await _pumpRecordRouter(
+      tester,
+      dailyRecordRepository: dailyRepo,
+      mealQuickImagePicker: (_) async => null,
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-meal')));
+    await tester.pumpAndSettle();
+
+    expect(dailyRepo.createdInputs, isEmpty);
+    expect(dailyRepo.uploadedImages, isEmpty);
+    expect(find.text('确认餐食记录'), findsNothing);
   });
 
   testWidgets('Record page opens natural-language sheet on mobile', (
@@ -1089,79 +1164,6 @@ void main() {
     expect(dailyRepo.createInput?.unit, 'ml');
   });
 
-  testWidgets('Record meal quick action opens fast entry and saves', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(480, 1200);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-    final dailyRepo = _FakeDailyRecordRepository();
-    final currentDateTime = DateTime(2026, 6, 6, 9, 45);
-
-    await _pumpRecordRouter(
-      tester,
-      dailyRecordRepository: dailyRepo,
-      selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: currentDateTime,
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('record-quick-meal')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(RecordCreatePage), findsNothing);
-    expect(find.byKey(const Key('record-fast-entry-meal')), findsOneWidget);
-    expect(find.byKey(const Key('daily-record-kind-meal')), findsNothing);
-
-    await tester.tap(find.byKey(const Key('record-fast-entry-choice-meal-1')));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
-
-    final input = dailyRepo.createInput;
-    expect(input, isNotNull);
-    expect(input!.kind, DailyRecordKind.meal);
-    expect(input.occurredAt, '2026-06-06');
-    expect(input.occurredTime, '09:45');
-    expect(input.title, '午餐');
-    expect(input.value, isNull);
-    expect(input.unit, isNull);
-    expect(input.note, isNull);
-  });
-
-  testWidgets('Record meal quick action more opens full create page', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(480, 1200);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await _pumpRecordRouter(
-      tester,
-      selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: DateTime(2026, 6, 6, 9, 45),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('record-quick-meal')));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(RecordCreatePage), findsOneWidget);
-    expect(find.byKey(const Key('daily-record-kind-meal')), findsOneWidget);
-    expect(find.text('日期'), findsOneWidget);
-    expect(find.text('2026年6月6日'), findsOneWidget);
-    expect(find.text('时间'), findsOneWidget);
-    expect(find.text('09:45'), findsOneWidget);
-  });
-
   testWidgets('Record symptom quick action opens fast entry and saves', (
     tester,
   ) async {
@@ -1935,6 +1937,7 @@ Future<void> _pumpRecordRouter(
   DateTime? selectedDate,
   DateTime? currentDateTime,
   AuthSessionNotifier Function()? authSessionNotifier,
+  PickMealQuickImage? mealQuickImagePicker,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
@@ -1957,6 +1960,8 @@ Future<void> _pumpRecordRouter(
         medicineReminderListProvider.overrideWith(
           (ref) async => medicineReminders,
         ),
+        if (mealQuickImagePicker != null)
+          mealQuickImagePickerProvider.overrideWithValue(mealQuickImagePicker),
         if (selectedDate != null)
           selectedRecordDateProvider.overrideWith(
             () => _FixedSelectedRecordDateNotifier(selectedDate),
@@ -2126,6 +2131,8 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   DailyRecordUpdateInput? lastUpdateInput;
   DailyRecordCreateInput? createInput;
   final List<DailyRecordCreateInput> createdInputs = <DailyRecordCreateInput>[];
+  final List<DailyRecordImageUploadInput> uploadedImages =
+      <DailyRecordImageUploadInput>[];
   final List<String> deletedIds = <String>[];
   bool fetchRecordsCalled = false;
 
@@ -2223,6 +2230,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   Future<DailyRecordAttachmentInput> uploadImage(
     DailyRecordImageUploadInput input,
   ) async {
+    uploadedImages.add(input);
     return DailyRecordAttachmentInput(
       objectKey: 'daily-records/user-1/test.jpg',
       bucket: 'bucket',
@@ -2327,6 +2335,78 @@ DailyRecordItem _dailyRecord({
     createdAt: DateTime.now().toIso8601String(),
     updatedAt: DateTime.now().toIso8601String(),
   );
+}
+
+Uint8List _tinyPngBytes() {
+  return Uint8List.fromList(const [
+    0x89,
+    0x50,
+    0x4e,
+    0x47,
+    0x0d,
+    0x0a,
+    0x1a,
+    0x0a,
+    0x00,
+    0x00,
+    0x00,
+    0x0d,
+    0x49,
+    0x48,
+    0x44,
+    0x52,
+    0x00,
+    0x00,
+    0x00,
+    0x01,
+    0x00,
+    0x00,
+    0x00,
+    0x01,
+    0x08,
+    0x06,
+    0x00,
+    0x00,
+    0x00,
+    0x1f,
+    0x15,
+    0xc4,
+    0x89,
+    0x00,
+    0x00,
+    0x00,
+    0x0a,
+    0x49,
+    0x44,
+    0x41,
+    0x54,
+    0x78,
+    0x9c,
+    0x63,
+    0x00,
+    0x01,
+    0x00,
+    0x00,
+    0x05,
+    0x00,
+    0x01,
+    0x0d,
+    0x0a,
+    0x2d,
+    0xb4,
+    0x00,
+    0x00,
+    0x00,
+    0x00,
+    0x49,
+    0x45,
+    0x4e,
+    0x44,
+    0xae,
+    0x42,
+    0x60,
+    0x82,
+  ]);
 }
 
 class _FakeRecordRepository implements RecordRepository {

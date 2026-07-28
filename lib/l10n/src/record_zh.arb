@@ -169,6 +169,7 @@
   "recordQuickSleepWakeLabel": "醒来",
   "recordQuickSleepKeepSeparateAction": "保持两条",
   "recordQuickSleepMergeAction": "合并",
+  "recordQuickMealConfirmTitle": "确认餐食记录",
   "recordFastEntryMultiSelectAction": "多选",
   "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",
   "@recordFastEntryPartialFailedToast": {

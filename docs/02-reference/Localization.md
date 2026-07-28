@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (Record quick-entry sleep strings)
+Last updated: 2026-07-28 (Record quick-entry meal strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -81,6 +81,8 @@ Persisted preference keys:
   Record page.
 - Record quick sleep strings (`recordQuickSleep*`) are owned by the Record ARB entries because the
   start toast, multi-start selection, and merge confirmation live on the Record page.
+- Record quick meal strings (`recordQuickMeal*`) are owned by the Record ARB entries because the
+  camera confirmation dialog lives on the Record page and saves a Record daily entry.
 - Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is
   owned by the Record ARB entries.
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate

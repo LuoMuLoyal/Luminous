@@ -132,7 +132,6 @@ class QuickEntryExecutor {
   bool _usesLegacyFastEntry(DailyRecordKind kind) {
     return switch (kind) {
       DailyRecordKind.water ||
-      DailyRecordKind.meal ||
       DailyRecordKind.symptom ||
       DailyRecordKind.mood ||
       DailyRecordKind.note => true,

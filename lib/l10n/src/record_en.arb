@@ -169,6 +169,7 @@
   "recordQuickSleepWakeLabel": "Wake",
   "recordQuickSleepKeepSeparateAction": "Keep separate",
   "recordQuickSleepMergeAction": "Merge",
+  "recordQuickMealConfirmTitle": "Confirm meal record",
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordFastEntryPartialFailedToast": {

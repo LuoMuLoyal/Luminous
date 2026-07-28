@@ -660,13 +660,15 @@ git commit -m "feat(record): 快速记录睡眠开始结束"
 
 ## Phase 5: Meal Camera Flow
 
+Status: implemented and verified 2026-07-28.
+
 **Files:**
 
 - Create: `lib/features/record/presentation/quick_entry/meal_flow.dart`
-- Modify or reuse: `lib/features/record/presentation/pages/create.dart`
-- Modify: `lib/features/record/presentation/widgets/forms/image_attachment_field.dart`
 - Modify: `lib/features/record/presentation/services/quick_entry_executor.dart`
+- Modify: `lib/features/record/presentation/pages/page.dart`
 - Test: `test/record/quick_entry/meal_flow_test.dart`
+- Modify: `test/record/page_test.dart`
 
 - [ ] **Step 1: Write failing meal flow tests**
 

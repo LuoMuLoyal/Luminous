@@ -26,6 +26,7 @@ import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
+import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
 import 'package:luminous/features/record/presentation/quick_entry/sleep_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
@@ -337,6 +338,17 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return;
     }
 
+    if (action.type == RecordEntryType.meal) {
+      await _handleMealQuickAction(
+        context,
+        now: now,
+        occurredAt: date,
+        occurredTime: currentTime,
+        session: session,
+      );
+      return;
+    }
+
     final prefs =
         ref.read(quickEntryPreferencesProvider).asData?.value ??
         const QuickEntryPreferences();
@@ -359,6 +371,82 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         isAuthLoading: session.isLoading,
       ),
     );
+  }
+
+  Future<void> _handleMealQuickAction(
+    BuildContext context, {
+    required DateTime now,
+    required String occurredAt,
+    required String occurredTime,
+    required AuthSessionState session,
+  }) async {
+    if (!session.canAccessProtectedData) {
+      if (session.isLoading) return;
+      await showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      );
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final repository = ref.read(dailyRecordRepositoryProvider);
+    final flow = MealQuickEntryFlow(
+      pickImage: ref.read(mealQuickImagePickerProvider),
+      uploadImage: repository.uploadImage,
+      createRecord: repository.create,
+      emitDataChange: (topic) =>
+          ref.read(dataChangeBusProvider.notifier).emit(topic),
+    );
+
+    late final MealQuickEntryOutcome outcome;
+    try {
+      outcome = await flow.startWithCamera(
+        MealQuickEntryContext(
+          occurredAt: occurredAt,
+          occurredTime: occurredTime,
+          defaultTitle: _defaultMealTitle(l10n, now),
+        ),
+      );
+    } on MealQuickImageUnsupportedException {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordImageUnsupportedToast);
+      return;
+    } catch (_) {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordImagePickFailedToast);
+      return;
+    }
+
+    if (!context.mounted ||
+        outcome.type == MealQuickEntryOutcomeType.cancelled) {
+      return;
+    }
+    final draft = outcome.draft;
+    if (draft == null) return;
+    await _showMealConfirmationDialog(context, flow: flow, draft: draft);
+  }
+
+  Future<void> _showMealConfirmationDialog(
+    BuildContext context, {
+    required MealQuickEntryFlow flow,
+    required MealQuickEntryDraft draft,
+  }) async {
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: 460,
+      scrollable: false,
+      builder: (dialogContext) =>
+          _MealQuickConfirmationDialog(flow: flow, draft: draft),
+    );
+  }
+
+  String _defaultMealTitle(AppLocalizations l10n, DateTime now) {
+    final hour = now.hour;
+    if (hour < 10) return l10n.recordFastChoiceMealBreakfast;
+    if (hour < 15) return l10n.recordFastChoiceMealLunch;
+    if (hour < 21) return l10n.recordFastChoiceMealDinner;
+    return l10n.recordFastChoiceMealSnack;
   }
 
   Future<void> _handleSleepQuickAction(
@@ -1041,6 +1129,133 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       builder: (sheetContext) =>
           RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
     );
+  }
+}
+
+class _MealQuickConfirmationDialog extends StatefulWidget {
+  const _MealQuickConfirmationDialog({required this.flow, required this.draft});
+
+  final MealQuickEntryFlow flow;
+  final MealQuickEntryDraft draft;
+
+  @override
+  State<_MealQuickConfirmationDialog> createState() =>
+      _MealQuickConfirmationDialogState();
+}
+
+class _MealQuickConfirmationDialogState
+    extends State<_MealQuickConfirmationDialog> {
+  late final TextEditingController _titleController;
+  late final TextEditingController _valueController;
+  late final TextEditingController _noteController;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.draft.title ?? '');
+    _valueController = TextEditingController(text: widget.draft.value ?? '');
+    _noteController = TextEditingController(text: widget.draft.note ?? '');
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _valueController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final image = widget.draft.image;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.recordQuickMealConfirmTitle,
+          style: TypographyToken.level6.body(context),
+        ),
+        if (image != null) ...[
+          const SizedBox(height: Spacing.level4),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusTokens.level3),
+            child: AspectRatio(
+              aspectRatio: 4 / 3,
+              child: Image.memory(image.bytes, fit: BoxFit.cover),
+            ),
+          ),
+        ],
+        const SizedBox(height: Spacing.level4),
+        FTextField(
+          key: const Key('record-quick-meal-title-field'),
+          control: FTextFieldControl.managed(controller: _titleController),
+          label: Text(l10n.recordCreateFieldTitle),
+          enabled: !_saving,
+        ),
+        const SizedBox(height: Spacing.level3),
+        FTextField(
+          key: const Key('record-quick-meal-value-field'),
+          control: FTextFieldControl.managed(controller: _valueController),
+          label: Text(l10n.recordCreateValueMeal),
+          enabled: !_saving,
+        ),
+        const SizedBox(height: Spacing.level3),
+        FTextField(
+          key: const Key('record-quick-meal-note-field'),
+          control: FTextFieldControl.managed(controller: _noteController),
+          label: Text(l10n.recordCreateFieldNote),
+          maxLines: 2,
+          enabled: !_saving,
+        ),
+        if (_saving) ...[
+          const SizedBox(height: Spacing.level4),
+          const Center(child: FProgress()),
+        ],
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: _saving ? null : () => Navigator.of(context).pop(),
+              child: Text(l10n.commonCancel),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              key: const Key('record-quick-meal-confirm-action'),
+              onPress: _saving ? null : _save,
+              child: Text(l10n.commonConfirm),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _save() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _saving = true);
+    try {
+      await widget.flow.saveDraft(
+        widget.draft.copyWith(
+          title: _titleController.text,
+          value: _valueController.text,
+          note: _noteController.text,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      unawaited(Toast.show(context, l10n.recordCreateFailedToast));
+      return;
+    }
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    unawaited(Toast.show(context, l10n.recordCreateSavedToast));
   }
 }
 

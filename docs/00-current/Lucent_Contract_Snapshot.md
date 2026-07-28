@@ -1,6 +1,6 @@
 # Lucent Contract Snapshot
 
-Last updated: 2026-07-28 (Record quick sleep uses existing daily-record payload)
+Last updated: 2026-07-28 (Record quick meal uses existing daily-record attachments)
 
 ## 基础
 
@@ -47,6 +47,10 @@ Last updated: 2026-07-28 (Record quick sleep uses existing daily-record payload)
 - **睡眠快速记录**：未新增后端 API 或 DTO。Record 快速睡眠继续使用 daily records `create/delete` 合同；
   前端在 `DailyRecordKind.sleep.payload` 中写入临时 `sleepEvent=start/wake` fact，确认合并后写入既有标准
   `durationMinutes/startAt/endAt` sleep payload。
+- **餐食快速记录**：未新增后端 API 或 DTO。Record 快速餐食继续使用 daily records 图片附件合同：
+  `POST /api/v1/user/daily-records/attachments/images/presign-upload` 预签上传后，将返回的 attachment metadata
+  放入 `DailyRecordCreateInput.attachments` 创建 `DailyRecordKind.meal`，后端 meal analysis 仍由既有 daily-record
+  图片附件链路触发。
 - **Medicine 主页空态**：未登录 preview 与已登录空药盒均复用现有 `MedicineWorkspace` 结构（`plan.items` 为空），空态文案与卡片由前端根据认证状态本地化渲染，未引入新合同字段。
 - **用户数据边界**：用户业务数据在 `/api/v1/user/*` 下；账户资料/安全操作在 `/api/v1/account/*` 下。
 - **SSE 流**：Today AI 分析 `/api/v1/user/today-analysis/generate/stream`、Report AI 摘要 `/api/v1/user/reports/summary/generate/stream`、Assistant `/api/v1/user/assistant/chat/stream`。通过 `LucentSseClient` + Dio 直接消费，不经过 Retrofit。
