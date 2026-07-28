@@ -53,7 +53,6 @@ void main() {
 
     final keys = <String>[
       'record-quick-actions',
-      'record-ai-input',
       'record-timeline',
       'record-filter-chips',
     ];
@@ -183,7 +182,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('record-ai-input')));
+    await tester.tap(find.byKey(const Key('record-nlp-action')));
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('record-nlp-input-field')), findsOneWidget);
@@ -259,7 +258,7 @@ void main() {
       await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.tap(find.byKey(const Key('record-nlp-action')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -335,7 +334,7 @@ void main() {
       await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.tap(find.byKey(const Key('record-nlp-action')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
@@ -416,7 +415,7 @@ void main() {
       await _pumpRecordPage(tester, dailyRecordRepository: repo);
 
       await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('record-ai-input')));
+      await tester.tap(find.byKey(const Key('record-nlp-action')));
       await tester.pumpAndSettle();
 
       await tester.enterText(
