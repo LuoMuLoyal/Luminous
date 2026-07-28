@@ -711,6 +711,11 @@ git commit -m "feat(record): 快速记录餐食拍照确认"
 
 ## Phase 6: Sorting Completion And Full Verification
 
+Status: implemented 2026-07-28. Verified with Record/Medicine suites, Settings root page, targeted
+quick-entry tests, `flutter analyze`, and doc coverage. Full `test/settings` still has unrelated
+pre-existing failures in `help_settings_page_test.dart` and `user_settings_controller_test.dart`,
+so it is not counted as passed for this phase.
+
 **Files:**
 
 - Modify: `lib/features/record/presentation/pages/quick_entry_settings.dart`

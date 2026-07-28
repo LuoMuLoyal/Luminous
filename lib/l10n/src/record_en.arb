@@ -167,6 +167,7 @@
   "recordQuickSleepMergeBody": "The wake time has been saved. You can merge the start and wake facts into one complete sleep record.",
   "recordQuickSleepStartLabel": "Start",
   "recordQuickSleepWakeLabel": "Wake",
+  "recordQuickSleepInProgressBadge": "Active",
   "recordQuickSleepKeepSeparateAction": "Keep separate",
   "recordQuickSleepMergeAction": "Merge",
   "recordQuickMealConfirmTitle": "Confirm meal record",

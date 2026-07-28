@@ -54,9 +54,15 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   FTile(
                     key: const Key('record-quick-settings-reorder'),
                     title: Text(l10n.recordQuickSettingsManualOrder),
-                    subtitle: Text(l10n.recordQuickSettingsManualOrderHint),
+                    subtitle: Text(
+                      prefs.dynamicSortEnabled
+                          ? l10n.recordQuickSortDisableDynamicFirst
+                          : l10n.recordQuickSettingsManualOrderHint,
+                    ),
                     suffix: const Icon(SemanticIcons.actionNext),
-                    onPress: () => context.push(Routes.recordQuickEntryReorder),
+                    onPress: prefs.dynamicSortEnabled
+                        ? null
+                        : () => context.push(Routes.recordQuickEntryReorder),
                   ),
                   FTile(
                     key: const Key('record-quick-settings-reset-order'),

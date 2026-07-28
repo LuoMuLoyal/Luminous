@@ -167,6 +167,7 @@
   "recordQuickSleepMergeBody": "刚刚已经记录了醒来时间，可以把开始和醒来合并为一条完整睡眠。",
   "recordQuickSleepStartLabel": "入睡",
   "recordQuickSleepWakeLabel": "醒来",
+  "recordQuickSleepInProgressBadge": "进行中",
   "recordQuickSleepKeepSeparateAction": "保持两条",
   "recordQuickSleepMergeAction": "合并",
   "recordQuickMealConfirmTitle": "确认餐食记录",

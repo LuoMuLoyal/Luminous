@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry meal l10n/runtime)
+Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
 
 ## 技术栈
 
@@ -77,6 +77,8 @@ Last updated: 2026-07-28 (Record quick-entry meal l10n/runtime)
 - `DataChangeBus`（keepAlive Notifier）解耦跨 feature invalidation——`DataChangeTopic` 定义 5 个领域事件，消费方 watch `dataChangeVersionProvider(topic)`。
 - `PrefKeys`（`core/config/pref_keys.dart`）集中管理 SharedPreferences key。Record quick-entry
   偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量、饮水角标模式和睡眠进行中标记。
+- Record quick-entry panel 从 `RecordDashboardView` 接收当天 `RecordDaySummary` 与 `RecordTimelineEntry`
+  列表，用于本地渲染饮水角标（累计量/次数/隐藏）和睡眠进行中角标；该显示层不新增后端状态字段。
 
 ## 本地持久化
 
@@ -131,6 +133,8 @@ Last updated: 2026-07-28 (Record quick-entry meal l10n/runtime)
   `mealQuickImagePickerProvider` 封装 `ImagePicker` + `ImageCompressor`，单击餐食先调用相机，拍照后在
   Record 页确认对话框中补充标题/描述/备注，确认后复用 `dailyRecordRepository.uploadImage` 和
   `DailyRecordCreateInput.attachments` 创建 meal daily record。
+- 2026-07-28：Record quick-entry sorting/help/badges 新增 `recordQuickSleepInProgressBadge`，用于快速记录
+  睡眠入口角标；排序和显示偏好继续由 `QuickEntryPreferences` + SharedPreferences 管理。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

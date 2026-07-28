@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/icon_action_button.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
@@ -21,11 +22,15 @@ class RecordQuickEntryPanel extends ConsumerStatefulWidget {
     super.key,
     required this.actions,
     required this.l10n,
+    this.summary = const RecordDaySummary(items: <RecordSummaryItem>[]),
+    this.timeline = const <RecordTimelineEntry>[],
     this.onQuickAction,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
+  final RecordDaySummary summary;
+  final List<RecordTimelineEntry> timeline;
   final ValueChanged<RecordQuickAction>? onQuickAction;
 
   @override
@@ -66,6 +71,13 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
                   actions: gridActions,
                   l10n: l10n,
                   metrics: metrics,
+                  badgeFor: (action) => _badgeFor(
+                    action,
+                    prefs,
+                    l10n,
+                    widget.summary,
+                    widget.timeline,
+                  ),
                   onTap: widget.onQuickAction,
                 ),
                 if (noteAction != null) ...[
@@ -89,6 +101,60 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
     QuickEntryPreferences prefs,
   ) {
     return buildMobileQuickActions(actions, preferences: prefs);
+  }
+
+  String? _badgeFor(
+    RecordQuickAction action,
+    QuickEntryPreferences prefs,
+    AppLocalizations l10n,
+    RecordDaySummary summary,
+    List<RecordTimelineEntry> timeline,
+  ) {
+    return switch (action.type) {
+      RecordEntryType.water => _waterBadge(prefs, l10n, summary, timeline),
+      RecordEntryType.sleep => _sleepBadge(prefs, l10n, timeline),
+      _ => null,
+    };
+  }
+
+  String? _waterBadge(
+    QuickEntryPreferences prefs,
+    AppLocalizations l10n,
+    RecordDaySummary summary,
+    List<RecordTimelineEntry> timeline,
+  ) {
+    if (prefs.waterBadgeMode == QuickEntryWaterBadgeMode.hidden) return null;
+    if (prefs.waterBadgeMode == QuickEntryWaterBadgeMode.dailyCount) {
+      final count = timeline
+          .where((entry) => entry.type == RecordEntryType.water)
+          .length;
+      return count > 0 ? count.toString() : null;
+    }
+    final waterSummary = summary.items
+        .where((item) => item.type == RecordEntryType.water)
+        .firstOrNull;
+    if (waterSummary == null || waterSummary.value.trim().isEmpty) {
+      return null;
+    }
+    final unit = waterSummary.unitKey == null
+        ? ''
+        : recordCopy(l10n, waterSummary.unitKey!);
+    return '${waterSummary.value}$unit';
+  }
+
+  String? _sleepBadge(
+    QuickEntryPreferences prefs,
+    AppLocalizations l10n,
+    List<RecordTimelineEntry> timeline,
+  ) {
+    if (!prefs.sleepInProgressBadgeEnabled) return null;
+    final inProgress = timeline.any(
+      (entry) =>
+          entry.type == RecordEntryType.sleep &&
+          entry.value == null &&
+          entry.valueKey == null,
+    );
+    return inProgress ? l10n.recordQuickSleepInProgressBadge : null;
   }
 }
 
@@ -117,9 +183,72 @@ class _PanelHeader extends StatelessWidget {
           key: const Key('record-quick-help-action'),
           tooltip: l10n.recordQuickHelpTooltip,
           icon: SemanticIcons.actionHelp,
-          onTap: () {},
+          onTap: () => _showQuickHelp(context, l10n),
         ),
       ],
+    );
+  }
+
+  Future<void> _showQuickHelp(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: 440,
+      scrollable: false,
+      builder: (dialogContext) => Column(
+        key: const Key('record-quick-help-dialog'),
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.recordQuickHelpTooltip,
+            style: TypographyToken.level6.body(dialogContext),
+          ),
+          const SizedBox(height: Spacing.level4),
+          _HelpLine(text: l10n.recordQuickSettingsMedicationRule),
+          _HelpLine(text: l10n.recordQuickSettingsMealRule),
+          _HelpLine(text: l10n.recordQuickSettingsSymptomRule),
+          _HelpLine(text: l10n.recordQuickSettingsMoodRule),
+          _HelpLine(text: l10n.recordQuickSettingsSleepRule),
+          const SizedBox(height: Spacing.level5),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FButton(
+              variant: FButtonVariant.ghost,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.commonConfirm),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HelpLine extends StatelessWidget {
+  const _HelpLine({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.level2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 2),
+            child: Icon(SemanticIcons.statusInfo, size: IconSizeTokens.level2),
+          ),
+          const SizedBox(width: Spacing.level2),
+          Expanded(
+            child: Text(text, style: TypographyToken.level4.body(context)),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -168,12 +297,14 @@ class _QuickRecordGrid extends StatelessWidget {
     required this.actions,
     required this.l10n,
     required this.metrics,
+    required this.badgeFor,
     this.onTap,
   });
 
   final List<RecordQuickAction> actions;
   final AppLocalizations l10n;
   final _QuickRecordMetrics metrics;
+  final String? Function(RecordQuickAction action) badgeFor;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
@@ -199,6 +330,7 @@ class _QuickRecordGrid extends StatelessWidget {
                     action: rows[rowIndex][index],
                     l10n: l10n,
                     metrics: metrics,
+                    badge: badgeFor(rows[rowIndex][index]),
                     onTap: onTap,
                   ),
                 ),
@@ -227,12 +359,14 @@ class _QuickRecordTile extends StatelessWidget {
     required this.action,
     required this.l10n,
     required this.metrics,
+    this.badge,
     this.onTap,
   });
 
   final RecordQuickAction action;
   final AppLocalizations l10n;
   final _QuickRecordMetrics metrics;
+  final String? badge;
   final ValueChanged<RecordQuickAction>? onTap;
 
   @override
@@ -257,16 +391,27 @@ class _QuickRecordTile extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                FAvatar.raw(
-                  size: metrics.avatarSize,
-                  style: .delta(
-                    backgroundColor: action.softColor.subtle(context),
-                  ),
-                  child: Icon(
-                    isLocked ? SemanticIcons.statusBlocked : action.icon,
-                    color: action.accent.solid(context),
-                    size: Spacing.level5,
-                  ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    FAvatar.raw(
+                      size: metrics.avatarSize,
+                      style: .delta(
+                        backgroundColor: action.softColor.subtle(context),
+                      ),
+                      child: Icon(
+                        isLocked ? SemanticIcons.statusBlocked : action.icon,
+                        color: action.accent.solid(context),
+                        size: Spacing.level5,
+                      ),
+                    ),
+                    if (badge != null)
+                      Positioned(
+                        top: -Spacing.level1,
+                        right: -Spacing.level2,
+                        child: _QuickBadge(text: badge!),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: Spacing.level2),
                 Text(
@@ -281,6 +426,38 @@ class _QuickRecordTile extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _QuickBadge extends StatelessWidget {
+  const _QuickBadge({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: context.theme.colors.primary,
+        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
+        border: Border.all(color: context.theme.colors.background, width: 1.5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level2,
+          vertical: 1,
+        ),
+        child: Text(
+          text,
+          style: TypographyToken.level1
+              .body(context)
+              .copyWith(
+                color: context.theme.colors.primaryForeground,
+                fontWeight: FontWeight.w700,
+              ),
         ),
       ),
     );

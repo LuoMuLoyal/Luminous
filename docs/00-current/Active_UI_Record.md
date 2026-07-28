@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (快速记录 UX 重构阶段 5 meal flow)
+Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges completion)
 
 ## 支持的记录类型
 
@@ -86,6 +86,12 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 5 meal flow)
   - 拍照成功后弹出轻量确认对话框，展示图片并允许补充标题、名称/描述和备注；默认标题按当前时间预填早餐/午餐/晚餐/加餐。
   - 用户确认后才上传图片并创建 `DailyRecordKind.meal` daily record，attachments 继续复用既有 `uploadImage` + `DailyRecordCreateInput.attachments` 链路，因此可进入后端 meal analysis 流程。
   - 餐食确认保存属于显式确认写入，成功后显示普通保存反馈，不显示撤销 toast。
+- 阶段 6 已完成快速记录排序/帮助/角标收尾：
+  - quick panel help 按钮会弹出轻量说明对话框，复用各快捷项规则文案，说明当前单击/确认式行为，不引入双击心智负担。
+  - 快速记录设置页在动态排序开启时禁用手动排序入口，并显示“请先关闭动态排序再编辑顺序”。
+  - 手动排序页从占位页改为说明 + `ReorderableListView`，按默认顺序或用户自定义顺序展示 7 个快捷入口，拖拽后写入 `QuickEntryPreferences.customOrder`。
+  - “重置为默认顺序”只清除 `customOrder`，不影响饮水默认量、角标或睡眠进行中标记。
+  - quick panel 现在接收 dashboard summary/timeline：饮水角标按偏好显示今日累计量或次数；睡眠角标在发现未合并的 sleep start fact 时显示“进行中”。
 
 ## 骨架屏
 

@@ -68,6 +68,12 @@ void main() {
         totalTiles += find.byKey(Key(key)).evaluate().length;
       }
       expect(totalTiles, 7);
+
+      await tester.tap(find.byKey(const Key('record-quick-help-action')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('record-quick-help-dialog')), findsOneWidget);
+      expect(find.text(l10n.recordQuickSettingsMealRule), findsOneWidget);
     });
 
     testWidgets('note tile uses horizontal icon-left text-right layout', (
@@ -121,6 +127,64 @@ void main() {
         find.descendant(of: noteFinder, matching: find.byType(Column)),
         findsNothing,
       );
+    });
+
+    testWidgets('renders water and sleep badges from dashboard data', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(480, 1200);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final dashboard = RecordDashboard.signedOut(DateTime(2026, 7, 21));
+      final waterAction = dashboard.quickActions.firstWhere(
+        (action) => action.type == RecordEntryType.water,
+      );
+      final sleepAction = dashboard.quickActions.firstWhere(
+        (action) => action.type == RecordEntryType.sleep,
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TestForuiApp(
+            home: Scaffold(
+              body: RecordQuickEntryPanel(
+                actions: dashboard.quickActions,
+                l10n: l10n,
+                summary: RecordDaySummary(
+                  items: [
+                    RecordSummaryItem(
+                      type: RecordEntryType.water,
+                      icon: waterAction.icon,
+                      titleKey: waterAction.titleKey,
+                      value: '500 ml',
+                      accent: waterAction.accent,
+                      softColor: waterAction.softColor,
+                    ),
+                  ],
+                ),
+                timeline: [
+                  RecordTimelineEntry(
+                    time: '23:10',
+                    type: RecordEntryType.sleep,
+                    icon: sleepAction.icon,
+                    accent: sleepAction.accent,
+                    softColor: sleepAction.softColor,
+                    titleKey: sleepAction.titleKey,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('500 ml'), findsOneWidget);
+      expect(find.text(l10n.recordQuickSleepInProgressBadge), findsOneWidget);
     });
 
     testWidgets('default quick actions include medication and mood', (

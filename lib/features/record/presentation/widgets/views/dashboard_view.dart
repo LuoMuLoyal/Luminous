@@ -98,6 +98,8 @@ class _MobileRecordDashboard extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
         RecordQuickEntryPanel(
           actions: quickActions,
+          summary: dashboard.summary,
+          timeline: dashboard.timeline,
           l10n: l10n,
           onQuickAction: onQuickAction,
         ),
