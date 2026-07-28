@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 class DataExportRequestInFlightState {
   const DataExportRequestInFlightState({required this.inFlight, this.input});
@@ -134,7 +136,11 @@ const reportPrintPdfExportRequest = DataExportRequestInput(
 class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   @override
   Future<DataExportRequestDataDto?> build() async {
-    return _fetchLatest();
+    return authGuarded(
+      ref: ref,
+      fetch: _fetchLatest,
+      signedOutFallback: () => pendingAuthSessionResolution(),
+    );
   }
 
   Future<DataExportRequestDataDto?> requestExport([

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 
@@ -12,8 +14,14 @@ import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 class UserSettingsController extends AsyncNotifier<UserSettings> {
   @override
   Future<UserSettings> build() async {
-    final repo = ref.read(userSettingsRepositoryProvider);
-    return repo.getSettings();
+    return authGuarded(
+      ref: ref,
+      fetch: () {
+        final repo = ref.read(userSettingsRepositoryProvider);
+        return repo.getSettings();
+      },
+      signedOutFallback: () => pendingAuthSessionResolution(),
+    );
   }
 
   Future<void> setAiSummariesEnabled(bool enabled) async {

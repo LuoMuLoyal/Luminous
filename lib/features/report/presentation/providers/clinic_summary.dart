@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 /// Fetches the authenticated user's de-identified clinic summary preview.
 ///
@@ -8,8 +10,16 @@ import 'package:luminous/core/network/network_providers.dart';
 /// a [ClinicSummaryDto] with masked profile fields.
 final clinicSummaryPreviewProvider =
     FutureProvider.autoDispose<ClinicSummaryDto>((ref) async {
-      final api = ref.watch(lucentClientProvider).reports;
-      return api.reportsControllerPreviewClinicSummaryV1().then((r) => r.data!);
+      return authGuarded(
+        ref: ref,
+        fetch: () {
+          final api = ref.watch(lucentClientProvider).reports;
+          return api.reportsControllerPreviewClinicSummaryV1().then(
+            (r) => r.data!,
+          );
+        },
+        signedOutFallback: () => pendingAuthSessionResolution(),
+      );
     });
 
 /// Fetches a shared clinic summary by its public token.
