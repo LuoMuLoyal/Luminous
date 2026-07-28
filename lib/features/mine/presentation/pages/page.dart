@@ -62,14 +62,14 @@ class MinePage extends ConsumerWidget {
               suffixes: [
                 IconActionButton(
                   tooltip: l10n.mineHeaderNotifications,
-                  icon: FLucideIcons.bell,
+                  icon: SemanticIcons.notificationBell,
                   onTap: () => context.push(Routes.notifications),
                   showBadge: hasUnread,
                 ),
                 IconActionButton(
                   key: const Key('mine-settings-action'),
                   tooltip: l10n.mineHeaderSettings,
-                  icon: FLucideIcons.settings,
+                  icon: SemanticIcons.actionSettings,
                   onTap: () => context.push(Routes.settings),
                 ),
               ],
@@ -126,7 +126,7 @@ class MineErrorView extends StatelessWidget {
     return StateErrorView(
       title: l10n.mineErrorTitle,
       description: l10n.mineErrorDescription,
-      icon: FLucideIcons.searchX,
+      icon: SemanticIcons.safetyCoverage,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: StateTone.warning,

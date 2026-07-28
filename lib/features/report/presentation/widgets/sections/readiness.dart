@@ -99,7 +99,7 @@ class ReportReadinessSection extends StatelessWidget {
                 children: [
                   ExcludeSemantics(
                     child: Icon(
-                      FLucideIcons.clock3,
+                      SemanticIcons.statusPending,
                       color: colors.mutedForeground,
                       size: Spacing.level5,
                     ),
@@ -154,7 +154,7 @@ class ReportReadinessSection extends StatelessWidget {
                       onPress: onSync,
                       variant: FButtonVariant.outline,
                       prefix: const Icon(
-                        FLucideIcons.refreshCw,
+                        SemanticIcons.actionRefresh,
                         size: IconSizeTokens.level2,
                       ),
                       child: Text(l10n.reportSyncAction),
@@ -178,9 +178,9 @@ class ReportReadinessSection extends StatelessWidget {
   };
 
   IconData get _statusIcon => switch (status) {
-    ReportReadinessStatus.signedOut => FLucideIcons.lock,
-    ReportReadinessStatus.insufficient => FLucideIcons.circleAlert,
-    ReportReadinessStatus.ready => FLucideIcons.badgeCheck,
+    ReportReadinessStatus.signedOut => SemanticIcons.statusBlocked,
+    ReportReadinessStatus.insufficient => SemanticIcons.statusError,
+    ReportReadinessStatus.ready => SemanticIcons.reportAdherence,
   };
 
   String get _badgeLabel => switch (status) {
@@ -219,7 +219,7 @@ class _PrimaryAction extends StatelessWidget {
         key: const Key('report-readiness-sign-in-action'),
         onPress: section.onSignIn,
         prefix: const Icon(
-          FLucideIcons.lockKeyhole,
+          SemanticIcons.statusBlocked,
           size: IconSizeTokens.level2,
         ),
         child: Text(section.l10n.authGoLogin),
@@ -228,7 +228,7 @@ class _PrimaryAction extends StatelessWidget {
         key: const Key('report-readiness-record-action'),
         onPress: section.onContinueRecord,
         prefix: const Icon(
-          FLucideIcons.notebookPen,
+          SemanticIcons.tabRecord,
           size: IconSizeTokens.level2,
         ),
         child: Text(section.l10n.reportContinueRecordAction),
@@ -242,7 +242,7 @@ class _PrimaryAction extends StatelessWidget {
                 height: Spacing.level5,
                 child: FCircularProgress(),
               )
-            : const Icon(FLucideIcons.sparkles, size: Spacing.level5),
+            : const Icon(SemanticIcons.aiEntry, size: Spacing.level5),
         child: Text(section.l10n.reportGenerateAction),
       ),
     };

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 
 IconData medicineSafetyTipIcon(String category) {
   return switch (category) {
-    'alcohol' => FLucideIcons.wine,
-    'caffeine' => FLucideIcons.coffee,
-    'timing' => FLucideIcons.clock3,
-    'storage' => FLucideIcons.thermometer,
-    'food' => FLucideIcons.utensils,
-    'pregnancy' => FLucideIcons.heartPulse,
-    'allergy' => FLucideIcons.syringe,
-    'driving' => FLucideIcons.car,
-    _ => FLucideIcons.lightbulb,
+    'alcohol' => SemanticIcons.safetyAlcohol,
+    'caffeine' => SemanticIcons.recordCaffeine,
+    'timing' => SemanticIcons.statusPending,
+    'storage' => SemanticIcons.recordSymptom,
+    'food' => SemanticIcons.recordMeal,
+    'pregnancy' => SemanticIcons.profileCondition,
+    'allergy' => SemanticIcons.safetyAllergyShot,
+    'driving' => SemanticIcons.safetyDriving,
+    _ => SemanticIcons.aiTip,
   };
 }
 

@@ -85,7 +85,7 @@ class ReminderFormBody extends StatelessWidget {
       return StateErrorView(
         title: l10n.medicineNoMedicineTitle,
         description: l10n.medicineNoMedicineBody,
-        icon: FLucideIcons.pill,
+        icon: SemanticIcons.recordMedicine,
         actionLabel: l10n.medicineQuickAddTitle,
         onAction: () => context.push(Routes.medicineSearch),
       );
@@ -176,7 +176,7 @@ class ReminderFormBody extends StatelessWidget {
                 ),
                 const AppDivider(),
                 ValueActionRow(
-                  icon: FLucideIcons.calendar,
+                  icon: SemanticIcons.actionCalendar,
                   title: l10n.medicineReminderStartDateLabel,
                   value: dateLabel(
                     l10n,
@@ -187,7 +187,7 @@ class ReminderFormBody extends StatelessWidget {
                 ),
                 const AppDivider(),
                 ValueActionRow(
-                  icon: FLucideIcons.calendarX2,
+                  icon: SemanticIcons.safetySchedulingConflict,
                   title: l10n.medicineReminderEndDateLabel,
                   value: dateLabel(
                     l10n,
@@ -214,7 +214,7 @@ class ReminderFormBody extends StatelessWidget {
                 ),
                 const AppDivider(),
                 UnavailableMethodRow(
-                  icon: FLucideIcons.messageSquare,
+                  icon: SemanticIcons.actionMessage,
                   title: l10n.medicineReminderSmsLabel,
                   subtitle: l10n.medicineReminderSmsUnavailableHint,
                   status: l10n.medicineReminderUnavailableStatus,

@@ -1,5 +1,4 @@
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 
@@ -289,7 +288,7 @@ class MockRecordRepository implements RecordRepository {
   static final _quickActions = <RecordQuickAction>[
     const RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
       accent: SemanticColor.primary,
@@ -297,7 +296,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.vitals,
-      icon: FLucideIcons.heart,
+      icon: SemanticIcons.profileCondition,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
       accent: SemanticColor.primary,
@@ -305,7 +304,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
-      icon: FLucideIcons.cupSoda,
+      icon: SemanticIcons.recordWater,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: SemanticColor.primary,
@@ -313,7 +312,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: FLucideIcons.thermometer,
+      icon: SemanticIcons.recordSymptom,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -321,7 +320,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -330,7 +329,7 @@ class MockRecordRepository implements RecordRepository {
     // Lightweight mood self-check-in quick action.
     const RecordQuickAction(
       type: RecordEntryType.mood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -338,7 +337,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -346,7 +345,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -363,7 +362,7 @@ class MockRecordRepository implements RecordRepository {
   static final _summaryItems = <RecordSummaryItem>[
     const RecordSummaryItem(
       type: RecordEntryType.meal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       titleKey: RecordCopyKey.summaryMealTitle,
       value: '2',
       unitKey: RecordCopyKey.summaryTimesUnit,
@@ -372,7 +371,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordSummaryItem(
       type: RecordEntryType.water,
-      icon: FLucideIcons.cupSoda,
+      icon: SemanticIcons.recordWater,
       titleKey: RecordCopyKey.summaryWaterTitle,
       value: '5 / 8',
       unitKey: RecordCopyKey.summaryCupsUnit,
@@ -381,7 +380,7 @@ class MockRecordRepository implements RecordRepository {
     ),
     const RecordSummaryItem(
       type: RecordEntryType.vitals,
-      icon: FLucideIcons.heart,
+      icon: SemanticIcons.profileCondition,
       titleKey: RecordCopyKey.summaryLatestVitalTitle,
       value: '118/76',
       detailKey: RecordCopyKey.summaryNormal,
@@ -394,35 +393,35 @@ class MockRecordRepository implements RecordRepository {
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
-      icon: FLucideIcons.heart,
+      icon: SemanticIcons.profileCondition,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: FLucideIcons.cupSoda,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: FLucideIcons.thermometer,
+      icon: SemanticIcons.recordSymptom,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       selected: true,
     ),
@@ -431,21 +430,21 @@ class MockRecordRepository implements RecordRepository {
     const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       accent: SemanticColor.primary,
       selected: true,
     ),
@@ -487,29 +486,29 @@ class MockRecordRepository implements RecordRepository {
     const RecordTimelineEntry(
       time: '08:30',
       type: RecordEntryType.medication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeMedication,
       valueKey: RecordCopyKey.timelineMedicationName,
       detailKey: RecordCopyKey.timelineMedicationDetail,
-      trailingIcon: FLucideIcons.checkCircle2,
+      trailingIcon: SemanticIcons.statusSuccess,
     ),
     const RecordTimelineEntry(
       time: '09:15',
       type: RecordEntryType.water,
-      icon: FLucideIcons.cupSoda,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeWater,
       valueKey: RecordCopyKey.timelineWaterAmount,
       detailKey: RecordCopyKey.timelineWaterProgress,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
     const RecordTimelineEntry(
       time: '12:45',
       type: RecordEntryType.meal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineMealLunch,
@@ -517,18 +516,18 @@ class MockRecordRepository implements RecordRepository {
       detailKey: RecordCopyKey.timelineMealNutrition,
       badgeKey: RecordCopyKey.timelineAiBadge,
       imagePlaceholderKey: RecordCopyKey.foodImagePlaceholder,
-      trailingIcon: FLucideIcons.ellipsis,
+      trailingIcon: SemanticIcons.actionMore,
     ),
     const RecordTimelineEntry(
       time: '15:20',
       type: RecordEntryType.symptom,
-      icon: FLucideIcons.thermometer,
+      icon: SemanticIcons.recordSymptom,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineSymptomRecord,
       detailKey: RecordCopyKey.timelineSymptomDetail,
       badgeKey: RecordCopyKey.timelineManualBadge,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
     // Deferred by Product_Vision MVP: keep lightweight mood timeline data
     // because it is useful for future self-check-ins, but do not surface it in
@@ -536,43 +535,43 @@ class MockRecordRepository implements RecordRepository {
     const RecordTimelineEntry(
       time: '10:30',
       type: RecordEntryType.mood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineMoodCalm,
       detailKey: RecordCopyKey.timelineMoodDetail,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
     const RecordTimelineEntry(
       time: '23:30',
       type: RecordEntryType.sleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.timelineSleepRecord,
       detailKey: RecordCopyKey.timelineSleepDetail,
       badgeKey: RecordCopyKey.summaryNormal,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
     const RecordTimelineEntry(
       time: '16:00',
       type: RecordEntryType.note,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeNote,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
     const RecordTimelineEntry(
       time: '06:10',
       type: RecordEntryType.weight,
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       softColor: SemanticColor.neutral,
       titleKey: RecordCopyKey.typeWeight,
       value: '--',
       detailKey: RecordCopyKey.timelineWeightDetail,
-      trailingIcon: FLucideIcons.chevronRight,
+      trailingIcon: SemanticIcons.actionNext,
     ),
   ];
 

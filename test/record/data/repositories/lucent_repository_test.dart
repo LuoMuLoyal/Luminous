@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -229,12 +228,12 @@ void main() {
   group('timeline icon mapping', () {
     // vital and activity are filtered out by _isActiveRecordEntryType
     final cases = [
-      (DailyRecordKind.water, FLucideIcons.droplets),
-      (DailyRecordKind.meal, FLucideIcons.utensils),
-      (DailyRecordKind.mood, FLucideIcons.smile),
-      (DailyRecordKind.symptom, FLucideIcons.cross),
-      (DailyRecordKind.note, FLucideIcons.notebookPen),
-      (DailyRecordKind.sleep, FLucideIcons.moon),
+      (DailyRecordKind.water, SemanticIcons.recordWater),
+      (DailyRecordKind.meal, SemanticIcons.recordMeal),
+      (DailyRecordKind.mood, SemanticIcons.recordMood),
+      (DailyRecordKind.symptom, SemanticIcons.safetyDanger),
+      (DailyRecordKind.note, SemanticIcons.tabRecord),
+      (DailyRecordKind.sleep, SemanticIcons.recordMoon),
     ];
 
     for (final (kind, expectedIcon) in cases) {

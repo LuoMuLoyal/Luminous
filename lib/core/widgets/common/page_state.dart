@@ -91,7 +91,7 @@ PageViewState<T> resolvePageViewState<T>({
   required AuthSessionState session,
   required AsyncValue<T> data,
   bool Function(T data)? isInsufficient,
-  IconData errorIcon = FLucideIcons.circleAlert,
+  IconData errorIcon = SemanticIcons.statusError,
 }) {
   // Priority 1: session still restoring
   if (session.isRestoring) {
@@ -226,7 +226,7 @@ class SignInHintBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(FLucideIcons.lock, color: colors.primary, size: 20),
+          Icon(SemanticIcons.statusBlocked, color: colors.primary, size: 20),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
@@ -318,7 +318,7 @@ class _DefaultEmptyInsufficientView extends StatelessWidget {
       description: description.isEmpty
           ? l10n.stateEmptyDefaultDescription
           : description,
-      icon: icon ?? FLucideIcons.info,
+      icon: icon ?? SemanticIcons.statusInfo,
       actionLabel: actionLabel,
       onAction: onAction,
       tone: StateTone.neutral,

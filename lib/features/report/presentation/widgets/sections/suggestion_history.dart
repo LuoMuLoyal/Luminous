@@ -77,11 +77,11 @@ class ReportSuggestionHistorySection extends StatelessWidget {
 
   IconData _iconForType(TodaySuggestionType type) {
     return switch (type) {
-      TodaySuggestionType.confirmedRisk => FLucideIcons.triangleAlert,
-      TodaySuggestionType.compliance => FLucideIcons.clipboardList,
-      TodaySuggestionType.trend => FLucideIcons.trendingUp,
-      TodaySuggestionType.behaviorAdvice => FLucideIcons.lightbulb,
-      TodaySuggestionType.coverage => FLucideIcons.activity,
+      TodaySuggestionType.confirmedRisk => SemanticIcons.statusWarning,
+      TodaySuggestionType.compliance => SemanticIcons.recordClipboard,
+      TodaySuggestionType.trend => SemanticIcons.reportTrend,
+      TodaySuggestionType.behaviorAdvice => SemanticIcons.aiTip,
+      TodaySuggestionType.coverage => SemanticIcons.recordActivity,
     };
   }
 
@@ -166,7 +166,7 @@ class _EmptyView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            FLucideIcons.history,
+            SemanticIcons.reportHistory,
             color: colors.secondary,
             size: Spacing.level5,
           ),

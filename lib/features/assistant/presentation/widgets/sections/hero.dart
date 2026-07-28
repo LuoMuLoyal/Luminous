@@ -81,7 +81,10 @@ class _FullHero extends StatelessWidget {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(Spacing.level3),
-                    child: Icon(FLucideIcons.bot, size: IconSizeTokens.level3),
+                    child: Icon(
+                      SemanticIcons.aiGenerated,
+                      size: IconSizeTokens.level3,
+                    ),
                   ),
                 ),
                 const SizedBox(width: Spacing.level3),
@@ -103,7 +106,7 @@ class _FullHero extends StatelessWidget {
                         variant: FButtonVariant.ghost,
                         onPress: onToggleCompact,
                         child: const Icon(
-                          FLucideIcons.chevronsUp,
+                          SemanticIcons.actionCollapse,
                           size: IconSizeTokens.level2,
                         ),
                       ),
@@ -188,7 +191,10 @@ class _CompactHero extends StatelessWidget {
               ),
               child: const Padding(
                 padding: EdgeInsets.all(Spacing.level2),
-                child: Icon(FLucideIcons.bot, size: IconSizeTokens.level2),
+                child: Icon(
+                  SemanticIcons.aiGenerated,
+                  size: IconSizeTokens.level2,
+                ),
               ),
             ),
             const SizedBox(width: Spacing.level3),
@@ -232,7 +238,7 @@ class _CompactHero extends StatelessWidget {
                     variant: FButtonVariant.ghost,
                     onPress: onToggleCompact,
                     child: const Icon(
-                      FLucideIcons.chevronsDown,
+                      SemanticIcons.actionExpand,
                       size: IconSizeTokens.level2,
                     ),
                   ),

@@ -131,7 +131,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                   FButton.icon(
                     onPress: () => Navigator.of(context).pop(),
                     variant: FButtonVariant.ghost,
-                    child: const Icon(FLucideIcons.x),
+                    child: const Icon(SemanticIcons.actionClose),
                   ),
                 ],
               ),
@@ -151,7 +151,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                         children: [
                           Expanded(
                             child: _OptionCard(
-                              icon: FLucideIcons.camera,
+                              icon: SemanticIcons.actionCamera,
                               label: l10n.recordOcrCameraAction,
                               onTap: () => pickAndRecognize(ImageSource.camera),
                             ),
@@ -159,7 +159,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           const SizedBox(width: Spacing.level4),
                           Expanded(
                             child: _OptionCard(
-                              icon: FLucideIcons.images,
+                              icon: SemanticIcons.actionImage,
                               label: l10n.recordOcrGalleryAction,
                               onTap: () =>
                                   pickAndRecognize(ImageSource.gallery),
@@ -192,7 +192,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           variant: FButtonVariant.ghost,
                           onPress: isRecognizing.value ? null : handleRetake,
                           prefix: const Icon(
-                            FLucideIcons.refreshCw,
+                            SemanticIcons.actionRefresh,
                             size: IconSizeTokens.level2,
                           ),
                           child: Text(l10n.recordOcrRetakeAction),
@@ -225,7 +225,7 @@ class _RecordOcrEntrySheet extends HookConsumerWidget {
                           Row(
                             children: [
                               Icon(
-                                FLucideIcons.fileSearch,
+                                SemanticIcons.actionSearch,
                                 size: Spacing.level5,
                                 color: colors.mutedForeground,
                               ),

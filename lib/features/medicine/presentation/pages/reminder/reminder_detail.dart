@@ -90,7 +90,7 @@ class MedicineReminderDetailPage extends ConsumerWidget {
                     description: isNotFound
                         ? l10n.medicineReminderNotFoundDescription
                         : l10n.medicineReminderGenericErrorDescription,
-                    icon: FLucideIcons.circleAlert,
+                    icon: SemanticIcons.statusError,
                     actionLabel: l10n.todayRetryAction,
                     onAction: () => ref.invalidate(
                       medicineReminderDetailProvider(currentMedicineId),
@@ -237,7 +237,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   child: Row(
                     children: [
                       Icon(
-                        FLucideIcons.power,
+                        SemanticIcons.dosePower,
                         color: isActive
                             ? SemanticColor.primary.solid(context)
                             : colors.mutedForeground,
@@ -290,7 +290,7 @@ class _ReminderDetailBody extends ConsumerWidget {
             children: [
               FTile(
                 prefix: Icon(
-                  FLucideIcons.repeat2,
+                  SemanticIcons.doseRepeat,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -305,7 +305,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.clock3,
+                  SemanticIcons.statusPending,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -322,7 +322,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.pillBottle,
+                  SemanticIcons.medicineBottle,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -337,7 +337,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.calendar,
+                  SemanticIcons.actionCalendar,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -352,7 +352,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.calendarX2,
+                  SemanticIcons.safetySchedulingConflict,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -367,7 +367,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.bell,
+                  SemanticIcons.notificationBell,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -384,7 +384,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.messageSquare,
+                  SemanticIcons.actionMessage,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -399,7 +399,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               ),
               FTile(
                 prefix: Icon(
-                  FLucideIcons.volume2,
+                  SemanticIcons.doseVolume,
                   color: colors.mutedForeground,
                   size: Spacing.level5,
                 ),
@@ -415,7 +415,7 @@ class _ReminderDetailBody extends ConsumerWidget {
               if (hasNote)
                 FTile(
                   prefix: Icon(
-                    FLucideIcons.notebookPen,
+                    SemanticIcons.tabRecord,
                     color: colors.mutedForeground,
                     size: Spacing.level5,
                   ),
@@ -462,7 +462,7 @@ class _ReminderDetailBody extends ConsumerWidget {
                   );
                 }
               },
-              prefix: const Icon(FLucideIcons.trash2),
+              prefix: const Icon(SemanticIcons.actionDelete),
               child: Text(l10n.medicineReminderDeleteAction),
             ),
           ],

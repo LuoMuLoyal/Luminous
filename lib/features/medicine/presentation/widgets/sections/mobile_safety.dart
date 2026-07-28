@@ -115,7 +115,7 @@ class _LastCheckedLabel extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            FLucideIcons.clock,
+            SemanticIcons.doseSlot,
             size: IconSizeTokens.level2,
             color: SemanticColor.warning.solid(context),
           ),
@@ -136,7 +136,7 @@ class _LastCheckedLabel extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          FLucideIcons.clock,
+          SemanticIcons.doseSlot,
           size: IconSizeTokens.level2,
           color: context.theme.colors.mutedForeground,
         ),
@@ -286,7 +286,7 @@ class _RiskSummary extends StatelessWidget {
           ),
         ),
         Icon(
-          FLucideIcons.chevronRight,
+          SemanticIcons.actionNext,
           color: context.theme.colors.mutedForeground,
           size: IconSizeTokens.level3,
         ),
@@ -463,7 +463,7 @@ class _SafetyEmptyCard extends StatelessWidget {
                   shape: const CircleBorder(),
                 ),
                 child: Icon(
-                  FLucideIcons.shieldCheck,
+                  SemanticIcons.safetySafe,
                   color: context.theme.colors.mutedForeground,
                   size: IconSizeTokens.level4,
                 ),
@@ -492,7 +492,7 @@ class _SafetyEmptyCard extends StatelessWidget {
                 ),
               ),
               Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 color: context.theme.colors.mutedForeground,
                 size: IconSizeTokens.level3,
               ),
@@ -524,7 +524,7 @@ class _SafetySummary {
       return _SafetySummary(
         title: l10n.medicineRiskCheckTierConfirmedRisk,
         body: l10n.medicineRiskCheckFindingsTitle,
-        icon: FLucideIcons.triangleAlert,
+        icon: SemanticIcons.statusWarning,
       );
     }
 
@@ -532,14 +532,14 @@ class _SafetySummary {
       return _SafetySummary(
         title: l10n.medicineRiskCheckTierUncovered,
         body: l10n.medicineRiskCheckTierUncoveredDisclaimer,
-        icon: FLucideIcons.circleAlert,
+        icon: SemanticIcons.statusError,
       );
     }
 
     return _SafetySummary(
       title: l10n.medicineRiskCheckTierConfirmedSafe,
       body: l10n.medicineRiskCheckTierSafeDisclaimer,
-      icon: FLucideIcons.badgeCheck,
+      icon: SemanticIcons.reportAdherence,
     );
   }
 }

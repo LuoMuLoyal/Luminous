@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/report/data/repositories/lucent_ai_summary.dart';
@@ -421,7 +420,7 @@ ReportAiSummary _testSummary({required ReportAiSummaryRange range}) {
         kind: ReportAiSummaryBulletKind.medication,
         text: '用药记录良好。',
         color: SemanticColor.primary,
-        icon: FLucideIcons.pill,
+        icon: SemanticIcons.recordMedicine,
       ),
     ],
     actionLabel: '查看报告',

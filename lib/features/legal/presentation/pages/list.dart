@@ -34,7 +34,7 @@ class LegalListPage extends ConsumerWidget {
         error: (_, __) => StateErrorView(
           title: l10n.legalLoadErrorTitle,
           description: l10n.legalLoadErrorDescription,
-          icon: FLucideIcons.circleAlert,
+          icon: SemanticIcons.statusError,
           actionLabel: l10n.legalRetryAction,
           onAction: () => ref.invalidate(legalDocumentsProvider),
         ),
@@ -43,7 +43,7 @@ class LegalListPage extends ConsumerWidget {
             return StateMessageView(
               title: l10n.legalListEmptyTitle,
               description: l10n.legalListEmptyDescription,
-              icon: FLucideIcons.fileText,
+              icon: SemanticIcons.recordNote,
             );
           }
           return SingleChildScrollView(
@@ -73,7 +73,7 @@ class LegalListPage extends ConsumerWidget {
                     color: colors.primary,
                     size: 20,
                   ),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => LegalDetailRoute(
                     docType: doc.docType.pathSegment,
                   ).push(context),
@@ -88,13 +88,13 @@ class LegalListPage extends ConsumerWidget {
 
   IconData _iconForType(LegalDocType type) {
     return switch (type) {
-      LegalDocType.terms => FLucideIcons.fileText,
-      LegalDocType.privacy => FLucideIcons.shield,
-      LegalDocType.disclaimer => FLucideIcons.info,
-      LegalDocType.minorProtection => FLucideIcons.baby,
-      LegalDocType.sdkList => FLucideIcons.list,
-      LegalDocType.permissions => FLucideIcons.key,
-      LegalDocType.accountCancellation => FLucideIcons.userMinus,
+      LegalDocType.terms => SemanticIcons.recordNote,
+      LegalDocType.privacy => SemanticIcons.safetyNeutral,
+      LegalDocType.disclaimer => SemanticIcons.statusInfo,
+      LegalDocType.minorProtection => SemanticIcons.safetySpecialGroup,
+      LegalDocType.sdkList => SemanticIcons.tabRecord,
+      LegalDocType.permissions => SemanticIcons.statusBlocked,
+      LegalDocType.accountCancellation => SemanticIcons.profileUser,
     };
   }
 }

@@ -18,7 +18,7 @@ class DesktopTabs extends StatelessWidget {
         Row(
           children: [
             Icon(
-              FLucideIcons.heartPulse,
+              SemanticIcons.profileCondition,
               color: colors.primary,
               size: IconSizeTokens.level3,
             ),
@@ -39,7 +39,7 @@ class DesktopTabs extends StatelessWidget {
           child: const SizedBox(
             width: 28,
             height: 28,
-            child: Icon(FLucideIcons.userRound, size: IconSizeTokens.level2),
+            child: Icon(SemanticIcons.profileUser, size: IconSizeTokens.level2),
           ),
         ),
       ],

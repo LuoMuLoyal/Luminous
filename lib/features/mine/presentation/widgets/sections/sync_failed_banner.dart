@@ -67,7 +67,7 @@ class _Banner extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                FLucideIcons.cloudAlert,
+                SemanticIcons.statusWarning,
                 size: 20,
                 color: SemanticColor.warning.solid(context),
               ),

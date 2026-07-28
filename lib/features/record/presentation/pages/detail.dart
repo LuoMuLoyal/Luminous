@@ -80,7 +80,7 @@ class RecordDetailPage extends ConsumerWidget {
                 error: (_, __) => StateErrorView(
                   title: l10n.recordDetailErrorTitle,
                   description: l10n.recordErrorDescription,
-                  icon: FLucideIcons.notebookPen,
+                  icon: SemanticIcons.tabRecord,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () =>
                       ref.invalidate(dailyRecordDetailProvider(recordId)),
@@ -103,7 +103,7 @@ class RecordDetailPage extends ConsumerWidget {
               context,
               RecordEditRoute(id: recordId).location,
             ),
-            child: const Icon(FLucideIcons.pencil),
+            child: const Icon(SemanticIcons.actionEdit),
           ),
         ),
     ];
@@ -315,7 +315,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
           key: const Key('record-detail-delete-action'),
           variant: FButtonVariant.destructive,
           onPress: () => _deleteRecord(context, ref, record.id),
-          prefix: const Icon(FLucideIcons.trash2, size: 18),
+          prefix: const Icon(SemanticIcons.actionDelete, size: 18),
           child: Text(l10n.recordDeleteAction),
         ),
       ],
@@ -543,14 +543,14 @@ class _KindIcon extends StatelessWidget {
     final background = colors.secondary;
 
     final icon = switch (kind) {
-      DailyRecordKind.water => FLucideIcons.droplets,
-      DailyRecordKind.meal => FLucideIcons.utensils,
-      DailyRecordKind.vital => FLucideIcons.heartPulse,
-      DailyRecordKind.mood => FLucideIcons.smile,
-      DailyRecordKind.symptom => FLucideIcons.cross,
-      DailyRecordKind.activity => FLucideIcons.personStanding,
-      DailyRecordKind.note => FLucideIcons.notebookPen,
-      DailyRecordKind.sleep => FLucideIcons.moonStar,
+      DailyRecordKind.water => SemanticIcons.recordWater,
+      DailyRecordKind.meal => SemanticIcons.recordMeal,
+      DailyRecordKind.vital => SemanticIcons.profileCondition,
+      DailyRecordKind.mood => SemanticIcons.recordMood,
+      DailyRecordKind.symptom => SemanticIcons.safetyDanger,
+      DailyRecordKind.activity => SemanticIcons.recordActivity,
+      DailyRecordKind.note => SemanticIcons.tabRecord,
+      DailyRecordKind.sleep => SemanticIcons.recordSleep,
     };
 
     return DecoratedBox(
@@ -587,7 +587,7 @@ class _RecordDetailImage extends StatelessWidget {
           child: imageUrl == null
               ? Center(
                   child: Icon(
-                    FLucideIcons.image,
+                    SemanticIcons.actionImage,
                     color: colors.mutedForeground,
                     size: 28,
                   ),
@@ -597,14 +597,14 @@ class _RecordDetailImage extends StatelessWidget {
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Center(
                     child: Icon(
-                      FLucideIcons.image,
+                      SemanticIcons.actionImage,
                       color: colors.mutedForeground,
                       size: 28,
                     ),
                   ),
                   errorWidget: (context, url, error) => Center(
                     child: Icon(
-                      FLucideIcons.imageOff,
+                      SemanticIcons.statusUnavailable,
                       color: colors.mutedForeground,
                       size: 28,
                     ),

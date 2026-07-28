@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -59,7 +60,7 @@ void main() {
     expect(find.byKey(const Key('settings-row-export')), findsOneWidget);
     expect(find.text(l10n.desktopSidebarSettings), findsOneWidget);
     expect(find.byType(AppBackButton), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.actionPrev), findsOneWidget);
     expect(find.text(l10n.mineSettingsAccountTitle), findsWidgets);
     expect(find.text(l10n.mineSettingsThemeTitle), findsOneWidget);
     expect(find.text(l10n.mineSettingsLanguageTitle), findsOneWidget);

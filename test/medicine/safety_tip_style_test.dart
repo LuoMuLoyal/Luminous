@@ -1,36 +1,39 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/presentation/utils/safety_tip_style.dart';
 
 void main() {
   group('medicineSafetyTipIcon', () {
     test('returns wine for alcohol', () {
-      expect(medicineSafetyTipIcon('alcohol'), FLucideIcons.wine);
+      expect(medicineSafetyTipIcon('alcohol'), SemanticIcons.safetyAlcohol);
     });
     test('returns coffee for caffeine', () {
-      expect(medicineSafetyTipIcon('caffeine'), FLucideIcons.coffee);
+      expect(medicineSafetyTipIcon('caffeine'), SemanticIcons.recordCaffeine);
     });
     test('returns clock3 for timing', () {
-      expect(medicineSafetyTipIcon('timing'), FLucideIcons.clock3);
+      expect(medicineSafetyTipIcon('timing'), SemanticIcons.statusPending);
     });
     test('returns thermometer for storage', () {
-      expect(medicineSafetyTipIcon('storage'), FLucideIcons.thermometer);
+      expect(medicineSafetyTipIcon('storage'), SemanticIcons.recordSymptom);
     });
     test('returns utensils for food', () {
-      expect(medicineSafetyTipIcon('food'), FLucideIcons.utensils);
+      expect(medicineSafetyTipIcon('food'), SemanticIcons.recordMeal);
     });
     test('returns heartPulse for pregnancy', () {
-      expect(medicineSafetyTipIcon('pregnancy'), FLucideIcons.heartPulse);
+      expect(
+        medicineSafetyTipIcon('pregnancy'),
+        SemanticIcons.profileCondition,
+      );
     });
     test('returns syringe for allergy', () {
-      expect(medicineSafetyTipIcon('allergy'), FLucideIcons.syringe);
+      expect(medicineSafetyTipIcon('allergy'), SemanticIcons.safetyAllergyShot);
     });
     test('returns car for driving', () {
-      expect(medicineSafetyTipIcon('driving'), FLucideIcons.car);
+      expect(medicineSafetyTipIcon('driving'), SemanticIcons.safetyDriving);
     });
     test('returns lightbulb as default', () {
-      expect(medicineSafetyTipIcon('unknown'), FLucideIcons.lightbulb);
+      expect(medicineSafetyTipIcon('unknown'), SemanticIcons.aiTip);
     });
   });
 

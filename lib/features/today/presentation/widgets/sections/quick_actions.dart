@@ -40,7 +40,7 @@ class TodayQuickActionsSection extends StatelessWidget {
                           child: Text(action.badge!),
                         )
                       : null,
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => action.usePush
                       ? context.push(action.route)
                       : context.go(action.route),
@@ -62,7 +62,7 @@ class TodayQuickActionsSection extends StatelessWidget {
                     ),
                     title: Text(action.title),
                     subtitle: Text(action.subtitle),
-                    suffix: const Icon(FLucideIcons.chevronRight),
+                    suffix: const Icon(SemanticIcons.actionNext),
                     onPress: () => action.usePush
                         ? context.push(action.route)
                         : context.go(action.route),

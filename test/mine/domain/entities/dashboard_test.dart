@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 
 void main() {
@@ -51,7 +51,7 @@ void main() {
     test('creates a dashboard with privacy notice', () {
       final dashboard = MineDashboard.signedOut();
 
-      expect(dashboard.privacyNotice.icon, FLucideIcons.shield);
+      expect(dashboard.privacyNotice.icon, SemanticIcons.safetyNeutral);
       expect(dashboard.privacyNotice.titleKey, MineCopyKey.privacyNoticeTitle);
       expect(
         dashboard.privacyNotice.actionKey,

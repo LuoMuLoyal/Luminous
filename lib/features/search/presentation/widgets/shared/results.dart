@@ -94,7 +94,7 @@ class SearchResultTile extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              FLucideIcons.check,
+                              SemanticIcons.statusDone,
                               size: Spacing.level4,
                               color: colors.primary,
                             ),
@@ -214,7 +214,7 @@ class PreviewPanel extends StatelessWidget {
                           const Padding(
                             padding: EdgeInsets.only(top: 6),
                             child: Icon(
-                              FLucideIcons.dot,
+                              SemanticIcons.statusPending,
                               size: IconSizeTokens.level1,
                             ),
                           ),
@@ -249,7 +249,7 @@ class PreviewPanel extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
-                            FLucideIcons.badgeCheck,
+                            SemanticIcons.reportAdherence,
                             size: 16,
                             color: colors.primary,
                           ),
@@ -269,7 +269,7 @@ class PreviewPanel extends StatelessWidget {
                   child: Column(
                     children: [
                       Icon(
-                        FLucideIcons.search,
+                        SemanticIcons.actionSearch,
                         size: Spacing.level9,
                         color: colors.mutedForeground,
                       ),
@@ -307,9 +307,13 @@ class NoResultTools extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = <(IconData, String, VoidCallback?)>[
-      (FLucideIcons.search, l10n.medicineSearchNoResultKeyword, onClearQuery),
       (
-        FLucideIcons.arrowLeftRight,
+        SemanticIcons.actionSearch,
+        l10n.medicineSearchNoResultKeyword,
+        onClearQuery,
+      ),
+      (
+        SemanticIcons.safetyInteraction,
         l10n.medicineSearchNoResultSwitch,
         onSwitchSource,
       ),

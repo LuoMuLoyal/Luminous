@@ -173,7 +173,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                     size: FButtonSizeVariant.sm,
                     onPress: () => Navigator.pop(ctx),
                     child: const Icon(
-                      FLucideIcons.x,
+                      SemanticIcons.actionClose,
                       size: IconSizeTokens.level3,
                     ),
                   ),
@@ -245,7 +245,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
         child: StateErrorView(
           title: l10n.scanPermissionDeniedTitle,
           description: l10n.scanPermissionDeniedHint,
-          icon: FLucideIcons.cameraOff,
+          icon: SemanticIcons.statusUnavailable,
           actionLabel: l10n.scanPermissionOpenSettings,
           onAction: () => openAppSettings(),
           tone: StateTone.warning,
@@ -265,7 +265,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
               setState(() => _torchOn = !_torchOn);
             },
             child: Icon(
-              _torchOn ? FLucideIcons.zap : FLucideIcons.zapOff,
+              _torchOn
+                  ? SemanticIcons.safetyAllergy
+                  : SemanticIcons.safetyAllergy,
               color: colors.foreground,
             ),
           ),
@@ -357,7 +359,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(
-                                  FLucideIcons.search,
+                                  SemanticIcons.actionSearch,
                                   size: 16,
                                   color: Color(0xFFFFFFFF),
                                 ),

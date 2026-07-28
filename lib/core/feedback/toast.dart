@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/logger.dart';
 
 class Toast {
@@ -74,7 +75,7 @@ class Toast {
                 variant: FButtonVariant.ghost,
                 size: .sm,
                 onPress: entry.dismiss,
-                child: const Icon(FLucideIcons.x, size: 16),
+                child: const Icon(SemanticIcons.actionClose, size: 16),
               ),
         onDismiss: () {
           if (_currentMessage == message) {

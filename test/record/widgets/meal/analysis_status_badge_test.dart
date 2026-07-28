@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -123,25 +124,25 @@ void main() {
     testWidgets('renders icon for analyzing status', (tester) async {
       await pumpBadge(tester, status: 'analyzing');
 
-      expect(find.byIcon(FLucideIcons.clock3), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusPending), findsOneWidget);
     });
 
     testWidgets('renders icon for confirmed status', (tester) async {
       await pumpBadge(tester, status: 'confirmed');
 
-      expect(find.byIcon(FLucideIcons.badgeCheck), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.reportAdherence), findsOneWidget);
     });
 
     testWidgets('renders icon for failed status', (tester) async {
       await pumpBadge(tester, status: 'analysis_failed');
 
-      expect(find.byIcon(FLucideIcons.circleAlert), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusError), findsOneWidget);
     });
 
     testWidgets('renders icon for unconfirmed status', (tester) async {
       await pumpBadge(tester, status: null);
 
-      expect(find.byIcon(FLucideIcons.badgeHelp), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionHelp), findsOneWidget);
     });
 
     testWidgets('renders FBadge', (tester) async {

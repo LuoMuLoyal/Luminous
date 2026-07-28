@@ -194,7 +194,7 @@ class _TodayPlanRow extends StatelessWidget {
                   child: _DoseActionButton(
                     key: const Key('medicine-plan-dose-action-taken'),
                     label: l10n.medicineDoseActionTaken,
-                    icon: FLucideIcons.check,
+                    icon: SemanticIcons.statusDone,
                     filled: true,
                     onTap: () => onMarkDose!(takenRequest),
                   ),
@@ -204,7 +204,7 @@ class _TodayPlanRow extends StatelessWidget {
                   child: _DoseActionButton(
                     key: const Key('medicine-plan-dose-action-skipped'),
                     label: l10n.medicineDoseActionSkipped,
-                    icon: FLucideIcons.ban,
+                    icon: SemanticIcons.statusSkipped,
                     color: SemanticColor.neutral,
                     onTap: () => onMarkDose!(skippedRequest),
                   ),
@@ -288,7 +288,7 @@ class _TodayPlanEmpty extends StatelessWidget {
           FAvatar.raw(
             size: Spacing.level8,
             child: Icon(
-              FLucideIcons.calendarCheck,
+              SemanticIcons.doseCalendarCheck,
               color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),

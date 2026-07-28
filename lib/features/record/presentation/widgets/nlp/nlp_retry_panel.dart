@@ -25,7 +25,10 @@ class RecordNlpRetryPanel extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
-            Icon(FLucideIcons.circleAlert, color: context.theme.colors.primary),
+            Icon(
+              SemanticIcons.statusError,
+              color: context.theme.colors.primary,
+            ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Text(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
@@ -111,10 +110,10 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
 
   IconData _bulletIcon(ReportAiSummaryBulletKind kind) {
     return switch (kind) {
-      ReportAiSummaryBulletKind.medication => FLucideIcons.pill,
-      ReportAiSummaryBulletKind.hydration => FLucideIcons.droplets,
-      ReportAiSummaryBulletKind.sleep => FLucideIcons.moon,
-      ReportAiSummaryBulletKind.general => FLucideIcons.lightbulb,
+      ReportAiSummaryBulletKind.medication => SemanticIcons.recordMedicine,
+      ReportAiSummaryBulletKind.hydration => SemanticIcons.recordWater,
+      ReportAiSummaryBulletKind.sleep => SemanticIcons.recordMoon,
+      ReportAiSummaryBulletKind.general => SemanticIcons.aiTip,
     };
   }
 }

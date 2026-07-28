@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/desktop_hover.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
@@ -15,7 +14,7 @@ void main() {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: FLucideIcons.droplets,
+        icon: SemanticIcons.recordWater,
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,
@@ -32,7 +31,7 @@ void main() {
       const entry = RecordTimelineEntry(
         time: '08:00',
         type: RecordEntryType.water,
-        icon: FLucideIcons.droplets,
+        icon: SemanticIcons.recordWater,
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeWater,

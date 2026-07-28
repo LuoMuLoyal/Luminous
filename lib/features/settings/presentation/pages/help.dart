@@ -40,7 +40,7 @@ class HelpSettingsPage extends ConsumerWidget {
                 if (actionable.isEmpty) {
                   return StateMessageView(
                     title: l10n.settingsHelpEmpty,
-                    icon: FLucideIcons.circleHelp,
+                    icon: SemanticIcons.actionHelp,
                   );
                 }
                 return FTileGroup(
@@ -53,7 +53,7 @@ class HelpSettingsPage extends ConsumerWidget {
                           final sub = resource.subtitle;
                           return sub == null || sub.isEmpty ? null : Text(sub);
                         }(),
-                        suffix: const Icon(FLucideIcons.chevronRight),
+                        suffix: const Icon(SemanticIcons.actionNext),
                         onPress: () => _openResource(context, resource),
                       ),
                   ],
@@ -68,7 +68,7 @@ class HelpSettingsPage extends ConsumerWidget {
               ),
               error: (error, _) => StateMessageView(
                 title: l10n.settingsHelpError,
-                icon: FLucideIcons.circleAlert,
+                icon: SemanticIcons.statusError,
                 tone: StateTone.danger,
                 actionLabel: l10n.settingsHelpRetryAction,
                 onAction: () =>

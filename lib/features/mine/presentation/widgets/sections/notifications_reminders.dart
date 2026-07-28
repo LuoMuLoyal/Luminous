@@ -39,7 +39,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
             FTile(
               key: const Key('mine-notification-settings-tile'),
               prefix: const SoftIcon(
-                icon: FLucideIcons.bellRing,
+                icon: SemanticIcons.notificationBellRing,
                 color: SemanticColor.primary,
               ),
               title: Text(l10n.mineReminderSectionTitle),
@@ -48,13 +48,13 @@ class MineNotificationsReminderSection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => context.push(Routes.settingsNotifications),
             ),
             FTile(
               key: const Key('mine-dnd-settings-tile'),
               prefix: const SoftIcon(
-                icon: FLucideIcons.moonStar,
+                icon: SemanticIcons.recordSleep,
                 color: SemanticColor.primary,
               ),
               title: Text(l10n.settingsNotificationsDndTitle),
@@ -63,13 +63,13 @@ class MineNotificationsReminderSection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => context.push(Routes.settingsNotificationsDnd),
             ),
             FTile(
               key: const Key('mine-notification-inbox-tile'),
               prefix: const SoftIcon(
-                icon: FLucideIcons.mail,
+                icon: SemanticIcons.actionMessage,
                 color: SemanticColor.primary,
               ),
               title: Text(l10n.mineNotificationInboxTitle),
@@ -78,7 +78,7 @@ class MineNotificationsReminderSection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () =>
                   pushAuthRequiredRoute(context, Routes.notifications),
             ),

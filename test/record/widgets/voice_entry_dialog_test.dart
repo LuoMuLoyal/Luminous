@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/voice_entry_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -65,7 +66,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      expect(find.byIcon(FLucideIcons.x), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionClose), findsOneWidget);
     });
 
     testWidgets('renders mic icon', (tester) async {
@@ -75,7 +76,7 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // micOff icon shown when not listening
-      expect(find.byIcon(FLucideIcons.micOff), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusUnavailable), findsOneWidget);
     });
 
     testWidgets('renders SheetDragHandle', (tester) async {
@@ -94,7 +95,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
-      await tester.tap(find.byIcon(FLucideIcons.x));
+      await tester.tap(find.byIcon(SemanticIcons.actionClose));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
       // Sheet should be closed — title no longer visible

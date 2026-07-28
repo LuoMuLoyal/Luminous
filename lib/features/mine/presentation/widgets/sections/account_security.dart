@@ -41,7 +41,7 @@ class MineAccountSecuritySection extends ConsumerWidget {
             FTile(
               key: const Key('mine-account-settings-tile'),
               prefix: Icon(
-                FLucideIcons.userCheck,
+                SemanticIcons.profileUser,
                 color: colors.primary,
                 size: Spacing.level5,
               ),
@@ -51,13 +51,13 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => pushAuthRequiredRoute(context, Routes.account),
             ),
             FTile(
               key: const Key('mine-security-pin-tile'),
               prefix: Icon(
-                FLucideIcons.lockKeyhole,
+                SemanticIcons.statusBlocked,
                 color: colors.primary,
                 size: Spacing.level5,
               ),
@@ -67,14 +67,14 @@ class MineAccountSecuritySection extends ConsumerWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () =>
                   pushAuthRequiredRoute(context, Routes.settingsSecurityPin),
             ),
             FTile(
               key: const Key('mine-sign-out-tile'),
               prefix: Icon(
-                FLucideIcons.logOut,
+                SemanticIcons.actionClose,
                 color: signedIn ? colors.error : context.theme.colors.primary,
                 size: Spacing.level5,
               ),

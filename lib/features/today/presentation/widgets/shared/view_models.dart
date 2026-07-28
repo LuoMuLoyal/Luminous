@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -149,7 +148,7 @@ List<TodayOverviewItem> buildOverviewItems(
 
   return [
     TodayOverviewItem(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       label: l10n.todayMedicationOverviewLabel,
       value: l10n.todayMedicationOverviewCount(
         safeMedicationDone,
@@ -158,7 +157,7 @@ List<TodayOverviewItem> buildOverviewItems(
       color: SemanticColor.primary,
     ),
     TodayOverviewItem(
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       label: l10n.todayHydrationOverviewLabel,
       value: l10n.todayWaterOverviewCount(
         dashboard.water.completedCount,
@@ -167,7 +166,7 @@ List<TodayOverviewItem> buildOverviewItems(
       color: SemanticColor.primary,
     ),
     TodayOverviewItem(
-      icon: FLucideIcons.moonStar,
+      icon: SemanticIcons.recordSleep,
       label: l10n.todayVitalSleepLabel,
       value: sleep,
       color: SemanticColor.primary,
@@ -185,7 +184,7 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
 
   return [
     TodayAiSummaryItem(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       color: SemanticColor.primary,
       text: hasMedicationRisk
           ? l10n.todayAiSummaryMedicationPending(
@@ -194,14 +193,14 @@ List<TodayAiSummaryItem> buildAiSummaryBullets(
           : l10n.todayAiSummaryMedicationDone,
     ),
     TodayAiSummaryItem(
-      icon: FLucideIcons.cupSoda,
+      icon: SemanticIcons.recordWater,
       color: SemanticColor.primary,
       text: waterRemaining == 0
           ? l10n.todayAiSummaryWaterDone
           : l10n.todayAiSummaryWaterRemaining(waterRemaining),
     ),
     TodayAiSummaryItem(
-      icon: FLucideIcons.bed,
+      icon: SemanticIcons.recordSleep,
       color: SemanticColor.primary,
       text: l10n.todayAiSummarySleepPlaceholder,
     ),
@@ -219,7 +218,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: FLucideIcons.sparkles,
+          icon: SemanticIcons.aiEntry,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryPreviewHint,
         ),
@@ -231,7 +230,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: FLucideIcons.brain,
+          icon: SemanticIcons.aiSuggestion,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryDisabledHint,
         ),
@@ -252,7 +251,7 @@ TodayAiSummaryCardContent buildAiCardContent({
     return TodayAiSummaryCardContent(
       bullets: [
         TodayAiSummaryItem(
-          icon: FLucideIcons.badgeAlert,
+          icon: SemanticIcons.statusError,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryErrorHint,
         ),
@@ -267,7 +266,7 @@ TodayAiSummaryCardContent buildAiCardContent({
       summary: aiState.streamingSummary,
       bullets: [
         TodayAiSummaryItem(
-          icon: FLucideIcons.refreshCw,
+          icon: SemanticIcons.aiAnalyzing,
           color: SemanticColor.primary,
           text: l10n.todayAiSummaryGeneratingHint,
         ),
@@ -285,10 +284,10 @@ TodayAiSummaryCardContent buildAiCardContent({
 
 TodayAiSummaryItem mapAiBullet(TodayAiAnalysisBullet bullet) {
   final icon = switch (bullet.kind) {
-    TodayAiAnalysisBulletKind.medication => FLucideIcons.pill,
-    TodayAiAnalysisBulletKind.hydration => FLucideIcons.droplets,
-    TodayAiAnalysisBulletKind.sleep => FLucideIcons.moonStar,
-    TodayAiAnalysisBulletKind.general => FLucideIcons.lightbulb,
+    TodayAiAnalysisBulletKind.medication => SemanticIcons.recordMedicine,
+    TodayAiAnalysisBulletKind.hydration => SemanticIcons.recordWater,
+    TodayAiAnalysisBulletKind.sleep => SemanticIcons.recordSleep,
+    TodayAiAnalysisBulletKind.general => SemanticIcons.aiTip,
   };
 
   return TodayAiSummaryItem(
@@ -324,34 +323,34 @@ List<TodayQuickActionItem> buildQuickActionItems(
 
   return [
     TodayQuickActionItem(
-      icon: FLucideIcons.badgeCheck,
+      icon: SemanticIcons.doseTaken,
       title: l10n.todayQuickActionConfirmTitle,
       subtitle: confirmSubtitle,
       route: Routes.medicine,
       badge: confirmBadge,
     ),
     TodayQuickActionItem(
-      icon: FLucideIcons.filePenLine,
+      icon: SemanticIcons.actionEditCard,
       title: l10n.todayQuickActionRecordTitle,
       subtitle: l10n.todayQuickActionRecordSubtitle,
       route: '${Routes.recordCreate}?kind=water',
       usePush: true,
     ),
     TodayQuickActionItem(
-      icon: FLucideIcons.shieldPlus,
+      icon: SemanticIcons.safetyCaution,
       title: l10n.todayQuickActionExplainTitle,
       subtitle: l10n.todayQuickActionExplainSubtitle,
       route: Routes.medicineRiskCheck,
     ),
     TodayQuickActionItem(
-      icon: FLucideIcons.alarmClockCheck,
+      icon: SemanticIcons.doseSchedule,
       title: l10n.todayQuickActionReminderTitle,
       subtitle: l10n.todayQuickActionReminderSubtitle,
       route: Routes.medicineRemindersNew,
       usePush: true,
     ),
     TodayQuickActionItem(
-      icon: FLucideIcons.userRound,
+      icon: SemanticIcons.profileUser,
       title: l10n.todayQuickActionProfileTitle,
       subtitle: l10n.todayQuickActionProfileSubtitle,
       route: Routes.mine,

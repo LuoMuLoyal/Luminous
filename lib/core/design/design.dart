@@ -20,6 +20,7 @@ export 'elevation.dart';
 export 'gradient.dart';
 export 'high_contrast.dart';
 export 'icon_size.dart';
+export 'icon_tokens.dart';
 export 'layout_scale.dart';
 export 'motion.dart';
 export 'radius.dart';

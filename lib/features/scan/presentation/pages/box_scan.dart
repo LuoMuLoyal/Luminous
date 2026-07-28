@@ -37,14 +37,14 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
         ),
         const SizedBox(height: Spacing.level4),
         _MethodTile(
-          icon: FLucideIcons.camera,
+          icon: SemanticIcons.actionCamera,
           title: l10n.scanMethodOcrTitle,
           subtitle: l10n.scanMethodOcrSubtitle,
           onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ocr),
         ),
         const SizedBox(height: Spacing.level3),
         _MethodTile(
-          icon: FLucideIcons.sparkles,
+          icon: SemanticIcons.aiEntry,
           title: l10n.scanMethodAiTitle,
           subtitle: l10n.scanMethodAiSubtitle,
           onTap: () => Navigator.of(dialogContext).pop(_ScanMethod.ai),
@@ -273,7 +273,7 @@ class _MethodTile extends StatelessWidget {
           subtitle,
           style: typography.body.sm.copyWith(color: colors.mutedForeground),
         ),
-        suffix: Icon(FLucideIcons.chevronRight, color: colors.mutedForeground),
+        suffix: Icon(SemanticIcons.actionNext, color: colors.mutedForeground),
       ),
     );
   }

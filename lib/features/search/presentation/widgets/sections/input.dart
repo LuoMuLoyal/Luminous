@@ -40,7 +40,7 @@ class SearchInput extends HookWidget {
         context,
         style,
         variants,
-        Icon(FLucideIcons.search, color: colors.mutedForeground),
+        Icon(SemanticIcons.actionSearch, color: colors.mutedForeground),
       ),
       suffixBuilder: controller.text.isEmpty
           ? null
@@ -55,7 +55,7 @@ class SearchInput extends HookWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.level1),
                   child: Icon(
-                    FLucideIcons.circleX,
+                    SemanticIcons.notificationFailed,
                     color: colors.mutedForeground,
                   ),
                 ),

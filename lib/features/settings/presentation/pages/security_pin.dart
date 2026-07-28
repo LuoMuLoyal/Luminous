@@ -85,8 +85,8 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
                       children: [
                         Icon(
                           pinEnabled
-                              ? FLucideIcons.shieldCheck
-                              : FLucideIcons.shieldOff,
+                              ? SemanticIcons.safetySafe
+                              : SemanticIcons.statusBlocked,
                           size: 28,
                           color: pinEnabled
                               ? colors.primary

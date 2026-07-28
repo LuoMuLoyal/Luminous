@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -15,7 +15,7 @@ class MedicineErrorView extends StatelessWidget {
     return StateErrorView(
       title: l10n.medicineErrorTitle,
       description: l10n.medicineErrorDescription,
-      icon: FLucideIcons.pillBottle,
+      icon: SemanticIcons.medicineBottle,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: StateTone.warning,

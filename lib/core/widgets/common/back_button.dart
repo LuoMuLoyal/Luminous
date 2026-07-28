@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Unified back button.
@@ -29,7 +30,7 @@ class AppBackButton extends StatelessWidget {
         onPress: onPressed ?? () => _handleBack(context),
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
-        child: const Icon(FLucideIcons.chevronLeft),
+        child: const Icon(SemanticIcons.actionPrev),
       ),
     );
   }

@@ -27,7 +27,7 @@ class RiskCoverageItem extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            FLucideIcons.circleAlert,
+            SemanticIcons.statusError,
             color: SemanticColor.warning.solid(context),
             size: IconSizeTokens.level3,
           ),

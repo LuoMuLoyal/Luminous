@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 
@@ -53,7 +54,7 @@ void main() {
             title: 'Page',
             actions: [
               IconButton(
-                icon: const Icon(FLucideIcons.share2),
+                icon: const Icon(SemanticIcons.actionShare),
                 onPressed: () {},
               ),
             ],
@@ -62,7 +63,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(FLucideIcons.share2), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionShare), findsOneWidget);
     });
 
     testWidgets('renders custom title widget', (tester) async {

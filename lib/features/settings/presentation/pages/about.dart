@@ -93,44 +93,44 @@ class AboutSettingsPage extends ConsumerWidget {
               children: [
                 FTile(
                   title: Text(l10n.settingsAboutPrivacyPolicy),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => context.push('${Routes.legal}/privacy'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutTermsOfService),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => context.push('${Routes.legal}/terms'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutDisclaimer),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => context.push('${Routes.legal}/disclaimer'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutMinorProtection),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () =>
                       context.push('${Routes.legal}/minor-protection'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutSdkList),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => context.push('${Routes.legal}/sdk-list'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutPermissions),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => context.push('${Routes.legal}/permissions'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutAccountCancellation),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () =>
                       context.push('${Routes.legal}/account-cancellation'),
                 ),
                 FTile(
                   title: Text(l10n.settingsAboutLicenses),
-                  suffix: const Icon(FLucideIcons.chevronRight),
+                  suffix: const Icon(SemanticIcons.actionNext),
                   onPress: () => showLicensePage(
                     context: context,
                     applicationName: appName,
@@ -141,7 +141,7 @@ class AboutSettingsPage extends ConsumerWidget {
                   subtitle: supportEmail == null || supportEmail.isEmpty
                       ? null
                       : Text(supportEmail),
-                  suffix: const Icon(FLucideIcons.arrowUpRight),
+                  suffix: const Icon(SemanticIcons.actionExternalLink),
                   onPress: () => _openSupport(context, infoAsync.asData?.value),
                 ),
               ],

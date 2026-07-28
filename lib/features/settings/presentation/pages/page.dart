@@ -53,13 +53,13 @@ class SettingsPage extends ConsumerWidget {
         children: [
           _SettingsNavigationTile(
             tileKey: const Key('settings-row-account-security'),
-            icon: FLucideIcons.shieldCheck,
+            icon: SemanticIcons.safetySafe,
             title: l10n.mineSettingsAccountTitle,
             onTap: () => pushAuthRequiredRoute(context, Routes.account),
           ),
           _SettingsNavigationTile(
             tileKey: const Key('settings-row-security-pin'),
-            icon: FLucideIcons.lockKeyhole,
+            icon: SemanticIcons.statusBlocked,
             title: l10n.settingsSecurityPinTitle,
             subtitle: l10n.settingsSecurityPinSubtitle,
             onTap: () {
@@ -72,7 +72,7 @@ class SettingsPage extends ConsumerWidget {
           ),
           _SettingsNavigationTile(
             tileKey: const Key('settings-row-health-profile'),
-            icon: FLucideIcons.heartPulse,
+            icon: SemanticIcons.profileCondition,
             title: l10n.settingsHealthProfileTitle,
             subtitle: l10n.settingsHealthProfileSubtitle,
             onTap: () {
@@ -148,21 +148,21 @@ class SettingsPage extends ConsumerWidget {
               groups: [
                 _SettingsGroup(
                   label: l10n.settingsAccountSecuritySectionTitle,
-                  icon: FLucideIcons.shieldCheck,
+                  icon: SemanticIcons.safetySafe,
                   body: FTileGroup(
                     physics: const NeverScrollableScrollPhysics(),
                     divider: FItemDivider.full,
                     children: [
                       _SettingsNavigationTile(
                         tileKey: const Key('settings-row-account-security'),
-                        icon: FLucideIcons.shieldCheck,
+                        icon: SemanticIcons.safetySafe,
                         title: l10n.mineSettingsAccountTitle,
                         onTap: () =>
                             pushAuthRequiredRoute(context, Routes.account),
                       ),
                       _SettingsNavigationTile(
                         tileKey: const Key('settings-row-security-pin'),
-                        icon: FLucideIcons.lockKeyhole,
+                        icon: SemanticIcons.statusBlocked,
                         title: l10n.settingsSecurityPinTitle,
                         subtitle: l10n.settingsSecurityPinSubtitle,
                         onTap: () {
@@ -175,7 +175,7 @@ class SettingsPage extends ConsumerWidget {
                       ),
                       _SettingsNavigationTile(
                         tileKey: const Key('settings-row-health-profile'),
-                        icon: FLucideIcons.heartPulse,
+                        icon: SemanticIcons.profileCondition,
                         title: l10n.settingsHealthProfileTitle,
                         subtitle: l10n.settingsHealthProfileSubtitle,
                         onTap: () {
@@ -191,22 +191,22 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 _SettingsGroup(
                   label: l10n.settingsGeneralSectionTitle,
-                  icon: FLucideIcons.slidersHorizontal,
+                  icon: SemanticIcons.actionSettings,
                   body: const _GeneralSection(),
                 ),
                 _SettingsGroup(
                   label: l10n.settingsQuickEntrySection,
-                  icon: FLucideIcons.zap,
+                  icon: SemanticIcons.safetyAllergy,
                   body: const _QuickEntrySection(),
                 ),
                 _SettingsGroup(
                   label: l10n.settingsPrivacySectionTitle,
-                  icon: FLucideIcons.lock,
+                  icon: SemanticIcons.statusBlocked,
                   body: _PrivacySection(signedIn: signedIn),
                 ),
                 _SettingsGroup(
                   label: l10n.settingsAboutSectionTitle,
-                  icon: FLucideIcons.info,
+                  icon: SemanticIcons.statusInfo,
                   body: _AboutSection(signedIn: signedIn),
                 ),
               ],
@@ -378,7 +378,7 @@ class _MasterNavItem extends StatelessWidget {
             ),
             if (selected)
               Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 size: IconSizeTokens.level2,
                 color: colors.primary,
               ),
@@ -421,11 +421,11 @@ class _AccountHeader extends StatelessWidget {
         prefix: FAvatar.raw(
           size: 64,
           child: const Icon(
-            FLucideIcons.userRound,
+            SemanticIcons.profileUser,
             size: IconSizeTokens.level5,
           ),
         ),
-        suffix: const Icon(FLucideIcons.chevronRight),
+        suffix: const Icon(SemanticIcons.actionNext),
         onPress: onTap,
       ),
     );
@@ -460,7 +460,7 @@ class _PrivacySection extends ConsumerWidget {
           children: [
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-ai'),
-              icon: FLucideIcons.sparkles,
+              icon: SemanticIcons.aiEntry,
               title: l10n.settingsAiTitle,
               subtitle: l10n.settingsAiSubtitle,
               onTap: () {
@@ -476,7 +476,7 @@ class _PrivacySection extends ConsumerWidget {
               title: Text(l10n.minePrivacyReportTitle),
               subtitle: Text(l10n.minePrivacyReportSubtitle),
               prefix: const Icon(
-                FLucideIcons.share2,
+                SemanticIcons.actionShare,
                 size: IconSizeTokens.level3,
               ),
               suffix: FSwitch(
@@ -522,7 +522,7 @@ class _PrivacySection extends ConsumerWidget {
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-export'),
-              icon: FLucideIcons.arrowDownToLine,
+              icon: SemanticIcons.actionExport,
               title: l10n.mineSettingExportTitle,
               onTap: () {
                 if (!signedIn) {
@@ -614,21 +614,21 @@ class _GeneralSection extends ConsumerWidget {
           children: [
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-theme'),
-              icon: FLucideIcons.palette,
+              icon: SemanticIcons.actionSettings,
               title: l10n.mineSettingsThemeTitle,
               value: _themeSummaryLabel(l10n, currentTheme, currentFamily),
               onTap: () => context.push(Routes.settingsTheme),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-language'),
-              icon: FLucideIcons.globe,
+              icon: SemanticIcons.actionExternalLink,
               title: l10n.mineSettingsLanguageTitle,
               value: _languageLabel(l10n, currentLocale),
               onTap: () => context.push(Routes.settingsLanguage),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-data-storage'),
-              icon: FLucideIcons.database,
+              icon: SemanticIcons.actionSettings,
               title: l10n.settingsDataStorageTitle,
               subtitle: l10n.settingsDataStorageSubtitle,
               value: _retentionLabel(l10n, dataStorage.retentionPeriod),
@@ -636,20 +636,20 @@ class _GeneralSection extends ConsumerWidget {
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-advanced'),
-              icon: FLucideIcons.slidersHorizontal,
+              icon: SemanticIcons.actionSettings,
               title: l10n.mineSettingsAdvancedTitle,
               onTap: () => context.push(Routes.settingsMore),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-accessibility'),
-              icon: FLucideIcons.accessibility,
+              icon: SemanticIcons.actionSettings,
               title: l10n.settingsAccessibilityTitle,
               subtitle: l10n.settingsAccessibilitySubtitle,
               onTap: () => context.push(Routes.settingsAccessibility),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-notifications'),
-              icon: FLucideIcons.bell,
+              icon: SemanticIcons.notificationBell,
               title: l10n.mineSettingsNotificationsTitle,
               value: _notificationSummary(l10n, ref),
               onTap: () => context.push(Routes.settingsNotifications),
@@ -803,13 +803,13 @@ class _AboutSection extends ConsumerWidget {
           children: [
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-help'),
-              icon: FLucideIcons.circleHelp,
+              icon: SemanticIcons.actionHelp,
               title: l10n.mineSettingHelpTitle,
               onTap: () => context.push(Routes.settingsHelp),
             ),
             _SettingsNavigationTile(
               tileKey: const Key('settings-row-about'),
-              icon: FLucideIcons.info,
+              icon: SemanticIcons.statusInfo,
               title: l10n.mineSettingAboutTitle,
               onTap: () => context.push(Routes.settingsAbout),
             ),
@@ -900,7 +900,7 @@ class _SettingsNavigationTile extends StatelessWidget with FTileMixin {
         final v = value;
         return v == null || v.isEmpty ? null : Text(v);
       }(),
-      suffix: const Icon(FLucideIcons.chevronRight),
+      suffix: const Icon(SemanticIcons.actionNext),
       onPress: onTap,
     );
   }

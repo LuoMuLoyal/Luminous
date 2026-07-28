@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
@@ -154,7 +155,7 @@ void main() {
     expect(find.text('这次回复没有完成'), findsOneWidget);
     expect(find.byKey(const Key('assistant-retry-action')), findsOneWidget);
     // Server error icon
-    expect(find.byIcon(FLucideIcons.cloudOff), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.statusUnavailable), findsOneWidget);
   });
 
   testWidgets('assistant message shows usedTools as localized chips', (

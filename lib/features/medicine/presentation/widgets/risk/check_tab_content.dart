@@ -199,7 +199,7 @@ class _TabHeader extends StatelessWidget {
     return Row(
       children: [
         Icon(
-          FLucideIcons.clock,
+          SemanticIcons.doseSlot,
           size: IconSizeTokens.level2,
           color: context.theme.colors.mutedForeground,
         ),
@@ -525,7 +525,7 @@ class _SafeStateCard extends StatelessWidget {
                 shape: const CircleBorder(),
               ),
               child: Icon(
-                FLucideIcons.badgeCheck,
+                SemanticIcons.reportAdherence,
                 color: SemanticColor.success.solid(context),
                 size: IconSizeTokens.level4,
               ),
@@ -589,7 +589,7 @@ class _LlmEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              FLucideIcons.sparkles,
+              SemanticIcons.aiEntry,
               size: IconSizeTokens.level5,
               color: context.theme.colors.mutedForeground,
             ),
@@ -655,7 +655,7 @@ class _NeverCheckedState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              FLucideIcons.shieldCheck,
+              SemanticIcons.safetySafe,
               size: IconSizeTokens.level5,
               color: context.theme.colors.mutedForeground,
             ),
@@ -713,7 +713,7 @@ class _StaleBanner extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              FLucideIcons.circleAlert,
+              SemanticIcons.statusError,
               color: SemanticColor.warning.solid(context),
               size: IconSizeTokens.level3,
             ),
@@ -759,7 +759,7 @@ class _OverallRecommendationCard extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  FLucideIcons.lightbulb,
+                  SemanticIcons.aiTip,
                   color: SemanticColor.primary.solid(context),
                   size: IconSizeTokens.level3,
                 ),
@@ -802,7 +802,7 @@ class _LlmUnavailableState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              FLucideIcons.ban,
+              SemanticIcons.statusSkipped,
               size: IconSizeTokens.level5,
               color: SemanticColor.neutral.solid(context),
             ),

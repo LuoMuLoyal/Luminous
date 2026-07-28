@@ -211,7 +211,7 @@ class _ErrorView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            FLucideIcons.triangleAlert,
+            SemanticIcons.statusWarning,
             size: 32,
             color: SemanticColor.warning.solid(context),
           ),

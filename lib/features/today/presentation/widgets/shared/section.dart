@@ -81,7 +81,7 @@ class TodaySection extends StatelessWidget {
                     actionText,
                     const SizedBox(width: Spacing.level1),
                     Icon(
-                      FLucideIcons.chevronRight,
+                      SemanticIcons.actionNext,
                       size: Spacing.level4,
                       color: foreground,
                     ),

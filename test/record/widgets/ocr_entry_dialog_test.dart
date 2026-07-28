@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/ocr_entry_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -44,7 +45,7 @@ void main() {
     await pumpSheet(tester);
 
     expect(find.text(l10n.recordOcrEntryTitle), findsOneWidget);
-    expect(find.byIcon(FLucideIcons.x), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.actionClose), findsOneWidget);
   });
 
   testWidgets('renders camera and gallery options', (tester) async {
@@ -57,7 +58,7 @@ void main() {
   testWidgets('close button dismisses sheet', (tester) async {
     await pumpSheet(tester);
 
-    await tester.tap(find.byIcon(FLucideIcons.x));
+    await tester.tap(find.byIcon(SemanticIcons.actionClose));
     await tester.pumpAndSettle();
 
     expect(find.text(l10n.recordOcrEntryTitle), findsNothing);

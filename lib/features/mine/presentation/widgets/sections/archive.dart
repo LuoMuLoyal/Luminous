@@ -70,7 +70,7 @@ class _ArchiveEmpty extends StatelessWidget {
             FAvatar.raw(
               size: Spacing.level8,
               child: Icon(
-                FLucideIcons.clipboardList,
+                SemanticIcons.recordClipboard,
                 color: SemanticColor.primary.solid(context),
                 size: Spacing.level5,
               ),
@@ -149,7 +149,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
                     fontWeight: FontWeight.w700,
                   ),
             ),
-      suffix: const Icon(FLucideIcons.chevronRight),
+      suffix: const Icon(SemanticIcons.actionNext),
       onPress: () {
         unawaited(_handleTap(context, ref));
       },
@@ -269,7 +269,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(FLucideIcons.x, size: 20),
+                    icon: const Icon(SemanticIcons.actionClose, size: 20),
                     onPressed: () => Navigator.of(sheetContext).pop(),
                   ),
                 ],
@@ -312,7 +312,7 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(FLucideIcons.plus, size: 16),
+                    const Icon(SemanticIcons.actionAdd, size: 16),
                     const SizedBox(width: Spacing.level2),
                     Text(l10n.mineArchiveAddNewAction),
                   ],
@@ -411,7 +411,7 @@ class _RecordListTile extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.level2),
             Icon(
-              FLucideIcons.chevronRight,
+              SemanticIcons.actionNext,
               size: 18,
               color: colors.mutedForeground,
             ),

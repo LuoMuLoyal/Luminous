@@ -56,7 +56,7 @@ class RecordAiInputBar extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              FLucideIcons.sparkles,
+              SemanticIcons.aiEntry,
               color: colors.primary,
               size: Spacing.level6,
             ),
@@ -104,12 +104,12 @@ class RecordAiInputBar extends StatelessWidget {
             const SizedBox(width: Spacing.level1),
             IconActionButton(
               tooltip: l10n.recordVoiceInputTitle,
-              icon: FLucideIcons.mic,
+              icon: SemanticIcons.actionMic,
               onTap: onMicTap,
             ),
             IconActionButton(
               tooltip: l10n.recordOcrEntryTitle,
-              icon: FLucideIcons.camera,
+              icon: SemanticIcons.actionCamera,
               onTap: onCameraTap,
             ),
           ],
@@ -331,7 +331,7 @@ class _PanelHeader extends StatelessWidget {
           tipBuilder: (context, controller) =>
               Text(l10n.recordQuickDynamicSortTooltip),
           child: Icon(
-            FLucideIcons.circleHelp,
+            SemanticIcons.actionHelp,
             size: 16,
             color: colors.mutedForeground,
           ),
@@ -349,7 +349,7 @@ class _PanelHeader extends StatelessWidget {
           tooltip: prefs.dynamicSortEnabled
               ? l10n.recordQuickSortDisableDynamicFirst
               : l10n.recordQuickEditOrder,
-          icon: FLucideIcons.pencil,
+          icon: SemanticIcons.actionEdit,
           onTap: prefs.dynamicSortEnabled ? null : onEditTap,
         ),
       ],
@@ -388,7 +388,7 @@ class _ReorderableGrid extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                FLucideIcons.gripVertical,
+                SemanticIcons.actionMore,
                 size: 14,
                 color: colors.mutedForeground,
               ),
@@ -455,7 +455,7 @@ class _ReorderableTile extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            FLucideIcons.gripVertical,
+            SemanticIcons.actionMore,
             size: 20,
             color: colors.mutedForeground,
           ),
@@ -621,7 +621,7 @@ class _QuickRecordTile extends StatelessWidget {
                     backgroundColor: action.softColor.subtle(context),
                   ),
                   child: Icon(
-                    isLocked ? FLucideIcons.lock : action.icon,
+                    isLocked ? SemanticIcons.statusBlocked : action.icon,
                     color: action.accent.solid(context),
                     size: Spacing.level5,
                   ),
@@ -686,7 +686,7 @@ class _QuickRecordNoteButton extends StatelessWidget {
                     backgroundColor: action.softColor.subtle(context),
                   ),
                   child: Icon(
-                    isLocked ? FLucideIcons.lock : action.icon,
+                    isLocked ? SemanticIcons.statusBlocked : action.icon,
                     color: action.accent.solid(context),
                     size: Spacing.level5,
                   ),

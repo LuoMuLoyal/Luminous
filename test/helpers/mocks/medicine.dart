@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
 
@@ -21,19 +20,19 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
-      icon: FLucideIcons.camera,
+      icon: SemanticIcons.actionCamera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
       accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: FLucideIcons.scanLine,
+      icon: SemanticIcons.actionScan,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: FLucideIcons.receiptText,
+      icon: SemanticIcons.doseLog,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
       accent: SemanticColor.primary,
@@ -48,7 +47,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     quickActions: [
       const MedicineQuickAction(
-        icon: FLucideIcons.search,
+        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: SemanticColor.primary,
@@ -121,7 +120,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
     ),
     alerts: <MedicineAlert>[
       const MedicineAlert(
-        icon: FLucideIcons.wine,
+        icon: SemanticIcons.safetyAlcohol,
         titleKey: MedicineCopyKey.alertAlcoholRiskTitle,
         bodyKey: MedicineCopyKey.alertAlcoholRiskBody,
         detailKey: MedicineCopyKey.alertAlcoholRiskDetail,
@@ -130,7 +129,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: FLucideIcons.coffee,
+        icon: SemanticIcons.recordCaffeine,
         titleKey: MedicineCopyKey.alertCoffeeReminderTitle,
         bodyKey: MedicineCopyKey.alertCoffeeReminderBody,
         detailKey: MedicineCopyKey.alertCoffeeReminderDetail,
@@ -139,7 +138,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: FLucideIcons.copy,
+        icon: SemanticIcons.safetyDuplicate,
         titleKey: MedicineCopyKey.alertDuplicateCheckTitle,
         bodyKey: MedicineCopyKey.alertDuplicateCheckBody,
         detailKey: MedicineCopyKey.alertDuplicateCheckDetail,
@@ -148,7 +147,7 @@ class MockMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
         softColor: SemanticColor.primary,
       ),
       const MedicineAlert(
-        icon: FLucideIcons.droplets,
+        icon: SemanticIcons.recordWater,
         titleKey: MedicineCopyKey.alertSpecialGroupSafetyTitle,
         bodyKey: MedicineCopyKey.alertSpecialGroupSafetyBody,
         detailKey: MedicineCopyKey.alertSpecialGroupSafetyDetail,

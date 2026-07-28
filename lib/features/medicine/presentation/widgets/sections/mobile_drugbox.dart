@@ -101,7 +101,7 @@ class _DrugBoxHeader extends StatelessWidget {
           ),
           child: Center(
             child: Icon(
-              FLucideIcons.briefcaseMedical,
+              SemanticIcons.medicineKit,
               color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),
@@ -156,7 +156,7 @@ class _DrugBoxHeader extends StatelessWidget {
               ),
               const SizedBox(width: Spacing.level1),
               Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 size: Spacing.level4,
                 color: colors.foreground,
               ),
@@ -232,7 +232,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
       children: [
         Expanded(
           child: _DrugBoxMetricItem(
-            icon: FLucideIcons.clock,
+            icon: SemanticIcons.doseSlot,
             color: SemanticColor.primary,
             label: l10n.medicineNextDoseReminderTitle,
             value: value,
@@ -242,7 +242,7 @@ class _DrugBoxReminderStrip extends StatelessWidget {
         const _MetricDivider(),
         Expanded(
           child: _DrugBoxMetricItem(
-            icon: FLucideIcons.badgeCheck,
+            icon: SemanticIcons.reportAdherence,
             color: SemanticColor.primary,
             label: l10n.medicineHeroMetricAdherenceLabel,
             value: workspace.hero.metricAdherence,
@@ -355,7 +355,7 @@ class _DrugBoxEmpty extends StatelessWidget {
           FAvatar.raw(
             size: Spacing.level8,
             child: Icon(
-              FLucideIcons.pillBottle,
+              SemanticIcons.medicineBottle,
               color: SemanticColor.primary.solid(context),
               size: Spacing.level5,
             ),
@@ -477,7 +477,7 @@ class _DrugBoxMedicationRow extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.level2),
             Icon(
-              FLucideIcons.chevronRight,
+              SemanticIcons.actionNext,
               color: colors.mutedForeground,
               size: Spacing.level5,
             ),

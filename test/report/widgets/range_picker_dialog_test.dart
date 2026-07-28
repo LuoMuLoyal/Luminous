@@ -2,6 +2,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/dialogs/range_picker_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -58,7 +59,7 @@ void main() {
     await showDialogAndSettle(tester);
 
     // The check icon is shown for the selected option
-    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.statusDone), findsOneWidget);
   });
 
   testWidgets('tapping last7Days returns correct query', (tester) async {
@@ -149,7 +150,7 @@ void main() {
     await tester.tap(find.text('open-dialog'));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.statusDone), findsOneWidget);
   });
 
   testWidgets('shows check on custom when selected', (tester) async {
@@ -176,7 +177,7 @@ void main() {
     await tester.tap(find.text('open-dialog'));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+    expect(find.byIcon(SemanticIcons.statusDone), findsOneWidget);
   });
 
   testWidgets('tapping custom opens calendar dialog', (tester) async {

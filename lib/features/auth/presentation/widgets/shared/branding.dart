@@ -20,7 +20,7 @@ class AuthBrandLogo extends StatelessWidget {
       height: size,
       fit: BoxFit.contain,
       errorBuilder: (context, error, stackTrace) =>
-          Icon(FLucideIcons.shieldPlus, color: colors.primary, size: size),
+          Icon(SemanticIcons.safetyCaution, color: colors.primary, size: size),
     );
   }
 }

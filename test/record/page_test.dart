@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -2207,7 +2207,7 @@ class _FakeRecordRepository implements RecordRepository {
             const RecordTimelineEntry(
               time: '09:45',
               type: RecordEntryType.vitals,
-              icon: FLucideIcons.heart,
+              icon: SemanticIcons.profileCondition,
               accent: SemanticColor.primary,
               softColor: SemanticColor.neutral,
               titleKey: RecordCopyKey.typeVitals,
@@ -2255,7 +2255,7 @@ class _LongTimelineRecordRepository implements RecordRepository {
       return RecordTimelineEntry(
         time: time,
         type: RecordEntryType.note,
-        icon: FLucideIcons.notebookPen,
+        icon: SemanticIcons.tabRecord,
         accent: SemanticColor.primary,
         softColor: SemanticColor.neutral,
         titleKey: RecordCopyKey.typeNote,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
 
 import '../../helpers/test_forui_app.dart';
@@ -35,7 +36,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(FButton), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.chevronLeft), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionPrev), findsOneWidget);
     });
 
     testWidgets('calls custom onPressed when provided', (tester) async {

@@ -19,7 +19,7 @@ void main() {
           home: Scaffold(
             body: RecordHeaderActionChip(
               label: 'Test',
-              icon: FLucideIcons.plus,
+              icon: SemanticIcons.actionAdd,
               onTap: () {},
               emphasized: emphasized,
               iconOnly: iconOnly,
@@ -43,7 +43,7 @@ void main() {
 
     testWidgets('renders icon', (tester) async {
       await pumpChip(tester);
-      expect(find.byIcon(FLucideIcons.plus), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionAdd), findsOneWidget);
     });
 
     testWidgets('renders FButton', (tester) async {
@@ -63,7 +63,7 @@ void main() {
           home: Scaffold(
             body: RecordHeaderActionChip(
               label: 'Tap',
-              icon: FLucideIcons.plus,
+              icon: SemanticIcons.actionAdd,
               onTap: () => tapped = true,
             ),
           ),

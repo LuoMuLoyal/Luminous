@@ -52,7 +52,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                   FButton.icon(
                     variant: FButtonVariant.ghost,
                     onPress: () => Navigator.of(context).pop(),
-                    child: const Icon(FLucideIcons.x),
+                    child: const Icon(SemanticIcons.actionClose),
                   ),
                 ],
               ),
@@ -74,7 +74,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                       return StateMessageView(
                         title: title,
                         description: state.recentConversationError!,
-                        icon: FLucideIcons.clock4,
+                        icon: SemanticIcons.actionTimeSlot,
                         tone: StateTone.warning,
                         actionLabel: AppLocalizations.of(
                           context,
@@ -86,7 +86,7 @@ class AssistantConversationDrawer extends StatelessWidget {
                       return StateMessageView(
                         title: emptyTitle,
                         description: emptyDescription,
-                        icon: FLucideIcons.messageSquareMore,
+                        icon: SemanticIcons.actionMessage,
                       );
                     }
 

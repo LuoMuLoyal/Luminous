@@ -53,7 +53,7 @@ class ReportScoreHero extends StatelessWidget {
                         tipBuilder: (context, controller) =>
                             Text(l10n.reportScoreHelpTooltip),
                         child: Icon(
-                          FLucideIcons.circleHelp,
+                          SemanticIcons.actionHelp,
                           color: colors.mutedForeground,
                           size: 18,
                         ),
@@ -126,7 +126,7 @@ class ReportScoreHero extends StatelessWidget {
               ),
               style: .delta(backgroundColor: colors.primary),
               child: Icon(
-                FLucideIcons.badgeCheck,
+                SemanticIcons.reportAdherence,
                 color: colors.primaryForeground,
                 size: ResponsiveSizing.scaleByWidth(
                   context,

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/scan/domain/services/text_matcher.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -268,16 +268,16 @@ void main() {
       );
 
       // Candidate list not visible initially
-      expect(find.byIcon(FLucideIcons.chevronDown), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.chevronUp), findsNothing);
+      expect(find.byIcon(SemanticIcons.actionExpand), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionCollapse), findsNothing);
 
       // Tap to expand
       await tester.tap(find.textContaining('从列表选择其他匹配'));
       await tester.pumpAndSettle();
 
       // Now expanded
-      expect(find.byIcon(FLucideIcons.chevronUp), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.chevronDown), findsNothing);
+      expect(find.byIcon(SemanticIcons.actionCollapse), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionExpand), findsNothing);
     });
 
     testWidgets('candidate list shows sorted results by confidence', (

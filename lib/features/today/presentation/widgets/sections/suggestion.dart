@@ -110,7 +110,7 @@ class TodaySecondarySuggestionsSection extends ConsumerWidget {
                           ),
                           const SizedBox(width: Spacing.level2),
                           Icon(
-                            FLucideIcons.chevronRight,
+                            SemanticIcons.actionNext,
                             size: Spacing.level5,
                             color: colors.mutedForeground,
                           ),

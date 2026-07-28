@@ -85,7 +85,7 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                         height: 60,
                         color: colors.muted,
                         child: Icon(
-                          FLucideIcons.imageOff,
+                          SemanticIcons.statusUnavailable,
                           size: Spacing.level5,
                           color: colors.mutedForeground,
                         ),
@@ -171,8 +171,8 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       children: [
                         Icon(
                           _showCandidateList
-                              ? FLucideIcons.chevronUp
-                              : FLucideIcons.chevronDown,
+                              ? SemanticIcons.actionCollapse
+                              : SemanticIcons.actionExpand,
                           size: 20,
                           color: colors.primary,
                         ),
@@ -206,8 +206,8 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                             children: [
                               Icon(
                                 _selectedIndex == i
-                                    ? FLucideIcons.checkCircle2
-                                    : FLucideIcons.circle,
+                                    ? SemanticIcons.statusSuccess
+                                    : SemanticIcons.statusPending,
                                 color: colors.primary,
                                 size: 20,
                               ),

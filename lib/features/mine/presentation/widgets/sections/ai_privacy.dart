@@ -26,7 +26,7 @@ class MineAiPrivacySection extends StatelessWidget {
             FTile(
               key: const Key('mine-ai-settings-tile'),
               prefix: Icon(
-                FLucideIcons.sparkles,
+                SemanticIcons.aiEntry,
                 color: colors.primary,
                 size: Spacing.level5,
               ),
@@ -36,13 +36,13 @@ class MineAiPrivacySection extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () => pushAuthRequiredRoute(context, Routes.settingsAi),
             ),
             FTile(
               key: const Key('mine-privacy-report-tile'),
               prefix: Icon(
-                FLucideIcons.share2,
+                SemanticIcons.actionShare,
                 color: colors.primary,
                 size: Spacing.level5,
               ),
@@ -52,7 +52,7 @@ class MineAiPrivacySection extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              suffix: const Icon(FLucideIcons.chevronRight),
+              suffix: const Icon(SemanticIcons.actionNext),
               onPress: () =>
                   pushAuthRequiredRoute(context, Routes.settingsExport),
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 
 void main() {
@@ -118,7 +118,7 @@ void main() {
           kind: ReportAiSummaryBulletKind.medication,
           text: 'Med advice',
           color: SemanticColor.primary,
-          icon: FLucideIcons.pill,
+          icon: SemanticIcons.recordMedicine,
         ),
         ReportAiSummaryBullet(
           kind: ReportAiSummaryBulletKind.hydration,

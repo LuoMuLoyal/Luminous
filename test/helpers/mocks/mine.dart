@@ -1,6 +1,6 @@
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/mine/data/repositories/lucent.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/domain/repositories/profile.dart';
@@ -86,21 +86,21 @@ class MockMineRepository implements MineRepository {
 
   static final _mockAlerts = [
     const MineStatusCard(
-      icon: FLucideIcons.triangleAlert,
+      icon: SemanticIcons.statusWarning,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     const MineStatusCard(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
       badgeKey: MineCopyKey.alertMedicineBadge,
     ),
     const MineStatusCard(
-      icon: FLucideIcons.userCheck,
+      icon: SemanticIcons.profileUser,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -118,7 +118,7 @@ class MockMineRepository implements MineRepository {
       route: '/mine/profile/edit',
     ),
     const MineArchiveEntry(
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
@@ -126,14 +126,14 @@ class MockMineRepository implements MineRepository {
       route: '/mine/allergy/new',
     ),
     const MineArchiveEntry(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,
       route: Routes.mineMedicineNew,
     ),
     const MineArchiveEntry(
-      icon: FLucideIcons.contact,
+      icon: SemanticIcons.profileContact,
       accent: SemanticColor.primary,
       titleKey: MineCopyKey.archiveEmergencyTitle,
       subtitleKey: MineCopyKey.archiveEmergencySubtitle,

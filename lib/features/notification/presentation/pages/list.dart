@@ -128,7 +128,7 @@ class NotificationListPage extends ConsumerWidget {
             fallback: l10n.notificationErrorTitle,
             l10n: l10n,
           ),
-          icon: FLucideIcons.circleAlert,
+          icon: SemanticIcons.statusError,
           actionLabel: l10n.notificationRetryAction,
           onAction: () => ref.invalidate(notificationListControllerProvider),
         ),
@@ -352,7 +352,7 @@ class _EmptyView extends StatelessWidget {
       child: StateMessageView(
         title: l10n.notificationEmptyTitle,
         description: l10n.notificationEmptyDescription,
-        icon: FLucideIcons.messageSquareMore,
+        icon: SemanticIcons.actionMessage,
         tone: StateTone.neutral,
       ),
     );

@@ -199,7 +199,7 @@ class AssistantMessageBubble extends StatelessWidget {
           value: 'copy',
           child: Row(
             children: [
-              const Icon(FLucideIcons.copy, size: 16),
+              const Icon(SemanticIcons.actionCopy, size: 16),
               const SizedBox(width: Spacing.level2),
               Text(l10n.assistantCopyAction),
             ],

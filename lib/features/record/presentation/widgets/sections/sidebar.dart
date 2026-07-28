@@ -190,12 +190,12 @@ class _RecordMonthCalendarPanelState extends State<RecordMonthCalendarPanel> {
                   ),
                 ),
                 _CalendarIconActionButton(
-                  icon: FLucideIcons.chevronLeft,
+                  icon: SemanticIcons.actionPrev,
                   label: l10n.recordPreviousDayAction,
                   onTap: () => _changeMonth(-1),
                 ),
                 _CalendarIconActionButton(
-                  icon: FLucideIcons.chevronRight,
+                  icon: SemanticIcons.actionNext,
                   label: l10n.recordNextDayAction,
                   onTap: () => _changeMonth(1),
                 ),
@@ -296,7 +296,7 @@ class RecordFilterPanel extends StatelessWidget {
                         ),
                         const SizedBox(width: Spacing.level1),
                         Icon(
-                          FLucideIcons.checkCheck,
+                          SemanticIcons.statusAllDone,
                           size: IconSizeTokens.level2,
                           color: colors.foreground,
                         ),
@@ -497,7 +497,9 @@ class _FilterRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              filter.selected ? FLucideIcons.circleCheck : FLucideIcons.circle,
+              filter.selected
+                  ? SemanticIcons.statusSuccess
+                  : SemanticIcons.statusPending,
               color: filter.selected ? colors.primary : colors.mutedForeground,
               size: 18,
             ),

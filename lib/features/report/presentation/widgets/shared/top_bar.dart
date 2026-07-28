@@ -149,7 +149,7 @@ class ReportActionBar extends StatelessWidget {
             key: const Key('report-top-generate-action'),
             onPress: isGenerating ? null : onGenerate,
             prefix: Icon(
-              isGenerating ? FLucideIcons.loaderCircle : FLucideIcons.sparkles,
+              isGenerating ? SemanticIcons.aiAnalyzing : SemanticIcons.aiEntry,
               size: 16,
             ),
             child: Text(
@@ -167,7 +167,9 @@ class ReportActionBar extends StatelessWidget {
             variant: FButtonVariant.secondary,
             onPress: isSyncing ? null : onSync,
             child: Icon(
-              isSyncing ? FLucideIcons.loaderCircle : FLucideIcons.refreshCw,
+              isSyncing
+                  ? SemanticIcons.aiAnalyzing
+                  : SemanticIcons.actionRefresh,
               size: 16,
             ),
           ),
@@ -219,7 +221,7 @@ class ReportPeriodPill extends StatelessWidget {
           ),
           const SizedBox(width: Spacing.level1),
           Icon(
-            FLucideIcons.chevronDown,
+            SemanticIcons.actionExpand,
             size: 16,
             color: colors.mutedForeground,
           ),

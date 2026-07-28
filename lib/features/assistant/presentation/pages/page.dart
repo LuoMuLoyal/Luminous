@@ -362,7 +362,7 @@ class AssistantPage extends HookConsumerWidget {
                     isOpeningConversation
                 ? null
                 : openRecentConversationsDrawer,
-            child: const Icon(FLucideIcons.clock4),
+            child: const Icon(SemanticIcons.actionTimeSlot),
           ),
         ),
         FTooltip(
@@ -380,7 +380,7 @@ class AssistantPage extends HookConsumerWidget {
                     isOpeningConversation
                 ? null
                 : handleStartNewConversation,
-            child: const Icon(FLucideIcons.plus),
+            child: const Icon(SemanticIcons.actionAdd),
           ),
         ),
         if (session.canAccessProtectedData && capabilities != null)
@@ -391,7 +391,7 @@ class AssistantPage extends HookConsumerWidget {
               key: const Key('assistant-controls-action'),
               variant: FButtonVariant.ghost,
               onPress: openControlsDrawer,
-              child: const Icon(FLucideIcons.settings2),
+              child: const Icon(SemanticIcons.actionSettings),
             ),
           ),
       ],
@@ -412,7 +412,7 @@ class AssistantPage extends HookConsumerWidget {
                   maxWidth: Breakpoints.assistantContent,
                   title: l10n.authNotSignedIn,
                   description: l10n.assistantSignedOutDescription,
-                  icon: FLucideIcons.circleAlert,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.authGoLogin,
                   onAction: () =>
                       context.go(loginRouteForReturnTo('/assistant')),
@@ -430,7 +430,7 @@ class AssistantPage extends HookConsumerWidget {
                   title: l10n.assistantLoadErrorTitle,
                   description:
                       capabilityError ?? l10n.assistantLoadErrorFallback,
-                  icon: FLucideIcons.circleAlert,
+                  icon: SemanticIcons.statusError,
                   tone: StateTone.warning,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () => ref
@@ -456,7 +456,7 @@ class AssistantPage extends HookConsumerWidget {
                   StateMessageView(
                     title: l10n.assistantLoadErrorTitle,
                     description: conversationError,
-                    icon: FLucideIcons.circleAlert,
+                    icon: SemanticIcons.statusError,
                     tone: StateTone.warning,
                     actionLabel: l10n.todayRetryAction,
                     onAction: () => ref
@@ -509,7 +509,10 @@ class AssistantPage extends HookConsumerWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(FLucideIcons.chevronDown, size: 16),
+                                const Icon(
+                                  SemanticIcons.actionExpand,
+                                  size: 16,
+                                ),
                                 const SizedBox(width: Spacing.level2),
                                 Text(l10n.assistantScrollToBottom),
                               ],
@@ -561,7 +564,7 @@ class _AssistantControlsSheet extends StatelessWidget {
                   FButton.icon(
                     variant: FButtonVariant.ghost,
                     onPress: () => Navigator.of(context).pop(),
-                    child: const Icon(FLucideIcons.x),
+                    child: const Icon(SemanticIcons.actionClose),
                   ),
                 ],
               ),

@@ -230,19 +230,19 @@ class _DesktopBrandPanel extends StatelessWidget {
                     const SizedBox(height: Spacing.level9),
                     // Feature list
                     _BrandFeatureItem(
-                      icon: FLucideIcons.layoutList,
+                      icon: SemanticIcons.tabRecord,
                       title: l10n.authBrandFeatureRecords,
                       description: l10n.authBrandFeatureRecordsDesc,
                     ),
                     const SizedBox(height: Spacing.level5),
                     _BrandFeatureItem(
-                      icon: FLucideIcons.sparkles,
+                      icon: SemanticIcons.aiEntry,
                       title: l10n.authBrandFeatureAnalysis,
                       description: l10n.authBrandFeatureAnalysisDesc,
                     ),
                     const SizedBox(height: Spacing.level5),
                     _BrandFeatureItem(
-                      icon: FLucideIcons.shieldCheck,
+                      icon: SemanticIcons.safetySafe,
                       title: l10n.authBrandFeaturePrivacy,
                       description: l10n.authBrandFeaturePrivacyDesc,
                     ),

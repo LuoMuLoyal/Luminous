@@ -30,7 +30,7 @@ class LegalDetailPage extends ConsumerWidget {
         child: StateErrorView(
           title: l10n.legalNotFoundTitle,
           description: l10n.legalNotFoundDescription,
-          icon: FLucideIcons.fileQuestion,
+          icon: SemanticIcons.statusUnknown,
           actionLabel: l10n.legalBackToListAction,
           onAction: () => context.go(Routes.legal),
         ),
@@ -52,7 +52,7 @@ class LegalDetailPage extends ConsumerWidget {
         error: (_, __) => StateErrorView(
           title: l10n.legalLoadErrorTitle,
           description: l10n.legalLoadErrorDescription,
-          icon: FLucideIcons.circleAlert,
+          icon: SemanticIcons.statusError,
           actionLabel: l10n.legalRetryAction,
           onAction: () => ref.invalidate(legalDocumentProvider(parsedType)),
         ),

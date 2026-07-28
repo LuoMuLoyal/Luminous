@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -175,7 +174,7 @@ void main() {
         ),
       );
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[0].icon, FLucideIcons.badgeCheck);
+      expect(items[0].icon, SemanticIcons.reportAdherence);
       expect(items[0].badge, '2');
       expect(items[0].route, Routes.medicine);
     });
@@ -198,7 +197,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[1].icon, FLucideIcons.filePenLine);
+      expect(items[1].icon, SemanticIcons.actionEditCard);
       expect(items[1].usePush, isTrue);
       expect(items[1].route, contains(Routes.recordCreate));
     });
@@ -207,7 +206,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[2].icon, FLucideIcons.shieldPlus);
+      expect(items[2].icon, SemanticIcons.safetyCaution);
       expect(items[2].route, Routes.medicineRiskCheck);
     });
 
@@ -215,7 +214,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[3].icon, FLucideIcons.alarmClockCheck);
+      expect(items[3].icon, SemanticIcons.doseSchedule);
       expect(items[3].route, Routes.medicineRemindersNew);
     });
 
@@ -223,7 +222,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[4].icon, FLucideIcons.userRound);
+      expect(items[4].icon, SemanticIcons.profileUser);
       expect(items[4].route, Routes.mine);
     });
 
@@ -259,7 +258,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[0].icon, FLucideIcons.pill);
+      expect(bullets[0].icon, SemanticIcons.recordMedicine);
     });
 
     test(
@@ -297,7 +296,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[1].icon, FLucideIcons.cupSoda);
+      expect(bullets[1].icon, SemanticIcons.recordWater);
     });
 
     test(
@@ -328,7 +327,7 @@ void main() {
       final l10n = await loadZh();
       final dashboard = TodayDashboard.signedOut();
       final bullets = buildAiSummaryBullets(l10n, dashboard);
-      expect(bullets[2].icon, FLucideIcons.bed);
+      expect(bullets[2].icon, SemanticIcons.recordSleep);
     });
 
     test('all bullets use SemanticColor.primary', () async {

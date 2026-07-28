@@ -226,14 +226,14 @@ class ReportDashboardView extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
         ReportPreviewLockedSection(
           key: const Key('report-findings-preview-locked'),
-          icon: FLucideIcons.lightbulb,
+          icon: SemanticIcons.aiTip,
           title: l10n.reportFindingsPreviewTitle,
           body: l10n.reportFindingsPreviewBody,
         ),
         const SizedBox(height: Spacing.level4),
         ReportPreviewLockedSection(
           key: const Key('report-suggestion-history-preview-locked'),
-          icon: FLucideIcons.history,
+          icon: SemanticIcons.reportHistory,
           title: l10n.reportSuggestionHistoryPreviewTitle,
           body: l10n.reportSuggestionHistoryPreviewBody,
         ),
@@ -410,7 +410,7 @@ class ReportDashboardView extends StatelessWidget {
             Expanded(
               child: ReportPreviewLockedSection(
                 key: const Key('report-findings-preview-locked'),
-                icon: FLucideIcons.lightbulb,
+                icon: SemanticIcons.aiTip,
                 title: l10n.reportFindingsPreviewTitle,
                 body: l10n.reportFindingsPreviewBody,
               ),
@@ -419,7 +419,7 @@ class ReportDashboardView extends StatelessWidget {
             Expanded(
               child: ReportPreviewLockedSection(
                 key: const Key('report-suggestion-history-preview-locked'),
-                icon: FLucideIcons.history,
+                icon: SemanticIcons.reportHistory,
                 title: l10n.reportSuggestionHistoryPreviewTitle,
                 body: l10n.reportSuggestionHistoryPreviewBody,
               ),
@@ -474,22 +474,22 @@ class ReportDashboardView extends StatelessWidget {
   List<ReportExportAction> get _previewExportActions => const [
     ReportExportAction(
       kind: ReportExportKind.hospital,
-      icon: FLucideIcons.hospital,
+      icon: SemanticIcons.medicineKit,
       color: SemanticColor.primary,
     ),
     ReportExportAction(
       kind: ReportExportKind.monthly,
-      icon: FLucideIcons.barChart,
+      icon: SemanticIcons.tabReport,
       color: SemanticColor.primary,
     ),
     ReportExportAction(
       kind: ReportExportKind.print,
-      icon: FLucideIcons.printer,
+      icon: SemanticIcons.actionExport,
       color: SemanticColor.primary,
     ),
     ReportExportAction(
       kind: ReportExportKind.clinicShare,
-      icon: FLucideIcons.share2,
+      icon: SemanticIcons.actionShare,
       color: SemanticColor.primary,
     ),
   ];
@@ -532,7 +532,7 @@ class _ReportLockedFeaturesHint extends StatelessWidget {
       child: FTile(
         prefix: FAvatar.raw(
           child: Icon(
-            FLucideIcons.lock,
+            SemanticIcons.statusBlocked,
             color: colors.primary,
             size: Spacing.level4,
           ),

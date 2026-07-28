@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
@@ -123,7 +122,7 @@ void main() {
         text: 'Take your medicine',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, FLucideIcons.pill);
+      expect(item.icon, SemanticIcons.recordMedicine);
       expect(item.text, 'Take your medicine');
       expect(item.color, SemanticColor.primary);
     });
@@ -134,7 +133,7 @@ void main() {
         text: 'Drink more water',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, FLucideIcons.droplets);
+      expect(item.icon, SemanticIcons.recordWater);
       expect(item.text, 'Drink more water');
     });
 
@@ -144,7 +143,7 @@ void main() {
         text: 'Sleep earlier',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, FLucideIcons.moonStar);
+      expect(item.icon, SemanticIcons.recordSleep);
       expect(item.text, 'Sleep earlier');
     });
 
@@ -154,7 +153,7 @@ void main() {
         text: 'General advice',
       );
       final item = mapAiBullet(bullet);
-      expect(item.icon, FLucideIcons.lightbulb);
+      expect(item.icon, SemanticIcons.aiTip);
       expect(item.text, 'General advice');
     });
   });
@@ -197,19 +196,19 @@ List<TodayOverviewItem> _buildOverviewItemsWithDefaults({
   final safeMedicationDone = medicationDone < 0 ? 0 : medicationDone;
   return [
     TodayOverviewItem(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       label: 'medication',
       value: '$safeMedicationDone/$medicineCount',
       color: SemanticColor.primary,
     ),
     TodayOverviewItem(
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       label: 'hydration',
       value: '$waterCompleted/$waterTarget',
       color: SemanticColor.primary,
     ),
     const TodayOverviewItem(
-      icon: FLucideIcons.moonStar,
+      icon: SemanticIcons.recordSleep,
       label: 'sleep',
       value: '-- h',
       color: SemanticColor.primary,

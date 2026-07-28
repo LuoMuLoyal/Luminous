@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/presentation/pages/advanced.dart';
 import 'package:luminous/features/settings/presentation/pages/ai.dart';
@@ -137,7 +138,7 @@ void main() {
       );
 
       expect(find.text(l10n.settingsSecurityPinStatusDisabled), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.shieldOff), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusBlocked), findsOneWidget);
     });
 
     testWidgets('shows enabled status when PIN is enabled', (tester) async {
@@ -152,7 +153,7 @@ void main() {
       );
 
       expect(find.text(l10n.settingsSecurityPinStatusEnabled), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.shieldCheck), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.safetySafe), findsOneWidget);
     });
 
     testWidgets('shows enable section when PIN disabled', (tester) async {
@@ -223,7 +224,7 @@ void main() {
       await pumpPage(tester, const FeatureFlagsSettingsPage());
 
       expect(find.text(l10n.settingsFeatureFlagsWarning), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.flaskConical), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.recordSymptom), findsOneWidget);
     });
 
     testWidgets('renders AI section with toggles', (tester) async {
@@ -462,7 +463,7 @@ void main() {
       await pumpPage(tester, const AdvancedSettingsPage());
 
       // 4 tiles have chevronRight: clear-cache, api-endpoint, log-level, feature-flags
-      expect(find.byIcon(FLucideIcons.chevronRight), findsNWidgets(4));
+      expect(find.byIcon(SemanticIcons.actionNext), findsNWidgets(4));
     });
 
     testWidgets('renders SettingsSectionLabel for developer section', (

@@ -1,42 +1,50 @@
 # 图标去重与多样化计划
 
-## 背景
+## 原则
 
-当前 app 使用了 152 种不同的 FLucideIcons，但少数图标被过度复用于语义完全不同的场景，导致用户产生认知歧义。以下是问题最严重的图标。
+**能不重复就不重复。** 当两个场景的语义不同时，使用不同图标。只有语义完全相同（如"确认"永远是 `check`，"关闭"永远是 `x`）才允许重复。Tab 图标和内容层图标必须区分。
 
-## 当前问题清单（按严重度排序）
+## 当前问题
 
-### P0 — 语义混淆（同一图标表达完全不同含义）
+全 app 使用了 152 种 FLucideIcons，但前 10 个图标占了近 200 次引用。同一图标被用于语义完全不同的场景，导致用户认知混淆。
 
-| 图标 | 使用次数 | 问题 |
-|------|---------|------|
-| `sparkles` | 17 | 同时表示 AI 摘要入口、AI 建议卡、AI 分析 bullet、AI 生成中、NLP 入口、报告 AI 总结、Today 助手按钮。用户看到 sparkles 无法区分是"AI 入口"还是"AI 已生成"还是"建议" |
-| `circleAlert` | 34 | 同时表示：通用错误状态、风险检查 medium 级别、风险检查 interaction 类型、报告数据不足、提醒投递失败、安全告警、record 解析失败。34 次中至少 6 种不同语义 |
-| `badgeCheck` | 12 | 同时表示：依从率指标、风险检查 safe 状态、报告 ready 状态、报告 medication insight、通知已投递、记录已完成。同一"成功/完成"语义被泛化到不相关场景 |
-| `shieldCheck` | 9 | 同时表示：安全检查通过、风险检查 specialGroup 类型、风险检查安全状态、设置隐私项。语义边界模糊 |
-| `pill` | 17 | 同时表示 tab 药品图标、药品列表行、AI 分析 medication bullet、记录类型用药、健康档案药品项。tab 图标和内容图标重复使用同一图标，层级感消失 |
+### 高频图标使用次数
 
-### P1 — 近义图标不统一（同一语义用了多个图标）
+| 图标 | 次数 | 不同语义数 |
+|------|------|-----------|
+| `chevronRight` | 56 | 1（导航箭头，合理） |
+| `circleAlert` | 34 | 7+ |
+| `sparkles` | 17 | 5 |
+| `pill` | 17 | 5 |
+| `x` | 15 | 2（关闭/删除） |
+| `notebookPen` | 14 | 3 |
+| `droplets` | 14 | 1（饮水，合理） |
+| `triangleAlert` | 13 | 3 |
+| `userRound` | 12 | 4 |
+| `lightbulb` | 12 | 3 |
+| `badgeCheck` | 12 | 5 |
+| `moon` / `moonStar` | 16 | 1（睡眠，但用了两个图标） |
 
-| 语义 | 使用的图标 | 文件 |
-|------|-----------|------|
-| 睡眠 | `moon`(11) + `moonStar`(5) | `view_models.dart` 用 `moonStar`；`report` 系列、`record` 系列、`suggestion_icon_mapping` 用 `moon`。应统一为一个 |
-| 时间/计划 | `clock`(6) + `clock3`(7) + `clock4`(3) | 三种时钟图标混用。`clock3` 用于提醒时间标签和风险检查 timing；`clock` 用于计划状态和长期用药；`clock4` 用于 Forui 内置 |
-| 饮食 | `utensils`(9) + `cupSoda`(1) | Today 的 AI bullet 饮食用 `cupSoda`，记录页用 `utensils` |
+### 可接受重复的图标
 
-### P2 — 功能图标复用于不相关场景
+以下图标语义单一、通用，重复使用合理：
 
-| 图标 | 问题 |
-|------|------|
-| `userRound` (12) | tab "我的"图标 + 健康档案项 + AI bullet user 类型 + 设置项。tab 图标应与内容图标区分 |
-| `notebookPen` (14) | tab "记录"图标 + 记录相关设置项 + 通用编辑。tab 图标复用到内容层 |
-| `pill` (17) | tab "用药"图标 + 用药列表行 + AI bullet + 记录类型 + 健康档案。tab 图标复用到内容层 |
+- `chevronRight` / `chevronLeft` — 导航方向箭头
+- `chevronDown` / `chevronUp` — 展开/收起
+- `check` — 确认/已选
+- `x` — 关闭/删除
+- `plus` — 新增
+- `droplets` — 饮水
+- `search` — 搜索
+- `trash2` — 删除
+- `lock` — 锁定
+- `bell` — 通知
 
 ## 执行方案
 
-### Phase 1 — 建立图标语义映射表
+### Phase 1 — 新建 `SemanticIcons` 语义图标注册表
 
-在 `lib/core/design/tokens/icon_tokens.dart` 新建一个语义图标注册表，将图标按语义分组，禁止业务代码直接引用 `FLucideIcons.xxx`。
+文件：`lib/core/design/tokens/icon_tokens.dart`
 
 ```dart
 /// 语义图标注册表
@@ -44,58 +52,114 @@
 /// 所有业务代码应通过 [SemanticIcons] 引用图标，而非直接使用 [FLucideIcons]。
 /// 这确保同一语义不会使用不同图标，不同语义不会使用相同图标。
 abstract final class SemanticIcons {
-  // === 导航 ===
+  // ================================================================
+  // 导航 — Tab 图标，与内容层图标严格区分
+  // ================================================================
   static const tabToday = FLucideIcons.house;
   static const tabRecord = FLucideIcons.notebookPen;
-  static const tabMedicine = FLucideIcons.pillBottle; // 区别于内容层药品图标
+  static const tabMedicine = FLucideIcons.pillBottle;  // ≠ 内容层 pill
   static const tabReport = FLucideIcons.chartColumn;
   static const tabMine = FLucideIcons.userRound;
 
-  // === AI / 智能功能 ===
-  static const aiEntry = FLucideIcons.sparkles;       // AI 入口（按钮/输入栏）
-  static const aiGenerated = FLucideIcons.wand2;       // AI 已生成（结果标记）
-  static const aiAnalyzing = FLucideIcons.loaderCircle; // AI 分析中（加载）
-  static const aiSuggestion = FLucideIcons.lightbulb;  // 建议内容
+  // ================================================================
+  // AI — 入口 / 生成中 / 结果 / 建议 各用不同图标
+  // ================================================================
+  static const aiEntry = FLucideIcons.sparkles;         // AI 入口按钮
+  static const aiAnalyzing = FLucideIcons.loaderCircle;  // AI 分析中
+  static const aiGenerated = FLucideIcons.bot;           // AI 已生成结果
+  static const aiSuggestion = FLucideIcons.brain;        // AI 建议/洞察
+  static const aiTip = FLucideIcons.lightbulb;           // 通用提示/技巧
 
-  // === 健康 / 记录 ===
+  // ================================================================
+  // 健康记录类型 — 每种类型独立图标
+  // ================================================================
   static const recordMedicine = FLucideIcons.pill;
   static const recordWater = FLucideIcons.droplets;
   static const recordMeal = FLucideIcons.utensils;
-  static const recordSleep = FLucideIcons.moonStar;    // 统一用 moonStar
+  static const recordSleep = FLucideIcons.moonStar;
   static const recordCaffeine = FLucideIcons.coffee;
   static const recordSymptom = FLucideIcons.thermometer;
   static const recordMood = FLucideIcons.smile;
-  static const recordNote = FLucideIcons.stickyNote;
+  static const recordNote = FLucideIcons.fileText;        // ≠ notebookPen
+  static const recordActivity = FLucideIcons.activity;
+  static const recordWeight = FLucideIcons.scale;          // 需验证可用性
 
-  // === 状态 ===
+  // ================================================================
+  // 通用状态
+  // ================================================================
   static const statusError = FLucideIcons.circleAlert;
   static const statusWarning = FLucideIcons.triangleAlert;
   static const statusSuccess = FLucideIcons.circleCheck;
-  static const statusInfo = FLucideIcons.circleHelp;
+  static const statusInfo = FLucideIcons.info;
   static const statusPending = FLucideIcons.clock3;
   static const statusSkipped = FLucideIcons.ban;
   static const statusDone = FLucideIcons.check;
+  static const statusAllDone = FLucideIcons.checkCheck;   // "全部完成"
+  static const statusBlocked = FLucideIcons.lock;
+  static const statusUnavailable = FLucideIcons.circleSlash;
+  static const statusUnknown = FLucideIcons.fileQuestion;
 
-  // === 用药安全 ===
+  // ================================================================
+  // 用药安全 — 风险等级、发现类型各用不同图标
+  // ================================================================
+  // 风险等级
   static const safetySafe = FLucideIcons.shieldCheck;
   static const safetyCaution = FLucideIcons.shieldAlert;
-  static const safetyRisk = FLucideIcons.circleAlert;  // 风险
-  static const safetyDanger = FLucideIcons.siren;       // 红旗/严重
-  static const safetyInteraction = FLucideIcons.arrowLeftRight; // 交互
-  static const safetyAllergy = FLucideIcons.zap;        // 过敏
-  static const safetyCoverage = FLucideIcons.searchX;   // 覆盖缺口
-  static const safetyLongTerm = FLucideIcons.hourglass;  // 长期用药
-  static const safetySpecialGroup = FLucideIcons.users;  // 特殊人群
+  static const safetyRisk = FLucideIcons.triangleAlert;   // ≠ circleAlert
+  static const safetyDanger = FLucideIcons.siren;          // 红旗/严重
 
-  // === 报告 ===
-  static const reportReady = FLucideIcons.circleCheck;
-  static const reportInsufficient = FLucideIcons.chartNoAxesColumn; // 数据不足
+  // 发现类型
+  static const safetyInteraction = FLucideIcons.arrowLeftRight;
+  static const safetyAllergy = FLucideIcons.zap;
+  static const safetyCoverage = FLucideIcons.searchX;
+  static const safetyLongTerm = FLucideIcons.hourglass;
+  static const safetySpecialGroup = FLucideIcons.baby;     // 孕妇/儿童/老人
+  static const safetySchedulingConflict = FLucideIcons.calendarX2;
+
+  // ================================================================
+  // 报告 — 状态/趋势/指标各用不同图标
+  // ================================================================
+  static const reportReady = FLucideIcons.circleCheck;     // ≠ badgeCheck
+  static const reportInsufficient = FLucideIcons.fileQuestion;
   static const reportTrend = FLucideIcons.trendingUp;
-  static const reportAdherence = FLucideIcons.badgeCheck; // 依从率专用
+  static const reportAdherence = FLucideIcons.badgeCheck;  // 依从率专用
+  static const reportInsight = FLucideIcons.lightbulb;
+  static const reportDataMedication = FLucideIcons.pill;
+  static const reportDataHydration = FLucideIcons.droplets;
+  static const reportDataSleep = FLucideIcons.moonStar;
+  static const reportDataCaffeine = FLucideIcons.coffee;
+  static const reportDataSymptom = FLucideIcons.thermometer;
+  static const reportExport = FLucideIcons.arrowDownToLine;
+  static const reportHistory = FLucideIcons.history;
 
-  // === 操作 ===
+  // ================================================================
+  // 用药执行 — 计划/提醒/打卡
+  // ================================================================
+  static const medicineDose = FLucideIcons.pill;
+  static const medicineBottle = FLucideIcons.pillBottle;
+  static const medicineKit = FLucideIcons.briefcaseMedical;
+  static const doseSchedule = FLucideIcons.alarmClockCheck;
+  static const doseSlot = FLucideIcons.clock3;
+  static const doseTaken = FLucideIcons.check;
+  static const doseSkipped = FLucideIcons.ban;
+  static const dosePending = FLucideIcons.clock3;
+  static const dosePlanned = FLucideIcons.calendarClock;
+
+  // ================================================================
+  // 通知
+  // ================================================================
+  static const notificationBell = FLucideIcons.bell;
+  static const notificationDelivered = FLucideIcons.checkCheck;
+  static const notificationFailed = FLucideIcons.circleX;   // ≠ circleAlert
+  static const notificationPending = FLucideIcons.clock3;
+
+  // ================================================================
+  // 操作
+  // ================================================================
   static const actionAdd = FLucideIcons.plus;
+  static const actionAddCard = FLucideIcons.squarePlus;
   static const actionEdit = FLucideIcons.pencil;
+  static const actionEditCard = FLucideIcons.squarePen;     // ≠ notebookPen
   static const actionDelete = FLucideIcons.trash2;
   static const actionSearch = FLucideIcons.search;
   static const actionClose = FLucideIcons.x;
@@ -105,90 +169,180 @@ abstract final class SemanticIcons {
   static const actionExpand = FLucideIcons.chevronDown;
   static const actionCollapse = FLucideIcons.chevronUp;
   static const actionRefresh = FLucideIcons.refreshCw;
+  static const actionReset = FLucideIcons.rotateCcw;
   static const actionShare = FLucideIcons.share2;
   static const actionCopy = FLucideIcons.copy;
-  static const actionLock = FLucideIcons.lock;
+  static const actionExport = FLucideIcons.arrowDownToLine;
+  static const actionExternalLink = FLucideIcons.externalLink;
+  static const actionSettings = FLucideIcons.settings;
+  static const actionScan = FLucideIcons.scanLine;
+  static const actionCamera = FLucideIcons.camera;
+  static const actionMic = FLucideIcons.mic;
+  static const actionImage = FLucideIcons.image;
+
+  // ================================================================
+  // 健康/档案
+  // ================================================================
+  static const profileUser = FLucideIcons.userCheck;       // ≠ tabMine userRound
+  static const profileAllergy = FLucideIcons.zap;
+  static const profileCondition = FLucideIcons.heartPulse;
+  static const profileMedicine = FLucideIcons.briefcaseMedical;
+  static const profileEmergency = FLucideIcons.siren;
+  static const profileContact = FLucideIcons.phone;         // 需验证可用性
 }
 ```
 
-### Phase 2 — 按优先级替换
+### Phase 2 — 按高频图标逐个拆分
 
-#### Step 1：AI 语义拆分（影响最大）
+#### Step 1：`sparkles` (17→1) — AI 语义拆分
 
-将 `sparkles` 的 17 次使用按语义拆分：
-
-| 当前 | 替换为 | 涉及文件 |
-|------|--------|---------|
-| AI 入口按钮（Today 助手栏、NLP 输入栏、报告 AI 按钮） | `SemanticIcons.aiEntry` (sparkles) — 保留 | `today/top_bar.dart`, `record/quick_entry_panel.dart`, `report/dashboard_view.dart` |
-| AI 已生成结果标记 | `SemanticIcons.aiGenerated` (wand2) | `today/suggestion_state_views.dart`, `today/observation.dart`, `report/ai_summary.dart` |
-| AI 分析中 / loading | `SemanticIcons.aiAnalyzing` (loaderCircle) — 已部分使用 | `today/observation.dart` |
-| AI 建议内容 bullet | `SemanticIcons.aiSuggestion` (lightbulb) — 已部分使用 | `today/view_models.dart`, `report/ai_summary.dart` |
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| Today 助手入口按钮 | `SemanticIcons.aiEntry` (sparkles) — 保留 | `today/top_bar.dart` |
+| NLP 输入栏入口 | `SemanticIcons.aiEntry` (sparkles) — 保留 | `record/quick_entry_panel.dart` |
+| 报告 AI 总结按钮 | `SemanticIcons.aiEntry` (sparkles) — 保留 | `report/dashboard_view.dart` |
+| AI 分析中 / loading | `SemanticIcons.aiAnalyzing` (loaderCircle) | `today/observation.dart`, `report/ai_summary.dart` |
+| AI 已生成结果标记 | `SemanticIcons.aiGenerated` (bot) | `today/suggestion_state_views.dart`, `today/observation.dart`, `report/ai_summary.dart` |
+| AI 建议/洞察 bullet | `SemanticIcons.aiSuggestion` (brain) | `today/view_models.dart`, `report/ai_summary.dart` |
 | 通用 fallback | `SemanticIcons.aiEntry` (sparkles) | `suggestion_icon_mapping.dart` |
+| Today 助手发送按钮空态 | `SemanticIcons.aiTip` (lightbulb) | `today/suggestion_state_views.dart` |
 
-#### Step 2：错误 / 告警语义拆分
+**结果**：sparkles 只保留 3 次（入口按钮），其余 14 次分散到 4 个不同图标。
 
-将 `circleAlert` 的 34 次使用按语义拆分：
+#### Step 2：`circleAlert` (34→3) — 错误/告警语义拆分
 
-| 当前语义 | 替换为 | 涉及文件 |
-|---------|--------|---------|
-| 通用错误状态 | `SemanticIcons.statusError` (circleAlert) — 保留 | `core/widgets/state_views.dart` 等 |
-| 风险检查 medium 级别 | `SemanticIcons.safetyCaution` (shieldAlert) | `medicine/copy.dart`, `medicine/risk_finding_tile.dart` |
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| 通用错误状态页 | `SemanticIcons.statusError` (circleAlert) — 保留 | `core/widgets/state_views.dart` |
+| 通知投递失败 | `SemanticIcons.notificationFailed` (circleX) | `notification/list_item.dart` |
+| 风险检查 medium 级别 | `SemanticIcons.safetyCaution` (shieldAlert) | `medicine/copy.dart` |
 | 风险检查 interaction 类型 | `SemanticIcons.safetyInteraction` (arrowLeftRight) | `medicine/copy.dart` |
-| 报告数据不足 | `SemanticIcons.reportInsufficient` (chartNoAxesColumn) | `report/dashboard_view.dart` |
-| 通知投递失败 | `SemanticIcons.statusError` (circleAlert) — 保留 | `notification/list_item.dart` |
+| 报告数据不足 | `SemanticIcons.reportInsufficient` (fileQuestion) | `report/dashboard_view.dart` |
 | 安全告警行 | `SemanticIcons.safetyCaution` (shieldAlert) | `medicine/mobile_safety.dart` |
+| Record 解析失败 | `SemanticIcons.statusUnknown` (fileQuestion) | `record/nlp_retry_panel.dart` |
+| 设置/帮助错误提示 | `SemanticIcons.statusError` (circleAlert) — 保留 | `settings/*.dart` |
+| 搜索/扫码错误 | `SemanticIcons.statusError` (circleAlert) — 保留 | `search/*.dart`, `scan/*.dart` |
+| 提醒投递失败 | `SemanticIcons.notificationFailed` (circleX) | `medicine/log_panels.dart` |
 
-#### Step 3：成功 / 完成语义拆分
+**结果**：circleAlert 从 34 次降到约 8 次，其余分散到 5 个不同图标。
 
-将 `badgeCheck` 的 12 次使用按语义拆分：
+#### Step 3：`badgeCheck` (12→1) — 成功/完成语义拆分
 
-| 当前语义 | 替换为 |
-|---------|--------|
-| 依从率指标 | `SemanticIcons.reportAdherence` (badgeCheck) — 保留 |
-| 风险检查 safe 状态 | `SemanticIcons.safetySafe` (shieldCheck) |
-| 报告 ready 状态 | `SemanticIcons.reportReady` (circleCheck) |
-| 报告 medication insight | `SemanticIcons.recordMedicine` (pill) |
-| 通知已投递 | `SemanticIcons.statusDone` (check) |
-| 记录已完成 | `SemanticIcons.statusDone` (check) |
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| 依从率指标 | `SemanticIcons.reportAdherence` (badgeCheck) — 保留 | `medicine/mobile_drugbox.dart` |
+| 风险检查 safe 状态 | `SemanticIcons.safetySafe` (shieldCheck) | `medicine/copy.dart` |
+| 报告 ready 状态 | `SemanticIcons.reportReady` (circleCheck) | `report/dashboard_view.dart` |
+| 报告 medication insight | `SemanticIcons.reportDataMedication` (pill) | `report/dashboard_view.dart` |
+| 通知已投递 | `SemanticIcons.notificationDelivered` (checkCheck) | `notification/list_item.dart` |
+| 记录已完成 | `SemanticIcons.statusAllDone` (checkCheck) | `record/mobile_timeline.dart` |
+| Today 主动建议已执行 | `SemanticIcons.statusDone` (check) | `today/view_models.dart` |
 
-#### Step 4：Tab 图标与内容图标区分
+**结果**：badgeCheck 只保留 1 次（依从率专用）。
 
-| Tab | 当前 | 替换方案 |
-|-----|------|---------|
-| Medicine tab | `pill` | `pillBottle`（药瓶，区别于内容层的 `pill` 药片） |
-| Record tab | `notebookPen` | 保留（但内容层编辑改用 `squarePen`） |
-| Today tab | `house` | 保留 |
-| Mine tab | `userRound` | 保留（但内容层用户相关改用 `userCog` / `contact`） |
+#### Step 4：`pill` (17→3) — 药品图标按场景区分
 
-#### Step 5：近义图标统一
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| Tab 用药 | `SemanticIcons.tabMedicine` (pillBottle) | `shell/tab.dart` |
+| 用药列表行 / 今日计划行 | `SemanticIcons.medicineDose` (pill) — 保留 | `medicine/mobile_drugbox.dart`, `medicine/mobile_records.dart` |
+| AI 分析 medication bullet | `SemanticIcons.medicineDose` (pill) — 保留 | `today/view_models.dart`, `report/ai_summary.dart` |
+| 记录类型 medication | `SemanticIcons.recordMedicine` (pill) — 保留 | `record/mobile_timeline.dart` |
+| 健康档案药品项 | `SemanticIcons.profileMedicine` (briefcaseMedical) | `mine/archive.dart` |
+| 用药安全摘要 | `SemanticIcons.medicineKit` (briefcaseMedical) | `medicine/mobile_safety.dart` |
 
-| 语义 | 统一为 | 操作 |
-|------|--------|------|
-| 睡眠 | `moonStar` | 全局替换 `moon` → `moonStar`（except `AppThemeModePreference.dark` 保留 `moon`） |
-| 时钟/计划 | `clock3` | 风险检查和提醒相关统一为 `clock3`；Forui 内置 `clock4` 保留 |
-| 饮食 | `utensils` | Today AI bullet 的 `cupSoda` 改为 `utensils` |
+**结果**：pill 从 17 次降到约 8 次，tab 改用 pillBottle，档案改用 briefcaseMedical。
+
+#### Step 5：`notebookPen` (14→2) — 记录/编辑区分
+
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| Tab 记录 | `SemanticIcons.tabRecord` (notebookPen) — 保留 | `shell/tab.dart` |
+| 记录类型 "note" | `SemanticIcons.recordNote` (fileText) | `record/mobile_timeline.dart`, `mine/archive.dart` |
+| 新建记录入口 | `SemanticIcons.actionAddCard` (squarePlus) | `record/quick_entry_panel.dart`, `record/new_entry_panel.dart` |
+| 设置编辑项 | `SemanticIcons.actionEditCard` (squarePen) | `settings/page.dart` |
+
+**结果**：notebookPen 只保留 1 次（Tab），其余分散到 3 个不同图标。
+
+#### Step 6：`userRound` (12→1) — 用户图标按场景区分
+
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| Tab 我的 | `SemanticIcons.tabMine` (userRound) — 保留 | `shell/tab.dart` |
+| 健康档案用户 | `SemanticIcons.profileUser` (userCheck) | `mine/account_hero.dart` |
+| AI bullet user 类型 | `SemanticIcons.profileUser` (userCheck) | `today/view_models.dart`, `report/ai_summary.dart` |
+| 设置项 | 按具体语义使用不同图标 | `settings/page.dart` |
+| Suggestion icon mapping | `SemanticIcons.profileUser` (userCheck) | `suggestion_icon_mapping.dart` |
+
+**结果**：userRound 只保留 1 次（Tab），其余改用 userCheck 或具体图标。
+
+#### Step 7：`lightbulb` (12→2) — 建议类图标拆分
+
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| 行为建议 bullet | `SemanticIcons.aiTip` (lightbulb) — 保留 | `today/view_models.dart` |
+| 报告 insight | `SemanticIcons.reportInsight` (lightbulb) — 保留 | `report/dashboard_view.dart` |
+| AI 建议 fallback | `SemanticIcons.aiSuggestion` (brain) | `today/observation.dart`, `suggestion_icon_mapping.dart` |
+| Today 摘要提示 | `SemanticIcons.aiTip` (lightbulb) — 保留 | `today/summary.dart` |
+
+**结果**：lightbulb 从 12 次降到约 6 次，AI 洞察改用 brain。
+
+#### Step 8：`shieldCheck` (9→1) — 安全图标拆分
+
+| 当前场景 | 替换为 | 文件 |
+|---------|--------|------|
+| 风险检查 safe 状态 | `SemanticIcons.safetySafe` (shieldCheck) — 保留 | `medicine/copy.dart` |
+| 风险检查 specialGroup | `SemanticIcons.safetySpecialGroup` (baby) | `medicine/copy.dart` |
+| 设置隐私项 | `SemanticIcons.statusBlocked` (lock) | `settings/page.dart` |
+| 安全检查通过摘要 | `SemanticIcons.safetySafe` (shieldCheck) — 保留 | `medicine/mobile_safety.dart` |
+
+**结果**：shieldCheck 从 9 次降到约 4 次。
+
+#### Step 9：近义图标统一
+
+| 语义 | 当前 | 统一为 | 操作 |
+|------|------|--------|------|
+| 睡眠 | `moon` + `moonStar` | `SemanticIcons.recordSleep` (moonStar) | 全局替换 `moon` → `moonStar`（`AppThemeModePreference.dark` 保留 `moon`） |
+| 时钟/计划 | `clock` + `clock3` + `clock4` | `SemanticIcons.doseSlot` (clock3) | `clock` → `clock3`；`clock4` 为 Forui 内置，保留 |
+| 饮食 | `utensils` + `cupSoda` | `SemanticIcons.recordMeal` (utensils) | `cupSoda` → `utensils` |
+| 编辑 | `pencil` + `notebookPen` + `squarePen` | 按场景：`actionEdit`(pencil) / `actionEditCard`(squarePen) / `recordNote`(fileText) | 按语义归位 |
+| 列表 | `clipboardList` + `list` + `layoutList` | `clipboardList` 用于任务列表，`layoutList` 用于记录时间线 | 按语义归位 |
 
 ### Phase 3 — 清理与验证
 
 1. **搜索残留**：`rg "FLucideIcons\." lib/ --type dart | rg -v "icon_tokens.dart"` — 确认无直接引用
 2. **flutter analyze**：确保无类型错误
 3. **flutter test**：全量测试通过
-4. **视觉走查**：在真机上逐页检查图标语义是否清晰
+4. **视觉走查**：在真机上逐页检查图标语义是否清晰、是否有视觉冲突
 
 ## 执行顺序
 
 1. 新建 `lib/core/design/tokens/icon_tokens.dart`
-2. Phase 2 Step 1（AI 拆分）
-3. Phase 2 Step 2（错误拆分）
-4. Phase 2 Step 3（成功拆分）
-5. Phase 2 Step 4（Tab 区分）
-6. Phase 2 Step 5（近义统一）
-7. Phase 3（清理验证）
+2. Step 1：AI 拆分（sparkles）
+3. Step 2：错误拆分（circleAlert）
+4. Step 3：成功拆分（badgeCheck）
+5. Step 4：药品拆分（pill）
+6. Step 5：记录拆分（notebookPen）
+7. Step 6：用户拆分（userRound）
+8. Step 7：建议拆分（lightbulb）
+9. Step 8：安全拆分（shieldCheck）
+10. Step 9：近义统一
+11. Phase 3：清理验证
 
-每步完成后运行 `flutter analyze` + `flutter test`。
+每步完成后运行 `flutter analyze` + 相关测试。
+
+## 预期效果
+
+| 指标 | 当前 | 目标 |
+|------|------|------|
+| 唯一图标数 | 152 | ~180+ |
+| 最高频图标（除导航/操作类） | circleAlert 34 | ≤ 8 |
+| 语义混淆图标数 | 10+ | 0 |
+| Tab 图标与内容图标重复 | 3 个 | 0 |
 
 ## 风险
 
-- Forui 内置组件的图标（如 `FHeader` 的 back/close）不需要改，它们通过 `FIcons` 主题管理，不在本次范围内。
-- `suggestion_icon_mapping.dart` 的后端驱动图标映射保持不变，只是 fallback 和映射值可能更新。
-- 部分图标可能在 Forui 0.24 中不存在（如 `wand2`, `arrowLeftRight`, `chartNoAxesColumn`），需验证后选择替代。
+- 部分图标可能在 Forui 0.24 中不存在（如 `baby`, `scale`, `phone`），需验证后选择替代。
+- Forui 内置组件的图标（如 `FHeader` 的 back/close）通过 `FIcons` 主题管理，不在本次范围内。
+- `suggestion_icon_mapping.dart` 的后端驱动图标映射保持不变，只是 fallback 和映射值更新。
+- 替换后需视觉走查，确保新图标在 18px / 20px / 24px 尺寸下可读。

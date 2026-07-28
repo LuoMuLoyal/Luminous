@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/feedback/toast.dart';
@@ -64,8 +63,8 @@ class _ClinicSummarySharedPageState
                 : l10n.reportClinicSummarySharedExpired,
             description: l10n.reportClinicSummaryLoadFailed,
             icon: isNetworkError
-                ? FLucideIcons.wifiOff
-                : FLucideIcons.triangleAlert,
+                ? SemanticIcons.statusUnavailable
+                : SemanticIcons.statusWarning,
             tone: StateTone.warning,
             actionLabel: isNetworkError ? l10n.todayRetryAction : null,
             onAction: isNetworkError

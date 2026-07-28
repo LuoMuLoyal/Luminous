@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 
 void main() {
@@ -31,7 +30,7 @@ void main() {
         MedicineCopyKey.quickActionSearchSubtitle,
       );
       expect(ws.quickActions.first.accent, SemanticColor.primary);
-      expect(ws.quickActions.first.icon, FLucideIcons.search);
+      expect(ws.quickActions.first.icon, SemanticIcons.actionSearch);
     });
 
     test('has empty plan items', () {

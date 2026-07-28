@@ -39,7 +39,10 @@ class MineTopBar extends ConsumerWidget {
               FButton.icon(
                 onPress: onNotificationsTap,
                 variant: FButtonVariant.ghost,
-                child: Icon(FLucideIcons.bell, color: colors.foreground),
+                child: Icon(
+                  SemanticIcons.notificationBell,
+                  color: colors.foreground,
+                ),
               ),
               if (hasUnread)
                 Positioned(
@@ -65,7 +68,7 @@ class MineTopBar extends ConsumerWidget {
             key: const Key('mine-settings-action'),
             onPress: onSettingsTap,
             variant: FButtonVariant.ghost,
-            child: Icon(FLucideIcons.settings, color: colors.foreground),
+            child: Icon(SemanticIcons.actionSettings, color: colors.foreground),
           ),
         ),
       ],

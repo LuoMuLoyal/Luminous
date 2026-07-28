@@ -203,7 +203,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                   FButton.icon(
                     onPress: () => Navigator.of(context).pop(),
                     variant: FButtonVariant.ghost,
-                    child: const Icon(FLucideIcons.x),
+                    child: const Icon(SemanticIcons.actionClose),
                   ),
                 ],
               ),
@@ -217,7 +217,7 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      FLucideIcons.circleAlert,
+                      SemanticIcons.statusError,
                       color: colors.destructive,
                       size: 16,
                     ),
@@ -311,8 +311,8 @@ class _RecordVoiceEntrySheet extends HookConsumerWidget {
                         ),
                         child: Icon(
                           isListening.value
-                              ? FLucideIcons.mic
-                              : FLucideIcons.micOff,
+                              ? SemanticIcons.actionMic
+                              : SemanticIcons.statusUnavailable,
                           color: isListening.value
                               ? colors.primaryForeground
                               : micColor,

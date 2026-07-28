@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
@@ -139,10 +138,10 @@ class LucentReportRepository implements ReportRepository {
 
   IconData _metricIcon(ReportDataKind kind) {
     return switch (kind) {
-      ReportDataKind.medication => FLucideIcons.pill,
-      ReportDataKind.water => FLucideIcons.droplets,
-      ReportDataKind.sleep => FLucideIcons.moon,
-      ReportDataKind.general => FLucideIcons.heartPulse,
+      ReportDataKind.medication => SemanticIcons.recordMedicine,
+      ReportDataKind.water => SemanticIcons.recordWater,
+      ReportDataKind.sleep => SemanticIcons.recordMoon,
+      ReportDataKind.general => SemanticIcons.profileCondition,
     };
   }
 
@@ -157,10 +156,10 @@ class LucentReportRepository implements ReportRepository {
 
   IconData _insightIcon(ReportInsightKind kind) {
     return switch (kind) {
-      ReportInsightKind.medication => FLucideIcons.badgeCheck,
-      ReportInsightKind.hydration => FLucideIcons.droplets,
-      ReportInsightKind.sleep => FLucideIcons.moon,
-      ReportInsightKind.general => FLucideIcons.chartLine,
+      ReportInsightKind.medication => SemanticIcons.reportAdherence,
+      ReportInsightKind.hydration => SemanticIcons.recordWater,
+      ReportInsightKind.sleep => SemanticIcons.recordMoon,
+      ReportInsightKind.general => SemanticIcons.reportChart,
     };
   }
 
@@ -181,22 +180,22 @@ class LucentReportRepository implements ReportRepository {
 final _exportActions = <ReportExportAction>[
   const ReportExportAction(
     kind: ReportExportKind.hospital,
-    icon: FLucideIcons.hospital,
+    icon: SemanticIcons.medicineKit,
     color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.monthly,
-    icon: FLucideIcons.barChart,
+    icon: SemanticIcons.tabReport,
     color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.print,
-    icon: FLucideIcons.printer,
+    icon: SemanticIcons.actionExport,
     color: SemanticColor.primary,
   ),
   const ReportExportAction(
     kind: ReportExportKind.clinicShare,
-    icon: FLucideIcons.share2,
+    icon: SemanticIcons.actionShare,
     color: SemanticColor.primary,
   ),
 ];

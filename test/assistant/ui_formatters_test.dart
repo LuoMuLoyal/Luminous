@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
@@ -76,11 +77,11 @@ void main() {
     test('streamInterrupted → wifiOff', () {
       expect(
         sendErrorIcon(AssistantSendErrorType.streamInterrupted),
-        FLucideIcons.wifiOff,
+        SemanticIcons.statusUnavailable,
       );
     });
     test('null → circleAlert', () {
-      expect(sendErrorIcon(null), FLucideIcons.circleAlert);
+      expect(sendErrorIcon(null), SemanticIcons.statusError);
     });
     test('covers all types', () {
       for (final t in AssistantSendErrorType.values) {

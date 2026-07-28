@@ -81,7 +81,11 @@ class _SuggestionFeedbackRowState extends ConsumerState<SuggestionFeedbackRow> {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(FLucideIcons.check, size: Spacing.level4, color: colors.primary),
+          Icon(
+            SemanticIcons.statusDone,
+            size: Spacing.level4,
+            color: colors.primary,
+          ),
           const SizedBox(width: Spacing.level1),
           Text(
             l10n.todaySuggestionFeedbackSubmitted,
@@ -252,7 +256,7 @@ class AiExplainContent extends StatelessWidget {
           Row(
             children: [
               Icon(
-                FLucideIcons.sparkles,
+                SemanticIcons.aiGenerated,
                 size: Spacing.level4,
                 color: colors.primary,
               ),
@@ -311,7 +315,7 @@ class AiExplainUnavailable extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            FLucideIcons.info,
+            SemanticIcons.statusInfo,
             size: Spacing.level4,
             color: colors.mutedForeground,
           ),

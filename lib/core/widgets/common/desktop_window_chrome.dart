@@ -119,13 +119,15 @@ class _WindowControlButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _WindowButton(
-            icon: FLucideIcons.minus,
+            icon: SemanticIcons.actionMinus,
             tooltip: l10n.desktopWindowMinimize,
             iconColor: iconColor,
             onPressed: onMinimize,
           ),
           _WindowButton(
-            icon: isMaximized ? FLucideIcons.copy : FLucideIcons.square,
+            icon: isMaximized
+                ? SemanticIcons.actionCopy
+                : SemanticIcons.statusPending,
             iconSize: IconSizeTokens.level2,
             tooltip: isMaximized
                 ? l10n.desktopWindowRestore
@@ -134,7 +136,7 @@ class _WindowControlButtons extends StatelessWidget {
             onPressed: onMaximizeToggle,
           ),
           _WindowButton(
-            icon: FLucideIcons.x,
+            icon: SemanticIcons.actionClose,
             tooltip: l10n.desktopWindowClose,
             iconColor: iconColor,
             hoverColor: theme.colors.destructive,

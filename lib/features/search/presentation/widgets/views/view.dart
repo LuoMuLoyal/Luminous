@@ -22,12 +22,12 @@ final _scanQuickActions = (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
     ? <MedicineSearchQuickAction>[
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.barcode,
-          icon: FLucideIcons.scanLine,
+          icon: SemanticIcons.actionScan,
           accent: SemanticColor.primary,
         ),
         const MedicineSearchQuickAction(
           type: MedicineSearchActionType.photo,
-          icon: FLucideIcons.camera,
+          icon: SemanticIcons.actionCamera,
           accent: SemanticColor.primary,
         ),
       ]
@@ -140,7 +140,7 @@ class MedicineSearchErrorView extends StatelessWidget {
     return StateErrorView(
       title: l10n.medicineSearchErrorTitle,
       description: l10n.medicineSearchErrorDescription,
-      icon: FLucideIcons.searchX,
+      icon: SemanticIcons.safetyCoverage,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: StateTone.warning,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 import '../../helpers/test_forui_app.dart';
 
@@ -32,12 +33,12 @@ void main() {
         _appShell(
           FBadge.raw(
             builder: (context, style) =>
-                const Icon(FLucideIcons.heart, size: 16),
+                const Icon(SemanticIcons.profileCondition, size: 16),
           ),
         ),
       );
 
-      expect(find.byIcon(FLucideIcons.heart), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.profileCondition), findsOneWidget);
     });
   });
 
@@ -53,12 +54,12 @@ void main() {
         _appShell(
           const FHeader.nested(
             title: Text('Profile'),
-            prefixes: [Icon(FLucideIcons.userRound)],
+            prefixes: [Icon(SemanticIcons.profileUser)],
           ),
         ),
       );
 
-      expect(find.byIcon(FLucideIcons.userRound), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.profileUser), findsOneWidget);
       expect(find.text('Profile'), findsOneWidget);
     });
 
@@ -91,12 +92,12 @@ void main() {
         _appShell(
           FTile(
             title: const Text('More'),
-            suffix: const Icon(FLucideIcons.chevronRight),
+            suffix: const Icon(SemanticIcons.actionNext),
           ),
         ),
       );
 
-      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionNext), findsOneWidget);
     });
 
     testWidgets('点击触发回调', (tester) async {

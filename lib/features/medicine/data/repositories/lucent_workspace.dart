@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
@@ -166,7 +165,7 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
 
   static List<MedicineQuickAction> _defaultQuickActions() => [
     const MedicineQuickAction(
-      icon: FLucideIcons.search,
+      icon: SemanticIcons.actionSearch,
       titleKey: MedicineCopyKey.quickActionSearchTitle,
       subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
       accent: SemanticColor.primary,
@@ -179,19 +178,19 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   // Prescription import remains deferred pending OCR/contract work.
   static final _mobileScanQuickActions = <MedicineQuickAction>[
     const MedicineQuickAction(
-      icon: FLucideIcons.camera,
+      icon: SemanticIcons.actionCamera,
       titleKey: MedicineCopyKey.quickActionCameraTitle,
       subtitleKey: MedicineCopyKey.quickActionCameraSubtitle,
       accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: FLucideIcons.scanLine,
+      icon: SemanticIcons.actionScan,
       titleKey: MedicineCopyKey.quickActionBarcodeTitle,
       subtitleKey: MedicineCopyKey.quickActionBarcodeSubtitle,
       accent: SemanticColor.primary,
     ),
     const MedicineQuickAction(
-      icon: FLucideIcons.receiptText,
+      icon: SemanticIcons.doseLog,
       titleKey: MedicineCopyKey.quickActionPrescriptionTitle,
       subtitleKey: MedicineCopyKey.quickActionPrescriptionSubtitle,
       accent: SemanticColor.primary,

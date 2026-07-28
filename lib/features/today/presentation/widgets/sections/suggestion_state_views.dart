@@ -25,7 +25,7 @@ class SuggestionEmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              FLucideIcons.sparkles,
+              SemanticIcons.aiEntry,
               size: Spacing.level8,
               color: context.theme.colors.mutedForeground,
             ),
@@ -179,7 +179,7 @@ class SuggestionErrorState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              FLucideIcons.circleAlert,
+              SemanticIcons.statusError,
               size: Spacing.level8,
               color: context.theme.colors.mutedForeground,
             ),
@@ -226,7 +226,7 @@ class SecondarySuggestionErrorState extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                FLucideIcons.circleAlert,
+                SemanticIcons.statusError,
                 size: Spacing.level6,
                 color: context.theme.colors.mutedForeground,
               ),

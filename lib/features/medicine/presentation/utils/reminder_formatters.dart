@@ -1,7 +1,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
@@ -110,9 +110,9 @@ String deliveryStatusLabel(AppLocalizations l10n, String value) {
 
 IconData deliveryStatusIcon(String value) {
   return switch (value) {
-    'delivered' => FLucideIcons.badgeCheck,
-    'failed' => FLucideIcons.circleAlert,
-    _ => FLucideIcons.clock3,
+    'delivered' => SemanticIcons.reportAdherence,
+    'failed' => SemanticIcons.statusError,
+    _ => SemanticIcons.statusPending,
   };
 }
 

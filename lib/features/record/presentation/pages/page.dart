@@ -93,7 +93,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               label: isCompact
                   ? l10n.recordAddCompactAction
                   : l10n.recordAddAction,
-              icon: FLucideIcons.plus,
+              icon: SemanticIcons.actionAdd,
               emphasized: true,
               onTap: () => pushAuthRequiredRoute(
                 context,
@@ -106,14 +106,14 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             RecordHeaderActionChip(
               key: const Key('record-date-today-action'),
               label: l10n.recordTodayAction,
-              icon: FLucideIcons.calendarDays,
+              icon: SemanticIcons.actionCalendar,
               onTap: () => _setSelectedDate(clock.now()),
               iconOnly: isCompact,
             ),
             RecordHeaderActionChip(
               key: const Key('record-date-previous-action'),
               label: l10n.recordPreviousDayAction,
-              icon: FLucideIcons.chevronLeft,
+              icon: SemanticIcons.actionPrev,
               onTap: () => _setSelectedDate(
                 selectedDate.subtract(const Duration(days: 1)),
               ),
@@ -122,14 +122,14 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             RecordHeaderActionChip(
               key: const Key('record-date-next-action'),
               label: l10n.recordNextDayAction,
-              icon: FLucideIcons.chevronRight,
+              icon: SemanticIcons.actionNext,
               onTap: () =>
                   _setSelectedDate(selectedDate.add(const Duration(days: 1))),
               iconOnly: true,
             ),
             RecordHeaderActionChip(
               label: l10n.recordPickDateAction,
-              icon: FLucideIcons.calendarDays,
+              icon: SemanticIcons.actionCalendar,
               onTap: () => _pickSelectedDate(context, selectedDate),
               iconOnly: true,
             ),
@@ -138,7 +138,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               label: isCompact
                   ? l10n.recordAddCompactAction
                   : l10n.recordAddAction,
-              icon: FLucideIcons.plus,
+              icon: SemanticIcons.actionAdd,
               emphasized: true,
               onTap: () => pushAuthRequiredRoute(
                 context,
@@ -153,7 +153,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       fatalErrorBuilder: (error) => StateErrorView(
         title: l10n.recordErrorTitle,
         description: l10n.recordErrorDescription,
-        icon: FLucideIcons.notebookPen,
+        icon: SemanticIcons.tabRecord,
         actionLabel: l10n.todayRetryAction,
         onAction: () => ref.invalidate(recordDashboardProvider),
         tone: StateTone.warning,

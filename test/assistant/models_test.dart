@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 
@@ -41,28 +41,28 @@ void main() {
     test('returns squarePlus for createDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.createDailyRecord),
-        FLucideIcons.squarePlus,
+        SemanticIcons.actionAddCard,
       );
     });
 
     test('returns squarePen for updateDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.updateDailyRecord),
-        FLucideIcons.squarePen,
+        SemanticIcons.actionEditCard,
       );
     });
 
     test('returns trash2 for deleteDailyRecord', () {
       expect(
         proposalIcon(AssistantProposedActionType.deleteDailyRecord),
-        FLucideIcons.trash2,
+        SemanticIcons.actionDelete,
       );
     });
 
     test('returns settings2 for updateUserSettings', () {
       expect(
         proposalIcon(AssistantProposedActionType.updateUserSettings),
-        FLucideIcons.settings2,
+        SemanticIcons.actionSettings,
       );
     });
   });

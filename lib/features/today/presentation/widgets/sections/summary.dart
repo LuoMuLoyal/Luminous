@@ -282,7 +282,7 @@ class _AiExpandButton extends StatelessWidget {
               turns: isCollapse ? 0.25 : 0,
               duration: DurationTokens.widgetQuick,
               child: Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 size: Spacing.level4,
                 color: colors.primary,
               ),

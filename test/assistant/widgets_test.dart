@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
@@ -63,7 +63,7 @@ void main() {
             maxWidth: 560,
             title: 'Ready',
             description: 'Assistant is active',
-            icon: FLucideIcons.check,
+            icon: SemanticIcons.statusDone,
           ),
         ),
       );
@@ -78,7 +78,7 @@ void main() {
             maxWidth: 560,
             title: 'Error',
             description: 'Something went wrong',
-            icon: FLucideIcons.circleAlert,
+            icon: SemanticIcons.statusError,
             actionLabel: 'Retry',
             onAction: () {},
             tone: StateTone.danger,

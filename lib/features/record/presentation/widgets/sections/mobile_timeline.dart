@@ -311,7 +311,7 @@ class _TimelineRow extends StatelessWidget {
                     ],
                     const SizedBox(width: Spacing.level2),
                     Icon(
-                      FLucideIcons.chevronRight,
+                      SemanticIcons.actionNext,
                       color: colors.mutedForeground,
                       size: Spacing.level5,
                     ),
@@ -373,7 +373,7 @@ class _MobileTimelineEmptyState extends StatelessWidget {
           child: Column(
             children: [
               Icon(
-                FLucideIcons.filePlus2,
+                SemanticIcons.actionAdd,
                 size: Spacing.level8,
                 color: colors.mutedForeground,
               ),
@@ -401,7 +401,10 @@ class _MobileTimelineEmptyState extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(FLucideIcons.plus, size: IconSizeTokens.level2),
+                    const Icon(
+                      SemanticIcons.actionAdd,
+                      size: IconSizeTokens.level2,
+                    ),
                     const SizedBox(width: Spacing.level2),
                     Text(l10n.recordTimelineEmptyAction),
                   ],

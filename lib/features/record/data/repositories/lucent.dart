@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -80,14 +79,14 @@ class LucentRecordRepository implements RecordRepository {
     const soft = SemanticColor.neutral;
 
     final icon = switch (kind) {
-      DailyRecordKind.water => FLucideIcons.droplets,
-      DailyRecordKind.meal => FLucideIcons.utensils,
-      DailyRecordKind.vital => FLucideIcons.heart,
-      DailyRecordKind.mood => FLucideIcons.smile,
-      DailyRecordKind.symptom => FLucideIcons.cross,
-      DailyRecordKind.activity => FLucideIcons.personStanding,
-      DailyRecordKind.note => FLucideIcons.notebookPen,
-      DailyRecordKind.sleep => FLucideIcons.moon,
+      DailyRecordKind.water => SemanticIcons.recordWater,
+      DailyRecordKind.meal => SemanticIcons.recordMeal,
+      DailyRecordKind.vital => SemanticIcons.profileCondition,
+      DailyRecordKind.mood => SemanticIcons.recordMood,
+      DailyRecordKind.symptom => SemanticIcons.safetyDanger,
+      DailyRecordKind.activity => SemanticIcons.recordActivity,
+      DailyRecordKind.note => SemanticIcons.tabRecord,
+      DailyRecordKind.sleep => SemanticIcons.recordMoon,
     };
 
     // Mood records created through the fast-entry dialog store the level in
@@ -274,7 +273,7 @@ class LucentRecordRepository implements RecordRepository {
   static final _staticQuickActions = <RecordQuickAction>[
     const RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: FLucideIcons.briefcaseMedical,
+      icon: SemanticIcons.medicineKit,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -282,7 +281,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -291,7 +290,7 @@ class LucentRecordRepository implements RecordRepository {
     // Lightweight mood self-check-in quick action.
     const RecordQuickAction(
       type: RecordEntryType.mood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -299,7 +298,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -307,7 +306,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: SemanticColor.primary,
@@ -315,7 +314,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.vitals,
-      icon: FLucideIcons.heart,
+      icon: SemanticIcons.profileCondition,
       titleKey: RecordCopyKey.typeVitals,
       subtitleKey: RecordCopyKey.summaryNormal,
       accent: SemanticColor.primary,
@@ -323,7 +322,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -331,7 +330,7 @@ class LucentRecordRepository implements RecordRepository {
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -351,56 +350,56 @@ class LucentRecordRepository implements RecordRepository {
     const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: FLucideIcons.briefcaseMedical,
+      icon: SemanticIcons.medicineKit,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.vitals,
       titleKey: RecordCopyKey.typeVitals,
-      icon: FLucideIcons.heart,
+      icon: SemanticIcons.profileCondition,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       accent: SemanticColor.primary,
       selected: true,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       accent: SemanticColor.primary,
       selected: true,
     ),

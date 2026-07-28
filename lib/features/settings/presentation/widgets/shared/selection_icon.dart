@@ -17,7 +17,7 @@ class SettingsSelectionIcon extends StatelessWidget {
     return Opacity(
       opacity: selected ? 1 : 0,
       child: Icon(
-        FLucideIcons.check,
+        SemanticIcons.statusDone,
         size: IconSizeTokens.level3,
         color: colors.primary,
       ),

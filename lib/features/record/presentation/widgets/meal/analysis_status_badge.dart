@@ -79,22 +79,22 @@ class MealAnalysisStatusBadge extends StatelessWidget {
       'analyzing' => (
         l10n.recordMealAnalysisStatusAnalyzing,
         SemanticColor.primary,
-        FLucideIcons.clock3,
+        SemanticIcons.statusPending,
       ),
       'confirmed' => (
         l10n.recordMealAnalysisStatusConfirmed,
         SemanticColor.primary,
-        FLucideIcons.badgeCheck,
+        SemanticIcons.reportAdherence,
       ),
       'analysis_failed' => (
         l10n.recordMealAnalysisStatusFailed,
         SemanticColor.destructive,
-        FLucideIcons.circleAlert,
+        SemanticIcons.statusError,
       ),
       _ => (
         l10n.recordMealAnalysisStatusUnconfirmed,
         SemanticColor.primary,
-        FLucideIcons.badgeHelp,
+        SemanticIcons.actionHelp,
       ),
     };
   }

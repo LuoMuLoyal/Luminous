@@ -21,7 +21,7 @@ class ReportReferenceNotice extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              FLucideIcons.triangleAlert,
+              SemanticIcons.statusWarning,
               color: context.theme.colors.primary,
               size: Spacing.level5,
             ),

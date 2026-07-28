@@ -554,10 +554,10 @@ class _ProfileSection extends StatelessWidget {
                             width: 56,
                             height: 56,
                             errorBuilder: (_, __, ___) =>
-                                const Icon(FLucideIcons.userRound, size: 28),
+                                const Icon(SemanticIcons.profileUser, size: 28),
                           ),
                         )
-                      : const Icon(FLucideIcons.userRound, size: 28),
+                      : const Icon(SemanticIcons.profileUser, size: 28),
                 ),
                 const SizedBox(width: Spacing.level4),
                 Expanded(

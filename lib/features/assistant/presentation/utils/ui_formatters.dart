@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -37,10 +38,13 @@ String messageIdFor(AssistantMessage message) {
 
 IconData proposalIcon(AssistantProposedActionType type) {
   return switch (type) {
-    AssistantProposedActionType.createDailyRecord => FLucideIcons.squarePlus,
-    AssistantProposedActionType.updateDailyRecord => FLucideIcons.squarePen,
-    AssistantProposedActionType.deleteDailyRecord => FLucideIcons.trash2,
-    AssistantProposedActionType.updateUserSettings => FLucideIcons.settings2,
+    AssistantProposedActionType.createDailyRecord =>
+      SemanticIcons.actionAddCard,
+    AssistantProposedActionType.updateDailyRecord =>
+      SemanticIcons.actionEditCard,
+    AssistantProposedActionType.deleteDailyRecord => SemanticIcons.actionDelete,
+    AssistantProposedActionType.updateUserSettings =>
+      SemanticIcons.actionSettings,
   };
 }
 
@@ -103,10 +107,10 @@ String sendErrorDescription(
 
 IconData sendErrorIcon(AssistantSendErrorType? errorType) {
   return switch (errorType) {
-    AssistantSendErrorType.streamInterrupted => FLucideIcons.wifiOff,
-    AssistantSendErrorType.emptyResult => FLucideIcons.hourglass,
-    AssistantSendErrorType.server => FLucideIcons.cloudOff,
-    AssistantSendErrorType.unknown || null => FLucideIcons.circleAlert,
+    AssistantSendErrorType.streamInterrupted => SemanticIcons.statusUnavailable,
+    AssistantSendErrorType.emptyResult => SemanticIcons.safetyLongTerm,
+    AssistantSendErrorType.server => SemanticIcons.statusUnavailable,
+    AssistantSendErrorType.unknown || null => SemanticIcons.statusError,
   };
 }
 

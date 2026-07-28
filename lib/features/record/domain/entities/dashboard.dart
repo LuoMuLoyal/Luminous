@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 
 part 'dashboard.freezed.dart';
 
@@ -69,7 +68,7 @@ abstract class RecordDashboard with _$RecordDashboard {
   static final _defaultQuickActions = <RecordQuickAction>[
     const RecordQuickAction(
       type: RecordEntryType.symptom,
-      icon: FLucideIcons.briefcaseMedical,
+      icon: SemanticIcons.medicineKit,
       titleKey: RecordCopyKey.typeSymptom,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -77,7 +76,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.medication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       titleKey: RecordCopyKey.typeMedication,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -85,7 +84,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.water,
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       titleKey: RecordCopyKey.typeWater,
       subtitleKey: RecordCopyKey.summaryCupsUnit,
       accent: SemanticColor.primary,
@@ -93,7 +92,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.meal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       titleKey: RecordCopyKey.typeMeal,
       subtitleKey: RecordCopyKey.summaryTimesUnit,
       accent: SemanticColor.primary,
@@ -101,7 +100,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.sleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       titleKey: RecordCopyKey.typeSleep,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -109,7 +108,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.mood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       titleKey: RecordCopyKey.typeMood,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -117,7 +116,7 @@ abstract class RecordDashboard with _$RecordDashboard {
     ),
     const RecordQuickAction(
       type: RecordEntryType.note,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       titleKey: RecordCopyKey.typeNote,
       subtitleKey: RecordCopyKey.summaryRecorded,
       accent: SemanticColor.primary,
@@ -129,49 +128,49 @@ abstract class RecordDashboard with _$RecordDashboard {
     const RecordFilter(
       type: RecordEntryType.symptom,
       titleKey: RecordCopyKey.typeSymptom,
-      icon: FLucideIcons.briefcaseMedical,
+      icon: SemanticIcons.medicineKit,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.medication,
       titleKey: RecordCopyKey.typeMedication,
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.water,
       titleKey: RecordCopyKey.typeWater,
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.meal,
       titleKey: RecordCopyKey.typeMeal,
-      icon: FLucideIcons.utensils,
+      icon: SemanticIcons.recordMeal,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.sleep,
       titleKey: RecordCopyKey.typeSleep,
-      icon: FLucideIcons.moon,
+      icon: SemanticIcons.recordMoon,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.mood,
       titleKey: RecordCopyKey.typeMood,
-      icon: FLucideIcons.smile,
+      icon: SemanticIcons.recordMood,
       accent: SemanticColor.primary,
       selected: false,
     ),
     const RecordFilter(
       type: RecordEntryType.note,
       titleKey: RecordCopyKey.typeNote,
-      icon: FLucideIcons.notebookPen,
+      icon: SemanticIcons.tabRecord,
       accent: SemanticColor.primary,
       selected: false,
     ),

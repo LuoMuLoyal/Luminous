@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -241,7 +242,7 @@ void main() {
       setDesktopScreenSize(tester);
       await pumpShell(tester, router: buildRouter());
 
-      expect(find.byIcon(FLucideIcons.heartPulse), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.profileUser), findsOneWidget);
     });
   });
 }

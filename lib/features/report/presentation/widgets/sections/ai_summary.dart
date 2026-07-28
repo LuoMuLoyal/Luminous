@@ -61,7 +61,7 @@ class ReportAiSummarySection extends StatelessWidget {
                 FAvatar.raw(
                   size: Spacing.level8,
                   child: Icon(
-                    FLucideIcons.sparkles,
+                    SemanticIcons.aiEntry,
                     color: SemanticColor.primary.solid(context),
                     size: Spacing.level5,
                   ),
@@ -216,8 +216,8 @@ class ReportAiSummarySection extends StatelessWidget {
                         },
                   prefix: Icon(
                     aiState.isLoading
-                        ? FLucideIcons.loaderCircle
-                        : FLucideIcons.sparkles,
+                        ? SemanticIcons.aiAnalyzing
+                        : SemanticIcons.aiEntry,
                     size: 16,
                   ),
                   child: Text(

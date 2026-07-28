@@ -42,7 +42,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                   child: Row(
                     children: [
                       Icon(
-                        FLucideIcons.flaskConical,
+                        SemanticIcons.recordSymptom,
                         size: 16,
                         color: context.theme.colors.primary,
                       ),
@@ -81,7 +81,7 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
                     FTile(
                       title: Text(l10n.settingsFeatureFlagsAiProvider),
                       subtitle: Text(flags.aiRuntimeProvider.name),
-                      suffix: const Icon(FLucideIcons.chevronRight),
+                      suffix: const Icon(SemanticIcons.actionNext),
                       onPress: () => _showProviderSheet(
                         context,
                         flags.aiRuntimeProvider,

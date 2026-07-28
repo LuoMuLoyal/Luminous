@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:clock/clock.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';
 
@@ -50,7 +50,7 @@ class MockReportRepository implements ReportRepository {
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,
-        icon: FLucideIcons.pill,
+        icon: SemanticIcons.recordMedicine,
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
@@ -61,7 +61,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.sleep,
-        icon: FLucideIcons.moon,
+        icon: SemanticIcons.recordMoon,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
@@ -72,7 +72,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.water,
-        icon: FLucideIcons.droplets,
+        icon: SemanticIcons.recordWater,
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
@@ -108,7 +108,7 @@ class MockReportRepository implements ReportRepository {
     findings: <ReportFinding>[
       ReportFinding(
         kind: ReportInsightKind.general,
-        icon: FLucideIcons.chartLine,
+        icon: SemanticIcons.reportChart,
         color: SemanticColor.primary,
         title: 'Preparing report',
         body: 'The latest contract-backed report is loading.',
@@ -117,7 +117,7 @@ class MockReportRepository implements ReportRepository {
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,
-        icon: FLucideIcons.hospital,
+        icon: SemanticIcons.medicineKit,
         color: SemanticColor.primary,
       ),
       ReportExportAction(
@@ -127,14 +127,14 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
-        icon: FLucideIcons.printer,
+        icon: SemanticIcons.actionExport,
         color: SemanticColor.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
-        icon: FLucideIcons.chartLine,
+        icon: SemanticIcons.reportChart,
         color: SemanticColor.primary,
         title: 'Preparing report',
         status: ReportStatus.stable,
@@ -159,7 +159,7 @@ class MockReportRepository implements ReportRepository {
     metrics: <ReportMetric>[
       ReportMetric(
         kind: ReportDataKind.medication,
-        icon: FLucideIcons.pill,
+        icon: SemanticIcons.recordMedicine,
         color: SemanticColor.primary,
         value: '--',
         unit: '%',
@@ -170,7 +170,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.sleep,
-        icon: FLucideIcons.moon,
+        icon: SemanticIcons.recordMoon,
         color: SemanticColor.primary,
         value: '--',
         unit: 'h',
@@ -181,7 +181,7 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportMetric(
         kind: ReportDataKind.water,
-        icon: FLucideIcons.droplets,
+        icon: SemanticIcons.recordWater,
         color: SemanticColor.primary,
         value: '--',
         unit: 'L',
@@ -217,7 +217,7 @@ class MockReportRepository implements ReportRepository {
     findings: <ReportFinding>[
       ReportFinding(
         kind: ReportInsightKind.general,
-        icon: FLucideIcons.lock,
+        icon: SemanticIcons.statusBlocked,
         color: SemanticColor.primary,
         title: '登录后解锁报告',
         body: '报告会基于你的真实记录生成最近 7 天的聚合结果。',
@@ -226,7 +226,7 @@ class MockReportRepository implements ReportRepository {
     exportActions: <ReportExportAction>[
       ReportExportAction(
         kind: ReportExportKind.hospital,
-        icon: FLucideIcons.hospital,
+        icon: SemanticIcons.medicineKit,
         color: SemanticColor.primary,
       ),
       ReportExportAction(
@@ -236,14 +236,14 @@ class MockReportRepository implements ReportRepository {
       ),
       ReportExportAction(
         kind: ReportExportKind.print,
-        icon: FLucideIcons.printer,
+        icon: SemanticIcons.actionExport,
         color: SemanticColor.primary,
       ),
     ],
     patterns: <ReportPatternCard>[
       ReportPatternCard(
         kind: ReportInsightKind.general,
-        icon: FLucideIcons.lock,
+        icon: SemanticIcons.statusBlocked,
         color: SemanticColor.primary,
         title: '等待登录',
         status: ReportStatus.insufficientData,

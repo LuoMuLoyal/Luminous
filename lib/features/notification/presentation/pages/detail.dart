@@ -46,7 +46,7 @@ class NotificationDetailPage extends ConsumerWidget {
                   return StateMessageView(
                     title: l10n.notificationNotFoundTitle,
                     description: l10n.notificationNotFoundDescription,
-                    icon: FLucideIcons.bellOff,
+                    icon: SemanticIcons.statusBlocked,
                     tone: StateTone.neutral,
                   );
                 }
@@ -67,7 +67,7 @@ class NotificationDetailPage extends ConsumerWidget {
                   fallback: l10n.notificationErrorTitle,
                   l10n: l10n,
                 ),
-                icon: FLucideIcons.circleAlert,
+                icon: SemanticIcons.statusError,
                 actionLabel: l10n.notificationRetryAction,
                 onAction: () =>
                     ref.invalidate(notificationDetailProvider(notificationId)),
@@ -303,7 +303,7 @@ class _ActionBar extends StatelessWidget {
         FButton(
           onPress: onNavigate,
           prefix: const Icon(
-            FLucideIcons.externalLink,
+            SemanticIcons.actionExternalLink,
             size: IconSizeTokens.level3,
           ),
           child: Text(l10n.notificationActionNavigate),
@@ -314,7 +314,9 @@ class _ActionBar extends StatelessWidget {
         variant: FButtonVariant.outline,
         onPress: detail.isRead ? onMarkUnread : onMarkRead,
         prefix: Icon(
-          detail.isRead ? FLucideIcons.mailMinus : FLucideIcons.checkCheck,
+          detail.isRead
+              ? SemanticIcons.notificationRead
+              : SemanticIcons.statusAllDone,
           size: 18,
         ),
         child: Text(
@@ -327,7 +329,10 @@ class _ActionBar extends StatelessWidget {
       FButton(
         variant: FButtonVariant.destructive,
         onPress: () => _showDeleteConfirm(context, onDelete),
-        prefix: const Icon(FLucideIcons.trash2, size: IconSizeTokens.level3),
+        prefix: const Icon(
+          SemanticIcons.actionDelete,
+          size: IconSizeTokens.level3,
+        ),
         child: Text(l10n.notificationActionDelete),
       ),
     ];

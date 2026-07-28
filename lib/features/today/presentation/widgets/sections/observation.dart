@@ -77,7 +77,7 @@ class TodayObservationSection extends ConsumerWidget {
     if (!hasMeaningfulVitalValue(dashboard.vitals, TodayVitalType.sleep)) {
       return [
         _ObservationItem(
-          icon: FLucideIcons.moonStar,
+          icon: SemanticIcons.recordSleep,
           title: l10n.todayObservationSleepMissingTitle,
           subtitle: l10n.todayObservationSleepMissingSubtitle,
           tag: l10n.todayObservationLowConfidenceTag,
@@ -159,7 +159,7 @@ class _ObservationTile extends StatelessWidget {
             if (item.onPress != null) ...[
               const SizedBox(width: Spacing.level2),
               Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 size: Spacing.level4,
                 color: colors.mutedForeground,
               ),
@@ -248,7 +248,7 @@ class _ObservationErrorState extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.level4),
       child: Row(
         children: [
-          Icon(FLucideIcons.circleAlert, color: colors.destructive),
+          Icon(SemanticIcons.statusError, color: colors.destructive),
           const SizedBox(width: Spacing.level3),
           Expanded(
             child: Text(
@@ -337,17 +337,17 @@ String _tagForConfidence(
 
 IconData _iconFor(String icon) {
   return switch (icon) {
-    'droplets' => FLucideIcons.droplets,
-    'moon' => FLucideIcons.moon,
-    'activity' => FLucideIcons.activity,
-    'coffee' => FLucideIcons.coffee,
-    'user' => FLucideIcons.userRound,
-    'clipboard' => FLucideIcons.clipboardList,
-    'alert-triangle' => FLucideIcons.triangleAlert,
-    'pill' => FLucideIcons.pill,
-    'trending-up' => FLucideIcons.trendingUp,
-    'lightbulb' => FLucideIcons.lightbulb,
-    'info' => FLucideIcons.info,
-    _ => FLucideIcons.sparkles,
+    'droplets' => SemanticIcons.recordWater,
+    'moon' => SemanticIcons.recordMoon,
+    'activity' => SemanticIcons.recordActivity,
+    'coffee' => SemanticIcons.recordCaffeine,
+    'user' => SemanticIcons.profileUser,
+    'clipboard' => SemanticIcons.recordClipboard,
+    'alert-triangle' => SemanticIcons.statusWarning,
+    'pill' => SemanticIcons.recordMedicine,
+    'trending-up' => SemanticIcons.reportTrend,
+    'lightbulb' => SemanticIcons.aiTip,
+    'info' => SemanticIcons.statusInfo,
+    _ => SemanticIcons.aiEntry,
   };
 }

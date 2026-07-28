@@ -93,10 +93,13 @@ class ValueActionRow extends StatelessWidget {
                     variant: FButtonVariant.ghost,
                     size: .sm,
                     onPress: onClear,
-                    child: const Icon(FLucideIcons.x, size: Spacing.level5),
+                    child: const Icon(
+                      SemanticIcons.actionClose,
+                      size: Spacing.level5,
+                    ),
                   )
                 : Icon(
-                    FLucideIcons.chevronRight,
+                    SemanticIcons.actionNext,
                     color: colors.mutedForeground,
                     size: Spacing.level5,
                   ),
@@ -134,7 +137,7 @@ class SwitchRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            FLucideIcons.bellRing,
+            SemanticIcons.notificationBellRing,
             color: colors.mutedForeground,
             size: Spacing.level5,
           ),
@@ -248,7 +251,7 @@ class SoundPreferenceRow extends StatelessWidget {
       child: Row(
         children: [
           Icon(
-            FLucideIcons.volume2,
+            SemanticIcons.doseVolume,
             color: colors.mutedForeground,
             size: Spacing.level5,
           ),
@@ -311,7 +314,7 @@ class SelectedMedicineRow extends StatelessWidget {
         children: [
           FAvatar.raw(
             child: Icon(
-              FLucideIcons.pill,
+              SemanticIcons.recordMedicine,
               color: SemanticColor.primary.solid(context),
             ),
           ),

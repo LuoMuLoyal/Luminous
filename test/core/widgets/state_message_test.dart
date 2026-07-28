@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_message.dart';
 
 import '../../helpers/test_forui_app.dart';
@@ -36,7 +37,7 @@ void main() {
           StateMessageView(
             title: 'Error',
             description: 'Tap to retry',
-            icon: FLucideIcons.triangleAlert,
+            icon: SemanticIcons.statusWarning,
             actionLabel: 'Retry',
             onAction: () {},
           ),
@@ -54,7 +55,7 @@ void main() {
           StateMessageView(
             title: 'Network error',
             description: 'Check connection',
-            icon: FLucideIcons.wifiOff,
+            icon: SemanticIcons.statusUnavailable,
             actionLabel: 'Retry',
             onAction: () => tapped = true,
           ),
@@ -73,7 +74,7 @@ void main() {
             maxWidth: 560,
             title: 'Limited',
             description: 'Width is constrained.',
-            icon: FLucideIcons.info,
+            icon: SemanticIcons.statusInfo,
           ),
         ),
       );
@@ -95,7 +96,7 @@ void main() {
           const StateMessageView(
             title: 'Full',
             description: 'No width limit.',
-            icon: FLucideIcons.info,
+            icon: SemanticIcons.statusInfo,
           ),
         ),
       );
@@ -118,7 +119,7 @@ void main() {
             child: StateMessageView(
               title: 'Need retry',
               description: 'The response did not finish.',
-              icon: FLucideIcons.triangleAlert,
+              icon: SemanticIcons.statusWarning,
               actionLabel: 'Retry',
             ),
           ),
@@ -136,7 +137,7 @@ void main() {
           const StateErrorView(
             title: 'Something went wrong',
             description: 'Please try again later.',
-            icon: FLucideIcons.circleAlert,
+            icon: SemanticIcons.statusError,
           ),
         ),
       );
@@ -151,7 +152,7 @@ void main() {
           const StateErrorView(
             title: 'Compact',
             description: 'Small error view',
-            icon: FLucideIcons.info,
+            icon: SemanticIcons.statusInfo,
             compact: true,
           ),
         ),
@@ -169,7 +170,7 @@ void main() {
           const StateMessageView(
             title: 'Neutral',
             description: 'Primary accent',
-            icon: FLucideIcons.info,
+            icon: SemanticIcons.statusInfo,
             tone: StateTone.neutral,
           ),
         ),
@@ -186,7 +187,7 @@ void main() {
           const StateMessageView(
             title: 'Danger',
             description: 'Destructive accent',
-            icon: FLucideIcons.circleAlert,
+            icon: SemanticIcons.statusError,
             tone: StateTone.danger,
           ),
         ),

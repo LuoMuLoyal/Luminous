@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
@@ -74,7 +73,7 @@ MineDashboard buildDashboard({
     alerts: alerts,
     archiveEntries: archiveEntries,
     privacyNotice: const MinePrivacyNotice(
-      icon: FLucideIcons.shield,
+      icon: SemanticIcons.safetyNeutral,
       titleKey: MineCopyKey.privacyNoticeTitle,
       actionKey: MineCopyKey.privacyNoticeAction,
     ),
@@ -127,14 +126,14 @@ MineCompletion _buildCompletion(HealthContextSnapshot snapshot) {
 List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
   return [
     const MineStatusCard(
-      icon: FLucideIcons.triangleAlert,
+      icon: SemanticIcons.statusWarning,
       accent: _red,
       titleKey: MineCopyKey.alertAllergyTitle,
       subtitleKey: MineCopyKey.alertAllergySubtitle,
       badgeKey: MineCopyKey.alertAllergyBadge,
     ),
     MineStatusCard(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: _blue,
       titleKey: MineCopyKey.alertMedicineTitle,
       subtitleKey: MineCopyKey.alertMedicineSubtitle,
@@ -143,7 +142,7 @@ List<MineStatusCard> _buildAlerts(HealthContextSnapshot snapshot) {
           : MineCopyKey.archiveNeedsFill,
     ),
     const MineStatusCard(
-      icon: FLucideIcons.userCheck,
+      icon: SemanticIcons.profileUser,
       accent: _green,
       titleKey: MineCopyKey.alertPrivacyTitle,
       subtitleKey: MineCopyKey.alertPrivacySubtitle,
@@ -157,7 +156,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
 
   return [
     MineArchiveEntry(
-      icon: FLucideIcons.badge,
+      icon: SemanticIcons.reportAdherence,
       accent: _green,
       titleKey: MineCopyKey.archiveBasicTitle,
       subtitleKey: MineCopyKey.archiveBasicSubtitle,
@@ -167,7 +166,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: '/mine/profile/edit',
     ),
     MineArchiveEntry(
-      icon: FLucideIcons.droplets,
+      icon: SemanticIcons.recordWater,
       accent: _pink,
       titleKey: MineCopyKey.archiveAllergyTitle,
       subtitleKey: MineCopyKey.archiveAllergySubtitle,
@@ -177,7 +176,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: Routes.mineAllergyNew,
     ),
     MineArchiveEntry(
-      icon: FLucideIcons.heartPulse,
+      icon: SemanticIcons.profileCondition,
       accent: _red,
       titleKey: MineCopyKey.archiveConditionTitle,
       subtitleKey: MineCopyKey.archiveConditionSubtitle,
@@ -187,7 +186,7 @@ List<MineArchiveEntry> _buildArchiveEntries(HealthContextSnapshot snapshot) {
       route: Routes.mineConditionNew,
     ),
     MineArchiveEntry(
-      icon: FLucideIcons.pill,
+      icon: SemanticIcons.recordMedicine,
       accent: _blue,
       titleKey: MineCopyKey.archiveMedicineTitle,
       subtitleKey: MineCopyKey.archiveMedicineSubtitle,

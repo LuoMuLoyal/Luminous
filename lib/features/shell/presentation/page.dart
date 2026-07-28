@@ -202,7 +202,7 @@ class _SidebarHeaderContent extends StatelessWidget {
               FAvatar.raw(
                 size: 28,
                 child: const Icon(
-                  FLucideIcons.userRound,
+                  SemanticIcons.profileUser,
                   size: IconSizeTokens.level2,
                 ),
               ),
@@ -271,9 +271,9 @@ class _SidebarFooter extends ConsumerWidget {
       AppThemeModePreference.dark => AppThemeModePreference.system,
     };
     final themeIcon = switch (themePref.mode) {
-      AppThemeModePreference.system => FLucideIcons.monitor,
-      AppThemeModePreference.light => FLucideIcons.sun,
-      AppThemeModePreference.dark => FLucideIcons.moon,
+      AppThemeModePreference.system => SemanticIcons.actionExternalLink,
+      AppThemeModePreference.light => SemanticIcons.actionThemeLight,
+      AppThemeModePreference.dark => SemanticIcons.recordMoon,
     };
 
     return Column(
@@ -286,7 +286,7 @@ class _SidebarFooter extends ConsumerWidget {
             clipBehavior: Clip.none,
             children: [
               FSidebarItem(
-                icon: const Icon(FLucideIcons.bell),
+                icon: const Icon(SemanticIcons.notificationBell),
                 label: Text(l10n.desktopSidebarNotifications),
                 onPress: () => context.push(Routes.notifications),
               ),
@@ -312,12 +312,12 @@ class _SidebarFooter extends ConsumerWidget {
               ref.read(themeControllerProvider.notifier).setMode(nextMode),
         ),
         FSidebarItem(
-          icon: const Icon(FLucideIcons.settings),
+          icon: const Icon(SemanticIcons.actionSettings),
           label: Text(l10n.desktopSidebarSettings),
           onPress: () => context.push(Routes.settings),
         ),
         FSidebarItem(
-          icon: const Icon(FLucideIcons.circleHelp),
+          icon: const Icon(SemanticIcons.actionHelp),
           label: Text(l10n.desktopSidebarHelp),
           onPress: () => context.push(Routes.assistant),
         ),

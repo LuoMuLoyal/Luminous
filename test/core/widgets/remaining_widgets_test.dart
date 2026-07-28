@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 import '../../helpers/test_forui_app.dart';
 
@@ -16,7 +17,7 @@ void main() {
       await tester.pumpWidget(
         _appShell(
           FButton(
-            prefix: const Icon(FLucideIcons.search),
+            prefix: const Icon(SemanticIcons.actionSearch),
             onPress: () {},
             mainAxisSize: MainAxisSize.min,
             child: const Text('Search'),
@@ -25,7 +26,7 @@ void main() {
       );
 
       expect(find.text('Search'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.search), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionSearch), findsOneWidget);
     });
 
     testWidgets('点击触发回调', (tester) async {
@@ -62,7 +63,7 @@ void main() {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(FLucideIcons.image, size: 32),
+                Icon(SemanticIcons.actionImage, size: 32),
                 SizedBox(height: 8),
                 Text('No image'),
               ],
@@ -72,7 +73,7 @@ void main() {
       );
 
       expect(find.text('No image'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.image), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionImage), findsOneWidget);
     });
 
     testWidgets('支持自定义图标', (tester) async {
@@ -88,7 +89,7 @@ void main() {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(FLucideIcons.camera, size: 32),
+                Icon(SemanticIcons.actionCamera, size: 32),
                 SizedBox(height: 8),
                 Text('Photo'),
               ],
@@ -98,7 +99,7 @@ void main() {
       );
 
       expect(find.text('Photo'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.camera), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionCamera), findsOneWidget);
     });
 
     testWidgets('支持指定宽高', (tester) async {
@@ -110,7 +111,7 @@ void main() {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(FLucideIcons.image, size: 32),
+                Icon(SemanticIcons.actionImage, size: 32),
                 SizedBox(height: 8),
                 Text('Sized'),
               ],
@@ -196,12 +197,12 @@ void main() {
         _appShell(
           FTile(
             title: const Text('With chevron'),
-            suffix: const Icon(FLucideIcons.chevronRight),
+            suffix: const Icon(SemanticIcons.actionNext),
           ),
         ),
       );
 
-      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionNext), findsOneWidget);
     });
 
     testWidgets('带副标题和值', (tester) async {
@@ -242,13 +243,13 @@ void main() {
         _appShell(
           FTile(
             title: const Text('Go to page'),
-            suffix: const Icon(FLucideIcons.chevronRight),
+            suffix: const Icon(SemanticIcons.actionNext),
           ),
         ),
       );
 
       expect(find.text('Go to page'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.chevronRight), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.actionNext), findsOneWidget);
     });
 
     testWidgets('带副标题和值', (tester) async {
@@ -258,7 +259,7 @@ void main() {
             title: const Text('Language'),
             subtitle: const Text('App locale'),
             details: const Text('English'),
-            suffix: const Icon(FLucideIcons.chevronRight),
+            suffix: const Icon(SemanticIcons.actionNext),
           ),
         ),
       );
@@ -275,7 +276,7 @@ void main() {
           FTile(
             title: const Text('Navigate'),
             onPress: () => tapped = true,
-            suffix: const Icon(FLucideIcons.chevronRight),
+            suffix: const Icon(SemanticIcons.actionNext),
           ),
         ),
       );

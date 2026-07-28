@@ -210,7 +210,7 @@ class EvidenceToggleButton extends StatelessWidget {
               turns: expanded ? 0.25 : 0,
               duration: DurationTokens.widgetQuick,
               child: Icon(
-                FLucideIcons.chevronRight,
+                SemanticIcons.actionNext,
                 size: Spacing.level4,
                 color: colors.primary,
               ),

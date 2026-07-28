@@ -126,7 +126,7 @@ class RecordNewEntryPanel extends StatelessWidget {
                 ),
               ),
               prefix: Icon(
-                FLucideIcons.plus,
+                SemanticIcons.actionAdd,
                 color: context.theme.colors.primary,
                 size: 20,
               ),

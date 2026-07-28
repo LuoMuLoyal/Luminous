@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -86,7 +87,7 @@ class _MedicineRiskCheckPageState extends ConsumerState<MedicineRiskCheckPage> {
         error: (_, __) => StateErrorView(
           title: l10n.medicineErrorTitle,
           description: l10n.medicineErrorDescription,
-          icon: FLucideIcons.shieldAlert,
+          icon: SemanticIcons.safetyCaution,
           actionLabel: l10n.todayRetryAction,
           onAction: () => ref.invalidate(medicineRiskCheckRecordsProvider),
           tone: StateTone.warning,

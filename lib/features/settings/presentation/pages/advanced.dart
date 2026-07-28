@@ -50,7 +50,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                     FTile(
                       key: const Key('advanced-settings-row-clear-cache'),
                       title: Text(l10n.settingsAdvancedClearImageCache),
-                      suffix: const Icon(FLucideIcons.chevronRight),
+                      suffix: const Icon(SemanticIcons.actionNext),
                       onPress: () async {
                         imageCache.clear();
                         imageCache.clearLiveImages();
@@ -76,7 +76,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
                       ),
                       subtitle: Text(l10n.settingsAdvancedResetDefaultsHint),
                       suffix: Icon(
-                        FLucideIcons.rotateCcw,
+                        SemanticIcons.actionReset,
                         size: 18,
                         color: context.theme.colors.destructive,
                       ),
@@ -178,21 +178,21 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
           key: const Key('dev-settings-row-api-endpoint'),
           title: Text(l10n.settingsDevApiEndpoint),
           subtitle: Text(dev.resolvedBaseUrl),
-          suffix: const Icon(FLucideIcons.chevronRight),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () => _showEndpointSheet(context, ref, dev),
         ),
         FTile(
           key: const Key('dev-settings-row-log-level'),
           title: Text(l10n.settingsDevLogLevel),
           subtitle: Text(_logLevelLabel(l10n, dev.logLevel)),
-          suffix: const Icon(FLucideIcons.chevronRight),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () => _showLogLevelSheet(context, ref, dev.logLevel),
         ),
         FTile(
           key: const Key('dev-settings-row-feature-flags'),
           title: Text(l10n.settingsFeatureFlagsTitle),
           subtitle: Text(l10n.settingsFeatureFlagsSummary(flags.enabledCount)),
-          suffix: const Icon(FLucideIcons.chevronRight),
+          suffix: const Icon(SemanticIcons.actionNext),
           onPress: () => const SettingsFeatureFlagsRoute().push(context),
         ),
       ],

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 
 part 'workspace.freezed.dart';
@@ -26,7 +25,7 @@ abstract class MedicineWorkspace with _$MedicineWorkspace {
     ),
     quickActions: <MedicineQuickAction>[
       MedicineQuickAction(
-        icon: FLucideIcons.search,
+        icon: SemanticIcons.actionSearch,
         titleKey: MedicineCopyKey.quickActionSearchTitle,
         subtitleKey: MedicineCopyKey.quickActionSearchSubtitle,
         accent: SemanticColor.primary,

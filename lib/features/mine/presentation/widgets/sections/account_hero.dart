@@ -248,7 +248,7 @@ class _AvatarPlaceholder extends StatelessWidget {
             child: SizedBox.square(
               dimension: 64,
               child: Icon(
-                FLucideIcons.userRound,
+                SemanticIcons.profileUser,
                 color: colors.mutedForeground,
                 size: 32,
               ),
@@ -266,7 +266,7 @@ class _AvatarPlaceholder extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(Spacing.level1),
                 child: Icon(
-                  FLucideIcons.pencil,
+                  SemanticIcons.actionEdit,
                   color: colors.primaryForeground,
                   size: 12,
                 ),

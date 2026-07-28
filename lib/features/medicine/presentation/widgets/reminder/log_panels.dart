@@ -42,7 +42,7 @@ class ReminderTodayLogPanel extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(
-                        FLucideIcons.clipboardList,
+                        SemanticIcons.recordClipboard,
                         color: colors.mutedForeground,
                         size: Spacing.level5,
                       ),
@@ -126,7 +126,7 @@ class _ReminderDeliveryLogPanelState extends State<ReminderDeliveryLogPanel> {
                   child: Row(
                     children: [
                       Icon(
-                        FLucideIcons.receiptText,
+                        SemanticIcons.doseLog,
                         color: colors.mutedForeground,
                         size: Spacing.level5,
                       ),
@@ -251,10 +251,10 @@ class _TodayLogRow extends StatelessWidget {
       DoseLogStatus.planned => SemanticColor.warning,
     };
     final icon = switch (log.status) {
-      DoseLogStatus.taken => FLucideIcons.circleCheck,
-      DoseLogStatus.skipped => FLucideIcons.circleSlash,
-      DoseLogStatus.missed => FLucideIcons.circleX,
-      DoseLogStatus.planned => FLucideIcons.clock,
+      DoseLogStatus.taken => SemanticIcons.statusSuccess,
+      DoseLogStatus.skipped => SemanticIcons.statusUnavailable,
+      DoseLogStatus.missed => SemanticIcons.notificationFailed,
+      DoseLogStatus.planned => SemanticIcons.doseSlot,
     };
     final label = switch (log.status) {
       DoseLogStatus.taken => l10n.medicineDoseStatusTaken,

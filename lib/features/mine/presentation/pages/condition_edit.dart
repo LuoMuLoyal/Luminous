@@ -177,7 +177,7 @@ class ConditionEditPage extends HookConsumerWidget {
                 StateErrorView(
                   title: l10n.mineEditRecordNotFoundTitle,
                   description: l10n.mineEditRecordNotFoundDescription,
-                  icon: FLucideIcons.circleAlert,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.mineEditBackAction,
                   onAction: () => context.pop(),
                 ),

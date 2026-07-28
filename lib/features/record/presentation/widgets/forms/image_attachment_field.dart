@@ -91,7 +91,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                             variant: FButtonVariant.outline,
                             onPress: enabled ? onPick : null,
                             prefix: const Icon(
-                              FLucideIcons.image,
+                              SemanticIcons.actionImage,
                               size: IconSizeTokens.level3,
                             ),
                             child: Text(
@@ -105,7 +105,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                               variant: FButtonVariant.outline,
                               onPress: enabled ? onCameraPick : null,
                               prefix: const Icon(
-                                FLucideIcons.camera,
+                                SemanticIcons.actionCamera,
                                 size: IconSizeTokens.level3,
                               ),
                               child: Text(l10n.recordImageCameraAction),
@@ -115,7 +115,7 @@ class DailyRecordImageAttachmentField extends StatelessWidget {
                               variant: FButtonVariant.ghost,
                               onPress: enabled ? onRemove : null,
                               prefix: const Icon(
-                                FLucideIcons.x,
+                                SemanticIcons.actionClose,
                                 size: IconSizeTokens.level3,
                               ),
                               child: Text(l10n.recordImageRemoveAction),
@@ -171,11 +171,11 @@ class _AttachmentPreview extends StatelessWidget {
               imageUrl: url,
               fit: BoxFit.cover,
               placeholder: (context, url) =>
-                  const _PreviewFallback(icon: FLucideIcons.image),
+                  const _PreviewFallback(icon: SemanticIcons.actionImage),
               errorWidget: (context, url, error) =>
-                  const _PreviewFallback(icon: FLucideIcons.imageOff),
+                  const _PreviewFallback(icon: SemanticIcons.statusUnavailable),
             ),
-            _ => const _PreviewFallback(icon: FLucideIcons.imagePlus),
+            _ => const _PreviewFallback(icon: SemanticIcons.actionAdd),
           },
         ),
       ),

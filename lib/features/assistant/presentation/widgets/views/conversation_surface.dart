@@ -168,7 +168,7 @@ class _ConversationView extends ConsumerWidget {
       return StateMessageView(
         title: l10n.assistantConversationDisabledTitle,
         description: _disabledDescription(l10n, capabilities),
-        icon: FLucideIcons.circlePause,
+        icon: SemanticIcons.statusPaused,
         tone: StateTone.warning,
       );
     }
@@ -177,7 +177,7 @@ class _ConversationView extends ConsumerWidget {
       return StateMessageView(
         title: l10n.assistantConversationEmptyTitle,
         description: l10n.assistantConversationEmptyDescription,
-        icon: FLucideIcons.messageSquareMore,
+        icon: SemanticIcons.actionMessage,
       );
     }
 
@@ -317,7 +317,7 @@ class _InputComposer extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  FLucideIcons.circlePause,
+                  SemanticIcons.statusPaused,
                   size: 14,
                   color: colors.mutedForeground,
                 ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
 import 'package:luminous/features/medicine/presentation/utils/reminder_formatters.dart';
 
@@ -20,13 +20,13 @@ void main() {
 
   group('deliveryStatusIcon', () {
     test('delivered returns badgeCheck', () {
-      expect(deliveryStatusIcon('delivered'), FLucideIcons.badgeCheck);
+      expect(deliveryStatusIcon('delivered'), SemanticIcons.reportAdherence);
     });
     test('failed returns circleAlert', () {
-      expect(deliveryStatusIcon('failed'), FLucideIcons.circleAlert);
+      expect(deliveryStatusIcon('failed'), SemanticIcons.statusError);
     });
     test('default returns clock3', () {
-      expect(deliveryStatusIcon('unknown'), FLucideIcons.clock3);
+      expect(deliveryStatusIcon('unknown'), SemanticIcons.statusPending);
     });
   });
 

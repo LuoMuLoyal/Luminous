@@ -183,7 +183,7 @@ class RecordNlpDialog extends HookConsumerWidget {
               FButton.icon(
                 variant: FButtonVariant.ghost,
                 onPress: () => Navigator.of(context).pop(),
-                child: const Icon(FLucideIcons.x),
+                child: const Icon(SemanticIcons.actionClose),
               ),
             ],
           ),
@@ -280,7 +280,7 @@ class RecordNlpDialog extends HookConsumerWidget {
             Row(
               children: [
                 Icon(
-                  FLucideIcons.circleAlert,
+                  SemanticIcons.statusError,
                   color: colors.destructive,
                   size: 18,
                 ),

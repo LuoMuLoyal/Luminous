@@ -68,15 +68,15 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: Spacing.level3),
                   _ScopeRow(
-                    icon: FLucideIcons.shieldAlert,
+                    icon: SemanticIcons.safetyCaution,
                     label: l10n.medicineSearchPrecheckScopeAllergy,
                   ),
                   _ScopeRow(
-                    icon: FLucideIcons.gitCompare,
+                    icon: SemanticIcons.safetyInteraction,
                     label: l10n.medicineSearchPrecheckScopeInteraction,
                   ),
                   _ScopeRow(
-                    icon: FLucideIcons.fileText,
+                    icon: SemanticIcons.recordNote,
                     label: l10n.medicineSearchPrecheckScopeContraindication,
                   ),
                   if (result.coverageIssues.isNotEmpty) ...[
@@ -96,7 +96,7 @@ class _MedicineAddPrecheckDialog extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
-                            FLucideIcons.circleAlert,
+                            SemanticIcons.statusError,
                             color: colors.secondary,
                             size: 18,
                           ),
@@ -263,7 +263,7 @@ class _ScopeRow extends StatelessWidget {
             ),
           ),
           Icon(
-            FLucideIcons.check,
+            SemanticIcons.statusDone,
             color: colors.primary,
             size: IconSizeTokens.level2,
           ),
@@ -295,7 +295,7 @@ class _PrecheckCoverageRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(
-              FLucideIcons.circleAlert,
+              SemanticIcons.statusError,
               color: colors.secondary,
               size: IconSizeTokens.level3,
             ),

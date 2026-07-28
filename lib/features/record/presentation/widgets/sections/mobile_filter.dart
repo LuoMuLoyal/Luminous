@@ -53,7 +53,7 @@ class RecordMobileFilter extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        FLucideIcons.x,
+                        SemanticIcons.actionClose,
                         size: Spacing.level4,
                         color: context.theme.colors.mutedForeground,
                       ),

@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 /// Maps backend suggestion icon strings to Flutter [IconData].
 ///
 /// When the backend introduces a new icon name not listed here, the fallback
-/// [FLucideIcons.sparkles] is used. To add support for a new icon, simply add
+/// [SemanticIcons.aiEntry] is used. To add support for a new icon, simply add
 /// an entry to [_mapping].
 class SuggestionIconMapping {
   SuggestionIconMapping._();
 
-  static const IconData _fallback = FLucideIcons.sparkles;
+  static const IconData _fallback = SemanticIcons.aiEntry;
 
   /// Canonical mapping from backend icon string → [IconData].
   static const Map<String, IconData> _mapping = {
-    'droplets': FLucideIcons.droplets,
-    'moon': FLucideIcons.moon,
-    'activity': FLucideIcons.activity,
-    'coffee': FLucideIcons.coffee,
-    'user': FLucideIcons.userRound,
-    'clipboard': FLucideIcons.clipboardList,
-    'alert-triangle': FLucideIcons.triangleAlert,
-    'pill': FLucideIcons.pill,
-    'trending-up': FLucideIcons.trendingUp,
-    'lightbulb': FLucideIcons.lightbulb,
-    'info': FLucideIcons.info,
+    'droplets': SemanticIcons.recordWater,
+    'moon': SemanticIcons.recordMoon,
+    'activity': SemanticIcons.recordActivity,
+    'coffee': SemanticIcons.recordCaffeine,
+    'user': SemanticIcons.profileUser,
+    'clipboard': SemanticIcons.recordClipboard,
+    'alert-triangle': SemanticIcons.statusWarning,
+    'pill': SemanticIcons.recordMedicine,
+    'trending-up': SemanticIcons.reportTrend,
+    'lightbulb': SemanticIcons.aiTip,
+    'info': SemanticIcons.statusInfo,
   };
 
   /// Resolves a backend icon string to [IconData].

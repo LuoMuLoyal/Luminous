@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 
 import '../../helpers/test_forui_app.dart';
 
@@ -26,7 +27,7 @@ void main() {
       );
 
       expect(find.text('Verified'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.check), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusDone), findsOneWidget);
     });
 
     testWidgets('FBadge.secondary 无图标时只显示文本', (tester) async {
@@ -37,7 +38,7 @@ void main() {
       );
 
       expect(find.text('Basic'), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.check), findsNothing);
+      expect(find.byIcon(SemanticIcons.statusDone), findsNothing);
     });
 
     testWidgets('FBadge.destructive 渲染不同变体', (tester) async {
@@ -60,7 +61,7 @@ Widget _iconLabelBuilder(BuildContext context, FBadgeStyle style) {
   return const Row(
     mainAxisSize: MainAxisSize.min,
     children: [
-      Icon(FLucideIcons.check, size: 14),
+      Icon(SemanticIcons.statusDone, size: 14),
       SizedBox(width: 4),
       Text('Verified'),
     ],

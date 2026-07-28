@@ -359,7 +359,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                 StateErrorView(
                   title: l10n.medicineReminderNotFoundTitle,
                   description: l10n.medicineReminderNotFoundDescription,
-                  icon: FLucideIcons.circleAlert,
+                  icon: SemanticIcons.statusError,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () {
                     ref.invalidate(healthContextSnapshotProvider);
@@ -544,7 +544,7 @@ class _ReminderTimePickerDialog extends HookWidget {
             FButton.icon(
               onPress: () => Navigator.of(context).pop(),
               variant: FButtonVariant.ghost,
-              child: const Icon(FLucideIcons.x),
+              child: const Icon(SemanticIcons.actionClose),
             ),
           ],
         ),

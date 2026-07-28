@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 
 void main() {
@@ -173,7 +172,7 @@ void main() {
     test('locked defaults to false', () {
       const action = RecordQuickAction(
         type: RecordEntryType.meal,
-        icon: FLucideIcons.utensils,
+        icon: SemanticIcons.recordMeal,
         titleKey: RecordCopyKey.typeMeal,
         subtitleKey: RecordCopyKey.summaryTimesUnit,
         accent: SemanticColor.primary,
@@ -188,7 +187,7 @@ void main() {
       const filter = RecordFilter(
         type: RecordEntryType.water,
         titleKey: RecordCopyKey.typeWater,
-        icon: FLucideIcons.cupSoda,
+        icon: SemanticIcons.recordWater,
         accent: SemanticColor.primary,
         selected: false,
       );

@@ -79,7 +79,7 @@ class TodayMiniTrendChart extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Icon(
-                    FLucideIcons.chartLine,
+                    SemanticIcons.reportChart,
                     color: palette.fillStrong,
                     size: Spacing.level5,
                   ),

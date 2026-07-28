@@ -345,7 +345,7 @@ class _TrendEmptyState extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                FLucideIcons.chartLine,
+                SemanticIcons.reportChart,
                 size: Spacing.level8,
                 color: colors.mutedForeground,
               ),

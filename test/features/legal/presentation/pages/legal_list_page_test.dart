@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart';
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
@@ -185,13 +186,13 @@ void main() {
         ],
       );
 
-      expect(find.byIcon(FLucideIcons.fileText), findsWidgets);
-      expect(find.byIcon(FLucideIcons.shield), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.info), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.baby), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.list), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.key), findsOneWidget);
-      expect(find.byIcon(FLucideIcons.userMinus), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.recordNote), findsWidgets);
+      expect(find.byIcon(SemanticIcons.safetyNeutral), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusInfo), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.safetySpecialGroup), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.tabRecord), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusBlocked), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.profileUser), findsOneWidget);
     });
   });
 }

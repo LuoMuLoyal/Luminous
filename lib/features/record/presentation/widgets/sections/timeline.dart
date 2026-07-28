@@ -85,7 +85,7 @@ class RecordTimelinePanel extends StatelessWidget {
                         ),
                         const SizedBox(width: Spacing.level1),
                         Icon(
-                          FLucideIcons.chevronDown,
+                          SemanticIcons.actionExpand,
                           size: Spacing.level4,
                           color: colors.foreground,
                         ),
@@ -444,7 +444,7 @@ class _TimelineCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            FLucideIcons.utensils,
+                            SemanticIcons.recordMeal,
                             size: 22,
                             color: colors.mutedForeground,
                           ),
@@ -501,18 +501,18 @@ class _TimelineCard extends StatelessWidget {
   }
 
   IconData _trailingIcon() {
-    if (entry.trailingIcon == FLucideIcons.checkCircle2) {
-      return FLucideIcons.badgeCheck;
+    if (entry.trailingIcon == SemanticIcons.statusSuccess) {
+      return SemanticIcons.reportAdherence;
     }
-    if (entry.trailingIcon == FLucideIcons.chevronRight ||
+    if (entry.trailingIcon == SemanticIcons.actionNext ||
         entry.trailingIcon == null) {
-      return FLucideIcons.chevronRight;
+      return SemanticIcons.actionNext;
     }
     return entry.trailingIcon!;
   }
 
   Color _trailingColor(FColors colors) {
-    if (entry.trailingIcon == FLucideIcons.checkCircle2) {
+    if (entry.trailingIcon == SemanticIcons.statusSuccess) {
       return colors.foreground;
     }
     return colors.mutedForeground;
@@ -536,9 +536,10 @@ class _TimelineImageThumbnail extends StatelessWidget {
           imageUrl: imageUrl,
           fit: BoxFit.cover,
           placeholder: (context, url) =>
-              const _TimelineImageFallback(icon: FLucideIcons.image),
-          errorWidget: (context, url, error) =>
-              const _TimelineImageFallback(icon: FLucideIcons.imageOff),
+              const _TimelineImageFallback(icon: SemanticIcons.actionImage),
+          errorWidget: (context, url, error) => const _TimelineImageFallback(
+            icon: SemanticIcons.statusUnavailable,
+          ),
           imageBuilder: (context, provider) => Semantics(
             label: label,
             image: true,
@@ -630,7 +631,7 @@ class _DragFeedback extends StatelessWidget {
                 ),
                 const SizedBox(width: Spacing.level3),
                 Icon(
-                  FLucideIcons.calendarDays,
+                  SemanticIcons.actionCalendar,
                   color: colors.mutedForeground,
                   size: 16,
                 ),
@@ -666,7 +667,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
           child: Column(
             children: [
               Icon(
-                FLucideIcons.filePlus2,
+                SemanticIcons.actionAdd,
                 size: Spacing.level8,
                 color: colors.mutedForeground,
               ),
@@ -700,7 +701,7 @@ class _DesktopTimelineEmptyState extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          FLucideIcons.plus,
+                          SemanticIcons.actionAdd,
                           size: IconSizeTokens.level2,
                         ),
                         const SizedBox(width: Spacing.level2),

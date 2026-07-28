@@ -59,35 +59,35 @@ class _CommandPaletteState extends State<CommandPalette> {
       // ── Navigation ──
       _Command(
         label: l10n.tabToday,
-        icon: FLucideIcons.layoutGrid,
+        icon: SemanticIcons.actionMore,
         keywords: ['today', '今日', l10n.tabToday],
         category: l10n.commandPaletteNavigateTo,
         onExecute: () => context.go(Routes.home),
       ),
       _Command(
         label: l10n.tabRecord,
-        icon: FLucideIcons.notebookPen,
+        icon: SemanticIcons.tabRecord,
         keywords: ['record', '记录', l10n.tabRecord],
         category: l10n.commandPaletteNavigateTo,
         onExecute: () => context.go(Routes.record),
       ),
       _Command(
         label: l10n.tabMedicine,
-        icon: FLucideIcons.pillBottle,
+        icon: SemanticIcons.medicineBottle,
         keywords: ['medicine', '用药', '药品', l10n.tabMedicine],
         category: l10n.commandPaletteNavigateTo,
         onExecute: () => context.go(Routes.medicine),
       ),
       _Command(
         label: l10n.tabReport,
-        icon: FLucideIcons.barChart,
+        icon: SemanticIcons.tabReport,
         keywords: ['report', '报告', l10n.tabReport],
         category: l10n.commandPaletteNavigateTo,
         onExecute: () => context.go(Routes.report),
       ),
       _Command(
         label: l10n.tabMine,
-        icon: FLucideIcons.userRound,
+        icon: SemanticIcons.profileUser,
         keywords: ['mine', '我的', 'profile', l10n.tabMine],
         category: l10n.commandPaletteNavigateTo,
         onExecute: () => context.go(Routes.mine),
@@ -95,14 +95,14 @@ class _CommandPaletteState extends State<CommandPalette> {
       // ── Actions ──
       _Command(
         label: l10n.desktopSidebarSettings,
-        icon: FLucideIcons.settings,
+        icon: SemanticIcons.actionSettings,
         keywords: ['settings', '设置', l10n.desktopSidebarSettings],
         category: l10n.commandPaletteActions,
         onExecute: () => context.push(Routes.settings),
       ),
       _Command(
         label: l10n.desktopSidebarHelp,
-        icon: FLucideIcons.circleHelp,
+        icon: SemanticIcons.actionHelp,
         keywords: ['help', 'assistant', '帮助', '助手', l10n.desktopSidebarHelp],
         category: l10n.commandPaletteActions,
         onExecute: () => context.push(Routes.assistant),
@@ -142,7 +142,7 @@ class _CommandPaletteState extends State<CommandPalette> {
                 decoration: InputDecoration(
                   hintText: l10n.commandPaletteSearchHint,
                   prefixIcon: Icon(
-                    FLucideIcons.search,
+                    SemanticIcons.actionSearch,
                     size: 18,
                     color: theme.colors.mutedForeground,
                   ),

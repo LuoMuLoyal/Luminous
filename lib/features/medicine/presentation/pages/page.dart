@@ -114,7 +114,7 @@ class MedicinePage extends ConsumerWidget {
                       child: StateMessageView(
                         title: l10n.medicineEmptyAddFirstTitle,
                         description: l10n.medicineEmptyAddFirstDescription,
-                        icon: FLucideIcons.pillBottle,
+                        icon: SemanticIcons.medicineBottle,
                         actionLabel: l10n.medicineQuickAddTitle,
                         onAction: () => pushAuthRequiredRoute(
                           context,
@@ -129,7 +129,7 @@ class MedicinePage extends ConsumerWidget {
                 child: StateMessageView(
                   title: l10n.medicineEmptyAddFirstTitle,
                   description: l10n.medicineEmptyAddFirstDescription,
-                  icon: FLucideIcons.pillBottle,
+                  icon: SemanticIcons.medicineBottle,
                   actionLabel: l10n.medicineQuickAddTitle,
                   onAction: () =>
                       pushAuthRequiredRoute(context, Routes.medicineSearch),
@@ -311,7 +311,7 @@ class _MedicineSafeGuardPill extends StatelessWidget {
     final isNarrow = MediaQuery.sizeOf(context).width < Breakpoints.tablet;
 
     final shieldIcon = Icon(
-      FLucideIcons.shieldCheck,
+      SemanticIcons.safetySafe,
       color: colors.primary,
       size: Spacing.level5,
     );
@@ -374,7 +374,10 @@ class _MedicineNotificationButton extends ConsumerWidget {
           FButton.icon(
             onPress: () => pushAuthRequiredRoute(context, Routes.notifications),
             variant: FButtonVariant.ghost,
-            child: Icon(FLucideIcons.bell, color: colors.foreground),
+            child: Icon(
+              SemanticIcons.notificationBell,
+              color: colors.foreground,
+            ),
           ),
           if (showBadge)
             Positioned(
@@ -431,7 +434,7 @@ class _MedicineMobileSearchBar extends StatelessWidget {
           children: [
             const SizedBox(width: Spacing.level2),
             Icon(
-              FLucideIcons.search,
+              SemanticIcons.actionSearch,
               color: colors.mutedForeground,
               size: Spacing.level5,
             ),

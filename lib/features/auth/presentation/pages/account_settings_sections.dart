@@ -39,14 +39,14 @@ class AccountStatusSection extends StatelessWidget {
     title: l10n.authAccountOverviewTitle,
     children: [
       _InfoRow(
-        icon: FLucideIcons.mail,
+        icon: SemanticIcons.actionMessage,
         label: l10n.authAccountOverviewEmail,
         value: user.email ?? l10n.authEmailMissing,
       ),
       _InfoRow(
         icon: user.emailVerified
-            ? FLucideIcons.mailCheck
-            : FLucideIcons.mailWarning,
+            ? SemanticIcons.statusSuccess
+            : SemanticIcons.notificationWarning,
         label: l10n.authAccountOverviewEmailVerified,
         value: user.emailVerifiedAt == null
             ? l10n.authEmailUnverifiedStatus
@@ -64,14 +64,16 @@ class AccountStatusSection extends StatelessWidget {
           ),
         ),
       _InfoRow(
-        icon: user.hasPassword ? FLucideIcons.lock : FLucideIcons.lockOpen,
+        icon: user.hasPassword
+            ? SemanticIcons.statusBlocked
+            : SemanticIcons.actionSettings,
         label: l10n.authAccountOverviewPassword,
         value: user.hasPassword
             ? l10n.authPasswordSetStatus
             : l10n.authPasswordUnsetStatus,
       ),
       _InfoRow(
-        icon: FLucideIcons.clock3,
+        icon: SemanticIcons.statusPending,
         label: l10n.authAccountOverviewLastLogin,
         value: user.lastLoginAt == null
             ? l10n.authLastLoginUnknown
@@ -196,7 +198,11 @@ class _LinkedIdentityTile extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.level4),
         child: Row(
           children: [
-            Icon(FLucideIcons.link, color: colors.primary, size: 20),
+            Icon(
+              SemanticIcons.actionExternalLink,
+              color: colors.primary,
+              size: 20,
+            ),
             const SizedBox(width: Spacing.level3),
             Expanded(
               child: Column(
@@ -505,7 +511,7 @@ class _DangerZoneSection extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  FLucideIcons.triangleAlert,
+                  SemanticIcons.statusWarning,
                   size: 16,
                   color: colors.destructive,
                 ),

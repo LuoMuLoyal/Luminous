@@ -12,7 +12,11 @@ class _MedicationAvatar extends StatelessWidget {
     return FAvatar.raw(
       size: size,
       style: .delta(backgroundColor: item.color.muted(context)),
-      child: Icon(FLucideIcons.pillBottle, color: color, size: size * 0.52),
+      child: Icon(
+        SemanticIcons.medicineBottle,
+        color: color,
+        size: size * 0.52,
+      ),
     );
   }
 }

@@ -13,21 +13,21 @@ class _QuickOperationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final operations = [
       _QuickOperation(
-        icon: FLucideIcons.plus,
+        icon: SemanticIcons.actionAdd,
         color: SemanticColor.primary,
         title: l10n.medicineQuickAddTitle,
         subtitle: l10n.medicineQuickAddSubtitle,
         onTap: () => pushAuthRequiredRoute(context, Routes.mineMedicineNew),
       ),
       _QuickOperation(
-        icon: FLucideIcons.search,
+        icon: SemanticIcons.actionSearch,
         color: SemanticColor.primary,
         title: l10n.medicineQuickActionSearchTitle,
         subtitle: l10n.medicineQuickActionSearchSubtitle,
         onTap: () => context.push(Routes.medicineSearch),
       ),
       _QuickOperation(
-        icon: FLucideIcons.bell,
+        icon: SemanticIcons.notificationBell,
         color: SemanticColor.primary,
         title: l10n.medicineReminderQuickTitle,
         subtitle: l10n.medicineReminderQuickSubtitle,
@@ -35,7 +35,7 @@ class _QuickOperationSection extends StatelessWidget {
             onCreateReminder ?? () => context.push(Routes.medicineRemindersNew),
       ),
       _QuickOperation(
-        icon: FLucideIcons.shieldAlert,
+        icon: SemanticIcons.safetyCaution,
         color: SemanticColor.primary,
         title: l10n.medicineQuickSafetyCheckTitle,
         subtitle: l10n.medicineQuickSafetyCheckSubtitle,
@@ -129,7 +129,7 @@ class _QuickOperationRow extends StatelessWidget {
               ),
             ),
             Icon(
-              FLucideIcons.chevronRight,
+              SemanticIcons.actionNext,
               color: colors.mutedForeground,
               size: Spacing.level5,
             ),

@@ -59,7 +59,7 @@ class MealDishEditorSection extends StatelessWidget {
                   key: Key('meal-dish-remove-$index'),
                   onPress: enabled ? () => onDishRemoved(index) : null,
                   child: Icon(
-                    FLucideIcons.trash2,
+                    SemanticIcons.actionDelete,
                     semanticLabel: l10n.recordMealDishRemoveAction,
                   ),
                 ),
@@ -74,7 +74,7 @@ class MealDishEditorSection extends StatelessWidget {
             variant: FButtonVariant.outline,
             key: const Key('meal-dish-add-action'),
             onPress: enabled ? onDishAdded : null,
-            prefix: const Icon(FLucideIcons.plus),
+            prefix: const Icon(SemanticIcons.actionAdd),
             child: Text(l10n.recordMealDishAddAction),
           ),
         ),

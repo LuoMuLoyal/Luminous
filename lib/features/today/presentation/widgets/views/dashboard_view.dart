@@ -63,7 +63,7 @@ class TodayErrorView extends StatelessWidget {
     return StateErrorView(
       title: l10n.todayErrorTitle,
       description: l10n.todayErrorDescription,
-      icon: FLucideIcons.circleHelp,
+      icon: SemanticIcons.actionHelp,
       actionLabel: l10n.todayRetryAction,
       onAction: onRetry,
       tone: StateTone.danger,

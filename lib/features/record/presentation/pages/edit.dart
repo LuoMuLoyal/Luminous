@@ -494,7 +494,7 @@ class RecordEditPage extends HookConsumerWidget {
           child: StateErrorView(
             title: l10n.recordDetailErrorTitle,
             description: l10n.recordErrorDescription,
-            icon: FLucideIcons.notebookPen,
+            icon: SemanticIcons.tabRecord,
             actionLabel: l10n.todayRetryAction,
             onAction: () {
               loadError.value = false;
@@ -628,7 +628,7 @@ class RecordEditPage extends HookConsumerWidget {
                             onPress: () => confirmMealAnalysis.value =
                                 !confirmMealAnalysis.value,
                             prefix: confirmMealAnalysis.value
-                                ? const Icon(FLucideIcons.check, size: 16)
+                                ? const Icon(SemanticIcons.statusDone, size: 16)
                                 : null,
                             child: Text(
                               confirmMealAnalysis.value
@@ -675,7 +675,7 @@ class RecordEditPage extends HookConsumerWidget {
                               height: 16,
                               child: FCircularProgress(),
                             )
-                          : const Icon(FLucideIcons.trash2, size: 18),
+                          : const Icon(SemanticIcons.actionDelete, size: 18),
                       child: Text(l10n.recordDeleteAction),
                     ),
                   ],

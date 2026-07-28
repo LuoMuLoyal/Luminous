@@ -211,7 +211,7 @@ class ReportPage extends ConsumerWidget {
                 child: StateErrorView(
                   title: l10n.reportErrorTitle,
                   description: l10n.reportErrorDescription,
-                  icon: FLucideIcons.chartColumnBig,
+                  icon: SemanticIcons.tabReport,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () => ref.invalidate(
                     reportDashboardProvider(selectedDashboardQuery),
@@ -226,7 +226,7 @@ class ReportPage extends ConsumerWidget {
                   child: StateErrorView(
                     title: l10n.reportErrorTitle,
                     description: l10n.reportErrorDescription,
-                    icon: FLucideIcons.chartColumnBig,
+                    icon: SemanticIcons.tabReport,
                     actionLabel: l10n.todayRetryAction,
                     onAction: () => ref.invalidate(
                       reportDashboardProvider(selectedDashboardQuery),

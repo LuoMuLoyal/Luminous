@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
-import 'package:luminous/core/design/semantic_color.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -166,7 +165,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
     );
     final summaryLine = summaryText.trim().isNotEmpty ? summaryText : null;
     final coverageAlert = MedicineAlert(
-      icon: FLucideIcons.info,
+      icon: SemanticIcons.statusInfo,
       color: SemanticColor.neutral,
       softColor: SemanticColor.neutral,
       rawTitle: summaryLine ?? l10n.medicineRiskCheckCoverageAlertTitle,
@@ -200,7 +199,7 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
   return [
     MedicineAlert(
-      icon: FLucideIcons.badgeCheck,
+      icon: SemanticIcons.reportAdherence,
       color: SemanticColor.primary,
       softColor: SemanticColor.primary,
       rawTitle: l10n.medicineRiskCheckAllClearAlertTitle,
@@ -213,13 +212,14 @@ List<MedicineAlert> medicineAlertsFromRiskCheck(
 
 IconData medicineRiskFindingIcon(MedicineRiskFinding finding) {
   return switch (finding.type) {
-    MedicineRiskFindingType.interaction => FLucideIcons.circleAlert,
-    MedicineRiskFindingType.duplicateIngredient => FLucideIcons.copy,
-    MedicineRiskFindingType.allergy => FLucideIcons.triangleAlert,
-    MedicineRiskFindingType.specialGroup => FLucideIcons.shieldCheck,
-    MedicineRiskFindingType.foodInteraction => FLucideIcons.utensils,
-    MedicineRiskFindingType.longTermUse => FLucideIcons.clock,
-    MedicineRiskFindingType.schedulingConflict => FLucideIcons.calendarClock,
+    MedicineRiskFindingType.interaction => SemanticIcons.statusError,
+    MedicineRiskFindingType.duplicateIngredient =>
+      SemanticIcons.safetyDuplicate,
+    MedicineRiskFindingType.allergy => SemanticIcons.statusWarning,
+    MedicineRiskFindingType.specialGroup => SemanticIcons.safetySafe,
+    MedicineRiskFindingType.foodInteraction => SemanticIcons.recordMeal,
+    MedicineRiskFindingType.longTermUse => SemanticIcons.doseSlot,
+    MedicineRiskFindingType.schedulingConflict => SemanticIcons.dosePlanned,
   };
 }
 
@@ -243,9 +243,9 @@ SemanticColor medicineRiskSeveritySoftColor(MedicineRiskSeverity severity) {
 /// non-color channel for color-blind users to differentiate severity.
 IconData medicineRiskSeverityIcon(MedicineRiskSeverity severity) {
   return switch (severity) {
-    MedicineRiskSeverity.high => FLucideIcons.triangleAlert,
-    MedicineRiskSeverity.medium => FLucideIcons.circleAlert,
-    MedicineRiskSeverity.info => FLucideIcons.info,
+    MedicineRiskSeverity.high => SemanticIcons.statusWarning,
+    MedicineRiskSeverity.medium => SemanticIcons.statusError,
+    MedicineRiskSeverity.info => SemanticIcons.statusInfo,
   };
 }
 

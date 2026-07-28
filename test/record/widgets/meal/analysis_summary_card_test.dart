@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/presentation/models/meal_analysis_view_data.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -60,7 +60,7 @@ void main() {
     testWidgets('renders status badge', (tester) async {
       await pumpCard(tester, _mkData(status: 'analyzing'));
 
-      expect(find.byIcon(FLucideIcons.clock3), findsOneWidget);
+      expect(find.byIcon(SemanticIcons.statusPending), findsOneWidget);
     });
 
     testWidgets('renders meal description when non-empty', (tester) async {

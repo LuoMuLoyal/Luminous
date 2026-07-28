@@ -59,7 +59,7 @@ class _AssistantEntryButton extends ConsumerWidget {
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.sm,
         mainAxisSize: MainAxisSize.min,
-        prefix: const Icon(FLucideIcons.sparkles, size: IconSizeTokens.level3),
+        prefix: const Icon(SemanticIcons.aiEntry, size: IconSizeTokens.level3),
         child: Text(l10n.assistantEntryTitle),
       ),
     );
@@ -102,7 +102,10 @@ class _NotificationButton extends ConsumerWidget {
             child: Semantics(
               label: l10n.todayNotificationsTooltip,
               button: true,
-              child: Icon(FLucideIcons.bell, color: colors.foreground),
+              child: Icon(
+                SemanticIcons.notificationBell,
+                color: colors.foreground,
+              ),
             ),
           ),
           if (hasUnread)

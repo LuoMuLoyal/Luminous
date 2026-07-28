@@ -45,7 +45,7 @@ class RiskRedFlagItem extends StatelessWidget {
                     Row(
                       children: [
                         Icon(
-                          FLucideIcons.triangleAlert,
+                          SemanticIcons.statusWarning,
                           color: SemanticColor.destructive.solid(context),
                           size: IconSizeTokens.level3,
                         ),
@@ -68,7 +68,7 @@ class RiskRedFlagItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Icon(
-                          FLucideIcons.siren,
+                          SemanticIcons.safetyDanger,
                           color: SemanticColor.destructive.solid(context),
                           size: IconSizeTokens.level2,
                         ),

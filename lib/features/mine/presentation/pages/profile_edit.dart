@@ -267,7 +267,7 @@ class ProfileEditPage extends HookConsumerWidget {
                 error: (_, __) => StateErrorView(
                   title: l10n.mineErrorTitle,
                   description: l10n.mineErrorDescription,
-                  icon: FLucideIcons.badge,
+                  icon: SemanticIcons.reportAdherence,
                   actionLabel: l10n.todayRetryAction,
                   onAction: () => ref
                       .read(dataChangeBusProvider.notifier)
