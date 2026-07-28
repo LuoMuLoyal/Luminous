@@ -21,9 +21,6 @@ class RecordDashboardView extends StatelessWidget {
     this.isPreview = false,
     this.isLoading = false,
     this.onQuickAction,
-    this.onAiInputTap,
-    this.onMicTap,
-    this.onCameraTap,
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
@@ -34,9 +31,6 @@ class RecordDashboardView extends StatelessWidget {
   final bool isPreview;
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
-  final VoidCallback? onAiInputTap;
-  final VoidCallback? onMicTap;
-  final VoidCallback? onCameraTap;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
@@ -63,12 +57,8 @@ class RecordDashboardView extends StatelessWidget {
           )
         : _MobileRecordDashboard(
             dashboard: dashboard,
-            isPreview: isPreview,
             l10n: l10n,
             onQuickAction: onQuickAction,
-            onAiInputTap: onAiInputTap,
-            onMicTap: onMicTap,
-            onCameraTap: onCameraTap,
             onFilterSelected: onFilterSelected,
             onDateSelected: onDateSelected,
           );
@@ -80,23 +70,15 @@ class RecordDashboardView extends StatelessWidget {
 class _MobileRecordDashboard extends StatelessWidget {
   const _MobileRecordDashboard({
     required this.dashboard,
-    required this.isPreview,
     required this.l10n,
     this.onQuickAction,
-    this.onAiInputTap,
-    this.onMicTap,
-    this.onCameraTap,
     this.onFilterSelected,
     this.onDateSelected,
   });
 
   final RecordDashboard dashboard;
-  final bool isPreview;
   final AppLocalizations l10n;
   final ValueChanged<RecordQuickAction>? onQuickAction;
-  final VoidCallback? onAiInputTap;
-  final VoidCallback? onMicTap;
-  final VoidCallback? onCameraTap;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
 
@@ -112,14 +94,6 @@ class _MobileRecordDashboard extends StatelessWidget {
           dashboard: dashboard,
           l10n: l10n,
           onDateSelected: onDateSelected,
-        ),
-        const SizedBox(height: Spacing.level4),
-        RecordAiInputBar(
-          l10n: l10n,
-          isPreview: isPreview,
-          onTap: onAiInputTap,
-          onMicTap: onMicTap,
-          onCameraTap: onCameraTap,
         ),
         const SizedBox(height: Spacing.level4),
         RecordQuickEntryPanel(

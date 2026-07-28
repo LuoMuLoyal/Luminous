@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-21 (P1 header migration)
+Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 
 ## 支持的记录类型
 
@@ -14,8 +14,8 @@ Last updated: 2026-07-21 (P1 header migration)
 
 ## 自然语言录入
 
-- 移动端顶部输入条是唯一的自然语言录入入口；点击输入条本体打开底部弹层。
-- 语音与 OCR 作为输入条右侧的辅助入口。
+- 移动端 header 右上角为 NLP 入口（sparkles 图标，`recordNlpHeaderAction`），点击打开 NLP 弹窗。
+- 语音与 OCR 功能已移除（产品职责重新判定 + 中文医疗词汇准确率无法保证）。
 - 接入 Lucent candidate 解析，确认后保存。
 - 候选审核可编辑、可选择性保存：调整 title/value/unit/note、编辑睡眠 payload、取消选中项、仅重试失败候选。
 - 候选编辑器按类型做轻量打磨：water 数字量 + 单位选择器、meal/symptom 更具体字段标签、note 强调正文。

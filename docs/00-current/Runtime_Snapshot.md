@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (About 页面版本检查 + 帮助页面重构：本地 FAQ Markdown + 环境变量反馈邮箱)
+Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 
 ## 技术栈
 
@@ -107,6 +107,8 @@ Last updated: 2026-07-28 (About 页面版本检查 + 帮助页面重构：本地
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`（11 个 fragment × 2 locale = 22 文件）。
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
+- 2026-07-28：Record 页面移除语音（`speech_to_text`）和 OCR 功能，删除 `voice_entry_dialog.dart` / `ocr_entry_dialog.dart` / `voice_recording.dart` / `speech_locale_resolver.dart` 及关联测试。`pubspec.yaml` 移除 `speech_to_text` 依赖，SDK 列表同步更新。
+- 2026-07-28：Record 移动端 header 右上角 `+` 按钮替换为 sparkles 图标 NLP 入口（`SemanticIcons.aiEntry` + `recordNlpHeaderAction` l10n 键），删除原 `RecordAiInputBar` 顶部输入条。NLP 入口直接从 header 调用 `_openNlpDialog`，不再经 `RecordDashboardView` 回调传递。
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。

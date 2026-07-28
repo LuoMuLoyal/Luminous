@@ -147,6 +147,7 @@
   "recordAiInputHint": "My stomach feels a bit bloated after eating...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "Natural language",
+  "recordNlpHeaderAction": "AI Record",
   "recordNlpSheetTitle": "Natural-language input",
   "recordNlpSheetSubtitle": "Parse into candidate records first, then save after confirmation.",
   "recordNlpInputHint": "For example: I drank two cups of water this morning, felt bloated at noon, and slept 6 hours last night.",

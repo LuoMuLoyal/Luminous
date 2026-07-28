@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (About 页面版本检查 l10n 键 + 帮助页面 FAQ + 反馈 l10n 键)
+Last updated: 2026-07-28 (Record NLP header action key + 语音/OCR l10n keys orphaned)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -61,9 +61,14 @@ Persisted preference keys:
    editor labels are owned by the Record ARB entries.
 - Record fast-entry quick-choice labels plus date/time field labels are owned by the Record ARB
    entries.
-- Record voice/OCR intake copy such as sheet titles, action labels, microphone-permission wording,
-   speech-unavailable / locale-unsupported errors, editable-result hint, and OCR failure toasts is
-   owned by the Record ARB entries.
+- Record voice/OCR intake copy (sheet titles, action labels, microphone-permission wording,
+   speech-unavailable / locale-unsupported errors, editable-result hint, OCR failure toasts) was
+   owned by the Record ARB entries. The active UI that used these keys has been deleted (voice and
+   OCR features removed); the l10n keys remain orphaned in `record_*.arb` and should be cleaned up
+   in a follow-up.
+- Record NLP header action label (`recordNlpHeaderAction`) is owned by the Record ARB entries.
+  The mobile header NLP entry button uses `SemanticIcons.aiEntry` (sparkles) and triggers
+  `_openNlpDialog` directly from the header, replacing the old `RecordAiInputBar` top input bar.
 - Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is
   owned by the Record ARB entries.
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate

@@ -25,8 +25,6 @@ import 'package:luminous/features/record/presentation/providers/time.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_dialog.dart';
-import 'package:luminous/features/record/presentation/widgets/dialogs/ocr_entry_dialog.dart';
-import 'package:luminous/features/record/presentation/widgets/dialogs/voice_entry_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
@@ -89,15 +87,15 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final headerActions = isMobileLayout
         ? [
             RecordHeaderActionChip(
-              key: const Key('record-add-action'),
-              label: isCompact
-                  ? l10n.recordAddCompactAction
-                  : l10n.recordAddAction,
-              icon: SemanticIcons.actionAdd,
+              key: const Key('record-nlp-action'),
+              label: l10n.recordNlpHeaderAction,
+              icon: SemanticIcons.aiEntry,
               emphasized: true,
-              onTap: () => pushAuthRequiredRoute(
+              onTap: () => _openNlpDialog(
                 context,
-                '/record/create?date=${formatRecordDate(selectedDate)}',
+                canAccessProtectedData: canAccessProtectedData,
+                isAuthLoading: isAuthLoading,
+                selectedDate: selectedDate,
               ),
               iconOnly: true,
             ),
@@ -195,24 +193,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               );
               _handleQuickAction(context, action);
             },
-            onAiInputTap: () => _openNlpDialog(
-              context,
-              canAccessProtectedData: canAccessProtectedData,
-              isAuthLoading: isAuthLoading,
-              selectedDate: selectedDate,
-            ),
-            onMicTap: () => _openVoiceEntry(
-              context,
-              canAccessProtectedData: canAccessProtectedData,
-              isAuthLoading: isAuthLoading,
-              selectedDate: selectedDate,
-            ),
-            onCameraTap: () => _openOcrEntry(
-              context,
-              canAccessProtectedData: canAccessProtectedData,
-              isAuthLoading: isAuthLoading,
-              selectedDate: selectedDate,
-            ),
             onNewEntry: () => _openRecordCreate(context),
           ),
         ],
@@ -420,72 +400,6 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     }
 
     ref.read(recordNlpControllerProvider.notifier).reset();
-    await showAppDialog<void>(
-      context: context,
-      builder: (dialogContext) =>
-          RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
-    );
-  }
-
-  Future<void> _openVoiceEntry(
-    BuildContext context, {
-    required bool canAccessProtectedData,
-    required bool isAuthLoading,
-    required DateTime selectedDate,
-  }) async {
-    if (!canAccessProtectedData) {
-      if (isAuthLoading) return;
-      await showAuthRequiredDialog(
-        context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-      );
-      return;
-    }
-
-    final text = await showRecordVoiceEntrySheet(context);
-    if (text == null || text.trim().isEmpty || !context.mounted) return;
-
-    // Feed recognized text into NLP pipeline
-    ref.read(recordNlpControllerProvider.notifier).reset();
-    ref.read(recordNlpControllerProvider.notifier).updateDraft(text.trim());
-    await ref
-        .read(recordNlpControllerProvider.notifier)
-        .generate(occurredAt: formatRecordDate(selectedDate));
-
-    if (!context.mounted) return;
-    await showAppDialog<void>(
-      context: context,
-      builder: (dialogContext) =>
-          RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
-    );
-  }
-
-  Future<void> _openOcrEntry(
-    BuildContext context, {
-    required bool canAccessProtectedData,
-    required bool isAuthLoading,
-    required DateTime selectedDate,
-  }) async {
-    if (!canAccessProtectedData) {
-      if (isAuthLoading) return;
-      await showAuthRequiredDialog(
-        context,
-        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
-      );
-      return;
-    }
-
-    final text = await showRecordOcrEntrySheet(context);
-    if (text == null || text.trim().isEmpty || !context.mounted) return;
-
-    // Feed recognized text into NLP pipeline
-    ref.read(recordNlpControllerProvider.notifier).reset();
-    ref.read(recordNlpControllerProvider.notifier).updateDraft(text.trim());
-    await ref
-        .read(recordNlpControllerProvider.notifier)
-        .generate(occurredAt: formatRecordDate(selectedDate));
-
-    if (!context.mounted) return;
     await showAppDialog<void>(
       context: context,
       builder: (dialogContext) =>

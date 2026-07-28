@@ -147,6 +147,7 @@
   "recordAiInputHint": "刚吃完饭胃有点胀...",
   "recordAiBadge": "AI",
   "recordNlpFabAction": "自然语言",
+  "recordNlpHeaderAction": "智能记录",
   "recordNlpSheetTitle": "自然语言录入",
   "recordNlpSheetSubtitle": "先解析成候选记录，确认后再保存。",
   "recordNlpInputHint": "比如：今天早上喝了两杯水，中午胃有点胀，昨晚睡了 6 小时。",
