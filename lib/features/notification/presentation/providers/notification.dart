@@ -48,8 +48,14 @@ class NotificationListController extends AsyncNotifier<NotificationPage> {
   @override
   Future<NotificationPage> build() async {
     _currentPage = 1;
-    final repo = ref.read(notificationRepositoryProvider);
-    return repo.findAll(page: 1, pageSize: _notificationPageSize);
+    return authGuarded(
+      ref: ref,
+      fetch: () {
+        final repo = ref.read(notificationRepositoryProvider);
+        return repo.findAll(page: 1, pageSize: _notificationPageSize);
+      },
+      signedOutFallback: () => pendingAuthSessionResolution(),
+    );
   }
 
   Future<void> loadMore() async {
