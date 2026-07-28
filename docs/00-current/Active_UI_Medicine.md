@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-28 (用药主页：删除药箱冗余计数摘要、移除今日计划重复操作按钮)
+Last updated: 2026-07-28 (Record 快速用药联动 dose logs)
 
 ## 页面结构
 
@@ -16,6 +16,8 @@ Last updated: 2026-07-28 (用药主页：删除药箱冗余计数摘要、移除
 ## 今日服用计划
 
 - slot-aware 打卡链路："已服用 / 跳过"调用 Lucent `POST /user/medicine-dose-logs/mark`。
+- Record 页快速用药入口复用同一 dose log 链路：当前药箱决定可记录药品，今日提醒计划决定附近 pending slot 默认选择，成功后发射 `DataChangeTopic.doseLogs` 让 Medicine 主页刷新。
+- 快速用药撤销使用 dose log 真实回滚：无旧 log 时删除刚创建的 dose log；已有 log 时恢复旧 status。
 - 同一种药存在多个 reminder slot 时，每次只确认当前 pending 槽位，不再按药品整天聚合覆盖。
 - Hero 的"今日剂次 / 依从率 / 下一剂"按 slot 统计。
 - 状态 badge 直接控制前景/浅底/边框，不再用 `FBadge.raw` 包装。
@@ -87,7 +89,7 @@ Last updated: 2026-07-28 (用药主页：删除药箱冗余计数摘要、移除
 - `MarkDoseLogDto` 直接作为 `@Body()` 参数传递。
 - **ADR-0009 cache-first**: `CachedDoseLogDataSource` 包装 `DoseLogRemoteDataSource`：
   - `fetchForDate`: 先读缓存（节流 60s）→ 缓存空则走网络 + 写缓存。
-  - `create`/`update`/`mark`: 远程成功后刷新缓存；`DioException` 时入队 `pending_sync_queue`（entityType=`dose_log`），注册 SyncWorker handler 重放后按 `scheduledFor` 刷新缓存。
+  - `create`/`update`/`mark`/`delete`: 远程成功后刷新缓存（`delete` 需要调用方传入日期）；`DioException` 时入队 `pending_sync_queue`（entityType=`dose_log`），注册 SyncWorker handler 重放后按 `scheduledFor` 或调用方提供的日期刷新缓存。
 - 消费方已全部迁移。
 
 ## 2026-07-19 补充

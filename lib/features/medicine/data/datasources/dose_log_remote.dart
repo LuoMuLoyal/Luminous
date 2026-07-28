@@ -83,6 +83,13 @@ class DoseLogRemoteDataSource {
     return _fromJson(_requireData(response));
   }
 
+  Future<void> delete(String doseLogId) async {
+    await dio.request<Object>(
+      LucentApiPaths.medicineDoseLog(doseLogId),
+      options: Options(method: 'DELETE'),
+    );
+  }
+
   Future<DoseLogItem> mark({
     required String currentMedicineId,
     required String status,

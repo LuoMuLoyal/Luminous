@@ -142,6 +142,23 @@
   "recordQuickSavedToast": "已快速记录",
   "recordQuickUndoAction": "撤销",
   "recordQuickUndoFailedToast": "撤销失败，请刷新后确认",
+  "recordQuickMedicationNoMedicinesTitle": "还没有药品",
+  "recordQuickMedicationNoMedicinesBody": "先把药品添加到药箱，之后就能从记录页快速记录服药。",
+  "recordQuickMedicationAddAction": "添加药品",
+  "recordQuickMedicationSelectTitle": "选择本次服用的药",
+  "recordQuickMedicationAlreadyRecordedToast": "附近用药已记录",
+  "recordQuickMedicationLoadFailedToast": "用药信息加载失败，请重试",
+  "recordQuickMedicationPartialFailedToast": "已记录 {savedCount} 种，{failedCount} 种失败",
+  "@recordQuickMedicationPartialFailedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryMultiSelectAction": "多选",
   "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",
   "@recordFastEntryPartialFailedToast": {

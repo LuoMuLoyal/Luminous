@@ -22,5 +22,48 @@ void main() {
         expect(emitted, [DataChangeTopic.dailyRecords]);
       },
     );
+
+    test(
+      'undo deletes the created dose log and emits doseLogs change',
+      () async {
+        final deleted = <String>[];
+        final emitted = <String>[];
+        final service = QuickEntryUndoService(
+          deleteDailyRecord: (_) async {},
+          deleteDoseLog: (id) async => deleted.add(id),
+          emitDataChange: emitted.add,
+        );
+
+        await service.undo(
+          const QuickEntryUndoAction.deleteDoseLog(doseLogId: 'dose-1'),
+        );
+
+        expect(deleted, ['dose-1']);
+        expect(emitted, [DataChangeTopic.doseLogs]);
+      },
+    );
+
+    test(
+      'undo restores previous dose log status and emits doseLogs change',
+      () async {
+        final restored = <String, String>{};
+        final emitted = <String>[];
+        final service = QuickEntryUndoService(
+          deleteDailyRecord: (_) async {},
+          updateDoseLogStatus: (id, status) async => restored[id] = status,
+          emitDataChange: emitted.add,
+        );
+
+        await service.undo(
+          const QuickEntryUndoAction.restoreDoseLogStatus(
+            doseLogId: 'dose-1',
+            previousStatus: 'planned',
+          ),
+        );
+
+        expect(restored, {'dose-1': 'planned'});
+        expect(emitted, [DataChangeTopic.doseLogs]);
+      },
+    );
   });
 }

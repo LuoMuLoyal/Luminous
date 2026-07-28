@@ -1,6 +1,6 @@
 # Lucent Contract Snapshot
 
-Last updated: 2026-07-28
+Last updated: 2026-07-28 (Record quick medication uses dose-log delete)
 
 ## 基础
 
@@ -43,7 +43,7 @@ Last updated: 2026-07-28
 
 ## 关键合同细节
 
-- **用药打卡**：`POST /api/v1/user/medicine-dose-logs/mark` 按提醒槽位幂等确认服药；`CreateDoseLogDto` / `DoseLogItemDto` 含 `reminderId` 与 `scheduledTime` 字段。
+- **用药打卡**：`POST /api/v1/user/medicine-dose-logs/mark` 按提醒槽位幂等确认服药；`CreateDoseLogDto` / `DoseLogItemDto` 含 `reminderId` 与 `scheduledTime` 字段。Record 快速用药撤销使用既有 `DELETE /api/v1/user/medicine-dose-logs/{id}` 删除新建 log，或 `PATCH /api/v1/user/medicine-dose-logs/{id}` 恢复旧 status；本次未改变后端合同。
 - **Medicine 主页空态**：未登录 preview 与已登录空药盒均复用现有 `MedicineWorkspace` 结构（`plan.items` 为空），空态文案与卡片由前端根据认证状态本地化渲染，未引入新合同字段。
 - **用户数据边界**：用户业务数据在 `/api/v1/user/*` 下；账户资料/安全操作在 `/api/v1/account/*` 下。
 - **SSE 流**：Today AI 分析 `/api/v1/user/today-analysis/generate/stream`、Report AI 摘要 `/api/v1/user/reports/summary/generate/stream`、Assistant `/api/v1/user/assistant/chat/stream`。通过 `LucentSseClient` + Dio 直接消费，不经过 Retrofit。

@@ -142,6 +142,23 @@
   "recordQuickSavedToast": "Quick record saved",
   "recordQuickUndoAction": "Undo",
   "recordQuickUndoFailedToast": "Undo failed. Refresh and check the record.",
+  "recordQuickMedicationNoMedicinesTitle": "No medicines yet",
+  "recordQuickMedicationNoMedicinesBody": "Add medicines to your medicine box first, then you can log doses quickly from Record.",
+  "recordQuickMedicationAddAction": "Add medicine",
+  "recordQuickMedicationSelectTitle": "Select medicines taken now",
+  "recordQuickMedicationAlreadyRecordedToast": "Nearby dose already recorded",
+  "recordQuickMedicationLoadFailedToast": "Could not load medicines. Try again.",
+  "recordQuickMedicationPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
+  "@recordQuickMedicationPartialFailedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordFastEntryPartialFailedToast": {

@@ -1,43 +1,85 @@
 import 'package:luminous/core/providers/data_change_bus.dart';
 
 typedef DeleteDailyRecord = Future<void> Function(String recordId);
+typedef DeleteDoseLog = Future<void> Function(String doseLogId);
+typedef UpdateDoseLogStatus =
+    Future<void> Function(String doseLogId, String status);
 typedef EmitDataChange = void Function(String topic);
 
-enum QuickEntryUndoActionType { deleteDailyRecord }
+enum QuickEntryUndoActionType {
+  deleteDailyRecord,
+  deleteDoseLog,
+  restoreDoseLogStatus,
+}
 
 class QuickEntryUndoAction {
   const QuickEntryUndoAction.deleteDailyRecord({required this.recordId})
-    : type = QuickEntryUndoActionType.deleteDailyRecord;
+    : type = QuickEntryUndoActionType.deleteDailyRecord,
+      doseLogId = null,
+      previousStatus = null;
+
+  const QuickEntryUndoAction.deleteDoseLog({required this.doseLogId})
+    : type = QuickEntryUndoActionType.deleteDoseLog,
+      recordId = null,
+      previousStatus = null;
+
+  const QuickEntryUndoAction.restoreDoseLogStatus({
+    required this.doseLogId,
+    required this.previousStatus,
+  }) : type = QuickEntryUndoActionType.restoreDoseLogStatus,
+       recordId = null;
 
   final QuickEntryUndoActionType type;
-  final String recordId;
+  final String? recordId;
+  final String? doseLogId;
+  final String? previousStatus;
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         other is QuickEntryUndoAction &&
             other.type == type &&
-            other.recordId == recordId;
+            other.recordId == recordId &&
+            other.doseLogId == doseLogId &&
+            other.previousStatus == previousStatus;
   }
 
   @override
-  int get hashCode => Object.hash(type, recordId);
+  int get hashCode => Object.hash(type, recordId, doseLogId, previousStatus);
 }
 
 class QuickEntryUndoService {
   const QuickEntryUndoService({
     required this.deleteDailyRecord,
     required this.emitDataChange,
+    this.deleteDoseLog,
+    this.updateDoseLogStatus,
   });
 
   final DeleteDailyRecord deleteDailyRecord;
+  final DeleteDoseLog? deleteDoseLog;
+  final UpdateDoseLogStatus? updateDoseLogStatus;
   final EmitDataChange emitDataChange;
 
   Future<void> undo(QuickEntryUndoAction action) async {
     switch (action.type) {
       case QuickEntryUndoActionType.deleteDailyRecord:
-        await deleteDailyRecord(action.recordId);
+        await deleteDailyRecord(action.recordId!);
         emitDataChange(DataChangeTopic.dailyRecords);
+      case QuickEntryUndoActionType.deleteDoseLog:
+        final deleteDoseLog = this.deleteDoseLog;
+        if (deleteDoseLog == null) {
+          throw StateError('Dose log delete undo is not configured.');
+        }
+        await deleteDoseLog(action.doseLogId!);
+        emitDataChange(DataChangeTopic.doseLogs);
+      case QuickEntryUndoActionType.restoreDoseLogStatus:
+        final updateDoseLogStatus = this.updateDoseLogStatus;
+        if (updateDoseLogStatus == null) {
+          throw StateError('Dose log status restore undo is not configured.');
+        }
+        await updateDoseLogStatus(action.doseLogId!, action.previousStatus!);
+        emitDataChange(DataChangeTopic.doseLogs);
     }
   }
 }

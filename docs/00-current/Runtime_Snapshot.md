@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry daily-flow l10n)
+Last updated: 2026-07-28 (Record quick-entry medication l10n/runtime)
 
 ## 技术栈
 
@@ -120,6 +120,9 @@ Last updated: 2026-07-28 (Record quick-entry daily-flow l10n)
   `recordQuickSavedToast`、`recordQuickUndoAction`、`recordQuickUndoFailedToast`，以及症状多选
   `recordFastEntryMultiSelectAction`、`recordFastEntryPartialFailedToast`。这些键位于
   `record_*` 分片，仍通过 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 生成。
+- 2026-07-28：Record quick medication 新增 `recordQuickMedication*` 键，用于 0 药引导、用药选择、
+  已记录提示、加载失败和部分失败反馈。运行时通过 `healthContextSnapshotProvider`、
+  `medicineReminderListProvider` 和 `CachedDoseLogDataSource` 组合当前药箱、提醒和 dose logs。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

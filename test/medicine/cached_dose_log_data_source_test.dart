@@ -19,6 +19,8 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
   DoseLogItem? createResult;
   DoseLogItem? updateResult;
   DoseLogItem? markResult;
+  String? lastDeleteId;
+  String? lastDeleteDate;
   String? lastFetchDate;
   String? lastCreateDate;
   String? lastCreateStatus;
@@ -133,6 +135,14 @@ class _FakeDoseLogRemote extends DoseLogRemoteDataSource {
           createdAt: '2026-07-10T00:00:00.000Z',
           updatedAt: '2026-07-10T00:00:00.000Z',
         );
+  }
+
+  @override
+  Future<void> delete(String doseLogId) async {
+    if (writeShouldFail) {
+      throw _networkError('/api/v1/user/medicine-dose-logs/$doseLogId');
+    }
+    lastDeleteId = doseLogId;
   }
 }
 
@@ -452,6 +462,20 @@ void main() {
       });
     });
 
+    // ─── delete ──────────────────────────────────────────────────────
+    group('delete', () {
+      test(
+        'deletes remote dose log and refreshes cache for the date',
+        () async {
+          await dataSource.delete('log-1', date: '2026-07-10');
+
+          expect(remote.lastDeleteId, 'log-1');
+          expect(remote.fetchCallCount, greaterThanOrEqualTo(1));
+          expect(remote.lastFetchDate, '2026-07-10');
+        },
+      );
+    });
+
     // ─── JSON serialization round-trip ───────────────────────────────
     group('JSON serialization round-trip', () {
       test('handles all DoseLogStatus values', () async {
@@ -548,6 +572,25 @@ void main() {
 
         expect(
           () => dataSource.update('log-1', 'skipped'),
+          throwsA(isA<AppError>()),
+        );
+
+        await Future.delayed(Duration.zero);
+
+        verify(
+          () => pendingSyncDao.enqueue(
+            entityType: 'dose_log',
+            operation: 'write',
+            payload: any(named: 'payload'),
+          ),
+        ).called(1);
+      });
+
+      test('delete enqueues pending sync on network failure', () async {
+        remote.writeShouldFail = true;
+
+        expect(
+          () => dataSource.delete('log-1', date: '2026-07-10'),
           throwsA(isA<AppError>()),
         );
 

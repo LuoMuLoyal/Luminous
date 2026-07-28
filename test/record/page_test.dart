@@ -12,6 +12,10 @@ import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
+import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -164,6 +168,66 @@ void main() {
       expect(meal.dy, greaterThan(water.dy));
     },
   );
+
+  testWidgets(
+    'Record medication quick action prompts when no medicines exist',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(480, 1200);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+      await _pumpRecordRouter(tester);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('record-quick-medication')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text(l10n.recordQuickMedicationNoMedicinesTitle),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.recordQuickMedicationAddAction), findsOneWidget);
+    },
+  );
+
+  testWidgets('Record medication quick action marks one nearby slot taken', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(480, 1200);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final doseLogs = _FakeCachedDoseLogDataSource();
+
+    await _pumpRecordRouter(
+      tester,
+      healthContextSnapshot: _healthSnapshot(
+        currentMedicines: [_currentMedicine(id: 'med-1')],
+      ),
+      cachedDoseLogDataSource: doseLogs,
+      medicineReminders: [
+        _medicineReminder(id: 'rem-1', currentMedicineId: 'med-1', hour: 8),
+      ],
+      selectedDate: DateTime(2026, 7, 28),
+      currentDateTime: DateTime(2026, 7, 28, 8),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('record-quick-medication')));
+    await tester.pumpAndSettle();
+
+    expect(doseLogs.markInputs, hasLength(1));
+    expect(doseLogs.markInputs.single.currentMedicineId, 'med-1');
+    expect(doseLogs.markInputs.single.reminderId, 'rem-1');
+    expect(doseLogs.markInputs.single.scheduledTime, '08:00');
+    expect(doseLogs.markInputs.single.status, 'taken');
+  });
 
   testWidgets('Record page opens natural-language sheet on mobile', (
     tester,
@@ -1838,6 +1902,8 @@ Future<void> _pumpRecordRouter(
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
   HealthContextSnapshot? healthContextSnapshot,
+  CachedDoseLogDataSource? cachedDoseLogDataSource,
+  List<MedicineReminderItem> medicineReminders = const [],
   String initialLocation = '/',
   DateTime? selectedDate,
   DateTime? currentDateTime,
@@ -1857,6 +1923,12 @@ Future<void> _pumpRecordRouter(
         ),
         healthContextSnapshotProvider.overrideWith(
           (ref) async => healthContextSnapshot ?? _healthSnapshot(),
+        ),
+        cachedDoseLogDataSourceProvider.overrideWith(
+          (ref) => cachedDoseLogDataSource ?? _FakeCachedDoseLogDataSource(),
+        ),
+        medicineReminderListProvider.overrideWith(
+          (ref) async => medicineReminders,
         ),
         if (selectedDate != null)
           selectedRecordDateProvider.overrideWith(
@@ -2322,7 +2394,10 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
   }
 }
 
-HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
+HealthContextSnapshot _healthSnapshot({
+  String? sexAtBirth = 'male',
+  List<CurrentMedicineItem> currentMedicines = const <CurrentMedicineItem>[],
+}) {
   return HealthContextSnapshot(
     summary: const HealthSummary(
       age: 27,
@@ -2348,8 +2423,117 @@ HealthContextSnapshot _healthSnapshot({String? sexAtBirth = 'male'}) {
     ),
     allergies: const <AllergyItem>[],
     conditions: const <ConditionItem>[],
-    currentMedicines: const <CurrentMedicineItem>[],
+    currentMedicines: currentMedicines,
   );
+}
+
+CurrentMedicineItem _currentMedicine({required String id}) {
+  return CurrentMedicineItem(
+    id: id,
+    source: 'manual',
+    sourceRefId: null,
+    displayName: 'Medicine $id',
+    strengthText: '10mg',
+    doseText: '1 tablet',
+    route: null,
+    startedAt: null,
+    endedAt: null,
+    isCurrent: true,
+    note: null,
+    createdAt: '2026-07-28T08:00:00Z',
+    updatedAt: '2026-07-28T08:00:00Z',
+  );
+}
+
+MedicineReminderItem _medicineReminder({
+  required String id,
+  required String currentMedicineId,
+  required int hour,
+}) {
+  return MedicineReminderItem(
+    id: id,
+    currentMedicineId: currentMedicineId,
+    scheduledHour: hour,
+    scheduledMinute: 0,
+    isActive: true,
+    createdAt: '2026-07-28T08:00:00Z',
+    updatedAt: '2026-07-28T08:00:00Z',
+  );
+}
+
+class _CapturedDoseMark {
+  const _CapturedDoseMark({
+    required this.currentMedicineId,
+    required this.status,
+    required this.date,
+    this.reminderId,
+    this.scheduledTime,
+  });
+
+  final String currentMedicineId;
+  final String status;
+  final String date;
+  final String? reminderId;
+  final String? scheduledTime;
+}
+
+class _FakeCachedDoseLogDataSource implements CachedDoseLogDataSource {
+  final logs = <DoseLogItem>[];
+  final markInputs = <_CapturedDoseMark>[];
+  final deletedIds = <String>[];
+  final updated = <String, String>{};
+
+  @override
+  Future<List<DoseLogItem>> fetchForDate(String date) async => logs;
+
+  @override
+  Future<DoseLogItem> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  }) async {
+    markInputs.add(
+      _CapturedDoseMark(
+        currentMedicineId: currentMedicineId,
+        status: status,
+        date: date,
+        reminderId: reminderId,
+        scheduledTime: scheduledTime,
+      ),
+    );
+    return DoseLogItem(
+      id: 'dose-${markInputs.length}',
+      currentMedicineId: currentMedicineId,
+      reminderId: reminderId,
+      status: DoseLogStatus.taken,
+      scheduledFor: date,
+      scheduledTime: scheduledTime,
+      createdAt: '2026-07-28T08:00:00Z',
+      updatedAt: '2026-07-28T08:00:00Z',
+    );
+  }
+
+  @override
+  Future<void> delete(String doseLogId, {required String date}) async {
+    deletedIds.add(doseLogId);
+  }
+
+  @override
+  Future<DoseLogItem> update(String doseLogId, String status) async {
+    updated[doseLogId] = status;
+    return DoseLogItem(
+      id: doseLogId,
+      status: DoseLogStatus.values.firstWhere((value) => value.name == status),
+      scheduledFor: '2026-07-28',
+      createdAt: '2026-07-28T08:00:00Z',
+      updatedAt: '2026-07-28T08:00:00Z',
+    );
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 Future<void> _scrollDashboardTo(WidgetTester tester, Finder finder) async {

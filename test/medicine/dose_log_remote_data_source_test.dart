@@ -80,6 +80,12 @@ void main() {
         expect(result.status, DoseLogStatus.skipped);
       },
     );
+
+    test('delete calls the dose-log delete endpoint', () async {
+      await dataSource.delete('dose-1');
+
+      adapter.requestAt('DELETE', '/api/v1/user/medicine-dose-logs/dose-1');
+    });
   });
 }
 
@@ -121,6 +127,10 @@ class _FakeDoseLogAdapter implements HttpClientAdapter {
         'message': '',
         'data': <String, Object?>{'items': listItems},
       });
+    }
+
+    if (options.method == 'DELETE') {
+      return _jsonResponse(<String, Object?>{'code': 0, 'message': ''});
     }
 
     final payload = requests.last.jsonBody;

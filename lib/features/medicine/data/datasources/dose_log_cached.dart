@@ -82,6 +82,16 @@ class CachedDoseLogDataSource {
     }
   }
 
+  Future<void> delete(String doseLogId, {required String date}) async {
+    try {
+      await remote.delete(doseLogId);
+      await _refreshCache(date);
+    } on DioException catch (e) {
+      await _enqueueWriteFailure(e, dateOverride: date);
+      throw LucentErrorMapper.toAppError(e);
+    }
+  }
+
   Future<DoseLogItem> mark({
     required String currentMedicineId,
     required String status,
@@ -112,7 +122,10 @@ class CachedDoseLogDataSource {
   /// [DioException]'s [RequestOptions]. If the request body contains a
   /// `scheduledFor` field, it is also stored so the replay handler can
   /// refresh the cache for that date after a successful replay.
-  Future<void> _enqueueWriteFailure(DioException e) async {
+  Future<void> _enqueueWriteFailure(
+    DioException e, {
+    String? dateOverride,
+  }) async {
     appTalker.warning('DoseLog write failed, queuing for sync: $e');
 
     final psq = pendingSyncDao;
@@ -121,7 +134,10 @@ class CachedDoseLogDataSource {
     await psq.enqueue(
       entityType: 'dose_log',
       operation: 'write',
-      payload: _serializeHttpRequest(e.requestOptions),
+      payload: _serializeHttpRequest(
+        e.requestOptions,
+        dateOverride: dateOverride,
+      ),
     );
     unawaited(syncWorker?.flush());
   }
@@ -129,11 +145,14 @@ class CachedDoseLogDataSource {
   /// Serializes a [RequestOptions] into a JSON string for the pending sync
   /// queue payload. Extracts `scheduledFor` from the body (if present) for
   /// targeted cache refresh after replay.
-  static String _serializeHttpRequest(RequestOptions options) {
+  static String _serializeHttpRequest(
+    RequestOptions options, {
+    String? dateOverride,
+  }) {
     final body = options.data;
-    String? date;
+    String? date = dateOverride;
     if (body is Map<String, dynamic>) {
-      date = body['scheduledFor'] as String?;
+      date ??= body['scheduledFor'] as String?;
     }
     return jsonEncode({
       'method': options.method,
