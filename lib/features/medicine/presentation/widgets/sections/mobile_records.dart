@@ -1,6 +1,6 @@
 part of '../views/mobile_dashboard_view.dart';
 
-class _MedicineRecordsSection extends StatelessWidget {
+class _MedicineRecordsSection extends StatefulWidget {
   const _MedicineRecordsSection({
     required this.workspace,
     required this.nextDose,
@@ -14,8 +14,23 @@ class _MedicineRecordsSection extends StatelessWidget {
   final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
+  State<_MedicineRecordsSection> createState() =>
+      _MedicineRecordsSectionState();
+}
+
+class _MedicineRecordsSectionState extends State<_MedicineRecordsSection> {
+  static const _collapsedLimit = 4;
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final items = workspace.plan.items.take(4).toList(growable: false);
+    final l10n = widget.l10n;
+    final workspace = widget.workspace;
+    final allItems = workspace.plan.items;
+    final isTruncated = allItems.length > _collapsedLimit;
+    final items = (_expanded || !isTruncated)
+        ? allItems
+        : allItems.take(_collapsedLimit).toList(growable: false);
 
     return Column(
       key: const Key('medicine-today-plan'),
@@ -37,28 +52,37 @@ class _MedicineRecordsSection extends StatelessWidget {
                 _DrugBoxReminderStrip(
                   key: const Key('medicine-next-reminder'),
                   workspace: workspace,
-                  nextDose: nextDose,
+                  nextDose: widget.nextDose,
                   l10n: l10n,
-                  onMarkDose: onMarkDose,
                 ),
                 const SizedBox(height: Spacing.level4),
                 const AppDivider(),
                 const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
                   _TodayPlanEmpty(l10n: l10n)
-                else
+                else ...[
                   Column(
                     children: [
                       for (var index = 0; index < items.length; index += 1) ...[
                         _TodayPlanRow(
                           item: items[index],
                           l10n: l10n,
-                          onMarkDose: onMarkDose,
+                          onMarkDose: widget.onMarkDose,
                         ),
                         if (index < items.length - 1) const AppDivider(),
                       ],
                     ],
                   ),
+                  if (isTruncated) ...[
+                    const SizedBox(height: Spacing.level2),
+                    _TruncatedFooter(
+                      label: _expanded
+                          ? l10n.medicineTodayPlanCollapse
+                          : l10n.medicineTodayPlanShowAll(allItems.length),
+                      onTap: () => setState(() => _expanded = !_expanded),
+                    ),
+                  ],
+                ],
               ],
             ),
           ),

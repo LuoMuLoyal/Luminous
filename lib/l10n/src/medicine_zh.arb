@@ -251,6 +251,23 @@
   "medicineTodayPlanTitle": "今日服用计划",
   "medicineTodayPlanEmpty": "今日暂无服药计划",
   "medicineTodayPlanInspectAction": "查看全部",
+  "medicineDrugboxMoreCount": "+{count} 种",
+  "@medicineDrugboxMoreCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineTodayPlanShowAll": "查看全部（共 {count} 项）",
+  "@medicineTodayPlanShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineTodayPlanCollapse": "收起",
   "medicineGenericName": "药品",
   "medicineGenericDosage": "剂量",
   "medicineGenericSchedule": "用法",

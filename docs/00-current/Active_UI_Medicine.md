@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-27 (用药提醒详情页：FTileGroup 分组 + 圆角矩形药品图标)
+Last updated: 2026-07-28 (用药主页：删除药箱冗余计数摘要、移除今日计划重复操作按钮)
 
 ## 页面结构
 
@@ -21,6 +21,13 @@ Last updated: 2026-07-27 (用药提醒详情页：FTileGroup 分组 + 圆角矩�
 - 状态 badge 直接控制前景/浅底/边框，不再用 `FBadge.raw` 包装。
 - 时间 pill 文本显式使用深色前景。
 - 依从率 detail 使用专用 l10n 键（`medicineAdherenceDetail`），不再误用"待服用"。
+- `_DrugBoxReminderStrip` 只做信息摘要（下次用药时间 + 依从率），不放 Taken/Skipped 按钮。操作按钮仅在每个 `_TodayPlanRow` 行内，避免同一药品出现两组操作按钮。
+- 今日计划默认显示前 4 项，超过时底部显示"查看全部（共 N 项）"可展开/收起。
+
+## 当前用药盒
+
+- `_DrugBoxHeader` 展示药品总数 + 管理按钮，不再在 `_DrugBoxContent` 左侧重复显示大字号计数摘要。
+- 药品列表默认显示前 3 种，超过时底部显示"+N 种"可点击跳转药品管理页。
 
 ## 通知铃铛
 

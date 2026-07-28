@@ -49,13 +49,23 @@ class _DrugBoxSection extends StatelessWidget {
                 const SizedBox(height: Spacing.level4),
                 if (items.isEmpty)
                   _DrugBoxEmpty(l10n: l10n)
-                else
+                else ...[
                   _DrugBoxContent(
                     items: items.take(3).toList(growable: false),
-                    totalCount: items.length,
                     l10n: l10n,
                     onOpenReminder: onOpenReminder,
                   ),
+                  if (items.length > 3) ...[
+                    const SizedBox(height: Spacing.level2),
+                    _TruncatedFooter(
+                      label: l10n.medicineDrugboxMoreCount(items.length - 3),
+                      onTap: () => pushAuthRequiredRoute(
+                        context,
+                        Routes.mineMedicineNew,
+                      ),
+                    ),
+                  ],
+                ],
               ],
             ),
           ),
@@ -161,82 +171,27 @@ class _DrugBoxHeader extends StatelessWidget {
 class _DrugBoxContent extends StatelessWidget {
   const _DrugBoxContent({
     required this.items,
-    required this.totalCount,
     required this.l10n,
     required this.onOpenReminder,
   });
 
   final List<MedicinePlanItem> items;
-  final int totalCount;
   final AppLocalizations l10n;
   final void Function(String currentMedicineId)? onOpenReminder;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        _DrugBoxCountSummary(count: totalCount, l10n: l10n),
-        const SizedBox(width: Spacing.level3),
-        const SizedBox(
-          height: Spacing.level10,
-          child: AppDivider(axis: Axis.vertical),
-        ),
-        const SizedBox(width: Spacing.level3),
-        Expanded(
-          child: Column(
-            children: [
-              for (var index = 0; index < items.length; index += 1) ...[
-                _DrugBoxMedicationRow(
-                  item: items[index],
-                  l10n: l10n,
-                  onOpenReminder: onOpenReminder,
-                ),
-                if (index < items.length - 1) const AppDivider(),
-              ],
-            ],
+        for (var index = 0; index < items.length; index += 1) ...[
+          _DrugBoxMedicationRow(
+            item: items[index],
+            l10n: l10n,
+            onOpenReminder: onOpenReminder,
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DrugBoxCountSummary extends StatelessWidget {
-  const _DrugBoxCountSummary({required this.count, required this.l10n});
-
-  final int count;
-  final AppLocalizations l10n;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    return SizedBox(
-      width: Spacing.level9,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SkeletonText(
-            text: l10n.medicineDrugboxTotal(count),
-            style: TypographyToken.level8
-                .display(context)
-                .copyWith(fontWeight: FontWeight.w800),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            widthFactor: 0.72,
-          ),
-          const SizedBox(height: Spacing.level1),
-          Text(
-            l10n.medicineDrugboxTotalPrefix,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          if (index < items.length - 1) const AppDivider(),
         ],
-      ),
+      ],
     );
   }
 }
@@ -247,13 +202,11 @@ class _DrugBoxReminderStrip extends StatelessWidget {
     required this.workspace,
     required this.nextDose,
     required this.l10n,
-    required this.onMarkDose,
   });
 
   final MedicineWorkspace workspace;
   final _NextDose? nextDose;
   final AppLocalizations l10n;
-  final void Function(MedicineDoseMarkRequest request)? onMarkDose;
 
   @override
   Widget build(BuildContext context) {
@@ -273,73 +226,29 @@ class _DrugBoxReminderStrip extends StatelessWidget {
               ? l10n.medicineNoPendingDoseDetail
               : l10n.medicineNoMedicineBody)
         : _doseSummary(l10n, item);
-    final takenRequest = item == null
-        ? null
-        : buildMedicineDoseMarkRequest(
-            item: item,
-            slot: slot,
-            action: MedicineDoseAction.taken,
-          );
-    final skippedRequest = item == null
-        ? null
-        : buildMedicineDoseMarkRequest(
-            item: item,
-            slot: slot,
-            action: MedicineDoseAction.skipped,
-          );
-    final canMark =
-        onMarkDose != null && takenRequest != null && skippedRequest != null;
 
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: _DrugBoxMetricItem(
-                icon: FLucideIcons.clock,
-                color: SemanticColor.primary,
-                label: l10n.medicineNextDoseReminderTitle,
-                value: value,
-                detail: detail,
-              ),
-            ),
-            const _MetricDivider(),
-            Expanded(
-              child: _DrugBoxMetricItem(
-                icon: FLucideIcons.badgeCheck,
-                color: SemanticColor.primary,
-                label: l10n.medicineHeroMetricAdherenceLabel,
-                value: workspace.hero.metricAdherence,
-                detail: l10n.medicineAdherenceDetail,
-              ),
-            ),
-          ],
-        ),
-        if (canMark) ...[
-          const SizedBox(height: Spacing.level3),
-          Row(
-            children: [
-              _DoseActionButton(
-                key: const Key('medicine-next-dose-action-taken'),
-                label: l10n.medicineDoseActionTaken,
-                icon: FLucideIcons.check,
-                color: SemanticColor.primary,
-                filled: true,
-                onTap: () => onMarkDose!(takenRequest),
-              ),
-              const SizedBox(width: Spacing.level3),
-              _DoseActionButton(
-                key: const Key('medicine-next-dose-action-skipped'),
-                label: l10n.medicineDoseActionSkipped,
-                icon: FLucideIcons.ban,
-                color: SemanticColor.neutral,
-                onTap: () => onMarkDose!(skippedRequest),
-              ),
-            ],
+        Expanded(
+          child: _DrugBoxMetricItem(
+            icon: FLucideIcons.clock,
+            color: SemanticColor.primary,
+            label: l10n.medicineNextDoseReminderTitle,
+            value: value,
+            detail: detail,
           ),
-        ],
+        ),
+        const _MetricDivider(),
+        Expanded(
+          child: _DrugBoxMetricItem(
+            icon: FLucideIcons.badgeCheck,
+            color: SemanticColor.primary,
+            label: l10n.medicineHeroMetricAdherenceLabel,
+            value: workspace.hero.metricAdherence,
+            detail: l10n.medicineAdherenceDetail,
+          ),
+        ),
       ],
     );
   }
@@ -573,6 +482,36 @@ class _DrugBoxMedicationRow extends StatelessWidget {
               size: Spacing.level5,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TruncatedFooter extends StatelessWidget {
+  const _TruncatedFooter({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+
+    return FTappable(
+      onPress: onTap,
+      builder: (context, data, _) => Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.level2),
+          child: Text(
+            label,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(
+                  color: colors.mutedForeground,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
         ),
       ),
     );

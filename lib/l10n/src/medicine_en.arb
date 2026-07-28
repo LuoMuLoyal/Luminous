@@ -244,6 +244,23 @@
   "medicineTodayPlanTitle": "Today's dosing plan",
   "medicineTodayPlanEmpty": "No doses scheduled today",
   "medicineTodayPlanInspectAction": "View all",
+  "medicineDrugboxMoreCount": "+{count} more",
+  "@medicineDrugboxMoreCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineTodayPlanShowAll": "View all ({count} items)",
+  "@medicineTodayPlanShowAll": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicineTodayPlanCollapse": "Collapse",
   "medicineGenericName": "Medicine",
   "medicineGenericDosage": "Dosage",
   "medicineGenericSchedule": "Schedule",
