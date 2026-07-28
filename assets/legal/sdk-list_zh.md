@@ -54,20 +54,13 @@
 - **用途**：药品条码扫描
 - **收集信息**：相机画面（仅在用户主动扫描时处理，不存储上传）
 
-### 8. speech_to_text
-
-- **提供方**：Dart 开源社区（底层依赖各平台原生语音识别）
-- **用途**：语音输入记录
-- **收集信息**：语音输入内容（仅在用户主动使用语音功能时）
-- **备注**：iOS 端使用 Apple Speech Framework，Android 端使用 Google Speech Recognition
-
-### 9. share_plus
+### 8. share_plus
 
 - **提供方**：Dart 开源社区
 - **用途**：分享诊所摘要 PDF 等内容到其他应用
 - **收集信息**：不主动收集个人信息
 
-### 10. google_mlkit_text_recognition
+### 9. google_mlkit_text_recognition
 
 - **提供方**：Google LLC
 - **用途**：OCR 文字识别（用于药品包装识别）

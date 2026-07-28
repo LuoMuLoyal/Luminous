@@ -54,20 +54,13 @@ To provide a complete user experience, Luminous uses the following third-party S
 - **Purpose**: Medicine barcode scanning
 - **Data Collected**: Camera feed (only processed when the user actively scans; not stored or uploaded)
 
-### 8. speech_to_text
-
-- **Provider**: Dart open-source community (relies on platform-native speech recognition)
-- **Purpose**: Voice input for records
-- **Data Collected**: Voice input content (only when the user actively uses the voice feature)
-- **Note**: Uses Apple Speech Framework on iOS, Google Speech Recognition on Android
-
-### 9. share_plus
+### 8. share_plus
 
 - **Provider**: Dart open-source community
 - **Purpose**: Sharing clinic summary PDFs and other content to other apps
 - **Data Collected**: Does not actively collect personal information
 
-### 10. google_mlkit_text_recognition
+### 9. google_mlkit_text_recognition
 
 - **Provider**: Google LLC
 - **Purpose**: OCR text recognition (for medicine package identification)
