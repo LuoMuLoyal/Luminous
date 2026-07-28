@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
@@ -176,14 +175,14 @@ class _TimelineRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: Spacing.level8,
-            child: SkeletonText(
-              text: entry.time,
+            width: 44,
+            child: Text(
+              entry.time,
               style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),
-              widthFactor: 0.68,
               maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           Expanded(
@@ -217,9 +216,9 @@ class _TimelineRow extends StatelessWidget {
                       width: Spacing.level8,
                       height: Spacing.level8,
                       decoration: BoxDecoration(
-                        color: entry.softColor.solid(context),
+                        color: entry.softColor.muted(context),
                         borderRadius: BorderRadius.circular(
-                          RadiusTokens.level4,
+                          RadiusTokens.level3,
                         ),
                       ),
                       child: Center(
@@ -235,25 +234,23 @@ class _TimelineRow extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SkeletonText(
-                            text: label,
+                          Text(
+                            label,
                             style: TypographyToken.level4
                                 .body(context)
                                 .copyWith(fontWeight: FontWeight.w700),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            widthFactor: 0.64,
                           ),
                           if (subtitle.isNotEmpty) ...[
                             const SizedBox(height: Spacing.level1),
-                            SkeletonText(
-                              text: subtitle,
+                            Text(
+                              subtitle,
                               style: TypographyToken.level3
                                   .body(context)
                                   .copyWith(color: colors.mutedForeground),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              widthFactor: 0.78,
                             ),
                           ],
                         ],
@@ -261,52 +258,42 @@ class _TimelineRow extends StatelessWidget {
                     ),
                     if (entry.badgeKey != null) ...[
                       const SizedBox(width: Spacing.level2),
-                      SkeletonSlot(
-                        skeleton: InlineSkeletonBlock(
-                          height:
-                              (TypographyToken.level3.body(context).fontSize ??
-                                  14) +
-                              8,
-                          widthFactor: 0.16,
-                          radius: RadiusTokens.level2,
-                        ),
-                        child: FBadge.raw(
-                          builder: (context, style) {
-                            return DecoratedBox(
-                              decoration: ShapeDecoration(
-                                color: colors.secondary,
-                                shape: RoundedSuperellipseBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    RadiusTokens.level2,
+                      FBadge.raw(
+                        builder: (context, style) {
+                          return DecoratedBox(
+                            decoration: ShapeDecoration(
+                              color: colors.secondary,
+                              shape: RoundedSuperellipseBorder(
+                                borderRadius: BorderRadius.circular(
+                                  RadiusTokens.level2,
+                                ),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: Spacing.level2,
+                                vertical: Spacing.level1,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    recordCopy(l10n, entry.badgeKey!),
+                                    style: TypographyToken.level3
+                                        .body(context)
+                                        .copyWith(
+                                          color: colors.foreground,
+                                          fontWeight: FontWeight.w700,
+                                          letterSpacing: 0,
+                                        ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
+                                ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.level2,
-                                  vertical: Spacing.level1,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      recordCopy(l10n, entry.badgeKey!),
-                                      style: TypographyToken.level3
-                                          .body(context)
-                                          .copyWith(
-                                            color: colors.foreground,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0,
-                                          ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                     const SizedBox(width: Spacing.level2),

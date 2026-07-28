@@ -24,7 +24,7 @@ import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
-import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/components.dart';
 import 'package:luminous/features/record/presentation/widgets/views/dashboard_view.dart';
 import 'package:luminous/features/record/presentation/widgets/views/skeleton_view.dart';
@@ -91,7 +91,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               label: l10n.recordNlpHeaderAction,
               icon: SemanticIcons.aiEntry,
               emphasized: true,
-              onTap: () => _openNlpDialog(
+              onTap: () => _openNlpSheet(
                 context,
                 canAccessProtectedData: canAccessProtectedData,
                 isAuthLoading: isAuthLoading,
@@ -132,16 +132,17 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               iconOnly: true,
             ),
             RecordHeaderActionChip(
-              key: const Key('record-add-action'),
-              label: isCompact
-                  ? l10n.recordAddCompactAction
-                  : l10n.recordAddAction,
-              icon: SemanticIcons.actionAdd,
+              key: const Key('record-nlp-action'),
+              label: l10n.recordNlpHeaderAction,
+              icon: SemanticIcons.aiEntry,
               emphasized: true,
-              onTap: () => pushAuthRequiredRoute(
+              onTap: () => _openNlpSheet(
                 context,
-                '/record/create?date=${formatRecordDate(selectedDate)}',
+                canAccessProtectedData: canAccessProtectedData,
+                isAuthLoading: isAuthLoading,
+                selectedDate: selectedDate,
               ),
+              iconOnly: true,
             ),
           ];
 
@@ -382,7 +383,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     };
   }
 
-  Future<void> _openNlpDialog(
+  Future<void> _openNlpSheet(
     BuildContext context, {
     required bool canAccessProtectedData,
     required bool isAuthLoading,
@@ -400,10 +401,14 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     }
 
     ref.read(recordNlpControllerProvider.notifier).reset();
-    await showAppDialog<void>(
+    await showFSheet<void>(
       context: context,
-      builder: (dialogContext) =>
-          RecordNlpDialog(occurredAt: formatRecordDate(selectedDate)),
+      side: FLayout.btt,
+      useSafeArea: true,
+      resizeToAvoidBottomInset: true,
+      mainAxisMaxRatio: 0.85,
+      builder: (sheetContext) =>
+          RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
     );
   }
 }

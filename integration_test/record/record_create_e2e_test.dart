@@ -13,7 +13,7 @@ void main() {
   ) async {
     final dailyRecordRepository = E2eDailyRecordRepository();
 
-    await pumpOfflineApp(
+    final container = await pumpOfflineApp(
       tester,
       authSessionOverride: SignedInAuthSessionNotifier.new,
       dailyRecordRepository: dailyRecordRepository,
@@ -21,8 +21,8 @@ void main() {
 
     await openTab(tester, '记录');
 
-    // Navigate to the record create page via the add action.
-    await tester.tap(find.byKey(const Key('record-add-action')));
+    // Navigate to the record create page via direct route.
+    unawaited(container.read(appRouterProvider).push('/record/create'));
     await settleE2e(tester);
 
     // Default kind is water — verify the kind selector is visible.
@@ -74,36 +74,35 @@ void main() {
     await settleE2e(tester, frames: 30);
   });
 
-  testWidgets(
-    'record create from record tab add action shows auth dialog when signed out',
-    (tester) async {
-      await pumpOfflineApp(tester);
+  testWidgets('record NLP entry shows auth dialog when signed out', (
+    tester,
+  ) async {
+    await pumpOfflineApp(tester);
 
-      await openTab(tester, '记录');
+    await openTab(tester, '记录');
 
-      // Tap the add action — this uses pushAuthRequiredRoute which shows
-      // a dialog instead of navigating directly.
-      await tester.tap(find.byKey(const Key('record-add-action')));
-      await settleE2e(tester);
+    // Tap the NLP action — this shows an auth-required dialog instead
+    // of navigating directly.
+    await tester.tap(find.byKey(const Key('record-nlp-action')));
+    await settleE2e(tester);
 
-      // Should show the auth-required dialog, not the create page.
-      expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    // Should show the auth-required dialog, not the create page.
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
 
-      // Tapping the login action should navigate to login.
-      await tester.tap(find.byKey(const Key('auth-required-login-action')));
-      await settleE2e(tester);
+    // Tapping the login action should navigate to login.
+    await tester.tap(find.byKey(const Key('auth-required-login-action')));
+    await settleE2e(tester);
 
-      expect(find.text('邮箱'), findsWidgets);
-      expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
-    },
-  );
+    expect(find.text('邮箱'), findsWidgets);
+    expect(find.widgetWithText(FButton, '登录'), findsOneWidget);
+  });
 
   testWidgets(
     'record create empty value shows validation error and stays on page',
     (tester) async {
       final dailyRecordRepository = E2eDailyRecordRepository();
 
-      await pumpOfflineApp(
+      final container = await pumpOfflineApp(
         tester,
         authSessionOverride: SignedInAuthSessionNotifier.new,
         dailyRecordRepository: dailyRecordRepository,
@@ -111,7 +110,7 @@ void main() {
 
       await openTab(tester, '记录');
 
-      await tester.tap(find.byKey(const Key('record-add-action')));
+      unawaited(container.read(appRouterProvider).push('/record/create'));
       await settleE2e(tester);
 
       // Tap save without entering any value.
@@ -135,7 +134,7 @@ void main() {
   testWidgets(
     'record create back button returns to timeline when form is empty',
     (tester) async {
-      await pumpOfflineApp(
+      final container = await pumpOfflineApp(
         tester,
         authSessionOverride: SignedInAuthSessionNotifier.new,
         dailyRecordRepository: E2eDailyRecordRepository(),
@@ -143,7 +142,7 @@ void main() {
 
       await openTab(tester, '记录');
 
-      await tester.tap(find.byKey(const Key('record-add-action')));
+      unawaited(container.read(appRouterProvider).push('/record/create'));
       await settleE2e(tester);
 
       expect(find.byKey(const Key('daily-record-value-field')), findsOneWidget);
@@ -168,7 +167,7 @@ void main() {
   testWidgets(
     'record create with dirty form shows discard confirmation on back',
     (tester) async {
-      await pumpOfflineApp(
+      final container = await pumpOfflineApp(
         tester,
         authSessionOverride: SignedInAuthSessionNotifier.new,
         dailyRecordRepository: E2eDailyRecordRepository(),
@@ -176,7 +175,7 @@ void main() {
 
       await openTab(tester, '记录');
 
-      await tester.tap(find.byKey(const Key('record-add-action')));
+      unawaited(container.read(appRouterProvider).push('/record/create'));
       await settleE2e(tester);
 
       // Enter some text to make the form dirty.

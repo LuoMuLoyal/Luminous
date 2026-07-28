@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
+Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header + NLP 弹窗改为 bottom sheet + 时间线修复)
 
 ## 支持的记录类型
 
@@ -14,7 +14,7 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 
 ## 自然语言录入
 
-- 移动端 header 右上角为 NLP 入口（sparkles 图标，`recordNlpHeaderAction`），点击打开 NLP 弹窗。
+- 移动端 header 右上角为 NLP 入口（sparkles 图标，`recordNlpHeaderAction`），点击打开 NLP bottom sheet（`showFSheet`，btt 方向）。
 - 语音与 OCR 功能已移除（产品职责重新判定 + 中文医疗词汇准确率无法保证）。
 - 接入 Lucent candidate 解析，确认后保存。
 - 候选审核可编辑、可选择性保存：调整 title/value/unit/note、编辑睡眠 payload、取消选中项、仅重试失败候选。
@@ -39,8 +39,10 @@ Last updated: 2026-07-28 (移除语音/OCR + NLP 入口移至 header)
 ## 时间线
 
 - 桌面端 `RecordTimelinePanel` 与移动端 `RecordMobileTimeline` 均使用 `timeline_tile` 绘制。
-- 时间线项可点击跳转详情，保留骨架屏加载态。
+- 时间线项可点击跳转详情。移动端不再使用骨架屏（loading 时显示 `RecordSkeletonView`，时间线区域 `isLoading` 始终为 false）。
 - 移动端首屏默认展示前 7 条；超过 7 条显示"查看全部记录/收起"切换。
+- 时间线条目按 `occurredTime ?? occurredAt` 倒序排列（最新在最上方），排序在 `LucentRecordRepository` 的原始 `DailyRecordItem` 列表上完成。
+- 移动端图标容器背景使用 `softColor.muted(context)`（tinted background），圆角 `RadiusTokens.level3`，时间标签宽度 44px。
 - **空态**：`entries.isEmpty` 时渲染图标+标题+描述+CTA 结构化空态，CTA 跳 `/record/create?date=<选中日期>`。桌面端额外附"清除筛选"按钮。
 - **桌面端拖拽改日期**：时间线卡片（仅 `recordId != null` 的真实记录）包裹 `Draggable<TimelineDragData>`，可拖拽到日历日期单元格（`DragTarget`）改变记录日期。拖拽时源卡片半透明（opacity 0.4），拖拽预览为紧凑浮动卡片（图标+标题+日历图标）。目标日历日期悬浮高亮（primary 色调背景+边框）。成功后调用 `dailyRecordRepositoryProvider.update()` 更新 `occurredAt`，发射 `DataChangeTopic.dailyRecords` 触发看板刷新，自动导航到新日期，Toast 反馈结果。移动端不启用拖拽。
 

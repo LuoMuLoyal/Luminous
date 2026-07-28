@@ -296,178 +296,183 @@ class _TimelineCard extends StatelessWidget {
         entry.rawDetail ??
         (entry.detailKey == null ? null : recordCopy(l10n, entry.detailKey!));
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level3),
-        border: Border(
-          left: BorderSide(color: entry.accent.solid(context), width: 3),
-          top: BorderSide(color: colors.border),
-          right: BorderSide(color: colors.border),
-          bottom: BorderSide(color: colors.border),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.background,
+          border: Border(
+            left: BorderSide(color: entry.accent.solid(context), width: 3),
+            top: BorderSide(color: colors.border),
+            right: BorderSide(color: colors.border),
+            bottom: BorderSide(color: colors.border),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                color: entry.softColor.solid(context),
-                borderRadius: BorderRadius.circular(RadiusTokens.level4),
-              ),
-              child: Center(
-                child: Icon(
-                  entry.icon,
-                  color: entry.accent.solid(context),
-                  size: 19,
-                ),
-              ),
-            ),
-            const SizedBox(width: Spacing.level4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          label,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (entry.badgeKey != null) ...[
-                        const SizedBox(width: Spacing.level3),
-                        FBadge.raw(
-                          builder: (context, style) {
-                            return DecoratedBox(
-                              decoration: ShapeDecoration(
-                                color: colors.secondary,
-                                shape: RoundedSuperellipseBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    RadiusTokens.level2,
-                                  ),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.level2,
-                                  vertical: Spacing.level1,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      recordCopy(l10n, entry.badgeKey!),
-                                      style: TypographyToken.level3
-                                          .body(context)
-                                          .copyWith(
-                                            color: colors.foreground,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0,
-                                          ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                  if (value != null && value.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level2),
-                    Text.rich(
-                      TextSpan(
-                        style: TypographyToken.level4
-                            .body(context)
-                            .copyWith(
-                              color: colors.foreground,
-                              fontWeight: FontWeight.w700,
-                            ),
-                        children: [
-                          TextSpan(text: value),
-                          if (unit != null)
-                            TextSpan(
-                              text: ' $unit',
-                              style: TypographyToken.level3
-                                  .body(context)
-                                  .copyWith(color: colors.mutedForeground),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  if (detail != null) ...[
-                    const SizedBox(height: Spacing.level2),
-                    Text(
-                      detail,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            if (entry.imageUrl != null && !dense) ...[
-              const SizedBox(width: Spacing.level4),
-              _TimelineImageThumbnail(imageUrl: entry.imageUrl!, label: label),
-            ] else if (entry.imagePlaceholderKey != null && !dense) ...[
-              const SizedBox(width: Spacing.level4),
-              DecoratedBox(
+        child: Padding(
+          padding: EdgeInsets.all(dense ? Spacing.level4 : Spacing.level5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
-                  color: SemanticColor.neutral.subtle(context),
+                  color: entry.softColor.muted(context),
                   borderRadius: BorderRadius.circular(RadiusTokens.level3),
-                  border: Border.all(color: colors.border),
                 ),
-                child: SizedBox(
-                  width: 96,
-                  height: 72,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.level3,
-                        vertical: Spacing.level2,
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            SemanticIcons.recordMeal,
-                            size: 22,
-                            color: colors.mutedForeground,
-                          ),
-                          const SizedBox(height: Spacing.level1),
-                          Text(
-                            recordCopy(l10n, entry.imagePlaceholderKey!),
+                child: Center(
+                  child: Icon(
+                    entry.icon,
+                    color: entry.accent.solid(context),
+                    size: 19,
+                  ),
+                ),
+              ),
+              const SizedBox(width: Spacing.level4),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            label,
                             style: TypographyToken.level3
                                 .body(context)
-                                .copyWith(color: colors.foreground),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
+                                .copyWith(color: colors.mutedForeground),
                             overflow: TextOverflow.ellipsis,
                           ),
+                        ),
+                        if (entry.badgeKey != null) ...[
+                          const SizedBox(width: Spacing.level3),
+                          FBadge.raw(
+                            builder: (context, style) {
+                              return DecoratedBox(
+                                decoration: ShapeDecoration(
+                                  color: colors.secondary,
+                                  shape: RoundedSuperellipseBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      RadiusTokens.level2,
+                                    ),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: Spacing.level2,
+                                    vertical: Spacing.level1,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        recordCopy(l10n, entry.badgeKey!),
+                                        style: TypographyToken.level3
+                                            .body(context)
+                                            .copyWith(
+                                              color: colors.foreground,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 0,
+                                            ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ],
+                      ],
+                    ),
+                    if (value != null && value.isNotEmpty) ...[
+                      const SizedBox(height: Spacing.level2),
+                      Text.rich(
+                        TextSpan(
+                          style: TypographyToken.level4
+                              .body(context)
+                              .copyWith(
+                                color: colors.foreground,
+                                fontWeight: FontWeight.w700,
+                              ),
+                          children: [
+                            TextSpan(text: value),
+                            if (unit != null)
+                              TextSpan(
+                                text: ' $unit',
+                                style: TypographyToken.level3
+                                    .body(context)
+                                    .copyWith(color: colors.mutedForeground),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    if (detail != null) ...[
+                      const SizedBox(height: Spacing.level2),
+                      Text(
+                        detail,
+                        style: TypographyToken.level3
+                            .body(context)
+                            .copyWith(color: colors.mutedForeground),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (entry.imageUrl != null && !dense) ...[
+                const SizedBox(width: Spacing.level4),
+                _TimelineImageThumbnail(
+                  imageUrl: entry.imageUrl!,
+                  label: label,
+                ),
+              ] else if (entry.imagePlaceholderKey != null && !dense) ...[
+                const SizedBox(width: Spacing.level4),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: SemanticColor.neutral.subtle(context),
+                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                    border: Border.all(color: colors.border),
+                  ),
+                  child: SizedBox(
+                    width: 96,
+                    height: 72,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Spacing.level3,
+                          vertical: Spacing.level2,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              SemanticIcons.recordMeal,
+                              size: 22,
+                              color: colors.mutedForeground,
+                            ),
+                            const SizedBox(height: Spacing.level1),
+                            Text(
+                              recordCopy(l10n, entry.imagePlaceholderKey!),
+                              style: TypographyToken.level3
+                                  .body(context)
+                                  .copyWith(color: colors.foreground),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
+              ],
+              const SizedBox(width: Spacing.level3),
+              Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
             ],
-            const SizedBox(width: Spacing.level3),
-            Icon(_trailingIcon(), color: _trailingColor(colors), size: 18),
-          ],
+          ),
         ),
       ),
     );

@@ -56,7 +56,13 @@ class LucentRecordRepository implements RecordRepository {
       }
     }
 
-    final timeline = records.map(_toTimelineEntry).toList();
+    final sortedRecords = List<DailyRecordItem>.from(records)
+      ..sort((a, b) {
+        final ta = a.occurredTime ?? a.occurredAt;
+        final tb = b.occurredTime ?? b.occurredAt;
+        return tb.compareTo(ta);
+      });
+    final timeline = sortedRecords.map(_toTimelineEntry).toList();
 
     return RecordDashboard(
       selectedDate: date,

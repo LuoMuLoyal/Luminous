@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
-import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_dialog.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/nlp_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../auth/test_helpers.dart';
 import '../helpers/test_forui_app.dart';
 
 void main() {
-  testWidgets('RecordNlpDialog renders', (tester) async {
+  testWidgets('RecordNlpSheet renders', (tester) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
     await tester.pumpWidget(
       ProviderScope(
@@ -19,10 +20,14 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) => ElevatedButton(
-                onPressed: () => showDialog(
+                onPressed: () => showFSheet(
                   context: context,
+                  side: FLayout.btt,
+                  useSafeArea: true,
+                  resizeToAvoidBottomInset: true,
+                  mainAxisMaxRatio: 0.85,
                   builder: (_) =>
-                      const RecordNlpDialog(occurredAt: '2026-06-10'),
+                      const RecordNlpSheet(occurredAt: '2026-06-10'),
                 ),
                 child: const Text('Open'),
               ),
@@ -36,6 +41,6 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.byType(RecordNlpDialog), findsOneWidget);
+    expect(find.byType(RecordNlpSheet), findsOneWidget);
   });
 }
