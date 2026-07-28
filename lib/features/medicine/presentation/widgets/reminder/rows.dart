@@ -62,28 +62,47 @@ class ValueActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
+    final typography = context.theme.typography;
 
-    return FTile(
+    return FTappable(
       onPress: onTap,
-      prefix: Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
-      title: Text(title),
-      details: Text(
-        value,
-        textAlign: TextAlign.right,
-        style: TextStyle(color: colors.mutedForeground),
-      ),
-      suffix: onClear != null
-          ? FButton.icon(
-              variant: FButtonVariant.ghost,
-              size: .sm,
-              onPress: onClear,
-              child: const Icon(FLucideIcons.x, size: Spacing.level5),
-            )
-          : Icon(
-              FLucideIcons.chevronRight,
-              color: colors.mutedForeground,
-              size: Spacing.level5,
+      builder: (context, data, _) => Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level4,
+          vertical: Spacing.level3,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: colors.mutedForeground, size: Spacing.level5),
+            const SizedBox(width: Spacing.level4),
+            Expanded(
+              child: Text(
+                title,
+                style: typography.body.sm.copyWith(fontWeight: FontWeight.w700),
+              ),
             ),
+            const SizedBox(width: Spacing.level3),
+            Text(
+              value,
+              textAlign: TextAlign.right,
+              style: typography.body.sm.copyWith(color: colors.mutedForeground),
+            ),
+            const SizedBox(width: Spacing.level2),
+            onClear != null
+                ? FButton.icon(
+                    variant: FButtonVariant.ghost,
+                    size: .sm,
+                    onPress: onClear,
+                    child: const Icon(FLucideIcons.x, size: Spacing.level5),
+                  )
+                : Icon(
+                    FLucideIcons.chevronRight,
+                    color: colors.mutedForeground,
+                    size: Spacing.level5,
+                  ),
+          ],
+        ),
+      ),
     );
   }
 }

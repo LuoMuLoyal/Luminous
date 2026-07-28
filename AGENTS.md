@@ -78,7 +78,7 @@ flutter test
 ## Design System
 
 Forui-led theming. Details in `docs/02-reference/Design_System.md` and
-`docs/02-reference/Forui_Reference.md`.
+`docs/02-reference/Forui_Reference.md`. Reference in `D:\25080\Documents\VSCodeProject\Lumos\forui-docs`
 
 - `SemanticColor`, `Spacing`, `RadiusTokens`, `TypographyToken` — design tokens.
 - Prefer Forui primitives directly. Don't add thin wrappers that only preset styles;
@@ -107,6 +107,7 @@ and `app_en.arb` are **generated** by merging these fragments — **never edit
 them directly**.
 
 Correct workflow when adding or modifying any user-visible string:
+
 1. Edit the fragment file(s) in `lib/l10n/src/`
 2. Run `dart scripts/arb_tools.dart merge` to regenerate `app_zh.arb` / `app_en.arb`
 3. Run `flutter gen-l10n` to regenerate Dart localization code

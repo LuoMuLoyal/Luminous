@@ -100,8 +100,15 @@ class ReportAiSummarySection extends StatelessWidget {
                                 : FMultiValueControl.lifted(
                                     value: {selectedRange},
                                     onChange: (selection) {
-                                      if (selection.isNotEmpty) {
-                                        onRangeChanged!(selection.first);
+                                      // FMultiValueControl.lifted 的 _ProxyNotifier
+                                      // 在点击新选项时将新值添加到集合中而不移除旧值，
+                                      // 因此 selection.first 可能返回旧值。过滤出
+                                      // 与当前 selectedRange 不同的值即为新选中项。
+                                      final next = selection
+                                          .where((v) => v != selectedRange)
+                                          .firstOrNull;
+                                      if (next != null) {
+                                        onRangeChanged!(next);
                                       }
                                     },
                                   ),

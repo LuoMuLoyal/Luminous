@@ -24,7 +24,11 @@ class FrequencySegments extends StatelessWidget {
       control: FMultiValueControl.lifted(
         value: {frequency},
         onChange: (value) {
-          if (value.isNotEmpty) onChanged(value.first);
+          // FMultiValueControl.lifted 的 _ProxyNotifier 在点击新选项时
+          // 会将新值添加到集合中而不移除旧值，因此 value.first 可能返回
+          // 旧值导致切换无效。这里找出与当前 frequency 不同的值即为新选中项。
+          final next = value.where((v) => v != frequency).firstOrNull;
+          if (next != null) onChanged(next);
         },
       ),
       children: [

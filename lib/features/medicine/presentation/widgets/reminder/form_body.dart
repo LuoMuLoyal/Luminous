@@ -233,6 +233,22 @@ class ReminderFormBody extends StatelessWidget {
               padding: const EdgeInsets.all(Spacing.level4),
               child: FTextField(
                 control: FTextFieldControl.managed(controller: noteController),
+                style: FTextFieldStyleDelta.delta(
+                  border:
+                      FVariantsValueDelta<
+                        FTextFieldVariantConstraint,
+                        FTextFieldVariant,
+                        InputBorder,
+                        Delta
+                      >.delta([.all(InputBorder.none)]),
+                  color:
+                      FVariantsValueDelta<
+                        FTextFieldVariantConstraint,
+                        FTextFieldVariant,
+                        Color?,
+                        Delta
+                      >.delta([.all(Colors.transparent)]),
+                ),
                 label: Text(l10n.medicineReminderNoteOptionalLabel),
                 hint: l10n.medicineReminderNoteHint,
                 maxLength: 100,
