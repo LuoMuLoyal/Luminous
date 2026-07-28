@@ -148,6 +148,7 @@ flutter:
     - assets/icon/app_icon.png
     - assets/icon/oauth/
     - assets/legal/
+    - assets/faq/
 
 melos:
   useRootAsPackage: true

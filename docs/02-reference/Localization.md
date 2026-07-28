@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-27 (风险检查页面重构 l10n 新增 27 个 medicine 键)
+Last updated: 2026-07-28 (帮助页面 FAQ + 反馈 l10n 键新增)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -91,6 +91,10 @@ Persisted preference keys:
    sleep-stage labels are owned by the Record feature ARB entries.
 - Mine no longer owns any campus-service strings; support-resource copy is limited to settings
    help/about surfaces plus backend-provided titles when present.
+- Settings help page FAQ and feedback strings (`settingsHelpFaqSectionTitle`, `settingsHelpFaqLoadError`,
+  `settingsHelpFeedbackSectionTitle`, `settingsHelpFeedbackSubject`, `settingsHelpFeedbackUnavailable`,
+  `settingsHelpFeedbackOpenFailed`) are owned by the Settings ARB entries. The `mineHelpFaqTitle` /
+  `mineHelpFaqSubtitle` keys have been removed (unused after help page self-containment).
 - Mine root-page readiness copy such as preview/signed-in badges, locked/incomplete/ready titles,
   readiness descriptions, primary CTA labels, and the account/privacy section title is owned by
   the Mine ARB entries.

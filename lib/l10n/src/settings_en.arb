@@ -240,5 +240,11 @@
     }
   },
   "settingsAdvancedResetDefaultsHint": "Reset all settings to defaults. This cannot be undone.",
-  "settingsHelpRetryAction": "Retry"
+  "settingsHelpRetryAction": "Retry",
+  "settingsHelpFaqSectionTitle": "FAQ",
+  "settingsHelpFaqLoadError": "Failed to load FAQ",
+  "settingsHelpFeedbackSectionTitle": "Feedback",
+  "settingsHelpFeedbackSubject": "Luminous Feedback",
+  "settingsHelpFeedbackUnavailable": "Feedback email is not configured, please try again later",
+  "settingsHelpFeedbackOpenFailed": "Unable to open email app, please check if a mail client is installed"
 }

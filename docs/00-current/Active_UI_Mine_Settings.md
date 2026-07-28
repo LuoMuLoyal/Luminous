@@ -1,6 +1,6 @@
 # Active UI — Mine / Settings
 
-Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration）
+Last updated: 2026-07-28（帮助页面自包含重构：本地 FAQ Markdown + 环境变量反馈邮箱）
 
 ## Mine 根页结构
 
@@ -217,3 +217,11 @@ Last updated: 2026-07-21（法律合规 P0 补全 + P1 实施 + header migration
 - **Tagline**：新增 `settingsAboutTagline` ARB key，展示一句话产品描述。
 - **API 精简**：后端 `app-info` 端点移除 `name`/`version`/`description`/`buildDate` 字段，只返回 `supportEmail` 和 `minClientVersion`（通过环境变量配置）。
 - **l10n 清理**：移除不再使用的 `settingsAboutBuildNumberLabel` 和 `mineSettingAboutValue`；新增 `settingsAboutVersionLabel`（带 `{version}` 占位符）和 `settingsAboutBuildLabel`（带 `{buildNumber}` 占位符）。
+
+## 2026-07-28 帮助页面自包含重构
+
+- **后端依赖移除**：帮助页面不再消费 `supportResourcesProvider('help')`，FAQ 和反馈入口全部前端自包含。
+- **FAQ 本地 Markdown**：新增 `assets/faq/faq_zh.md` 和 `faq_en.md`，按 `## ` 标题切分为多个 `_FaqItem`，每个 Q&A 使用 `FCollapsible` 可折叠展开，答案用 `MarkdownBody` 渲染。加载态使用 `InlineSkeleton` 骨架屏，错误态有重试按钮。
+- **反馈入口环境变量**：反馈 tile 通过 `EnvReader.string(EnvKey.supportEmail)` 获取 `SUPPORT_EMAIL` 环境变量，构造 `mailto:` URI 唤起邮件客户端。邮箱未配置时 toast 提示，打开失败时也 toast 提示。
+- **l10n 变更**：新增 6 个 settings 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`）；删除 mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
+- **后端回退**：Lucent `SupportResourcesService.getResources()` 回退为静态列表，不再动态注入 mailto。

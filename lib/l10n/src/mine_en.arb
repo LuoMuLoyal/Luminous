@@ -338,5 +338,7 @@
   "mineEditDoseQuick5ml": "5ml",
   "mineEditDoseQuick10ml": "10ml",
   "mineArchiveViewDetailAction": "View details",
-  "mineArchiveEditAction": "Edit"
+  "mineArchiveEditAction": "Edit",
+  "mineHelpFeedbackTitle": "Feedback",
+  "mineHelpFeedbackSubtitle": "Report issues or suggest improvements"
 }

@@ -338,5 +338,7 @@
   "mineEditDoseQuick5ml": "5ml",
   "mineEditDoseQuick10ml": "10ml",
   "mineArchiveViewDetailAction": "查看详情",
-  "mineArchiveEditAction": "编辑"
+  "mineArchiveEditAction": "编辑",
+  "mineHelpFeedbackTitle": "意见反馈",
+  "mineHelpFeedbackSubtitle": "报告问题或提出建议"
 }

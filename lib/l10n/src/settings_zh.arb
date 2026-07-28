@@ -240,5 +240,11 @@
     }
   },
   "settingsAdvancedResetDefaultsHint": "将所有设置恢复为默认值，此操作不可撤销",
-  "settingsHelpRetryAction": "重试"
+  "settingsHelpRetryAction": "重试",
+  "settingsHelpFaqSectionTitle": "常见问题",
+  "settingsHelpFaqLoadError": "FAQ 加载失败",
+  "settingsHelpFeedbackSectionTitle": "意见反馈",
+  "settingsHelpFeedbackSubject": "Luminous 意见反馈",
+  "settingsHelpFeedbackUnavailable": "暂未配置反馈邮箱，请稍后再试",
+  "settingsHelpFeedbackOpenFailed": "无法打开邮件应用，请检查是否已安装邮件客户端"
 }

@@ -10,7 +10,8 @@ enum EnvKey {
   luminousExperimentalAiRuntime('LUMINOUS_EXPERIMENTAL_AI_RUNTIME'),
   luminousAiRuntimeProvider('LUMINOUS_AI_RUNTIME_PROVIDER'),
   luminousEnableGenUi('LUMINOUS_ENABLE_GEN_UI'),
-  sentryDsn('SENTRY_DSN');
+  sentryDsn('SENTRY_DSN'),
+  supportEmail('SUPPORT_EMAIL');
 
   const EnvKey(this.wireName);
 
