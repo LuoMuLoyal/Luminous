@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry medication l10n/runtime)
+Last updated: 2026-07-28 (Record quick-entry sleep l10n/runtime)
 
 ## 技术栈
 
@@ -123,6 +123,10 @@ Last updated: 2026-07-28 (Record quick-entry medication l10n/runtime)
 - 2026-07-28：Record quick medication 新增 `recordQuickMedication*` 键，用于 0 药引导、用药选择、
   已记录提示、加载失败和部分失败反馈。运行时通过 `healthContextSnapshotProvider`、
   `medicineReminderListProvider` 和 `CachedDoseLogDataSource` 组合当前药箱、提醒和 dose logs。
+- 2026-07-28：Record quick sleep 新增 `recordQuickSleep*` 键，用于开始睡眠 toast、加载失败、
+  多 start 选择、合并确认和保持分离/合并操作。运行时通过 `dailyRecordRepositoryProvider`
+  拉取前一天与当天的 sleep records，识别 `payload.sleepEvent=start/wake` 临时事实，并在确认合并后写入标准
+  `durationMinutes/startAt/endAt` sleep payload。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

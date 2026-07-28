@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (快速记录 UX 重构阶段 3 medication flow)
+Last updated: 2026-07-28 (快速记录 UX 重构阶段 4 sleep flow)
 
 ## 支持的记录类型
 
@@ -74,6 +74,12 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 3 medication flow)
   - 附近 slot 已 taken/skipped 时不重复写入，只提示附近用药已记录。
   - 2+ 种当前用药时打开选择弹窗，默认选中附近 pending slot 对应药品；确认写入不显示撤销 toast，部分失败时保留失败项。
   - 用药即时写入撤销走 dose log 真实回滚：新建 log 删除，已有 log 恢复旧状态，并刷新 `DataChangeTopic.doseLogs`。
+- 阶段 4 已接入睡眠快速记录：
+  - 睡眠入口单击不再打开旧的时长选择 fast-entry 弹窗。
+  - 没有进行中睡眠时，单击按当前时间创建 `DailyRecordKind.sleep` 临时 start fact：`payload.sleepEvent=start`、`payload.eventAt=<UTC ISO>`，成功后显示可撤销 toast。
+  - 若前一天或当天存在一个未被 wake fact 关联的 start fact，再次单击先创建 wake fact：`payload.sleepEvent=wake`、`payload.eventAt=<UTC ISO>`、`payload.startedRecordId=<start id>`，随后展示合并确认。
+  - 合并确认展示入睡、醒来和总时长；确认后创建标准 sleep payload（`durationMinutes/startAt/endAt`），再删除 start/wake 临时事实。取消则保留两条事实。
+  - 若发现多个未结束 start，弹出选择对话框，由用户选择要结束哪一段；不自动猜测。
 
 ## 骨架屏
 

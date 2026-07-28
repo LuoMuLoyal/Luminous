@@ -21,11 +21,13 @@ import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/controllers/nlp.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/providers/time.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
+import 'package:luminous/features/record/presentation/quick_entry/sleep_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_executor.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
@@ -323,6 +325,18 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       return;
     }
 
+    if (action.type == RecordEntryType.sleep) {
+      await _handleSleepQuickAction(
+        context,
+        selectedDate: selectedDate,
+        now: now,
+        occurredAt: date,
+        occurredTime: currentTime,
+        session: session,
+      );
+      return;
+    }
+
     final prefs =
         ref.read(quickEntryPreferencesProvider).asData?.value ??
         const QuickEntryPreferences();
@@ -345,6 +359,325 @@ class _RecordPageState extends ConsumerState<RecordPage> {
         isAuthLoading: session.isLoading,
       ),
     );
+  }
+
+  Future<void> _handleSleepQuickAction(
+    BuildContext context, {
+    required DateTime selectedDate,
+    required DateTime now,
+    required String occurredAt,
+    required String occurredTime,
+    required AuthSessionState session,
+  }) async {
+    if (!session.canAccessProtectedData) {
+      if (session.isLoading) return;
+      await showAuthRequiredDialog(
+        context,
+        onLogin: () => context.push(loginRouteForCurrentLocation(context)),
+      );
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final repository = ref.read(dailyRecordRepositoryProvider);
+    QuickEntryUndoAction? undoAction;
+    final flow = SleepQuickEntryFlow(
+      createRecord: repository.create,
+      deleteRecord: repository.delete,
+      emitDataChange: (topic) =>
+          ref.read(dataChangeBusProvider.notifier).emit(topic),
+      registerUndo: (action) => undoAction = action,
+    );
+
+    late final List<DailyRecordItem> records;
+    try {
+      records = await _fetchSleepQuickCandidates(selectedDate);
+    } catch (_) {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordQuickSleepLoadFailedToast);
+      return;
+    }
+
+    late final SleepQuickEntryOutcome outcome;
+    try {
+      outcome = await flow.handleTap(
+        context: SleepQuickEntryContext(
+          occurredAt: occurredAt,
+          occurredTime: occurredTime,
+          now: now,
+        ),
+        candidateRecords: records,
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      await Toast.show(context, l10n.recordCreateFailedToast);
+      return;
+    }
+
+    if (!context.mounted) return;
+    switch (outcome.type) {
+      case SleepQuickEntryOutcomeType.started:
+        final action = undoAction;
+        if (action == null) {
+          await Toast.show(context, l10n.recordQuickSleepStartedToast);
+          return;
+        }
+        await Toast.showWithAction(
+          context,
+          l10n.recordQuickSleepStartedToast,
+          l10n.recordQuickUndoAction,
+          () {
+            unawaited(_undoDailyRecordQuickAction(context, action));
+          },
+        );
+      case SleepQuickEntryOutcomeType.wakeRecorded:
+        final merge = outcome.merge;
+        if (merge == null) return;
+        await _showSleepMergeDialog(context, flow: flow, merge: merge);
+      case SleepQuickEntryOutcomeType.needsStartSelection:
+        await _showSleepStartSelectionDialog(
+          context,
+          flow: flow,
+          contextData: SleepQuickEntryContext(
+            occurredAt: occurredAt,
+            occurredTime: occurredTime,
+            now: now,
+          ),
+          openStarts: outcome.openStarts,
+        );
+      case SleepQuickEntryOutcomeType.invalidDuration:
+        await Toast.show(context, l10n.recordQuickSleepInvalidDurationToast);
+    }
+  }
+
+  Future<List<DailyRecordItem>> _fetchSleepQuickCandidates(
+    DateTime selectedDate,
+  ) async {
+    final repository = ref.read(dailyRecordRepositoryProvider);
+    final dates = [
+      selectedDate.subtract(const Duration(days: 1)),
+      selectedDate,
+    ];
+    final lists = await Future.wait(
+      dates.map(
+        (date) => repository.fetchRecords(
+          formatRecordDate(date),
+          kind: DailyRecordKind.sleep.name,
+          pageSize: 100,
+        ),
+      ),
+    );
+    return [for (final list in lists) ...list.items];
+  }
+
+  Future<void> _showSleepStartSelectionDialog(
+    BuildContext context, {
+    required SleepQuickEntryFlow flow,
+    required SleepQuickEntryContext contextData,
+    required List<DailyRecordItem> openStarts,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    var saving = false;
+
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: 440,
+      scrollable: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.recordQuickSleepSelectStartTitle,
+                style: TypographyToken.level6.body(dialogContext),
+              ),
+              const SizedBox(height: Spacing.level4),
+              for (final start in openStarts) ...[
+                FButton(
+                  key: Key('record-quick-sleep-start-${start.id}'),
+                  variant: FButtonVariant.outline,
+                  onPress: saving
+                      ? null
+                      : () async {
+                          setDialogState(() => saving = true);
+                          late final SleepQuickEntryOutcome outcome;
+                          try {
+                            outcome = await flow.recordWakeForStart(
+                              context: contextData,
+                              startRecord: start,
+                            );
+                          } catch (_) {
+                            if (!dialogContext.mounted) return;
+                            setDialogState(() => saving = false);
+                            unawaited(
+                              Toast.show(context, l10n.recordCreateFailedToast),
+                            );
+                            return;
+                          }
+                          if (!dialogContext.mounted) return;
+                          if (outcome.type ==
+                              SleepQuickEntryOutcomeType.invalidDuration) {
+                            setDialogState(() => saving = false);
+                            unawaited(
+                              Toast.show(
+                                context,
+                                l10n.recordQuickSleepInvalidDurationToast,
+                              ),
+                            );
+                            return;
+                          }
+                          final merge = outcome.merge;
+                          Navigator.of(dialogContext).pop();
+                          if (merge != null && context.mounted) {
+                            await _showSleepMergeDialog(
+                              context,
+                              flow: flow,
+                              merge: merge,
+                            );
+                          }
+                        },
+                  child: Text(_sleepEventLabel(start)),
+                ),
+                const SizedBox(height: Spacing.level3),
+              ],
+              if (saving) ...[
+                const SizedBox(height: Spacing.level2),
+                const Center(child: FProgress()),
+              ],
+              const SizedBox(height: Spacing.level2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    onPress: saving
+                        ? null
+                        : () => Navigator.of(dialogContext).pop(),
+                    child: Text(l10n.commonCancel),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _showSleepMergeDialog(
+    BuildContext context, {
+    required SleepQuickEntryFlow flow,
+    required SleepQuickEntryMerge merge,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    var saving = false;
+
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: 440,
+      scrollable: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.recordQuickSleepMergeTitle,
+                style: TypographyToken.level6.body(dialogContext),
+              ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.recordQuickSleepMergeBody,
+                style: TypographyToken.level4.body(dialogContext),
+              ),
+              const SizedBox(height: Spacing.level4),
+              _SleepMergeSummaryRow(
+                label: l10n.recordQuickSleepStartLabel,
+                value: _sleepEventLabel(merge.startRecord),
+              ),
+              const SizedBox(height: Spacing.level2),
+              _SleepMergeSummaryRow(
+                label: l10n.recordQuickSleepWakeLabel,
+                value: _sleepEventLabel(merge.wakeRecord),
+              ),
+              const SizedBox(height: Spacing.level2),
+              _SleepMergeSummaryRow(
+                label: l10n.recordSleepDurationLabel,
+                value: _formatSleepDuration(merge.durationMinutes, l10n),
+              ),
+              if (saving) ...[
+                const SizedBox(height: Spacing.level4),
+                const Center(child: FProgress()),
+              ],
+              const SizedBox(height: Spacing.level5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FButton(
+                    variant: FButtonVariant.ghost,
+                    onPress: saving
+                        ? null
+                        : () => Navigator.of(dialogContext).pop(),
+                    child: Text(l10n.recordQuickSleepKeepSeparateAction),
+                  ),
+                  const SizedBox(width: Spacing.level3),
+                  FButton(
+                    onPress: saving
+                        ? null
+                        : () async {
+                            setDialogState(() => saving = true);
+                            try {
+                              await flow.confirmMerge(merge);
+                            } catch (_) {
+                              if (!dialogContext.mounted) return;
+                              setDialogState(() => saving = false);
+                              unawaited(
+                                Toast.show(
+                                  context,
+                                  l10n.recordCreateFailedToast,
+                                ),
+                              );
+                              return;
+                            }
+                            if (!dialogContext.mounted) return;
+                            Navigator.of(dialogContext).pop();
+                            unawaited(
+                              Toast.show(context, l10n.recordCreateSavedToast),
+                            );
+                          },
+                    child: Text(l10n.recordQuickSleepMergeAction),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  String _sleepEventLabel(DailyRecordItem record) {
+    final eventAt = SleepQuickEntryFlow.eventAtForRecord(record);
+    if (eventAt == null) {
+      return formatRecordDateTimeLabel(
+        record.occurredAt,
+        occurredTime: record.occurredTime,
+      );
+    }
+    return formatRecordDateTimeLabel(
+      formatRecordDate(eventAt.toLocal()),
+      occurredTime: formatRecordTimeValue(eventAt.toLocal()),
+    );
+  }
+
+  String _formatSleepDuration(int minutes, AppLocalizations l10n) {
+    final h = minutes ~/ 60;
+    final m = minutes % 60;
+    if (m == 0) return '$h${l10n.todayVitalSleepUnit}';
+    return '$h${l10n.todayVitalSleepUnit} $m${l10n.recordSleepMinutesUnit}';
   }
 
   Future<void> _handleMedicationQuickAction(
@@ -621,6 +954,25 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     }
   }
 
+  Future<void> _undoDailyRecordQuickAction(
+    BuildContext context,
+    QuickEntryUndoAction action,
+  ) async {
+    try {
+      await QuickEntryUndoService(
+        deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+        emitDataChange: (topic) =>
+            ref.read(dataChangeBusProvider.notifier).emit(topic),
+      ).undo(action);
+    } catch (_) {
+      if (!context.mounted) return;
+      await Toast.show(
+        context,
+        AppLocalizations.of(context)!.recordQuickUndoFailedToast,
+      );
+    }
+  }
+
   Future<void> _pickSelectedDate(
     BuildContext context,
     DateTime selectedDate,
@@ -688,6 +1040,35 @@ class _RecordPageState extends ConsumerState<RecordPage> {
       mainAxisMaxRatio: 0.85,
       builder: (sheetContext) =>
           RecordNlpSheet(occurredAt: formatRecordDate(selectedDate)),
+    );
+  }
+}
+
+class _SleepMergeSummaryRow extends StatelessWidget {
+  const _SleepMergeSummaryRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 76,
+          child: Text(
+            label,
+            style: TypographyToken.level3
+                .body(context)
+                .copyWith(color: context.theme.colors.mutedForeground),
+          ),
+        ),
+        const SizedBox(width: Spacing.level3),
+        Expanded(
+          child: Text(value, style: TypographyToken.level4.body(context)),
+        ),
+      ],
     );
   }
 }

@@ -897,9 +897,7 @@ void main() {
     expect(repo.deleteCalledWith, 'test-id-1');
   });
 
-  testWidgets('Record sleep quick action opens fast entry and saves', (
-    tester,
-  ) async {
+  testWidgets('Record sleep quick action creates a start fact', (tester) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(480, 1200);
     addTearDown(() {
@@ -921,11 +919,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsNothing);
-    expect(find.byKey(const Key('record-fast-entry-sleep')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('record-fast-entry-choice-sleep-2')));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
-
     final input = dailyRepo.createInput;
     expect(input, isNotNull);
     expect(input!.kind, DailyRecordKind.sleep);
@@ -935,10 +928,13 @@ void main() {
     expect(input.value, isNull);
     expect(input.unit, isNull);
     expect(input.note, isNull);
-    expect(input.payload, {'durationMinutes': 480});
+    expect(input.payload, {
+      'sleepEvent': 'start',
+      'eventAt': currentDateTime.toUtc().toIso8601String(),
+    });
   });
 
-  testWidgets('Record sleep quick action more opens full create page', (
+  testWidgets('Record sleep quick action records wake and merges confirmed', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -948,25 +944,56 @@ void main() {
       tester.view.resetPhysicalSize();
     });
 
+    final dailyRepo = _FakeDailyRecordRepository(
+      recordsByDate: {
+        '2026-06-05': [
+          _dailyRecord(
+            id: 'sleep-start-1',
+            kind: DailyRecordKind.sleep,
+            occurredAt: '2026-06-05',
+            occurredTime: '23:15',
+            payload: {
+              'sleepEvent': 'start',
+              'eventAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
+            },
+          ),
+        ],
+        '2026-06-06': const <DailyRecordItem>[],
+      },
+    );
+
     await _pumpRecordRouter(
       tester,
+      dailyRecordRepository: dailyRepo,
       selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: DateTime(2026, 6, 6, 9, 45),
+      currentDateTime: DateTime.utc(2026, 6, 5, 23, 10),
     );
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
-    await tester.pumpAndSettle();
+    expect(find.text('合并为一条睡眠记录？'), findsOneWidget);
+    expect(dailyRepo.createdInputs, hasLength(1));
+    expect(dailyRepo.createdInputs.first.payload, {
+      'sleepEvent': 'wake',
+      'eventAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
+      'startedRecordId': 'sleep-start-1',
+    });
 
-    expect(find.byType(RecordCreatePage), findsOneWidget);
-    expect(find.byKey(const Key('daily-record-kind-sleep')), findsOneWidget);
-    expect(find.text('日期'), findsOneWidget);
-    expect(find.text('2026年6月6日'), findsOneWidget);
-    expect(find.text('时间'), findsOneWidget);
-    expect(find.text('09:45'), findsOneWidget);
+    await tester.tap(find.text('合并'));
+    await tester.pumpAndSettle();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(dailyRepo.createdInputs, hasLength(2));
+    expect(dailyRepo.createdInputs.last.kind, DailyRecordKind.sleep);
+    expect(dailyRepo.createdInputs.last.occurredAt, '2026-06-06');
+    expect(dailyRepo.createdInputs.last.payload, {
+      'durationMinutes': 475,
+      'startAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
+      'endAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
+    });
+    expect(dailyRepo.deletedIds, ['sleep-start-1', 'created-id-1']);
   });
 
   testWidgets('Record mobile note quick action opens fast entry first', (
@@ -2072,6 +2099,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     this.fetchThrows = false,
     this.generatedCandidates,
     this.failCreateAtIndexes = const <int>{},
+    this.recordsByDate,
   });
 
   final String? itemOccurredAt;
@@ -2090,6 +2118,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   final bool fetchThrows;
   final DailyRecordCandidateResult? generatedCandidates;
   final Set<int> failCreateAtIndexes;
+  final Map<String, List<DailyRecordItem>>? recordsByDate;
   String? deleteCalledWith;
   String? updateCalledWith;
   String? getCalledWith;
@@ -2097,6 +2126,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   DailyRecordUpdateInput? lastUpdateInput;
   DailyRecordCreateInput? createInput;
   final List<DailyRecordCreateInput> createdInputs = <DailyRecordCreateInput>[];
+  final List<String> deletedIds = <String>[];
   bool fetchRecordsCalled = false;
 
   @override
@@ -2109,6 +2139,10 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
     fetchRecordsCalled = true;
     fetchDate = date;
     if (fetchThrows) throw Exception('fetch error');
+    final records = recordsByDate?[date];
+    if (records != null) {
+      return DailyRecordListData(items: records, total: records.length);
+    }
     return DailyRecordListData(
       items: [
         DailyRecordItem(
@@ -2222,6 +2256,7 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
       value: input.value,
       unit: input.unit,
       note: input.note,
+      payload: input.payload,
       mealAnalysisStatus: itemMealAnalysisStatus,
       mealAnalysisCoverage: itemMealAnalysisCoverage,
       mealShortDescription: itemMealShortDescription,
@@ -2263,7 +2298,35 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
   @override
   Future<void> delete(String id) async {
     deleteCalledWith = id;
+    deletedIds.add(id);
   }
+}
+
+DailyRecordItem _dailyRecord({
+  required String id,
+  required DailyRecordKind kind,
+  required String occurredAt,
+  String? occurredTime,
+  String? title,
+  String? value,
+  String? unit,
+  String? note,
+  Map<String, dynamic>? payload,
+}) {
+  return DailyRecordItem(
+    id: id,
+    kind: kind,
+    occurredAt: occurredAt,
+    occurredTime: occurredTime,
+    title: title,
+    value: value,
+    unit: unit,
+    note: note,
+    payload: payload,
+    source: 'manual',
+    createdAt: DateTime.now().toIso8601String(),
+    updatedAt: DateTime.now().toIso8601String(),
+  );
 }
 
 class _FakeRecordRepository implements RecordRepository {

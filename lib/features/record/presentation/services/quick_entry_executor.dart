@@ -135,8 +135,7 @@ class QuickEntryExecutor {
       DailyRecordKind.meal ||
       DailyRecordKind.symptom ||
       DailyRecordKind.mood ||
-      DailyRecordKind.note ||
-      DailyRecordKind.sleep => true,
+      DailyRecordKind.note => true,
       _ => false,
     };
   }

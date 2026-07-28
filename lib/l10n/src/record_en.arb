@@ -159,6 +159,16 @@
       }
     }
   },
+  "recordQuickSleepStartedToast": "Sleep tracking started",
+  "recordQuickSleepLoadFailedToast": "Could not load sleep records. Try again.",
+  "recordQuickSleepInvalidDurationToast": "Wake time must be after sleep start.",
+  "recordQuickSleepSelectStartTitle": "Select the sleep to end",
+  "recordQuickSleepMergeTitle": "Merge into one sleep record?",
+  "recordQuickSleepMergeBody": "The wake time has been saved. You can merge the start and wake facts into one complete sleep record.",
+  "recordQuickSleepStartLabel": "Start",
+  "recordQuickSleepWakeLabel": "Wake",
+  "recordQuickSleepKeepSeparateAction": "Keep separate",
+  "recordQuickSleepMergeAction": "Merge",
   "recordFastEntryMultiSelectAction": "Multi-select",
   "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordFastEntryPartialFailedToast": {

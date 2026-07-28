@@ -618,12 +618,15 @@ git commit -m "feat(record): 联动用药快速记录"
 
 ## Phase 4: Sleep Flow
 
+Status: implemented and verified 2026-07-28.
+
 **Files:**
 
 - Create: `lib/features/record/presentation/quick_entry/sleep_flow.dart`
 - Modify: `lib/features/record/presentation/services/quick_entry_executor.dart`
-- Modify: `lib/features/record/presentation/widgets/sections/quick_entry_panel.dart`
+- Modify: `lib/features/record/presentation/pages/page.dart`
 - Test: `test/record/quick_entry/sleep_flow_test.dart`
+- Modify: `test/record/page_test.dart`
 
 - [ ] **Step 1: Write failing sleep payload tests**
 

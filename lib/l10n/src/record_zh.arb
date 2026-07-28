@@ -159,6 +159,16 @@
       }
     }
   },
+  "recordQuickSleepStartedToast": "已开始记录睡眠",
+  "recordQuickSleepLoadFailedToast": "睡眠记录加载失败，请重试",
+  "recordQuickSleepInvalidDurationToast": "醒来时间必须晚于入睡时间",
+  "recordQuickSleepSelectStartTitle": "选择要结束的睡眠",
+  "recordQuickSleepMergeTitle": "合并为一条睡眠记录？",
+  "recordQuickSleepMergeBody": "刚刚已经记录了醒来时间，可以把开始和醒来合并为一条完整睡眠。",
+  "recordQuickSleepStartLabel": "入睡",
+  "recordQuickSleepWakeLabel": "醒来",
+  "recordQuickSleepKeepSeparateAction": "保持两条",
+  "recordQuickSleepMergeAction": "合并",
   "recordFastEntryMultiSelectAction": "多选",
   "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",
   "@recordFastEntryPartialFailedToast": {
