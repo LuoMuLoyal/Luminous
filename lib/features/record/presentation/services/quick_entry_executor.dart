@@ -1,15 +1,31 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/quick_entry/water_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
+import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/fast_entry_dialog.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 class QuickEntryExecutor {
-  const QuickEntryExecutor();
+  const QuickEntryExecutor({
+    required this.createRecord,
+    required this.deleteDailyRecord,
+    required this.emitDataChange,
+    required this.preferences,
+  });
+
+  final CreateDailyRecord createRecord;
+  final DeleteDailyRecord deleteDailyRecord;
+  final EmitDataChange emitDataChange;
+  final QuickEntryPreferences preferences;
 
   Future<void> execute(QuickEntryExecutionContext context) async {
     final buildContext = context.buildContext;
@@ -25,6 +41,11 @@ class QuickEntryExecutor {
 
     final kind = dailyRecordKindForEntryType(context.action.type);
     final route = _createRoute(context, kind);
+
+    if (kind == DailyRecordKind.water) {
+      await _recordWater(context);
+      return;
+    }
 
     if (kind == null || !_usesLegacyFastEntry(kind)) {
       if (!buildContext.mounted) return;
@@ -42,6 +63,58 @@ class QuickEntryExecutor {
         animation: animation,
       ),
     );
+  }
+
+  Future<void> _recordWater(QuickEntryExecutionContext context) async {
+    final buildContext = context.buildContext;
+    final l10n = AppLocalizations.of(buildContext)!;
+    QuickEntryUndoAction? undoAction;
+    try {
+      await WaterQuickEntryFlow(
+        createRecord: createRecord,
+        emitDataChange: emitDataChange,
+        registerUndo: (action) => undoAction = action,
+      ).record(
+        QuickEntryRecordContext(
+          occurredAt: context.occurredAt,
+          occurredTime: context.occurredTime,
+        ),
+        preferences,
+      );
+    } catch (_) {
+      if (!buildContext.mounted) return;
+      await Toast.show(buildContext, l10n.recordCreateFailedToast);
+      return;
+    }
+
+    final action = undoAction;
+    if (!buildContext.mounted || action == null) return;
+    await Toast.showWithAction(
+      buildContext,
+      l10n.recordQuickSavedToast,
+      l10n.recordQuickUndoAction,
+      () {
+        unawaited(_undo(buildContext, action));
+      },
+    );
+  }
+
+  Future<void> _undo(
+    BuildContext buildContext,
+    QuickEntryUndoAction action,
+  ) async {
+    try {
+      await QuickEntryUndoService(
+        deleteDailyRecord: deleteDailyRecord,
+        emitDataChange: emitDataChange,
+      ).undo(action);
+    } catch (_) {
+      if (!buildContext.mounted) return;
+      await Toast.show(
+        buildContext,
+        AppLocalizations.of(buildContext)!.recordQuickUndoFailedToast,
+      );
+    }
   }
 
   String _createRoute(

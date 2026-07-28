@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (Record quick-entry settings strings)
+Last updated: 2026-07-28 (Record quick-entry daily-flow strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -72,6 +72,10 @@ Persisted preference keys:
 - Record quick-entry settings strings (`recordQuickSettings*`) and quick panel help copy
   (`recordQuickHelpTooltip`) are owned by the Record ARB entries. Settings only owns the secondary
   entry subtitle (`settingsQuickEntrySubtitle`) because that row lives on the Settings page.
+- Record quick-entry daily-flow feedback strings (`recordQuickSavedToast`,
+  `recordQuickUndoAction`, `recordQuickUndoFailedToast`) and symptom multi-select fast-entry strings
+  (`recordFastEntryMultiSelectAction`, `recordFastEntryPartialFailedToast`) are owned by the Record
+  ARB entries.
 - Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is
   owned by the Record ARB entries.
 - Record meal-analysis strings such as status/coverage labels, summary section titles, estimate

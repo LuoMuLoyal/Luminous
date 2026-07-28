@@ -964,7 +964,7 @@ void main() {
     expect(repo.requestedDates, contains(DateTime(2026, 6, 5)));
   });
 
-  testWidgets('Record water quick action opens fast entry and saves', (
+  testWidgets('Record water quick action records default amount immediately', (
     tester,
   ) async {
     tester.view.devicePixelRatio = 1;
@@ -988,49 +988,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsNothing);
-    expect(find.byKey(const Key('record-fast-entry-water')), findsOneWidget);
+    expect(find.byKey(const Key('record-fast-entry-water')), findsNothing);
     expect(find.byKey(const Key('daily-record-kind-water')), findsNothing);
-
-    await tester.tap(find.byKey(const Key('record-fast-entry-choice-water-1')));
-    await tester.pumpAndSettle();
-    await tester.pump(const Duration(seconds: 2));
 
     expect(dailyRepo.createInput?.kind, DailyRecordKind.water);
     expect(dailyRepo.createInput?.occurredAt, '2026-06-06');
     expect(dailyRepo.createInput?.occurredTime, '09:45');
-    expect(dailyRepo.createInput?.value, '500');
+    expect(dailyRepo.createInput?.value, '250');
     expect(dailyRepo.createInput?.unit, 'ml');
-  });
-
-  testWidgets('Record water quick action more opens full create page', (
-    tester,
-  ) async {
-    tester.view.devicePixelRatio = 1;
-    tester.view.physicalSize = const Size(480, 1200);
-    addTearDown(() {
-      tester.view.resetDevicePixelRatio();
-      tester.view.resetPhysicalSize();
-    });
-
-    await _pumpRecordRouter(
-      tester,
-      selectedDate: DateTime(2026, 6, 6),
-      currentDateTime: DateTime(2026, 6, 6, 9, 45),
-    );
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('record-quick-water')));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.byKey(const Key('record-fast-entry-more-action')));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(RecordCreatePage), findsOneWidget);
-    expect(find.byKey(const Key('daily-record-kind-water')), findsOneWidget);
-    expect(find.text('日期'), findsOneWidget);
-    expect(find.text('2026年6月6日'), findsOneWidget);
-    expect(find.text('时间'), findsOneWidget);
-    expect(find.text('09:45'), findsOneWidget);
   });
 
   testWidgets('Record meal quick action opens fast entry and saves', (
@@ -1149,6 +1114,52 @@ void main() {
     expect(input.unit, isNull);
     expect(input.note, isNull);
   });
+
+  testWidgets(
+    'Record symptom quick action supports multi-select confirmation',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(480, 1200);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final dailyRepo = _FakeDailyRecordRepository();
+
+      await _pumpRecordRouter(
+        tester,
+        dailyRecordRepository: dailyRepo,
+        selectedDate: DateTime(2026, 6, 6),
+        currentDateTime: DateTime(2026, 6, 6, 9, 45),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('record-quick-symptom')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.byKey(const Key('record-fast-entry-multi-select-action')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('record-fast-entry-choice-symptom-0')),
+      );
+      await tester.tap(
+        find.byKey(const Key('record-fast-entry-choice-symptom-2')),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.byKey(const Key('record-fast-entry-confirm-action')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('record-fast-entry-symptom')), findsNothing);
+      expect(dailyRepo.createdInputs, hasLength(2));
+      expect(dailyRepo.createdInputs.map((input) => input.title), ['头痛', '头晕']);
+      expect(dailyRepo.createdInputs.map((input) => input.value), ['轻度', '轻度']);
+    },
+  );
 
   testWidgets('Record symptom quick action more opens full create page', (
     tester,

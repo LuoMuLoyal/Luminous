@@ -139,6 +139,21 @@
   "recordQuickSettingsSymptomRule": "Symptom: single select saves; multi-select confirms.",
   "recordQuickSettingsMoodRule": "Mood: selecting one mood saves immediately.",
   "recordQuickSettingsSleepRule": "Sleep: single tap starts or ends a sleep record.",
+  "recordQuickSavedToast": "Quick record saved",
+  "recordQuickUndoAction": "Undo",
+  "recordQuickUndoFailedToast": "Undo failed. Refresh and check the record.",
+  "recordFastEntryMultiSelectAction": "Multi-select",
+  "recordFastEntryPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
+  "@recordFastEntryPartialFailedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryTitle": "Quick {type}",
   "@recordFastEntryTitle": {
     "placeholders": {

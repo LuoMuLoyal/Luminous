@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry settings foundation)
+Last updated: 2026-07-28 (Record quick-entry daily-flow l10n)
 
 ## 技术栈
 
@@ -116,6 +116,10 @@ Last updated: 2026-07-28 (Record quick-entry settings foundation)
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-28：Record quick-entry settings 新增 `recordQuickSettings*` 和
   `recordQuickHelpTooltip` 键，Settings 根页新增 `settingsQuickEntrySubtitle` 次入口文案。
+- 2026-07-28：Record quick-entry daily flows 新增即时保存/撤销反馈键
+  `recordQuickSavedToast`、`recordQuickUndoAction`、`recordQuickUndoFailedToast`，以及症状多选
+  `recordFastEntryMultiSelectAction`、`recordFastEntryPartialFailedToast`。这些键位于
+  `record_*` 分片，仍通过 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 生成。
 - 2026-07-24：全量翻译质量优化，修复 28 处翻译问题（见 `docs/03-logs/migration-log/2026-07-24.md`），包括语义错误（`轻动作`→`快捷操作`）、copy-paste 错误（`medicineStatusNeedsCheckin` 中英文均与 `medicineStatusStable` 相同）、非标准英语（`Needs lift`→`Needs improvement`）、口语化表达、缺少因果连词等。
 - Medicine 主页新增空态文案键：`medicineTodayPlanEmpty`、`medicineSafetyPanelEmptyTitle`、`medicineSafetyPanelEmptyBody`（位于 `medicine_*` 分片）。
 - Mine 健康档案分组新增空态文案键：`mineArchiveEmptyTitle`、`mineArchiveEmptyDescription`（位于 `mine_*` 分片）。

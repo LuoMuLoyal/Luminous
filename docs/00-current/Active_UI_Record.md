@@ -1,6 +1,6 @@
 # Active UI — Record
 
-Last updated: 2026-07-28 (快速记录 UX 重构阶段 1 foundation)
+Last updated: 2026-07-28 (快速记录 UX 重构阶段 2 daily flows)
 
 ## 支持的记录类型
 
@@ -59,8 +59,14 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 1 foundation)
   - Record header 新增 `record-quick-settings-action`，进入 `/record/quick-entry-settings`。
   - Settings 页保留快速记录次入口 `settings-row-quick-entry`，不再直接承载动态排序/收起开关。
   - `quick_entry_panel.dart` 回归展示职责：渲染网格、Note 独立入口和 help affordance；动态排序开关与手动排序入口迁入专门设置页。
-  - `QuickEntryExecutor` 作为兼容执行边界，当前仍复用旧 `RecordFastEntryDialog` / 创建页 fallback；后续阶段按类型替换为 water/symptom/mood/medication/sleep/meal flows。
+  - `QuickEntryExecutor` 作为兼容执行边界，仍保留旧 `RecordFastEntryDialog` / 创建页 fallback 给未重构类型使用；后续阶段继续替换 medication/sleep/meal flows。
   - `QuickEntryPreferences` 新增饮水默认量、饮水角标模式、睡眠进行中标记偏好，并保留动态排序和自定义顺序。
+- 阶段 2 已接入低风险 daily record 快速写入：
+  - 饮水单击不再打开 fast-entry 弹窗，按 `QuickEntryPreferences.waterDefaultAmountMl` 立即创建 water daily record，默认 `250 ml`。
+  - `QuickEntryUndoService` 支持撤销即时 daily record 写入：删除刚创建的记录并发射 `DataChangeTopic.dailyRecords`。
+  - 饮水、症状单选、情绪单选这些无确认即时写入成功后显示带“撤销”的快速记录 toast；写入失败不注册撤销。
+  - 症状弹窗支持多选模式：点击“多选”后 chip 仅切换选中，底部“确认”批量写入；批量确认属于用户显式确认，不显示撤销 toast，部分失败时保留失败项可重试。
+  - 情绪仍使用旧 fast-entry 弹窗展示常见情绪，点选一个情绪立即保存并可撤销。
 
 ## 骨架屏
 
@@ -182,4 +188,3 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 1 foundation)
 - 桌面端固定 4 列，`minTileWidth: 160px`
 - 图标容器固定 28px，图标 16px
 - 数值字体 `TypographyToken.level6`
-

@@ -307,8 +307,17 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     final date = formatRecordDate(selectedDate);
     final currentTime = formatRecordTimeValue(now);
     final session = ref.read(authSessionProvider);
+    final prefs =
+        ref.read(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
 
-    await const QuickEntryExecutor().execute(
+    await QuickEntryExecutor(
+      createRecord: ref.read(dailyRecordRepositoryProvider).create,
+      deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
+      emitDataChange: (topic) =>
+          ref.read(dataChangeBusProvider.notifier).emit(topic),
+      preferences: prefs,
+    ).execute(
       QuickEntryExecutionContext(
         buildContext: context,
         action: action,

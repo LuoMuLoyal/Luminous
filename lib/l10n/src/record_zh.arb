@@ -139,6 +139,21 @@
   "recordQuickSettingsSymptomRule": "症状：单选立即保存，多选确认保存",
   "recordQuickSettingsMoodRule": "情绪：点选一个情绪立即保存",
   "recordQuickSettingsSleepRule": "睡眠：单击开始或结束睡眠记录",
+  "recordQuickSavedToast": "已快速记录",
+  "recordQuickUndoAction": "撤销",
+  "recordQuickUndoFailedToast": "撤销失败，请刷新后确认",
+  "recordFastEntryMultiSelectAction": "多选",
+  "recordFastEntryPartialFailedToast": "已记录 {savedCount} 项，{failedCount} 项失败",
+  "@recordFastEntryPartialFailedToast": {
+    "placeholders": {
+      "savedCount": {
+        "type": "int"
+      },
+      "failedCount": {
+        "type": "int"
+      }
+    }
+  },
   "recordFastEntryTitle": "快速记录{type}",
   "@recordFastEntryTitle": {
     "placeholders": {
