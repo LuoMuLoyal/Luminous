@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
@@ -133,14 +134,31 @@ const reportPrintPdfExportRequest = DataExportRequestInput(
 /// - [fetchLatest] reads `GET /api/v1/user/data-export-requests/latest`.
 /// - [requestExport] posts `POST /api/v1/user/data-export-requests` and
 ///   updates the cached latest state.
+///
+/// The provider is kept alive to avoid disposal/recreation cycles when the
+/// report page transitions between loading and ready states.
 class DataExportController extends AsyncNotifier<DataExportRequestDataDto?> {
   @override
   Future<DataExportRequestDataDto?> build() async {
+    // Keep this provider alive to avoid disposal/recreation cycles when
+    // the report page transitions between loading and ready states.
+    ref.keepAlive();
     return authGuarded(
       ref: ref,
-      fetch: _fetchLatest,
+      fetch: _fetchLatestSafe,
       signedOutFallback: () => pendingAuthSessionResolution(),
     );
+  }
+
+  /// Wraps [_fetchLatest] with graceful error handling — returns `null`
+  /// instead of throwing so the provider never enters an error state.
+  Future<DataExportRequestDataDto?> _fetchLatestSafe() async {
+    try {
+      return await _fetchLatest();
+    } catch (e, st) {
+      appTalker.handle(e, st, 'DataExportController._fetchLatestSafe: failed');
+      return null;
+    }
   }
 
   Future<DataExportRequestDataDto?> requestExport([

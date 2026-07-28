@@ -10,6 +10,7 @@ import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
+import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -64,6 +65,10 @@ class ReportPage extends ConsumerWidget {
 
     final input = _exportInputForKind(kind);
     if (input == null) return;
+
+    // Security elevation: require PIN verification before creating an export.
+    final elevated = await showSecurityElevationDialog(context, ref);
+    if (!elevated) return;
 
     final controller = ref.read(dataExportControllerProvider.notifier);
     final launcher = ref.read(externalUrlLauncherProvider);

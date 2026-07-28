@@ -6,6 +6,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/security_elevation_dialog.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
@@ -172,6 +173,11 @@ class DataExportPage extends ConsumerWidget {
 
   Future<void> _requestExport(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
+
+    // Security elevation: require PIN verification before creating an export.
+    final elevated = await showSecurityElevationDialog(context, ref);
+    if (!elevated) return;
+
     final result = await runGuarded(
       ref: ref,
       tag: 'DataExportPage._requestExport',

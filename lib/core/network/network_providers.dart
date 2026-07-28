@@ -6,6 +6,8 @@ import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/network/base_url.dart';
 import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/network/interceptors/security_elevation_interceptor.dart';
+import 'package:luminous/core/network/security_elevation_token_holder.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -41,6 +43,14 @@ LucentSessionStore lucentSessionStore(Ref ref) {
   return const SecureLucentSessionStore();
 }
 
+/// Provides the [SecurityElevationTokenHolder] — a mutable in-memory store
+/// for the short-lived security elevation token. The Dio interceptor reads
+/// from this holder to inject the `x-security-elevation` header.
+@Riverpod(keepAlive: true)
+SecurityElevationTokenHolder securityElevationTokenHolder(Ref ref) {
+  return SecurityElevationTokenHolder();
+}
+
 /// Provides the [LucentDioClient] singleton — the root HTTP client for all
 /// Lucent API communication.
 ///
@@ -48,12 +58,14 @@ LucentSessionStore lucentSessionStore(Ref ref) {
 /// Disposes the underlying Dio instances when the provider is destroyed.
 @Riverpod(keepAlive: true)
 LucentDioClient lucentDioClient(Ref ref) {
+  final tokenHolder = ref.watch(securityElevationTokenHolderProvider);
   final client = LucentDioClient(
     baseUrl: ref.watch(lucentBaseUrlProvider),
     sessionStore: ref.watch(lucentSessionStoreProvider),
     localeResolver: () =>
         (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
             .acceptLanguage,
+    interceptors: [SecurityElevationInterceptor(holder: tokenHolder)],
   );
   ref.onDispose(client.dispose);
   return client;

@@ -7,6 +7,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -422,6 +423,8 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
+        // PIN changed → invalidate any previously issued elevation token.
+        ref.read(securityElevationControllerProvider.notifier).clear();
         await Toast.show(context, l10n.settingsSecurityPinEnableSuccess);
       case Failure(:final error):
         await Toast.show(
@@ -467,6 +470,8 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
+        // PIN changed → invalidate any previously issued elevation token.
+        ref.read(securityElevationControllerProvider.notifier).clear();
         await Toast.show(context, l10n.settingsSecurityPinChangeSuccess);
       case Failure(:final error):
         await Toast.show(
@@ -500,6 +505,8 @@ class SecurityPinSettingsPage extends HookConsumerWidget {
     if (!context.mounted) return;
     switch (result) {
       case Success():
+        // PIN disabled → invalidate any previously issued elevation token.
+        ref.read(securityElevationControllerProvider.notifier).clear();
         await Toast.show(context, l10n.settingsSecurityPinDisableSuccess);
       case Failure(:final error):
         await Toast.show(
