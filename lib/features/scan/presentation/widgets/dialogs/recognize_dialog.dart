@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/presentation/routes.dart';
-import 'package:luminous/features/scan/domain/services/text_matcher.dart';
+import 'package:luminous/features/scan/domain/entities/scan_result.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRecognizeDialog extends StatefulWidget {
@@ -307,8 +307,6 @@ String _matchTypeLabel(MedicineMatchType type, AppLocalizations l10n) {
   switch (type) {
     case MedicineMatchType.approvalNumber:
       return l10n.scanMatchTypeApprovalNumber;
-    case MedicineMatchType.barcode:
-      return l10n.scanMatchTypeBarcode;
     case MedicineMatchType.nameFuzzy:
       return l10n.scanMatchTypeNameFuzzy;
   }

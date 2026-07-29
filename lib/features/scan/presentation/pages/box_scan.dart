@@ -13,8 +13,9 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/scan/data/repositories/scan.dart';
-import 'package:luminous/features/scan/domain/services/ocr.dart';
-import 'package:luminous/features/scan/domain/services/text_matcher.dart';
+import 'package:luminous/features/scan/domain/entities/scan_result.dart';
+import 'package:luminous/features/scan/domain/services/medicine_ocr_extractor.dart';
+import 'package:luminous/features/scan/domain/services/paddle_ocr_provider.dart';
 import 'package:luminous/features/scan/presentation/widgets/dialogs/recognize_dialog.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -192,8 +193,11 @@ Future<List<MedicineMatchResult>> _processPhoto(
   final repo = container.read(scanRepositoryProvider);
 
   if (method == _ScanMethod.ocr) {
-    final ocrText = await const OcrService().recognizeText(photo);
-    final candidates = const MedicineTextMatcher().extractCandidates(ocrText);
+    final ocrEngine = container.read(paddleOcrProvider);
+    final ocrBlocks = await ocrEngine.recognize(photo.path);
+    final candidates = const MedicineOcrExtractor().extractCandidates(
+      ocrBlocks,
+    );
 
     final results = <MedicineMatchResult>[];
     for (final candidate in candidates) {

@@ -1,6 +1,6 @@
 # 第三方 SDK 清单
 
-最后更新：2026-07-21
+最后更新：2026-07-29
 
 ## 说明
 
@@ -60,12 +60,12 @@
 - **用途**：分享诊所摘要 PDF 等内容到其他应用
 - **收集信息**：不主动收集个人信息
 
-### 9. google_mlkit_text_recognition
+### 9. paddle_ocr_native
 
-- **提供方**：Google LLC
-- **用途**：OCR 文字识别（用于药品包装识别）
+- **提供方**：PaddlePaddle 开源社区（百度）
+- **用途**：OCR 文字识别（用于药品包装识别，基于 PP-OCRv6 / ONNX Runtime）
 - **收集信息**：图片中的文字内容（仅在用户主动使用时本地处理，不上传至服务器）
-- **隐私政策**：https://policies.google.com/privacy
+- **开源许可**：Apache License 2.0
 
 ## 更新说明
 

@@ -69,7 +69,7 @@ dependencies:
   flutter_markdown_plus: ^1.0.12
   email_validator: ^2.1.17
   mobile_scanner: ^7.2.0
-  google_mlkit_text_recognition: ^0.15.1
+  paddle_ocr_native: ^0.1.1
 
   sign_in_with_apple: ^8.1.0
   flutter_svg: ^2.1.0

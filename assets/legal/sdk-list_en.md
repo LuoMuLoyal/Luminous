@@ -1,6 +1,6 @@
 # Third-Party SDK List
 
-Last updated: 2026-07-21
+Last updated: 2026-07-29
 
 ## Overview
 
@@ -60,12 +60,12 @@ To provide a complete user experience, Luminous uses the following third-party S
 - **Purpose**: Sharing clinic summary PDFs and other content to other apps
 - **Data Collected**: Does not actively collect personal information
 
-### 9. google_mlkit_text_recognition
+### 9. paddle_ocr_native
 
-- **Provider**: Google LLC
-- **Purpose**: OCR text recognition (for medicine package identification)
+- **Provider**: PaddlePaddle Open Source Community (Baidu)
+- **Purpose**: OCR text recognition (for medicine package identification, based on PP-OCRv6 / ONNX Runtime)
 - **Data Collected**: Text content from images (processed locally only when the user actively uses the feature; not uploaded to servers)
-- **Privacy Policy**: https://policies.google.com/privacy
+- **License**: Apache License 2.0
 
 ## Update Notes
 

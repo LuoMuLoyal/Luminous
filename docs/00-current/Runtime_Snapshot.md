@@ -114,6 +114,7 @@ Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
 - `scripts/arb_tools.dart` merge 命令在 `flutter gen-l10n` 前合并为 `app_{zh,en}.arb`（gitignored）。
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
 - 2026-07-28：Record 页面移除语音（`speech_to_text`）和 OCR 功能，删除 `voice_entry_dialog.dart` / `ocr_entry_dialog.dart` / `voice_recording.dart` / `speech_locale_resolver.dart` 及关联测试。`pubspec.yaml` 移除 `speech_to_text` 依赖，SDK 列表同步更新。
+- 2026-07-29：Medicine 拍照识别 OCR 引擎从 `google_mlkit_text_recognition` 替换为 `paddle_ocr_native`（PP-OCRv6 / ONNX Runtime）。`pubspec.yaml` 依赖替换；Android 移除 ML Kit 四语言模型、限制 `arm64-v8a` ABI；iOS 最低版本从 13.0 升至 16.0、启用 static framework linkage；移除 `RECORD_AUDIO` / `NSMicrophoneUsageDescription` 残留权限。候选提取算法从纯文本正则匹配重写为空间布局评分（面积 + 位置 + 置信度）。
 - 2026-07-28：Record 移动端 header 右上角 `+` 按钮替换为 sparkles 图标 NLP 入口（`SemanticIcons.aiEntry` + `recordNlpHeaderAction` l10n 键），删除原 `RecordAiInputBar` 顶部输入条。NLP 入口直接从 header 调用 `_openNlpDialog`，不再经 `RecordDashboardView` 回调传递。
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-28：Record quick-entry settings 新增 `recordQuickSettings*` 和
