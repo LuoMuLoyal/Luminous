@@ -354,10 +354,25 @@ String medicineRiskLevelDescription(
   };
 }
 
-/// Formats a [DateTime] as `HH:mm` for display in last-checked labels.
-String medicineRiskCheckFormatTime(DateTime? time) {
+/// Formats a [DateTime] for display in last-checked labels.
+///
+/// Shows `HH:mm` when the check was done today; otherwise shows `MM-dd HH:mm`
+/// to avoid misleading the user about when the check was performed.
+String medicineRiskCheckFormatTime(DateTime? time, {DateTime? now}) {
   if (time == null) return '--';
-  return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  final reference = now ?? DateTime.now();
+  final isSameDay =
+      time.year == reference.year &&
+      time.month == reference.month &&
+      time.day == reference.day;
+  final hh = time.hour.toString().padLeft(2, '0');
+  final mm = time.minute.toString().padLeft(2, '0');
+  if (isSameDay) {
+    return '$hh:$mm';
+  }
+  final month = time.month.toString().padLeft(2, '0');
+  final day = time.day.toString().padLeft(2, '0');
+  return '$month-$day $hh:$mm';
 }
 
 String medicineRiskFindingEvidence(

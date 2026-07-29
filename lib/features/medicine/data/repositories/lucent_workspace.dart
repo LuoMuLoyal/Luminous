@@ -8,6 +8,7 @@ import 'package:luminous/features/health_context/domain/repositories/snapshot.da
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart'
     show DoseLogItem, DoseLogRemoteDataSource, DoseLogStatus;
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/domain/entities/workspace.dart';
 import 'package:luminous/features/medicine/domain/repositories/risk_check.dart';
 import 'package:luminous/features/medicine/domain/repositories/workspace.dart';
@@ -31,7 +32,14 @@ class LucentMedicineWorkspaceRepository implements MedicineWorkspaceRepository {
   @override
   Future<MedicineWorkspace> fetchWorkspace() async {
     final snapshot = await healthRepo.fetchHealthContext();
-    final riskRecords = await riskCheckRepository.getRecords();
+    MedicineRiskCheckRecords? riskRecords;
+    try {
+      riskRecords = await riskCheckRepository.getRecords();
+    } catch (e) {
+      appTalker.error(
+        'LucentMedicineWorkspace.fetchWorkspace: risk records failed: $e',
+      );
+    }
     final medicines = snapshot.currentMedicines
         .where((medicine) => medicine.isCurrent)
         .toList(growable: false);

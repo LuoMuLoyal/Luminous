@@ -113,9 +113,11 @@ class ReminderFormBody extends StatelessWidget {
                     child: FSelect<String>.rich(
                       label: Text(l10n.medicineReminderMedicineLabel),
                       hint: l10n.medicineReminderMedicineLabel,
-                      format: (value) => medicines
-                          .firstWhere((m) => m.id == value)
-                          .displayName,
+                      format: (value) =>
+                          medicines
+                              .firstWhereOrNull((m) => m.id == value)
+                              ?.displayName ??
+                          '',
                       control: FSelectControl.lifted(
                         value: selectedMedicineId,
                         onChange: (value) => onMedicineChanged?.call(value),
