@@ -55,7 +55,7 @@ class AssistantController extends Notifier<AssistantState> {
       return const AssistantState();
     }
 
-    Future<void>.microtask(_bootstrap);
+    unawaited(Future<void>.microtask(_bootstrap));
     return const AssistantState(
       isLoadingCapabilities: true,
       isLoadingConversation: true,

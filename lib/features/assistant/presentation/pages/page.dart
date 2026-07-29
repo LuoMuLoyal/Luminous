@@ -88,10 +88,12 @@ class AssistantPage extends HookConsumerWidget {
 
     void scrollToBottom() {
       if (!scrollController.hasClients) return;
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: DurationTokens.widgetQuick,
-        curve: MotionTokens.snappy,
+      unawaited(
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: DurationTokens.widgetQuick,
+          curve: MotionTokens.snappy,
+        ),
       );
     }
 

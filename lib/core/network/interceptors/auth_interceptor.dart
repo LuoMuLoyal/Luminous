@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_initializing_formals, avoid_renaming_method_parameters
 
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/envelope.dart';
@@ -48,7 +49,7 @@ class AuthInterceptor extends Interceptor {
   Future<LucentSessionTokens?>? _refreshFuture;
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
@@ -74,8 +75,12 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final shouldRefresh = await _shouldRefresh(err);
+    var currentErr = err;
     if (shouldRefresh) {
       final refreshedTokens = await _refreshTokens();
       if (refreshedTokens != null && refreshedTokens.hasAccessToken) {
@@ -88,12 +93,12 @@ class AuthInterceptor extends Interceptor {
           return;
         } on DioException catch (e) {
           // Retry failed — fall through to session-clear / error mapping.
-          err = e;
+          currentErr = e;
         }
       }
     }
 
-    if (shouldRefresh || _isAuthFailure(err)) {
+    if (shouldRefresh || _isAuthFailure(currentErr)) {
       await _sessionStore.clear();
       final onSessionExpired = _onSessionExpired;
       if (onSessionExpired != null) {
@@ -101,7 +106,7 @@ class AuthInterceptor extends Interceptor {
       }
     }
 
-    handler.next(err);
+    handler.next(currentErr);
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────
@@ -148,7 +153,7 @@ class AuthInterceptor extends Interceptor {
 
     final future = _doRefresh();
     _refreshFuture = future;
-    future.whenComplete(() => _refreshFuture = null);
+    unawaited(future.whenComplete(() => _refreshFuture = null));
     return future;
   }
 

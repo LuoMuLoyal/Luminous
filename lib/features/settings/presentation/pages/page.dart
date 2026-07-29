@@ -63,10 +63,10 @@ class SettingsPage extends ConsumerWidget {
             subtitle: l10n.settingsSecurityPinSubtitle,
             onTap: () {
               if (!signedIn) {
-                pushAuthRequiredRoute(context, Routes.settings);
+                unawaited(pushAuthRequiredRoute(context, Routes.settings));
                 return;
               }
-              context.push(Routes.settingsSecurityPin);
+              unawaited(context.push(Routes.settingsSecurityPin));
             },
           ),
           _SettingsNavigationTile(
@@ -76,7 +76,7 @@ class SettingsPage extends ConsumerWidget {
             subtitle: l10n.settingsHealthProfileSubtitle,
             onTap: () {
               if (!signedIn) {
-                pushAuthRequiredRoute(context, Routes.settings);
+                unawaited(pushAuthRequiredRoute(context, Routes.settings));
                 return;
               }
               context.go(Routes.mine);
@@ -166,10 +166,12 @@ class SettingsPage extends ConsumerWidget {
                         subtitle: l10n.settingsSecurityPinSubtitle,
                         onTap: () {
                           if (!signedIn) {
-                            pushAuthRequiredRoute(context, Routes.settings);
+                            unawaited(
+                              pushAuthRequiredRoute(context, Routes.settings),
+                            );
                             return;
                           }
-                          context.push(Routes.settingsSecurityPin);
+                          unawaited(context.push(Routes.settingsSecurityPin));
                         },
                       ),
                       _SettingsNavigationTile(
@@ -179,7 +181,9 @@ class SettingsPage extends ConsumerWidget {
                         subtitle: l10n.settingsHealthProfileSubtitle,
                         onTap: () {
                           if (!signedIn) {
-                            pushAuthRequiredRoute(context, Routes.settings);
+                            unawaited(
+                              pushAuthRequiredRoute(context, Routes.settings),
+                            );
                             return;
                           }
                           context.go(Routes.mine);
@@ -464,10 +468,10 @@ class _PrivacySection extends ConsumerWidget {
               subtitle: l10n.settingsAiSubtitle,
               onTap: () {
                 if (!signedIn) {
-                  pushAuthRequiredRoute(context, Routes.settings);
+                  unawaited(pushAuthRequiredRoute(context, Routes.settings));
                   return;
                 }
-                context.push(Routes.settingsAi);
+                unawaited(context.push(Routes.settingsAi));
               },
             ),
             FTile(
@@ -525,10 +529,10 @@ class _PrivacySection extends ConsumerWidget {
               title: l10n.mineSettingExportTitle,
               onTap: () {
                 if (!signedIn) {
-                  pushAuthRequiredRoute(context, Routes.settings);
+                  unawaited(pushAuthRequiredRoute(context, Routes.settings));
                   return;
                 }
-                context.push(Routes.settingsExport);
+                unawaited(context.push(Routes.settingsExport));
               },
             ),
           ],

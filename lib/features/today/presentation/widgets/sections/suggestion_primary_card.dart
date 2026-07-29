@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -57,7 +58,7 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
 
   void _toggleEvidence() {
     setState(() => _evidenceExpanded = !_evidenceExpanded);
-    _controller.toggle();
+    unawaited(_controller.toggle());
   }
 
   @override

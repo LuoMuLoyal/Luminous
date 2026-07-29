@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -261,9 +262,11 @@ class _MedicineRecognizeDialogState extends State<MedicineRecognizeDialog> {
                       final id = res?.id;
                       if (id != null) {
                         Navigator.of(context).pop();
-                        MedicineReminderDetailRoute(
-                          medicineId: id,
-                        ).push(context);
+                        unawaited(
+                          MedicineReminderDetailRoute(
+                            medicineId: id,
+                          ).push(context),
+                        );
                       }
                     }
                   : null,

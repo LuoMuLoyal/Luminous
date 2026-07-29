@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _RiskScoreRingState extends State<RiskScoreRing>
       parent: _controller,
       curve: MotionTokens.entrance,
     );
-    if (widget.animate) _controller.forward();
+    if (widget.animate) unawaited(_controller.forward());
   }
 
   @override

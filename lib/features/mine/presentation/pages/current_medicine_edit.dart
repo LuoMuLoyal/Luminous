@@ -77,7 +77,7 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
         AppLocalizations.of(context)!.mineEditFieldDisplayNameRequired,
       );
       if (displayNameError != null) {
-        Toast.show(context, displayNameError);
+        unawaited(Toast.show(context, displayNameError));
         return;
       }
 
@@ -87,60 +87,70 @@ class CurrentMedicineEditPage extends HookConsumerWidget {
       const source = HealthMedicineSource.manual;
 
       if (medicineId != null) {
-        ref
-            .read(currentMedicineFormProvider.notifier)
-            .save(
-              create: const CurrentMedicineWriteInput(
-                source: source,
-                displayName: '',
+        unawaited(
+          ref
+              .read(currentMedicineFormProvider.notifier)
+              .save(
+                create: const CurrentMedicineWriteInput(
+                  source: source,
+                  displayName: '',
+                ),
+                id: medicineId,
+                update: CurrentMedicineUpdateInput(
+                  source: source,
+                  displayName: displayNameController.text,
+                  strengthText: strengthTextController.text.isEmpty
+                      ? null
+                      : strengthTextController.text,
+                  doseText: doseTextController.text.isEmpty
+                      ? null
+                      : doseTextController.text,
+                  route: routeController.text.isEmpty
+                      ? null
+                      : routeController.text,
+                  startedAt: startedAt.value != null
+                      ? _formatDate(startedAt.value!)
+                      : null,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-              id: medicineId,
-              update: CurrentMedicineUpdateInput(
-                source: source,
-                displayName: displayNameController.text,
-                strengthText: strengthTextController.text.isEmpty
-                    ? null
-                    : strengthTextController.text,
-                doseText: doseTextController.text.isEmpty
-                    ? null
-                    : doseTextController.text,
-                route: routeController.text.isEmpty
-                    ? null
-                    : routeController.text,
-                startedAt: startedAt.value != null
-                    ? _formatDate(startedAt.value!)
-                    : null,
-                note: noteController.text.isEmpty ? null : noteController.text,
-              ),
-            );
+        );
       } else {
-        ref
-            .read(currentMedicineFormProvider.notifier)
-            .save(
-              create: CurrentMedicineWriteInput(
-                source: source,
-                displayName: displayNameController.text,
-                strengthText: strengthTextController.text.isEmpty
-                    ? null
-                    : strengthTextController.text,
-                doseText: doseTextController.text.isEmpty
-                    ? null
-                    : doseTextController.text,
-                route: routeController.text.isEmpty
-                    ? null
-                    : routeController.text,
-                startedAt: startedAt.value != null
-                    ? _formatDate(startedAt.value!)
-                    : null,
-                note: noteController.text.isEmpty ? null : noteController.text,
+        unawaited(
+          ref
+              .read(currentMedicineFormProvider.notifier)
+              .save(
+                create: CurrentMedicineWriteInput(
+                  source: source,
+                  displayName: displayNameController.text,
+                  strengthText: strengthTextController.text.isEmpty
+                      ? null
+                      : strengthTextController.text,
+                  doseText: doseTextController.text.isEmpty
+                      ? null
+                      : doseTextController.text,
+                  route: routeController.text.isEmpty
+                      ? null
+                      : routeController.text,
+                  startedAt: startedAt.value != null
+                      ? _formatDate(startedAt.value!)
+                      : null,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-            );
+        );
       }
     }
 
     void onDelete() {
       if (medicineId != null) {
-        ref.read(currentMedicineFormProvider.notifier).delete(medicineId!);
+        unawaited(
+          ref.read(currentMedicineFormProvider.notifier).delete(medicineId!),
+        );
       }
     }
 

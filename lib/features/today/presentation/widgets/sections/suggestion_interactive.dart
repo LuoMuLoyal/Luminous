@@ -162,8 +162,10 @@ class _SuggestionAiExplainButtonState
       return FButton(
         onPress: () {
           setState(() => _isRequested = true);
-          // Trigger the provider.
-          ref.read(suggestionExplanationProvider(params).future);
+          unawaited(
+            // Trigger the provider.
+            ref.read(suggestionExplanationProvider(params).future),
+          );
         },
         variant: FButtonVariant.ghost,
         size: FButtonSizeVariant.xs,

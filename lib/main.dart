@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,13 +21,15 @@ Future<void> main() async {
   // Catch framework errors (sync errors in widget build / layout / paint).
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    Sentry.captureException(details.exception, stackTrace: details.stack);
+    unawaited(
+      Sentry.captureException(details.exception, stackTrace: details.stack),
+    );
   };
 
   // Catch uncaught async errors without creating a new zone — avoids
   // "Zone mismatch" between binding init and runApp.
   PlatformDispatcher.instance.onError = (error, stack) {
-    Sentry.captureException(error, stackTrace: stack);
+    unawaited(Sentry.captureException(error, stackTrace: stack));
     return true;
   };
 

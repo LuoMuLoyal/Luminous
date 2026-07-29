@@ -82,7 +82,7 @@ class ProfileEditPage extends HookConsumerWidget {
         emergencyContactPhone: emergencyContactPhoneController.text.trim(),
       );
 
-      ref.read(healthProfileFormProvider.notifier).save(input);
+      unawaited(ref.read(healthProfileFormProvider.notifier).save(input));
     }
 
     final Widget content;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -273,7 +274,7 @@ Future<void> _showAdvancePicker(
       selected: settings.reminderAdvanceMinutes,
       l10n: l10n,
       onSelect: (minutes) {
-        controller.setReminderAdvanceMinutes(minutes);
+        unawaited(controller.setReminderAdvanceMinutes(minutes));
         Navigator.of(context).pop();
       },
     ),

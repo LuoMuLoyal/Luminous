@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
@@ -364,5 +365,5 @@ List<TodayQuickActionItem> buildQuickActionItems(
 /// destination — [context.go] would replace the current route and leave
 /// no back path, which is inconsistent with the rest of the app.
 void openRoute(BuildContext context, String route) {
-  context.push(route);
+  unawaited(context.push(route));
 }

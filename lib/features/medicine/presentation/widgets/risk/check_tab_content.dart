@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -47,11 +48,13 @@ class _CheckTabContentState extends State<CheckTabContent> {
   void _scrollToKey(GlobalKey key) {
     final ctx = key.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
-        duration: const Duration(milliseconds: 400),
-        curve: MotionTokens.standard,
-        alignment: 0.1,
+      unawaited(
+        Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 400),
+          curve: MotionTokens.standard,
+          alignment: 0.1,
+        ),
       );
     }
   }

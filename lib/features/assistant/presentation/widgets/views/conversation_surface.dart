@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -298,7 +299,7 @@ class _InputComposer extends StatelessWidget {
                   HardwareKeyboard.instance.isMetaPressed;
               if (isEnter && withModifier) {
                 if (canSend) {
-                  onSend();
+                  unawaited(onSend());
                 }
                 return KeyEventResult.handled;
               }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -87,7 +88,7 @@ class _MobileBottomNavigationBar extends StatelessWidget {
       index: currentIndex,
       onChange: (index) {
         if (index != currentIndex) {
-          HapticFeedback.selectionClick();
+          unawaited(HapticFeedback.selectionClick());
         }
         onSelectTab(index);
       },

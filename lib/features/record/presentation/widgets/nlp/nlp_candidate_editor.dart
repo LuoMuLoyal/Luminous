@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -35,21 +36,21 @@ class RecordNlpCandidateEditor extends HookWidget {
     useEffect(() {
       final text = item.title ?? '';
       if (titleController.text != text) {
-        Future.microtask(() => titleController.text = text);
+        unawaited(Future.microtask(() => titleController.text = text));
       }
       return null;
     }, [item.title]);
     useEffect(() {
       final text = item.value ?? '';
       if (valueController.text != text) {
-        Future.microtask(() => valueController.text = text);
+        unawaited(Future.microtask(() => valueController.text = text));
       }
       return null;
     }, [item.value]);
     useEffect(() {
       final text = item.note ?? '';
       if (noteController.text != text) {
-        Future.microtask(() => noteController.text = text);
+        unawaited(Future.microtask(() => noteController.text = text));
       }
       return null;
     }, [item.note]);

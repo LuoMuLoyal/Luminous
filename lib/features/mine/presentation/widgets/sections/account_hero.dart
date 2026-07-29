@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -220,11 +221,11 @@ class MineAccountHero extends StatelessWidget {
     List<_ReadinessGap> gaps,
   ) {
     if (isPreview) {
-      context.push(loginRouteForCurrentLocation(context));
+      unawaited(context.push(loginRouteForCurrentLocation(context)));
       return;
     }
     final route = gaps.isNotEmpty ? gaps.first.route : Routes.mineProfileEdit;
-    pushAuthRequiredRoute(context, route);
+    unawaited(pushAuthRequiredRoute(context, route));
   }
 }
 

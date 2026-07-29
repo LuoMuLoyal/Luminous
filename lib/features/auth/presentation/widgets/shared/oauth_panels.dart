@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
@@ -72,7 +73,7 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
   @override
   void initState() {
     super.initState();
-    _checkAppleAvailability();
+    unawaited(_checkAppleAvailability());
   }
 
   Future<void> _checkAppleAvailability() async {

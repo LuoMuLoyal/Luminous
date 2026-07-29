@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:forui/forui.dart';
@@ -40,7 +41,7 @@ class RecordNlpSheet extends HookConsumerWidget {
       if (msg == null || msg == previous?.errorMessage) {
         return;
       }
-      Toast.show(context, msg);
+      unawaited(Toast.show(context, msg));
     });
 
     Future<void> handleGenerate() async {

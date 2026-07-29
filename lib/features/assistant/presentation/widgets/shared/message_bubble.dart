@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -186,34 +188,36 @@ class AssistantMessageBubble extends StatelessWidget {
       renderBox.size.bottomLeft(Offset.zero),
     );
 
-    showMenu<String>(
-      context: context,
-      position: RelativeRect.fromLTRB(
-        position.dx,
-        position.dy,
-        position.dx + renderBox.size.width,
-        position.dy + 40,
-      ),
-      items: [
-        PopupMenuItem<String>(
-          value: 'copy',
-          child: Row(
-            children: [
-              const Icon(SemanticIcons.actionCopy, size: 16),
-              const SizedBox(width: Spacing.level2),
-              Text(l10n.assistantCopyAction),
-            ],
-          ),
+    unawaited(
+      showMenu<String>(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          position.dx,
+          position.dy,
+          position.dx + renderBox.size.width,
+          position.dy + 40,
         ),
-      ],
-    ).then((value) async {
-      if (value == 'copy' && context.mounted) {
-        await Clipboard.setData(ClipboardData(text: content));
-        if (context.mounted) {
-          await Toast.show(context, l10n.assistantCopySuccess);
+        items: [
+          PopupMenuItem<String>(
+            value: 'copy',
+            child: Row(
+              children: [
+                const Icon(SemanticIcons.actionCopy, size: 16),
+                const SizedBox(width: Spacing.level2),
+                Text(l10n.assistantCopyAction),
+              ],
+            ),
+          ),
+        ],
+      ).then((value) async {
+        if (value == 'copy' && context.mounted) {
+          await Clipboard.setData(ClipboardData(text: content));
+          if (context.mounted) {
+            await Toast.show(context, l10n.assistantCopySuccess);
+          }
         }
-      }
-    });
+      }),
+    );
   }
 }
 

@@ -40,7 +40,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _initScanner();
+    unawaited(_initScanner());
   }
 
   Future<void> _initScanner() async {
@@ -71,14 +71,14 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Re-check permission when returning from system settings.
     if (state == AppLifecycleState.resumed && _permissionDenied) {
-      _initScanner();
+      unawaited(_initScanner());
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller?.dispose();
+    unawaited(_controller?.dispose());
     super.dispose();
   }
 
@@ -147,90 +147,92 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
     final colors = context.theme.colors;
     final typography = context.theme.typography;
 
-    showFSheet(
-      context: context,
-      side: FLayout.btt,
-      useSafeArea: true,
-      mainAxisMaxRatio: null,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      l10n.scanCandidateSheetTitle,
-                      style: typography.body.lg.copyWith(
-                        fontWeight: FontWeight.w700,
+    unawaited(
+      showFSheet(
+        context: context,
+        side: FLayout.btt,
+        useSafeArea: true,
+        mainAxisMaxRatio: null,
+        builder: (ctx) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Spacing.level4),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.scanCandidateSheetTitle,
+                        style: typography.body.lg.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                  ),
-                  FButton.icon(
-                    variant: FButtonVariant.ghost,
-                    size: FButtonSizeVariant.sm,
-                    onPress: () => Navigator.pop(ctx),
-                    child: const Icon(
-                      SemanticIcons.actionClose,
-                      size: IconSizeTokens.level3,
+                    FButton.icon(
+                      variant: FButtonVariant.ghost,
+                      size: FButtonSizeVariant.sm,
+                      onPress: () => Navigator.pop(ctx),
+                      child: const Icon(
+                        SemanticIcons.actionClose,
+                        size: IconSizeTokens.level3,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const AppDivider(),
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.paddingOf(ctx).bottom + Spacing.level4,
+                  ],
                 ),
-                itemCount: items.length,
-                separatorBuilder: (_, __) => const AppDivider(),
-                itemBuilder: (_, i) {
-                  final item = items[i];
-                  return FTappable(
-                    onPress: () {
-                      Navigator.pop(ctx);
-                      unawaited(
-                        MedicineReminderDetailRoute(
-                          medicineId: item.id,
-                        ).push(context),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Spacing.level5,
-                        vertical: Spacing.level4,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.name, style: typography.body.md),
-                          if (item.subtitle != null)
-                            Text(
-                              item.subtitle!,
-                              style: typography.body.sm.copyWith(
-                                color: colors.mutedForeground,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
-            ),
-          ],
+              const AppDivider(),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.paddingOf(ctx).bottom + Spacing.level4,
+                  ),
+                  itemCount: items.length,
+                  separatorBuilder: (_, __) => const AppDivider(),
+                  itemBuilder: (_, i) {
+                    final item = items[i];
+                    return FTappable(
+                      onPress: () {
+                        Navigator.pop(ctx);
+                        unawaited(
+                          MedicineReminderDetailRoute(
+                            medicineId: item.id,
+                          ).push(context),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Spacing.level5,
+                          vertical: Spacing.level4,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item.name, style: typography.body.md),
+                            if (item.subtitle != null)
+                              Text(
+                                item.subtitle!,
+                                style: typography.body.sm.copyWith(
+                                  color: colors.mutedForeground,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   void _goToManualSearch() {
-    context.push(Routes.medicineSearch);
+    unawaited(context.push(Routes.medicineSearch));
   }
 
   @override
@@ -261,7 +263,7 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
           FButton.icon(
             variant: FButtonVariant.ghost,
             onPress: () {
-              _controller?.toggleTorch();
+              unawaited(_controller?.toggleTorch());
               setState(() => _torchOn = !_torchOn);
             },
             child: Icon(

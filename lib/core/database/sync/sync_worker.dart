@@ -48,14 +48,14 @@ class SyncWorker {
     _subscription = Connectivity().onConnectivityChanged.listen((results) {
       final hasConnection = results.any((r) => r != ConnectivityResult.none);
       if (hasConnection) {
-        flush();
+        unawaited(flush());
       }
     });
   }
 
   /// Stops listening to connectivity changes.
   void stop() {
-    _subscription?.cancel();
+    unawaited(_subscription?.cancel());
     _subscription = null;
   }
 

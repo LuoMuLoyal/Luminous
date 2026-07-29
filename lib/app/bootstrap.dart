@@ -40,7 +40,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       if (!mounted) {
         return;
       }
-      ref.read(authSessionProvider.notifier).restore();
+      unawaited(ref.read(authSessionProvider.notifier).restore());
       // Trigger cache cleanup based on data retention setting
       ref.read(cacheCleanupProvider);
     });

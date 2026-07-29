@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -215,29 +217,33 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
     DeveloperSettingsState dev,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    showFSheet(
-      context: context,
-      side: FLayout.btt,
-      builder: (context) => _EndpointSheet(
-        current: dev.apiEndpoint,
-        customUrl: dev.customApiUrl,
-        l10n: l10n,
-        onSelect: (endpoint) async {
-          await ref
-              .read(developerSettingsControllerProvider.notifier)
-              .setApiEndpoint(endpoint);
-          if (context.mounted) Navigator.of(context).pop();
-          // Log out to clear stale session for the previous endpoint.
-          await ref.read(authSessionProvider.notifier).logout();
-          if (context.mounted) {
-            await Toast.show(context, l10n.settingsDevApiEndpointSwitched);
-          }
-        },
-        onCustomUrlChanged: (url) {
-          ref
-              .read(developerSettingsControllerProvider.notifier)
-              .setCustomApiUrl(url);
-        },
+    unawaited(
+      showFSheet(
+        context: context,
+        side: FLayout.btt,
+        builder: (context) => _EndpointSheet(
+          current: dev.apiEndpoint,
+          customUrl: dev.customApiUrl,
+          l10n: l10n,
+          onSelect: (endpoint) async {
+            await ref
+                .read(developerSettingsControllerProvider.notifier)
+                .setApiEndpoint(endpoint);
+            if (context.mounted) Navigator.of(context).pop();
+            // Log out to clear stale session for the previous endpoint.
+            await ref.read(authSessionProvider.notifier).logout();
+            if (context.mounted) {
+              await Toast.show(context, l10n.settingsDevApiEndpointSwitched);
+            }
+          },
+          onCustomUrlChanged: (url) {
+            unawaited(
+              ref
+                  .read(developerSettingsControllerProvider.notifier)
+                  .setCustomApiUrl(url),
+            );
+          },
+        ),
       ),
     );
   }
@@ -248,18 +254,20 @@ class _DeveloperOptionsGroup extends ConsumerWidget {
     LogLevel current,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    showFSheet(
-      context: context,
-      side: FLayout.btt,
-      builder: (context) => _LogLevelSheet(
-        current: current,
-        l10n: l10n,
-        onSelect: (level) async {
-          await ref
-              .read(developerSettingsControllerProvider.notifier)
-              .setLogLevel(level);
-          if (context.mounted) Navigator.of(context).pop();
-        },
+    unawaited(
+      showFSheet(
+        context: context,
+        side: FLayout.btt,
+        builder: (context) => _LogLevelSheet(
+          current: current,
+          l10n: l10n,
+          onSelect: (level) async {
+            await ref
+                .read(developerSettingsControllerProvider.notifier)
+                .setLogLevel(level);
+            if (context.mounted) Navigator.of(context).pop();
+          },
+        ),
       ),
     );
   }

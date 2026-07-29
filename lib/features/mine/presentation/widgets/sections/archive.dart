@@ -244,82 +244,84 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
   ) {
     final records = _collectRecords(snapshot);
 
-    showFSheet<void>(
-      context: context,
-      side: FLayout.btt,
-      builder: (sheetContext) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.level4,
-                Spacing.level4,
-                Spacing.level4,
-                Spacing.level2,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      mineCopy(l10n, entry.titleKey),
-                      style: TypographyToken.level6
-                          .body(context)
-                          .copyWith(fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(SemanticIcons.actionClose, size: 20),
-                    onPressed: () => Navigator.of(sheetContext).pop(),
-                  ),
-                ],
-              ),
-            ),
-            const AppDivider(),
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.level4,
-                  vertical: Spacing.level2,
+    unawaited(
+      showFSheet<void>(
+        context: context,
+        side: FLayout.btt,
+        builder: (sheetContext) => SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Spacing.level4,
+                  Spacing.level4,
+                  Spacing.level4,
+                  Spacing.level2,
                 ),
-                itemCount: records.length,
-                separatorBuilder: (_, __) => const AppDivider(),
-                itemBuilder: (context, index) {
-                  final record = records[index];
-                  return _RecordListTile(
-                    title: record.title,
-                    subtitle: record.subtitle,
-                    onTap: () {
-                      Navigator.of(sheetContext).pop();
-                      unawaited(
-                        pushAuthRequiredRoute(context, record.editRoute),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            const AppDivider(),
-            Padding(
-              padding: const EdgeInsets.all(Spacing.level4),
-              child: FButton(
-                variant: FButtonVariant.outline,
-                onPress: () {
-                  Navigator.of(sheetContext).pop();
-                  unawaited(pushAuthRequiredRoute(context, newRoute));
-                },
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(SemanticIcons.actionAdd, size: 16),
-                    const SizedBox(width: Spacing.level2),
-                    Text(l10n.mineArchiveAddNewAction),
+                    Expanded(
+                      child: Text(
+                        mineCopy(l10n, entry.titleKey),
+                        style: TypographyToken.level6
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(SemanticIcons.actionClose, size: 20),
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                    ),
                   ],
                 ),
               ),
-            ),
-          ],
+              const AppDivider(),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.level4,
+                    vertical: Spacing.level2,
+                  ),
+                  itemCount: records.length,
+                  separatorBuilder: (_, __) => const AppDivider(),
+                  itemBuilder: (context, index) {
+                    final record = records[index];
+                    return _RecordListTile(
+                      title: record.title,
+                      subtitle: record.subtitle,
+                      onTap: () {
+                        Navigator.of(sheetContext).pop();
+                        unawaited(
+                          pushAuthRequiredRoute(context, record.editRoute),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              const AppDivider(),
+              Padding(
+                padding: const EdgeInsets.all(Spacing.level4),
+                child: FButton(
+                  variant: FButtonVariant.outline,
+                  onPress: () {
+                    Navigator.of(sheetContext).pop();
+                    unawaited(pushAuthRequiredRoute(context, newRoute));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(SemanticIcons.actionAdd, size: 16),
+                      const SizedBox(width: Spacing.level2),
+                      Text(l10n.mineArchiveAddNewAction),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -76,40 +76,48 @@ class AllergyEditPage extends HookConsumerWidget {
         AppLocalizations.of(context)!.mineEditFieldLabelRequired,
       );
       if (labelError != null) {
-        Toast.show(context, labelError);
+        unawaited(Toast.show(context, labelError));
         return;
       }
 
       if (allergyId != null) {
-        ref
-            .read(allergyFormProvider.notifier)
-            .save(
-              create: HealthAllergyWriteInput(kind: kind.value, label: ''),
-              id: allergyId,
-              update: HealthAllergyUpdateInput(
-                kind: kind.value,
-                label: labelController.text,
-                reaction: reactionController.text.isEmpty
-                    ? null
-                    : reactionController.text,
-                severity: severity.value,
-                note: noteController.text.isEmpty ? null : noteController.text,
+        unawaited(
+          ref
+              .read(allergyFormProvider.notifier)
+              .save(
+                create: HealthAllergyWriteInput(kind: kind.value, label: ''),
+                id: allergyId,
+                update: HealthAllergyUpdateInput(
+                  kind: kind.value,
+                  label: labelController.text,
+                  reaction: reactionController.text.isEmpty
+                      ? null
+                      : reactionController.text,
+                  severity: severity.value,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-            );
+        );
       } else {
-        ref
-            .read(allergyFormProvider.notifier)
-            .save(
-              create: HealthAllergyWriteInput(
-                kind: kind.value,
-                label: labelController.text,
-                reaction: reactionController.text.isEmpty
-                    ? null
-                    : reactionController.text,
-                severity: severity.value,
-                note: noteController.text.isEmpty ? null : noteController.text,
+        unawaited(
+          ref
+              .read(allergyFormProvider.notifier)
+              .save(
+                create: HealthAllergyWriteInput(
+                  kind: kind.value,
+                  label: labelController.text,
+                  reaction: reactionController.text.isEmpty
+                      ? null
+                      : reactionController.text,
+                  severity: severity.value,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-            );
+        );
       }
     }
 

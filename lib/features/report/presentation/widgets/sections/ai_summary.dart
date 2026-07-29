@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:forui/forui.dart';
@@ -237,7 +238,7 @@ class ReportAiSummarySection extends StatelessWidget {
   void _handleAction(BuildContext context, String action) {
     final route = mapActionToRoute(action);
     if (route != null) {
-      context.push(route);
+      unawaited(context.push(route));
     }
   }
 }

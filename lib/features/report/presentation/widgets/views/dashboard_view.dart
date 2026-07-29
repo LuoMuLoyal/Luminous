@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:forui/forui.dart';
@@ -127,7 +128,7 @@ class ReportDashboardView extends StatelessWidget {
           onGenerate: onGenerateAiSummary == null
               ? null
               : () {
-                  onGenerateAiSummary!();
+                  unawaited(onGenerateAiSummary!());
                 },
           onSync: onSync,
           isGenerating:
@@ -280,7 +281,7 @@ class ReportDashboardView extends StatelessWidget {
           onGenerate: onGenerateAiSummary == null
               ? null
               : () {
-                  onGenerateAiSummary!();
+                  unawaited(onGenerateAiSummary!());
                 },
           onSync: onSync,
           isGenerating:

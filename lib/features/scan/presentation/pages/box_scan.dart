@@ -85,7 +85,7 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
           onRetake: () {
             Navigator.of(dialogContext).pop();
             // Re-show the scan sheet after dismiss
-            showMedicineBoxScanSheet(context);
+            unawaited(showMedicineBoxScanSheet(context));
           },
         ),
       ),
@@ -138,7 +138,7 @@ Future<void> _showScanFailureDialog(
               variant: FButtonVariant.outline,
               onPress: () {
                 Navigator.of(dialogContext).pop();
-                showMedicineBoxScanSheet(context);
+                unawaited(showMedicineBoxScanSheet(context));
               },
               child: Text(l10n.scanRetakeAction),
             ),
@@ -146,7 +146,7 @@ Future<void> _showScanFailureDialog(
             FButton(
               onPress: () {
                 Navigator.of(dialogContext).pop();
-                context.push(Routes.medicineSearch);
+                unawaited(context.push(Routes.medicineSearch));
               },
               child: Text(l10n.scanManualSearchAction),
             ),
@@ -159,23 +159,25 @@ Future<void> _showScanFailureDialog(
 
 void _showProcessingOverlay(BuildContext context, _ScanMethod method) {
   final l10n = AppLocalizations.of(context)!;
-  showAppDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    scrollable: false,
-    builder: (_) => PopScope(
-      canPop: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const FCircularProgress(),
-          const SizedBox(height: Spacing.level4),
-          Text(
-            method == _ScanMethod.ocr
-                ? l10n.scanProcessingOcr
-                : l10n.scanProcessingAi,
-          ),
-        ],
+  unawaited(
+    showAppDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      scrollable: false,
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const FCircularProgress(),
+            const SizedBox(height: Spacing.level4),
+            Text(
+              method == _ScanMethod.ocr
+                  ? l10n.scanProcessingOcr
+                  : l10n.scanProcessingAi,
+            ),
+          ],
+        ),
       ),
     ),
   );

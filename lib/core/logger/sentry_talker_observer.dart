@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
@@ -12,19 +13,23 @@ import 'package:talker_flutter/talker_flutter.dart';
 class SentryTalkerObserver extends TalkerObserver {
   @override
   void onError(TalkerError err) {
-    Sentry.captureException(
-      err.error,
-      stackTrace: err.stackTrace,
-      hint: Hint.withMap({'talker_message': err.message}),
+    unawaited(
+      Sentry.captureException(
+        err.error,
+        stackTrace: err.stackTrace,
+        hint: Hint.withMap({'talker_message': err.message}),
+      ),
     );
   }
 
   @override
   void onException(TalkerException err) {
-    Sentry.captureException(
-      err.exception,
-      stackTrace: err.stackTrace,
-      hint: Hint.withMap({'talker_message': err.message}),
+    unawaited(
+      Sentry.captureException(
+        err.exception,
+        stackTrace: err.stackTrace,
+        hint: Hint.withMap({'talker_message': err.message}),
+      ),
     );
   }
 }

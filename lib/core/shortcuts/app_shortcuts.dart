@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -73,19 +74,19 @@ class AppShortcuts extends StatelessWidget {
           ),
           CreateRecordIntent: CallbackAction<CreateRecordIntent>(
             onInvoke: (_) {
-              context.push(Routes.recordCreate);
+              unawaited(context.push(Routes.recordCreate));
               return null;
             },
           ),
           OpenSettingsIntent: CallbackAction<OpenSettingsIntent>(
             onInvoke: (_) {
-              context.push(Routes.settings);
+              unawaited(context.push(Routes.settings));
               return null;
             },
           ),
           OpenAssistantIntent: CallbackAction<OpenAssistantIntent>(
             onInvoke: (_) {
-              context.push(Routes.assistant);
+              unawaited(context.push(Routes.assistant));
               return null;
             },
           ),

@@ -73,44 +73,54 @@ class ConditionEditPage extends HookConsumerWidget {
         AppLocalizations.of(context)!.mineEditFieldLabelRequired,
       );
       if (labelError != null) {
-        Toast.show(context, labelError);
+        unawaited(Toast.show(context, labelError));
         return;
       }
 
       if (conditionId != null) {
-        ref
-            .read(conditionFormProvider.notifier)
-            .save(
-              create: const HealthConditionWriteInput(label: ''),
-              id: conditionId,
-              update: HealthConditionUpdateInput(
-                label: labelController.text,
-                status: status.value,
-                diagnosedAt: diagnosedAt.value != null
-                    ? _formatDate(diagnosedAt.value!)
-                    : null,
-                note: noteController.text.isEmpty ? null : noteController.text,
+        unawaited(
+          ref
+              .read(conditionFormProvider.notifier)
+              .save(
+                create: const HealthConditionWriteInput(label: ''),
+                id: conditionId,
+                update: HealthConditionUpdateInput(
+                  label: labelController.text,
+                  status: status.value,
+                  diagnosedAt: diagnosedAt.value != null
+                      ? _formatDate(diagnosedAt.value!)
+                      : null,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-            );
+        );
       } else {
-        ref
-            .read(conditionFormProvider.notifier)
-            .save(
-              create: HealthConditionWriteInput(
-                label: labelController.text,
-                status: status.value,
-                diagnosedAt: diagnosedAt.value != null
-                    ? _formatDate(diagnosedAt.value!)
-                    : null,
-                note: noteController.text.isEmpty ? null : noteController.text,
+        unawaited(
+          ref
+              .read(conditionFormProvider.notifier)
+              .save(
+                create: HealthConditionWriteInput(
+                  label: labelController.text,
+                  status: status.value,
+                  diagnosedAt: diagnosedAt.value != null
+                      ? _formatDate(diagnosedAt.value!)
+                      : null,
+                  note: noteController.text.isEmpty
+                      ? null
+                      : noteController.text,
+                ),
               ),
-            );
+        );
       }
     }
 
     void onDelete() {
       if (conditionId != null) {
-        ref.read(conditionFormProvider.notifier).delete(conditionId!);
+        unawaited(
+          ref.read(conditionFormProvider.notifier).delete(conditionId!),
+        );
       }
     }
 

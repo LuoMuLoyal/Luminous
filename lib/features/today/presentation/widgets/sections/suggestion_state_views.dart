@@ -63,7 +63,7 @@ class SuggestionSkeleton extends StatelessWidget {
     final colors = context.theme.colors;
 
     return SkeletonShimmer(
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: colors.card,
           borderRadius: BorderRadius.circular(RadiusTokens.level4),

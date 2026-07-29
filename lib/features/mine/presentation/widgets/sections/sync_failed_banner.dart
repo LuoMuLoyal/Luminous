@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -26,8 +28,8 @@ class MineSyncFailedBanner extends ConsumerWidget {
           message: l10n.mineSyncFailedWarning(count),
           actionLabel: l10n.mineSyncFailedAction,
           onTap: () {
-            ref.read(syncWorkerProvider).flush();
-            Toast.show(context, l10n.mineSyncFailedAction);
+            unawaited(ref.read(syncWorkerProvider).flush());
+            unawaited(Toast.show(context, l10n.mineSyncFailedAction));
           },
         );
       },

@@ -196,11 +196,13 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             onFilterSelected: (type) {
               // Defer provider modification to avoid "modified while
               // widget tree was building" errors when filter chips
-              // rebuild during tap handling.
-              Future(
-                () => ref
-                    .read(selectedRecordFilterProvider.notifier)
-                    .setFilter(type),
+              unawaited(
+                // rebuild during tap handling.
+                Future(
+                  () => ref
+                      .read(selectedRecordFilterProvider.notifier)
+                      .setFilter(type),
+                ),
               );
             },
             onDateSelected: (date) => _setSelectedDate(date),
@@ -209,13 +211,15 @@ class _RecordPageState extends ConsumerState<RecordPage> {
             onQuickAction: (action) {
               // Defer provider modification to avoid "modified while
               // widget tree was building" errors when the quick entry
-              // panel rebuilds during tap handling.
-              Future(
-                () => ref
-                    .read(quickEntryPreferencesProvider.notifier)
-                    .recordTap(action.type),
+              unawaited(
+                // panel rebuilds during tap handling.
+                Future(
+                  () => ref
+                      .read(quickEntryPreferencesProvider.notifier)
+                      .recordTap(action.type),
+                ),
               );
-              _handleQuickAction(context, action);
+              unawaited(_handleQuickAction(context, action));
             },
             onNewEntry: () => _openRecordCreate(context),
           ),
@@ -298,13 +302,15 @@ class _RecordPageState extends ConsumerState<RecordPage> {
 
   void _openRecordCreate(BuildContext context) {
     final selectedDate = ref.read(selectedRecordDateProvider);
-    pushAuthRequiredRoute(
-      context,
-      '/record/create?date=${formatRecordDate(selectedDate)}',
+    unawaited(
+      pushAuthRequiredRoute(
+        context,
+        '/record/create?date=${formatRecordDate(selectedDate)}',
+      ),
     );
   }
 
-  void _handleQuickAction(
+  Future<void> _handleQuickAction(
     BuildContext context,
     RecordQuickAction action,
   ) async {

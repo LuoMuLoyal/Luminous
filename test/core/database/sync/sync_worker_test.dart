@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -218,8 +219,10 @@ void main() {
     test('start and stop do not throw', () {
       // start() begins listening to connectivity changes.
       // In test environment without platform channels, this should
-      // not throw during start/stop lifecycle.
-      worker.start();
+      unawaited(
+        // not throw during start/stop lifecycle.
+        worker.start(),
+      );
       worker.stop();
     });
 
@@ -229,8 +232,8 @@ void main() {
     });
 
     test('start can be called multiple times safely', () {
-      worker.start();
-      worker.start();
+      unawaited(worker.start());
+      unawaited(worker.start());
       worker.stop();
     });
   });

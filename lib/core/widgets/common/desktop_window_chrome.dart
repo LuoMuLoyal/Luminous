@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -30,7 +31,7 @@ class _DesktopWindowChromeState extends State<DesktopWindowChrome>
   void initState() {
     super.initState();
     windowManager.addListener(this);
-    _checkMaximized();
+    unawaited(_checkMaximized());
   }
 
   @override

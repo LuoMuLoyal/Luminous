@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -278,7 +280,9 @@ void main() {
     test('resets to default signed-out state', () {
       // First set authenticated
       final session = testSession(email: 'clear@example.com');
-      container.read(authSessionProvider.notifier).applySession(session);
+      unawaited(
+        container.read(authSessionProvider.notifier).applySession(session),
+      );
       expect(container.read(authSessionProvider).isAuthenticated, isTrue);
 
       // Then clear

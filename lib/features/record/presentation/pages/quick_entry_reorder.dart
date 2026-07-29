@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -62,9 +64,11 @@ class _QuickEntryReorderPageState extends ConsumerState<QuickEntryReorderPage> {
     final item = current.removeAt(oldIndex);
     current.insert(newIndex, item);
     setState(() => _order = current);
-    ref
-        .read(quickEntryPreferencesProvider.notifier)
-        .setCustomOrder(current.map((type) => type.name).toList());
+    unawaited(
+      ref
+          .read(quickEntryPreferencesProvider.notifier)
+          .setCustomOrder(current.map((type) => type.name).toList()),
+    );
   }
 }
 

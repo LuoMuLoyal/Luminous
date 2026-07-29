@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -213,24 +215,28 @@ class LoginPage extends HookConsumerWidget {
       if ((wechatCode?.isNotEmpty ?? false) &&
           (wechatState?.isNotEmpty ?? false)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          oauthController
-              .completeWechatLogin(code: wechatCode!, state: wechatState!)
-              .then((s) {
-                if (s != null && context.mounted) {
-                  goAfterLogin(fallbackHome: true);
-                }
-              });
+          unawaited(
+            oauthController
+                .completeWechatLogin(code: wechatCode!, state: wechatState!)
+                .then((s) {
+                  if (s != null && context.mounted) {
+                    goAfterLogin(fallbackHome: true);
+                  }
+                }),
+          );
         });
       }
       if ((qqCode?.isNotEmpty ?? false) && (qqState?.isNotEmpty ?? false)) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          oauthController.completeQqLogin(code: qqCode!, state: qqState!).then((
-            s,
-          ) {
-            if (s != null && context.mounted) {
-              goAfterLogin(fallbackHome: true);
-            }
-          });
+          unawaited(
+            oauthController
+                .completeQqLogin(code: qqCode!, state: qqState!)
+                .then((s) {
+                  if (s != null && context.mounted) {
+                    goAfterLogin(fallbackHome: true);
+                  }
+                }),
+          );
         });
       }
       return null;

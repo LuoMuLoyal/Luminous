@@ -411,16 +411,18 @@ class _DrugBoxMedicationRow extends StatelessWidget {
     return FTappable(
       onPress: () {
         if (currentMedicineId == null) {
-          Toast.show(context, l10n.medicineOpenPlanItemToast);
+          unawaited(Toast.show(context, l10n.medicineOpenPlanItemToast));
           return;
         }
         if (onOpenReminder != null) {
           onOpenReminder!(currentMedicineId);
           return;
         }
-        MedicineReminderDetailRoute(
-          medicineId: currentMedicineId,
-        ).push(context);
+        unawaited(
+          MedicineReminderDetailRoute(
+            medicineId: currentMedicineId,
+          ).push(context),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(

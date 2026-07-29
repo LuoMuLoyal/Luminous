@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
@@ -74,7 +75,7 @@ class ReportRangeMenu extends StatelessWidget {
               title: Text(l10n.reportRangeLast7Days),
               selected: selectedQuery.range == ReportDashboardRange.last7Days,
               onPress: () {
-                controller.hide();
+                unawaited(controller.hide());
                 onQueryChanged(
                   const ReportDashboardQuery(
                     range: ReportDashboardRange.last7Days,
@@ -86,7 +87,7 @@ class ReportRangeMenu extends StatelessWidget {
               title: Text(l10n.reportRangeLast30Days),
               selected: selectedQuery.range == ReportDashboardRange.last30Days,
               onPress: () {
-                controller.hide();
+                unawaited(controller.hide());
                 onQueryChanged(
                   const ReportDashboardQuery(
                     range: ReportDashboardRange.last30Days,

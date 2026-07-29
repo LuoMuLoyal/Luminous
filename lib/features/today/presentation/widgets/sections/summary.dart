@@ -56,7 +56,7 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
 
   void _toggleAi() {
     setState(() => _aiExpanded = !_aiExpanded);
-    _controller.toggle();
+    unawaited(_controller.toggle());
   }
 
   @override

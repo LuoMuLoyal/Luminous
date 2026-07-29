@@ -199,7 +199,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
   void _handleAction(BuildContext context, String? action) {
     final route = mapActionToRoute(action);
     if (route != null) {
-      context.push(route);
+      unawaited(context.push(route));
     }
   }
 }
@@ -346,46 +346,48 @@ class _ActionBar extends StatelessWidget {
 
   void _showDeleteConfirm(BuildContext context, VoidCallback onDelete) {
     final l10n = AppLocalizations.of(context)!;
-    showAppDialog<void>(
-      context: context,
-      maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
-        MediaQuery.sizeOf(context).width,
-      ),
-      scrollable: false,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.notificationDeleteConfirmTitle,
-            style: TypographyToken.level6.body(context),
-          ),
-          const SizedBox(height: Spacing.level3),
-          Text(
-            l10n.notificationDeleteConfirmDescription,
-            style: TypographyToken.level4.body(context),
-          ),
-          const SizedBox(height: Spacing.level5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => Navigator.of(context).pop(),
-                child: Text(l10n.notificationDeleteConfirmCancel),
-              ),
-              const SizedBox(width: Spacing.level3),
-              FButton(
-                variant: FButtonVariant.destructive,
-                onPress: () {
-                  Navigator.of(context).pop();
-                  onDelete();
-                },
-                child: Text(l10n.notificationDeleteConfirmConfirm),
-              ),
-            ],
-          ),
-        ],
+    unawaited(
+      showAppDialog<void>(
+        context: context,
+        maxWidth: LayoutScaleResolver.wideDialogMaxWidthFor(
+          MediaQuery.sizeOf(context).width,
+        ),
+        scrollable: false,
+        builder: (context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.notificationDeleteConfirmTitle,
+              style: TypographyToken.level6.body(context),
+            ),
+            const SizedBox(height: Spacing.level3),
+            Text(
+              l10n.notificationDeleteConfirmDescription,
+              style: TypographyToken.level4.body(context),
+            ),
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(context).pop(),
+                  child: Text(l10n.notificationDeleteConfirmCancel),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  variant: FButtonVariant.destructive,
+                  onPress: () {
+                    Navigator.of(context).pop();
+                    onDelete();
+                  },
+                  child: Text(l10n.notificationDeleteConfirmConfirm),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

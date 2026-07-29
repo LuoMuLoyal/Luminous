@@ -65,15 +65,15 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       next,
     ) {
       if (next.deleted && previous?.deleted != true) {
-        Toast.show(context, l10n.medicineReminderDeletedToast);
+        unawaited(Toast.show(context, l10n.medicineReminderDeletedToast));
         if (context.mounted) context.pop();
       } else if (next.saved && previous?.saved != true) {
-        Toast.show(context, l10n.medicineReminderSavedToast);
+        unawaited(Toast.show(context, l10n.medicineReminderSavedToast));
         if (context.mounted) context.pop();
       }
       final error = next.errorMessage;
       if (error != null && error != previous?.errorMessage) {
-        Toast.show(context, l10n.medicineReminderSaveFailedToast);
+        unawaited(Toast.show(context, l10n.medicineReminderSaveFailedToast));
       }
     });
 
@@ -239,13 +239,13 @@ class MedicineReminderEditPage extends HookConsumerWidget {
         l10n.medicineReminderMedicineRequiredToast,
       );
       if (medIdError != null) {
-        Toast.show(context, medIdError);
+        unawaited(Toast.show(context, medIdError));
         return;
       }
       final effectiveMedId = medId!;
 
       if (times.value.isEmpty) {
-        Toast.show(context, l10n.medicineReminderTimeRequiredToast);
+        unawaited(Toast.show(context, l10n.medicineReminderTimeRequiredToast));
         return;
       }
 
@@ -253,7 +253,9 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           .where((item) => item.id == effectiveMedId)
           .firstOrNull;
       if (medicine == null) {
-        Toast.show(context, l10n.medicineReminderMedicineRequiredToast);
+        unawaited(
+          Toast.show(context, l10n.medicineReminderMedicineRequiredToast),
+        );
         return;
       }
 
@@ -262,32 +264,38 @@ class MedicineReminderEditPage extends HookConsumerWidget {
           : (selectedWeekdays.value.toList()..sort());
       if (frequency.value != ReminderFrequency.daily &&
           (daysOfWeek?.isEmpty ?? true)) {
-        Toast.show(context, l10n.medicineReminderWeekdayRequiredToast);
+        unawaited(
+          Toast.show(context, l10n.medicineReminderWeekdayRequiredToast),
+        );
         return;
       }
 
       final start = startDate.value;
       final end2 = endDate.value;
       if (start != null && end2 != null && end2.isBefore(start)) {
-        Toast.show(context, l10n.medicineReminderDateRangeInvalidToast);
+        unawaited(
+          Toast.show(context, l10n.medicineReminderDateRangeInvalidToast),
+        );
         return;
       }
 
-      ref
-          .read(medicineReminderFormProvider.notifier)
-          .saveGroup(
-            existingReminders: remindersFor(reminders, effectiveMedId),
-            input: MedicineReminderGroupWriteInput(
-              currentMedicineId: effectiveMedId,
-              label: medicine.displayName,
-              times: times.value,
-              daysOfWeek: daysOfWeek,
-              startDate: formatDateInput(startDate.value),
-              endDate: formatDateInput(endDate.value),
-              isActive: isActive.value,
-              note: trimmedOrNull(noteController.text),
+      unawaited(
+        ref
+            .read(medicineReminderFormProvider.notifier)
+            .saveGroup(
+              existingReminders: remindersFor(reminders, effectiveMedId),
+              input: MedicineReminderGroupWriteInput(
+                currentMedicineId: effectiveMedId,
+                label: medicine.displayName,
+                times: times.value,
+                daysOfWeek: daysOfWeek,
+                startDate: formatDateInput(startDate.value),
+                endDate: formatDateInput(endDate.value),
+                isActive: isActive.value,
+                note: trimmedOrNull(noteController.text),
+              ),
             ),
-          );
+      );
     }
 
     Future<void> confirmDelete(List<MedicineReminderItem> reminders) async {
@@ -407,9 +415,11 @@ class MedicineReminderEditPage extends HookConsumerWidget {
                         if (value == ReminderFrequency.daily) {
                           selectedWeekdays.value = <int>{};
                           if (hadWeekdays) {
-                            Toast.show(
-                              context,
-                              l10n.medicineReminderFrequencyDailyClearedWeekdays,
+                            unawaited(
+                              Toast.show(
+                                context,
+                                l10n.medicineReminderFrequencyDailyClearedWeekdays,
+                              ),
                             );
                           }
                         } else if (selectedWeekdays.value.isEmpty) {

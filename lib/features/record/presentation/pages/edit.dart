@@ -454,7 +454,7 @@ class RecordEditPage extends HookConsumerWidget {
           !loaded.value &&
           !loadingRecord.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (context.mounted) loadRecord();
+          if (context.mounted) unawaited(loadRecord());
         });
       }
       return null;

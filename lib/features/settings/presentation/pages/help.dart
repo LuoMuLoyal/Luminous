@@ -219,9 +219,9 @@ class _FaqTileState extends State<_FaqTile>
   void _toggle() {
     setState(() => _expanded = !_expanded);
     if (_expanded) {
-      _controller.forward();
+      unawaited(_controller.forward());
     } else {
-      _controller.reverse();
+      unawaited(_controller.reverse());
     }
   }
 

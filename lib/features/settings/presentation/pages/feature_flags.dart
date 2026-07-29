@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -182,11 +183,13 @@ class FeatureFlagsSettingsPage extends ConsumerWidget {
     Future<void> Function(AiRuntimeProviderKind) onSelect,
   ) {
     final l10n = AppLocalizations.of(context)!;
-    showFSheet(
-      context: context,
-      side: FLayout.btt,
-      builder: (context) =>
-          _ProviderSheet(current: current, onSelect: onSelect, l10n: l10n),
+    unawaited(
+      showFSheet(
+        context: context,
+        side: FLayout.btt,
+        builder: (context) =>
+            _ProviderSheet(current: current, onSelect: onSelect, l10n: l10n),
+      ),
     );
   }
 }
@@ -229,7 +232,7 @@ class _ProviderSheet extends ConsumerWidget {
                     suffix: SettingsSelectionIcon(selected: kind == current),
                     onPress: () {
                       Navigator.of(context).pop();
-                      onSelect(kind);
+                      unawaited(onSelect(kind));
                     },
                   ),
               ],
