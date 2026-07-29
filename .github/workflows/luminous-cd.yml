@@ -52,11 +52,18 @@ jobs:
           flutter-version: 3.44.0
           cache: true
 
+      - name: Cache pub packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: pub-${{ runner.os }}-
+
       - name: Merge ARB fragments
         run: dart scripts/arb_tools.dart merge
 
       - name: Bootstrap generated sources
-        run: dart run tool/bootstrap_generated_sources.dart --skip-client
+        run: dart run scripts/bootstrap_generated_sources.dart --skip-client
 
       - name: Build generated API client
         run: |

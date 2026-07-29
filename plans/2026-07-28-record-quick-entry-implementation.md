@@ -402,7 +402,7 @@ Run:
 ```powershell
 flutter analyze
 flutter test test/record/quick_entry_preferences_test.dart test/record/presentation/widgets/sections/quick_entry_panel_test.dart test/record/quick_entry_settings_page_test.dart test/settings/page_test.dart test/record/presentation/controllers/quick_entry_controller_test.dart
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 Expected: no analyzer issues; targeted tests pass; doc coverage prints no blocking concern.
@@ -522,7 +522,7 @@ Run:
 ```powershell
 flutter test test/record/quick_entry/water_flow_test.dart test/record/quick_entry/symptom_flow_test.dart test/record/quick_entry/mood_flow_test.dart test/record/presentation/services/quick_entry_undo_test.dart
 flutter analyze
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 - [ ] **Step 8: Update docs and commit phase 2**
@@ -605,7 +605,7 @@ Run:
 ```powershell
 flutter test test/record/quick_entry/medication_flow_test.dart test/medicine/dose_log_remote_data_source_test.dart test/medicine/cached_dose_log_data_source_test.dart test/medicine/reminder_providers_test.dart
 flutter analyze
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 Update `Active_UI_Record.md`, `Active_UI_Medicine.md`, migration log, and rolling plan.
@@ -649,7 +649,7 @@ Run:
 ```powershell
 flutter test test/record/quick_entry/sleep_flow_test.dart test/record/presentation/widgets/sections/quick_entry_panel_test.dart
 flutter analyze
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 Commit:
@@ -700,7 +700,7 @@ Run:
 ```powershell
 flutter test test/record/quick_entry/meal_flow_test.dart test/record/create_page_test.dart test/record/presentation/models/meal_analysis_view_data_test.dart
 flutter analyze
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 Commit:
@@ -748,7 +748,7 @@ Run:
 ```powershell
 flutter test test/record test/medicine test/settings
 flutter analyze
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 If the targeted suites are clean and shared behavior changed broadly, run:
@@ -788,4 +788,4 @@ The refactor is complete when:
 - Medication writes synchronize with Medicine dose logs.
 - Meal quick entry uses the camera-first confirmation flow.
 - Dedicated quick-entry settings and manual sorting are reachable from Record and Settings.
-- `flutter analyze`, relevant targeted tests, and `dart run tool/check_doc_coverage.dart --warning-only` pass.
+- `flutter analyze`, relevant targeted tests, and `dart run scripts/check_doc_coverage.dart --warning-only` pass.

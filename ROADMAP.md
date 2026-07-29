@@ -77,7 +77,7 @@ progress.
   empty allergies or current medicines → remind user (affects safety check
   coverage)
 - **Release Gate** — `flutter analyze`, `flutter test`, `dart run
-  tool/run_daily_checks.dart` all green; migration logs and current state docs
+  scripts/run_daily_checks.dart` all green; migration logs and current state docs
   synced; no P2/P3 features advertised as current
 
 ### P2 → `1.1.0`
@@ -131,7 +131,7 @@ Broaden platform reach and prepare for larger scale.
 | `2.0.0`     | Scale & platform     | Planned     |
 
 Releases follow [Semantic Versioning](https://semver.org/). Each release passes
-the full `flutter analyze` + `flutter test` + `dart run tool/run_daily_checks.dart`
+the full `flutter analyze` + `flutter test` + `dart run scripts/run_daily_checks.dart`
 gate before publish.
 
 Detailed feature brainstorm and adjustment rationale: see

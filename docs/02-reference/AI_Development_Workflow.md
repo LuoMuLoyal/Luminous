@@ -31,7 +31,7 @@ It complements:
    - `flutter gen-l10n`
    - `flutter analyze`
    - `flutter test`
-   - `dart run tool/run_daily_checks.dart`
+   - `dart run scripts/run_daily_checks.dart`
 3. Respect generated and contract-owned files:
    - do not hand-edit `lib/l10n/app_localizations*.dart`
    - do not hand-edit `generated/lucent_api/`

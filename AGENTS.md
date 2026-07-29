@@ -2,7 +2,7 @@
 
 ## Documentation Rules
 
-After every code change, run `dart run tool/check_doc_coverage.dart --warning-only`.
+After every code change, run `dart run scripts/check_doc_coverage.dart --warning-only`.
 It reads `docs/doc-map.yaml` and prints a per-rule report of which docs each touched code
 area expects. The pre-commit hook runs the same tool in **blocking** mode: code files
 staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHECK=1`.
@@ -114,11 +114,11 @@ Correct workflow when adding or modifying any user-visible string:
 
 Direct edits to `app_zh.arb` / `app_en.arb` **will be lost** on the next merge.
 
-- Run `dart run tool/bootstrap_generated_sources.dart` after fresh clone or
+- Run `dart run scripts/bootstrap_generated_sources.dart` after fresh clone or
   ARB / contract changes (includes the merge + gen-l10n + build_runner above).
 
 ## OpenAPI Client
 
 - Source: `Lucent/docs/openapi.json`.
-- Regenerate: `pnpm export:openapi` in Lucent → `dart run tool/bootstrap_generated_sources.dart` in Luminous.
+- Regenerate: `pnpm export:openapi` in Lucent → `dart run scripts/bootstrap_generated_sources.dart` in Luminous.
 - Tracked boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`.

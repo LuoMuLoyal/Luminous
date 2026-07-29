@@ -34,7 +34,7 @@ flutter test
 After cloning, install the shared git hooks once:
 
 ```bash
-dart run tool/install_git_hooks.dart
+dart run scripts/install_git_hooks.dart
 ```
 
 This sets `core.hooksPath` to `.githooks/`. The hooks are kept lightweight to
@@ -42,9 +42,9 @@ avoid slowing down your workflow:
 
 - **`commit-msg`**: validates Conventional Commits format (type, scope, subject).
 - **`pre-commit`**: runs `dart format` on staged `.dart` files and `flutter analyze`.
-- **`pre-push`**: no-op (full validation runs in CI).
+- **`pre-push`**: runs `flutter analyze` and `dart format --set-exit-if-changed`.
 
-For a full local check, run `dart run tool/run_daily_checks.dart`.
+For a full local check, run `dart run scripts/run_daily_checks.dart`.
 
 ---
 
@@ -106,11 +106,11 @@ incompatible with prior versions. For normal commits, keep a single-line summary
 
 ### Before Push
 
-The `pre-push` hook is a no-op — full validation (analyze, format check,
-tests, OpenAPI sync) runs in CI. For a local full check:
+The `pre-push` hook runs `flutter analyze` and `dart format --set-exit-if-changed`.
+For a full local check:
 
 ```bash
-dart run tool/run_daily_checks.dart
+dart run scripts/run_daily_checks.dart
 ```
 
 If you changed ARB files:
@@ -129,7 +129,7 @@ If Lucent API code changed (cross-repo):
 pnpm export:openapi
 
 # In Luminous:
-dart run tool/bootstrap_generated_sources.dart
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
 ---
@@ -222,40 +222,18 @@ flutter test --name "test name pattern"         # by name
 - `network_image_mock` — call `mockNetworkImages(() async { ... })` in widget
   tests that render `CachedNetworkImage` to prevent real network calls.
 
-### Golden Tests
+### Integration Tests
+
+All integration tests use the standard `integration_test` package with
+`testWidgets`. Run them on a device or emulator:
 
 ```bash
-flutter test test/golden/                       # run golden tests
-flutter test --update-goldens test/golden/      # regenerate baselines
-```
-
-- Golden tests use `alchemist` with light/dark theme scenarios.
-- Baseline images are stored in `test/golden/goldens/`.
-- Run `--update-goldens` when visual changes are intentional.
-
-### Integration Tests (Patrol)
-
-All integration tests use Patrol (`patrolTest`). Patrol replaces the
-built-in `integration_test` package — there is only one E2E writing
-style in this project.
-
-```bash
-# Install patrol_cli (one-time)
-dart pub global activate patrol_cli
-
 # Run all integration tests
-dart pub global run patrol_cli:main test \
-  --target integration_test/ \
-  --device emulator-5554
+flutter test integration_test
 
-# Run a single test
-dart pub global run patrol_cli:main test \
-  --target integration_test/settings/settings_preferences_e2e_test.dart \
-  --device emulator-5554
+# Run a single scenario
+flutter test integration_test/settings/settings_preferences_e2e_test.dart
 ```
-
-Patrol also enables native system interaction (permission dialogs,
-notifications, WebView) via `$.native`.
 
 ### Full-Stack E2E
 
@@ -268,7 +246,7 @@ dart run tool/run_fullstack_checks.dart
 ### Daily Checks
 
 ```bash
-dart run tool/run_daily_checks.dart
+dart run scripts/run_daily_checks.dart
 ```
 
 ---
@@ -302,7 +280,7 @@ The API contract source of truth is **Lucent controller/DTO code plus a freshly 
 `Lucent/docs/openapi.json`**. When the backend API changes:
 
 1. In `Lucent`: `pnpm export:openapi`
-2. In `Luminous`: `dart run tool/bootstrap_generated_sources.dart`
+2. In `Luminous`: `dart run scripts/bootstrap_generated_sources.dart`
 
 Never hand-edit `generated/lucent_api/`. The generator handles enum defaults and
 nullable map entries natively. Commit the regenerated non-`.g.dart`
@@ -311,7 +289,7 @@ nullable map entries natively. Commit the regenerated non-`.g.dart`
 Verify contract sync:
 
 ```bash
-dart run tool/verify_lucent_openapi_sync.dart
+dart run scripts/verify_lucent_openapi_sync.dart
 ```
 
 ---
@@ -324,7 +302,7 @@ dart run tool/verify_lucent_openapi_sync.dart
    ```bash
    flutter analyze
    flutter test
-   dart run tool/run_daily_checks.dart
+   dart run scripts/run_daily_checks.dart
    ```
 4. Update documentation per the rules above.
 5. Open a PR using the [template](.github/pull_request_template.md).

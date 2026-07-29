@@ -68,7 +68,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run tool/run_daily_checks.dart [options]
+Usage: dart run scripts/run_daily_checks.dart [options]
 
 Options:
   --openapi <path>   Verify against an explicit Lucent OpenAPI file path.

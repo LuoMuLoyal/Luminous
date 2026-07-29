@@ -37,7 +37,7 @@ Future<void> main(List<String> args) async {
   } on ProcessException catch (error) {
     stderr.writeln(error.message);
     stderr.writeln(
-      'OpenAPI/client verification command failed. Run `dart run tool/bootstrap_generated_sources.dart` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
+      'OpenAPI/client verification command failed. Run `dart run scripts/bootstrap_generated_sources.dart` after exporting Lucent OpenAPI if the generated client needs to be refreshed.',
     );
     exitCode = error.errorCode;
   } on FormatException catch (error) {
@@ -110,7 +110,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run tool/verify_lucent_openapi_sync.dart [options]
+Usage: dart run scripts/verify_lucent_openapi_sync.dart [options]
 
 Options:
   --openapi <path>   Verify against an explicit Lucent OpenAPI file path.

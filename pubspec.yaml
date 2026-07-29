@@ -65,7 +65,7 @@ dependencies:
   lucent_api:
     path: generated/lucent_api
   url_launcher: ^6.3.2
-  fluwx: 5.7.5
+  fluwx: 5.7.5 # pinned: WeChat SDK requires exact version match for native builds
   flutter_markdown_plus: ^1.0.12
   email_validator: ^2.1.17
   mobile_scanner: ^7.2.0
@@ -95,10 +95,9 @@ dev_dependencies:
   build_runner: ^2.15.0
   json_serializable: ^6.9.5
   freezed: ^3.2.5
-  melos: ^7.8.1
   mocktail: ^1.0.5
   network_image_mock: ^2.1.1
-  alchemist: ^0.14.0
+
   integration_test:
     sdk: flutter
   riverpod_generator: ^4.0.4
@@ -149,28 +148,3 @@ flutter:
     - assets/icon/oauth/
     - assets/legal/
     - assets/faq/
-
-melos:
-  useRootAsPackage: true
-  scripts:
-    pub-get:
-      description: Install Flutter dependencies
-      run: flutter pub get
-    daily:
-      description: Run local daily validation
-      run: dart run tool/run_daily_checks.dart
-    fullstack:
-      description: Run the Android emulator full-stack validation gate
-      run: dart run tool/run_fullstack_checks.dart
-    fullstack-auth:
-      description: Run the full-stack auth smoke lane
-      run: flutter test integration_test/auth/fullstack_auth_smoke_test.dart -d emulator-5554 --dart-define-from-file=.env
-    fullstack-record:
-      description: Run the full-stack record CRUD lane
-      run: flutter test integration_test/record/fullstack_record_lane_test.dart -d emulator-5554 --dart-define-from-file=.env
-    fullstack-sleep:
-      description: Run the full-stack sleep structured-entry lane
-      run: flutter test integration_test/record/fullstack_sleep_lane_test.dart -d emulator-5554 --dart-define-from-file=.env
-    fullstack-today-report:
-      description: Run the full-stack today/report AI lane
-      run: flutter test integration_test/app/fullstack_today_report_lane_test.dart -d emulator-5554 --dart-define-from-file=.env

@@ -13,9 +13,9 @@ linter:
     # --- Bug 预防 ---
     - always_declare_return_types
     # - avoid_void_async
-    # - cancel_subscriptions
-    # - close_sinks
-    # - discarded_futures
+    - cancel_subscriptions
+    - close_sinks
+    # - discarded_futures  # 107 issues — needs a dedicated unawaited() pass
     # - only_throw_errors
     # - parameter_assignments
 

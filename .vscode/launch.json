@@ -9,15 +9,6 @@
       "toolArgs": [
         "--dart-define-from-file=.env"
       ]
-    },
-    {
-      "name": "Luminous (Fullstack E2E Env)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "toolArgs": [
-        "--dart-define-from-file=.env"
-      ]
     }
   ]
 }

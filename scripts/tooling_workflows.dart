@@ -6,9 +6,9 @@ import 'tooling_support.dart';
 Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   await runLoggedCommand(
     'dart',
-    ['run', 'tool/check_doc_coverage.dart', '--warning-only'],
+    ['run', 'scripts/check_doc_coverage.dart', '--warning-only'],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run tool/check_doc_coverage.dart --warning-only',
+    stepName: 'dart run scripts/check_doc_coverage.dart --warning-only',
   );
   stdout.writeln('');
 
@@ -25,7 +25,7 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
 
   await runLoggedCommand(
     'dart',
-    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'tool/'],
+    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'scripts/'],
     workingDirectory: context.repoRoot,
     stepName: 'dart format --set-exit-if-changed',
   );
@@ -43,11 +43,11 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
     'dart',
     [
       'run',
-      'tool/verify_lucent_openapi_sync.dart',
+      'scripts/verify_lucent_openapi_sync.dart',
       if (openApiPath != null) '--openapi=$openApiPath',
     ],
     workingDirectory: context.repoRoot,
-    stepName: 'dart run tool/verify_lucent_openapi_sync.dart',
+    stepName: 'dart run scripts/verify_lucent_openapi_sync.dart',
   );
 }
 
@@ -64,7 +64,7 @@ Future<void> runPrePushChecks(ToolContext context) async {
   stdout.writeln('==> dart format --set-exit-if-changed');
   await runLoggedCommand(
     'dart',
-    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'tool/'],
+    ['format', '--set-exit-if-changed', 'lib/', 'test/', 'scripts/'],
     workingDirectory: context.repoRoot,
     stepName: 'dart format --set-exit-if-changed',
   );
@@ -76,7 +76,7 @@ Future<void> runPreCommitChecks(ToolContext context) async {
   // not block the commit. Bypass entirely with SKIP_DOC_CHECK=1.
   await runLoggedCommand(
     'dart',
-    ['run', 'tool/check_doc_coverage.dart', '--warning-only', '--staged'],
+    ['run', 'scripts/check_doc_coverage.dart', '--warning-only', '--staged'],
     workingDirectory: context.repoRoot,
     stepName: 'doc-check (warning only)',
   );

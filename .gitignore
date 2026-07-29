@@ -102,5 +102,4 @@ docs/assets
 nul
 
 reference
-test/golden/goldens
-test/golden/failures/
+

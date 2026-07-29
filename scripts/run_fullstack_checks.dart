@@ -73,7 +73,7 @@ Map<String, String> _parseNamedArgs(List<String> args) {
 }
 
 const _usage = '''
-Usage: dart run tool/run_fullstack_checks.dart [options]
+Usage: dart run scripts/run_fullstack_checks.dart [options]
 
 Options:
   --device-id <id>        Flutter device id. Default: emulator-5554

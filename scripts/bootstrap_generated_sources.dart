@@ -50,57 +50,71 @@ Future<void> bootstrapGeneratedSources(
     stdout.writeln('');
   }
 
+  // Build the client branch and app codegen branch in parallel — they
+  // have no dependency on each other after root pub get completes.
+  final futures = <Future<void>>[];
+
   if (!skipClient) {
-    final openApiFile = resolveRequiredOpenApiFile(
-      openApiPath,
-      defaultLucentRoot: context.lucentRoot,
-      repoRoot: context.repoRoot,
-    );
-    verifyOpenApiJson(openApiFile);
-
-    final generatedClientRoot = Directory(
-      '${context.repoRoot.path}${Platform.pathSeparator}generated'
-      '${Platform.pathSeparator}lucent_api',
-    );
-    if (!generatedClientRoot.existsSync()) {
-      throw StateError(
-        'Generated client directory not found: ${generatedClientRoot.path}',
-      );
-    }
-
-    await runLoggedCommand(
-      'dart',
-      ['pub', 'get'],
-      workingDirectory: generatedClientRoot,
-      stepName: 'dart pub get (generated/lucent_api)',
-    );
-    stdout.writeln('');
-
-    await runLoggedCommand(
-      'dart',
-      ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-      workingDirectory: generatedClientRoot,
-      stepName:
-          'dart run build_runner build --delete-conflicting-outputs '
-          '(generated/lucent_api)',
-    );
-    stdout.writeln('');
-
-    // Format generated code so that diffs only show semantic changes,
-    // not formatting drift from the generator.
-    await runLoggedCommand(
-      'dart',
-      ['format', generatedClientRoot.path],
-      workingDirectory: context.repoRoot,
-      stepName: 'dart format generated/lucent_api',
-    );
-    stdout.writeln('');
+    futures.add(_buildClient(context, openApiPath: openApiPath));
   }
 
-  if (skipAppCodegen) {
-    return;
+  if (!skipAppCodegen) {
+    futures.add(_buildAppCodegen(context));
   }
 
+  if (futures.isNotEmpty) {
+    await Future.wait(futures);
+  }
+}
+
+Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
+  final openApiFile = resolveRequiredOpenApiFile(
+    openApiPath,
+    defaultLucentRoot: context.lucentRoot,
+    repoRoot: context.repoRoot,
+  );
+  verifyOpenApiJson(openApiFile);
+
+  final generatedClientRoot = Directory(
+    '${context.repoRoot.path}${Platform.pathSeparator}generated'
+    '${Platform.pathSeparator}lucent_api',
+  );
+  if (!generatedClientRoot.existsSync()) {
+    throw StateError(
+      'Generated client directory not found: ${generatedClientRoot.path}',
+    );
+  }
+
+  await runLoggedCommand(
+    'dart',
+    ['pub', 'get'],
+    workingDirectory: generatedClientRoot,
+    stepName: 'dart pub get (generated/lucent_api)',
+  );
+  stdout.writeln('');
+
+  await runLoggedCommand(
+    'dart',
+    ['run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+    workingDirectory: generatedClientRoot,
+    stepName:
+        'dart run build_runner build --delete-conflicting-outputs '
+        '(generated/lucent_api)',
+  );
+  stdout.writeln('');
+
+  // Format generated code so that diffs only show semantic changes,
+  // not formatting drift from the generator.
+  await runLoggedCommand(
+    'dart',
+    ['format', generatedClientRoot.path],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart format generated/lucent_api',
+  );
+  stdout.writeln('');
+}
+
+Future<void> _buildAppCodegen(ToolContext context) async {
   await runLoggedCommand(
     'flutter',
     ['gen-l10n'],
@@ -187,7 +201,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run tool/bootstrap_generated_sources.dart [options]
+Usage: dart run scripts/bootstrap_generated_sources.dart [options]
 
 Options:
   --openapi <path>        Use an explicit Lucent OpenAPI file path.

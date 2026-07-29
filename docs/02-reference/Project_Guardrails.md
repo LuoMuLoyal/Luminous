@@ -10,7 +10,7 @@ This replaces the long historical error audit as the current quick-read checklis
    facts in `Current_State.md`; next work in `Next_Plan.md`; history in `MigrationLog.md`.
 - Keep `docs/doc-map.yaml` aligned with real ownership boundaries. If a code path changes and its
    owning docs also change, update the mapping instead of teaching contributors tribal knowledge.
-- Run `dart run tool/check_doc_coverage.dart` when you are unsure which docs should move with a code
+- Run `dart run scripts/check_doc_coverage.dart` when you are unsure which docs should move with a code
    change. It is warning-only, not a merge gate.
 - Do not record implementation status, completed work, or current runtime truth in `Next_Plan.md`.
    If it is already true now, move it to `Current_State.md` or `MigrationLog.md`.
@@ -104,7 +104,7 @@ This replaces the long historical error audit as the current quick-read checklis
    repo-specific cleanup steps just to strip generated trailing spaces.
 - Do not describe the Android emulator + Lucent test-runtime lane as already covered by GitHub
    Actions. The current CI boundary is repo-safe Flutter checks only; full-stack E2E remains a
-   local/manual gate through `tool/run_fullstack_checks.dart`.
+   local/manual gate through `scripts/run_fullstack_checks.dart`.
 - `luminous-cd.yml` validates required GitHub secrets (`LUCENT_BASE_URL`, `SENTRY_DSN`) before
    the Flutter Web build; missing secrets fail the pipeline early instead of injecting empty
    strings into `--dart-define`.
@@ -115,8 +115,8 @@ This replaces the long historical error audit as the current quick-read checklis
    API changed.
 - Frontend focused change: `flutter analyze`, relevant tests or `flutter test`.
 - Cross-contract change: run both backend OpenAPI export and Luminous client regeneration.
-- Prefer `dart run tool/run_daily_checks.dart` for repo-safe frontend verification and `dart run
-   tool/run_fullstack_checks.dart` for the local emulator gate instead of retyping long command
+- Prefer `dart run scripts/run_daily_checks.dart` for repo-safe frontend verification and `dart run
+   scripts/run_fullstack_checks.dart` for the local emulator gate instead of retyping long command
    chains.
 - Run emulator integration tests sequentially per device. Do not run multiple `flutter test
    integration_test/... -d emulator-5554` commands concurrently against the same emulator; they can

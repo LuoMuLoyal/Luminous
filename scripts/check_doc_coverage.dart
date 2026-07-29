@@ -148,7 +148,7 @@ class _ParsedArgs {
 }
 
 const _usage = '''
-Usage: dart run tool/check_doc_coverage.dart [options]
+Usage: dart run scripts/check_doc_coverage.dart [options]
 
 By default this script blocks (exit 1) when code files are staged/changed
 but no docs/ files are included.

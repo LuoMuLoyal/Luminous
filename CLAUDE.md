@@ -26,9 +26,8 @@ flutter test integration_test                             # all E2E
 flutter test integration_test/<scenario>_e2e_test.dart    # one E2E scenario
 flutter gen-l10n                                          # after ARB changes
 dart scripts/arb_tools.dart merge                         # merge fragment ARBs before gen-l10n
-cd generated/lucent_api && dart run build_runner build    # regenerate API client
-dart run tool/check_doc_coverage.dart --warning-only      # after EVERY code change
-dart run tool/bootstrap_generated_sources.dart            # after clone / ARB / contract change
+dart run scripts/bootstrap_generated_sources.dart            # after clone / ARB / contract change
+dart run scripts/check_doc_coverage.dart --warning-only      # after EVERY code change
 ```
 
 While iterating use the narrow command; run `flutter analyze` + `flutter test` before
@@ -39,7 +38,7 @@ finishing.
 After **every** code change, run:
 
 ```bash
-dart run tool/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
 It reads `docs/doc-map.yaml` and prints a per-rule report of which docs each touched code
@@ -111,7 +110,7 @@ Correct workflow:
 2. `dart scripts/arb_tools.dart merge` — merge fragments → `app_zh.arb` / `app_en.arb`
 3. `flutter gen-l10n` — generate Dart localization code
 
-`dart run tool/bootstrap_generated_sources.dart` runs after fresh clone or
+`dart run scripts/bootstrap_generated_sources.dart` runs after fresh clone or
 ARB / contract changes (includes the merge + gen-l10n + build_runner above).
 
 - `docs/02-reference/Localization.md` records ownership rules per ARB fragment —
@@ -121,7 +120,7 @@ ARB / contract changes (includes the merge + gen-l10n + build_runner above).
 
 - Source: `Lucent/docs/openapi.json`.
 - Regenerate: `pnpm export:openapi` in Lucent →
-  `cd generated/lucent_api && dart run build_runner build` in Luminous.
+  `dart run scripts/bootstrap_generated_sources.dart` in Luminous.
 - Tracked boundary: `generated/lucent_api/lib/api/**` except `**/*.g.dart`.
 
 ## Non-Negotiable Boundaries

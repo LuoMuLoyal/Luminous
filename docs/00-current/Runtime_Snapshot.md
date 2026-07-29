@@ -146,7 +146,7 @@ Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
 - 集成测试统一使用 Patrol（`patrolTest`）。
 - `integration_test/` 分为离线/mock 流程与 Android 模拟器全栈 lane。
 - 全栈移动 E2E 当前为本地/手动，不属于 GitHub Actions 流水线。
-- 本地验证入口：`tool/check_doc_coverage.dart`、`tool/run_daily_checks.dart`、`tool/run_fullstack_checks.dart`、`tool/verify_lucent_openapi_sync.dart`。
+- 本地验证入口：`scripts/check_doc_coverage.dart`、`scripts/run_daily_checks.dart`、`scripts/run_fullstack_checks.dart`、`scripts/verify_lucent_openapi_sync.dart`。
 - GitHub Actions 在构建 APK 前检查生成客户端漂移。
 - `luminous-cd.yml` 在 Flutter Web 构建前校验 `LUCENT_BASE_URL` 和 `SENTRY_DSN` secrets 存在性，防止空字符串注入 `--dart-define`。
 - Mock repositories 仅存在于 `test/helpers/mocks/`，生产代码使用 repository `signedOut()` 工厂返回静态预览数据。
@@ -175,7 +175,7 @@ Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
 - 官方生成器从 `openapi_retrofit_generator` 切换为 `@openapitools/openapi-generator-cli` 7.22.0 `dart-dio` + `json_serializable` + `copy_with_extension`。
 - 生成命令：`openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c config.json`（配置含 `enumUnknownDefaultCase=true`）。
 - 药品详情 `drugInteractions` 合同改为 `List<DrugbankDrugInteractionDto>`；`CreateDataExportRequestDto` 枚举字段移除 `default`。
-- 生成后需运行 `dart run tool/bootstrap_generated_sources.dart` 生成 `.g.dart` 和 root 代码。
+- 生成后需运行 `dart run scripts/bootstrap_generated_sources.dart` 生成 `.g.dart` 和 root 代码。
 
 ### 国际化
 

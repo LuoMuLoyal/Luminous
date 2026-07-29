@@ -16,7 +16,7 @@ P0-P2 UI/UX 优化全部完成。当前处于 Phase 5 Release Gate 阶段。下�
 1. **运行发布验证门**
    - `flutter analyze --no-pub`
    - `flutter test --no-pub`
-   - `dart run tool/run_daily_checks.dart`（仓库安全级）
+   - `dart run scripts/run_daily_checks.dart`（仓库安全级）
    - 集成测试框架选型暂缓，待评估后引入
 2. **助手演进限定在 concrete 场景**
    - 仅当选定具体缺失用户任务时才扩展 tools/proposals

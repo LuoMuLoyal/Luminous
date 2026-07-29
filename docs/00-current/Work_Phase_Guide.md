@@ -50,13 +50,13 @@ Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文�
 ```powershell
 flutter analyze --no-pub
 flutter test --no-pub
-dart run tool/run_daily_checks.dart
+dart run scripts/run_daily_checks.dart
 ```
 
 需要真实端到端信心时运行：
 
 ```powershell
-dart run tool/run_fullstack_checks.dart
+dart run scripts/run_fullstack_checks.dart
 ```
 
 发布前检查：

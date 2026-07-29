@@ -11,7 +11,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Generated Dart package scaffold: `generated/lucent_api/`
 - Network wrapper: `lib/core/network/dio_client.dart`
 - Public Flutter API exports: `lib/core/network/api.dart`
-- Contract drift verifier: `tool/verify_lucent_openapi_sync.dart`
+- Contract drift verifier: `scripts/verify_lucent_openapi_sync.dart`
 
 ## Current Generated Baseline
 
@@ -36,7 +36,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Read-side contract drift must be fixed at the Lucent OpenAPI export first. Do not bypass an
   existing generated read API with handwritten Dio GET parsing unless
   `../Lucent/docs/openapi.json` has been freshly exported,
-  `dart run tool/bootstrap_generated_sources.dart` has been attempted, and the exported contract
+  `dart run scripts/bootstrap_generated_sources.dart` has been attempted, and the exported contract
   still lacks the required fields.
 - For writes where nullable clearing matters, use local domain write inputs or raw Dio JSON maps
   instead of generated write DTOs.
@@ -88,7 +88,7 @@ After generating, restore the generated `pubspec.yaml` SDK and dependency constr
 baseline, then run:
 
 ```bash
-dart run tool/bootstrap_generated_sources.dart
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
 This runs `flutter pub get`, `dart pub get` in `generated/lucent_api`, `build_runner` for both the
@@ -105,7 +105,7 @@ flutter test
 For CI-only contract-path verification without re-exporting from a sibling workspace layout, run:
 
 ```bash
-dart run tool/verify_lucent_openapi_sync.dart \
+dart run scripts/verify_lucent_openapi_sync.dart \
   --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 
@@ -120,6 +120,6 @@ the generated client layout exists, so it can run safely before commit inside a 
 - Flutter generated sources in the main app (`*.g.dart`, `*.freezed.dart`,
   `lib/l10n/app_localizations*.dart`) are also local-only and ignored.
 - CI and local validation now regenerate these artifacts before analyze/test via
-  `dart run tool/bootstrap_generated_sources.dart`.
+  `dart run scripts/bootstrap_generated_sources.dart`.
 - The `dart-dio` generator still produces Markdown doc stubs and package test stubs; these are
   tracked by the project baseline and regenerated alongside the rest of the package.
