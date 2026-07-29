@@ -454,10 +454,6 @@ TodayRepository todayRepository(Ref ref) {
 
 | 步骤 | 文件 | 动作 |
 |------|------|------|
-| 2.1 | `record/application/` | 创建目录，抽出 `change_record_date.dart`、`quick_entry_meal.dart`、`quick_entry_sleep.dart`、`quick_entry_medication.dart`、`nlp_flow.dart` |
-| 2.2 | `record/presentation/pages/page.dart` | 从 1226 行瘦身到 ~350 行：移除所有 `_handle*QuickAction` 方法、`_changeRecordDate`、`_openNlpSheet`、`_showMealConfirmationDialog`、`_showSleepMergeDialog`、`_showSleepStartSelectionDialog` 等 |
-| 2.3 | `record/presentation/widgets/header_actions.dart` | 从 page.dart 抽出 header actions 构建 |
-| 2.4 | `record/presentation/widgets/sections/timeline.dart` | 拆出 `timeline_item.dart` 和 `timeline_drag_handler.dart` |
 | 2.5 | `record/presentation/pages/edit.dart` | 抽出 form sections 到独立 widget 文件 |
 | 2.6 | `record/presentation/pages/detail.dart` | 抽出 edit/delete 编排到 `application/usecases/record_detail_actions.dart` |
 
