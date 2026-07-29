@@ -8,14 +8,10 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/error_mapper.dart';
+import 'package:luminous/features/assistant/application/orchestrators/proposal_flow.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/domain/entities/inputs.dart';
-import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/settings/domain/entities/user_settings.dart';
-import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 
 part 'conversation.freezed.dart';
 
@@ -401,7 +397,7 @@ class AssistantController extends Notifier<AssistantState> {
     );
 
     try {
-      await _executeProposal(proposal);
+      await ProposalExecutionOrchestrator(ref: ref).execute(proposal);
       _updateProposalState(
         messageId: messageId,
         proposalId: proposalId,
@@ -433,91 +429,6 @@ class AssistantController extends Notifier<AssistantState> {
       executionState: AssistantProposalExecutionState.dismissed,
       executionError: null,
     );
-  }
-
-  Future<void> _executeProposal(AssistantProposedAction proposal) async {
-    if (proposal.isExpired) {
-      throw const LucentApiException(
-        message: 'Proposal expired; please regenerate.',
-      );
-    }
-    switch (proposal.payload) {
-      case AssistantCreateDailyRecordProposalPayload():
-        final payload =
-            proposal.payload as AssistantCreateDailyRecordProposalPayload;
-        await ref
-            .read(dailyRecordRepositoryProvider)
-            .create(
-              DailyRecordCreateInput(
-                kind: _mapDailyRecordKind(payload.draft.kind),
-                occurredAt: payload.draft.occurredAt,
-                title: payload.draft.title,
-                value: payload.draft.value,
-                unit: payload.draft.unit,
-                note: payload.draft.note,
-                payload: payload.draft.payload,
-              ),
-            );
-      case AssistantUpdateDailyRecordProposalPayload():
-        final payload =
-            proposal.payload as AssistantUpdateDailyRecordProposalPayload;
-        await ref
-            .read(dailyRecordRepositoryProvider)
-            .update(
-              payload.recordId,
-              DailyRecordUpdateInput(
-                occurredAt: payload.hasOccurredAt
-                    ? payload.occurredAt
-                    : dailyRecordNoChange,
-                title: payload.hasTitle ? payload.title : dailyRecordNoChange,
-                value: payload.hasValue ? payload.value : dailyRecordNoChange,
-                unit: payload.hasUnit ? payload.unit : dailyRecordNoChange,
-                note: payload.hasNote ? payload.note : dailyRecordNoChange,
-                payload: payload.hasPayload
-                    ? payload.payload
-                    : dailyRecordNoChange,
-              ),
-            );
-      case AssistantDeleteDailyRecordProposalPayload():
-        final payload =
-            proposal.payload as AssistantDeleteDailyRecordProposalPayload;
-        await ref.read(dailyRecordRepositoryProvider).delete(payload.recordId);
-      case AssistantUpdateUserSettingsProposalPayload():
-        final payload =
-            proposal.payload as AssistantUpdateUserSettingsProposalPayload;
-        final ctx = payload.draft.assistantContext;
-        final current = ref.read(userSettingsControllerProvider).value;
-        await ref
-            .read(userSettingsControllerProvider.notifier)
-            .applySettingsPatch(
-              aiSummariesEnabled: current?.aiSummariesEnabled ?? false,
-              dataSharingConsent: current?.dataSharingConsent ?? false,
-              assistantEnabled:
-                  payload.draft.assistantEnabled ??
-                  current?.assistantEnabled ??
-                  false,
-              assistantMemoryEnabled:
-                  payload.draft.assistantMemoryEnabled ??
-                  current?.assistantMemoryEnabled ??
-                  false,
-              waterTargetCount: current?.waterTargetCount ?? 8,
-              assistantContext: ctx != null
-                  ? AssistantContextPatch(
-                      healthProfile: ctx.healthProfile,
-                      dailyRecords: ctx.dailyRecords,
-                      sleepRecords: ctx.sleepRecords,
-                      currentMedicines: ctx.currentMedicines,
-                    )
-                  : AssistantContextPatch(
-                      healthProfile: current?.assistantContext.healthProfile,
-                      dailyRecords: current?.assistantContext.dailyRecords,
-                      sleepRecords: current?.assistantContext.sleepRecords,
-                      currentMedicines:
-                          current?.assistantContext.currentMedicines,
-                    ),
-            );
-        await loadCapabilities();
-    }
   }
 
   (AssistantMessage, AssistantProposedAction)? _findProposalTarget({
@@ -564,17 +475,6 @@ class AssistantController extends Notifier<AssistantState> {
           })
           .toList(growable: false),
     );
-  }
-
-  DailyRecordKind _mapDailyRecordKind(String raw) {
-    return switch (raw) {
-      'water' => DailyRecordKind.water,
-      'meal' => DailyRecordKind.meal,
-      'symptom' => DailyRecordKind.symptom,
-      'note' => DailyRecordKind.note,
-      'sleep' => DailyRecordKind.sleep,
-      _ => DailyRecordKind.note,
-    };
   }
 
   String messageIdOf(AssistantMessage message) => _messageIdOf(message);

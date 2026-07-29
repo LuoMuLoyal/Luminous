@@ -11,11 +11,11 @@ import 'package:luminous/features/report/presentation/widgets/sections/ai_summar
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/findings.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/patterns.dart';
-import 'package:luminous/features/report/presentation/widgets/sections/preview_empty.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/suggestion_history.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/trend.dart';
 import 'package:luminous/features/report/presentation/widgets/shared/reference_notice.dart';
+import 'package:luminous/features/report/presentation/widgets/views/dashboard_preview.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -107,7 +107,14 @@ class ReportDashboardView extends StatelessWidget {
     final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
 
     if (isPreview || !canAccessProtectedData) {
-      return _buildMobilePreviewLayout(l10n: l10n);
+      return ReportDashboardPreview(
+        l10n: l10n,
+        dashboardQuery: dashboardQuery,
+        onDashboardQueryChanged: onDashboardQueryChanged,
+        startDate: dashboard.startDate,
+        onSignIn: onSignIn,
+        isDesktop: false,
+      );
     }
 
     return Column(
@@ -206,58 +213,18 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildMobilePreviewLayout({required AppLocalizations l10n}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SignInHintBanner(
-          onSignIn: onSignIn,
-          message: l10n.reportPreviewBannerMessage,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportTrendSection(
-          key: const Key('report-trend-section'),
-          trends: _previewTrends,
-          selectedQuery: dashboardQuery,
-          onQueryChanged: onDashboardQueryChanged ?? (_) {},
-          l10n: l10n,
-          startDate: dashboard.startDate,
-          showRangePill: false,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportPreviewLockedSection(
-          key: const Key('report-findings-preview-locked'),
-          icon: SemanticIcons.aiTip,
-          title: l10n.reportFindingsPreviewTitle,
-          body: l10n.reportFindingsPreviewBody,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportPreviewLockedSection(
-          key: const Key('report-suggestion-history-preview-locked'),
-          icon: SemanticIcons.reportHistory,
-          title: l10n.reportSuggestionHistoryPreviewTitle,
-          body: l10n.reportSuggestionHistoryPreviewBody,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportExportSection(
-          key: const Key('report-export-section'),
-          actions: _previewExportActions,
-          latestRequest: null,
-          requestInFlight: const DataExportRequestInFlightState(
-            inFlight: false,
-          ),
-          l10n: l10n,
-          onActionTap: null,
-        ),
-      ],
-    );
-  }
-
   Widget _buildDesktopLayout({required AppLocalizations l10n}) {
     final readinessStatus = _readinessStatus();
 
     if (isPreview || !canAccessProtectedData) {
-      return _buildDesktopPreviewLayout(l10n: l10n);
+      return ReportDashboardPreview(
+        l10n: l10n,
+        dashboardQuery: dashboardQuery,
+        onDashboardQueryChanged: onDashboardQueryChanged,
+        startDate: dashboard.startDate,
+        onSignIn: onSignIn,
+        isDesktop: true,
+      );
     }
 
     final canShowFullReport = readinessStatus == ReportReadinessStatus.ready;
@@ -386,62 +353,6 @@ class ReportDashboardView extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopPreviewLayout({required AppLocalizations l10n}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SignInHintBanner(
-          onSignIn: onSignIn,
-          message: l10n.reportPreviewBannerMessage,
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportTrendSection(
-          key: const Key('report-trend-section'),
-          trends: _previewTrends,
-          selectedQuery: dashboardQuery,
-          onQueryChanged: onDashboardQueryChanged ?? (_) {},
-          l10n: l10n,
-          startDate: dashboard.startDate,
-          showRangePill: false,
-        ),
-        const SizedBox(height: Spacing.level4),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ReportPreviewLockedSection(
-                key: const Key('report-findings-preview-locked'),
-                icon: SemanticIcons.aiTip,
-                title: l10n.reportFindingsPreviewTitle,
-                body: l10n.reportFindingsPreviewBody,
-              ),
-            ),
-            const SizedBox(width: Spacing.level4),
-            Expanded(
-              child: ReportPreviewLockedSection(
-                key: const Key('report-suggestion-history-preview-locked'),
-                icon: SemanticIcons.reportHistory,
-                title: l10n.reportSuggestionHistoryPreviewTitle,
-                body: l10n.reportSuggestionHistoryPreviewBody,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: Spacing.level4),
-        ReportExportSection(
-          key: const Key('report-export-section'),
-          actions: _previewExportActions,
-          latestRequest: null,
-          requestInFlight: const DataExportRequestInFlightState(
-            inFlight: false,
-          ),
-          l10n: l10n,
-          onActionTap: null,
-        ),
-      ],
-    );
-  }
-
   int _insufficientMetricCount() {
     return dashboard.metrics
         .where((metric) => metric.status == ReportStatus.insufficientData)
@@ -471,53 +382,6 @@ class ReportDashboardView extends StatelessWidget {
     ReportDashboardRange.last30Days => l10n.reportRangeLast30Days,
     ReportDashboardRange.custom => l10n.reportRangeCustom,
   };
-
-  List<ReportExportAction> get _previewExportActions => const [
-    ReportExportAction(
-      kind: ReportExportKind.hospital,
-      icon: SemanticIcons.medicineKit,
-      color: SemanticColor.primary,
-    ),
-    ReportExportAction(
-      kind: ReportExportKind.monthly,
-      icon: SemanticIcons.tabReport,
-      color: SemanticColor.primary,
-    ),
-    ReportExportAction(
-      kind: ReportExportKind.print,
-      icon: SemanticIcons.actionExport,
-      color: SemanticColor.primary,
-    ),
-    ReportExportAction(
-      kind: ReportExportKind.clinicShare,
-      icon: SemanticIcons.actionShare,
-      color: SemanticColor.primary,
-    ),
-  ];
-
-  List<ReportTrendSeries> get _previewTrends => const [
-    ReportTrendSeries(
-      kind: ReportDataKind.medication,
-      color: SemanticColor.primary,
-      unit: '%',
-      values: [],
-      currentValue: '--',
-    ),
-    ReportTrendSeries(
-      kind: ReportDataKind.water,
-      color: SemanticColor.info,
-      unit: 'L',
-      values: [],
-      currentValue: '--',
-    ),
-    ReportTrendSeries(
-      kind: ReportDataKind.sleep,
-      color: SemanticColor.warning,
-      unit: 'h',
-      values: [],
-      currentValue: '--',
-    ),
-  ];
 }
 
 class _ReportLockedFeaturesHint extends StatelessWidget {

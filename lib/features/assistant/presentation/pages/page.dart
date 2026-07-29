@@ -15,8 +15,8 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
+import 'package:luminous/features/assistant/presentation/widgets/controls_sheet.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/controls_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/hero.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_surface.dart';
@@ -317,32 +317,30 @@ class AssistantPage extends HookConsumerWidget {
         showFSheet<void>(
           context: context,
           side: FLayout.rtl,
-          builder: (sheetContext) => _AssistantControlsSheet(
+          builder: (sheetContext) => AssistantControlsSheet(
             title: l10n.assistantControlsDrawerTitle,
-            controls: AssistantControlsPanel(
-              settings: settings,
-              fallbackContext: effectiveContext,
-              capabilities: capabilities!,
-              onToggleEnabled: (nextValue) =>
-                  toggleAssistantEnabled(context, nextValue),
-              onToggleMemoryEnabled: (nextValue) =>
-                  toggleAssistantMemoryEnabled(context, nextValue),
-              onToggleContext:
-                  ({
-                    bool? healthProfile,
-                    bool? dailyRecords,
-                    bool? sleepRecords,
-                    bool? currentMedicines,
-                  }) => toggleContextSetting(
-                    context,
-                    settings: settings,
-                    fallbackContext: effectiveContext,
-                    healthProfile: healthProfile,
-                    dailyRecords: dailyRecords,
-                    sleepRecords: sleepRecords,
-                    currentMedicines: currentMedicines,
-                  ),
-            ),
+            settings: settings,
+            fallbackContext: effectiveContext,
+            capabilities: capabilities!,
+            onToggleEnabled: (nextValue) =>
+                toggleAssistantEnabled(context, nextValue),
+            onToggleMemoryEnabled: (nextValue) =>
+                toggleAssistantMemoryEnabled(context, nextValue),
+            onToggleContext:
+                ({
+                  bool? healthProfile,
+                  bool? dailyRecords,
+                  bool? sleepRecords,
+                  bool? currentMedicines,
+                }) => toggleContextSetting(
+                  context,
+                  settings: settings,
+                  fallbackContext: effectiveContext,
+                  healthProfile: healthProfile,
+                  dailyRecords: dailyRecords,
+                  sleepRecords: sleepRecords,
+                  currentMedicines: currentMedicines,
+                ),
           ),
         ),
       );
@@ -532,50 +530,5 @@ class AssistantPage extends HookConsumerWidget {
     );
 
     return scaffoldBody;
-  }
-}
-
-class _AssistantControlsSheet extends StatelessWidget {
-  const _AssistantControlsSheet({required this.title, required this.controls});
-
-  final String title;
-  final Widget controls;
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width < 600
-        ? MediaQuery.sizeOf(context).width * 0.85
-        : 400.0;
-
-    return SizedBox(
-      width: width,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.level5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TypographyToken.level7.display(context),
-                    ),
-                  ),
-                  FButton.icon(
-                    variant: FButtonVariant.ghost,
-                    onPress: () => Navigator.of(context).pop(),
-                    child: const Icon(SemanticIcons.actionClose),
-                  ),
-                ],
-              ),
-              const SizedBox(height: Spacing.level4),
-              Expanded(child: SingleChildScrollView(child: controls)),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -12,7 +12,6 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/forms/validators.dart';
-import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
@@ -27,6 +26,8 @@ import 'package:luminous/features/medicine/presentation/utils/reminder_formatter
 import 'package:luminous/features/medicine/presentation/widgets/reminder/delete_dialog.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/form_body.dart';
 import 'package:luminous/features/medicine/presentation/widgets/reminder/loading.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/medicine_selector.dart';
+import 'package:luminous/features/medicine/presentation/widgets/reminder/time_selector.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineReminderEditPage extends HookConsumerWidget {
@@ -204,7 +205,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       final picked = await showAppDialog<FTime?>(
         context: context,
         scrollable: false,
-        builder: (_) => _ReminderTimePickerDialog(initial: initial),
+        builder: (_) => ReminderTimePickerDialog(initial: initial),
       );
       if (picked == null) return;
       final isDuplicate = times.value.any(
@@ -377,7 +378,7 @@ class MedicineReminderEditPage extends HookConsumerWidget {
               else if (isLoading)
                 const ReminderLoading()
               else if (!isEdit && selectedMedicineId.value == null)
-                _MedicineSelectorPrompt(
+                MedicineSelectorPrompt(
                   onSelect: () => context.push(Routes.medicineSearch),
                 )
               else
@@ -480,133 +481,6 @@ class MedicineReminderEditPage extends HookConsumerWidget {
       title: title,
       actions: actions,
       child: SingleChildScrollView(child: content),
-    );
-  }
-}
-
-class _MedicineSelectorPrompt extends StatelessWidget {
-  const _MedicineSelectorPrompt({required this.onSelect});
-
-  final VoidCallback onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.medicineReminderSelectMedicineHint,
-              style: TypographyToken.level4.body(context),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: Spacing.level4),
-            FButton(
-              onPress: onSelect,
-              child: Text(l10n.medicineReminderSelectMedicineAction),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Centered dialog for picking a reminder time.
-///
-/// Shows a title, live preview of the selected time, the
-/// [FTimePicker] wheel, and explicit cancel/confirm action buttons.
-class _ReminderTimePickerDialog extends HookWidget {
-  const _ReminderTimePickerDialog({required this.initial});
-
-  /// The time pre-selected when the dialog opens.
-  final FTime initial;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final typography = context.theme.typography;
-    final locale = Localizations.localeOf(context);
-
-    final timeController = useMemoized(
-      () => FTimePickerController(time: initial),
-    );
-    useEffect(() => timeController.dispose, [timeController]);
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Title row with close button
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                l10n.medicineReminderTimePickerTitle,
-                style: typography.body.xl2.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            FButton.icon(
-              onPress: () => Navigator.of(context).pop(),
-              variant: FButtonVariant.ghost,
-              child: const Icon(SemanticIcons.actionClose),
-            ),
-          ],
-        ),
-        const SizedBox(height: Spacing.level2),
-
-        // Live preview of the currently selected time
-        ValueListenableBuilder<FTime>(
-          valueListenable: timeController,
-          builder: (context, time, _) {
-            return Text(
-              formatTimeOfDay(
-                TimeOfDay(hour: time.hour, minute: time.minute),
-                locale,
-              ),
-              style: typography.body.xl3.copyWith(
-                fontWeight: FontWeight.w800,
-                color: context.theme.colors.primary,
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: Spacing.level4),
-
-        // Time picker wheel
-        SizedBox(
-          height: 200,
-          child: FTimePicker(
-            control: FTimePickerControl.managed(controller: timeController),
-          ),
-        ),
-        const SizedBox(height: Spacing.level4),
-
-        // Cancel + Confirm action buttons
-        Row(
-          children: [
-            Expanded(
-              child: FButton(
-                onPress: () => Navigator.of(context).pop(),
-                variant: FButtonVariant.outline,
-                child: Text(l10n.commonCancel),
-              ),
-            ),
-            const SizedBox(width: Spacing.level3),
-            Expanded(
-              child: FButton(
-                onPress: () => Navigator.of(context).pop(timeController.value),
-                child: Text(l10n.commonConfirm),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

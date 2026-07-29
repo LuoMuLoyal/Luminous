@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +25,7 @@ import 'package:luminous/features/record/presentation/utils/date_time_formatters
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -53,7 +53,7 @@ class RecordCreatePage extends HookConsumerWidget {
 
     final kind = useState(initialKind ?? DailyRecordKind.water);
     final saving = useState(false);
-    final selectedImage = useState<_PendingDailyRecordImage?>(null);
+    final selectedImage = useState<PendingDailyRecordImage?>(null);
     final valueError = useState<String?>(null);
     final titleError = useState<String?>(null);
     final seedDate = initialDate ?? clock.now();
@@ -208,7 +208,7 @@ class RecordCreatePage extends HookConsumerWidget {
         final compressedBytes = await ImageCompressor.compressForUpload(
           rawBytes,
         );
-        selectedImage.value = _PendingDailyRecordImage(
+        selectedImage.value = PendingDailyRecordImage(
           bytes: compressedBytes,
           fileName: image.name,
           contentType: 'image/jpeg',
@@ -355,7 +355,15 @@ class RecordCreatePage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               session.isLoading
-                  ? const _RecordFormLoading()
+                  ? const InlineSkeletonSection(
+                      children: [
+                        InlineSkeletonBlock(height: 56),
+                        InlineSkeletonBlock(height: 56),
+                        InlineSkeletonBlock(height: 56),
+                        InlineSkeletonBlock(height: 96),
+                        InlineSkeletonBlock(height: 56),
+                      ],
+                    )
                   : AuthRequiredDialogGate(
                       onLogin: () =>
                           context.push(loginRouteForCurrentLocation(context)),
@@ -500,7 +508,7 @@ class RecordCreatePage extends HookConsumerWidget {
     required TextEditingController unitController,
     required TextEditingController noteController,
     required TextEditingController titleController,
-    required _PendingDailyRecordImage? selectedImage,
+    required PendingDailyRecordImage? selectedImage,
   }) {
     return valueController.text.trim().isNotEmpty ||
         unitController.text.trim().isNotEmpty ||
@@ -552,7 +560,7 @@ class RecordCreatePage extends HookConsumerWidget {
 
   static String? resolveImageContentType(XFile image) {
     final mimeType = image.mimeType?.trim().toLowerCase();
-    if (_allowedImageContentTypes.contains(mimeType)) return mimeType;
+    if (allowedImageContentTypes.contains(mimeType)) return mimeType;
 
     final name = image.name.toLowerCase();
     if (name.endsWith('.jpg') || name.endsWith('.jpeg')) return 'image/jpeg';
@@ -561,40 +569,4 @@ class RecordCreatePage extends HookConsumerWidget {
     if (name.endsWith('.gif')) return 'image/gif';
     return null;
   }
-}
-
-class _RecordFormLoading extends StatelessWidget {
-  const _RecordFormLoading();
-
-  @override
-  Widget build(BuildContext context) {
-    return const InlineSkeletonSection(
-      children: [
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 56),
-        InlineSkeletonBlock(height: 96),
-        InlineSkeletonBlock(height: 56),
-      ],
-    );
-  }
-}
-
-const _allowedImageContentTypes = <String>{
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-};
-
-class _PendingDailyRecordImage {
-  const _PendingDailyRecordImage({
-    required this.bytes,
-    required this.fileName,
-    required this.contentType,
-  });
-
-  final Uint8List bytes;
-  final String fileName;
-  final String contentType;
 }
