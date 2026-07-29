@@ -1,5 +1,5 @@
 import 'package:lucent_api/lucent_api.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:luminous/core/ai/ai_runtime_config.dart';
+import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'feature_flags_controller.freezed.dart';
+part 'feature_flags.freezed.dart';
 
 /// Experimental feature flags that can be toggled at runtime in debug mode.
 ///

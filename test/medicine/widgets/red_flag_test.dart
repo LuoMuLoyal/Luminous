@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/red_flag.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../../helpers/test_forui_app.dart';

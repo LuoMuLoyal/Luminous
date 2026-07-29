@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/ai/ai_runtime_config.dart';
-import 'package:luminous/core/ai/ai_runtime_providers.dart';
+import 'package:luminous/core/ai/runtime_config.dart';
+import 'package:luminous/core/ai/runtime_providers.dart';
 
 void main() {
   group('AiRuntimeProviderKind', () {

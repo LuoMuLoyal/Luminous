@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
 import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 

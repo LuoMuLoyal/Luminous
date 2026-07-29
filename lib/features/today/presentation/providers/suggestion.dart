@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/database/database_providers.dart';
+import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/repositories/ai_summary.dart';

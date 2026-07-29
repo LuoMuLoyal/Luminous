@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
+import '../connection_providers.dart';
 import '../daos/pending_sync_dao.dart';
-import '../database_providers.dart';
 
-part 'sync_worker.g.dart';
+part 'worker.g.dart';
 
 /// Replays pending sync items when network connectivity is restored.
 ///

@@ -7,7 +7,7 @@ import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'database_providers.g.dart';
+part 'connection_providers.g.dart';
 
 /// Provides the singleton [AppDatabase] instance.
 ///

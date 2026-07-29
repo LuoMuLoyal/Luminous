@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';

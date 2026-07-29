@@ -20,7 +20,7 @@ import 'package:luminous/features/medicine/presentation/pages/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/safety_tips.dart';
 import 'package:luminous/features/medicine/presentation/providers/workspace.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/red_flag.dart';
 import 'package:luminous/features/medicine/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/medicine/presentation/widgets/views/workspace_view.dart';

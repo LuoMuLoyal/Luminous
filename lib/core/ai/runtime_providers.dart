@@ -1,7 +1,7 @@
-import 'package:luminous/core/ai/ai_runtime_config.dart';
+import 'package:luminous/core/ai/runtime_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'ai_runtime_providers.g.dart';
+part 'runtime_providers.g.dart';
 
 @riverpod
 AiRuntimeEnvironment aiRuntimeEnvironment(Ref ref) {

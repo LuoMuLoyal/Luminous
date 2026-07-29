@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/network/session_store.dart';
 
 /// In-memory session store for testing.

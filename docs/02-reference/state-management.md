@@ -158,6 +158,43 @@ truth for shared/business state.
 > matching the "Allowed examples" above. The AGENTS.md rule "State is Riverpod, not GetX" refers to
 > **shared/business state management**, not to ephemeral widget-local presentation state.
 
+### Application Layer Pattern
+
+When page widgets grow too large, business orchestration logic is extracted into the
+`application/` layer. This keeps presentation thin (build + route + trigger use case) and
+makes orchestration reusable and testable.
+
+#### Function-style use cases
+
+Single operations that coordinate repository calls, DataChangeBus emission, and UI feedback:
+
+```dart
+// application/usecases/change_record_date.dart
+Future<Result<void>> changeRecordDate({
+  required Ref ref,
+  required BuildContext context,
+  required String recordId,
+  required DateTime newDate,
+}) async {
+  // repository call → emit data change → toast feedback
+}
+```
+
+#### Class-style orchestrators
+
+Multi-step flows that need stateful sequencing:
+
+```dart
+// application/orchestrators/nlp_flow.dart
+class NlpFlow {
+  NlpFlow({required this.repository, required this.emitDataChange});
+  // ...execute() orchestrates NLP candidate extraction → review → save
+}
+```
+
+The application layer may import other features' **domain** layer for cross-feature
+orchestration. See [[architecture#Cross-Feature Import Boundaries]].
+
 ### Cross-Feature Data Refresh (Invalidation Bus)
 
 Feature modules are isolated: a feature must **never** import another feature's presentation-layer

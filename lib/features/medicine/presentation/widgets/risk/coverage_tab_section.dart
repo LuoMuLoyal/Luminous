@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_coverage_issue_tile.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/coverage_issue_tile.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Coverage section of the risk check tab — shows a foldable list of

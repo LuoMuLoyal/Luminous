@@ -1,22 +1,22 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-import 'daos/current_medicine_dao.dart';
-import 'daos/daily_record_dao.dart';
-import 'daos/health_context_dao.dart';
-import 'daos/medicine_dose_log_dao.dart';
-import 'daos/pending_sync_dao.dart';
-import 'daos/today_suggestion_dao.dart';
 // Platform-agnostic database connection via conditional imports.
 //
 // Known risk: HarmonyOS ArkWeb may not expose `dart.library.js_interop`,
 // causing the stub to throw UnsupportedError at runtime. This is a known
 // limitation — if ArkWeb support is needed, test on a real device and
 // consider adding `if (dart.library.html)` as an additional fallback.
-import 'database_connection.dart'
-    if (dart.library.io) 'database_connection_io.dart'
-    if (dart.library.js_interop) 'database_connection_web.dart'
+import 'connection.dart'
+    if (dart.library.io) 'connection_io.dart'
+    if (dart.library.js_interop) 'connection_web.dart'
     as conn;
+import 'daos/current_medicine_dao.dart';
+import 'daos/daily_record_dao.dart';
+import 'daos/health_context_dao.dart';
+import 'daos/medicine_dose_log_dao.dart';
+import 'daos/pending_sync_dao.dart';
+import 'daos/today_suggestion_dao.dart';
 import 'tables/current_medicines.dart';
 import 'tables/daily_records.dart';
 import 'tables/health_context.dart';

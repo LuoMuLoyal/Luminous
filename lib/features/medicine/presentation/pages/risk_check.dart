@@ -10,8 +10,8 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/providers/risk_check.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/check_loading.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/check_tab_content.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_check_loading.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class MedicineRiskCheckPage extends ConsumerStatefulWidget {

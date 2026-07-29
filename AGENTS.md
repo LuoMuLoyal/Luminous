@@ -33,9 +33,20 @@ flutter test
 
 - `lib/core/` — shared design system, theme, feedback, network, widgets.
 - `lib/features/{feature}/` — per-feature vertical slices:
+  - `application/` — business orchestration: use cases (function-style) and orchestrators (class-style)
   - `data/` — repositories, data sources, providers, mappers, utils
   - `domain/` — entities, repository interfaces, services, constants
   - `presentation/` — pages, widgets, controllers, providers, utils, models, services
+
+### Cross-Feature Import Rules
+
+1. **data → data prohibited** — a feature's `data/` layer must not import another feature's
+   `data/` layer. Use domain interfaces (`domain/repositories/`) instead.
+2. **presentation → presentation prohibited** — a feature's `presentation/` layer must not
+   import another feature's `presentation/` providers. Use domain entities, the shared
+   snapshot hub (`healthContextSnapshotProvider`), or the DataChangeBus.
+3. **application → domain allowed** — the `application/` layer may import other features'
+   `domain/` layer (interfaces + entities) for cross-feature orchestration.
 
 ## Barrel Exports
 

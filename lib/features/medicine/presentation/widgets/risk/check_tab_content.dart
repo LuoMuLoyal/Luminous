@@ -6,7 +6,7 @@ import 'package:luminous/features/medicine/domain/entities/risk_check.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/coverage_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/findings_tab_section.dart';
 import 'package:luminous/features/medicine/presentation/widgets/risk/overview_tab_section.dart';
-import 'package:luminous/features/medicine/presentation/widgets/risk/risk_red_flag.dart';
+import 'package:luminous/features/medicine/presentation/widgets/risk/red_flag.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The content shown inside each FTabs entry. Handles both static and LLM

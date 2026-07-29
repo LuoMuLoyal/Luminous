@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'settings_controller.freezed.dart';
+part 'settings.freezed.dart';
 
 enum FontSizePreference {
   small('small', 0.85),

@@ -1,6 +1,6 @@
 import 'package:clock/clock.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/assistant/data/datasources/assistant.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';

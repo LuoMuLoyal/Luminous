@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/medicine_dose_log_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/database_providers.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/error_mapper.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

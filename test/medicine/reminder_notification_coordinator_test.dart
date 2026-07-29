@@ -5,7 +5,6 @@ import 'package:lucent_api/lucent_api.dart' show MedicineRemindersApi;
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/config/pref_keys.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';

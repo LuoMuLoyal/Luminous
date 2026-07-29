@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 

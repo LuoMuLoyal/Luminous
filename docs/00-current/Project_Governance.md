@@ -1,6 +1,6 @@
 # Project Governance
 
-Last updated: 2026-07-22 (CI/CD secrets 校验)
+Last updated: 2026-07-29 (架构精炼 Phase 5-6 完成)
 
 ## 维护模式
 
@@ -15,7 +15,7 @@ Last updated: 2026-07-22 (CI/CD secrets 校验)
 ## 测试工具链
 
 - Lucent 使用 Vitest。
-- Luminous 使用 Flutter 内置 test + Patrol 集成测试。
+- Luminous 使用 Flutter 内置 test + integration_test 集成测试。
 
 ## 仓库布局
 

@@ -8,12 +8,12 @@ import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/semantic_color.dart';
-import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/network_providers.dart'
+import 'package:luminous/core/network/client_providers.dart'
     show
         lucentBaseUrlProvider,
         lucentDioClientProvider,
         lucentSessionStoreProvider;
+import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
 import 'package:luminous/features/auth/data/datasources/auth.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';

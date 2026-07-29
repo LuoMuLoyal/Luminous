@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// Fetches the authenticated user's de-identified clinic summary preview.

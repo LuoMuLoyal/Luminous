@@ -1,4 +1,4 @@
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/report/data/datasources/report.dart';
 import 'package:luminous/features/report/data/repositories/lucent.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart';

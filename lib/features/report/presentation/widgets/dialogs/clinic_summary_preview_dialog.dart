@@ -6,7 +6,7 @@ import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/api_paths.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
 import 'package:luminous/features/report/presentation/providers/dashboard.dart';

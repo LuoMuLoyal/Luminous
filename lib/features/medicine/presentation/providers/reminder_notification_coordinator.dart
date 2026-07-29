@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/i18n/locale.dart';
-import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/notifications/local_notification_gateway.dart';
 import 'package:luminous/features/medicine/data/datasources/reminder_local_preferences.dart';

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/database/daos/health_context_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/health_context/data/datasources/snapshot.dart';
 import 'package:luminous/features/health_context/data/mappers/health_context.dart';

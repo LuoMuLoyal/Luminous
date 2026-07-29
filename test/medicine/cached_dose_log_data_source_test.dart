@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' hide DoseLogStatus;
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/database.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';

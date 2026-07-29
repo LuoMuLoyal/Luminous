@@ -65,6 +65,36 @@ All repository providers are declared with `@riverpod` and access the API throug
 `lucentClientProvider`. Repository implementations own DTO ↔ domain entity mapping so that
 presentation/domain layers never see generated DTO types.
 
+### Domain Interface Injection (Cross-Feature)
+
+When a feature's repository needs data from another feature, it depends on the other feature's
+**domain interface** — never on its data source concrete type. The provider assembly layer injects
+the concrete implementation at wiring time.
+
+Domain interfaces exposed for cross-feature consumption:
+
+- `medicine/domain/repositories/dose_log.dart` — `DoseLogRepository` (implemented by
+  `CachedDoseLogDataSource`). Consumed by `today/data/repositories/lucent.dart`.
+- `medicine/domain/repositories/reminder.dart` — `ReminderRepository` (implemented by
+  `MedicineReminderRemoteDataSource`). Consumed by `today/data/repositories/lucent.dart`.
+
+```dart
+// today/data/providers/today_suggestion.dart — provider assembly
+@riverpod
+TodayRepository todayRepository(Ref ref) {
+  return LucentTodayRepository(
+    dailyRecordRepository: ref.watch(dailyRecordRepositoryProvider),
+    doseLogRepository: ref.watch(doseLogRepositoryProvider),       // domain interface
+    medicineReminderRepository: ref.watch(medicineReminderRepositoryProvider), // domain interface
+    // ...
+  );
+}
+```
+
+This ensures `today/data/` never imports `medicine/data/` — the dependency direction is
+`today/data → medicine/domain` (interface) + `today/data/providers → medicine/data/providers`
+(wiring), not `today/data → medicine/data` (implementation).
+
 ### Cross-Feature Data Access
 
 Features must not directly import another feature's presentation-layer providers. Two mechanisms

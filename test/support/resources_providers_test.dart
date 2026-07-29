@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/support/data/providers/resources.dart';
 
 Response<T> _response<T>(T data) => Response<T>(

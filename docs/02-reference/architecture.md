@@ -21,12 +21,19 @@ lib/
 │   └── router.dart        # GoRouter configuration (StatefulShellRoute + top-level routes)
 │
 ├── core/                  # Cross-cutting infrastructure
+│   ├── accessibility/     # Accessibility settings (font size, reduce animations, high contrast)
+│   ├── ai/                # AI runtime config and providers
+│   ├── auth/              # Session state and auth guard (cross-cutting)
+│   ├── config/            # Developer settings, feature flags, env keys, pref keys
+│   ├── database/          # Drift database, DAOs, connection (io/web), sync worker, cache cleanup
 │   ├── design/            # Design tokens (colors, typography, spacing, radius, shadows, breakpoints)
 │   ├── feedback/          # AppToast, user-facing notifications
-│   ├── i18n/              # Locale resolution and controller
-│   ├── network/           # Dio HTTP client, API session, SSE, error mapping, base URL
+│   ├── i18n/              # Locale enum and controller
+│   ├── network/           # Dio HTTP client, API session, SSE, error mapping, client providers
 │   ├── notifications/     # Local notification gateway
+│   ├── providers/         # Cross-cutting providers (data change bus, auth guard, security elevation)
 │   ├── router/            # Shared route helpers (action_route_mapper, external_url_launcher)
+│   ├── shortcuts/         # Keyboard shortcuts
 │   ├── theme/             # App theme, theme controller, theme extensions
 │   └── widgets/           # Shared UI components
 │       ├── common/        # AppBackButton, AppDialogShell, AppStateErrorView, AppStateMessageView, etc.
@@ -59,11 +66,15 @@ reference only. No new code should be added there.
 
 ### Feature Module Inner Structure
 
-Each feature follows a Clean-Architecture-inspired inner split. Not every feature has all three
-layers — some are lightweight:
+Each feature follows a Clean-Architecture-inspired inner split with an optional application layer
+for business orchestration. Not every feature has all four layers — some are lightweight:
 
 ```
 lib/features/<feature>/
+├── application/            # Business orchestration layer (optional)
+│   ├── usecases/           # Single-operation use cases (function-style)
+│   └── orchestrators/      # Multi-step flow orchestrators (class-style)
+│
 ├── data/                   # Data access layer
 │   ├── datasources/        # Remote API, local storage, cached sources
 │   ├── mappers/            # DTO ↔ domain entity mappers
@@ -73,9 +84,9 @@ lib/features/<feature>/
 ├── domain/                 # Business logic layer
 │   ├── entities/           # Domain entities (freezed models)
 │   ├── repositories/       # Repository interfaces (abstract)
-│   └── services/           # Domain services
+│   └── services/           # Domain services (pure business logic)
 │
-└── presentation/           # UI layer
+└── presentation/           # UI layer (thin: build + route + trigger use case)
     ├── pages/              # Full-page widgets (and sub-pages like reminder/)
     ├── providers/          # UI-state Riverpod providers (forms/, session/)
     ├── controllers/        # UI controllers (record-specific)
@@ -88,10 +99,29 @@ lib/features/<feature>/
         └── views/          # View-level widgets
 ```
 
-**Full Clean Architecture** (data + domain + presentation): `assistant`, `auth`, `health_context`,
-`medicine`, `mine`, `notification`, `record`, `report`, `scan`, `search`, `settings`, `support`, `today`
+**Application layer** exists in: `record` (quick entry use cases, NLP flow orchestrator, record
+detail actions), `assistant` (proposal flow orchestrator).
+
+**Full Clean Architecture** (application + data + domain + presentation): `record`, `assistant`
+
+**Standard** (data + domain + presentation): `auth`, `health_context`, `medicine`, `mine`,
+`notification`, `report`, `scan`, `search`, `settings`, `support`, `today`
 
 **Presentation-only** (no data/domain): `shell`
+
+### Application Layer
+
+The application layer holds business orchestration logic that was previously inlined in page
+widgets. It uses two forms:
+
+- **Function-style use cases** (`application/usecases/`): Single operations like
+  `changeRecordDate()`, `quickEntryMeal()`. Receive `Ref` and `BuildContext` as parameters,
+  coordinate repository calls + DataChangeBus emission + UI feedback.
+- **Class-style orchestrators** (`application/orchestrators/`): Multi-step flows like
+  `NlpFlow`, `ProposalFlow`. Encapsulate complex sequencing with injected dependencies.
+
+The application layer may import other features' **domain** layer (interfaces + entities) for
+cross-feature orchestration, but must never touch their data or presentation layers.
 
 ---
 
@@ -173,6 +203,25 @@ User-visible text goes through ARB files + `flutter gen-l10n`. Locale is resolve
 
 `melos` manages workspace-level scripts (`melos run daily`, `melos run fullstack`). See
 [ADR-0005](adr/0005-melos-monorepo.md).
+
+### Cross-Feature Import Boundaries
+
+Three rules govern cross-feature imports to prevent coupling:
+
+1. **data → data prohibited**: A feature's `data/` layer must not import another feature's
+   `data/` layer. Cross-feature data access goes through **domain interfaces**
+   (`domain/repositories/`). Provider assembly injects concrete implementations at the
+   provider wiring level.
+
+2. **presentation → presentation prohibited**: A feature's `presentation/` layer must not
+   import another feature's `presentation/` providers. Cross-feature reads use **domain
+   entities** or the **shared read-only snapshot hub** (`healthContextSnapshotProvider`).
+   Cross-feature writes use the **DataChangeBus**.
+
+3. **application → domain allowed**: The `application/` layer may import other features'
+   `domain/` layer (interfaces + entities) for cross-feature orchestration. This is the
+   application layer's privilege — it coordinates across features but only through domain
+   abstractions, never through data or presentation implementations.
 
 ### WeChat OAuth
 

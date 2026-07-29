@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:luminous/core/database/database_providers.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
-import 'package:luminous/core/network/network_providers.dart';
+import 'package:luminous/core/database/connection_providers.dart';
+import 'package:luminous/core/database/sync/worker.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/record/data/datasources/record.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/data/repositories/lucent_daily.dart';

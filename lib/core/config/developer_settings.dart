@@ -7,7 +7,7 @@ import 'package:luminous/core/network/base_url.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker;
 
-part 'developer_settings_controller.freezed.dart';
+part 'developer_settings.freezed.dart';
 
 /// API endpoint presets available for developer switching.
 ///

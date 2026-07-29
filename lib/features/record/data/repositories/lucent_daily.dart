@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
-import 'package:luminous/core/database/sync/sync_worker.dart';
+import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/errors/error.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/logger/logger.dart';

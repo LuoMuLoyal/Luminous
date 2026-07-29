@@ -30,7 +30,7 @@ This replaces the long historical error audit as the current quick-read checklis
 - Do not hand-maintain API prose. Lucent controller/DTO code plus `Lucent/docs/openapi.json` is the
    contract.
 - After Lucent API changes, run `pnpm export:openapi`, then regenerate Luminous with
-`cd generated/lucent_api && dart run build_runner build`.
+  `dart run scripts/bootstrap_generated_sources.dart`.
 - Do not run ad-hoc OpenAPI generator commands for normal work.
 - Do not pass generated write DTOs into Flutter domain/presentation code when nullable clearing
    matters; use local write inputs or raw maps.
@@ -50,6 +50,13 @@ This replaces the long historical error audit as the current quick-read checklis
 
 ## Frontend
 
+- Do not let a feature's `data/` layer import another feature's `data/` layer. Cross-feature data
+   access goes through **domain interfaces** (`domain/repositories/`).
+- Do not let a feature's `presentation/` layer import another feature's `presentation/` providers.
+   Use domain entities, the shared snapshot hub (`healthContextSnapshotProvider`), or the
+   DataChangeBus instead.
+- The `application/` layer may import other features' `domain/` layer (interfaces + entities) for
+   cross-feature orchestration — this is the only cross-feature import allowed beyond `core/`.
 - Do not add code to legacy folders: `lib/pages`, `lib/stores`, `lib/viewmodels`, `lib/components`.
 - Do not use `Navigator.push(MaterialPageRoute(...))`; use GoRouter.
 - Do not show full-page loading for pages with stable local chrome; use localized skeletons for
