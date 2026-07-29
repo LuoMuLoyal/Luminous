@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,11 +13,11 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/utils/image_compressor.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart'
     show
@@ -30,9 +28,12 @@ import 'package:luminous/features/record/domain/entities/inputs.dart'
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/meal_confirm_action.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -60,7 +61,7 @@ class RecordEditPage extends HookConsumerWidget {
     final loadError = useState(false);
     final existingImageAttachment = useState<DailyRecordAttachment?>(null);
     final existingSleepPayload = useState<Map<String, dynamic>?>(null);
-    final selectedImage = useState<_PendingDailyRecordImage?>(null);
+    final selectedImage = useState<PendingDailyRecordImage?>(null);
     final attachmentsChanged = useState(false);
     final recordOccurredAt = useState<DateTime?>(null);
     final recordOccurredTime = useState<String?>(null);
@@ -345,65 +346,12 @@ class RecordEditPage extends HookConsumerWidget {
       }
     }
 
-    Future<void> onDelete() async {
-      final confirmed = await showAppDialog<bool>(
-        context: context,
-        scrollable: false,
-        builder: (dialogContext) => Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.recordDeleteConfirmTitle,
-              style: dialogContext.theme.dialogStyle.titleTextStyle,
-            ),
-            const SizedBox(height: Spacing.level2),
-            Text(
-              l10n.recordDeleteConfirmMessage,
-              style: dialogContext.theme.dialogStyle.bodyTextStyle,
-            ),
-            const SizedBox(height: Spacing.level5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FButton(
-                  variant: FButtonVariant.ghost,
-                  onPress: () => Navigator.of(dialogContext).pop(false),
-                  child: Text(l10n.authCancelAction),
-                ),
-                const SizedBox(width: Spacing.level3),
-                FButton(
-                  key: const Key('record-delete-confirm-action'),
-                  variant: FButtonVariant.destructive,
-                  onPress: () => Navigator.of(dialogContext).pop(true),
-                  child: Text(l10n.recordDeleteAction),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-      if (confirmed != true) return;
-      deleting.value = true;
-      try {
-        final repo = ref.read(dailyRecordRepositoryProvider);
-        await repo.delete(recordId);
-        invalidateProviders();
-        if (context.mounted) {
-          await Toast.show(context, l10n.recordDeletedToast);
-          if (!context.mounted) return;
-          context.pop();
-          context.pop();
-        }
-      } catch (e) {
-        ref.read(talkerProvider).error('RecordEditPage.onDelete: failed: $e');
-        if (context.mounted) {
-          await Toast.show(context, l10n.recordDeleteFailedToast);
-        }
-      } finally {
-        if (context.mounted) deleting.value = false;
-      }
-    }
+    Future<void> onDelete() => deleteRecord(
+      ref: ref,
+      context: context,
+      recordId: recordId,
+      popCount: 2,
+    );
 
     Future<void> onPickImage() async {
       try {
@@ -412,7 +360,7 @@ class RecordEditPage extends HookConsumerWidget {
           requestFullMetadata: false,
         );
         if (image == null) return;
-        final contentType = RecordEditPage.resolveImageContentType(image);
+        final contentType = resolveImageContentType(image);
         if (contentType == null) {
           if (context.mounted) {
             await Toast.show(context, l10n.recordImageUnsupportedToast);
@@ -424,7 +372,7 @@ class RecordEditPage extends HookConsumerWidget {
         final compressedBytes = await ImageCompressor.compressForUpload(
           rawBytes,
         );
-        selectedImage.value = _PendingDailyRecordImage(
+        selectedImage.value = PendingDailyRecordImage(
           bytes: compressedBytes,
           fileName: image.name,
           contentType: 'image/jpeg',
@@ -618,24 +566,11 @@ class RecordEditPage extends HookConsumerWidget {
                       ),
                       if (canConfirmMealAnalysis.value) ...[
                         const SizedBox(height: Spacing.level3),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: FButton(
-                            variant: confirmMealAnalysis.value
-                                ? FButtonVariant.primary
-                                : FButtonVariant.outline,
-                            key: const Key('meal-confirm-action'),
-                            onPress: () => confirmMealAnalysis.value =
-                                !confirmMealAnalysis.value,
-                            prefix: confirmMealAnalysis.value
-                                ? const Icon(SemanticIcons.statusDone, size: 16)
-                                : null,
-                            child: Text(
-                              confirmMealAnalysis.value
-                                  ? l10n.recordMealConfirmActionSelected
-                                  : l10n.recordMealConfirmAction,
-                            ),
-                          ),
+                        MealConfirmAction(
+                          l10n: l10n,
+                          confirmed: confirmMealAnalysis.value,
+                          onToggle: () => confirmMealAnalysis.value =
+                              !confirmMealAnalysis.value,
                         ),
                       ],
                     ],
@@ -651,32 +586,12 @@ class RecordEditPage extends HookConsumerWidget {
                       onRemove: onRemoveImage,
                       enabled: !saving.value && !deleting.value,
                     ),
-                    const SizedBox(height: Spacing.level5),
-                    FButton(
-                      key: const Key('record-edit-save-action'),
-                      onPress: saving.value ? null : onSave,
-                      prefix: saving.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: FCircularProgress(),
-                            )
-                          : null,
-                      child: Text(l10n.mineEditSaveAction),
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    FButton(
-                      key: const Key('record-edit-delete-action'),
-                      variant: FButtonVariant.destructive,
-                      onPress: deleting.value || saving.value ? null : onDelete,
-                      prefix: deleting.value
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: FCircularProgress(),
-                            )
-                          : const Icon(SemanticIcons.actionDelete, size: 18),
-                      child: Text(l10n.recordDeleteAction),
+                    RecordEditActions(
+                      l10n: l10n,
+                      saving: saving.value,
+                      deleting: deleting.value,
+                      onSave: onSave,
+                      onDelete: onDelete,
                     ),
                   ],
                 ),
@@ -691,17 +606,6 @@ class RecordEditPage extends HookConsumerWidget {
       title: l10n.recordEditAction,
       child: SingleChildScrollView(child: content),
     );
-  }
-
-  static String? resolveImageContentType(XFile image) {
-    final mimeType = image.mimeType?.trim().toLowerCase();
-    if (_allowedImageContentTypes.contains(mimeType)) return mimeType;
-    final name = image.name.toLowerCase();
-    if (name.endsWith('.jpg') || name.endsWith('.jpeg')) return 'image/jpeg';
-    if (name.endsWith('.png')) return 'image/png';
-    if (name.endsWith('.webp')) return 'image/webp';
-    if (name.endsWith('.gif')) return 'image/gif';
-    return null;
   }
 }
 
@@ -721,23 +625,4 @@ class _RecordEditLoading extends StatelessWidget {
       ],
     );
   }
-}
-
-const _allowedImageContentTypes = <String>{
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-};
-
-class _PendingDailyRecordImage {
-  const _PendingDailyRecordImage({
-    required this.bytes,
-    required this.fileName,
-    required this.contentType,
-  });
-
-  final Uint8List bytes;
-  final String fileName;
-  final String contentType;
 }

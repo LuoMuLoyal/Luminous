@@ -106,7 +106,8 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - **SyncWorker replay**: `daily_record` entity type 的 replay handler 重放离线写操作（create/delete/update）。
 - `DailyRecordJsonCodec` 手动序列化 `DailyRecordItem`。
 - 错误反馈使用 l10n 消息（`recordDeletedToast`/`recordDeleteFailedToast`），不用通用"已保存"/"创建失败"。
-- 删除操作 `context.pop()` 直接回列表页。
+- 删除操作通过 `deleteRecord` use case（`application/usecases/record_detail_actions.dart`）编排：确认对话框 → repo.delete → provider invalidation → toast → pop。编辑页 popCount=2，详情页 popCount=1。
+- 编辑入口通过 `editRecord` use case 编排 auth-required route push。
 
 ## 2026-07-19 补充
 

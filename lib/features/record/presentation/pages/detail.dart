@@ -8,17 +8,13 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
-import 'package:luminous/features/record/presentation/routes.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
@@ -99,10 +95,7 @@ class RecordDetailPage extends ConsumerWidget {
           tipBuilder: (context, controller) => Text(l10n.recordEditAction),
           child: FButton.icon(
             variant: FButtonVariant.ghost,
-            onPress: () => pushAuthRequiredRoute(
-              context,
-              RecordEditRoute(id: recordId).location,
-            ),
+            onPress: () => editRecord(context, recordId),
             child: const Icon(SemanticIcons.actionEdit),
           ),
         ),
@@ -314,7 +307,12 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         FButton(
           key: const Key('record-detail-delete-action'),
           variant: FButtonVariant.destructive,
-          onPress: () => _deleteRecord(context, ref, record.id),
+          onPress: () => deleteRecord(
+            ref: ref,
+            context: context,
+            recordId: record.id,
+            popCount: 1,
+          ),
           prefix: const Icon(SemanticIcons.actionDelete, size: 18),
           child: Text(l10n.recordDeleteAction),
         ),
@@ -386,68 +384,6 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
     if (rows.isEmpty) return const [];
 
     return [const SizedBox(height: Spacing.level5), _DetailRows(rows: rows)];
-  }
-
-  Future<void> _deleteRecord(
-    BuildContext context,
-    WidgetRef ref,
-    String recordId,
-  ) async {
-    final l10n = AppLocalizations.of(context)!;
-    final confirmed = await showAppDialog<bool>(
-      context: context,
-      scrollable: false,
-      builder: (dialogContext) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.recordDeleteConfirmTitle,
-            style: dialogContext.theme.dialogStyle.titleTextStyle,
-          ),
-          const SizedBox(height: Spacing.level2),
-          Text(
-            l10n.recordDeleteConfirmMessage,
-            style: dialogContext.theme.dialogStyle.bodyTextStyle,
-          ),
-          const SizedBox(height: Spacing.level5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FButton(
-                variant: FButtonVariant.ghost,
-                onPress: () => Navigator.of(dialogContext).pop(false),
-                child: Text(l10n.authCancelAction),
-              ),
-              const SizedBox(width: Spacing.level3),
-              FButton(
-                key: const Key('record-delete-confirm-action'),
-                variant: FButtonVariant.destructive,
-                onPress: () => Navigator.of(dialogContext).pop(true),
-                child: Text(l10n.recordDeleteAction),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-    if (confirmed != true) return;
-
-    try {
-      await ref.read(dailyRecordRepositoryProvider).delete(recordId);
-      ref.invalidate(dailyRecordDetailProvider(recordId));
-      ref
-          .read(dataChangeBusProvider.notifier)
-          .emit(DataChangeTopic.dailyRecords);
-      if (!context.mounted) return;
-      await Toast.show(context, l10n.mineEditDeletedToast);
-      if (context.mounted) context.pop();
-    } catch (e) {
-      ref.read(talkerProvider).error('RecordDetailPage.onDelete: failed: $e');
-      if (context.mounted) {
-        await Toast.show(context, l10n.recordDeleteFailedToast);
-      }
-    }
   }
 }
 
