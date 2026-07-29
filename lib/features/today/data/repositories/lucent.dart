@@ -1,9 +1,10 @@
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
+import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -16,9 +17,9 @@ class LucentTodayRepository implements TodayRepository {
   LucentTodayRepository({
     required this.fetchHealthContextSnapshot,
     required this.dailyRecordRepository,
-    required this.cachedDoseLogDataSource,
+    required this.doseLogRepository,
     required this.userSettingsRepository,
-    required this.medicineReminderRemoteDataSource,
+    required this.reminderRepository,
     required this.talker,
   });
 
@@ -29,9 +30,9 @@ class LucentTodayRepository implements TodayRepository {
   /// is resolved at call time (not construction time).
   final Future<HealthContextSnapshot> Function() fetchHealthContextSnapshot;
   final DailyRecordRepository dailyRecordRepository;
-  final CachedDoseLogDataSource cachedDoseLogDataSource;
+  final DoseLogRepository doseLogRepository;
   final UserSettingsRepository userSettingsRepository;
-  final MedicineReminderRemoteDataSource medicineReminderRemoteDataSource;
+  final ReminderRepository reminderRepository;
   final Talker talker;
 
   @override
@@ -69,7 +70,7 @@ class LucentTodayRepository implements TodayRepository {
     final waterCount = (recordCounts['water'] ?? 0).toInt();
     final completedMedicineIds = <String>{};
     try {
-      final doseLogs = await cachedDoseLogDataSource.fetchForDate(dateStr);
+      final doseLogs = await doseLogRepository.fetchForDate(dateStr);
       for (final log in doseLogs) {
         final medicineId = log.currentMedicineId;
         if (medicineId != null &&
@@ -209,7 +210,7 @@ class LucentTodayRepository implements TodayRepository {
   ) async {
     if (allMedicineIds.isEmpty) return {};
     try {
-      final reminders = await medicineReminderRemoteDataSource.fetchActive();
+      final reminders = await reminderRepository.fetchActive();
       return reminders
           .where((reminder) {
             final medicineId = reminder.currentMedicineId;
@@ -233,7 +234,7 @@ class LucentTodayRepository implements TodayRepository {
   ) async {
     if (pendingMedicineIds.isEmpty) return null;
     try {
-      final reminders = await medicineReminderRemoteDataSource.fetchActive();
+      final reminders = await reminderRepository.fetchActive();
       final todayReminders =
           reminders
               .where((reminder) {

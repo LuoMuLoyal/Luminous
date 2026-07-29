@@ -2,36 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api.dart' hide DoseLogStatus;
 import 'package:luminous/core/network/error_code.dart';
 import 'package:luminous/core/network/map_utils.dart';
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+export 'package:luminous/features/medicine/domain/entities/dose_log.dart'
+    show DoseLogItem, DoseLogStatus;
+
 part 'dose_log_remote.g.dart';
-
-enum DoseLogStatus { taken, skipped, missed, planned }
-
-class DoseLogItem {
-  const DoseLogItem({
-    required this.id,
-    this.currentMedicineId,
-    this.reminderId,
-    required this.status,
-    required this.scheduledFor,
-    this.scheduledTime,
-    this.doseText,
-    this.note,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-  final String id;
-  final String? currentMedicineId;
-  final String? reminderId;
-  final DoseLogStatus status;
-  final String scheduledFor;
-  final String? scheduledTime;
-  final String? doseText;
-  final String? note;
-  final String createdAt;
-  final String updatedAt;
-}
 
 class DoseLogRemoteDataSource {
   DoseLogRemoteDataSource({required this.api, required this.dio});

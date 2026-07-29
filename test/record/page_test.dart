@@ -15,8 +15,11 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder.dart';
+import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
+import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/data/repositories/lucent.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
@@ -212,7 +215,7 @@ void main() {
       healthContextSnapshot: _healthSnapshot(
         currentMedicines: [_currentMedicine(id: 'med-1')],
       ),
-      cachedDoseLogDataSource: doseLogs,
+      doseLogRepository: doseLogs,
       medicineReminders: [
         _medicineReminder(id: 'rem-1', currentMedicineId: 'med-1', hour: 8),
       ],
@@ -1931,7 +1934,7 @@ Future<void> _pumpRecordRouter(
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
   HealthContextSnapshot? healthContextSnapshot,
-  CachedDoseLogDataSource? cachedDoseLogDataSource,
+  DoseLogRepository? doseLogRepository,
   List<MedicineReminderItem> medicineReminders = const [],
   String initialLocation = '/',
   DateTime? selectedDate,
@@ -1954,11 +1957,11 @@ Future<void> _pumpRecordRouter(
         healthContextSnapshotProvider.overrideWith(
           (ref) async => healthContextSnapshot ?? _healthSnapshot(),
         ),
-        cachedDoseLogDataSourceProvider.overrideWith(
-          (ref) => cachedDoseLogDataSource ?? _FakeCachedDoseLogDataSource(),
+        doseLogRepositoryProvider.overrideWith(
+          (ref) => doseLogRepository ?? _FakeCachedDoseLogDataSource(),
         ),
-        medicineReminderListProvider.overrideWith(
-          (ref) async => medicineReminders,
+        reminderRepositoryProvider.overrideWith(
+          (ref) => _FakeReminderRepository(medicineReminders),
         ),
         if (mealQuickImagePicker != null)
           mealQuickImagePickerProvider.overrideWithValue(mealQuickImagePicker),
@@ -2674,6 +2677,22 @@ class _FakeCachedDoseLogDataSource implements CachedDoseLogDataSource {
       updatedAt: '2026-07-28T08:00:00Z',
     );
   }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FakeReminderRepository implements ReminderRepository {
+  _FakeReminderRepository(this._reminders);
+
+  final List<MedicineReminderItem> _reminders;
+
+  @override
+  Future<List<MedicineReminderItem>> fetchActive() async =>
+      _reminders.where((r) => r.isActive).toList();
+
+  @override
+  Future<List<MedicineReminderItem>> fetchAll() async => _reminders;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

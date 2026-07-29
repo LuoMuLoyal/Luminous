@@ -28,8 +28,8 @@ import 'package:luminous/features/settings/presentation/providers/data_export.da
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
+import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 DataExportRequestInput? _exportInputForKind(ReportExportKind kind) {

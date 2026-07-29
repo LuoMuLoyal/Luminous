@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
-import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
-import 'package:luminous/features/medicine/data/datasources/reminder_remote.dart';
+import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
+import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 
 typedef MarkDoseLog = Future<DoseLogItem> Function(MedicationQuickMarkInput);

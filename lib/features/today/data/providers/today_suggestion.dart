@@ -16,11 +16,9 @@ TodayRepository todayRepository(Ref ref) {
     fetchHealthContextSnapshot: () =>
         ref.read(healthContextSnapshotProvider.future),
     dailyRecordRepository: ref.watch(dailyRecordRepositoryProvider),
-    cachedDoseLogDataSource: ref.watch(cachedDoseLogDataSourceProvider),
+    doseLogRepository: ref.watch(doseLogRepositoryProvider),
     userSettingsRepository: ref.watch(userSettingsRepositoryProvider),
-    medicineReminderRemoteDataSource: ref.watch(
-      medicineReminderRemoteDataSourceProvider,
-    ),
+    reminderRepository: ref.watch(reminderRepositoryProvider),
     talker: ref.watch(talkerProvider),
   );
 }

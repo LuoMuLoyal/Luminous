@@ -5,21 +5,13 @@ import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
 import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
+import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'suggestion.g.dart';
-
-@riverpod
-TodaySuggestionRemoteDataSource todaySuggestionRemoteDataSource(Ref ref) {
-  return TodaySuggestionRemoteDataSource(
-    api: ref.watch(lucentClientProvider).todaySuggestion,
-  );
-}
 
 /// Manages the lifecycle of Today suggestion cards: fetch, dismiss, feedback.
 ///
@@ -112,28 +104,6 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(_fetch);
   }
-}
-
-/// Suggestion history for the Report page.
-///
-/// Returns `null` when the user is not authenticated.
-/// Fetches the most recent 20 suggestion history items.
-@riverpod
-Future<TodaySuggestionHistory?> suggestionHistory(Ref ref) async {
-  return authGuarded(
-    ref: ref,
-    fetch: () {
-      final ds = ref.watch(todaySuggestionRemoteDataSourceProvider);
-      return ds.fetchHistory(
-        language:
-            (ref.read(localeControllerProvider).asData?.value ??
-                    AppLocale.system)
-                .acceptLanguage,
-        limit: 20,
-      );
-    },
-    signedOutFallback: () async => null,
-  );
 }
 
 /// AI explanation for a single suggestion, loaded on demand.

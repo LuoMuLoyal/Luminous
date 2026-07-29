@@ -10,6 +10,7 @@ import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_remote.dart';
+import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dose_log_cached.g.dart';
@@ -23,7 +24,7 @@ part 'dose_log_cached.g.dart';
 /// On network failure ([DioException]), enqueues the HTTP request into the
 /// pending sync queue for later replay by [SyncWorker], then rethrows so the
 /// UI can show an error.
-class CachedDoseLogDataSource {
+class CachedDoseLogDataSource implements DoseLogRepository {
   CachedDoseLogDataSource({
     required this.remote,
     required this.dao,
@@ -38,6 +39,7 @@ class CachedDoseLogDataSource {
 
   DateTime? _lastRefreshAttempt;
 
+  @override
   Future<List<DoseLogItem>> fetchForDate(String date) async {
     // 1. Check cache
     final cachedJson = await dao.fetchByDate(date);
@@ -55,6 +57,7 @@ class CachedDoseLogDataSource {
     return remoteItems;
   }
 
+  @override
   Future<DoseLogItem> create(
     String currentMedicineId,
     String status,
@@ -71,6 +74,7 @@ class CachedDoseLogDataSource {
     }
   }
 
+  @override
   Future<DoseLogItem> update(String doseLogId, String status) async {
     try {
       final result = await remote.update(doseLogId, status);
@@ -82,6 +86,7 @@ class CachedDoseLogDataSource {
     }
   }
 
+  @override
   Future<void> delete(String doseLogId, {required String date}) async {
     try {
       await remote.delete(doseLogId);
@@ -92,6 +97,7 @@ class CachedDoseLogDataSource {
     }
   }
 
+  @override
   Future<DoseLogItem> mark({
     required String currentMedicineId,
     required String status,
@@ -220,6 +226,13 @@ class CachedDoseLogDataSource {
       updatedAt: m['updatedAt'] as String,
     );
   }
+}
+
+/// Provider for [DoseLogRepository] — returns the cache-first
+/// [CachedDoseLogDataSource] implementation.
+@riverpod
+DoseLogRepository doseLogRepository(Ref ref) {
+  return ref.watch(cachedDoseLogDataSourceProvider);
 }
 
 @riverpod

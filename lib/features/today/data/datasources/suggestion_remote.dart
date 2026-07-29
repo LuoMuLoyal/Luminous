@@ -1,12 +1,13 @@
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
+import 'package:luminous/features/today/domain/repositories/suggestion.dart';
 
 /// Remote data source for the Today suggestion engine.
 ///
 /// Wraps the generated [TodaySuggestionApi] and maps DTOs to domain entities.
 /// The Retrofit client returns envelope-wrapped DTOs (code/message/data);
 /// this class unwraps `.data` and converts to domain types.
-class TodaySuggestionRemoteDataSource {
+class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   const TodaySuggestionRemoteDataSource({required this.api});
 
   final TodaySuggestionApi api;
@@ -14,6 +15,7 @@ class TodaySuggestionRemoteDataSource {
   // ── Suggestions ─────────────────────────────────────────────────────────
 
   /// GET /api/v1/user/today/suggestions
+  @override
   Future<TodaySuggestionBundle> fetchSuggestions({
     required String language,
     String? date,
@@ -30,6 +32,7 @@ class TodaySuggestionRemoteDataSource {
   // ── Feedback ───────────────────────────────────────────────────────────
 
   /// POST /api/v1/user/today/suggestions/:id/feedback
+  @override
   Future<TodaySuggestionFeedbackResult> submitFeedback({
     required String id,
     required TodaySuggestionFeedback feedback,
@@ -54,6 +57,7 @@ class TodaySuggestionRemoteDataSource {
   // ── Explanation ────────────────────────────────────────────────────────
 
   /// POST /api/v1/user/today/suggestions/:id/explain
+  @override
   Future<TodaySuggestionExplanation> explainSuggestion({
     required String id,
     required String language,
@@ -75,6 +79,7 @@ class TodaySuggestionRemoteDataSource {
   // ── History ────────────────────────────────────────────────────────────
 
   /// GET /api/v1/user/today/suggestions/history
+  @override
   Future<TodaySuggestionHistory> fetchHistory({
     required String language,
     String? startDate,

@@ -12,7 +12,7 @@ import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
-import 'package:luminous/features/medicine/presentation/providers/reminders.dart';
+import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
@@ -27,13 +27,10 @@ Future<void> undoMedicationQuickAction(
   try {
     await QuickEntryUndoService(
       deleteDailyRecord: ref.read(dailyRecordRepositoryProvider).delete,
-      deleteDoseLog: (doseLogId) => ref
-          .read(cachedDoseLogDataSourceProvider)
-          .delete(doseLogId, date: date),
+      deleteDoseLog: (doseLogId) =>
+          ref.read(doseLogRepositoryProvider).delete(doseLogId, date: date),
       updateDoseLogStatus: (doseLogId, status) async {
-        await ref
-            .read(cachedDoseLogDataSourceProvider)
-            .update(doseLogId, status);
+        await ref.read(doseLogRepositoryProvider).update(doseLogId, status);
       },
       emitDataChange: (topic) =>
           ref.read(dataChangeBusProvider.notifier).emit(topic),
@@ -225,7 +222,7 @@ Future<void> handleMedicationQuickAction(
   QuickEntryUndoAction? undoAction;
   final flow = MedicationQuickEntryFlow(
     markDose: (input) => ref
-        .read(cachedDoseLogDataSourceProvider)
+        .read(doseLogRepositoryProvider)
         .mark(
           currentMedicineId: input.currentMedicineId,
           status: input.status,
@@ -241,9 +238,9 @@ Future<void> handleMedicationQuickAction(
   late final MedicationQuickEntryOutcome outcome;
   try {
     final snapshot = await ref.read(healthContextSnapshotProvider.future);
-    final reminders = await ref.read(medicineReminderListProvider.future);
+    final reminders = await ref.read(reminderRepositoryProvider).fetchAll();
     final todayLogs = await ref
-        .read(cachedDoseLogDataSourceProvider)
+        .read(doseLogRepositoryProvider)
         .fetchForDate(occurredAt);
     outcome = await flow.handleTap(
       context: MedicationQuickEntryContext(date: occurredAt, now: now),

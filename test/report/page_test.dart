@@ -17,8 +17,8 @@ import 'package:luminous/features/report/domain/repositories/report.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
+import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
-import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/feature_mocks.dart';
