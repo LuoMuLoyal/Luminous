@@ -1,8 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router/helpers.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/routes.dart' as auth_routes;
 import 'package:luminous/features/legal/presentation/routes.dart'
     as legal_routes;

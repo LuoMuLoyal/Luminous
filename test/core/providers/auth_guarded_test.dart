@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 void main() {
   group('authGuarded', () {

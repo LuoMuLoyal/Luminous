@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/assistant/data/repositories/lucent.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/domain/repositories/assistant.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../auth/test_helpers.dart';
 
 /// A fake repository with canned responses.

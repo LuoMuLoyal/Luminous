@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 class DataExportRequestInFlightState {
   const DataExportRequestInFlightState({required this.inFlight, this.input});

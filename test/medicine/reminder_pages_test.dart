@@ -6,10 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart'
     show MedicineDoseLogsApi, MedicineRemindersApi;
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/database.dart';
 import 'package:luminous/core/database/database_providers.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';

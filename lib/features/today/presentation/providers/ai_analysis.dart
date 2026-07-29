@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/error_mapper.dart';
 import 'package:luminous/core/network/result_code.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/today/data/repositories/lucent_ai.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';

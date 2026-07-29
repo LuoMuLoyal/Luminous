@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/data/datasources/wechat/mobile_auth_client.dart';
 import 'package:luminous/features/auth/data/providers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 import '../auth/test_helpers.dart';

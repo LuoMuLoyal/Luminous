@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';

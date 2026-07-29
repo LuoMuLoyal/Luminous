@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 
 /// Auth-guard helper for use inside provider functions.
 ///

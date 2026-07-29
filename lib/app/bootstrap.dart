@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/accessibility/settings_controller.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/cache_cleanup.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
@@ -18,7 +18,6 @@ import 'package:luminous/core/shortcuts/app_shortcuts.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
 import 'package:luminous/core/widgets/common/desktop_window_chrome.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/medicine/presentation/providers/reminder_notification_coordinator.dart';
 import 'package:luminous/l10n/app_localizations.dart';

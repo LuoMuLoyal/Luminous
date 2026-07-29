@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/mine/data/providers/mine.dart';
 import 'package:luminous/features/mine/domain/entities/dashboard.dart';
 import 'package:luminous/features/mine/presentation/providers/dashboard.dart';

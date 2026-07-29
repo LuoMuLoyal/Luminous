@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/i18n/locale_controller.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/settings/data/datasources/profile_remote.dart';
 import 'package:luminous/features/settings/data/providers/profile.dart';
 import 'package:luminous/features/settings/presentation/providers/profile_sync.dart';

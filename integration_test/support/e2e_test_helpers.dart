@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart' show LucentApi, MedicineDoseLogsApi;
 import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/network_providers.dart'
@@ -20,7 +21,6 @@ import 'package:luminous/features/auth/domain/entities/auth_verification_scene.d
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/domain/entities/verification_code.dart';
 import 'package:luminous/features/auth/domain/repositories/auth.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
@@ -69,10 +69,10 @@ export 'package:flutter/material.dart';
 export 'package:flutter_test/flutter_test.dart';
 export 'package:forui/forui.dart';
 export 'package:luminous/app/router.dart' show appRouterProvider;
+export 'package:luminous/core/auth/session_provider.dart'
+    show authSessionProvider;
 export 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart'
     show AuthVerificationScene;
-export 'package:luminous/features/auth/presentation/providers/session.dart'
-    show authSessionProvider;
 export 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 export 'package:luminous/features/legal/data/repositories/lucent.dart'
     show legalRepositoryProvider;

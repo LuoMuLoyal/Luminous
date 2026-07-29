@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/network_providers.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 
 /// State of the security elevation flow.
 sealed class SecurityElevationState {

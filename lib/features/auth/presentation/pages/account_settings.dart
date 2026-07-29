@@ -7,6 +7,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/back_button.dart';
@@ -15,7 +16,6 @@ import 'package:luminous/features/auth/domain/entities/auth_verification_scene.d
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/auth/presentation/pages/account_settings_sections.dart';
 import 'package:luminous/features/auth/presentation/providers/account.dart';
-import 'package:luminous/features/auth/presentation/providers/session.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
