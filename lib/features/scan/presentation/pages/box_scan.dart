@@ -56,6 +56,23 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
 
   if (method == null || !context.mounted) return;
 
+  // Pre-check: verify the OCR engine can initialise before opening the camera.
+  // This catches ABI incompatibility (non-arm64 devices) and model-loading
+  // failures early, instead of letting the user take a photo first.
+  if (method == _ScanMethod.ocr) {
+    final container = ProviderScope.containerOf(context);
+    final ocrEngine = container.read(paddleOcrProvider);
+    try {
+      await ocrEngine.ensureInitialized();
+    } catch (e) {
+      appTalker.warning('OCR engine init failed (ABI pre-check): $e');
+      if (context.mounted) {
+        await _showOcrUnavailableDialog(context, l10n);
+      }
+      return;
+    }
+  }
+
   final photo = await ImagePicker().pickImage(
     source: ImageSource.camera,
     imageQuality: 90,
@@ -100,6 +117,51 @@ Future<void> showMedicineBoxScanSheet(BuildContext context) async {
       }
     }
   }
+}
+
+/// Shows a dialog when OCR is unavailable, offering to switch to AI recognition.
+Future<void> _showOcrUnavailableDialog(
+  BuildContext context,
+  AppLocalizations l10n,
+) async {
+  await showAppDialog<void>(
+    context: context,
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.scanOcrUnavailableTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.scanOcrUnavailableMessage,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.outline,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.scanCloseAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              onPress: () {
+                Navigator.of(dialogContext).pop();
+                unawaited(showMedicineBoxScanSheet(context));
+              },
+              child: Text(l10n.scanOcrUnavailableUseAi),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 /// Safely dismisses the processing overlay dialog from the root navigator.

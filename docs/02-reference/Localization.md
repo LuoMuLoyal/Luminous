@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-28 (Record quick-entry settings and badge strings)
+Last updated: 2026-07-30 (Scan OCR unavailable strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -152,6 +152,9 @@ Persisted preference keys:
 - Scan feature strings such as recognition result titles, retake/confirm/close actions, method picker
   labels, barcode not-found toasts, recognition-failed dialog title/body, manual-search action, and
   recognizing hint (`scanRecognizingHint`) are owned by the Scan ARB entries (`scan*` keys).
+- Scan OCR unavailable strings (`scanOcrUnavailableTitle`, `scanOcrUnavailableMessage`,
+  `scanOcrUnavailableUseAi`) shown when the OCR engine fails to initialise (ABI mismatch, model
+  corruption) are owned by the Scan ARB entries (`scan*` keys in `medicine_*.arb`).
 - Record create-page section title strings (`recordCreateSectionBasicTitle` /
   `recordCreateSectionDetailsTitle`) and discard-changes confirmation copy
   (`recordDiscardChangesTitle` / `Message` / `Action`) are owned by the Record ARB entries.

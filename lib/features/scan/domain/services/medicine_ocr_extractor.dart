@@ -28,7 +28,7 @@ class MedicineOcrExtractor {
 
   /// Approval number pattern after normalisation (allows some fuzzy chars).
   static final _approvalNumberPattern = RegExp(
-    r'国药准[字淮宇][HhZzSsBbJjOo0l1|8B己已]\w{7,9}',
+    r'国药准[字淮宇][HhZzSsBbJjOo0l1|8B己已][A-Za-z0-9]{7,9}',
   );
 
   /// Extract candidates from OCR text blocks. Strategies run serially;

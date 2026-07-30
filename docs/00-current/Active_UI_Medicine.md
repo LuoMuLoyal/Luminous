@@ -1,6 +1,6 @@
 # Active UI — Medicine
 
-Last updated: 2026-07-28 (Record 快速用药联动 dose logs)
+Last updated: 2026-07-30 (OCR ABI pre-check)
 
 ## 页面结构
 
@@ -70,6 +70,7 @@ Last updated: 2026-07-28 (Record 快速用药联动 dose logs)
 - 扫码页全部硬编码中文已迁入 l10n 键。
 - `MedicineMatchType.name` 英文枚举直出改为 `_matchTypeLabel` + l10n 映射。
 - 扫码结果对话框和处理遮罩统一使用 `showAppDialog(barrierDismissible: false)` 调用，不再直接使用底层 `showFDialog`；`MedicineRecognizeDialog` 移除 `FDialog` 包装层和 `animation` 参数，由 `DialogShell` 统一管理对话框框架。
+- OCR 入口 ABI 预检（2026-07-30）：用户选择 OCR 方式后、打开相机前调用 `PaddleOcrEngine.ensureInitialized()` 预检 native 库可用性。init 失败（非 arm64 设备、模型损坏等）时显示 `_showOcrUnavailableDialog`，提供关闭和"使用 AI 识别"两个操作，避免用户拍照后才发现 OCR 不可用。
 
 ## 提醒
 

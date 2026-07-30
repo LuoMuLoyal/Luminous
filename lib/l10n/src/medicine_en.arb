@@ -648,5 +648,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "scanOcrUnavailableTitle": "OCR Unavailable",
+  "scanOcrUnavailableMessage": "This device architecture does not support the on-device OCR engine. Please use AI recognition.",
+  "scanOcrUnavailableUseAi": "Use AI Recognition"
 }

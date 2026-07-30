@@ -655,5 +655,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "scanOcrUnavailableTitle": "OCR 识别不可用",
+  "scanOcrUnavailableMessage": "此设备架构不支持 OCR 离线识别引擎，请使用 AI 识别。",
+  "scanOcrUnavailableUseAi": "使用 AI 识别"
 }

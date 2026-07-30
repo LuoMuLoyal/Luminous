@@ -20,18 +20,33 @@ class PaddleOcrEngine {
   final _ocr = PaddleOcr();
   bool _initialized = false;
 
-  /// Recognise text in the image at [imagePath].
+  /// Pre-initialise the ONNX Runtime sessions.
   ///
-  /// Lazily initialises the ONNX Runtime sessions on first call.
-  /// Subsequent calls reuse the sessions.
-  Future<List<OcrTextBlock>> recognize(String imagePath) async {
-    if (!_initialized) {
+  /// Call this before entering the OCR scan flow to detect early whether
+  /// the device supports the required native libraries (e.g. arm64-v8a ABI).
+  /// Throws on init failure; the [_initialized] flag is reset so the next
+  /// call can retry.
+  Future<void> ensureInitialized() async {
+    if (_initialized) return;
+    try {
       await _ocr.init(
         config: const PaddleOcrConfig(),
         engine: const EngineConfig(numThreads: 4),
       );
       _initialized = true;
+    } catch (e) {
+      // Reset state so the engine can be retried on the next call.
+      _initialized = false;
+      rethrow;
     }
+  }
+
+  /// Recognise text in the image at [imagePath].
+  ///
+  /// Lazily initialises the ONNX Runtime sessions on first call.
+  /// Subsequent calls reuse the sessions.
+  Future<List<OcrTextBlock>> recognize(String imagePath) async {
+    await ensureInitialized();
 
     final run = await _ocr.recognize(imagePath);
 

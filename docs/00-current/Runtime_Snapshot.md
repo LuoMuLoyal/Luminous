@@ -1,6 +1,6 @@
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
+Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
 
 ## 技术栈
 
@@ -115,6 +115,7 @@ Last updated: 2026-07-28 (Record quick-entry settings and badges runtime)
 - 用户可见文本全部通过 ARB + `AppLocalizations`，无硬编码字符串。
 - 2026-07-28：Record 页面移除语音（`speech_to_text`）和 OCR 功能，删除 `voice_entry_dialog.dart` / `ocr_entry_dialog.dart` / `voice_recording.dart` / `speech_locale_resolver.dart` 及关联测试。`pubspec.yaml` 移除 `speech_to_text` 依赖，SDK 列表同步更新。
 - 2026-07-29：Medicine 拍照识别 OCR 引擎从 `google_mlkit_text_recognition` 替换为 `paddle_ocr_native`（PP-OCRv6 / ONNX Runtime）。`pubspec.yaml` 依赖替换；Android 移除 ML Kit 四语言模型、限制 `arm64-v8a` ABI；iOS 最低版本从 13.0 升至 16.0、启用 static framework linkage；移除 `RECORD_AUDIO` / `NSMicrophoneUsageDescription` 残留权限。候选提取算法从纯文本正则匹配重写为空间布局评分（面积 + 位置 + 置信度）。
+- 2026-07-30：OCR 引擎初始化失败后状态恢复 + ABI 入口预检。`PaddleOcrEngine` 提取 `ensureInitialized()` 公共方法，init 失败时重置 `_initialized = false` 并 rethrow，允许下次调用重试（原 bug：失败后引擎卡在不一致状态，当前生命周期内 OCR 永久不可用）。`box_scan.dart` 在用户选择 OCR 后、打开相机前调用 `ensureInitialized()` 预检，失败时显示 `_showOcrUnavailableDialog` 并提供切换到 AI 识别的入口。批准号正则 `\w{7,9}` 收紧为 `[A-Za-z0-9]{7,9}`（排除下划线）。新增 l10n 键 `scanOcrUnavailableTitle` / `scanOcrUnavailableMessage` / `scanOcrUnavailableUseAi`。
 - 2026-07-28：Record 移动端 header 右上角 `+` 按钮替换为 sparkles 图标 NLP 入口（`SemanticIcons.aiEntry` + `recordNlpHeaderAction` l10n 键），删除原 `RecordAiInputBar` 顶部输入条。NLP 入口直接从 header 调用 `_openNlpDialog`，不再经 `RecordDashboardView` 回调传递。
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-28：Record quick-entry settings 新增 `recordQuickSettings*` 和
