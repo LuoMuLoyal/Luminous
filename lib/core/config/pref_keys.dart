@@ -62,6 +62,7 @@ abstract final class PrefKeys {
       'record.quickEntry.water.badgeMode';
   static const recordQuickEntrySleepInProgressBadgeEnabled =
       'record.quickEntry.sleep.inProgressBadgeEnabled';
+  static const recordQuickEntryCustomIcons = 'record.quickEntry.customIcons';
 
   /// Prefix for frequency-count keys: `record.quickEntry.freq.<type>`.
   static const recordQuickEntryFrequencyPrefix = 'record.quickEntry.freq.';

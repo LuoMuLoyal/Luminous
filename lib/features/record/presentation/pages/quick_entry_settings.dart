@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
@@ -123,6 +124,22 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.level6),
+              SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
+              const SizedBox(height: Spacing.level3),
+              FTileGroup(
+                physics: const NeverScrollableScrollPhysics(),
+                divider: FItemDivider.full,
+                children: [
+                  FTile(
+                    key: const Key('record-quick-settings-custom-icon'),
+                    title: Text(l10n.recordQuickSettingsCustomIconTitle),
+                    subtitle: Text(l10n.recordQuickSettingsCustomIconHint),
+                    suffix: const Icon(SemanticIcons.actionHelp),
+                    onPress: () => _showIconPickerHelp(context, l10n),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsRules),
               const SizedBox(height: Spacing.level3),
               FTileGroup(
@@ -166,5 +183,41 @@ class QuickEntrySettingsPage extends ConsumerWidget {
       QuickEntryWaterBadgeMode.hidden =>
         l10n.recordQuickSettingsWaterBadgeHidden,
     };
+  }
+
+  Future<void> _showIconPickerHelp(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: 440,
+      scrollable: false,
+      builder: (dialogContext) => Column(
+        key: const Key('record-quick-icon-help-dialog'),
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.recordQuickSettingsCustomIconTitle,
+            style: TypographyToken.level6.body(dialogContext),
+          ),
+          const SizedBox(height: Spacing.level4),
+          Text(
+            l10n.recordQuickSettingsCustomIconHint,
+            style: TypographyToken.level4.body(dialogContext),
+          ),
+          const SizedBox(height: Spacing.level5),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FButton(
+              variant: FButtonVariant.ghost,
+              onPress: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n.commonConfirm),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

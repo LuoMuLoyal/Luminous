@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/design/lucide_icon_bridge.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/icon_action_button.dart';
+import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
@@ -79,6 +81,7 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
                     widget.timeline,
                   ),
                   onTap: widget.onQuickAction,
+                  onLongPress: (action) => _showIconPicker(context, action),
                 ),
                 if (noteAction != null) ...[
                   const AppDivider(),
@@ -100,7 +103,34 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
     List<RecordQuickAction> actions,
     QuickEntryPreferences prefs,
   ) {
-    return buildMobileQuickActions(actions, preferences: prefs);
+    final ordered = buildMobileQuickActions(actions, preferences: prefs);
+    if (prefs.customIcons.isEmpty) return ordered;
+    return ordered
+        .map((action) {
+          final customIconName = prefs.customIcons[action.type.name];
+          if (customIconName != null) {
+            return action.copyWith(
+              icon: LucideIconBridge.resolve(customIconName),
+            );
+          }
+          return action;
+        })
+        .toList(growable: false);
+  }
+
+  Future<void> _showIconPicker(
+    BuildContext context,
+    RecordQuickAction action,
+  ) async {
+    final iconData = await showAppIconPicker(context, currentIcon: action.icon);
+    if (iconData != null && context.mounted) {
+      final iconName = LucideIconBridge.nameOf(iconData);
+      if (iconName != null) {
+        await ref
+            .read(quickEntryPreferencesProvider.notifier)
+            .setCustomIcon(action.type.name, iconName);
+      }
+    }
   }
 
   String? _badgeFor(
@@ -299,6 +329,7 @@ class _QuickRecordGrid extends StatelessWidget {
     required this.metrics,
     required this.badgeFor,
     this.onTap,
+    this.onLongPress,
   });
 
   final List<RecordQuickAction> actions;
@@ -306,6 +337,7 @@ class _QuickRecordGrid extends StatelessWidget {
   final _QuickRecordMetrics metrics;
   final String? Function(RecordQuickAction action) badgeFor;
   final ValueChanged<RecordQuickAction>? onTap;
+  final ValueChanged<RecordQuickAction>? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -332,6 +364,7 @@ class _QuickRecordGrid extends StatelessWidget {
                     metrics: metrics,
                     badge: badgeFor(rows[rowIndex][index]),
                     onTap: onTap,
+                    onLongPress: onLongPress,
                   ),
                 ),
                 if (index < rows[rowIndex].length - 1)
@@ -361,6 +394,7 @@ class _QuickRecordTile extends StatelessWidget {
     required this.metrics,
     this.badge,
     this.onTap,
+    this.onLongPress,
   });
 
   final RecordQuickAction action;
@@ -368,6 +402,7 @@ class _QuickRecordTile extends StatelessWidget {
   final _QuickRecordMetrics metrics;
   final String? badge;
   final ValueChanged<RecordQuickAction>? onTap;
+  final ValueChanged<RecordQuickAction>? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -377,6 +412,7 @@ class _QuickRecordTile extends StatelessWidget {
     return FTappable(
       key: Key('record-quick-${action.type.name}'),
       onPress: (onTap == null || isLocked) ? null : () => onTap!(action),
+      onLongPress: onLongPress == null ? null : () => onLongPress!(action),
       child: Semantics(
         button: true,
         label: isLocked

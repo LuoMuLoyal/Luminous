@@ -11,6 +11,7 @@ const _kWaterDefaultAmountMl = PrefKeys.recordQuickEntryWaterDefaultAmountMl;
 const _kWaterBadgeMode = PrefKeys.recordQuickEntryWaterBadgeMode;
 const _kSleepInProgressBadgeEnabled =
     PrefKeys.recordQuickEntrySleepInProgressBadgeEnabled;
+const _kCustomIcons = PrefKeys.recordQuickEntryCustomIcons;
 const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 
 /// Maximum number of recent taps to keep for frequency-based sorting.
@@ -28,6 +29,7 @@ class QuickEntryPreferences {
     this.waterDefaultAmountMl = 250,
     this.waterBadgeMode = QuickEntryWaterBadgeMode.dailyTotal,
     this.sleepInProgressBadgeEnabled = true,
+    this.customIcons = const {},
   });
 
   /// Whether dynamic frequency-based sorting is enabled.
@@ -52,6 +54,11 @@ class QuickEntryPreferences {
   /// Whether the sleep tile should show an in-progress badge.
   final bool sleepInProgressBadgeEnabled;
 
+  /// User-customized icons per entry type.
+  /// Key: `RecordEntryType.name` (e.g. `'water'`, `'meal'`).
+  /// Value: Lucide icon name in kebab-case (e.g. `'droplets'`).
+  final Map<String, String> customIcons;
+
   QuickEntryPreferences copyWith({
     bool? dynamicSortEnabled,
     List<String>? customOrder,
@@ -60,6 +67,7 @@ class QuickEntryPreferences {
     int? waterDefaultAmountMl,
     QuickEntryWaterBadgeMode? waterBadgeMode,
     bool? sleepInProgressBadgeEnabled,
+    Map<String, String>? customIcons,
   }) {
     return QuickEntryPreferences(
       dynamicSortEnabled: dynamicSortEnabled ?? this.dynamicSortEnabled,
@@ -70,6 +78,7 @@ class QuickEntryPreferences {
       waterBadgeMode: waterBadgeMode ?? this.waterBadgeMode,
       sleepInProgressBadgeEnabled:
           sleepInProgressBadgeEnabled ?? this.sleepInProgressBadgeEnabled,
+      customIcons: customIcons ?? this.customIcons,
     );
   }
 }
@@ -98,6 +107,20 @@ class QuickEntryPreferencesController
     final sleepInProgressBadgeEnabled =
         prefs.getBool(_kSleepInProgressBadgeEnabled) ?? true;
 
+    // Load custom icons: stored as ['water:droplets', 'meal:utensils', ...].
+    final customIcons = <String, String>{};
+    final rawIcons = prefs.getStringList(_kCustomIcons);
+    if (rawIcons != null) {
+      for (final entry in rawIcons) {
+        final colonIndex = entry.indexOf(':');
+        if (colonIndex > 0 && colonIndex < entry.length - 1) {
+          customIcons[entry.substring(0, colonIndex)] = entry.substring(
+            colonIndex + 1,
+          );
+        }
+      }
+    }
+
     // Load frequency counts for all known entry types.
     final frequency = <String, int>{};
     for (final type in RecordEntryType.values) {
@@ -115,6 +138,7 @@ class QuickEntryPreferencesController
       waterDefaultAmountMl: waterDefaultAmountMl,
       waterBadgeMode: waterBadgeMode,
       sleepInProgressBadgeEnabled: sleepInProgressBadgeEnabled,
+      customIcons: customIcons,
     );
   }
 
@@ -174,6 +198,35 @@ class QuickEntryPreferencesController
     await prefs.setBool(_kSleepInProgressBadgeEnabled, enabled);
   }
 
+  /// Sets a custom icon name for the given entry [type].
+  /// Pass `iconName = null` to remove the custom icon.
+  Future<void> setCustomIcon(String type, String? iconName) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    final updated = Map<String, String>.from(current.customIcons);
+    if (iconName != null) {
+      updated[type] = iconName;
+    } else {
+      updated.remove(type);
+    }
+    state = AsyncData(current.copyWith(customIcons: updated));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      _kCustomIcons,
+      updated.entries.map((e) => '${e.key}:${e.value}').toList(),
+    );
+  }
+
+  /// Removes the custom icon for the given entry [type].
+  Future<void> resetCustomIcon(String type) => setCustomIcon(type, null);
+
+  /// Clears all custom icons.
+  Future<void> resetAllCustomIcons() async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(customIcons: const {}));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_kCustomIcons);
+  }
+
   /// Records a tap on the given [type] for frequency-based sorting.
   /// Keeps at most [_maxFrequencyEntries] total taps by trimming proportionally.
   Future<void> recordTap(RecordEntryType type) async {
@@ -206,6 +259,7 @@ class QuickEntryPreferencesController
     await prefs.remove(_kWaterDefaultAmountMl);
     await prefs.remove(_kWaterBadgeMode);
     await prefs.remove(_kSleepInProgressBadgeEnabled);
+    await prefs.remove(_kCustomIcons);
     for (final type in RecordEntryType.values) {
       await prefs.remove('$_kFrequencyPrefix${type.name}');
     }
