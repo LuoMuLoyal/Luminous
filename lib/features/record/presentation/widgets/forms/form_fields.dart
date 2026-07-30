@@ -240,6 +240,8 @@ const activeDailyRecordKinds = <DailyRecordKind>[
   DailyRecordKind.symptom,
   DailyRecordKind.note,
   DailyRecordKind.sleep,
+  DailyRecordKind.vital,
+  DailyRecordKind.activity,
 ];
 
 List<DailyRecordKind> _visibleDailyRecordKinds(DailyRecordKind selectedKind) {

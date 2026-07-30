@@ -130,6 +130,7 @@ class DailyRecordRemoteDataSource {
     _putIfNotNull(payload, 'value', input.value);
     _putIfNotNull(payload, 'unit', input.unit);
     _putIfNotNull(payload, 'note', input.note);
+    _putIfNotNull(payload, 'source', input.source);
     _putIfNotNull(payload, 'payload', input.payload);
     if (input.attachments.isNotEmpty) {
       payload['attachments'] = input.attachments

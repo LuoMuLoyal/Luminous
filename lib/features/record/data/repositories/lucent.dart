@@ -449,7 +449,9 @@ class LucentRecordRepository implements RecordRepository {
       RecordEntryType.sleep ||
       RecordEntryType.medication ||
       RecordEntryType.mood ||
-      RecordEntryType.note => true,
+      RecordEntryType.note ||
+      RecordEntryType.vitals ||
+      RecordEntryType.activity => true,
       _ => false,
     };
   }

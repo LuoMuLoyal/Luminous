@@ -11,9 +11,9 @@ DailyRecordKind? dailyRecordKindForEntryType(RecordEntryType type) {
     RecordEntryType.activity => DailyRecordKind.activity,
     RecordEntryType.note => DailyRecordKind.note,
     RecordEntryType.sleep => DailyRecordKind.sleep,
-    RecordEntryType.medication ||
-    RecordEntryType.heartRate ||
-    RecordEntryType.weight => null,
+    RecordEntryType.medication => null,
+    RecordEntryType.heartRate => DailyRecordKind.vital,
+    RecordEntryType.weight => DailyRecordKind.vital,
   };
 }
 

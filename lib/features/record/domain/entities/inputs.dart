@@ -16,6 +16,7 @@ abstract class DailyRecordCreateInput with _$DailyRecordCreateInput {
     String? value,
     String? unit,
     String? note,
+    String? source,
     Map<String, dynamic>? payload,
     @Default([]) List<DailyRecordAttachmentInput> attachments,
   }) = _DailyRecordCreateInput;
