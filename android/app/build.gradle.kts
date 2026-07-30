@@ -37,12 +37,14 @@ android {
         applicationId = "com.dev.luminous"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         ndk {
-            abiFilters += "arm64-v8a"
+            // arm64-v8a: all modern 64-bit ARM phones (domestic + international)
+            // x86_64:    Android emulators for development
+            abiFilters += listOf("arm64-v8a", "x86_64")
         }
     }
 
@@ -82,17 +84,6 @@ kotlin {
 
 flutter {
     source = "../.."
-}
-
-    packaging {
-        jniLibs {
-            excludes += setOf(
-                "lib/armeabi-v7a/**",
-                "lib/x86/**",
-                "lib/x86_64/**",
-            )
-        }
-    }
 }
 
 dependencies {

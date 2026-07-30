@@ -119,7 +119,15 @@ FThemeData appThemeData(AppThemeFamily family, Brightness brightness) {
   final colors = base.colors.copyWith(
     extensions: [_semanticColorsFor(brightness, base.colors)],
   );
-  return FThemeData(touch: true, debugLabel: base.debugLabel, colors: colors);
+
+  final typography = FTypography.inherit(colors: colors, touch: true);
+
+  return FThemeData(
+    touch: true,
+    debugLabel: base.debugLabel,
+    colors: colors,
+    typography: typography,
+  );
 }
 
 /// Builds the [SemanticColors] extension for a given brightness.
