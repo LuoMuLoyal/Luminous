@@ -18,6 +18,12 @@ abstract final class OAuthBrandColors {
   /// Tencent QQ blue — #12B7F5.
   static const Color qq = Color(0xFF12B7F5);
 
+  /// Weibo red — #E6162D.
+  static const Color weibo = Color(0xFFE6162D);
+
+  /// Google blue — #4285F4.
+  static const Color google = Color(0xFF4285F4);
+
   /// Apple black — #000000.
   static const Color apple = Color(0xFF000000);
 }
@@ -39,6 +45,18 @@ class OAuthButtonRow extends StatefulWidget {
     required this.qqAuthorizeUrl,
     required this.onQqStart,
     required this.onQqComplete,
+    required this.weiboCallbackController,
+    required this.isStartingWeibo,
+    required this.isCompletingWeibo,
+    required this.weiboAuthorizeUrl,
+    required this.onWeiboStart,
+    required this.onWeiboComplete,
+    required this.googleCallbackController,
+    required this.isStartingGoogle,
+    required this.isCompletingGoogle,
+    required this.googleAuthorizeUrl,
+    required this.onGoogleStart,
+    required this.onGoogleComplete,
     required this.isStartingApple,
     required this.onAppleSignIn,
   });
@@ -58,6 +76,22 @@ class OAuthButtonRow extends StatefulWidget {
   final String? qqAuthorizeUrl;
   final VoidCallback onQqStart;
   final VoidCallback onQqComplete;
+
+  // Weibo
+  final TextEditingController weiboCallbackController;
+  final bool isStartingWeibo;
+  final bool isCompletingWeibo;
+  final String? weiboAuthorizeUrl;
+  final VoidCallback onWeiboStart;
+  final VoidCallback onWeiboComplete;
+
+  // Google
+  final TextEditingController googleCallbackController;
+  final bool isStartingGoogle;
+  final bool isCompletingGoogle;
+  final String? googleAuthorizeUrl;
+  final VoidCallback onGoogleStart;
+  final VoidCallback onGoogleComplete;
 
   // Apple
   final bool isStartingApple;
@@ -135,6 +169,24 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                 disabled: widget.isStartingQq || widget.isCompletingQq,
                 onPressed: widget.onQqStart,
               ),
+              const SizedBox(width: Spacing.level4),
+              _OAuthCircleButton(
+                buttonKey: const Key('weibo-login-start-button'),
+                assetPath: 'assets/icon/oauth/weibo.svg',
+                backgroundColor: OAuthBrandColors.weibo,
+                isLoading: widget.isStartingWeibo,
+                disabled: widget.isStartingWeibo || widget.isCompletingWeibo,
+                onPressed: widget.onWeiboStart,
+              ),
+              const SizedBox(width: Spacing.level4),
+              _OAuthCircleButton(
+                buttonKey: const Key('google-login-start-button'),
+                assetPath: 'assets/icon/oauth/google.svg',
+                backgroundColor: OAuthBrandColors.google,
+                isLoading: widget.isStartingGoogle,
+                disabled: widget.isStartingGoogle || widget.isCompletingGoogle,
+                onPressed: widget.onGoogleStart,
+              ),
               if (_appleAvailable) ...[
                 const SizedBox(width: Spacing.level4),
                 _OAuthCircleButton(
@@ -199,6 +251,58 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
                     child: FCircularProgress(),
                   )
                 : Text(l10n.authQqCompleteAction),
+          ),
+        ],
+        // Weibo callback input (shown when authorizeUrl is set)
+        if (widget.weiboAuthorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: Spacing.level4),
+          FTextField(
+            key: const Key('weibo-callback-input'),
+            control: FTextFieldControl.managed(
+              controller: widget.weiboCallbackController,
+            ),
+            label: Text(l10n.authWeiboCallbackLabel),
+            hint: l10n.authWeiboCallbackHint,
+            keyboardType: TextInputType.url,
+          ),
+          const SizedBox(height: Spacing.level3),
+          FButton(
+            key: const Key('weibo-complete-button'),
+            onPress: widget.isCompletingWeibo ? null : widget.onWeiboComplete,
+            size: FButtonSizeVariant.sm,
+            child: widget.isCompletingWeibo
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authWeiboCompleteAction),
+          ),
+        ],
+        // Google callback input (shown when authorizeUrl is set)
+        if (widget.googleAuthorizeUrl?.isNotEmpty == true) ...[
+          const SizedBox(height: Spacing.level4),
+          FTextField(
+            key: const Key('google-callback-input'),
+            control: FTextFieldControl.managed(
+              controller: widget.googleCallbackController,
+            ),
+            label: Text(l10n.authGoogleCallbackLabel),
+            hint: l10n.authGoogleCallbackHint,
+            keyboardType: TextInputType.url,
+          ),
+          const SizedBox(height: Spacing.level3),
+          FButton(
+            key: const Key('google-complete-button'),
+            onPress: widget.isCompletingGoogle ? null : widget.onGoogleComplete,
+            size: FButtonSizeVariant.sm,
+            child: widget.isCompletingGoogle
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: FCircularProgress(),
+                  )
+                : Text(l10n.authGoogleCompleteAction),
           ),
         ],
       ],

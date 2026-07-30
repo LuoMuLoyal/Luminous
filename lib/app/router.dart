@@ -49,6 +49,8 @@ class Routes {
   static const login = '/login';
   static const loginOauthWechat = '/login/oauth/wechat';
   static const loginOauthQq = '/login/oauth/qq';
+  static const loginOauthWeibo = '/login/oauth/weibo';
+  static const loginOauthGoogle = '/login/oauth/google';
   static const forgotPassword = '/forgot-password';
   static const register = '/register';
 

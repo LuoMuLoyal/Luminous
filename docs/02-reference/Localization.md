@@ -1,6 +1,6 @@
 # Flutter Localization
 
-Last updated: 2026-07-30 (Scan OCR unavailable strings)
+Last updated: 2026-07-30 (OAuth Weibo + Google sign-in strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -165,6 +165,16 @@ Persisted preference keys:
   "User"/"用户" — owned by the Mine ARB entries.
 - Auth QQ sign-in strings are owned by the Auth ARB entries (`authQqSignIn`,
   `authQqCallbackLabel`, `authQqCompleteAction`).
+- Auth Weibo sign-in strings (`authWeiboSignIn`, `authWeiboCallbackLabel`,
+  `authWeiboCallbackHint`, `authWeiboCompleteAction`, `authWeiboBrowserOpenFailed`,
+  `authWeiboAuthorizeOpened`, `authWeiboCallbackRequiredToast`,
+  `authWeiboCallbackInvalidToast`) are owned by the Auth ARB entries.
+- Auth Google sign-in strings (`authGoogleSignIn`, `authGoogleCallbackLabel`,
+  `authGoogleCallbackHint`, `authGoogleCompleteAction`, `authGoogleBrowserOpenFailed`,
+  `authGoogleAuthorizeOpened`, `authGoogleCallbackRequiredToast`,
+  `authGoogleCallbackInvalidToast`) are owned by the Auth ARB entries.
+- Auth identity provider display names (`authIdentityProviderWeibo`,
+  `authIdentityProviderGoogle`) are owned by the Auth ARB entries.
 - Auth form strings such as login password hint (`authPasswordLoginHint`), register terms-required
   hint (`authRegisterTermsRequiredHint`), email verify action (`authEmailVerifyAction`), and danger-zone
   label (`authDeleteAccountDangerZoneLabel`) are owned by the Auth ARB entries.

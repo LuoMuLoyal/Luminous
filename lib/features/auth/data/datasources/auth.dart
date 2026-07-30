@@ -170,6 +170,70 @@ class LucentAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<OAuthAuthorizeData> createWeiboAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    final trimmedWeiboCallbackUri = callbackUri?.trim();
+    final response = await _client.auth
+        .oAuthControllerCreateWeiboAuthorizeUrlV1(
+          weiboOAuthAuthorizeDto:
+              trimmedWeiboCallbackUri != null &&
+                  trimmedWeiboCallbackUri.isNotEmpty
+              ? WeiboOAuthAuthorizeDto(callbackUri: trimmedWeiboCallbackUri)
+              : null,
+        );
+    return _mapAuthorizeData(response.data!.data);
+  }
+
+  @override
+  Future<AuthSession> loginWithWeibo({
+    required String code,
+    required String state,
+  }) async {
+    final response = await _client.auth.oAuthControllerLoginWithWeiboV1(
+      weiboOAuthCallbackDto: WeiboOAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
+    );
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    await _persistSession(session);
+    return session;
+  }
+
+  @override
+  Future<OAuthAuthorizeData> createGoogleAuthorizeUrl({
+    String? callbackUri,
+  }) async {
+    final trimmedGoogleCallbackUri = callbackUri?.trim();
+    final response = await _client.auth
+        .oAuthControllerCreateGoogleAuthorizeUrlV1(
+          googleOAuthAuthorizeDto:
+              trimmedGoogleCallbackUri != null &&
+                  trimmedGoogleCallbackUri.isNotEmpty
+              ? GoogleOAuthAuthorizeDto(callbackUri: trimmedGoogleCallbackUri)
+              : null,
+        );
+    return _mapAuthorizeData(response.data!.data);
+  }
+
+  @override
+  Future<AuthSession> loginWithGoogle({
+    required String code,
+    required String state,
+  }) async {
+    final response = await _client.auth.oAuthControllerLoginWithGoogleV1(
+      googleOAuthCallbackDto: GoogleOAuthCallbackDto(
+        code: code.trim(),
+        state: state.trim(),
+      ),
+    );
+    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    await _persistSession(session);
+    return session;
+  }
+
+  @override
   Future<AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,

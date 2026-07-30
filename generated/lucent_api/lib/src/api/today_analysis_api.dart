@@ -10,9 +10,9 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/generate_today_analysis_dto.dart';
-import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1200_response.dart';
 import 'package:lucent_api/src/model/today_analysis_response_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
+import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
 
 class TodayAnalysisApi {
   final Dio _dio;
@@ -31,9 +31,9 @@ class TodayAnalysisApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [MedicinesControllerRecognizeAsyncV1200Response] as data
+  /// Returns a [Future] containing a [Response] with a [TodaySuggestionControllerExplainSuggestionAsyncV1202Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<MedicinesControllerRecognizeAsyncV1200Response>>
+  Future<Response<TodaySuggestionControllerExplainSuggestionAsyncV1202Response>>
   todayAnalysisControllerGenerateAsyncV1({
     required GenerateTodayAnalysisDto generateTodayAnalysisDto,
     CancelToken? cancelToken,
@@ -74,18 +74,18 @@ class TodayAnalysisApi {
       onReceiveProgress: onReceiveProgress,
     );
 
-    MedicinesControllerRecognizeAsyncV1200Response? _responseData;
+    TodaySuggestionControllerExplainSuggestionAsyncV1202Response? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              MedicinesControllerRecognizeAsyncV1200Response,
-              MedicinesControllerRecognizeAsyncV1200Response
+              TodaySuggestionControllerExplainSuggestionAsyncV1202Response,
+              TodaySuggestionControllerExplainSuggestionAsyncV1202Response
             >(
               rawData,
-              'MedicinesControllerRecognizeAsyncV1200Response',
+              'TodaySuggestionControllerExplainSuggestionAsyncV1202Response',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -98,7 +98,9 @@ class TodayAnalysisApi {
       );
     }
 
-    return Response<MedicinesControllerRecognizeAsyncV1200Response>(
+    return Response<
+      TodaySuggestionControllerExplainSuggestionAsyncV1202Response
+    >(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

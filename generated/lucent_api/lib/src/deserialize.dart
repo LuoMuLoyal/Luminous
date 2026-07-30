@@ -75,6 +75,8 @@ import 'package:lucent_api/src/model/forgot_password_response_dto.dart';
 import 'package:lucent_api/src/model/generate_daily_record_candidates_dto.dart';
 import 'package:lucent_api/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_api/src/model/generate_today_analysis_dto.dart';
+import 'package:lucent_api/src/model/google_o_auth_authorize_dto.dart';
+import 'package:lucent_api/src/model/google_o_auth_callback_dto.dart';
 import 'package:lucent_api/src/model/health_app_info_dto.dart';
 import 'package:lucent_api/src/model/health_component_dto.dart';
 import 'package:lucent_api/src/model/health_context_data_dto.dart';
@@ -114,8 +116,6 @@ import 'package:lucent_api/src/model/medicine_safety_tip_response_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_data_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_item_dto.dart';
 import 'package:lucent_api/src/model/medicine_search_response_dto.dart';
-import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1200_response.dart';
-import 'package:lucent_api/src/model/medicines_controller_recognize_async_v1200_response_data.dart';
 import 'package:lucent_api/src/model/notification_detail_dto.dart';
 import 'package:lucent_api/src/model/notification_detail_response_dto.dart';
 import 'package:lucent_api/src/model/notification_list_item_dto.dart';
@@ -175,6 +175,8 @@ import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_response_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
+import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
+import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response_data.dart';
 import 'package:lucent_api/src/model/today_suggestions_data_dto.dart';
 import 'package:lucent_api/src/model/today_suggestions_response_dto.dart';
 import 'package:lucent_api/src/model/tokens_dto.dart';
@@ -203,6 +205,8 @@ import 'package:lucent_api/src/model/verify_email_data_dto.dart';
 import 'package:lucent_api/src/model/verify_email_dto.dart';
 import 'package:lucent_api/src/model/verify_email_response_dto.dart';
 import 'package:lucent_api/src/model/verify_security_pin_dto.dart';
+import 'package:lucent_api/src/model/weibo_o_auth_authorize_dto.dart';
+import 'package:lucent_api/src/model/weibo_o_auth_callback_dto.dart';
 
 final _regList = RegExp(r'^List<(.*)>$');
 final _regSet = RegExp(r'^Set<(.*)>$');
@@ -504,6 +508,12 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'GenerateTodayAnalysisDto':
       return GenerateTodayAnalysisDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'GoogleOAuthAuthorizeDto':
+      return GoogleOAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'GoogleOAuthCallbackDto':
+      return GoogleOAuthCallbackDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'HealthAppInfoDto':
       return HealthAppInfoDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -640,16 +650,6 @@ ReturnType deserialize<ReturnType, BaseType>(
       return MedicineSearchResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'MedicineSource':
-    case 'MedicinesControllerRecognizeAsyncV1200Response':
-      return MedicinesControllerRecognizeAsyncV1200Response.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
-    case 'MedicinesControllerRecognizeAsyncV1200ResponseData':
-      return MedicinesControllerRecognizeAsyncV1200ResponseData.fromJson(
-            value as Map<String, dynamic>,
-          )
-          as ReturnType;
     case 'NotificationDetailDto':
       return NotificationDetailDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -849,6 +849,16 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'TodaySuggestionControllerExplainSuggestionAsyncV1202Response':
+      return TodaySuggestionControllerExplainSuggestionAsyncV1202Response.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodaySuggestionControllerExplainSuggestionAsyncV1202ResponseData':
+      return TodaySuggestionControllerExplainSuggestionAsyncV1202ResponseData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'TodaySuggestionsDataDto':
       return TodaySuggestionsDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -944,6 +954,12 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'VerifySecurityPinDto':
       return VerifySecurityPinDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'WeiboOAuthAuthorizeDto':
+      return WeiboOAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'WeiboOAuthCallbackDto':
+      return WeiboOAuthCallbackDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     default:
       RegExpMatch? match;

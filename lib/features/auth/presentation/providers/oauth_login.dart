@@ -22,6 +22,14 @@ class OAuthLoginState {
     this.isCompletingQq = false,
     this.qqAuthorizeUrl,
     this.qqState,
+    this.isStartingWeibo = false,
+    this.isCompletingWeibo = false,
+    this.weiboAuthorizeUrl,
+    this.weiboState,
+    this.isStartingGoogle = false,
+    this.isCompletingGoogle = false,
+    this.googleAuthorizeUrl,
+    this.googleState,
     this.isStartingApple = false,
     this.errorMessage,
   });
@@ -35,6 +43,16 @@ class OAuthLoginState {
   final bool isCompletingQq;
   final String? qqAuthorizeUrl;
   final String? qqState;
+
+  final bool isStartingWeibo;
+  final bool isCompletingWeibo;
+  final String? weiboAuthorizeUrl;
+  final String? weiboState;
+
+  final bool isStartingGoogle;
+  final bool isCompletingGoogle;
+  final String? googleAuthorizeUrl;
+  final String? googleState;
 
   final bool isStartingApple;
   final String? errorMessage;
@@ -51,6 +69,14 @@ class OAuthLoginState {
     bool? isCompletingQq,
     Object? qqAuthorizeUrl = _sentinel,
     Object? qqState = _sentinel,
+    bool? isStartingWeibo,
+    bool? isCompletingWeibo,
+    Object? weiboAuthorizeUrl = _sentinel,
+    Object? weiboState = _sentinel,
+    bool? isStartingGoogle,
+    bool? isCompletingGoogle,
+    Object? googleAuthorizeUrl = _sentinel,
+    Object? googleState = _sentinel,
     bool? isStartingApple,
     Object? errorMessage = _sentinel,
   }) {
@@ -69,6 +95,22 @@ class OAuthLoginState {
           ? this.qqAuthorizeUrl
           : qqAuthorizeUrl as String?,
       qqState: qqState == _sentinel ? this.qqState : qqState as String?,
+      isStartingWeibo: isStartingWeibo ?? this.isStartingWeibo,
+      isCompletingWeibo: isCompletingWeibo ?? this.isCompletingWeibo,
+      weiboAuthorizeUrl: weiboAuthorizeUrl == _sentinel
+          ? this.weiboAuthorizeUrl
+          : weiboAuthorizeUrl as String?,
+      weiboState: weiboState == _sentinel
+          ? this.weiboState
+          : weiboState as String?,
+      isStartingGoogle: isStartingGoogle ?? this.isStartingGoogle,
+      isCompletingGoogle: isCompletingGoogle ?? this.isCompletingGoogle,
+      googleAuthorizeUrl: googleAuthorizeUrl == _sentinel
+          ? this.googleAuthorizeUrl
+          : googleAuthorizeUrl as String?,
+      googleState: googleState == _sentinel
+          ? this.googleState
+          : googleState as String?,
       isStartingApple: isStartingApple ?? this.isStartingApple,
       errorMessage: errorMessage == _sentinel
           ? this.errorMessage
@@ -318,6 +360,131 @@ class OAuthLoginController extends Notifier<OAuthLoginState> {
       final errorMessage = _mapError(e, 'OAuthLoginController.completeQqLogin');
       this.state = this.state.copyWith(
         isCompletingQq: false,
+        errorMessage: errorMessage,
+      );
+      return null;
+    }
+  }
+
+  // =========================
+  //  Weibo
+  // =========================
+
+  /// Creates a Weibo authorize URL.
+  ///
+  /// Returns the authorize URL on success, `null` on failure.
+  Future<String?> startWeiboLogin({String? webCallbackUri}) async {
+    state = state.copyWith(
+      isStartingWeibo: true,
+      errorMessage: null,
+      weiboAuthorizeUrl: null,
+      weiboState: null,
+    );
+    try {
+      final authorize = await _remote.createWeiboAuthorizeUrl(
+        callbackUri: webCallbackUri,
+      );
+      state = state.copyWith(
+        isStartingWeibo: false,
+        weiboAuthorizeUrl: authorize.authorizeUrl,
+        weiboState: authorize.state,
+      );
+      return authorize.authorizeUrl;
+    } catch (e) {
+      final errorMessage = _mapError(e, 'OAuthLoginController.startWeiboLogin');
+      state = state.copyWith(
+        isStartingWeibo: false,
+        errorMessage: errorMessage,
+      );
+      return null;
+    }
+  }
+
+  /// Completes a Weibo login with a manually-pasted callback.
+  Future<AuthSession?> completeWeiboLogin({
+    required String code,
+    required String state,
+  }) async {
+    this.state = this.state.copyWith(
+      isCompletingWeibo: true,
+      errorMessage: null,
+    );
+    try {
+      final s = await _remote.loginWithWeibo(code: code, state: state);
+      await ref.read(authSessionProvider.notifier).applySession(s);
+      this.state = this.state.copyWith(isCompletingWeibo: false);
+      return s;
+    } catch (e) {
+      final errorMessage = _mapError(
+        e,
+        'OAuthLoginController.completeWeiboLogin',
+      );
+      this.state = this.state.copyWith(
+        isCompletingWeibo: false,
+        errorMessage: errorMessage,
+      );
+      return null;
+    }
+  }
+
+  // =========================
+  //  Google
+  // =========================
+
+  /// Creates a Google authorize URL.
+  ///
+  /// Returns the authorize URL on success, `null` on failure.
+  Future<String?> startGoogleLogin({String? webCallbackUri}) async {
+    state = state.copyWith(
+      isStartingGoogle: true,
+      errorMessage: null,
+      googleAuthorizeUrl: null,
+      googleState: null,
+    );
+    try {
+      final authorize = await _remote.createGoogleAuthorizeUrl(
+        callbackUri: webCallbackUri,
+      );
+      state = state.copyWith(
+        isStartingGoogle: false,
+        googleAuthorizeUrl: authorize.authorizeUrl,
+        googleState: authorize.state,
+      );
+      return authorize.authorizeUrl;
+    } catch (e) {
+      final errorMessage = _mapError(
+        e,
+        'OAuthLoginController.startGoogleLogin',
+      );
+      state = state.copyWith(
+        isStartingGoogle: false,
+        errorMessage: errorMessage,
+      );
+      return null;
+    }
+  }
+
+  /// Completes a Google login with a manually-pasted callback.
+  Future<AuthSession?> completeGoogleLogin({
+    required String code,
+    required String state,
+  }) async {
+    this.state = this.state.copyWith(
+      isCompletingGoogle: true,
+      errorMessage: null,
+    );
+    try {
+      final s = await _remote.loginWithGoogle(code: code, state: state);
+      await ref.read(authSessionProvider.notifier).applySession(s);
+      this.state = this.state.copyWith(isCompletingGoogle: false);
+      return s;
+    } catch (e) {
+      final errorMessage = _mapError(
+        e,
+        'OAuthLoginController.completeGoogleLogin',
+      );
+      this.state = this.state.copyWith(
+        isCompletingGoogle: false,
         errorMessage: errorMessage,
       );
       return null;

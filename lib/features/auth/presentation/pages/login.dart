@@ -29,6 +29,10 @@ class LoginPage extends HookConsumerWidget {
     this.wechatState,
     this.qqCode,
     this.qqState,
+    this.weiboCode,
+    this.weiboState,
+    this.googleCode,
+    this.googleState,
     this.returnTo,
   });
 
@@ -36,6 +40,10 @@ class LoginPage extends HookConsumerWidget {
   final String? wechatState;
   final String? qqCode;
   final String? qqState;
+  final String? weiboCode;
+  final String? weiboState;
+  final String? googleCode;
+  final String? googleState;
   final String? returnTo;
 
   @override
@@ -46,6 +54,8 @@ class LoginPage extends HookConsumerWidget {
     final codeController = useTextEditingController();
     final wechatCallbackController = useTextEditingController();
     final qqCallbackController = useTextEditingController();
+    final weiboCallbackController = useTextEditingController();
+    final googleCallbackController = useTextEditingController();
 
     final state = ref.watch(loginFormProvider);
     final notifier = ref.read(loginFormProvider.notifier);
@@ -98,6 +108,32 @@ class LoginPage extends HookConsumerWidget {
         host: base.host,
         port: base.hasPort ? base.port : null,
         path: Routes.loginOauthQq,
+        queryParameters: rt == null ? null : {'returnTo': rt},
+      ).toString();
+    }
+
+    String? webWeiboCallbackUri() {
+      if (!kIsWeb) return null;
+      final base = Uri.base;
+      final rt = safeReturnTo(returnTo);
+      return Uri(
+        scheme: base.scheme,
+        host: base.host,
+        port: base.hasPort ? base.port : null,
+        path: Routes.loginOauthWeibo,
+        queryParameters: rt == null ? null : {'returnTo': rt},
+      ).toString();
+    }
+
+    String? webGoogleCallbackUri() {
+      if (!kIsWeb) return null;
+      final base = Uri.base;
+      final rt = safeReturnTo(returnTo);
+      return Uri(
+        scheme: base.scheme,
+        host: base.host,
+        port: base.hasPort ? base.port : null,
+        path: Routes.loginOauthGoogle,
         queryParameters: rt == null ? null : {'returnTo': rt},
       ).toString();
     }
@@ -186,6 +222,80 @@ class LoginPage extends HookConsumerWidget {
       goAfterLogin(fallbackHome: true);
     }
 
+    Future<void> startWeiboLogin() async {
+      final authorizeUrl = await oauthController.startWeiboLogin(
+        webCallbackUri: webWeiboCallbackUri(),
+      );
+      if (authorizeUrl == null || !context.mounted) return;
+
+      final opened = await ref
+          .read(externalUrlLauncherProvider)
+          .open(Uri.parse(authorizeUrl));
+      if (!context.mounted) return;
+      if (!opened) {
+        await Toast.show(context, l10n.authWeiboBrowserOpenFailed);
+        return;
+      }
+      await Toast.show(context, l10n.authWeiboAuthorizeOpened);
+    }
+
+    Future<void> completeWeiboLoginFromInput() async {
+      final callback = OAuthCallbackParser.parse(
+        weiboCallbackController.text,
+        oauthState.weiboState,
+      );
+      if (callback == null) {
+        final message = weiboCallbackController.text.trim().isEmpty
+            ? l10n.authWeiboCallbackRequiredToast
+            : l10n.authWeiboCallbackInvalidToast;
+        await Toast.show(context, message);
+        return;
+      }
+      final session = await oauthController.completeWeiboLogin(
+        code: callback.code,
+        state: callback.state,
+      );
+      if (session == null || !context.mounted) return;
+      goAfterLogin(fallbackHome: true);
+    }
+
+    Future<void> startGoogleLogin() async {
+      final authorizeUrl = await oauthController.startGoogleLogin(
+        webCallbackUri: webGoogleCallbackUri(),
+      );
+      if (authorizeUrl == null || !context.mounted) return;
+
+      final opened = await ref
+          .read(externalUrlLauncherProvider)
+          .open(Uri.parse(authorizeUrl));
+      if (!context.mounted) return;
+      if (!opened) {
+        await Toast.show(context, l10n.authGoogleBrowserOpenFailed);
+        return;
+      }
+      await Toast.show(context, l10n.authGoogleAuthorizeOpened);
+    }
+
+    Future<void> completeGoogleLoginFromInput() async {
+      final callback = OAuthCallbackParser.parse(
+        googleCallbackController.text,
+        oauthState.googleState,
+      );
+      if (callback == null) {
+        final message = googleCallbackController.text.trim().isEmpty
+            ? l10n.authGoogleCallbackRequiredToast
+            : l10n.authGoogleCallbackInvalidToast;
+        await Toast.show(context, message);
+        return;
+      }
+      final session = await oauthController.completeGoogleLogin(
+        code: callback.code,
+        state: callback.state,
+      );
+      if (session == null || !context.mounted) return;
+      goAfterLogin(fallbackHome: true);
+    }
+
     Future<void> startAppleLogin() async {
       if (!context.mounted) return;
       final failMessage = l10n.authAppleSignInFailed;
@@ -231,6 +341,34 @@ class LoginPage extends HookConsumerWidget {
           unawaited(
             oauthController
                 .completeQqLogin(code: qqCode!, state: qqState!)
+                .then((s) {
+                  if (s != null && context.mounted) {
+                    goAfterLogin(fallbackHome: true);
+                  }
+                }),
+          );
+        });
+      }
+      if ((weiboCode?.isNotEmpty ?? false) &&
+          (weiboState?.isNotEmpty ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          unawaited(
+            oauthController
+                .completeWeiboLogin(code: weiboCode!, state: weiboState!)
+                .then((s) {
+                  if (s != null && context.mounted) {
+                    goAfterLogin(fallbackHome: true);
+                  }
+                }),
+          );
+        });
+      }
+      if ((googleCode?.isNotEmpty ?? false) &&
+          (googleState?.isNotEmpty ?? false)) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          unawaited(
+            oauthController
+                .completeGoogleLogin(code: googleCode!, state: googleState!)
                 .then((s) {
                   if (s != null && context.mounted) {
                     goAfterLogin(fallbackHome: true);
@@ -492,6 +630,18 @@ class LoginPage extends HookConsumerWidget {
               qqAuthorizeUrl: oauthState.qqAuthorizeUrl,
               onQqStart: startQqLogin,
               onQqComplete: completeQqLoginFromInput,
+              weiboCallbackController: weiboCallbackController,
+              isStartingWeibo: oauthState.isStartingWeibo,
+              isCompletingWeibo: oauthState.isCompletingWeibo,
+              weiboAuthorizeUrl: oauthState.weiboAuthorizeUrl,
+              onWeiboStart: startWeiboLogin,
+              onWeiboComplete: completeWeiboLoginFromInput,
+              googleCallbackController: googleCallbackController,
+              isStartingGoogle: oauthState.isStartingGoogle,
+              isCompletingGoogle: oauthState.isCompletingGoogle,
+              googleAuthorizeUrl: oauthState.googleAuthorizeUrl,
+              onGoogleStart: startGoogleLogin,
+              onGoogleComplete: completeGoogleLoginFromInput,
               isStartingApple: oauthState.isStartingApple,
               onAppleSignIn: startAppleLogin,
             ),

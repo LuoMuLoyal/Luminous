@@ -50,6 +50,20 @@ abstract interface class AuthRepository {
     required String state,
   });
 
+  Future<OAuthAuthorizeData> createWeiboAuthorizeUrl({String? callbackUri});
+
+  Future<AuthSession> loginWithWeibo({
+    required String code,
+    required String state,
+  });
+
+  Future<OAuthAuthorizeData> createGoogleAuthorizeUrl({String? callbackUri});
+
+  Future<AuthSession> loginWithGoogle({
+    required String code,
+    required String state,
+  });
+
   Future<AuthUser> linkWechatWebIdentity({
     required String code,
     required String state,
