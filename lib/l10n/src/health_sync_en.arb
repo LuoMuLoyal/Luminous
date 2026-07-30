@@ -1,0 +1,61 @@
+{
+  "healthSyncTitle": "Health Data Import",
+  "healthSyncDescription": "Import steps, heart rate, sleep and other data from Apple Health / Health Connect into your records.",
+  "healthSyncNotAvailable": "Health data sync is not available on this device. Only iOS (HealthKit) and Android devices with Google Play Services are supported.",
+  "healthSyncMetricTypes": "Select Data Types",
+  "healthSyncTimeRange": "Time Range",
+  "healthSyncRangeToday": "Today",
+  "healthSyncRangeThreeDays": "Last 3 days",
+  "healthSyncRangeSevenDays": "Last 7 days",
+  "healthSyncFetchButton": "Fetch Health Data",
+  "healthSyncImportButton": "Import {count} records",
+  "@healthSyncImportButton": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncSyncing": "Syncing…",
+  "healthSyncResetButton": "Reset",
+  "healthSyncLoading": "Loading…",
+  "healthSyncResultTitle": "Sync Result",
+  "healthSyncResultSuccess": "Imported {count} records",
+  "@healthSyncResultSuccess": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncResultSkipped": "Skipped {count} (already exists)",
+  "@healthSyncResultSkipped": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncResultFailed": "Failed {count}",
+  "@healthSyncResultFailed": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncPreviewTitle": "Data Preview",
+  "healthSyncPreviewMore": "{count} more records…",
+  "@healthSyncPreviewMore": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncMetricHeartRate": "Heart Rate",
+  "healthSyncMetricBloodPressure": "Blood Pressure",
+  "healthSyncMetricBloodOxygen": "Blood Oxygen",
+  "healthSyncMetricBloodGlucose": "Blood Glucose",
+  "healthSyncMetricBodyTemperature": "Body Temperature",
+  "healthSyncMetricWeight": "Weight",
+  "healthSyncMetricRespiratoryRate": "Respiratory Rate",
+  "healthSyncMetricSteps": "Steps",
+  "healthSyncMetricFlightsClimbed": "Flights Climbed",
+  "healthSyncMetricExerciseTime": "Exercise Time",
+  "healthSyncMetricSleep": "Sleep",
+  "healthSyncMetricWater": "Water",
+  "healthSyncMetricHeight": "Height",
+  "mineHealthSyncTitle": "Import from Health App",
+  "mineHealthSyncSubtitle": "Sync Apple Health / Health Connect data"
+}

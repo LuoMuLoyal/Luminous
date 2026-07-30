@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -71,6 +73,24 @@ class MineAccountSecuritySection extends ConsumerWidget {
               onPress: () =>
                   pushAuthRequiredRoute(context, Routes.settingsSecurityPin),
             ),
+            if (Platform.isIOS || Platform.isAndroid)
+              FTile(
+                key: const Key('mine-health-sync-tile'),
+                prefix: Icon(
+                  SemanticIcons.recordActivity,
+                  color: colors.primary,
+                  size: Spacing.level5,
+                ),
+                title: Text(l10n.mineHealthSyncTitle),
+                subtitle: Text(
+                  l10n.mineHealthSyncSubtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                suffix: const Icon(SemanticIcons.actionNext),
+                onPress: () =>
+                    pushAuthRequiredRoute(context, Routes.healthSync),
+              ),
             FTile(
               key: const Key('mine-sign-out-tile'),
               prefix: Icon(

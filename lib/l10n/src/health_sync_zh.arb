@@ -1,0 +1,61 @@
+{
+  "healthSyncTitle": "健康数据导入",
+  "healthSyncDescription": "从 Apple 健康 / Health Connect 导入步数、心率、睡眠等数据到你的记录中。",
+  "healthSyncNotAvailable": "当前设备不支持健康数据同步。仅 iOS（HealthKit）和有 Google Play Services 的 Android 设备可用。",
+  "healthSyncMetricTypes": "选择数据类型",
+  "healthSyncTimeRange": "时间范围",
+  "healthSyncRangeToday": "今天",
+  "healthSyncRangeThreeDays": "最近 3 天",
+  "healthSyncRangeSevenDays": "最近 7 天",
+  "healthSyncFetchButton": "获取健康数据",
+  "healthSyncImportButton": "导入 {count} 条记录",
+  "@healthSyncImportButton": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncSyncing": "正在同步…",
+  "healthSyncResetButton": "重新选择",
+  "healthSyncLoading": "加载中…",
+  "healthSyncResultTitle": "同步结果",
+  "healthSyncResultSuccess": "成功导入 {count} 条",
+  "@healthSyncResultSuccess": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncResultSkipped": "跳过 {count} 条（已存在）",
+  "@healthSyncResultSkipped": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncResultFailed": "失败 {count} 条",
+  "@healthSyncResultFailed": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncPreviewTitle": "数据预览",
+  "healthSyncPreviewMore": "还有 {count} 条数据…",
+  "@healthSyncPreviewMore": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "healthSyncMetricHeartRate": "心率",
+  "healthSyncMetricBloodPressure": "血压",
+  "healthSyncMetricBloodOxygen": "血氧",
+  "healthSyncMetricBloodGlucose": "血糖",
+  "healthSyncMetricBodyTemperature": "体温",
+  "healthSyncMetricWeight": "体重",
+  "healthSyncMetricRespiratoryRate": "呼吸频率",
+  "healthSyncMetricSteps": "步数",
+  "healthSyncMetricFlightsClimbed": "爬楼层数",
+  "healthSyncMetricExerciseTime": "运动时间",
+  "healthSyncMetricSleep": "睡眠",
+  "healthSyncMetricWater": "饮水量",
+  "healthSyncMetricHeight": "身高",
+  "mineHealthSyncTitle": "从健康 App 导入",
+  "mineHealthSyncSubtitle": "同步 Apple 健康 / Health Connect 数据"
+}

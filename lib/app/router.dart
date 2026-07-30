@@ -4,6 +4,8 @@ import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/assistant/presentation/routes.dart'
     as assistant_routes;
 import 'package:luminous/features/auth/presentation/routes.dart' as auth_routes;
+import 'package:luminous/features/health_data/presentation/routes.dart'
+    as health_data_routes;
 import 'package:luminous/features/legal/presentation/routes.dart'
     as legal_routes;
 import 'package:luminous/features/medicine/presentation/pages/page.dart';
@@ -92,6 +94,8 @@ class Routes {
   static const assistant = '/assistant';
 
   static const scanBarcode = '/scan/barcode';
+
+  static const healthSync = '/health-sync';
 
   static const legal = '/legal';
   static const legalDetail = '/legal/:docType';
@@ -231,6 +235,7 @@ GoRouter appRouter(Ref ref) => GoRouter(
     ...notification_routes.$appRoutes,
     ...assistant_routes.$appRoutes,
     ...scan_routes.$appRoutes,
+    ...health_data_routes.$appRoutes,
     ...legal_routes.$appRoutes,
     // -- public shared clinic summary (deep link, no auth required) --
     GoRoute(

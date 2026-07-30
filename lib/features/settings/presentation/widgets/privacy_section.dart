@@ -8,6 +8,7 @@ import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/health_data/presentation/providers/health_auto_sync.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/features/settings/presentation/widgets/navigation_tile.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
@@ -97,6 +98,23 @@ class PrivacySection extends ConsumerWidget {
                   );
                 }
               },
+            ),
+            FTile(
+              key: const Key('settings-row-health-auto-sync'),
+              title: Text(l10n.settingsHealthAutoSyncTitle),
+              subtitle: Text(l10n.settingsHealthAutoSyncSubtitle),
+              prefix: const Icon(
+                SemanticIcons.recordActivity,
+                size: IconSizeTokens.level3,
+              ),
+              suffix: FSwitch(
+                value: ref.watch(healthAutoSyncPreferenceProvider),
+                onChange: (value) => ref
+                    .read(healthAutoSyncPreferenceProvider.notifier)
+                    .toggle(),
+              ),
+              onPress: () =>
+                  ref.read(healthAutoSyncPreferenceProvider.notifier).toggle(),
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-export'),

@@ -263,5 +263,7 @@
   "settingsHelpFeedbackSectionTitle": "Feedback",
   "settingsHelpFeedbackSubject": "Luminous Feedback",
   "settingsHelpFeedbackUnavailable": "Feedback email is not configured, please try again later",
-  "settingsHelpFeedbackOpenFailed": "Unable to open email app, please check if a mail client is installed"
+  "settingsHelpFeedbackOpenFailed": "Unable to open email app, please check if a mail client is installed",
+  "settingsHealthAutoSyncTitle": "Health Data Auto-Sync",
+  "settingsHealthAutoSyncSubtitle": "Automatically sync last 24 hours of health data when app enters foreground"
 }

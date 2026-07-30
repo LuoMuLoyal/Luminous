@@ -106,4 +106,8 @@ abstract final class PrefKeys {
       'settings.dataStorage.imageQuality';
   static const settingsDataStorageSyncPreference =
       'settings.dataStorage.syncPreference';
+
+  // ── Health Data ───────────────────────────────────────────────────────
+
+  static const healthAutoSyncEnabled = 'health.autoSync.enabled';
 }
