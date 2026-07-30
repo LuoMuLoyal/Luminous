@@ -45,6 +45,8 @@
 		</array>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<key>NSHealthShareUsageDescription</key>
+		<string>读取您的步数、心率、睡眠等健康数据，自动同步到 Luminous 记录中</string>
 		<key>NSCameraUsageDescription</key>
 		<string>需要访问相机以拍摄药品包装、处方或资料图片，用于识别与记录。</string>
 		<key>NSPhotoLibraryUsageDescription</key>

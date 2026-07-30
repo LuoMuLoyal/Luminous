@@ -28,6 +28,7 @@ const Map<String, List<String>> fragmentRules = {
   'mine': ['mine'],
   'assistant': ['assistant'],
   'notification': ['notification'],
+  'health_sync': ['health_sync'],
 };
 
 const List<String> locales = ['zh', 'en'];

@@ -70,6 +70,7 @@ dependencies:
   email_validator: ^2.1.17
   mobile_scanner: ^7.2.0
   paddle_ocr_native: ^0.1.1
+  health: ^13.3.1
 
   sign_in_with_apple: ^8.1.0
   flutter_svg: ^2.1.0
@@ -104,12 +105,19 @@ dev_dependencies:
   riverpod_generator: ^4.0.4
   drift_dev: ^2.20.0
   go_router_builder: ^4.3.0
+
+dependency_overrides:
+  # health ^13.x pulls device_info_plus ^12.x which depends on win32 ^5.x,
+  # conflicting with package_info_plus ^10.x (win32 ^6.x).
+  # device_info_plus 13.x uses win32 ^6.x, resolving the conflict.
+  device_info_plus: ^13.0.0
+
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: assets/icon/app_icon.png
   remove_alpha_ios: true
-  min_sdk_android: 21
+  min_sdk_android: 26
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: assets/icon/app_icon.png
   adaptive_icon_foreground_inset: 24
