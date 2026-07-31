@@ -54,7 +54,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
       end: end,
     );
     final metrics = mapper.mapToMetrics(points);
-    return _pairBloodPressure(metrics);
+    return metrics;
   }
 
   @override
@@ -119,7 +119,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
     for (final date in dates) {
       try {
-        final result = await dailyRecordRepo.fetchRecords(date, pageSize: 200);
+        final result = await dailyRecordRepo.fetchRecords(date, pageSize: 2000);
         for (final record in result.items) {
           final source = record.source ?? 'manual';
           fingerprints.add('${record.kind.name}|${record.occurredAt}|$source');
@@ -134,55 +134,6 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
   String _fingerprint(DailyRecordCreateInput input) {
     return '${input.kind.name}|${input.occurredAt}|${input.source ?? 'manual'}';
-  }
-
-  /// Pair blood pressure systolic/diastolic data points by proximity.
-  ///
-  /// When two blood pressure metrics are within 2 minutes of each other,
-  /// merge them: the earlier one's value becomes the systolic value,
-  /// the later one's value becomes the secondaryValue (diastolic).
-  List<HealthMetric> _pairBloodPressure(List<HealthMetric> metrics) {
-    final bpMetrics = metrics
-        .where((m) => m.type == HealthMetricType.bloodPressure)
-        .toList();
-    if (bpMetrics.isEmpty) return metrics;
-
-    bpMetrics.sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
-    final used = List<bool>.filled(bpMetrics.length, false);
-    final paired = <HealthMetric>[];
-
-    for (var i = 0; i < bpMetrics.length; i++) {
-      if (used[i]) continue;
-      final first = bpMetrics[i];
-
-      // Find the nearest unused BP metric within 2 minutes
-      for (var j = i + 1; j < bpMetrics.length; j++) {
-        if (used[j]) continue;
-        final second = bpMetrics[j];
-        final diff = second.recordedAt.difference(first.recordedAt).inMinutes;
-        if (diff >= 0 && diff <= 2) {
-          paired.add(
-            first.copyWith(
-              secondaryValue: second.value,
-              secondaryUnit: second.unit,
-            ),
-          );
-          used[i] = true;
-          used[j] = true;
-          break;
-        }
-      }
-      if (!used[i]) {
-        // No pair found — keep as single reading
-        paired.add(first);
-        used[i] = true;
-      }
-    }
-
-    final nonBp = metrics.where(
-      (m) => m.type != HealthMetricType.bloodPressure,
-    );
-    return [...nonBp, ...paired];
   }
 
   String _formatDate(DateTime dt) {

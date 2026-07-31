@@ -6,19 +6,22 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 /// Maps between native health plugin data types and Luminous domain models.
 ///
 /// Responsibilities:
-/// - `HealthDataPoint` → `HealthMetric` (with sleep merging)
+/// - `HealthDataPoint` → `HealthMetric` (with sleep merging + BP pairing)
 /// - `HealthMetric` → `DailyRecordCreateInput` (with payload + source)
 class HealthRecordMapper {
   const HealthRecordMapper();
 
   /// Convert a list of [HealthDataPoint]s to [HealthMetric]s.
   ///
-  /// Non-sleep data points map 1:1. Sleep data points (SLEEP_ASLEEP,
-  /// SLEEP_DEEP, SLEEP_LIGHT, SLEEP_REM) from the same date are merged
-  /// into a single [HealthMetric] with per-stage minute breakdowns.
+  /// Non-sleep, non-BP data points map 1:1. Sleep data points
+  /// (SLEEP_ASLEEP, SLEEP_DEEP, SLEEP_LIGHT, SLEEP_REM) from the same
+  /// date are merged into a single [HealthMetric] with per-stage minute
+  /// breakdowns. Blood pressure systolic/diastolic data points are
+  /// paired by time proximity using their original [HealthDataType].
   List<HealthMetric> mapToMetrics(List<HealthDataPoint> points) {
     final nonSleep = <HealthMetric>[];
     final sleepByDate = <String, _SleepAggregator>{};
+    final bpPoints = <_BloodPressureDataPoint>[];
 
     for (final point in points) {
       final type = _toMetricType(point.type);
@@ -28,6 +31,16 @@ class HealthRecordMapper {
         final dateKey = _dateKey(point.dateTo);
         sleepByDate.putIfAbsent(dateKey, _SleepAggregator.new);
         sleepByDate[dateKey]!.add(point);
+      } else if (type == HealthMetricType.bloodPressure) {
+        final value = _extractNumeric(point);
+        if (value == null) continue;
+        bpPoints.add(
+          _BloodPressureDataPoint(
+            value: value,
+            recordedAt: point.dateTo,
+            isSystolic: point.type == HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          ),
+        );
       } else {
         final value = _extractNumeric(point);
         if (value == null) continue;
@@ -44,6 +57,9 @@ class HealthRecordMapper {
       }
     }
 
+    // Pair blood pressure systolic/diastolic using original type info
+    nonSleep.addAll(_pairBloodPressure(bpPoints));
+
     // Merge sleep aggregators into metrics
     for (final entry in sleepByDate.entries) {
       final merged = entry.value.merge();
@@ -51,6 +67,78 @@ class HealthRecordMapper {
     }
 
     return nonSleep;
+  }
+
+  /// Pair blood pressure systolic/diastolic data points.
+  ///
+  /// Uses the original [HealthDataType] to distinguish systolic from
+  /// diastolic, preventing value swaps when both data points share the
+  /// same timestamp. Each systolic is matched with the nearest unused
+  /// diastolic within a 2-minute window.
+  List<HealthMetric> _pairBloodPressure(List<_BloodPressureDataPoint> points) {
+    if (points.isEmpty) return [];
+
+    final systolics = points.where((p) => p.isSystolic).toList()
+      ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
+    final diastolics = points.where((p) => !p.isSystolic).toList()
+      ..sort((a, b) => a.recordedAt.compareTo(b.recordedAt));
+    final usedDiastolic = List<bool>.filled(diastolics.length, false);
+    final result = <HealthMetric>[];
+
+    for (final sys in systolics) {
+      // Find the nearest unused diastolic within 2 minutes
+      int? bestIdx;
+      int? bestDiff;
+      for (var i = 0; i < diastolics.length; i++) {
+        if (usedDiastolic[i]) continue;
+        final dia = diastolics[i];
+        final diff = dia.recordedAt.difference(sys.recordedAt).inMinutes.abs();
+        if (diff <= 2 && (bestDiff == null || diff < bestDiff)) {
+          bestIdx = i;
+          bestDiff = diff;
+        }
+      }
+
+      if (bestIdx != null) {
+        usedDiastolic[bestIdx] = true;
+        result.add(
+          HealthMetric(
+            type: HealthMetricType.bloodPressure,
+            value: sys.value,
+            unit: 'mmHg',
+            recordedAt: sys.recordedAt,
+            secondaryValue: diastolics[bestIdx].value,
+            secondaryUnit: 'mmHg',
+          ),
+        );
+      } else {
+        // No pair found — keep as single reading
+        result.add(
+          HealthMetric(
+            type: HealthMetricType.bloodPressure,
+            value: sys.value,
+            unit: 'mmHg',
+            recordedAt: sys.recordedAt,
+          ),
+        );
+      }
+    }
+
+    // Add unpaired diastolics as single readings
+    for (var i = 0; i < diastolics.length; i++) {
+      if (!usedDiastolic[i]) {
+        result.add(
+          HealthMetric(
+            type: HealthMetricType.bloodPressure,
+            value: diastolics[i].value,
+            unit: 'mmHg',
+            recordedAt: diastolics[i].recordedAt,
+          ),
+        );
+      }
+    }
+
+    return result;
   }
 
   /// Convert a [HealthMetric] to a [DailyRecordCreateInput].
@@ -309,6 +397,23 @@ class HealthRecordMapper {
   }
 
   String _dateKey(DateTime dt) => _formatDate(dt);
+}
+
+/// Temporary holder for blood pressure data points during pairing.
+///
+/// Preserves the original [HealthDataType] distinction (systolic vs
+/// diastolic) so the mapper can pair correctly even when both data
+/// points share the same timestamp.
+class _BloodPressureDataPoint {
+  _BloodPressureDataPoint({
+    required this.value,
+    required this.recordedAt,
+    required this.isSystolic,
+  });
+
+  final double value;
+  final DateTime recordedAt;
+  final bool isSystolic;
 }
 
 /// Aggregates sleep data points from the same date into a single [HealthMetric].
