@@ -71,6 +71,14 @@ Future<void> runPrePushChecks(ToolContext context) async {
 }
 
 Future<void> runPreCommitChecks(ToolContext context) async {
+  // ── Migration-log overwrite detection (blocking) ────────────
+  // Migration logs must be appended to, not overwritten. If a staged
+  // migration-log file has more than 5 deleted lines, block the commit.
+  // Bypass with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
+  if (Platform.environment['SKIP_DOC_CHECK'] != '1') {
+    await _checkMigrationLogOverwrite(context);
+  }
+
   // ── Documentation check (non-blocking) ───────────────────────
   // Runs in warning-only mode so missing docs are reported but do
   // not block the commit. Bypass entirely with SKIP_DOC_CHECK=1.
@@ -296,6 +304,60 @@ Future<void> runFullstackChecks(
       stepName: 'flutter test $testFile',
     );
     stdout.writeln('');
+  }
+}
+
+/// Max deletion lines allowed in a staged migration-log file before blocking.
+const _migrationLogMaxDeletions = 5;
+
+/// Checks staged migration-log files for excessive deletions.
+///
+/// Migration logs must be **appended** to, not overwritten. If a staged
+/// diff for a migration-log file contains more than
+/// [_migrationLogMaxDeletions] deleted lines, the commit is blocked.
+Future<void> _checkMigrationLogOverwrite(ToolContext context) async {
+  final stagedModified = await captureCommandLines('git', [
+    'diff',
+    '--cached',
+    '--name-only',
+    '--diff-filter=M',
+  ], workingDirectory: context.repoRoot);
+
+  final logPattern = RegExp(r'^docs/03-logs/migration-log/.+\.md$');
+  final logFiles = stagedModified
+      .where((f) => logPattern.hasMatch(f.replaceAll('\\', '/')))
+      .toList();
+
+  for (final file in logFiles) {
+    final result = await Process.run('git', [
+      'diff',
+      '--cached',
+      '--',
+      file,
+    ], workingDirectory: context.repoRoot.path);
+    if (result.exitCode != 0) continue;
+
+    final diff = result.stdout.toString();
+    final deletionCount = diff
+        .split('\n')
+        .where((line) => line.startsWith('-') && !line.startsWith('---'))
+        .length;
+
+    if (deletionCount > _migrationLogMaxDeletions) {
+      stderr.writeln('');
+      stderr.writeln('Migration Log Overwrite Detected:');
+      stderr.writeln(
+        '  $file has $deletionCount deleted lines in staged diff '
+        '(max $_migrationLogMaxDeletions).',
+      );
+      stderr.writeln('  Migration logs must be appended to, not overwritten.');
+      stderr.writeln(
+        '  If restructure is needed, keep deletions <= $_migrationLogMaxDeletions.',
+      );
+      stderr.writeln('  Bypass with SKIP_DOC_CHECK=1 or --no-verify.');
+      exitCode = 1;
+      return;
+    }
   }
 }
 
