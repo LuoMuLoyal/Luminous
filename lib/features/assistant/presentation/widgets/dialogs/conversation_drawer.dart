@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
-import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
-import 'package:luminous/l10n/app_localizations.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_header.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart';
 
+/// A compact conversation manager shown as a side sheet on mobile and tablet
+/// and as a sidebar on desktop.
+///
+/// Conversations are grouped by recency (today / last 7 days / older) and the
+/// currently active conversation is visually highlighted. Rename and delete
+/// actions are currently disabled because the backend does not expose
+/// `PATCH /conversations/:id` or `DELETE /conversations/:id` yet.
 class AssistantConversationDrawer extends StatelessWidget {
   const AssistantConversationDrawer({
     super.key,
@@ -15,6 +20,7 @@ class AssistantConversationDrawer extends StatelessWidget {
     required this.emptyDescription,
     required this.onRetry,
     required this.onSelect,
+    this.onNewConversation,
   });
 
   final AssistantState state;
@@ -23,15 +29,13 @@ class AssistantConversationDrawer extends StatelessWidget {
   final String emptyDescription;
   final VoidCallback onRetry;
   final ValueChanged<String> onSelect;
+  final VoidCallback? onNewConversation;
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-
-    final items = state.recentConversations;
-    final width = MediaQuery.sizeOf(context).width < 600
-        ? MediaQuery.sizeOf(context).width * 0.8
-        : 360.0;
+    final width = MediaQuery.sizeOf(context).width < Breakpoints.tablet
+        ? MediaQuery.sizeOf(context).width * 0.85
+        : 320.0;
 
     return SizedBox(
       width: width,
@@ -41,137 +45,19 @@ class AssistantConversationDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: TypographyToken.level7.display(context),
-                    ),
-                  ),
-                  FButton.icon(
-                    variant: FButtonVariant.ghost,
-                    onPress: () => Navigator.of(context).pop(),
-                    child: const Icon(SemanticIcons.actionClose),
-                  ),
-                ],
+              AssistantConversationDrawerHeader(
+                title: title,
+                onNewConversation: onNewConversation,
+                onClose: () => Navigator.of(context).pop(),
               ),
               const SizedBox(height: Spacing.level4),
               Expanded(
-                child: Builder(
-                  builder: (context) {
-                    if (state.isLoadingRecentConversations && items.isEmpty) {
-                      return const StateSkeletonView(
-                        blocks: <StateSkeletonBlock>[
-                          StateSkeletonBlock(height: 72),
-                          StateSkeletonBlock(height: 72),
-                          StateSkeletonBlock(height: 72),
-                        ],
-                      );
-                    }
-                    if (state.recentConversationError != null &&
-                        items.isEmpty) {
-                      return StateMessageView(
-                        title: title,
-                        description: state.recentConversationError!,
-                        icon: SemanticIcons.actionTimeSlot,
-                        tone: StateTone.warning,
-                        actionLabel: AppLocalizations.of(
-                          context,
-                        )!.todayRetryAction,
-                        onAction: onRetry,
-                      );
-                    }
-                    if (items.isEmpty) {
-                      return StateMessageView(
-                        title: emptyTitle,
-                        description: emptyDescription,
-                        icon: SemanticIcons.actionMessage,
-                      );
-                    }
-
-                    return ListView.separated(
-                      key: const Key('assistant-recent-conversation-list'),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        final selected = item.id == state.conversationId;
-                        final borderColor = selected
-                            ? colors.primary
-                            : colors.border;
-                        final backgroundColor = selected
-                            ? SemanticColor.primary.muted(context)
-                            : colors.background;
-
-                        return FTappable(
-                          key: Key('assistant-recent-conversation-${item.id}'),
-                          onPress: state.isOpeningConversation
-                              ? null
-                              : () => onSelect(item.id),
-                          child: FCard(
-                            style: .delta(
-                              decoration: .shapeDelta(
-                                color: backgroundColor,
-                                shape: RoundedSuperellipseBorder(
-                                  side: BorderSide(color: borderColor),
-                                  borderRadius:
-                                      context.theme.style.borderRadius.lg,
-                                ),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.level4),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    conversationTitle(context, item),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TypographyToken.level5
-                                        .body(context)
-                                        .copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                  const SizedBox(height: Spacing.level2),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          conversationTimestampLabel(
-                                            context,
-                                            item,
-                                          ),
-                                          style: TypographyToken.level3
-                                              .body(context)
-                                              .copyWith(
-                                                color: colors.mutedForeground,
-                                              ),
-                                        ),
-                                      ),
-                                      if (selected)
-                                        Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!.assistantRecentConversationCurrentLabel,
-                                          style: TypographyToken.level4
-                                              .body(context)
-                                              .copyWith(
-                                                color: colors.primary,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                        ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (_, __) =>
-                          const SizedBox(height: Spacing.level3),
-                    );
-                  },
+                child: AssistantConversationDrawerList(
+                  state: state,
+                  emptyTitle: emptyTitle,
+                  emptyDescription: emptyDescription,
+                  onRetry: onRetry,
+                  onSelect: onSelect,
                 ),
               ),
             ],
