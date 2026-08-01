@@ -31,6 +31,9 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   final Stream<AssistantRemoteEvent>? _stream;
 
   String? lastOpenedConversationId;
+  String? lastStreamConversationId;
+  final List<(String, List<String>, String, String?)> confirmProposalsCalls =
+      <(String, List<String>, String, String?)>[];
 
   @override
   Future<lucent.AssistantCapabilitiesDataDto> getCapabilities() async {
@@ -70,8 +73,21 @@ class _FakeAssistantRemoteDataSource extends AssistantRemoteDataSource {
   @override
   Stream<AssistantRemoteEvent> streamMessages({
     required List<lucent.AssistantInputMessageDto> messages,
+    String? conversationId,
   }) {
+    lastStreamConversationId = conversationId;
     return _stream ?? const Stream.empty();
+  }
+
+  @override
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) async {
+    confirmProposalsCalls.add((conversationId, proposalIds, decision, note));
+    return null;
   }
 }
 
@@ -992,6 +1008,60 @@ void main() {
       expect(events[0], isA<AssistantGenerationChunkEvent>());
       expect(events[1], isA<AssistantGenerationChunkEvent>());
       expect(events[2], isA<AssistantGenerationResultEvent>());
+    });
+
+    test('passes conversationId through to data source', () async {
+      final fake = _FakeAssistantRemoteDataSource(
+        stream: Stream.fromIterable(const []),
+      );
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      await repo.streamMessages([
+        AssistantMessage(
+          role: AssistantMessageRole.user,
+          content: 'hi',
+          createdAt: dummyDateTime,
+        ),
+      ], conversationId: 'conv-persisted').toList();
+
+      expect(fake.lastStreamConversationId, 'conv-persisted');
+    });
+  });
+
+  group('LucentAssistantRepository.confirmProposals', () {
+    test('delegates approved decision to data source', () async {
+      final fake = _FakeAssistantRemoteDataSource();
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      final content = await repo.confirmProposals(
+        conversationId: 'conv-1',
+        proposalIds: const ['pa-1'],
+        decision: 'approved',
+      );
+
+      expect(fake.confirmProposalsCalls, hasLength(1));
+      final call = fake.confirmProposalsCalls.single;
+      expect(call.$1, 'conv-1');
+      expect(call.$2, ['pa-1']);
+      expect(call.$3, 'approved');
+      expect(call.$4, isNull);
+      expect(content, isNull);
+    });
+
+    test('passes note when rejecting', () async {
+      final fake = _FakeAssistantRemoteDataSource();
+      final repo = LucentAssistantRepository(dataSource: fake);
+
+      await repo.confirmProposals(
+        conversationId: 'conv-1',
+        proposalIds: const ['pa-1'],
+        decision: 'rejected',
+        note: 'looks wrong',
+      );
+
+      final call = fake.confirmProposalsCalls.single;
+      expect(call.$3, 'rejected');
+      expect(call.$4, 'looks wrong');
     });
   });
 }

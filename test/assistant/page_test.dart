@@ -547,7 +547,23 @@ class _PendingUserSettingsController extends UserSettingsController {
   }
 }
 
-class _FakeAssistantRepository implements AssistantRepository {
+/// Stubs the backend proposal confirmation for repositories that only need
+/// local proposal execution in tests.
+mixin _ConfirmProposalsStub implements AssistantRepository {
+  @override
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) async {
+    return null;
+  }
+}
+
+class _FakeAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   static const _capabilities = AssistantCapabilities(
     phase: 'phase_1',
     assistantEnabled: true,
@@ -589,8 +605,9 @@ class _FakeAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -682,7 +699,9 @@ class _TrackingUserSettingsController extends _ReadyUserSettingsController {
   }
 }
 
-class _ErrorStreamAssistantRepository implements AssistantRepository {
+class _ErrorStreamAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -704,15 +723,18 @@ class _ErrorStreamAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return Stream<AssistantGenerationEvent>.error(
       const LucentApiException(message: '服务端出现问题', statusCode: 503),
     );
   }
 }
 
-class _SuccessWithToolsAssistantRepository implements AssistantRepository {
+class _SuccessWithToolsAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -734,8 +756,9 @@ class _SuccessWithToolsAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       const AssistantGenerationChunkEvent('根据你的睡眠数据…'),
       AssistantGenerationResultEvent(
@@ -751,7 +774,9 @@ class _SuccessWithToolsAssistantRepository implements AssistantRepository {
   }
 }
 
-class _ProposalAssistantRepository implements AssistantRepository {
+class _ProposalAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -773,8 +798,9 @@ class _ProposalAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-proposal',
@@ -822,7 +848,9 @@ class _ProposalAssistantRepository implements AssistantRepository {
   }
 }
 
-class _SettingsProposalAssistantRepository implements AssistantRepository {
+class _SettingsProposalAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -844,8 +872,9 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-settings-proposal',
@@ -887,7 +916,9 @@ class _SettingsProposalAssistantRepository implements AssistantRepository {
   }
 }
 
-class _ExpiredProposalAssistantRepository implements AssistantRepository {
+class _ExpiredProposalAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -909,8 +940,9 @@ class _ExpiredProposalAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return Stream<AssistantGenerationEvent>.fromIterable([
       AssistantGenerationResultEvent(
         conversationId: 'conversation-proposal-expired',
@@ -958,7 +990,9 @@ class _ExpiredProposalAssistantRepository implements AssistantRepository {
   }
 }
 
-class _DisabledAssistantRepository implements AssistantRepository {
+class _DisabledAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async =>
       const <AssistantConversationSummary>[];
@@ -1000,8 +1034,9 @@ class _DisabledAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -1033,7 +1068,9 @@ class _DisabledWithHistoryAssistantRepository
   }
 }
 
-class _RestoredConversationAssistantRepository implements AssistantRepository {
+class _RestoredConversationAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   int clearCalls = 0;
 
   @override
@@ -1092,13 +1129,16 @@ class _RestoredConversationAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
 
-class _RetryAwareAssistantRepository implements AssistantRepository {
+class _RetryAwareAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   _RetryAwareAssistantRepository();
 
   final List<int> recordedMessageCounts = <int>[];
@@ -1125,8 +1165,9 @@ class _RetryAwareAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) async* {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) async* {
     recordedMessageCounts.add(messages.length);
     _attempt += 1;
 
@@ -1146,7 +1187,9 @@ class _RetryAwareAssistantRepository implements AssistantRepository {
   }
 }
 
-class _RecentConversationsAssistantRepository implements AssistantRepository {
+class _RecentConversationsAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   final List<String> openedConversationIds = <String>[];
 
   @override
@@ -1229,8 +1272,9 @@ class _RecentConversationsAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }
@@ -1298,7 +1342,9 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
 
 /// Repository that hangs on both [getCapabilities] and [getLatestConversation]
 /// until the completers finish. Used to test the loading skeleton state.
-class _FullyHangingAssistantRepository implements AssistantRepository {
+class _FullyHangingAssistantRepository
+    with _ConfirmProposalsStub
+    implements AssistantRepository {
   _FullyHangingAssistantRepository(
     this._pendingCapabilities,
     this._pendingConversation,
@@ -1329,8 +1375,9 @@ class _FullyHangingAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
     return const Stream<AssistantGenerationEvent>.empty();
   }
 }

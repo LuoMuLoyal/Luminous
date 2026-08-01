@@ -11,6 +11,13 @@ import '../auth/test_helpers.dart';
 
 /// A fake repository with canned responses.
 class _FakeAssistantRepository implements AssistantRepository {
+  _FakeAssistantRepository({this.latestConversation, this.streamOverride});
+
+  final AssistantConversation? latestConversation;
+  final Stream<AssistantGenerationEvent>? streamOverride;
+
+  String? lastStreamConversationId;
+
   @override
   Future<AssistantCapabilities> getCapabilities() async {
     return AssistantCapabilities(
@@ -36,7 +43,9 @@ class _FakeAssistantRepository implements AssistantRepository {
   }
 
   @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
+  Future<AssistantConversation?> getLatestConversation() async {
+    return latestConversation;
+  }
 
   @override
   Future<List<AssistantConversationSummary>> listRecentConversations() async {
@@ -53,9 +62,21 @@ class _FakeAssistantRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) async* {
-    // no-op
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) {
+    lastStreamConversationId = conversationId;
+    return streamOverride ?? const Stream.empty();
+  }
+
+  @override
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) async {
+    return null;
   }
 }
 
@@ -120,6 +141,46 @@ void main() {
       expect(state.isLoadingCapabilities, isFalse);
       expect(state.capabilityError, isNotNull);
     });
+
+    test('sendMessage forwards the persisted conversation id', () async {
+      SharedPreferences.setMockInitialValues(const <String, Object>{});
+      final session = SignedInAuthSessionNotifier();
+      final fake = _FakeAssistantRepository(
+        latestConversation: AssistantConversation(
+          id: 'persisted-1',
+          title: null,
+          status: 'active',
+          messages: const <AssistantMessage>[],
+          lastMessageAt: null,
+          createdAt: DateTime(2026, 6, 1),
+          updatedAt: DateTime(2026, 6, 1),
+        ),
+        streamOverride: Stream.fromIterable([
+          AssistantGenerationResultEvent(
+            conversationId: 'persisted-1',
+            message: AssistantMessage(
+              role: AssistantMessageRole.assistant,
+              content: 'ok',
+              createdAt: DateTime(2026, 6, 1),
+            ),
+          ),
+        ]),
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authSessionProvider.overrideWith(() => session),
+          assistantRepositoryProvider.overrideWithValue(fake),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final controller = container.read(assistantControllerProvider.notifier);
+      await controller.loadCapabilities();
+      await controller.loadLatestConversation();
+      await controller.sendMessage('hello');
+
+      expect(fake.lastStreamConversationId, 'persisted-1');
+    });
   });
 }
 
@@ -147,8 +208,19 @@ class _ErrorThrowingRepository implements AssistantRepository {
 
   @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) async* {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) async* {
     // no-op
+  }
+
+  @override
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) async {
+    throw UnimplementedError();
   }
 }
