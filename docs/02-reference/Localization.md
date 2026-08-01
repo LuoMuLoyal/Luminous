@@ -80,6 +80,10 @@ Persisted preference keys:
   `recordQuickUndoAction`, `recordQuickUndoFailedToast`) and symptom multi-select fast-entry strings
   (`recordFastEntryMultiSelectAction`, `recordFastEntryPartialFailedToast`) are owned by the Record
   ARB entries.
+- Record detail page strings (`recordDetail*`, including water progress, copy summary, and
+  adjacent-navigation labels) and record edit discard strings (`recordEditDiscard*`) are owned by
+  the Record ARB entries. Water default customization strings (`recordQuickSettingsWaterCustom*`)
+  are also Record-owned and used by both the quick-entry settings page and the long-press dialog.
 - Record quick medication strings (`recordQuickMedication*`) are owned by the Record ARB entries,
   even when an action routes to Medicine search, because the prompt and selection dialog live on the
   Record page.

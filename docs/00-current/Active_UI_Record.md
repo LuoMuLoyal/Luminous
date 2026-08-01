@@ -96,6 +96,13 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - 长按快捷瓦片不再打开图标选择器，改为按类型弹出 Forui 弹窗：water → 饮水默认量/角标设置；meal → 无照片手动录入（`MealQuickConfirmationDialog`）；medication/symptom/mood/sleep → 该类型当前规则说明。回调经 `onQuickActionLongPress`（`page.dart` → `RecordDashboardView` → `RecordQuickEntryPanel`）分发到 `handleQuickActionLongPress`。饮水默认量下拉含"自定义"选项：选中后弹出 `water_custom_amount_dialog` 输入毫升数，确认后保存 `custom` + `waterCustomMl`；设置页与长按弹窗共用 `handleWaterDefaultSelect`。
   - 自定义图标选择器迁移到两处：快速记录设置页"自定义图标"区（7 种类型逐行选择 + 恢复默认）与创建/编辑记录页的 `RecordKindIconField`（仅对映射到快捷类型的 kind 渲染）。
   - `RecordDashboard.defaultQuickActions` / `quickActionFor` 与 `resolveQuickActionIcon` 作为默认图标与生效图标的统一来源。
+- 阶段 8 详情页增强：
+  - 按类型富展示：water 记录显示"今日饮水"卡片（聚合当天 ml 记录，`{total} / 2000 ml` + 进度条）；mood 记录解析 `payload.moodLabel` 展示本地化情绪行。
+  - 相邻导航：底部"上一条/下一条"按钮（`dailyRecordListForDateProvider` 拉当天记录，按发生时间排序），`pushReplacement` 切换；边界禁用。
+  - 复制摘要：`record-detail-copy-action` 复制类型/数值/情绪/备注/来源/更新时间到剪贴板。
+- 阶段 8 编辑页重构：
+  - 逻辑下沉 `RecordEditController`（`presentation/providers/record_edit_controller.dart`）：`RecordEditState` 不可变表单状态 + load/save/isDirty/字段 setter/pickImage；页面瘦身为纯表单渲染。
+  - 未保存提醒：文本监听保持 dirty 实时，`PopScope` 拦截系统返回 + `AppBackButton` 自定义返回，弹"放弃修改？"确认（`recordEditDiscard*` 文案）。
 
 ## 骨架屏
 

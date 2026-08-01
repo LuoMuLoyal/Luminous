@@ -79,6 +79,8 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
   偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量（预设或自定义 ml）、饮水角标模式和睡眠进行中标记。
 - Record quick-entry panel 从 `RecordDashboardView` 接收当天 `RecordDaySummary` 与 `RecordTimelineEntry`
   列表，用于本地渲染饮水角标（累计量/次数/隐藏）和睡眠进行中角标；该显示层不新增后端状态字段。
+- `dailyRecordDetailProvider(recordId)` 为 keepAlive FutureProvider；`dailyRecordListForDateProvider(date)`（手写 `FutureProvider.family`）按本地日期拉当天记录，供详情页相邻导航与饮水聚合。
+- `recordEditControllerProvider`（`presentation/providers/record_edit_controller.dart`）承载编辑页表单状态与 load/save/isDirty；页面为纯表单渲染并负责未保存离开提醒（`PopScope` + 自定义 `AppBackButton`）。
 
 ## 本地持久化
 

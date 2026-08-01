@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/candidates.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
@@ -167,5 +168,62 @@ void main() {
     expect(payload?['mealAnalysis'], <String, dynamic>{
       'analysisStatus': 'confirmed',
     });
+  });
+
+  testWidgets('unsaved changes prompt before leaving', (tester) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final repo = _FakeRecordRepo();
+
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (_, __) => const Scaffold(body: Text('Home')),
+        ),
+        GoRoute(
+          path: '/record/:id/edit',
+          builder: (_, state) =>
+              RecordEditPage(recordId: state.pathParameters['id']!),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+        ],
+        child: TestAuthApp(router: router),
+      ),
+    );
+    await router.push('/record/test-id/edit');
+    await tester.pumpAndSettle();
+    // Modify the note field so the form becomes dirty.
+    await tester.enterText(
+      find.byKey(const Key('daily-record-note-field')),
+      '未保存的备注',
+    );
+    await tester.pump();
+
+    // Backing out shows the discard confirmation.
+    await tester.tap(find.byType(AppBackButton));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.recordEditDiscardTitle), findsOneWidget);
+
+    // Keep editing: dialog closes and the page stays.
+    await tester.tap(find.text(l10n.recordEditKeepEditingAction));
+    await tester.pumpAndSettle();
+    expect(find.byType(RecordEditPage), findsOneWidget);
+    expect(find.text(l10n.recordEditDiscardTitle), findsNothing);
+
+    // Discard: dialog closes and we navigate back home.
+    await tester.tap(find.byType(AppBackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('record-edit-discard-confirm')));
+    await tester.pumpAndSettle();
+    expect(find.text('Home'), findsOneWidget);
   });
 }

@@ -1,40 +1,31 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
-import 'package:luminous/core/logger/logger.dart';
-import 'package:luminous/core/providers/data_change_bus.dart';
-import 'package:luminous/core/utils/image_compressor.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
-import 'package:luminous/features/record/data/providers/record_access.dart';
-import 'package:luminous/features/record/domain/entities/inputs.dart'
-    show
-        DailyRecordAttachmentInput,
-        DailyRecordImageUploadInput,
-        DailyRecordUpdateInput,
-        dailyRecordNoChange;
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/presentation/providers/record_edit_controller.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
-import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/meal_confirm_action.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
-import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/dish_editor.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -47,231 +38,90 @@ class RecordEditPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final state = ref.watch(recordEditControllerProvider);
+    final controller = ref.read(recordEditControllerProvider.notifier);
 
     final valueController = useTextEditingController();
     final unitController = useTextEditingController();
     final noteController = useTextEditingController();
     final titleController = useTextEditingController();
-    final imagePicker = useMemoized(() => ImagePicker());
 
-    final kind = useState(DailyRecordKind.water);
-    final saving = useState(false);
-    final deleting = useState(false);
-    final loaded = useState(false);
-    final loadingRecord = useState(false);
-    final loadError = useState(false);
-    final existingImageAttachment = useState<DailyRecordAttachment?>(null);
-    final existingSleepPayload = useState<Map<String, dynamic>?>(null);
-    final selectedImage = useState<PendingDailyRecordImage?>(null);
-    final attachmentsChanged = useState(false);
-    final recordOccurredAt = useState<DateTime?>(null);
-    final recordOccurredTime = useState<String?>(null);
-    final sleepBedtime = useState<TimeOfDay?>(null);
-    final sleepWakeTime = useState<TimeOfDay?>(null);
-    final sleepQuality = useState<String?>(null);
-    final sleepDeepMinutes = useState<int?>(null);
-    final sleepLightMinutes = useState<int?>(null);
-    final sleepRemMinutes = useState<int?>(null);
-    final mealDishNames = useState<List<String>>(<String>[]);
-    final canConfirmMealAnalysis = useState(false);
-    final confirmMealAnalysis = useState(false);
-
-    void invalidateProviders() {
-      ref.invalidate(dailyRecordDetailProvider(recordId));
-      ref
-          .read(dataChangeBusProvider.notifier)
-          .emit(DataChangeTopic.dailyRecords);
-    }
-
-    void loadSleepPayloadData(Map<String, dynamic>? payload) {
-      if (payload == null) return;
-      final startAt = payload['startAt'] as String?;
-      if (startAt != null) {
-        final dt = DateTime.tryParse(startAt);
-        if (dt != null) {
-          final local = dt.toLocal();
-          sleepBedtime.value = TimeOfDay(
-            hour: local.hour,
-            minute: local.minute,
-          );
+    // Rebuild on every text change so dirty detection stays current.
+    final rebuildTick = useState(0);
+    useEffect(() {
+      void onEdit() => rebuildTick.value++;
+      for (final controller in [
+        valueController,
+        unitController,
+        noteController,
+        titleController,
+      ]) {
+        controller.addListener(onEdit);
+      }
+      return () {
+        for (final controller in [
+          valueController,
+          unitController,
+          noteController,
+          titleController,
+        ]) {
+          controller.removeListener(onEdit);
         }
-      }
-      final endAt = payload['endAt'] as String?;
-      if (endAt != null) {
-        final dt = DateTime.tryParse(endAt);
-        if (dt != null) {
-          final local = dt.toLocal();
-          sleepWakeTime.value = TimeOfDay(
-            hour: local.hour,
-            minute: local.minute,
-          );
-        }
-      }
-      sleepQuality.value = payload['quality'] as String?;
-      final deep = payload['deepMinutes'];
-      if (deep is num && deep > 0) sleepDeepMinutes.value = deep.round();
-      final light = payload['lightMinutes'];
-      if (light is num && light > 0) sleepLightMinutes.value = light.round();
-      final rem = payload['remMinutes'];
-      if (rem is num && rem > 0) sleepRemMinutes.value = rem.round();
-    }
-
-    String defaultUnitTextForKind(DailyRecordKind k) {
-      if (k == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
-      return '';
-    }
-
-    Future<void> loadRecord() async {
-      if (loaded.value || loadingRecord.value) return;
-      loadingRecord.value = true;
-      try {
-        final repo = ref.read(dailyRecordRepositoryProvider);
-        final record = await repo.get(recordId);
-        if (!context.mounted) return;
-        kind.value = record.kind;
-        valueController.text = record.value ?? '';
-        unitController.text =
-            record.unit ?? defaultUnitTextForKind(record.kind);
-        noteController.text = record.note ?? '';
-        titleController.text = record.title ?? '';
-        existingImageAttachment.value = record.attachments
-            .where((a) => a.kind == DailyRecordAttachmentKind.image)
-            .firstOrNull;
-        existingSleepPayload.value = record.payload == null
-            ? null
-            : Map<String, dynamic>.from(record.payload!);
-        selectedImage.value = null;
-        attachmentsChanged.value = false;
-        loadSleepPayloadData(record.payload);
-        mealDishNames.value = parseMealDishDraftNames(record.payload);
-        final mealAnalysis = parseMealAnalysisViewData(record.payload);
-        canConfirmMealAnalysis.value =
-            mealAnalysis != null &&
-            (mealAnalysis.status == 'unconfirmed' ||
-                mealAnalysis.status == 'confirmed');
-        confirmMealAnalysis.value = false;
-        recordOccurredAt.value = parseRecordDate(record.occurredAt);
-        recordOccurredTime.value = record.occurredTime?.trim();
-        loaded.value = true;
-        loadingRecord.value = false;
-      } catch (e) {
-        ref.read(talkerProvider).error('RecordEditPage.loadRecord: failed: $e');
-        if (context.mounted) {
-          loadError.value = true;
-        }
-      } finally {
-        if (context.mounted && !loaded.value) {
-          loadingRecord.value = false;
-        }
-      }
-    }
-
-    String? optionalText(TextEditingController c) {
-      final val = c.text.trim();
-      return val.isEmpty ? null : val;
-    }
-
-    String? normalizedValueForKind(DailyRecordKind k) {
-      if (k == DailyRecordKind.sleep) return null;
-      return optionalText(valueController);
-    }
-
-    String? unitTextForKind(DailyRecordKind k) {
-      final val = unitController.text.trim();
-      if (val.isNotEmpty) return val;
-      if (k == DailyRecordKind.water) return dailyRecordWaterDefaultUnit;
-      return null;
-    }
-
-    int? resolvedSleepDurationMinutes() {
-      final computed = computeSleepDurationMinutes(
-        sleepBedtime.value,
-        sleepWakeTime.value,
-      );
-      if (computed != null && computed > 0) return computed;
-      final existing = existingSleepPayload.value?['durationMinutes'];
-      if (existing is num && existing > 0) return existing.round();
-      return null;
-    }
-
-    Map<String, dynamic>? buildSleepPayload(DailyRecordKind k) {
-      if (k != DailyRecordKind.sleep) return null;
-      final minutes = resolvedSleepDurationMinutes();
-      if (minutes == null || minutes <= 0) return null;
-      final payload = <String, dynamic>{'durationMinutes': minutes};
-      final bedTime = sleepBedtime.value;
-      final wakeTime = sleepWakeTime.value;
-      if (bedTime != null && wakeTime != null) {
-        final occurredAt = recordOccurredAt.value ?? clock.now();
-        final wake = DateTime(
-          occurredAt.year,
-          occurredAt.month,
-          occurredAt.day,
-          wakeTime.hour,
-          wakeTime.minute,
-        );
-        var bed = DateTime(
-          occurredAt.year,
-          occurredAt.month,
-          occurredAt.day,
-          bedTime.hour,
-          bedTime.minute,
-        );
-        if (!bed.isBefore(wake)) bed = bed.subtract(const Duration(days: 1));
-        payload['startAt'] = bed.toUtc().toIso8601String();
-        payload['endAt'] = wake.toUtc().toIso8601String();
-      }
-      if (sleepQuality.value != null) payload['quality'] = sleepQuality.value;
-      final deep = sleepDeepMinutes.value;
-      if (deep != null && deep > 0) {
-        payload['deepMinutes'] = deep;
-      }
-      final light = sleepLightMinutes.value;
-      if (light != null && light > 0) {
-        payload['lightMinutes'] = light;
-      }
-      final rem = sleepRemMinutes.value;
-      if (rem != null && rem > 0) {
-        payload['remMinutes'] = rem;
-      }
-      return payload;
-    }
-
-    Map<String, dynamic>? buildMealPayload(DailyRecordKind k) {
-      if (k != DailyRecordKind.meal) return null;
-      final dishes = mealDishNames.value
-          .map((item) => item.trim())
-          .where((item) => item.isNotEmpty)
-          .map((item) => <String, dynamic>{'rawName': item})
-          .toList(growable: false);
-      final payload = <String, dynamic>{
-        'mealInput': <String, dynamic>{'recognizedDishes': dishes},
       };
-      if (confirmMealAnalysis.value) {
-        payload['mealAnalysis'] = <String, dynamic>{
-          'analysisStatus': 'confirmed',
-        };
-      }
-      return payload;
-    }
+    }, [valueController, unitController, noteController, titleController]);
 
-    Map<String, dynamic>? buildPayload(DailyRecordKind k) {
-      return switch (k) {
-        DailyRecordKind.sleep => buildSleepPayload(k),
-        DailyRecordKind.meal => buildMealPayload(k),
-        _ => null,
-      };
-    }
+    final session = ref.watch(authSessionProvider);
 
-    bool isValidSleepValue() {
-      if (kind.value != DailyRecordKind.sleep) return true;
-      final minutes = resolvedSleepDurationMinutes();
-      return minutes != null && minutes > 0;
-    }
+    // Load the record once when signed in and not already loading/loaded.
+    useEffect(
+      () {
+        if (session.canAccessProtectedData &&
+            !state.loading &&
+            !state.loaded &&
+            !state.loadFailed) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) unawaited(controller.load(recordId));
+          });
+        }
+        return null;
+      },
+      [
+        session.canAccessProtectedData,
+        state.loading,
+        state.loaded,
+        state.loadFailed,
+      ],
+    );
+
+    // Sync text controllers once the record has loaded.
+    useEffect(
+      () {
+        if (!state.loaded) return null;
+        valueController.text = state.initialValue;
+        unitController.text = state.initialUnit;
+        titleController.text = state.initialTitle;
+        noteController.text = state.initialNote;
+        return null;
+      },
+      [
+        state.loaded,
+        state.initialValue,
+        state.initialUnit,
+        state.initialTitle,
+        state.initialNote,
+      ],
+    );
+
+    final dirty = controller.isDirty(
+      value: valueController.text,
+      unit: unitController.text,
+      title: titleController.text,
+      note: noteController.text,
+    );
 
     void onKindChanged(DailyRecordKind newKind) {
-      final wasWater = kind.value == DailyRecordKind.water;
-      kind.value = newKind;
+      final wasWater = state.kind == DailyRecordKind.water;
+      controller.setKind(newKind);
       if (newKind != DailyRecordKind.water &&
           wasWater &&
           unitController.text.trim() == dailyRecordWaterDefaultUnit) {
@@ -281,69 +131,26 @@ class RecordEditPage extends HookConsumerWidget {
           unitController.text.trim().isEmpty) {
         unitController.text = dailyRecordWaterDefaultUnit;
       }
-      if (newKind != DailyRecordKind.sleep) {
-        sleepBedtime.value = null;
-        sleepWakeTime.value = null;
-        sleepQuality.value = null;
-        sleepDeepMinutes.value = null;
-        sleepLightMinutes.value = null;
-        sleepRemMinutes.value = null;
-      }
-    }
-
-    Future<Object> buildAttachmentPatch() async {
-      if (!attachmentsChanged.value) return dailyRecordNoChange;
-      final image = selectedImage.value;
-      if (image == null) return const <DailyRecordAttachmentInput>[];
-      final repo = ref.read(dailyRecordRepositoryProvider);
-      final attachment = await repo.uploadImage(
-        DailyRecordImageUploadInput(
-          bytes: image.bytes,
-          contentType: image.contentType,
-          sizeBytes: image.bytes.length,
-          fileName: image.fileName,
-        ),
-      );
-      return <DailyRecordAttachmentInput>[attachment];
     }
 
     Future<void> onSave() async {
-      if (kind.value == DailyRecordKind.sleep && !isValidSleepValue()) {
-        unawaited(Toast.show(context, l10n.recordSleepInvalidValueToast));
-        return;
-      }
-      saving.value = true;
-      try {
-        final repo = ref.read(dailyRecordRepositoryProvider);
-        final attachmentPatch = await buildAttachmentPatch();
-        final rules = dailyRecordFormRules(kind.value);
-        await repo.update(
-          recordId,
-          DailyRecordUpdateInput(
-            kind: kind.value,
-            occurredAt: formatRecordDate(recordOccurredAt.value ?? clock.now()),
-            occurredTime: recordOccurredTime.value,
-            title: rules.showTitle ? optionalText(titleController) : null,
-            value: rules.showValue ? normalizedValueForKind(kind.value) : null,
-            unit: rules.showUnit ? unitTextForKind(kind.value) : null,
-            note: optionalText(noteController),
-            payload: buildPayload(kind.value),
-            attachments: attachmentPatch,
-          ),
-        );
-        invalidateProviders();
-        if (context.mounted) {
+      final result = await controller.save(
+        recordId,
+        value: valueController.text,
+        unit: unitController.text,
+        title: titleController.text,
+        note: noteController.text,
+        occurredTime: state.occurredTime,
+      );
+      if (!context.mounted) return;
+      switch (result) {
+        case RecordEditSaveResult.saved:
           await Toast.show(context, l10n.mineEditSavedToast);
-          if (!context.mounted) return;
-          context.pop();
-        }
-      } catch (e) {
-        ref.read(talkerProvider).error('RecordEditPage.onSave: failed: $e');
-        if (context.mounted) {
+          if (context.mounted) _popOrGoHome(context);
+        case RecordEditSaveResult.invalidSleep:
+          await Toast.show(context, l10n.recordSleepInvalidValueToast);
+        case RecordEditSaveResult.failed:
           await Toast.show(context, l10n.recordCreateFailedToast);
-        }
-      } finally {
-        if (context.mounted) saving.value = false;
       }
     }
 
@@ -354,60 +161,18 @@ class RecordEditPage extends HookConsumerWidget {
       popCount: 2,
     );
 
-    Future<void> onPickImage() async {
-      try {
-        final image = await imagePicker.pickImage(
-          source: ImageSource.gallery,
-          requestFullMetadata: false,
-        );
-        if (image == null) return;
-        final contentType = resolveImageContentType(image);
-        if (contentType == null) {
-          if (context.mounted) {
-            await Toast.show(context, l10n.recordImageUnsupportedToast);
-          }
-          return;
-        }
-        final rawBytes = await image.readAsBytes();
-        if (!context.mounted) return;
-        final compressedBytes = await ImageCompressor.compressForUpload(
-          rawBytes,
-        );
-        selectedImage.value = PendingDailyRecordImage(
-          bytes: compressedBytes,
-          fileName: image.name,
-          contentType: 'image/jpeg',
-        );
-        attachmentsChanged.value = true;
-      } catch (e) {
-        ref
-            .read(talkerProvider)
-            .error('RecordEditPage.onPickImage: failed: $e');
-        if (context.mounted) {
-          await Toast.show(context, l10n.recordImagePickFailedToast);
-        }
+    Future<void> handleBack() async {
+      if (!dirty) {
+        _popOrGoHome(context);
+        return;
+      }
+      final leave = await _confirmDiscard(context, l10n);
+      if (leave == true && context.mounted) {
+        _popOrGoHome(context);
       }
     }
 
-    void onRemoveImage() {
-      selectedImage.value = null;
-      attachmentsChanged.value = true;
-    }
-
-    final session = ref.watch(authSessionProvider);
     final Widget content;
-
-    // Trigger load on first eligible frame
-    useEffect(() {
-      if (session.canAccessProtectedData &&
-          !loaded.value &&
-          !loadingRecord.value) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (context.mounted) unawaited(loadRecord());
-        });
-      }
-      return null;
-    }, [session.canAccessProtectedData]);
 
     if (!session.canAccessProtectedData) {
       final width = MediaQuery.sizeOf(context).width;
@@ -431,7 +196,7 @@ class RecordEditPage extends HookConsumerWidget {
           ),
         ),
       );
-    } else if (loadError.value) {
+    } else if (state.loadFailed) {
       final width = MediaQuery.sizeOf(context).width;
       content = ResponsiveContentFrame(
         child: Padding(
@@ -445,15 +210,12 @@ class RecordEditPage extends HookConsumerWidget {
             description: l10n.recordErrorDescription,
             icon: SemanticIcons.tabRecord,
             actionLabel: l10n.todayRetryAction,
-            onAction: () {
-              loadError.value = false;
-              loaded.value = false;
-            },
+            onAction: () => controller.load(recordId),
             tone: StateTone.warning,
           ),
         ),
       );
-    } else if (!loaded.value) {
+    } else if (!state.loaded) {
       final width = MediaQuery.sizeOf(context).width;
       content = ResponsiveContentFrame(
         child: Padding(
@@ -486,38 +248,40 @@ class RecordEditPage extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     RecordOccurredAtFields(
-                      date: recordOccurredAt.value ?? clock.now(),
-                      time: recordOccurredTime.value,
-                      onDateChanged: (date) =>
-                          recordOccurredAt.value = DateTime(
-                            date.year,
-                            date.month,
-                            date.day,
-                            recordOccurredAt.value?.hour ?? clock.now().hour,
-                            recordOccurredAt.value?.minute ??
-                                clock.now().minute,
-                          ),
+                      date: state.occurredAt ?? clock.now(),
+                      time: state.occurredTime,
+                      onDateChanged: (date) => controller.setOccurredAt(
+                        DateTime(
+                          date.year,
+                          date.month,
+                          date.day,
+                          state.occurredAt?.hour ?? clock.now().hour,
+                          state.occurredAt?.minute ?? clock.now().minute,
+                        ),
+                      ),
                       onTimeChanged: (time) {
                         if (time == null) {
-                          recordOccurredTime.value = null;
+                          controller.setOccurredAt(
+                            state.occurredAt,
+                            time: null,
+                          );
                           return;
                         }
-                        recordOccurredAt.value = DateTime(
-                          recordOccurredAt.value?.year ?? clock.now().year,
-                          recordOccurredAt.value?.month ?? clock.now().month,
-                          recordOccurredAt.value?.day ?? clock.now().day,
-                          time.hour,
-                          time.minute,
-                        );
-                        recordOccurredTime.value = formatHourMinute(
-                          time.hour,
-                          time.minute,
+                        controller.setOccurredAt(
+                          DateTime(
+                            state.occurredAt?.year ?? clock.now().year,
+                            state.occurredAt?.month ?? clock.now().month,
+                            state.occurredAt?.day ?? clock.now().day,
+                            time.hour,
+                            time.minute,
+                          ),
+                          time: formatHourMinute(time.hour, time.minute),
                         );
                       },
                     ),
                     const SizedBox(height: Spacing.level3),
                     DailyRecordFormFields(
-                      kind: kind.value,
+                      kind: state.kind,
                       onKindChanged: onKindChanged,
                       showKindField: false,
                       valueController: valueController,
@@ -526,73 +290,61 @@ class RecordEditPage extends HookConsumerWidget {
                       noteController: noteController,
                     ),
                     const SizedBox(height: Spacing.level3),
-                    RecordKindIconField(kind: kind.value),
-                    if (kind.value == DailyRecordKind.sleep) ...[
+                    RecordKindIconField(kind: state.kind),
+                    if (state.kind == DailyRecordKind.sleep) ...[
                       const SizedBox(height: Spacing.level3),
                       SleepStructuredFields(
                         l10n: l10n,
-                        bedtime: sleepBedtime.value,
-                        wakeTime: sleepWakeTime.value,
-                        quality: sleepQuality.value,
-                        deepMinutes: sleepDeepMinutes.value,
-                        lightMinutes: sleepLightMinutes.value,
-                        remMinutes: sleepRemMinutes.value,
-                        onBedtimeChanged: (v) => sleepBedtime.value = v,
-                        onWakeTimeChanged: (v) => sleepWakeTime.value = v,
-                        onQualityChanged: (v) => sleepQuality.value = v,
-                        onDeepMinutesChanged: (v) => sleepDeepMinutes.value = v,
-                        onLightMinutesChanged: (v) =>
-                            sleepLightMinutes.value = v,
-                        onRemMinutesChanged: (v) => sleepRemMinutes.value = v,
+                        bedtime: state.bedtime,
+                        wakeTime: state.wakeTime,
+                        quality: state.sleepQuality,
+                        deepMinutes: state.deepMinutes,
+                        lightMinutes: state.lightMinutes,
+                        remMinutes: state.remMinutes,
+                        onBedtimeChanged: controller.setBedtime,
+                        onWakeTimeChanged: controller.setWakeTime,
+                        onQualityChanged: controller.setSleepQuality,
+                        onDeepMinutesChanged: controller.setDeepMinutes,
+                        onLightMinutesChanged: controller.setLightMinutes,
+                        onRemMinutesChanged: controller.setRemMinutes,
                       ),
                     ],
-                    if (kind.value == DailyRecordKind.meal) ...[
+                    if (state.kind == DailyRecordKind.meal) ...[
                       const SizedBox(height: Spacing.level3),
                       MealDishEditorSection(
-                        dishNames: mealDishNames.value,
-                        enabled: !saving.value && !deleting.value,
-                        onDishChanged: (index, value) {
-                          final next = [...mealDishNames.value];
-                          if (index >= 0 && index < next.length) {
-                            next[index] = value;
-                            mealDishNames.value = next;
-                          }
-                        },
-                        onDishRemoved: (index) {
-                          final next = [...mealDishNames.value]
-                            ..removeAt(index);
-                          mealDishNames.value = next;
-                        },
-                        onDishAdded: () {
-                          mealDishNames.value = [...mealDishNames.value, ''];
-                        },
+                        dishNames: state.dishNames,
+                        enabled: !state.saving && !state.deleting,
+                        onDishChanged: controller.setDishName,
+                        onDishRemoved: controller.removeDish,
+                        onDishAdded: controller.addDish,
                       ),
-                      if (canConfirmMealAnalysis.value) ...[
+                      if (state.canConfirmMealAnalysis) ...[
                         const SizedBox(height: Spacing.level3),
                         MealConfirmAction(
                           l10n: l10n,
-                          confirmed: confirmMealAnalysis.value,
-                          onToggle: () => confirmMealAnalysis.value =
-                              !confirmMealAnalysis.value,
+                          confirmed: state.confirmMealAnalysis,
+                          onToggle: () => controller.setConfirmMealAnalysis(
+                            !state.confirmMealAnalysis,
+                          ),
                         ),
                       ],
                     ],
                     const SizedBox(height: Spacing.level3),
                     DailyRecordImageAttachmentField(
                       l10n: l10n,
-                      selectedBytes: selectedImage.value?.bytes,
-                      selectedFileName: selectedImage.value?.fileName,
-                      existingAttachment: attachmentsChanged.value
+                      selectedBytes: state.selectedImage?.bytes,
+                      selectedFileName: state.selectedImage?.fileName,
+                      existingAttachment: state.attachmentsChanged
                           ? null
-                          : existingImageAttachment.value,
-                      onPick: onPickImage,
-                      onRemove: onRemoveImage,
-                      enabled: !saving.value && !deleting.value,
+                          : state.existingImageAttachment,
+                      onPick: () => unawaited(controller.pickImage()),
+                      onRemove: controller.removeImage,
+                      enabled: !state.saving && !state.deleting,
                     ),
                     RecordEditActions(
                       l10n: l10n,
-                      saving: saving.value,
-                      deleting: deleting.value,
+                      saving: state.saving,
+                      deleting: state.deleting,
                       onSave: onSave,
                       onDelete: onDelete,
                     ),
@@ -605,11 +357,69 @@ class RecordEditPage extends HookConsumerWidget {
       );
     }
 
-    return PageScaffold(
-      title: l10n.recordEditAction,
-      child: SingleChildScrollView(child: content),
+    return PopScope(
+      canPop: !dirty || !state.loaded,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop || !state.loaded) return;
+        unawaited(handleBack());
+      },
+      child: PageScaffold(
+        title: l10n.recordEditAction,
+        leading: AppBackButton(onPressed: () => unawaited(handleBack())),
+        child: SingleChildScrollView(child: content),
+      ),
     );
   }
+}
+
+void _popOrGoHome(BuildContext context) {
+  if (GoRouter.of(context).canPop()) {
+    context.pop();
+  } else {
+    context.go(Routes.home);
+  }
+}
+
+/// Shows a discard-confirmation dialog; returns `true` when the user agrees
+/// to leave without saving.
+Future<bool?> _confirmDiscard(BuildContext context, AppLocalizations l10n) {
+  return showAppDialog<bool>(
+    context: context,
+    scrollable: false,
+    builder: (dialogContext) => Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.recordEditDiscardTitle,
+          style: dialogContext.theme.dialogStyle.titleTextStyle,
+        ),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.recordEditDiscardMessage,
+          style: dialogContext.theme.dialogStyle.bodyTextStyle,
+        ),
+        const SizedBox(height: Spacing.level5),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FButton(
+              variant: FButtonVariant.ghost,
+              onPress: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.recordEditKeepEditingAction),
+            ),
+            const SizedBox(width: Spacing.level3),
+            FButton(
+              key: const Key('record-edit-discard-confirm'),
+              variant: FButtonVariant.destructive,
+              onPress: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.recordEditDiscardAction),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 class _RecordEditLoading extends StatelessWidget {
