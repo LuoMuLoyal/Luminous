@@ -174,7 +174,7 @@ void main() {
         ),
       );
       final items = buildQuickActionItems(l10n, dashboard);
-      expect(items[0].icon, SemanticIcons.reportAdherence);
+      expect(items[0].icon, SemanticIcons.doseTaken);
       expect(items[0].badge, '2');
       expect(items[0].route, Routes.medicine);
     });

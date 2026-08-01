@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/shell/presentation/tab.dart';
@@ -79,9 +81,13 @@ void main() {
   Future<void> pumpShell(
     WidgetTester tester, {
     required GoRouter router,
+    List<Override> overrides = const [],
   }) async {
     await tester.pumpWidget(
-      ProviderScope(child: TestForuiRouterApp(routerConfig: router)),
+      ProviderScope(
+        overrides: overrides,
+        child: TestForuiRouterApp(routerConfig: router),
+      ),
     );
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
@@ -238,9 +244,17 @@ void main() {
       expect(find.byKey(const Key('tab-medicine')), findsOneWidget);
     });
 
-    testWidgets('renders heart pulse icon in header', (tester) async {
+    testWidgets('renders profile user icon in authenticated header', (
+      tester,
+    ) async {
       setDesktopScreenSize(tester);
-      await pumpShell(tester, router: buildRouter());
+      await pumpShell(
+        tester,
+        router: buildRouter(),
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+        ],
+      );
 
       expect(find.byIcon(SemanticIcons.profileUser), findsOneWidget);
     });
