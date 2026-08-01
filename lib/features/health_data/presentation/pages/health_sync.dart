@@ -5,6 +5,7 @@ import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
+import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync_controller.dart';
@@ -89,8 +90,10 @@ class HealthSyncPage extends ConsumerWidget {
                 onPress: state.isLoading
                     ? null
                     : () async {
-                        await controller.requestPermissions();
-                        await controller.fetchData();
+                        final status = await controller.requestPermissions();
+                        if (status == HealthPermissionStatus.granted) {
+                          await controller.fetchData();
+                        }
                       },
                 child: Text(l10n.healthSyncFetchButton),
               ),

@@ -372,7 +372,7 @@ class HealthRecordMapper {
         '身高',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {'vitalType': 'weight', 'value': metric.value, 'unit': metric.unit},
+        {'vitalType': 'height', 'value': metric.value, 'unit': metric.unit},
       ),
       HealthMetricType.water => (
         '饮水量',

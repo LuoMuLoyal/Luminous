@@ -104,8 +104,8 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
   /// Build a set of existing record fingerprints for deduplication.
   ///
-  /// Groups metrics by date, fetches existing records for each date, and
-  /// creates (kind + occurredAt + source) fingerprints.
+  /// Groups metrics by date, fetches existing records for each date (with
+  /// pagination), and creates (kind + occurredAt + source) fingerprints.
   Future<Set<String>> _buildDedupFingerprints(
     List<HealthMetric> metrics,
   ) async {
@@ -119,13 +119,29 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
     for (final date in dates) {
       try {
-        final result = await dailyRecordRepo.fetchRecords(date, pageSize: 2000);
-        for (final record in result.items) {
-          final source = record.source ?? 'manual';
-          fingerprints.add('${record.kind.name}|${record.occurredAt}|$source');
+        var page = 1;
+        while (true) {
+          final result = await dailyRecordRepo.fetchRecords(
+            date,
+            page: page,
+            pageSize: _dedupPageSize,
+          );
+          for (final record in result.items) {
+            final source = record.source ?? 'manual';
+            fingerprints.add(
+              '${record.kind.name}|${record.occurredAt}|$source',
+            );
+          }
+          if (page * _dedupPageSize >= result.total) break;
+          page++;
         }
       } catch (e) {
-        appTalker.warning('HealthSync: failed to fetch existing records: $e');
+        // Dedup relies on the existing records; abort the sync instead of
+        // silently importing duplicates.
+        appTalker.error(
+          'HealthSync: failed to fetch existing records for $date: $e',
+        );
+        rethrow;
       }
     }
 
@@ -141,6 +157,9 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
         '-${dt.month.toString().padLeft(2, '0')}'
         '-${dt.day.toString().padLeft(2, '0')}';
   }
+
+  /// Page size used when fetching existing records for deduplication.
+  static const _dedupPageSize = 500;
 
   static const _allSupportedTypes = <HealthMetricType>{
     HealthMetricType.heartRate,

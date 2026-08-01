@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:health/health.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 
@@ -95,7 +96,8 @@ class HealthPlatformDataSource {
       return granted
           ? HealthPermissionStatus.granted
           : HealthPermissionStatus.denied;
-    } catch (_) {
+    } catch (e) {
+      appTalker.error('HealthPlatform: requestAuthorization failed: $e');
       return HealthPermissionStatus.denied;
     }
   }
@@ -121,7 +123,8 @@ class HealthPlatformDataSource {
         if (hasPermission == true) {
           authorized.add(type);
         }
-      } catch (_) {
+      } catch (e) {
+        appTalker.error('HealthPlatform: hasPermissions failed for $type: $e');
         // skip types that fail permission check
       }
     }
@@ -157,7 +160,8 @@ class HealthPlatformDataSource {
         types: dataTypes,
       );
       return _health.removeDuplicates(points);
-    } catch (_) {
+    } catch (e) {
+      appTalker.error('HealthPlatform: getHealthDataFromTypes failed: $e');
       return [];
     }
   }
@@ -173,7 +177,8 @@ class HealthPlatformDataSource {
 
     try {
       return await _health.getTotalStepsInInterval(start, end);
-    } catch (_) {
+    } catch (e) {
+      appTalker.error('HealthPlatform: getTotalStepsInInterval failed: $e');
       return null;
     }
   }

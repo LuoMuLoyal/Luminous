@@ -129,7 +129,10 @@ class AssistantPage extends HookConsumerWidget {
 
     useEffect(() {
       scrollController.addListener(onUserScroll);
-      return () => scrollController.removeListener(onUserScroll);
+      return () {
+        scrollController.removeListener(onUserScroll);
+        scrollController.dispose();
+      };
     }, [scrollController]);
 
     String statusSummaryText(AppLocalizations l, AssistantCapabilities caps) {

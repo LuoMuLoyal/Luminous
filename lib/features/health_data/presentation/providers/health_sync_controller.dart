@@ -1,6 +1,7 @@
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
+import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/repositories/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -31,13 +32,15 @@ class HealthSyncController extends _$HealthSyncController {
     state = state.copyWith(timeRange: range);
   }
 
-  Future<void> requestPermissions() async {
+  Future<HealthPermissionStatus> requestPermissions() async {
     state = state.copyWith(isRequestingPermissions: true, error: null);
     try {
-      await _repo.requestPermissions(state.selectedTypes);
+      final status = await _repo.requestPermissions(state.selectedTypes);
       state = state.copyWith(isRequestingPermissions: false);
+      return status;
     } catch (e) {
       state = state.copyWith(isRequestingPermissions: false, error: '$e');
+      return HealthPermissionStatus.denied;
     }
   }
 
