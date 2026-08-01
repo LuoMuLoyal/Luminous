@@ -9,8 +9,6 @@ import 'package:intl/intl.dart' as intl;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
-import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/proposal_card.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -61,8 +59,8 @@ class AssistantMessageBubble extends StatelessWidget {
         constraints: const BoxConstraints(
           maxWidth: Breakpoints.assistantContent,
         ),
-        child: GestureDetector(
-          onLongPress: () => _showContextMenu(context, l10n),
+        child: FContextMenu.tiles(
+          menu: _buildContextMenu(context, l10n),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: background,
@@ -82,10 +80,6 @@ class AssistantMessageBubble extends StatelessWidget {
                           .copyWith(color: foreground),
                     )
                   else if (isStreaming)
-                    // While streaming, render the in-progress content as plain
-                    // text. Re-parsing the full markdown on every chunk is the
-                    // main source of jank for long replies; we swap to
-                    // MarkdownBody once the result settles.
                     Text(
                       content,
                       style: TypographyToken.level4
@@ -110,32 +104,7 @@ class AssistantMessageBubble extends StatelessWidget {
                     ),
                   if (isStreaming) ...[
                     const SizedBox(height: Spacing.level3),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _AnimatedDots(color: colors.mutedForeground),
-                        const SizedBox(width: Spacing.level2),
-                        Text(
-                          l10n.assistantStreamingLabel,
-                          style: TypographyToken.level3
-                              .body(context)
-                              .copyWith(color: colors.mutedForeground),
-                        ),
-                      ],
-                    ),
-                  ],
-                  if (!isStreaming && usedTools.isNotEmpty) ...[
-                    const SizedBox(height: Spacing.level3),
-                    Wrap(
-                      spacing: Spacing.level2,
-                      runSpacing: Spacing.level2,
-                      children: [
-                        for (final tool in usedTools)
-                          AssistantToolChip(
-                            label: localizeToolName(tool, context),
-                          ),
-                      ],
-                    ),
+                    _AnimatedDots(color: colors.primary),
                   ],
                   if (!isStreaming &&
                       !isUser &&
@@ -180,44 +149,31 @@ class AssistantMessageBubble extends StatelessWidget {
     return intl.DateFormat.Hm(locale).format(local);
   }
 
-  void _showContextMenu(BuildContext context, AppLocalizations l10n) {
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-
-    final position = renderBox.localToGlobal(
-      renderBox.size.bottomLeft(Offset.zero),
-    );
-
-    unawaited(
-      showMenu<String>(
-        context: context,
-        position: RelativeRect.fromLTRB(
-          position.dx,
-          position.dy,
-          position.dx + renderBox.size.width,
-          position.dy + 40,
-        ),
-        items: [
-          PopupMenuItem<String>(
-            value: 'copy',
-            child: Row(
-              children: [
-                const Icon(SemanticIcons.actionCopy, size: 16),
-                const SizedBox(width: Spacing.level2),
-                Text(l10n.assistantCopyAction),
-              ],
-            ),
+  List<FTileGroup> _buildContextMenu(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) {
+    final isUser = role == AssistantMessageRole.user;
+    return [
+      FTileGroup(
+        children: [
+          FTile(
+            title: Text(l10n.assistantCopyAction),
+            onPress: () async {
+              await Clipboard.setData(ClipboardData(text: content));
+              if (context.mounted) {
+                await Toast.show(context, l10n.assistantCopySuccess);
+              }
+            },
           ),
+          // TODO: wire regenerate / resend once the controller supports it.
+          if (!isUser && !isStreaming)
+            FTile(title: Text(l10n.assistantRegenerateAction), onPress: null),
+          if (isUser && !isStreaming)
+            FTile(title: Text(l10n.assistantResendAction), onPress: null),
         ],
-      ).then((value) async {
-        if (value == 'copy' && context.mounted) {
-          await Clipboard.setData(ClipboardData(text: content));
-          if (context.mounted) {
-            await Toast.show(context, l10n.assistantCopySuccess);
-          }
-        }
-      }),
-    );
+      ),
+    ];
   }
 }
 
@@ -236,13 +192,12 @@ class _AnimatedDots extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(right: index < 2 ? 3.0 : 0),
           child:
-              Container(
-                    width: 6,
-                    height: 6,
+              DecoratedBox(
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
                     ),
+                    child: const SizedBox(width: 6, height: 6),
                   )
                   .animate(onPlay: (controller) => controller.repeat())
                   .scale(
