@@ -77,7 +77,7 @@ void main() {
     );
 
     test(
-      'one medicine without nearby slot creates an un-slotted dose log',
+      'one medicine without nearby slot creates a dose log at current time',
       () async {
         MedicationQuickMarkInput? marked;
         final flow = MedicationQuickEntryFlow(
@@ -86,6 +86,7 @@ void main() {
             return _doseLog(
               id: 'dose-new',
               currentMedicineId: input.currentMedicineId,
+              scheduledTime: input.scheduledTime,
             );
           },
           emitDataChange: (_) {},
@@ -104,7 +105,7 @@ void main() {
         expect(outcome.type, MedicationQuickEntryOutcomeType.recordedSingle);
         expect(marked?.currentMedicineId, 'med-1');
         expect(marked?.reminderId, isNull);
-        expect(marked?.scheduledTime, isNull);
+        expect(marked?.scheduledTime, '08:00');
       },
     );
 
@@ -198,6 +199,7 @@ void main() {
               id: 'med-2',
               currentMedicineId: 'med-2',
               name: 'Medicine med-2',
+              scheduledTime: '08:00',
             ),
           ],
         );

@@ -70,7 +70,7 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
 - 阶段 3 已接入用药快速记录：
   - Record 用药入口读取当前药箱、提醒计划和所选日期 dose logs，不再跳空白创建页。
   - 0 种当前用药时弹轻量确认框，引导去 `/medicine/search` 添加药品。
-  - 1 种当前用药时，若当前时间前 30 分钟到后 2 小时内有 pending reminder slot，直接调用 slot-aware dose log mark；没有附近 slot 时创建无 slot 但归属于该 current medicine 的 dose log。
+  - 1 种当前用药时，若当前时间前 30 分钟到后 2 小时内有 pending reminder slot，直接调用 slot-aware dose log mark；没有附近 slot 时仍走 `mark` 接口，但使用当前时间作为 `scheduledTime`，归属于该 current medicine 并可在同分钟内去重。
   - 附近 slot 已 taken/skipped 时不重复写入，只提示附近用药已记录。
   - 2+ 种当前用药时打开选择弹窗，默认选中附近 pending slot 对应药品；确认写入不显示撤销 toast，部分失败时保留失败项。
   - 用药即时写入撤销走 dose log 真实回滚：新建 log 删除，已有 log 恢复旧状态，并刷新 `DataChangeTopic.doseLogs`。

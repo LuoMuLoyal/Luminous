@@ -293,6 +293,7 @@ class MedicationQuickEntryFlow {
       id: medicine.id,
       currentMedicineId: medicine.id,
       name: medicine.displayName,
+      scheduledTime: _formatTime(context.now),
     );
   }
 
@@ -344,5 +345,11 @@ class MedicationQuickEntryFlow {
       parts[0],
       parts[1],
     );
+  }
+
+  String _formatTime(DateTime value) {
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }
