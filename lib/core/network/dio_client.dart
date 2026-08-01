@@ -6,6 +6,7 @@ import 'package:luminous/core/network/interceptors/auth_interceptor.dart';
 import 'package:luminous/core/network/interceptors/envelope_interceptor.dart';
 import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
+import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
 
 /// Thin wrapper over the generated [LucentApi] that exposes individual API
@@ -52,6 +53,8 @@ class LucentDioClient {
     Future<void> Function()? onSessionExpired,
     Dio? dio,
     Iterable<Interceptor> interceptors = const [],
+    TraceInterceptor? traceInterceptor,
+    void Function(String traceId)? onTraceId,
     HttpClientAdapter? httpClientAdapter,
     Duration connectTimeout = _defaultConnectTimeout,
     Duration receiveTimeout = _defaultReceiveTimeout,
@@ -93,7 +96,12 @@ class LucentDioClient {
       onSessionExpired: onSessionExpired,
     );
 
+    _traceInterceptor =
+        traceInterceptor ?? TraceInterceptor(onTraceId: onTraceId);
+    _refreshDio.interceptors.add(_traceInterceptor);
+
     _dio.interceptors.addAll(<Interceptor>[
+      _traceInterceptor,
       ...interceptors,
       _authInterceptor,
       RetryInterceptor(dio: _dio),
@@ -110,6 +118,7 @@ class LucentDioClient {
   late final LucentClient _client;
   late final Dio _refreshDio;
   late final AuthInterceptor _authInterceptor;
+  late final TraceInterceptor _traceInterceptor;
 
   static BaseOptions _createBaseOptions({
     required String baseUrl,
@@ -135,6 +144,10 @@ class LucentDioClient {
 
   /// The generated Lucent API client.
   LucentClient get client => _client;
+
+  /// The latest trace id seen by the trace interceptor, or null before the
+  /// first request. Used for diagnostics / error reporting.
+  String? get lastTraceId => _traceInterceptor.lastTraceId;
 
   /// Callback invoked when the session can no longer be refreshed.
   /// Delegates to [AuthInterceptor.onSessionExpired].
