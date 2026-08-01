@@ -23,8 +23,8 @@ void main() {
 
     test('returns desktop scale for width >= 1200', () {
       final scale = LayoutScaleResolver.resolve(1440);
-      expect(scale.pageHorizontalPadding, equals(Spacing.level6));
-      expect(scale.maxContentWidth, equals(1400));
+      expect(scale.pageHorizontalPadding, equals(Spacing.level7));
+      expect(scale.maxContentWidth, equals(1600));
     });
 
     test('returns desktop scale for width exactly 1200', () {

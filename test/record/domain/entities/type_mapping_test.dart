@@ -65,12 +65,18 @@ void main() {
       expect(dailyRecordKindForEntryType(RecordEntryType.medication), isNull);
     });
 
-    test('returns null for heartRate', () {
-      expect(dailyRecordKindForEntryType(RecordEntryType.heartRate), isNull);
+    test('maps heartRate to DailyRecordKind.vital', () {
+      expect(
+        dailyRecordKindForEntryType(RecordEntryType.heartRate),
+        DailyRecordKind.vital,
+      );
     });
 
-    test('returns null for weight', () {
-      expect(dailyRecordKindForEntryType(RecordEntryType.weight), isNull);
+    test('maps weight to DailyRecordKind.vital', () {
+      expect(
+        dailyRecordKindForEntryType(RecordEntryType.weight),
+        DailyRecordKind.vital,
+      );
     });
   });
 

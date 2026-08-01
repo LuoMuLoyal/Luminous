@@ -59,8 +59,16 @@ void main() {
     });
     test('non-mappable types return null', () {
       expect(dailyRecordKindForEntryType(RecordEntryType.medication), isNull);
-      expect(dailyRecordKindForEntryType(RecordEntryType.heartRate), isNull);
-      expect(dailyRecordKindForEntryType(RecordEntryType.weight), isNull);
+    });
+    test('maps heartRate and weight to vital', () {
+      expect(
+        dailyRecordKindForEntryType(RecordEntryType.heartRate),
+        DailyRecordKind.vital,
+      );
+      expect(
+        dailyRecordKindForEntryType(RecordEntryType.weight),
+        DailyRecordKind.vital,
+      );
     });
   });
 

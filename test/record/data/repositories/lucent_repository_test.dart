@@ -226,7 +226,8 @@ void main() {
 
   // ── _toTimelineEntry — icon mapping ──────────────────────────
   group('timeline icon mapping', () {
-    // vital and activity are filtered out by _isActiveRecordEntryType
+    // vital and activity are active record entry types; their icons are
+    // asserted separately below.
     final cases = [
       (DailyRecordKind.water, SemanticIcons.recordWater),
       (DailyRecordKind.meal, SemanticIcons.recordMeal),
@@ -693,33 +694,29 @@ void main() {
       expect(dashboard.timeline.first.rawDetail, isNull);
     });
 
-    test(
-      'vital records are filtered out by _isActiveRecordEntryType',
-      () async {
-        dailyRepo.fetchRecordsResult = DailyRecordListData(
-          items: [_item(kind: DailyRecordKind.vital)],
-          total: 1,
-        );
+    test('vital records are included by _isActiveRecordEntryType', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.vital)],
+        total: 1,
+      );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
 
-        expect(dashboard.timeline, isEmpty);
-      },
-    );
+      expect(dashboard.timeline, hasLength(1));
+      expect(dashboard.timeline.first.type, RecordEntryType.vitals);
+    });
 
-    test(
-      'activity records are filtered out by _isActiveRecordEntryType',
-      () async {
-        dailyRepo.fetchRecordsResult = DailyRecordListData(
-          items: [_item(kind: DailyRecordKind.activity)],
-          total: 1,
-        );
+    test('activity records are included by _isActiveRecordEntryType', () async {
+      dailyRepo.fetchRecordsResult = DailyRecordListData(
+        items: [_item(kind: DailyRecordKind.activity)],
+        total: 1,
+      );
 
-        final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
+      final dashboard = await repo.fetchDashboard(DateTime(2026, 7, 14));
 
-        expect(dashboard.timeline, isEmpty);
-      },
-    );
+      expect(dashboard.timeline, hasLength(1));
+      expect(dashboard.timeline.first.type, RecordEntryType.activity);
+    });
 
     test('rawDetail is null for non-meal kinds even with topFoods', () async {
       dailyRepo.fetchRecordsResult = DailyRecordListData(
