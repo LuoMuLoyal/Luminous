@@ -10,6 +10,7 @@ import 'package:luminous/core/config/env_reader.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/skeleton.dart';
@@ -350,6 +351,7 @@ class _FeedbackSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.theme.colors;
+    final lastTraceId = ref.watch(lastTraceIdProvider);
 
     // Prefer backend supportEmail; fall back to compile-time env.
     final appInfo = ref.watch(appInfoProvider).asData?.value;
@@ -359,6 +361,30 @@ class _FeedbackSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Diagnostic block — shows the latest request Trace ID when present
+        // so users can attach it to their feedback for backend correlation.
+        if (lastTraceId != null && lastTraceId.isNotEmpty) ...[
+          SettingsSectionLabel(label: l10n.settingsHelpTraceIdTitle),
+          const SizedBox(height: Spacing.level3),
+          FTileGroup(
+            children: [
+              FTile(
+                prefix: Icon(
+                  SemanticIcons.actionCopy,
+                  color: colors.primary,
+                  size: Spacing.level5,
+                ),
+                title: Text(
+                  lastTraceId,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onPress: () => _copyTraceId(context, lastTraceId),
+              ),
+            ],
+          ),
+          const SizedBox(height: Spacing.level6),
+        ],
         SettingsSectionLabel(label: l10n.settingsHelpFeedbackSectionTitle),
         const SizedBox(height: Spacing.level3),
         FTileGroup(
@@ -382,6 +408,13 @@ class _FeedbackSection extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _copyTraceId(BuildContext context, String traceId) async {
+    await Clipboard.setData(ClipboardData(text: traceId));
+    if (context.mounted) {
+      unawaited(Toast.show(context, l10n.settingsHelpTraceIdCopy));
+    }
   }
 
   Future<void> _openFeedback(BuildContext context, String email) async {

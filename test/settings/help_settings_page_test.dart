@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/features/settings/presentation/pages/help.dart';
 import 'package:luminous/features/support/data/repositories/lucent.dart';
 import 'package:luminous/features/support/domain/entities/support_resource.dart';
@@ -57,6 +59,61 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('自动同步到云端'), findsOneWidget);
+  });
+
+  testWidgets('Help page shows latest Trace ID block and copies it on tap', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    final clipboardLog = <MethodCall>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (MethodCall call) async {
+        clipboardLog.add(call);
+        return null;
+      },
+    );
+    addTearDown(() {
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      );
+    });
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          localeControllerProvider.overrideWith(() => _ZhLocaleController()),
+          supportRepositoryProvider.overrideWithValue(_FakeSupportRepository()),
+          lastTraceIdProvider.overrideWithValue('trace-12345'),
+        ],
+        child: const TestForuiApp(home: HelpSettingsPage()),
+      ),
+    );
+
+    // Bounded pumps instead of pumpAndSettle: the FAQ section keeps a
+    // shimmer skeleton running until its asset future completes, which in
+    // widget tests can leave pumpAndSettle spinning. The Trace ID block is
+    // rendered synchronously, so a couple of frames are enough.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    expect(find.text(l10n.settingsHelpTraceIdTitle), findsOneWidget);
+    expect(find.text('trace-12345'), findsOneWidget);
+
+    await tester.tap(find.text('trace-12345'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    final setDataCalls = clipboardLog
+        .where((call) => call.method == 'Clipboard.setData')
+        .toList();
+    expect(setDataCalls, hasLength(1));
+    expect(
+      (setDataCalls.single.arguments as Map<Object?, Object?>)['text'],
+      'trace-12345',
+    );
   });
 }
 

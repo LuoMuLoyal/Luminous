@@ -264,6 +264,8 @@
   "settingsHelpFeedbackSubject": "Luminous 意见反馈",
   "settingsHelpFeedbackUnavailable": "暂未配置反馈邮箱，请稍后再试",
   "settingsHelpFeedbackOpenFailed": "无法打开邮件应用，请检查是否已安装邮件客户端",
+  "settingsHelpTraceIdCopy": "复制",
+  "settingsHelpTraceIdTitle": "最近一次请求 Trace ID",
   "settingsHealthAutoSyncTitle": "健康数据自动同步",
   "settingsHealthAutoSyncSubtitle": "App 进入前台时自动同步最近 24 小时的健康数据"
 }
