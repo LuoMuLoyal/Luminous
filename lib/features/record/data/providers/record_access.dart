@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/network/client_providers.dart';
@@ -93,4 +94,23 @@ Future<DailyRecordItem> dailyRecordDetail(Ref ref, String id) {
         const Duration(seconds: 5),
         onTimeout: () => throw TimeoutException('请求超时，请检查网络后重试。'),
       );
+}
+
+/// Fetches the full daily-record list for [date] (formatted as a local date
+/// key), used by the record detail page for adjacent-record navigation and
+/// same-day water aggregation.
+final dailyRecordListForDateProvider =
+    FutureProvider.family<DailyRecordListData, DateTime>((ref, date) {
+      return ref
+          .watch(dailyRecordRepositoryProvider)
+          .fetchRecords(_localDateKey(date), pageSize: 200);
+    });
+
+/// Formats [date] as `yyyy-MM-dd` in local time, matching the daily-record
+/// wire contract.
+String _localDateKey(DateTime date) {
+  final d = DateTime(date.year, date.month, date.day);
+  return '${d.year.toString().padLeft(4, '0')}-'
+      '${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
 }

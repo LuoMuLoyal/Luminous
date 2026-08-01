@@ -366,6 +366,23 @@
   "recordSourceAi": "AI",
   "recordSourceImport": "Imported",
   "recordDetailUpdatedAtLabel": "Updated at",
+  "recordDetailMoodLabel": "Mood",
+  "recordDetailDailyWaterTitle": "Water today",
+  "recordDetailDailyWaterProgress": "{total} / {target} ml",
+  "@recordDetailDailyWaterProgress": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "recordDetailCopyAction": "Copy summary",
+  "recordDetailCopiedToast": "Copied to clipboard",
+  "recordDetailPreviousAction": "Previous",
+  "recordDetailNextAction": "Next",
   "recordMealAnalysisSectionTitle": "Meal analysis",
   "recordMealAnalysisStatusAnalyzing": "Analyzing",
   "recordMealAnalysisStatusUnconfirmed": "Needs confirmation",
@@ -397,6 +414,10 @@
     }
   },
   "recordEditAction": "Edit",
+  "recordEditDiscardTitle": "Discard changes?",
+  "recordEditDiscardMessage": "You have unsaved changes. Leave anyway?",
+  "recordEditDiscardAction": "Discard changes",
+  "recordEditKeepEditingAction": "Keep editing",
   "recordDeleteAction": "Delete",
   "recordDeleteConfirmMessage": "Delete this record? This action cannot be undone.",
   "recordDeleteConfirmTitle": "Delete Record",

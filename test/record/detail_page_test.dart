@@ -96,6 +96,71 @@ class _FakeRepo extends DailyRecordRepository {
   Future<void> delete(String id) async {}
 }
 
+/// Fake repository that returns same-day water records plus the viewed record.
+class _WaterFakeRepo extends DailyRecordRepository {
+  @override
+  Future<DailyRecordItem> get(String id) async {
+    return _waterRecord(id: id, value: '300');
+  }
+
+  @override
+  Future<DailyRecordListData> fetchRecords(
+    String date, {
+    String? kind,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    return DailyRecordListData(
+      items: [
+        _waterRecord(id: 'water-1', value: '250'),
+        _waterRecord(id: 'water-2', value: '300'),
+        _waterRecord(id: 'water-3', value: '1', unit: 'cup'),
+      ],
+      total: 3,
+    );
+  }
+
+  @override
+  Future<DailyRecordSummaryData> fetchSummary(String date) async =>
+      throw UnimplementedError();
+  @override
+  Future<DailyRecordAttachmentInput> uploadImage(
+    DailyRecordImageUploadInput input,
+  ) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordCandidateResult> generateCandidates({
+    required String text,
+    required String occurredAt,
+  }) async => throw UnimplementedError();
+  @override
+  Future<DailyRecordItem> create(DailyRecordCreateInput input) async =>
+      throw UnimplementedError();
+  @override
+  Future<DailyRecordItem> update(
+    String id,
+    DailyRecordUpdateInput input,
+  ) async => throw UnimplementedError();
+  @override
+  Future<void> delete(String id) async {}
+
+  DailyRecordItem _waterRecord({
+    required String id,
+    required String value,
+    String unit = 'ml',
+  }) {
+    return DailyRecordItem(
+      id: id,
+      kind: DailyRecordKind.water,
+      occurredAt: '2026-06-10',
+      value: value,
+      unit: unit,
+      attachments: const <DailyRecordAttachment>[],
+      createdAt: '2026-06-10T08:00:00.000Z',
+      updatedAt: '2026-06-10T08:00:00.000Z',
+    );
+  }
+}
+
 void main() {
   testWidgets('RecordDetailPage loads and displays record when authenticated', (
     tester,
@@ -135,5 +200,60 @@ void main() {
     expect(find.textContaining('西红柿'), findsWidgets);
     expect(find.textContaining('热量'), findsOneWidget);
     expect(find.textContaining('保守估算'), findsWidgets);
+  });
+
+  testWidgets('water detail shows daily progress and adjacent navigation', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+    final repo = _WaterFakeRepo();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(() => SignedInAuthSessionNotifier()),
+          dailyRecordRepositoryProvider.overrideWithValue(repo),
+        ],
+        child: TestAuthApp(
+          router: GoRouter(
+            initialLocation: '/',
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (_, __) => const RecordDetailPage(recordId: 'water-2'),
+              ),
+              GoRoute(
+                path: '/record/:id',
+                builder: (_, state) =>
+                    RecordDetailPage(recordId: state.pathParameters['id']!),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump();
+
+    // 250 + 300 ml aggregated; the cup record is not counted.
+    expect(find.text('今日饮水'), findsOneWidget);
+    expect(find.text('550 / 2000 ml'), findsOneWidget);
+
+    // Adjacent navigation: water-2 sits between water-1 and water-3.
+    expect(
+      find.byKey(const Key('record-detail-previous-action')),
+      findsOneWidget,
+    );
+    expect(find.byKey(const Key('record-detail-next-action')), findsOneWidget);
+
+    // Copy action is available.
+    expect(find.byKey(const Key('record-detail-copy-action')), findsOneWidget);
+
+    // Navigating next loads the adjacent record.
+    await tester.tap(find.byKey(const Key('record-detail-next-action')));
+    await tester.pumpAndSettle();
+    expect(find.byType(RecordDetailPage), findsOneWidget);
+    expect(find.text('今日饮水'), findsOneWidget);
   });
 }

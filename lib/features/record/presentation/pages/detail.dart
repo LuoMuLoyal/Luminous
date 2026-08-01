@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -154,6 +156,28 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         ? parseMealAnalysisViewData(record.payload)
         : null;
 
+    // Same-day records drive adjacent navigation and the water progress card.
+    final recordDate = DateTime.tryParse(record.occurredAt);
+    final dayList = recordDate == null
+        ? null
+        : ref.watch(dailyRecordListForDateProvider(recordDate));
+    final dayItems = <DailyRecordItem>[...?dayList?.asData?.value.items]
+      ..sort(_compareRecords);
+    final currentIndex = dayItems.indexWhere((item) => item.id == record.id);
+    final previousRecord = currentIndex > 0 ? dayItems[currentIndex - 1] : null;
+    final nextRecord = currentIndex >= 0 && currentIndex < dayItems.length - 1
+        ? dayItems[currentIndex + 1]
+        : null;
+
+    // Aggregate today's water in ml for the progress card (ml units only).
+    var waterTotalMl = 0;
+    for (final item in dayItems) {
+      if (item.kind == DailyRecordKind.water && item.unit == 'ml') {
+        final value = int.tryParse(item.value ?? '');
+        if (value != null && value > 0) waterTotalMl += value;
+      }
+    }
+
     // Sync the analysis poller with the current status.
     final isAnalyzing =
         mealAnalysis != null && mealAnalysis.status == 'analyzing';
@@ -209,6 +233,11 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     _DetailRowData(
                       l10n.recordDetailValueLabel,
                       _valueWithUnit(record.value!, record.unit),
+                    ),
+                  if (_moodLabel(l10n, record) != null)
+                    _DetailRowData(
+                      l10n.recordDetailMoodLabel,
+                      _moodLabel(l10n, record)!,
                     ),
                   if (_nonEmpty(record.note) != null)
                     _DetailRowData(l10n.recordCreateFieldNote, record.note!),
@@ -303,6 +332,87 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
             ),
           ),
         ],
+        if (record.kind == DailyRecordKind.water && waterTotalMl > 0) ...[
+          const SizedBox(height: Spacing.level4),
+          _DetailSurface(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(SemanticIcons.recordWater, size: 18),
+                    const SizedBox(width: Spacing.level3),
+                    Expanded(
+                      child: Text(
+                        l10n.recordDetailDailyWaterTitle,
+                        style: TypographyToken.level4
+                            .body(context)
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    Text(
+                      l10n.recordDetailDailyWaterProgress(
+                        waterTotalMl,
+                        _waterDailyTargetMl,
+                      ),
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: Spacing.level4),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: (waterTotalMl / _waterDailyTargetMl).clamp(0.0, 1.0),
+                    minHeight: 8,
+                    backgroundColor: colors.muted,
+                    color: colors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: Spacing.level4),
+        Row(
+          children: [
+            Expanded(
+              child: FButton(
+                key: const Key('record-detail-previous-action'),
+                variant: FButtonVariant.ghost,
+                onPress: previousRecord == null
+                    ? null
+                    : () => context.pushReplacement(
+                        '/record/${previousRecord.id}',
+                      ),
+                prefix: const Icon(SemanticIcons.actionPrev),
+                child: Text(l10n.recordDetailPreviousAction),
+              ),
+            ),
+            const SizedBox(width: Spacing.level3),
+            Expanded(
+              child: FButton(
+                key: const Key('record-detail-next-action'),
+                variant: FButtonVariant.ghost,
+                onPress: nextRecord == null
+                    ? null
+                    : () => context.pushReplacement('/record/${nextRecord.id}'),
+                suffix: const Icon(SemanticIcons.actionNext),
+                child: Text(l10n.recordDetailNextAction),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: Spacing.level4),
+        FButton(
+          key: const Key('record-detail-copy-action'),
+          variant: FButtonVariant.ghost,
+          onPress: () => unawaited(_copySummary(context, l10n, record)),
+          prefix: const Icon(SemanticIcons.actionCopy, size: 18),
+          child: Text(l10n.recordDetailCopyAction),
+        ),
         const SizedBox(height: Spacing.level4),
         FButton(
           key: const Key('record-detail-delete-action'),
@@ -318,6 +428,29 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
         ),
       ],
     );
+  }
+
+  Future<void> _copySummary(
+    BuildContext context,
+    AppLocalizations l10n,
+    DailyRecordItem record,
+  ) async {
+    final lines = <String>[
+      '${l10n.recordCreateFieldKind}：${_kindLabel(l10n, record.kind)}',
+      if (_nonEmpty(record.value) != null)
+        '${l10n.recordDetailValueLabel}：${_valueWithUnit(record.value!, record.unit)}',
+      if (_moodLabel(l10n, record) != null)
+        '${l10n.recordDetailMoodLabel}：${_moodLabel(l10n, record)}',
+      if (_nonEmpty(record.note) != null)
+        '${l10n.recordCreateFieldNote}：${record.note}',
+      if (_nonEmpty(record.source) != null)
+        '${l10n.recordDetailSourceLabel}：${_sourceLabel(l10n, record.source!)}',
+      '${l10n.recordDetailUpdatedAtLabel}：${formatRecordDateTimeLabel(record.updatedAt)}',
+    ];
+    await Clipboard.setData(ClipboardData(text: lines.join('\n')));
+    if (context.mounted) {
+      await Toast.show(context, l10n.recordDetailCopiedToast);
+    }
   }
 
   List<Widget> _buildSleepDetails(
@@ -577,6 +710,32 @@ class _RecordDetailLoading extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Suggested daily hydration goal (ml) used by the water progress card.
+const _waterDailyTargetMl = 2000;
+
+/// Orders same-day records by occurrence date/time (ascending).
+int _compareRecords(DailyRecordItem a, DailyRecordItem b) {
+  final byDate = a.occurredAt.compareTo(b.occurredAt);
+  if (byDate != 0) return byDate;
+  return (a.occurredTime ?? '').compareTo(b.occurredTime ?? '');
+}
+
+/// Returns the localized mood label for a mood record, or null when the
+/// record is not a mood or has no recognizable mood payload.
+String? _moodLabel(AppLocalizations l10n, DailyRecordItem record) {
+  if (record.kind != DailyRecordKind.mood) return null;
+  final label = record.payload?['moodLabel'];
+  if (label is! String) return null;
+  return switch (label) {
+    'great' => l10n.recordTimelineMoodGreat,
+    'good' => l10n.recordTimelineMoodGood,
+    'okay' => l10n.recordTimelineMoodOkay,
+    'bad' => l10n.recordTimelineMoodBad,
+    'terrible' => l10n.recordTimelineMoodTerrible,
+    _ => null,
+  };
 }
 
 String _kindLabel(AppLocalizations l10n, DailyRecordKind kind) {

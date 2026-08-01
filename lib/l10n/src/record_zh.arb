@@ -366,6 +366,23 @@
   "recordSourceAi": "AI 识别",
   "recordSourceImport": "导入",
   "recordDetailUpdatedAtLabel": "更新于",
+  "recordDetailMoodLabel": "情绪",
+  "recordDetailDailyWaterTitle": "今日饮水",
+  "recordDetailDailyWaterProgress": "{total} / {target} ml",
+  "@recordDetailDailyWaterProgress": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "recordDetailCopyAction": "复制摘要",
+  "recordDetailCopiedToast": "已复制到剪贴板",
+  "recordDetailPreviousAction": "上一条",
+  "recordDetailNextAction": "下一条",
   "recordMealAnalysisSectionTitle": "餐食分析",
   "recordMealAnalysisStatusAnalyzing": "分析中",
   "recordMealAnalysisStatusUnconfirmed": "待确认",
@@ -397,6 +414,10 @@
     }
   },
   "recordEditAction": "编辑",
+  "recordEditDiscardTitle": "放弃修改？",
+  "recordEditDiscardMessage": "你有未保存的修改，确定要离开吗？",
+  "recordEditDiscardAction": "放弃修改",
+  "recordEditKeepEditingAction": "继续编辑",
   "recordDeleteAction": "删除",
   "recordDeleteConfirmMessage": "确定删除此记录？此操作不可撤销。",
   "recordDeleteConfirmTitle": "删除记录",
