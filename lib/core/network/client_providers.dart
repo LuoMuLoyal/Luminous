@@ -8,6 +8,7 @@ import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/interceptors/security_elevation_interceptor.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
 import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/network/trace_context.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'client_providers.g.dart';
@@ -65,7 +66,10 @@ LucentDioClient lucentDioClient(Ref ref) {
         (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
             .acceptLanguage,
     interceptors: [SecurityElevationInterceptor(holder: tokenHolder)],
-    onTraceId: (id) => ref.read(lastTraceIdProvider.notifier).update(id),
+    onTraceId: (id) {
+      TraceContext.lastTraceId = id;
+      ref.read(lastTraceIdProvider.notifier).update(id);
+    },
   );
   ref.onDispose(client.dispose);
   return client;
