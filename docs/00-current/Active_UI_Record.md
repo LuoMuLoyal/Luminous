@@ -62,7 +62,7 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - `QuickEntryExecutor` 作为兼容执行边界，仍保留旧 `RecordFastEntryDialog` / 创建页 fallback 给未重构类型使用；后续阶段继续替换 medication/sleep/meal flows。
   - `QuickEntryPreferences` 新增饮水默认量、饮水角标模式、睡眠进行中标记偏好，并保留动态排序和自定义顺序。
 - 阶段 2 已接入低风险 daily record 快速写入：
-  - 饮水单击不再打开 fast-entry 弹窗，按 `QuickEntryPreferences.waterDefaultAmountMl` 立即创建 water daily record，默认 `250 ml`。
+  - 饮水单击不再打开 fast-entry 弹窗，按 `QuickEntryPreferences.waterDefault`（`QuickEntryWaterDefault` 枚举，可设 250 ml / 500 ml / 1 杯 / 1 次 / 自定义 ml）立即创建 water daily record，默认 `250 ml`；自定义值存 `waterCustomMl`。
   - `QuickEntryUndoService` 支持撤销即时 daily record 写入：删除刚创建的记录并发射 `DataChangeTopic.dailyRecords`。
   - 饮水、症状单选、情绪单选这些无确认即时写入成功后显示带“撤销”的快速记录 toast；写入失败不注册撤销。
   - 症状弹窗支持多选模式：点击“多选”后 chip 仅切换选中，底部“确认”批量写入；批量确认属于用户显式确认，不显示撤销 toast，部分失败时保留失败项可重试。
@@ -93,7 +93,7 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - “重置为默认顺序”只清除 `customOrder`，不影响饮水默认量、角标或睡眠进行中标记。
   - quick panel 现在接收 dashboard summary/timeline：饮水角标按偏好显示今日累计量或次数；睡眠角标在发现未合并的 sleep start fact 时显示“进行中”。
 - 阶段 7 已还原长按行为并迁移图标选择器：
-  - 长按快捷瓦片不再打开图标选择器，改为按类型弹出 Forui 弹窗：water → 饮水默认量/角标设置；meal → 无照片手动录入（`MealQuickConfirmationDialog`）；medication/symptom/mood/sleep → 该类型当前规则说明。回调经 `onQuickActionLongPress`（`page.dart` → `RecordDashboardView` → `RecordQuickEntryPanel`）分发到 `handleQuickActionLongPress`。
+  - 长按快捷瓦片不再打开图标选择器，改为按类型弹出 Forui 弹窗：water → 饮水默认量/角标设置；meal → 无照片手动录入（`MealQuickConfirmationDialog`）；medication/symptom/mood/sleep → 该类型当前规则说明。回调经 `onQuickActionLongPress`（`page.dart` → `RecordDashboardView` → `RecordQuickEntryPanel`）分发到 `handleQuickActionLongPress`。饮水默认量下拉含"自定义"选项：选中后弹出 `water_custom_amount_dialog` 输入毫升数，确认后保存 `custom` + `waterCustomMl`；设置页与长按弹窗共用 `handleWaterDefaultSelect`。
   - 自定义图标选择器迁移到两处：快速记录设置页"自定义图标"区（7 种类型逐行选择 + 恢复默认）与创建/编辑记录页的 `RecordKindIconField`（仅对映射到快捷类型的 kind 渲染）。
   - `RecordDashboard.defaultQuickActions` / `quickActionFor` 与 `resolveQuickActionIcon` 作为默认图标与生效图标的统一来源。
 

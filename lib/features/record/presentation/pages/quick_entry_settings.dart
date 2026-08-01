@@ -12,6 +12,7 @@ import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
@@ -85,19 +86,36 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               FSelect<QuickEntryWaterDefault>.rich(
                 key: const Key('record-quick-settings-water-default'),
                 label: Text(l10n.recordQuickSettingsWaterDefault),
-                format: (value) => waterDefaultLabel(l10n, value),
+                format: (value) => waterDefaultOptionLabel(
+                  l10n,
+                  value,
+                  customMl: prefs.waterCustomMl,
+                ),
                 control: FSelectControl.lifted(
                   value: prefs.waterDefault,
                   onChange: (value) {
                     if (value != null) {
-                      unawaited(controller.setWaterDefault(value));
+                      unawaited(
+                        handleWaterDefaultSelect(
+                          context,
+                          value: value,
+                          prefs: prefs,
+                          controller: controller,
+                        ),
+                      );
                     }
                   },
                 ),
                 children: [
                   for (final option in QuickEntryWaterDefault.values)
                     FSelectItem.item(
-                      title: Text(waterDefaultLabel(l10n, option)),
+                      title: Text(
+                        waterDefaultOptionLabel(
+                          l10n,
+                          option,
+                          customMl: prefs.waterCustomMl,
+                        ),
+                      ),
                       value: option,
                     ),
                 ],

@@ -15,6 +15,7 @@ void main() {
       expect(prefs.collapsed, isFalse);
       expect(prefs.frequency, isEmpty);
       expect(prefs.waterDefault, QuickEntryWaterDefault.ml250);
+      expect(prefs.waterCustomMl, 250);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
       expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
@@ -26,7 +27,8 @@ void main() {
         customOrder: const ['meal', 'water'],
         collapsed: true,
         frequency: const {'meal': 5},
-        waterDefault: QuickEntryWaterDefault.ml500,
+        waterDefault: QuickEntryWaterDefault.custom,
+        waterCustomMl: 300,
         waterBadgeMode: QuickEntryWaterBadgeMode.dailyCount,
         sleepInProgressBadgeEnabled: false,
       );
@@ -35,7 +37,8 @@ void main() {
       expect(updated.customOrder, ['meal', 'water']);
       expect(updated.collapsed, isTrue);
       expect(updated.frequency, {'meal': 5});
-      expect(updated.waterDefault, QuickEntryWaterDefault.ml500);
+      expect(updated.waterDefault, QuickEntryWaterDefault.custom);
+      expect(updated.waterCustomMl, 300);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
       expect(updated.sleepInProgressBadgeEnabled, isFalse);
 
@@ -45,6 +48,7 @@ void main() {
       expect(original.collapsed, isFalse);
       expect(original.frequency, isEmpty);
       expect(original.waterDefault, QuickEntryWaterDefault.ml250);
+      expect(original.waterCustomMl, 250);
       expect(original.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
       expect(original.sleepInProgressBadgeEnabled, isTrue);
     });
@@ -67,6 +71,7 @@ void main() {
       expect(updated.collapsed, isFalse);
       expect(updated.frequency, {'water': 3});
       expect(updated.waterDefault, QuickEntryWaterDefault.ml500);
+      expect(updated.waterCustomMl, 250);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.hidden);
       expect(updated.sleepInProgressBadgeEnabled, isFalse);
     });
@@ -223,6 +228,46 @@ void main() {
         'ml500',
       );
     });
+
+    test('setWaterCustomMl updates state and persists', () async {
+      await readPrefs();
+
+      final controller = container.read(quickEntryPreferencesProvider.notifier);
+      await controller.setWaterCustomMl(300);
+
+      final state = container.read(quickEntryPreferencesProvider).requireValue;
+      expect(state.waterCustomMl, 300);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt('record.quickEntry.water.customMl'), 300);
+    });
+
+    test(
+      'custom water default round-trips via enum name and customMl',
+      () async {
+        await readPrefs();
+
+        final controller = container.read(
+          quickEntryPreferencesProvider.notifier,
+        );
+        await controller.setWaterCustomMl(350);
+        await controller.setWaterDefault(QuickEntryWaterDefault.custom);
+
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          'custom',
+        );
+        expect(prefs.getInt('record.quickEntry.water.customMl'), 350);
+
+        // A fresh container re-reads the persisted values.
+        final c = ProviderContainer();
+        addTearDown(c.dispose);
+        final reloaded = await c.read(quickEntryPreferencesProvider.future);
+        expect(reloaded.waterDefault, QuickEntryWaterDefault.custom);
+        expect(reloaded.waterCustomMl, 350);
+      },
+    );
 
     test('setWaterBadgeMode updates state and persists', () async {
       await readPrefs();

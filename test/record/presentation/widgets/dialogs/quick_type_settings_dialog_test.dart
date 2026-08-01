@@ -58,6 +58,40 @@ void main() {
       expect(find.text('500 ml'), findsOneWidget);
     });
 
+    testWidgets(
+      'picking the custom default amount prompts for ml and persists',
+      (tester) async {
+        await pumpDialog(
+          tester,
+          RecordDashboard.quickActionFor(RecordEntryType.water)!,
+        );
+
+        // Open the default amount choice list and pick the custom option.
+        await tester.tap(find.byKey(const Key('quick-type-water-default')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('自定义 (250 ml)').last);
+        await tester.pumpAndSettle();
+
+        // The amount dialog appears; enter a new amount and confirm.
+        expect(find.byKey(const Key('water-custom-ml-field')), findsOneWidget);
+        await tester.enterText(
+          find.byKey(const Key('water-custom-ml-field')),
+          '300',
+        );
+        await tester.tap(find.byKey(const Key('water-custom-ml-confirm')));
+        await tester.pumpAndSettle();
+
+        // The select now shows the custom amount and preferences persist.
+        expect(find.text('自定义 (300 ml)'), findsOneWidget);
+        final prefs = await SharedPreferences.getInstance();
+        expect(
+          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          'custom',
+        );
+        expect(prefs.getInt('record.quickEntry.water.customMl'), 300);
+      },
+    );
+
     testWidgets('symptom long-press dialog shows the type rule', (
       tester,
     ) async {

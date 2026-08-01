@@ -80,7 +80,20 @@ String waterDefaultLabel(AppLocalizations l10n, QuickEntryWaterDefault option) {
     QuickEntryWaterDefault.ml500 => l10n.recordFastChoiceWater500ml,
     QuickEntryWaterDefault.cup => l10n.recordFastChoiceWater1Cup,
     QuickEntryWaterDefault.times => l10n.recordFastChoiceWater1Time,
+    QuickEntryWaterDefault.custom => l10n.recordQuickSettingsWaterCustom,
   };
+}
+
+/// Localized label for a water default option, showing the current custom
+/// amount (e.g. `自定义 (300 ml)`) when [option] is the custom choice.
+String waterDefaultOptionLabel(
+  AppLocalizations l10n,
+  QuickEntryWaterDefault option, {
+  required int customMl,
+}) {
+  return option == QuickEntryWaterDefault.custom
+      ? l10n.recordQuickSettingsWaterCustomValue(customMl)
+      : waterDefaultLabel(l10n, option);
 }
 
 /// Localized label for a water quick-entry badge display mode.

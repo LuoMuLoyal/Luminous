@@ -34,13 +34,14 @@ class WaterQuickEntryFlow {
     QuickEntryPreferences preferences,
   ) async {
     final waterDefault = preferences.waterDefault;
+    final resolved = waterDefault.resolve(customMl: preferences.waterCustomMl);
     final item = await createRecord(
       DailyRecordCreateInput(
         kind: DailyRecordKind.water,
         occurredAt: context.occurredAt,
         occurredTime: context.occurredTime,
-        value: waterDefault.value,
-        unit: waterDefault.unit,
+        value: resolved.value,
+        unit: resolved.unit,
       ),
     );
 

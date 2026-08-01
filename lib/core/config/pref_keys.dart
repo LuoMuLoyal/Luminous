@@ -58,6 +58,8 @@ abstract final class PrefKeys {
   static const recordQuickEntryCollapsed = 'record.quickEntry.collapsed';
   static const recordQuickEntryWaterDefaultAmountMl =
       'record.quickEntry.water.defaultAmountMl';
+  static const recordQuickEntryWaterCustomMl =
+      'record.quickEntry.water.customMl';
   static const recordQuickEntryWaterBadgeMode =
       'record.quickEntry.water.badgeMode';
   static const recordQuickEntrySleepInProgressBadgeEnabled =

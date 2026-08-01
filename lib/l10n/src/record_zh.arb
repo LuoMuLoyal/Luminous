@@ -118,6 +118,19 @@
   "recordQuickSettingsResetOrderHint": "仅清除手动顺序，不影响其他快捷设置",
   "recordQuickSettingsDefaults": "默认动作",
   "recordQuickSettingsWaterDefault": "饮水默认量",
+  "recordQuickSettingsWaterCustom": "自定义",
+  "recordQuickSettingsWaterCustomValue": "自定义 ({ml} ml)",
+  "@recordQuickSettingsWaterCustomValue": {
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickSettingsWaterCustomDialogTitle": "自定义饮水默认量",
+  "recordQuickSettingsWaterCustomDialogLabel": "毫升数",
+  "recordQuickSettingsWaterCustomDialogHint": "输入每次快捷记录写入的毫升数",
+  "recordQuickSettingsWaterCustomDialogInvalid": "请输入大于 0 的数字",
   "recordQuickSettingsWaterAmount": "{amount} ml",
   "@recordQuickSettingsWaterAmount": {
     "placeholders": {

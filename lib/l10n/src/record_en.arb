@@ -118,6 +118,19 @@
   "recordQuickSettingsResetOrderHint": "Only clears manual order; other quick settings stay unchanged.",
   "recordQuickSettingsDefaults": "Default actions",
   "recordQuickSettingsWaterDefault": "Water default amount",
+  "recordQuickSettingsWaterCustom": "Custom",
+  "recordQuickSettingsWaterCustomValue": "Custom ({ml} ml)",
+  "@recordQuickSettingsWaterCustomValue": {
+    "placeholders": {
+      "ml": {
+        "type": "int"
+      }
+    }
+  },
+  "recordQuickSettingsWaterCustomDialogTitle": "Custom water amount",
+  "recordQuickSettingsWaterCustomDialogLabel": "Amount (ml)",
+  "recordQuickSettingsWaterCustomDialogHint": "Enter the ml to log per quick entry",
+  "recordQuickSettingsWaterCustomDialogInvalid": "Enter a number greater than 0",
   "recordQuickSettingsWaterAmount": "{amount} ml",
   "@recordQuickSettingsWaterAmount": {
     "placeholders": {

@@ -85,6 +85,32 @@ void main() {
       expect(created?.value, '1');
       expect(created?.unit, 'cup');
     });
+
+    test('records the custom ml amount with the ml unit', () async {
+      DailyRecordCreateInput? created;
+      final flow = WaterQuickEntryFlow(
+        createRecord: (input) async {
+          created = input;
+          return _dailyRecord(id: 'water-4', kind: input.kind);
+        },
+        emitDataChange: (_) {},
+        registerUndo: (_) {},
+      );
+
+      await flow.record(
+        const QuickEntryRecordContext(
+          occurredAt: '2026-07-28',
+          occurredTime: '08:30',
+        ),
+        const QuickEntryPreferences(
+          waterDefault: QuickEntryWaterDefault.custom,
+          waterCustomMl: 300,
+        ),
+      );
+
+      expect(created?.value, '300');
+      expect(created?.unit, 'ml');
+    });
   });
 }
 

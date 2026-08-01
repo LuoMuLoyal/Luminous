@@ -76,7 +76,7 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
 - `authGuarded` helper 封装 auth session 检查模式。
 - `DataChangeBus`（keepAlive Notifier）解耦跨 feature invalidation——`DataChangeTopic` 定义 5 个领域事件，消费方 watch `dataChangeVersionProvider(topic)`。
 - `PrefKeys`（`core/config/pref_keys.dart`）集中管理 SharedPreferences key。Record quick-entry
-  偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量、饮水角标模式和睡眠进行中标记。
+  偏好包括动态排序、自定义顺序、收起状态、频率计数、饮水默认量（预设或自定义 ml）、饮水角标模式和睡眠进行中标记。
 - Record quick-entry panel 从 `RecordDashboardView` 接收当天 `RecordDaySummary` 与 `RecordTimelineEntry`
   列表，用于本地渲染饮水角标（累计量/次数/隐藏）和睡眠进行中角标；该显示层不新增后端状态字段。
 
