@@ -99,7 +99,7 @@ class DailyRecordItemDto {
   @JsonKey(name: r'source', required: false, includeIfNull: false)
   final String? source_;
 
-  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }.
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. For vital: { vitalType, value, unit, secondaryValue?, secondaryUnit? }. For activity: { activityType, value, unit }.
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Map<String, Object>? payload;
 

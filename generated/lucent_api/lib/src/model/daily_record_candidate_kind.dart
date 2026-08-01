@@ -16,6 +16,10 @@ enum DailyRecordCandidateKind {
   note(r'note'),
   @JsonValue(r'sleep')
   sleep(r'sleep'),
+  @JsonValue(r'vital')
+  vital(r'vital'),
+  @JsonValue(r'activity')
+  activity(r'activity'),
   @JsonValue(r'unknown_default_open_api')
   unknownDefaultOpenApi(r'unknown_default_open_api');
 

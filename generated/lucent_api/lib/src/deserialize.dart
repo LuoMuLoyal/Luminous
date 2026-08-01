@@ -11,6 +11,8 @@ import 'package:lucent_api/src/model/assistant_capabilities_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_confirm_result_dto.dart';
+import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_context_settings_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_data_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_list_response_dto.dart';
@@ -26,6 +28,7 @@ import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
+import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
 import 'package:lucent_api/src/model/cooldown_message_dto.dart';
 import 'package:lucent_api/src/model/create_current_medicine_dto.dart';
 import 'package:lucent_api/src/model/create_daily_record_dto.dart';
@@ -275,6 +278,14 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'AssistantConfirmResultDto':
+      return AssistantConfirmResultDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'AssistantConfirmResultResponseDto':
+      return AssistantConfirmResultResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'AssistantContextSettingsDto':
       return AssistantContextSettingsDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -331,6 +342,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'CnMedicineDetailDto':
       return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ConfirmAssistantProposalDto':
+      return ConfirmAssistantProposalDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CooldownMessageDto':
       return CooldownMessageDto.fromJson(value as Map<String, dynamic>)

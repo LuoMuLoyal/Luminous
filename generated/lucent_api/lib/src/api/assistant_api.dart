@@ -11,8 +11,10 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/assistant_capabilities_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_clear_result_response_dto.dart';
+import 'package:lucent_api/src/model/assistant_confirm_result_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_list_response_dto.dart';
 import 'package:lucent_api/src/model/assistant_conversation_response_dto.dart';
+import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
 import 'package:lucent_api/src/model/stream_assistant_messages_dto.dart';
 
 class AssistantApi {
@@ -79,6 +81,102 @@ class AssistantApi {
     }
 
     return Response<AssistantClearResultResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// Confirm or reject pending assistant write proposals and resume the graph thread
+  ///
+  ///
+  /// Parameters:
+  /// * [conversationId]
+  /// * [confirmAssistantProposalDto]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [AssistantConfirmResultResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<AssistantConfirmResultResponseDto>>
+  assistantControllerConfirmProposalV1({
+    required String conversationId,
+    required ConfirmAssistantProposalDto confirmAssistantProposalDto,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path =
+        r'/api/v1/user/assistant/conversations/{conversationId}/confirm'
+            .replaceAll(
+              '{'
+              r'conversationId'
+              '}',
+              conversationId.toString(),
+            );
+    final _options = Options(
+      method: r'POST',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
+      validateStatus: validateStatus,
+    );
+
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(confirmAssistantProposalDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    final _response = await _dio.request<Object>(
+      _path,
+      data: _bodyData,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    AssistantConfirmResultResponseDto? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              AssistantConfirmResultResponseDto,
+              AssistantConfirmResultResponseDto
+            >(rawData, 'AssistantConfirmResultResponseDto', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<AssistantConfirmResultResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

@@ -34,6 +34,8 @@ class CreateDailyRecordDto {
 
     this.note,
 
+    this.source_,
+
     this.payload,
 
     this.attachments,
@@ -71,7 +73,11 @@ class CreateDailyRecordDto {
   @JsonKey(name: r'note', required: false, includeIfNull: false)
   final String? note;
 
-  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. endAt is an ISO 8601 timestamp whose date component matches occurredAt (wake date). startAt is the bedtime ISO 8601 timestamp and may fall on the day before occurredAt for cross-midnight sleep.
+  /// Record source. Defaults to \"manual\". Use \"apple_health\" or \"health_connect\" for auto-synced records.
+  @JsonKey(name: r'source', required: false, includeIfNull: false)
+  final String? source_;
+
+  /// Structured payload for kind-specific data. For sleep: { startAt, endAt, durationMinutes, quality?, deepMinutes?, lightMinutes?, remMinutes? }. endAt is an ISO 8601 timestamp whose date component matches occurredAt (wake date). startAt is the bedtime ISO 8601 timestamp and may fall on the day before occurredAt for cross-midnight sleep. For vital: { vitalType: \"heartRate\"|\"bloodPressure\"|\"bloodOxygen\"|\"bloodGlucose\"|\"bodyTemperature\"|\"weight\"|\"respiratoryRate\", value: number, unit: string, secondaryValue?: number, secondaryUnit?: string }. For activity: { activityType: \"steps\"|\"flightsClimbed\"|\"distance\"|\"exerciseTime\", value: number, unit: string }. Vital and activity payloads are optional for manual entry.
   @JsonKey(name: r'payload', required: false, includeIfNull: false)
   final Object? payload;
 
@@ -90,6 +96,7 @@ class CreateDailyRecordDto {
           other.value == value &&
           other.unit == unit &&
           other.note == note &&
+          other.source_ == source_ &&
           other.payload == payload &&
           other.attachments == attachments;
 
@@ -102,6 +109,7 @@ class CreateDailyRecordDto {
       value.hashCode +
       unit.hashCode +
       note.hashCode +
+      source_.hashCode +
       payload.hashCode +
       attachments.hashCode;
 
