@@ -40,7 +40,7 @@ void main() {
       ]);
     });
 
-    test('uses custom water amount preference', () async {
+    test('uses custom water default preference', () async {
       DailyRecordCreateInput? created;
       final flow = WaterQuickEntryFlow(
         createRecord: (input) async {
@@ -56,10 +56,34 @@ void main() {
           occurredAt: '2026-07-28',
           occurredTime: '08:30',
         ),
-        const QuickEntryPreferences(waterDefaultAmountMl: 500),
+        const QuickEntryPreferences(waterDefault: QuickEntryWaterDefault.ml500),
       );
 
       expect(created?.value, '500');
+      expect(created?.unit, 'ml');
+    });
+
+    test('records a cup default with the cup unit', () async {
+      DailyRecordCreateInput? created;
+      final flow = WaterQuickEntryFlow(
+        createRecord: (input) async {
+          created = input;
+          return _dailyRecord(id: 'water-3', kind: input.kind);
+        },
+        emitDataChange: (_) {},
+        registerUndo: (_) {},
+      );
+
+      await flow.record(
+        const QuickEntryRecordContext(
+          occurredAt: '2026-07-28',
+          occurredTime: '08:30',
+        ),
+        const QuickEntryPreferences(waterDefault: QuickEntryWaterDefault.cup),
+      );
+
+      expect(created?.value, '1');
+      expect(created?.unit, 'cup');
     });
   });
 }

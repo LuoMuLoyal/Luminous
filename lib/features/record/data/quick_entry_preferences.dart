@@ -19,6 +19,23 @@ const _maxFrequencyEntries = 50;
 
 enum QuickEntryWaterBadgeMode { dailyTotal, dailyCount, hidden }
 
+/// Water quick-entry default amount choices, mirroring the fast-entry water
+/// options: 250 ml / 500 ml / 1 杯 / 1 次.
+enum QuickEntryWaterDefault {
+  ml250('250', 'ml'),
+  ml500('500', 'ml'),
+  cup('1', 'cup'),
+  times('1', 'times');
+
+  const QuickEntryWaterDefault(this.value, this.unit);
+
+  /// Value stored on a water daily record.
+  final String value;
+
+  /// Unit stored on a water daily record (`ml` / `cup` / `times`).
+  final String unit;
+}
+
 /// State for quick-entry preferences.
 class QuickEntryPreferences {
   const QuickEntryPreferences({
@@ -26,7 +43,7 @@ class QuickEntryPreferences {
     this.customOrder = const [],
     this.collapsed = false,
     this.frequency = const {},
-    this.waterDefaultAmountMl = 250,
+    this.waterDefault = QuickEntryWaterDefault.ml250,
     this.waterBadgeMode = QuickEntryWaterBadgeMode.dailyTotal,
     this.sleepInProgressBadgeEnabled = true,
     this.customIcons = const {},
@@ -46,7 +63,7 @@ class QuickEntryPreferences {
   final Map<String, int> frequency;
 
   /// Default amount created by a single water quick-entry tap.
-  final int waterDefaultAmountMl;
+  final QuickEntryWaterDefault waterDefault;
 
   /// How the water quick-entry tile should summarize today's water.
   final QuickEntryWaterBadgeMode waterBadgeMode;
@@ -64,7 +81,7 @@ class QuickEntryPreferences {
     List<String>? customOrder,
     bool? collapsed,
     Map<String, int>? frequency,
-    int? waterDefaultAmountMl,
+    QuickEntryWaterDefault? waterDefault,
     QuickEntryWaterBadgeMode? waterBadgeMode,
     bool? sleepInProgressBadgeEnabled,
     Map<String, String>? customIcons,
@@ -74,7 +91,7 @@ class QuickEntryPreferences {
       customOrder: customOrder ?? this.customOrder,
       collapsed: collapsed ?? this.collapsed,
       frequency: frequency ?? this.frequency,
-      waterDefaultAmountMl: waterDefaultAmountMl ?? this.waterDefaultAmountMl,
+      waterDefault: waterDefault ?? this.waterDefault,
       waterBadgeMode: waterBadgeMode ?? this.waterBadgeMode,
       sleepInProgressBadgeEnabled:
           sleepInProgressBadgeEnabled ?? this.sleepInProgressBadgeEnabled,
@@ -100,7 +117,7 @@ class QuickEntryPreferencesController
     final dynamicSortEnabled = prefs.getBool(_kDynamicSortEnabled) ?? false;
     final customOrder = prefs.getStringList(_kCustomOrder) ?? const [];
     final collapsed = prefs.getBool(_kCollapsed) ?? false;
-    final waterDefaultAmountMl = prefs.getInt(_kWaterDefaultAmountMl) ?? 250;
+    final waterDefault = _parseWaterDefault(prefs);
     final waterBadgeMode = _parseWaterBadgeMode(
       prefs.getString(_kWaterBadgeMode),
     );
@@ -135,7 +152,7 @@ class QuickEntryPreferencesController
       customOrder: customOrder,
       collapsed: collapsed,
       frequency: frequency,
-      waterDefaultAmountMl: waterDefaultAmountMl,
+      waterDefault: waterDefault,
       waterBadgeMode: waterBadgeMode,
       sleepInProgressBadgeEnabled: sleepInProgressBadgeEnabled,
       customIcons: customIcons,
@@ -147,6 +164,20 @@ class QuickEntryPreferencesController
       (mode) => mode.name == value,
       orElse: () => QuickEntryWaterBadgeMode.dailyTotal,
     );
+  }
+
+  /// Parses the stored water default. Supports both the current enum-name
+  /// format and the legacy int (ml) format stored under the same key.
+  QuickEntryWaterDefault _parseWaterDefault(SharedPreferences prefs) {
+    final stored = prefs.get(_kWaterDefaultAmountMl);
+    if (stored is String) {
+      for (final option in QuickEntryWaterDefault.values) {
+        if (option.name == stored) return option;
+      }
+    }
+    return prefs.getInt(_kWaterDefaultAmountMl) == 500
+        ? QuickEntryWaterDefault.ml500
+        : QuickEntryWaterDefault.ml250;
   }
 
   Future<void> setDynamicSortEnabled(bool enabled) async {
@@ -177,11 +208,11 @@ class QuickEntryPreferencesController
     await prefs.setBool(_kCollapsed, collapsed);
   }
 
-  Future<void> setWaterDefaultAmountMl(int amountMl) async {
+  Future<void> setWaterDefault(QuickEntryWaterDefault option) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
-    state = AsyncData(current.copyWith(waterDefaultAmountMl: amountMl));
+    state = AsyncData(current.copyWith(waterDefault: option));
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_kWaterDefaultAmountMl, amountMl);
+    await prefs.setString(_kWaterDefaultAmountMl, option.name);
   }
 
   Future<void> setWaterBadgeMode(QuickEntryWaterBadgeMode mode) async {

@@ -14,7 +14,7 @@ void main() {
       expect(prefs.customOrder, isEmpty);
       expect(prefs.collapsed, isFalse);
       expect(prefs.frequency, isEmpty);
-      expect(prefs.waterDefaultAmountMl, 250);
+      expect(prefs.waterDefault, QuickEntryWaterDefault.ml250);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
       expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
@@ -26,7 +26,7 @@ void main() {
         customOrder: const ['meal', 'water'],
         collapsed: true,
         frequency: const {'meal': 5},
-        waterDefaultAmountMl: 500,
+        waterDefault: QuickEntryWaterDefault.ml500,
         waterBadgeMode: QuickEntryWaterBadgeMode.dailyCount,
         sleepInProgressBadgeEnabled: false,
       );
@@ -35,7 +35,7 @@ void main() {
       expect(updated.customOrder, ['meal', 'water']);
       expect(updated.collapsed, isTrue);
       expect(updated.frequency, {'meal': 5});
-      expect(updated.waterDefaultAmountMl, 500);
+      expect(updated.waterDefault, QuickEntryWaterDefault.ml500);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
       expect(updated.sleepInProgressBadgeEnabled, isFalse);
 
@@ -44,7 +44,7 @@ void main() {
       expect(original.customOrder, isEmpty);
       expect(original.collapsed, isFalse);
       expect(original.frequency, isEmpty);
-      expect(original.waterDefaultAmountMl, 250);
+      expect(original.waterDefault, QuickEntryWaterDefault.ml250);
       expect(original.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
       expect(original.sleepInProgressBadgeEnabled, isTrue);
     });
@@ -55,7 +55,7 @@ void main() {
         customOrder: ['water'],
         collapsed: true,
         frequency: {'water': 3},
-        waterDefaultAmountMl: 500,
+        waterDefault: QuickEntryWaterDefault.ml500,
         waterBadgeMode: QuickEntryWaterBadgeMode.hidden,
         sleepInProgressBadgeEnabled: false,
       );
@@ -66,7 +66,7 @@ void main() {
       expect(updated.customOrder, ['water']);
       expect(updated.collapsed, isFalse);
       expect(updated.frequency, {'water': 3});
-      expect(updated.waterDefaultAmountMl, 500);
+      expect(updated.waterDefault, QuickEntryWaterDefault.ml500);
       expect(updated.waterBadgeMode, QuickEntryWaterBadgeMode.hidden);
       expect(updated.sleepInProgressBadgeEnabled, isFalse);
     });
@@ -92,7 +92,7 @@ void main() {
       expect(prefs.customOrder, isEmpty);
       expect(prefs.collapsed, isFalse);
       expect(prefs.frequency, isEmpty);
-      expect(prefs.waterDefaultAmountMl, 250);
+      expect(prefs.waterDefault, QuickEntryWaterDefault.ml250);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyTotal);
       expect(prefs.sleepInProgressBadgeEnabled, isTrue);
     });
@@ -104,7 +104,7 @@ void main() {
         'record.quickEntry.collapsed': true,
         'record.quickEntry.freq.meal': 5,
         'record.quickEntry.freq.water': 3,
-        'record.quickEntry.water.defaultAmountMl': 500,
+        'record.quickEntry.water.defaultAmountMl': 'ml500',
         'record.quickEntry.water.badgeMode': 'dailyCount',
         'record.quickEntry.sleep.inProgressBadgeEnabled': false,
       });
@@ -118,10 +118,26 @@ void main() {
       expect(prefs.customOrder, ['meal', 'water']);
       expect(prefs.collapsed, isTrue);
       expect(prefs.frequency, {'meal': 5, 'water': 3});
-      expect(prefs.waterDefaultAmountMl, 500);
+      expect(prefs.waterDefault, QuickEntryWaterDefault.ml500);
       expect(prefs.waterBadgeMode, QuickEntryWaterBadgeMode.dailyCount);
       expect(prefs.sleepInProgressBadgeEnabled, isFalse);
     });
+
+    test(
+      'build migrates legacy int water default from SharedPreferences',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'record.quickEntry.water.defaultAmountMl': 500,
+        });
+
+        final c = ProviderContainer();
+        addTearDown(c.dispose);
+
+        final prefs = await c.read(quickEntryPreferencesProvider.future);
+
+        expect(prefs.waterDefault, QuickEntryWaterDefault.ml500);
+      },
+    );
 
     test('setDynamicSortEnabled updates state and persists', () async {
       await readPrefs();
@@ -192,17 +208,20 @@ void main() {
       expect(prefs.getInt('record.quickEntry.freq.mood'), 1);
     });
 
-    test('setWaterDefaultAmountMl updates state and persists', () async {
+    test('setWaterDefault updates state and persists', () async {
       await readPrefs();
 
       final controller = container.read(quickEntryPreferencesProvider.notifier);
-      await controller.setWaterDefaultAmountMl(500);
+      await controller.setWaterDefault(QuickEntryWaterDefault.ml500);
 
       final state = container.read(quickEntryPreferencesProvider).requireValue;
-      expect(state.waterDefaultAmountMl, 500);
+      expect(state.waterDefault, QuickEntryWaterDefault.ml500);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getInt('record.quickEntry.water.defaultAmountMl'), 500);
+      expect(
+        prefs.getString('record.quickEntry.water.defaultAmountMl'),
+        'ml500',
+      );
     });
 
     test('setWaterBadgeMode updates state and persists', () async {
@@ -246,18 +265,21 @@ void main() {
           quickEntryPreferencesProvider.notifier,
         );
         await controller.setCustomOrder(['water', 'meal']);
-        await controller.setWaterDefaultAmountMl(500);
+        await controller.setWaterDefault(QuickEntryWaterDefault.ml500);
         await controller.resetCustomOrder();
 
         final state = container
             .read(quickEntryPreferencesProvider)
             .requireValue;
         expect(state.customOrder, isEmpty);
-        expect(state.waterDefaultAmountMl, 500);
+        expect(state.waterDefault, QuickEntryWaterDefault.ml500);
 
         final prefs = await SharedPreferences.getInstance();
         expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
-        expect(prefs.getInt('record.quickEntry.water.defaultAmountMl'), 500);
+        expect(
+          prefs.getString('record.quickEntry.water.defaultAmountMl'),
+          'ml500',
+        );
       },
     );
 

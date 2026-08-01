@@ -1,3 +1,4 @@
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -69,5 +70,26 @@ String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
     RecordCopyKey.range7Days => l10n.recordRange7Days,
     RecordCopyKey.range30Days => l10n.recordRange30Days,
     RecordCopyKey.foodImagePlaceholder => l10n.recordFoodImagePlaceholder,
+  };
+}
+
+/// Localized label for a water quick-entry default choice.
+String waterDefaultLabel(AppLocalizations l10n, QuickEntryWaterDefault option) {
+  return switch (option) {
+    QuickEntryWaterDefault.ml250 => l10n.recordFastChoiceWater250ml,
+    QuickEntryWaterDefault.ml500 => l10n.recordFastChoiceWater500ml,
+    QuickEntryWaterDefault.cup => l10n.recordFastChoiceWater1Cup,
+    QuickEntryWaterDefault.times => l10n.recordFastChoiceWater1Time,
+  };
+}
+
+/// Localized label for a water quick-entry badge display mode.
+String waterBadgeLabel(AppLocalizations l10n, QuickEntryWaterBadgeMode mode) {
+  return switch (mode) {
+    QuickEntryWaterBadgeMode.dailyTotal =>
+      l10n.recordQuickSettingsWaterBadgeDailyTotal,
+    QuickEntryWaterBadgeMode.dailyCount =>
+      l10n.recordQuickSettingsWaterBadgeDailyCount,
+    QuickEntryWaterBadgeMode.hidden => l10n.recordQuickSettingsWaterBadgeHidden,
   };
 }
