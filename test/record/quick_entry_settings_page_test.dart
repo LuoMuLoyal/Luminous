@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_reorder.dart';
 import 'package:luminous/features/record/presentation/pages/quick_entry_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,7 +68,7 @@ void main() {
   testWidgets('reset default order clears custom order only', (tester) async {
     SharedPreferences.setMockInitialValues(<String, Object>{
       'record.quickEntry.customOrder': ['water', 'meal'],
-      'record.quickEntry.water.defaultAmountMl': 500,
+      'record.quickEntry.water.defaultAmountMl': 'ml500',
     });
 
     await tester.pumpWidget(
@@ -82,7 +83,67 @@ void main() {
 
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getStringList('record.quickEntry.customOrder'), isNull);
-    expect(prefs.getInt('record.quickEntry.water.defaultAmountMl'), 500);
+    expect(prefs.getString('record.quickEntry.water.defaultAmountMl'), 'ml500');
+  });
+
+  testWidgets('custom icon section lists every quick type with reset', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
+    );
+    await tester.pumpAndSettle();
+
+    for (final type in const [
+      'symptom',
+      'medication',
+      'water',
+      'meal',
+      'sleep',
+      'mood',
+      'note',
+    ]) {
+      expect(
+        find.byKey(Key('record-quick-settings-icon-$type')),
+        findsOneWidget,
+        reason: 'expected an icon tile for $type',
+      );
+    }
+
+    // Reset is disabled when no custom icons are configured.
+    final resetTile = tester.widget<FTile>(
+      find.byKey(const Key('record-quick-settings-reset-icons')),
+    );
+    expect(resetTile.onPress, isNull);
+  });
+
+  testWidgets('custom icon reset clears stored custom icons', (tester) async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'record.quickEntry.customIcons': ['water:coffee'],
+    });
+
+    await tester.pumpWidget(
+      const ProviderScope(child: TestForuiApp(home: QuickEntrySettingsPage())),
+    );
+    await tester.pumpAndSettle();
+
+    final resetTile = tester.widget<FTile>(
+      find.byKey(const Key('record-quick-settings-reset-icons')),
+    );
+    expect(resetTile.onPress, isNotNull);
+
+    final resetFinder = find.byKey(
+      const Key('record-quick-settings-reset-icons'),
+    );
+    await tester.ensureVisible(resetFinder);
+    await tester.pumpAndSettle();
+    await tester.tap(resetFinder);
+    await tester.pumpAndSettle();
+
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getStringList('record.quickEntry.customIcons'), isNull);
   });
 
   testWidgets(

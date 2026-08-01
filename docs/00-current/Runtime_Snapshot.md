@@ -120,6 +120,10 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
 - 2026-07-28：About 页面新增版本检查功能 l10n 键（`settingsAboutCheckUpdate`、`settingsAboutCheckUpdateChecking`、`settingsAboutCheckUpdateUpToDate`、`settingsAboutCheckUpdateAvailable`、`settingsAboutCheckUpdateFailed`），位于 `settings_*` 分片。帮助页面新增 FAQ 区块和反馈区块 l10n 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`），删除 Mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - 2026-07-28：Record quick-entry settings 新增 `recordQuickSettings*` 和
   `recordQuickHelpTooltip` 键，Settings 根页新增 `settingsQuickEntrySubtitle` 次入口文案。
+- 2026-08-01：Record quick-entry 图标与长按文案更新。`recordQuickSettingsCustomIconTitle` /
+  `recordQuickSettingsCustomIconHint` 从"长按修改图标"改为点击更换；新增 `recordQuickIconChangeAction`、
+  `recordQuickIconResetAction`、`recordQuickIconFieldLabel`、`recordQuickHelpLongPressRule` 键，
+  供快速记录设置页、创建/编辑表单图标字段与长按类型设置弹窗使用。
 - 2026-07-28：Record quick-entry daily flows 新增即时保存/撤销反馈键
   `recordQuickSavedToast`、`recordQuickUndoAction`、`recordQuickUndoFailedToast`，以及症状多选
   `recordFastEntryMultiSelectAction`、`recordFastEntryPartialFailedToast`。这些键位于

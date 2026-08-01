@@ -92,6 +92,10 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - 手动排序页从占位页改为说明 + `ReorderableListView`，按默认顺序或用户自定义顺序展示 7 个快捷入口，拖拽后写入 `QuickEntryPreferences.customOrder`。
   - “重置为默认顺序”只清除 `customOrder`，不影响饮水默认量、角标或睡眠进行中标记。
   - quick panel 现在接收 dashboard summary/timeline：饮水角标按偏好显示今日累计量或次数；睡眠角标在发现未合并的 sleep start fact 时显示“进行中”。
+- 阶段 7 已还原长按行为并迁移图标选择器：
+  - 长按快捷瓦片不再打开图标选择器，改为按类型弹出 Forui 弹窗：water → 饮水默认量/角标设置；meal → 无照片手动录入（`MealQuickConfirmationDialog`）；medication/symptom/mood/sleep → 该类型当前规则说明。回调经 `onQuickActionLongPress`（`page.dart` → `RecordDashboardView` → `RecordQuickEntryPanel`）分发到 `handleQuickActionLongPress`。
+  - 自定义图标选择器迁移到两处：快速记录设置页"自定义图标"区（7 种类型逐行选择 + 恢复默认）与创建/编辑记录页的 `RecordKindIconField`（仅对映射到快捷类型的 kind 渲染）。
+  - `RecordDashboard.defaultQuickActions` / `quickActionFor` 与 `resolveQuickActionIcon` 作为默认图标与生效图标的统一来源。
 
 ## 骨架屏
 

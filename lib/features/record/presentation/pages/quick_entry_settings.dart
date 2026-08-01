@@ -1,13 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/design/lucide_icon_bridge.dart';
+import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/features/settings/presentation/widgets/shared/section_label.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -76,39 +82,54 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDefaults),
               const SizedBox(height: Spacing.level3),
-              FTileGroup(
-                physics: const NeverScrollableScrollPhysics(),
-                divider: FItemDivider.full,
+              FSelect<QuickEntryWaterDefault>.rich(
+                key: const Key('record-quick-settings-water-default'),
+                label: Text(l10n.recordQuickSettingsWaterDefault),
+                format: (value) => waterDefaultLabel(l10n, value),
+                control: FSelectControl.lifted(
+                  value: prefs.waterDefault,
+                  onChange: (value) {
+                    if (value != null) {
+                      unawaited(controller.setWaterDefault(value));
+                    }
+                  },
+                ),
                 children: [
-                  FTile(
-                    key: const Key('record-quick-settings-water-default'),
-                    title: Text(l10n.recordQuickSettingsWaterDefault),
-                    details: Text(
-                      l10n.recordQuickSettingsWaterAmount(
-                        prefs.waterDefaultAmountMl,
-                      ),
+                  for (final option in QuickEntryWaterDefault.values)
+                    FSelectItem.item(
+                      title: Text(waterDefaultLabel(l10n, option)),
+                      value: option,
                     ),
-                    onPress: () => controller.setWaterDefaultAmountMl(
-                      prefs.waterDefaultAmountMl == 250 ? 500 : 250,
-                    ),
-                  ),
                 ],
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDisplay),
               const SizedBox(height: Spacing.level3),
+              FSelect<QuickEntryWaterBadgeMode>.rich(
+                key: const Key('record-quick-settings-water-badge'),
+                label: Text(l10n.recordQuickSettingsWaterBadge),
+                format: (value) => waterBadgeLabel(l10n, value),
+                control: FSelectControl.lifted(
+                  value: prefs.waterBadgeMode,
+                  onChange: (value) {
+                    if (value != null) {
+                      unawaited(controller.setWaterBadgeMode(value));
+                    }
+                  },
+                ),
+                children: [
+                  for (final mode in QuickEntryWaterBadgeMode.values)
+                    FSelectItem.item(
+                      title: Text(waterBadgeLabel(l10n, mode)),
+                      value: mode,
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level3),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
                 children: [
-                  FTile(
-                    key: const Key('record-quick-settings-water-badge'),
-                    title: Text(l10n.recordQuickSettingsWaterBadge),
-                    details: Text(_waterBadgeLabel(l10n, prefs.waterBadgeMode)),
-                    onPress: () => controller.setWaterBadgeMode(
-                      _nextWaterBadgeMode(prefs.waterBadgeMode),
-                    ),
-                  ),
                   FTile(
                     key: const Key('record-quick-settings-sleep-badge'),
                     title: Text(l10n.recordQuickSettingsSleepBadge),
@@ -126,16 +147,37 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
               const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.recordQuickSettingsCustomIconHint,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+              const SizedBox(height: Spacing.level3),
               FTileGroup(
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
                 children: [
+                  for (final action in RecordDashboard.defaultQuickActions)
+                    FTile(
+                      key: Key(
+                        'record-quick-settings-icon-${action.type.name}',
+                      ),
+                      title: Text(recordCopy(l10n, action.titleKey)),
+                      subtitle: Text(l10n.recordQuickIconChangeAction),
+                      prefix: Icon(
+                        resolveQuickActionIcon(action, prefs),
+                        size: IconSizeTokens.level3,
+                      ),
+                      suffix: const Icon(SemanticIcons.actionNext),
+                      onPress: () => _pickCustomIcon(context, ref, action),
+                    ),
                   FTile(
-                    key: const Key('record-quick-settings-custom-icon'),
-                    title: Text(l10n.recordQuickSettingsCustomIconTitle),
-                    subtitle: Text(l10n.recordQuickSettingsCustomIconHint),
-                    suffix: const Icon(SemanticIcons.actionHelp),
-                    onPress: () => _showIconPickerHelp(context, l10n),
+                    key: const Key('record-quick-settings-reset-icons'),
+                    title: Text(l10n.recordQuickIconResetAction),
+                    onPress: prefs.customIcons.isEmpty
+                        ? null
+                        : controller.resetAllCustomIcons,
                   ),
                 ],
               ),
@@ -160,64 +202,23 @@ class QuickEntrySettingsPage extends ConsumerWidget {
     );
   }
 
-  QuickEntryWaterBadgeMode _nextWaterBadgeMode(
-    QuickEntryWaterBadgeMode current,
-  ) {
-    return switch (current) {
-      QuickEntryWaterBadgeMode.dailyTotal =>
-        QuickEntryWaterBadgeMode.dailyCount,
-      QuickEntryWaterBadgeMode.dailyCount => QuickEntryWaterBadgeMode.hidden,
-      QuickEntryWaterBadgeMode.hidden => QuickEntryWaterBadgeMode.dailyTotal,
-    };
-  }
-
-  String _waterBadgeLabel(
-    AppLocalizations l10n,
-    QuickEntryWaterBadgeMode mode,
-  ) {
-    return switch (mode) {
-      QuickEntryWaterBadgeMode.dailyTotal =>
-        l10n.recordQuickSettingsWaterBadgeDailyTotal,
-      QuickEntryWaterBadgeMode.dailyCount =>
-        l10n.recordQuickSettingsWaterBadgeDailyCount,
-      QuickEntryWaterBadgeMode.hidden =>
-        l10n.recordQuickSettingsWaterBadgeHidden,
-    };
-  }
-
-  Future<void> _showIconPickerHelp(
+  Future<void> _pickCustomIcon(
     BuildContext context,
-    AppLocalizations l10n,
+    WidgetRef ref,
+    RecordQuickAction action,
   ) async {
-    await showAppDialog<void>(
-      context: context,
-      maxWidth: 440,
-      scrollable: false,
-      builder: (dialogContext) => Column(
-        key: const Key('record-quick-icon-help-dialog'),
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.recordQuickSettingsCustomIconTitle,
-            style: TypographyToken.level6.body(dialogContext),
-          ),
-          const SizedBox(height: Spacing.level4),
-          Text(
-            l10n.recordQuickSettingsCustomIconHint,
-            style: TypographyToken.level4.body(dialogContext),
-          ),
-          const SizedBox(height: Spacing.level5),
-          Align(
-            alignment: Alignment.centerRight,
-            child: FButton(
-              variant: FButtonVariant.ghost,
-              onPress: () => Navigator.of(dialogContext).pop(),
-              child: Text(l10n.commonConfirm),
-            ),
-          ),
-        ],
-      ),
+    final prefs =
+        ref.read(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
+    final iconData = await showAppIconPicker(
+      context,
+      currentIcon: resolveQuickActionIcon(action, prefs),
     );
+    if (iconData == null || !context.mounted) return;
+    final iconName = LucideIconBridge.nameOf(iconData);
+    if (iconName == null) return;
+    await ref
+        .read(quickEntryPreferencesProvider.notifier)
+        .setCustomIcon(action.type.name, iconName);
   }
 }

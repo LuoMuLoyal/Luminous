@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:luminous/core/design/lucide_icon_bridge.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
@@ -6,6 +8,19 @@ import 'package:luminous/l10n/app_localizations.dart';
 // ---------------------------------------------------------------------------
 // Helper functions
 // ---------------------------------------------------------------------------
+
+/// Resolves the effective display icon for [action], applying a user-customized
+/// Lucide icon when one is stored in [preferences] for the action's type.
+IconData resolveQuickActionIcon(
+  RecordQuickAction action,
+  QuickEntryPreferences preferences,
+) {
+  final customName = preferences.customIcons[action.type.name];
+  if (customName != null) {
+    return LucideIconBridge.resolve(customName, fallback: action.icon);
+  }
+  return action.icon;
+}
 
 /// Default preferred order of quick-action types on mobile.
 const defaultQuickActionOrder = <RecordEntryType>[

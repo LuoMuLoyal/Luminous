@@ -53,6 +53,9 @@ Last updated: 2026-07-28 (Record quick-entry sorting/help/badges has no contract
   图片附件链路触发。
 - **快速记录排序/帮助/角标**：阶段 6 仅修改本地 SharedPreferences 偏好、前端说明弹窗，以及基于现有
   Record dashboard summary/timeline 的水与睡眠角标渲染；未新增 Lucent API、DTO 或 OpenAPI 生成客户端变更。
+- **长按类型弹窗与自定义图标**：阶段 7 为纯前端改动——长按改为逐类型 Forui 弹窗（water 设置 /
+  meal 手动录入 / 其余类型规则说明），图标选择器迁移到快速记录设置页与创建/编辑表单；未新增 Lucent
+  API、DTO 或 OpenAPI 生成客户端变更。
 - **Medicine 主页空态**：未登录 preview 与已登录空药盒均复用现有 `MedicineWorkspace` 结构（`plan.items` 为空），空态文案与卡片由前端根据认证状态本地化渲染，未引入新合同字段。
 - **用户数据边界**：用户业务数据在 `/api/v1/user/*` 下；账户资料/安全操作在 `/api/v1/account/*` 下。
 - **SSE 流**：Today AI 分析 `/api/v1/user/today-analysis/generate/stream`、Report AI 摘要 `/api/v1/user/reports/summary/generate/stream`、Assistant `/api/v1/user/assistant/chat/stream`。通过 `LucentSseClient` + Dio 直接消费，不经过 Retrofit。

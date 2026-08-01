@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_meal.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_medication.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_sleep.dart';
@@ -15,6 +16,8 @@ import 'package:luminous/features/record/presentation/providers/time.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_context.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_executor.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
+import 'package:luminous/features/record/presentation/widgets/dialogs/quick_type_settings_dialog.dart';
+import 'package:luminous/l10n/app_localizations.dart';
 
 /// Dispatches a quick entry action to the appropriate handler based on type.
 ///
@@ -95,5 +98,47 @@ Future<void> handleQuickAction(
       canAccessProtectedData: canAccessProtectedData,
       isAuthLoading: isAuthLoading,
     ),
+  );
+}
+
+/// Dispatches a quick-entry **long press** to the type-specific
+/// "more/settings" surface (per the quick-entry UX spec).
+///
+/// - meal: manual no-photo meal entry dialog;
+/// - water: water default amount / badge settings dialog;
+/// - medication / symptom / mood / sleep: the type's current rule dialog.
+Future<void> handleQuickActionLongPress(
+  BuildContext context,
+  WidgetRef ref,
+  RecordQuickAction action,
+) async {
+  assert(!action.locked, 'Locked quick actions should be disabled by UI');
+
+  final selectedDate = ref.read(selectedRecordDateProvider);
+  final now = ref.read(currentRecordDateTimeProvider);
+  final date = formatRecordDate(selectedDate);
+  final currentTime = formatRecordTimeValue(now);
+  final session = ref.read(authSessionProvider);
+
+  if (action.type == RecordEntryType.meal) {
+    await handleMealQuickActionManual(
+      context,
+      ref,
+      now: now,
+      occurredAt: date,
+      occurredTime: currentTime,
+      canAccessProtectedData: session.canAccessProtectedData,
+      isAuthLoading: session.isLoading,
+    );
+    return;
+  }
+
+  final l10n = AppLocalizations.of(context)!;
+  await showAppDialog<void>(
+    context: context,
+    maxWidth: 440,
+    scrollable: false,
+    builder: (dialogContext) =>
+        QuickEntryTypeSettingsDialog(action: action, l10n: l10n),
   );
 }

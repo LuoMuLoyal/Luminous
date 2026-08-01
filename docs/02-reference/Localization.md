@@ -70,8 +70,12 @@ Persisted preference keys:
   The mobile header NLP entry button uses `SemanticIcons.aiEntry` (sparkles) and triggers
   `_openNlpDialog` directly from the header, replacing the old `RecordAiInputBar` top input bar.
 - Record quick-entry settings strings (`recordQuickSettings*`) and quick panel help copy
-  (`recordQuickHelpTooltip`) are owned by the Record ARB entries. Settings only owns the secondary
+  (`recordQuickHelpTooltip`, `recordQuickHelpLongPressRule`) are owned by the Record ARB entries.
+  Settings only owns the secondary
   entry subtitle (`settingsQuickEntrySubtitle`) because that row lives on the Settings page.
+- Record quick-entry icon customization strings (`recordQuickIcon*`) are owned by the Record ARB
+  entries and used by the quick-entry settings page, the create/edit record forms
+  (`RecordKindIconField`), and the long-press type-settings dialog.
 - Record quick-entry daily-flow feedback strings (`recordQuickSavedToast`,
   `recordQuickUndoAction`, `recordQuickUndoFailedToast`) and symptom multi-select fast-entry strings
   (`recordFastEntryMultiSelectAction`, `recordFastEntryPartialFailedToast`) are owned by the Record

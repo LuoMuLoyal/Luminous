@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/core/design/lucide_icon_bridge.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/icon_action_button.dart';
-import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
@@ -27,6 +25,7 @@ class RecordQuickEntryPanel extends ConsumerStatefulWidget {
     this.summary = const RecordDaySummary(items: <RecordSummaryItem>[]),
     this.timeline = const <RecordTimelineEntry>[],
     this.onQuickAction,
+    this.onQuickActionLongPress,
   });
 
   final List<RecordQuickAction> actions;
@@ -34,6 +33,10 @@ class RecordQuickEntryPanel extends ConsumerStatefulWidget {
   final RecordDaySummary summary;
   final List<RecordTimelineEntry> timeline;
   final ValueChanged<RecordQuickAction>? onQuickAction;
+
+  /// Long-press is a shortcut to the type-specific "more/settings" surface
+  /// (per the quick-entry UX spec), never the icon picker.
+  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
 
   @override
   ConsumerState<RecordQuickEntryPanel> createState() =>
@@ -81,7 +84,7 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
                     widget.timeline,
                   ),
                   onTap: widget.onQuickAction,
-                  onLongPress: (action) => _showIconPicker(context, action),
+                  onLongPress: widget.onQuickActionLongPress,
                 ),
                 if (noteAction != null) ...[
                   const AppDivider(),
@@ -104,33 +107,12 @@ class _RecordQuickEntryPanelState extends ConsumerState<RecordQuickEntryPanel> {
     QuickEntryPreferences prefs,
   ) {
     final ordered = buildMobileQuickActions(actions, preferences: prefs);
-    if (prefs.customIcons.isEmpty) return ordered;
     return ordered
-        .map((action) {
-          final customIconName = prefs.customIcons[action.type.name];
-          if (customIconName != null) {
-            return action.copyWith(
-              icon: LucideIconBridge.resolve(customIconName),
-            );
-          }
-          return action;
-        })
+        .map(
+          (action) =>
+              action.copyWith(icon: resolveQuickActionIcon(action, prefs)),
+        )
         .toList(growable: false);
-  }
-
-  Future<void> _showIconPicker(
-    BuildContext context,
-    RecordQuickAction action,
-  ) async {
-    final iconData = await showAppIconPicker(context, currentIcon: action.icon);
-    if (iconData != null && context.mounted) {
-      final iconName = LucideIconBridge.nameOf(iconData);
-      if (iconName != null) {
-        await ref
-            .read(quickEntryPreferencesProvider.notifier)
-            .setCustomIcon(action.type.name, iconName);
-      }
-    }
   }
 
   String? _badgeFor(
@@ -242,6 +224,7 @@ class _PanelHeader extends StatelessWidget {
           _HelpLine(text: l10n.recordQuickSettingsSymptomRule),
           _HelpLine(text: l10n.recordQuickSettingsMoodRule),
           _HelpLine(text: l10n.recordQuickSettingsSleepRule),
+          _HelpLine(text: l10n.recordQuickHelpLongPressRule),
           const SizedBox(height: Spacing.level5),
           Align(
             alignment: Alignment.centerRight,

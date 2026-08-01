@@ -31,6 +31,7 @@ import 'package:luminous/features/record/presentation/utils/meal_analysis_payloa
 import 'package:luminous/features/record/presentation/widgets/forms/edit_actions.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/meal_confirm_action.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
@@ -524,6 +525,8 @@ class RecordEditPage extends HookConsumerWidget {
                       titleController: titleController,
                       noteController: noteController,
                     ),
+                    const SizedBox(height: Spacing.level3),
+                    RecordKindIconField(kind: kind.value),
                     if (kind.value == DailyRecordKind.sleep) ...[
                       const SizedBox(height: Spacing.level3),
                       SleepStructuredFields(

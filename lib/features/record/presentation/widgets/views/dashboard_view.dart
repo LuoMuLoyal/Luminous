@@ -21,6 +21,7 @@ class RecordDashboardView extends StatelessWidget {
     this.isPreview = false,
     this.isLoading = false,
     this.onQuickAction,
+    this.onQuickActionLongPress,
     this.onNewEntry,
     this.onFilterSelected,
     this.onDateSelected,
@@ -31,6 +32,7 @@ class RecordDashboardView extends StatelessWidget {
   final bool isPreview;
   final bool isLoading;
   final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
   final VoidCallback? onNewEntry;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
@@ -59,6 +61,7 @@ class RecordDashboardView extends StatelessWidget {
             dashboard: dashboard,
             l10n: l10n,
             onQuickAction: onQuickAction,
+            onQuickActionLongPress: onQuickActionLongPress,
             onFilterSelected: onFilterSelected,
             onDateSelected: onDateSelected,
           );
@@ -72,6 +75,7 @@ class _MobileRecordDashboard extends StatelessWidget {
     required this.dashboard,
     required this.l10n,
     this.onQuickAction,
+    this.onQuickActionLongPress,
     this.onFilterSelected,
     this.onDateSelected,
   });
@@ -79,6 +83,7 @@ class _MobileRecordDashboard extends StatelessWidget {
   final RecordDashboard dashboard;
   final AppLocalizations l10n;
   final ValueChanged<RecordQuickAction>? onQuickAction;
+  final ValueChanged<RecordQuickAction>? onQuickActionLongPress;
   final ValueChanged<RecordEntryType?>? onFilterSelected;
   final ValueChanged<DateTime>? onDateSelected;
 
@@ -102,6 +107,7 @@ class _MobileRecordDashboard extends StatelessWidget {
           timeline: dashboard.timeline,
           l10n: l10n,
           onQuickAction: onQuickAction,
+          onQuickActionLongPress: onQuickActionLongPress,
         ),
         const SizedBox(height: Spacing.level4),
         RecordMobileFilter(

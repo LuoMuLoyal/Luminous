@@ -24,6 +24,7 @@ import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/form_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/image_attachment_field.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/kind_icon_field.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/occurred_at_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/pending_image.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
@@ -429,6 +430,8 @@ class RecordCreatePage extends HookConsumerWidget {
                       titleError: titleError.value,
                       enabled: !saving.value,
                     ),
+                    const SizedBox(height: Spacing.level3),
+                    RecordKindIconField(kind: kind.value),
                     if (kind.value == DailyRecordKind.sleep) ...[
                       const SizedBox(height: Spacing.level3),
                       SleepStructuredFields(

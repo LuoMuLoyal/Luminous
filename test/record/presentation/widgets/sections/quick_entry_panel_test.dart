@@ -197,5 +197,44 @@ void main() {
       expect(types, contains(RecordEntryType.medication));
       expect(types, contains(RecordEntryType.mood));
     });
+
+    testWidgets('long press forwards the action to onQuickActionLongPress', (
+      tester,
+    ) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(480, 1200);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+
+      final actions = RecordDashboard.signedOut(
+        DateTime(2026, 7, 21),
+      ).quickActions;
+      final longPressed = <RecordEntryType>[];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TestForuiApp(
+            home: Scaffold(
+              body: RecordQuickEntryPanel(
+                actions: actions,
+                l10n: l10n,
+                onQuickActionLongPress: (action) =>
+                    longPressed.add(action.type),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Long-press must NOT open an icon picker; it forwards to the callback.
+      await tester.longPress(find.byKey(const Key('record-quick-water')));
+      await tester.pumpAndSettle();
+
+      expect(longPressed, [RecordEntryType.water]);
+      expect(find.byType(IconButton), findsNothing);
+    });
   });
 }

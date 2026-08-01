@@ -200,6 +200,9 @@ class _RecordPageState extends ConsumerState<RecordPage> {
               );
               unawaited(handleQuickAction(context, ref, action));
             },
+            onQuickActionLongPress: (action) {
+              unawaited(handleQuickActionLongPress(context, ref, action));
+            },
             onNewEntry: () => _openRecordCreate(context),
           ),
         ],

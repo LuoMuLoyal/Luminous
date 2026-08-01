@@ -26,7 +26,7 @@ abstract class RecordDashboard with _$RecordDashboard {
       selectedDay: selectedDate.day,
       weekDays: _emptyWeekDays(selectedDate),
       monthDays: const <RecordCalendarDay>[],
-      quickActions: _defaultQuickActions,
+      quickActions: defaultQuickActions,
       summary: const RecordDaySummary(items: <RecordSummaryItem>[]),
       filters: _defaultFilters,
       timeline: const <RecordTimelineEntry>[],
@@ -65,64 +65,74 @@ abstract class RecordDashboard with _$RecordDashboard {
     });
   }
 
-  static final _defaultQuickActions = <RecordQuickAction>[
-    const RecordQuickAction(
-      type: RecordEntryType.symptom,
-      icon: SemanticIcons.medicineKit,
-      titleKey: RecordCopyKey.typeSymptom,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.medication,
-      icon: SemanticIcons.recordMedicine,
-      titleKey: RecordCopyKey.typeMedication,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.water,
-      icon: SemanticIcons.recordWater,
-      titleKey: RecordCopyKey.typeWater,
-      subtitleKey: RecordCopyKey.summaryCupsUnit,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.meal,
-      icon: SemanticIcons.recordMeal,
-      titleKey: RecordCopyKey.typeMeal,
-      subtitleKey: RecordCopyKey.summaryTimesUnit,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.sleep,
-      icon: SemanticIcons.recordMoon,
-      titleKey: RecordCopyKey.typeSleep,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.mood,
-      icon: SemanticIcons.recordMood,
-      titleKey: RecordCopyKey.typeMood,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-    const RecordQuickAction(
-      type: RecordEntryType.note,
-      icon: SemanticIcons.tabRecord,
-      titleKey: RecordCopyKey.typeNote,
-      subtitleKey: RecordCopyKey.summaryRecorded,
-      accent: SemanticColor.primary,
-      softColor: SemanticColor.neutral,
-    ),
-  ];
+  static final List<RecordQuickAction> defaultQuickActions =
+      <RecordQuickAction>[
+        const RecordQuickAction(
+          type: RecordEntryType.symptom,
+          icon: SemanticIcons.medicineKit,
+          titleKey: RecordCopyKey.typeSymptom,
+          subtitleKey: RecordCopyKey.summaryRecorded,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.medication,
+          icon: SemanticIcons.recordMedicine,
+          titleKey: RecordCopyKey.typeMedication,
+          subtitleKey: RecordCopyKey.summaryRecorded,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.water,
+          icon: SemanticIcons.recordWater,
+          titleKey: RecordCopyKey.typeWater,
+          subtitleKey: RecordCopyKey.summaryCupsUnit,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.meal,
+          icon: SemanticIcons.recordMeal,
+          titleKey: RecordCopyKey.typeMeal,
+          subtitleKey: RecordCopyKey.summaryTimesUnit,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.sleep,
+          icon: SemanticIcons.recordMoon,
+          titleKey: RecordCopyKey.typeSleep,
+          subtitleKey: RecordCopyKey.summaryRecorded,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.mood,
+          icon: SemanticIcons.recordMood,
+          titleKey: RecordCopyKey.typeMood,
+          subtitleKey: RecordCopyKey.summaryRecorded,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+        const RecordQuickAction(
+          type: RecordEntryType.note,
+          icon: SemanticIcons.tabRecord,
+          titleKey: RecordCopyKey.typeNote,
+          subtitleKey: RecordCopyKey.summaryRecorded,
+          accent: SemanticColor.primary,
+          softColor: SemanticColor.neutral,
+        ),
+      ];
+
+  /// Returns the built-in quick action for [type], or null when the type has
+  /// no quick action (e.g. vitals / activity).
+  static RecordQuickAction? quickActionFor(RecordEntryType type) {
+    for (final action in defaultQuickActions) {
+      if (action.type == type) return action;
+    }
+    return null;
+  }
 
   static final _defaultFilters = <RecordFilter>[
     const RecordFilter(
