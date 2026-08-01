@@ -35,17 +35,24 @@ class AssistantControlsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width < 600
-        ? MediaQuery.sizeOf(context).width * 0.85
+    final width = MediaQuery.sizeOf(context).width < Breakpoints.tablet
+        ? MediaQuery.sizeOf(context).width * 0.92
         : 400.0;
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return SizedBox(
       width: width,
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(Spacing.level5),
+          padding: EdgeInsets.fromLTRB(
+            Spacing.level5,
+            Spacing.level4,
+            Spacing.level5,
+            Spacing.level5 + bottomPadding,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 children: [
@@ -63,7 +70,7 @@ class AssistantControlsSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: Spacing.level4),
-              Expanded(
+              Flexible(
                 child: SingleChildScrollView(
                   child: AssistantControlsPanel(
                     settings: settings,

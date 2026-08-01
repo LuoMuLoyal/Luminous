@@ -34,79 +34,78 @@ class AssistantControlsPanel extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final colors = context.theme.colors;
 
-    return FCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.assistantStatusSectionTitle,
-            style: TypographyToken.level5
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: Spacing.level3),
-          Text(
-            l10n.assistantEntrySubtitle,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
-          ),
-          const SizedBox(height: Spacing.level4),
-          FTileGroup(
-            children: [
-              _SwitchTile(
-                tileKey: const Key('assistant-row-enabled'),
-                title: l10n.assistantSettingsEnableTitle,
-                subtitle: l10n.assistantSettingsEnableSubtitle,
-                value:
-                    settings?.assistantEnabled ?? capabilities.assistantEnabled,
-                onChanged: (value) => onToggleEnabled(value),
-              ),
-              _SwitchTile(
-                tileKey: const Key('assistant-row-memory-enabled'),
-                title: l10n.assistantSettingsMemoryTitle,
-                subtitle: l10n.assistantSettingsMemorySubtitle,
-                value:
-                    settings?.assistantMemoryEnabled ??
-                    capabilities.assistantMemoryEnabled,
-                onChanged: (value) => onToggleMemoryEnabled(value),
-              ),
-              _SwitchTile(
-                tileKey: const Key('assistant-row-context-health-profile'),
-                title: l10n.assistantContextHealthProfile,
-                value:
-                    settings?.assistantContext.healthProfile ??
-                    capabilities.assistantContext.healthProfile,
-                onChanged: (value) => onToggleContext(healthProfile: value),
-              ),
-              _SwitchTile(
-                tileKey: const Key('assistant-row-context-daily-records'),
-                title: l10n.assistantContextDailyRecords,
-                value:
-                    settings?.assistantContext.dailyRecords ??
-                    capabilities.assistantContext.dailyRecords,
-                onChanged: (value) => onToggleContext(dailyRecords: value),
-              ),
-              _SwitchTile(
-                tileKey: const Key('assistant-row-context-sleep-records'),
-                title: l10n.assistantContextSleepRecords,
-                value:
-                    settings?.assistantContext.sleepRecords ??
-                    capabilities.assistantContext.sleepRecords,
-                onChanged: (value) => onToggleContext(sleepRecords: value),
-              ),
-              _SwitchTile(
-                tileKey: const Key('assistant-row-context-current-medicines'),
-                title: l10n.assistantContextCurrentMedicines,
-                value:
-                    settings?.assistantContext.currentMedicines ??
-                    capabilities.assistantContext.currentMedicines,
-                onChanged: (value) => onToggleContext(currentMedicines: value),
-              ),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          l10n.assistantStatusSectionTitle,
+          style: TypographyToken.level5
+              .body(context)
+              .copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          l10n.assistantEntrySubtitle,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
+        ),
+        const SizedBox(height: Spacing.level4),
+        FTileGroup(
+          children: [
+            _SwitchTile(
+              tileKey: const Key('assistant-row-enabled'),
+              title: l10n.assistantSettingsEnableTitle,
+              subtitle: l10n.assistantSettingsEnableSubtitle,
+              value:
+                  settings?.assistantEnabled ?? capabilities.assistantEnabled,
+              onChanged: (value) => onToggleEnabled(value),
+            ),
+            _SwitchTile(
+              tileKey: const Key('assistant-row-memory-enabled'),
+              title: l10n.assistantSettingsMemoryTitle,
+              subtitle: l10n.assistantSettingsMemorySubtitle,
+              value:
+                  settings?.assistantMemoryEnabled ??
+                  capabilities.assistantMemoryEnabled,
+              onChanged: (value) => onToggleMemoryEnabled(value),
+            ),
+            _SwitchTile(
+              tileKey: const Key('assistant-row-context-health-profile'),
+              title: l10n.assistantContextHealthProfile,
+              value:
+                  settings?.assistantContext.healthProfile ??
+                  capabilities.assistantContext.healthProfile,
+              onChanged: (value) => onToggleContext(healthProfile: value),
+            ),
+            _SwitchTile(
+              tileKey: const Key('assistant-row-context-daily-records'),
+              title: l10n.assistantContextDailyRecords,
+              value:
+                  settings?.assistantContext.dailyRecords ??
+                  capabilities.assistantContext.dailyRecords,
+              onChanged: (value) => onToggleContext(dailyRecords: value),
+            ),
+            _SwitchTile(
+              tileKey: const Key('assistant-row-context-sleep-records'),
+              title: l10n.assistantContextSleepRecords,
+              value:
+                  settings?.assistantContext.sleepRecords ??
+                  capabilities.assistantContext.sleepRecords,
+              onChanged: (value) => onToggleContext(sleepRecords: value),
+            ),
+            _SwitchTile(
+              tileKey: const Key('assistant-row-context-current-medicines'),
+              title: l10n.assistantContextCurrentMedicines,
+              value:
+                  settings?.assistantContext.currentMedicines ??
+                  capabilities.assistantContext.currentMedicines,
+              onChanged: (value) => onToggleContext(currentMedicines: value),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

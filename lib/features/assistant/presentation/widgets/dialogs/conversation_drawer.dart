@@ -4,7 +4,7 @@ import 'package:luminous/features/assistant/presentation/providers/conversation.
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_header.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart';
 
-/// A compact conversation manager shown as a side sheet on mobile and tablet
+/// A conversation manager rendered as a Material [Drawer] on mobile/tablet
 /// and as a sidebar on desktop.
 ///
 /// Conversations are grouped by recency (today / last 7 days / older) and the
@@ -37,7 +37,7 @@ class AssistantConversationDrawer extends StatelessWidget {
         ? MediaQuery.sizeOf(context).width * 0.85
         : 320.0;
 
-    return SizedBox(
+    return Drawer(
       width: width,
       child: SafeArea(
         child: Padding(

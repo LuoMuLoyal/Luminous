@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
@@ -19,6 +18,7 @@ class AssistantPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final scaffoldKey = useMemoized(GlobalKey<ScaffoldState>.new);
 
     final inputController = useTextEditingController();
     final scrollController = useMemoized(() => ScrollController());
@@ -106,58 +106,54 @@ class AssistantPage extends HookConsumerWidget {
       }
     }
 
-    void openRecentConversationsDrawer() {
-      unawaited(
-        showFSheet<void>(
-          context: context,
-          side: FLayout.rtl,
-          builder: (sheetContext) => AssistantConversationDrawer(
-            state: ref.read(assistantControllerProvider),
-            title: l10n.assistantConversationSidebarTitle,
-            emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
-            emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
-            onRetry: () => ref
-                .read(assistantControllerProvider.notifier)
-                .loadRecentConversations(),
-            onNewConversation: () async {
-              Navigator.of(sheetContext).pop();
-              await handleStartNewConversation();
-            },
-            onSelect: (conversationId) async {
-              Navigator.of(sheetContext).pop();
-              await ref
-                  .read(assistantControllerProvider.notifier)
-                  .openConversation(conversationId);
-            },
-          ),
-        ),
-      );
-    }
-
-    return AssistantPageBody(
-      inputController: inputController,
-      scrollController: scrollController,
-      isNearBottom: isNearBottom,
-      onSend: handleSend,
-      onRetry: null,
-      onConfirmProposal: ({required messageId, required proposalId}) =>
-          handleConfirmProposal(
-            context,
-            messageId: messageId,
-            proposalId: proposalId,
-          ),
-      onDismissProposal: ({required messageId, required proposalId}) {
-        unawaited(
-          ref
-              .read(assistantControllerProvider.notifier)
-              .dismissProposedAction(
-                messageId: messageId,
-                proposalId: proposalId,
-              ),
-        );
+    final conversationDrawer = AssistantConversationDrawer(
+      state: ref.watch(assistantControllerProvider),
+      title: l10n.assistantConversationSidebarTitle,
+      emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
+      emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
+      onRetry: () => ref
+          .read(assistantControllerProvider.notifier)
+          .loadRecentConversations(),
+      onNewConversation: () async {
+        scaffoldKey.currentState?.closeEndDrawer();
+        await handleStartNewConversation();
       },
-      onStartNewConversation: handleStartNewConversation,
-      onOpenDrawer: openRecentConversationsDrawer,
+      onSelect: (conversationId) async {
+        scaffoldKey.currentState?.closeEndDrawer();
+        await ref
+            .read(assistantControllerProvider.notifier)
+            .openConversation(conversationId);
+      },
+    );
+
+    return Scaffold(
+      key: scaffoldKey,
+      endDrawer: conversationDrawer,
+      body: AssistantPageBody(
+        inputController: inputController,
+        scrollController: scrollController,
+        isNearBottom: isNearBottom,
+        onSend: handleSend,
+        onRetry: null,
+        onConfirmProposal: ({required messageId, required proposalId}) =>
+            handleConfirmProposal(
+              context,
+              messageId: messageId,
+              proposalId: proposalId,
+            ),
+        onDismissProposal: ({required messageId, required proposalId}) {
+          unawaited(
+            ref
+                .read(assistantControllerProvider.notifier)
+                .dismissProposedAction(
+                  messageId: messageId,
+                  proposalId: proposalId,
+                ),
+          );
+        },
+        onStartNewConversation: handleStartNewConversation,
+        onOpenDrawer: () => scaffoldKey.currentState?.openEndDrawer(),
+      ),
     );
   }
 }

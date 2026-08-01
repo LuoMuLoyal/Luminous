@@ -85,7 +85,9 @@ Last updated: 2026-08-01
 - **输入区重构为 `AssistantInputBar`**：默认单行，最多 5 行；圆形发送图标按钮；空会话时显示 4 个本地化快捷提问 chip（今日总结 / 睡眠 / 用药 / 注意事项）；桌面端 focus 后显示 `Ctrl/⌘ + Enter` 快捷键提示，3 秒后自动淡出。
 - **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；上下文菜单改用 `FContextMenu.tiles`，支持复制，并预留"重新生成 / 重新发送"入口（当前 disabled，等 controller 支持后启用）。
 - **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。
-- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 从抽屉内大卡片改为紧凑会话列表；按"今天 / 最近 7 天 / 更早"分组；当前会话用 `prefix` 对勾图标高亮；顶部新增"新对话"按钮；重命名/删除菜单因后端暂无 `PATCH/DELETE /conversations/:id` 接口暂未接入。
+- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 从 `showFSheet` 右侧弹窗改为真正的 `Drawer` 侧滑抽屉；按"今天 / 最近 7 天 / 更早"分组；当前会话用 `prefix` 对勾图标高亮；顶部新增"新对话"按钮；重命名/删除菜单因后端暂无 `PATCH/DELETE /conversations/:id` 接口暂未接入。
+- **首屏去卡片化**：`AssistantConversationSurface` 移除外层 `FCard`，聊天区不再被厚重边框和过大 padding 包裹；`AssistantPageBody` 外层垂直 padding 与状态栏间距收紧，移动端首屏更多区域留给消息历史与输入区。
+- **设置弹窗轻量化**：`AssistantControlsSheet` 移动端宽度改为 `0.92`、padding 底部跟随安全区；`AssistantControlsPanel` 移除内层 `FCard`，标题与开关间距统一。
 - **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、侧边栏分组/高亮/空态/新建按钮、状态消息等；流式渲染由 `test/assistant/page_test.dart` 覆盖。
 
 ## 2026-07-19 补充

@@ -57,73 +57,62 @@ class AssistantConversationSurface extends ConsumerWidget {
       assistantControllerProvider.select((s) => s.isSending),
     );
 
-    return FCard(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.level5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isOpeningConversation) ...[
-              Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.level3),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: FCircularProgress(),
-                        )
-                        .animate(onPlay: (c) => c.repeat())
-                        .rotate(duration: 800.ms),
-                    const SizedBox(width: Spacing.level2),
-                    Text(
-                      l10n.assistantOpeningConversationLabel,
-                      style: TypographyToken.level3
-                          .body(context)
-                          .copyWith(color: colors.mutedForeground),
-                    ),
-                  ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (isOpeningConversation) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.level3),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: FCircularProgress(),
+                ).animate(onPlay: (c) => c.repeat()).rotate(duration: 800.ms),
+                const SizedBox(width: Spacing.level2),
+                Text(
+                  l10n.assistantOpeningConversationLabel,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: colors.mutedForeground),
                 ),
-              ),
-            ],
-            Expanded(
-              child: AssistantConversationMessageList(
-                capabilities: capabilities,
-                scrollController: scrollController,
-                onConfirmProposal: onConfirmProposal,
-                onDismissProposal: onDismissProposal,
-              ),
+              ],
             ),
-            if (sendError != null) ...[
-              const SizedBox(height: Spacing.level4),
-              StateMessageView(
-                title: l10n.assistantSendErrorTitle,
-                description: sendErrorDescription(
-                  l10n,
-                  sendErrorType,
-                  sendError,
-                ),
-                icon: sendErrorIcon(sendErrorType),
-                tone: StateTone.warning,
-                actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
-                onAction: onRetry,
-                actionKey: const Key('assistant-retry-action'),
-                padding: const EdgeInsets.all(Spacing.level4),
-              ),
-            ],
-            const SizedBox(height: Spacing.level4),
-            AssistantInputBar(
-              controller: controller,
-              canSend: capabilities.canSendMessages && !isSending,
-              isSending: isSending,
-              canSendMessages: capabilities.canSendMessages,
-              showStarterPrompts: showStarterPrompts,
-              onSend: onSend,
-            ),
-          ],
+          ),
+        ],
+        Expanded(
+          child: AssistantConversationMessageList(
+            capabilities: capabilities,
+            scrollController: scrollController,
+            onConfirmProposal: onConfirmProposal,
+            onDismissProposal: onDismissProposal,
+          ),
         ),
-      ),
+        if (sendError != null) ...[
+          const SizedBox(height: Spacing.level4),
+          StateMessageView(
+            title: l10n.assistantSendErrorTitle,
+            description: sendErrorDescription(l10n, sendErrorType, sendError),
+            icon: sendErrorIcon(sendErrorType),
+            tone: StateTone.warning,
+            actionLabel: onRetry != null ? l10n.assistantRetryAction : null,
+            onAction: onRetry,
+            actionKey: const Key('assistant-retry-action'),
+            padding: const EdgeInsets.all(Spacing.level4),
+          ),
+        ],
+        const SizedBox(height: Spacing.level3),
+        AssistantInputBar(
+          controller: controller,
+          canSend: capabilities.canSendMessages && !isSending,
+          isSending: isSending,
+          canSendMessages: capabilities.canSendMessages,
+          showStarterPrompts: showStarterPrompts,
+          onSend: onSend,
+        ),
+      ],
     );
   }
 }

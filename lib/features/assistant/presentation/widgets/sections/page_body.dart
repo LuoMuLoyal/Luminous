@@ -115,11 +115,16 @@ class AssistantPageBody extends ConsumerWidget {
         ),
       ],
       child: ResponsiveContentFrame(
+        padding: EdgeInsets.symmetric(
+          horizontal: width < Breakpoints.mobile
+              ? Spacing.level3
+              : Spacing.level4,
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: width < Breakpoints.mobile
-                ? Spacing.level6
-                : Spacing.level7,
+                ? Spacing.level3
+                : Spacing.level4,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +180,7 @@ class AssistantPageBody extends ConsumerWidget {
                         .loadLatestConversation(),
                   ),
                 ],
-                const SizedBox(height: Spacing.level4),
+                const SizedBox(height: Spacing.level3),
                 Expanded(
                   child: AssistantConversationStack(
                     inputController: inputController,
