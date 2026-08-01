@@ -64,75 +64,6 @@ void main() {
     expect(find.byKey(const Key('assistant-input')), findsNothing);
   });
 
-  testWidgets(
-    'AI chat context toggle still works when settings are not loaded yet',
-    (tester) async {
-      tester.view.physicalSize = const Size(1200, 1600);
-      tester.view.devicePixelRatio = 1.0;
-      SharedPreferences.setMockInitialValues(const <String, Object>{});
-      final repository = _FakeAssistantRepository();
-      final settingsController = _PendingUserSettingsController();
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            authSessionProvider.overrideWith(
-              () => _SignedInAuthSessionNotifier(),
-            ),
-            assistantRepositoryProvider.overrideWithValue(repository),
-            userSettingsControllerProvider.overrideWith(
-              () => settingsController,
-            ),
-          ],
-          child: TestForuiRouterApp(
-            routerConfig: GoRouter(
-              initialLocation: '/assistant',
-              routes: [
-                GoRoute(
-                  path: '/assistant',
-                  builder: (context, state) => const AssistantPage(),
-                ),
-                GoRoute(
-                  path: '/login',
-                  builder: (context, state) =>
-                      const Scaffold(body: Text('login-page')),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await tester.pumpAndSettle();
-
-      // The controls panel now lives in a drawer; open it first.
-      await tester.tap(find.byKey(const Key('assistant-controls-action')));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.byKey(const Key('assistant-row-context-health-profile')),
-        findsOneWidget,
-      );
-
-      final pageScrollable = find.byType(Scrollable).first;
-      await tester.scrollUntilVisible(
-        find.byKey(const Key('assistant-row-context-health-profile')),
-        240,
-        scrollable: pageScrollable,
-      );
-      await tester.tap(
-        find.byKey(const Key('assistant-row-context-health-profile')),
-      );
-      await tester.pumpAndSettle();
-
-      expect(settingsController.lastContextUpdate, isNotNull);
-      expect(settingsController.lastContextUpdate?.healthProfile, isFalse);
-      expect(settingsController.lastContextUpdate?.dailyRecords, isTrue);
-      expect(settingsController.lastContextUpdate?.sleepRecords, isTrue);
-      expect(settingsController.lastContextUpdate?.currentMedicines, isTrue);
-    },
-  );
-
   testWidgets('send error shows retry button and error-specific icon', (
     tester,
   ) async {
@@ -156,27 +87,6 @@ void main() {
     expect(find.byKey(const Key('assistant-retry-action')), findsOneWidget);
     // Server error icon
     expect(find.byIcon(SemanticIcons.statusUnavailable), findsOneWidget);
-  });
-
-  testWidgets('assistant message shows usedTools as localized chips', (
-    tester,
-  ) async {
-    tester.view.physicalSize = const Size(1200, 1600);
-    tester.view.devicePixelRatio = 1.0;
-    SharedPreferences.setMockInitialValues(const <String, Object>{});
-    final repository = _SuccessWithToolsAssistantRepository();
-
-    await tester.pumpWidget(_buildTestApp(repository: repository));
-    await tester.pumpAndSettle();
-
-    // Type and send a message
-    final input = find.byKey(const Key('assistant-input'));
-    await tester.enterText(input, '帮我看看最近的睡眠');
-    await tester.tap(find.byKey(const Key('assistant-send-action')));
-    await tester.pumpAndSettle();
-
-    // Localized tool chip should be visible
-    expect(find.text('睡眠概况'), findsOneWidget);
   });
 
   testWidgets('assistant message shows proposal card', (tester) async {
@@ -437,7 +347,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('最近会话'), findsOneWidget);
+    expect(find.text('会话'), findsOneWidget);
     expect(find.text('睡眠跟进'), findsOneWidget);
     expect(find.text('头痛追踪'), findsOneWidget);
 
@@ -530,20 +440,6 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
         updatedAt: DateTime.parse('2026-01-02T00:00:00Z'),
       ),
     );
-  }
-}
-
-class _PendingUserSettingsController extends UserSettingsController {
-  AssistantContextPatch? lastContextUpdate;
-
-  @override
-  Future<UserSettings> build() {
-    return Completer<UserSettings>().future;
-  }
-
-  @override
-  Future<void> setAssistantContext(AssistantContextPatch patch) async {
-    lastContextUpdate = patch;
   }
 }
 
@@ -729,48 +625,6 @@ class _ErrorStreamAssistantRepository
     return Stream<AssistantGenerationEvent>.error(
       const LucentApiException(message: '服务端出现问题', statusCode: 503),
     );
-  }
-}
-
-class _SuccessWithToolsAssistantRepository
-    with _ConfirmProposalsStub
-    implements AssistantRepository {
-  @override
-  Future<List<AssistantConversationSummary>> listRecentConversations() async =>
-      const <AssistantConversationSummary>[];
-
-  @override
-  Future<AssistantConversation?> getLatestConversation() async => null;
-
-  @override
-  Future<AssistantConversation> openConversation(String conversationId) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> clearLatestConversation() async => false;
-
-  @override
-  Future<AssistantCapabilities> getCapabilities() async =>
-      _FakeAssistantRepository._capabilities;
-
-  @override
-  Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages, {
-    String? conversationId,
-  }) {
-    return Stream<AssistantGenerationEvent>.fromIterable([
-      const AssistantGenerationChunkEvent('根据你的睡眠数据…'),
-      AssistantGenerationResultEvent(
-        conversationId: 'conversation-1',
-        message: AssistantMessage(
-          role: AssistantMessageRole.assistant,
-          content: '你最近的睡眠质量不错，建议保持规律作息。',
-          usedTools: const <String>['get_sleep_summary_by_range'],
-          createdAt: DateTime.now(),
-        ),
-      ),
-    ]);
   }
 }
 

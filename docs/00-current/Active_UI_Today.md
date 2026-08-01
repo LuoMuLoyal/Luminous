@@ -74,13 +74,19 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 
 ## 助手入口
 
+Last updated: 2026-08-01
+
 - Today 顶部栏暴露一级助手入口（`FLucideIcons.sparkles` 图标按钮）→ `/assistant` 工作区。
-- 助手控制面板（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从对话页底部常驻移入底部抽屉（`_AssistantControlsSheet`），由助手页顶栏 `settings2` 图标按钮打开，释放对话区垂直空间。
+- 助手页状态卡已从展开式 `AssistantHero` 替换为默认折叠的 `AssistantStatusBar`：仅显示 bot 徽章 + 标题 + 单行状态摘要 + 状态色圆点，不再展示工具数、上下文数、RAG、流式输出等技术标签。
+- 助手设置（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从顶部齿轮一级入口移除，改从 `AssistantStatusBar` 右侧 subtle 设置图标进入，保留在 `AssistantControlsSheet` / `AssistantControlsPanel` 中。
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
-- 助手禁用时的提示文案指向右上角设置入口。
+- 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
+- **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表 + 输入区由 `AssistantConversationStack` 负责；文件行数全部达标（`page.dart` 163 行，子组件均 < 250 行）。
+- **输入区重构为 `AssistantInputBar`**：默认单行，最多 5 行；圆形发送图标按钮；空会话时显示 4 个本地化快捷提问 chip（今日总结 / 睡眠 / 用药 / 注意事项）；桌面端 focus 后显示 `Ctrl/⌘ + Enter` 快捷键提示，3 秒后自动淡出。
+- **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；上下文菜单改用 `FContextMenu.tiles`，支持复制，并预留"重新生成 / 重新发送"入口（当前 disabled，等 controller 支持后启用）。
 - **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。
-- **输入区桌面快捷键 + 禁用态同步**：桌面宽度（`>= Breakpoints.tablet`）下 `FTextField` 外包 `Focus(onKeyEvent:)`，`Ctrl/⌘ + Enter` 触发发送（移动端 `Enter` 仍为换行）；助手禁用时 `FTextField.enabled = false` 真正禁用输入框，输入框上方显示 `assistantInputDisabledHint` 提示行，桌面端输入框下方显示 `assistantSendShortcutHint` 快捷键提示。
-- **Hero 折叠**：对话开始后（`hasConversation && !heroExpanded`）`AssistantHero` 自动折叠为单行紧凑状态条（bot 小徽章 + 标题 + 单行省略状态摘要 + 状态色圆点 + 展开钮），用户可点击展开/再折叠，`AnimatedSize`（`DurationTokens.widgetStandard` = 300ms）平滑过渡。状态色圆点映射 disabled → `mutedForeground` / 未配置或未就绪 → `SemanticColor.warning.solid` / 就绪 → `SemanticColor.success.solid`，带 `Tooltip` 显示完整状态文案。
+- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 从抽屉内大卡片改为紧凑会话列表；按"今天 / 最近 7 天 / 更早"分组；当前会话用 `prefix` 对勾图标高亮；顶部新增"新对话"按钮；重命名/删除菜单因后端暂无 `PATCH/DELETE /conversations/:id` 接口暂未接入。
+- **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、侧边栏分组/高亮/空态/新建按钮、状态消息等；流式渲染由 `test/assistant/page_test.dart` 覆盖。
 
 ## 2026-07-19 补充
 
