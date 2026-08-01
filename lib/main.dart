@@ -6,6 +6,7 @@ import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/window_manager_setup.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/network/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
@@ -56,6 +57,14 @@ Future<void> _initSentry() async {
       options.tracesSampleRate = kReleaseMode ? 0.2 : 1.0;
       options.attachStacktrace = true;
       options.sendDefaultPii = false;
+      options.beforeSend = (event, hint) {
+        final id = TraceContext.lastTraceId;
+        if (id != null) {
+          event.tags ??= {};
+          event.tags!['trace_id'] = id;
+        }
+        return event;
+      };
     });
   } catch (e, st) {
     debugPrint(
