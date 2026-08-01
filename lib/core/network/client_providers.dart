@@ -65,9 +65,21 @@ LucentDioClient lucentDioClient(Ref ref) {
         (ref.read(localeControllerProvider).asData?.value ?? AppLocale.system)
             .acceptLanguage,
     interceptors: [SecurityElevationInterceptor(holder: tokenHolder)],
+    onTraceId: (id) => ref.read(lastTraceIdProvider.notifier).update(id),
   );
   ref.onDispose(client.dispose);
   return client;
+}
+
+/// Latest backend trace id, read from the Lucent `traceresponse` header.
+/// Updated by the trace interceptor callback as requests complete; feature
+/// code can attach this to logs / error reports to correlate with Jaeger.
+@Riverpod(keepAlive: true)
+class LastTraceId extends _$LastTraceId {
+  @override
+  String? build() => null;
+
+  void update(String id) => state = id;
 }
 
 /// Provides the generated [LucentClient] — the single entry point for
