@@ -490,12 +490,14 @@ class AssistantPage extends HookConsumerWidget {
                                 ),
                         onDismissProposal:
                             ({required messageId, required proposalId}) {
-                              ref
-                                  .read(assistantControllerProvider.notifier)
-                                  .dismissProposedAction(
-                                    messageId: messageId,
-                                    proposalId: proposalId,
-                                  );
+                              unawaited(
+                                ref
+                                    .read(assistantControllerProvider.notifier)
+                                    .dismissProposedAction(
+                                      messageId: messageId,
+                                      proposalId: proposalId,
+                                    ),
+                              );
                             },
                       ),
                       if (!isNearBottom.value)

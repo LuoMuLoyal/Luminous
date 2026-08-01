@@ -269,7 +269,10 @@ class AssistantController extends Notifier<AssistantState> {
       await for (final event
           in ref
               .read(assistantRepositoryProvider)
-              .streamMessages(nextMessages)) {
+              .streamMessages(
+                nextMessages,
+                conversationId: state.conversationId,
+              )) {
         switch (event) {
           case AssistantGenerationChunkEvent():
             state = state.copyWith(
@@ -397,13 +400,28 @@ class AssistantController extends Notifier<AssistantState> {
     );
 
     try {
+      // The actual write is always applied by the client. In a persisted
+      // conversation the backend additionally resumes the suspended graph
+      // thread with an `approved` decision and returns the confirmation reply.
       await ProposalExecutionOrchestrator(ref: ref).execute(proposal);
+      final conversationId = state.conversationId;
+      if (conversationId != null && conversationId.isNotEmpty) {
+        final finalContent = await ref
+            .read(assistantRepositoryProvider)
+            .confirmProposals(
+              conversationId: conversationId,
+              proposalIds: <String>[proposal.id],
+              decision: 'approved',
+            );
+        _appendFinalContent(finalContent);
+      }
       _updateProposalState(
         messageId: messageId,
         proposalId: proposalId,
         executionState: AssistantProposalExecutionState.confirmed,
         executionError: null,
       );
+      await loadRecentConversations();
     } catch (error) {
       ref
           .read(talkerProvider)
@@ -419,15 +437,71 @@ class AssistantController extends Notifier<AssistantState> {
     }
   }
 
-  void dismissProposedAction({
+  Future<void> dismissProposedAction({
     required String messageId,
     required String proposalId,
-  }) {
+  }) async {
+    final conversationId = state.conversationId;
+    if (conversationId == null || conversationId.isEmpty) {
+      _updateProposalState(
+        messageId: messageId,
+        proposalId: proposalId,
+        executionState: AssistantProposalExecutionState.dismissed,
+        executionError: null,
+      );
+      return;
+    }
+
+    // In a persisted conversation dismissing a proposal rejects it on the
+    // backend so the suspended graph thread resumes and the user can keep
+    // chatting with the same conversation.
+    try {
+      final finalContent = await ref
+          .read(assistantRepositoryProvider)
+          .confirmProposals(
+            conversationId: conversationId,
+            proposalIds: <String>[proposalId],
+            decision: 'rejected',
+          );
+      _appendFinalContent(finalContent);
+    } catch (error) {
+      ref
+          .read(talkerProvider)
+          .error('AssistantController.dismissProposedAction: failed: $error');
+      final messageText = LucentErrorMapper.fromObject(error).message;
+      _updateProposalState(
+        messageId: messageId,
+        proposalId: proposalId,
+        executionState: AssistantProposalExecutionState.failed,
+        executionError: messageText,
+      );
+      rethrow;
+    }
+
     _updateProposalState(
       messageId: messageId,
       proposalId: proposalId,
       executionState: AssistantProposalExecutionState.dismissed,
       executionError: null,
+    );
+  }
+
+  /// Appends the assistant confirmation reply produced after a proposal
+  /// decision is applied on the backend, when one is available.
+  void _appendFinalContent(String? finalContent) {
+    final content = finalContent?.trim();
+    if (content == null || content.isEmpty) {
+      return;
+    }
+    state = state.copyWith(
+      messages: <AssistantMessage>[
+        ...state.messages,
+        AssistantMessage(
+          role: AssistantMessageRole.assistant,
+          content: content,
+          createdAt: clock.now(),
+        ),
+      ],
     );
   }
 

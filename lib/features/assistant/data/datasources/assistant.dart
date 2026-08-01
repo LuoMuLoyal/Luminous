@@ -66,8 +66,31 @@ class AssistantRemoteDataSource {
     return response.data!.data.cleared;
   }
 
+  /// Confirms or rejects pending assistant write proposals on the backend and
+  /// resumes the suspended graph thread. Returns the final assistant content
+  /// produced after the decision is applied, or null when unavailable.
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) async {
+    final response = await api.assistantControllerConfirmProposalV1(
+      conversationId: conversationId,
+      confirmAssistantProposalDto: lucent.ConfirmAssistantProposalDto(
+        proposalIds: proposalIds,
+        decision: decision == 'approved'
+            ? lucent.ConfirmAssistantProposalDtoDecisionEnum.approved
+            : lucent.ConfirmAssistantProposalDtoDecisionEnum.rejected,
+        note: note,
+      ),
+    );
+    return response.data?.data.finalContent;
+  }
+
   Stream<AssistantRemoteEvent> streamMessages({
     required List<lucent.AssistantInputMessageDto> messages,
+    String? conversationId,
   }) async* {
     final sse = LucentSseClient(dio: dio);
 
@@ -75,6 +98,8 @@ class AssistantRemoteDataSource {
       '/api/v1/user/assistant/messages/stream',
       body: <String, Object?>{
         'messages': messages.map((message) => message.toJson()).toList(),
+        if (conversationId != null && conversationId.isNotEmpty)
+          'conversationId': conversationId,
       },
     )) {
       switch (event.event) {

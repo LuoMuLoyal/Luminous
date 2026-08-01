@@ -59,9 +59,25 @@ class LucentAssistantRepository implements AssistantRepository {
   }
 
   @override
+  Future<String?> confirmProposals({
+    required String conversationId,
+    required List<String> proposalIds,
+    required String decision,
+    String? note,
+  }) {
+    return dataSource.confirmProposals(
+      conversationId: conversationId,
+      proposalIds: proposalIds,
+      decision: decision,
+      note: note,
+    );
+  }
+
+  @override
   Stream<AssistantGenerationEvent> streamMessages(
-    List<AssistantMessage> messages,
-  ) async* {
+    List<AssistantMessage> messages, {
+    String? conversationId,
+  }) async* {
     final requestMessages = messages
         .map(
           (message) => lucent.AssistantInputMessageDto(
@@ -78,6 +94,7 @@ class LucentAssistantRepository implements AssistantRepository {
 
     await for (final event in dataSource.streamMessages(
       messages: requestMessages,
+      conversationId: conversationId,
     )) {
       switch (event) {
         case AssistantRemoteChunkEvent():
