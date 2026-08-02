@@ -8,6 +8,7 @@ import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
 /// Thin wrapper over the generated [LucentApi] that exposes individual API
 /// clients as property getters, preserving the `.assistant`, `.medicines` etc.
@@ -98,7 +99,10 @@ class LucentDioClient {
 
     _traceInterceptor =
         traceInterceptor ?? TraceInterceptor(onTraceId: onTraceId);
-    _refreshDio.interceptors.add(_traceInterceptor);
+    // The refresh Dio gets its own interceptor instance so token-refresh
+    // requests do not overwrite the user-visible lastTraceId (and the
+    // lastTraceIdProvider / TraceContext it feeds) with their own trace ids.
+    _refreshDio.interceptors.add(TraceInterceptor());
 
     _dio.interceptors.addAll(<Interceptor>[
       _traceInterceptor,
@@ -108,6 +112,15 @@ class LucentDioClient {
       ErrorInterceptor(),
       EnvelopeInterceptor(),
     ]);
+
+    // Sentry distributed tracing: wraps the HTTP adapter / transformer to
+    // attach tracing headers (sentry-trace/baggage, plus W3C `traceparent`
+    // when options.propagateTraceparent is set) and record request spans
+    // under the active route transaction. `captureFailedRequests` stays off —
+    // failures are already reported via the Talker→Sentry observer and the
+    // framework error handlers. Must run last, after the interceptor chain.
+    _dio.addSentry(captureFailedRequests: false);
+    _refreshDio.addSentry(captureFailedRequests: false);
   }
 
   static const Duration _defaultConnectTimeout = Duration(seconds: 10);

@@ -26,6 +26,7 @@ import 'package:luminous/features/settings/presentation/routes.dart'
 import 'package:luminous/features/shell/presentation/page.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 part 'router.g.dart';
 
@@ -146,6 +147,10 @@ const _publicRootRoutes = <String>[
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) => GoRouter(
   initialLocation: Routes.home,
+  // Starts a Sentry route transaction per navigation; dio requests then
+  // become child spans carrying the same traceId (Sentry NavigatorObserver
+  // is a no-op when Sentry is not initialized, e.g. in tests).
+  observers: [SentryNavigatorObserver()],
   redirect: (context, state) {
     final session = ref.read(authSessionProvider);
 

@@ -6,7 +6,6 @@ import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/window_manager_setup.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
-import 'package:luminous/core/network/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
@@ -54,14 +53,26 @@ Future<void> _initSentry() async {
   try {
     await SentryFlutter.init((options) {
       options.dsn = dsn;
-      options.tracesSampleRate = kReleaseMode ? 0.2 : 1.0;
+      // Trace every request so the propagated W3C `traceparent` always
+      // carries the sampled flag (`01`). With a lower rate, unsampled
+      // requests would send sampled=`00` and Lucent's OTel (parent-based
+      // sampler) would drop their spans in Jaeger.
+      options.tracesSampleRate = 1.0;
+      // Propagate the W3C `traceparent` header on outgoing requests so the
+      // backend OTel SDK continues the same trace — one traceId across
+      // Sentry + Jaeger + the help-page "last trace id" display.
+      options.propagateTraceparent = true;
       options.attachStacktrace = true;
       options.sendDefaultPii = false;
+      // Request-bound errors get their trace context auto-bound by
+      // `SentryDioInterceptor`; for errors forwarded by the Talker observer
+      // we attach the per-error backend traceId (`trace_id` tag) carried in
+      // the hint — no more global "last request" tag.
       options.beforeSend = (event, hint) {
-        final id = TraceContext.lastTraceId;
-        if (id != null) {
-          event.tags ??= {};
-          event.tags!['trace_id'] = id;
+        final traceId = hint.get('trace_id') as String?;
+        if (traceId != null && traceId.isNotEmpty) {
+          event.tags ??= <String, String>{};
+          event.tags!['trace_id'] = traceId;
         }
         return event;
       };

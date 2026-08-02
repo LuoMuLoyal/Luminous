@@ -82,6 +82,7 @@ dependencies:
   clock: ^1.1.2
   talker_flutter: ^5.1.17
   sentry_flutter: ^9.0.0
+  sentry_dio: ^9.0.0
   flutter_image_compress: ^2.4.0
   riverpod_annotation: ^4.0.3
   window_manager: ^0.4.3
