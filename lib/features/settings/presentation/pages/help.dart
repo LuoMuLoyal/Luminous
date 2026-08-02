@@ -379,7 +379,9 @@ class _FeedbackSection extends ConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                onPress: () => _copyTraceId(context, lastTraceId),
+                onPress: () {
+                  unawaited(_copyTraceId(context, lastTraceId));
+                },
               ),
             ],
           ),
@@ -402,7 +404,9 @@ class _FeedbackSection extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               suffix: const Icon(SemanticIcons.actionExternalLink),
-              onPress: () => _openFeedback(context, supportEmail),
+              onPress: () {
+                unawaited(_openFeedback(context, supportEmail));
+              },
             ),
           ],
         ),
