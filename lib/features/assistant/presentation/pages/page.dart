@@ -106,8 +106,20 @@ class AssistantPage extends HookConsumerWidget {
       }
     }
 
+    // Watch only the drawer-relevant fields so streaming chunks (messages /
+    // streamingDraft) do not rebuild the Scaffold + drawer on every event.
     final conversationDrawer = AssistantConversationDrawer(
-      state: ref.watch(assistantControllerProvider),
+      state: ref.watch(
+        assistantControllerProvider.select(
+          (s) => AssistantState(
+            conversationId: s.conversationId,
+            isOpeningConversation: s.isOpeningConversation,
+            isLoadingRecentConversations: s.isLoadingRecentConversations,
+            recentConversationError: s.recentConversationError,
+            recentConversations: s.recentConversations,
+          ),
+        ),
+      ),
       title: l10n.assistantConversationSidebarTitle,
       emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
       emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
