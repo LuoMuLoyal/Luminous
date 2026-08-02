@@ -16,6 +16,10 @@ class TraceInterceptor extends Interceptor {
   TraceInterceptor({void Function(String traceId)? onTraceId})
     : _onTraceId = onTraceId;
 
+  /// Shared cryptographically secure RNG. Creating a new [Random.secure]
+  /// instance per request is expensive — reuse one instance across requests.
+  static final Random _secureRandom = Random.secure();
+
   /// Callback invoked with the latest backend traceId parsed from the
   /// `traceresponse` response header.
   final void Function(String traceId)? _onTraceId;
@@ -27,9 +31,10 @@ class TraceInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final existing = options.headers['traceparent'];
-    if (existing is String && existing.isNotEmpty) {
+    final existing = _existingTraceparent(options.headers);
+    if (existing != null && existing.isNotEmpty) {
       // Preserve the caller-provided trace context without overwriting it.
+      options.extra['traceId'] = _traceIdFrom(existing);
       handler.next(options);
       return;
     }
@@ -37,6 +42,9 @@ class TraceInterceptor extends Interceptor {
     final traceparent = _newTraceparent();
     options.headers['traceparent'] = traceparent;
     lastTraceId = _traceIdFrom(traceparent);
+    // Per-request trace id for error binding: error/reporting code reads
+    // `requestOptions.extra['traceId']` (see ErrorInterceptor).
+    options.extra['traceId'] = lastTraceId;
     handler.next(options);
   }
 
@@ -52,24 +60,36 @@ class TraceInterceptor extends Interceptor {
     if (traceId != null) {
       lastTraceId = traceId;
       _onTraceId?.call(traceId);
+      // Backend-confirmed trace id (the same one that went on the wire).
+      response.requestOptions.extra['traceId'] = traceId;
     }
     handler.next(response);
   }
 
+  /// HTTP header names are case-insensitive; some callers may set the header
+  /// as `Traceparent` rather than the lowercase form used here, so match any
+  /// casing.
+  String? _existingTraceparent(Map<String, dynamic> headers) {
+    for (final entry in headers.entries) {
+      if (entry.key.toLowerCase() == 'traceparent') {
+        final value = entry.value;
+        if (value is String && value.isNotEmpty) return value;
+        if (value != null) return value.toString();
+      }
+    }
+    return null;
+  }
+
   /// Extracts the traceId (2nd segment) from a `traceparent`/`traceresponse`
   /// header value.
-  String? _traceIdFrom(String headerValue) {
-    final segments = headerValue.split('-');
-    if (segments.length < 2) return null;
-    return segments[1];
-  }
+  String? _traceIdFrom(String headerValue) =>
+      traceIdFromTraceHeader(headerValue);
 
   /// Generates a fresh `00-{traceId}-{spanId}-01` header value using
   /// [Random.secure].
   String _newTraceparent() {
-    final random = Random.secure();
-    final traceId = _randomHex(random, 16);
-    final spanId = _randomHex(random, 8);
+    final traceId = _randomHex(_secureRandom, 16);
+    final spanId = _randomHex(_secureRandom, 8);
     return '00-$traceId-$spanId-01';
   }
 
@@ -81,4 +101,16 @@ class TraceInterceptor extends Interceptor {
     }
     return buffer.toString();
   }
+}
+
+/// Extracts the W3C trace id (2nd segment) from a `traceparent` /
+/// `traceresponse` header value, or null when malformed.
+///
+/// Shared by [TraceInterceptor] and the error interceptors that bind the
+/// per-request trace id (from the `traceresponse` header of error responses,
+/// falling back to `options.extra['traceId']`).
+String? traceIdFromTraceHeader(String headerValue) {
+  final segments = headerValue.split('-');
+  if (segments.length < 2) return null;
+  return segments[1];
 }

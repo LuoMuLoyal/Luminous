@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Envelope interceptor: validates the Lucent `{ code, message, data }`
@@ -27,6 +28,16 @@ import 'package:luminous/core/network/map_utils.dart';
 /// generated deserialization code, the envelope is guaranteed to have
 /// `code == 0` and a non-null body.
 class EnvelopeInterceptor extends Interceptor {
+  /// Trace id of the request that produced [response]: the backend-confirmed
+  /// `traceresponse` header when present, else the outgoing `traceparent`.
+  static String? _traceIdFor(Response<dynamic> response) {
+    final traceResponse = response.headers.value('traceresponse');
+    if (traceResponse != null && traceResponse.isNotEmpty) {
+      return traceIdFromTraceHeader(traceResponse);
+    }
+    return response.requestOptions.extra['traceId'] as String?;
+  }
+
   @override
   void onResponse(
     Response<dynamic> response,
@@ -51,8 +62,9 @@ class EnvelopeInterceptor extends Interceptor {
             requestOptions: response.requestOptions,
             response: response,
             type: DioExceptionType.badResponse,
-            error: const LucentApiException(
+            error: LucentApiException(
               message: '服务器返回了空响应体',
+              traceId: _traceIdFor(response),
               networkErrorCode: NetworkErrorCode.emptyResponse,
             ),
           ),
@@ -86,6 +98,7 @@ class EnvelopeInterceptor extends Interceptor {
                 : '业务错误 (code: ${envelope.code})',
             code: envelope.code,
             statusCode: response.statusCode,
+            traceId: _traceIdFor(response),
             networkErrorCode: NetworkErrorCode.businessFailure,
           ),
         ),

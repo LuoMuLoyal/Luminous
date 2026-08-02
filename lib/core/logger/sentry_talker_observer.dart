@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/trace_context.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -13,10 +14,10 @@ import 'package:talker_flutter/talker_flutter.dart';
 /// Only error and exception levels are forwarded — info/warning/debug logs
 /// stay in Talker's in-memory history and console output only.
 ///
-/// The latest backend trace id ([TraceContext.lastTraceId]) is attached to the
-/// [Hint] of every forwarded event so reports can be correlated with Jaeger
-/// traces. talker_flutter 5.1.17 has no middleware API (see Task E3), so trace
-/// injection happens on the Sentry path only.
+/// The trace id attached to the [Hint] is per-error: the backend trace id of
+/// the failing request ([LucentApiException.traceId]) when the wrapped error
+/// is an API exception, otherwise the best-effort [TraceContext.lastTraceId].
+/// `main.dart`'s `beforeSend` promotes this hint value to the `trace_id` tag.
 class SentryTalkerObserver extends TalkerObserver {
   @override
   void onError(TalkerError err) {
@@ -24,7 +25,7 @@ class SentryTalkerObserver extends TalkerObserver {
       Sentry.captureException(
         err.error,
         stackTrace: err.stackTrace,
-        hint: _buildHint(err.message),
+        hint: _buildHint(err.message, err.error),
       ),
     );
   }
@@ -35,15 +36,18 @@ class SentryTalkerObserver extends TalkerObserver {
       Sentry.captureException(
         err.exception,
         stackTrace: err.stackTrace,
-        hint: _buildHint(err.message),
+        hint: _buildHint(err.message, err.exception),
       ),
     );
   }
 
-  /// Builds the [Hint] forwarded to Sentry, attaching the latest backend
-  /// trace id (when available) for Jaeger correlation.
-  Hint _buildHint(String? message) {
-    final traceId = TraceContext.lastTraceId;
+  /// Builds the [Hint] forwarded to Sentry, attaching the trace id of the
+  /// failing request (when available) for Jaeger correlation.
+  Hint _buildHint(String? message, Object? error) {
+    final traceId = switch (error) {
+      LucentApiException(:final traceId) => traceId,
+      _ => TraceContext.lastTraceId,
+    };
     return Hint.withMap({
       'talker_message': message,
       if (traceId != null) 'trace_id': traceId,

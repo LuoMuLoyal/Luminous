@@ -367,4 +367,74 @@ void main() {
       }
     });
   });
+
+  group('ErrorInterceptor — traceId binding', () {
+    test(
+      'binds traceId from traceresponse header of the error response',
+      () async {
+        final adapter = _MockAdapter()
+          ..enqueueError(
+            statusCode: 500,
+            data: {'code': 500001, 'message': 'internal error', 'data': null},
+            headers: {
+              'traceresponse':
+                  '00-9999aaaabbbbccccddddeeeeffff0000-2233445566778899-01',
+            },
+          );
+        final dio = _buildDio(adapter);
+
+        try {
+          await dio.get('/api/v1/test');
+        } on DioException catch (e) {
+          final apiError = _extractApiException(e);
+          expect(apiError!.traceId, '9999aaaabbbbccccddddeeeeffff0000');
+        }
+      },
+    );
+
+    test(
+      'falls back to request extra traceId when there is no response',
+      () async {
+        final adapter = _MockAdapter()
+          ..enqueue(
+            _MockResponse(
+              statusCode: null,
+              data: null,
+              errorType: DioExceptionType.connectionError,
+            ),
+          );
+        final dio = Dio(BaseOptions(baseUrl: 'http://localhost:3000'));
+        dio.httpClientAdapter = adapter;
+        dio.interceptors.add(ErrorInterceptor());
+
+        try {
+          await dio.get(
+            '/api/v1/test',
+            options: Options(
+              extra: {'traceId': 'aaaabbbbccccddddeeeeffff00001111'},
+            ),
+          );
+        } on DioException catch (e) {
+          final apiError = _extractApiException(e);
+          expect(apiError!.traceId, 'aaaabbbbccccddddeeeeffff00001111');
+        }
+      },
+    );
+
+    test(
+      'traceId is null when neither response header nor extra is present',
+      () async {
+        final adapter = _MockAdapter()
+          ..enqueueError(statusCode: 500, data: null);
+        final dio = _buildDio(adapter);
+
+        try {
+          await dio.get('/api/v1/test');
+        } on DioException catch (e) {
+          final apiError = _extractApiException(e);
+          expect(apiError!.traceId, isNull);
+        }
+      },
+    );
+  });
 }

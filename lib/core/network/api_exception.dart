@@ -6,6 +6,7 @@ class LucentApiException implements Exception {
     this.code,
     this.statusCode,
     this.requestId,
+    this.traceId,
     this.data,
     this.networkErrorCode,
   });
@@ -14,6 +15,12 @@ class LucentApiException implements Exception {
   final int? code;
   final int? statusCode;
   final String? requestId;
+
+  /// The backend trace id of the failing request (from the `traceresponse`
+  /// response header, falling back to the outgoing `traceparent`), so logs
+  /// can be correlated with the Jaeger trace for this exact request.
+  final String? traceId;
+
   final Object? data;
 
   /// 当错误来自网络层基础设施（超时、连接失败等），携带此错误码
@@ -45,6 +52,7 @@ class LucentApiException implements Exception {
       if (code != null) ', code: $code',
       if (statusCode != null) ', statusCode: $statusCode',
       if (requestId != null && requestId!.isNotEmpty) ', requestId: $requestId',
+      if (traceId != null && traceId!.isNotEmpty) ', traceId: $traceId',
       if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
       ')',
     ];

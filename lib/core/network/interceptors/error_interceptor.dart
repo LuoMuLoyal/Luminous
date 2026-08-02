@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/network/error_code.dart';
+import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/map_utils.dart';
 
 /// Error interceptor: maps `DioException` → `LucentApiException`.
@@ -25,6 +26,10 @@ class ErrorInterceptor extends Interceptor {
         ? null
         : LucentEnvelope<Object?>.fromJson(json, dataDecoder: (raw) => raw);
     final requestId = response?.headers.value('X-Request-Id');
+    final traceResponse = response?.headers.value('traceresponse');
+    final traceId = traceResponse != null && traceResponse.isNotEmpty
+        ? traceIdFromTraceHeader(traceResponse)
+        : err.requestOptions.extra['traceId'] as String?;
 
     return DioException(
       requestOptions: err.requestOptions,
@@ -41,6 +46,7 @@ class ErrorInterceptor extends Interceptor {
         code: envelope?.code,
         statusCode: response?.statusCode,
         requestId: requestId,
+        traceId: traceId,
         data: json,
         networkErrorCode: envelope != null && !envelope.isSuccess
             ? NetworkErrorCode.businessFailure

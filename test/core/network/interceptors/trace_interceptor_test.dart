@@ -19,7 +19,13 @@ void main() {
         traceparent,
         matches(RegExp(r'^00-[0-9a-f]{32}-[0-9a-f]{16}-01$')),
       );
-      expect(interceptor.lastTraceId, (traceparent as String).split('-')[1]);
+      final traceId = (traceparent as String).split('-')[1];
+      expect(interceptor.lastTraceId, traceId);
+      expect(
+        options.extra['traceId'],
+        traceId,
+        reason: 'per-request traceId must be available for error binding',
+      );
     });
 
     test(
@@ -38,6 +44,11 @@ void main() {
         await handler.future;
 
         expect(options.headers['traceparent'], existing);
+        expect(
+          options.extra['traceId'],
+          'aaaabbbbccccddddeeeeffff00001111',
+          reason: 'passthrough must still expose the traceId for error binding',
+        );
       },
     );
   });
@@ -68,6 +79,12 @@ void main() {
 
         expect(interceptor.lastTraceId, '11112222333344445555666677778888');
         expect(callbackTraceId, '11112222333344445555666677778888');
+        expect(
+          response.requestOptions.extra['traceId'],
+          '11112222333344445555666677778888',
+          reason:
+              'backend-confirmed traceId must be written back to the request',
+        );
       },
     );
   });
