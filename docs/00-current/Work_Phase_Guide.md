@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Work Phase Guide
 
 Last updated: 2026-07-18

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Lumos Project Guardrails
 
 Last updated: 2026-06-11

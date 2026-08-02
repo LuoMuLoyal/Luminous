@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: how-to
+updated: 2026-08-02
+---
+
 # How-To: 新增 Feature 模块
 
 ## 前置

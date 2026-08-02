@@ -1,9 +1,16 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Luminous Next Plan
 
 Last updated: 2026-07-18
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
-产品优先级口径以 [[01-product/Product_Brainstorm_2026-07-07]] 为准。
+产品优先级口径以 [[04-archive/product/Product_Brainstorm_2026-07-07]] 为准。
 
 ## 当前目标
 

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Luminous Current State
 
 Last updated: 2026-07-18
@@ -34,7 +41,7 @@ Last updated: 2026-07-18
 ### 边界
 
 - [[00-current/Mock_Or_Deferred]] — Mock 与延后能力
-- [[00-current/Removed_From_Active_Scope]] — 已移出活跃范围的功能
+- [[04-archive/Removed_From_Active_Scope]] — 已移出活跃范围的功能
 
 ## 相关文档
 

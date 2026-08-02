@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: how-to
+updated: 2026-08-02
+---
+
 # How-To: 运行测试与检查
 
 ## 日常开发

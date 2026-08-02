@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Design System
 
 本文档保留设计系统总览与 Token。

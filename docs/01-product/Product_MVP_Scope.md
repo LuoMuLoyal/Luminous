@@ -1,10 +1,17 @@
+---
+status: active
+owner: frontend
+quadrant: explanation
+updated: 2026-08-02
+---
+
 # Product MVP Scope
 
 本文件是 [[Product_Vision]] 拆分后的子文档。
 
 相关子文档：
 - [[Product_AI_Design]]
-- [[Product_Insights]]
+- [[04-archive/product/Product_Insights]]
 - [[Product_Safety_Privacy]]
 - [[Product_Information_Architecture]]
 

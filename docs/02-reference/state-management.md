@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # State Management (Riverpod)
 
 本文件是 [[architecture]] 拆分后的子文档。

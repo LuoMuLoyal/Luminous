@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: explanation
+updated: 2026-08-02
+---
+
 # Luminous 项目愿景文档
 
 本文档保留产品愿景总览。
@@ -6,7 +13,7 @@
 
 - [[Product_MVP_Scope]]
 - [[Product_AI_Design]]
-- [[Product_Insights]]
+- [[04-archive/product/Product_Insights]]
 - [[Product_Safety_Privacy]]
 - [[Product_Information_Architecture]]
 

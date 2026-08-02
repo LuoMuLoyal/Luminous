@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Project Governance
 
 Last updated: 2026-07-29 (架构精炼 Phase 5-6 完成)

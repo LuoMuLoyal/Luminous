@@ -11,11 +11,9 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 - [[01-product/Product_Vision]] — 产品愿景总览
 - [[01-product/Product_MVP_Scope]] — 首发版本范围
 - [[01-product/Product_AI_Design]] — AI 能力设计
-- [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
 - [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
 - [[01-product/Product_Tab_Component_Blueprint]] — 五个 Tab 的组件级蓝图
-- [[01-product/Product_Brainstorm_2026-07-07]] — 功能头脑风暴与调整建议
 - [[02-reference/architecture]] — 目录与模块结构总览
 - [[02-reference/state-management]] — Riverpod 状态管理
 - [[02-reference/routing]] — GoRouter 路由
@@ -36,6 +34,15 @@ Luminous Flutter 客户端的文档 vault。本目录是产品、前端架构和
 
 - `04-archive/` 存放旧计划和已完成的 audit remediation，仅供考古。
 - 活跃文档完成后应直接删除，不留 `✅` 或 `DONE` 标记。
+- 完成使命的产品过程文档 → `04-archive/product/`；已实施的 spec → `04-archive/specs/`。
+
+## 00-current 与 02-reference 边界
+
+- `00-current/` = **易变状态**：当前实现进度、UI/数据/运行时的实时快照、待办与计划。它回答「现在是什么样」。会随代码频繁更新，`Current_State.md` 是唯一索引。
+- `02-reference/` = **稳定事实**：架构、设计系统、数据层、路由、ADR、how-to。它回答「应该是什么样」。只在约定本身变化时才更新，不跟随实现细节抖动。
+- 判断规则：内容会频繁变化（依赖版本、合同快照、UI 进度）→ 放 `00-current/`；内容是长期约定（架构、规范、决策）→ 放 `02-reference/`。
+- **分工**：`02-reference/architecture.md` 描述稳定的架构与模块结构；`00-current/Runtime_Snapshot.md` 记录当前技术栈版本/依赖快照（易变），二者内容不重复——架构文档不写版本号，快照不写设计理由。
+- 活跃状态文档超 250 行时应拆分子文件，用 wikilink 互连。
 
 ## 文档治理
 

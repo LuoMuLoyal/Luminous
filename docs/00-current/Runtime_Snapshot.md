@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Luminous Runtime Snapshot
 
 Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)

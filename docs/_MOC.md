@@ -18,19 +18,15 @@
 - [[00-current/Active_UI_Report]] — Report tab 当前状态（含 Clinic Summary）
 - [[00-current/Active_UI_Mine_Settings]] — Mine / Settings 当前状态
 - [[00-current/Mock_Or_Deferred]] — Mock 与延后能力
-- [[00-current/Removed_From_Active_Scope]] — 已移出活跃范围的功能
 
 ## 01-product — 产品
 
 - [[01-product/Product_Vision]] — 产品定位与愿景总览
 - [[01-product/Product_MVP_Scope]] — 首发版本范围
 - [[01-product/Product_AI_Design]] — AI 能力设计
-- [[01-product/Product_Insights]] — 每日总结、每周趋势与主动提醒
 - [[01-product/Product_Safety_Privacy]] — 用药安全与 AI 隐私边界
 - [[01-product/Product_Information_Architecture]] — 信息架构与竞赛叙事
-- [[01-product/MVP_Demo_Baseline]] — 可重复的演示基线
-- [[01-product/MVP_Demo_Script]] — 演示/答辩操作脚本
-- [[01-product/Product_Brainstorm_2026-07-07]] — 功能头脑风暴与调整建议
+- [[01-product/Product_Tab_Component_Blueprint]] — 五个 Tab 的组件级蓝图
 
 ## 02-reference — 参考规范
 
@@ -58,3 +54,6 @@
 
 - [[04-archive/current-state-archive]] — 已完成的 baseline 与 UX audit remediation
 - `migration-log/` — 2026-05、2026-06 的日迁移日志
+- `product/` — 完成使命的产品过程文档（Brainstorm、MVP_Demo_Baseline/Script、Product_Insights）
+- `specs/` — 已实施的 spec（快速记录 UX 设计）
+- [[04-archive/Removed_From_Active_Scope]] — 已移出活跃范围的功能

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Flutter Localization
 
 Last updated: 2026-07-30 (OAuth Weibo + Google sign-in strings)

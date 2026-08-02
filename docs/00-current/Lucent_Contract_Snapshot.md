@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Lucent Contract Snapshot
 
 Last updated: 2026-07-28 (Record quick-entry sorting/help/badges has no contract change)

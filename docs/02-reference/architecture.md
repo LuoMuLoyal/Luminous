@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Luminous Architecture
 
 本文档保留目录结构与模块结构总览。

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Design System Components
 
 本文件是 [[Design_System]] 拆分后的子文档。

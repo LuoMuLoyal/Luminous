@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Active UI — Record
 
 Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges completion)

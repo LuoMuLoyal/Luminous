@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # 桌面端 UI 适配现状
 
 本文档记录 Luminous 桌面端 UI/UX 专项优化的完整实现状态。源方案见 `plans/2026-07-24-desktop-uiux-optimization.md`。

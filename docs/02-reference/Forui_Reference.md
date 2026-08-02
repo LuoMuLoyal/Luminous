@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Forui 参考（项目版）
 
 > 版本：`forui: 0.24.1`，`forui_hooks: 0.24.0`。

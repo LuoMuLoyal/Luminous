@@ -1,12 +1,16 @@
 # Luminous 文档覆盖映射
 #
-# tool/check_doc_coverage.dart 读取本文件：
-# - 阻断模式（默认）：有代码变更但无任何 docs/ 文件变更 → exit(1)
-# - 警告模式（--warning-only）：每条规则的 docs_required 中未被触及的文档输出警告
+# scripts/check_doc_coverage.dart 读取本文件（唯一事实源）：
+# - docs_required：必改文档，全部命中才满足（通常只有迁移日志）
+# - docs_any_of：  至少命中其一（按变更性质选择）
+# - docs_info：    仅建议，缺失不警告
+# - 阻断模式（默认，pre-commit）：有代码变更但无任何 docs/ 文件变更 → exit(1)
+# - 警告模式（--warning-only）：打印每条规则的三级报告，不阻断
 # - 旁路：SKIP_DOC_CHECK=1
 #
 # glob 规则：* 匹配单层路径，** 匹配多层路径。
-# docs/03-logs/migration-log/*.md 在每条规则中都列出——任何代码变更都应记录迁移日志。
+# 归档文档（04-archive/）不参与覆盖映射（历史可追溯，不强制同步）。
+# 活跃文档 front-matter 中的 status/updated 由 stale 检查消费。
 
 rules:
   # ──────────────────────────────────────────────
@@ -14,14 +18,15 @@ rules:
   # ──────────────────────────────────────────────
   - name: docs-tooling
     code:
-      - tool/check_doc_coverage.dart
-      - tool/doc_coverage.dart
-      - tool/tooling_workflows.dart
-      - tool/tooling_support.dart
-      - tool/git_hook.dart
-      - tool/run_daily_checks.dart
-      - tool/run_fullstack_checks.dart
-      - tool/verify_lucent_openapi_sync.dart
+      - scripts/check_doc_coverage.dart
+      - scripts/check_doc_links.dart
+      - scripts/doc_coverage.dart
+      - scripts/tooling_workflows.dart
+      - scripts/tooling_support.dart
+      - scripts/git_hook.dart
+      - scripts/run_daily_checks.dart
+      - scripts/run_fullstack_checks.dart
+      - scripts/verify_lucent_openapi_sync.dart
       - .github/workflows/**
       - .github/copilot-instructions.md
       - .cursor/mcp.json
@@ -32,10 +37,13 @@ rules:
       - GEMINI.md
       - docs/doc-map.yaml
     docs_required:
-      - docs/00-current/Project_Governance.md
-      - docs/02-reference/AI_Development_Workflow.md
-      - docs/02-reference/Project_Guardrails.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/02-reference/Project_Guardrails.md
+      - docs/02-reference/AI_Development_Workflow.md
+      - docs/00-current/Project_Governance.md
+    docs_info:
+      - docs/00-current/TODO.md
 
   # ──────────────────────────────────────────────
   # App Shell、路由、桌面外壳
@@ -46,13 +54,16 @@ rules:
       - lib/core/router/**
       - lib/features/shell/**
     docs_required:
-      - docs/00-current/Active_Mobile_UI.md
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/routing.md
       - docs/02-reference/architecture.md
       - docs/02-reference/adr/0002-gorouter-navigation.md
       - docs/02-reference/adr/0010-type-safe-routing-go-router-builder.md
-      - docs/03-logs/migration-log/*.md
+      - docs/00-current/Active_Mobile_UI.md
+      - docs/00-current/Desktop_UI.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 网络层与 API 客户端
@@ -62,12 +73,14 @@ rules:
       - lib/core/network/**
       - generated/lucent_api/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/data-layer.md
       - docs/02-reference/OpenApi_Client.md
       - docs/02-reference/adr/0007-network-layer-separation.md
-      - docs/03-logs/migration-log/*.md
+      - docs/00-current/Lucent_Contract_Snapshot.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 设计系统与主题
@@ -77,12 +90,13 @@ rules:
       - lib/core/design/**
       - lib/core/theme/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/Design_System.md
       - docs/02-reference/Design_System_Components.md
-      - docs/02-reference/Design_System_Migration.md
       - docs/02-reference/Forui_Reference.md
-      - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/02-reference/Design_System_Migration.md
 
   # ──────────────────────────────────────────────
   # Core — 本地持久化（Drift）
@@ -91,10 +105,12 @@ rules:
     code:
       - lib/core/database/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/data-layer.md
       - docs/02-reference/adr/0009-local-persistence-drift.md
-      - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 错误处理与 Result 类型
@@ -103,9 +119,11 @@ rules:
     code:
       - lib/core/errors/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/02-reference/adr/0008-result-type-and-error-handling.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/02-reference/adr/0008-result-type-and-error-handling.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — Provider 与状态管理
@@ -114,11 +132,11 @@ rules:
     code:
       - lib/core/providers/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/state-management.md
       - docs/02-reference/adr/0001-riverpod-state-management.md
       - docs/02-reference/adr/0006-riverpod-generator-and-auth-guard.md
-      - docs/03-logs/migration-log/*.md
 
   # ──────────────────────────────────────────────
   # Core — 配置与环境变量
@@ -127,8 +145,9 @@ rules:
     code:
       - lib/core/config/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 国际化与 ARB
@@ -139,9 +158,11 @@ rules:
       - lib/l10n/**
       - scripts/arb_tools.dart
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/02-reference/Localization.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/02-reference/Localization.md
+    docs_info:
+      - docs/02-reference/how-to/add-localization.md
 
   # ──────────────────────────────────────────────
   # Core — 反馈与通知基础设施
@@ -151,8 +172,9 @@ rules:
       - lib/core/feedback/**
       - lib/core/notifications/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — 共享 Widget
@@ -161,9 +183,9 @@ rules:
     code:
       - lib/core/widgets/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/02-reference/Design_System_Components.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/02-reference/Design_System_Components.md
 
   # ──────────────────────────────────────────────
   # Core — 工具函数
@@ -172,8 +194,9 @@ rules:
     code:
       - lib/core/utils/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Runtime_Snapshot.md
 
   # ──────────────────────────────────────────────
   # Core — AI 运行时实验 seam
@@ -182,10 +205,9 @@ rules:
     code:
       - lib/core/ai/**
     docs_required:
-      - docs/00-current/Runtime_Snapshot.md
-      - docs/00-current/Mock_Or_Deferred.md
-      - docs/02-reference/AI_Development_Workflow.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/02-reference/AI_Development_Workflow.md
 
   # ──────────────────────────────────────────────
   # Auth Feature
@@ -194,10 +216,11 @@ rules:
     code:
       - lib/features/auth/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
+      - docs/03-logs/migration-log/*.md
+    docs_any_of:
       - docs/02-reference/Auth_Forui_Migration_Pattern.md
       - docs/02-reference/Localization.md
-      - docs/03-logs/migration-log/*.md
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Today Feature
@@ -206,10 +229,10 @@ rules:
     code:
       - lib/features/today/**
     docs_required:
-      - docs/00-current/Active_UI_Today.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
-      - docs/01-product/Product_AI_Design.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Today.md
+      - docs/01-product/Product_AI_Design.md
 
   # ──────────────────────────────────────────────
   # Record Feature
@@ -218,9 +241,9 @@ rules:
     code:
       - lib/features/record/**
     docs_required:
-      - docs/00-current/Active_UI_Record.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Record.md
 
   # ──────────────────────────────────────────────
   # Medicine Feature
@@ -229,9 +252,9 @@ rules:
     code:
       - lib/features/medicine/**
     docs_required:
-      - docs/00-current/Active_UI_Medicine.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Report Feature
@@ -240,9 +263,9 @@ rules:
     code:
       - lib/features/report/**
     docs_required:
-      - docs/00-current/Active_UI_Report.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Report.md
 
   # ──────────────────────────────────────────────
   # Mine Feature
@@ -251,8 +274,9 @@ rules:
     code:
       - lib/features/mine/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Settings Feature
@@ -261,8 +285,9 @@ rules:
     code:
       - lib/features/settings/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Health Context Feature
@@ -271,8 +296,9 @@ rules:
     code:
       - lib/features/health_context/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Notification Feature
@@ -281,8 +307,9 @@ rules:
     code:
       - lib/features/notification/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Assistant Feature
@@ -291,11 +318,13 @@ rules:
     code:
       - lib/features/assistant/**
     docs_required:
-      - docs/00-current/Active_UI_Today.md
-      - docs/00-current/Mock_Or_Deferred.md
-      - docs/00-current/Lucent_Contract_Snapshot.md
-      - docs/01-product/Product_AI_Design.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Active_UI_Today.md
+      - docs/01-product/Product_AI_Design.md
+      - docs/02-reference/AI_Development_Workflow.md
+    docs_info:
+      - docs/00-current/Mock_Or_Deferred.md
 
   # ──────────────────────────────────────────────
   # Legal Feature
@@ -304,8 +333,9 @@ rules:
     code:
       - lib/features/legal/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Active_UI_Mine_Settings.md
 
   # ──────────────────────────────────────────────
   # Search Feature
@@ -314,8 +344,9 @@ rules:
     code:
       - lib/features/search/**
     docs_required:
-      - docs/00-current/Active_UI_Medicine.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Scan Feature（药品拍照/条码识别）
@@ -324,9 +355,11 @@ rules:
     code:
       - lib/features/scan/**
     docs_required:
-      - docs/00-current/Active_UI_Medicine.md
-      - docs/00-current/Mock_Or_Deferred.md
       - docs/03-logs/migration-log/*.md
+    docs_any_of:
+      - docs/00-current/Mock_Or_Deferred.md
+    docs_info:
+      - docs/00-current/Active_UI_Medicine.md
 
   # ──────────────────────────────────────────────
   # Support Feature（帮助/关于元数据）
@@ -335,5 +368,6 @@ rules:
     code:
       - lib/features/support/**
     docs_required:
-      - docs/00-current/Active_UI_Mine_Settings.md
       - docs/03-logs/migration-log/*.md
+    docs_info:
+      - docs/00-current/Active_UI_Mine_Settings.md

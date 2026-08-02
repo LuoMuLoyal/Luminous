@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: explanation
+updated: 2026-08-02
+---
+
 # Product Tab Component Blueprint
 
 本文件只回答一个问题：`Today / Record / Medicine / Report / Mine` 五个 tab 在 1.0 应该各自负责什么、展示什么、不展示什么。它是 [[Product_Information_Architecture]] 的组件级展开，不重复解释产品愿景本身。

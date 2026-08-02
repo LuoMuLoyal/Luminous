@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Luminous 架构升级分析
 
 Last updated: 2026-07-10

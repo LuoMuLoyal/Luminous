@@ -20,6 +20,26 @@ Future<void> main(List<String> args) async {
       return;
     }
 
+    // Doc freshness advisory (front-matter based) — runs in every mode and
+    // never blocks. Consumed by daily checks via --warning-only.
+    final freshness = analyzeDocFreshness(
+      contentByPath: _collectDocContents(context.repoRoot),
+      today: _todayIso(),
+    );
+    if (freshness.hasWarnings) {
+      stdout.writeln('Doc freshness warnings:');
+      for (final path in freshness.staleActiveDocs) {
+        stdout.writeln(
+          '  - $path: stale (>$staleDocThresholdDays days without update — '
+          'review or archive)',
+        );
+      }
+      for (final path in freshness.staleStatusDocs) {
+        stdout.writeln('  - $path: marked status: stale — archive it');
+      }
+      stdout.writeln('');
+    }
+
     // Bypass (only meaningful in blocking mode).
     if (!options.warningOnly && Platform.environment['SKIP_DOC_CHECK'] == '1') {
       stdout.writeln('[doc-check] Skipped (SKIP_DOC_CHECK=1)');
@@ -162,3 +182,28 @@ Options:
 Environment:
   SKIP_DOC_CHECK=1    Bypass the blocking check (ignored with --warning-only).
 ''';
+
+/// Collects `docs/**/*.md` contents (excluding `.obsidian/`) keyed by
+/// display path, for the freshness advisory.
+Map<String, String> _collectDocContents(Directory repoRoot) {
+  final docsDir = Directory('${repoRoot.path}${Platform.pathSeparator}docs');
+  if (!docsDir.existsSync()) {
+    return const {};
+  }
+  final docsBase = docsDir.path.replaceAll('\\', '/');
+  final contents = <String, String>{};
+  for (final file in collectMarkdownFiles(docsDir)) {
+    final relative = file.path
+        .replaceAll('\\', '/')
+        .substring(docsBase.length + 1);
+    contents['docs/$relative'] = file.readAsStringSync();
+  }
+  return contents;
+}
+
+String _todayIso() {
+  final now = DateTime.now();
+  final month = now.month.toString().padLeft(2, '0');
+  final day = now.day.toString().padLeft(2, '0');
+  return '${now.year}-$month-$day';
+}

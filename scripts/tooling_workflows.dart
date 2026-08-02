@@ -12,6 +12,16 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
+  // Wikilink / relative-link integrity for the docs vault (blocks on
+  // broken links).
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/check_doc_links.dart'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run scripts/check_doc_links.dart',
+  );
+  stdout.writeln('');
+
   await bootstrapGeneratedSources(context, openApiPath: openApiPath);
   stdout.writeln('');
 
@@ -87,6 +97,16 @@ Future<void> runPreCommitChecks(ToolContext context) async {
     ['run', 'scripts/check_doc_coverage.dart', '--warning-only', '--staged'],
     workingDirectory: context.repoRoot,
     stepName: 'doc-check (warning only)',
+  );
+  stdout.writeln('');
+
+  // ── Wikilink integrity (blocking) ──────────────────────────────────
+  // Broken doc links fail the commit regardless of SKIP_DOC_CHECK.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/check_doc_links.dart'],
+    workingDirectory: context.repoRoot,
+    stepName: 'doc-links check',
   );
   stdout.writeln('');
 

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-08-02
+---
+
 # Active UI — Mine / Settings
 
 Last updated: 2026-07-28（快速记录设置入口迁移）

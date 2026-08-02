@@ -13,11 +13,21 @@ class DocCoverageRule {
     required this.name,
     required this.codePatterns,
     required this.requiredDocs,
+    this.anyOfDocs = const [],
+    this.infoDocs = const [],
   });
 
   final String name;
   final List<String> codePatterns;
+
+  /// docs_required — ALL of these must be touched.
   final List<String> requiredDocs;
+
+  /// docs_any_of — AT LEAST ONE of these must be touched.
+  final List<String> anyOfDocs;
+
+  /// docs_info — informational only, missing is not a warning.
+  final List<String> infoDocs;
 }
 
 class DocCoverageReport {
@@ -25,20 +35,31 @@ class DocCoverageReport {
 
   final List<DocCoverageMatch> matchedRules;
 
-  bool get hasWarnings =>
-      matchedRules.any((match) => match.missingDocs.isNotEmpty);
+  /// True when a required or any-of target is missing for a matched rule.
+  bool get hasWarnings => matchedRules.any(
+    (match) =>
+        match.missingRequired.isNotEmpty || match.missingAnyOf.isNotEmpty,
+  );
+
+  /// True when an info-level target is missing for a matched rule.
+  bool get hasInfos =>
+      matchedRules.any((match) => match.missingInfo.isNotEmpty);
 }
 
 class DocCoverageMatch {
   const DocCoverageMatch({
     required this.ruleName,
     required this.touchedCodeFiles,
-    required this.missingDocs,
+    required this.missingRequired,
+    required this.missingAnyOf,
+    required this.missingInfo,
   });
 
   final String ruleName;
   final List<String> touchedCodeFiles;
-  final List<String> missingDocs;
+  final List<String> missingRequired;
+  final List<String> missingAnyOf;
+  final List<String> missingInfo;
 }
 
 DocCoverageConfig loadDocCoverageConfig(File file) {
@@ -53,6 +74,8 @@ DocCoverageConfig parseDocCoverageConfig(String source) {
   String? currentName;
   List<String>? currentCodePatterns;
   List<String>? currentRequiredDocs;
+  List<String>? currentAnyOfDocs;
+  List<String>? currentInfoDocs;
   _RuleSection? currentSection;
 
   void commitRule() {
@@ -64,6 +87,8 @@ DocCoverageConfig parseDocCoverageConfig(String source) {
         name: currentName,
         codePatterns: List.unmodifiable(currentCodePatterns ?? const []),
         requiredDocs: List.unmodifiable(currentRequiredDocs ?? const []),
+        anyOfDocs: List.unmodifiable(currentAnyOfDocs ?? const []),
+        infoDocs: List.unmodifiable(currentInfoDocs ?? const []),
       ),
     );
   }
@@ -81,6 +106,8 @@ DocCoverageConfig parseDocCoverageConfig(String source) {
       currentName = trimmed.substring('- name:'.length).trim();
       currentCodePatterns = <String>[];
       currentRequiredDocs = <String>[];
+      currentAnyOfDocs = <String>[];
+      currentInfoDocs = <String>[];
       currentSection = null;
       continue;
     }
@@ -95,6 +122,16 @@ DocCoverageConfig parseDocCoverageConfig(String source) {
       continue;
     }
 
+    if (trimmed == 'docs_any_of:') {
+      currentSection = _RuleSection.anyOf;
+      continue;
+    }
+
+    if (trimmed == 'docs_info:') {
+      currentSection = _RuleSection.info;
+      continue;
+    }
+
     if (trimmed.startsWith('- ')) {
       final value = trimmed.substring(2).trim();
       switch (currentSection) {
@@ -102,6 +139,10 @@ DocCoverageConfig parseDocCoverageConfig(String source) {
           currentCodePatterns?.add(value);
         case _RuleSection.docsRequired:
           currentRequiredDocs?.add(value);
+        case _RuleSection.anyOf:
+          currentAnyOfDocs?.add(value);
+        case _RuleSection.info:
+          currentInfoDocs?.add(value);
         case null:
           throw FormatException(
             'Unexpected list item outside a rule section: $line',
@@ -138,7 +179,25 @@ DocCoverageReport buildDocCoverageReport({
       continue;
     }
 
-    final missingDocs = rule.requiredDocs
+    final missingRequired = rule.requiredDocs
+        .map(_normalizePath)
+        .where(
+          (docPattern) => !normalizedDocFiles.any(
+            (docFile) => _matchesPattern(docFile, docPattern),
+          ),
+        )
+        .toList(growable: false);
+
+    final anyOfTouched = rule.anyOfDocs.any(
+      (pattern) => normalizedDocFiles.any(
+        (docFile) => _matchesPattern(docFile, _normalizePath(pattern)),
+      ),
+    );
+    final missingAnyOf = rule.anyOfDocs.isEmpty || anyOfTouched
+        ? const <String>[]
+        : rule.anyOfDocs.map(_normalizePath).toList(growable: false);
+
+    final missingInfo = rule.infoDocs
         .map(_normalizePath)
         .where(
           (docPattern) => !normalizedDocFiles.any(
@@ -151,7 +210,9 @@ DocCoverageReport buildDocCoverageReport({
       DocCoverageMatch(
         ruleName: rule.name,
         touchedCodeFiles: touchedCodeFiles,
-        missingDocs: missingDocs,
+        missingRequired: missingRequired,
+        missingAnyOf: missingAnyOf,
+        missingInfo: missingInfo,
       ),
     );
   }
@@ -164,19 +225,40 @@ String renderDocCoverageReport(DocCoverageReport report) {
     return 'Documentation coverage: no mapped code changes detected.';
   }
 
-  if (!report.hasWarnings) {
+  if (!report.hasWarnings && !report.hasInfos) {
     return 'Documentation coverage: all mapped doc targets were updated.';
   }
 
   final buffer = StringBuffer('Documentation coverage warnings:\n');
-  for (final match in report.matchedRules.where(
-    (match) => match.missingDocs.isNotEmpty,
-  )) {
+  for (final match in report.matchedRules) {
+    if (match.missingRequired.isEmpty &&
+        match.missingAnyOf.isEmpty &&
+        match.missingInfo.isEmpty) {
+      continue;
+    }
     buffer.writeln('- Rule: ${match.ruleName}');
     buffer.writeln('  Code changes: ${match.touchedCodeFiles.join(', ')}');
-    buffer.writeln('  Review/update docs: ${match.missingDocs.join(', ')}');
+    if (match.missingRequired.isNotEmpty) {
+      buffer.writeln(
+        '  Required docs not updated: ${match.missingRequired.join(', ')}',
+      );
+    }
+    if (match.missingAnyOf.isNotEmpty) {
+      buffer.writeln(
+        '  Update at least one of: ${match.missingAnyOf.join(', ')}',
+      );
+    }
+    if (match.missingInfo.isNotEmpty) {
+      buffer.writeln(
+        '  Suggested docs (optional): ${match.missingInfo.join(', ')}',
+      );
+    }
   }
-  buffer.write('This is warning-only and does not block the workflow.');
+  if (report.hasWarnings) {
+    buffer.write('This is warning-only and does not block the workflow.');
+  } else {
+    buffer.write('No required docs missing — suggestions only.');
+  }
   return buffer.toString();
 }
 
@@ -241,4 +323,102 @@ RegExp _globToRegExp(String pattern) {
   return RegExp(buffer.toString());
 }
 
-enum _RuleSection { code, docsRequired }
+enum _RuleSection { code, docsRequired, anyOf, info }
+
+/// Days after which an `status: active` doc is considered stale.
+const int staleDocThresholdDays = 90;
+
+// --- Front-matter & freshness -----------------------------------------
+
+/// Parses a leading YAML front-matter block (Obsidian-compatible).
+Map<String, String> parseFrontMatter(String content) {
+  final match = RegExp(r'^---\r?\n([\s\S]*?)\r?\n---\r?\n').firstMatch(content);
+  if (match == null) {
+    return const {};
+  }
+  final result = <String, String>{};
+  for (final line in match.group(1)!.split(RegExp(r'\r?\n'))) {
+    final kv = RegExp(r'^([a-zA-Z][\w-]*):\s*(.*)$').firstMatch(line.trim());
+    if (kv != null) {
+      result[kv.group(1)!] = kv.group(2)!.trim();
+    }
+  }
+  return result;
+}
+
+class DocFreshnessReport {
+  const DocFreshnessReport({
+    required this.staleActiveDocs,
+    required this.staleStatusDocs,
+  });
+
+  /// Docs with `status: active` whose front-matter `updated` is older than
+  /// [staleDocThresholdDays] — review or archive.
+  final List<String> staleActiveDocs;
+
+  /// Docs explicitly marked `status: stale` but not yet archived.
+  final List<String> staleStatusDocs;
+
+  bool get hasWarnings =>
+      staleActiveDocs.isNotEmpty || staleStatusDocs.isNotEmpty;
+}
+
+/// Analyzes doc freshness from front-matter. [contentByPath] maps a display
+/// path (e.g. `docs/00-current/TODO.md`) to file content.
+DocFreshnessReport analyzeDocFreshness({
+  required Map<String, String> contentByPath,
+  required String today,
+  int staleThresholdDays = staleDocThresholdDays,
+}) {
+  final todayMs = DateTime.parse(today).millisecondsSinceEpoch;
+  final staleActive = <String>[];
+  final staleStatus = <String>[];
+
+  contentByPath.forEach((path, content) {
+    final frontMatter = parseFrontMatter(content);
+    final status = frontMatter['status'];
+    if (status == null) {
+      return;
+    }
+    if (status == 'stale') {
+      staleStatus.add(path);
+      return;
+    }
+    if (status != 'active') {
+      return;
+    }
+    final updated = frontMatter['updated'];
+    if (updated == null) {
+      return;
+    }
+    final updatedMs = DateTime.tryParse(updated)?.millisecondsSinceEpoch;
+    if (updatedMs == null) {
+      return;
+    }
+    if (todayMs - updatedMs >
+        staleThresholdDays * Duration.millisecondsPerDay) {
+      staleActive.add(path);
+    }
+  });
+
+  return DocFreshnessReport(
+    staleActiveDocs: List.unmodifiable(staleActive),
+    staleStatusDocs: List.unmodifiable(staleStatus),
+  );
+}
+
+/// Collects all markdown files under [docsDir], excluding `.obsidian/`.
+List<File> collectMarkdownFiles(Directory docsDir) {
+  final files = <File>[];
+  for (final entity in docsDir.listSync()) {
+    if (entity is Directory) {
+      if (entity.path.split(Platform.pathSeparator).last == '.obsidian') {
+        continue;
+      }
+      files.addAll(collectMarkdownFiles(entity));
+    } else if (entity is File && entity.path.endsWith('.md')) {
+      files.add(entity);
+    }
+  }
+  return files;
+}

@@ -1,3 +1,10 @@
+---
+status: active
+owner: frontend
+quadrant: explanation
+updated: 2026-08-02
+---
+
 # Product Safety And Privacy
 
 本文件是 [[Product_Vision]] 拆分后的子文档。
@@ -5,7 +12,7 @@
 相关子文档：
 - [[Product_MVP_Scope]]
 - [[Product_AI_Design]]
-- [[Product_Insights]]
+- [[04-archive/product/Product_Insights]]
 - [[Product_Information_Architecture]]
 
 ## 用药安全边界
