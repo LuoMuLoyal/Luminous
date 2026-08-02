@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -199,7 +201,10 @@ void main() {
         child: TestAuthApp(router: router),
       ),
     );
-    await router.push('/record/test-id/edit');
+    // `router.push` returns a Future that only resolves when the pushed
+    // route is popped, so it must not be awaited here — that would hang the
+    // test until the route is dismissed at the end.
+    unawaited(router.push('/record/test-id/edit'));
     await tester.pumpAndSettle();
     // Modify the note field so the form becomes dirty.
     await tester.enterText(

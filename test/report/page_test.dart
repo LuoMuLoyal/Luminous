@@ -8,6 +8,7 @@ import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/dio_client.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
@@ -298,6 +299,9 @@ void main() {
             _FakeLucentClient(dataExportApi: exportApi),
           ),
           externalUrlLauncherProvider.overrideWithValue(launcher),
+          securityElevationControllerProvider.overrideWith(
+            _VerifiedSecurityElevationController.new,
+          ),
         ],
         child: const TestForuiApp(home: ReportPage()),
       ),
@@ -699,6 +703,16 @@ class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
       ),
     );
   }
+}
+
+/// Skips the PIN elevation dialog: the export flow is not what these tests
+/// exercise, so treat elevation as already verified.
+class _VerifiedSecurityElevationController extends SecurityElevationController {
+  @override
+  SecurityElevationState build() =>
+      SecurityElevationVerified(expiresAt: _farFuture);
+
+  static final DateTime _farFuture = DateTime(2100);
 }
 
 class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {

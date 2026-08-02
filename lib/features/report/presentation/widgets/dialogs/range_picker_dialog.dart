@@ -204,6 +204,11 @@ Future<ReportDashboardQuery?> _showCalendarBottomSheet(
                   control: FGridCalendarControl(
                     start: DateTime(2020),
                     end: monthEnd,
+                    today: today,
+                    initial: DateTime(
+                      initialRange.$1.year,
+                      initialRange.$1.month,
+                    ),
                   ),
                   selectionControl: FDateSelectionControl.managedRange(
                     controller: rangeController,
@@ -274,6 +279,8 @@ Future<ReportDashboardQuery?> _showCalendarDialog(
               control: FGridCalendarControl(
                 start: DateTime(2020),
                 end: monthEnd,
+                today: today,
+                initial: DateTime(initialRange.$1.year, initialRange.$1.month),
               ),
               selectionControl: FDateSelectionControl.managedRange(
                 controller: rangeController,

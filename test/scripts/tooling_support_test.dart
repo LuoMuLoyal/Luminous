@@ -31,7 +31,7 @@ void main() {
       expect(resolved.path, file.absolute.path);
     });
 
-    test('falls back to default Lucent docs/openapi.value path', () {
+    test('falls back to default Lucent docs/openapi.json path', () {
       final tempRoot = Directory.systemTemp.createTempSync(
         'luminous-openapi-test-',
       );
@@ -48,7 +48,7 @@ void main() {
         '${lucentRoot.path}${Platform.pathSeparator}docs',
       )..createSync(recursive: true);
       final openApiFile = File(
-        '${docsDir.path}${Platform.pathSeparator}openapi.value',
+        '${docsDir.path}${Platform.pathSeparator}openapi.json',
       )..writeAsStringSync('{}');
 
       final resolved = resolveRequiredOpenApiFile(
