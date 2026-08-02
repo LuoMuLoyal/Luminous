@@ -95,7 +95,7 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
 - cache-first 模式：读（缓存 + 后台刷新节流 30-60s）→ 写（乐观本地副本 → 远程确认/失败入队 pending sync）。
 - `SyncWorker`：connectivity_plus 监听 + 指数退避重放 + maxRetry 上限 + handler 注册机制。
 - `cacheCleanupProvider`：应用启动时按 `DataRetentionPeriod` 清理过期缓存。
-- `MineSyncFailedBanner`：Mine 页面顶部展示同步失败警告。
+- `MineSyncFailedBanner`：Mine 页面顶部展示同步失败警告；“查看详情”读取 `PendingSyncDao.fetchPermanentlyFailed()` 展示本地诊断字段，并通过 `resetForRetry` + `SyncWorker.flush()` 支持全部重试。
 - `cache_constants.dart`：统一所有时间常量（节流/超时/重试/退避）。
 
 ## 认证与会话

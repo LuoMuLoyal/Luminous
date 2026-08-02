@@ -129,6 +129,10 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
   the network, and backfill the cache.
 - **Write**: optimistic local copy first, then remote confirm; on failure, enqueue to
   `pending_sync_queue` for replay via `SyncWorker` (connectivity listener + exponential backoff).
+- **Failure details**: `PendingSyncDao.fetchPermanentlyFailed()` exposes the diagnostic fields kept
+  in the queue (`entityType`, `entityId`, `operation`, retry counts, and `lastError`) for the Mine
+  sync-failure dialog. `resetForRetry()` clears the terminal retry state before a manual flush;
+  the queued payload is never rendered or modified by the UI.
 - **Cleanup**: `cacheCleanupProvider` trims expired cache rows at startup based on the user's
   `DataRetentionPeriod` setting.
 

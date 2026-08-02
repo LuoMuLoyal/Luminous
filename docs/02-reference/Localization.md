@@ -146,6 +146,8 @@ Persisted preference keys:
   section labels (info/dosage/timeline), field hints (blood type/strength/dose/route), allergy
   severity descriptions, condition status descriptions, and the "+N more" readiness gap badge is
   owned by the Mine ARB entries.
+- Mine sync-failure details copy (dialog title/description, diagnostic field labels, empty/error
+  states, retry action and retrying state) is owned by the Mine ARB entries.
 - Report root-page suggestion-history copy such as section title, empty state, lifecycle
   badges, and suggestion detail sheet labels (rule ID, trigger type, confidence, generated-at,
   feedback, expired-at) is owned by the Report ARB entries.

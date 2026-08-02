@@ -17,6 +17,7 @@ class PendingSyncEntry {
     required this.createdAt,
     required this.retryCount,
     required this.maxRetry,
+    this.lastError,
   });
   final String id;
   final String entityType;
@@ -26,6 +27,7 @@ class PendingSyncEntry {
   final DateTime createdAt;
   final int retryCount;
   final int maxRetry;
+  final String? lastError;
 
   /// Whether this entry has exceeded the max retry count.
   bool get isPermanentlyFailed => retryCount >= maxRetry;
@@ -147,6 +149,28 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     return result.read(count) ?? 0;
   }
 
+  /// Returns permanently failed items for the user-facing sync details view.
+  Future<List<PendingSyncEntry>> fetchPermanentlyFailed() async {
+    final query = select(pendingSyncItems)
+      ..where((t) => t.retryCount.isBiggerOrEqual(t.maxRetry))
+      ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]);
+
+    final rows = await query.get();
+    return rows.map(_toEntry).toList();
+  }
+
+  /// Resets a permanently failed item so [SyncWorker.flush] can retry it.
+  Future<void> resetForRetry(String id) async {
+    await (update(pendingSyncItems)..where((t) => t.id.equals(id))).write(
+      const PendingSyncItemsCompanion(
+        retryCount: Value(0),
+        lastAttemptAt: Value(null),
+        isSyncing: Value(false),
+        lastError: Value(null),
+      ),
+    );
+  }
+
   PendingSyncEntry _toEntry(PendingSyncItem r) {
     return PendingSyncEntry(
       id: r.id,
@@ -157,6 +181,7 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
       createdAt: r.createdAt,
       retryCount: r.retryCount,
       maxRetry: r.maxRetry,
+      lastError: r.lastError,
     );
   }
 

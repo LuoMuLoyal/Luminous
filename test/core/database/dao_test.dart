@@ -240,6 +240,52 @@ void main() {
       expect(ready, isEmpty); // Exceeded maxRetry (default 5)
     });
 
+    test('fetchPermanentlyFailed returns diagnostic details', () async {
+      final id = await dao.enqueue(
+        entityType: 'daily_record',
+        entityId: 'rec1',
+        operation: 'update',
+        payload: '{"id":"rec1"}',
+      );
+
+      for (var i = 0; i < 5; i++) {
+        await dao.markSyncing(id);
+        await dao.markFailed(id, 'network error $i');
+      }
+
+      final failed = await dao.fetchPermanentlyFailed();
+
+      expect(failed, hasLength(1));
+      expect(failed.first.id, id);
+      expect(failed.first.entityType, 'daily_record');
+      expect(failed.first.entityId, 'rec1');
+      expect(failed.first.operation, 'update');
+      expect(failed.first.retryCount, 5);
+      expect(failed.first.maxRetry, 5);
+      expect(failed.first.lastError, 'network error 4');
+    });
+
+    test('resetForRetry makes a permanently failed item ready again', () async {
+      final id = await dao.enqueue(
+        entityType: 'daily_record',
+        operation: 'create',
+        payload: '{}',
+      );
+
+      for (var i = 0; i < 5; i++) {
+        await dao.markSyncing(id);
+        await dao.markFailed(id, 'network error');
+      }
+
+      await dao.resetForRetry(id);
+
+      final ready = await dao.fetchReady();
+      expect(ready, hasLength(1));
+      expect(ready.first.id, id);
+      expect(ready.first.retryCount, 0);
+      expect(ready.first.lastError, isNull);
+    });
+
     test('fetchReady orders by createdAt ascending', () async {
       await dao.enqueue(
         entityType: 'daily_record',
