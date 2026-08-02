@@ -48,7 +48,8 @@ class AssistantConversationDrawer extends StatelessWidget {
               AssistantConversationDrawerHeader(
                 title: title,
                 onNewConversation: onNewConversation,
-                onClose: () => Navigator.of(context).pop(),
+                // Close only the end drawer, never pop the hosting route.
+                onClose: () => Scaffold.of(context).closeEndDrawer(),
               ),
               const SizedBox(height: Spacing.level4),
               Expanded(
