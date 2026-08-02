@@ -1,15 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/back_button.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
-import 'package:luminous/features/assistant/presentation/widgets/controls_sheet_opener.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/status_bar.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_stack.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -79,8 +81,16 @@ class AssistantPageBody extends ConsumerWidget {
 
     final width = MediaQuery.sizeOf(context).width;
 
+    void handleStarterPrompt(String prompt) {
+      inputController.value = TextEditingValue(
+        text: prompt,
+        selection: TextSelection.collapsed(offset: prompt.length),
+      );
+    }
+
     return PageScaffold(
       title: l10n.assistantPageTitle,
+      leading: const AppBackButton(key: Key('assistant-back-action')),
       actions: [
         FTooltip(
           tipBuilder: (context, controller) =>
@@ -94,7 +104,7 @@ class AssistantPageBody extends ConsumerWidget {
                     isOpeningConversation
                 ? null
                 : onOpenDrawer,
-            child: const Icon(SemanticIcons.actionTimeSlot),
+            child: const Icon(FLucideIcons.menu),
           ),
         ),
         FTooltip(
@@ -111,6 +121,18 @@ class AssistantPageBody extends ConsumerWidget {
                 ? null
                 : onStartNewConversation,
             child: const Icon(SemanticIcons.actionAdd),
+          ),
+        ),
+        FTooltip(
+          tipBuilder: (context, controller) =>
+              Text(l10n.assistantControlsDrawerTitle),
+          child: FButton.icon(
+            key: const Key('assistant-status-settings-action'),
+            variant: FButtonVariant.ghost,
+            onPress: !session.canAccessProtectedData
+                ? null
+                : () => unawaited(context.push(Routes.settingsAi)),
+            child: const Icon(SemanticIcons.actionSettings),
           ),
         ),
       ],
@@ -162,11 +184,6 @@ class AssistantPageBody extends ConsumerWidget {
                       .loadCapabilities(),
                 ),
               ] else ...[
-                AssistantStatusBar(
-                  capabilities: capabilities,
-                  onOpenSettings: () =>
-                      showAssistantSettingsSheet(context, ref, capabilities),
-                ),
                 if (conversationError != null) ...[
                   const SizedBox(height: Spacing.level4),
                   StateMessageView(
@@ -188,6 +205,7 @@ class AssistantPageBody extends ConsumerWidget {
                     isNearBottom: isNearBottom,
                     capabilities: capabilities,
                     hasConversation: hasConversation,
+                    onStarterPrompt: handleStarterPrompt,
                     onSend: onSend,
                     onRetry: onRetry,
                     onConfirmProposal: onConfirmProposal,

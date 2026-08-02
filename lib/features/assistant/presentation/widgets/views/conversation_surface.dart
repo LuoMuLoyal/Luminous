@@ -8,6 +8,7 @@ import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/views/conversation_message_list.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -18,6 +19,7 @@ class AssistantConversationSurface extends ConsumerWidget {
     required this.capabilities,
     required this.scrollController,
     required this.controller,
+    required this.onStarterPrompt,
     required this.onSend,
     this.onRetry,
     required this.onConfirmProposal,
@@ -28,6 +30,7 @@ class AssistantConversationSurface extends ConsumerWidget {
   final AssistantCapabilities capabilities;
   final ScrollController scrollController;
   final TextEditingController controller;
+  final ValueChanged<String> onStarterPrompt;
   final Future<void> Function() onSend;
   final VoidCallback? onRetry;
   final bool showStarterPrompts;
@@ -83,12 +86,14 @@ class AssistantConversationSurface extends ConsumerWidget {
           ),
         ],
         Expanded(
-          child: AssistantConversationMessageList(
-            capabilities: capabilities,
-            scrollController: scrollController,
-            onConfirmProposal: onConfirmProposal,
-            onDismissProposal: onDismissProposal,
-          ),
+          child: showStarterPrompts && capabilities.canSendMessages
+              ? AssistantWelcomePanel(onStarterPrompt: onStarterPrompt)
+              : AssistantConversationMessageList(
+                  capabilities: capabilities,
+                  scrollController: scrollController,
+                  onConfirmProposal: onConfirmProposal,
+                  onDismissProposal: onDismissProposal,
+                ),
         ),
         if (sendError != null) ...[
           const SizedBox(height: Spacing.level4),
@@ -109,7 +114,6 @@ class AssistantConversationSurface extends ConsumerWidget {
           canSend: capabilities.canSendMessages && !isSending,
           isSending: isSending,
           canSendMessages: capabilities.canSendMessages,
-          showStarterPrompts: showStarterPrompts,
           onSend: onSend,
         ),
       ],

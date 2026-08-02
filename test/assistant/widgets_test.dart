@@ -6,6 +6,7 @@ import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/message_bubble.dart';
@@ -40,6 +41,29 @@ void main() {
     });
   });
 
+  group('AssistantWelcomePanel', () {
+    testWidgets('renders welcome copy and forwards starter prompt', (
+      tester,
+    ) async {
+      String? selectedPrompt;
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantWelcomePanel(
+            onStarterPrompt: (prompt) => selectedPrompt = prompt,
+          ),
+        ),
+      );
+
+      expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
+      expect(find.text('可以问我最近的睡眠、记录和用药情况。'), findsOneWidget);
+
+      await tester.tap(find.text('总结我今天的记录'));
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(selectedPrompt, '总结我今天的记录');
+    });
+  });
+
   group('AssistantMessageBubble', () {
     testWidgets('renders user message content', (tester) async {
       await tester.pumpWidget(
@@ -53,6 +77,28 @@ void main() {
         ),
       );
       expect(find.text('User message'), findsOneWidget);
+    });
+
+    testWidgets('uses a readable accent color for user message text', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _shell(
+          const AssistantMessageBubble(
+            messageId: 'msg-user-color',
+            role: AssistantMessageRole.user,
+            content: 'Readable user message',
+            usedTools: <String>[],
+          ),
+        ),
+      );
+
+      final messageContext = tester.element(
+        find.byType(AssistantMessageBubble),
+      );
+      final text = tester.widget<SelectableText>(find.byType(SelectableText));
+
+      expect(text.style?.color, SemanticColor.primary.solid(messageContext));
     });
 
     testWidgets('renders assistant message with context menu', (tester) async {
@@ -80,6 +126,10 @@ void main() {
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
             onRetry: () {},
             onSelect: (_) {},
           ),
@@ -125,6 +175,10 @@ void main() {
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
             onRetry: () {},
             onSelect: (_) {},
           ),
@@ -150,6 +204,10 @@ void main() {
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
             onRetry: () {},
             onSelect: (_) {},
             onNewConversation: () {},
@@ -160,6 +218,110 @@ void main() {
         find.byKey(const Key('assistant-sidebar-new-conversation')),
         findsOneWidget,
       );
+    });
+
+    testWidgets('filters conversations by title in the drawer search', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+      final conversations = <AssistantConversationSummary>[
+        AssistantConversationSummary(
+          id: 'today',
+          title: 'Today chat',
+          status: 'active',
+          lastMessageAt: now,
+          createdAt: now,
+          updatedAt: now,
+        ),
+        AssistantConversationSummary(
+          id: 'this-week',
+          title: 'This week chat',
+          status: 'active',
+          lastMessageAt: now.subtract(const Duration(days: 2)),
+          createdAt: now.subtract(const Duration(days: 2)),
+          updatedAt: now.subtract(const Duration(days: 2)),
+        ),
+        AssistantConversationSummary(
+          id: 'older',
+          title: 'Older chat',
+          status: 'active',
+          lastMessageAt: now.subtract(const Duration(days: 8)),
+          createdAt: now.subtract(const Duration(days: 8)),
+          updatedAt: now.subtract(const Duration(days: 8)),
+        ),
+      ];
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantConversationDrawer(
+            state: AssistantState(recentConversations: conversations),
+            title: 'History',
+            emptyTitle: 'No conversations',
+            emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
+            onRetry: () {},
+            onSelect: (_) {},
+          ),
+        ),
+      );
+
+      await tester.enterText(
+        find.byKey(const Key('assistant-conversation-search')),
+        'Older',
+      );
+      await tester.pump();
+
+      expect(find.text('Older chat'), findsOneWidget);
+      expect(find.text('Today chat'), findsNothing);
+      expect(find.text('This week chat'), findsNothing);
+      expect(find.text('今天'), findsNothing);
+      expect(find.text('最近 7 天'), findsNothing);
+    });
+
+    testWidgets('shows an empty state when the search has no matches', (
+      tester,
+    ) async {
+      final now = DateTime.now();
+
+      await tester.pumpWidget(
+        _shell(
+          AssistantConversationDrawer(
+            state: AssistantState(
+              recentConversations: [
+                AssistantConversationSummary(
+                  id: 'today',
+                  title: 'Today chat',
+                  status: 'active',
+                  lastMessageAt: now,
+                  createdAt: now,
+                  updatedAt: now,
+                ),
+              ],
+            ),
+            title: 'History',
+            emptyTitle: 'No conversations',
+            emptyDescription: 'Start a new chat',
+            searchHint: 'Search chat content…',
+            searchEmptyTitle: 'No matching chats',
+            searchEmptyDescription: 'Try another search.',
+            onClose: () {},
+            onRetry: () {},
+            onSelect: (_) {},
+          ),
+        ),
+      );
+
+      await tester.enterText(
+        find.byKey(const Key('assistant-conversation-search')),
+        'missing',
+      );
+      await tester.pump();
+
+      expect(find.text('No matching chats'), findsOneWidget);
+      expect(find.text('Today chat'), findsNothing);
     });
   });
 

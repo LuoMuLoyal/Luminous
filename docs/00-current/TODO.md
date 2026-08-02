@@ -13,6 +13,15 @@ Last updated: 2026-07-18
 
 ## 延后（有明确原因）
 
+- AI 会话重命名与删除
+  - 当前客户端只支持新建、加载和切换会话；等待后端提供会话标题更新与删除 API 后再实现
+
+- AI 消息 Markdown 模板升级
+  - 当前只使用基础 `MarkdownBody` 样式；后续统一设计标题、列表、代码块、引用、表格和链接的视觉模板
+
+- AI 消息操作按钮完善
+  - 复制、重新生成、重新发送需要从上下文菜单占位行为调整为明确可用的消息操作，并补齐对应 controller 链路
+
 - Forui 0.23.0 `FToaster` 的 `_entranceDismissController` LateInitializationError
   - 已通过移除测试树中的 `FToaster`、`AppToast.show` 加 try-catch 降级规避
   - 升级至 Forui 0.24+ 后恢复 toast 测试

@@ -5,15 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_shortcut_hint.dart';
-import 'package:luminous/features/assistant/presentation/widgets/sections/input_bar_starter_prompts.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// Chat-style input bar for the assistant page.
 ///
 /// - Single-line height by default, expanding to [maxLines] as the user types.
 /// - Circular send icon button instead of a full text button.
-/// - Optional starter prompt chips shown above the field when the conversation
-///   is empty.
 /// - Desktop shortcut hint (Ctrl/⌘ + Enter) appears only while the field is
 ///   focused and fades after a short delay.
 class AssistantInputBar extends StatefulWidget {
@@ -23,18 +20,14 @@ class AssistantInputBar extends StatefulWidget {
     required this.canSend,
     required this.isSending,
     required this.canSendMessages,
-    this.showStarterPrompts = false,
     required this.onSend,
-    this.onStarterPrompt,
   });
 
   final TextEditingController controller;
   final bool canSend;
   final bool isSending;
   final bool canSendMessages;
-  final bool showStarterPrompts;
   final Future<void> Function() onSend;
-  final void Function(String prompt)? onStarterPrompt;
 
   @override
   State<AssistantInputBar> createState() => _AssistantInputBarState();
@@ -126,59 +119,37 @@ class _AssistantInputBarState extends State<AssistantInputBar> {
             ),
           ),
         ],
-        if (widget.showStarterPrompts && widget.canSendMessages) ...[
-          AssistantInputStarterPrompts(onSelected: widget.onStarterPrompt),
-          const SizedBox(height: Spacing.level3),
-        ],
         Focus(
           focusNode: _focusNode,
           onKeyEvent: _handleKeyEvent,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: colors.background,
-              borderRadius: BorderRadius.circular(RadiusTokens.level4),
-              border: Border.all(color: colors.border),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.level4,
-                      vertical: Spacing.level3,
-                    ),
-                    child: FTextField(
-                      key: const Key('assistant-input'),
-                      control: FTextFieldControl.managed(
-                        controller: widget.controller,
+          child: FTextField(
+            key: const Key('assistant-input'),
+            control: FTextFieldControl.managed(controller: widget.controller),
+            minLines: 1,
+            maxLines: _maxLines,
+            hint: l10n.assistantInputHint,
+            enabled: widget.canSendMessages,
+            suffixBuilder: (context, style, variants) => Padding(
+              padding: const EdgeInsets.only(
+                right: Spacing.level2,
+                bottom: Spacing.level2,
+              ),
+              child: FButton.icon(
+                key: const Key('assistant-send-action'),
+                size: FButtonSizeVariant.sm,
+                variant: FButtonVariant.primary,
+                onPress: widget.canSend ? _handleSend : null,
+                child: widget.isSending
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: FCircularProgress(),
+                      )
+                    : const Icon(
+                        SemanticIcons.actionSend,
+                        size: IconSizeTokens.level3,
                       ),
-                      minLines: 1,
-                      maxLines: _maxLines,
-                      hint: l10n.assistantInputHint,
-                      enabled: widget.canSendMessages,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    right: Spacing.level3,
-                    bottom: Spacing.level3,
-                  ),
-                  child: FButton.icon(
-                    key: const Key('assistant-send-action'),
-                    variant: FButtonVariant.primary,
-                    onPress: widget.canSend ? _handleSend : null,
-                    child: widget.isSending
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: FCircularProgress(),
-                          )
-                        : const Icon(SemanticIcons.actionSend, size: 18),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),

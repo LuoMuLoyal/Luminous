@@ -1,43 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_header.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart';
 
-/// A conversation manager rendered as a Material [Drawer] on mobile/tablet
-/// and as a sidebar on desktop.
+/// The conversation manager rendered inside the page's opaque push drawer.
 ///
 /// Conversations are grouped by recency (today / last 7 days / older) and the
 /// currently active conversation is visually highlighted. Rename and delete
 /// actions are currently disabled because the backend does not expose
 /// `PATCH /conversations/:id` or `DELETE /conversations/:id` yet.
-class AssistantConversationDrawer extends StatelessWidget {
+class AssistantConversationDrawer extends StatefulWidget {
   const AssistantConversationDrawer({
     super.key,
+    this.width,
     required this.state,
     required this.title,
     required this.emptyTitle,
     required this.emptyDescription,
+    required this.searchHint,
+    required this.searchEmptyTitle,
+    required this.searchEmptyDescription,
+    required this.onClose,
     required this.onRetry,
     required this.onSelect,
     this.onNewConversation,
   });
 
   final AssistantState state;
+  final double? width;
   final String title;
   final String emptyTitle;
   final String emptyDescription;
+  final String searchHint;
+  final String searchEmptyTitle;
+  final String searchEmptyDescription;
+  final VoidCallback onClose;
   final VoidCallback onRetry;
   final ValueChanged<String> onSelect;
   final VoidCallback? onNewConversation;
 
   @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width < Breakpoints.tablet
-        ? MediaQuery.sizeOf(context).width * 0.85
-        : 320.0;
+  State<AssistantConversationDrawer> createState() =>
+      _AssistantConversationDrawerState();
+}
 
-    return Drawer(
+class _AssistantConversationDrawerState
+    extends State<AssistantConversationDrawer> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController()..addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController
+      ..removeListener(_onSearchChanged)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final width =
+        widget.width ??
+        (MediaQuery.sizeOf(context).width < Breakpoints.tablet
+            ? MediaQuery.sizeOf(context).width * 0.85
+            : 320.0);
+
+    return SizedBox(
+      key: const Key('assistant-conversation-drawer'),
       width: width,
       child: SafeArea(
         child: Padding(
@@ -46,19 +86,35 @@ class AssistantConversationDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AssistantConversationDrawerHeader(
-                title: title,
-                onNewConversation: onNewConversation,
-                // Close only the end drawer, never pop the hosting route.
-                onClose: () => Scaffold.of(context).closeEndDrawer(),
+                title: widget.title,
+                searchField: FTextField(
+                  key: const Key('assistant-conversation-search'),
+                  control: FTextFieldControl.managed(
+                    controller: _searchController,
+                  ),
+                  hint: widget.searchHint,
+                  prefixBuilder: (context, style, variants) =>
+                      FTextField.prefixIconBuilder(
+                        context,
+                        style,
+                        variants,
+                        const Icon(FLucideIcons.search),
+                      ),
+                ),
+                onNewConversation: widget.onNewConversation,
+                onClose: widget.onClose,
               ),
               const SizedBox(height: Spacing.level4),
               Expanded(
                 child: AssistantConversationDrawerList(
-                  state: state,
-                  emptyTitle: emptyTitle,
-                  emptyDescription: emptyDescription,
-                  onRetry: onRetry,
-                  onSelect: onSelect,
+                  state: widget.state,
+                  emptyTitle: widget.emptyTitle,
+                  emptyDescription: widget.emptyDescription,
+                  searchQuery: _searchController.text,
+                  searchEmptyTitle: widget.searchEmptyTitle,
+                  searchEmptyDescription: widget.searchEmptyDescription,
+                  onRetry: widget.onRetry,
+                  onSelect: widget.onSelect,
                 ),
               ),
             ],

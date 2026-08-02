@@ -9,11 +9,13 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
   const AssistantConversationDrawerHeader({
     super.key,
     required this.title,
+    required this.searchField,
     this.onNewConversation,
     required this.onClose,
   });
 
   final String title;
+  final Widget searchField;
   final VoidCallback? onNewConversation;
   final VoidCallback onClose;
 
@@ -21,29 +23,39 @@ class AssistantConversationDrawerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Text(title, style: TypographyToken.level7.display(context)),
-        ),
-        if (onNewConversation != null) ...[
-          FTooltip(
-            tipBuilder: (context, controller) =>
-                Text(l10n.assistantNewConversationAction),
-            child: FButton.icon(
-              key: const Key('assistant-sidebar-new-conversation'),
-              variant: FButtonVariant.primary,
-              onPress: onNewConversation,
-              child: const Icon(SemanticIcons.actionAdd, size: 18),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: TypographyToken.level7.display(context),
+              ),
             ),
-          ),
-          const SizedBox(width: Spacing.level2),
-        ],
-        FButton.icon(
-          variant: FButtonVariant.ghost,
-          onPress: onClose,
-          child: const Icon(SemanticIcons.actionClose),
+            if (onNewConversation != null) ...[
+              FTooltip(
+                tipBuilder: (context, controller) =>
+                    Text(l10n.assistantNewConversationAction),
+                child: FButton.icon(
+                  key: const Key('assistant-sidebar-new-conversation'),
+                  variant: FButtonVariant.primary,
+                  onPress: onNewConversation,
+                  child: const Icon(SemanticIcons.actionAdd, size: 18),
+                ),
+              ),
+              const SizedBox(width: Spacing.level2),
+            ],
+            FButton.icon(
+              variant: FButtonVariant.ghost,
+              onPress: onClose,
+              child: const Icon(SemanticIcons.actionClose),
+            ),
+          ],
         ),
+        const SizedBox(height: Spacing.level4),
+        searchField,
       ],
     );
   }

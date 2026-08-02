@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:forui/forui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
@@ -18,7 +19,6 @@ class AssistantPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final scaffoldKey = useMemoized(GlobalKey<ScaffoldState>.new);
 
     final inputController = useTextEditingController();
     final scrollController = useMemoized(() => ScrollController());
@@ -107,41 +107,31 @@ class AssistantPage extends HookConsumerWidget {
     }
 
     // Watch only the drawer-relevant fields so streaming chunks (messages /
-    // streamingDraft) do not rebuild the Scaffold + drawer on every event.
-    final conversationDrawer = AssistantConversationDrawer(
-      state: ref.watch(
-        assistantControllerProvider.select(
-          (s) => AssistantState(
-            conversationId: s.conversationId,
-            isOpeningConversation: s.isOpeningConversation,
-            isLoadingRecentConversations: s.isLoadingRecentConversations,
-            recentConversationError: s.recentConversationError,
-            recentConversations: s.recentConversations,
-          ),
+    // streamingDraft) do not rebuild the sheet contents on every event.
+    final drawerState = ref.watch(
+      assistantControllerProvider.select(
+        (s) => AssistantState(
+          conversationId: s.conversationId,
+          isOpeningConversation: s.isOpeningConversation,
+          isLoadingRecentConversations: s.isLoadingRecentConversations,
+          recentConversationError: s.recentConversationError,
+          recentConversations: s.recentConversations,
         ),
       ),
-      title: l10n.assistantConversationSidebarTitle,
-      emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
-      emptyDescription: l10n.assistantRecentConversationsEmptyDescription,
-      onRetry: () => ref
-          .read(assistantControllerProvider.notifier)
-          .loadRecentConversations(),
-      onNewConversation: () async {
-        scaffoldKey.currentState?.closeEndDrawer();
-        await handleStartNewConversation();
-      },
-      onSelect: (conversationId) async {
-        scaffoldKey.currentState?.closeEndDrawer();
-        await ref
-            .read(assistantControllerProvider.notifier)
-            .openConversation(conversationId);
-      },
     );
 
-    return Scaffold(
-      key: scaffoldKey,
-      endDrawer: conversationDrawer,
-      body: AssistantPageBody(
+    final drawerWidth = MediaQuery.sizeOf(context).width < Breakpoints.tablet
+        ? MediaQuery.sizeOf(context).width * 0.84
+        : 320.0;
+    final isConversationDrawerOpen = useState(false);
+
+    void openConversationDrawer() {
+      isConversationDrawerOpen.value = true;
+    }
+
+    final mainContent = KeyedSubtree(
+      key: const Key('assistant-main-content'),
+      child: AssistantPageBody(
         inputController: inputController,
         scrollController: scrollController,
         isNearBottom: isNearBottom,
@@ -164,7 +154,95 @@ class AssistantPage extends HookConsumerWidget {
           );
         },
         onStartNewConversation: handleStartNewConversation,
-        onOpenDrawer: () => scaffoldKey.currentState?.openEndDrawer(),
+        onOpenDrawer: openConversationDrawer,
+      ),
+    );
+
+    return ClipRect(
+      child: Stack(
+        clipBehavior: Clip.hardEdge,
+        children: [
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(
+              end: isConversationDrawerOpen.value ? drawerWidth : 0,
+            ),
+            duration: DurationTokens.widgetQuick,
+            curve: MotionTokens.snappy,
+            child: mainContent,
+            builder: (context, offset, child) {
+              final displaced = offset.abs() > 0.5;
+              return IgnorePointer(
+                ignoring: displaced,
+                child: ExcludeSemantics(
+                  excluding: displaced,
+                  child: Transform.translate(
+                    offset: Offset(offset, 0),
+                    child: child,
+                  ),
+                ),
+              );
+            },
+          ),
+          Positioned(
+            left: isConversationDrawerOpen.value ? 0 : -drawerWidth,
+            top: 0,
+            bottom: 0,
+            width: drawerWidth,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(
+                end: isConversationDrawerOpen.value ? 0 : -drawerWidth,
+              ),
+              duration: DurationTokens.widgetQuick,
+              curve: MotionTokens.snappy,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.theme.colors.background,
+                ),
+                child: AssistantConversationDrawer(
+                  width: drawerWidth,
+                  state: drawerState,
+                  title: l10n.assistantConversationSidebarTitle,
+                  emptyTitle: l10n.assistantRecentConversationsEmptyTitle,
+                  emptyDescription:
+                      l10n.assistantRecentConversationsEmptyDescription,
+                  searchHint: l10n.assistantConversationSearchHint,
+                  searchEmptyTitle: l10n.assistantConversationSearchEmptyTitle,
+                  searchEmptyDescription:
+                      l10n.assistantConversationSearchEmptyDescription,
+                  onClose: () => isConversationDrawerOpen.value = false,
+                  onRetry: () => ref
+                      .read(assistantControllerProvider.notifier)
+                      .loadRecentConversations(),
+                  onNewConversation: () {
+                    isConversationDrawerOpen.value = false;
+                    unawaited(handleStartNewConversation());
+                  },
+                  onSelect: (conversationId) {
+                    isConversationDrawerOpen.value = false;
+                    unawaited(
+                      ref
+                          .read(assistantControllerProvider.notifier)
+                          .openConversation(conversationId),
+                    );
+                  },
+                ),
+              ),
+              builder: (context, offset, child) {
+                final displaced = offset.abs() > 0.5;
+                return IgnorePointer(
+                  ignoring: displaced,
+                  child: ExcludeSemantics(
+                    excluding: displaced,
+                    child: Transform.translate(
+                      offset: Offset(offset, 0),
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

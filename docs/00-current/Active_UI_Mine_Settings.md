@@ -115,7 +115,7 @@ Last updated: 2026-07-28（快速记录设置入口迁移）
 
 - Today 顶部栏暴露一级助手入口 → `/assistant` 工作区。
 - Settings 保留相同的能力/权限控制作为二级入口。
-- 助手工作区读取真实 Lucent capabilities，发送真实 SSE 流式请求，Markdown 渲染。
+- 助手工作区读取真实 Lucent capabilities，发送真实 SSE 请求；当前部分 graph 回答是在后端完成生成后按空白切分回放，真实 token 级增量链路待后续改造。Markdown 渲染使用基础 `MarkdownBody`，模板升级另列 TODO。
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
 - 控制面板（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从对话页底部常驻移入右侧抽屉（`_AssistantControlsSheet`），顶栏新增 `settings2` 图标按钮打开，释放对话区垂直空间。
 - 助手禁用时的提示文案指向右上角设置入口（"在右上角设置中打开启用 AI 对话开关"）。

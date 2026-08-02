@@ -18,6 +18,7 @@ class AssistantConversationStack extends ConsumerWidget {
     required this.isNearBottom,
     required this.capabilities,
     required this.hasConversation,
+    required this.onStarterPrompt,
     required this.onSend,
     this.onRetry,
     required this.onConfirmProposal,
@@ -29,6 +30,7 @@ class AssistantConversationStack extends ConsumerWidget {
   final ValueNotifier<bool> isNearBottom;
   final AssistantCapabilities capabilities;
   final bool hasConversation;
+  final ValueChanged<String> onStarterPrompt;
   final Future<void> Function() onSend;
   final VoidCallback? onRetry;
   final Future<void> Function({
@@ -53,6 +55,7 @@ class AssistantConversationStack extends ConsumerWidget {
           scrollController: scrollController,
           controller: inputController,
           showStarterPrompts: !hasConversation,
+          onStarterPrompt: onStarterPrompt,
           onSend: onSend,
           onRetry: lastFailedInput != null
               ? () => ref

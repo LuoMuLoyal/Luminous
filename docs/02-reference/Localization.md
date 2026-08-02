@@ -156,8 +156,10 @@ Persisted preference keys:
    retrieval tools such as leaflet search, DrugBank entity resolution, DrugBank passage search, and
    medical-QA search.
 - Assistant controls drawer strings such as the drawer title (`assistantControlsDrawerTitle`) and the
-   disabled-by-user hint (`assistantConversationDisabledByUserHint`) are owned by the Assistant ARB
-   entries. The hint text references the top-right settings entry point.
+  disabled-by-user hint (`assistantConversationDisabledByUserHint`) are owned by the Assistant ARB
+  entries. The hint text references the top-right settings entry point.
+- Assistant chat welcome and conversation search strings (`assistantWelcome*` and
+  `assistantConversationSearch*`) are owned by the Assistant ARB entries.
 - Assistant hero toggle strings (`assistantHeroCollapseAction` / `assistantHeroExpandAction`), the input
    disabled hint (`assistantInputDisabledHint`), and the desktop send shortcut hint
    (`assistantSendShortcutHint`) are owned by the Assistant ARB entries.

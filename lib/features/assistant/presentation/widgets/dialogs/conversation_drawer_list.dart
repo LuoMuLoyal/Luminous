@@ -17,6 +17,9 @@ class AssistantConversationDrawerList extends StatelessWidget {
     required this.state,
     required this.emptyTitle,
     required this.emptyDescription,
+    required this.searchQuery,
+    required this.searchEmptyTitle,
+    required this.searchEmptyDescription,
     required this.onRetry,
     required this.onSelect,
   });
@@ -24,12 +27,26 @@ class AssistantConversationDrawerList extends StatelessWidget {
   final AssistantState state;
   final String emptyTitle;
   final String emptyDescription;
+  final String searchQuery;
+  final String searchEmptyTitle;
+  final String searchEmptyDescription;
   final VoidCallback onRetry;
   final ValueChanged<String> onSelect;
 
   @override
   Widget build(BuildContext context) {
     final items = state.recentConversations;
+    final query = searchQuery.trim().toLowerCase();
+    final visibleItems = query.isEmpty
+        ? items
+        : items
+              .where(
+                (item) => conversationTitle(
+                  context,
+                  item,
+                ).toLowerCase().contains(query),
+              )
+              .toList(growable: false);
 
     if (state.isLoadingRecentConversations && items.isEmpty) {
       return const StateSkeletonView(
@@ -52,6 +69,14 @@ class AssistantConversationDrawerList extends StatelessWidget {
       );
     }
 
+    if (query.isNotEmpty && visibleItems.isEmpty) {
+      return StateMessageView(
+        title: searchEmptyTitle,
+        description: searchEmptyDescription,
+        icon: SemanticIcons.actionSearch,
+      );
+    }
+
     if (items.isEmpty) {
       return StateMessageView(
         title: emptyTitle,
@@ -60,7 +85,7 @@ class AssistantConversationDrawerList extends StatelessWidget {
       );
     }
 
-    final groups = _groupConversations(items, DateTime.now());
+    final groups = _groupConversations(visibleItems, DateTime.now());
 
     return ListView.builder(
       key: const Key('assistant-recent-conversation-list'),

@@ -20,6 +20,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/features/settings/presentation/pages/ai.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -296,7 +297,7 @@ void main() {
 
       expect(repository.clearCalls, 1);
       expect(find.text('昨晚睡得不太好'), findsNothing);
-      expect(find.text('开始第一条消息'), findsOneWidget);
+      expect(find.text('开始和 Luminous 聊天'), findsOneWidget);
       expect(find.text('这条输入会被清空'), findsNothing);
     },
   );
@@ -328,7 +329,7 @@ void main() {
     expect(find.text('先从最近三天入睡时间波动来看。'), findsOneWidget);
   });
 
-  testWidgets('recent conversation sheet opens and switches conversation', (
+  testWidgets('recent conversation drawer opens and switches conversation', (
     tester,
   ) async {
     SharedPreferences.setMockInitialValues(const <String, Object>{});
@@ -342,11 +343,23 @@ void main() {
       findsOneWidget,
     );
 
+    final mainContentBefore = tester
+        .getTopLeft(find.byKey(const Key('assistant-main-content')))
+        .dx;
+
     await tester.tap(
       find.byKey(const Key('assistant-recent-conversations-action')),
     );
     await tester.pumpAndSettle();
 
+    final mainContentAfter = tester
+        .getTopLeft(find.byKey(const Key('assistant-main-content')))
+        .dx;
+    expect(mainContentAfter, greaterThan(mainContentBefore));
+    expect(
+      find.byKey(const Key('assistant-conversation-drawer')),
+      findsOneWidget,
+    );
     expect(find.text('会话'), findsOneWidget);
     expect(find.text('睡眠跟进'), findsOneWidget);
     expect(find.text('头痛追踪'), findsOneWidget);
@@ -361,6 +374,47 @@ void main() {
     expect(repository.openedConversationIds, <String>['conversation-headache']);
     expect(find.text('今天头痛还在继续'), findsOneWidget);
     expect(find.text('先看一下你最近记录里的触发因素。'), findsOneWidget);
+  });
+
+  testWidgets('assistant header keeps back history new and settings actions', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('assistant-back-action')), findsOneWidget);
+    expect(
+      find.byKey(const Key('assistant-recent-conversations-action')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('assistant-new-conversation-action')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('assistant-status-settings-action')),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('assistant settings action navigates to the dedicated AI page', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues(const <String, Object>{});
+
+    await tester.pumpWidget(
+      _buildTestApp(repository: _FakeAssistantRepository()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('assistant-status-settings-action')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('AI 设置'), findsOneWidget);
   });
 
   testWidgets('AI chat page renders on mobile screen size', (tester) async {
@@ -378,6 +432,13 @@ void main() {
 
     // Input field should be visible on mobile
     expect(find.byKey(const Key('assistant-input')), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('assistant-input')),
+        matching: find.byKey(const Key('assistant-send-action')),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('AI chat page shows loading skeleton while capabilities load', (
@@ -536,6 +597,10 @@ Widget _buildTestApp({
             path: '/login',
             builder: (context, state) =>
                 const Scaffold(body: Text('login-page')),
+          ),
+          GoRoute(
+            path: '/settings/ai',
+            builder: (context, state) => const AiSettingsPage(),
           ),
         ],
       ),

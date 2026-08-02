@@ -7,7 +7,7 @@ updated: 2026-08-02
 
 # Active UI — Today
 
-Last updated: 2026-07-25 (summary FCollapsible)
+Last updated: 2026-08-02 (assistant chat UI)
 
 ## 页面结构
 
@@ -84,18 +84,19 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 Last updated: 2026-08-01
 
 - Today 顶部栏暴露一级助手入口（`FLucideIcons.sparkles` 图标按钮）→ `/assistant` 工作区。
-- 助手页状态卡已从展开式 `AssistantHero` 替换为默认折叠的 `AssistantStatusBar`：仅显示 bot 徽章 + 标题 + 单行状态摘要 + 状态色圆点，不再展示工具数、上下文数、RAG、流式输出等技术标签。
-- 助手设置（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从顶部齿轮一级入口移除，改从 `AssistantStatusBar` 右侧 subtle 设置图标进入，保留在 `AssistantControlsSheet` / `AssistantControlsPanel` 中。
+- 助手页使用轻量 Forui header：从左到右为返回、历史对话、新会话、设置；不再在消息区常驻技术状态卡。
+- 历史对话使用页面内不透明 push drawer：聊天页整体向右移动，抽屉内容不会通过透明 modal barrier 覆盖聊天页。
+- 助手设置（启用 AI 对话 / 持久化记忆 / 4 个上下文开关）从 header 设置按钮跳转到独立 `/settings/ai` 页面调整。
 - 流式滚底优化：仅当用户已处于底部附近时自动滚底；用户上翻后显示"回到底部"悬浮按钮。
 - 助手状态文案已重写为自然语言（"AI 助手已准备好" / "AI 助手正在准备中" / "AI 助手暂时不可用" / "AI 助手已关闭"）。
 - **页面结构拆分**：`AssistantPage` 仅保留控制器与高层回调，UI 布局下沉到 `AssistantPageBody`；消息列表 + 输入区由 `AssistantConversationStack` 负责；文件行数全部达标（`page.dart` 163 行，子组件均 < 250 行）。
-- **输入区重构为 `AssistantInputBar`**：默认单行，最多 5 行；圆形发送图标按钮；空会话时显示 4 个本地化快捷提问 chip（今日总结 / 睡眠 / 用药 / 注意事项）；桌面端 focus 后显示 `Ctrl/⌘ + Enter` 快捷键提示，3 秒后自动淡出。
-- **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；上下文菜单改用 `FContextMenu.tiles`，支持复制，并预留"重新生成 / 重新发送"入口（当前 disabled，等 controller 支持后启用）。
-- **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。
-- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 从 `showFSheet` 右侧弹窗改为真正的 `Drawer` 侧滑抽屉；按"今天 / 最近 7 天 / 更早"分组；当前会话用 `prefix` 对勾图标高亮；顶部新增"新对话"按钮；重命名/删除菜单因后端暂无 `PATCH/DELETE /conversations/:id` 接口暂未接入。
-- **首屏去卡片化**：`AssistantConversationSurface` 移除外层 `FCard`，聊天区不再被厚重边框和过大 padding 包裹；`AssistantPageBody` 外层垂直 padding 与状态栏间距收紧，移动端首屏更多区域留给消息历史与输入区。
-- **设置弹窗轻量化**：`AssistantControlsSheet` 移动端宽度改为 `0.92`、padding 底部跟随安全区；`AssistantControlsPanel` 移除内层 `FCard`，标题与开关间距统一。
-- **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、侧边栏分组/高亮/空态/新建按钮、状态消息等；流式渲染由 `test/assistant/page_test.dart` 覆盖。
+- **输入区重构为 `AssistantInputBar`**：默认单行，最多 5 行；发送按钮放入同一个 Forui `FTextField` suffix，避免盒中盒；空会话的 4 个本地化快捷提问 chip（今日总结 / 睡眠 / 用药 / 注意事项）移到中央欢迎区，点击后写入输入框；桌面端 focus 后显示 `Ctrl/⌘ + Enter` 快捷键提示，3 秒后自动淡出。
+- **消息气泡去工程化**：`AssistantMessageBubble` 移除工具 chip 渲染与"正在生成"文字标签，流式期间使用 pulsing dots 动画指示器；用户气泡文字使用主色实色，避免浅色背景上使用浅色 `primaryForeground` 导致不可读；上下文菜单改用 `FContextMenu.tiles`，复制和"重新生成 / 重新发送"操作的完整按钮化交互仍列入 TODO。
+- **流式 rebuild 优化**：`AssistantPage` 用多个 `ref.watch(...select(...))` 切片订阅状态，`streamingDraft` 变化不再触发父级重建；`AssistantConversationSurface` / `_ConversationView` 改为 `ConsumerWidget`，`messages` 与 `streamingDraft` 分别独立 select 订阅；`AssistantMessageBubble` 流式期间渲染纯 `Text`、结束后才切 `MarkdownBody`，避免每个 chunk 重复解析整段 markdown。当前后端对常见 graph 回答先执行 `graph.invoke()`，再通过空白切分回放伪 chunk；SSE 传输正常，但尚未实现从 graph/LLM 到 HTTP 的真实增量流。
+- **侧边栏重构为会话管理器**：`AssistantConversationDrawer` 通过页面内 `Stack` 从左侧推入，固定不透明背景；顶部使用 Forui 搜索框、关闭和新对话按钮；会话仍按"今天 / 最近 7 天 / 更早"分组，当前会话用 `prefix` 对勾图标高亮；搜索只过滤已加载列表，重命名/删除因后端暂无对应接口暂未接入。
+- **首屏重做**：空会话在消息区展示居中的 `AssistantWelcomePanel` 和 starter prompts；输入区保持轻量圆角表面，聊天消息状态不改变。
+- **设置页独立化**：聊天页设置按钮跳转现有 `/settings/ai` 独立页面；`AssistantControlsSheet` 保留为未使用的旧实现，当前聊天流程不再打开透明设置浮层。
+- **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、会话 drawer 分组/高亮/空态/新建按钮/搜索过滤、状态消息等；流式渲染、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
 
 ## 2026-07-19 补充
 

@@ -51,7 +51,9 @@ class AssistantMessageBubble extends StatelessWidget {
     final background = isUser
         ? SemanticColor.primary.muted(context)
         : colors.secondary;
-    final foreground = isUser ? colors.primaryForeground : colors.foreground;
+    final foreground = isUser
+        ? SemanticColor.primary.solid(context)
+        : colors.foreground;
 
     return Align(
       alignment: align,
