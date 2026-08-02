@@ -62,20 +62,11 @@ class AssistantRemoteDataSource {
   }
 
   Future<bool> clearLatestConversation() async {
-    // Workaround: the generated OpenAPI client sends a POST with no body, but
-    // the backend expects a parseable JSON payload when Content-Type is
-    // application/json (Dio base options). Sending an empty object keeps the
-    // request valid and avoids `Unexpected end of JSON input`.
-    final response = await dio.post<Object>(
-      '/api/v1/user/assistant/latest/clear',
-      data: <String, dynamic>{},
-    );
-    final data = response.data;
-    if (data is Map<String, dynamic>) {
-      return (data['data'] as Map<String, dynamic>?)?['cleared'] as bool? ??
-          false;
-    }
-    return false;
+    // Use the generated OpenAPI client (no manual path or body workaround).
+    // The backend treats an empty JSON body as absent, so a no-body POST is
+    // accepted by this endpoint.
+    final response = await api.assistantControllerClearLatestConversationV1();
+    return response.data?.data.cleared ?? false;
   }
 
   /// Confirms or rejects pending assistant write proposals on the backend and
