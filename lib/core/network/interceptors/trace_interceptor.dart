@@ -13,8 +13,10 @@ import 'package:dio/dio.dart';
 /// already carries a `traceparent` header is passed through untouched so an
 /// existing trace context is preserved.
 class TraceInterceptor extends Interceptor {
-  TraceInterceptor({void Function(String traceId)? onTraceId})
-    : _onTraceId = onTraceId;
+  TraceInterceptor({
+    void Function(String traceId)? onTraceId,
+    this.skipHeaderInjection = false,
+  }) : _onTraceId = onTraceId;
 
   /// Shared cryptographically secure RNG. Creating a new [Random.secure]
   /// instance per request is expensive — reuse one instance across requests.
@@ -23,6 +25,20 @@ class TraceInterceptor extends Interceptor {
   /// Callback invoked with the latest backend traceId parsed from the
   /// `traceresponse` response header.
   final void Function(String traceId)? _onTraceId;
+
+  /// When true, skips generating and injecting a fresh `traceparent` header
+  /// on requests that don't already carry one. Use this when another layer
+  /// (e.g. Sentry's `sentry_dio` adapter) will inject `traceparent` with
+  /// a traceId that belongs to the active Sentry transaction — otherwise the
+  /// interceptor's random traceId would be overwritten, wasting the RNG call
+  /// and temporarily exposing a stale [lastTraceId].
+  ///
+  /// Requests that already have a `traceparent` header are still passed
+  /// through and their traceId is still tracked (existing trace context wins).
+  ///
+  /// Response-side tracking (`traceresponse`) is unaffected — [lastTraceId]
+  /// and [onTraceId] are still updated from the backend response header.
+  final bool skipHeaderInjection;
 
   /// The most recently seen traceId: updated with the injected `traceparent`
   /// traceId on request and with the backend `traceresponse` traceId on
@@ -34,7 +50,13 @@ class TraceInterceptor extends Interceptor {
     final existing = _existingTraceparent(options.headers);
     if (existing != null && existing.isNotEmpty) {
       // Preserve the caller-provided trace context without overwriting it.
-      options.extra['traceId'] = _traceIdFrom(existing);
+      lastTraceId = _traceIdFrom(existing);
+      options.extra['traceId'] = lastTraceId;
+      handler.next(options);
+      return;
+    }
+
+    if (skipHeaderInjection) {
       handler.next(options);
       return;
     }

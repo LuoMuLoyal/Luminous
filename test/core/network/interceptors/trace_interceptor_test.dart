@@ -7,7 +7,7 @@ import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 void main() {
   group('TraceInterceptor.onRequest', () {
     test('injects a well-formed traceparent when none is present', () async {
-      final interceptor = TraceInterceptor();
+      final interceptor = TraceInterceptor(skipHeaderInjection: false);
       final options = RequestOptions(path: '/api/v1/test');
       final handler = RequestInterceptorHandler();
 
@@ -48,6 +48,56 @@ void main() {
           options.extra['traceId'],
           'aaaabbbbccccddddeeeeffff00001111',
           reason: 'passthrough must still expose the traceId for error binding',
+        );
+      },
+    );
+
+    test('skips injection when skipHeaderInjection is true', () async {
+      final interceptor = TraceInterceptor(skipHeaderInjection: true);
+      final options = RequestOptions(path: '/api/v1/test');
+      final handler = RequestInterceptorHandler();
+
+      interceptor.onRequest(options, handler);
+      await handler.future;
+
+      expect(
+        options.headers['traceparent'],
+        isNull,
+        reason: 'no traceparent should be injected',
+      );
+      expect(
+        options.extra['traceId'],
+        isNull,
+        reason: 'no traceId set when injection is skipped',
+      );
+      expect(interceptor.lastTraceId, isNull);
+    });
+
+    test(
+      'still tracks existing traceparent when skipHeaderInjection is true',
+      () async {
+        const existing =
+            '00-aaaabbbbccccddddeeeeffff00001111-2233445566778899-01';
+        final interceptor = TraceInterceptor(skipHeaderInjection: true);
+        final options = RequestOptions(
+          path: '/api/v1/test',
+          headers: {'traceparent': existing},
+        );
+        final handler = RequestInterceptorHandler();
+
+        interceptor.onRequest(options, handler);
+        await handler.future;
+
+        expect(
+          options.headers['traceparent'],
+          existing,
+          reason: 'existing traceparent must pass through',
+        );
+        expect(interceptor.lastTraceId, 'aaaabbbbccccddddeeeeffff00001111');
+        expect(
+          options.extra['traceId'],
+          'aaaabbbbccccddddeeeeffff00001111',
+          reason: 'traceId must still be tracked for error binding',
         );
       },
     );

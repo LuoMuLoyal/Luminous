@@ -8,6 +8,7 @@ import 'package:luminous/core/network/interceptors/error_interceptor.dart';
 import 'package:luminous/core/network/interceptors/retry_interceptor.dart';
 import 'package:luminous/core/network/interceptors/trace_interceptor.dart';
 import 'package:luminous/core/network/session_store.dart';
+import 'package:sentry/sentry.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 
 /// Thin wrapper over the generated [LucentApi] that exposes individual API
@@ -97,12 +98,19 @@ class LucentDioClient {
       onSessionExpired: onSessionExpired,
     );
 
+    final skipInjection = _isSentryPropagatingTraceparent();
     _traceInterceptor =
-        traceInterceptor ?? TraceInterceptor(onTraceId: onTraceId);
+        traceInterceptor ??
+        TraceInterceptor(
+          onTraceId: onTraceId,
+          skipHeaderInjection: skipInjection,
+        );
     // The refresh Dio gets its own interceptor instance so token-refresh
     // requests do not overwrite the user-visible lastTraceId (and the
     // lastTraceIdProvider / TraceContext it feeds) with their own trace ids.
-    _refreshDio.interceptors.add(TraceInterceptor());
+    _refreshDio.interceptors.add(
+      TraceInterceptor(skipHeaderInjection: skipInjection),
+    );
 
     _dio.interceptors.addAll(<Interceptor>[
       _traceInterceptor,
@@ -171,5 +179,21 @@ class LucentDioClient {
   void dispose() {
     _dio.close(force: true);
     _refreshDio.close(force: true);
+  }
+
+  /// Returns true when Sentry is initialized and configured to propagate
+  /// W3C `traceparent` headers (`propagateTraceparent = true`).
+  ///
+  /// When Sentry handles traceparent injection via the `sentry_dio` adapter,
+  /// the [TraceInterceptor] can skip generating its own random traceparent
+  /// to avoid a wasted RNG call and a stale intermediate [lastTraceId].
+  static bool _isSentryPropagatingTraceparent() {
+    try {
+      final hub = HubAdapter();
+      // ignore: invalid_use_of_internal_member
+      return hub.isEnabled && hub.options.propagateTraceparent;
+    } catch (_) {
+      return false;
+    }
   }
 }
