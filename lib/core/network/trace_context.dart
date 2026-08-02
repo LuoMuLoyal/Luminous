@@ -9,5 +9,11 @@ class TraceContext {
 
   /// The most recent backend trace id seen by the trace interceptor, or
   /// null before the first request.
+  ///
+  /// Best-effort value: with concurrent requests the last one to complete
+  /// wins, so this is an approximation for diagnostics, not a per-request
+  /// correlation guarantee. A plain mutable field (no notifier) is
+  /// intentional so sync, non-widget code (Talker / Sentry hooks) can read
+  /// it without a `Ref`.
   static String? lastTraceId;
 }
