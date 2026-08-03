@@ -101,6 +101,9 @@ dev_dependencies:
   freezed: ^3.2.5
   mocktail: ^1.0.5
   network_image_mock: ^2.1.1
+  # Platform interfaces used directly in tests (fakes for scan/camera flows).
+  permission_handler_platform_interface: ^4.3.0
+  image_picker_platform_interface: ^2.11.1
 
   integration_test:
     sdk: flutter

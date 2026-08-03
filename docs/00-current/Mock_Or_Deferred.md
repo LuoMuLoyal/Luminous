@@ -2,12 +2,18 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Mock or Deferred
 
-Last updated: 2026-07-30
+Last updated: 2026-08-03
+
+## 扫码（barcode / box scan）测试与平台桥接
+
+- `barcode_scanner_page_test` / `box_scan_test` 通过注入平台接口 fake 隔离真实设备能力：`PermissionHandlerPlatform.instance`（相机权限）、`MobileScannerPlatform.instance`（相机预览/条码流）、`ImagePickerPlatform.instance`（拍照），`paddleOcrProvider` 以 mocktail `MockPaddleOcrEngine` 覆盖，`PaddleOcrNativePlatform.instance` 注入 `FakePaddleOcrNativePlatform`。测试从不启动真实相机/相册/OCR 引擎。
+- `box_scan.dart` 的 AI 识别分支（`File.readAsBytes` → `ImageCompressor` 压缩 → 上传）依赖真实 dart:io 文件 I/O，在 `testWidgets` 的 FakeAsync 测试区内无法完成（Flutter 测试基础设施限制），按测试计划排除项处理，仅覆盖方法选择、OCR 分支、AI 取消路径。
+
 
 ## 助手骨架死段清理
 

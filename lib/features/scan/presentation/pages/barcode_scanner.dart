@@ -64,7 +64,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage>
     _controller = MobileScannerController(
       detectionSpeed: DetectionSpeed.normal,
     );
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() => _permissionDenied = false);
+    }
   }
 
   @override
