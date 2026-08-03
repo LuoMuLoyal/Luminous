@@ -117,9 +117,11 @@ class AssistantConversationDrawerList extends StatelessWidget {
 
     for (final item in items) {
       final updatedAt = item.updatedAt;
-      if (updatedAt.isAfter(today)) {
+      // `!isBefore` (i.e. "is after or equal to") so a conversation updated
+      // exactly at 00:00:00 lands in the current group instead of "older".
+      if (!updatedAt.isBefore(today)) {
         todayItems.add(item);
-      } else if (updatedAt.isAfter(weekAgo)) {
+      } else if (!updatedAt.isBefore(weekAgo)) {
         thisWeekItems.add(item);
       } else {
         olderItems.add(item);
