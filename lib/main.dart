@@ -53,11 +53,19 @@ Future<void> _initSentry() async {
   try {
     await SentryFlutter.init((options) {
       options.dsn = dsn;
-      // Trace every request so the propagated W3C `traceparent` always
-      // carries the sampled flag (`01`). With a lower rate, unsampled
-      // requests would send sampled=`00` and Lucent's OTel (parent-based
-      // sampler) would drop their spans in Jaeger.
-      options.tracesSampleRate = 1.0;
+      // Sample critical paths (sync, auth) at 100% so their propagated W3C
+      // `traceparent` always carries the sampled flag (`01`) and Lucent's OTel
+      // (parent-based sampler) keeps their spans in Jaeger. Non-critical
+      // requests are sampled at 10% in release builds to limit battery, network
+      // and quota cost; their unsampled traceparent (`sampled=00`) is dropped
+      // by the backend sampler by design. Debug builds keep full sampling.
+      options.tracesSampler = (context) {
+        final name = context.transactionContext.name;
+        if (name.contains('/sync/') || name.contains('/auth/')) {
+          return 1.0;
+        }
+        return kReleaseMode ? 0.1 : 1.0;
+      };
       // Propagate the W3C `traceparent` header on outgoing requests so the
       // backend OTel SDK continues the same trace — one traceId across
       // Sentry + Jaeger + the help-page "last trace id" display.
