@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-02（同步失败详情与重试入口）
+Last updated: 2026-08-03（同步失败重试异常日志；同步失败详情与重试入口）
 
 ## Mine 根页结构
 
@@ -34,6 +34,7 @@ Last updated: 2026-08-02（同步失败详情与重试入口）
 - `MineSyncFailedBanner` 在 Mine 页面顶部展示同步失败警告（warning 色 subtle 背景 + border + cloudAlert 图标）。点击“查看详情”打开 Forui 详情对话框，展示失败条目的数据类型、操作、记录 ID、尝试次数、加入时间和最近错误。
 - `syncFailedCountProvider` 查询 `PendingSyncDao.permanentlyFailedCount()`。
 - 详情对话框的“全部重试”会先通过 `PendingSyncDao.resetForRetry` 清除永久失败状态，再调用 `SyncWorker.flush()`；查看详情本身不再显示 Toast 占位提示。
+- “全部重试”失败的异常不再静默吞掉：记录到 `talker`（release 下经 `SentryTalkerObserver` 上报 Sentry），界面仍显示通用错误文案（2026-08-03）。
 
 ## 健康档案
 

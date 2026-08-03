@@ -6,6 +6,7 @@ import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/worker.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -53,7 +54,10 @@ class _SyncFailedDetailsContentState
       await ref.read(syncWorkerProvider).flush();
       ref.invalidate(syncFailedCountProvider);
       if (mounted) Navigator.of(context).pop();
-    } catch (_) {
+    } catch (e, st) {
+      // Log the real failure (DB corruption, disk full, ...) so it is not
+      // silently swallowed — talker forwards it to Sentry in release builds.
+      ref.read(talkerProvider).error('MineSyncFailedDetails._retryAll: $e', st);
       if (!mounted) return;
       setState(() {
         _isRetrying = false;
