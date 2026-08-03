@@ -92,17 +92,10 @@ class AssistantMessageBubble extends StatelessWidget {
                     MarkdownBody(
                       data: content,
                       selectable: true,
-                      styleSheet:
-                          MarkdownStyleSheet.fromTheme(
-                            Theme.of(context),
-                          ).copyWith(
-                            p: TypographyToken.level4
-                                .body(context)
-                                .copyWith(color: foreground),
-                            blockquote: TypographyToken.level3
-                                .body(context)
-                                .copyWith(color: colors.mutedForeground),
-                          ),
+                      styleSheet: MarkdownStyle.ai(
+                        context,
+                        background: background,
+                      ),
                     ),
                   if (isStreaming) ...[
                     const SizedBox(height: Spacing.level3),

@@ -83,24 +83,7 @@ class LegalDetailPage extends ConsumerWidget {
                   data: doc.content,
                   selectable: true,
                   shrinkWrap: true,
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                      .copyWith(
-                        p: TypographyToken.level4
-                            .body(context)
-                            .copyWith(height: 1.7),
-                        h1: TypographyToken.level7
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
-                        h2: TypographyToken.level6
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w600),
-                        h3: TypographyToken.level5
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w600),
-                        h1Padding: const EdgeInsets.only(top: Spacing.level6),
-                        h2Padding: const EdgeInsets.only(top: Spacing.level5),
-                        h3Padding: const EdgeInsets.only(top: Spacing.level4),
-                      ),
+                  styleSheet: MarkdownStyle.legal(context),
                 ),
                 const SizedBox(height: Spacing.level7),
               ],

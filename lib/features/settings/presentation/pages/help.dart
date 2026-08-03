@@ -271,12 +271,7 @@ class _FaqTileState extends State<_FaqTile>
                   data: widget.item.answer,
                   selectable: true,
                   shrinkWrap: true,
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                      .copyWith(
-                        p: TypographyToken.level4
-                            .body(context)
-                            .copyWith(height: 1.6),
-                      ),
+                  styleSheet: MarkdownStyle.legal(context),
                 ),
               ),
             ),

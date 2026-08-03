@@ -152,12 +152,10 @@ class ReportAiSummarySection extends StatelessWidget {
                 child: MarkdownBody(
                   data: content.summaryText!,
                   selectable: true,
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                      .copyWith(
-                        p: TypographyToken.level4
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w700),
-                      ),
+                  styleSheet: MarkdownStyle.ai(
+                    context,
+                    paragraphWeight: FontWeight.w700,
+                  ),
                 ),
               ),
               const AppDivider(),

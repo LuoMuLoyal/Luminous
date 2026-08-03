@@ -278,21 +278,18 @@ class AiExplainContent extends StatelessWidget {
           MarkdownBody(
             data: explanation.reason,
             selectable: true,
-            styleSheet: MarkdownStyleSheet.fromTheme(
-              Theme.of(context),
-            ).copyWith(p: TypographyToken.level4.body(context)),
+            styleSheet: MarkdownStyle.ai(context),
           ),
           if (explanation.boundary.isNotEmpty) ...[
             const SizedBox(height: Spacing.level2),
             MarkdownBody(
               data: explanation.boundary,
               selectable: true,
-              styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                  .copyWith(
-                    p: TypographyToken.level3
-                        .body(context)
-                        .copyWith(color: colors.mutedForeground),
-                  ),
+              styleSheet: MarkdownStyle.ai(context).copyWith(
+                p: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: colors.mutedForeground),
+              ),
             ),
           ],
         ],

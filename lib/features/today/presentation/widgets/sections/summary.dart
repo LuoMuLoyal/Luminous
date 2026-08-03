@@ -122,12 +122,10 @@ class _TodaySummarySectionState extends ConsumerState<TodaySummarySection>
                 MarkdownBody(
                   data: content.summary!,
                   selectable: true,
-                  styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
-                      .copyWith(
-                        p: TypographyToken.level3
-                            .body(context)
-                            .copyWith(fontWeight: FontWeight.w600),
-                      ),
+                  styleSheet: MarkdownStyle.ai(
+                    context,
+                    paragraphWeight: FontWeight.w600,
+                  ),
                 ),
               ] else if (!isPreview) ...[
                 Text(
