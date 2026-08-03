@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:drift/drift.dart';
 
 import '../cache_constants.dart';
@@ -5,6 +7,15 @@ import '../database.dart';
 import '../tables/pending_sync_queue.dart';
 
 part 'pending_sync_dao.g.dart';
+
+/// Exponential backoff for [retryCount]: [syncBackoffBase] * 2^retryCount,
+/// capped at [syncBackoffMax].
+Duration backoffForRetryCount(int retryCount) {
+  final baseSeconds = syncBackoffBase.inSeconds;
+  final maxSeconds = syncBackoffMax.inSeconds;
+  final seconds = baseSeconds * (1 << retryCount);
+  return Duration(seconds: seconds.clamp(0, maxSeconds));
+}
 
 /// Pending sync item with decoded fields for the SyncWorker.
 class PendingSyncEntry {
@@ -35,12 +46,7 @@ class PendingSyncEntry {
   /// The minimum delay before the next retry attempt.
   /// Exponential backoff: [syncBackoffBase] * 2^retryCount,
   /// capped at [syncBackoffMax].
-  Duration get backoffDelay {
-    final baseSeconds = syncBackoffBase.inSeconds;
-    final maxSeconds = syncBackoffMax.inSeconds;
-    final seconds = baseSeconds * (1 << retryCount);
-    return Duration(seconds: seconds.clamp(0, maxSeconds));
-  }
+  Duration get backoffDelay => backoffForRetryCount(retryCount);
 }
 
 /// Data access object for the pending sync queue.
@@ -87,8 +93,7 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
         .where((r) {
           if (r.lastAttemptAt == null) return true;
           final elapsed = now.difference(r.lastAttemptAt!);
-          final entry = _toEntry(r);
-          return elapsed >= entry.backoffDelay;
+          return elapsed >= backoffForRetryCount(r.retryCount);
         })
         .map(_toEntry)
         .toList();
@@ -186,8 +191,12 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
   }
 
   String _generateId() {
-    return 'pending_${DateTime.now().microsecondsSinceEpoch}_${_counter++}';
+    // Cryptographically random suffix — unlike a static counter it survives
+    // hot restart and is unique across isolates, so the id cannot collide
+    // with rows already persisted in the database.
+    return 'pending_${DateTime.now().microsecondsSinceEpoch}_'
+        '${_secureRandom.nextInt(1 << 32)}';
   }
 
-  static int _counter = 0;
+  static final Random _secureRandom = Random.secure();
 }
