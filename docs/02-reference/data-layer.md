@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Data Layer
@@ -33,6 +33,11 @@ Widget
 - `lib/core/network/api.dart`: Barrel export re-exporting the generated API client and all network
   layer files. Features use `ref.watch(lucentClientProvider).medicines` etc. to access typed API
   methods.
+- `lib/core/network/error_mapper.dart`: `LucentErrorMapper.fromObject()` is the single source of
+  truth for `DioException` → `LucentApiException` mapping (envelope parsing, fallback messages,
+  network-error-code derivation, traceId binding). `lib/core/network/interceptors/error_interceptor.dart`
+  delegates to it and only re-wraps the mapped exception into a rejected `DioException`, so the
+  mapping logic is not duplicated between the interceptor and feature call sites.
 
 ### Generated API Client
 
@@ -132,7 +137,9 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
 - **Failure details**: `PendingSyncDao.fetchPermanentlyFailed()` exposes the diagnostic fields kept
   in the queue (`entityType`, `entityId`, `operation`, retry counts, and `lastError`) for the Mine
   sync-failure dialog. `resetForRetry()` clears the terminal retry state before a manual flush;
-  the queued payload is never rendered or modified by the UI.
+  the queued payload is never rendered or modified by the UI. Pending sync ids use a
+  cryptographically random suffix (`Random.secure()`) so they remain unique across hot restarts
+  and isolates; backoff is computed by the shared `backoffForRetryCount()` helper.
 - **Cleanup**: `cacheCleanupProvider` trims expired cache rows at startup based on the user's
   `DataRetentionPeriod` setting.
 

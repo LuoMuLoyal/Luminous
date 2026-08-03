@@ -187,11 +187,14 @@ class LucentDioClient {
   /// When Sentry handles traceparent injection via the `sentry_dio` adapter,
   /// the [TraceInterceptor] can skip generating its own random traceparent
   /// to avoid a wasted RNG call and a stale intermediate [lastTraceId].
+  ///
+  /// Uses only the public [Sentry.isEnabled] flag. `main.dart` always enables
+  /// `propagateTraceparent` whenever Sentry is initialized, so the flag is
+  /// equivalent here — and unlike `HubAdapter` / `Sentry.currentHub`, it is
+  /// covered by the SDK's semver guarantees.
   static bool _isSentryPropagatingTraceparent() {
     try {
-      final hub = HubAdapter();
-      // ignore: invalid_use_of_internal_member
-      return hub.isEnabled && hub.options.propagateTraceparent;
+      return Sentry.isEnabled;
     } catch (_) {
       return false;
     }
