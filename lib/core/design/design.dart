@@ -22,6 +22,7 @@ export 'high_contrast.dart';
 export 'icon_size.dart';
 export 'icon_tokens.dart';
 export 'layout_scale.dart';
+export 'markdown_style.dart';
 export 'motion.dart';
 export 'radius.dart';
 export 'responsive_sizing.dart';
