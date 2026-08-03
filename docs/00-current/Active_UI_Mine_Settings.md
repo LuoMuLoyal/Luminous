@@ -177,6 +177,7 @@ Last updated: 2026-08-03（同步失败重试异常日志；同步失败详情�
 - About 页法律入口完整覆盖 7 种文档类型（2026-07-21 P0 补全 + P1）：隐私政策、服务条款、医疗免责声明、未成年人保护、第三方 SDK、权限使用说明、账号注销政策，均跳转 App 内 `/legal/:docType`。
 - 列表页展示 7 种文档类型（条款/隐私/免责/未成年人保护/SDK 列表/权限/账号注销），每项带类型图标 + 标题 + 更新时间。
 - 详情页从滚动 `Markdown` 改为 `MarkdownBody` + `SingleChildScrollView`，支持文本选择（`selectable: true`）。
+- 正文 Markdown 样式走 `MarkdownStyle.legal(context)`（正式文档样式，见 [[Design_System#Markdown 渲染]]，2026-08-03 起统一）。
 - 正文字号从 `TypographyToken.level3`（14px）升级为 `level4`（16px），行高 `1.7`，长文阅读更舒适。
 - h1/h2/h3 字号升级（level7/level6/level5）并添加段落间距（`h1Padding`/`h2Padding`/`h3Padding`）。
 - 详情页包裹 `ResponsiveContentFrame` 限宽，宽屏不再通栏。
@@ -242,6 +243,7 @@ Last updated: 2026-08-03（同步失败重试异常日志；同步失败详情�
 
 - **后端依赖移除**：帮助页面不再消费 `supportResourcesProvider('help')`，FAQ 和反馈入口全部前端自包含。
 - **FAQ 本地 Markdown**：新增 `assets/faq/faq_zh.md` 和 `faq_en.md`，按 `## ` 标题切分为多个 `_FaqItem`，每个 Q&A 使用 `FCollapsible` 可折叠展开，答案用 `MarkdownBody` 渲染。加载态使用 `InlineSkeleton` 骨架屏，错误态有重试按钮。
+- **FAQ 答案 Markdown 样式**（2026-08-03）：走 `MarkdownStyle.legal(context)` 正式文档样式（见 [[Design_System#Markdown 渲染]]）。
 - **反馈入口环境变量**：反馈 tile 通过 `EnvReader.string(EnvKey.supportEmail)` 获取 `SUPPORT_EMAIL` 环境变量，构造 `mailto:` URI 唤起邮件客户端。邮箱未配置时 toast 提示，打开失败时也 toast 提示。
 - **l10n 变更**：新增 6 个 settings 键（`settingsHelpFaqSectionTitle`、`settingsHelpFaqLoadError`、`settingsHelpFeedbackSectionTitle`、`settingsHelpFeedbackSubject`、`settingsHelpFeedbackUnavailable`、`settingsHelpFeedbackOpenFailed`）；删除 mine 分片中未使用的 `mineHelpFaqTitle` / `mineHelpFaqSubtitle`。
 - **后端回退**：Lucent `SupportResourcesService.getResources()` 回退为静态列表，不再动态注入 mailto。

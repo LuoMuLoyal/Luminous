@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Active UI — Report
 
-Last updated: 2026-07-26 (report UX 瘦身)
+Last updated: 2026-08-03 (AI 总结 Markdown 样式)
 
 ## 页面结构
 
@@ -47,7 +47,7 @@ Last updated: 2026-07-26 (report UX 瘦身)
 ## AI 摘要
 
 - 手动 AI 摘要生成，真实增量流 `/api/v1/user/reports/summary/generate/stream`（通过 `LucentSseClient`）。
-- AI 摘要文本使用 `MarkdownBody` 渲染。
+- AI 摘要文本使用 `MarkdownBody` 渲染，样式走 `MarkdownStyle.ai(context, paragraphWeight: FontWeight.w700)`（见 [[Design_System#Markdown 渲染]]，2026-08-03 起统一）。
 - 本地 signed-out / disabled / loading / success / error AI 摘要状态。
 - 卡片内 `近 7 天 / 近 30 天` AI 摘要切换，带按范围缓存状态。
 - AI 占位文案使用 l10n 兜底，无硬编码中文。

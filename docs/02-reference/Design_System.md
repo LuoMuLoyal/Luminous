@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Design System
@@ -90,6 +90,15 @@ updated: 2026-08-02
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
 - 响应式尺寸 helper 位于 `lib/core/design/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
    尺寸。
+
+## Markdown 渲染（2026-08-03）
+
+- `lib/core/design/markdown_style.dart` 为全 App Markdown 渲染样式的唯一入口（`MarkdownStyle` 抽象类），所有 `MarkdownBody` 调用点禁止本地 `fromTheme(...).copyWith(...)` 漂移。
+- 两套预置：
+  - `MarkdownStyle.legal(context)` — 正式文档（法律文书详情、帮助页 FAQ）：正文 level4 (16px) / 行高 1.7、h1-h3 强层级递减、中性 `colors.border` 引用左条。
+  - `MarkdownStyle.ai(context, {background, paragraphWeight, emphasizeLinks})` — AI 生成内容（聊天气泡、Today 摘要/建议、报告总结）：正文 level4 / 行高 1.6、`colors.primary` 引用左条与列表 bullet、代码块圆角 + 等宽字体 + 主题背景；`background` 传入气泡/容器底色使代码背景自适配，`paragraphWeight` 支持摘要 w600 / 报告总结 w700 覆盖。
+- 两套均基于 `TypographyToken` / `Spacing` / `RadiusTokens` 与 Forui `FColors` 解析，深浅色自动适配；代码块/行内代码/表格/分割线/链接统一接入主题 token。
+- 全部 6 处渲染点已迁移：legal 2 处（`legal/detail.dart`、`settings/help.dart`）+ ai 4 处（`assistant/message_bubble.dart`、`today/summary.dart`、`today/suggestion_interactive.dart`、`report/ai_summary.dart`）。
 
 
 

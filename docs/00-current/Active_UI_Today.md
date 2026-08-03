@@ -99,6 +99,7 @@ Last updated: 2026-08-01
 - **测试覆盖**：`test/assistant/widgets_test.dart` 覆盖消息气泡上下文菜单、会话 drawer 分组/高亮/空态/新建按钮/搜索过滤、状态消息等；流式渲染、drawer 推移、header 四入口和设置跳转由 `test/assistant/page_test.dart` 覆盖。
 - **drawer 宽度缓存**（2026-08-03）：`AssistantPage` 的 `drawerWidth` 由每帧 `MediaQuery.sizeOf` 计算改为 `useMemoized` 缓存，仅屏幕宽度变化时重算。
 - **会话分组边界**（2026-08-03）：会话列表"今天/本周"边界由 `isAfter` 改为 `!isBefore`（等价 isAfterOrEqualTo），正好 00:00:00 更新的会话归入当天/本周而非"更早"。
+- **AI 内容 Markdown 样式统一**（2026-08-03）：助手消息气泡、Today AI 摘要（w600）、建议 reason/boundary 均接入 `MarkdownStyle.ai`（见 [[Design_System#Markdown 渲染]]）；气泡传入自身背景色使代码背景自适配。
 
 ## 2026-07-19 补充
 
