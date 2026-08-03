@@ -402,6 +402,60 @@ void main() {
       await dao.remove('nonexistent');
       expect(await dao.pendingCount(), 0);
     });
+
+    test('permanentlyFailedCount returns 0 when nothing failed', () async {
+      await dao.enqueue(
+        entityType: 'daily_record',
+        operation: 'create',
+        payload: '{}',
+      );
+      expect(await dao.permanentlyFailedCount(), 0);
+    });
+
+    test('permanentlyFailedCount counts items exceeding maxRetry', () async {
+      final id = await dao.enqueue(
+        entityType: 'daily_record',
+        entityId: 'rec1',
+        operation: 'update',
+        payload: '{"id":"rec1"}',
+      );
+
+      // Exhaust all retries (default maxRetry = 5)
+      for (var i = 0; i < 5; i++) {
+        await dao.markSyncing(id);
+        await dao.markFailed(id, 'error $i');
+      }
+
+      expect(await dao.permanentlyFailedCount(), 1);
+
+      // A healthy pending item is not counted
+      await dao.enqueue(
+        entityType: 'daily_record',
+        operation: 'create',
+        payload: '{}',
+      );
+      expect(await dao.permanentlyFailedCount(), 1);
+    });
+
+    test(
+      'permanentlyFailedCount excludes items that were reset for retry',
+      () async {
+        final id = await dao.enqueue(
+          entityType: 'daily_record',
+          operation: 'create',
+          payload: '{}',
+        );
+
+        for (var i = 0; i < 5; i++) {
+          await dao.markSyncing(id);
+          await dao.markFailed(id, 'error');
+        }
+        expect(await dao.permanentlyFailedCount(), 1);
+
+        await dao.resetForRetry(id);
+        expect(await dao.permanentlyFailedCount(), 0);
+      },
+    );
   });
 
   // ─── PendingSyncEntry — unit properties ──────────────────────────────
