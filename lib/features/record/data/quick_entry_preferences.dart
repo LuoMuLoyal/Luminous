@@ -15,6 +15,7 @@ const _kSleepInProgressBadgeEnabled =
 const _kSymptomDefaultSeverity =
     PrefKeys.recordQuickEntrySymptomDefaultSeverity;
 const _kSymptomEnabledChoices = PrefKeys.recordQuickEntrySymptomEnabledChoices;
+const _kMoodBadgeMode = PrefKeys.recordQuickEntryMoodBadgeMode;
 const _kCustomIcons = PrefKeys.recordQuickEntryCustomIcons;
 const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 
@@ -22,6 +23,9 @@ const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 const _maxFrequencyEntries = 50;
 
 enum QuickEntryWaterBadgeMode { dailyTotal, dailyCount, hidden }
+
+/// How the mood quick-entry tile should summarize today's mood.
+enum QuickEntryMoodBadgeMode { latest, hidden }
 
 /// Water quick-entry default amount choices, mirroring the fast-entry water
 /// options: 250 ml / 500 ml / 1 杯 / 1 次, plus a user-defined custom amount.
@@ -66,6 +70,7 @@ class QuickEntryPreferences {
     this.sleepInProgressBadgeEnabled = true,
     this.symptomDefaultSeverity = 'mild',
     this.symptomEnabledChoices = const [],
+    this.moodBadgeMode = QuickEntryMoodBadgeMode.latest,
     this.customIcons = const {},
   });
 
@@ -102,6 +107,9 @@ class QuickEntryPreferences {
   /// Empty list means all preset choices are enabled.
   final List<String> symptomEnabledChoices;
 
+  /// How the mood quick-entry tile should summarize today's mood.
+  final QuickEntryMoodBadgeMode moodBadgeMode;
+
   /// User-customized icons per entry type.
   /// Key: `RecordEntryType.name` (e.g. `'water'`, `'meal'`).
   /// Value: Lucide icon name in kebab-case (e.g. `'droplets'`).
@@ -118,6 +126,7 @@ class QuickEntryPreferences {
     bool? sleepInProgressBadgeEnabled,
     String? symptomDefaultSeverity,
     List<String>? symptomEnabledChoices,
+    QuickEntryMoodBadgeMode? moodBadgeMode,
     Map<String, String>? customIcons,
   }) {
     return QuickEntryPreferences(
@@ -134,6 +143,7 @@ class QuickEntryPreferences {
           symptomDefaultSeverity ?? this.symptomDefaultSeverity,
       symptomEnabledChoices:
           symptomEnabledChoices ?? this.symptomEnabledChoices,
+      moodBadgeMode: moodBadgeMode ?? this.moodBadgeMode,
       customIcons: customIcons ?? this.customIcons,
     );
   }
@@ -167,6 +177,7 @@ class QuickEntryPreferencesController
         prefs.getString(_kSymptomDefaultSeverity) ?? 'mild';
     final symptomEnabledChoices =
         prefs.getStringList(_kSymptomEnabledChoices) ?? const [];
+    final moodBadgeMode = _parseMoodBadgeMode(prefs.getString(_kMoodBadgeMode));
 
     // Load custom icons: stored as ['water:droplets', 'meal:utensils', ...].
     final customIcons = <String, String>{};
@@ -202,6 +213,7 @@ class QuickEntryPreferencesController
       sleepInProgressBadgeEnabled: sleepInProgressBadgeEnabled,
       symptomDefaultSeverity: symptomDefaultSeverity,
       symptomEnabledChoices: symptomEnabledChoices,
+      moodBadgeMode: moodBadgeMode,
       customIcons: customIcons,
     );
   }
@@ -210,6 +222,13 @@ class QuickEntryPreferencesController
     return QuickEntryWaterBadgeMode.values.firstWhere(
       (mode) => mode.name == value,
       orElse: () => QuickEntryWaterBadgeMode.dailyTotal,
+    );
+  }
+
+  QuickEntryMoodBadgeMode _parseMoodBadgeMode(String? value) {
+    return QuickEntryMoodBadgeMode.values.firstWhere(
+      (mode) => mode.name == value,
+      orElse: () => QuickEntryMoodBadgeMode.latest,
     );
   }
 
@@ -297,6 +316,13 @@ class QuickEntryPreferencesController
     await prefs.setStringList(_kSymptomEnabledChoices, choices);
   }
 
+  Future<void> setMoodBadgeMode(QuickEntryMoodBadgeMode mode) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(moodBadgeMode: mode));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kMoodBadgeMode, mode.name);
+  }
+
   /// Sets a custom icon name for the given entry [type].
   /// Pass `iconName = null` to remove the custom icon.
   Future<void> setCustomIcon(String type, String? iconName) async {
@@ -361,6 +387,7 @@ class QuickEntryPreferencesController
     await prefs.remove(_kSleepInProgressBadgeEnabled);
     await prefs.remove(_kSymptomDefaultSeverity);
     await prefs.remove(_kSymptomEnabledChoices);
+    await prefs.remove(_kMoodBadgeMode);
     await prefs.remove(_kCustomIcons);
     for (final type in RecordEntryType.values) {
       await prefs.remove('$_kFrequencyPrefix${type.name}');

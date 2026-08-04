@@ -162,6 +162,23 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                       !prefs.sleepInProgressBadgeEnabled,
                     ),
                   ),
+                  FTile(
+                    key: const Key('record-quick-settings-mood-badge'),
+                    title: Text(l10n.recordQuickSettingsMoodBadge),
+                    subtitle: Text(switch (prefs.moodBadgeMode) {
+                      QuickEntryMoodBadgeMode.latest =>
+                        l10n.recordQuickSettingsMoodBadgeLatest,
+                      QuickEntryMoodBadgeMode.hidden =>
+                        l10n.recordQuickSettingsMoodBadgeHidden,
+                    }),
+                    suffix: const Icon(SemanticIcons.actionNext),
+                    onPress: () => _showMoodBadgeSelect(
+                      context,
+                      prefs: prefs,
+                      controller: controller,
+                      l10n: l10n,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: Spacing.level6),
@@ -316,5 +333,59 @@ class QuickEntrySettingsPage extends ConsumerWidget {
       'severe' => l10n.recordFastChoiceSeveritySevere,
       _ => l10n.recordFastChoiceSeverityMild,
     };
+  }
+
+  Future<void> _showMoodBadgeSelect(
+    BuildContext context, {
+    required QuickEntryPreferences prefs,
+    required QuickEntryPreferencesController controller,
+    required AppLocalizations l10n,
+  }) async {
+    final selected = await showFDialog<QuickEntryMoodBadgeMode>(
+      context: context,
+      builder: (dialogContext, style, animation) => FDialog(
+        animation: animation,
+        builder: (context, style) => Padding(
+          padding: const EdgeInsets.all(Spacing.level5),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.recordQuickSettingsMoodBadge,
+                style: style.titleTextStyle,
+              ),
+              const SizedBox(height: Spacing.level4),
+              for (final mode in QuickEntryMoodBadgeMode.values)
+                FTappable(
+                  onPress: () => Navigator.of(context).pop(mode),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: Spacing.level2,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(switch (mode) {
+                            QuickEntryMoodBadgeMode.latest =>
+                              l10n.recordQuickSettingsMoodBadgeLatest,
+                            QuickEntryMoodBadgeMode.hidden =>
+                              l10n.recordQuickSettingsMoodBadgeHidden,
+                          }),
+                        ),
+                        if (mode == prefs.moodBadgeMode)
+                          const Icon(SemanticIcons.statusDone),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (selected != null) {
+      unawaited(controller.setMoodBadgeMode(selected));
+    }
   }
 }

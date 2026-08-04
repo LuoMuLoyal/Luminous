@@ -55,6 +55,12 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
             controller: ref.read(quickEntryPreferencesProvider.notifier),
             l10n: l10n,
           )
+        else if (action.type == RecordEntryType.mood)
+          _MoodSettings(
+            prefs: prefs,
+            controller: ref.read(quickEntryPreferencesProvider.notifier),
+            l10n: l10n,
+          )
         else
           Text(
             _ruleText(l10n, action.type),
@@ -81,6 +87,49 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       RecordEntryType.sleep => l10n.recordQuickSettingsSleepRule,
       RecordEntryType.water => l10n.recordQuickSettingsWaterDefault,
       _ => l10n.recordQuickSettingsMealRule,
+    };
+  }
+}
+
+class _MoodSettings extends StatelessWidget {
+  const _MoodSettings({
+    required this.prefs,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final QuickEntryPreferences prefs;
+  final QuickEntryPreferencesController controller;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return FSelect<QuickEntryMoodBadgeMode>.rich(
+      key: const Key('quick-type-mood-badge'),
+      label: Text(l10n.recordQuickSettingsMoodBadge),
+      format: (value) => _moodBadgeLabel(l10n, value),
+      control: FSelectControl.lifted(
+        value: prefs.moodBadgeMode,
+        onChange: (value) {
+          if (value != null) {
+            unawaited(controller.setMoodBadgeMode(value));
+          }
+        },
+      ),
+      children: [
+        for (final mode in QuickEntryMoodBadgeMode.values)
+          FSelectItem.item(
+            title: Text(_moodBadgeLabel(l10n, mode)),
+            value: mode,
+          ),
+      ],
+    );
+  }
+
+  String _moodBadgeLabel(AppLocalizations l10n, QuickEntryMoodBadgeMode mode) {
+    return switch (mode) {
+      QuickEntryMoodBadgeMode.latest => l10n.recordQuickSettingsMoodBadgeLatest,
+      QuickEntryMoodBadgeMode.hidden => l10n.recordQuickSettingsMoodBadgeHidden,
     };
   }
 }
