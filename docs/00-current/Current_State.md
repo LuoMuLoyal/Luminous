@@ -2,18 +2,26 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-03
 ---
 
 # Luminous Current State
 
-Last updated: 2026-07-18
+Last updated: 2026-08-03
 
 本文件是 `00-current/` 目录的索引。具体实现细节由各子文件负责，变更历史见 `03-logs/migration-log/`。
 
 ## 当前基线
 
 五 Tab 根页（Today / Record / Medicine / Report / Mine）均已接入 `PageViewState` 统一状态机。未登录态使用 `SignInHintBanner` 轻量提示条而非全屏门控。P0-P2 UI/UX 优化全部完成，当前处于发布验证门阶段。
+
+### 测试补齐（2026-08-03）
+
+- 全量测试 2870 通过 + 1 跳过（基线 2709 + 1）。
+- 行覆盖率 **67.0%**（基线 63.0%，+4.0%）。剔除生成物 `.g.dart`/`.freezed.dart`、进程入口 `main.dart`/`bootstrap.dart`、平台桥接等排除项后，纯业务逻辑覆盖率估计 75-80%。
+- 主要补齐模块：scan 页面/OCR (57 用例)、health_data (已提交)、risk_check (已提交)、clinic_summary (已提交)、core/database DAO (3)、change_record_date (3)、version_check (13)、master_detail (6)。
+- 跳过项：`command_palette`（initState 中 AppLocalizations.of 触发 debug 断言）、`security_elevation_dialog`（多 Provider 依赖）、search sections / record_access（P2 低优先级）。
+- 详见 `docs/03-logs/migration-log/2026-08-03.md`。
 
 ## 目录索引
 
