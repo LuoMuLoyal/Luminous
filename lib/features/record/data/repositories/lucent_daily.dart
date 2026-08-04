@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:luminous/core/database/cache_constants.dart';
 import 'package:luminous/core/database/daos/daily_record_dao.dart';
 import 'package:luminous/core/database/daos/pending_sync_dao.dart';
 import 'package:luminous/core/database/sync/worker.dart';
@@ -43,6 +44,13 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
 
   /// Background refresh throttle: 30 seconds per date.
   final Map<String, DateTime> _lastRefreshAttempt = {};
+
+  /// Consecutive background refresh failures per date/kind key.
+  /// Escalates to error level after [kBackgroundRefreshFailuresBeforeError]
+  /// so silent stale-cache problems are not hidden behind warnings.
+  final Map<String, int> _backgroundRefreshFailures = {};
+
+  static const int _kBackgroundRefreshFailuresBeforeError = 3;
 
   @override
   Future<DailyRecordListData> fetchRecords(
@@ -234,12 +242,12 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
     final now = DateTime.now();
     final lastAttempt = _lastRefreshAttempt[key];
     if (lastAttempt != null &&
-        now.difference(lastAttempt) < const Duration(seconds: 30)) {
+        now.difference(lastAttempt) < backgroundRefreshThrottle) {
       return;
     }
     _lastRefreshAttempt[key] = now;
 
-    // Fire and forget — errors are logged, not propagated
+    // Fire and forget — errors are logged, not propagated.
     unawaited(
       Future(() async {
         try {
@@ -253,8 +261,17 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
               .map(DailyRecordJsonCodec.itemToJson)
               .toList();
           await dao.replaceByDate(date, kind: kind, jsonItems: jsonItems);
-        } catch (e) {
-          appTalker.warning('DailyRecord background refresh failed: $e');
+          // Clear failure counter on success.
+          _backgroundRefreshFailures.remove(key);
+        } catch (e, st) {
+          final failures = (_backgroundRefreshFailures[key] ?? 0) + 1;
+          _backgroundRefreshFailures[key] = failures;
+          final message = 'DailyRecord background refresh failed: $e';
+          if (failures >= _kBackgroundRefreshFailuresBeforeError) {
+            appTalker.error(message, st);
+          } else {
+            appTalker.warning(message);
+          }
         }
       }),
     );

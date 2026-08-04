@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-04
 ---
 
 # Active UI — Record
@@ -232,3 +232,19 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
 - 桌面端固定 4 列，`minTileWidth: 160px`
 - 图标容器固定 28px，图标 16px
 - 数值字体 `TypographyToken.level6`
+
+## 2026-08-04 全仓库审查修复（Record 模块）
+
+### 常量与 token 统一
+
+- 新增 `lib/features/record/presentation/constants.dart`，定义 `kCalendarMinYear = 2000` 与 `kCalendarMinDate`，替换 `record/presentation/pages/page.dart` 中日历选择器硬编码 `DateTime(2000)`。
+- 快速记录/确认弹窗中 7 处硬编码 `maxWidth: 440` 统一改为 `LayoutScaleResolver.dialogStandardMaxWidth`（`lib/core/design/layout_scale.dart`），涉及 medication/sleep/meal/quick-entry 与水杯自定义量等弹窗。
+
+### 异常日志补齐
+
+- `quick_entry_medication.dart`、`quick_entry_sleep.dart`、`quick_entry_meal.dart`、`record/presentation/pages/page.dart` 中原 `catch (_)` 块改为 `catch (e, st)`，并通过 `ref.read(talkerProvider).error(...)` 记录异常与堆栈，便于线上问题追踪。
+
+### 数据层稳健性
+
+- `LucentDailyRecordRepository._refreshInBackground` 内联 `Duration(seconds: 30)` 改为复用 `backgroundRefreshThrottle`（`lib/core/database/cache_constants.dart`）。
+- 新增按日期维度的连续后台刷新失败计数器；连续失败 3 次后将日志级别从 warning 提升为 error，成功时清空计数器，避免过期缓存长期静默。
