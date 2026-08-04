@@ -6,6 +6,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -67,7 +68,8 @@ Future<void> undoDailyRecordQuickAction(
       emitDataChange: (topic) =>
           ref.read(dataChangeBusProvider.notifier).emit(topic),
     ).undo(action);
-  } catch (_) {
+  } catch (e, st) {
+    ref.read(talkerProvider).error('undoDailyRecordQuickAction failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(
       context,
@@ -88,7 +90,7 @@ Future<void> showSleepStartSelectionDialog(
 
   await showAppDialog<void>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     scrollable: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
@@ -115,7 +117,10 @@ Future<void> showSleepStartSelectionDialog(
                             context: contextData,
                             startRecord: start,
                           );
-                        } catch (_) {
+                        } catch (e, st) {
+                          ref
+                              .read(talkerProvider)
+                              .error('recordWakeForStart failed: $e', st);
                           if (!dialogContext.mounted) return;
                           setDialogState(() => saving = false);
                           unawaited(
@@ -185,7 +190,7 @@ Future<void> showSleepMergeDialog(
 
   await showAppDialog<void>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     scrollable: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
@@ -240,7 +245,10 @@ Future<void> showSleepMergeDialog(
                           setDialogState(() => saving = true);
                           try {
                             await flow.confirmMerge(merge);
-                          } catch (_) {
+                          } catch (e, st) {
+                            ref
+                                .read(talkerProvider)
+                                .error('confirmMerge failed: $e', st);
                             if (!dialogContext.mounted) return;
                             setDialogState(() => saving = false);
                             unawaited(
@@ -298,7 +306,8 @@ Future<void> handleSleepQuickAction(
   late final List<DailyRecordItem> records;
   try {
     records = await fetchSleepQuickCandidates(ref, selectedDate);
-  } catch (_) {
+  } catch (e, st) {
+    ref.read(talkerProvider).error('fetchSleepQuickCandidates failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(context, l10n.recordQuickSleepLoadFailedToast);
     return;
@@ -314,7 +323,8 @@ Future<void> handleSleepQuickAction(
       ),
       candidateRecords: records,
     );
-  } catch (_) {
+  } catch (e, st) {
+    ref.read(talkerProvider).error('sleep flow handleTap failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(context, l10n.recordCreateFailedToast);
     return;

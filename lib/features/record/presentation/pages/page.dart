@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -18,6 +19,7 @@ import 'package:luminous/features/record/application/usecases/quick_entry.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/type_mapping.dart';
+import 'package:luminous/features/record/presentation/constants.dart';
 import 'package:luminous/features/record/presentation/providers/dashboard.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/header_actions.dart';
@@ -39,7 +41,8 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     ref.invalidate(recordDashboardProvider);
     try {
       await ref.read(recordDashboardProvider.future);
-    } catch (_) {
+    } catch (e, st) {
+      ref.read(talkerProvider).error('RecordPage._refreshAll failed: $e', st);
       if (!context.mounted) return;
       final l10n = AppLocalizations.of(context)!;
       await Toast.show(context, l10n.recordRefreshErrorToast);
@@ -90,7 +93,7 @@ class _RecordPageState extends ConsumerState<RecordPage> {
           height: 400,
           child: FCalendar.splitGrid(
             control: FGridSplitCalendarControl(
-              start: DateTime(2000),
+              start: kCalendarMinDate,
               end: today.add(const Duration(days: 365)),
             ),
             selectionControl: FDateSelectionControl.managedSingle(

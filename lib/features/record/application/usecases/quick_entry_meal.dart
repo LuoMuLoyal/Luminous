@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -71,7 +72,10 @@ Future<void> handleMealQuickAction(
     if (!context.mounted) return;
     await Toast.show(context, l10n.recordImageUnsupportedToast);
     return;
-  } catch (_) {
+  } catch (e, st) {
+    ref
+        .read(talkerProvider)
+        .error('handleMealQuickAction startWithCamera failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(context, l10n.recordImagePickFailedToast);
     return;

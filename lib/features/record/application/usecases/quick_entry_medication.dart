@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -35,7 +36,8 @@ Future<void> undoMedicationQuickAction(
       emitDataChange: (topic) =>
           ref.read(dataChangeBusProvider.notifier).emit(topic),
     ).undo(action);
-  } catch (_) {
+  } catch (e, st) {
+    ref.read(talkerProvider).error('undoMedicationQuickAction failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(
       context,
@@ -48,7 +50,7 @@ Future<void> showNoMedicationPrompt(BuildContext context) async {
   final l10n = AppLocalizations.of(context)!;
   final add = await showAppDialog<bool>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     scrollable: false,
     builder: (context) => Column(
       mainAxisSize: MainAxisSize.min,
@@ -100,7 +102,7 @@ Future<void> showMedicationSelectionDialog(
 
   await showAppDialog<void>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     scrollable: false,
     builder: (dialogContext) => StatefulBuilder(
       builder: (dialogContext, setDialogState) {
@@ -248,7 +250,10 @@ Future<void> handleMedicationQuickAction(
       reminders: reminders,
       todayLogs: todayLogs,
     );
-  } catch (_) {
+  } catch (e, st) {
+    ref
+        .read(talkerProvider)
+        .error('handleMedicationQuickAction load failed: $e', st);
     if (!context.mounted) return;
     await Toast.show(context, l10n.recordQuickMedicationLoadFailedToast);
     return;
