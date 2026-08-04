@@ -141,7 +141,7 @@ class PrivacySection extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     return await showAppDialog<bool>(
           context: context,
-          maxWidth: 440,
+          maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
           scrollable: false,
           builder: (context) => Column(
             mainAxisSize: MainAxisSize.min,

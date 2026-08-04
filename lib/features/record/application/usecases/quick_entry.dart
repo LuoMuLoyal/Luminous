@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/record/application/usecases/quick_entry_meal.dart';
@@ -136,7 +137,7 @@ Future<void> handleQuickActionLongPress(
   final l10n = AppLocalizations.of(context)!;
   await showAppDialog<void>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     scrollable: false,
     builder: (dialogContext) =>
         QuickEntryTypeSettingsDialog(action: action, l10n: l10n),

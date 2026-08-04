@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-03
+updated: 2026-08-04
 ---
 
 # Design System
@@ -90,6 +90,9 @@ updated: 2026-08-03
 - 断点引用 `Breakpoints` 常量；不出现硬编码 `600`。
 - 响应式尺寸 helper 位于 `lib/core/design/responsive_sizing.dart`，用于卡宽、sidebar 宽、grid 高、可缩放 hero/chart
    尺寸。
+- 对话框宽度 token 位于 `lib/core/design/layout_scale.dart`：`LayoutScaleResolver.dialogMaxWidth` (360)、
+  `wideDialogMaxWidth` (420)、`dialogStandardMaxWidth` (440)。快速记录选择/确认类弹窗统一使用
+  `dialogStandardMaxWidth`，避免 `maxWidth: 440` 硬编码分散在多处。
 
 ## Markdown 渲染（2026-08-03）
 

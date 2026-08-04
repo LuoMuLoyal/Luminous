@@ -207,7 +207,7 @@ class _PanelHeader extends StatelessWidget {
   ) async {
     await showAppDialog<void>(
       context: context,
-      maxWidth: 440,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
       scrollable: false,
       builder: (dialogContext) => Column(
         key: const Key('record-quick-help-dialog'),

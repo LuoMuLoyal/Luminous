@@ -16,7 +16,7 @@ Future<int?> showWaterCustomAmountDialog(
   final l10n = AppLocalizations.of(context)!;
   return showAppDialog<int>(
     context: context,
-    maxWidth: 440,
+    maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
     builder: (dialogContext) =>
         _WaterCustomAmountBody(l10n: l10n, initialMl: initialMl),
   );

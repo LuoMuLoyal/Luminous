@@ -38,6 +38,9 @@ abstract final class LayoutScaleResolver {
   /// Wider dialog max width (confirmations, account settings).
   static const double wideDialogMaxWidth = 420;
 
+  /// Standard compact dialog max width (quick-entry selection dialogs).
+  static const double dialogStandardMaxWidth = 440.0;
+
   /// Resolves a dialog max width based on the current screen width.
   ///
   /// On desktop (>= 1200) dialogs are wider for comfortable reading; on
