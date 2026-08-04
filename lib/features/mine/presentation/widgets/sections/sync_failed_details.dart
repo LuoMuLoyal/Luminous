@@ -60,11 +60,16 @@ class _SyncFailedDetailsContentState
       ref.read(talkerProvider).error('MineSyncFailedDetails._retryAll: $e', st);
       if (!mounted) return;
       setState(() {
-        _isRetrying = false;
         _retryError = AppLocalizations.of(
           context,
         )!.mineSyncFailedDetailsRetryFailed;
       });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRetrying = false;
+        });
+      }
     }
   }
 
