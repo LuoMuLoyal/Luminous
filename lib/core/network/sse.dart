@@ -50,10 +50,10 @@ class LucentSseClient {
           rethrow;
         }
         reconnectAttempts++;
-        // Exponential backoff: 1s, 2s, 4s, ...
-        await Future<void>.delayed(
-          Duration(seconds: 1 << (reconnectAttempts - 1)),
-        );
+        // Exponential backoff: 1s, 2s, 4s, ... capped at 60s to avoid
+        // unexpectedly long waits if [maxReconnects] is raised later.
+        final delaySeconds = (1 << (reconnectAttempts - 1)).clamp(1, 60);
+        await Future<void>.delayed(Duration(seconds: delaySeconds));
         // Loop and retry.
         continue;
       }
