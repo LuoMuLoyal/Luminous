@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
-import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_header.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_list.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 
 /// The conversation manager rendered inside the page's opaque push drawer.
 ///
@@ -28,7 +28,7 @@ class AssistantConversationDrawer extends StatefulWidget {
     this.onNewConversation,
   });
 
-  final AssistantState state;
+  final AssistantDrawerState state;
   final double? width;
   final String title;
   final String emptyTitle;

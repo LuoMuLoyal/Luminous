@@ -4,8 +4,8 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/welcome_panel.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/chips.dart';
 import 'package:luminous/features/assistant/presentation/widgets/shared/loading_view.dart';
@@ -122,7 +122,13 @@ void main() {
       await tester.pumpWidget(
         _shell(
           AssistantConversationDrawer(
-            state: const AssistantState(),
+            state: const AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: [],
+            ),
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
@@ -168,8 +174,11 @@ void main() {
       await tester.pumpWidget(
         _shell(
           AssistantConversationDrawer(
-            state: AssistantState(
+            state: AssistantDrawerState(
               conversationId: 'today',
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
               recentConversations: [today, thisWeek, older],
             ),
             title: 'History',
@@ -200,7 +209,13 @@ void main() {
       await tester.pumpWidget(
         _shell(
           AssistantConversationDrawer(
-            state: const AssistantState(),
+            state: const AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: [],
+            ),
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
@@ -254,7 +269,13 @@ void main() {
       await tester.pumpWidget(
         _shell(
           AssistantConversationDrawer(
-            state: AssistantState(recentConversations: conversations),
+            state: AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
+              recentConversations: conversations,
+            ),
             title: 'History',
             emptyTitle: 'No conversations',
             emptyDescription: 'Start a new chat',
@@ -289,7 +310,11 @@ void main() {
       await tester.pumpWidget(
         _shell(
           AssistantConversationDrawer(
-            state: AssistantState(
+            state: AssistantDrawerState(
+              conversationId: null,
+              isOpeningConversation: false,
+              isLoadingRecentConversations: false,
+              recentConversationError: null,
               recentConversations: [
                 AssistantConversationSummary(
                   id: 'today',

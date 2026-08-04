@@ -10,6 +10,7 @@ import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/features/assistant/presentation/widgets/sections/page_body.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -110,7 +111,7 @@ class AssistantPage extends HookConsumerWidget {
     // streamingDraft) do not rebuild the sheet contents on every event.
     final drawerState = ref.watch(
       assistantControllerProvider.select(
-        (s) => AssistantState(
+        (s) => AssistantDrawerState(
           conversationId: s.conversationId,
           isOpeningConversation: s.isOpeningConversation,
           isLoadingRecentConversations: s.isLoadingRecentConversations,

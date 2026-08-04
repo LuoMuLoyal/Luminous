@@ -3,8 +3,8 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/assistant/domain/entities/models.dart';
-import 'package:luminous/features/assistant/presentation/providers/conversation.dart';
 import 'package:luminous/features/assistant/presentation/utils/ui_formatters.dart';
+import 'package:luminous/features/assistant/presentation/widgets/dialogs/conversation_drawer_state.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// The grouped conversation list used inside the assistant conversation drawer.
@@ -24,7 +24,7 @@ class AssistantConversationDrawerList extends StatelessWidget {
     required this.onSelect,
   });
 
-  final AssistantState state;
+  final AssistantDrawerState state;
   final String emptyTitle;
   final String emptyDescription;
   final String searchQuery;
