@@ -15,6 +15,7 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/medicine/data/datasources/dose_log_cached.dart';
 import 'package:luminous/features/medicine/data/providers/workspace.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/presentation/quick_entry/medication_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -221,6 +222,9 @@ Future<void> handleMedicationQuickAction(
   }
 
   final l10n = AppLocalizations.of(context)!;
+  final prefs =
+      ref.read(quickEntryPreferencesProvider).asData?.value ??
+      const QuickEntryPreferences();
   QuickEntryUndoAction? undoAction;
   final flow = MedicationQuickEntryFlow(
     markDose: (input) => ref
@@ -249,6 +253,7 @@ Future<void> handleMedicationQuickAction(
       currentMedicines: snapshot.currentMedicines,
       reminders: reminders,
       todayLogs: todayLogs,
+      autoRecordSingle: prefs.medicationAutoRecordSingle,
     );
   } catch (e, st) {
     ref
@@ -264,7 +269,12 @@ Future<void> handleMedicationQuickAction(
     case MedicationQuickEntryOutcomeType.noCurrentMedicines:
       await showNoMedicationPrompt(context);
     case MedicationQuickEntryOutcomeType.alreadyRecorded:
-      await Toast.show(context, l10n.recordQuickMedicationAlreadyRecordedToast);
+      if (prefs.medicationShowAlreadyRecordedHint) {
+        await Toast.show(
+          context,
+          l10n.recordQuickMedicationAlreadyRecordedToast,
+        );
+      }
     case MedicationQuickEntryOutcomeType.recordedSingle:
       final action = undoAction;
       if (action == null) {

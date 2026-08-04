@@ -129,6 +129,7 @@ class MedicationQuickEntryFlow {
     required List<CurrentMedicineItem> currentMedicines,
     required List<MedicineReminderItem> reminders,
     required List<DoseLogItem> todayLogs,
+    bool autoRecordSingle = true,
   }) async {
     final medicines = currentMedicines
         .where((medicine) => medicine.isCurrent)
@@ -144,7 +145,7 @@ class MedicationQuickEntryFlow {
       todayLogs: todayLogs,
     );
 
-    if (medicines.length > 1) {
+    if (medicines.length > 1 || !autoRecordSingle) {
       final defaultSelectedIds = plannedChoices
           .where((choice) => choice.defaultSelected)
           .map((choice) => choice.id)

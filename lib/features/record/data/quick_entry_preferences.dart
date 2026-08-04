@@ -18,6 +18,10 @@ const _kSymptomDefaultSeverity =
     PrefKeys.recordQuickEntrySymptomDefaultSeverity;
 const _kSymptomEnabledChoices = PrefKeys.recordQuickEntrySymptomEnabledChoices;
 const _kMoodBadgeMode = PrefKeys.recordQuickEntryMoodBadgeMode;
+const _kMedicationAutoRecordSingle =
+    PrefKeys.recordQuickEntryMedicationAutoRecordSingle;
+const _kMedicationShowAlreadyRecordedHint =
+    PrefKeys.recordQuickEntryMedicationShowAlreadyRecordedHint;
 const _kCustomIcons = PrefKeys.recordQuickEntryCustomIcons;
 const _kFrequencyPrefix = PrefKeys.recordQuickEntryFrequencyPrefix;
 
@@ -74,6 +78,8 @@ class QuickEntryPreferences {
     this.symptomDefaultSeverity = 'mild',
     this.symptomEnabledChoices = const [],
     this.moodBadgeMode = QuickEntryMoodBadgeMode.latest,
+    this.medicationAutoRecordSingle = true,
+    this.medicationShowAlreadyRecordedHint = true,
     this.customIcons = const {},
   });
 
@@ -116,6 +122,12 @@ class QuickEntryPreferences {
   /// How the mood quick-entry tile should summarize today's mood.
   final QuickEntryMoodBadgeMode moodBadgeMode;
 
+  /// Whether a single current medicine should be auto-recorded on tap.
+  final bool medicationAutoRecordSingle;
+
+  /// Whether to show a toast when nearby dose is already recorded.
+  final bool medicationShowAlreadyRecordedHint;
+
   /// User-customized icons per entry type.
   /// Key: `RecordEntryType.name` (e.g. `'water'`, `'meal'`).
   /// Value: Lucide icon name in kebab-case (e.g. `'droplets'`).
@@ -134,6 +146,8 @@ class QuickEntryPreferences {
     String? symptomDefaultSeverity,
     List<String>? symptomEnabledChoices,
     QuickEntryMoodBadgeMode? moodBadgeMode,
+    bool? medicationAutoRecordSingle,
+    bool? medicationShowAlreadyRecordedHint,
     Map<String, String>? customIcons,
   }) {
     return QuickEntryPreferences(
@@ -153,6 +167,11 @@ class QuickEntryPreferences {
       symptomEnabledChoices:
           symptomEnabledChoices ?? this.symptomEnabledChoices,
       moodBadgeMode: moodBadgeMode ?? this.moodBadgeMode,
+      medicationAutoRecordSingle:
+          medicationAutoRecordSingle ?? this.medicationAutoRecordSingle,
+      medicationShowAlreadyRecordedHint:
+          medicationShowAlreadyRecordedHint ??
+          this.medicationShowAlreadyRecordedHint,
       customIcons: customIcons ?? this.customIcons,
     );
   }
@@ -189,6 +208,10 @@ class QuickEntryPreferencesController
     final symptomEnabledChoices =
         prefs.getStringList(_kSymptomEnabledChoices) ?? const [];
     final moodBadgeMode = _parseMoodBadgeMode(prefs.getString(_kMoodBadgeMode));
+    final medicationAutoRecordSingle =
+        prefs.getBool(_kMedicationAutoRecordSingle) ?? true;
+    final medicationShowAlreadyRecordedHint =
+        prefs.getBool(_kMedicationShowAlreadyRecordedHint) ?? true;
 
     // Load custom icons: stored as ['water:droplets', 'meal:utensils', ...].
     final customIcons = <String, String>{};
@@ -226,6 +249,8 @@ class QuickEntryPreferencesController
       symptomDefaultSeverity: symptomDefaultSeverity,
       symptomEnabledChoices: symptomEnabledChoices,
       moodBadgeMode: moodBadgeMode,
+      medicationAutoRecordSingle: medicationAutoRecordSingle,
+      medicationShowAlreadyRecordedHint: medicationShowAlreadyRecordedHint,
       customIcons: customIcons,
     );
   }
@@ -342,6 +367,22 @@ class QuickEntryPreferencesController
     await prefs.setString(_kMoodBadgeMode, mode.name);
   }
 
+  Future<void> setMedicationAutoRecordSingle(bool enabled) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(medicationAutoRecordSingle: enabled));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kMedicationAutoRecordSingle, enabled);
+  }
+
+  Future<void> setMedicationShowAlreadyRecordedHint(bool enabled) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(
+      current.copyWith(medicationShowAlreadyRecordedHint: enabled),
+    );
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kMedicationShowAlreadyRecordedHint, enabled);
+  }
+
   /// Sets a custom icon name for the given entry [type].
   /// Pass `iconName = null` to remove the custom icon.
   Future<void> setCustomIcon(String type, String? iconName) async {
@@ -408,6 +449,8 @@ class QuickEntryPreferencesController
     await prefs.remove(_kSymptomDefaultSeverity);
     await prefs.remove(_kSymptomEnabledChoices);
     await prefs.remove(_kMoodBadgeMode);
+    await prefs.remove(_kMedicationAutoRecordSingle);
+    await prefs.remove(_kMedicationShowAlreadyRecordedHint);
     await prefs.remove(_kCustomIcons);
     for (final type in RecordEntryType.values) {
       await prefs.remove('$_kFrequencyPrefix${type.name}');

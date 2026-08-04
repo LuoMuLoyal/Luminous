@@ -321,6 +321,41 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 divider: FItemDivider.full,
                 children: [
+                  FTile(
+                    key: const Key(
+                      'record-quick-settings-medication-auto-record',
+                    ),
+                    title: Text(l10n.recordQuickSettingsMedicationAutoRecord),
+                    subtitle: Text(
+                      l10n.recordQuickSettingsMedicationAutoRecordHint,
+                    ),
+                    suffix: FSwitch(
+                      value: prefs.medicationAutoRecordSingle,
+                      onChange: controller.setMedicationAutoRecordSingle,
+                    ),
+                    onPress: () => controller.setMedicationAutoRecordSingle(
+                      !prefs.medicationAutoRecordSingle,
+                    ),
+                  ),
+                  FTile(
+                    key: const Key(
+                      'record-quick-settings-medication-already-recorded-hint',
+                    ),
+                    title: Text(
+                      l10n.recordQuickSettingsMedicationAlreadyRecordedHint,
+                    ),
+                    subtitle: Text(
+                      l10n.recordQuickSettingsMedicationAlreadyRecordedHintDesc,
+                    ),
+                    suffix: FSwitch(
+                      value: prefs.medicationShowAlreadyRecordedHint,
+                      onChange: controller.setMedicationShowAlreadyRecordedHint,
+                    ),
+                    onPress: () =>
+                        controller.setMedicationShowAlreadyRecordedHint(
+                          !prefs.medicationShowAlreadyRecordedHint,
+                        ),
+                  ),
                   FTile(title: Text(l10n.recordQuickSettingsMedicationRule)),
                   FTile(title: Text(l10n.recordQuickSettingsMealRule)),
                   FTile(title: Text(l10n.recordQuickSettingsSymptomRule)),

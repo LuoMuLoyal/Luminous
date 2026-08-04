@@ -167,6 +167,11 @@
       }
     }
   },
+  "recordQuickSettingsMedicationAutoRecord": "Auto-record when only one medicine",
+  "recordQuickSettingsMedicationAutoRecordHint": "When off, a selection dialog appears even for a single medicine.",
+  "recordQuickSettingsMedicationAlreadyRecordedHint": "Show hint when already recorded",
+  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "When off, no toast is shown if a nearby dose is already recorded.",
+  "recordQuickSettingsMedicationManageAction": "Manage medicines",
   "recordQuickSettingsRules": "Rules",
   "recordQuickSettingsMedicationRule": "Medication: smart selection from medicine box and nearby reminder slots.",
   "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",

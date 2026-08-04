@@ -72,6 +72,10 @@ abstract final class PrefKeys {
       'record.quickEntry.symptom.enabledChoices';
   static const recordQuickEntryMoodBadgeMode =
       'record.quickEntry.mood.badgeMode';
+  static const recordQuickEntryMedicationAutoRecordSingle =
+      'record.quickEntry.medication.autoRecordSingle';
+  static const recordQuickEntryMedicationShowAlreadyRecordedHint =
+      'record.quickEntry.medication.showAlreadyRecordedHint';
   static const recordQuickEntryCustomIcons = 'record.quickEntry.customIcons';
 
   /// Prefix for frequency-count keys: `record.quickEntry.freq.<type>`.

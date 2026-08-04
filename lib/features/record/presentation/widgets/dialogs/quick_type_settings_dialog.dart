@@ -67,6 +67,12 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
             controller: ref.read(quickEntryPreferencesProvider.notifier),
             l10n: l10n,
           )
+        else if (action.type == RecordEntryType.medication)
+          _MedicationSettings(
+            prefs: prefs,
+            controller: ref.read(quickEntryPreferencesProvider.notifier),
+            l10n: l10n,
+          )
         else
           Text(
             _ruleText(l10n, action.type),
@@ -94,6 +100,52 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       RecordEntryType.water => l10n.recordQuickSettingsWaterDefault,
       _ => l10n.recordQuickSettingsMealRule,
     };
+  }
+}
+
+class _MedicationSettings extends StatelessWidget {
+  const _MedicationSettings({
+    required this.prefs,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final QuickEntryPreferences prefs;
+  final QuickEntryPreferencesController controller;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FTile(
+          title: Text(l10n.recordQuickSettingsMedicationAutoRecord),
+          subtitle: Text(l10n.recordQuickSettingsMedicationAutoRecordHint),
+          suffix: FSwitch(
+            value: prefs.medicationAutoRecordSingle,
+            onChange: controller.setMedicationAutoRecordSingle,
+          ),
+          onPress: () => controller.setMedicationAutoRecordSingle(
+            !prefs.medicationAutoRecordSingle,
+          ),
+        ),
+        const SizedBox(height: Spacing.level2),
+        FTile(
+          title: Text(l10n.recordQuickSettingsMedicationAlreadyRecordedHint),
+          subtitle: Text(
+            l10n.recordQuickSettingsMedicationAlreadyRecordedHintDesc,
+          ),
+          suffix: FSwitch(
+            value: prefs.medicationShowAlreadyRecordedHint,
+            onChange: controller.setMedicationShowAlreadyRecordedHint,
+          ),
+          onPress: () => controller.setMedicationShowAlreadyRecordedHint(
+            !prefs.medicationShowAlreadyRecordedHint,
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -167,6 +167,11 @@
       }
     }
   },
+  "recordQuickSettingsMedicationAutoRecord": "仅一种药时自动记录",
+  "recordQuickSettingsMedicationAutoRecordHint": "关闭后，即使只有一种药也会弹出选择确认",
+  "recordQuickSettingsMedicationAlreadyRecordedHint": "已记录时显示提示",
+  "recordQuickSettingsMedicationAlreadyRecordedHintDesc": "关闭后，附近用药已记录时不再弹出提示",
+  "recordQuickSettingsMedicationManageAction": "管理药品",
   "recordQuickSettingsRules": "规则",
   "recordQuickSettingsMedicationRule": "用药：按药箱和当前时间附近提醒智能选择",
   "recordQuickSettingsMealRule": "餐食：单击打开相机，确认后保存",
