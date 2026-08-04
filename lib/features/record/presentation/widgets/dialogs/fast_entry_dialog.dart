@@ -9,6 +9,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -49,7 +50,10 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final typeLabel = dailyRecordKindLabel(l10n, widget.kind);
-    final choices = recordFastEntryChoicesFor(widget.kind, l10n);
+    final prefs =
+        ref.watch(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
+    final choices = _resolveChoices(prefs, l10n);
 
     return FDialog(
       key: Key('record-fast-entry-${widget.kind.name}'),
@@ -142,6 +146,44 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
   }
 
   bool get _supportsMultiSelect => widget.kind == DailyRecordKind.symptom;
+
+  /// Returns fast-entry choices, applying user preferences for symptom.
+  List<RecordFastChoice> _resolveChoices(
+    QuickEntryPreferences prefs,
+    AppLocalizations l10n,
+  ) {
+    final base = recordFastEntryChoicesFor(widget.kind, l10n);
+    if (widget.kind != DailyRecordKind.symptom) return base;
+
+    // Filter by enabled choices (empty = all enabled).
+    final enabled = prefs.symptomEnabledChoices.toSet();
+    final filtered = enabled.isEmpty
+        ? base
+        : base.where((c) => enabled.contains(c.title)).toList();
+
+    // Apply default severity.
+    final severityLabel = _severityLabel(l10n, prefs.symptomDefaultSeverity);
+    return [
+      for (final choice in filtered)
+        RecordFastChoice(
+          label: choice.label,
+          prefix: choice.prefix,
+          title: choice.title,
+          value: severityLabel,
+          unit: choice.unit,
+          note: choice.note,
+          payload: choice.payload,
+        ),
+    ];
+  }
+
+  String _severityLabel(AppLocalizations l10n, String severity) {
+    return switch (severity) {
+      'moderate' => l10n.recordFastChoiceSeverityModerate,
+      'severe' => l10n.recordFastChoiceSeveritySevere,
+      _ => l10n.recordFastChoiceSeverityMild,
+    };
+  }
 
   void _handleChoiceTap(int index, RecordFastChoice choice) {
     if (!_multiSelect) {

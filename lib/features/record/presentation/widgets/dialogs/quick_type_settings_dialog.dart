@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -47,6 +49,12 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
             controller: ref.read(quickEntryPreferencesProvider.notifier),
             l10n: l10n,
           )
+        else if (action.type == RecordEntryType.symptom)
+          _SymptomSettings(
+            prefs: prefs,
+            controller: ref.read(quickEntryPreferencesProvider.notifier),
+            l10n: l10n,
+          )
         else
           Text(
             _ruleText(l10n, action.type),
@@ -73,6 +81,98 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       RecordEntryType.sleep => l10n.recordQuickSettingsSleepRule,
       RecordEntryType.water => l10n.recordQuickSettingsWaterDefault,
       _ => l10n.recordQuickSettingsMealRule,
+    };
+  }
+}
+
+class _SymptomSettings extends StatelessWidget {
+  const _SymptomSettings({
+    required this.prefs,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final QuickEntryPreferences prefs;
+  final QuickEntryPreferencesController controller;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final severityOptions = _symptomSeverityOptions(l10n);
+    final allChoices = recordFastEntryChoicesFor(DailyRecordKind.symptom, l10n);
+    final enabledSet = prefs.symptomEnabledChoices.toSet();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FSelect<String>.rich(
+          key: const Key('quick-type-symptom-severity'),
+          label: Text(l10n.recordQuickSettingsSymptomDefaultSeverity),
+          format: (value) => _severityLabel(l10n, value),
+          control: FSelectControl.lifted(
+            value: prefs.symptomDefaultSeverity,
+            onChange: (value) {
+              if (value != null) {
+                unawaited(controller.setSymptomDefaultSeverity(value));
+              }
+            },
+          ),
+          children: [
+            for (final option in severityOptions)
+              FSelectItem.item(
+                title: Text(_severityLabel(l10n, option)),
+                value: option,
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.level3),
+        Text(
+          l10n.recordQuickSettingsSymptomChoices,
+          style: TypographyToken.level4.body(context),
+        ),
+        const SizedBox(height: Spacing.level2),
+        Wrap(
+          spacing: Spacing.level2,
+          runSpacing: Spacing.level2,
+          children: [
+            for (final choice in allChoices)
+              FilterChip(
+                label: Text(choice.label),
+                selected:
+                    enabledSet.isEmpty || enabledSet.contains(choice.title),
+                onSelected: (selected) {
+                  final current = Set<String>.from(
+                    prefs.symptomEnabledChoices.isEmpty
+                        ? allChoices.map((c) => c.title ?? c.label)
+                        : prefs.symptomEnabledChoices,
+                  );
+                  if (selected) {
+                    current.add(choice.title ?? choice.label);
+                  } else {
+                    current.remove(choice.title ?? choice.label);
+                  }
+                  unawaited(
+                    controller.setSymptomEnabledChoices(current.toList()),
+                  );
+                },
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  List<String> _symptomSeverityOptions(AppLocalizations l10n) => [
+    'mild',
+    'moderate',
+    'severe',
+  ];
+
+  String _severityLabel(AppLocalizations l10n, String value) {
+    return switch (value) {
+      'moderate' => l10n.recordFastChoiceSeverityModerate,
+      'severe' => l10n.recordFastChoiceSeveritySevere,
+      _ => l10n.recordFastChoiceSeverityMild,
     };
   }
 }

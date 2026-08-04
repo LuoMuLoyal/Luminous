@@ -11,7 +11,9 @@ import 'package:luminous/core/widgets/common/icon_picker_sheet.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/water_custom_amount_dialog.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/copy.dart';
 import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
@@ -163,6 +165,74 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.level6),
+              SettingsSectionLabel(
+                label: l10n.recordQuickSettingsSymptomChoices,
+              ),
+              const SizedBox(height: Spacing.level3),
+              FSelect<String>.rich(
+                key: const Key('record-quick-settings-symptom-severity'),
+                label: Text(l10n.recordQuickSettingsSymptomDefaultSeverity),
+                format: (value) => _severityLabel(l10n, value),
+                control: FSelectControl.lifted(
+                  value: prefs.symptomDefaultSeverity,
+                  onChange: (value) {
+                    if (value != null) {
+                      unawaited(controller.setSymptomDefaultSeverity(value));
+                    }
+                  },
+                ),
+                children: [
+                  for (final option in ['mild', 'moderate', 'severe'])
+                    FSelectItem.item(
+                      title: Text(_severityLabel(l10n, option)),
+                      value: option,
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.recordQuickSettingsSymptomChoices,
+                style: context.theme.typography.body.sm.copyWith(
+                  color: context.theme.colors.mutedForeground,
+                ),
+              ),
+              const SizedBox(height: Spacing.level3),
+              Wrap(
+                spacing: Spacing.level2,
+                runSpacing: Spacing.level2,
+                children: [
+                  for (final choice in recordFastEntryChoicesFor(
+                    DailyRecordKind.symptom,
+                    l10n,
+                  ))
+                    FilterChip(
+                      label: Text(choice.label),
+                      selected:
+                          prefs.symptomEnabledChoices.isEmpty ||
+                          prefs.symptomEnabledChoices.contains(choice.title),
+                      onSelected: (selected) {
+                        final allChoices = recordFastEntryChoicesFor(
+                          DailyRecordKind.symptom,
+                          l10n,
+                        );
+                        final current = Set<String>.from(
+                          prefs.symptomEnabledChoices.isEmpty
+                              ? allChoices.map((c) => c.title ?? c.label)
+                              : prefs.symptomEnabledChoices,
+                        );
+                        if (selected) {
+                          current.add(choice.title ?? choice.label);
+                        } else {
+                          current.remove(choice.title ?? choice.label);
+                        }
+                        unawaited(
+                          controller.setSymptomEnabledChoices(current.toList()),
+                        );
+                      },
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),
               const SizedBox(height: Spacing.level3),
               Text(
@@ -238,5 +308,13 @@ class QuickEntrySettingsPage extends ConsumerWidget {
     await ref
         .read(quickEntryPreferencesProvider.notifier)
         .setCustomIcon(action.type.name, iconName);
+  }
+
+  String _severityLabel(AppLocalizations l10n, String severity) {
+    return switch (severity) {
+      'moderate' => l10n.recordFastChoiceSeverityModerate,
+      'severe' => l10n.recordFastChoiceSeveritySevere,
+      _ => l10n.recordFastChoiceSeverityMild,
+    };
   }
 }

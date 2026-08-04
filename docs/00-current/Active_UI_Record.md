@@ -7,7 +7,7 @@ updated: 2026-08-04
 
 # Active UI — Record
 
-Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges completion)
+Last updated: 2026-08-04 (快速记录长按设置 Symptom)
 
 ## 支持的记录类型
 
@@ -109,7 +109,12 @@ Last updated: 2026-07-28 (快速记录 UX 重构阶段 6 sorting/help/badges com
   - 复制摘要：`record-detail-copy-action` 复制类型/数值/情绪/备注/来源/更新时间到剪贴板。
 - 阶段 8 编辑页重构：
   - 逻辑下沉 `RecordEditController`（`presentation/providers/record_edit_controller.dart`）：`RecordEditState` 不可变表单状态 + load/save/isDirty/字段 setter/pickImage；页面瘦身为纯表单渲染。
-  - 未保存提醒：文本监听保持 dirty 实时，`PopScope` 拦截系统返回 + `AppBackButton` 自定义返回，弹"放弃修改？"确认（`recordEditDiscard*` 文案）。
+  - 未保存提醒：文本监听保持 dirty 实时，`PopScope` 拦截系统返回 + `AppBackButton` 自定义返回，弹“放弃修改？”确认（`recordEditDiscard*` 文案）。
+- 阶段 9 长按设置面板（Symptom）：
+  - 长按 symptom 快捷瓦片不再只显示静态规则文本，改为弹出可配置面板：默认严重程度 `FSelect`（mild/moderate/severe）+ 症状选项 `FilterChip` 勾选。
+  - `QuickEntryPreferences` 新增 `symptomDefaultSeverity`、`symptomEnabledChoices` 字段，对应 PrefKeys `record.quickEntry.symptom.defaultSeverity` / `.enabledChoices`。
+  - `RecordFastEntryDialog` 读取偏好过滤症状选项并应用默认严重程度。
+  - `QuickEntrySettingsPage` 新增“症状选项”分区，与长按弹窗双向同步。
 
 ## 骨架屏
 
