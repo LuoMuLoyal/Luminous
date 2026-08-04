@@ -64,6 +64,8 @@ abstract final class PrefKeys {
       'record.quickEntry.water.badgeMode';
   static const recordQuickEntrySleepInProgressBadgeEnabled =
       'record.quickEntry.sleep.inProgressBadgeEnabled';
+  static const recordQuickEntrySleepDefaultDurationMinutes =
+      'record.quickEntry.sleep.defaultDurationMinutes';
   static const recordQuickEntrySymptomDefaultSeverity =
       'record.quickEntry.symptom.defaultSeverity';
   static const recordQuickEntrySymptomEnabledChoices =

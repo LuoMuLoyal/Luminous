@@ -61,6 +61,12 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
             controller: ref.read(quickEntryPreferencesProvider.notifier),
             l10n: l10n,
           )
+        else if (action.type == RecordEntryType.sleep)
+          _SleepSettings(
+            prefs: prefs,
+            controller: ref.read(quickEntryPreferencesProvider.notifier),
+            l10n: l10n,
+          )
         else
           Text(
             _ruleText(l10n, action.type),
@@ -88,6 +94,64 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       RecordEntryType.water => l10n.recordQuickSettingsWaterDefault,
       _ => l10n.recordQuickSettingsMealRule,
     };
+  }
+}
+
+class _SleepSettings extends StatelessWidget {
+  const _SleepSettings({
+    required this.prefs,
+    required this.controller,
+    required this.l10n,
+  });
+
+  final QuickEntryPreferences prefs;
+  final QuickEntryPreferencesController controller;
+  final AppLocalizations l10n;
+
+  static const _durationOptions = [360, 420, 480, 540];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        FSelect<int>.rich(
+          key: const Key('quick-type-sleep-duration'),
+          label: Text(l10n.recordQuickSettingsSleepDefaultDuration),
+          format: (value) =>
+              l10n.recordQuickSettingsSleepDurationHours(value ~/ 60),
+          control: FSelectControl.lifted(
+            value: prefs.sleepDefaultDurationMinutes,
+            onChange: (value) {
+              if (value != null) {
+                unawaited(controller.setSleepDefaultDurationMinutes(value));
+              }
+            },
+          ),
+          children: [
+            for (final minutes in _durationOptions)
+              FSelectItem.item(
+                title: Text(
+                  l10n.recordQuickSettingsSleepDurationHours(minutes ~/ 60),
+                ),
+                value: minutes,
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.level3),
+        FTile(
+          title: Text(l10n.recordQuickSettingsSleepBadge),
+          subtitle: Text(l10n.recordQuickSettingsSleepBadgeHint),
+          suffix: FSwitch(
+            value: prefs.sleepInProgressBadgeEnabled,
+            onChange: controller.setSleepInProgressBadgeEnabled,
+          ),
+          onPress: () => controller.setSleepInProgressBadgeEnabled(
+            !prefs.sleepInProgressBadgeEnabled,
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -158,6 +158,15 @@
   "recordQuickSettingsMoodBadge": "情绪角标",
   "recordQuickSettingsMoodBadgeLatest": "今日最新",
   "recordQuickSettingsMoodBadgeHidden": "不显示",
+  "recordQuickSettingsSleepDefaultDuration": "默认睡眠时长",
+  "recordQuickSettingsSleepDurationHours": "{hours} 小时",
+  "@recordQuickSettingsSleepDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "recordQuickSettingsRules": "规则",
   "recordQuickSettingsMedicationRule": "用药：按药箱和当前时间附近提醒智能选择",
   "recordQuickSettingsMealRule": "餐食：单击打开相机，确认后保存",

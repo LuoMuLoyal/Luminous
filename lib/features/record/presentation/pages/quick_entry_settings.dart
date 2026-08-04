@@ -85,6 +85,34 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDefaults),
               const SizedBox(height: Spacing.level3),
+              FSelect<int>.rich(
+                key: const Key('record-quick-settings-sleep-duration'),
+                label: Text(l10n.recordQuickSettingsSleepDefaultDuration),
+                format: (value) =>
+                    l10n.recordQuickSettingsSleepDurationHours(value ~/ 60),
+                control: FSelectControl.lifted(
+                  value: prefs.sleepDefaultDurationMinutes,
+                  onChange: (value) {
+                    if (value != null) {
+                      unawaited(
+                        controller.setSleepDefaultDurationMinutes(value),
+                      );
+                    }
+                  },
+                ),
+                children: [
+                  for (final minutes in [360, 420, 480, 540])
+                    FSelectItem.item(
+                      title: Text(
+                        l10n.recordQuickSettingsSleepDurationHours(
+                          minutes ~/ 60,
+                        ),
+                      ),
+                      value: minutes,
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level6),
               FSelect<QuickEntryWaterDefault>.rich(
                 key: const Key('record-quick-settings-water-default'),
                 label: Text(l10n.recordQuickSettingsWaterDefault),

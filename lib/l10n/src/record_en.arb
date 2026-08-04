@@ -158,6 +158,15 @@
   "recordQuickSettingsMoodBadge": "Mood badge",
   "recordQuickSettingsMoodBadgeLatest": "Latest today",
   "recordQuickSettingsMoodBadgeHidden": "Hidden",
+  "recordQuickSettingsSleepDefaultDuration": "Default sleep duration",
+  "recordQuickSettingsSleepDurationHours": "{hours} hours",
+  "@recordQuickSettingsSleepDurationHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "recordQuickSettingsRules": "Rules",
   "recordQuickSettingsMedicationRule": "Medication: smart selection from medicine box and nearby reminder slots.",
   "recordQuickSettingsMealRule": "Meal: single tap opens the camera; confirmation saves.",

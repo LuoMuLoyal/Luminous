@@ -7,7 +7,7 @@ updated: 2026-08-04
 
 # Active UI — Record
 
-Last updated: 2026-08-04 (快速记录长按设置 Symptom + Mood)
+Last updated: 2026-08-04 (快速记录长按设置 Symptom + Mood + Sleep)
 
 ## 支持的记录类型
 
@@ -110,13 +110,15 @@ Last updated: 2026-08-04 (快速记录长按设置 Symptom + Mood)
 - 阶段 8 编辑页重构：
   - 逻辑下沉 `RecordEditController`（`presentation/providers/record_edit_controller.dart`）：`RecordEditState` 不可变表单状态 + load/save/isDirty/字段 setter/pickImage；页面瘦身为纯表单渲染。
   - 未保存提醒：文本监听保持 dirty 实时，`PopScope` 拦截系统返回 + `AppBackButton` 自定义返回，弹“放弃修改？”确认（`recordEditDiscard*` 文案）。
-- 阶段 9 长按设置面板（Symptom / Mood）：
+- 阶段 9 长按设置面板（Symptom / Mood / Sleep）：
   - 长按 symptom 快捷瓦片不再只显示静态规则文本，改为弹出可配置面板：默认严重程度 `FSelect`（mild/moderate/severe）+ 症状选项 `FilterChip` 勾选。
   - `QuickEntryPreferences` 新增 `symptomDefaultSeverity`、`symptomEnabledChoices` 字段，对应 PrefKeys `record.quickEntry.symptom.defaultSeverity` / `.enabledChoices`。
   - `RecordFastEntryDialog` 读取偏好过滤症状选项并应用默认严重程度。
   - `QuickEntrySettingsPage` 新增“症状选项”分区，与长按弹窗双向同步。
   - 长按 mood 快捷瓦片弹出角标模式设置（今日最新 / 不显示），`QuickEntryPreferences` 新增 `moodBadgeMode` 字段。
   - `quick_entry_panel.dart` 新增 mood 徽章逻辑：`latest` 模式显示今日最新心情标签。
+  - 长按 sleep 快捷瓦片弹出默认睡眠时长选择（6h/7h/8h/9h）+ 进行中徽章开关，`QuickEntryPreferences` 新增 `sleepDefaultDurationMinutes` 字段。
+  - `RecordFastEntryDialog` 读取默认时长偏好，将匹配的选项排在最前面。
 
 ## 骨架屏
 

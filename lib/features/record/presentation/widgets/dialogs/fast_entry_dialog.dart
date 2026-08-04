@@ -153,7 +153,12 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
     AppLocalizations l10n,
   ) {
     final base = recordFastEntryChoicesFor(widget.kind, l10n);
-    if (widget.kind != DailyRecordKind.symptom) return base;
+    if (widget.kind != DailyRecordKind.symptom) {
+      if (widget.kind == DailyRecordKind.sleep) {
+        return _reorderSleepChoices(base, prefs.sleepDefaultDurationMinutes);
+      }
+      return base;
+    }
 
     // Filter by enabled choices (empty = all enabled).
     final enabled = prefs.symptomEnabledChoices.toSet();
@@ -183,6 +188,24 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
       'severe' => l10n.recordFastChoiceSeveritySevere,
       _ => l10n.recordFastChoiceSeverityMild,
     };
+  }
+
+  /// Reorders sleep choices so the user's default duration is first.
+  List<RecordFastChoice> _reorderSleepChoices(
+    List<RecordFastChoice> choices,
+    int defaultMinutes,
+  ) {
+    final matching = <RecordFastChoice>[];
+    final rest = <RecordFastChoice>[];
+    for (final choice in choices) {
+      final minutes = choice.payload?['durationMinutes'];
+      if (minutes == defaultMinutes) {
+        matching.add(choice);
+      } else {
+        rest.add(choice);
+      }
+    }
+    return [...matching, ...rest];
   }
 
   void _handleChoiceTap(int index, RecordFastChoice choice) {

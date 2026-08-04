@@ -12,6 +12,8 @@ const _kWaterCustomMl = PrefKeys.recordQuickEntryWaterCustomMl;
 const _kWaterBadgeMode = PrefKeys.recordQuickEntryWaterBadgeMode;
 const _kSleepInProgressBadgeEnabled =
     PrefKeys.recordQuickEntrySleepInProgressBadgeEnabled;
+const _kSleepDefaultDurationMinutes =
+    PrefKeys.recordQuickEntrySleepDefaultDurationMinutes;
 const _kSymptomDefaultSeverity =
     PrefKeys.recordQuickEntrySymptomDefaultSeverity;
 const _kSymptomEnabledChoices = PrefKeys.recordQuickEntrySymptomEnabledChoices;
@@ -68,6 +70,7 @@ class QuickEntryPreferences {
     this.waterCustomMl = 250,
     this.waterBadgeMode = QuickEntryWaterBadgeMode.dailyTotal,
     this.sleepInProgressBadgeEnabled = true,
+    this.sleepDefaultDurationMinutes = 480,
     this.symptomDefaultSeverity = 'mild',
     this.symptomEnabledChoices = const [],
     this.moodBadgeMode = QuickEntryMoodBadgeMode.latest,
@@ -99,6 +102,9 @@ class QuickEntryPreferences {
   /// Whether the sleep tile should show an in-progress badge.
   final bool sleepInProgressBadgeEnabled;
 
+  /// Default sleep duration in minutes for the fast-entry dialog.
+  final int sleepDefaultDurationMinutes;
+
   /// Default severity applied to symptom quick-entry choices.
   /// One of `'mild'`, `'moderate'`, `'severe'`.
   final String symptomDefaultSeverity;
@@ -124,6 +130,7 @@ class QuickEntryPreferences {
     int? waterCustomMl,
     QuickEntryWaterBadgeMode? waterBadgeMode,
     bool? sleepInProgressBadgeEnabled,
+    int? sleepDefaultDurationMinutes,
     String? symptomDefaultSeverity,
     List<String>? symptomEnabledChoices,
     QuickEntryMoodBadgeMode? moodBadgeMode,
@@ -139,6 +146,8 @@ class QuickEntryPreferences {
       waterBadgeMode: waterBadgeMode ?? this.waterBadgeMode,
       sleepInProgressBadgeEnabled:
           sleepInProgressBadgeEnabled ?? this.sleepInProgressBadgeEnabled,
+      sleepDefaultDurationMinutes:
+          sleepDefaultDurationMinutes ?? this.sleepDefaultDurationMinutes,
       symptomDefaultSeverity:
           symptomDefaultSeverity ?? this.symptomDefaultSeverity,
       symptomEnabledChoices:
@@ -173,6 +182,8 @@ class QuickEntryPreferencesController
     );
     final sleepInProgressBadgeEnabled =
         prefs.getBool(_kSleepInProgressBadgeEnabled) ?? true;
+    final sleepDefaultDurationMinutes =
+        prefs.getInt(_kSleepDefaultDurationMinutes) ?? 480;
     final symptomDefaultSeverity =
         prefs.getString(_kSymptomDefaultSeverity) ?? 'mild';
     final symptomEnabledChoices =
@@ -211,6 +222,7 @@ class QuickEntryPreferencesController
       waterCustomMl: waterCustomMl,
       waterBadgeMode: waterBadgeMode,
       sleepInProgressBadgeEnabled: sleepInProgressBadgeEnabled,
+      sleepDefaultDurationMinutes: sleepDefaultDurationMinutes,
       symptomDefaultSeverity: symptomDefaultSeverity,
       symptomEnabledChoices: symptomEnabledChoices,
       moodBadgeMode: moodBadgeMode,
@@ -302,6 +314,13 @@ class QuickEntryPreferencesController
     await prefs.setBool(_kSleepInProgressBadgeEnabled, enabled);
   }
 
+  Future<void> setSleepDefaultDurationMinutes(int minutes) async {
+    final current = state.asData?.value ?? const QuickEntryPreferences();
+    state = AsyncData(current.copyWith(sleepDefaultDurationMinutes: minutes));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_kSleepDefaultDurationMinutes, minutes);
+  }
+
   Future<void> setSymptomDefaultSeverity(String severity) async {
     final current = state.asData?.value ?? const QuickEntryPreferences();
     state = AsyncData(current.copyWith(symptomDefaultSeverity: severity));
@@ -385,6 +404,7 @@ class QuickEntryPreferencesController
     await prefs.remove(_kWaterCustomMl);
     await prefs.remove(_kWaterBadgeMode);
     await prefs.remove(_kSleepInProgressBadgeEnabled);
+    await prefs.remove(_kSleepDefaultDurationMinutes);
     await prefs.remove(_kSymptomDefaultSeverity);
     await prefs.remove(_kSymptomEnabledChoices);
     await prefs.remove(_kMoodBadgeMode);
