@@ -92,7 +92,7 @@ void main() {
       },
     );
 
-    testWidgets('symptom long-press dialog shows the type rule', (
+    testWidgets('symptom long-press dialog shows severity and choices', (
       tester,
     ) async {
       await pumpDialog(
@@ -100,7 +100,10 @@ void main() {
         RecordDashboard.quickActionFor(RecordEntryType.symptom)!,
       );
 
-      expect(find.text('症状：单选立即保存，多选确认保存'), findsOneWidget);
+      expect(
+        find.byKey(const Key('quick-type-symptom-severity')),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('quick-type-water-default')), findsNothing);
     });
   });

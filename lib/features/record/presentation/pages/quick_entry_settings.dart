@@ -242,40 +242,45 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: Spacing.level3),
-              Wrap(
-                spacing: Spacing.level2,
-                runSpacing: Spacing.level2,
-                children: [
-                  for (final choice in recordFastEntryChoicesFor(
-                    DailyRecordKind.symptom,
-                    l10n,
-                  ))
-                    FilterChip(
-                      label: Text(choice.label),
-                      selected:
-                          prefs.symptomEnabledChoices.isEmpty ||
-                          prefs.symptomEnabledChoices.contains(choice.title),
-                      onSelected: (selected) {
-                        final allChoices = recordFastEntryChoicesFor(
-                          DailyRecordKind.symptom,
-                          l10n,
-                        );
-                        final current = Set<String>.from(
-                          prefs.symptomEnabledChoices.isEmpty
-                              ? allChoices.map((c) => c.title ?? c.label)
-                              : prefs.symptomEnabledChoices,
-                        );
-                        if (selected) {
-                          current.add(choice.title ?? choice.label);
-                        } else {
-                          current.remove(choice.title ?? choice.label);
-                        }
-                        unawaited(
-                          controller.setSymptomEnabledChoices(current.toList()),
-                        );
-                      },
-                    ),
-                ],
+              Material(
+                type: MaterialType.transparency,
+                child: Wrap(
+                  spacing: Spacing.level2,
+                  runSpacing: Spacing.level2,
+                  children: [
+                    for (final choice in recordFastEntryChoicesFor(
+                      DailyRecordKind.symptom,
+                      l10n,
+                    ))
+                      FilterChip(
+                        label: Text(choice.label),
+                        selected:
+                            prefs.symptomEnabledChoices.isEmpty ||
+                            prefs.symptomEnabledChoices.contains(choice.title),
+                        onSelected: (selected) {
+                          final allChoices = recordFastEntryChoicesFor(
+                            DailyRecordKind.symptom,
+                            l10n,
+                          );
+                          final current = Set<String>.from(
+                            prefs.symptomEnabledChoices.isEmpty
+                                ? allChoices.map((c) => c.title ?? c.label)
+                                : prefs.symptomEnabledChoices,
+                          );
+                          if (selected) {
+                            current.add(choice.title ?? choice.label);
+                          } else {
+                            current.remove(choice.title ?? choice.label);
+                          }
+                          unawaited(
+                            controller.setSymptomEnabledChoices(
+                              current.toList(),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsIcons),

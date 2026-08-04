@@ -296,32 +296,35 @@ class _SymptomSettings extends StatelessWidget {
           style: TypographyToken.level4.body(context),
         ),
         const SizedBox(height: Spacing.level2),
-        Wrap(
-          spacing: Spacing.level2,
-          runSpacing: Spacing.level2,
-          children: [
-            for (final choice in allChoices)
-              FilterChip(
-                label: Text(choice.label),
-                selected:
-                    enabledSet.isEmpty || enabledSet.contains(choice.title),
-                onSelected: (selected) {
-                  final current = Set<String>.from(
-                    prefs.symptomEnabledChoices.isEmpty
-                        ? allChoices.map((c) => c.title ?? c.label)
-                        : prefs.symptomEnabledChoices,
-                  );
-                  if (selected) {
-                    current.add(choice.title ?? choice.label);
-                  } else {
-                    current.remove(choice.title ?? choice.label);
-                  }
-                  unawaited(
-                    controller.setSymptomEnabledChoices(current.toList()),
-                  );
-                },
-              ),
-          ],
+        Material(
+          type: MaterialType.transparency,
+          child: Wrap(
+            spacing: Spacing.level2,
+            runSpacing: Spacing.level2,
+            children: [
+              for (final choice in allChoices)
+                FilterChip(
+                  label: Text(choice.label),
+                  selected:
+                      enabledSet.isEmpty || enabledSet.contains(choice.title),
+                  onSelected: (selected) {
+                    final current = Set<String>.from(
+                      prefs.symptomEnabledChoices.isEmpty
+                          ? allChoices.map((c) => c.title ?? c.label)
+                          : prefs.symptomEnabledChoices,
+                    );
+                    if (selected) {
+                      current.add(choice.title ?? choice.label);
+                    } else {
+                      current.remove(choice.title ?? choice.label);
+                    }
+                    unawaited(
+                      controller.setSymptomEnabledChoices(current.toList()),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ],
     );
