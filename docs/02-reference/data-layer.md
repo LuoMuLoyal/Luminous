@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-03
+updated: 2026-08-04
 ---
 
 # Data Layer
@@ -38,6 +38,9 @@ Widget
   network-error-code derivation, traceId binding). `lib/core/network/interceptors/error_interceptor.dart`
   delegates to it and only re-wraps the mapped exception into a rejected `DioException`, so the
   mapping logic is not duplicated between the interceptor and feature call sites.
+- `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
+  optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
+  `maxReconnects` later cannot produce unbounded delays.
 
 ### Generated API Client
 
@@ -139,7 +142,9 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
   sync-failure dialog. `resetForRetry()` clears the terminal retry state before a manual flush;
   the queued payload is never rendered or modified by the UI. Pending sync ids use a
   cryptographically random suffix (`Random.secure()`) so they remain unique across hot restarts
-  and isolates; backoff is computed by the shared `backoffForRetryCount()` helper.
+  and isolates. `markFailed()` increments `retryCount` atomically at the database level
+  (`retryCount = retryCount + 1`) so concurrent callers cannot race on a read-then-write value;
+  backoff is computed by the shared `backoffForRetryCount()` helper.
 - **Cleanup**: `cacheCleanupProvider` trims expired cache rows at startup based on the user's
   `DataRetentionPeriod` setting.
 

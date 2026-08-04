@@ -106,21 +106,23 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
-  /// Marks a sync attempt as failed, increments retry count.
+  /// Marks a sync attempt as failed and atomically increments [retryCount].
+  ///
+  /// Uses `retryCount = retryCount + 1` at the database level so concurrent
+  /// callers cannot race on the read-then-write value.
   Future<void> markFailed(String id, String error) async {
-    final current = await (select(
-      pendingSyncItems,
-    )..where((t) => t.id.equals(id))).getSingleOrNull();
-    if (current == null) return;
+    final rows = await (update(pendingSyncItems)..where((t) => t.id.equals(id)))
+        .write(
+          PendingSyncItemsCompanion.custom(
+            isSyncing: const Variable(false),
+            retryCount: pendingSyncItems.retryCount + const Variable(1),
+            lastAttemptAt: Variable(DateTime.now()),
+            lastError: Variable(error),
+          ),
+        );
 
-    await (update(pendingSyncItems)..where((t) => t.id.equals(id))).write(
-      PendingSyncItemsCompanion(
-        isSyncing: const Value(false),
-        retryCount: Value(current.retryCount + 1),
-        lastAttemptAt: Value(DateTime.now()),
-        lastError: Value(error),
-      ),
-    );
+    // Nothing to update if the item no longer exists (e.g. already synced).
+    if (rows == 0) return;
   }
 
   /// Removes a successfully synced item.
