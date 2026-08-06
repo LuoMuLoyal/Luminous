@@ -214,6 +214,51 @@ void main() {
         expect(result.failed, isEmpty);
       },
     );
+
+    test(
+      'failed markDose records error in result and continues processing',
+      () async {
+        final flow = MedicationQuickEntryFlow(
+          markDose: (input) async {
+            if (input.currentMedicineId == 'med-2') {
+              throw Exception('network error');
+            }
+            return _doseLog(
+              id: 'dose-1',
+              currentMedicineId: input.currentMedicineId,
+            );
+          },
+          emitDataChange: (_) {},
+          registerUndo: (_) {},
+        );
+
+        final result = await flow.recordConfirmedSelection(
+          context: _context(),
+          choices: const [
+            MedicationQuickChoice(
+              id: 'med-1|rem-1|08:00',
+              currentMedicineId: 'med-1',
+              name: 'Medicine med-1',
+              reminderId: 'rem-1',
+              scheduledTime: '08:00',
+            ),
+            MedicationQuickChoice(
+              id: 'med-2',
+              currentMedicineId: 'med-2',
+              name: 'Medicine med-2',
+              scheduledTime: '08:00',
+            ),
+          ],
+        );
+
+        expect(result.succeeded, hasLength(1));
+        expect(result.succeeded.first.currentMedicineId, 'med-1');
+        expect(result.failed, hasLength(1));
+        expect(result.failed.first.currentMedicineId, 'med-2');
+        expect(result.errors, contains('med-2'));
+        expect(result.errors['med-2'], contains('network error'));
+      },
+    );
   });
 }
 

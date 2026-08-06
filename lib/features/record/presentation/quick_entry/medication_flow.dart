@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
@@ -89,10 +90,14 @@ class MedicationQuickBatchResult {
   const MedicationQuickBatchResult({
     required this.succeeded,
     required this.failed,
+    this.errors = const {},
   });
 
   final List<MedicationQuickChoice> succeeded;
   final List<MedicationQuickChoice> failed;
+
+  /// Error message per failed choice id, for UI display.
+  final Map<String, String> errors;
 }
 
 class MedicationQuickChoice {
@@ -180,6 +185,8 @@ class MedicationQuickEntryFlow {
     final succeeded = <MedicationQuickChoice>[];
     final failed = <MedicationQuickChoice>[];
 
+    final errors = <String, String>{};
+
     for (final choice in choices) {
       try {
         await markDose(
@@ -192,8 +199,14 @@ class MedicationQuickEntryFlow {
           ),
         );
         succeeded.add(choice);
-      } catch (_) {
+      } catch (e, st) {
+        appTalker.error(
+          'MedicationQuickEntry: markDose failed for "${choice.name}" '
+          '(medicineId=${choice.currentMedicineId}): $e',
+          st,
+        );
         failed.add(choice);
+        errors[choice.id] = e.toString();
       }
     }
 
@@ -201,7 +214,11 @@ class MedicationQuickEntryFlow {
       emitDataChange(DataChangeTopic.doseLogs);
     }
 
-    return MedicationQuickBatchResult(succeeded: succeeded, failed: failed);
+    return MedicationQuickBatchResult(
+      succeeded: succeeded,
+      failed: failed,
+      errors: errors,
+    );
   }
 
   Future<DoseLogItem> _recordChoice(
