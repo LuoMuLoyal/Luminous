@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -61,7 +62,8 @@ Future<PdfDownloadResult> downloadAndSharePdf({
       ShareParams(files: [XFile(file.path)], subject: shareSubject),
     );
     return PdfDownloadResult.success;
-  } catch (_) {
+  } catch (e, st) {
+    appTalker.error('PDF download failed: $e', st);
     return PdfDownloadResult.failed;
   }
 }

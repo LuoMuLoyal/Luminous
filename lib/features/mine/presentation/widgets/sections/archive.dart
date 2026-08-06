@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/soft_icon.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
@@ -213,7 +214,8 @@ class _ArchiveRow extends ConsumerWidget with FTileMixin {
       HealthContextSnapshot? snapshot;
       try {
         snapshot = await ref.read(healthContextSnapshotProvider.future);
-      } catch (_) {
+      } catch (e) {
+        appTalker.warning('MineArchive: healthContextSnapshot load failed: $e');
         // If snapshot fails to load, fall through to direct navigation.
       }
       if (snapshot != null && _hasRecords(snapshot) && context.mounted) {

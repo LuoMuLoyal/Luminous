@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/i18n/locale.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -107,7 +108,10 @@ class LucentLegalRepository implements LegalRepository {
             updatedAt: '',
           ),
         );
-      } catch (_) {
+      } catch (e) {
+        appTalker.warning(
+          'LucentLegalRepository: fallback asset not found: $e',
+        );
         // Asset not found — skip this document.
       }
     }

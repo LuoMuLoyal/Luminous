@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -114,7 +115,10 @@ class _OAuthButtonRowState extends State<OAuthButtonRow> {
     try {
       final available = await SignInWithApple.isAvailable();
       if (mounted) setState(() => _appleAvailable = available);
-    } catch (_) {
+    } catch (e) {
+      appTalker.debug(
+        'OAuthButtonRow: Apple Sign In availability check failed: $e',
+      );
       // Platform channel unavailable — Apple Sign In not supported.
       if (mounted) setState(() => _appleAvailable = false);
     }

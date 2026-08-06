@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/router/external_url_launcher.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -61,7 +62,8 @@ class _AboutSettingsPageState extends ConsumerState<AboutSettingsPage> {
       } else {
         setState(() => _checkState = _CheckState.upToDate);
       }
-    } catch (_) {
+    } catch (e) {
+      appTalker.warning('AboutSettings: version check failed: $e');
       if (mounted) {
         setState(() => _checkState = _CheckState.checkFailed);
       }
