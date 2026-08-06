@@ -87,7 +87,12 @@ _ParsedArgs _parseNamedArgs(List<String> args) {
 }
 
 void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
-  final requiredPaths = <String>['pubspec.yaml', 'lib/api/export.dart'];
+  final requiredPaths = <String>[
+    'pubspec.yaml',
+    'lib/lucent_api.dart',
+    'lib/src/api.dart',
+    'lib/src/deserialize.dart',
+  ];
 
   for (final relativePath in requiredPaths) {
     final file = File(

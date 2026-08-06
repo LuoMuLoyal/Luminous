@@ -58,9 +58,6 @@ import 'package:lucent_api/src/model/data_export_latest_response_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_data_dto.dart';
 import 'package:lucent_api/src/model/data_export_request_response_dto.dart';
 import 'package:lucent_api/src/model/delete_account_dto.dart';
-import 'package:lucent_api/src/model/device_item_dto.dart';
-import 'package:lucent_api/src/model/device_list_response_dto.dart';
-import 'package:lucent_api/src/model/device_response_dto.dart';
 import 'package:lucent_api/src/model/disable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/dose_log_item_dto.dart';
 import 'package:lucent_api/src/model/dose_log_list_data_dto.dart';
@@ -135,7 +132,6 @@ import 'package:lucent_api/src/model/recognize_medicine_dto.dart';
 import 'package:lucent_api/src/model/refresh_dto.dart';
 import 'package:lucent_api/src/model/refresh_response_dto.dart';
 import 'package:lucent_api/src/model/register_data_dto.dart';
-import 'package:lucent_api/src/model/register_device_dto.dart';
 import 'package:lucent_api/src/model/register_dto.dart';
 import 'package:lucent_api/src/model/register_response_dto.dart';
 import 'package:lucent_api/src/model/reminder_delivery_item_dto.dart';
@@ -456,15 +452,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'DeleteAccountDto':
       return DeleteAccountDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'DeviceItemDto':
-      return DeviceItemDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'DeviceListResponseDto':
-      return DeviceListResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
-    case 'DeviceResponseDto':
-      return DeviceResponseDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'DisableSecurityPinDto':
       return DisableSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -714,9 +701,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'RegisterDataDto':
       return RegisterDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'RegisterDeviceDto':
-      return RegisterDeviceDto.fromJson(value as Map<String, dynamic>)
-          as ReturnType;
     case 'RegisterDto':
       return RegisterDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'RegisterResponseDto':
@@ -937,7 +921,6 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'UserCurrentMedicineItemDto':
       return UserCurrentMedicineItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'UserDevicePlatform':
     case 'UserFullDto':
       return UserFullDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'UserHealthProfileDto':

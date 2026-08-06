@@ -25,7 +25,6 @@ import 'package:lucent_api/src/api/reports_api.dart';
 import 'package:lucent_api/src/api/support_resources_api.dart';
 import 'package:lucent_api/src/api/today_analysis_api.dart';
 import 'package:lucent_api/src/api/today_suggestion_api.dart';
-import 'package:lucent_api/src/api/user_devices_api.dart';
 import 'package:lucent_api/src/api/user_health_context_api.dart';
 import 'package:lucent_api/src/api/user_settings_api.dart';
 
@@ -258,12 +257,6 @@ class LucentApi {
   /// by doing that all interceptors will not be executed
   TodaySuggestionApi getTodaySuggestionApi() {
     return TodaySuggestionApi(dio);
-  }
-
-  /// Get UserDevicesApi instance, base route and serializer can be overridden by a given but be careful,
-  /// by doing that all interceptors will not be executed
-  UserDevicesApi getUserDevicesApi() {
-    return UserDevicesApi(dio);
   }
 
   /// Get UserHealthContextApi instance, base route and serializer can be overridden by a given but be careful,

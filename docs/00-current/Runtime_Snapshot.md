@@ -63,6 +63,7 @@ Last updated: 2026-08-06 (JPush push lifecycle integration)
 
 - 拦截器链：`AuthInterceptor`（token 注入 + 401 刷新）→ `RetryInterceptor`（5xx/超时重试）→ `ErrorInterceptor`（DioException → LucentApiException 映射）。
 - `LucentDioClient` 仅负责 Dio 实例配置 + interceptor 注册。
+- 旧用户设备注册合同已移除；`LucentDioClient` 和生成客户端不再暴露设备注册 API，推送身份由 JPush SDK 绑定当前用户 UUID alias。
 - `lucentClientProvider`（keepAlive）是全部 feature 的统一 API 访问入口。
 - Base URL 解析：debug 模式下 `DeveloperSettingsController.resolvedBaseUrl` 对 `ApiEndpoint.local` 做平台适配——Android 模拟器使用 `10.0.2.2`（因为 `127.0.0.1` 指向模拟器自身），其他平台使用 `127.0.0.1`。`LucentBaseUrl.value` 的 debug 回退同理。Release 模式强制使用 `.env` 注入的 `LUCENT_BASE_URL`。
 - `LucentSseClient` 支持 `reconnect` 自动重连；SSE 请求单独覆盖 `receiveTimeout: Duration.zero`（不限超时），避免 AI 生成慢时主 Dio 的 10s `receiveTimeout` 导致流提前中断。
@@ -222,4 +223,4 @@ Last updated: 2026-08-06 (JPush push lifecycle integration)
 - 生成客户端新增 7 个 risk check DTO 文件，`MedicinesApi` 新增 `medicinesControllerGetRiskCheckV1` / `medicinesControllerRunRiskCheckV1` 方法。
 - `MedicineRiskCheckResult` 实体增加 `overallRiskLevel` / `overallRiskScore` / `redFlags` / `overallRecommendation` 字段；新增 `MedicineRiskCheckRecord` / `MedicineRiskCheckRecords` 包装实体。
 - 用药安全卡片（`mobile_safety.dart`）重写：消除 FCard 嵌套，改为单一 `FTappable` → `DecoratedBox`；新增最后检查时间显示和 stale 状态指示。
-- OpenAPI 导出更新为 104 paths / 224 schemas。
+- OpenAPI 导出更新为 107 paths / 229 schemas；旧用户设备注册 API、DTO 和生成客户端入口已移除。

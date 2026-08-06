@@ -38,7 +38,6 @@ class LucentClient {
   SupportResourcesApi get supportResources => _api.getSupportResourcesApi();
   TodayAnalysisApi get todayAnalysis => _api.getTodayAnalysisApi();
   TodaySuggestionApi get todaySuggestion => _api.getTodaySuggestionApi();
-  UserDevicesApi get userDevices => _api.getUserDevicesApi();
   UserHealthContextApi get userHealthContext => _api.getUserHealthContextApi();
   UserSettingsApi get userSettings => _api.getUserSettingsApi();
 }
