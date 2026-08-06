@@ -52,6 +52,10 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
 
   static const int _kBackgroundRefreshFailuresBeforeError = 3;
 
+  /// Maximum number of tracked keys to prevent unbounded growth when the user
+  /// browses many different dates. Excess entries are pruned oldest-first.
+  static const int _kMaxTrackedRefreshKeys = 50;
+
   @override
   Future<DailyRecordListData> fetchRecords(
     String date, {
@@ -246,6 +250,10 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
       return;
     }
     _lastRefreshAttempt[key] = now;
+    // Prune oldest entries to prevent unbounded growth.
+    if (_lastRefreshAttempt.length > _kMaxTrackedRefreshKeys) {
+      _lastRefreshAttempt.remove(_lastRefreshAttempt.keys.first);
+    }
 
     // Fire and forget — errors are logged, not propagated.
     unawaited(
@@ -266,6 +274,12 @@ class LucentDailyRecordRepository implements DailyRecordRepository {
         } catch (e, st) {
           final failures = (_backgroundRefreshFailures[key] ?? 0) + 1;
           _backgroundRefreshFailures[key] = failures;
+          // Prune oldest entries to prevent unbounded growth.
+          if (_backgroundRefreshFailures.length > _kMaxTrackedRefreshKeys) {
+            _backgroundRefreshFailures.remove(
+              _backgroundRefreshFailures.keys.first,
+            );
+          }
           final message = 'DailyRecord background refresh failed: $e';
           if (failures >= _kBackgroundRefreshFailuresBeforeError) {
             appTalker.error(message, st);
