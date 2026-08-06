@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:luminous/core/design/semantic_color.dart';
@@ -34,8 +35,8 @@ abstract class MedicineSearchDashboard with _$MedicineSearchDashboard {
     required MedicineSearchSafetyPreview safetyPreview,
   }) = _MedicineSearchDashboard;
 
-  MedicineSearchResult get selectedResult {
-    return results.firstWhere((result) => result.id == selectedResultId);
+  MedicineSearchResult? get selectedResult {
+    return results.firstWhereOrNull((result) => result.id == selectedResultId);
   }
 }
 

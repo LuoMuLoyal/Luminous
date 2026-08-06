@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -52,8 +53,8 @@ class MedicineSearchNotifier extends Notifier<MedicineSearchState> {
 
   Future<void> selectResult(String id) async {
     state = state.copyWith(selectedResultId: id);
-    if (state.results.any((r) => r.id == id)) {
-      final result = state.results.firstWhere((r) => r.id == id);
+    final result = state.results.firstWhereOrNull((r) => r.id == id);
+    if (result != null) {
       final preview = await ref
           .watch(medicineSearchRepositoryProvider)
           .fetchDetail(result.id, result.source);

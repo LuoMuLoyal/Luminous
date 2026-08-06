@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -114,10 +115,10 @@ class SearchPage extends ConsumerWidget {
           .emit(DataChangeTopic.currentMedicines);
 
       if (context.mounted) {
-        final newMedicine = updatedSnapshot.currentMedicines.firstWhere(
+        final newMedicine = updatedSnapshot.currentMedicines.firstWhereOrNull(
           (m) => m.sourceRefId == result.id && m.source == medicineSource.name,
-          orElse: () => updatedSnapshot.currentMedicines.last,
         );
+        if (newMedicine == null) return;
         unawaited(
           Toast.showWithAction(
             context,

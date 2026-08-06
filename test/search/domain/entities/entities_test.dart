@@ -38,8 +38,8 @@ void main() {
         ),
       );
 
-      expect(dashboard.selectedResult.id, 'r2');
-      expect(dashboard.selectedResult.name, 'Ibuprofen');
+      expect(dashboard.selectedResult!.id, 'r2');
+      expect(dashboard.selectedResult!.name, 'Ibuprofen');
     });
 
     test('returns first match when selectedResultId matches first result', () {
@@ -68,10 +68,10 @@ void main() {
         ),
       );
 
-      expect(dashboard.selectedResult.id, 'r1');
+      expect(dashboard.selectedResult!.id, 'r1');
     });
 
-    test('throws StateError when no result matches selectedResultId', () {
+    test('returns null when no result matches selectedResultId', () {
       const dashboard = MedicineSearchDashboard(
         query: '',
         selectedSource: MedicineSearchSource.cn,
@@ -97,7 +97,7 @@ void main() {
         ),
       );
 
-      expect(() => dashboard.selectedResult, throwsA(isA<StateError>()));
+      expect(dashboard.selectedResult, isNull);
     });
   });
 
