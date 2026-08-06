@@ -3,6 +3,7 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/quick_entry/water_flow.dart';
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
+import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 
 typedef DeleteSleepRecord = Future<void> Function(String recordId);
 
@@ -195,7 +196,7 @@ class SleepQuickEntryFlow {
     }
     final date = DateTime.tryParse(record.occurredAt);
     if (date == null) return null;
-    final time = _parseHourMinute(record.occurredTime);
+    final time = parseRecordTime(record.occurredTime);
     if (time == null) return date;
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
@@ -246,16 +247,4 @@ class SleepQuickEntryFlow {
   static bool _isSleepWake(DailyRecordItem record) =>
       record.kind == DailyRecordKind.sleep &&
       record.payload?['sleepEvent'] == 'wake';
-
-  static ({int hour, int minute})? _parseHourMinute(String? value) {
-    final trimmed = value?.trim();
-    if (trimmed == null || trimmed.isEmpty) return null;
-    final parts = trimmed.split(':');
-    if (parts.length != 2) return null;
-    final hour = int.tryParse(parts[0]);
-    final minute = int.tryParse(parts[1]);
-    if (hour == null || minute == null) return null;
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
-    return (hour: hour, minute: minute);
-  }
 }
