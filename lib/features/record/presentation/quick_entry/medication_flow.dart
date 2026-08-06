@@ -10,13 +10,18 @@ typedef MarkDoseLog = Future<DoseLogItem> Function(MedicationQuickMarkInput);
 typedef RegisterMedicationQuickUndo =
     void Function(QuickEntryUndoAction action);
 
+/// "Nearby reminder" window: a reminder scheduled within this offset before
+/// or after the current time is considered nearby and auto-selected.
+const Duration kMedicationNearbyWindowBefore = Duration(minutes: 30);
+const Duration kMedicationNearbyWindowAfter = Duration(hours: 2);
+
 class MedicationQuickEntryWindow {
   const MedicationQuickEntryWindow({required this.now});
 
   final DateTime now;
 
-  DateTime get startsAt => now.subtract(const Duration(minutes: 30));
-  DateTime get endsAt => now.add(const Duration(hours: 2));
+  DateTime get startsAt => now.subtract(kMedicationNearbyWindowBefore);
+  DateTime get endsAt => now.add(kMedicationNearbyWindowAfter);
 
   bool contains(DateTime value) {
     return !value.isBefore(startsAt) && !value.isAfter(endsAt);

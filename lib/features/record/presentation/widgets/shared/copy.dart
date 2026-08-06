@@ -1,5 +1,7 @@
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/constants/fast_entry_choices.dart';
 import 'package:luminous/features/record/domain/entities/dashboard.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String recordCopy(AppLocalizations l10n, RecordCopyKey key) {
@@ -105,4 +107,36 @@ String waterBadgeLabel(AppLocalizations l10n, QuickEntryWaterBadgeMode mode) {
       l10n.recordQuickSettingsWaterBadgeDailyCount,
     QuickEntryWaterBadgeMode.hidden => l10n.recordQuickSettingsWaterBadgeHidden,
   };
+}
+
+/// Localized label for a symptom severity value (`mild` / `moderate` / `severe`).
+String symptomSeverityLabel(AppLocalizations l10n, String severity) {
+  return switch (severity) {
+    'moderate' => l10n.recordFastChoiceSeverityModerate,
+    'severe' => l10n.recordFastChoiceSeveritySevere,
+    _ => l10n.recordFastChoiceSeverityMild,
+  };
+}
+
+/// Computes the updated set of enabled symptom choices after toggling
+/// [choiceTitle]. When the current set is empty (meaning all are enabled),
+/// it starts from the full list of preset choices.
+List<String> toggleSymptomChoice({
+  required List<String> currentChoices,
+  required String choiceTitle,
+  required bool selected,
+  required AppLocalizations l10n,
+}) {
+  final allChoices = recordFastEntryChoicesFor(DailyRecordKind.symptom, l10n);
+  final current = Set<String>.from(
+    currentChoices.isEmpty
+        ? allChoices.map((c) => c.title ?? c.label)
+        : currentChoices,
+  );
+  if (selected) {
+    current.add(choiceTitle);
+  } else {
+    current.remove(choiceTitle);
+  }
+  return current.toList();
 }

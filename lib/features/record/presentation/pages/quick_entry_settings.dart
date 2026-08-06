@@ -101,7 +101,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                   },
                 ),
                 children: [
-                  for (final minutes in [360, 420, 480, 540])
+                  for (final minutes in kSleepDurationOptions)
                     FSelectItem.item(
                       title: Text(
                         l10n.recordQuickSettingsSleepDurationHours(
@@ -217,7 +217,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
               FSelect<String>.rich(
                 key: const Key('record-quick-settings-symptom-severity'),
                 label: Text(l10n.recordQuickSettingsSymptomDefaultSeverity),
-                format: (value) => _severityLabel(l10n, value),
+                format: (value) => symptomSeverityLabel(l10n, value),
                 control: FSelectControl.lifted(
                   value: prefs.symptomDefaultSeverity,
                   onChange: (value) {
@@ -229,7 +229,7 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 children: [
                   for (final option in ['mild', 'moderate', 'severe'])
                     FSelectItem.item(
-                      title: Text(_severityLabel(l10n, option)),
+                      title: Text(symptomSeverityLabel(l10n, option)),
                       value: option,
                     ),
                 ],
@@ -258,23 +258,14 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                             prefs.symptomEnabledChoices.isEmpty ||
                             prefs.symptomEnabledChoices.contains(choice.title),
                         onSelected: (selected) {
-                          final allChoices = recordFastEntryChoicesFor(
-                            DailyRecordKind.symptom,
-                            l10n,
-                          );
-                          final current = Set<String>.from(
-                            prefs.symptomEnabledChoices.isEmpty
-                                ? allChoices.map((c) => c.title ?? c.label)
-                                : prefs.symptomEnabledChoices,
-                          );
-                          if (selected) {
-                            current.add(choice.title ?? choice.label);
-                          } else {
-                            current.remove(choice.title ?? choice.label);
-                          }
                           unawaited(
                             controller.setSymptomEnabledChoices(
-                              current.toList(),
+                              toggleSymptomChoice(
+                                currentChoices: prefs.symptomEnabledChoices,
+                                choiceTitle: choice.title ?? choice.label,
+                                selected: selected,
+                                l10n: l10n,
+                              ),
                             ),
                           );
                         },
@@ -393,14 +384,6 @@ class QuickEntrySettingsPage extends ConsumerWidget {
     await ref
         .read(quickEntryPreferencesProvider.notifier)
         .setCustomIcon(action.type.name, iconName);
-  }
-
-  String _severityLabel(AppLocalizations l10n, String severity) {
-    return switch (severity) {
-      'moderate' => l10n.recordFastChoiceSeverityModerate,
-      'severe' => l10n.recordFastChoiceSeveritySevere,
-      _ => l10n.recordFastChoiceSeverityMild,
-    };
   }
 
   Future<void> _showMoodBadgeSelect(

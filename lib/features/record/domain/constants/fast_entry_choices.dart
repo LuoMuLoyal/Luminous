@@ -34,7 +34,7 @@ class RecordFastChoice {
 /// Extracted as a named constant so that adjustments only need to happen in
 /// one place. When remote config is available, replace this with a dynamic
 /// list loaded at runtime.
-const _sleepDurationOptions = <int>[360, 420, 480, 540];
+const kSleepDurationOptions = <int>[360, 420, 480, 540];
 
 /// Returns the quick-entry choices for the given record [kind].
 List<RecordFastChoice> recordFastEntryChoicesFor(
@@ -127,7 +127,7 @@ List<RecordFastChoice> recordFastEntryChoicesFor(
       ),
     ],
     DailyRecordKind.sleep => [
-      for (final minutes in _sleepDurationOptions)
+      for (final minutes in kSleepDurationOptions)
         RecordFastChoice(
           label: '${minutes ~/ 60}h',
           payload: <String, dynamic>{'durationMinutes': minutes},

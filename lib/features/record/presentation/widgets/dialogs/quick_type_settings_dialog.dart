@@ -97,7 +97,6 @@ class QuickEntryTypeSettingsDialog extends ConsumerWidget {
       RecordEntryType.symptom => l10n.recordQuickSettingsSymptomRule,
       RecordEntryType.mood => l10n.recordQuickSettingsMoodRule,
       RecordEntryType.sleep => l10n.recordQuickSettingsSleepRule,
-      RecordEntryType.water => l10n.recordQuickSettingsWaterDefault,
       _ => l10n.recordQuickSettingsMealRule,
     };
   }
@@ -160,7 +159,7 @@ class _SleepSettings extends StatelessWidget {
   final QuickEntryPreferencesController controller;
   final AppLocalizations l10n;
 
-  static const _durationOptions = [360, 420, 480, 540];
+  static const _durationOptions = kSleepDurationOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +272,7 @@ class _SymptomSettings extends StatelessWidget {
         FSelect<String>.rich(
           key: const Key('quick-type-symptom-severity'),
           label: Text(l10n.recordQuickSettingsSymptomDefaultSeverity),
-          format: (value) => _severityLabel(l10n, value),
+          format: (value) => symptomSeverityLabel(l10n, value),
           control: FSelectControl.lifted(
             value: prefs.symptomDefaultSeverity,
             onChange: (value) {
@@ -285,7 +284,7 @@ class _SymptomSettings extends StatelessWidget {
           children: [
             for (final option in severityOptions)
               FSelectItem.item(
-                title: Text(_severityLabel(l10n, option)),
+                title: Text(symptomSeverityLabel(l10n, option)),
                 value: option,
               ),
           ],
@@ -308,18 +307,15 @@ class _SymptomSettings extends StatelessWidget {
                   selected:
                       enabledSet.isEmpty || enabledSet.contains(choice.title),
                   onSelected: (selected) {
-                    final current = Set<String>.from(
-                      prefs.symptomEnabledChoices.isEmpty
-                          ? allChoices.map((c) => c.title ?? c.label)
-                          : prefs.symptomEnabledChoices,
-                    );
-                    if (selected) {
-                      current.add(choice.title ?? choice.label);
-                    } else {
-                      current.remove(choice.title ?? choice.label);
-                    }
                     unawaited(
-                      controller.setSymptomEnabledChoices(current.toList()),
+                      controller.setSymptomEnabledChoices(
+                        toggleSymptomChoice(
+                          currentChoices: prefs.symptomEnabledChoices,
+                          choiceTitle: choice.title ?? choice.label,
+                          selected: selected,
+                          l10n: l10n,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -335,14 +331,6 @@ class _SymptomSettings extends StatelessWidget {
     'moderate',
     'severe',
   ];
-
-  String _severityLabel(AppLocalizations l10n, String value) {
-    return switch (value) {
-      'moderate' => l10n.recordFastChoiceSeverityModerate,
-      'severe' => l10n.recordFastChoiceSeveritySevere,
-      _ => l10n.recordFastChoiceSeverityMild,
-    };
-  }
 }
 
 class _WaterSettings extends StatelessWidget {
