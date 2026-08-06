@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/widgets/common/divider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/core/widgets/layout/page_scaffold.dart';
 import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
@@ -239,6 +240,7 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     _DetailRowData(
                       l10n.recordDetailValueLabel,
                       _valueWithUnit(record.value!, record.unit),
+                      highlight: true,
                     ),
                   if (_moodLabel(l10n, record) != null)
                     _DetailRowData(
@@ -539,7 +541,7 @@ class _DetailRows extends StatelessWidget {
       children: [
         for (var index = 0; index < rows.length; index += 1) ...[
           _DetailRow(data: rows[index]),
-          if (index != rows.length - 1) const SizedBox(height: Spacing.level4),
+          if (index != rows.length - 1) const AppDivider(),
         ],
       ],
     );
@@ -555,41 +557,55 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-            minWidth: Spacing.level8 * 2,
-            maxWidth: Spacing.level8 * 2 + Spacing.level4,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.level3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              minWidth: Spacing.level8 * 2,
+              maxWidth: Spacing.level8 * 2 + Spacing.level4,
+            ),
+            child: Text(
+              data.label,
+              style: TypographyToken.level3
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
           ),
-          child: Text(
-            data.label,
-            style: TypographyToken.level3
-                .body(context)
-                .copyWith(color: colors.mutedForeground),
+          const SizedBox(width: Spacing.level4),
+          Expanded(
+            child: Text(
+              data.value,
+              style: data.highlight
+                  ? TypographyToken.level6
+                        .display(context)
+                        .copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: colors.primary,
+                        )
+                  : TypographyToken.level5
+                        .body(context)
+                        .copyWith(fontWeight: FontWeight.w700),
+              overflow: TextOverflow.visible,
+            ),
           ),
-        ),
-        const SizedBox(width: Spacing.level4),
-        Expanded(
-          child: Text(
-            data.value,
-            style: TypographyToken.level5
-                .body(context)
-                .copyWith(fontWeight: FontWeight.w700),
-            overflow: TextOverflow.visible,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
 class _DetailRowData {
-  const _DetailRowData(this.label, this.value);
+  const _DetailRowData(this.label, this.value, {this.highlight = false});
 
   final String label;
   final String value;
+
+  /// Renders the value at a larger, primary-colored size (receipt-style
+  /// emphasis for the record's key number).
+  final bool highlight;
 }
 
 class _DetailSurface extends StatelessWidget {

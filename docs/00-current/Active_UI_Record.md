@@ -7,7 +7,7 @@ updated: 2026-08-06
 
 # Active UI — Record
 
-Last updated: 2026-08-06 (详情页/编辑页区分度精进第一批)
+Last updated: 2026-08-06 (详情页/编辑页区分度精进两批完成)
 
 ## 支持的记录类型
 
@@ -125,6 +125,8 @@ Last updated: 2026-08-06 (详情页/编辑页区分度精进第一批)
   - 详情页 = 只读快照：顶栏编辑图标移除；头部 Hero 化——`_KindHeroAvatar` 52px 圆形类型图标（`RecordDashboard.quickActionFor` + `resolveQuickActionIcon` 与快速记录面板图标同源，vitals/activity 回退 primary）+ 标题旁 `_SourceBadge` 来源徽章（信息行的「来源」行移除避免重复，复制摘要仍含来源）。
   - 详情页底部操作重排：`record-detail-edit-action` primary 主按钮「编辑这条记录」→ 上一条/下一条 ghost 并排 → 复制摘要 ghost → 删除 destructive 置底。
   - 编辑页 = 编辑工作台：表单顶部 `_EditStatusHint` 提示条，默认「修改后点击保存生效」（muted），dirty 时切换警告色「有未保存的更改」（`SemanticColor.warning`），与返回丢弃确认（`recordEditDiscard*`）形成闭环。
+  - 详情页票据式排版：核心数值行（value + unit）`highlight` 大字号（`level6.display` + primary 加粗）；信息行间 `AppDivider` 细分隔线。
+  - 编辑页表单面板：全部字段收进浅灰底衬面板（`colors.secondary` + 圆角），与页面白底产生层次，一眼区分「输入区」。
 
 ## 骨架屏
 

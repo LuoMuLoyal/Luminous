@@ -87,40 +87,6 @@ Record 模块的**详情页**（`lib/features/record/presentation/pages/detail.d
 | 编辑页「未保存更改」提示条 | **加提示条**（警告色，配合已有丢弃确认） |
 | 实施节奏 | **先出方案文档**（本文件），代码改动后续分批实施 |
 
-## 实施进度
+## 实施完成（2026-08-06）
 
-### 第一批:低风险高感知 —— 已完成(2026-08-06)
-
-- 详情页 Hero 头部 + 「编辑这条记录」底部 primary 主按钮 + 顶栏编辑图标移除 + 次要操作降权。
-- 编辑页 dirty 提示条(默认「修改后点击保存生效」/ dirty 时「有未保存的更改」)。
-- l10n 新增 `recordDetailEditAction` / `recordEditUnsavedHint` / `recordEditUnsavedWarning`。
-- 迁移日志、状态文档、测试均已更新;`flutter analyze` 0 issues、`test/record/` 全绿。
-
-### 第二批:容器与密度 —— 待执行
-
-4. `detail.dart`：票据式排版（核心数值大字号 + 行分隔线）。
-5. `edit.dart`：表单面板统一容器 + 可选浅灰底衬。
-
-### 收尾（第二批完成后）
-
-- 迁移日志：`docs/03-logs/migration-log/2026-08-0X.md`
-- 状态文档：更新 `docs/00-current/Active_UI_Record.md`
-- 测试：详情 / 编辑页 widget 测试补充新 key；`flutter analyze` + `flutter test`
-- 完成后本文件的「实施进度」节删除
-
-## 预计新增 l10n 字符串
-
-| Key（record_zh.arb） | 文案 |
-|----------------------|------|
-| recordDetailEditAction | 编辑这条记录 |
-| recordEditUnsavedHint | 修改后点击保存生效 |
-| recordEditUnsavedWarning | 有未保存的更改 |
-
-（英文碎片 `record_en.arb` 同步补充；最终以实施时为准。）
-
-## 验收标准
-
-- 详情页一眼可辨为「只读快照」：Hero 头部 + 来源徽章 + 编辑主按钮 + 弱化次要操作。
-- 编辑页一眼可辨为「编辑工作台」：dirty 提示条 + 表单面板 + 保存主导。
-- 同一条记录两页图标一致；返回拦截与丢弃确认不受影响。
-- 移动端 / 桌面端行为一致；`flutter analyze` / `flutter test` 通过。
+两批均已实施并通过验证（`flutter analyze` 0 issues、`test/record/` 全绿），迁移日志与状态文档已同步；第二批暂未提交（用户要求）。详细改动见 `docs/03-logs/migration-log/2026-08-06.md`。

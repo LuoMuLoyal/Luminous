@@ -248,112 +248,121 @@ class RecordEditPage extends HookConsumerWidget {
               ),
               const SizedBox(height: Spacing.level2),
               Padding(
-                padding: const EdgeInsets.all(Spacing.level4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    RecordOccurredAtFields(
-                      date: state.occurredAt ?? clock.now(),
-                      time: state.occurredTime,
-                      onDateChanged: (date) => controller.setOccurredAt(
-                        DateTime(
-                          date.year,
-                          date.month,
-                          date.day,
-                          state.occurredAt?.hour ?? clock.now().hour,
-                          state.occurredAt?.minute ?? clock.now().minute,
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: context.theme.colors.secondary,
+                    borderRadius: BorderRadius.circular(RadiusTokens.level3),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.level4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        RecordOccurredAtFields(
+                          date: state.occurredAt ?? clock.now(),
+                          time: state.occurredTime,
+                          onDateChanged: (date) => controller.setOccurredAt(
+                            DateTime(
+                              date.year,
+                              date.month,
+                              date.day,
+                              state.occurredAt?.hour ?? clock.now().hour,
+                              state.occurredAt?.minute ?? clock.now().minute,
+                            ),
+                          ),
+                          onTimeChanged: (time) {
+                            if (time == null) {
+                              controller.setOccurredAt(
+                                state.occurredAt,
+                                time: null,
+                              );
+                              return;
+                            }
+                            controller.setOccurredAt(
+                              DateTime(
+                                state.occurredAt?.year ?? clock.now().year,
+                                state.occurredAt?.month ?? clock.now().month,
+                                state.occurredAt?.day ?? clock.now().day,
+                                time.hour,
+                                time.minute,
+                              ),
+                              time: formatHourMinute(time.hour, time.minute),
+                            );
+                          },
                         ),
-                      ),
-                      onTimeChanged: (time) {
-                        if (time == null) {
-                          controller.setOccurredAt(
-                            state.occurredAt,
-                            time: null,
-                          );
-                          return;
-                        }
-                        controller.setOccurredAt(
-                          DateTime(
-                            state.occurredAt?.year ?? clock.now().year,
-                            state.occurredAt?.month ?? clock.now().month,
-                            state.occurredAt?.day ?? clock.now().day,
-                            time.hour,
-                            time.minute,
-                          ),
-                          time: formatHourMinute(time.hour, time.minute),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    DailyRecordFormFields(
-                      kind: state.kind,
-                      onKindChanged: onKindChanged,
-                      showKindField: false,
-                      valueController: valueController,
-                      unitController: unitController,
-                      titleController: titleController,
-                      noteController: noteController,
-                    ),
-                    const SizedBox(height: Spacing.level3),
-                    RecordKindIconField(kind: state.kind),
-                    if (state.kind == DailyRecordKind.sleep) ...[
-                      const SizedBox(height: Spacing.level3),
-                      SleepStructuredFields(
-                        l10n: l10n,
-                        bedtime: state.bedtime,
-                        wakeTime: state.wakeTime,
-                        quality: state.sleepQuality,
-                        deepMinutes: state.deepMinutes,
-                        lightMinutes: state.lightMinutes,
-                        remMinutes: state.remMinutes,
-                        onBedtimeChanged: controller.setBedtime,
-                        onWakeTimeChanged: controller.setWakeTime,
-                        onQualityChanged: controller.setSleepQuality,
-                        onDeepMinutesChanged: controller.setDeepMinutes,
-                        onLightMinutesChanged: controller.setLightMinutes,
-                        onRemMinutesChanged: controller.setRemMinutes,
-                      ),
-                    ],
-                    if (state.kind == DailyRecordKind.meal) ...[
-                      const SizedBox(height: Spacing.level3),
-                      MealDishEditorSection(
-                        dishNames: state.dishNames,
-                        enabled: !state.saving && !state.deleting,
-                        onDishChanged: controller.setDishName,
-                        onDishRemoved: controller.removeDish,
-                        onDishAdded: controller.addDish,
-                      ),
-                      if (state.canConfirmMealAnalysis) ...[
                         const SizedBox(height: Spacing.level3),
-                        MealConfirmAction(
-                          l10n: l10n,
-                          confirmed: state.confirmMealAnalysis,
-                          onToggle: () => controller.setConfirmMealAnalysis(
-                            !state.confirmMealAnalysis,
+                        DailyRecordFormFields(
+                          kind: state.kind,
+                          onKindChanged: onKindChanged,
+                          showKindField: false,
+                          valueController: valueController,
+                          unitController: unitController,
+                          titleController: titleController,
+                          noteController: noteController,
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        RecordKindIconField(kind: state.kind),
+                        if (state.kind == DailyRecordKind.sleep) ...[
+                          const SizedBox(height: Spacing.level3),
+                          SleepStructuredFields(
+                            l10n: l10n,
+                            bedtime: state.bedtime,
+                            wakeTime: state.wakeTime,
+                            quality: state.sleepQuality,
+                            deepMinutes: state.deepMinutes,
+                            lightMinutes: state.lightMinutes,
+                            remMinutes: state.remMinutes,
+                            onBedtimeChanged: controller.setBedtime,
+                            onWakeTimeChanged: controller.setWakeTime,
+                            onQualityChanged: controller.setSleepQuality,
+                            onDeepMinutesChanged: controller.setDeepMinutes,
+                            onLightMinutesChanged: controller.setLightMinutes,
+                            onRemMinutesChanged: controller.setRemMinutes,
                           ),
+                        ],
+                        if (state.kind == DailyRecordKind.meal) ...[
+                          const SizedBox(height: Spacing.level3),
+                          MealDishEditorSection(
+                            dishNames: state.dishNames,
+                            enabled: !state.saving && !state.deleting,
+                            onDishChanged: controller.setDishName,
+                            onDishRemoved: controller.removeDish,
+                            onDishAdded: controller.addDish,
+                          ),
+                          if (state.canConfirmMealAnalysis) ...[
+                            const SizedBox(height: Spacing.level3),
+                            MealConfirmAction(
+                              l10n: l10n,
+                              confirmed: state.confirmMealAnalysis,
+                              onToggle: () => controller.setConfirmMealAnalysis(
+                                !state.confirmMealAnalysis,
+                              ),
+                            ),
+                          ],
+                        ],
+                        const SizedBox(height: Spacing.level3),
+                        DailyRecordImageAttachmentField(
+                          l10n: l10n,
+                          selectedBytes: state.selectedImage?.bytes,
+                          selectedFileName: state.selectedImage?.fileName,
+                          existingAttachment: state.attachmentsChanged
+                              ? null
+                              : state.existingImageAttachment,
+                          onPick: () => unawaited(controller.pickImage()),
+                          onRemove: controller.removeImage,
+                          enabled: !state.saving && !state.deleting,
+                        ),
+                        RecordEditActions(
+                          l10n: l10n,
+                          saving: state.saving,
+                          deleting: state.deleting,
+                          onSave: onSave,
+                          onDelete: onDelete,
                         ),
                       ],
-                    ],
-                    const SizedBox(height: Spacing.level3),
-                    DailyRecordImageAttachmentField(
-                      l10n: l10n,
-                      selectedBytes: state.selectedImage?.bytes,
-                      selectedFileName: state.selectedImage?.fileName,
-                      existingAttachment: state.attachmentsChanged
-                          ? null
-                          : state.existingImageAttachment,
-                      onPick: () => unawaited(controller.pickImage()),
-                      onRemove: controller.removeImage,
-                      enabled: !state.saving && !state.deleting,
                     ),
-                    RecordEditActions(
-                      l10n: l10n,
-                      saving: state.saving,
-                      deleting: state.deleting,
-                      onSave: onSave,
-                      onDelete: onDelete,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
