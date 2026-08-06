@@ -22,9 +22,11 @@ Last updated: 2026-07-18
 - AI 消息操作按钮完善
   - 复制、重新生成、重新发送需要从上下文菜单占位行为调整为明确可用的消息操作，并补齐对应 controller 链路
 
-- Forui 0.23.0 `FToaster` 的 `_entranceDismissController` LateInitializationError
-  - 已通过移除测试树中的 `FToaster`、`AppToast.show` 加 try-catch 降级规避
-  - 升级至 Forui 0.24+ 后恢复 toast 测试
+- forui 0.25.0 toast dismiss 的 dispose-during-notifyListeners 风险
+  - 现象：`FToasterEntry.dismiss()` 在 toast 入场动画完成前触发时，forui 非无障碍分支直接 `reverse()`，
+    同步走到 dismissed 状态后在通知期间 `dispose()`（无障碍分支用 microtask 规避了同样问题）
+  - 影响：连续 `Toast.show` 时旧 toast 可能在入场完成前被 dismiss，调试构建可能触发断言
+  - 现状：toast 测试通过先完成入场动画规避；生产未复现，暂不处理，后续升级 forui 时留意
 - `formz` 表单校验
   - 已尝试，发现该校验并不合适后回退
 - `intl.DateFormat` 替代 ISO 字符串
