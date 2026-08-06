@@ -284,7 +284,10 @@ class DailyRecordRemoteDataSource {
   }
 
   DailyRecordKind _parseKind(String value) {
-    return DailyRecordKind.values.firstWhere((k) => k.name == value);
+    return DailyRecordKind.values.firstWhere(
+      (k) => k.name == value,
+      orElse: () => DailyRecordKind.note,
+    );
   }
 
   DailyRecordAttachmentKind _parseAttachmentKind(String value) {
