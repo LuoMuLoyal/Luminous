@@ -1,3 +1,4 @@
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -71,7 +72,11 @@ class SymptomQuickEntryFlow {
           ),
         );
         succeeded.add(choice);
-      } catch (_) {
+      } catch (e, st) {
+        appTalker.error(
+          'SymptomQuickEntry: createRecord failed for "${choice.title}": $e',
+          st,
+        );
         failed.add(choice);
       }
     }

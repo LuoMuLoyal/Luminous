@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/record/presentation/quick_entry/meal_flow.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -126,7 +127,8 @@ class _MealQuickConfirmationDialogState
           note: _noteController.text,
         ),
       );
-    } catch (_) {
+    } catch (e, st) {
+      appTalker.error('MealQuickConfirmation: saveDraft failed: $e', st);
       if (!mounted) return;
       setState(() => _saving = false);
       unawaited(Toast.show(context, l10n.recordCreateFailedToast));

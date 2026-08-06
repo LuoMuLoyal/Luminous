@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/data/quick_entry_preferences.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
@@ -81,7 +82,8 @@ class QuickEntryExecutor {
         ),
         preferences,
       );
-    } catch (_) {
+    } catch (e, st) {
+      appTalker.error('QuickEntryExecutor: water record failed: $e', st);
       if (!buildContext.mounted) return;
       await Toast.show(buildContext, l10n.recordCreateFailedToast);
       return;
@@ -108,7 +110,8 @@ class QuickEntryExecutor {
         deleteDailyRecord: deleteDailyRecord,
         emitDataChange: emitDataChange,
       ).undo(action);
-    } catch (_) {
+    } catch (e, st) {
+      appTalker.error('QuickEntryExecutor: undo failed: $e', st);
       if (!buildContext.mounted) return;
       await Toast.show(
         buildContext,
