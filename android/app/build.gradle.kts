@@ -22,6 +22,11 @@ val hasReleaseSigning =
     keystoreValue("keyAlias").isNotEmpty() &&
     keystoreValue("keyPassword").isNotEmpty()
 
+val luminousApplicationId = "com.dev.luminous"
+val jpushAppKey = providers.gradleProperty("JPUSH_APP_KEY")
+    .orElse(providers.environmentVariable("JPUSH_APP_KEY"))
+    .orElse("")
+
 android {
     namespace = "com.dev.luminous"
     compileSdk = flutter.compileSdkVersion
@@ -34,7 +39,10 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.dev.luminous"
+        applicationId = luminousApplicationId
+        manifestPlaceholders["JPUSH_PKGNAME"] = luminousApplicationId
+        manifestPlaceholders["JPUSH_APPKEY"] = jpushAppKey.get()
+        manifestPlaceholders["JPUSH_CHANNEL"] = "developer-default"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26
