@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-06
 ---
 
 # Luminous TODO
 
-Last updated: 2026-07-18
+Last updated: 2026-08-06
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -34,7 +34,7 @@ Last updated: 2026-07-18
 
 ## 审查暂缓项
 
-- 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`quick_entry_panel.dart`（685 行）、`record/edit.dart`（648 行）、`settings/page.dart`（638 行）、`record/detail.dart`（572 行）、`report/page.dart`（559 行）
+- 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/detail.dart`（853 行）、`quick_entry_panel.dart`（565 行）、`record/edit.dart`（511 行）、`report/page.dart`（470 行）、`settings/page.dart`（184 行）
 - 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 ## 实验性功能（稳定版后启动）
