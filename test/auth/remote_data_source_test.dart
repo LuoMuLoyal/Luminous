@@ -122,7 +122,7 @@ void main() {
 
         expect(
           () => dataSource.login(email: 'test@example.com', password: 'Pw'),
-          throwsA(isA<TypeError>()),
+          throwsA(isA<StateError>()),
         );
       });
 
@@ -212,7 +212,7 @@ void main() {
       test('throws on null response', () async {
         adapter.body = null;
 
-        expect(() => dataSource.fetchAccount(), throwsA(isA<TypeError>()));
+        expect(() => dataSource.fetchAccount(), throwsA(isA<StateError>()));
       });
     });
 

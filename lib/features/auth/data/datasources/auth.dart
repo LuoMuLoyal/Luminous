@@ -28,6 +28,18 @@ class LucentAuthRepository implements AuthRepository {
     );
   }
 
+  /// Extracts the response body, throwing a descriptive error if null.
+  ///
+  /// Replaces `response.data!.data` to avoid `NullPointerException` when
+  /// the server returns an empty body (500 error, network timeout, CDN
+  /// interception).
+  T _requireBody<T>(T? body) {
+    if (body == null) {
+      throw StateError('API 返回空响应体');
+    }
+    return body;
+  }
+
   SendVerificationCodeDtoSceneEnum _toDtoScene(AuthVerificationScene scene) {
     return switch (scene) {
       AuthVerificationScene.register =>
@@ -59,7 +71,9 @@ class LucentAuthRepository implements AuthRepository {
         code: trimmedCode == null || trimmedCode.isEmpty ? null : trimmedCode,
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -76,7 +90,7 @@ class LucentAuthRepository implements AuthRepository {
               ? OAuthAuthorizeDto(callbackUri: trimmedCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data!.data);
+    return _mapAuthorizeData(_requireBody(response.data).data);
   }
 
   @override
@@ -92,7 +106,7 @@ class LucentAuthRepository implements AuthRepository {
               ? OAuthAuthorizeDto(callbackUri: trimmedIdentityCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data!.data);
+    return _mapAuthorizeData(_requireBody(response.data).data);
   }
 
   @override
@@ -106,7 +120,9 @@ class LucentAuthRepository implements AuthRepository {
         state: state.trim(),
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -116,7 +132,9 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.auth.oAuthControllerLoginWithWechatMobileV1(
       oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -136,7 +154,9 @@ class LucentAuthRepository implements AuthRepository {
         familyName: familyName,
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -150,7 +170,7 @@ class LucentAuthRepository implements AuthRepository {
           ? QqOAuthAuthorizeDto(callbackUri: trimmedQqCallbackUri)
           : null,
     );
-    return _mapAuthorizeData(response.data!.data);
+    return _mapAuthorizeData(_requireBody(response.data).data);
   }
 
   @override
@@ -164,7 +184,9 @@ class LucentAuthRepository implements AuthRepository {
         state: state.trim(),
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -182,7 +204,7 @@ class LucentAuthRepository implements AuthRepository {
               ? WeiboOAuthAuthorizeDto(callbackUri: trimmedWeiboCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data!.data);
+    return _mapAuthorizeData(_requireBody(response.data).data);
   }
 
   @override
@@ -196,7 +218,9 @@ class LucentAuthRepository implements AuthRepository {
         state: state.trim(),
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -214,7 +238,7 @@ class LucentAuthRepository implements AuthRepository {
               ? GoogleOAuthAuthorizeDto(callbackUri: trimmedGoogleCallbackUri)
               : null,
         );
-    return _mapAuthorizeData(response.data!.data);
+    return _mapAuthorizeData(_requireBody(response.data).data);
   }
 
   @override
@@ -228,7 +252,9 @@ class LucentAuthRepository implements AuthRepository {
         state: state.trim(),
       ),
     );
-    final session = AuthMapper.toSessionFromLogin(response.data!.data);
+    final session = AuthMapper.toSessionFromLogin(
+      _requireBody(response.data).data,
+    );
     await _persistSession(session);
     return session;
   }
@@ -245,7 +271,7 @@ class LucentAuthRepository implements AuthRepository {
             state: state.trim(),
           ),
         );
-    return _authUserFromAccount(response.data!.data);
+    return _authUserFromAccount(_requireBody(response.data).data);
   }
 
   @override
@@ -254,7 +280,7 @@ class LucentAuthRepository implements AuthRepository {
         .accountControllerLinkWechatMobileIdentityV1(
           oAuthCodeCallbackDto: OAuthCodeCallbackDto(code: code.trim()),
         );
-    return _authUserFromAccount(response.data!.data);
+    return _authUserFromAccount(_requireBody(response.data).data);
   }
 
   @override
@@ -275,7 +301,7 @@ class LucentAuthRepository implements AuthRepository {
             : trimmedNickname,
       ),
     );
-    return AuthMapper.toSessionFromRegister(response.data!.data);
+    return AuthMapper.toSessionFromRegister(_requireBody(response.data).data);
   }
 
   @override
@@ -295,7 +321,7 @@ class LucentAuthRepository implements AuthRepository {
   @override
   Future<AuthUser> fetchAccount() async {
     final response = await _client.account.accountControllerGetAccountV1();
-    return _authUserFromAccount(response.data!.data);
+    return _authUserFromAccount(_requireBody(response.data).data);
   }
 
   @override
@@ -303,7 +329,7 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.auth.sessionControllerRefreshV1(
       refreshDto: RefreshDto(refreshToken: refreshToken.trim()),
     );
-    final tokens = response.data!.data;
+    final tokens = _requireBody(response.data).data;
     await _sessionStore.write(
       LucentSessionTokens(
         accessToken: tokens.accessToken,
@@ -330,7 +356,7 @@ class LucentAuthRepository implements AuthRepository {
         scene: _toDtoScene(scene),
       ),
     );
-    return _mapCooldown(response.data!.data);
+    return _mapCooldown(_requireBody(response.data).data);
   }
 
   @override
@@ -353,7 +379,7 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.auth.localControllerForgotPasswordV1(
       forgotPasswordDto: ForgotPasswordDto(email: email.trim()),
     );
-    return _mapCooldown(response.data!.data);
+    return _mapCooldown(_requireBody(response.data).data);
   }
 
   @override
@@ -377,7 +403,7 @@ class LucentAuthRepository implements AuthRepository {
         avatar: avatar?.trim(),
       ),
     );
-    return _authUserFromAccount(response.data!.data);
+    return _authUserFromAccount(_requireBody(response.data).data);
   }
 
   @override
@@ -407,9 +433,9 @@ class LucentAuthRepository implements AuthRepository {
       ),
     );
     return currentUser.copyWith(
-      email: response.data!.data.email,
+      email: _requireBody(response.data).data.email,
       emailVerifiedAt: _parseOptionalDateTime(
-        response.data!.data.emailVerifiedAt,
+        _requireBody(response.data).data.emailVerifiedAt,
       ),
     );
   }
@@ -434,7 +460,7 @@ class LucentAuthRepository implements AuthRepository {
     final response = await _client.account.accountControllerUnlinkIdentityV1(
       identityId: identityId,
     );
-    return _authUserFromAccount(response.data!.data);
+    return _authUserFromAccount(_requireBody(response.data).data);
   }
 
   AuthUser _authUserFromAccount(AccountDto user) {
