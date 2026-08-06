@@ -89,8 +89,10 @@ class DoseLogRemoteDataSource {
     return _fromJson(_requireData(response));
   }
 
-  DoseLogStatus _parseStatus(String s) =>
-      DoseLogStatus.values.firstWhere((e) => e.name == s);
+  DoseLogStatus _parseStatus(String s) => DoseLogStatus.values.firstWhere(
+    (e) => e.name == s,
+    orElse: () => DoseLogStatus.planned,
+  );
 
   DoseLogItem _fromJson(Map<String, dynamic> json) {
     return DoseLogItem(
