@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-06
 ---
 
 # Luminous Runtime Snapshot
 
-Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
+Last updated: 2026-08-06 (JPush push lifecycle integration)
 
 ## 技术栈
 
@@ -88,6 +88,7 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
   列表，用于本地渲染饮水角标（累计量/次数/隐藏）和睡眠进行中角标；该显示层不新增后端状态字段。
 - `dailyRecordDetailProvider(recordId)` 为 keepAlive FutureProvider；`dailyRecordListForDateProvider(date)`（手写 `FutureProvider.family`）按本地日期拉当天记录，供详情页相邻导航与饮水聚合。
 - `recordEditControllerProvider`（`presentation/providers/record_edit_controller.dart`）承载编辑页表单状态与 load/save/isDirty；页面为纯表单渲染并负责未保存离开提醒（`PopScope` + 自定义 `AppBackButton`）。
+- JPush 推送由 `core/push/jpush_gateway.dart`、`message_handler.dart`、`lifecycle.dart` 分层：`main()` 在 `runApp()` 前初始化 SDK，根组件持续 watch `pushCoordinatorProvider` 保持事件订阅；认证 restore 完成后通过 `PushCoordinator` 处理冷启动点击、通知未读数失效和用户 UUID alias 绑定/解绑。JPush 未配置或运行在非移动平台时静默禁用。
 
 ## 本地持久化
 
@@ -106,6 +107,7 @@ Last updated: 2026-07-30 (OCR engine init fix and ABI pre-check)
 - GoRouter 全局 `redirect` 守卫：未认证用户可以访问主 tab 预览页（`/`、`/record`、`/medicine`、`/report`、`/mine`）以及 `/settings`、`/assistant`、`/legal`、`/report/clinic-summary`；其他受保护路由才重定向到 `/login`。已认证用户访问 `/login`、`/register`、`/forgot-password` 时会被送回首页。
 - 受保护 provider 在认证恢复或确认登出时不调用 Lucent。
 - 受保护入口点击在当前页弹出登录提示（`AuthRequiredDialogGate` 带 returnTo）。
+- JPush alias 生命周期跟随认证状态：已授权时复用现有通知权限状态调用 APNs authority，未授权不额外弹窗但仍绑定 alias；登出时删除 alias。Android AppKey 通过 Gradle 参数/环境变量注入，Dart 侧通过 `--dart-define=JPUSH_APP_KEY` 注入；iOS Debug/Profile 使用 APNs development，Release 使用 production entitlement。
 
 ## 类型安全路由
 

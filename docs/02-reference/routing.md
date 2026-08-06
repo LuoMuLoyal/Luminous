@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-06
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-07-28
+Last updated: 2026-08-06
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -101,6 +101,15 @@ The following routes are accessible without signing in so the app can be opened 
 - `/legal`, `/report/clinic-summary` — shared/legal content.
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users away from `/login`, `/register`, `/forgot-password`.
+
+### Push Notification Navigation
+
+JPush notification receive/open events are normalized by `lib/core/push/message_handler.dart`.
+Both the default action and `extras.action = medicine_reminder` navigate to `/notifications`;
+click events invalidate the notification unread-count provider before navigation. The root app
+keeps `pushCoordinatorProvider` alive, and `bootstrap.dart` starts cold-start event handling only
+after the auth session restore has completed so the protected notification route is evaluated with
+the final session state.
 
 ### Record Quick-Entry Settings
 

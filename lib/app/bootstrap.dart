@@ -13,6 +13,7 @@ import 'package:luminous/core/database/cache_cleanup.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/push/lifecycle.dart';
 import 'package:luminous/core/shortcuts/shortcuts.dart';
 import 'package:luminous/core/theme/preference.dart';
 import 'package:luminous/core/theme/theme.dart';
@@ -38,9 +39,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       if (!mounted) {
         return;
       }
-      unawaited(ref.read(authSessionProvider.notifier).restore());
-      // Trigger cache cleanup based on data retention setting
-      ref.read(cacheCleanupProvider);
+      unawaited(_restoreAuthAndStartPush());
     });
   }
 
@@ -55,12 +54,17 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
 
       if (previous?.isAuthenticated == true && !next.isAuthenticated) {
         ref.invalidate(healthContextSnapshotProvider);
+      }
+
+      if (!next.isLoading) {
+        unawaited(_syncPushAuth(next.isAuthenticated ? next.user?.id : null));
+      }
+
+      if (previous?.isAuthenticated == true && !next.isAuthenticated) {
         return;
       }
 
-      if (!next.isAuthenticated || next.isLoading) {
-        return;
-      }
+      if (!next.isAuthenticated || next.isLoading) return;
 
       final becameAuthenticated = previous?.isAuthenticated != true;
       final switchedUser =
@@ -76,6 +80,7 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       medicineReminderNotificationSyncProvider,
       (_, _) {},
     );
+    ref.watch(pushCoordinatorProvider);
 
     final themePreference = ref
         .watch(themeControllerProvider)
@@ -139,6 +144,33 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: widget.routerConfig ?? ref.watch(appRouterProvider),
     );
+  }
+
+  Future<void> _restoreAuthAndStartPush() async {
+    try {
+      await ref.read(authSessionProvider.notifier).restore();
+      if (!mounted) return;
+
+      // Keep cache cleanup startup work in the same post-frame bootstrap.
+      ref.read(cacheCleanupProvider);
+
+      final coordinator = ref.read(pushCoordinatorProvider);
+      await coordinator.start();
+      final session = ref.read(authSessionProvider);
+      await coordinator.onAuthChanged(
+        userId: session.isAuthenticated ? session.user?.id : null,
+      );
+    } catch (error) {
+      ref.read(talkerProvider).error('Push startup failed: $error');
+    }
+  }
+
+  Future<void> _syncPushAuth(String? userId) async {
+    try {
+      await ref.read(pushCoordinatorProvider).onAuthChanged(userId: userId);
+    } catch (error) {
+      ref.read(talkerProvider).error('Push alias sync failed: $error');
+    }
   }
 
   Future<void> _restoreLocaleFromProfile() async {

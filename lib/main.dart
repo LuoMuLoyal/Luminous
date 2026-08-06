@@ -6,6 +6,8 @@ import 'package:luminous/app/bootstrap.dart';
 import 'package:luminous/app/window_manager_setup.dart';
 import 'package:luminous/core/config/env_keys.dart';
 import 'package:luminous/core/config/env_reader.dart';
+import 'package:luminous/core/logger/logger.dart';
+import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> main() async {
@@ -17,6 +19,12 @@ Future<void> main() async {
   await initDesktopWindow();
 
   await _initSentry();
+
+  try {
+    await jpushGatewaySingleton.init();
+  } catch (error, stackTrace) {
+    appTalker.error('JPush initialization failed: $error\n$stackTrace');
+  }
 
   // Catch framework errors (sync errors in widget build / layout / paint).
   FlutterError.onError = (details) {

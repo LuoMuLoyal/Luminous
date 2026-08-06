@@ -38,9 +38,13 @@ class PushMessageHandler {
       invalidateUnread();
     });
     _openSubscription = gateway.openEvents.listen((event) {
-      invalidateUnread();
-      navigate(routeForPushEvent(event));
+      handleOpenEvent(event);
     });
+  }
+
+  void handleOpenEvent(Map<String, dynamic> event) {
+    invalidateUnread();
+    navigate(routeForPushEvent(event));
   }
 
   Future<void> dispose() async {
