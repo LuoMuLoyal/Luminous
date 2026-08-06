@@ -75,8 +75,8 @@ dependencies:
   sign_in_with_apple: ^8.1.0
   flutter_svg: ^2.1.0
   share_plus: ^13.2.0
-  forui: ^0.24.1
-  forui_hooks: ^0.24.0
+  forui: ^0.25.0
+  forui_hooks: ^0.25.0
   timeline_tile: ^2.0.0
   flutter_slidable: ^4.0.3
   clock: ^1.1.2

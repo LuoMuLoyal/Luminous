@@ -2,12 +2,14 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-06
 ---
 
 # Forui 参考（项目版）
 
-> 版本：`forui: 0.24.1`，`forui_hooks: 0.24.0`。
+> 版本：`forui: 0.25.0`，`forui_hooks: 0.25.0`。
+>
+> **0.25.x Breaking Changes**：`FIconBuilder` 与 `FIcons.iconData(...)` 移除，改用 `FIcon`；`FTooltip.semanticsLabel` 移除（改由触发侧 `semanticsTooltip` 提供）；`FDialogRouteStyle.barrierFilter` / `FDialogStyle.backgroundFilter` / `FModalSheetStyle.barrierFilter` / `FPopoverStyle` 的 filter 改为接收 `BuildContext`；`FDialogRouteStyle.inherit(colors: ...)` / `FModalSheetStyle.inherit(colors: ...)` 移除；`FBreadcrumbItem.collapsed(semanticsLabel: ...)` 改为 `menuSemanticsLabel`；`FAnimatedModalBarrier.filter` 改为接收 `BuildContext`。
 >
 > **0.24.x Breaking Changes**：`FThemes` 类被移除（仅保留 `FTheme.neutral`）；`FCard.raw` / `FDialog.raw` 构造函数被移除（API 合并到 `FCard` / `FDialog`）；`FDialog` 构造函数从声明式（`title`/`body`/`actions`）改为 `builder` 模式；`FDateSelectionControl.lifted` 改为 `liftedSingle`；`FBadgeStyle.contentStyle` 被移除（`labelTextStyle` 提升到顶层）。
 
@@ -30,7 +32,7 @@ updated: 2026-08-02
 
 推荐顺序：
 1. 需要了解某个组件怎么用 → 优先看 `llms-full.txt` 里对应章节。
-2. 需要确认 API 参数或默认样式 → 看 `Pub/Cache/hosted/pub.dev/forui-0.24.1/lib/src/widgets/...`。
+2. 需要确认 API 参数或默认样式 → 看 `Pub/Cache/hosted/pub.dev/forui-0.25.0/lib/src/widgets/...`。
 3. 需要项目实际用法 → 看本文件和 `lib/core/widgets` 里的封装。
 
 官方地址：

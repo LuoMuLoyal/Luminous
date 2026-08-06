@@ -710,26 +710,26 @@ packages:
     dependency: "direct main"
     description:
       name: forui
-      sha256: cdecccadcc54fa786e691cd7debca2e2d422106d0e35d0aaa8b74262bf2af5c5
+      sha256: bf2a76293044ec8fbe8869032a67e79b6dfb12a471c9c3ecacb45626e69744d2
       url: "https://pub.dev"
     source: hosted
-    version: "0.24.1"
+    version: "0.25.0"
   forui_assets:
     dependency: transitive
     description:
       name: forui_assets
-      sha256: "95f11ad6f0d560a91971388f13ebf7beb77a631f9bb6ba5ab7b3454ac3acda96"
+      sha256: "43b219f28399786b8ac51c01048f583b3155c0e39ac163845b1e73c959240139"
       url: "https://pub.dev"
     source: hosted
-    version: "0.24.0"
+    version: "0.25.0"
   forui_hooks:
     dependency: "direct main"
     description:
       name: forui_hooks
-      sha256: "4e58df0308b7e6f72fc2dd29adc42d9880e3927aad5abdaf020a0b867d455b8d"
+      sha256: "821e9581cb8a92b20c02a8efafc19fdeb20824cf393735bb73da2bd71ecd7927"
       url: "https://pub.dev"
     source: hosted
-    version: "0.24.0"
+    version: "0.25.0"
   freezed:
     dependency: "direct dev"
     description:
