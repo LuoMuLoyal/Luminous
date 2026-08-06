@@ -206,12 +206,18 @@ void main() {
     // test until the route is dismissed at the end.
     unawaited(router.push('/record/test-id/edit'));
     await tester.pumpAndSettle();
+    // The form shows the default save hint before any edits.
+    expect(find.byKey(const Key('record-edit-save-hint')), findsOneWidget);
+    expect(find.text(l10n.recordEditUnsavedHint), findsOneWidget);
     // Modify the note field so the form becomes dirty.
     await tester.enterText(
       find.byKey(const Key('daily-record-note-field')),
       '未保存的备注',
     );
     await tester.pump();
+    // The hint switches to the unsaved-changes warning while dirty.
+    expect(find.byKey(const Key('record-edit-unsaved-hint')), findsOneWidget);
+    expect(find.text(l10n.recordEditUnsavedWarning), findsOneWidget);
 
     // Backing out shows the discard confirmation.
     await tester.tap(find.byType(AppBackButton));

@@ -16,12 +16,16 @@ import 'package:luminous/core/widgets/layout/responsive_content_frame.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/record/application/usecases/record_detail_actions.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/data/quick_entry_preferences.dart';
+import 'package:luminous/features/record/domain/entities/dashboard.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/record/domain/entities/type_mapping.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/utils/meal_analysis_payload_parser.dart';
 import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_status_badge.dart';
 import 'package:luminous/features/record/presentation/widgets/meal/analysis_summary_card.dart';
+import 'package:luminous/features/record/presentation/widgets/shared/dashboard_tokens.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 class RecordDetailPage extends ConsumerWidget {
@@ -91,21 +95,10 @@ class RecordDetailPage extends ConsumerWidget {
       );
     }
 
-    final actions = <Widget>[
-      if (session.canAccessProtectedData)
-        FTooltip(
-          tipBuilder: (context, controller) => Text(l10n.recordEditAction),
-          child: FButton.icon(
-            variant: FButtonVariant.ghost,
-            onPress: () => editRecord(context, recordId),
-            child: const Icon(SemanticIcons.actionEdit),
-          ),
-        ),
-    ];
-
+    // The edit entry point lives in the page body as the primary action,
+    // keeping the header clean and the detail page clearly read-only.
     return PageScaffold(
       title: l10n.recordDetailTitle,
-      actions: actions,
       child: SingleChildScrollView(child: content),
     );
   }
@@ -195,17 +188,30 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _KindIcon(kind: record.kind),
+                  _KindHeroAvatar(kind: record.kind),
                   const SizedBox(width: Spacing.level4),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          record.title ?? _kindLabel(l10n, record.kind),
-                          style: TypographyToken.level7
-                              .display(context)
-                              .copyWith(fontWeight: FontWeight.w800),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                record.title ?? _kindLabel(l10n, record.kind),
+                                style: TypographyToken.level7
+                                    .display(context)
+                                    .copyWith(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            if (_nonEmpty(record.source) != null) ...[
+                              const SizedBox(width: Spacing.level3),
+                              _SourceBadge(
+                                label: _sourceLabel(l10n, record.source!),
+                              ),
+                            ],
+                          ],
                         ),
                         const SizedBox(height: Spacing.level2),
                         Text(
@@ -241,11 +247,6 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
                     ),
                   if (_nonEmpty(record.note) != null)
                     _DetailRowData(l10n.recordCreateFieldNote, record.note!),
-                  if (_nonEmpty(record.source) != null)
-                    _DetailRowData(
-                      l10n.recordDetailSourceLabel,
-                      _sourceLabel(l10n, record.source!),
-                    ),
                   _DetailRowData(
                     l10n.recordDetailUpdatedAtLabel,
                     formatRecordDateTimeLabel(record.updatedAt),
@@ -375,6 +376,13 @@ class _RecordDetailBodyState extends ConsumerState<_RecordDetailBody> {
             ),
           ),
         ],
+        const SizedBox(height: Spacing.level4),
+        FButton(
+          key: const Key('record-detail-edit-action'),
+          onPress: () => editRecord(context, record.id),
+          prefix: const Icon(SemanticIcons.actionEdit, size: 18),
+          child: Text(l10n.recordDetailEditAction),
+        ),
         const SizedBox(height: Spacing.level4),
         Row(
           children: [
@@ -600,39 +608,82 @@ class _DetailSurface extends StatelessWidget {
   }
 }
 
-class _KindIcon extends StatelessWidget {
-  const _KindIcon({required this.kind});
+/// Hero avatar for the record detail header.
+///
+/// Uses the kind's quick-action accent colors and resolves the user-customized
+/// icon (same source as the quick-entry panel), so the same record reads
+/// consistently across surfaces. Falls back to the neutral primary style for
+/// kinds without a quick action (vitals / activity).
+class _KindHeroAvatar extends ConsumerWidget {
+  const _KindHeroAvatar({required this.kind});
 
   final DailyRecordKind kind;
 
   @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colors = context.theme.colors;
+    final entryType = recordEntryTypeForDailyRecordKind(kind);
+    final action = RecordDashboard.quickActionFor(entryType);
+    final prefs =
+        ref.watch(quickEntryPreferencesProvider).asData?.value ??
+        const QuickEntryPreferences();
+
+    final accent = action?.accent.solid(context) ?? colors.primary;
+    final soft = action?.softColor.subtle(context) ?? colors.secondary;
+    final icon = action == null
+        ? _kindIconFallback(kind)
+        : resolveQuickActionIcon(action, prefs);
+
+    return FAvatar.raw(
+      size: 52,
+      style: .delta(backgroundColor: soft),
+      child: Icon(icon, color: accent, size: 24),
+    );
+  }
+}
+
+/// Lightweight source badge shown next to the detail title.
+class _SourceBadge extends StatelessWidget {
+  const _SourceBadge({required this.label});
+
+  final String label;
+
+  @override
   Widget build(BuildContext context) {
     final colors = context.theme.colors;
-    final color = colors.primary;
-    final background = colors.secondary;
-
-    final icon = switch (kind) {
-      DailyRecordKind.water => SemanticIcons.recordWater,
-      DailyRecordKind.meal => SemanticIcons.recordMeal,
-      DailyRecordKind.vital => SemanticIcons.profileCondition,
-      DailyRecordKind.mood => SemanticIcons.recordMood,
-      DailyRecordKind.symptom => SemanticIcons.safetyDanger,
-      DailyRecordKind.activity => SemanticIcons.recordActivity,
-      DailyRecordKind.note => SemanticIcons.tabRecord,
-      DailyRecordKind.sleep => SemanticIcons.recordSleep,
-    };
-
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(RadiusTokens.level4),
+        color: colors.muted,
+        borderRadius: BorderRadius.circular(RadiusTokens.levelFull),
       ),
-      child: SizedBox.square(
-        dimension: 44,
-        child: Icon(icon, color: color, size: 22),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level2,
+          vertical: 1,
+        ),
+        child: Text(
+          label,
+          style: TypographyToken.level1
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
+        ),
       ),
     );
   }
+}
+
+/// Fallback icon for kinds without a quick action (vitals / activity).
+IconData _kindIconFallback(DailyRecordKind kind) {
+  return switch (kind) {
+    DailyRecordKind.water => SemanticIcons.recordWater,
+    DailyRecordKind.meal => SemanticIcons.recordMeal,
+    DailyRecordKind.vital => SemanticIcons.profileCondition,
+    DailyRecordKind.mood => SemanticIcons.recordMood,
+    DailyRecordKind.symptom => SemanticIcons.safetyDanger,
+    DailyRecordKind.activity => SemanticIcons.recordActivity,
+    DailyRecordKind.note => SemanticIcons.tabRecord,
+    DailyRecordKind.sleep => SemanticIcons.recordSleep,
+  };
 }
 
 class _RecordDetailImage extends StatelessWidget {

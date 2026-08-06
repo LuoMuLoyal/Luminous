@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-04
+updated: 2026-08-06
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-04 (快速记录长按设置 Symptom + Mood + Sleep + Medication)
+Last updated: 2026-08-06 (详情页/编辑页区分度精进第一批)
 
 ## 支持的记录类型
 
@@ -121,6 +121,10 @@ Last updated: 2026-08-04 (快速记录长按设置 Symptom + Mood + Sleep + Medi
   - `RecordFastEntryDialog` 读取默认时长偏好，将匹配的选项排在最前面。
   - 长按 medication 快捷瓦片弹出两个开关：单药自动记录 + 已记录提示。`QuickEntryPreferences` 新增 `medicationAutoRecordSingle`、`medicationShowAlreadyRecordedHint` 字段。
   - `MedicationQuickEntryFlow.handleTap` 新增 `autoRecordSingle` 参数控制单药是否自动记录。`handleMedicationQuickAction` 读取 `showAlreadyRecordedHint` 控制已记录 toast。
+- 阶段 10 详情页 / 编辑页区分度精进（2026-08-06，方案见 `plans/2026-08-06-record-detail-edit-differentiation.md`）：
+  - 详情页 = 只读快照：顶栏编辑图标移除；头部 Hero 化——`_KindHeroAvatar` 52px 圆形类型图标（`RecordDashboard.quickActionFor` + `resolveQuickActionIcon` 与快速记录面板图标同源，vitals/activity 回退 primary）+ 标题旁 `_SourceBadge` 来源徽章（信息行的「来源」行移除避免重复，复制摘要仍含来源）。
+  - 详情页底部操作重排：`record-detail-edit-action` primary 主按钮「编辑这条记录」→ 上一条/下一条 ghost 并排 → 复制摘要 ghost → 删除 destructive 置底。
+  - 编辑页 = 编辑工作台：表单顶部 `_EditStatusHint` 提示条，默认「修改后点击保存生效」（muted），dirty 时切换警告色「有未保存的更改」（`SemanticColor.warning`），与返回丢弃确认（`recordEditDiscard*`）形成闭环。
 
 ## 骨架屏
 

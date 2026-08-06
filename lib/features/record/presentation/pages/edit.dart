@@ -243,6 +243,11 @@ class RecordEditPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.level4),
+                child: _EditStatusHint(dirty: dirty, l10n: l10n),
+              ),
+              const SizedBox(height: Spacing.level2),
+              Padding(
                 padding: const EdgeInsets.all(Spacing.level4),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -436,6 +441,62 @@ class _RecordEditLoading extends StatelessWidget {
         InlineSkeletonBlock(height: 56),
         InlineSkeletonBlock(height: 44),
       ],
+    );
+  }
+}
+
+/// Status hint above the edit form.
+///
+/// Shows a subtle "changes take effect after saving" hint by default, and
+/// switches to a warning pill while the form is dirty, echoing the
+/// discard-confirmation dialog shown on back navigation.
+class _EditStatusHint extends StatelessWidget {
+  const _EditStatusHint({required this.dirty, required this.l10n});
+
+  final bool dirty;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    const warning = SemanticColor.warning;
+    final background = dirty ? warning.subtle(context) : colors.muted;
+    final foreground = dirty ? warning.solid(context) : colors.mutedForeground;
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(RadiusTokens.level2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.level3,
+          vertical: Spacing.level2,
+        ),
+        child: Row(
+          key: Key(
+            dirty ? 'record-edit-unsaved-hint' : 'record-edit-save-hint',
+          ),
+          children: [
+            Icon(
+              dirty ? SemanticIcons.statusWarning : SemanticIcons.statusInfo,
+              color: foreground,
+              size: IconSizeTokens.level2,
+            ),
+            const SizedBox(width: Spacing.level2),
+            Expanded(
+              child: Text(
+                dirty
+                    ? l10n.recordEditUnsavedWarning
+                    : l10n.recordEditUnsavedHint,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: foreground),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

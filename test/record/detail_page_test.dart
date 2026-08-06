@@ -250,6 +250,10 @@ void main() {
     // Copy action is available.
     expect(find.byKey(const Key('record-detail-copy-action')), findsOneWidget);
 
+    // Edit is the primary action in the page body (header icon removed).
+    expect(find.byKey(const Key('record-detail-edit-action')), findsOneWidget);
+    expect(find.text('编辑这条记录'), findsOneWidget);
+
     // Navigating next loads the adjacent record.
     await tester.tap(find.byKey(const Key('record-detail-next-action')));
     await tester.pumpAndSettle();
