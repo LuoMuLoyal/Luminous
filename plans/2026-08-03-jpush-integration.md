@@ -1,685 +1,292 @@
 # 极光推送客户端集成实施计划
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 在 Luminous 接入极光推送（JPush），按极光推荐的最佳实践：登录后 `setAlias(userId)` 绑定用户、退出 `deleteAlias()`，接收通知消息并路由到站内通知页，覆盖前台/后台/终止三种状态。
+**Goal:** Luminous 在 Android/iOS 接入 JPush：初始化 SDK，登录后绑定 Lucent 用户 UUID 为 alias，退出时解绑，处理前台到达与后台/终止态点击，并统一路由到站内通知页。
 
-**Architecture:** 新增 `lib/core/push/` 目录，三个职责单一的文件（**文件名不重复目录已表明的 `push` 前缀**）：`jpush_gateway.dart`（封装 jpush_flutter：setup/事件流/alias 绑定/权限）、`message_handler.dart`（通知点击路由 `/notifications`、到达刷新未读数）、`lifecycle.dart`（推送生命周期编排：启动初始化、登录态变化时绑定/解绑 alias）。SDK 初始化放在 `main()`（`runApp` 之前）以捕获冷启动点击；`jpushGatewaySingleton` 由 `main()` 初始化、Riverpod provider 复用同一实例。现有 `flutter_local_notifications` 本地提醒链路不动。仅 Android/iOS 生效，其他平台静默跳过。
+**Architecture:** `lib/core/push/` 分为 SDK 网关、消息处理、生命周期协调三个职责。网关只处理插件 API 与跨平台事件归一化；消息处理只负责未读数失效和路由；协调器只负责启动冷启动通知处理及认证状态到 alias 的映射。现有 `flutter_local_notifications` 本地提醒链路保持不变。JPush 未配置或运行在非 Android/iOS 平台时静默禁用。
 
-**Tech Stack:** Flutter, Riverpod, GoRouter, `jpush_flutter ^3.4.5`, 生成 API 客户端 `generated/lucent_api`。
-
----
-
-## 与后端的契约
-
-- 客户端登录后 `jpush.setAlias(userId)`、退出 `jpush.deleteAlias()`；alias = Lucent 用户 id（UUID）。极光维护 alias→设备映射，同一用户多设备共享一个 alias。
-- 后端按 `audience: { alias: [userId] }` 推送，**不再提供设备注册 API**；旧 `POST/GET/DELETE /api/v1/user/user-devices` 已删除。
-- 通知 `extras`（后端 `data`）携带 `action` 等路由信息；v1 统一跳转 `/notifications`，后续按 `action` 细化。
-
-## 现状
-
-- `lib/core/notifications/local_notification_gateway.dart`：本地定时通知（用药提醒等），与远程推送互不干扰。
-- `lib/features/settings/domain/services/notification_permission.dart` + `lib/features/settings/data/providers/notification_permission.dart`：系统通知权限统一管理（permission_handler + flutter_local_notifications），**推送授权复用该流程，不额外弹窗**。
-- `generated/lucent_api` 含旧的 `UserDevicesApi`（本次随后端删除契约后重生成移除）。
-- 路由：`lib/app/router.dart` 的 `Routes.notifications = '/notifications'`；`appRouterProvider` 为 GoRouter provider。
-- 未读角标：`notificationUnreadCountProvider`（`lib/features/notification/data/providers/unread_count.dart`）。
+**Tech Stack:** Flutter, Riverpod 3, GoRouter 17, `jpush_flutter`（按 pub resolver 解析的当前兼容版本）, generated `lucent_api`。
 
 ---
 
-### Task 1: 依赖与原生平台配置
+## 审核结论与执行约束
+
+- 原计划使用了不存在的 `android/app/build.gradle`；本仓库实际文件是 `android/app/build.gradle.kts`。
+- 原计划漏掉 `lib/core/network/dio_client.dart` 的 `userDevices` getter；OpenAPI 客户端删除后必须同步移除该 getter。
+- `jpush_flutter` 的 `JPushFlutterInterface` 位于 `package:jpush_flutter/jpush_interface.dart`；`setup()` 和 `applyPushAuthority()` 返回 `void`，不能 `await`；`setAlias()`/`deleteAlias()` 返回 `Future<Map>`；事件回调签名是返回 `Future` 的异步回调。实现和测试按实际 SDK 类型编译，不按旧示例猜测。
+- 不把真实 AppKey 写进 Gradle、Dart 或 plist。Android placeholder 从 `-PJPUSH_APP_KEY` 或环境变量读取，缺失时为空；Dart 侧从 `--dart-define=JPUSH_APP_KEY=...` 读取。真实推送构建必须同时提供两者。
+- iOS 推送能力通过 `Runner.entitlements` + `project.pbxproj` 配置，Debug/Profile 使用 development，Release 使用 production；不把手动 Xcode 点击步骤当成已完成的自动化验证。真实 provisioning、APNs 证书和真机消息链路属于外部验收。
+- 现有通知权限流程不能被登录时的 JPush API 额外弹窗绕过。协调器只在现有 `NotificationPermissionService` 返回 `granted` 时调用 `applyPushAuthority`；未授权时只绑定 alias，不主动申请权限。
+- 当前日期为 2026-08-06，迁移日志统一追加到 `docs/03-logs/migration-log/2026-08-06.md`。Luminous 已有 `l10n.yaml` 工作区修改必须原样保留，不得纳入本任务提交。
+
+## 验收标准
+
+- Android Gradle Kotlin DSL 和 iOS entitlements 已配置，缺少 AppKey 时构建/启动不因 JPush 崩溃。
+- 网关能在 Android/iOS 注册事件、解析 title/content/extras、绑定/解绑 alias、读取 iOS 冷启动通知；非移动平台静默返回。
+- 点击通知使未读数失效并路由到已存在的 `/notifications`；前台到达只刷新未读数，不改变本地提醒行为。
+- 登录、切换用户、退出登录分别绑定正确 alias 或删除当前 alias；现有通知权限服务负责权限状态。
+- OpenAPI 客户端重新生成后无 `UserDevicesApi`/`RegisterDeviceDto`/`DeviceResponseDto` 残留；`dio_client.dart` 无旧 getter。
+- `flutter analyze`、`flutter test`、文档覆盖检查在环境允许时通过；Windows 环境不能执行的 iOS/真机验证明确记录为未验证。
+
+---
+
+### Task 0: 固化审核后的客户端计划
+
+**Files:**
+- Modify: `plans/2026-08-03-jpush-integration.md`
+
+- [ ] **Step 1: 检查仓库状态**
+
+```powershell
+git status --short --branch
+```
+
+Expected: 既有 `l10n.yaml` 修改保持未暂存；不覆盖其他用户文件。
+
+- [ ] **Step 2: Commit**
+
+```powershell
+git add plans/2026-08-03-jpush-integration.md
+git commit -m "docs(push): 审核并完善极光客户端实施计划"
+```
+
+---
+
+### Task 1: 依赖、Android placeholder 与 iOS Push entitlement
 
 **Files:**
 - Modify: `pubspec.yaml`
-- Modify: `android/app/build.gradle`
-- Modify: `ios/Runner/AppDelegate.swift`（仅当收不到 device token 时兜底，见 Step 4）
+- Modify: `pubspec.lock`
+- Modify: `android/app/build.gradle.kts`
+- Create: `ios/Runner/Runner.entitlements`
+- Modify: `ios/Runner.xcodeproj/project.pbxproj`
+- Modify: `docs/03-logs/migration-log/2026-08-06.md`
 
-- [ ] **Step 1: 添加依赖**
+- [ ] **Step 1: 添加 SDK 依赖并记录解析版本**
 
-Run: `flutter pub add jpush_flutter`
-Expected: `pubspec.yaml` 的 `dependencies` 出现 `jpush_flutter: ^3.4.5`，`flutter pub get` 成功。
-
-- [ ] **Step 2: Android 配置 manifestPlaceholders**
-
-在 `android/app/build.gradle` 的 `defaultConfig` 块内追加（`JPUSH_APPKEY` 替换为极光控制台该包名对应的 AppKey，AppKey 为公开应用标识，可入库）：
-
-```groovy
-        manifestPlaceholders = [
-            JPUSH_PKGNAME: applicationId,
-            JPUSH_APPKEY : "在这里填极光控制台 AppKey",
-            JPUSH_CHANNEL: "developer-default",
-        ]
+```powershell
+flutter pub add jpush_flutter
+flutter pub get
 ```
 
-> 若构建报 minSdk 不足，按报错提升 `android/app/build.gradle` 中 `minSdk`（jpush_flutter 3.x 要求 Android 5.0+）。
+Expected: `pubspec.yaml` 增加 `jpush_flutter`，`pubspec.lock` 固定实际解析版本；不手工把旧计划中的 `^3.4.5` 当作 API 事实。
 
-- [ ] **Step 3: iOS 开启推送能力（手动 Xcode 步骤）**
+- [ ] **Step 2: 修改实际 Kotlin DSL 的 manifest placeholders**
 
-1. Xcode 打开 `ios/Runner.xcworkspace`
-2. `Runner` target → `Signing & Capabilities` → `+ Capability` → `Push Notifications`
-3. 确认开发/发布 provisioning profile 已勾选 Push Notifications entitlement（需在 Apple Developer 后台为 App ID 开启 Push 能力）
+在 `android/app/build.gradle.kts` 中增加从 Gradle property/env 读取 AppKey 的 provider，`defaultConfig` 设置：`JPUSH_PKGNAME=applicationId`、`JPUSH_APPKEY=读取值或空字符串`、`JPUSH_CHANNEL=developer-default`。仓库文件中不得出现真实 AppKey 或“在这里填”的占位文字；无值时保留空字符串，让 Dart 层也保持禁用。
 
-- [ ] **Step 4: 验证 iOS device token 兜底（仅在收不到 token 时执行）**
+- [ ] **Step 3: 配置 iOS entitlements**
 
-`jpush_flutter` 插件默认自动处理 APNs 注册；若真机收不到推送，在 `AppDelegate.swift` 的 `didFinishLaunchingWithOptions` 中追加转发：
+创建 `ios/Runner/Runner.entitlements`，内容使用 `$(APS_ENVIRONMENT)` 作为 `aps-environment`；在 Runner target 的 Debug/Profile/Release build settings 中加入 `CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements`，并分别设置 `APS_ENVIRONMENT=development/development/production`。不修改 `AppDelegate.swift`，除非真实设备验证证明插件需要额外转发 token。
 
-```swift
-  override func application(
-    _ application: UIApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-  ) {
-    // jpush_flutter 插件要求转发 deviceToken 给 JPUSHService
-    NotificationCenter.default.post(
-      name: Notification.Name("didRegisterForRemoteNotificationsWithDeviceToken"),
-      object: deviceToken
-    )
-  }
+- [ ] **Step 4: 运行静态配置检查和 Android debug 构建**
+
+```powershell
+rg -n "在这里填|真实 AppKey|JPUSH_APPKEY|APS_ENVIRONMENT|CODE_SIGN_ENTITLEMENTS" android ios
+flutter build apk --debug
 ```
 
-- [ ] **Step 5: 验证构建**
+Expected: 不出现真实凭据；Android debug 构建成功。若 Android 构建因 SDK/Gradle 版本失败，先按实际报错修正，不盲目升级 minSdk/生产依赖。
 
-Run: `flutter build apk --debug`
-Expected: 构建成功（iOS 在后续任务统一用 `flutter analyze` 验证 Dart 层）。
+- [ ] **Step 5: 文档检查并 Commit**
 
-- [ ] **Step 6: Commit**
-
-```bash
-git -C Luminous add pubspec.yaml pubspec.lock android/app/build.gradle
-git -C Luminous commit -m "feat(push): 接入 jpush_flutter 依赖与原生平台配置"
+```powershell
+dart run scripts/check_doc_coverage.dart --warning-only
+git add pubspec.yaml pubspec.lock android/app/build.gradle.kts ios/Runner/Runner.entitlements ios/Runner.xcodeproj/project.pbxproj docs/03-logs/migration-log/2026-08-06.md
+git commit -m "feat(push): 接入 JPush 依赖与移动端原生配置"
 ```
 
 ---
 
-### Task 2: JPush 网关封装
+### Task 2: JPush 网关
 
 **Files:**
 - Create: `lib/core/push/jpush_gateway.dart`
+- Create: `test/core/push/jpush_gateway_test.dart`
+- Modify: `docs/03-logs/migration-log/2026-08-06.md`
 
-> 命名说明：目录 `push/` 已表明域，文件名只保留业务词 + 限定词。`jpush` 是实现限定词（区别于未来可能的厂商直连实现），故 `jpush_gateway.dart` 保留。
+- [ ] **Step 1: 先写可测试的网关行为**
 
-- [ ] **Step 1: 新建 `lib/core/push/jpush_gateway.dart`**
+测试覆盖：非 Android/iOS 或 AppKey 为空时 `init()` 不调用 `setup`；移动平台配置存在时先注册异步事件回调再调用同步 `setup`；`setAlias`/`deleteAlias` 只在 configured 时调用；`getLaunchAppNotification()` 空 Map 返回 null；extras 同时兼容 Map 与 JSON 字符串；没有订阅者时先到达的点击事件在第一个订阅者建立后仍可消费。
+
+- [ ] **Step 2: 实现网关并匹配当前 SDK 签名**
+
+导入：
 
 ```dart
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
-
-/// 极光 AppKey。iOS 由 Dart 侧传入（--dart-define），Android 由 manifestPlaceholders 提供；
-/// 两处值必须一致。未配置时推送功能整体禁用。
-const jpushAppKey = String.fromEnvironment('JPUSH_APP_KEY');
-
-/// 归一化的推送事件（与平台无关）。
-class PushNotificationEvent {
-  const PushNotificationEvent({
-    required this.title,
-    required this.body,
-    this.extras,
-  });
-
-  final String title;
-  final String body;
-
-  /// 后端 `data` 的映射；JPush 可能以 JSON 字符串或 Map 形式返回。
-  final Map<String, dynamic>? extras;
-}
-
-/// 推送点击事件消费者（路由与未读刷新）。定义在网关文件中以复用
-/// [PushNotificationEvent]，避免 lifecycle / message_handler 循环依赖。
-abstract interface class PushEventSink {
-  void handleOpen(PushNotificationEvent event);
-}
-
-/// 封装 jpush_flutter：setup、alias 绑定、通知事件流、APNs 注册。
-/// 仅 Android/iOS 可用；web/桌面平台静默禁用。
-class JpushGateway {
-  JpushGateway({JPushFlutterInterface? jpush}) : _jpush = jpush ?? JPush.newJPush();
-
-  final JPushFlutterInterface _jpush;
-  bool _initialized = false;
-  bool _available = false;
-
-  /// 通知到达（前台）事件流。
-  final _onReceive = StreamController<PushNotificationEvent>.broadcast();
-  /// 通知点击事件流（含冷启动后缓存的点击）。
-  final _onOpen = StreamController<PushNotificationEvent>.broadcast();
-
-  Stream<PushNotificationEvent> get onReceiveNotification => _onReceive.stream;
-  Stream<PushNotificationEvent> get onOpenNotification => _onOpen.stream;
-
-  bool get isAvailable => _available;
-
-  /// 必须最先调用：注册事件回调（在 setup 之前）→ setup → 标记可用。
-  Future<void> init() async {
-    if (_initialized) {
-      return;
-    }
-    _initialized = true;
-    _available = _supportsPushOnThisPlatform;
-
-    if (!_available) {
-      return;
-    }
-
-    _jpush.addEventHandler(
-      onReceiveNotification: (message) {
-        _onReceive.add(_parseEvent(message));
-      },
-      onOpenNotification: (message) {
-        _onOpen.add(_parseEvent(message));
-      },
-    );
-
-    if (jpushAppKey.isEmpty) {
-      return; // 未配置 AppKey：保持禁用，不调用 setup
-    }
-
-    await _jpush.setup(
-      appKey: jpushAppKey,
-      channel: 'developer-default',
-      production: const bool.fromEnvironment('dart.vm.product'),
-      debug: kDebugMode,
-    );
-  }
-
-  /// 登录后绑定用户别名（alias = Lucent userId）。极光自动建立
-  /// alias → 设备映射，同一用户多设备共享一个 alias。
-  /// 失败仅记录日志，下次登录会再次绑定。
-  Future<void> setAlias(String userId) async {
-    if (!_available || jpushAppKey.isEmpty) {
-      return;
-    }
-    final result = await _jpush.setAlias(userId);
-    final code = result is Map ? result['code'] : null;
-    if (code is int && code != 0) {
-      debugPrint('JPush setAlias failed: code=$code, msg=${result?['msg']}');
-    }
-  }
-
-  /// 退出登录解绑别名。
-  Future<void> deleteAlias() async {
-    if (!_available || jpushAppKey.isEmpty) {
-      return;
-    }
-    await _jpush.deleteAlias();
-  }
-
-  /// iOS：注册 APNs（若系统权限已授予则静默注册，不重复弹窗）。
-  /// Android：通知权限由现有 permission_handler 流程统一管理，无需额外调用。
-  Future<void> ensureApnsRegistered() async {
-    if (!_available || jpushAppKey.isEmpty) {
-      return;
-    }
-    if (kIsWeb || defaultTargetPlatform != TargetPlatform.iOS) {
-      return; // 仅 iOS 需要
-    }
-    await _jpush.applyPushAuthority(
-      const NotificationSettingsIOS(sound: true, alert: true, badge: true),
-    );
-  }
-
-  /// iOS：获取点击通知冷启动应用的那条通知；Android 由缓存事件流覆盖。
-  Future<PushNotificationEvent?> launchNotification() async {
-    if (!_available || defaultTargetPlatform != TargetPlatform.iOS) {
-      return null;
-    }
-    final raw = await _jpush.getLaunchAppNotification();
-    if (raw == null || raw.isEmpty) {
-      return null;
-    }
-    return _parseEvent(raw);
-  }
-
-  void dispose() {
-    _onReceive.close();
-    _onOpen.close();
-  }
-
-  bool get _supportsPushOnThisPlatform {
-    if (kIsWeb) return false;
-    return defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS;
-  }
-
-  /// 归一化 JPush 消息 Map；extras 兼容「JSON 字符串」与「Map」两种形态。
-  static PushNotificationEvent _parseEvent(Map<dynamic, dynamic> raw) {
-    var extras = raw['extras'];
-    if (extras is String && extras.isNotEmpty) {
-      try {
-        final decoded = jsonDecode(extras);
-        if (decoded is Map<String, dynamic>) {
-          extras = decoded;
-        }
-      } catch (_) {
-        extras = null;
-      }
-    }
-    return PushNotificationEvent(
-      title: raw['title']?.toString() ?? '',
-      body: raw['content']?.toString() ?? '',
-      extras: extras is Map<String, dynamic> ? extras : null,
-    );
-  }
-}
-
-/// `main()` 中提前初始化的全局单例；provider 复用同一实例，保证
-/// 冷启动时 `runApp` 之前注册的事件回调与 app 内订阅的是同一对象。
-final jpushGatewaySingleton = JpushGateway();
-
-final jpushGatewayProvider = Provider<JpushGateway>((ref) {
-  ref.onDispose(jpushGatewaySingleton.dispose);
-  return jpushGatewaySingleton;
-});
+import 'package:jpush_flutter/jpush_interface.dart';
 ```
 
-- [ ] **Step 2: 运行 analyze**
+`JpushGateway` 接受可选 `JPushFlutterInterface` 以便测试；`addEventHandler` 的两个 handler 声明为 `Future<void> Function(Map<String, dynamic>)`；`setup()`、`applyPushAuthority()` 不使用 `await`；`setAlias()`、`deleteAlias()` 使用 `await`；冷启动读取 `Future<Map>` 并以 `isEmpty` 判断。使用 `StreamController.broadcast` + pending-open 队列避免 `main()` 早于 Riverpod provider 初始化时丢失点击事件。`jpushGatewaySingleton` 只初始化一次，provider 不在短生命周期 dispose 时关闭进程级单例。
 
-Run: `flutter analyze lib/core/push/`
-Expected: 无错误（`NotificationSettingsIOS`、`addEventHandler`、`setAlias`、`deleteAlias`、`getLaunchAppNotification` 等 API 以 `jpush_flutter` 3.4.5 文档为准，若个别签名不同按实际修正并保持语义一致）。
+- [ ] **Step 3: 运行网关测试和 analyzer**
 
-- [ ] **Step 3: Commit**
+```powershell
+flutter test test/core/push/jpush_gateway_test.dart
+flutter analyze lib/core/push/jpush_gateway.dart test/core/push/jpush_gateway_test.dart
+dart run scripts/check_doc_coverage.dart --warning-only
+```
 
-```bash
-git -C Luminous add lib/core/push/jpush_gateway.dart
-git -C Luminous commit -m "feat(push): 封装极光推送网关（alias 绑定）"
+- [ ] **Step 4: Commit**
+
+```powershell
+git add lib/core/push/jpush_gateway.dart test/core/push/jpush_gateway_test.dart docs/03-logs/migration-log/2026-08-06.md
+git commit -m "feat(push): 封装 JPush SDK 与 alias 网关"
 ```
 
 ---
 
-### Task 3: 推送消息处理与路由
+### Task 3: 消息处理与站内路由
 
 **Files:**
 - Create: `lib/core/push/message_handler.dart`
+- Create: `test/core/push/message_handler_test.dart`
+- Modify: `docs/03-logs/migration-log/2026-08-06.md`
 
-> 命名说明：目录 `push/` 已表明域，文件名 `message_handler` 表明职责，不重复 `push_` 前缀。
+- [ ] **Step 1: 实现消息处理**
 
-- [ ] **Step 1: 新建 `lib/core/push/message_handler.dart`**
+`routeForPushEvent()` 默认返回现有 `Routes.notifications`；`PushMessageHandler` 订阅网关 open/receive 流，点击和前台到达都 `invalidate(notificationUnreadCountProvider)`，点击额外 `go(Routes.notifications)`。provider 使用 `ref.keepAlive()` 或由应用根持续 watch，确保 `ref.read()` 后不会在首帧结束时销毁订阅。
 
-```dart
-import 'dart:async';
+- [ ] **Step 2: 编写消息路由测试**
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/app/router.dart';
-import 'package:luminous/core/push/jpush_gateway.dart';
-import 'package:luminous/features/notification/data/providers/unread_count.dart';
+测试默认消息和带 `extras.action=medicine_reminder` 的消息都返回 `/notifications`；不引入新的可见文案，不改 `lib/l10n/src/`。
 
-/// 通知点击的默认落地路由。后续可按 `event.extras['action']` 细化为具体页面。
-String routeForPushEvent(PushNotificationEvent event) {
-  final action = event.extras?['action'];
-  return switch (action) {
-    // 用药提醒等业务动作 v1 统一进站内通知列表，后续逐类细化。
-    _ => Routes.notifications,
-  };
-}
+- [ ] **Step 3: 运行验证和 Commit**
 
-/// 订阅极光事件流：点击 → 路由；到达 → 刷新未读数。
-class PushMessageHandler implements PushEventSink {
-  PushMessageHandler(
-    this._ref, {
-    required JpushGateway gateway,
-  }) {
-    _subs.add(gateway.onOpenNotification.listen(handleOpen));
-    _subs.add(gateway.onReceiveNotification.listen(handleReceive));
-  }
-
-  final Ref _ref;
-  final List<StreamSubscription<PushNotificationEvent>> _subs = [];
-
-  void handleOpen(PushNotificationEvent event) {
-    _ref.invalidate(notificationUnreadCountProvider);
-    _ref.read(appRouterProvider).go(routeForPushEvent(event));
-  }
-
-  void handleReceive(PushNotificationEvent event) {
-    _ref.invalidate(notificationUnreadCountProvider);
-  }
-
-  void dispose() {
-    for (final sub in _subs) {
-      unawaited(sub.cancel());
-    }
-  }
-}
-
-final pushMessageHandlerProvider = Provider<PushMessageHandler>((ref) {
-  final handler = PushMessageHandler(
-    ref,
-    gateway: ref.watch(jpushGatewayProvider),
-  );
-  ref.onDispose(handler.dispose);
-  return handler;
-});
-```
-
-- [ ] **Step 2: 运行 analyze**
-
-Run: `flutter analyze lib/core/push/message_handler.dart`
-Expected: 无错误（`notificationUnreadCountProvider` 所在文件路径以实际为准，若在 `providers/unread_count.dart` 而非 `data/providers/`，按实际 import 修正）。
-
-- [ ] **Step 3: Commit**
-
-```bash
-git -C Luminous add lib/core/push/message_handler.dart
-git -C Luminous commit -m "feat(push): 推送点击路由与未读刷新处理"
+```powershell
+flutter test test/core/push/message_handler_test.dart
+flutter analyze lib/core/push/message_handler.dart test/core/push/message_handler_test.dart
+dart run scripts/check_doc_coverage.dart --warning-only
+git add lib/core/push/message_handler.dart test/core/push/message_handler_test.dart docs/03-logs/migration-log/2026-08-06.md
+git commit -m "feat(push): 处理通知点击与站内路由"
 ```
 
 ---
 
-### Task 4: 生命周期编排与启动接线
+### Task 4: 生命周期、认证接线与通知权限协作
 
 **Files:**
 - Create: `lib/core/push/lifecycle.dart`
+- Create: `test/core/push/lifecycle_test.dart`
 - Modify: `lib/main.dart`
 - Modify: `lib/app/bootstrap.dart`
+- Modify: `docs/00-current/Runtime_Snapshot.md`
+- Modify: `docs/03-logs/migration-log/2026-08-06.md`
 
-> 命名说明：目录 `push/` 已表明域，文件名 `lifecycle` 表明职责（推送生命周期编排），不重复 `push_` 前缀；类名保持 `PushCoordinator`（命名规则只约束文件名）。
+- [ ] **Step 1: 实现 `PushCoordinator`**
 
-- [ ] **Step 1: 新建 `lib/core/push/lifecycle.dart`**
+构造函数注入 `JpushGateway`、`PushEventSink`、`NotificationPermissionService`。`onAuthChanged` 的 `userId` 对登出为可选；登录时先检查现有通知权限，权限为 `granted` 才调用无额外弹窗的 APNs 注册，再 `setAlias(userId)`；登出只 `deleteAlias()`；JPush 不可用或用户 ID 为空时返回。`start()` 只执行一次，在 iOS 读取冷启动通知并交给 sink。
 
-```dart
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:luminous/core/push/jpush_gateway.dart';
-import 'package:luminous/core/push/message_handler.dart';
+- [ ] **Step 2: 修正启动顺序和 provider 生命周期**
 
-/// 推送生命周期编排：启动初始化、登录态变化时绑定/解绑 alias。
-class PushCoordinator {
-  PushCoordinator({
-    required JpushGateway gateway,
-    required PushEventSink eventSink,
-  })  : _gateway = gateway,
-        _eventSink = eventSink;
+在 `main()` 的 `WidgetsFlutterBinding.ensureInitialized()` 后、`runApp()` 前调用 `jpushGatewaySingleton.init()`，捕获并记录初始化失败但不阻断应用启动。`bootstrap.dart` 首帧中先 `await authSessionProvider.notifier.restore()`，再启动 coordinator，确保冷启动点击不会先被未恢复的 auth redirect 丢失；在 auth listener 中处理登出、首次登录和切换用户。根 widget 持续 `ref.watch(pushCoordinatorProvider)`，保证消息 handler 订阅整个 app 生命周期。
 
-  final JpushGateway _gateway;
-  final PushEventSink _eventSink;
+- [ ] **Step 3: 编写生命周期测试**
 
-  bool _started = false;
+使用 fake gateway 与 fake permission service 覆盖：已授权登录执行 APNs 注册+alias；未授权登录只 alias 不申请权限；登出删除 alias；不可用时无操作；`start()` 把冷启动事件传给 sink 且只处理一次。
 
-  /// 启动时调用（app 首帧后）：处理 iOS 冷启动点击。
-  /// 事件流订阅由 [pushMessageHandlerProvider] 在 provider 图中创建时完成。
-  Future<void> start() async {
-    if (_started) {
-      return;
-    }
-    _started = true;
+- [ ] **Step 4: 运行定向验证和文档检查**
 
-    final launch = await _gateway.launchNotification();
-    if (launch != null) {
-      _eventSink.handleOpen(launch);
-    }
-  }
-
-  /// 登录态变化：登录绑定 alias（并注册 iOS APNs），退出解绑 alias。
-  Future<void> onAuthChanged({
-    required bool authenticated,
-    required String userId,
-  }) async {
-    if (!_gateway.isAvailable) {
-      return;
-    }
-    if (authenticated) {
-      // iOS 注册 APNs（权限已授予时静默注册）；Android 不额外弹窗。
-      await _gateway.ensureApnsRegistered();
-      await _gateway.setAlias(userId);
-    } else {
-      await _gateway.deleteAlias();
-    }
-  }
-}
-
-final pushCoordinatorProvider = Provider<PushCoordinator>((ref) {
-  return PushCoordinator(
-    gateway: ref.watch(jpushGatewayProvider),
-    eventSink: ref.watch(pushMessageHandlerProvider),
-  );
-});
+```powershell
+flutter test test/core/push/
+flutter analyze lib/main.dart lib/app/bootstrap.dart lib/core/push/ test/core/push/
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
-- [ ] **Step 2: 在 `main.dart` 的 `main()` 中提前初始化网关**（`runApp` 之前，`WidgetsFlutterBinding.ensureInitialized()` 之后）
+- [ ] **Step 5: Commit**
 
-```dart
-  // 极光推送：SDK 初始化须在 runApp 之前，以捕获冷启动点击事件。
-  await _initPush();
-```
-
-在文件内新增：
-
-```dart
-/// 初始化极光推送网关（无 AppKey 时静默禁用）。
-Future<void> _initPush() async {
-  try {
-    await jpushGatewaySingleton.init();
-  } catch (e, st) {
-    debugPrint('⚠️ JPush init failed: $e\n$st');
-  }
-}
-```
-
-并在 import 区加入 `package:luminous/core/push/jpush_gateway.dart`。
-
-> 说明：`jpushGatewaySingleton` 已在 Task 2 的网关文件中定义，`main()` 初始化与 app 内 provider 引用的是同一实例；`init()` 幂等，重复调用安全。
-
-- [ ] **Step 3: 在 `bootstrap.dart` 的认证监听中接入 alias 绑定/解绑**
-
-在 `_LuminousAppState.initState` 的 `addPostFrameCallback` 内、`authSessionProvider.restore()` 之后追加：
-
-```dart
-      unawaited(ref.read(pushCoordinatorProvider).start());
-```
-
-在 `ref.listen<AuthSessionState>(authSessionProvider, ...)` 中：退出分支（`previous?.isAuthenticated == true && !next.isAuthenticated`）内追加：
-
-```dart
-        unawaited(
-          ref
-              .read(pushCoordinatorProvider)
-              .onAuthChanged(authenticated: false, userId: previous.user!.id),
-        );
-```
-
-在 `becameAuthenticated` / `switchedUser` 分支（`_restoreLocaleFromProfile()` 调用处）追加：
-
-```dart
-      unawaited(
-        ref
-            .read(pushCoordinatorProvider)
-            .onAuthChanged(authenticated: true, userId: next.user!.id),
-      );
-```
-
-并在 import 区加入 `package:luminous/core/push/lifecycle.dart`。
-
-- [ ] **Step 4: 重新生成 API 客户端**（后端已删除 user-devices 契约）
-
-Run: `dart run scripts/bootstrap_generated_sources.dart`
-Expected: `generated/lucent_api` 中 `UserDevicesApi`、`RegisterDeviceDto`、`UserDevicePlatform` 等不再生成（`UserDevicePlatform` 若因 session 相关 DTO 残留则保留，无需处理）；`flutter analyze` 无因删除引发的未使用引用报错。
-
-- [ ] **Step 5: 运行 analyze 与全量检查**
-
-Run: `flutter analyze`
-Expected: 无错误。
-
-- [ ] **Step 6: Commit**
-
-```bash
-git -C Luminous add lib/core/push/lifecycle.dart lib/main.dart lib/app/bootstrap.dart lib/core/push/jpush_gateway.dart lib/core/push/message_handler.dart generated/lucent_api
-git -C Luminous commit -m "feat(push): 启动初始化与登录态 alias 绑定接线"
+```powershell
+git add lib/core/push/lifecycle.dart test/core/push/lifecycle_test.dart lib/main.dart lib/app/bootstrap.dart docs/00-current/Runtime_Snapshot.md docs/03-logs/migration-log/2026-08-06.md
+git commit -m "feat(push): 接入启动生命周期与登录 alias 绑定"
 ```
 
 ---
 
-### Task 5: 测试与文档
+### Task 5: 后端合同删除后的客户端同步
 
 **Files:**
-- Create: `test/core/push/message_handler_test.dart`
-- Create: `test/core/push/lifecycle_test.dart`
-- Modify: `docs/03-logs/migration-log/2026-08-03.md`（追加）
-- Modify: `docs/00-current/Current_State.md`（如含推送状态描述则同步）
+- Modify: `lib/core/network/dio_client.dart`
+- Modify: `generated/lucent_api/**`（仅生成器产物）
+- Modify: `docs/00-current/Lucent_Contract_Snapshot.md`
+- Modify: `docs/02-reference/OpenApi_Client.md`
+- Modify: `docs/03-logs/migration-log/2026-08-06.md`
 
-- [ ] **Step 1: 新建 `test/core/push/message_handler_test.dart`**
+- [ ] **Step 1: 先删除旧客户端 accessor**
 
-```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/push/jpush_gateway.dart';
-import 'package:luminous/core/push/message_handler.dart';
+删除 `DioClient.userDevices` getter；先运行 analyzer，确认唯一编译引用来自生成客户端本身，业务代码没有实际调用旧 API。
 
-void main() {
-  group('routeForPushEvent', () {
-    test('默认跳转站内通知列表', () {
-      const event = PushNotificationEvent(title: 't', body: 'b');
-      expect(routeForPushEvent(event), '/notifications');
-    });
+- [ ] **Step 2: 从 Lucent 最新 OpenAPI 重新生成**
 
-    test('带 action 的提醒类消息 v1 也进通知列表', () {
-      const event = PushNotificationEvent(
-        title: 't',
-        body: 'b',
-        extras: <String, dynamic>{'action': 'medicine_reminder'},
-      );
-      expect(routeForPushEvent(event), '/notifications');
-    });
-  });
-}
+```powershell
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
-- [ ] **Step 2: 新建 `test/core/push/lifecycle_test.dart`**
+该脚本会执行 `flutter pub get`、生成客户端 `build_runner`、`flutter gen-l10n` 和应用 `build_runner`；保留与本任务无关的既有 `l10n.yaml` 工作区修改，不把它加入 stage。
 
-```dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:luminous/core/push/jpush_gateway.dart';
-import 'package:luminous/core/push/lifecycle.dart';
+- [ ] **Step 3: 检查生成范围**
 
-class FakeGateway extends JpushGateway {
-  FakeGateway({this.available = true});
-
-  final bool available;
-  final aliases = <String>[];
-  bool deleted = false;
-  bool apnsRegistered = false;
-
-  @override
-  bool get isAvailable => available;
-
-  @override
-  Future<void> setAlias(String userId) async {
-    aliases.add(userId);
-  }
-
-  @override
-  Future<void> deleteAlias() async {
-    deleted = true;
-  }
-
-  @override
-  Future<void> ensureApnsRegistered() async {
-    apnsRegistered = true;
-  }
-}
-
-class FakeSink implements PushEventSink {
-  final opened = <PushNotificationEvent>[];
-
-  @override
-  void handleOpen(PushNotificationEvent event) {
-    opened.add(event);
-  }
-}
-
-void main() {
-  group('PushCoordinator.onAuthChanged', () {
-    test('登录时注册 APNs 并绑定 alias=userId', () async {
-      final gateway = FakeGateway();
-      final coordinator = PushCoordinator(
-        gateway: gateway,
-        eventSink: FakeSink(),
-      );
-
-      await coordinator.onAuthChanged(authenticated: true, userId: 'user-1');
-
-      expect(gateway.apnsRegistered, isTrue);
-      expect(gateway.aliases, ['user-1']);
-      expect(gateway.deleted, isFalse);
-    });
-
-    test('退出时解绑 alias', () async {
-      final gateway = FakeGateway();
-      final coordinator = PushCoordinator(
-        gateway: gateway,
-        eventSink: FakeSink(),
-      );
-
-      await coordinator.onAuthChanged(authenticated: false, userId: 'user-1');
-
-      expect(gateway.deleted, isTrue);
-      expect(gateway.aliases, isEmpty);
-    });
-
-    test('推送不可用时不做任何操作', () async {
-      final gateway = FakeGateway(available: false);
-      final coordinator = PushCoordinator(
-        gateway: gateway,
-        eventSink: FakeSink(),
-      );
-
-      await coordinator.onAuthChanged(authenticated: true, userId: 'user-1');
-
-      expect(gateway.aliases, isEmpty);
-      expect(gateway.apnsRegistered, isFalse);
-    });
-  });
-}
+```powershell
+rg -n "UserDevicesApi|RegisterDeviceDto|DeviceResponseDto|user-devices|user_devices" generated lib
+git diff --stat
 ```
 
-- [ ] **Step 3: 运行测试**
+Expected: 旧设备 API/DTO 无残留；`UserDevicePlatform` 只有在仍被 UserSession 合同使用时才保留；生成器没有删除或改写无关 API。
 
-Run: `flutter test test/core/push/`
-Expected: PASS（两个测试文件全绿）
+- [ ] **Step 4: 运行合同和文档验证**
 
-- [ ] **Step 4: 运行文档检查工具确认要更新的文档**
-
-Run: `dart run scripts/check_doc_coverage.dart --warning-only`
-Expected: 输出 per-rule 报告；按报告更新（至少包括 migration log）。
-
-- [ ] **Step 5: 追加迁移日志** `docs/03-logs/migration-log/2026-08-03.md`
-
-```markdown
-## 极光推送客户端集成
-
-- 新增 `lib/core/push/`：`jpush_gateway`、`message_handler`、`lifecycle`。
-- `main()` 提前初始化 JPush SDK；登录 `setAlias(userId)`、退出 `deleteAlias()`（极光推荐最佳实践）。
-- 通知点击统一路由到 `/notifications`，到达刷新未读数；本地提醒链路不变。
-- 随后端删除 user-devices 契约，重新生成 `generated/lucent_api`。
-- 未新增可见文案，无需更新 Localization。
+```powershell
+flutter analyze lib/core/network/dio_client.dart generated/lucent_api
+dart run scripts/check_doc_coverage.dart --warning-only
 ```
 
-- [ ] **Step 6: 更新当前状态文档**（如 `docs/00-current/Current_State.md` 或对应子文件描述了消息推送现状，删除“仅离线/未接推送”相关旧描述）
+- [ ] **Step 5: Commit**
 
-- [ ] **Step 7: 全量验证**
-
-Run: `flutter analyze` 和 `flutter test`
-Expected: 全部通过。
-
-- [ ] **Step 8: Commit**
-
-```bash
-git -C Luminous add test/core/push/ docs/03-logs/migration-log/2026-08-03.md docs/00-current/Current_State.md
-git -C Luminous commit -m "test(push): alias 绑定与消息路由单测及文档同步"
+```powershell
+git add lib/core/network/dio_client.dart generated/lucent_api docs/00-current/Lucent_Contract_Snapshot.md docs/02-reference/OpenApi_Client.md docs/03-logs/migration-log/2026-08-06.md
+git commit -m "chore(api): 同步移除设备注册接口的生成客户端"
 ```
 
 ---
 
-## 验证清单（全部通过后计划文件可删除）
+### Task 6: 全量验证、真实设备边界与计划收尾
 
-- [ ] `flutter analyze` 无错误
-- [ ] `flutter test` 全绿（含新增 `test/core/push/`）
-- [ ] 真机验证 Android：登录 → 极光后台看到 userId 对应的 alias 绑定 → 后端 `sendToUser` 触发 → 前台 toast/后台通知栏/终止态点击均正确跳转 `/notifications`
-- [ ] 真机验证 iOS：首次登录调用 `applyPushAuthority` 注册 APNs → 收到推送（注意生产/沙箱证书与后端 `JPUSH_APNS_PRODUCTION` 匹配）
-- [ ] 退出登录 → 极光后台该 alias 解除绑定；同账号其他设备不受影响
-- [ ] 未配置 AppKey（`--dart-define` 缺失）时 app 正常启动、无异常日志
-- [ ] `generated/lucent_api` 无 `UserDevicesApi` 残留
+- [ ] **Step 1: 运行全量检查**
 
-## 后续迭代（不在本次范围）
+```powershell
+flutter analyze
+flutter test
+dart run scripts/check_doc_coverage.dart --warning-only
+dart run scripts/check_doc_coverage.dart --staged
+```
 
-- 按 `extras.action` 细化路由（用药提醒直达提醒详情等）
-- Android 厂商通道（华为/小米/OPPO/vivo）接入 `fl_jpush-android` 插件 + 各厂商开发者账号配置
-- 用户级推送开关（原设备级 `notificationsEnabled` 语义迁移为用户设置，推送前由后端检查）
+- [ ] **Step 2: 检查敏感信息和工作区边界**
+
+```powershell
+rg -n "JPUSH_APP_KEY|JPUSH_APPKEY|JPUSH_MASTER_SECRET|Master Secret" --glob '!pubspec.lock' --glob '!plans/**' .
+git status --short
+```
+
+Expected: 只有空配置、构建参数名和文档说明；不出现真实 AppKey/Master Secret；`l10n.yaml` 仍是原有未暂存改动。
+
+- [ ] **Step 3: 记录无法在当前环境验证的项目**
+
+Windows 环境不执行 iOS build、Apple entitlement/provisioning 验证；没有 JPush 凭据和 Android/iOS 真机时，不声称前台/后台/终止态真实推送已通过。交付时列出这些未验证项和所需命令/设备。
+
+- [ ] **Step 4: 删除已完成计划文件**
+
+在迁移日志追加“本计划实施完毕，计划文件已删（实施完毕文件已删）”，删除 `plans/2026-08-03-jpush-integration.md`；不要留下 `✅`/`DONE` 标记。
+
+- [ ] **Step 5: Commit**
+
+```powershell
+git add plans/2026-08-03-jpush-integration.md docs/03-logs/migration-log/2026-08-06.md
+git commit -m "chore(plans): 完成极光客户端计划并清理计划文件"
+```
+
+---
+
+## 与 Lucent 的交接
+
+只有在 Lucent 的 OpenAPI 已移除设备注册路径后执行 Task 5。真实推送联调需要服务端 `JPUSH_APP_KEY`/`JPUSH_MASTER_SECRET`、客户端 Dart define/Android Gradle property、正确的包名/Bundle ID 以及匹配的 APNs provisioning；所有凭据只注入本地或部署环境。
