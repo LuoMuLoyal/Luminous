@@ -255,8 +255,6 @@ void main() {
         expect(result.succeeded.first.currentMedicineId, 'med-1');
         expect(result.failed, hasLength(1));
         expect(result.failed.first.currentMedicineId, 'med-2');
-        expect(result.errors, contains('med-2'));
-        expect(result.errors['med-2'], contains('network error'));
       },
     );
   });

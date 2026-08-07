@@ -95,14 +95,10 @@ class MedicationQuickBatchResult {
   const MedicationQuickBatchResult({
     required this.succeeded,
     required this.failed,
-    this.errors = const {},
   });
 
   final List<MedicationQuickChoice> succeeded;
   final List<MedicationQuickChoice> failed;
-
-  /// Error message per failed choice id, for UI display.
-  final Map<String, String> errors;
 }
 
 class MedicationQuickChoice {
@@ -190,8 +186,6 @@ class MedicationQuickEntryFlow {
     final succeeded = <MedicationQuickChoice>[];
     final failed = <MedicationQuickChoice>[];
 
-    final errors = <String, String>{};
-
     for (final choice in choices) {
       try {
         await markDose(
@@ -211,7 +205,6 @@ class MedicationQuickEntryFlow {
           st,
         );
         failed.add(choice);
-        errors[choice.id] = e.toString();
       }
     }
 
@@ -219,11 +212,7 @@ class MedicationQuickEntryFlow {
       emitDataChange(DataChangeTopic.doseLogs);
     }
 
-    return MedicationQuickBatchResult(
-      succeeded: succeeded,
-      failed: failed,
-      errors: errors,
-    );
+    return MedicationQuickBatchResult(succeeded: succeeded, failed: failed);
   }
 
   Future<DoseLogItem> _recordChoice(
