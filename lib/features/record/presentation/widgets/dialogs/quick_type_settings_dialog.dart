@@ -219,24 +219,50 @@ class _MoodSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FSelect<QuickEntryMoodBadgeMode>.rich(
-      key: const Key('quick-type-mood-badge'),
-      label: Text(l10n.recordQuickSettingsMoodBadge),
-      format: (value) => _moodBadgeLabel(l10n, value),
-      control: FSelectControl.lifted(
-        value: prefs.moodBadgeMode,
-        onChange: (value) {
-          if (value != null) {
-            unawaited(controller.setMoodBadgeMode(value));
-          }
-        },
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final mode in QuickEntryMoodBadgeMode.values)
-          FSelectItem.item(
-            title: Text(_moodBadgeLabel(l10n, mode)),
-            value: mode,
+        FSelect<String>.rich(
+          key: const Key('quick-type-mood-default-level'),
+          label: Text(l10n.recordQuickSettingsMoodDefaultLevel),
+          format: (value) => moodLevelLabel(l10n, value),
+          control: FSelectControl.lifted(
+            value: prefs.moodDefaultLevel,
+            onChange: (value) {
+              if (value != null) {
+                unawaited(controller.setMoodDefaultLevel(value));
+              }
+            },
           ),
+          children: [
+            for (final level in kMoodLevelOptions)
+              FSelectItem.item(
+                title: Text(moodLevelLabel(l10n, level)),
+                value: level,
+              ),
+          ],
+        ),
+        const SizedBox(height: Spacing.level3),
+        FSelect<QuickEntryMoodBadgeMode>.rich(
+          key: const Key('quick-type-mood-badge'),
+          label: Text(l10n.recordQuickSettingsMoodBadge),
+          format: (value) => _moodBadgeLabel(l10n, value),
+          control: FSelectControl.lifted(
+            value: prefs.moodBadgeMode,
+            onChange: (value) {
+              if (value != null) {
+                unawaited(controller.setMoodBadgeMode(value));
+              }
+            },
+          ),
+          children: [
+            for (final mode in QuickEntryMoodBadgeMode.values)
+              FSelectItem.item(
+                title: Text(_moodBadgeLabel(l10n, mode)),
+                value: mode,
+              ),
+          ],
+        ),
       ],
     );
   }

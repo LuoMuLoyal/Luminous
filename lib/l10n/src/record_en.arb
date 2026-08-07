@@ -158,6 +158,8 @@
   "recordQuickSettingsMoodBadge": "Mood badge",
   "recordQuickSettingsMoodBadgeLatest": "Latest today",
   "recordQuickSettingsMoodBadgeHidden": "Hidden",
+  "recordQuickSettingsMoodDefaultLevel": "Default mood",
+  "recordQuickSettingsMoodDefaultLevelHint": "The default mood is highlighted in the quick-entry dialog.",
   "recordQuickSettingsSleepDefaultDuration": "Default sleep duration",
   "recordQuickSettingsSleepDurationHours": "{hours} hours",
   "@recordQuickSettingsSleepDurationHours": {

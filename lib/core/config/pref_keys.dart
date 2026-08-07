@@ -72,6 +72,8 @@ abstract final class PrefKeys {
       'record.quickEntry.symptom.enabledChoices';
   static const recordQuickEntryMoodBadgeMode =
       'record.quickEntry.mood.badgeMode';
+  static const recordQuickEntryMoodDefaultLevel =
+      'record.quickEntry.mood.defaultLevel';
   static const recordQuickEntryMedicationAutoRecordSingle =
       'record.quickEntry.medication.autoRecordSingle';
   static const recordQuickEntryMedicationShowAlreadyRecordedHint =

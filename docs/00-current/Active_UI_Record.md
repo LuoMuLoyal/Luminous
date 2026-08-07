@@ -115,8 +115,9 @@ Last updated: 2026-08-06 (详情页/编辑页区分度精进两批完成)
   - `QuickEntryPreferences` 新增 `symptomDefaultSeverity`、`symptomEnabledChoices` 字段，对应 PrefKeys `record.quickEntry.symptom.defaultSeverity` / `.enabledChoices`。
   - `RecordFastEntryDialog` 读取偏好过滤症状选项并应用默认严重程度。
   - `QuickEntrySettingsPage` 新增“症状选项”分区，与长按弹窗双向同步。
-  - 长按 mood 快捷瓦片弹出角标模式设置（今日最新 / 不显示），`QuickEntryPreferences` 新增 `moodBadgeMode` 字段。
+  - 长按 mood 快捷瓦片弹出默认心情级别选择（很棒/不错/一般/不太好/很糟）+ 角标模式设置（今日最新 / 不显示），`QuickEntryPreferences` 新增 `moodDefaultLevel`、`moodBadgeMode` 字段。
   - `quick_entry_panel.dart` 新增 mood 徽章逻辑：`latest` 模式显示今日最新心情标签。
+  - `RecordFastEntryDialog` 读取 `moodDefaultLevel`，在 mood 弹窗中为匹配的选项下方显示 primary 色圆点高亮，提示默认项。
   - 长按 sleep 快捷瓦片弹出默认睡眠时长选择（6h/7h/8h/9h）+ 进行中徽章开关，`QuickEntryPreferences` 新增 `sleepDefaultDurationMinutes` 字段。
   - `RecordFastEntryDialog` 读取默认时长偏好，将匹配的选项排在最前面。
   - 长按 medication 快捷瓦片弹出两个开关：单药自动记录 + 已记录提示。`QuickEntryPreferences` 新增 `medicationAutoRecordSingle`、`medicationShowAlreadyRecordedHint` 字段。

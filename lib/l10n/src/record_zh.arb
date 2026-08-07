@@ -158,6 +158,8 @@
   "recordQuickSettingsMoodBadge": "情绪角标",
   "recordQuickSettingsMoodBadgeLatest": "今日最新",
   "recordQuickSettingsMoodBadgeHidden": "不显示",
+  "recordQuickSettingsMoodDefaultLevel": "默认心情",
+  "recordQuickSettingsMoodDefaultLevelHint": "快速记录弹窗中会高亮默认心情选项",
   "recordQuickSettingsSleepDefaultDuration": "默认睡眠时长",
   "recordQuickSettingsSleepDurationHours": "{hours} 小时",
   "@recordQuickSettingsSleepDurationHours": {

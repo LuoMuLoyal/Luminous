@@ -90,6 +90,7 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
                     selected: _selectedIndexes.contains(index),
                     enabled: !_saving,
                     onTap: () => _handleChoiceTap(index, choices[index]),
+                    isDefault: _isDefaultChoice(choices[index], prefs),
                   ),
               ],
             ),
@@ -143,6 +144,14 @@ class _RecordFastEntryDialogState extends ConsumerState<RecordFastEntryDialog> {
         ),
       ),
     );
+  }
+
+  /// Returns true if [choice] is the user's configured default for the
+  /// current kind. Currently only mood choices support a default.
+  bool _isDefaultChoice(RecordFastChoice choice, QuickEntryPreferences prefs) {
+    if (widget.kind != DailyRecordKind.mood) return false;
+    final moodLabel = choice.payload?['moodLabel'];
+    return moodLabel is String && moodLabel == prefs.moodDefaultLevel;
   }
 
   bool get _supportsMultiSelect => widget.kind == DailyRecordKind.symptom;
@@ -396,6 +405,7 @@ class _QuickChoiceChip extends StatelessWidget {
     required this.selected,
     required this.enabled,
     required this.onTap,
+    this.isDefault = false,
   });
 
   final String label;
@@ -403,14 +413,30 @@ class _QuickChoiceChip extends StatelessWidget {
   final bool selected;
   final bool enabled;
   final VoidCallback onTap;
+  final bool isDefault;
 
   @override
   Widget build(BuildContext context) {
-    return FButton(
+    final button = FButton(
       variant: selected ? FButtonVariant.primary : FButtonVariant.outline,
       onPress: enabled ? onTap : null,
       prefix: prefix,
       child: Text(label),
+    );
+    if (!isDefault) return button;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        button,
+        const SizedBox(height: Spacing.level1),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: context.theme.colors.primary,
+            shape: BoxShape.circle,
+          ),
+          child: const SizedBox(width: 4, height: 4),
+        ),
+      ],
     );
   }
 }

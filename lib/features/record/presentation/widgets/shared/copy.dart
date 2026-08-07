@@ -118,6 +118,21 @@ String symptomSeverityLabel(AppLocalizations l10n, String severity) {
   };
 }
 
+/// Preset mood level identifiers in descending order (best → worst).
+const kMoodLevelOptions = ['great', 'good', 'okay', 'bad', 'terrible'];
+
+/// Localized label for a mood level (`great` / `good` / `okay` / `bad` / `terrible`).
+String moodLevelLabel(AppLocalizations l10n, String level) {
+  return switch (level) {
+    'great' => l10n.recordFastChoiceMoodGreat,
+    'good' => l10n.recordFastChoiceMoodGood,
+    'okay' => l10n.recordFastChoiceMoodOkay,
+    'bad' => l10n.recordFastChoiceMoodBad,
+    'terrible' => l10n.recordFastChoiceMoodTerrible,
+    _ => level,
+  };
+}
+
 /// Computes the updated set of enabled symptom choices after toggling
 /// [choiceTitle]. When the current set is empty (meaning all are enabled),
 /// it starts from the full list of preset choices.

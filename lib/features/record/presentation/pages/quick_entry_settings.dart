@@ -151,6 +151,27 @@ class QuickEntrySettingsPage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: Spacing.level6),
+              FSelect<String>.rich(
+                key: const Key('record-quick-settings-mood-default-level'),
+                label: Text(l10n.recordQuickSettingsMoodDefaultLevel),
+                format: (value) => moodLevelLabel(l10n, value),
+                control: FSelectControl.lifted(
+                  value: prefs.moodDefaultLevel,
+                  onChange: (value) {
+                    if (value != null) {
+                      unawaited(controller.setMoodDefaultLevel(value));
+                    }
+                  },
+                ),
+                children: [
+                  for (final level in kMoodLevelOptions)
+                    FSelectItem.item(
+                      title: Text(moodLevelLabel(l10n, level)),
+                      value: level,
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level6),
               SettingsSectionLabel(label: l10n.recordQuickSettingsDisplay),
               const SizedBox(height: Spacing.level3),
               FSelect<QuickEntryWaterBadgeMode>.rich(
