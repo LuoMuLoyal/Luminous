@@ -54,7 +54,6 @@ class JpushGateway {
   /// Registers callbacks before invoking the plugin's synchronous setup API.
   Future<void> init() async {
     if (_initialized || !isConfigured) return;
-    _initialized = true;
 
     _client.addEventHandler(
       onReceiveNotification: _handleReceiveNotification,
@@ -66,6 +65,7 @@ class JpushGateway {
       channel: 'developer-default',
       debug: kDebugMode,
     );
+    _initialized = true;
   }
 
   /// Requests iOS push authority without introducing a second permission flow.
