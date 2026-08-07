@@ -69,4 +69,29 @@ void main() {
     expect(routes, <String>[Routes.notifications]);
     await handler.dispose();
   });
+
+  test('can restart after dispose', () async {
+    final fake = _FakeJPush();
+    final gateway = JpushGateway(
+      appKey: 'test-key',
+      client: fake,
+      platform: TargetPlatform.android,
+    );
+    var invalidationCount = 0;
+    final handler = PushMessageHandler(
+      gateway: gateway,
+      invalidateUnread: () => invalidationCount++,
+      navigate: (_) {},
+    );
+
+    handler.start();
+    await gateway.init();
+    await handler.dispose();
+
+    // Restart should not throw and should resume receiving events.
+    handler.start();
+    await fake.receiveHandler!(<String, dynamic>{'title': 'After restart'});
+    expect(invalidationCount, 1);
+    await handler.dispose();
+  });
 }
