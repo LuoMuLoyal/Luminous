@@ -93,5 +93,9 @@ What becomes easier or harder as a result of this decision?
   - Date: 2026-07-10
 - [0010](0010-type-safe-routing-go-router-builder.md)
   - Title: 类型安全路由 — go_router_builder
-  - Status: proposed
+  - Status: accepted
   - Date: 2026-07-10
+- [0011](0011-event-led-sparse-record-product-loop.md)
+  - Title: 事件期优先且允许稀疏记录的产品闭环
+  - Status: accepted
+  - Date: 2026-08-07

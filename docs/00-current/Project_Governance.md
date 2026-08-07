@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-07
 ---
 
 # Project Governance
 
-Last updated: 2026-08-06 (JPush 推送与 Lucent 合同同步)
+Last updated: 2026-08-07 (产品表面冻结决策)
 
 ## 维护模式
 
@@ -36,10 +36,10 @@ Last updated: 2026-08-06 (JPush 推送与 Lucent 合同同步)
 ## 产品表面
 
 - 移动端是当前产品表面。
-- 底部 tab 固定为 `today / record / medicine / report / mine`。
-- Web 仅用于报告预览/导出和竞赛展示。
+- 底部 tab 保留 `today / record / medicine / report / mine` 五个运行时入口；产品方向将 `report` 的用户任务和名称改为“回顾”，代码尚未迁移。
+- 完整认证 Web 应用冻结并保留代码，不继续功能对等、发行或产品化。
 - `Luminous-site` 当前是竞赛/营销首页，不做签入式报告预览。
-- 桌面视觉行为不是当前 UI 验收范围。
+- 桌面端冻结并保留代码，不继续功能对等、发行或产品化；共享代码回归仍需避免破坏现有实现。
 
 ## 文档治理
 

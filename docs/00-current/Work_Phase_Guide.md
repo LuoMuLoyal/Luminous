@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-07
 ---
 
 # Work Phase Guide
 
-Last updated: 2026-07-18
+Last updated: 2026-08-07
 
 本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。短期任务放在 `plans/`，完成后删除计划，把稳定事实同步回 `docs/00-current/`。
 
@@ -48,9 +48,18 @@ Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文�
 - 跨 feature presentation 耦合通过 `DataChangeBus` 解耦。
 - 巨型文件拆分（`suggestion.dart` 952→125 行）。
 
-## Phase 5: Release Gate ← 当前阶段
+## Phase 5: `0.1.0` Release Gate ← 当前阶段
 
-目标：准备首个稳定发布。
+目标：完成现有版本的真实联调、发布验证和 `0.1.0` 正式发布。
+
+产品方向文档、领域语言、平台冻结边界、ADR 和后续计划已经建立，但运行时代码尚未迁移。当前阶段不得启动健康事件 schema、主动建议重构、数据口径迁移或 Review 重做。
+
+关键边界：
+
+- 手机端是唯一核心产品；桌面端和完整认证 Web 应用冻结但不删除。
+- 只修复阻断 `0.1.0` 联调、验证或发布的问题。
+- 当前状态文档必须继续描述真实运行时，不能把 post-0.1.0 方向写成已实现能力。
+- 发布完成后再进入 Phase 6。
 
 必须运行：
 
@@ -84,7 +93,13 @@ dart run scripts/run_fullstack_checks.dart
 - **P1 体验缺口**：空态体系（横幅 CTA + 时间线空态）、危险操作确认链（6 处二次确认）、表单必填校验。
 - **P2 一致性打磨**：错误文案 mapper、日期格式收敛、剩余硬编码文案消除、触控目标与语义补齐、PIN 二次确认、骨架屏与真实版面对齐、桌面月历交互解耦、平板档限宽。
 
-## Phase 6: P2/P3 扩展探索
+## Phase 6: Post-`0.1.0` 产品闭环重构
+
+目标：按 [`../../plans/2026-08-07-post-0.1.0-product-loop-program.md`](../../plans/2026-08-07-post-0.1.0-product-loop-program.md) 实施健康事件、真正主动的建议链、统一数据口径、稀疏输入和事件回顾。
+
+进入条件：`0.1.0` 已正式发布，两个仓库工作树干净，并从发布后的新 feature branch/worktree 开始。
+
+## Phase 7: P2/P3 扩展探索
 
 目标：在 P0/P1 闭环稳定后，按 Brainstorm P2/P3 优先级选择明确场景扩展。
 
@@ -98,7 +113,7 @@ dart run scripts/run_fullstack_checks.dart
 
 - 红旗信号规则
 - 智能提醒优先级
-- Apple Health / Health Connect 桥接
+- 经设备、地区、系统服务和开发者权限验证后的可选健康数据桥接
 - 快捷记录 Widget
 - Assistant 嵌入式重构
 

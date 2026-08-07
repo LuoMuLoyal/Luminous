@@ -2,7 +2,7 @@
 
 [![Backend: Lucent](https://img.shields.io/badge/backend-LuoMuLoyal%2FLucent-2563eb?logo=github)](https://github.com/LuoMuLoyal/Lucent)
 
-Flutter 个人健康助手。以用药安全为入口，连接日常记录与 AI 驱动的主动提醒、总结和报告。
+Flutter 主动式个人健康助手。以用药安全和短期健康事件为入口，在记录稀疏时仍提供有证据的主动建议与事件回顾。
 
 Current version: **0.1.0-dev**
 
@@ -13,6 +13,7 @@ Current version: **0.1.0-dev**
 - [Contributing](CONTRIBUTING.md) — development setup, conventions, and PR process
 - [Code of Conduct](.github/CODE_OF_CONDUCT.md) — community standards
 - [Security Policy](SECURITY.md) — vulnerability reporting
+- [Product language](CONTEXT.md) — canonical health-event, sparse-record, guidance, and review terms
 - [Issues](https://github.com/LuoMuLoyal/Luminous/issues) — bug reports and feature requests
 
 ## AI Workflow
@@ -28,7 +29,7 @@ Current version: **0.1.0-dev**
 
 ## Baseline
 
-- Tabs: `today / record / medicine / report / mine`
+- Tabs: `today / record / medicine / report / mine`（产品方向将用户可见 `report` 改为“回顾”，运行时代码尚未迁移）
 - Design tokens: color / type / spacing / radius / breakpoints / animation
 - UI framework: [Forui](https://forui.dev)（2026-07 从 Material Design 全量迁移）
 - API client: `generated/lucent_api`

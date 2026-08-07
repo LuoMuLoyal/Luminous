@@ -2,12 +2,14 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-03
+updated: 2026-08-07
 ---
 
 # Active UI — Report
 
-Last updated: 2026-08-03 (AI 总结 Markdown 样式)
+Last updated: 2026-08-07 (产品方向迁移说明；运行时 UI 未变)
+
+> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；这些变化尚未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
 
 ## 页面结构
 
@@ -20,7 +22,7 @@ Last updated: 2026-08-03 (AI 总结 Markdown 样式)
   - `generatedAt` 从 Lucent report dashboard DTO 映射到前端 domain，显示"当前显示的数据更新于 …"。
   - 生成总结与同步操作仅在 readiness 主卡内提供，不再在内容区重复 `ReportActionBar`。
   - 时间范围由 Header `ReportRangeMenu` 表达，内容区不再重复日期范围文本。
-- 桌面端与移动端对齐到同一回顾语义：顶部移除旧 snapshot 状态块，主内容首块为 `readiness` 主卡。
+- 桌面端与移动端对齐到同一现有 Report 布局：顶部移除旧 snapshot 状态块，主内容首块为 `readiness` 主卡。
 - 未登录 preview 态：顶部显示与其他 tab 一致的轻量 `SignInHintBanner`；下方用显式空态卡片展示 Report 页职责范围（健康趋势、重点发现、历史建议回顾、导出预览），不再显示巨大的 readiness 锁定卡或灰色空白占位块。
 - `历史建议回顾` 数据源从通知接口切换到 `GET /today/suggestions/history` API，展示建议生命周期状态（进行中/已过期/已忽略）和按类型映射的图标。
 - 移动端完整层仅在 `已登录 + 数据足够` 时显示：AI 总结、健康模式分析、导出摘要、医疗免责声明。

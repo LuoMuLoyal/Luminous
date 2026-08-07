@@ -30,3 +30,10 @@ YYYY-MM-DD-short-task-name.md
 2. Execute the task and verify it.
 3. Move stable decisions and outcomes into the owning docs.
 4. Delete the plan file once it is no longer the active source of work.
+
+## Parked Program
+
+The event-led product-loop program is accepted but must remain parked until
+`0.1.0` has completed integration, verification, and release. Its dependency
+order and execution plans are indexed in
+[`2026-08-07-post-0.1.0-product-loop-program.md`](2026-08-07-post-0.1.0-product-loop-program.md).

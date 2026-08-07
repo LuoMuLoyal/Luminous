@@ -7,6 +7,9 @@ It is a living document — directions shift as the product and community grow.
 
 Luminous is currently at `0.1.0-dev`. The core mobile experience is functional
 with all five tabs active, but the project has not yet shipped a stable release.
+The product direction has been re-baselined around time-bounded health events,
+sparse records, proactive guidance, and event-first review; the runtime still
+reflects parts of the previous general report/dashboard model.
 
 **What works today**
 
@@ -48,48 +51,62 @@ with all five tabs active, but the project has not yet shipped a stable release.
 - Stable release — still in dev phase
 - Real medicine barcode / OCR / prescription recognition flow
 - Push notification delivery (pending Lucent FCM/APNs)
-- Web report preview beyond competition demo
-- Full desktop-first workflows
+- Health-event lifecycle and result confirmation
+- Truly event-triggered proactive analysis with consistent dose, water, sleep,
+  and missing-data semantics
+- Event-first Review UI replacing the current generic Report dashboard task
+
+Desktop and the full authenticated Web app are intentionally frozen. Their
+existing code remains, but feature parity, distribution, and productization are
+not roadmap commitments. `Luminous-website` remains the product/competition site.
 
 ---
 
 ## Directions
 
-Priority framework follows
-[Product Brainstorm 2026-07-07](docs/01-product/Product_Brainstorm_2026-07-07.md).
+Current priorities follow
+[ADR-0011](docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)
+and [Product Context](CONTEXT.md); the archived brainstorm remains historical input.
 
-### P0 + P1 → `1.0.0`
+### Current Release → `0.1.0`
 
-Ship the first stable mobile release. P0 items are complete; P1 items are in
-progress.
+Finish integration, verification, and release of the existing runtime. The
+post-0.1.0 product-loop redesign is explicitly out of scope for this release.
 
-- **P0 ✅ Safety Transparency** — Medicine risk check three-tier display
-  (confirmed risk / confirmed safe / uncovered-uncertain), explicit coverage
-  scope on pre-check sheet
-- **P0 ✅ Report Gating Clarity** — empty states explain why data is
-  insufficient, show recording progress toward threshold
-- **P1 — Today Information Density** — narrow to 3 zones: top suggestion/reminder
-  → AI daily summary (collapsed) → quick actions; move priority items to Record
-- **P1 — Record Quick Entry Dynamic Sort** — sort by usage frequency, show top 3
-  first, collapse rest; NLP entry as first priority; new users see only
-  water/symptom/sleep
-- **P1 — Mine Profile Completeness** — health profile shows completeness hint;
-  empty allergies or current medicines → remind user (affects safety check
-  coverage)
-- **Release Gate** — `flutter analyze`, `flutter test`, `dart run
-  scripts/run_daily_checks.dart` all green; migration logs and current state docs
-  synced; no P2/P3 features advertised as current
+- Fix only defects that block current integration or release
+- Run the full mobile and full-stack release gates
+- Keep current-state documentation honest about existing Report and Today behavior
+- Publish `0.1.0` before starting the program below
+
+### Product Loop Program → `0.2.0+`
+
+After `0.1.0` is published, execute the plans indexed by
+[`plans/2026-08-07-post-0.1.0-product-loop-program.md`](plans/2026-08-07-post-0.1.0-product-loop-program.md).
+
+- **Health Event Contract** — confirmed start/end, system proposals, related
+  symptoms/medicines/records, and improved/unchanged/worsened result
+- **Proactive Suggestion Runtime** — relevant changes trigger bounded
+  recomputation; opening Today is not the first generation trigger
+- **Sparse Record Semantics** — missing means unknown; medication uses reminder
+  slots; water uses ml; sleep supports night sleep and naps; optional health
+  imports cannot be a core prerequisite
+- **Review Experience** — keep the fifth tab and `/report` compatibility, rename
+  its user task to Review, remove the composite score and move optional exports
+  into More
+- **Visit Summary and Measurement** — harden the optional problem-oriented
+  summary while privacy-minimal event, suggestion and review signals validate
+  the core loop separately from exports
 
 ### P2 → `1.1.0`
 
 Harden the experience and add high-value features on the stable foundation.
 
-- **Clinic Summary Template** — structured doctor/pharmacist handoff export
-  with field-level privacy redaction (PDF + plain text)
-- **Symptom-Medicine Timeline** — cross-type correlation view in Record,
-  clickable AI summary evidence expansion
-- **Record Adherence** — weekly recording streak heatmap, density-aware AI
-  summary gating, inline progress prompts
+- **Review Validation** — verify that users open event reviews and complete the
+  single result question; generic weekly/monthly report usage is not assumed
+- **Symptom-Medicine Timeline** — event-scoped evidence view with explicit data
+  coverage and no unsupported causal claims
+- **Visit Summary Hardening** — optional, problem-oriented export under Review
+  > More, with field-level privacy controls and access measurement
 
 ### P3 → `1.2.0+`
 
@@ -99,20 +116,17 @@ Extend product capabilities.
   allergic reaction, breathing difficulty) with static safety copy
 - **Smart Reminder Priority** — context-aware reminder scheduling based on
   recording patterns and confirmation latency (requires Lucent rule extension)
-- **Health Bridge** — Apple Health / Health Connect read-only integration for
-  steps, sleep, water (reduces manual entry friction)
+- **Verified Health Bridge** — optional read-only integration only for verified
+  devices, regions, services, and developer access; never a core data prerequisite
 - **Quick-Entry Widget** — Android home screen + iOS Lock Screen widgets for
   one-tap water logging and medication status
-- **Embedded Assistant** — inline AI entry points in Today / Medicine / Report
+- **Embedded Assistant** — inline AI entry points in Today / Medicine / Review
   instead of standalone-only access
 
 ### Scale & Platform → `2.0.0`
 
 Broaden platform reach and prepare for larger scale.
 
-- **Desktop** — full desktop-first navigation, window management, keyboard
-  shortcuts
-- **Web** — progressive web app, shareable report preview (beyond demo)
 - **Family Profiles** — multi-user household management, dependent care
 - **Wearable** — Wear OS / watchOS companion for quick logging
 - **Internationalization** — additional locales, timezone-aware scheduling,
@@ -124,8 +138,10 @@ Broaden platform reach and prepare for larger scale.
 
 | Version  | Theme                | Status      |
 | -------- | -------------------- | ----------- |
-| `0.1.0-dev` | Initial development  | In progress |
-| `1.0.0`     | P0 + P1 stable release | Planned     |
+| `0.1.0-dev` | Current integration and release preparation | In progress |
+| `0.1.0`     | Existing runtime release | Planned     |
+| `0.2.0+`    | Event-led sparse-record product loop | Planned after `0.1.0` |
+| `1.0.0`     | Stable validated product loop | Planned     |
 | `1.1.0`     | P2 feature polish    | Planned     |
 | `1.2.0`     | P3 feature expansion | Planned     |
 | `2.0.0`     | Scale & platform     | Planned     |
@@ -134,8 +150,10 @@ Releases follow [Semantic Versioning](https://semver.org/). Each release passes
 the full `flutter analyze` + `flutter test` + `dart run scripts/run_daily_checks.dart`
 gate before publish.
 
-Detailed feature brainstorm and adjustment rationale: see
-[docs/01-product/Product_Brainstorm_2026-07-07.md](docs/01-product/Product_Brainstorm_2026-07-07.md).
+Current product direction and rationale: see
+[Product Vision](docs/01-product/Product_Vision.md),
+[MVP Scope](docs/01-product/Product_MVP_Scope.md), and
+[Product Context](CONTEXT.md).
 
 ## Contributing
 
