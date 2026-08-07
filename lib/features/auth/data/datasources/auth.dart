@@ -432,11 +432,10 @@ class LucentAuthRepository implements AuthRepository {
         code: code.trim(),
       ),
     );
+    final body = _requireBody(response.data).data;
     return currentUser.copyWith(
-      email: _requireBody(response.data).data.email,
-      emailVerifiedAt: _parseOptionalDateTime(
-        _requireBody(response.data).data.emailVerifiedAt,
-      ),
+      email: body.email,
+      emailVerifiedAt: _parseOptionalDateTime(body.emailVerifiedAt),
     );
   }
 
