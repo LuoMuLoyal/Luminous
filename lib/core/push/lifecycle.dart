@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/push/jpush_gateway.dart';
 import 'package:luminous/core/push/message_handler.dart';
 import 'package:luminous/features/settings/data/providers/notification_permission.dart';
@@ -31,7 +32,9 @@ class PushCoordinator {
   /// two aliases concurrently during a cold start.
   Future<void> onAuthChanged({String? userId}) {
     final operation = _authChanges.then<void>((_) => _applyAuthChange(userId));
-    _authChanges = operation.catchError((Object _, StackTrace __) {});
+    _authChanges = operation.catchError((Object error, StackTrace stack) {
+      appTalker.error('PushCoordinator: auth change chain error', error, stack);
+    });
     return operation;
   }
 
