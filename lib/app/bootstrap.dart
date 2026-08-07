@@ -52,16 +52,16 @@ class _LuminousAppState extends ConsumerState<LuminousApp> {
       final previousUserId = previous?.user?.id;
       final nextUserId = next.user?.id;
 
+      // Logout: invalidate health context + sync push alias to null, then return.
       if (previous?.isAuthenticated == true && !next.isAuthenticated) {
         ref.invalidate(healthContextSnapshotProvider);
+        unawaited(_syncPushAuth(null));
+        return;
       }
 
+      // Login / session restore / user switch: sync push alias.
       if (!next.isLoading) {
         unawaited(_syncPushAuth(next.isAuthenticated ? next.user?.id : null));
-      }
-
-      if (previous?.isAuthenticated == true && !next.isAuthenticated) {
-        return;
       }
 
       if (!next.isAuthenticated || next.isLoading) return;
