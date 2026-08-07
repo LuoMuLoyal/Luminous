@@ -1,12 +1,28 @@
 # AI 对话页重构：未完成实施方案
 
 Created: 2026-08-01
-Updated: 2026-08-03
+Updated: 2026-08-07（合并原 `ai-chat-redesign-problems.md` 和 `ai-chat-redesign.md`）
 
 > 进度说明（2026-08-03 更新）：原实施方案中**阶段 1、2、4、5 与阶段 3 的 UI 部分
 > （抽屉、分组、搜索、高亮）已完成**，最终阶段映射与验收见
 > `docs/03-logs/migration-log/2026-08-01.md`。本文件仅保留**未实施**的部分：
 > 阶段 3 的会话删除/重命名（后端接口阻塞）与阶段 6 桌面 split-view。
+>
+> 2026-08-07 合并说明：原 `2026-08-01-ai-chat-redesign-problems.md`（问题清单，
+> 仅剩 #8 未修复）和 `2026-08-01-ai-chat-redesign.md`（未完成部分概要）
+> 内容与本文件高度重叠，已合并到本文件并删除。
+
+## 现状与问题
+
+当前用户无法：
+- 重命名当前会话标题（始终为"未命名会话"或后端生成标题，用户难以识别）
+- 删除某条历史会话（长期使用后历史会话堆积，无法清理）
+- 清空当前会话（有"新对话"按钮，但不清空历史列表中的当前会话）
+- 查看会话创建时间
+
+相关代码位置：
+- `lib/features/assistant/presentation/providers/conversation.dart` — 没有 `renameConversation` / `deleteConversation`
+- `lib/features/assistant/presentation/pages/page.dart` — `handleStartNewConversation` 只调用 `clearConversation`
 
 ## 未完成部分
 
@@ -52,6 +68,10 @@ Updated: 2026-08-03
 
 实现建议：
 - 优先使用软删除，保留 `archived` 语义不变。
+  - `AssistantConversation.status` 枚举当前只有 `active` / `archived`，且 `archived`
+    已被用于"非当前活跃"语义，不适合复用为"已删除"。
+  - 需在 `AssistantConversationStatus` 枚举中增加 `deleted`（或新增 `isDeleted` /
+    `deletedAt` 字段）。
 - `listRecentSummaries` 默认过滤 `deleted`。
 - 若选择硬删除，注意 `AssistantMessage` 外键级联删除。
 
