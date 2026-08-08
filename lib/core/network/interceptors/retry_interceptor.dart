@@ -29,8 +29,11 @@ class RetryInterceptor extends Interceptor {
 
   static const String _retryCountKey = 'retryCount';
 
+  /// Base backoff delay in milliseconds (doubles on every retry attempt).
+  static const int _baseRetryDelayMs = 500;
+
   static Duration _defaultBackoff(int attempt) {
-    return Duration(milliseconds: 500 * (1 << attempt));
+    return Duration(milliseconds: _baseRetryDelayMs * (1 << attempt));
   }
 
   @override
