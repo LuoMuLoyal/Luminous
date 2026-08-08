@@ -96,7 +96,12 @@ class TimelineCard extends StatelessWidget {
           ? () => pushAuthRequiredRoute(context, '/record/${entry.recordId}')
           : () => pushAuthRequiredRoute(
               context,
-              '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
+              Uri(
+                path: '/record/create',
+                queryParameters: {
+                  'date': formatRecordDate(selectedDate ?? DateTime.now()),
+                },
+              ).toString(),
             ),
       child: DesktopHoverCard(child: child),
     );

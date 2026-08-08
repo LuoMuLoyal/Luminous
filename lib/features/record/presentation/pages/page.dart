@@ -72,7 +72,10 @@ class _RecordPageState extends ConsumerState<RecordPage> {
     unawaited(
       pushAuthRequiredRoute(
         context,
-        '/record/create?date=${formatRecordDate(selectedDate)}',
+        Uri(
+          path: '/record/create',
+          queryParameters: {'date': formatRecordDate(selectedDate)},
+        ).toString(),
       ),
     );
   }

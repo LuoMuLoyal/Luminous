@@ -98,7 +98,12 @@ class RecordTimelinePanel extends StatelessWidget {
                 onClearFilter: onClearFilter,
                 onCreate: () => pushAuthRequiredRoute(
                   context,
-                  '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
+                  Uri(
+                    path: '/record/create',
+                    queryParameters: {
+                      'date': formatRecordDate(selectedDate ?? DateTime.now()),
+                    },
+                  ).toString(),
                 ),
               )
             else

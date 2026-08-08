@@ -107,7 +107,10 @@ class _RecordMobileTimelineState extends State<RecordMobileTimeline> {
             hasActiveFilter: widget.hasActiveFilter,
             onCreate: () => pushAuthRequiredRoute(
               context,
-              '/record/create?date=${formatRecordDate(createDate)}',
+              Uri(
+                path: '/record/create',
+                queryParameters: {'date': formatRecordDate(createDate)},
+              ).toString(),
             ),
             onClearFilter: widget.onClearFilter,
           )
@@ -208,7 +211,14 @@ class _TimelineRow extends StatelessWidget {
                       )
                     : () => pushAuthRequiredRoute(
                         context,
-                        '/record/create?date=${formatRecordDate(selectedDate ?? DateTime.now())}',
+                        Uri(
+                          path: '/record/create',
+                          queryParameters: {
+                            'date': formatRecordDate(
+                              selectedDate ?? DateTime.now(),
+                            ),
+                          },
+                        ).toString(),
                       ),
                 child: Row(
                   children: [
