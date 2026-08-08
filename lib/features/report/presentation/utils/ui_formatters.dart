@@ -7,8 +7,11 @@ String reportDashboardDateRangeLabel(
   String endDate,
 ) {
   final locale = Localizations.localeOf(context).toString();
-  final start = DateTime.parse(startDate);
-  final end = DateTime.parse(endDate);
+  final start = DateTime.tryParse(startDate);
+  final end = DateTime.tryParse(endDate);
+  if (start == null || end == null) {
+    return '$startDate - $endDate';
+  }
   final formatter = DateFormat.MMMd(locale);
   return '${formatter.format(start)} - ${formatter.format(end)}';
 }

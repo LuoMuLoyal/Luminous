@@ -1,5 +1,6 @@
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
 import 'package:luminous/features/today/domain/entities/ai_analysis.dart';
 import 'package:luminous/features/today/domain/repositories/ai.dart';
@@ -50,7 +51,7 @@ class LucentTodayAiRepository implements TodayAiRepository {
   TodayAiAnalysis _mapAnalysis(lucent.TodayAnalysisDataDto dto) {
     return TodayAiAnalysis(
       date: dto.date,
-      generatedAt: DateTime.parse(dto.generatedAt),
+      generatedAt: parseDateTimeOrEpoch(dto.generatedAt),
       summary: dto.summary,
       bullets: dto.bullets.map(_mapBullet).toList(growable: false),
       actionLabel: dto.actionLabel,

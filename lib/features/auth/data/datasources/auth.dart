@@ -1,6 +1,7 @@
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/network/dio_client.dart';
 import 'package:luminous/core/network/session_store.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/auth/data/mappers/auth.dart';
 import 'package:luminous/features/auth/domain/entities/auth_verification_scene.dart';
 import 'package:luminous/features/auth/domain/entities/oauth_authorize.dart';
@@ -435,7 +436,7 @@ class LucentAuthRepository implements AuthRepository {
     final body = _requireBody(response.data).data;
     return currentUser.copyWith(
       email: body.email,
-      emailVerifiedAt: _parseOptionalDateTime(body.emailVerifiedAt),
+      emailVerifiedAt: parseDateTimeOrNull(body.emailVerifiedAt),
     );
   }
 
@@ -468,22 +469,22 @@ class LucentAuthRepository implements AuthRepository {
       email: user.email?.toString(),
       nickname: user.nickname?.toString(),
       avatar: user.avatar?.toString(),
-      emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
+      emailVerifiedAt: parseDateTimeOrNull(user.emailVerifiedAt),
       hasPassword: user.hasPassword,
-      lastLoginAt: _parseOptionalDateTime(user.lastLoginAt),
+      lastLoginAt: parseDateTimeOrNull(user.lastLoginAt),
       linkedIdentities: user.linkedIdentities
           .map(
             (identity) => AuthLinkedIdentity(
               id: identity.id,
               provider: identity.provider,
               email: identity.email?.toString(),
-              emailVerifiedAt: _parseOptionalDateTime(identity.emailVerifiedAt),
-              linkedAt: DateTime.parse(identity.linkedAt),
+              emailVerifiedAt: parseDateTimeOrNull(identity.emailVerifiedAt),
+              linkedAt: parseDateTimeOrEpoch(identity.linkedAt),
             ),
           )
           .toList(),
-      createdAt: DateTime.parse(user.createdAt),
-      updatedAt: DateTime.parse(user.updatedAt),
+      createdAt: parseDateTimeOrEpoch(user.createdAt),
+      updatedAt: parseDateTimeOrEpoch(user.updatedAt),
     );
   }
 
@@ -500,17 +501,5 @@ class LucentAuthRepository implements AuthRepository {
       message: dto.message,
       cooldownSeconds: dto.cooldown.toInt(),
     );
-  }
-
-  DateTime? _parseOptionalDateTime(Object? value) {
-    final raw = value?.toString();
-    if (raw == null || raw.isEmpty) {
-      return null;
-    }
-    try {
-      return DateTime.parse(raw);
-    } on FormatException {
-      return null;
-    }
   }
 }

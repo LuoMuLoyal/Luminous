@@ -11,6 +11,8 @@ LoginDataDto _loginData({
   String? emailVerifiedAt,
   String accessToken = 'at-1',
   String refreshToken = 'rt-1',
+  String createdAt = '2026-06-10T08:00:00.000Z',
+  String updatedAt = '2026-06-10T08:00:00.000Z',
 }) {
   return LoginDataDto(
     user: UserFullDto(
@@ -20,8 +22,8 @@ LoginDataDto _loginData({
       avatar: null,
       emailVerified: emailVerified,
       emailVerifiedAt: emailVerifiedAt,
-      createdAt: '2026-06-10T08:00:00.000Z',
-      updatedAt: '2026-06-10T08:00:00.000Z',
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     ),
     tokens: TokensDto(
       accessToken: accessToken,
@@ -73,6 +75,23 @@ void main() {
       final session = AuthMapper.toSessionFromLogin(_loginData());
 
       expect(session.user.avatar, isNull);
+    });
+
+    test('maps malformed emailVerifiedAt to null instead of crashing', () {
+      final session = AuthMapper.toSessionFromLogin(
+        _loginData(emailVerified: true, emailVerifiedAt: 'not-a-date'),
+      );
+
+      expect(session.user.emailVerifiedAt, isNull);
+    });
+
+    test('maps malformed createdAt to epoch instead of crashing', () {
+      final session = AuthMapper.toSessionFromLogin(
+        _loginData(createdAt: 'not-a-date', updatedAt: 'not-a-date'),
+      );
+
+      expect(session.user.createdAt, DateTime.fromMillisecondsSinceEpoch(0));
+      expect(session.user.updatedAt, DateTime.fromMillisecondsSinceEpoch(0));
     });
   });
 }

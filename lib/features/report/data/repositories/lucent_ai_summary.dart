@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/report/data/datasources/ai_summary_remote.dart';
 import 'package:luminous/features/report/domain/entities/ai_summary.dart';
 import 'package:luminous/features/report/domain/repositories/ai_summary.dart';
@@ -70,7 +71,7 @@ class LucentReportAiSummaryRepository implements ReportAiSummaryRepository {
       range: _mapRange(dto.range),
       startDate: dto.startDate,
       endDate: dto.endDate,
-      generatedAt: DateTime.parse(dto.generatedAt),
+      generatedAt: parseDateTimeOrEpoch(dto.generatedAt),
       summary: dto.summary,
       bullets: dto.bullets.map(_mapBullet).toList(growable: false),
       actionLabel: dto.actionLabel,

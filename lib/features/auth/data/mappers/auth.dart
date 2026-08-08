@@ -1,4 +1,5 @@
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 
 abstract final class AuthMapper {
@@ -9,15 +10,16 @@ abstract final class AuthMapper {
   static AuthSession toSessionFromRegister(RegisterDataDto data) {
     final user = data.user;
     final tokens = data.tokens;
+    // UserBriefDto 不携带 updatedAt,注册场景沿用 createdAt 作为占位。
     return AuthSession(
       user: AuthUser(
         id: user.id,
         email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: null,
-        emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
-        createdAt: DateTime.parse(user.createdAt),
-        updatedAt: DateTime.parse(user.createdAt),
+        emailVerifiedAt: parseDateTimeOrNull(user.emailVerifiedAt),
+        createdAt: parseDateTimeOrEpoch(user.createdAt),
+        updatedAt: parseDateTimeOrEpoch(user.createdAt),
       ),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
@@ -35,21 +37,13 @@ abstract final class AuthMapper {
         email: user.email?.toString(),
         nickname: user.nickname?.toString(),
         avatar: user.avatar?.toString(),
-        emailVerifiedAt: _parseOptionalDateTime(user.emailVerifiedAt),
-        createdAt: DateTime.parse(user.createdAt),
-        updatedAt: DateTime.parse(user.updatedAt),
+        emailVerifiedAt: parseDateTimeOrNull(user.emailVerifiedAt),
+        createdAt: parseDateTimeOrEpoch(user.createdAt),
+        updatedAt: parseDateTimeOrEpoch(user.updatedAt),
       ),
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       expiresInSeconds: tokens.expiresIn.toInt(),
     );
-  }
-
-  static DateTime? _parseOptionalDateTime(Object? value) {
-    final raw = value?.toString();
-    if (raw == null || raw.isEmpty) {
-      return null;
-    }
-    return DateTime.parse(raw);
   }
 }

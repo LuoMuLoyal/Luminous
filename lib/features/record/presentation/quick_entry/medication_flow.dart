@@ -275,7 +275,10 @@ class MedicationQuickEntryFlow {
               reminder.currentMedicineId == medicine.id &&
               reminder.isActive &&
               reminder.matchesDate(context.now) &&
-              window.contains(_dateTimeFor(context.date, reminder.timeLabel)),
+              _isInWindow(
+                _dateTimeFor(context.date, reminder.timeLabel),
+                window,
+              ),
         )
         .toList(growable: false);
 
@@ -347,15 +350,24 @@ class MedicationQuickEntryFlow {
         log?.status == DoseLogStatus.skipped;
   }
 
-  DateTime _dateTimeFor(String date, String time) {
-    final parsedDate = DateTime.parse(date);
-    final parts = time.split(':').map(int.parse).toList(growable: false);
+  bool _isInWindow(DateTime? value, MedicationQuickEntryWindow window) {
+    return value != null && window.contains(value);
+  }
+
+  DateTime? _dateTimeFor(String date, String time) {
+    final parsedDate = DateTime.tryParse(date);
+    if (parsedDate == null) return null;
+    final parts = time.split(':');
+    if (parts.length != 2) return null;
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+    if (hour == null || minute == null) return null;
     return DateTime(
       parsedDate.year,
       parsedDate.month,
       parsedDate.day,
-      parts[0],
-      parts[1],
+      hour,
+      minute,
     );
   }
 
