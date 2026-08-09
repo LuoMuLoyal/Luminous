@@ -21,22 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 2 — Persist Materialization State
-
-**Files:**
-
-- Modify: `Lucent/prisma/schema.prisma`
-- Modify: migration output under `Lucent/prisma/migrations/` created with migration name `add_suggestion_materialization_state`
-- Create: `Lucent/src/modules/today-suggestion/types/materialization.types.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/materialization/store.service.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/materialization/store.service.spec.ts`
-
-- [ ] 先写 store spec，覆盖不存在、pending、ready、failed、stale 五种状态和 version compare。
-- [ ] 在 Prisma 中新增 `UserSuggestionMaterialization`，唯一键为 `[userId, localDate]`，字段包含 `sourceVersion`、`computedVersion`、`status`、`reasonCodes`、`lastErrorCode`、`queuedAt`、`computedAt`、`updatedAt`。
-- [ ] 对健康内容不写 raw payload；`reasonCodes` 只使用固定枚举，如 `daily_record_changed`、`dose_log_changed`、`health_event_changed`。
-- [ ] 实现 store 的 `markPending`、`markReady`、`markFailed`、`readStatus`，并用 optimistic version 防止旧 job 覆盖新结果。
-- [ ] 运行 `pnpm prisma:generate` 和 store spec，确认状态转换通过。
-
 ## Task 3 — Add a Debounced Recompute Queue
 
 **Files:**
