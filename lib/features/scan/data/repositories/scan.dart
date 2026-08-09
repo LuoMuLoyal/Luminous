@@ -56,7 +56,7 @@ class LucentScanRepository implements ScanRepository {
     );
     final envelope = coerceToStringMap(presignResponse.data);
     if (envelope == null) {
-      throw Exception('File upload presign response is empty.');
+      throw StateError('File upload presign response is empty.');
     }
     final uploadData = coerceToStringMap(envelope['data']) ?? const {};
     final uploadUrl = uploadData['uploadUrl']?.toString() ?? '';
@@ -89,7 +89,7 @@ class LucentScanRepository implements ScanRepository {
     );
     final envelope = coerceToStringMap(response.data);
     if (envelope == null) {
-      throw Exception('Recognize medicine response is empty.');
+      throw StateError('Recognize medicine response is empty.');
     }
     final data = Map<String, dynamic>.from(envelope['data'] as Map);
     return MedicineRecognitionResult(

@@ -30,7 +30,7 @@ class ProposalExecutionOrchestrator {
   /// and after this call.
   Future<void> execute(AssistantProposedAction proposal) async {
     if (proposal.isExpired) {
-      throw Exception('Proposal expired; please regenerate.');
+      throw StateError('Proposal expired; please regenerate.');
     }
 
     switch (proposal.payload) {

@@ -321,7 +321,7 @@ void main() {
 
       expect(
         () => repo.uploadImage(bytes: [1, 2, 3], contentType: 'image/jpeg'),
-        throwsA(isA<Exception>()),
+        throwsA(isA<StateError>()),
       );
     });
   });
@@ -365,7 +365,7 @@ void main() {
 
       expect(
         () => repo.recognizeMedicine('https://cdn.example.com/img.jpg'),
-        throwsA(isA<Exception>()),
+        throwsA(isA<StateError>()),
       );
     });
 
