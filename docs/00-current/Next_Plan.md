@@ -7,32 +7,24 @@ updated: 2026-08-07
 
 # Luminous Next Plan
 
-Last updated: 2026-08-07
+Last updated: 2026-08-09
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 产品优先级以 [[02-reference/adr/0011-event-led-sparse-record-product-loop]] 和仓库根目录 `CONTEXT.md` 为准；历史 brainstorm 只用于追溯。
 
 ## 当前目标
 
-当前目标是完成现有版本的真实联调与发布验证，并同步启动产品闭环重构。产品方向已重新基线化，健康事件、真正主动的建议链、统一数据口径和 `Review/回顾` 重构的实施计划已就绪。
+当前目标是执行产品闭环重构。当前工作流为 `Health Event Contract`，先完成用户确认开始/结束、每日结果和关联记录的跨前后端合同，再进入主动建议运行时。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **完成 `0.1.0` 联调与发布验证**
-   - 修复真实联调发现的发布阻断问题
-   - 运行 `flutter analyze --no-pub`
-   - 运行 `flutter test --no-pub`
-   - 运行 `dart run scripts/run_daily_checks.dart`
-   - 需要真实端到端信心时运行 `dart run scripts/run_fullstack_checks.dart`
-2. **发布 `0.1.0`**
-   - 同步版本、CHANGELOG、当前状态与迁移日志
-   - 确认未把产品闭环方向写成当前运行时能力
-3. **启动大型产品闭环计划**
-   - 总计划：[`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md)
-   - 严格按合同基础 → 主动建议 → 稀疏输入 → 回顾 → 出口与测量的顺序执行
-4. **继续冻结非核心平台**
+1. **执行 Health Event Contract**
+   - 子计划：[`../../plans/2026-08-07-health-event-contract.md`](../../plans/2026-08-07-health-event-contract.md)
+   - 先完成 Lucent schema、ownership-safe API、OpenAPI 和 Luminous domain/data slice
+   - 再完成 Today 的开始、每日确认和结束入口；每个阶段完成定向验证、文档对齐和提交
+2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化
    - `Luminous-website` 是竞赛/营销表面，不是签入式产品壳
