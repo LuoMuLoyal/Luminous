@@ -21,24 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 3 — Add a Debounced Recompute Queue
-
-**Files:**
-
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/queue.service.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/queue.service.spec.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/trigger.listener.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/trigger.listener.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/today-suggestion.module.ts`
-- Modify: `Lucent/src/common/events/domain-events.ts`
-
-- [ ] 先写 queue spec：job id 稳定为 user/date；连续事件只保留一个 delayed job；原因集合合并；新版本递增。
-- [ ] 先写 listener spec，覆盖 `DAILY_RECORD_CHANGED`、`DOSE_LOG_CHANGED`、`REMINDER_CHANGED`、`HEALTH_CONTEXT_CHANGED`、`SETTINGS_CHANGED`、`HEALTH_EVENT_CHANGED`。
-- [ ] 实现 `RecomputeQueueService.enqueue()`，使用仓库现有 BullMQ config、重试和结构化日志规范，不新建第二套 Redis 客户端。
-- [ ] 对无 date 的 context/settings/reminder 事件，使用用户时区的今天；对带 date 的事件保持 payload 日期。
-- [ ] listener 先标记 materialization pending，再 enqueue；任一步失败记录 error，不向 emitter 抛出未处理异常。
-- [ ] 在 module 注册 queue/listener，运行目标 specs。
-
 ## Task 4 — Move Pipeline Execution Into the Worker
 
 **Files:**
