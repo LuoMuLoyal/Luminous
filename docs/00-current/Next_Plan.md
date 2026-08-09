@@ -14,17 +14,20 @@ Last updated: 2026-08-09
 
 ## 当前目标
 
-当前目标是执行产品闭环重构。当前工作流为 `Health Event Contract`，先完成用户确认开始/结束、每日结果和关联记录的跨前后端合同，再进入主动建议运行时。
+当前目标是完成 `Health Event Contract` 的 Task 8 acceptance verification。跨前后端合同、Today 手机端确认入口、自动化检查和文档对齐已完成；真实数据库 A/B ownership 与 start → check-in → end → history 流程仍待本地 PostgreSQL 可用后验证。通过后再进入 `Proactive Suggestion Runtime`。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **执行 Health Event Contract**
-   - 子计划：[`../../plans/2026-08-07-health-event-contract.md`](../../plans/2026-08-07-health-event-contract.md)
-   - 先完成 Lucent schema、ownership-safe API、OpenAPI 和 Luminous domain/data slice
-   - 再完成 Today 的开始、每日确认和结束入口；每个阶段完成定向验证、文档对齐和提交
-2. **继续冻结非核心平台**
+1. **完成 Health Event Contract acceptance verification**
+   - 启动可用的本地 PostgreSQL/test runtime，验证用户 A 无法读取或关联用户 B 的 event ID
+   - 验证开始 → check-in → 结束 → 历史读取，确认系统建议没有绕过用户确认写入状态
+2. **通过 acceptance 后执行 Proactive Suggestion Runtime**
+   - 子计划：[`../../plans/2026-08-07-proactive-suggestion-runtime.md`](../../plans/2026-08-07-proactive-suggestion-runtime.md)
+   - 先冻结健康事件写入后的 domain-event payload、去重、冷却和失败降级边界
+   - 再让记录写入触发服务端有界重算，Today 只读取已有结果并呈现陈旧/失败状态
+3. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化
    - `Luminous-website` 是竞赛/营销表面，不是签入式产品壳

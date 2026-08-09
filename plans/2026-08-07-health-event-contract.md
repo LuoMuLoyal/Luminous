@@ -24,18 +24,9 @@
 
 ## Task 8 — Verify and Document
 
-**Files:**
+自动验证、current-state、迁移日志和 Luminous TODO 已完成；Lucent 原有用户未提交 TODO 改动保持不动。
 
-- Create: `Lucent/docs/00-current/Active_Product_Loop.md`
-- Modify: `Lucent/docs/00-current/TODO.md`
-- Append: implementation-date file under `Lucent/docs/02-logs/migration-log/`
-- Modify: `Luminous/docs/00-current/Active_UI_Today.md`
-- Modify: `Luminous/docs/00-current/TODO.md`
-- Append: implementation-date file under `Luminous/docs/03-logs/migration-log/`
+剩余 acceptance gate：
 
-- [ ] 在 Lucent 运行 `pnpm lint:check && pnpm typecheck && pnpm test && pnpm build && pnpm docs:check`。
-- [ ] 在 Luminous 运行 `flutter analyze`、`flutter test`、`dart run scripts/check_doc_coverage.dart --warning-only`。
-- [ ] 运行两个仓库的文档链接检查和 `git diff --check`。
-- [ ] 手工验证用户 A 无法读取或关联用户 B 的 event ID。
-- [ ] 手工验证开始 → check-in → 结束 → 历史读取，确认系统建议没有绕过用户确认写入状态。
-- [ ] 更新 current-state 和迁移日志，删除两个任务清单中已经完成的 health-event 条目。
+- [ ] 本地 PostgreSQL/test runtime 可用后，验证用户 A 无法读取或关联用户 B 的 event ID。
+- [ ] 验证开始 → check-in → 结束 → 历史读取，确认系统建议没有绕过用户确认写入状态。

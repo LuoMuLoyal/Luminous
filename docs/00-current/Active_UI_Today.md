@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-04
+updated: 2026-08-09
 ---
 
 # Active UI — Today
