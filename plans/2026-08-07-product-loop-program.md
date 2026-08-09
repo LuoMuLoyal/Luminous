@@ -40,12 +40,6 @@
 
 ## Program Checkpoints
 
-### Checkpoint A — Contract Ready
-
-- [ ] Health Event API contract、Prisma migration、Flutter repository 和事件开始/结束 UI 全部通过测试。
-- [ ] OpenAPI diff 经人工检查，只包含计划中的新增/兼容变更。
-- [ ] 用一个真实流程验证：开始“感冒观察” → 关联症状与短期药物 → 每日一次结果 → 用户确认结束。
-
 ### Checkpoint B — Proactive Runtime Ready
 
 - [ ] 写入相关记录后，无需打开 Today 即可观察到服务端重算任务完成。
