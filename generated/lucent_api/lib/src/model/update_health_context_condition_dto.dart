@@ -20,11 +20,8 @@ class UpdateHealthContextConditionDto {
   /// Returns a new [UpdateHealthContextConditionDto] instance.
   UpdateHealthContextConditionDto({
     this.label,
-
     this.status,
-
     this.diagnosedAt,
-
     this.note,
   });
 

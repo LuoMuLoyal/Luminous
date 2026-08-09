@@ -20,11 +20,8 @@ class PollenIndicatorDto {
   /// Returns a new [PollenIndicatorDto] instance.
   PollenIndicatorDto({
     required this.level,
-
     required this.primaryType,
-
     required this.value,
-
     required this.unit,
   });
 

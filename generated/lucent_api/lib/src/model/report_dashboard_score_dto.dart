@@ -19,11 +19,8 @@ class ReportDashboardScoreDto {
   /// Returns a new [ReportDashboardScoreDto] instance.
   ReportDashboardScoreDto({
     required this.value,
-
     required this.maxValue,
-
     required this.status,
-
     required this.summary,
   });
 

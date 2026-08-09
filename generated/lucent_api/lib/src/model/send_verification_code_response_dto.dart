@@ -20,9 +20,7 @@ class SendVerificationCodeResponseDto {
   /// Returns a new [SendVerificationCodeResponseDto] instance.
   SendVerificationCodeResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

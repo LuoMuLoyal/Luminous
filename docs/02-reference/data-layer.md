@@ -80,6 +80,12 @@ All repository providers are declared with `@riverpod` and access the API throug
 `lucentClientProvider`. Repository implementations own DTO ↔ domain entity mapping so that
 presentation/domain layers never see generated DTO types.
 
+The `health_event` slice follows the same boundary: `HealthEventRepository` exposes domain
+entities, `LucentHealthEventRepository` maps the generated `HealthEventsApi`, and
+`activeHealthEventProvider` owns the keep-alive loading/data/error state plus explicit refresh.
+An empty active response and HTTP 404 both mean “no active event”; other transport failures remain
+errors so the UI can offer a retry path.
+
 ### Domain Interface Injection (Cross-Feature)
 
 When a feature's repository needs data from another feature, it depends on the other feature's

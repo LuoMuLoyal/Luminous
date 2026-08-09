@@ -20,31 +20,18 @@ class UserCurrentMedicineItemDto {
   /// Returns a new [UserCurrentMedicineItemDto] instance.
   UserCurrentMedicineItemDto({
     required this.id,
-
     required this.source_,
-
     required this.sourceRefId,
-
     required this.displayName,
-
     required this.strengthText,
-
     required this.doseText,
-
     required this.route,
-
     required this.startedAt,
-
     required this.endedAt,
-
     required this.isCurrent,
-
     required this.note,
-
     required this.sourcePayload,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 

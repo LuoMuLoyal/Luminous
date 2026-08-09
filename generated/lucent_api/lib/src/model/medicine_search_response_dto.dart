@@ -20,9 +20,7 @@ class MedicineSearchResponseDto {
   /// Returns a new [MedicineSearchResponseDto] instance.
   MedicineSearchResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

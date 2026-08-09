@@ -19,11 +19,8 @@ class OAuthAuthorizeDataDto {
   /// Returns a new [OAuthAuthorizeDataDto] instance.
   OAuthAuthorizeDataDto({
     required this.authorizeUrl,
-
     required this.state,
-
     required this.expiresIn,
-
     this.callbackUri,
   });
 

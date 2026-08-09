@@ -20,9 +20,7 @@ class HealthResponseDto {
   /// Returns a new [HealthResponseDto] instance.
   HealthResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

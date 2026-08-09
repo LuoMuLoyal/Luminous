@@ -21,19 +21,12 @@ class UserSettingsDataDto {
   /// Returns a new [UserSettingsDataDto] instance.
   UserSettingsDataDto({
     required this.aiSummariesEnabled,
-
     required this.dataSharingConsent,
-
     required this.assistantEnabled,
-
     required this.assistantMemoryEnabled,
-
     required this.waterTargetCount,
-
     required this.assistantContext,
-
     required this.updatedAt,
-
     required this.securityPin,
   });
 

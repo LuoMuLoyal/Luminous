@@ -20,17 +20,11 @@ class TodayAnalysisDataDto {
   /// Returns a new [TodayAnalysisDataDto] instance.
   TodayAnalysisDataDto({
     required this.date,
-
     required this.generatedAt,
-
     required this.summary,
-
     required this.bullets,
-
     required this.actionLabel,
-
     required this.action,
-
     required this.confidenceNote,
   });
 

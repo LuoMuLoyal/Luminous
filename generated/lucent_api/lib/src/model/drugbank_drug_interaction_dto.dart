@@ -19,7 +19,6 @@ class DrugbankDrugInteractionDto {
   /// Returns a new [DrugbankDrugInteractionDto] instance.
   DrugbankDrugInteractionDto({
     required this.drugbankId,
-
     required this.description,
   });
 

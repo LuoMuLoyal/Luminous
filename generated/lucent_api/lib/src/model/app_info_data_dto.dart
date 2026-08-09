@@ -19,11 +19,8 @@ class AppInfoDataDto {
   /// Returns a new [AppInfoDataDto] instance.
   AppInfoDataDto({
     this.minClientVersion,
-
     this.latestVersion,
-
     this.downloadUrl,
-
     this.supportEmail,
   });
 

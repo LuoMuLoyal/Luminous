@@ -20,9 +20,7 @@ class TodaySuggestionsResponseDto {
   /// Returns a new [TodaySuggestionsResponseDto] instance.
   TodaySuggestionsResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

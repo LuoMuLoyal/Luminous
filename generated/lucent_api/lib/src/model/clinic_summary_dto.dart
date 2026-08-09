@@ -20,19 +20,12 @@ class ClinicSummaryDto {
   /// Returns a new [ClinicSummaryDto] instance.
   ClinicSummaryDto({
     required this.generatedAt,
-
     required this.dataRange,
-
     required this.profile,
-
     required this.allergies,
-
     required this.conditions,
-
     required this.currentMedicines,
-
     this.findings,
-
     required this.disclaimer,
   });
 

@@ -20,9 +20,7 @@ class MedicineReminderListResponseDto {
   /// Returns a new [MedicineReminderListResponseDto] instance.
   MedicineReminderListResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

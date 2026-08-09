@@ -19,15 +19,10 @@ class AssistantToolCapabilityDto {
   /// Returns a new [AssistantToolCapabilityDto] instance.
   AssistantToolCapabilityDto({
     required this.name,
-
     required this.requiredContextSources,
-
     required this.permittedByUser,
-
     required this.enabled,
-
     required this.implemented,
-
     required this.disabledReason,
   });
 

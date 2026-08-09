@@ -19,9 +19,7 @@ class ResetPasswordDto {
   /// Returns a new [ResetPasswordDto] instance.
   ResetPasswordDto({
     required this.email,
-
     required this.code,
-
     required this.password,
   });
 

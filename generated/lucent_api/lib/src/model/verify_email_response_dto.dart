@@ -20,9 +20,7 @@ class VerifyEmailResponseDto {
   /// Returns a new [VerifyEmailResponseDto] instance.
   VerifyEmailResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

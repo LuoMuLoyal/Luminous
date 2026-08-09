@@ -20,17 +20,11 @@ class MedicineRiskCheckRecordDto {
   /// Returns a new [MedicineRiskCheckRecordDto] instance.
   MedicineRiskCheckRecordDto({
     required this.checkType,
-
     required this.result,
-
     required this.riskScore,
-
     required this.riskLevel,
-
     required this.stale,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 

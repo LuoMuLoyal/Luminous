@@ -20,9 +20,7 @@ class RefreshResponseDto {
   /// Returns a new [RefreshResponseDto] instance.
   RefreshResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

@@ -20,21 +20,13 @@ class ReportSummaryDataDto {
   /// Returns a new [ReportSummaryDataDto] instance.
   ReportSummaryDataDto({
     required this.range,
-
     required this.startDate,
-
     required this.endDate,
-
     required this.generatedAt,
-
     required this.summary,
-
     required this.bullets,
-
     required this.actionLabel,
-
     required this.action,
-
     required this.confidenceNote,
   });
 

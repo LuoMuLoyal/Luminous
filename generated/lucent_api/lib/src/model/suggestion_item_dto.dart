@@ -21,39 +21,22 @@ class SuggestionItemDto {
   /// Returns a new [SuggestionItemDto] instance.
   SuggestionItemDto({
     required this.id,
-
     required this.type,
-
     required this.cardTone,
-
     required this.icon,
-
     required this.title,
-
     required this.reason,
-
     required this.evidence,
-
     required this.boundary,
-
     required this.primaryAction,
-
     this.secondaryActions,
-
     required this.confidence,
-
     required this.ruleId,
-
     required this.ruleVersion,
-
     required this.triggerType,
-
     required this.lifecycleState,
-
     this.notificationEligible,
-
     this.feedbackOptions,
-
     this.subtype,
   });
 

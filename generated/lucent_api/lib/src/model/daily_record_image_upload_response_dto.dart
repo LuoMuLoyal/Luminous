@@ -20,9 +20,7 @@ class DailyRecordImageUploadResponseDto {
   /// Returns a new [DailyRecordImageUploadResponseDto] instance.
   DailyRecordImageUploadResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

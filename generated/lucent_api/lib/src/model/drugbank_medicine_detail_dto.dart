@@ -20,49 +20,27 @@ class DrugbankMedicineDetailDto {
   /// Returns a new [DrugbankMedicineDetailDto] instance.
   DrugbankMedicineDetailDto({
     required this.kind,
-
     this.drugType,
-
     this.state,
-
     this.description,
-
     this.indication,
-
     this.mechanismOfAction,
-
     this.pharmacodynamics,
-
     this.toxicity,
-
     this.metabolism,
-
     this.absorption,
-
     this.halfLife,
-
     this.proteinBinding,
-
     this.routeOfElimination,
-
     this.volumeOfDistribution,
-
     this.clearance,
-
     required this.groups,
-
     required this.categories,
-
     required this.atcCodes,
-
     required this.synonyms,
-
     required this.foodInteractions,
-
     this.drugInteractions,
-
     this.externalIdentifiers,
-
     this.externalLinks,
   });
 

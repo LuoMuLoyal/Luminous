@@ -19,9 +19,7 @@ class ConfirmAssistantProposalDto {
   /// Returns a new [ConfirmAssistantProposalDto] instance.
   ConfirmAssistantProposalDto({
     required this.proposalIds,
-
     required this.decision,
-
     this.note,
   });
 

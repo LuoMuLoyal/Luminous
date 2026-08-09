@@ -20,9 +20,7 @@ class DailyRecordResponseDto {
   /// Returns a new [DailyRecordResponseDto] instance.
   DailyRecordResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

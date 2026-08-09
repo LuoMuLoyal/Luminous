@@ -19,11 +19,8 @@ class RegisterDto {
   /// Returns a new [RegisterDto] instance.
   RegisterDto({
     required this.email,
-
     required this.password,
-
     required this.code,
-
     this.nickname,
   });
 

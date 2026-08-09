@@ -20,9 +20,7 @@ class AssistantClearResultResponseDto {
   /// Returns a new [AssistantClearResultResponseDto] instance.
   AssistantClearResultResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

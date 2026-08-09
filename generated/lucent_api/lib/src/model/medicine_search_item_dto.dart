@@ -19,19 +19,12 @@ class MedicineSearchItemDto {
   /// Returns a new [MedicineSearchItemDto] instance.
   MedicineSearchItemDto({
     required this.id,
-
     required this.source_,
-
     required this.name,
-
     required this.subtitle,
-
     required this.summary,
-
     required this.tags,
-
     required this.imageUrl,
-
     required this.matchedBy,
   });
 

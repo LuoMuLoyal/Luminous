@@ -20,11 +20,8 @@ class DailyRecordCandidateDataDto {
   /// Returns a new [DailyRecordCandidateDataDto] instance.
   DailyRecordCandidateDataDto({
     required this.locale,
-
     required this.generatedAt,
-
     required this.confirmationHint,
-
     required this.items,
   });
 

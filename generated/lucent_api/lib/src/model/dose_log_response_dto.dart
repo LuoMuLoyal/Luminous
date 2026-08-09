@@ -20,9 +20,7 @@ class DoseLogResponseDto {
   /// Returns a new [DoseLogResponseDto] instance.
   DoseLogResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

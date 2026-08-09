@@ -19,9 +19,7 @@ class TodayRecommendationResponseDto {
   /// Returns a new [TodayRecommendationResponseDto] instance.
   TodayRecommendationResponseDto({
     required this.id,
-
     required this.text,
-
     this.category,
   });
 

@@ -19,11 +19,8 @@ class SuggestionFeedbackDataDto {
   /// Returns a new [SuggestionFeedbackDataDto] instance.
   SuggestionFeedbackDataDto({
     required this.suggestionId,
-
     required this.feedback,
-
     required this.appliedEffect,
-
     this.expiresAt,
   });
 

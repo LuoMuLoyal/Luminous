@@ -19,9 +19,7 @@ class CreateFileUploadDto {
   /// Returns a new [CreateFileUploadDto] instance.
   CreateFileUploadDto({
     required this.contentType,
-
     required this.sizeBytes,
-
     this.fileName,
   });
 

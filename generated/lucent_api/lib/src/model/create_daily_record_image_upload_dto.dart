@@ -19,9 +19,7 @@ class CreateDailyRecordImageUploadDto {
   /// Returns a new [CreateDailyRecordImageUploadDto] instance.
   CreateDailyRecordImageUploadDto({
     required this.contentType,
-
     required this.sizeBytes,
-
     this.fileName,
   });
 

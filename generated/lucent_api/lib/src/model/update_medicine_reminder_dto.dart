@@ -19,21 +19,13 @@ class UpdateMedicineReminderDto {
   /// Returns a new [UpdateMedicineReminderDto] instance.
   UpdateMedicineReminderDto({
     this.currentMedicineId,
-
     this.label,
-
     this.scheduledHour,
-
     this.scheduledMinute,
-
     this.daysOfWeek,
-
     this.startDate,
-
     this.endDate,
-
     this.isActive,
-
     this.note,
   });
 

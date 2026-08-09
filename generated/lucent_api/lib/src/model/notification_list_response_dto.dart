@@ -20,11 +20,8 @@ class NotificationListResponseDto {
   /// Returns a new [NotificationListResponseDto] instance.
   NotificationListResponseDto({
     required this.code,
-
     required this.message,
-
     required this.items,
-
     required this.total,
   });
 

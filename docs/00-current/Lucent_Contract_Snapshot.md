@@ -7,7 +7,7 @@ updated: 2026-08-06
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-06 (Lucent 已移除旧设备注册合同，推送改由 JPush alias 驱动)
+Last updated: 2026-08-09 (新增 Health Event Contract)
 
 ## 基础
 
@@ -25,6 +25,7 @@ Last updated: 2026-08-06 (Lucent 已移除旧设备注册合同，推送改由 J
 - **枚举未知值**：生成器开启 `enumUnknownDefaultCase=true`，所有枚举均含 `unknownDefaultOpenApi` fallback。
 - **app-info 扩展**：`AppInfoDataDto` 新增 `latestVersion: string | null` 和 `downloadUrl: string | null` 字段，通过 `LATEST_VERSION` 和 `DOWNLOAD_URL` 环境变量配置。前端 About 页使用 `compareSemver()` 比较本地版本与 `latestVersion`，发现新版本时自动打开 `downloadUrl`。
 - **推送设备合同移除**：Lucent 已移除旧的用户设备注册 API、`user_devices` 持久化模型及其 DTO。Luminous 通过 JPush SDK 绑定用户 UUID alias，生成客户端和 `LucentDioClient` 不再暴露 `UserDevicesApi`、`RegisterDeviceDto`、`DeviceResponseDto` 或 `UserDevicePlatform`。
+- **Health Event Contract**：生成客户端新增 `HealthEventsApi`，覆盖 active/create/end/detail/list/check-in 六个操作，以及 `HealthEventStatus`（`active`/`ended`）和 `HealthEventOutcome`（`improved`/`unchanged`/`worsened`）。daily record 与 dose log DTO 同步携带可空 `healthEventId`；Luminous 的 `health_event` domain slice 通过 repository 适配器隔离这些生成类型，且对生成器的 nullable `Object?` 字段做运行时类型校验。
 
 ## Luminous 已使用的后端领域
 

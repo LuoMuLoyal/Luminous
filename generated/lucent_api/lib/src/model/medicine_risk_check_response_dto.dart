@@ -22,19 +22,12 @@ class MedicineRiskCheckResponseDto {
   /// Returns a new [MedicineRiskCheckResponseDto] instance.
   MedicineRiskCheckResponseDto({
     required this.overallRiskLevel,
-
     required this.overallRiskScore,
-
     required this.currentMedicineCount,
-
     required this.checkedMedicineCount,
-
     required this.findings,
-
     required this.coverageIssues,
-
     required this.redFlags,
-
     this.overallRecommendation,
   });
 

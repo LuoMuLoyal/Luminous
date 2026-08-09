@@ -19,11 +19,8 @@ class AssistantConversationMessageDto {
   /// Returns a new [AssistantConversationMessageDto] instance.
   AssistantConversationMessageDto({
     required this.role,
-
     required this.content,
-
     required this.usedTools,
-
     required this.createdAt,
   });
 

@@ -20,9 +20,7 @@ class ForgotPasswordResponseDto {
   /// Returns a new [ForgotPasswordResponseDto] instance.
   ForgotPasswordResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

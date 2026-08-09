@@ -20,9 +20,7 @@ class ReminderDeliveryListResponseDto {
   /// Returns a new [ReminderDeliveryListResponseDto] instance.
   ReminderDeliveryListResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

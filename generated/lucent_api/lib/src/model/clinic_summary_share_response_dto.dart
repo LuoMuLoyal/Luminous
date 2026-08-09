@@ -19,7 +19,6 @@ class ClinicSummaryShareResponseDto {
   /// Returns a new [ClinicSummaryShareResponseDto] instance.
   ClinicSummaryShareResponseDto({
     required this.shareUrl,
-
     required this.expiresAt,
   });
 

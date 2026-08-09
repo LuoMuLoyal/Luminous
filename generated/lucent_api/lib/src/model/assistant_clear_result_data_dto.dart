@@ -19,7 +19,6 @@ class AssistantClearResultDataDto {
   /// Returns a new [AssistantClearResultDataDto] instance.
   AssistantClearResultDataDto({
     required this.cleared,
-
     required this.archivedConversationId,
   });
 

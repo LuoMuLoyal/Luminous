@@ -20,9 +20,7 @@ class ReportDashboardResponseDto {
   /// Returns a new [ReportDashboardResponseDto] instance.
   ReportDashboardResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

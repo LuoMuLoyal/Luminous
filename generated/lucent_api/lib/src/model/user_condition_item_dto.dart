@@ -20,21 +20,13 @@ class UserConditionItemDto {
   /// Returns a new [UserConditionItemDto] instance.
   UserConditionItemDto({
     required this.id,
-
     required this.label,
-
     required this.status,
-
     required this.diagnosedAt,
-
     required this.resolvedAt,
-
     required this.note,
-
     required this.extras,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 

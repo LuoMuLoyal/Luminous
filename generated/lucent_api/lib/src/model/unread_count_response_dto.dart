@@ -19,9 +19,7 @@ class UnreadCountResponseDto {
   /// Returns a new [UnreadCountResponseDto] instance.
   UnreadCountResponseDto({
     required this.code,
-
     required this.message,
-
     required this.count,
   });
 

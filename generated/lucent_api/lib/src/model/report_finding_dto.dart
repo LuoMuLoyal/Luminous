@@ -19,9 +19,7 @@ class ReportFindingDto {
   /// Returns a new [ReportFindingDto] instance.
   ReportFindingDto({
     required this.kind,
-
     required this.title,
-
     required this.body,
   });
 

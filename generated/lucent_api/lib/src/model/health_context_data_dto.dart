@@ -24,13 +24,9 @@ class HealthContextDataDto {
   /// Returns a new [HealthContextDataDto] instance.
   HealthContextDataDto({
     required this.summary,
-
     required this.profile,
-
     required this.allergies,
-
     required this.conditions,
-
     required this.currentMedicines,
   });
 

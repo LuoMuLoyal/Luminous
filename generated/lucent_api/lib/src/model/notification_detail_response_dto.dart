@@ -20,9 +20,7 @@ class NotificationDetailResponseDto {
   /// Returns a new [NotificationDetailResponseDto] instance.
   NotificationDetailResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

@@ -19,9 +19,7 @@ class SuccessResponseDto {
   /// Returns a new [SuccessResponseDto] instance.
   SuccessResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

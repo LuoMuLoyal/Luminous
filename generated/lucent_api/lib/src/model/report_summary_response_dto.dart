@@ -20,9 +20,7 @@ class ReportSummaryResponseDto {
   /// Returns a new [ReportSummaryResponseDto] instance.
   ReportSummaryResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

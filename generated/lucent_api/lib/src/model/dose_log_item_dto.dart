@@ -20,31 +20,26 @@ class DoseLogItemDto {
   /// Returns a new [DoseLogItemDto] instance.
   DoseLogItemDto({
     required this.id,
-
+    this.healthEventId,
     this.currentMedicineId,
-
     this.reminderId,
-
     required this.status,
-
     required this.scheduledFor,
-
     this.scheduledTime,
-
     this.doseText,
-
     this.note,
-
     this.source_,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 
   /// Dose log id.
   @JsonKey(name: r'id', required: true, includeIfNull: false)
   final String id;
+
+  /// Linked health event id.
+  @JsonKey(name: r'healthEventId', required: false, includeIfNull: false)
+  final String? healthEventId;
 
   /// Linked current medicine id.
   @JsonKey(name: r'currentMedicineId', required: false, includeIfNull: false)
@@ -95,6 +90,7 @@ class DoseLogItemDto {
       identical(this, other) ||
       other is DoseLogItemDto &&
           other.id == id &&
+          other.healthEventId == healthEventId &&
           other.currentMedicineId == currentMedicineId &&
           other.reminderId == reminderId &&
           other.status == status &&
@@ -109,6 +105,7 @@ class DoseLogItemDto {
   @override
   int get hashCode =>
       id.hashCode +
+      (healthEventId == null ? 0 : healthEventId.hashCode) +
       currentMedicineId.hashCode +
       reminderId.hashCode +
       status.hashCode +

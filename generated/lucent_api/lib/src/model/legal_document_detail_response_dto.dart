@@ -20,9 +20,7 @@ class LegalDocumentDetailResponseDto {
   /// Returns a new [LegalDocumentDetailResponseDto] instance.
   LegalDocumentDetailResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

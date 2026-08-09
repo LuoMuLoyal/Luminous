@@ -19,11 +19,8 @@ class MedicinePaginationDto {
   /// Returns a new [MedicinePaginationDto] instance.
   MedicinePaginationDto({
     required this.page,
-
     required this.pageSize,
-
     required this.total,
-
     required this.totalPages,
   });
 

@@ -19,9 +19,7 @@ class TokensDto {
   /// Returns a new [TokensDto] instance.
   TokensDto({
     required this.accessToken,
-
     required this.refreshToken,
-
     required this.expiresIn,
   });
 

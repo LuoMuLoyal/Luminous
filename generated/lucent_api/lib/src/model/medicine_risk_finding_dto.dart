@@ -19,19 +19,12 @@ class MedicineRiskFindingDto {
   /// Returns a new [MedicineRiskFindingDto] instance.
   MedicineRiskFindingDto({
     required this.type,
-
     required this.severity,
-
     required this.context,
-
     required this.primaryMedicineName,
-
     this.secondaryMedicineName,
-
     this.relatedLabel,
-
     this.evidence,
-
     this.recommendation,
   });
 

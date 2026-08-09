@@ -19,11 +19,8 @@ class SuggestionActionDto {
   /// Returns a new [SuggestionActionDto] instance.
   SuggestionActionDto({
     required this.actionId,
-
     required this.label,
-
     required this.route,
-
     required this.authRequired,
   });
 

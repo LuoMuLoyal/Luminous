@@ -19,15 +19,10 @@ class UserHealthSummaryDto {
   /// Returns a new [UserHealthSummaryDto] instance.
   UserHealthSummaryDto({
     required this.age,
-
     required this.onboardingCompleted,
-
     required this.activeAllergyCount,
-
     required this.conditionCount,
-
     required this.currentMedicineCount,
-
     required this.missingCoreProfileFields,
   });
 

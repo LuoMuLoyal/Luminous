@@ -21,41 +21,24 @@ class DailyRecordItemDto {
   /// Returns a new [DailyRecordItemDto] instance.
   DailyRecordItemDto({
     required this.id,
-
     required this.kind,
-
+    this.healthEventId,
     required this.occurredAt,
-
     this.occurredTime,
-
     this.title,
-
     this.value,
-
     this.unit,
-
     this.note,
-
     this.source_,
-
     this.payload,
-
     this.mealAnalysisStatus,
-
     this.mealAnalysisCoverage,
-
     this.mealAnalysisUpdatedAt,
-
     this.mealAnalysisFailureReason,
-
     this.mealShortDescription,
-
     this.mealTopFoods,
-
     required this.attachments,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 
@@ -70,6 +53,10 @@ class DailyRecordItemDto {
     unknownEnumValue: DailyRecordKind.unknownDefaultOpenApi,
   )
   final DailyRecordKind kind;
+
+  /// Linked health event id.
+  @JsonKey(name: r'healthEventId', required: false, includeIfNull: false)
+  final String? healthEventId;
 
   /// Date in YYYY-MM-DD format.
   @JsonKey(name: r'occurredAt', required: true, includeIfNull: false)
@@ -152,6 +139,7 @@ class DailyRecordItemDto {
       other is DailyRecordItemDto &&
           other.id == id &&
           other.kind == kind &&
+          other.healthEventId == healthEventId &&
           other.occurredAt == occurredAt &&
           other.occurredTime == occurredTime &&
           other.title == title &&
@@ -174,6 +162,7 @@ class DailyRecordItemDto {
   int get hashCode =>
       id.hashCode +
       kind.hashCode +
+      (healthEventId == null ? 0 : healthEventId.hashCode) +
       occurredAt.hashCode +
       (occurredTime == null ? 0 : occurredTime.hashCode) +
       (title == null ? 0 : title.hashCode) +

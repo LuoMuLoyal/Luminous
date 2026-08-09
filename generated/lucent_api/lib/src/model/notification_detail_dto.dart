@@ -20,21 +20,13 @@ class NotificationDetailDto {
   /// Returns a new [NotificationDetailDto] instance.
   NotificationDetailDto({
     required this.id,
-
     required this.type,
-
     required this.title,
-
     required this.content,
-
     this.action,
-
     this.actionPayload,
-
     required this.isRead,
-
     required this.createdAt,
-
     this.readAt,
   });
 

@@ -20,9 +20,7 @@ class LegalDocumentListResponseDto {
   /// Returns a new [LegalDocumentListResponseDto] instance.
   LegalDocumentListResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

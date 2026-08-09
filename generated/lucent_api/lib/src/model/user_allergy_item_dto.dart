@@ -21,25 +21,15 @@ class UserAllergyItemDto {
   /// Returns a new [UserAllergyItemDto] instance.
   UserAllergyItemDto({
     required this.id,
-
     required this.kind,
-
     required this.label,
-
     required this.reaction,
-
     this.severity,
-
     required this.isActive,
-
     required this.note,
-
     required this.extras,
-
     required this.recordedAt,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 

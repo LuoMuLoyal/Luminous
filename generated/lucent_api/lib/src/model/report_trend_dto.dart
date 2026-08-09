@@ -19,11 +19,8 @@ class ReportTrendDto {
   /// Returns a new [ReportTrendDto] instance.
   ReportTrendDto({
     required this.kind,
-
     required this.unit,
-
     required this.currentValue,
-
     required this.values,
   });
 

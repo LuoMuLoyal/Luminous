@@ -19,11 +19,8 @@ class AssistantContextSettingsDto {
   /// Returns a new [AssistantContextSettingsDto] instance.
   AssistantContextSettingsDto({
     required this.healthProfile,
-
     required this.dailyRecords,
-
     required this.sleepRecords,
-
     required this.currentMedicines,
   });
 

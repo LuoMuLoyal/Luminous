@@ -20,9 +20,7 @@ class DailyRecordSummaryResponseDto {
   /// Returns a new [DailyRecordSummaryResponseDto] instance.
   DailyRecordSummaryResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

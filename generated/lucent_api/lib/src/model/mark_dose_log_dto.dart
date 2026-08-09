@@ -20,17 +20,12 @@ class MarkDoseLogDto {
   /// Returns a new [MarkDoseLogDto] instance.
   MarkDoseLogDto({
     this.currentMedicineId,
-
     this.reminderId,
-
+    this.healthEventId,
     required this.status,
-
     required this.scheduledFor,
-
     this.scheduledTime,
-
     this.doseText,
-
     this.note,
   });
 
@@ -41,6 +36,10 @@ class MarkDoseLogDto {
   /// Linked reminder id for slot-aware marks.
   @JsonKey(name: r'reminderId', required: false, includeIfNull: false)
   final String? reminderId;
+
+  /// Linked active health event id.
+  @JsonKey(name: r'healthEventId', required: false, includeIfNull: false)
+  final Object? healthEventId;
 
   @JsonKey(
     name: r'status',
@@ -72,6 +71,7 @@ class MarkDoseLogDto {
       other is MarkDoseLogDto &&
           other.currentMedicineId == currentMedicineId &&
           other.reminderId == reminderId &&
+          other.healthEventId == healthEventId &&
           other.status == status &&
           other.scheduledFor == scheduledFor &&
           other.scheduledTime == scheduledTime &&
@@ -82,6 +82,7 @@ class MarkDoseLogDto {
   int get hashCode =>
       currentMedicineId.hashCode +
       reminderId.hashCode +
+      (healthEventId == null ? 0 : healthEventId.hashCode) +
       status.hashCode +
       scheduledFor.hashCode +
       scheduledTime.hashCode +

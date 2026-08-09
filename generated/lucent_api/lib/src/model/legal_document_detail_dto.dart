@@ -19,11 +19,8 @@ class LegalDocumentDetailDto {
   /// Returns a new [LegalDocumentDetailDto] instance.
   LegalDocumentDetailDto({
     required this.docType,
-
     required this.title,
-
     required this.content,
-
     required this.updatedAt,
   });
 

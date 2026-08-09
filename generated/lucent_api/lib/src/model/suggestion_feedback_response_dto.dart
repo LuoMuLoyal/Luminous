@@ -20,9 +20,7 @@ class SuggestionFeedbackResponseDto {
   /// Returns a new [SuggestionFeedbackResponseDto] instance.
   SuggestionFeedbackResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

@@ -20,9 +20,7 @@ class LoginResponseDto {
   /// Returns a new [LoginResponseDto] instance.
   LoginResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

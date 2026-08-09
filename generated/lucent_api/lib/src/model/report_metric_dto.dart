@@ -19,17 +19,11 @@ class ReportMetricDto {
   /// Returns a new [ReportMetricDto] instance.
   ReportMetricDto({
     required this.kind,
-
     required this.value,
-
     required this.unit,
-
     required this.status,
-
     required this.delta,
-
     required this.direction,
-
     required this.sparkline,
   });
 

@@ -19,11 +19,8 @@ class AssistantConfirmResultDto {
   /// Returns a new [AssistantConfirmResultDto] instance.
   AssistantConfirmResultDto({
     required this.conversationId,
-
     required this.decision,
-
     required this.status,
-
     required this.finalContent,
   });
 

@@ -20,9 +20,7 @@ class RegisterResponseDto {
   /// Returns a new [RegisterResponseDto] instance.
   RegisterResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

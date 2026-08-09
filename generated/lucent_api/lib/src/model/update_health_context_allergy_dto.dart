@@ -21,17 +21,11 @@ class UpdateHealthContextAllergyDto {
   /// Returns a new [UpdateHealthContextAllergyDto] instance.
   UpdateHealthContextAllergyDto({
     this.kind,
-
     this.label,
-
     this.reaction,
-
     this.severity,
-
     this.note,
-
     this.recordedAt,
-
     this.isActive,
   });
 

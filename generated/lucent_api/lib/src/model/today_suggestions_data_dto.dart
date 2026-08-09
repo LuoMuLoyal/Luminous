@@ -20,13 +20,9 @@ class TodaySuggestionsDataDto {
   /// Returns a new [TodaySuggestionsDataDto] instance.
   TodaySuggestionsDataDto({
     required this.generatedAt,
-
     this.primary,
-
     this.secondary,
-
     this.observations,
-
     this.degraded,
   });
 

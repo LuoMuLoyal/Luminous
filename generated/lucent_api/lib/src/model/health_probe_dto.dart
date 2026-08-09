@@ -24,15 +24,10 @@ class HealthProbeDto {
   /// Returns a new [HealthProbeDto] instance.
   HealthProbeDto({
     required this.probe,
-
     required this.status,
-
     required this.checkedAt,
-
     required this.app,
-
     required this.summary,
-
     required this.components,
   });
 

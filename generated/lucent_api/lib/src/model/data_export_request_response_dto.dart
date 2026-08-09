@@ -20,9 +20,7 @@ class DataExportRequestResponseDto {
   /// Returns a new [DataExportRequestResponseDto] instance.
   DataExportRequestResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

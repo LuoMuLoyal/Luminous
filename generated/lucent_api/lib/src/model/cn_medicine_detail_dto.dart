@@ -19,45 +19,25 @@ class CnMedicineDetailDto {
   /// Returns a new [CnMedicineDetailDto] instance.
   CnMedicineDetailDto({
     required this.kind,
-
     this.approvalNumber,
-
     this.manufacturer,
-
     this.packageSpec,
-
     this.brandName,
-
     this.ingredients,
-
     this.properties,
-
     this.indications,
-
     this.dosage,
-
     this.adverseReactions,
-
     this.contraindications,
-
     this.precautions,
-
     this.pharmacologyToxicology,
-
     this.pharmacokinetics,
-
     this.overdose,
-
     this.storage,
-
     this.validityPeriod,
-
     this.barcode,
-
     this.nationalDrugCode,
-
     this.sourceUrl,
-
     this.imageUrl,
   });
 

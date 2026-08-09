@@ -19,11 +19,8 @@ class AppleOAuthCallbackDto {
   /// Returns a new [AppleOAuthCallbackDto] instance.
   AppleOAuthCallbackDto({
     required this.identityToken,
-
     this.authorizationCode,
-
     this.givenName,
-
     this.familyName,
   });
 

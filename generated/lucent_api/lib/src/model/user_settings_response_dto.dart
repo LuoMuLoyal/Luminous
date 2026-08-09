@@ -20,9 +20,7 @@ class UserSettingsResponseDto {
   /// Returns a new [UserSettingsResponseDto] instance.
   UserSettingsResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

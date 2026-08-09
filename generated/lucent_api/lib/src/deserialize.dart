@@ -38,6 +38,7 @@ import 'package:lucent_api/src/model/create_dose_log_dto.dart';
 import 'package:lucent_api/src/model/create_file_upload_dto.dart';
 import 'package:lucent_api/src/model/create_health_context_allergy_dto.dart';
 import 'package:lucent_api/src/model/create_health_context_condition_dto.dart';
+import 'package:lucent_api/src/model/create_health_event_dto.dart';
 import 'package:lucent_api/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/create_notification_dto.dart';
 import 'package:lucent_api/src/model/daily_record_attachment_dto.dart';
@@ -67,6 +68,7 @@ import 'package:lucent_api/src/model/drugbank_drug_interaction_dto.dart';
 import 'package:lucent_api/src/model/drugbank_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/emergency_contact_dto.dart';
 import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
+import 'package:lucent_api/src/model/end_health_event_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
 import 'package:lucent_api/src/model/evidence_item_dto.dart';
@@ -81,6 +83,13 @@ import 'package:lucent_api/src/model/health_app_info_dto.dart';
 import 'package:lucent_api/src/model/health_component_dto.dart';
 import 'package:lucent_api/src/model/health_context_data_dto.dart';
 import 'package:lucent_api/src/model/health_context_response_dto.dart';
+import 'package:lucent_api/src/model/health_event_check_in_response_dto.dart';
+import 'package:lucent_api/src/model/health_event_coverage_dto.dart';
+import 'package:lucent_api/src/model/health_event_item_dto.dart';
+import 'package:lucent_api/src/model/health_event_list_data_dto.dart';
+import 'package:lucent_api/src/model/health_event_list_response_dto.dart';
+import 'package:lucent_api/src/model/health_event_nullable_response_dto.dart';
+import 'package:lucent_api/src/model/health_event_response_dto.dart';
 import 'package:lucent_api/src/model/health_probe_dto.dart';
 import 'package:lucent_api/src/model/health_response_dto.dart';
 import 'package:lucent_api/src/model/health_summary_dto.dart';
@@ -190,6 +199,7 @@ import 'package:lucent_api/src/model/update_health_context_condition_dto.dart';
 import 'package:lucent_api/src/model/update_health_context_profile_dto.dart';
 import 'package:lucent_api/src/model/update_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/update_user_settings_dto.dart';
+import 'package:lucent_api/src/model/upsert_health_event_check_in_dto.dart';
 import 'package:lucent_api/src/model/user_allergy_item_dto.dart';
 import 'package:lucent_api/src/model/user_brief_dto.dart';
 import 'package:lucent_api/src/model/user_condition_item_dto.dart';
@@ -375,6 +385,9 @@ ReturnType deserialize<ReturnType, BaseType>(
             value as Map<String, dynamic>,
           )
           as ReturnType;
+    case 'CreateHealthEventDto':
+      return CreateHealthEventDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'CreateMedicineReminderDto':
       return CreateMedicineReminderDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -480,6 +493,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'EnableSecurityPinDto':
       return EnableSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'EndHealthEventDto':
+      return EndHealthEventDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'EnvironmentDataSource':
     case 'EnvironmentSnapshotDto':
       return EnvironmentSnapshotDto.fromJson(value as Map<String, dynamic>)
@@ -528,6 +544,33 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HealthContextResponseDto':
       return HealthContextResponseDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'HealthEventCheckInResponseDto':
+      return HealthEventCheckInResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'HealthEventCoverageDto':
+      return HealthEventCoverageDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'HealthEventItemDto':
+      return HealthEventItemDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'HealthEventListDataDto':
+      return HealthEventListDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'HealthEventListResponseDto':
+      return HealthEventListResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'HealthEventNullableResponseDto':
+      return HealthEventNullableResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'HealthEventOutcome':
+    case 'HealthEventResponseDto':
+      return HealthEventResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'HealthEventStatus':
     case 'HealthOverallStatus':
     case 'HealthProbeDto':
       return HealthProbeDto.fromJson(value as Map<String, dynamic>)
@@ -906,6 +949,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'UpdateUserSettingsDto':
       return UpdateUserSettingsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'UpsertHealthEventCheckInDto':
+      return UpsertHealthEventCheckInDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'UserAllergyItemDto':
       return UserAllergyItemDto.fromJson(value as Map<String, dynamic>)

@@ -19,7 +19,6 @@ class SecurityPinElevationResponseDto {
   /// Returns a new [SecurityPinElevationResponseDto] instance.
   SecurityPinElevationResponseDto({
     required this.elevationToken,
-
     required this.expiresAt,
   });
 

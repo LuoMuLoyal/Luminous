@@ -20,23 +20,14 @@ class DailyRecordAttachmentInputDto {
   /// Returns a new [DailyRecordAttachmentInputDto] instance.
   DailyRecordAttachmentInputDto({
     this.kind = DailyRecordAttachmentKind.image,
-
     required this.objectKey,
-
     this.bucket,
-
     this.provider,
-
     this.fileName,
-
     this.contentType,
-
     this.sizeBytes,
-
     this.width,
-
     this.height,
-
     this.publicUrl,
   });
 

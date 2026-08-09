@@ -20,9 +20,7 @@ class SupportResourceListResponseDto {
   /// Returns a new [SupportResourceListResponseDto] instance.
   SupportResourceListResponseDto({
     required this.code,
-
     required this.message,
-
     required this.data,
   });
 

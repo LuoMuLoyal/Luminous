@@ -20,19 +20,12 @@ class NotificationListItemDto {
   /// Returns a new [NotificationListItemDto] instance.
   NotificationListItemDto({
     required this.id,
-
     required this.type,
-
     required this.title,
-
     required this.content,
-
     this.action,
-
     this.actionPayload,
-
     required this.isRead,
-
     required this.createdAt,
   });
 

@@ -19,15 +19,10 @@ class AssistantConversationSummaryDto {
   /// Returns a new [AssistantConversationSummaryDto] instance.
   AssistantConversationSummaryDto({
     required this.id,
-
     required this.title,
-
     required this.status,
-
     required this.lastMessageAt,
-
     required this.createdAt,
-
     required this.updatedAt,
   });
 

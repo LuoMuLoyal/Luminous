@@ -50,6 +50,7 @@ lib/
 │   ├── assistant/         # AI health assistant chat
 │   ├── auth/              # Login, register, OAuth (WeChat, Apple, QQ)
 │   ├── health_context/    # User health profile (onboarding, allergies, conditions)
+│   ├── health_event/      # User-confirmed health event lifecycle and daily outcomes
 │   ├── medicine/          # Medicine search, current medicines, dose logs, reminders
 │   ├── mine/              # User profile dashboard, health context summary
 │   ├── notification/      # In-app notification list
@@ -111,7 +112,7 @@ detail actions), `assistant` (proposal flow orchestrator).
 
 **Full Clean Architecture** (application + data + domain + presentation): `record`, `assistant`
 
-**Standard** (data + domain + presentation): `auth`, `health_context`, `medicine`, `mine`,
+**Standard** (data + domain + presentation): `auth`, `health_context`, `health_event`, `medicine`, `mine`,
 `notification`, `report`, `scan`, `search`, `settings`, `support`, `today`
 
 **Presentation-only** (no data/domain): `shell`
