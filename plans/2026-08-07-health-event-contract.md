@@ -22,29 +22,6 @@
 - 事件可关联多个 `UserCurrentMedicine`；dose log 仍关联具体计划槽位，并额外携带 `healthEventId` 以保留历史归属。
 - 时区边界使用用户设置解析自然日；DTO 日期使用 `YYYY-MM-DD`，时间点使用带 offset 的 ISO 8601。
 
-## Task 7 — Add Mobile Confirmation UI
-
-**Files:**
-
-- Create: `Luminous/lib/features/health_event/presentation/widgets/sheets/start_event.dart`
-- Create: `Luminous/lib/features/health_event/presentation/widgets/sheets/check_in.dart`
-- Create: `Luminous/lib/features/health_event/presentation/widgets/sheets/end_event.dart`
-- Create: `Luminous/test/health_event/presentation/widgets/sheets/start_event_test.dart`
-- Create: `Luminous/test/health_event/presentation/widgets/sheets/check_in_test.dart`
-- Create: `Luminous/test/health_event/presentation/widgets/sheets/end_event_test.dart`
-- Modify: `Luminous/lib/features/today/presentation/pages/page.dart`
-- Modify: `Luminous/lib/features/today/presentation/widgets/views/dashboard_view.dart`
-- Modify: `Luminous/lib/l10n/src/today_zh.arb`
-- Modify: `Luminous/lib/l10n/src/today_en.arb`
-- Modify: `Luminous/docs/02-reference/Localization.md`
-
-- [ ] 先写 widget tests：无事件显示“开始一段健康观察”；active 事件显示今天一次结果入口；结束弹窗强制选择好转/差不多/加重；取消不写入。
-- [ ] 开始弹窗只要求短标题，可选关联当前短期药物和触发症状；不要求完整病史。
-- [ ] check-in 与结束使用三个固定选项；详细症状、严重程度和备注保持可选，不阻塞提交。
-- [ ] 保存成功后刷新 active event、Today dashboard 和相关记录；请求失败保留用户输入并显示可重试错误。
-- [ ] 只编辑 `lib/l10n/src/today_*.arb`，运行 `dart scripts/arb_tools.dart merge` 与 `flutter gen-l10n`。
-- [ ] 运行三个 widget test 文件，确认交互和可访问语义通过。
-
 ## Task 8 — Verify and Document
 
 **Files:**

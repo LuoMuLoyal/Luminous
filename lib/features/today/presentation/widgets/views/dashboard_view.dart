@@ -2,15 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
+import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
+import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
+import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/observation.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/quick_actions.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/summary.dart';
+import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:timezone/data/latest.dart' as timezone_data;
+import 'package:timezone/timezone.dart' as timezone;
 
 class TodayDashboardView extends ConsumerWidget {
   const TodayDashboardView({
@@ -131,6 +143,10 @@ class _MobileTodayDashboard extends StatelessWidget {
       ),
       Padding(
         padding: const EdgeInsets.only(bottom: Spacing.level5),
+        child: _HealthEventSection(isPreview: isPreview, onRefresh: onRefresh),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(bottom: Spacing.level5),
         child: TodayObservationSection(dashboard: dashboard),
       ),
       TodayQuickActionsSection(dashboard: dashboard),
@@ -164,6 +180,393 @@ class _MobileTodayDashboard extends StatelessWidget {
       ],
     );
   }
+}
+
+class _HealthEventSection extends ConsumerWidget {
+  const _HealthEventSection({required this.isPreview, required this.onRefresh});
+
+  final bool isPreview;
+  final Future<void> Function() onRefresh;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (isPreview) return const SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
+    final event = ref.watch(activeHealthEventProvider);
+
+    return TodaySection(
+      title: l10n.todayHealthEventSectionTitle,
+      child: event.when(
+        loading: () =>
+            const _HealthEventCard(child: Center(child: FProgress())),
+        error: (_, __) => _HealthEventCard(
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.todayHealthEventReadFailed,
+                  style: TypographyToken.level3
+                      .body(context)
+                      .copyWith(color: context.theme.colors.destructive),
+                ),
+              ),
+              FButton(
+                key: const Key('health-event-retry'),
+                variant: FButtonVariant.outline,
+                size: FButtonSizeVariant.sm,
+                onPress: () =>
+                    ref.read(activeHealthEventProvider.notifier).refresh(),
+                child: Text(l10n.todaySuggestionRetryAction),
+              ),
+            ],
+          ),
+        ),
+        data: (activeEvent) => activeEvent == null
+            ? _HealthEventCard(
+                child: _HealthEventActionRow(
+                  title: l10n.todayHealthEventStartTitle,
+                  subtitle: l10n.todayHealthEventStartSubtitle,
+                  actionLabel: l10n.todayHealthEventStartAction,
+                  actionKey: const Key('health-event-start-action'),
+                  onPress: () => _openStart(context, ref, l10n),
+                ),
+              )
+            : _HealthEventCard(
+                child: _ActiveHealthEventContent(
+                  event: activeEvent,
+                  onCheckIn: activeEvent.checkIn == null
+                      ? () => _openCheckIn(context, ref, activeEvent, l10n)
+                      : null,
+                  onEnd: () => _openEnd(context, ref, activeEvent, l10n),
+                  l10n: l10n,
+                ),
+              ),
+      ),
+    );
+  }
+
+  Future<void> _openStart(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+  ) async {
+    final currentMedicineOptions = await _readCurrentMedicineOptions(ref);
+    final reasonRecordOptions = await _readReasonRecordOptions(ref);
+    if (!context.mounted) return;
+    var saved = false;
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      scrollable: false,
+      builder: (dialogContext) => StartEventSheet(
+        heading: l10n.todayHealthEventStartTitle,
+        shortTitleLabel: l10n.todayHealthEventTitleLabel,
+        hint: l10n.todayHealthEventTitleHint,
+        currentMedicineLabel: l10n.todayHealthEventCurrentMedicineLabel,
+        currentMedicineOptions: currentMedicineOptions,
+        reasonRecordLabel: l10n.todayHealthEventReasonRecordLabel,
+        reasonRecordOptions: reasonRecordOptions,
+        cancelLabel: l10n.todayHealthEventCancelAction,
+        submitLabel: l10n.todayHealthEventStartAction,
+        submittingLabel: l10n.todayHealthEventSaveAction,
+        requiredMessage: l10n.todayHealthEventTitleRequired,
+        submitErrorLabel: l10n.todayHealthEventSaveFailed,
+        onSubmit:
+            ({
+              required shortTitle,
+              reasonRecordId,
+              required currentMedicineIds,
+            }) async {
+              await ref
+                  .read(activeHealthEventProvider.notifier)
+                  .create(
+                    title: shortTitle,
+                    reasonRecordId: reasonRecordId,
+                    currentMedicineIds: currentMedicineIds,
+                  );
+              saved = true;
+              if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+            },
+      ),
+    );
+    if (!saved || !context.mounted) return;
+    await onRefresh();
+  }
+
+  Future<List<HealthEventAssociationOption>> _readCurrentMedicineOptions(
+    WidgetRef ref,
+  ) async {
+    try {
+      final snapshot = await ref
+          .read(healthContextSnapshotProvider.future)
+          .timeout(const Duration(seconds: 2));
+      return snapshot.currentMedicines
+          .where((medicine) => medicine.isCurrent)
+          .map(
+            (medicine) => HealthEventAssociationOption(
+              id: medicine.id,
+              label: medicine.displayName,
+            ),
+          )
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<List<HealthEventAssociationOption>> _readReasonRecordOptions(
+    WidgetRef ref,
+  ) async {
+    try {
+      final userTimezone = await _readUserTimezone(ref);
+      final today = DateTime.parse(
+        _localDateKey(DateTime.now(), timeZoneName: userTimezone),
+      );
+      final records = await ref
+          .read(dailyRecordListForDateProvider(today).future)
+          .timeout(const Duration(seconds: 2));
+      return records.items
+          .where((record) => record.kind == DailyRecordKind.symptom)
+          .map((record) {
+            final label = [record.title, record.value, record.note]
+                .map((value) => value?.trim())
+                .whereType<String>()
+                .firstWhere((value) => value.isNotEmpty, orElse: () => '');
+            return (record: record, label: label);
+          })
+          .where((item) => item.label.isNotEmpty)
+          .map(
+            (item) => HealthEventAssociationOption(
+              id: item.record.id,
+              label: item.label,
+            ),
+          )
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<void> _openCheckIn(
+    BuildContext context,
+    WidgetRef ref,
+    HealthEvent event,
+    AppLocalizations l10n,
+  ) async {
+    var saved = false;
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      scrollable: false,
+      builder: (dialogContext) => CheckInSheet(
+        heading: l10n.todayHealthEventCheckInTitle,
+        subtitle: l10n.todayHealthEventCheckInSubtitle,
+        improvedLabel: l10n.todayHealthEventImproved,
+        unchangedLabel: l10n.todayHealthEventUnchanged,
+        worsenedLabel: l10n.todayHealthEventWorsened,
+        cancelLabel: l10n.todayHealthEventCancelAction,
+        submitLabel: l10n.todayHealthEventCheckInAction,
+        submittingLabel: l10n.todayHealthEventSaveAction,
+        requiredMessage: l10n.todayHealthEventOutcomeRequired,
+        submitErrorLabel: l10n.todayHealthEventSaveFailed,
+        onSubmit: (outcome) async {
+          final userTimezone = await _readUserTimezone(ref);
+          await ref
+              .read(activeHealthEventProvider.notifier)
+              .checkIn(
+                eventId: event.id,
+                date: _localDateKey(DateTime.now(), timeZoneName: userTimezone),
+                outcome: outcome,
+              );
+          saved = true;
+          if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+    if (!saved || !context.mounted) return;
+    await onRefresh();
+  }
+
+  Future<void> _openEnd(
+    BuildContext context,
+    WidgetRef ref,
+    HealthEvent event,
+    AppLocalizations l10n,
+  ) async {
+    var saved = false;
+    await showAppDialog<void>(
+      context: context,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      scrollable: false,
+      builder: (dialogContext) => EndEventSheet(
+        heading: l10n.todayHealthEventEndTitle,
+        subtitle: l10n.todayHealthEventEndSubtitle,
+        improvedLabel: l10n.todayHealthEventImproved,
+        unchangedLabel: l10n.todayHealthEventUnchanged,
+        worsenedLabel: l10n.todayHealthEventWorsened,
+        cancelLabel: l10n.todayHealthEventCancelAction,
+        submitLabel: l10n.todayHealthEventEndAction,
+        submittingLabel: l10n.todayHealthEventSaveAction,
+        requiredMessage: l10n.todayHealthEventOutcomeRequired,
+        submitErrorLabel: l10n.todayHealthEventSaveFailed,
+        onSubmit: (outcome) async {
+          await ref
+              .read(activeHealthEventProvider.notifier)
+              .end(eventId: event.id, outcome: outcome);
+          saved = true;
+          if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+        },
+      ),
+    );
+    if (!saved || !context.mounted) return;
+    await onRefresh();
+  }
+}
+
+class _HealthEventCard extends StatelessWidget {
+  const _HealthEventCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.card,
+        border: Border.all(color: colors.border),
+        borderRadius: BorderRadius.circular(RadiusTokens.level3),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _HealthEventActionRow extends StatelessWidget {
+  const _HealthEventActionRow({
+    required this.title,
+    required this.subtitle,
+    required this.actionLabel,
+    required this.actionKey,
+    required this.onPress,
+  });
+
+  final String title;
+  final String subtitle;
+  final String actionLabel;
+  final Key actionKey;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: TypographyToken.level5.body(context)),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          subtitle,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(color: context.theme.colors.mutedForeground),
+        ),
+        const SizedBox(height: Spacing.level4),
+        FButton(key: actionKey, onPress: onPress, child: Text(actionLabel)),
+      ],
+    );
+  }
+}
+
+class _ActiveHealthEventContent extends StatelessWidget {
+  const _ActiveHealthEventContent({
+    required this.event,
+    required this.onCheckIn,
+    required this.onEnd,
+    required this.l10n,
+  });
+
+  final HealthEvent event;
+  final VoidCallback? onCheckIn;
+  final VoidCallback onEnd;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(event.title, style: TypographyToken.level5.body(context)),
+        const SizedBox(height: Spacing.level2),
+        Text(
+          onCheckIn == null
+              ? l10n.todayHealthEventCheckInDone
+              : l10n.todayHealthEventCheckInSubtitle,
+          style: TypographyToken.level3
+              .body(context)
+              .copyWith(color: colors.mutedForeground),
+        ),
+        const SizedBox(height: Spacing.level4),
+        Wrap(
+          spacing: Spacing.level2,
+          runSpacing: Spacing.level2,
+          children: [
+            if (onCheckIn != null)
+              FButton(
+                key: const Key('health-event-check-in-action'),
+                onPress: onCheckIn,
+                child: Text(l10n.todayHealthEventCheckInAction),
+              ),
+            FButton(
+              key: const Key('health-event-end-action'),
+              variant: FButtonVariant.outline,
+              onPress: onEnd,
+              child: Text(l10n.todayHealthEventEndAction),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+Future<String?> _readUserTimezone(WidgetRef ref) async {
+  final cached = ref.read(healthContextSnapshotProvider);
+  if (cached.hasValue) return cached.value!.profile.timezone;
+  try {
+    return (await ref.read(
+      healthContextSnapshotProvider.future,
+    )).profile.timezone;
+  } catch (_) {
+    return null;
+  }
+}
+
+String _localDateKey(DateTime date, {String? timeZoneName}) {
+  const fallbackTimeZoneName = 'Asia/Shanghai';
+  var value = date.toLocal();
+  try {
+    timezone_data.initializeTimeZones();
+    value = timezone.TZDateTime.from(
+      date.toUtc(),
+      timezone.getLocation(
+        timeZoneName == null || timeZoneName.isEmpty
+            ? fallbackTimeZoneName
+            : timeZoneName,
+      ),
+    );
+  } catch (_) {
+    // Keep the backend's default timezone when the bundled timezone data is
+    // unavailable, rather than using a potentially different device date.
+    value = date.toUtc().add(const Duration(hours: 8));
+  }
+  return '${value.year.toString().padLeft(4, '0')}-'
+      '${value.month.toString().padLeft(2, '0')}-'
+      '${value.day.toString().padLeft(2, '0')}';
 }
 
 class _DesktopTodayDashboard extends StatelessWidget {

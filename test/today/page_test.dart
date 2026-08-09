@@ -7,6 +7,8 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/presentation/pages/page.dart';
@@ -20,6 +22,28 @@ import '../helpers/feature_mocks.dart';
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
 import 'test_helpers.dart';
+
+class _EmptyActiveHealthEventNotifier extends ActiveHealthEvent {
+  @override
+  Future<HealthEvent?> build() async => null;
+}
+
+class _TrackingActiveHealthEventNotifier extends ActiveHealthEvent {
+  static int refreshCalls = 0;
+  static int buildCalls = 0;
+
+  @override
+  Future<HealthEvent?> build() async {
+    buildCalls++;
+    return null;
+  }
+
+  @override
+  Future<void> refresh() {
+    refreshCalls++;
+    return super.refresh();
+  }
+}
 
 void main() {
   testWidgets(
@@ -91,6 +115,15 @@ void main() {
     await tester.pump();
 
     expect(find.byType(TodaySkeletonView), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('today-health-event-skeleton')),
+      220,
+      scrollable: find.byType(Scrollable),
+    );
+    expect(
+      find.byKey(const Key('today-health-event-skeleton')),
+      findsOneWidget,
+    );
     expect(find.byType(InlineSkeletonBlock), findsWidgets);
   });
 
@@ -128,6 +161,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _EmptyActiveHealthEventNotifier.new,
+          ),
           todayRepositoryProvider.overrideWithValue(
             const StaticTodayRepository(emptyDashboard),
           ),
@@ -205,6 +241,45 @@ void main() {
     );
   });
 
+  testWidgets('desktop pull-to-refresh does not refresh active health event', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1440, 1000);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    _TrackingActiveHealthEventNotifier.refreshCalls = 0;
+    _TrackingActiveHealthEventNotifier.buildCalls = 0;
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _TrackingActiveHealthEventNotifier.new,
+          ),
+          todayRepositoryProvider.overrideWithValue(
+            const MockTodayRepository(),
+          ),
+          todaySuggestionProvider.overrideWith(
+            StaticTodaySuggestionNotifier.new,
+          ),
+        ],
+        child: const TestForuiApp(home: TodayPage()),
+      ),
+    );
+    await _settleDashboard(tester);
+
+    await tester.drag(find.byType(CustomScrollView).last, const Offset(0, 400));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(_TrackingActiveHealthEventNotifier.refreshCalls, 0);
+    expect(_TrackingActiveHealthEventNotifier.buildCalls, 0);
+  });
+
   testWidgets('Today top bar assistant entry routes to assistant page', (
     tester,
   ) async {
@@ -214,6 +289,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _EmptyActiveHealthEventNotifier.new,
+          ),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -331,6 +409,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _EmptyActiveHealthEventNotifier.new,
+          ),
           todayDashboardProvider.overrideWith(
             (ref) => Future<TodayDashboard>.error(Exception('test error')),
           ),
@@ -355,6 +436,9 @@ void main() {
       ProviderScope(
         overrides: [
           authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+          activeHealthEventProvider.overrideWith(
+            _EmptyActiveHealthEventNotifier.new,
+          ),
           todayRepositoryProvider.overrideWithValue(
             const MockTodayRepository(),
           ),
@@ -399,6 +483,9 @@ Widget _signedInTodayApp() {
   return ProviderScope(
     overrides: [
       authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+      activeHealthEventProvider.overrideWith(
+        _EmptyActiveHealthEventNotifier.new,
+      ),
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
       todaySuggestionProvider.overrideWith(StaticTodaySuggestionNotifier.new),
     ],

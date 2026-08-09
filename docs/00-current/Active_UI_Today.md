@@ -7,11 +7,11 @@ updated: 2026-08-04
 
 # Active UI — Today
 
-Last updated: 2026-08-09 (health event domain slice)
+Last updated: 2026-08-09 (health event confirmation UI)
 
 ## 页面结构
 
-Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 → 今日摘要 → 观察项 → 轻动作`。
+Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 → 次建议区 → 今日摘要 → 健康观察 → 观察项 → 轻动作`。
 
 桌面端双栏布局：`TopBar → Row[左7: Primary+Summary | 右5: Secondary+Observation] → QuickActions`。
 
@@ -66,8 +66,17 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 
 ## 骨架屏
 
-- 移动端按真实 section 顺序：TopBar → PrimarySuggestion → SecondarySuggestions → Summary → Observation → QuickActions。
+- 移动端按真实 section 顺序：TopBar → Greeting → PrimarySuggestion → SecondarySuggestions → Summary → HealthObservation → Observation → QuickActions。
 - 桌面端双栏 `Row[左7: Primary+Summary | 右5: Secondary+Observation] + QuickActions`。
+
+## 健康观察
+
+- 手机 Today 在无 active event 时显示“开始一段健康观察”入口；开始只要求短标题，关联触发记录和当前短期用药保持可选。
+- active event 显示事件标题和当天一次结果确认入口；当天已有 check-in 时不重复提交入口。
+- check-in 与结束都只接受“好转 / 差不多 / 加重”，结束必须由用户选择结果。
+- 三个确认弹窗由父层提供 repository action；请求失败时弹窗保留输入并显示可重试错误，取消不发请求。
+- 写入成功后刷新 active event、Today dashboard 和 suggestion 数据；桌面端暂不接入新入口。
+- check-in 日期按用户 profile 时区计算；缺失或无效时使用后端约定的 `Asia/Shanghai` 默认值。
 
 ## 数据层
 
@@ -78,7 +87,8 @@ Today 根页为行动面板，首屏顺序为 `主建议卡 → 次建议区 →
 - Dashboard 用药统计通过 `cachedDoseLogDataSourceProvider` 读取（cache-first）。
 - 图标映射提取为独立 `SuggestionIconMapping` 类。
 - Dashboard 超时默认 8 秒，支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。骨架屏加载 2 秒后底部显示 `todayLoadingSlowHint`（"加载较慢，请稍候…"）muted 提示。
-- Health Event Contract 的 Flutter domain/data slice 已落地，但 Today 尚未接入开始、每日确认和结束 UI：`activeHealthEventProvider` 读取当前用户事件，空响应/404 映射为空态，其他请求错误保留为可重试错误。
+- Today 移动骨架包含健康观察区块，顺序与加载完成后的移动页面一致；桌面骨架保持原双栏结构。
+- `activeHealthEventProvider` 读取当前用户事件并提供经过认证守卫的 create/check-in/end action；空响应/404 映射为空态，其他请求错误保留为可重试错误。
 
 ## 助手入口
 

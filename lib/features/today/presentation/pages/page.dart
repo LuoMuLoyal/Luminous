@@ -8,6 +8,7 @@ import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
+import 'package:luminous/features/health_event/presentation/providers/active_event.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/features/shell/presentation/desktop_tab_shell.dart';
 import 'package:luminous/features/today/presentation/providers/dashboard.dart';
@@ -23,11 +24,20 @@ class TodayPage extends ConsumerWidget {
   Future<void> _refreshAll(BuildContext context, WidgetRef ref) async {
     ref.invalidate(todayDashboardProvider);
     ref.invalidate(todaySuggestionProvider);
+    final session = ref.read(authSessionProvider);
+    final isMobile = MediaQuery.sizeOf(context).width < Breakpoints.desktop;
+    if (session.canAccessProtectedData && isMobile) {
+      ref.invalidate(activeHealthEventProvider);
+    }
     try {
-      await Future.wait([
+      final futures = <Future<Object?>>[
         ref.read(todayDashboardProvider.future),
         ref.read(todaySuggestionProvider.future),
-      ]);
+      ];
+      if (session.canAccessProtectedData && isMobile) {
+        futures.add(ref.read(activeHealthEventProvider.future));
+      }
+      await Future.wait(futures);
     } catch (e) {
       appTalker.warning('TodayPage: refreshAll failed: $e');
       if (!context.mounted) return;

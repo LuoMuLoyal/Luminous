@@ -12,7 +12,7 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// transition doesn't cause a large layout jump:
 ///
 /// **Mobile:** TopBar → RecordHint → PrimarySuggestion → SecondarySuggestions
-/// → Summary → Observation → QuickActions
+/// → Summary → HealthObservation → Observation → QuickActions
 ///
 /// **Desktop:** TopBar → RecordHint →
 /// Row[7: PrimarySuggestion+Summary | 5: SecondarySuggestions+Observation]
@@ -103,6 +103,8 @@ class _TodaySkeletonViewState extends State<TodaySkeletonView> {
             _SecondarySuggestionsPlaceholder(),
             const SizedBox(height: Spacing.level5),
             _SummaryPlaceholder(),
+            const SizedBox(height: Spacing.level5),
+            _HealthEventPlaceholder(),
             const SizedBox(height: Spacing.level5),
             _ObservationPlaceholder(),
             const SizedBox(height: Spacing.level5),
@@ -310,6 +312,28 @@ class _ObservationPlaceholder extends StatelessWidget {
             ],
           ),
         ],
+      ],
+    );
+  }
+}
+
+class _HealthEventPlaceholder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const InlineSkeletonSection(
+      key: Key('today-health-event-skeleton'),
+      children: [
+        InlineSkeletonBlock(height: 18, widthFactor: 0.3),
+        SizedBox(height: Spacing.level4),
+        InlineSkeletonBlock(height: 16, widthFactor: 0.8),
+        SizedBox(height: Spacing.level3),
+        InlineSkeletonBlock(height: 14, widthFactor: 0.62),
+        SizedBox(height: Spacing.level4),
+        InlineSkeletonBlock(
+          height: 36,
+          width: 112,
+          radius: RadiusTokens.levelFull,
+        ),
       ],
     );
   }
