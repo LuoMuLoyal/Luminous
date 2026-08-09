@@ -10,7 +10,7 @@
 
 ---
 
-**Start gate:** 只有[总计划](2026-08-07-post-0.1.0-product-loop-program.md)中的健康事件、主动重算和稀疏口径三个 checkpoint 已满足，才把第五 Tab 切到新 Review read model。
+**Start gate:** 只有[总计划](2026-08-07-product-loop-program.md)中的健康事件、主动重算和稀疏口径三个 checkpoint 已满足，才把第五 Tab 切到新 Review read model。
 
 ## Review Contract
 

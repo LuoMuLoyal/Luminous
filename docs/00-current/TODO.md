@@ -11,9 +11,9 @@ Last updated: 2026-08-07
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
-## `0.1.0` 发布后：大型产品闭环重构（已决策，当前禁止启动）
+## 大型产品闭环重构（已决策，可启动）
 
-启动门槛：当前版本完成真实联调、发布验证和 `0.1.0` 正式发布。发布前只允许修复阻断 `0.1.0` 的缺陷，不得把下列重构夹带进当前版本。总计划见 [`../../plans/2026-08-07-post-0.1.0-product-loop-program.md`](../../plans/2026-08-07-post-0.1.0-product-loop-program.md)，决策依据见 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]。
+总计划见 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md)，决策依据见 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]。
 
 ### 健康事件与关键确认
 

@@ -1,8 +1,8 @@
-# Post-0.1.0 Product Loop Program Implementation Plan
+# Product Loop Program Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (- [ ]) syntax for tracking.
 
-**Goal:** 在 `0.1.0` 正式发布后，把 Luminous 从“通用记录 + 周/月报告”迁移为“健康事件期 + 稀疏记录 + 主动建议 + 事件回顾”的可验证产品闭环。
+**Goal:** 把 Luminous 从“通用记录 + 周/月报告”迁移为“健康事件期 + 稀疏记录 + 主动建议 + 事件回顾”的可验证产品闭环。
 
 **Architecture:** 这是跨 `Lucent` 与 `Luminous` 的总控计划。所有写入先形成统一健康事件和稀疏数据合同，领域事件驱动服务端有界重算，Flutter 只读取已有结果并呈现陈旧/失败状态；第五个 Tab 保留现有 `/report` 路由兼容，但用户任务和读模型迁为“回顾”。桌面端与完整认证 Web 代码保留且冻结。
 
@@ -10,21 +10,18 @@
 
 ---
 
-## Program Gate
+## Program Pre-conditions
 
-- [ ] 确认 `Luminous/pubspec.yaml` 已不再使用 `0.1.0-dev`，且 `0.1.0` 发布记录可在仓库 tag/release 中观察到。
-- [ ] 在 `Luminous/docs/00-current/Next_Plan.md` 把当前阶段从发布门禁切换到本计划；在此之前不得执行任何子计划中的代码步骤。
+- [ ] 在 `Luminous/docs/00-current/Next_Plan.md` 把当前阶段切换到本计划。
 - [ ] 分别运行 `git -C Luminous status --short` 与 `git -C Lucent status --short`，把与本计划无关的用户改动记录在实施日志中并保持不动。
 - [ ] 读取根 `AGENTS.md`、`Luminous/AGENTS.md`、`Lucent/AGENTS.md` 以及 [ADR-0011](../docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)。
 - [ ] 为本计划建立一个跨仓库 feature 分支；不在默认分支直接实施。
-
-若第一项不能满足，停止实施，只允许继续修复和验证 `0.1.0` 发布阻断问题。
 
 ## Workstream Order
 
 | Order | Plan | Outcome | Depends on |
 | --- | --- | --- | --- |
-| 1 | [Health Event Contract](2026-08-07-health-event-contract.md) | 可确认开始/结束、每日结果和关联记录的健康事件合同 | `0.1.0` 已发布 |
+| 1 | [Health Event Contract](2026-08-07-health-event-contract.md) | 可确认开始/结束、每日结果和关联记录的健康事件合同 | — |
 | 2 | [Proactive Suggestion Runtime](2026-08-07-proactive-suggestion-runtime.md) | 写事件触发有界重算，GET 只读现有结果 | Workstream 1 |
 | 3 | [Sparse Record Semantics](2026-08-07-sparse-record-semantics.md) | 服药槽位、饮水 ml、睡眠片段和 unknown 语义统一 | Workstream 1；与 2 的接口冻结后可并行 |
 | 4 | [Review Experience](2026-08-07-review-experience.md) | 第五 Tab 成为事件优先“回顾”，取消综合评分和整页锁定 | Workstreams 1–3 |

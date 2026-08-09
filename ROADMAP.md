@@ -70,18 +70,16 @@ and [Product Context](CONTEXT.md); the archived brainstorm remains historical in
 
 ### Current Release → `0.1.0`
 
-Finish integration, verification, and release of the existing runtime. The
-post-0.1.0 product-loop redesign is explicitly out of scope for this release.
+Finish integration, verification, and release of the existing runtime.
 
 - Fix only defects that block current integration or release
 - Run the full mobile and full-stack release gates
 - Keep current-state documentation honest about existing Report and Today behavior
-- Publish `0.1.0` before starting the program below
 
-### Product Loop Program → `0.2.0+`
+### Product Loop Program
 
-After `0.1.0` is published, execute the plans indexed by
-[`plans/2026-08-07-post-0.1.0-product-loop-program.md`](plans/2026-08-07-post-0.1.0-product-loop-program.md).
+Execute the plans indexed by
+[`plans/2026-08-07-product-loop-program.md`](plans/2026-08-07-product-loop-program.md).
 
 - **Health Event Contract** — confirmed start/end, system proposals, related
   symptoms/medicines/records, and improved/unchanged/worsened result
@@ -140,7 +138,7 @@ Broaden platform reach and prepare for larger scale.
 | -------- | -------------------- | ----------- |
 | `0.1.0-dev` | Current integration and release preparation | In progress |
 | `0.1.0`     | Existing runtime release | Planned     |
-| `0.2.0+`    | Event-led sparse-record product loop | Planned after `0.1.0` |
+| `0.2.0+`    | Event-led sparse-record product loop | Planned     |
 | `1.0.0`     | Stable validated product loop | Planned     |
 | `1.1.0`     | P2 feature polish    | Planned     |
 | `1.2.0`     | P3 feature expansion | Planned     |

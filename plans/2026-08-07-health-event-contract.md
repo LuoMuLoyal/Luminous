@@ -10,7 +10,7 @@
 
 ---
 
-**Start gate:** 只有[总计划](2026-08-07-post-0.1.0-product-loop-program.md)的 `0.1.0` release gate 已全部满足，才执行本文件。未发布时停止，不创建 schema 或 API。
+**Start gate:** 在[总计划](2026-08-07-product-loop-program.md)的 Pre-conditions 已完成后，才执行本文件。
 
 ## Contract Decisions
 

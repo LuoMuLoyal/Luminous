@@ -10,7 +10,7 @@
 
 ---
 
-**Start gate:** 只有[总计划](2026-08-07-post-0.1.0-product-loop-program.md)的 `0.1.0` release gate 与 Health Event Contract 的 API seam 已冻结，才执行本文件。
+**Start gate:** 只有[总计划](2026-08-07-product-loop-program.md)中 Health Event Contract 的 API seam 已冻结，才执行本文件。
 
 ## Shared Vocabulary
 

@@ -10,7 +10,7 @@
 
 ---
 
-**Start gate:** 只有[总计划](2026-08-07-post-0.1.0-product-loop-program.md)中的 Review primary path 已完成并通过内部验证，才实施本文件；导出与分享不得反向阻塞核心闭环发布。
+**Start gate:** 只有[总计划](2026-08-07-product-loop-program.md)中的 Review primary path 已完成并通过内部验证，才实施本文件；导出与分享不得反向阻塞核心闭环发布。
 
 ## Measurement Boundary
 
