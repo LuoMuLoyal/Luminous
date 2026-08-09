@@ -10,7 +10,7 @@
 
 ---
 
-**Start gate:** 只有[总计划](2026-08-07-product-loop-program.md)中的 Health Event Contract checkpoint（Checkpoint A）已满足，才执行本文件。
+**Start gate:** 只有 Health Event Contract 已完成跨前后端合同、真实 PostgreSQL acceptance 和文档 checkpoint，才执行本文件。
 
 ## Runtime Invariants
 
@@ -20,18 +20,6 @@
 - GET 不产生建议、不更新 baseline、不调用 LLM，只读取物化结果并返回状态。
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
-
-## Task 1 — Characterize Current Pull-Triggered Behavior
-
-**Files:**
-
-- Modify: `Lucent/src/modules/today-suggestion/services/suggestion.service.spec.ts`
-- Modify: `Lucent/src/modules/today-analysis/services/analysis.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/cache/suggestion-cache-invalidation.listener.spec.ts`
-
-- [ ] 增加 characterization tests，证明当前 `SuggestionService.generate()` 调用 pipeline、listener 只删除 cache、Today Analysis 只在显式 generate 时运行。
-- [ ] 为期望行为增加失败测试：read service 不能调用 pipeline；domain event 应 enqueue；相同 user/date 的事件应去重。
-- [ ] 运行三个 spec 文件，保存预期失败名称到实施记录，确保改造目标由测试固定。
 
 ## Task 2 — Persist Materialization State
 
