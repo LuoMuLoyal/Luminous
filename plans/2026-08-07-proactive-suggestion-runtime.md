@@ -21,21 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 6 — Fix the Missed-Dose Clock and Slot Evaluation
-
-**Files:**
-
-- Modify: `Lucent/src/modules/today-suggestion/services/collectors/medication.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/collectors/medication.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/rules/medication/missed-dose.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/rules/medication/missed-dose.service.spec.ts`
-
-- [ ] 先增加回归测试：本地日期 2026-08-07、当前时间 10:00、08:00 槽位在宽限期后为 overdue；10:30 槽位不是；未提供计划时间不伪造 missed。
-- [ ] 注入仓库现有 clock/`now()` seam，使用用户时区把 `scheduledFor + scheduledTime` 组合成时间点，不再从 date-only 午夜计算 nowMinutes。
-- [ ] collector 逐槽位返回 `planned/taken/skipped/unconfirmed/overdueUnconfirmed`，不按 medicineId 折叠完成状态。
-- [ ] missed-dose rule 只消费 `overdueUnconfirmed`，并在 copy 中使用“尚未确认”而非断言“漏服”。
-- [ ] 运行 collector 和 rule specs，包含一天同药两次、一服一未确认的用例。
-
 ## Task 7 — Make Today Analysis Event-Driven but Cost-Bounded
 
 **Files:**

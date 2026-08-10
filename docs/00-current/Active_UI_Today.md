@@ -7,7 +7,7 @@ updated: 2026-08-09
 
 # Active UI — Today
 
-Last updated: 2026-08-09 (health event confirmation UI)
+Last updated: 2026-08-10 (health event confirmation UI and reminder slot contract alignment)
 
 ## 页面结构
 
@@ -89,6 +89,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - Dashboard 超时默认 8 秒，支持 `--dart-define=DASHBOARD_TIMEOUT_SECONDS` 编译时配置。骨架屏加载 2 秒后底部显示 `todayLoadingSlowHint`（"加载较慢，请稍候…"）muted 提示。
 - Today 移动骨架包含健康观察区块，顺序与加载完成后的移动页面一致；桌面骨架保持原双栏结构。
 - `activeHealthEventProvider` 读取当前用户事件并提供经过认证守卫的 create/check-in/end action；空响应/404 映射为空态，其他请求错误保留为可重试错误。
+- Lucent Task 6 已将建议采集口径收敛到 reminder slot：服务端按用户时区返回 `planned/taken/skipped/unconfirmed/overdueUnconfirmed`，同一药品的多个提醒槽位独立；Luminous 代码暂不改动，Task 8 负责把这些状态接入 Today domain/UI。
 
 ## 助手入口
 
