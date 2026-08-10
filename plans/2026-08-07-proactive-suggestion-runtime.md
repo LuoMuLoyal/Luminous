@@ -21,25 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 4 — Move Pipeline Execution Into the Worker
-
-**Files:**
-
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/worker.service.ts`
-- Create: `Lucent/src/modules/today-suggestion/services/recompute/worker.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/pipeline.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/suggestion.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/suggestion.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/today-suggestion.controller.ts`
-- Modify: `Lucent/src/modules/today-suggestion/today-suggestion.controller.spec.ts`
-
-- [ ] 先写 worker spec：采集 → 规则 → 仲裁 → 模板呈现 → cache/persistence → ready；异常时 failed；旧 version 完成时不覆盖新 pending version。
-- [ ] 将现有 pipeline 中的纯计算入口保留给 worker，移除 GET path 对 `pipelineService.run()` 的调用。
-- [ ] 把 `SuggestionService.generate` 拆成 `readCurrent` 与 worker 调用的 `recompute`；controller GET 只调用 `readCurrent`。
-- [ ] 响应 DTO 增加 `materializationStatus`、`sourceVersion`、`computedAt`、`retryAfterSeconds`；pending/failed/empty 均返回稳定 envelope，不用 500 表示“尚未生成”。
-- [ ] 当用户首次进入且从未有 materialization 时，GET 返回 empty；账号初始化或事件创建负责 enqueue，GET 不偷偷补算。
-- [ ] 运行 worker、service 和 controller specs，确认 GET path mock 中 pipeline 调用次数为零。
-
 ## Task 5 — Wire Baseline Observation Into Production
 
 **Files:**

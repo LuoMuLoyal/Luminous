@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: how-to
-updated: 2026-08-02
+updated: 2026-08-10
 ---
 
 # How-To: 再生 Lucent API 客户端
@@ -25,13 +25,17 @@ pnpm export:openapi
 
 ```bash
 cd Luminous
-dart run tool/bootstrap_generated_sources.dart
+openapi-generator-cli generate \
+  -i ../Lucent/docs/openapi.json \
+  -g dart-dio \
+  -o generated/lucent_api \
+  -c openapi_gen_config.json
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
 此脚本会：
-1. 读取 `../Lucent/docs/openapi.json`
-2. 使用 `openapi_retrofit_generator` 生成 Retrofit 客户端和 JSON-serializable 模型
-3. 运行 `build_runner` 生成 `.g.dart` 文件
+1. 使用 `@openapitools/openapi-generator-cli` 的 `dart-dio` 读取 `../Lucent/docs/openapi.json`，生成客户端和 JSON-serializable 模型
+2. 运行 `build_runner` 生成 `.g.dart` 文件
 
 ### 3. 验证
 
@@ -50,7 +54,7 @@ flutter test                # 测试通过
 ## 仅验证合同同步（不实际再生）
 
 ```bash
-dart run tool/verify_lucent_openapi_sync.dart \
+dart run scripts/verify_lucent_openapi_sync.dart \
   --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 

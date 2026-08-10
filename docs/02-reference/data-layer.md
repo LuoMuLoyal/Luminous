@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-04
+updated: 2026-08-10
 ---
 
 # Data Layer
@@ -52,8 +52,8 @@ Widget
 cd ../Lucent
 pnpm export:openapi
 cd ../Luminous
-openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c /path/to/openapi_gen_config.json
-dart run tool/bootstrap_generated_sources.dart
+openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c openapi_gen_config.json
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
 `bootstrap_generated_sources.dart` runs `flutter pub get`, `dart pub get` in the generated package,

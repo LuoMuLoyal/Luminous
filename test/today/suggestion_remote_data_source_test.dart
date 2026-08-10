@@ -44,6 +44,13 @@ const _testAction = {
   'authRequired': false,
 };
 
+const _readyMaterialization = {
+  'materializationStatus': 'ready',
+  'sourceVersion': 3,
+  'computedAt': '2026-07-11T08:00:00.000Z',
+  'retryAfterSeconds': null,
+};
+
 void main() {
   late Dio dio;
   late TodaySuggestionApi api;
@@ -57,6 +64,7 @@ void main() {
     test('maps full bundle correctly', () async {
       final adapter = _JsonAdapter(
         responseBody: {
+          ..._readyMaterialization,
           'generatedAt': '2026-07-11T08:00:00.000Z',
           'primary': {
             'id': 's1',
@@ -113,6 +121,7 @@ void main() {
     test('maps bundle with null primary', () async {
       final adapter = _JsonAdapter(
         responseBody: {
+          ..._readyMaterialization,
           'generatedAt': '2026-07-11T08:00:00.000Z',
           'primary': null,
           'secondary': null,
@@ -132,6 +141,7 @@ void main() {
     test('maps secondary and observations cards', () async {
       final adapter = _JsonAdapter(
         responseBody: {
+          ..._readyMaterialization,
           'generatedAt': '2026-07-11T08:00:00.000Z',
           'primary': null,
           'secondary': [
@@ -202,6 +212,7 @@ void main() {
     test('maps evidence items', () async {
       final adapter = _JsonAdapter(
         responseBody: {
+          ..._readyMaterialization,
           'generatedAt': '2026-07-11T08:00:00.000Z',
           'primary': {
             'id': 's1',
@@ -415,6 +426,7 @@ void main() {
     test('unknown confidence fallback to medium', () async {
       final adapter = _JsonAdapter(
         responseBody: {
+          ..._readyMaterialization,
           'generatedAt': '2026-07-11T08:00:00.000Z',
           'primary': {
             'id': 's1',
