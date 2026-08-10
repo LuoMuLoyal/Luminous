@@ -21,21 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 5 — Wire Baseline Observation Into Production
-
-**Files:**
-
-- Modify: `Lucent/src/modules/today-suggestion/services/lifecycle/baseline.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/lifecycle/baseline.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/recompute/worker.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/recompute/worker.service.spec.ts`
-
-- [ ] 先写失败测试：一次成功 recompute 应按具备 coverage 的 signal 调用 `recordObservation`；missing signal 不写 baseline；同日重算幂等。
-- [ ] 给 baseline observation 使用 `userId + metric + localDate` 幂等键；若现有存储不能保证，补数据库唯一约束。
-- [ ] 仅在 collector 明确给出 observed value 和 coverage sufficient 时写 baseline。
-- [ ] 把 baseline 写入放在成功规则计算后；写入失败不丢弃已生成建议，但 materialization 记录固定 error code 供监控。
-- [ ] 运行 baseline 与 worker specs，确认现有依赖 baseline 的规则对新用户在积累足够观察后可获得资格。
-
 ## Task 6 — Fix the Missed-Dose Clock and Slot Evaluation
 
 **Files:**
