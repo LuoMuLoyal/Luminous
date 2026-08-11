@@ -7,6 +7,7 @@ import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
 import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';
+import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:mocktail/mocktail.dart';
@@ -367,6 +368,37 @@ void main() {
     );
 
     test(
+      'restores cached content before a first pending materialization response',
+      () async {
+        final cachedBundle = _bundle(primaryId: 'cached', sourceVersion: 1);
+        final pendingBundle = _bundle(
+          materializationStatus: TodaySuggestionMaterializationStatus.pending,
+          sourceVersion: 2,
+        );
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => pendingBundle);
+        when(() => mockDao.fetch()).thenAnswer(
+          (_) async => TodaySuggestionJsonCodec.bundleToJson(cachedBundle),
+        );
+        when(() => mockDao.replace(any())).thenAnswer((_) async {});
+
+        final c = buildContainer();
+        final result = await c.read(todaySuggestionProvider.future);
+
+        expect(
+          result?.materializationStatus,
+          TodaySuggestionMaterializationStatus.pending,
+        );
+        expect(result?.primary?.id, 'cached');
+      },
+    );
+
+    test(
       'debounces data changes into one GET without feedback or generation',
       () async {
         final bundle = _bundle(primaryId: 's1');
@@ -402,6 +434,51 @@ void main() {
             feedback: any(named: 'feedback'),
           ),
         );
+      },
+    );
+
+    test(
+      'serializes overlapping refreshes to prevent stale overwrites',
+      () async {
+        final initialBundle = _bundle(primaryId: 'initial');
+        final olderBundle = _bundle(primaryId: 'older', sourceVersion: 2);
+        final newerBundle = _bundle(primaryId: 'newer', sourceVersion: 3);
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => initialBundle);
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        final notifier = c.read(todaySuggestionProvider.notifier);
+        await c.read(todaySuggestionProvider.future);
+
+        var refreshCall = 0;
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) {
+          refreshCall++;
+          return refreshCall == 1
+              ? Future.delayed(
+                  const Duration(milliseconds: 30),
+                  () => olderBundle,
+                )
+              : Future.value(newerBundle);
+        });
+
+        final firstRefresh = notifier.refresh();
+        await Future<void>.delayed(Duration.zero);
+        final secondRefresh = notifier.refresh();
+        await Future.wait([firstRefresh, secondRefresh]);
+
+        expect(c.read(todaySuggestionProvider).value?.primary?.id, 'newer');
       },
     );
 

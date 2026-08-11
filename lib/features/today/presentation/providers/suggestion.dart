@@ -34,6 +34,7 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
   Timer? _dataChangeDebounce;
   AppLifecycleListener? _lifecycleListener;
   TodaySuggestionBundle? _lastBundle;
+  Future<void> _fetchTail = Future<void>.value();
   bool _listenersInstalled = false;
   bool _disposed = false;
 
@@ -126,9 +127,54 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
     }
   }
 
-  Future<TodaySuggestionBundle?> _fetch() async {
+  /// Serializes all reads so an older response cannot overwrite a newer one.
+  Future<TodaySuggestionBundle?> _fetch() {
+    final result = Completer<TodaySuggestionBundle?>();
+    _fetchTail = _fetchTail.then<void>((_) => _runFetch(result));
+    return result.future;
+  }
+
+  Future<void> _runFetch(Completer<TodaySuggestionBundle?> result) async {
+    try {
+      result.complete(await _performFetch());
+    } catch (error, stackTrace) {
+      result.completeError(error, stackTrace);
+    }
+  }
+
+  Future<TodaySuggestionBundle?> _performFetch() async {
     final ds = ref.read(todaySuggestionRemoteDataSourceProvider);
     final dao = ref.read(todaySuggestionDaoProvider);
+    TodaySuggestionBundle? cachedBundle;
+    var cacheWasRead = false;
+    var cacheWasInvalid = false;
+
+    // Load the last materialized content before the first GET so a cold-start
+    // response of pending/stale/failed can still retain the previous card.
+    if (_lastBundle == null) {
+      try {
+        final cached = await dao.fetch();
+        cacheWasRead = true;
+        if (cached != null) {
+          try {
+            cachedBundle = TodaySuggestionJsonCodec.bundleFromJson(cached);
+            _lastBundle = cachedBundle;
+          } catch (error) {
+            cacheWasInvalid = true;
+            ref
+                .read(talkerProvider)
+                .warning(
+                  'Suggestion cache deserialization failed, clearing stale cache: $error',
+                );
+            await dao.clear();
+          }
+        }
+      } catch (error, stackTrace) {
+        ref
+            .read(talkerProvider)
+            .warning('Suggestion cache prefetch failed: $error', stackTrace);
+      }
+    }
 
     try {
       final bundle = await ds.fetchSuggestions(
@@ -145,7 +191,10 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
       return materialized;
     } catch (e) {
       // Network failed — try cache as fallback (stale-while-error)
-      final cached = await dao.fetch();
+      if (cacheWasInvalid) rethrow;
+      if (cacheWasRead && cachedBundle != null) return cachedBundle;
+
+      final cached = cacheWasRead ? null : await dao.fetch();
       if (cached != null) {
         try {
           final bundle = TodaySuggestionJsonCodec.bundleFromJson(cached);
