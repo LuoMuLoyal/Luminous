@@ -7,7 +7,7 @@ updated: 2026-08-11
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-11 (Proactive Suggestion Runtime Task 7)
+Last updated: 2026-08-11 (Sparse Record Semantics medication slots)
 
 ## 基础
 
@@ -55,6 +55,7 @@ Last updated: 2026-08-11 (Proactive Suggestion Runtime Task 7)
 ## 关键合同细节
 
 - **用药打卡**：`POST /api/v1/user/medicine-dose-logs/mark` 按提醒槽位幂等确认服药；`CreateDoseLogDto` / `DoseLogItemDto` 含 `reminderId` 与 `scheduledTime` 字段。Record 快速用药撤销使用既有 `DELETE /api/v1/user/medicine-dose-logs/{id}` 删除新建 log，或 `PATCH /api/v1/user/medicine-dose-logs/{id}` 恢复旧 status；本次未改变后端合同。前端在药品无附近提醒 slot 时，以当前 `HH:mm` 作为 `scheduledTime` 调用 `mark`，避免只传 `currentMedicineId` 触发 400。
+- **服药稀疏语义**：Lucent Today/Report 以 `reminderId + scheduledFor + scheduledTime` 保持计划槽位独立；`planned` 在消费合同映射为 `unconfirmed`，taken、skipped、overdue-unconfirmed 分开计数。无 reminder 的临时 dose log 独立保存但不进入 adherence 分母；无计划窗口为 unknown。Flutter observed DTO/domain 迁移仍待后续合同阶段。
 - **睡眠快速记录**：未新增后端 API 或 DTO。Record 快速睡眠继续使用 daily records `create/delete` 合同；
   前端在 `DailyRecordKind.sleep.payload` 中写入临时 `sleepEvent=start/wake` fact，确认合并后写入既有标准
   `durationMinutes/startAt/endAt` sleep payload。

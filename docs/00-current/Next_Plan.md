@@ -23,7 +23,7 @@ Last updated: 2026-08-11
 1. **执行 Sparse Record Semantics**
    - 子计划：[`../../plans/2026-08-07-sparse-record-semantics.md`](../../plans/2026-08-07-sparse-record-semantics.md)
    - Water ml、coverage、unknown 与 observed zero 已在 Lucent 后端统一；Flutter DTO/domain 迁移留在后续合同同步阶段
-   - 下一步统一服药 reminder slot 的分母和状态，保持 `unconfirmed / skipped / missed` 可区分，再处理睡眠片段语义
+   - Lucent 后端已统一服药 reminder slot 的分母和状态：`planned` 在消费合同中映射为 `unconfirmed`，Flutter observed DTO/domain 迁移完成后再处理睡眠片段语义
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化
