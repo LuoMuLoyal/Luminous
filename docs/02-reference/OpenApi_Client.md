@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-11
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-06
+Last updated: 2026-08-11
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -22,7 +22,7 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 107 paths / 229 schemas.
+- Last known Lucent export: 114 paths / 254 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
@@ -56,8 +56,10 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 - Reminder delivery history is read through the feature data source and maps generated/raw response
   fields into local UI rows. The generated `ReminderDeliveriesApi` exists, but presentation/domain
   code should still depend on the feature repository boundary.
-- Today AI analysis, Report AI summary, and assistant streaming all use manual Dio + SSE parsing in
-  `lib/core/network/sse.dart`, not generated OpenAPI transport methods.
+- Today AI REST reads/generation/refresh use the generated OpenAPI transport and unwrap the
+  `{ code, message, data }` envelope in the Today data source. Today AI streaming, Report AI
+  summary, and assistant streaming continue to use manual Dio + SSE parsing in
+  `lib/core/network/sse.dart`.
 - `Accept-Language` is injected by the network layer.
 - Authorization is injected when an access token exists.
 - `401002` triggers refresh and retry.
@@ -74,13 +76,9 @@ From `Luminous`:
 cd ../Lucent
 pnpm export:openapi
 
-# 2. Generate the Dart client (requires @openapitools/openapi-generator-cli installed)
+# 2. Run the repository-owned filtered generator and generated-source bootstrap
 cd ../Luminous
-openapi-generator-cli generate \
-  -i ../Lucent/docs/openapi.json \
-  -g dart-dio \
-  -o generated/lucent_api \
-  -c /path/to/openapi_gen_config.json
+dart run scripts/bootstrap_generated_sources.dart
 ```
 
 Example config (`openapi_gen_config.json`):
@@ -94,15 +92,11 @@ Example config (`openapi_gen_config.json`):
 }
 ```
 
-After generating, restore the generated `pubspec.yaml` SDK and dependency constraints to the project
-baseline, then run:
-
-```bash
-dart run scripts/bootstrap_generated_sources.dart
-```
-
-This runs `flutter pub get`, `dart pub get` in `generated/lucent_api`, `build_runner` for both the
-generated package and the root app, and `flutter gen-l10n`.
+The bootstrap uses OpenAPI Generator with a Today Analysis API/model filter, copies only the
+contract slice and its required index/deserialize files into `generated/lucent_api`, then runs
+`flutter pub get`, generated-package `dart pub get`, `build_runner` for both the generated package
+and the root app, and `flutter gen-l10n`. This keeps the generated package on the repository Dart
+SDK constraint and avoids unrelated full-client churn.
 
 After regeneration, run:
 
@@ -119,8 +113,9 @@ dart run scripts/verify_lucent_openapi_sync.dart \
   --openapi /absolute/path/to/Lucent/docs/openapi.json
 ```
 
-`verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON and that
-the generated client layout exists, so it can run safely before commit inside a dirty working tree.
+`verify_lucent_openapi_sync.dart` verifies that the target OpenAPI file is readable JSON, the
+generated client layout exists, and the generated `TodayAnalysisApi` exposes the GET and refresh
+operations.
 
 ## Noise Boundary
 

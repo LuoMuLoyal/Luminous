@@ -5,6 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/network/api_exception.dart';
 import 'package:luminous/features/today/data/datasources/ai_remote.dart';
+import 'package:mocktail/mocktail.dart';
+
+class _MockTodayAnalysisApi extends Mock implements lucent.TodayAnalysisApi {}
 
 /// SSE adapter that returns a stream of events.
 class _SseAdapter implements HttpClientAdapter {
@@ -71,6 +74,60 @@ class _JsonAdapter implements HttpClientAdapter {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValue(lucent.GenerateTodayAnalysisDto());
+  });
+
+  test('unwraps the analysis from the generate response envelope', () async {
+    final analysis = lucent.TodayAnalysisDataDto(
+      date: '2026-07-11',
+      generatedAt: '2026-07-11T08:00:00.000Z',
+      summary: '今日状态良好',
+      bullets: [],
+      actionLabel: '保持现状',
+      action: 'navigate_to_record',
+      confidenceNote: '基于最近7天数据',
+    );
+    final api = _MockTodayAnalysisApi();
+    when(
+      () => api.todayAnalysisControllerGenerateV1(
+        generateTodayAnalysisDto: any(named: 'generateTodayAnalysisDto'),
+      ),
+    ).thenAnswer(
+      (_) async => Response<lucent.TodayAnalysisGenerateResponseDto>(
+        data: lucent.TodayAnalysisGenerateResponseDto(
+          code: 0,
+          message: 'ok',
+          data: lucent.TodayAnalysisGenerateResponseDtoData(
+            date: analysis.date,
+            generatedAt: analysis.generatedAt,
+            sourceVersion: 1,
+            summary: '',
+            bullets: [],
+            actionLabel: '',
+            action: '',
+            confidenceNote: '',
+            analysis: analysis,
+            status: lucent.TodayAnalysisGenerateResponseDtoDataStatusEnum.ready,
+            computedVersion: 1,
+            computedAt: analysis.generatedAt,
+            retryAfterSeconds: null,
+          ),
+        ),
+        requestOptions: RequestOptions(path: '/today-analysis/generate'),
+      ),
+    );
+
+    final dataSource = TodayAiRemoteDataSource(
+      api: api,
+      dio: Dio(BaseOptions(baseUrl: 'http://localhost')),
+    );
+
+    final result = await dataSource.generate(date: analysis.date);
+
+    expect(result, same(analysis));
+  });
+
   group('TodayAiRemoteDataSource — generate', () {
     late Dio dio;
     late lucent.TodayAnalysisApi api;
@@ -85,11 +142,25 @@ void main() {
         responseBody: {
           'date': '2026-07-11',
           'generatedAt': '2026-07-11T08:00:00.000Z',
-          'summary': '今日状态良好',
+          'sourceVersion': 1,
+          'summary': '',
           'bullets': [],
-          'actionLabel': '保持现状',
-          'action': 'navigate_to_record',
-          'confidenceNote': '基于最近7天数据',
+          'actionLabel': '',
+          'action': '',
+          'confidenceNote': '',
+          'analysis': {
+            'date': '2026-07-11',
+            'generatedAt': '2026-07-11T08:00:00.000Z',
+            'summary': '今日状态良好',
+            'bullets': [],
+            'actionLabel': '保持现状',
+            'action': 'navigate_to_record',
+            'confidenceNote': '基于最近7天数据',
+          },
+          'status': 'ready',
+          'computedVersion': 1,
+          'computedAt': '2026-07-11T08:00:00.000Z',
+          'retryAfterSeconds': null,
         },
       );
       dio.httpClientAdapter = adapter;
@@ -107,11 +178,25 @@ void main() {
         responseBody: {
           'date': '2026-07-11',
           'generatedAt': '2026-07-11T08:00:00.000Z',
-          'summary': 'ok',
+          'sourceVersion': 1,
+          'summary': '',
           'bullets': [],
           'actionLabel': '',
           'action': '',
           'confidenceNote': '',
+          'analysis': {
+            'date': '2026-07-11',
+            'generatedAt': '2026-07-11T08:00:00.000Z',
+            'summary': 'ok',
+            'bullets': [],
+            'actionLabel': '',
+            'action': '',
+            'confidenceNote': '',
+          },
+          'status': 'ready',
+          'computedVersion': 1,
+          'computedAt': '2026-07-11T08:00:00.000Z',
+          'retryAfterSeconds': null,
         },
       );
       dio.httpClientAdapter = adapter;

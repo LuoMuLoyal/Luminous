@@ -36,6 +36,10 @@ This replaces the long historical error audit as the current quick-read checklis
 
 - Do not hand-maintain API prose. Lucent controller/DTO code plus `Lucent/docs/openapi.json` is the
    contract.
+- After exporting Lucent OpenAPI, run `dart run scripts/bootstrap_generated_sources.dart`; the
+   repository-owned filtered generator keeps the generated package on the project SDK constraint.
+   `dart run scripts/verify_lucent_openapi_sync.dart` also checks the Today Analysis GET/refresh
+   methods exist in the generated client.
 - After Lucent API changes, run `pnpm export:openapi`, then regenerate Luminous with
   `dart run scripts/bootstrap_generated_sources.dart`.
 - Do not run ad-hoc OpenAPI generator commands for normal work.

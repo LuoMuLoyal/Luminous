@@ -85,6 +85,57 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     );
   }
 
+  final generatorConfig = File(
+    '${context.repoRoot.path}${Platform.pathSeparator}openapi_gen_config.json',
+  );
+  if (!generatorConfig.existsSync()) {
+    throw StateError(
+      'OpenAPI generator config not found: ${generatorConfig.path}',
+    );
+  }
+
+  final filteredOutput = await Directory.systemTemp.createTemp(
+    'luminous-openapi-today-analysis-',
+  );
+  final supportingOutput = await Directory.systemTemp.createTemp(
+    'luminous-openapi-supporting-',
+  );
+
+  try {
+    await _generateTodayAnalysisClient(
+      context,
+      openApiFile: openApiFile,
+      generatorConfig: generatorConfig,
+      outputDirectory: filteredOutput,
+    );
+    await _generateSupportingFiles(
+      context,
+      openApiFile: openApiFile,
+      generatorConfig: generatorConfig,
+      outputDirectory: supportingOutput,
+    );
+
+    _copyGeneratedFile(
+      filteredOutput,
+      generatedClientRoot,
+      'lib/src/api/today_analysis_api.dart',
+    );
+    _copyGeneratedModels(filteredOutput, generatedClientRoot);
+    _copyGeneratedFile(
+      supportingOutput,
+      generatedClientRoot,
+      'lib/lucent_api.dart',
+    );
+    _copyGeneratedFile(
+      supportingOutput,
+      generatedClientRoot,
+      'lib/src/deserialize.dart',
+    );
+  } finally {
+    await filteredOutput.delete(recursive: true);
+    await supportingOutput.delete(recursive: true);
+  }
+
   await runLoggedCommand(
     'dart',
     ['pub', 'get'],
@@ -112,6 +163,108 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     stepName: 'dart format generated/lucent_api',
   );
   stdout.writeln('');
+}
+
+Future<void> _generateTodayAnalysisClient(
+  ToolContext context, {
+  required File openApiFile,
+  required File generatorConfig,
+  required Directory outputDirectory,
+}) async {
+  final models = _todayAnalysisModels.join(':');
+  await runLoggedCommand(
+    'openapi-generator-cli',
+    [
+      'generate',
+      '-i',
+      openApiFile.path,
+      '-g',
+      'dart-dio',
+      '-o',
+      outputDirectory.path,
+      '-c',
+      generatorConfig.path,
+      '--global-property=apis=TodayAnalysis,models=$models',
+      '--global-property=modelDocs=false,apiDocs=false,modelTests=false,apiTests=false',
+    ],
+    workingDirectory: context.repoRoot,
+    stepName: 'openapi-generator (filtered Today Analysis client)',
+  );
+  stdout.writeln('');
+}
+
+Future<void> _generateSupportingFiles(
+  ToolContext context, {
+  required File openApiFile,
+  required File generatorConfig,
+  required Directory outputDirectory,
+}) async {
+  for (final supportingFile in const ['lucent_api.dart', 'deserialize.dart']) {
+    await runLoggedCommand(
+      'openapi-generator-cli',
+      [
+        'generate',
+        '-i',
+        openApiFile.path,
+        '-g',
+        'dart-dio',
+        '-o',
+        outputDirectory.path,
+        '-c',
+        generatorConfig.path,
+        '--global-property=models,apis,supportingFiles=$supportingFile',
+        '--global-property=modelDocs=false,apiDocs=false,modelTests=false,apiTests=false',
+      ],
+      workingDirectory: context.repoRoot,
+      stepName: 'openapi-generator (supporting $supportingFile)',
+    );
+  }
+  stdout.writeln('');
+}
+
+void _copyGeneratedFile(
+  Directory sourceRoot,
+  Directory targetRoot,
+  String relativePath,
+) {
+  final normalizedPath = relativePath.replaceAll('/', Platform.pathSeparator);
+  final source = File(
+    '${sourceRoot.path}${Platform.pathSeparator}$normalizedPath',
+  );
+  if (!source.existsSync()) {
+    throw StateError('OpenAPI generator did not produce ${source.path}');
+  }
+
+  final target = File(
+    '${targetRoot.path}${Platform.pathSeparator}$normalizedPath',
+  );
+  target.parent.createSync(recursive: true);
+  source.copySync(target.path);
+}
+
+void _copyGeneratedModels(Directory sourceRoot, Directory targetRoot) {
+  final sourceDirectory = Directory(
+    '${sourceRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}src${Platform.pathSeparator}model',
+  );
+  if (!sourceDirectory.existsSync()) {
+    throw StateError('OpenAPI generator did not produce model sources.');
+  }
+
+  for (final entity in sourceDirectory.listSync()) {
+    if (entity is! File ||
+        !entity.path.endsWith('.dart') ||
+        entity.path.endsWith('.g.dart')) {
+      continue;
+    }
+    final target = File(
+      '${targetRoot.path}${Platform.pathSeparator}lib'
+      '${Platform.pathSeparator}src${Platform.pathSeparator}model'
+      '${Platform.pathSeparator}${entity.uri.pathSegments.last}',
+    );
+    target.parent.createSync(recursive: true);
+    entity.copySync(target.path);
+  }
 }
 
 Future<void> _buildAppCodegen(ToolContext context) async {
@@ -210,3 +363,26 @@ Options:
   --skip-app-codegen      Skip flutter gen-l10n and root build_runner.
   --help                  Show this help text.
 ''';
+
+const _todayAnalysisModels = [
+  'GenerateTodayAnalysisDto',
+  'TodayAnalysisAsyncJobDataDto',
+  'TodayAnalysisAsyncResponseDto',
+  'TodayAnalysisAsyncResponseDto_data',
+  'TodayAnalysisAsyncResultDataDto',
+  'TodayAnalysisAsyncStatusDataDto',
+  'TodayAnalysisBulletDto',
+  'TodayAnalysisDataDto',
+  'TodayAnalysisGenerateResponseDto',
+  'TodayAnalysisGenerateResponseDto_data',
+  'TodayAnalysisReadDataDto',
+  'TodayAnalysisReadResponseDto',
+  'TodayAnalysisRefreshPendingDataDto',
+  'TodayAnalysisRefreshReadyDataDto',
+  'TodayAnalysisRefreshResponseDto',
+  'TodayAnalysisRefreshResponseDto_data',
+  'TodayAnalysisStreamErrorDto',
+  'TodayAnalysisStreamResultDto',
+  'TodayAnalysisStreamResultDto_data',
+  'TodayAnalysisStreamSummaryDto',
+];

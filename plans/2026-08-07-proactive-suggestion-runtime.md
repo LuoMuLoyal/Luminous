@@ -21,24 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 7 — Make Today Analysis Event-Driven but Cost-Bounded
-
-**Files:**
-
-- Create: `Lucent/src/modules/today-analysis/services/recompute/trigger.listener.ts`
-- Create: `Lucent/src/modules/today-analysis/services/recompute/trigger.listener.spec.ts`
-- Modify: `Lucent/src/modules/today-analysis/services/analysis-queue.service.ts`
-- Modify: `Lucent/src/modules/today-analysis/services/analysis-queue.service.spec.ts`
-- Modify: `Lucent/src/modules/today-analysis/services/analysis.service.ts`
-- Modify: `Lucent/src/modules/today-analysis/services/analysis.service.spec.ts`
-- Modify: `Lucent/src/modules/today-analysis/today-analysis.controller.ts`
-
-- [ ] 先写 listener/queue tests：只有 health-event start/end、症状 check-in、关键药物状态和服务端 suggestion 版本变化触发；普通饮食/心情/笔记不触发 LLM 分析。
-- [ ] 使用 user/date/version job id 合并触发，并设置每日最大生成次数；超过上限时保持 stale，不反复收费。
-- [ ] 保存最后成功 analysis 的 sourceVersion/computedAt；GET 返回现有值及 stale 状态，不 POST 时才首次生成。
-- [ ] 保留显式用户刷新 endpoint，但增加冷却时间和幂等保护。
-- [ ] 运行 today-analysis specs，确认普通记录事件不进入 LLM queue。
-
 ## Task 8 — Adapt the Flutter Today State Machine
 
 **Files:**

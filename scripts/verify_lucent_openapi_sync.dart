@@ -105,6 +105,24 @@ void _verifyGeneratedClientLayout(Directory generatedClientRoot) {
       );
     }
   }
+
+  final todayAnalysisApi = File(
+    '${generatedClientRoot.path}${Platform.pathSeparator}lib'
+    '${Platform.pathSeparator}src${Platform.pathSeparator}api'
+    '${Platform.pathSeparator}today_analysis_api.dart',
+  );
+  final source = todayAnalysisApi.readAsStringSync();
+  for (final methodName in const [
+    'todayAnalysisControllerReadV1',
+    'todayAnalysisControllerRefreshV1',
+  ]) {
+    if (!source.contains(methodName)) {
+      throw StateError(
+        'Generated Today Analysis API is missing required endpoint method '
+        '$methodName: ${todayAnalysisApi.path}',
+      );
+    }
+  }
 }
 
 class _ParsedArgs {

@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-09
+updated: 2026-08-10
 ---
 
 # Active UI — Today
@@ -90,6 +90,8 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - Today 移动骨架包含健康观察区块，顺序与加载完成后的移动页面一致；桌面骨架保持原双栏结构。
 - `activeHealthEventProvider` 读取当前用户事件并提供经过认证守卫的 create/check-in/end action；空响应/404 映射为空态，其他请求错误保留为可重试错误。
 - Lucent Task 6 已将建议采集口径收敛到 reminder slot：服务端按用户时区返回 `planned/taken/skipped/unconfirmed/overdueUnconfirmed`，同一药品的多个提醒槽位独立；Luminous 代码暂不改动，Task 8 负责把这些状态接入 Today domain/UI。
+- Lucent Task 7 已将 Today Analysis 改为服务端事件驱动的物化读模型：GET 只读取 `empty/pending/ready/stale/failed` 状态，写入相关事实后由服务端限次生成；Luminous generated client 已同步 GET、refresh 及相关响应模型，Task 8 负责把状态映射到 Today domain/UI。
+- Today AI data source 已按 generate API envelope 解包 `analysis`，并保留 direct analysis data 的类型安全映射；generated DTO 未被改写。
 
 ## 助手入口
 

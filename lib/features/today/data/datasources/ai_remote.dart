@@ -30,7 +30,27 @@ class TodayAiRemoteDataSource {
     final response = await api.todayAnalysisControllerGenerateV1(
       generateTodayAnalysisDto: lucent.GenerateTodayAnalysisDto(date: date),
     );
-    return response.data!.data;
+    final envelope = response.data;
+    if (envelope == null) {
+      throw StateError('Today analysis generate response was empty.');
+    }
+
+    final data = envelope.data;
+    final analysis = data.analysis;
+    if (analysis != null) {
+      return analysis;
+    }
+
+    return lucent.TodayAnalysisDataDto(
+      date: data.date,
+      generatedAt: data.generatedAt,
+      sourceVersion: data.sourceVersion,
+      summary: data.summary,
+      bullets: data.bullets,
+      actionLabel: data.actionLabel,
+      action: data.action,
+      confidenceNote: data.confidenceNote,
+    );
   }
 
   Stream<TodayAiRemoteEvent> generateStream({String? date}) async* {

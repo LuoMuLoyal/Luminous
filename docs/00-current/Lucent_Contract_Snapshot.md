@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-10
+updated: 2026-08-11
 ---
 
 # Lucent Contract Snapshot
 
-Last updated: 2026-08-10 (Proactive Suggestion Runtime Task 4)
+Last updated: 2026-08-11 (Proactive Suggestion Runtime Task 7)
 
 ## 基础
 
@@ -15,8 +15,8 @@ Last updated: 2026-08-10 (Proactive Suggestion Runtime Task 4)
 - 响应包络：`{ code, message, data }`
 - 生成合同：`Lucent/docs/openapi.json`
 - 生成客户端：`generated/lucent_api/`（`@openapitools/openapi-generator-cli` 7.22.0，generator `dart-dio`，`serializationLibrary=json_serializable`，`enumUnknownDefaultCase=true`）
-- 重新生成流程：Lucent `pnpm export:openapi` → Luminous `openapi-generator-cli generate -i ../Lucent/docs/openapi.json -g dart-dio -o generated/lucent_api -c openapi_gen_config.json` → `dart run scripts/bootstrap_generated_sources.dart`
-- 合同验证：`scripts/verify_lucent_openapi_sync.dart` 验证 `generated/lucent_api/` 与 `Lucent/docs/openapi.json` 同步
+- 重新生成流程：Lucent `pnpm export:openapi` → Luminous `dart run scripts/bootstrap_generated_sources.dart`（过滤 Today Analysis API/model，并运行 build_runner）
+- 合同验证：`scripts/verify_lucent_openapi_sync.dart` 验证 OpenAPI 文件、generated client 布局以及 Today Analysis GET/refresh 方法
 
 ## 当前合同变更
 
@@ -27,6 +27,7 @@ Last updated: 2026-08-10 (Proactive Suggestion Runtime Task 4)
 - **推送设备合同移除**：Lucent 已移除旧的用户设备注册 API、`user_devices` 持久化模型及其 DTO。Luminous 通过 JPush SDK 绑定用户 UUID alias，生成客户端和 `LucentDioClient` 不再暴露 `UserDevicesApi`、`RegisterDeviceDto`、`DeviceResponseDto` 或 `UserDevicePlatform`。
 - **Health Event Contract**：生成客户端新增 `HealthEventsApi`，覆盖 active/create/end/detail/list/check-in 六个操作，以及 `HealthEventStatus`（`active`/`ended`）和 `HealthEventOutcome`（`improved`/`unchanged`/`worsened`）。daily record 与 dose log DTO 同步携带可空 `healthEventId`；Luminous 的 `health_event` domain slice 通过 repository 适配器隔离这些生成类型，且对生成器的 nullable `Object?` 字段做运行时类型校验。
 - **Proactive Suggestion Runtime Task 4**：`TodaySuggestionsDataDto` 新增并强制要求 `materializationStatus`（`empty`/`pending`/`ready`/`stale`/`failed`）、`sourceVersion`、可空 `computedAt` 和可空 `retryAfterSeconds`。Luminous 已从 Lucent OpenAPI 合同重新生成该 DTO 及其 `.g.dart`；Today 现有 domain mapper 暂不消费这些状态字段，待 Task 8 接入状态机。
+- **Proactive Suggestion Runtime Task 7**：Today Analysis REST 合同现在返回显式 envelope DTO，GET/refresh/generate/async 的 `computedAt`、`retryAfterSeconds`、版本与物化状态字段均有明确 schema；生成 client 已包含 `TodayAnalysisApi` 的 GET/refresh 方法及对应模型。Today domain/UI 状态映射仍留给 Task 8。
 
 ## Luminous 已使用的后端领域
 

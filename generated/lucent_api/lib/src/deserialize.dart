@@ -179,9 +179,25 @@ import 'package:lucent_api/src/model/support_resource_dto.dart';
 import 'package:lucent_api/src/model/support_resource_list_data_dto.dart';
 import 'package:lucent_api/src/model/support_resource_list_response_dto.dart';
 import 'package:lucent_api/src/model/temperature_indicator_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_job_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_response_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_async_result_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_async_status_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
-import 'package:lucent_api/src/model/today_analysis_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_generate_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_generate_response_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_read_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_refresh_pending_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_refresh_ready_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_refresh_response_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_refresh_response_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_stream_error_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_stream_result_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_stream_result_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_stream_summary_dto.dart';
 import 'package:lucent_api/src/model/today_recommendation_response_dto.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response_data.dart';
@@ -555,6 +571,7 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'HealthEventItemDto':
       return HealthEventItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'HealthEventKind':
     case 'HealthEventListDataDto':
       return HealthEventListDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -876,14 +893,92 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'TemperatureIndicatorDto':
       return TemperatureIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'TodayAnalysisAsyncJobDataDto':
+      return TodayAnalysisAsyncJobDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisAsyncResponseDto':
+      return TodayAnalysisAsyncResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisAsyncResponseDtoData':
+      return TodayAnalysisAsyncResponseDtoData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisAsyncResultDataDto':
+      return TodayAnalysisAsyncResultDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisAsyncStatusDataDto':
+      return TodayAnalysisAsyncStatusDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'TodayAnalysisBulletDto':
       return TodayAnalysisBulletDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'TodayAnalysisDataDto':
       return TodayAnalysisDataDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
-    case 'TodayAnalysisResponseDto':
-      return TodayAnalysisResponseDto.fromJson(value as Map<String, dynamic>)
+    case 'TodayAnalysisGenerateResponseDto':
+      return TodayAnalysisGenerateResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisGenerateResponseDtoData':
+      return TodayAnalysisGenerateResponseDtoData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisReadDataDto':
+      return TodayAnalysisReadDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'TodayAnalysisReadResponseDto':
+      return TodayAnalysisReadResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisRefreshPendingDataDto':
+      return TodayAnalysisRefreshPendingDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisRefreshReadyDataDto':
+      return TodayAnalysisRefreshReadyDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisRefreshResponseDto':
+      return TodayAnalysisRefreshResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisRefreshResponseDtoData':
+      return TodayAnalysisRefreshResponseDtoData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisStreamErrorDto':
+      return TodayAnalysisStreamErrorDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'TodayAnalysisStreamResultDto':
+      return TodayAnalysisStreamResultDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisStreamResultDtoData':
+      return TodayAnalysisStreamResultDtoData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisStreamSummaryDto':
+      return TodayAnalysisStreamSummaryDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'TodayRecommendationResponseDto':
       return TodayRecommendationResponseDto.fromJson(
