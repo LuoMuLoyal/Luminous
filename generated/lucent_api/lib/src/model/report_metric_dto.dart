@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lucent_api/src/model/report_observed_metric_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -19,12 +20,20 @@ class ReportMetricDto {
   /// Returns a new [ReportMetricDto] instance.
   ReportMetricDto({
     required this.kind,
+
     required this.value,
+
     required this.unit,
+
     required this.status,
+
     required this.delta,
+
     required this.direction,
+
     required this.sparkline,
+
+    this.observedMetric,
   });
 
   @JsonKey(
@@ -35,12 +44,15 @@ class ReportMetricDto {
   )
   final ReportMetricDtoKindEnum kind;
 
+  @Deprecated('value has been deprecated')
   @JsonKey(name: r'value', required: true, includeIfNull: false)
   final String value;
 
+  @Deprecated('unit has been deprecated')
   @JsonKey(name: r'unit', required: true, includeIfNull: false)
   final String unit;
 
+  @Deprecated('status has been deprecated')
   @JsonKey(
     name: r'status',
     required: true,
@@ -49,9 +61,11 @@ class ReportMetricDto {
   )
   final ReportMetricDtoStatusEnum status;
 
+  @Deprecated('delta has been deprecated')
   @JsonKey(name: r'delta', required: true, includeIfNull: false)
   final String delta;
 
+  @Deprecated('direction has been deprecated')
   @JsonKey(
     name: r'direction',
     required: true,
@@ -60,8 +74,12 @@ class ReportMetricDto {
   )
   final ReportMetricDtoDirectionEnum direction;
 
+  @Deprecated('sparkline has been deprecated')
   @JsonKey(name: r'sparkline', required: true, includeIfNull: false)
   final List<num> sparkline;
+
+  @JsonKey(name: r'observedMetric', required: false, includeIfNull: false)
+  final ReportObservedMetricDto? observedMetric;
 
   @override
   bool operator ==(Object other) =>
@@ -73,7 +91,8 @@ class ReportMetricDto {
           other.status == status &&
           other.delta == delta &&
           other.direction == direction &&
-          other.sparkline == sparkline;
+          other.sparkline == sparkline &&
+          other.observedMetric == observedMetric;
 
   @override
   int get hashCode =>
@@ -83,7 +102,8 @@ class ReportMetricDto {
       status.hashCode +
       delta.hashCode +
       direction.hashCode +
-      sparkline.hashCode;
+      sparkline.hashCode +
+      observedMetric.hashCode;
 
   factory ReportMetricDto.fromJson(Map<String, dynamic> json) =>
       _$ReportMetricDtoFromJson(json);

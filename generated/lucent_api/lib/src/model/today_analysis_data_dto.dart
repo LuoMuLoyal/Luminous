@@ -4,6 +4,7 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -34,6 +35,8 @@ class TodayAnalysisDataDto {
     required this.action,
 
     required this.confidenceNote,
+
+    this.metrics,
   });
 
   @JsonKey(name: r'date', required: true, includeIfNull: false)
@@ -60,6 +63,9 @@ class TodayAnalysisDataDto {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
+  @JsonKey(name: r'metrics', required: false, includeIfNull: false)
+  final List<TodayAnalysisMetricDto>? metrics;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -71,7 +77,8 @@ class TodayAnalysisDataDto {
           other.bullets == bullets &&
           other.actionLabel == actionLabel &&
           other.action == action &&
-          other.confidenceNote == confidenceNote;
+          other.confidenceNote == confidenceNote &&
+          other.metrics == metrics;
 
   @override
   int get hashCode =>
@@ -82,7 +89,8 @@ class TodayAnalysisDataDto {
       bullets.hashCode +
       actionLabel.hashCode +
       action.hashCode +
-      confidenceNote.hashCode;
+      confidenceNote.hashCode +
+      metrics.hashCode;
 
   factory TodayAnalysisDataDto.fromJson(Map<String, dynamic> json) =>
       _$TodayAnalysisDataDtoFromJson(json);

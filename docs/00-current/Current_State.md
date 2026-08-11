@@ -7,13 +7,15 @@ updated: 2026-08-03
 
 # Luminous Current State
 
-Last updated: 2026-08-03
+Last updated: 2026-08-11
 
 本文件是 `00-current/` 目录的索引。具体实现细节由各子文件负责，变更历史见 `03-logs/migration-log/`。
 
 ## 当前基线
 
 五 Tab 根页（Today / Record / Medicine / Report / Mine）均已接入 `PageViewState` 统一状态机。未登录态使用 `SignInHintBanner` 轻量提示条而非全屏门控。P0-P2 UI/UX 优化全部完成，当前处于发布验证门阶段。
+
+Sparse Record Semantics 的后端已提供统一 observed metric OpenAPI 合同；Flutter generated client 已同步 `value`、`state`、`coverage`、`sources`、计数和时间窗字段。现有 domain/UI 仍处于兼容读取阶段，下一步接入 medication/sleep mapper 并保留 unknown 语义。
 
 ### 测试补齐（2026-08-03）
 

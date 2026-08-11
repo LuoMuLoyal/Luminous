@@ -6,6 +6,7 @@
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_refresh_pending_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_refresh_ready_data_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
@@ -38,6 +39,8 @@ class TodayAnalysisRefreshResponseDtoData {
     required this.action,
 
     required this.confidenceNote,
+
+    this.metrics,
 
     required this.analysis,
 
@@ -76,6 +79,9 @@ class TodayAnalysisRefreshResponseDtoData {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
+  @JsonKey(name: r'metrics', required: false, includeIfNull: false)
+  final List<TodayAnalysisMetricDto>? metrics;
+
   @JsonKey(name: r'analysis', required: true, includeIfNull: false)
   final TodayAnalysisDataDto analysis;
 
@@ -112,6 +118,7 @@ class TodayAnalysisRefreshResponseDtoData {
           other.actionLabel == actionLabel &&
           other.action == action &&
           other.confidenceNote == confidenceNote &&
+          other.metrics == metrics &&
           other.analysis == analysis &&
           other.status == status &&
           other.computedVersion == computedVersion &&
@@ -129,6 +136,7 @@ class TodayAnalysisRefreshResponseDtoData {
       actionLabel.hashCode +
       action.hashCode +
       confidenceNote.hashCode +
+      metrics.hashCode +
       analysis.hashCode +
       status.hashCode +
       computedVersion.hashCode +

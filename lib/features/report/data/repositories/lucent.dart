@@ -1,3 +1,7 @@
+// The generated contract marks the legacy scalar projection as deprecated.
+// Keep this mapper's fallback until the observed metric domain migration lands.
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:lucent_api/lucent_api.dart' as lucent;
 import 'package:luminous/core/design/design.dart';

@@ -239,7 +239,7 @@ void _copyGeneratedFile(
     '${targetRoot.path}${Platform.pathSeparator}$normalizedPath',
   );
   target.parent.createSync(recursive: true);
-  source.copySync(target.path);
+  target.writeAsStringSync(_normalizeGeneratedDart(source.readAsStringSync()));
 }
 
 void _copyGeneratedModels(Directory sourceRoot, Directory targetRoot) {
@@ -263,8 +263,18 @@ void _copyGeneratedModels(Directory sourceRoot, Directory targetRoot) {
       '${Platform.pathSeparator}${entity.uri.pathSegments.last}',
     );
     target.parent.createSync(recursive: true);
-    entity.copySync(target.path);
+    target.writeAsStringSync(
+      _normalizeGeneratedDart(entity.readAsStringSync()),
+    );
   }
+}
+
+String _normalizeGeneratedDart(String source) {
+  final lines = source.split('\n');
+  lines.removeWhere(
+    (line) => line.trimLeft().startsWith('unknownEnumValue: List<'),
+  );
+  return lines.join('\n');
 }
 
 Future<void> _buildAppCodegen(ToolContext context) async {
@@ -385,4 +395,8 @@ const _todayAnalysisModels = [
   'TodayAnalysisStreamResultDto',
   'TodayAnalysisStreamResultDto_data',
   'TodayAnalysisStreamSummaryDto',
+  'ReportMetricDto',
+  'ReportObservedMetricDto',
+  'SuggestionItemDto',
+  'SuggestionObservedMetricDto',
 ];

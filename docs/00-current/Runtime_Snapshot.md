@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-11
 ---
 
 # Luminous Runtime Snapshot
 
-Last updated: 2026-08-06 (JPush push lifecycle integration)
+Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 
 ## 技术栈
 
@@ -68,6 +68,7 @@ Last updated: 2026-08-06 (JPush push lifecycle integration)
 - Base URL 解析：debug 模式下 `DeveloperSettingsController.resolvedBaseUrl` 对 `ApiEndpoint.local` 做平台适配——Android 模拟器使用 `10.0.2.2`（因为 `127.0.0.1` 指向模拟器自身），其他平台使用 `127.0.0.1`。`LucentBaseUrl.value` 的 debug 回退同理。Release 模式强制使用 `.env` 注入的 `LUCENT_BASE_URL`。
 - `LucentSseClient` 支持 `reconnect` 自动重连；SSE 请求单独覆盖 `receiveTimeout: Duration.zero`（不限超时），避免 AI 生成慢时主 Dio 的 10s `receiveTimeout` 导致流提前中断。
 - `LucentApiPaths` 常量注册表集中管理所有 API 路径字符串。
+- generated Lucent client 已同步 Report、Today Suggestion、Today Analysis 的 observed metric DTO；`value`/`expectedCount` 保持 required nullable，枚举保留 unknown fallback，domain mapper 仍在兼容迁移阶段。
 - `LucentErrorMapper.toAppError()` 将任意异常转换为 `AppError`（5 分类：network/auth/server/business/unknown）。网络层 fallback 消息为英文（locale-neutral），业务错误消息由服务端按 locale 返回。
 - Android debug 构建通过 `debug/AndroidManifest.xml` 的 `android:usesCleartextTraffic="true"` 允许明文 HTTP 流量；release 构建不受影响（使用 HTTPS）。
 

@@ -5,6 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/suggestion_action_dto.dart';
 import 'package:lucent_api/src/model/evidence_item_dto.dart';
+import 'package:lucent_api/src/model/suggestion_observed_metric_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -21,23 +22,42 @@ class SuggestionItemDto {
   /// Returns a new [SuggestionItemDto] instance.
   SuggestionItemDto({
     required this.id,
+
     required this.type,
+
     required this.cardTone,
+
     required this.icon,
+
     required this.title,
+
     required this.reason,
+
     required this.evidence,
+
     required this.boundary,
+
     required this.primaryAction,
+
     this.secondaryActions,
+
     required this.confidence,
+
     required this.ruleId,
+
     required this.ruleVersion,
+
     required this.triggerType,
+
     required this.lifecycleState,
+
     this.notificationEligible,
+
     this.feedbackOptions,
+
     this.subtype,
+
+    this.observedMetric,
   });
 
   /// Unique suggestion id
@@ -137,6 +157,9 @@ class SuggestionItemDto {
   @JsonKey(name: r'subtype', required: false, includeIfNull: false)
   final Object? subtype;
 
+  @JsonKey(name: r'observedMetric', required: false, includeIfNull: false)
+  final SuggestionObservedMetricDto? observedMetric;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -158,7 +181,8 @@ class SuggestionItemDto {
           other.lifecycleState == lifecycleState &&
           other.notificationEligible == notificationEligible &&
           other.feedbackOptions == feedbackOptions &&
-          other.subtype == subtype;
+          other.subtype == subtype &&
+          other.observedMetric == observedMetric;
 
   @override
   int get hashCode =>
@@ -179,7 +203,8 @@ class SuggestionItemDto {
       lifecycleState.hashCode +
       notificationEligible.hashCode +
       feedbackOptions.hashCode +
-      subtype.hashCode;
+      subtype.hashCode +
+      observedMetric.hashCode;
 
   factory SuggestionItemDto.fromJson(Map<String, dynamic> json) =>
       _$SuggestionItemDtoFromJson(json);

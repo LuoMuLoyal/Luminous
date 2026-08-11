@@ -88,20 +88,6 @@
 - [ ] overlap 只标记 data-quality warning，不静默删除任一 episode。
 - [ ] 运行 daily-record 和 collector specs，包含跨午夜夜睡与同日下午两段午睡。
 
-## Task 6 — Expose Coverage and Sources Through OpenAPI
-
-**Files:**
-
-- Modify: `Lucent/src/modules/reports/dto/report-dashboard-response.dto.ts`
-- Modify: `Lucent/src/modules/today-suggestion/dto/suggestion-response.dto.ts`
-- Modify: `Lucent/src/modules/today-analysis/dto/analysis-response.dto.ts`
-- Modify: `Lucent/docs/openapi.json` (generated)
-
-- [ ] 为 water、medication、sleep DTO 增加同构 coverage/source/state 字段，并在 Swagger decorators 中枚举所有字面量。
-- [ ] 保留旧 scalar 字段一个兼容周期，但标为 deprecated；新 Flutter 代码只读取 observed metric object。
-- [ ] 运行 controller specs 和 `pnpm export:openapi`，人工检查 unknown 不会被 schema default 成 0。
-- [ ] 在 Luminous 运行 `dart run scripts/bootstrap_generated_sources.dart`，确认生成类型保持 nullable 和 enum。
-
 ## Task 7 — Update Mobile Quick Entry and Domain Mappers
 
 **Files:**

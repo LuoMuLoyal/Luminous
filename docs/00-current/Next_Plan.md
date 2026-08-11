@@ -22,7 +22,7 @@ Last updated: 2026-08-11
 
 1. **执行 Sparse Record Semantics**
    - 子计划：[`../../plans/2026-08-07-sparse-record-semantics.md`](../../plans/2026-08-07-sparse-record-semantics.md)
-   - Water ml、coverage、unknown 与 observed zero 已在 Lucent 后端统一；Flutter DTO/domain 迁移留在后续合同同步阶段
+   - Water ml、coverage、unknown 与 observed zero 已在 Lucent 后端统一；generated client 已同步 observed metric DTO，domain/UI 迁移仍待完成
    - Lucent 后端已统一服药 reminder slot 和睡眠 episode 语义；下一步是把 medication/sleep observed DTO/domain 接入 Flutter，再处理平台导入
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品

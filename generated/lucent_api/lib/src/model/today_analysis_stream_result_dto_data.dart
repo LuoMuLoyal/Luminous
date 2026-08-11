@@ -6,6 +6,7 @@
 import 'package:lucent_api/src/model/today_analysis_stream_summary_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_stream_error_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -38,6 +39,8 @@ class TodayAnalysisStreamResultDtoData {
 
     required this.confidenceNote,
 
+    this.metrics,
+
     required this.message,
 
     this.code,
@@ -69,6 +72,9 @@ class TodayAnalysisStreamResultDtoData {
   @JsonKey(name: r'confidenceNote', required: true, includeIfNull: false)
   final String confidenceNote;
 
+  @JsonKey(name: r'metrics', required: false, includeIfNull: false)
+  final List<TodayAnalysisMetricDto>? metrics;
+
   @JsonKey(name: r'message', required: true, includeIfNull: false)
   final String message;
 
@@ -90,6 +96,7 @@ class TodayAnalysisStreamResultDtoData {
           other.actionLabel == actionLabel &&
           other.action == action &&
           other.confidenceNote == confidenceNote &&
+          other.metrics == metrics &&
           other.message == message &&
           other.code == code &&
           other.statusCode == statusCode;
@@ -104,6 +111,7 @@ class TodayAnalysisStreamResultDtoData {
       actionLabel.hashCode +
       action.hashCode +
       confidenceNote.hashCode +
+      metrics.hashCode +
       message.hashCode +
       code.hashCode +
       statusCode.hashCode;

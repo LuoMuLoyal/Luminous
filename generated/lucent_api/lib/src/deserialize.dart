@@ -151,6 +151,7 @@ import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_dashboard_score_dto.dart';
 import 'package:lucent_api/src/model/report_finding_dto.dart';
 import 'package:lucent_api/src/model/report_metric_dto.dart';
+import 'package:lucent_api/src/model/report_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/report_pattern_dto.dart';
 import 'package:lucent_api/src/model/report_summary_bullet_dto.dart';
 import 'package:lucent_api/src/model/report_summary_data_dto.dart';
@@ -175,6 +176,7 @@ import 'package:lucent_api/src/model/suggestion_history_data_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_item_dto.dart';
 import 'package:lucent_api/src/model/suggestion_history_response_dto.dart';
 import 'package:lucent_api/src/model/suggestion_item_dto.dart';
+import 'package:lucent_api/src/model/suggestion_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/support_resource_dto.dart';
 import 'package:lucent_api/src/model/support_resource_list_data_dto.dart';
 import 'package:lucent_api/src/model/support_resource_list_response_dto.dart';
@@ -188,6 +190,8 @@ import 'package:lucent_api/src/model/today_analysis_bullet_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_generate_response_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_generate_response_dto_data.dart';
+import 'package:lucent_api/src/model/today_analysis_metric_dto.dart';
+import 'package:lucent_api/src/model/today_analysis_observed_metric_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_data_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_read_response_dto.dart';
 import 'package:lucent_api/src/model/today_analysis_refresh_pending_data_dto.dart';
@@ -792,6 +796,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ReportMetricDto':
       return ReportMetricDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ReportObservedMetricDto':
+      return ReportObservedMetricDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ReportPatternDto':
       return ReportPatternDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -877,6 +884,9 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'SuggestionItemDto':
       return SuggestionItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'SuggestionObservedMetricDto':
+      return SuggestionObservedMetricDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'SupportResourceActionType':
     case 'SupportResourceDto':
       return SupportResourceDto.fromJson(value as Map<String, dynamic>)
@@ -931,6 +941,14 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'TodayAnalysisGenerateResponseDtoData':
       return TodayAnalysisGenerateResponseDtoData.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'TodayAnalysisMetricDto':
+      return TodayAnalysisMetricDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'TodayAnalysisObservedMetricDto':
+      return TodayAnalysisObservedMetricDto.fromJson(
             value as Map<String, dynamic>,
           )
           as ReturnType;
