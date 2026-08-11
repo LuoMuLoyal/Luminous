@@ -52,25 +52,6 @@
 - [ ] Today suggestion signal、Report metrics 和 Today Analysis context 引用同一类型或同构 mapper，删除各自的隐式 null/zero 转换。
 - [ ] 运行 typecheck 和 context spec，确保 enum/string literal 在模块间一致。
 
-## Task 3 — Canonicalize Water to Milliliters
-
-**Files:**
-
-- Modify: `Lucent/src/modules/today-suggestion/services/collectors/record.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/collectors/record.service.spec.ts`
-- Modify: `Lucent/src/modules/reports/dashboard/context.service.ts`
-- Modify: `Lucent/src/modules/reports/dashboard/context.service.spec.ts`
-- Modify: `Lucent/src/modules/reports/dashboard/computation.service.ts`
-- Modify: `Lucent/src/modules/reports/dashboard/computation.service.spec.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/rules/lifestyle/water-shortfall.service.ts`
-- Modify: `Lucent/src/modules/today-suggestion/services/rules/lifestyle/water-shortfall.service.spec.ts`
-
-- [ ] 建立参数化测试覆盖 `ml`、`L` 和缺失/非法单位；合法值统一转为整数 ml，非法值计入 ignoredCount 而非零。
-- [ ] Today collector 和 Report context 共用一个纯 mapper，删除按 water record count 计算摄入量的路径。
-- [ ] Report computation 不再把无记录日加入 0L 平均值，也不以 `nonZeroDays` 排除用户明确记录的 0 ml。
-- [ ] water-shortfall rule 只有 coverage sufficient 且目标来源明确时才有资格；partial/none 返回 abstain reason。
-- [ ] 运行四组 specs，确认 Today、Report 和 rule 对相同 fixture 返回相同 ml 与 coverage。
-
 ## Task 4 — Preserve Medication Reminder Slots End to End
 
 **Files:**
