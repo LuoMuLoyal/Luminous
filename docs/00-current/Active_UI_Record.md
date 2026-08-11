@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-11
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-06 (详情页/编辑页区分度精进两批完成)
+Last updated: 2026-08-11 (Sparse Record Semantics sleep episodes)
 
 ## 支持的记录类型
 
@@ -17,6 +17,7 @@ Last updated: 2026-08-06 (详情页/编辑页区分度精进两批完成)
 - 心情
 - 笔记（独立类型：有自己的快捷操作、筛选、时间线项）
 - 睡眠（结构化录入：就寝/起床/质量/阶段）
+- Lucent 后端已支持 nightSleep/nap episode 与 `startedAt`/`endedAt`；当前 Flutter 快速录入继续发送兼容的 `startAt`/`endAt`，由后端按 nightSleep fallback 读取。
 - 用药（非创建型快捷操作）
 
 ## 自然语言录入
