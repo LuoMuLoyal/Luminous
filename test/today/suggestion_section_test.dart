@@ -357,6 +357,95 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('renders pending materialization with the previous card', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        customDataApp(
+          testSuggestionBundle.copyWith(
+            materializationStatus: TodaySuggestionMaterializationStatus.pending,
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text('上午的阿托伐他汀尚未确认'), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionLoadingHint), findsOneWidget);
+    });
+
+    testWidgets('renders stale materialization with the computed time', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        customDataApp(
+          testSuggestionBundle.copyWith(
+            materializationStatus: TodaySuggestionMaterializationStatus.stale,
+            computedAt: DateTime(2026, 7, 11, 8),
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text('上午的阿托伐他汀尚未确认'), findsOneWidget);
+      expect(find.text(l10n.todayUpdatedAt('08:00')), findsOneWidget);
+    });
+
+    testWidgets('renders a stale hint when computed time is unavailable', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        customDataApp(
+          testSuggestionBundle.copyWith(
+            materializationStatus: TodaySuggestionMaterializationStatus.stale,
+            computedAt: null,
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text('上午的阿托伐他汀尚未确认'), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionLoadingHint), findsOneWidget);
+    });
+
+    testWidgets('renders failed materialization with retry and old content', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        customDataApp(
+          testSuggestionBundle.copyWith(
+            materializationStatus: TodaySuggestionMaterializationStatus.failed,
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text('上午的阿托伐他汀尚未确认'), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionErrorHint), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionRetryAction), findsOneWidget);
+    });
+
+    testWidgets('renders empty materialization as the existing empty state', (
+      tester,
+    ) async {
+      final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+      await tester.pumpWidget(
+        customDataApp(
+          const TodaySuggestionBundle(
+            generatedAt: '2026-07-12T10:00:00Z',
+            materializationStatus: TodaySuggestionMaterializationStatus.empty,
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(find.text(l10n.todaySuggestionEmptyTitle), findsOneWidget);
+      expect(find.text(l10n.todaySuggestionEmptySubtitle), findsOneWidget);
+    });
   });
 
   // ── Primary Card Content ──────────────────────────────────────────────

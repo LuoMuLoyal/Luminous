@@ -230,6 +230,47 @@ void main() {
     });
   });
 
+  group('TodaySuggestionMaterializationStatus', () {
+    test('maps every backend status and unknown values to ready', () {
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('empty'),
+        TodaySuggestionMaterializationStatus.empty,
+      );
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('pending'),
+        TodaySuggestionMaterializationStatus.pending,
+      );
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('ready'),
+        TodaySuggestionMaterializationStatus.ready,
+      );
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('stale'),
+        TodaySuggestionMaterializationStatus.stale,
+      );
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('failed'),
+        TodaySuggestionMaterializationStatus.failed,
+      );
+      expect(
+        TodaySuggestionMaterializationStatus.fromJson('unknown'),
+        TodaySuggestionMaterializationStatus.ready,
+      );
+    });
+
+    test('bundle metadata defaults preserve existing construction calls', () {
+      const bundle = TodaySuggestionBundle(generatedAt: '2026-07-12T10:00:00Z');
+
+      expect(
+        bundle.materializationStatus,
+        TodaySuggestionMaterializationStatus.ready,
+      );
+      expect(bundle.sourceVersion, 0);
+      expect(bundle.computedAt, isNull);
+      expect(bundle.retryAfterSeconds, isNull);
+    });
+  });
+
   group('TodaySuggestionTriggerType', () {
     test('contains expected values', () {
       expect(

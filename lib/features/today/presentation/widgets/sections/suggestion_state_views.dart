@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/card_style.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/section.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -199,6 +201,69 @@ class SuggestionErrorState extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Lightweight status notice shown below a retained suggestion card.
+class SuggestionMaterializationNotice extends StatelessWidget {
+  const SuggestionMaterializationNotice({
+    super.key,
+    required this.status,
+    required this.computedAt,
+    required this.l10n,
+    this.onRetry,
+  });
+
+  final TodaySuggestionMaterializationStatus status;
+  final DateTime? computedAt;
+  final AppLocalizations l10n;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.theme.colors;
+    final message = switch (status) {
+      TodaySuggestionMaterializationStatus.pending =>
+        l10n.todaySuggestionLoadingHint,
+      TodaySuggestionMaterializationStatus.stale =>
+        computedAt != null
+            ? l10n.todayUpdatedAt(
+                DateFormat.Hm(l10n.localeName).format(computedAt!.toLocal()),
+              )
+            : l10n.todaySuggestionLoadingHint,
+      TodaySuggestionMaterializationStatus.failed =>
+        l10n.todaySuggestionErrorHint,
+      _ => null,
+    };
+
+    if (message == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: Spacing.level2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TypographyToken.level2
+                  .body(context)
+                  .copyWith(color: colors.mutedForeground),
+            ),
+          ),
+          if (status == TodaySuggestionMaterializationStatus.failed &&
+              onRetry != null) ...[
+            const SizedBox(width: Spacing.level2),
+            FButton(
+              onPress: onRetry,
+              variant: FButtonVariant.ghost,
+              size: FButtonSizeVariant.xs,
+              child: Text(l10n.todaySuggestionRetryAction),
+            ),
+          ],
+        ],
       ),
     );
   }

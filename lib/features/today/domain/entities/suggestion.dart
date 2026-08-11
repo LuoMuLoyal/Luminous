@@ -55,6 +55,31 @@ enum TodaySuggestionCardTone {
 /// Confidence level of the suggestion.
 enum TodaySuggestionConfidence { high, medium, low }
 
+/// Background materialization state returned by GET /today/suggestions.
+///
+/// This is transport-independent domain state. It deliberately does not carry
+/// or infer meaning from a backend error message.
+enum TodaySuggestionMaterializationStatus {
+  empty,
+  pending,
+  ready,
+  stale,
+  failed;
+
+  String toJson() => name;
+
+  static TodaySuggestionMaterializationStatus fromJson(String value) {
+    return switch (value) {
+      'empty' => TodaySuggestionMaterializationStatus.empty,
+      'pending' => TodaySuggestionMaterializationStatus.pending,
+      'ready' => TodaySuggestionMaterializationStatus.ready,
+      'stale' => TodaySuggestionMaterializationStatus.stale,
+      'failed' => TodaySuggestionMaterializationStatus.failed,
+      _ => TodaySuggestionMaterializationStatus.ready,
+    };
+  }
+}
+
 /// Lifecycle state of the suggestion.
 enum TodaySuggestionLifecycleState {
   generated,
@@ -197,6 +222,11 @@ abstract class TodaySuggestionCard with _$TodaySuggestionCard {
 abstract class TodaySuggestionBundle with _$TodaySuggestionBundle {
   const factory TodaySuggestionBundle({
     required String generatedAt,
+    @Default(TodaySuggestionMaterializationStatus.ready)
+    TodaySuggestionMaterializationStatus materializationStatus,
+    @Default(0) int sourceVersion,
+    DateTime? computedAt,
+    int? retryAfterSeconds,
     TodaySuggestionCard? primary,
     List<TodaySuggestionCard>? secondary,
     List<TodaySuggestionCard>? observations,

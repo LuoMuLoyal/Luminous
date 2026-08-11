@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
+import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_primary_card.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion_state_views.dart';
@@ -29,11 +30,44 @@ class TodayPrimarySuggestionSection extends ConsumerWidget {
       title: l10n.todayPrimarySuggestionSectionTitle,
       child: suggestionAsync.when(
         data: (bundle) {
-          final card = bundle?.primary;
+          final status =
+              bundle?.materializationStatus ??
+              TodaySuggestionMaterializationStatus.ready;
+          final card = status == TodaySuggestionMaterializationStatus.empty
+              ? null
+              : bundle?.primary;
           if (card == null) {
+            if (status == TodaySuggestionMaterializationStatus.pending) {
+              return SuggestionMaterializationNotice(
+                status: status,
+                computedAt: bundle?.computedAt,
+                l10n: l10n,
+              );
+            }
+            if (status == TodaySuggestionMaterializationStatus.failed) {
+              return SuggestionErrorState(
+                l10n: l10n,
+                onRetry: () =>
+                    ref.read(todaySuggestionProvider.notifier).refresh(),
+              );
+            }
             return SuggestionEmptyState(l10n: l10n);
           }
-          return SuggestionPrimaryCard(card: card, dashboard: dashboard);
+          return Column(
+            children: [
+              SuggestionPrimaryCard(card: card, dashboard: dashboard),
+              if (status != TodaySuggestionMaterializationStatus.ready)
+                SuggestionMaterializationNotice(
+                  status: status,
+                  computedAt: bundle?.computedAt,
+                  l10n: l10n,
+                  onRetry: status == TodaySuggestionMaterializationStatus.failed
+                      ? () =>
+                            ref.read(todaySuggestionProvider.notifier).refresh()
+                      : null,
+                ),
+            ],
+          );
         },
         loading: () => const SuggestionSkeleton(),
         error: (_, __) => SuggestionErrorState(

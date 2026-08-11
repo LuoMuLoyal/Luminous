@@ -21,25 +21,6 @@
 - 过去日期的编辑只重算受影响日期和依赖窗口，不无界重放全部历史。
 - `unconfirmed` 不是 `missed`；只有存在计划槽位、已超过宽限期且产品规则明确时才可生成漏服候选。
 
-## Task 8 — Adapt the Flutter Today State Machine
-
-**Files:**
-
-- Modify: `Luminous/lib/features/today/domain/entities/suggestion.dart`
-- Modify: `Luminous/lib/features/today/data/repositories/lucent.dart`
-- Modify: `Luminous/lib/features/today/presentation/providers/suggestion.dart`
-- Modify: `Luminous/lib/features/today/presentation/widgets/sections/suggestion_state_views.dart`
-- Modify: `Luminous/lib/features/today/presentation/widgets/sections/suggestion.dart`
-- Modify: `Luminous/test/today/repository_test.dart`
-- Modify: `Luminous/test/today/presentation/providers/suggestion_provider_test.dart`
-- Modify: `Luminous/test/today/suggestion_section_test.dart`
-
-- [ ] 先写 mapper/provider/widget 失败测试，覆盖 ready、stale、pending、failed、empty。
-- [ ] repository 将 generated DTO 转为 domain status，UI 不解析 error message 判断状态。
-- [ ] pending 显示现有内容加轻量“正在更新”；stale 保留旧内容并标注更新时间；failed 保留旧内容和重试；empty 不显示伪造建议。
-- [ ] 监听 DataChangeBus 只触发延迟 refetch，不调用 generate endpoint；应用 resume 时检查 sourceVersion。
-- [ ] 运行目标 Flutter tests，确认保存记录后不会由客户端发起首次生成 POST。
-
 ## Task 9 — Observability, Full Verification, and Documentation
 
 **Files:**

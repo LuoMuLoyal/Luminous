@@ -110,10 +110,28 @@ class TodaySuggestionRemoteDataSource implements SuggestionRepository {
   TodaySuggestionBundle _mapBundle(TodaySuggestionsDataDto dto) {
     return TodaySuggestionBundle(
       generatedAt: dto.generatedAt,
+      materializationStatus: TodaySuggestionMaterializationStatus.fromJson(
+        dto.materializationStatus.value,
+      ),
+      sourceVersion: _safeInt(dto.sourceVersion) ?? 0,
+      computedAt: _parseDateTime(dto.computedAt),
+      retryAfterSeconds: _safeInt(dto.retryAfterSeconds),
       primary: dto.primary != null ? _mapCard(dto.primary!) : null,
       secondary: dto.secondary?.map(_mapCard).toList(growable: false),
       observations: dto.observations?.map(_mapCard).toList(growable: false),
     );
+  }
+
+  DateTime? _parseDateTime(String? value) {
+    if (value == null) return null;
+    return DateTime.tryParse(value);
+  }
+
+  int? _safeInt(num? value) {
+    if (value == null || !value.isFinite || value != value.truncate()) {
+      return null;
+    }
+    return value.toInt();
   }
 
   TodaySuggestionCard _mapCard(SuggestionItemDto dto) {

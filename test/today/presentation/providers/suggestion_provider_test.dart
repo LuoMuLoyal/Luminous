@@ -1,8 +1,10 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/database/daos/today_suggestion_dao.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/datasources/suggestion_remote.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -25,9 +27,16 @@ class _SignedOutSessionNotifier extends AuthSessionNotifier {
   AuthSessionState build() => const AuthSessionState();
 }
 
-TodaySuggestionBundle _bundle({String? primaryId}) {
+TodaySuggestionBundle _bundle({
+  String? primaryId,
+  TodaySuggestionMaterializationStatus materializationStatus =
+      TodaySuggestionMaterializationStatus.ready,
+  int sourceVersion = 0,
+}) {
   return TodaySuggestionBundle(
     generatedAt: '2026-07-12T10:00:00Z',
+    materializationStatus: materializationStatus,
+    sourceVersion: sourceVersion,
     primary: primaryId != null
         ? TodaySuggestionCard(
             id: primaryId,
@@ -55,6 +64,8 @@ TodaySuggestionBundle _bundle({String? primaryId}) {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late _MockRemoteDataSource mockDataSource;
   late _MockDao mockDao;
 
@@ -314,6 +325,126 @@ void main() {
 
       // Should have data
       expect(c.read(todaySuggestionProvider).hasValue, isTrue);
+    });
+
+    test(
+      'keeps the previous primary while materialization is pending',
+      () async {
+        final oldBundle = _bundle(primaryId: 'old', sourceVersion: 1);
+        final pendingBundle = _bundle(
+          materializationStatus: TodaySuggestionMaterializationStatus.pending,
+          sourceVersion: 2,
+        );
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => oldBundle);
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        await c.read(todaySuggestionProvider.future);
+
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => pendingBundle);
+
+        await c.read(todaySuggestionProvider.notifier).refresh();
+
+        final result = c.read(todaySuggestionProvider).value!;
+        expect(
+          result.materializationStatus,
+          TodaySuggestionMaterializationStatus.pending,
+        );
+        expect(result.primary?.id, 'old');
+      },
+    );
+
+    test(
+      'debounces data changes into one GET without feedback or generation',
+      () async {
+        final bundle = _bundle(primaryId: 's1');
+        when(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).thenAnswer((_) async => bundle);
+        stubDaoSuccess();
+
+        final c = buildContainer();
+        await c.read(todaySuggestionProvider.future);
+        clearInteractions(mockDataSource);
+
+        final bus = c.read(dataChangeBusProvider.notifier);
+        bus.emit(DataChangeTopic.dailyRecords);
+        bus.emit(DataChangeTopic.doseLogs);
+        bus.emit(DataChangeTopic.userSettings);
+        await Future<void>.delayed(const Duration(milliseconds: 350));
+
+        verify(
+          () => mockDataSource.fetchSuggestions(
+            language: any(named: 'language'),
+            date: any(named: 'date'),
+            excludeIds: any(named: 'excludeIds'),
+          ),
+        ).called(1);
+        verifyNever(
+          () => mockDataSource.submitFeedback(
+            id: any(named: 'id'),
+            feedback: any(named: 'feedback'),
+          ),
+        );
+      },
+    );
+
+    testWidgets('checks sourceVersion again when the app resumes', (
+      tester,
+    ) async {
+      final initialBundle = _bundle(primaryId: 's1', sourceVersion: 1);
+      final refreshedBundle = _bundle(primaryId: 's2', sourceVersion: 2);
+      when(
+        () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
+          date: any(named: 'date'),
+          excludeIds: any(named: 'excludeIds'),
+        ),
+      ).thenAnswer((_) async => initialBundle);
+      stubDaoSuccess();
+
+      final c = buildContainer();
+      await c.read(todaySuggestionProvider.future);
+      clearInteractions(mockDataSource);
+
+      when(
+        () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
+          date: any(named: 'date'),
+          excludeIds: any(named: 'excludeIds'),
+        ),
+      ).thenAnswer((_) async => refreshedBundle);
+
+      WidgetsBinding.instance.handleAppLifecycleStateChanged(
+        AppLifecycleState.resumed,
+      );
+      await tester.pump();
+
+      verify(
+        () => mockDataSource.fetchSuggestions(
+          language: any(named: 'language'),
+          date: any(named: 'date'),
+          excludeIds: any(named: 'excludeIds'),
+        ),
+      ).called(1);
+      expect(c.read(todaySuggestionProvider).value?.sourceVersion, 2);
+      expect(c.read(todaySuggestionProvider).value?.primary?.id, 's2');
     });
   });
 }

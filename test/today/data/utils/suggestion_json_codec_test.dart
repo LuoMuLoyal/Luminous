@@ -65,16 +65,46 @@ void main() {
         final bundle = TodaySuggestionBundle(
           generatedAt: '2026-07-10T08:00:00Z',
           primary: createCard(),
+          materializationStatus: TodaySuggestionMaterializationStatus.stale,
+          sourceVersion: 7,
+          computedAt: DateTime.utc(2026, 7, 10, 8),
+          retryAfterSeconds: 12,
         );
 
         final json = TodaySuggestionJsonCodec.bundleToJson(bundle);
         final restored = TodaySuggestionJsonCodec.bundleFromJson(json);
 
         expect(restored.generatedAt, '2026-07-10T08:00:00Z');
+        expect(
+          restored.materializationStatus,
+          TodaySuggestionMaterializationStatus.stale,
+        );
+        expect(restored.sourceVersion, 7);
+        expect(restored.computedAt, DateTime.utc(2026, 7, 10, 8));
+        expect(restored.retryAfterSeconds, 12);
         expect(restored.primary, isNotNull);
         expect(restored.primary!.id, 'card-001');
         expect(restored.secondary, isNull);
         expect(restored.observations, isNull);
+      });
+
+      test('legacy cache defaults materialization metadata to ready', () {
+        final bundle = TodaySuggestionJsonCodec.bundleFromJson(
+          jsonEncode({
+            'generatedAt': '2026-07-10T08:00:00Z',
+            'primary': null,
+            'secondary': null,
+            'observations': null,
+          }),
+        );
+
+        expect(
+          bundle.materializationStatus,
+          TodaySuggestionMaterializationStatus.ready,
+        );
+        expect(bundle.sourceVersion, 0);
+        expect(bundle.computedAt, isNull);
+        expect(bundle.retryAfterSeconds, isNull);
       });
 
       test('round-trips a bundle with all sections populated', () {

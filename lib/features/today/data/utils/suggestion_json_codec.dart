@@ -10,6 +10,10 @@ class TodaySuggestionJsonCodec {
   static String bundleToJson(TodaySuggestionBundle bundle) {
     return jsonEncode({
       'generatedAt': bundle.generatedAt,
+      'materializationStatus': bundle.materializationStatus.toJson(),
+      'sourceVersion': bundle.sourceVersion,
+      'computedAt': bundle.computedAt?.toUtc().toIso8601String(),
+      'retryAfterSeconds': bundle.retryAfterSeconds,
       'primary': bundle.primary != null ? _cardToJson(bundle.primary!) : null,
       'secondary': bundle.secondary?.map(_cardToJson).toList(),
       'observations': bundle.observations?.map(_cardToJson).toList(),
@@ -20,6 +24,12 @@ class TodaySuggestionJsonCodec {
     final map = jsonDecode(json) as Map<String, dynamic>;
     return TodaySuggestionBundle(
       generatedAt: map['generatedAt'] as String,
+      materializationStatus: TodaySuggestionMaterializationStatus.fromJson(
+        map['materializationStatus'] as String? ?? 'ready',
+      ),
+      sourceVersion: _safeInt(map['sourceVersion']) ?? 0,
+      computedAt: _parseDateTime(map['computedAt']),
+      retryAfterSeconds: _safeInt(map['retryAfterSeconds']),
       primary: map['primary'] != null
           ? _cardFromJson(map['primary'] as Map<String, dynamic>)
           : null,
@@ -30,6 +40,19 @@ class TodaySuggestionJsonCodec {
           ?.map((e) => _cardFromJson(e as Map<String, dynamic>))
           .toList(),
     );
+  }
+
+  static DateTime? _parseDateTime(Object? value) {
+    if (value is! String) return null;
+    return DateTime.tryParse(value);
+  }
+
+  static int? _safeInt(Object? value) {
+    if (value is int) return value;
+    if (value is num && value.isFinite && value == value.truncate()) {
+      return value.toInt();
+    }
+    return null;
   }
 
   static Map<String, dynamic> _cardToJson(TodaySuggestionCard c) {

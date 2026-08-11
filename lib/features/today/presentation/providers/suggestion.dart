@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/database/connection_providers.dart';
 import 'package:luminous/core/i18n/locale.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/today/data/providers/suggestion.dart';
 import 'package:luminous/features/today/data/utils/suggestion_json_codec.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -28,14 +31,99 @@ final todaySuggestionProvider =
 class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
   /// Locally dismissed suggestion IDs — passed as `excludeIds` on re-fetch.
   final List<String> _dismissedIds = [];
+  Timer? _dataChangeDebounce;
+  AppLifecycleListener? _lifecycleListener;
+  TodaySuggestionBundle? _lastBundle;
+  bool _listenersInstalled = false;
+  bool _disposed = false;
+
+  static const _suggestionTopics = {
+    DataChangeTopic.dailyRecords,
+    DataChangeTopic.doseLogs,
+    DataChangeTopic.medicineReminders,
+    DataChangeTopic.healthContext,
+    DataChangeTopic.currentMedicines,
+    DataChangeTopic.userSettings,
+  };
 
   @override
   Future<TodaySuggestionBundle?> build() async {
-    return authGuarded(
+    _installRefreshListeners();
+    final bundle = await authGuarded(
       ref: ref,
       fetch: _fetch,
       signedOutFallback: () async => null,
     );
+    _lastBundle = bundle;
+    return bundle;
+  }
+
+  void _installRefreshListeners() {
+    if (_listenersInstalled) return;
+    _listenersInstalled = true;
+    ref.listen(dataChangeBusProvider, (previous, next) {
+      if (!_hasRelevantDataChange(previous, next)) return;
+      _scheduleDataRefresh();
+    });
+    _lifecycleListener = AppLifecycleListener(
+      onStateChange: (state) {
+        if (state == AppLifecycleState.resumed) {
+          unawaited(_refreshOnResume());
+        }
+      },
+    );
+    ref.onDispose(() {
+      _disposed = true;
+      _dataChangeDebounce?.cancel();
+      _lifecycleListener?.dispose();
+    });
+  }
+
+  bool _hasRelevantDataChange(
+    Map<String, int>? previous,
+    Map<String, int> next,
+  ) {
+    return _suggestionTopics.any((topic) => previous?[topic] != next[topic]);
+  }
+
+  void _scheduleDataRefresh() {
+    if (!_isAuthenticated) return;
+    _dataChangeDebounce?.cancel();
+    _dataChangeDebounce = Timer(const Duration(milliseconds: 300), () {
+      unawaited(_refreshSilently());
+    });
+  }
+
+  bool get _isAuthenticated => ref.read(authSessionProvider).isAuthenticated;
+
+  Future<void> _refreshSilently() async {
+    if (_disposed || !_isAuthenticated) return;
+    try {
+      final bundle = await _fetch();
+      if (!_disposed) state = AsyncData(bundle);
+    } catch (error, stackTrace) {
+      ref
+          .read(talkerProvider)
+          .warning('Suggestion data change refresh failed: $error', stackTrace);
+    }
+  }
+
+  Future<void> _refreshOnResume() async {
+    if (_disposed || !_isAuthenticated) return;
+    final previous = _lastBundle;
+    try {
+      final bundle = await _fetch();
+      if (_disposed) return;
+      if (previous?.sourceVersion != bundle?.sourceVersion ||
+          previous?.materializationStatus != bundle?.materializationStatus ||
+          previous?.computedAt != bundle?.computedAt) {
+        state = AsyncData(bundle);
+      }
+    } catch (error, stackTrace) {
+      ref
+          .read(talkerProvider)
+          .warning('Suggestion resume refresh failed: $error', stackTrace);
+    }
   }
 
   Future<TodaySuggestionBundle?> _fetch() async {
@@ -50,15 +138,19 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
                 .acceptLanguage,
         excludeIds: _dismissedIds.isEmpty ? null : _dismissedIds,
       );
+      final materialized = _preservePreviousContent(bundle);
       // Persist to cache
-      await dao.replace(TodaySuggestionJsonCodec.bundleToJson(bundle));
-      return bundle;
+      await dao.replace(TodaySuggestionJsonCodec.bundleToJson(materialized));
+      _lastBundle = materialized;
+      return materialized;
     } catch (e) {
       // Network failed — try cache as fallback (stale-while-error)
       final cached = await dao.fetch();
       if (cached != null) {
         try {
-          return TodaySuggestionJsonCodec.bundleFromJson(cached);
+          final bundle = TodaySuggestionJsonCodec.bundleFromJson(cached);
+          _lastBundle = bundle;
+          return bundle;
         } catch (e) {
           // Cache format is incompatible (likely after an app update).
           // Clear the stale cache so subsequent fetches don't hit the same
@@ -73,6 +165,21 @@ class TodaySuggestionNotifier extends AsyncNotifier<TodaySuggestionBundle?> {
       }
       rethrow;
     }
+  }
+
+  TodaySuggestionBundle _preservePreviousContent(TodaySuggestionBundle bundle) {
+    final previous = _lastBundle;
+    final status = bundle.materializationStatus;
+    if (previous == null ||
+        status == TodaySuggestionMaterializationStatus.ready ||
+        status == TodaySuggestionMaterializationStatus.empty) {
+      return bundle;
+    }
+    return bundle.copyWith(
+      primary: bundle.primary ?? previous.primary,
+      secondary: bundle.secondary ?? previous.secondary,
+      observations: bundle.observations ?? previous.observations,
+    );
   }
 
   /// Submit user feedback for a suggestion card, then refresh.

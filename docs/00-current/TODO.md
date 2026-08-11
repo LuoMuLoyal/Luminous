@@ -40,7 +40,6 @@ Last updated: 2026-08-07
 
 ### 当前已知但尚未实现/修复的运行时缺口
 
-- Today suggestion 目前主要在读取页面时生成；客户端需适配“服务端事件触发、GET 只读结果”的刷新、缓存、陈旧状态和失败展示语义
 - Today/Report 对饮水分别按记录条数与容量计算；客户端 domain mapper 和展示必须收敛到后端标准 ml + coverage 合同
 - 服药分析仍可能按 medicine/day 合并；客户端必须按 reminder slot 展示并保持 taken、skipped、unconfirmed 可区分
 - Report 当前 readiness 会因任一指标不足锁住完整内容；Review 必须允许单一维度成立，其他维度明确 unknown

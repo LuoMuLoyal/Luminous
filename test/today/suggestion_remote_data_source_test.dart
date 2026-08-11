@@ -101,6 +101,13 @@ void main() {
       final result = await ds.fetchSuggestions(language: 'zh-CN');
 
       expect(result.generatedAt, '2026-07-11T08:00:00.000Z');
+      expect(
+        result.materializationStatus,
+        TodaySuggestionMaterializationStatus.ready,
+      );
+      expect(result.sourceVersion, 3);
+      expect(result.computedAt, DateTime.utc(2026, 7, 11, 8));
+      expect(result.retryAfterSeconds, isNull);
       expect(result.primary, isNotNull);
       expect(result.primary!.id, 's1');
       expect(result.primary!.type, TodaySuggestionType.compliance);
