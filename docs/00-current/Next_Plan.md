@@ -7,23 +7,23 @@ updated: 2026-08-07
 
 # Luminous Next Plan
 
-Last updated: 2026-08-09
+Last updated: 2026-08-11
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 产品优先级以 [[02-reference/adr/0011-event-led-sparse-record-product-loop]] 和仓库根目录 `CONTEXT.md` 为准；历史 brainstorm 只用于追溯。
 
 ## 当前目标
 
-当前目标是执行 `Proactive Suggestion Runtime`。`Health Event Contract` 已完成跨前后端合同、Today 手机端确认入口、自动化检查、文档对齐和 PostgreSQL live acceptance；真实 E2E 已覆盖症状/当前用药关联、用户 A/B ownership、第二个 active 事件冲突以及 start → check-in → end → history 流程。
+当前目标是执行 `Sparse Record Semantics`。`Health Event Contract` 与 `Proactive Suggestion Runtime` 已完成跨前后端合同、主动重算、Today 只读物化、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history，以及记录写入 → worker 物化 → Today GET 的版本收敛。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **执行 Proactive Suggestion Runtime**
-   - 子计划：[`../../plans/2026-08-07-proactive-suggestion-runtime.md`](../../plans/2026-08-07-proactive-suggestion-runtime.md)
-   - 先冻结健康事件写入后的 domain-event payload、去重、冷却和失败降级边界
-   - 再让记录写入触发服务端有界重算，Today 只读取已有结果并呈现陈旧/失败状态
+1. **执行 Sparse Record Semantics**
+   - 子计划：[`../../plans/2026-08-07-sparse-record-semantics.md`](../../plans/2026-08-07-sparse-record-semantics.md)
+   - 先统一服药 reminder slot 的分母和状态，保持 `unconfirmed / skipped / missed` 可区分
+   - 再统一饮水 ml、coverage、unknown 与睡眠片段语义，让 Today、建议和回顾消费同一事实口径
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化

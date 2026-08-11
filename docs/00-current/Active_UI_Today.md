@@ -97,6 +97,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - Today suggestion provider 监听相关 `DataChangeBus` 事件并以 300ms 去抖重新 GET，不调用生成接口；应用 resume 时重新读取并比较 `sourceVersion`。
 - 应用重启后的首次 GET 也会先恢复本地 suggestion cache，再将 `pending / stale / failed` 状态与旧卡合并，避免服务端尚未完成物化时覆盖可用内容。
 - DataChangeBus、resume 和手动操作触发的建议 GET 按 FIFO 串行执行，旧请求完成后不会覆盖较新的刷新结果。
+- Proactive Suggestion Runtime Task 9 已完成：服务端写入 → worker 物化 → Today 只读 GET 的 PostgreSQL + Redis live acceptance 已通过；连续 10 次相关写入最终收敛到同一 `sourceVersion / computedVersion`，客户端继续保留 `pending / stale / failed` 的旧卡回退语义。
 
 ## 助手入口
 
