@@ -7,7 +7,7 @@ updated: 2026-08-07
 
 # Luminous TODO
 
-Last updated: 2026-08-07
+Last updated: 2026-08-11
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -36,10 +36,6 @@ Last updated: 2026-08-07
 - 桌面端和完整认证 Web 应用冻结：保留代码，不继续功能对等、发行或产品化；手机端是唯一核心产品，`Luminous-website` 继续承担官网和竞赛展示
 - 增加最小、隐私克制的闭环测量：记录成功、建议卡曝光与处理、事件开始/结束、结果确认、回顾打开，以及“更多”中导出/分享动作；快捷入口点击不能代替保存成功
 
-### 当前已知但尚未实现/修复的运行时缺口
-
-- Today/Report 对饮水分别按记录条数与容量计算；客户端 domain mapper 和展示必须收敛到后端标准 ml + coverage 合同
-- 服药分析仍可能按 medicine/day 合并；客户端必须按 reminder slot 展示并保持 taken、skipped、unconfirmed 可区分
 - Report 当前 readiness 会因任一指标不足锁住完整内容；Review 必须允许单一维度成立，其他维度明确 unknown
 - Report 当前仍保留 score summary、通用 7/30 天切换、默认导出区和 AI 泛化摘要；迁移时分别删除、降级或移入“更多”
 - Clinic Summary 当前没有字段级隐藏 UI，医生分享分支的安全提升边界与普通 PDF 不一致；迁移“更多”时统一预览、隐私选择和安全确认

@@ -7,7 +7,7 @@ updated: 2026-08-11
 
 # Flutter Localization
 
-Last updated: 2026-08-11 (Sparse Record Semantics quick-entry strings)
+Last updated: 2026-08-11 (Sparse Record Semantics contract closure)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -64,6 +64,10 @@ Persisted preference keys:
   `healthSyncAutoSyncNotConfigured`, `healthSyncAutoSyncUnsupported`) is owned by the Health Sync
   ARB fragments; the import page and Settings use these keys to distinguish unsupported platforms
   from the unconfigured background executor.
+- Sparse Record Semantics Task 9 does not add or rename user-visible strings. The existing Record
+  keys cover quick-entry water, medication, and sleep flows; the existing Health Sync keys cover
+  platform import and auto-sync boundaries. Canonical ml, observed/unknown, coverage, source, dose
+  slot, and sleep episode values are data-contract semantics, not new localization copy.
 - Report preview empty-state copy (`reportPreviewBannerMessage`, `reportTrendPreviewTitle`,
   `reportFindingsPreviewTitle`, `reportSuggestionHistoryPreviewTitle`, `reportExportPreviewTitle`
   and their `*Body` counterparts) is owned by the Report ARB entries.

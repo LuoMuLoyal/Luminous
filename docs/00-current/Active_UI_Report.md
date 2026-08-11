@@ -7,9 +7,16 @@ updated: 2026-08-11
 
 # Active UI — Report
 
-Last updated: 2026-08-11 (产品方向迁移说明；运行时 UI 未变)
+Last updated: 2026-08-11 (Sparse Record Semantics contract；运行时 UI 未变)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。OpenAPI、generated client 与 Report domain mapper 现在已暴露并保留 `ReportMetricDto.observedMetric`；Flutter UI 仍可读取 legacy scalar 展示，后续回顾页迁移再替换首屏呈现。
+
+## Sparse Record Semantics 合同
+
+- `ReportMetricDto.observedMetric` 统一承载 `value`、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`、`windowStart` 和 `windowEnd`；`unknown` 不投影为 `0`。
+- Report domain mapper 优先读取 `observedMetric`，并保留旧 scalar 作为兼容 fallback。当前 Report UI 的趋势和指标卡仍可能展示 legacy scalar，这是兼容期事实，不代表覆盖不足已完成。
+- 水量使用 canonical ml，服药 observed metric 以 reminder slot 为计划单位；这两类客户端合同已经同步。睡眠 episode 是 Lucent 后端和 Today collector 的语义，当前 Report 仍消费 legacy sleep scalar，Report 尚未提供 episode 级别的同日记录保留或“不按日期合并”保证。来源枚举保留 `manual`、`health_platform`、`reminder_plan`、`derived`，供后续回顾页解释数据边界。
+- 本次客户端合同同步没有改变 Report 页面可见结构、评分/导出/AI 摘要的既有行为；这些仍按本文件顶部的迁移说明和 TODO 管理。
 
 > 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；这些变化尚未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
 

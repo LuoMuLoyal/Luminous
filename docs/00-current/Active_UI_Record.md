@@ -7,7 +7,15 @@ updated: 2026-08-11
 
 # Active UI — Record
 
-Last updated: 2026-08-11 (Sparse Record Semantics quick-entry boundaries)
+Last updated: 2026-08-11 (Sparse Record Semantics client contract)
+
+## Sparse Record Semantics 客户端边界
+
+- 饮水的健康指标只把可解析且 `unit == ml` 的记录汇总为 canonical ml；明确的 `0 ml` 仍是 observed zero，无有效记录或只有不可换算单位时保持 `unknown/none`，分页或混合结果不完整时标记 `partial`。记录数量只保留为旧版快捷角标/兼容字段，不能冒充容量。
+- 用药按 reminder slot 保持身份：同一药品的不同提醒不合并；`planned` 在客户端语义中是 `unconfirmed`，`taken`、`skipped` 和超时未确认分别保留。没有 reminder 的临时 dose log 独立处理，不猜测 `scheduledTime`，也不进入计划槽位分母。
+- 睡眠标准记录使用 `sleepType`、`startedAt`、`endedAt`、`durationMinutes`（可选质量）；`nightSleep` 与 `nap` 同日均保留。快速录入产生的 start/wake facts 只是合并前的临时事实，取消合并时不删除它们。
+- 健康平台导入把饮水规范为 `ml`，保留来源、平台 external ID 和睡眠 episode 起止时间；external ID 优先去重，缺失时使用 kind/source/start/end/value/unit 稳定指纹，因此同日多条睡眠或饮水不会互相覆盖。
+- 自动同步能力明确区分 `unsupported`、`notConfigured` 和 `available`。当前没有后台 executor，前台导入仍可用，但自动同步开关保持关闭；平台不可用或未配置时不显示为通用可用能力。
 
 ## 支持的记录类型
 
