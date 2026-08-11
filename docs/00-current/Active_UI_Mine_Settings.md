@@ -47,6 +47,12 @@ Last updated: 2026-08-04（同步失败重试异常日志；同步失败详情�
 - 健康表单枚举使用 `health_enum_l10n.dart` 提供 l10n 映射。
 - 删除操作接入 `showDangerConfirmationDialog` 二次确认（allergy/condition/medicine 三处编辑页）。
 
+## 健康数据导入与自动同步
+
+- 健康数据页保留手动导入；不支持的平台显示具体原因，仅将 iOS HealthKit 和已安装且可用的 Android Health Connect 视为可用平台。
+- 自动同步状态由 `healthAutoSyncAvailabilityProvider` 区分 `unsupported`、`notConfigured` 和 `available`。当前应用尚未配置后台执行器，因此平台可用时仍显示“仅支持手动导入”，设置中的自动同步开关保持禁用。
+- 健康平台导入使用 external ID 优先、稳定字段指纹回退的去重策略；同日多条饮水与睡眠 episode 不再因日期合并而丢失。
+
 ## 设置页结构
 
 标准 app 模式，五个分组：Account & Security / Notifications / Privacy / General / About。

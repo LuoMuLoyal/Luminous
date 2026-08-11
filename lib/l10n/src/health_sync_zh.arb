@@ -1,7 +1,9 @@
 {
   "healthSyncTitle": "健康数据导入",
   "healthSyncDescription": "从 Apple 健康 / Health Connect 导入步数、心率、睡眠等数据到你的记录中。",
-  "healthSyncNotAvailable": "当前设备不支持健康数据同步。仅 iOS（HealthKit）和有 Google Play Services 的 Android 设备可用。",
+  "healthSyncNotAvailable": "此设备未提供可用的健康平台。iOS 需要 HealthKit；Android 需要已安装并可用的 Health Connect。",
+  "healthSyncAutoSyncNotConfigured": "当前仅支持手动导入；后台自动同步尚未配置。",
+  "healthSyncAutoSyncUnsupported": "此设备不支持健康平台自动同步。",
   "healthSyncMetricTypes": "选择数据类型",
   "healthSyncTimeRange": "时间范围",
   "healthSyncRangeToday": "今天",

@@ -68,6 +68,10 @@ void main() {
     expect(find.text(l10n(tester).healthSyncMetricHeartRate), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncMetricSteps), findsOneWidget);
     expect(find.text(l10n(tester).healthSyncMetricSleep), findsOneWidget);
+    expect(
+      find.text(l10n(tester).healthSyncAutoSyncNotConfigured),
+      findsOneWidget,
+    );
   });
 
   testWidgets('fetch flow: permission → fetch → import → result', (

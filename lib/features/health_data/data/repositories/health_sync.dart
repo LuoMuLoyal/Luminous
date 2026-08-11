@@ -8,6 +8,7 @@ import 'package:luminous/features/health_data/domain/entities/health_permission.
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
 import 'package:luminous/features/health_data/domain/repositories/health_sync.dart';
 import 'package:luminous/features/record/domain/entities/inputs.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 
 class HealthSyncRepositoryImpl implements HealthSyncRepository {
@@ -76,7 +77,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
 
     for (final metric in metrics) {
       final input = mapper.mapToCreateInput(metric, source: _sourceTag);
-      final fingerprint = _fingerprint(input);
+      final fingerprint = _fingerprintForMetric(metric, input, _sourceTag);
 
       if (fingerprints.contains(fingerprint)) {
         skipped++;
@@ -105,7 +106,7 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
   /// Build a set of existing record fingerprints for deduplication.
   ///
   /// Groups metrics by date, fetches existing records for each date (with
-  /// pagination), and creates (kind + occurredAt + source) fingerprints.
+  /// pagination), and creates identity- or interval-based fingerprints.
   Future<Set<String>> _buildDedupFingerprints(
     List<HealthMetric> metrics,
   ) async {
@@ -113,8 +114,13 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
     final dates = <String>{};
 
     for (final metric in metrics) {
-      final date = _formatDate(metric.recordedAt);
-      dates.add(date);
+      dates.add(_formatDate(metric.recordedAt));
+      if (metric.startAt != null) {
+        dates.add(_formatDate(metric.startAt!));
+      }
+      if (metric.endAt != null) {
+        dates.add(_formatDate(metric.endAt!));
+      }
     }
 
     for (final date in dates) {
@@ -128,9 +134,8 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
           );
           for (final record in result.items) {
             final source = record.source ?? 'manual';
-            fingerprints.add(
-              '${record.kind.name}|${record.occurredAt}|$source',
-            );
+            final fingerprint = _fingerprintForRecord(record, source);
+            if (fingerprint != null) fingerprints.add(fingerprint);
           }
           if (page * _dedupPageSize >= result.total) break;
           page++;
@@ -148,8 +153,108 @@ class HealthSyncRepositoryImpl implements HealthSyncRepository {
     return fingerprints;
   }
 
-  String _fingerprint(DailyRecordCreateInput input) {
-    return '${input.kind.name}|${input.occurredAt}|${input.source ?? 'manual'}';
+  String _fingerprintForMetric(
+    HealthMetric metric,
+    DailyRecordCreateInput input,
+    String source,
+  ) {
+    final externalId = metric.externalId;
+    if (externalId != null && externalId.isNotEmpty) {
+      return '${input.kind.name}|$source|external:$externalId';
+    }
+
+    final start = metric.startAt ?? metric.recordedAt;
+    final end = metric.endAt ?? metric.recordedAt;
+    return _intervalFingerprint(
+      kind: input.kind.name,
+      source: source,
+      start: start,
+      end: end,
+      value: metric.value,
+      unit: metric.unit,
+    );
+  }
+
+  String? _fingerprintForRecord(DailyRecordItem record, String source) {
+    final payload = record.payload;
+    final externalId = payload?['externalId'];
+    if (externalId is String && externalId.isNotEmpty) {
+      return '${record.kind.name}|$source|external:$externalId';
+    }
+
+    final start =
+        _parsePayloadTime(payload?['startedAt']) ??
+        _parsePayloadTime(payload?['startAt']) ??
+        _recordDateTime(record);
+    final end =
+        _parsePayloadTime(payload?['endedAt']) ??
+        _parsePayloadTime(payload?['endAt']) ??
+        _recordDateTime(record);
+    if (start == null || end == null) return null;
+
+    final Object? value;
+    if (record.kind == DailyRecordKind.sleep) {
+      value = payload == null
+          ? record.value
+          : (payload['durationMinutes'] ?? record.value);
+    } else {
+      value = record.value ?? (payload == null ? null : payload['value']);
+    }
+    final unit =
+        record.unit ??
+        (payload == null ? null : payload['unit']) ??
+        (record.kind == DailyRecordKind.sleep ? 'min' : null);
+    if (value == null || unit == null) return null;
+    return _intervalFingerprint(
+      kind: record.kind.name,
+      source: source,
+      start: start,
+      end: end,
+      value: value,
+      unit: unit,
+    );
+  }
+
+  String _intervalFingerprint({
+    required String kind,
+    required String source,
+    required DateTime start,
+    required DateTime end,
+    required Object value,
+    required String unit,
+  }) {
+    final normalizedValue = _normalizeFingerprintValue(value);
+    return '$kind|$source|${start.toUtc().toIso8601String()}|'
+        '${end.toUtc().toIso8601String()}|$normalizedValue|$unit';
+  }
+
+  String _normalizeFingerprintValue(Object value) {
+    final numeric = switch (value) {
+      num() => value.toDouble(),
+      String() => double.tryParse(value.trim()),
+      _ => null,
+    };
+    if (numeric == null || !numeric.isFinite) return value.toString();
+    return numeric == numeric.round()
+        ? numeric.round().toString()
+        : numeric.toString();
+  }
+
+  DateTime? _parsePayloadTime(Object? value) {
+    return value is String ? DateTime.tryParse(value) : null;
+  }
+
+  DateTime? _recordDateTime(DailyRecordItem record) {
+    final date = DateTime.tryParse(record.occurredAt);
+    if (date == null) return null;
+    final time = record.occurredTime;
+    if (time == null) return date;
+    final parts = time.split(':');
+    if (parts.length != 2) return date;
+    final hour = int.tryParse(parts[0]);
+    final minute = int.tryParse(parts[1]);
+    if (hour == null || minute == null) return date;
+    return DateTime(date.year, date.month, date.day, hour, minute);
   }
 
   String _formatDate(DateTime dt) {

@@ -4,23 +4,12 @@ import 'package:luminous/features/record/domain/entities/inputs.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 
 /// Maps between native health plugin data types and Luminous domain models.
-///
-/// Responsibilities:
-/// - `HealthDataPoint` → `HealthMetric` (with sleep merging + BP pairing)
-/// - `HealthMetric` → `DailyRecordCreateInput` (with payload + source)
 class HealthRecordMapper {
   const HealthRecordMapper();
 
-  /// Convert a list of [HealthDataPoint]s to [HealthMetric]s.
-  ///
-  /// Non-sleep, non-BP data points map 1:1. Sleep data points
-  /// (SLEEP_ASLEEP, SLEEP_DEEP, SLEEP_LIGHT, SLEEP_REM) from the same
-  /// date are merged into a single [HealthMetric] with per-stage minute
-  /// breakdowns. Blood pressure systolic/diastolic data points are
-  /// paired by time proximity using their original [HealthDataType].
   List<HealthMetric> mapToMetrics(List<HealthDataPoint> points) {
-    final nonSleep = <HealthMetric>[];
-    final sleepByDate = <String, _SleepAggregator>{};
+    final metrics = <HealthMetric>[];
+    final sleepEpisodes = <_SleepAggregator>[];
     final bpPoints = <_BloodPressureDataPoint>[];
 
     for (final point in points) {
@@ -28,53 +17,71 @@ class HealthRecordMapper {
       if (type == null) continue;
 
       if (type == HealthMetricType.sleep) {
-        final dateKey = _dateKey(point.dateTo);
-        sleepByDate.putIfAbsent(dateKey, _SleepAggregator.new);
-        sleepByDate[dateKey]!.add(point);
-      } else if (type == HealthMetricType.bloodPressure) {
-        final value = _extractNumeric(point);
-        if (value == null) continue;
+        final episode = sleepEpisodes.firstWhere(
+          (candidate) => candidate.overlaps(point.dateFrom, point.dateTo),
+          orElse: () {
+            final created = _SleepAggregator(point);
+            sleepEpisodes.add(created);
+            return created;
+          },
+        );
+        episode.add(point);
+        continue;
+      }
+
+      final value = _extractNumeric(point);
+      if (value == null) continue;
+
+      if (type == HealthMetricType.bloodPressure) {
         bpPoints.add(
           _BloodPressureDataPoint(
             value: value,
             recordedAt: point.dateTo,
             isSystolic: point.type == HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+            externalId: _externalId(point),
+            source: point.sourcePlatform.name,
+            sourceId: point.sourceId,
+            sourcePlatform: point.sourcePlatform.name,
+            startAt: point.dateFrom,
+            endAt: point.dateTo,
           ),
         );
-      } else {
-        final value = _extractNumeric(point);
-        if (value == null) continue;
-        nonSleep.add(
-          HealthMetric(
-            type: type,
-            value: value,
-            unit: _unitForType(type),
-            recordedAt: point.dateTo,
-            secondaryValue: _extractSecondaryValue(type, point),
-            secondaryUnit: _secondaryUnitForType(type),
-          ),
-        );
+        continue;
       }
+
+      final canonicalValue = type == HealthMetricType.water
+          ? _waterInMilliliters(value, point.unit)
+          : value;
+      if (canonicalValue == null) continue;
+      metrics.add(_metricFromPoint(point, type, canonicalValue));
     }
 
-    // Pair blood pressure systolic/diastolic using original type info
-    nonSleep.addAll(_pairBloodPressure(bpPoints));
-
-    // Merge sleep aggregators into metrics
-    for (final entry in sleepByDate.entries) {
-      final merged = entry.value.merge();
-      if (merged != null) nonSleep.add(merged);
-    }
-
-    return nonSleep;
+    metrics.addAll(_pairBloodPressure(bpPoints));
+    metrics.addAll(
+      sleepEpisodes.map((episode) => episode.merge()).whereType<HealthMetric>(),
+    );
+    return metrics;
   }
 
-  /// Pair blood pressure systolic/diastolic data points.
-  ///
-  /// Uses the original [HealthDataType] to distinguish systolic from
-  /// diastolic, preventing value swaps when both data points share the
-  /// same timestamp. Each systolic is matched with the nearest unused
-  /// diastolic within a 2-minute window.
+  HealthMetric _metricFromPoint(
+    HealthDataPoint point,
+    HealthMetricType type,
+    double value,
+  ) {
+    return HealthMetric(
+      type: type,
+      value: value,
+      unit: _unitForType(type),
+      recordedAt: point.dateTo,
+      externalId: _externalId(point),
+      source: point.sourcePlatform.name,
+      sourceId: point.sourceId,
+      sourcePlatform: point.sourcePlatform.name,
+      startAt: point.dateFrom,
+      endAt: point.dateTo,
+    );
+  }
+
   List<HealthMetric> _pairBloodPressure(List<_BloodPressureDataPoint> points) {
     if (points.isEmpty) return [];
 
@@ -86,7 +93,6 @@ class HealthRecordMapper {
     final result = <HealthMetric>[];
 
     for (final sys in systolics) {
-      // Find the nearest unused diastolic within 2 minutes
       int? bestIdx;
       int? bestDiff;
       for (var i = 0; i < diastolics.length; i++) {
@@ -99,52 +105,39 @@ class HealthRecordMapper {
         }
       }
 
-      if (bestIdx != null) {
-        usedDiastolic[bestIdx] = true;
-        result.add(
-          HealthMetric(
-            type: HealthMetricType.bloodPressure,
-            value: sys.value,
-            unit: 'mmHg',
-            recordedAt: sys.recordedAt,
-            secondaryValue: diastolics[bestIdx].value,
-            secondaryUnit: 'mmHg',
-          ),
-        );
-      } else {
-        // No pair found — keep as single reading
-        result.add(
-          HealthMetric(
-            type: HealthMetricType.bloodPressure,
-            value: sys.value,
-            unit: 'mmHg',
-            recordedAt: sys.recordedAt,
-          ),
-        );
-      }
+      final secondary = bestIdx == null ? null : diastolics[bestIdx];
+      if (bestIdx != null) usedDiastolic[bestIdx] = true;
+      result.add(_bloodPressureMetric(sys, secondary));
     }
 
-    // Add unpaired diastolics as single readings
     for (var i = 0; i < diastolics.length; i++) {
       if (!usedDiastolic[i]) {
-        result.add(
-          HealthMetric(
-            type: HealthMetricType.bloodPressure,
-            value: diastolics[i].value,
-            unit: 'mmHg',
-            recordedAt: diastolics[i].recordedAt,
-          ),
-        );
+        result.add(_bloodPressureMetric(diastolics[i], null));
       }
     }
-
     return result;
   }
 
-  /// Convert a [HealthMetric] to a [DailyRecordCreateInput].
-  ///
-  /// The [source] parameter sets the record source field
-  /// (e.g. "apple_health" or "health_connect").
+  HealthMetric _bloodPressureMetric(
+    _BloodPressureDataPoint primary,
+    _BloodPressureDataPoint? secondary,
+  ) {
+    return HealthMetric(
+      type: HealthMetricType.bloodPressure,
+      value: primary.value,
+      unit: 'mmHg',
+      recordedAt: primary.recordedAt,
+      externalId: primary.externalId,
+      source: primary.source,
+      sourceId: primary.sourceId,
+      sourcePlatform: primary.sourcePlatform,
+      startAt: primary.startAt,
+      endAt: primary.endAt,
+      secondaryValue: secondary?.value,
+      secondaryUnit: secondary == null ? null : 'mmHg',
+    );
+  }
+
   DailyRecordCreateInput mapToCreateInput(
     HealthMetric metric, {
     required String source,
@@ -152,7 +145,6 @@ class HealthRecordMapper {
     final kind = _kindForMetric(metric.type);
     final occurredAt = _formatDate(metric.recordedAt);
     final occurredTime = _formatTime(metric.recordedAt);
-
     final (title, value, unit, payload) = _fieldsForMetric(metric);
 
     return DailyRecordCreateInput(
@@ -166,8 +158,6 @@ class HealthRecordMapper {
       payload: payload,
     );
   }
-
-  // -- type mapping --
 
   HealthMetricType? _toMetricType(HealthDataType type) {
     return switch (type) {
@@ -197,24 +187,10 @@ class HealthRecordMapper {
     };
   }
 
-  // -- value extraction --
-
   double? _extractNumeric(HealthDataPoint point) {
     final value = point.value;
-    if (value is NumericHealthValue) {
-      return value.numericValue.toDouble();
-    }
-    return null;
+    return value is NumericHealthValue ? value.numericValue.toDouble() : null;
   }
-
-  double? _extractSecondaryValue(HealthMetricType type, HealthDataPoint point) {
-    // Blood pressure secondary value (diastolic) is handled at the
-    // repository level by pairing systolic/diastolic data points.
-    // For individual data points, the secondary value is not extracted here.
-    return null;
-  }
-
-  // -- unit mapping --
 
   String _unitForType(HealthMetricType type) {
     return switch (type) {
@@ -230,18 +206,23 @@ class HealthRecordMapper {
       HealthMetricType.exerciseTime => 'min',
       HealthMetricType.sleep => 'min',
       HealthMetricType.height => 'cm',
-      HealthMetricType.water => 'L',
+      HealthMetricType.water => 'ml',
     };
   }
 
-  String? _secondaryUnitForType(HealthMetricType type) {
-    return switch (type) {
-      HealthMetricType.bloodPressure => 'mmHg',
+  double? _waterInMilliliters(double value, HealthDataUnit unit) {
+    return switch (unit) {
+      HealthDataUnit.MILLILITER => value,
+      HealthDataUnit.LITER => value * 1000,
+      HealthDataUnit.FLUID_OUNCE_US => value * 29.5735295625,
+      HealthDataUnit.FLUID_OUNCE_IMPERIAL => value * 28.4130625,
+      HealthDataUnit.CUP_US => value * 236.5882365,
+      HealthDataUnit.CUP_IMPERIAL => value * 284.130625,
+      HealthDataUnit.PINT_US => value * 473.176473,
+      HealthDataUnit.PINT_IMPERIAL => value * 568.26125,
       _ => null,
     };
   }
-
-  // -- kind + payload mapping --
 
   DailyRecordKind _kindForMetric(HealthMetricType type) {
     return switch (type) {
@@ -251,30 +232,42 @@ class HealthRecordMapper {
       HealthMetricType.bloodGlucose ||
       HealthMetricType.bodyTemperature ||
       HealthMetricType.weight ||
-      HealthMetricType.respiratoryRate => DailyRecordKind.vital,
+      HealthMetricType.respiratoryRate ||
+      HealthMetricType.height => DailyRecordKind.vital,
       HealthMetricType.steps ||
       HealthMetricType.flightsClimbed ||
       HealthMetricType.exerciseTime => DailyRecordKind.activity,
       HealthMetricType.sleep => DailyRecordKind.sleep,
       HealthMetricType.water => DailyRecordKind.water,
-      HealthMetricType.height => DailyRecordKind.vital,
     };
   }
 
   (String? title, String? value, String? unit, Map<String, dynamic>? payload)
   _fieldsForMetric(HealthMetric metric) {
+    Map<String, dynamic> withExternalId(Map<String, dynamic> payload) {
+      final externalId = metric.externalId;
+      if (externalId != null && externalId.isNotEmpty) {
+        payload['externalId'] = externalId;
+      }
+      return payload;
+    }
+
     return switch (metric.type) {
       HealthMetricType.heartRate => (
         '心率',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {'vitalType': 'heartRate', 'value': metric.value, 'unit': metric.unit},
+        withExternalId({
+          'vitalType': 'heartRate',
+          'value': metric.value,
+          'unit': metric.unit,
+        }),
       ),
       HealthMetricType.bloodPressure => (
         '血压',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {
+        withExternalId({
           'vitalType': 'bloodPressure',
           'value': metric.value,
           'unit': metric.unit,
@@ -282,157 +275,205 @@ class HealthRecordMapper {
             'secondaryValue': metric.secondaryValue,
           if (metric.secondaryUnit != null)
             'secondaryUnit': metric.secondaryUnit,
-        },
+        }),
       ),
       HealthMetricType.bloodOxygen => (
         '血氧',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {
+        withExternalId({
           'vitalType': 'bloodOxygen',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.bloodGlucose => (
         '血糖',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {
+        withExternalId({
           'vitalType': 'bloodGlucose',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.bodyTemperature => (
         '体温',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {
+        withExternalId({
           'vitalType': 'bodyTemperature',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.weight => (
         '体重',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {'vitalType': 'weight', 'value': metric.value, 'unit': metric.unit},
+        withExternalId({
+          'vitalType': 'weight',
+          'value': metric.value,
+          'unit': metric.unit,
+        }),
       ),
       HealthMetricType.respiratoryRate => (
         '呼吸频率',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {
+        withExternalId({
           'vitalType': 'respiratoryRate',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.steps => (
         '步数',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {'activityType': 'steps', 'value': metric.value, 'unit': metric.unit},
+        withExternalId({
+          'activityType': 'steps',
+          'value': metric.value,
+          'unit': metric.unit,
+        }),
       ),
       HealthMetricType.flightsClimbed => (
         '爬楼',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {
+        withExternalId({
           'activityType': 'flightsClimbed',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.exerciseTime => (
         '运动时间',
         metric.value.toStringAsFixed(0),
         metric.unit,
-        {
+        withExternalId({
           'activityType': 'exerciseTime',
           'value': metric.value,
           'unit': metric.unit,
-        },
+        }),
       ),
       HealthMetricType.sleep => (
         null,
         null,
         null,
-        {
-          'durationMinutes': metric.sleepDuration?.inMinutes ?? 0,
+        withExternalId({
+          if (metric.sleepType != null) 'sleepType': metric.sleepType,
+          if (metric.startAt != null)
+            'startedAt': metric.startAt!.toUtc().toIso8601String(),
+          if (metric.endAt != null)
+            'endedAt': metric.endAt!.toUtc().toIso8601String(),
+          'durationMinutes':
+              metric.sleepDuration?.inMinutes ?? metric.value.round(),
           if (metric.deepMinutes != null) 'deepMinutes': metric.deepMinutes,
           if (metric.lightMinutes != null) 'lightMinutes': metric.lightMinutes,
           if (metric.remMinutes != null) 'remMinutes': metric.remMinutes,
           if (metric.sleepQuality != null) 'quality': metric.sleepQuality,
-        },
+        }),
       ),
       HealthMetricType.height => (
         '身高',
         metric.value.toStringAsFixed(1),
         metric.unit,
-        {'vitalType': 'height', 'value': metric.value, 'unit': metric.unit},
+        withExternalId({
+          'vitalType': 'height',
+          'value': metric.value,
+          'unit': metric.unit,
+        }),
       ),
       HealthMetricType.water => (
         '饮水量',
-        metric.value.toStringAsFixed(2),
+        metric.value.toStringAsFixed(
+          metric.value == metric.value.round() ? 0 : 2,
+        ),
         metric.unit,
-        null,
+        metric.externalId == null ? null : {'externalId': metric.externalId},
       ),
     };
   }
 
-  // -- date/time formatting --
+  String _formatDate(DateTime dt) =>
+      '${dt.year.toString().padLeft(4, '0')}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
-  String _formatDate(DateTime dt) {
-    return '${dt.year.toString().padLeft(4, '0')}'
-        '-${dt.month.toString().padLeft(2, '0')}'
-        '-${dt.day.toString().padLeft(2, '0')}';
+  String _formatTime(DateTime dt) =>
+      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+
+  String? _externalId(HealthDataPoint point) {
+    return _pointExternalId(point);
   }
-
-  String _formatTime(DateTime dt) {
-    return '${dt.hour.toString().padLeft(2, '0')}'
-        ':${dt.minute.toString().padLeft(2, '0')}';
-  }
-
-  String _dateKey(DateTime dt) => _formatDate(dt);
 }
 
-/// Temporary holder for blood pressure data points during pairing.
-///
-/// Preserves the original [HealthDataType] distinction (systolic vs
-/// diastolic) so the mapper can pair correctly even when both data
-/// points share the same timestamp.
+String? _pointExternalId(HealthDataPoint point) {
+  final uuid = point.uuid.trim();
+  if (uuid.isNotEmpty) return uuid;
+  final sourceId = point.sourceId.trim();
+  return sourceId.isEmpty ? null : sourceId;
+}
+
 class _BloodPressureDataPoint {
   _BloodPressureDataPoint({
     required this.value,
     required this.recordedAt,
     required this.isSystolic,
+    required this.externalId,
+    required this.source,
+    required this.sourceId,
+    required this.sourcePlatform,
+    required this.startAt,
+    required this.endAt,
   });
 
   final double value;
   final DateTime recordedAt;
   final bool isSystolic;
+  final String? externalId;
+  final String? source;
+  final String? sourceId;
+  final String? sourcePlatform;
+  final DateTime? startAt;
+  final DateTime? endAt;
 }
 
-/// Aggregates sleep data points from the same date into a single [HealthMetric].
 class _SleepAggregator {
-  DateTime? _end;
-  int? _totalMinutes;
-  int? _deepMinutes;
-  int? _lightMinutes;
-  int? _remMinutes;
+  _SleepAggregator(HealthDataPoint first)
+    : _start = first.dateFrom,
+      _end = first.dateTo,
+      _externalId = _pointExternalId(first),
+      _source = first.sourcePlatform.name,
+      _sourceId = first.sourceId,
+      _sourcePlatform = first.sourcePlatform.name;
+
   DateTime? _start;
+  DateTime? _end;
+  int _totalMinutes = 0;
+  int _deepMinutes = 0;
+  int _lightMinutes = 0;
+  int _remMinutes = 0;
+  final String? _externalId;
+  final String? _source;
+  final String? _sourceId;
+  final String? _sourcePlatform;
+
+  bool overlaps(DateTime start, DateTime end) {
+    final currentStart = _start;
+    final currentEnd = _end;
+    return currentStart != null &&
+        currentEnd != null &&
+        !start.isAfter(currentEnd) &&
+        !end.isBefore(currentStart);
+  }
 
   void add(HealthDataPoint point) {
-    final minutes = _extractMinutes(point);
-    if (minutes == null) return;
-
-    _end ??= point.dateTo;
-    if (point.dateFrom.isBefore(_start ?? point.dateFrom)) {
+    final minutes = point.dateTo.difference(point.dateFrom).inMinutes;
+    if (minutes <= 0) return;
+    if (_start == null || point.dateFrom.isBefore(_start!)) {
       _start = point.dateFrom;
     }
+    if (_end == null || point.dateTo.isAfter(_end!)) _end = point.dateTo;
 
     switch (point.type) {
       case HealthDataType.SLEEP_ASLEEP:
@@ -440,19 +481,18 @@ class _SleepAggregator {
       case HealthDataType.SLEEP_SESSION:
       case HealthDataType.SLEEP_UNKNOWN:
       case HealthDataType.SLEEP_OUT_OF_BED:
-        _totalMinutes = (_totalMinutes ?? 0) + minutes;
+        _totalMinutes += minutes;
       case HealthDataType.SLEEP_DEEP:
-        _deepMinutes = (_deepMinutes ?? 0) + minutes;
-        _totalMinutes = (_totalMinutes ?? 0) + minutes;
+        _deepMinutes += minutes;
+        _totalMinutes += minutes;
       case HealthDataType.SLEEP_LIGHT:
-        _lightMinutes = (_lightMinutes ?? 0) + minutes;
-        _totalMinutes = (_totalMinutes ?? 0) + minutes;
+        _lightMinutes += minutes;
+        _totalMinutes += minutes;
       case HealthDataType.SLEEP_REM:
-        _remMinutes = (_remMinutes ?? 0) + minutes;
-        _totalMinutes = (_totalMinutes ?? 0) + minutes;
+        _remMinutes += minutes;
+        _totalMinutes += minutes;
       case HealthDataType.SLEEP_AWAKE:
       case HealthDataType.SLEEP_AWAKE_IN_BED:
-        // awake time is not counted in total sleep
         break;
       default:
         break;
@@ -460,26 +500,25 @@ class _SleepAggregator {
   }
 
   HealthMetric? merge() {
-    final total = _totalMinutes;
-    if (total == null || total <= 0) return null;
-
+    if (_totalMinutes <= 0 || _start == null || _end == null) return null;
     return HealthMetric(
       type: HealthMetricType.sleep,
-      value: total.toDouble(),
+      value: _totalMinutes.toDouble(),
       unit: 'min',
-      recordedAt: _end ?? DateTime.now(),
-      sleepDuration: Duration(minutes: total),
-      deepMinutes: _deepMinutes,
-      lightMinutes: _lightMinutes,
-      remMinutes: _remMinutes,
+      recordedAt: _end!,
+      externalId: _externalId,
+      source: _source,
+      sourceId: _sourceId,
+      sourcePlatform: _sourcePlatform,
+      startAt: _start,
+      endAt: _end,
+      sleepType: _end!.difference(_start!).inMinutes <= 180
+          ? 'nap'
+          : 'nightSleep',
+      sleepDuration: Duration(minutes: _totalMinutes),
+      deepMinutes: _deepMinutes == 0 ? null : _deepMinutes,
+      lightMinutes: _lightMinutes == 0 ? null : _lightMinutes,
+      remMinutes: _remMinutes == 0 ? null : _remMinutes,
     );
-  }
-
-  int? _extractMinutes(HealthDataPoint point) {
-    final value = point.value;
-    if (value is NumericHealthValue) {
-      return value.numericValue.toInt();
-    }
-    return null;
   }
 }

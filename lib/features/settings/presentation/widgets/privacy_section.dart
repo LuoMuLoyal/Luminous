@@ -27,6 +27,20 @@ class PrivacySection extends ConsumerWidget {
         ? ref.watch(userSettingsControllerProvider)
         : null;
     final settings = settingsAsync?.asData?.value;
+    final healthAutoSyncAvailability = ref.watch(
+      healthAutoSyncAvailabilityProvider,
+    );
+    final healthAutoSyncEnabled = ref.watch(healthAutoSyncPreferenceProvider);
+    final healthAutoSyncCanToggle =
+        healthAutoSyncAvailability == HealthAutoSyncAvailability.available;
+    final healthAutoSyncSubtitle = switch (healthAutoSyncAvailability) {
+      HealthAutoSyncAvailability.unsupported =>
+        l10n.healthSyncAutoSyncUnsupported,
+      HealthAutoSyncAvailability.notConfigured =>
+        l10n.healthSyncAutoSyncNotConfigured,
+      HealthAutoSyncAvailability.available =>
+        l10n.settingsHealthAutoSyncSubtitle,
+    };
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,19 +116,25 @@ class PrivacySection extends ConsumerWidget {
             FTile(
               key: const Key('settings-row-health-auto-sync'),
               title: Text(l10n.settingsHealthAutoSyncTitle),
-              subtitle: Text(l10n.settingsHealthAutoSyncSubtitle),
+              subtitle: Text(healthAutoSyncSubtitle),
               prefix: const Icon(
                 SemanticIcons.recordActivity,
                 size: IconSizeTokens.level3,
               ),
               suffix: FSwitch(
-                value: ref.watch(healthAutoSyncPreferenceProvider),
-                onChange: (value) => ref
-                    .read(healthAutoSyncPreferenceProvider.notifier)
-                    .toggle(),
+                value: healthAutoSyncEnabled,
+                enabled: healthAutoSyncCanToggle,
+                onChange: healthAutoSyncCanToggle
+                    ? (value) => ref
+                          .read(healthAutoSyncPreferenceProvider.notifier)
+                          .toggle()
+                    : null,
               ),
-              onPress: () =>
-                  ref.read(healthAutoSyncPreferenceProvider.notifier).toggle(),
+              onPress: healthAutoSyncCanToggle
+                  ? () => ref
+                        .read(healthAutoSyncPreferenceProvider.notifier)
+                        .toggle()
+                  : null,
             ),
             SettingsNavigationTile(
               tileKey: const Key('settings-row-export'),

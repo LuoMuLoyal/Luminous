@@ -27,6 +27,13 @@ abstract class HealthMetric with _$HealthMetric {
     required double value,
     required String unit,
     required DateTime recordedAt,
+    String? externalId,
+    String? source,
+    String? sourceId,
+    String? sourcePlatform,
+    DateTime? startAt,
+    DateTime? endAt,
+    String? sleepType,
     double? secondaryValue,
     String? secondaryUnit,
     // sleep-specific

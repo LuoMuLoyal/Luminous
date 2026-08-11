@@ -19,12 +19,41 @@ DailyRecordItem _record({
   DailyRecordKind kind = DailyRecordKind.vital,
   String occurredAt = '2026-07-12',
   String? source = 'manual',
+  String occurredTime = '08:30',
+  String value = '72',
+  String unit = 'bpm',
 }) {
   return DailyRecordItem(
     id: id,
     kind: kind,
     occurredAt: occurredAt,
+    occurredTime: occurredTime,
     source: source,
+    value: value,
+    unit: unit,
+    createdAt: '2026-07-12T00:00:00',
+    updatedAt: '2026-07-12T00:00:00',
+  );
+}
+
+DailyRecordItem _recordWithPayload({
+  required String id,
+  required DailyRecordKind kind,
+  required String source,
+  required String value,
+  required String unit,
+  required Map<String, dynamic> payload,
+  String occurredAt = '2026-07-12',
+}) {
+  return DailyRecordItem(
+    id: id,
+    kind: kind,
+    occurredAt: occurredAt,
+    occurredTime: '08:30',
+    source: source,
+    value: value,
+    unit: unit,
+    payload: payload,
     createdAt: '2026-07-12T00:00:00',
     updatedAt: '2026-07-12T00:00:00',
   );
@@ -34,12 +63,19 @@ HealthMetric _metric({
   HealthMetricType type = HealthMetricType.heartRate,
   double value = 72,
   DateTime? recordedAt,
+  String? externalId,
+  String unit = 'bpm',
+  DateTime? startAt,
+  DateTime? endAt,
 }) {
   return HealthMetric(
     type: type,
     value: value,
-    unit: 'bpm',
+    unit: unit,
     recordedAt: recordedAt ?? DateTime(2026, 7, 12, 8, 30),
+    externalId: externalId,
+    startAt: startAt,
+    endAt: endAt,
   );
 }
 
@@ -195,6 +231,33 @@ void main() {
       verifyNever(() => dailyRecordRepo.create(any()));
     });
 
+    test('normalizes integer-valued string fingerprints', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer(
+        (_) async => DailyRecordListData(
+          items: [
+            _record(
+              id: 'existing-decimal',
+              kind: DailyRecordKind.vital,
+              source: 'health_connect',
+              value: '72.0',
+            ),
+          ],
+          total: 1,
+        ),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(recordedAt: DateTime(2026, 7, 12, 8, 30)),
+      ]);
+
+      expect(result.successCount, 0);
+      expect(result.skippedCount, 1);
+      verifyNever(() => dailyRecordRepo.create(any()));
+    });
+
     test('continues after a failed create and collects errors', () async {
       when(
         () =>
@@ -225,8 +288,183 @@ void main() {
         _metric(value: 90, recordedAt: DateTime(2026, 7, 12, 8, 30)),
       ]);
 
-      expect(result.successCount, 1);
-      expect(result.skippedCount, 2);
+      expect(result.successCount, 2);
+      expect(result.skippedCount, 1);
+    });
+
+    test('keeps same-day water records with different values', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      when(() => dailyRecordRepo.create(any())).thenAnswer(
+        (_) async => _record(id: 'water-created', kind: DailyRecordKind.water),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(
+          type: HealthMetricType.water,
+          value: 250,
+          unit: 'ml',
+          recordedAt: DateTime(2026, 7, 12, 8),
+        ),
+        _metric(
+          type: HealthMetricType.water,
+          value: 500,
+          unit: 'ml',
+          recordedAt: DateTime(2026, 7, 12, 9),
+        ),
+      ]);
+
+      expect(result.successCount, 2);
+      expect(result.skippedCount, 0);
+      verify(() => dailyRecordRepo.create(any())).called(2);
+    });
+
+    test('keeps two same-day sleep episodes', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-13', page: 1, pageSize: 500),
+      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      when(() => dailyRecordRepo.create(any())).thenAnswer(
+        (_) async => _record(id: 'sleep-created', kind: DailyRecordKind.sleep),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(
+          type: HealthMetricType.sleep,
+          value: 480,
+          unit: 'min',
+          startAt: DateTime(2026, 7, 12, 22),
+          endAt: DateTime(2026, 7, 13, 6),
+          recordedAt: DateTime(2026, 7, 13, 6),
+        ),
+        _metric(
+          type: HealthMetricType.sleep,
+          value: 60,
+          unit: 'min',
+          startAt: DateTime(2026, 7, 13, 13),
+          endAt: DateTime(2026, 7, 13, 14),
+          recordedAt: DateTime(2026, 7, 13, 14),
+        ),
+      ]);
+
+      expect(result.successCount, 2);
+      expect(result.skippedCount, 0);
+      verify(() => dailyRecordRepo.create(any())).called(2);
+    });
+
+    test('deduplicates a retry by external id', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer(
+        (_) async => DailyRecordListData(
+          items: [
+            _recordWithPayload(
+              id: 'existing-water',
+              kind: DailyRecordKind.water,
+              source: 'health_connect',
+              value: '250',
+              unit: 'ml',
+              payload: {'externalId': 'water-ext-1'},
+            ),
+          ],
+          total: 1,
+        ),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(
+          type: HealthMetricType.water,
+          value: 250,
+          unit: 'ml',
+          externalId: 'water-ext-1',
+        ),
+      ]);
+
+      expect(result.successCount, 0);
+      expect(result.skippedCount, 1);
+      verifyNever(() => dailyRecordRepo.create(any()));
+    });
+
+    test('deduplicates a cross-midnight sleep retry', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-13', page: 1, pageSize: 500),
+      ).thenAnswer(
+        (_) async => DailyRecordListData(
+          items: [
+            _recordWithPayload(
+              id: 'existing-sleep',
+              kind: DailyRecordKind.sleep,
+              source: 'health_connect',
+              value: '480',
+              unit: 'min',
+              occurredAt: '2026-07-13',
+              payload: {
+                'externalId': 'sleep-ext-1',
+                'startedAt': '2026-07-12T22:00:00.000Z',
+                'endedAt': '2026-07-13T06:00:00.000Z',
+                'durationMinutes': 480,
+              },
+            ),
+          ],
+          total: 1,
+        ),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(
+          type: HealthMetricType.sleep,
+          value: 480,
+          unit: 'min',
+          externalId: 'sleep-ext-1',
+          recordedAt: DateTime(2026, 7, 13, 6),
+          startAt: DateTime(2026, 7, 12, 22),
+          endAt: DateTime(2026, 7, 13, 6),
+        ),
+      ]);
+
+      expect(result.successCount, 0);
+      expect(result.skippedCount, 1);
+      verifyNever(() => dailyRecordRepo.create(any()));
+    });
+
+    test('uses value and unit for no-id fingerprints', () async {
+      when(
+        () =>
+            dailyRecordRepo.fetchRecords('2026-07-12', page: 1, pageSize: 500),
+      ).thenAnswer((_) async => const DailyRecordListData(items: [], total: 0));
+      when(() => dailyRecordRepo.create(any())).thenAnswer(
+        (_) async => _record(id: 'water-created', kind: DailyRecordKind.water),
+      );
+
+      final result = await repository.syncToRecords([
+        _metric(
+          type: HealthMetricType.water,
+          value: 250,
+          unit: 'ml',
+          recordedAt: DateTime(2026, 7, 12, 8),
+        ),
+        _metric(
+          type: HealthMetricType.water,
+          value: 500,
+          unit: 'ml',
+          recordedAt: DateTime(2026, 7, 12, 8),
+        ),
+      ]);
+
+      expect(result.successCount, 2);
+      expect(result.skippedCount, 0);
     });
 
     test('rethrows when fetching existing records fails', () async {

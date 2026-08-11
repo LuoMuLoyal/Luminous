@@ -1,7 +1,9 @@
 {
   "healthSyncTitle": "Health Data Import",
   "healthSyncDescription": "Import steps, heart rate, sleep and other data from Apple Health / Health Connect into your records.",
-  "healthSyncNotAvailable": "Health data sync is not available on this device. Only iOS (HealthKit) and Android devices with Google Play Services are supported.",
+  "healthSyncNotAvailable": "No supported health platform is available on this device. iOS requires HealthKit; Android requires an installed and available Health Connect.",
+  "healthSyncAutoSyncNotConfigured": "Only manual import is available; background health sync is not configured.",
+  "healthSyncAutoSyncUnsupported": "Background health sync is not supported on this device.",
   "healthSyncMetricTypes": "Select Data Types",
   "healthSyncTimeRange": "Time Range",
   "healthSyncRangeToday": "Today",

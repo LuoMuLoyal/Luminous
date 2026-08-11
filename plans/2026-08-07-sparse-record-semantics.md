@@ -88,23 +88,6 @@
 - [ ] overlap 只标记 data-quality warning，不静默删除任一 episode。
 - [ ] 运行 daily-record 和 collector specs，包含跨午夜夜睡与同日下午两段午睡。
 
-## Task 8 — Make Health Platform Import Honest and Lossless
-
-**Files:**
-
-- Modify: `Luminous/lib/features/health_data/data/repositories/health_sync.dart`
-- Modify: `Luminous/lib/features/health_data/data/mappers/health_record_mapper.dart`
-- Modify: `Luminous/lib/features/health_data/presentation/providers/health_auto_sync.dart`
-- Modify: `Luminous/lib/features/health_data/presentation/pages/health_sync.dart`
-- Modify: `Luminous/test/health_data/health_sync_repository_test.dart`
-- Modify: `Luminous/test/health_data/health_sync_providers_test.dart`
-
-- [ ] 先写去重回归测试：同日同 source 的两次饮水和两个 sleep episode 都保留；同一 external ID 重试只保存一次。
-- [ ] 指纹优先使用平台 external ID；没有时使用 kind/source/start/end/value/unit 的稳定 hash，不再使用 `kind|date|source`。
-- [ ] 若 app 没有后台 executor 或平台能力不可验证，auto-sync provider 返回 `unsupported/notConfigured` 并禁用开关；不得只存一个本地 true。
-- [ ] 页面显示具体可用性原因，不把 Apple Health/Health Connect 描述为所有手机可用。
-- [ ] 运行 health_data 目标 tests，并在一台实际具备权限的设备上验证导入；未验证厂商保持 unsupported。
-
 ## Task 9 — Localization, Documentation, and Verification
 
 **Files:**

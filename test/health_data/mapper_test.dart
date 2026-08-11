@@ -10,17 +10,19 @@ HealthDataPoint _point({
   DateTime? dateFrom,
   DateTime? dateTo,
   String? uuid,
+  HealthDataUnit unit = HealthDataUnit.COUNT,
+  String sourceId = 'src-1',
 }) {
   return HealthDataPoint(
     uuid: uuid ?? 'u-${type.name}-$value',
     value: NumericHealthValue(numericValue: value),
     type: type,
-    unit: HealthDataUnit.COUNT,
+    unit: unit,
     dateFrom: dateFrom ?? DateTime(2026, 7, 12, 8, 0),
     dateTo: dateTo ?? DateTime(2026, 7, 12, 8, 0),
     sourcePlatform: HealthPlatformType.appleHealth,
     sourceDeviceId: 'dev-1',
-    sourceId: 'src-1',
+    sourceId: sourceId,
     sourceName: 'source',
   );
 }
@@ -52,14 +54,51 @@ void main() {
       expect(metrics.single.unit, 'count');
     });
 
-    test('maps water with liter unit', () {
+    test('maps water to canonical milliliters', () {
       final metrics = mapper.mapToMetrics([
-        _point(type: HealthDataType.WATER, value: 0.5),
+        _point(
+          type: HealthDataType.WATER,
+          value: 500,
+          unit: HealthDataUnit.MILLILITER,
+        ),
       ]);
 
       expect(metrics.single.type, HealthMetricType.water);
-      expect(metrics.single.value, 0.5);
-      expect(metrics.single.unit, 'L');
+      expect(metrics.single.value, 500);
+      expect(metrics.single.unit, 'ml');
+    });
+
+    test('preserves external identity, source, and interval', () {
+      final from = DateTime(2026, 7, 12, 22);
+      final to = DateTime(2026, 7, 13, 6);
+      final metric = mapper.mapToMetrics([
+        _point(
+          type: HealthDataType.SLEEP_ASLEEP,
+          dateFrom: from,
+          dateTo: to,
+          uuid: 'external-1',
+        ),
+      ]).single;
+
+      expect(metric.externalId, 'external-1');
+      expect(metric.sourceId, 'src-1');
+      expect(metric.source, 'appleHealth');
+      expect(metric.startAt, from);
+      expect(metric.endAt, to);
+    });
+
+    test('uses sourceId as sleep external identity when uuid is absent', () {
+      final metric = mapper.mapToMetrics([
+        _point(
+          type: HealthDataType.SLEEP_ASLEEP,
+          uuid: '',
+          sourceId: 'platform-record-1',
+          dateFrom: DateTime(2026, 7, 12, 22),
+          dateTo: DateTime(2026, 7, 13, 6),
+        ),
+      ]).single;
+
+      expect(metric.externalId, 'platform-record-1');
     });
 
     test('skips unsupported data types', () {
@@ -165,8 +204,8 @@ void main() {
     });
   });
 
-  group('mapToMetrics — sleep merging', () {
-    test('merges sleep stages from the same date into one metric', () {
+  group('mapToMetrics — sleep episodes', () {
+    test('keeps same-day sleep episodes separate', () {
       final metrics = mapper.mapToMetrics([
         _point(
           type: HealthDataType.SLEEP_ASLEEP,
@@ -174,39 +213,50 @@ void main() {
           dateTo: DateTime(2026, 7, 13, 6, 0),
         ),
         _point(
-          type: HealthDataType.SLEEP_DEEP,
-          dateFrom: DateTime(2026, 7, 12, 23, 0),
-          dateTo: DateTime(2026, 7, 13, 0, 0),
-        ),
-        _point(
-          type: HealthDataType.SLEEP_LIGHT,
-          dateFrom: DateTime(2026, 7, 13, 0, 0),
-          dateTo: DateTime(2026, 7, 13, 3, 0),
-        ),
-        _point(
-          type: HealthDataType.SLEEP_REM,
-          dateFrom: DateTime(2026, 7, 13, 3, 0),
-          dateTo: DateTime(2026, 7, 13, 4, 0),
-        ),
-        _point(
-          type: HealthDataType.SLEEP_AWAKE,
-          dateFrom: DateTime(2026, 7, 13, 4, 0),
-          dateTo: DateTime(2026, 7, 13, 4, 10),
+          type: HealthDataType.SLEEP_ASLEEP,
+          dateFrom: DateTime(2026, 7, 13, 13, 0),
+          dateTo: DateTime(2026, 7, 13, 14, 0),
+          uuid: 'nap-1',
         ),
       ]);
 
-      expect(metrics, hasLength(1));
-      final sleep = metrics.single;
-      expect(sleep.type, HealthMetricType.sleep);
-      // 480 + 60 + 180 + 60 = 780; awake is not counted
-      expect(sleep.value, 780);
-      expect(sleep.unit, 'min');
-      expect(sleep.sleepDuration, const Duration(minutes: 780));
-      expect(sleep.deepMinutes, 60);
-      expect(sleep.lightMinutes, 180);
-      expect(sleep.remMinutes, 60);
-      // recordedAt is the end of the first merged point
-      expect(sleep.recordedAt, DateTime(2026, 7, 13, 6, 0));
+      expect(metrics, hasLength(2));
+      expect(
+        metrics.map((metric) => metric.startAt),
+        containsAll([DateTime(2026, 7, 12, 22), DateTime(2026, 7, 13, 13)]),
+      );
+      expect(
+        metrics.map((metric) => metric.endAt),
+        containsAll([DateTime(2026, 7, 13, 6), DateTime(2026, 7, 13, 14)]),
+      );
+    });
+
+    test('preserves sleep episode payload fields when creating records', () {
+      final input = mapper.mapToCreateInput(
+        HealthMetric(
+          type: HealthMetricType.sleep,
+          value: 60,
+          unit: 'min',
+          recordedAt: DateTime(2026, 7, 13, 14),
+          source: 'health_connect',
+          externalId: 'nap-1',
+          startAt: DateTime(2026, 7, 13, 13),
+          endAt: DateTime(2026, 7, 13, 14),
+          sleepDuration: const Duration(minutes: 60),
+          sleepType: 'nap',
+          sleepQuality: 'good',
+        ),
+        source: 'health_connect',
+      );
+
+      expect(input.payload, {
+        'sleepType': 'nap',
+        'startedAt': '2026-07-13T05:00:00.000Z',
+        'endedAt': '2026-07-13T06:00:00.000Z',
+        'durationMinutes': 60,
+        'quality': 'good',
+        'externalId': 'nap-1',
+      });
     });
 
     test('drops sleep group when no countable stages', () {
@@ -295,12 +345,12 @@ void main() {
       });
     });
 
-    test('maps water with null payload', () {
+    test('maps canonical water ml', () {
       final input = mapper.mapToCreateInput(
         HealthMetric(
           type: HealthMetricType.water,
-          value: 0.5,
-          unit: 'L',
+          value: 500,
+          unit: 'ml',
           recordedAt: DateTime(2026, 7, 12, 8, 30),
         ),
         source: 'apple_health',
@@ -308,7 +358,7 @@ void main() {
 
       expect(input.kind, DailyRecordKind.water);
       expect(input.title, '饮水量');
-      expect(input.value, '0.50');
+      expect(input.value, '500');
       expect(input.payload, isNull);
     });
 

@@ -7,6 +7,7 @@ import 'package:luminous/features/health_data/data/providers/health_sync.dart';
 import 'package:luminous/features/health_data/domain/entities/health_metric.dart';
 import 'package:luminous/features/health_data/domain/entities/health_permission.dart';
 import 'package:luminous/features/health_data/domain/entities/health_sync_result.dart';
+import 'package:luminous/features/health_data/presentation/providers/health_auto_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync.dart';
 import 'package:luminous/features/health_data/presentation/providers/health_sync_controller.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -20,6 +21,7 @@ class HealthSyncPage extends ConsumerWidget {
     final state = ref.watch(healthSyncControllerProvider);
     final controller = ref.read(healthSyncControllerProvider.notifier);
     final repo = ref.watch(healthSyncRepositoryProvider);
+    final autoSyncAvailability = ref.watch(healthAutoSyncAvailabilityProvider);
 
     if (!repo.isPlatformAvailable) {
       return PageScaffold(
@@ -50,6 +52,16 @@ class HealthSyncPage extends ConsumerWidget {
                   .body(context)
                   .copyWith(color: context.theme.colors.mutedForeground),
             ),
+            if (autoSyncAvailability ==
+                HealthAutoSyncAvailability.notConfigured) ...[
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.healthSyncAutoSyncNotConfigured,
+                style: TypographyToken.level5
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+              ),
+            ],
             const SizedBox(height: Spacing.level6),
             _MetricTypeSection(
               selectedTypes: state.selectedTypes,

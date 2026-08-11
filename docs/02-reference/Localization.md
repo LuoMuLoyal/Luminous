@@ -60,6 +60,10 @@ Persisted preference keys:
    ARB entries, not by repository/domain fallback strings.
 - Report readiness state copy such as status badges, updated-at wording, locked-feature hints,
   keep-recording CTA labels, and score summary is owned by the Report ARB entries.
+- Health data import and auto-sync availability copy (`healthSyncNotAvailable`,
+  `healthSyncAutoSyncNotConfigured`, `healthSyncAutoSyncUnsupported`) is owned by the Health Sync
+  ARB fragments; the import page and Settings use these keys to distinguish unsupported platforms
+  from the unconfigured background executor.
 - Report preview empty-state copy (`reportPreviewBannerMessage`, `reportTrendPreviewTitle`,
   `reportFindingsPreviewTitle`, `reportSuggestionHistoryPreviewTitle`, `reportExportPreviewTitle`
   and their `*Body` counterparts) is owned by the Report ARB entries.

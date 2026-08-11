@@ -283,35 +283,57 @@ void main() {
   });
 
   group('HealthAutoSyncPreference', () {
-    test('defaults to false and reads persisted value', () async {
+    test('reports unsupported when the platform is unavailable', () {
+      repo.available = false;
+      final c = ProviderContainer(
+        overrides: [healthSyncRepositoryProvider.overrideWithValue(repo)],
+      );
+      addTearDown(c.dispose);
+
+      expect(
+        c.read(healthAutoSyncAvailabilityProvider),
+        HealthAutoSyncAvailability.unsupported,
+      );
+      expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
+    });
+
+    test('reports notConfigured and ignores persisted enablement', () async {
       SharedPreferences.setMockInitialValues({
         PrefKeys.healthAutoSyncEnabled: true,
       });
-      final c = ProviderContainer();
+      repo.available = true;
+      final c = ProviderContainer(
+        overrides: [healthSyncRepositoryProvider.overrideWithValue(repo)],
+      );
       addTearDown(c.dispose);
 
-      // build() returns false synchronously; init completes on the next turn
+      expect(
+        c.read(healthAutoSyncAvailabilityProvider),
+        HealthAutoSyncAvailability.notConfigured,
+      );
       expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
       await Future<void>.delayed(Duration.zero);
-      expect(c.read(healthAutoSyncPreferenceProvider), isTrue);
-    });
-
-    test('toggle flips and persists', () async {
-      SharedPreferences.setMockInitialValues({});
-      final c = ProviderContainer();
-      addTearDown(c.dispose);
-
-      final notifier = c.read(healthAutoSyncPreferenceProvider.notifier);
-      await notifier.toggle();
-
-      expect(c.read(healthAutoSyncPreferenceProvider), isTrue);
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(PrefKeys.healthAutoSyncEnabled), isTrue);
-
-      await notifier.toggle();
       expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
-      expect(prefs.getBool(PrefKeys.healthAutoSyncEnabled), isFalse);
     });
+
+    test(
+      'toggle is a no-op until a background executor is configured',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        repo.available = true;
+        final c = ProviderContainer(
+          overrides: [healthSyncRepositoryProvider.overrideWithValue(repo)],
+        );
+        addTearDown(c.dispose);
+
+        final notifier = c.read(healthAutoSyncPreferenceProvider.notifier);
+        await notifier.toggle();
+
+        expect(c.read(healthAutoSyncPreferenceProvider), isFalse);
+        final prefs = await SharedPreferences.getInstance();
+        expect(prefs.getBool(PrefKeys.healthAutoSyncEnabled), isNull);
+      },
+    );
   });
 }
 
