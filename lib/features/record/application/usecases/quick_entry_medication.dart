@@ -96,6 +96,7 @@ Future<void> showMedicationSelectionDialog(
   required MedicationQuickEntryFlow flow,
   required MedicationQuickEntryContext contextData,
   required MedicationQuickSelection selection,
+  required Future<void> Function(QuickEntryUndoAction action) onUndo,
 }) async {
   final l10n = AppLocalizations.of(context)!;
   final selected = {...selection.defaultSelectedIds};
@@ -168,10 +169,30 @@ Future<void> showMedicationSelectionDialog(
                           );
                           if (!dialogContext.mounted) return;
                           if (result.failed.isEmpty) {
-                            unawaited(
-                              Toast.show(context, l10n.recordCreateSavedToast),
-                            );
+                            final batchUndo = result.undoActions.isEmpty
+                                ? null
+                                : QuickEntryUndoAction.batch(
+                                    actions: result.undoActions,
+                                  );
                             Navigator.of(dialogContext).pop();
+                            if (!context.mounted) return;
+                            if (batchUndo == null) {
+                              unawaited(
+                                Toast.show(
+                                  context,
+                                  l10n.recordCreateSavedToast,
+                                ),
+                              );
+                            } else {
+                              unawaited(
+                                Toast.showWithAction(
+                                  context,
+                                  l10n.recordQuickMedicationTemporaryToast,
+                                  l10n.recordQuickUndoAction,
+                                  () => unawaited(onUndo(batchUndo)),
+                                ),
+                              );
+                            }
                             return;
                           }
                           final failedIds = result.failed
@@ -291,6 +312,22 @@ Future<void> handleMedicationQuickAction(
           );
         },
       );
+    case MedicationQuickEntryOutcomeType.recordedTemporary:
+      final action = undoAction;
+      if (action == null) {
+        await Toast.show(context, l10n.recordQuickMedicationTemporaryToast);
+        return;
+      }
+      await Toast.showWithAction(
+        context,
+        l10n.recordQuickMedicationTemporaryToast,
+        l10n.recordQuickUndoAction,
+        () {
+          unawaited(
+            undoMedicationQuickAction(context, ref, action, occurredAt),
+          );
+        },
+      );
     case MedicationQuickEntryOutcomeType.needsSelection:
       final selection = outcome.selection;
       if (selection == null) return;
@@ -299,6 +336,8 @@ Future<void> handleMedicationQuickAction(
         flow: flow,
         contextData: MedicationQuickEntryContext(date: occurredAt, now: now),
         selection: selection,
+        onUndo: (action) =>
+            undoMedicationQuickAction(context, ref, action, occurredAt),
       );
   }
 }

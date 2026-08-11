@@ -160,10 +160,7 @@ List<TodayOverviewItem> buildOverviewItems(
     TodayOverviewItem(
       icon: SemanticIcons.recordWater,
       label: l10n.todayHydrationOverviewLabel,
-      value: l10n.todayWaterOverviewCount(
-        dashboard.water.completedCount,
-        dashboard.water.targetCount,
-      ),
+      value: _waterOverviewValue(l10n, dashboard.water),
       color: SemanticColor.primary,
     ),
     TodayOverviewItem(
@@ -174,6 +171,17 @@ List<TodayOverviewItem> buildOverviewItems(
       isFallback: sleepIsFallback,
     ),
   ];
+}
+
+String _waterOverviewValue(AppLocalizations l10n, TodayWaterSummary water) {
+  final observedMl = water.observedMl;
+  if (observedMl != null) {
+    return l10n.todayWaterOverviewMl(observedMl.round(), water.targetMl);
+  }
+  if (water.observedMetric != null) {
+    return l10n.todayWaterOverviewUnknown(water.targetMl);
+  }
+  return l10n.todayWaterOverviewCount(water.completedCount, water.targetCount);
 }
 
 List<TodayAiSummaryItem> buildAiSummaryBullets(

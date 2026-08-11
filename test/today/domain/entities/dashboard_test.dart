@@ -74,6 +74,25 @@ void main() {
       expect(summary.progress, 0.0);
     });
 
+    test('does not infer progress from counts when metric is unknown', () {
+      const summary = TodayWaterSummary(
+        completedCount: 3,
+        targetCount: 8,
+        observedMetric: TodayObservedMetric(
+          value: null,
+          state: TodayObservedMetricState.unknown,
+          coverage: TodayObservedMetricCoverage.none,
+          sources: [TodayObservedMetricSource.manual],
+          observedCount: 0,
+          expectedCount: null,
+          windowStart: '2026-08-11',
+          windowEnd: '2026-08-11',
+        ),
+      );
+
+      expect(summary.progress, 0.0);
+    });
+
     test('returns 0.0 when target is negative', () {
       const summary = TodayWaterSummary(completedCount: 3, targetCount: -1);
       expect(summary.progress, 0.0);
@@ -120,5 +139,25 @@ void main() {
     test('has empty environment signals', () {
       expect(TodayDashboard.signedOut().environment.signals, isEmpty);
     });
+  });
+
+  test('TodayObservedMetric preserves sparse observation semantics', () {
+    const metric = TodayObservedMetric(
+      value: null,
+      state: TodayObservedMetricState.unknown,
+      coverage: TodayObservedMetricCoverage.none,
+      sources: [TodayObservedMetricSource.manual],
+      observedCount: 0,
+      expectedCount: null,
+      windowStart: '2026-08-11',
+      windowEnd: '2026-08-11',
+    );
+
+    expect(metric.value, isNull);
+    expect(metric.state, TodayObservedMetricState.unknown);
+    expect(metric.coverage, TodayObservedMetricCoverage.none);
+    expect(metric.sources, [TodayObservedMetricSource.manual]);
+    expect(metric.observedCount, 0);
+    expect(metric.expectedCount, isNull);
   });
 }

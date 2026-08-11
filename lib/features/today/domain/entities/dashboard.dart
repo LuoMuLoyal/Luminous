@@ -25,6 +25,34 @@ enum TodayEnvironmentLevel { low, medium, high }
 
 enum TodayLumiSuggestionType { pollenProtection }
 
+enum TodayObservedMetricState { observed, unknown }
+
+enum TodayObservedMetricCoverage { sufficient, partial, none }
+
+enum TodayObservedMetricSource { manual, healthPlatform, reminderPlan, derived }
+
+class TodayObservedMetric {
+  const TodayObservedMetric({
+    required this.value,
+    required this.state,
+    required this.coverage,
+    required this.sources,
+    required this.observedCount,
+    required this.expectedCount,
+    required this.windowStart,
+    required this.windowEnd,
+  });
+
+  final double? value;
+  final TodayObservedMetricState state;
+  final TodayObservedMetricCoverage coverage;
+  final List<TodayObservedMetricSource> sources;
+  final int observedCount;
+  final int? expectedCount;
+  final String windowStart;
+  final String windowEnd;
+}
+
 @freezed
 abstract class TodayDashboard with _$TodayDashboard {
   const factory TodayDashboard({
@@ -95,7 +123,18 @@ abstract class TodayWaterSummary with _$TodayWaterSummary {
   const factory TodayWaterSummary({
     required int completedCount,
     required int targetCount,
+    TodayObservedMetric? observedMetric,
   }) = _TodayWaterSummary;
+
+  static const waterMlPerTargetCount = 250;
+
+  int get targetMl => targetCount * waterMlPerTargetCount;
+
+  double? get observedMl {
+    final metric = observedMetric;
+    if (metric?.state != TodayObservedMetricState.observed) return null;
+    return metric?.value;
+  }
 
   int get remainingCount {
     final remaining = targetCount - completedCount;
@@ -103,6 +142,12 @@ abstract class TodayWaterSummary with _$TodayWaterSummary {
   }
 
   double get progress {
+    if (observedMetric != null && observedMl == null) return 0.0;
+    final ml = observedMl;
+    if (ml != null) {
+      if (targetMl <= 0) return 0.0;
+      return (ml / targetMl).clamp(0, 1).toDouble();
+    }
     if (targetCount <= 0) return 0.0;
     final ratio = completedCount / targetCount;
     return ratio.clamp(0, 1).toDouble();
@@ -117,6 +162,7 @@ abstract class TodayMedicationSummary with _$TodayMedicationSummary {
     required String nextDoseTimeLabel,
     required TodayMedicationKind nextMedicine,
     String? nextMedicineName,
+    TodayObservedMetric? observedMetric,
   }) = _TodayMedicationSummary;
 }
 
@@ -125,6 +171,7 @@ abstract class TodayVitalSummary with _$TodayVitalSummary {
   const factory TodayVitalSummary({
     required TodayVitalType type,
     required String valueLabel,
+    TodayObservedMetric? observedMetric,
   }) = _TodayVitalSummary;
 }
 

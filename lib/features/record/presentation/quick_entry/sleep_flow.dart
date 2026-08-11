@@ -12,9 +12,27 @@ class SleepQuickEntryContext extends QuickEntryRecordContext {
     required super.occurredAt,
     required super.occurredTime,
     required this.now,
+    this.sleepType = 'nightSleep',
+    this.approximateDurationMinutes,
+    this.quality,
   });
 
   final DateTime now;
+  final String sleepType;
+  final int? approximateDurationMinutes;
+  final String? quality;
+}
+
+class SleepQuickEntryStartOptions {
+  const SleepQuickEntryStartOptions({
+    required this.sleepType,
+    this.approximateDurationMinutes,
+    this.quality,
+  });
+
+  final String sleepType;
+  final int? approximateDurationMinutes;
+  final String? quality;
 }
 
 enum SleepQuickEntryOutcomeType {
@@ -180,9 +198,14 @@ class SleepQuickEntryFlow {
         occurredAt: context.occurredAt,
         occurredTime: context.occurredTime,
         payload: {
+          'sleepType': startRecord.payload?['sleepType'] == 'nap'
+              ? 'nap'
+              : 'nightSleep',
+          'startedAt': startAt.toUtc().toIso8601String(),
+          'endedAt': endAt.toUtc().toIso8601String(),
           'durationMinutes': durationMinutes,
-          'startAt': startAt.toUtc().toIso8601String(),
-          'endAt': endAt.toUtc().toIso8601String(),
+          if (startRecord.payload?['quality'] is String)
+            'quality': startRecord.payload?['quality'],
         },
       ),
     );
@@ -202,15 +225,24 @@ class SleepQuickEntryFlow {
   }
 
   Future<DailyRecordItem> _recordStart(SleepQuickEntryContext context) async {
+    final payload = <String, dynamic>{
+      'sleepEvent': 'start',
+      'eventAt': context.now.toUtc().toIso8601String(),
+      'sleepType': context.sleepType == 'nap' ? 'nap' : 'nightSleep',
+    };
+    final approximateDurationMinutes = context.approximateDurationMinutes;
+    if (approximateDurationMinutes != null && approximateDurationMinutes > 0) {
+      payload['approximateDurationMinutes'] = approximateDurationMinutes;
+    }
+    final quality = context.quality;
+    if (quality != null && quality.isNotEmpty) payload['quality'] = quality;
+
     final record = await createRecord(
       DailyRecordCreateInput(
         kind: DailyRecordKind.sleep,
         occurredAt: context.occurredAt,
         occurredTime: context.occurredTime,
-        payload: {
-          'sleepEvent': 'start',
-          'eventAt': context.now.toUtc().toIso8601String(),
-        },
+        payload: payload,
       ),
     );
     emitDataChange(DataChangeTopic.dailyRecords);

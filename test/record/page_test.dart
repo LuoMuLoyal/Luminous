@@ -984,6 +984,7 @@ void main() {
     });
     final dailyRepo = _FakeDailyRecordRepository();
     final currentDateTime = DateTime(2026, 6, 6, 9, 45);
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
 
     await _pumpRecordRouter(
       tester,
@@ -994,6 +995,12 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('record-quick-sleep')));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.recordQuickSleepTypeTitle), findsOneWidget);
+    await tester.tap(find.text(l10n.recordQuickSleepNightAction));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.commonConfirm));
     await tester.pumpAndSettle();
 
     expect(find.byType(RecordCreatePage), findsNothing);
@@ -1009,6 +1016,7 @@ void main() {
     expect(input.payload, {
       'sleepEvent': 'start',
       'eventAt': currentDateTime.toUtc().toIso8601String(),
+      'sleepType': 'nightSleep',
     });
   });
 
@@ -1068,8 +1076,9 @@ void main() {
     expect(dailyRepo.createdInputs.last.occurredAt, '2026-06-06');
     expect(dailyRepo.createdInputs.last.payload, {
       'durationMinutes': 475,
-      'startAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
-      'endAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
+      'sleepType': 'nightSleep',
+      'startedAt': DateTime.utc(2026, 6, 5, 15, 15).toIso8601String(),
+      'endedAt': DateTime.utc(2026, 6, 5, 23, 10).toIso8601String(),
     });
     expect(dailyRepo.deletedIds, ['sleep-start-1', 'created-id-1']);
   });

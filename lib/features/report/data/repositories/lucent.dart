@@ -56,7 +56,42 @@ class LucentReportRepository implements ReportRepository {
       delta: dto.delta,
       direction: _mapDirection(dto.direction.value),
       sparkline: dto.sparkline.map((value) => value.toDouble()).toList(),
+      observedMetric: dto.observedMetric == null
+          ? null
+          : _mapObservedMetric(dto.observedMetric!),
     );
+  }
+
+  ReportObservedMetric _mapObservedMetric(lucent.ReportObservedMetricDto dto) {
+    return ReportObservedMetric(
+      value: dto.value?.toDouble(),
+      state: switch (dto.state.value) {
+        'observed' => ReportObservedMetricState.observed,
+        _ => ReportObservedMetricState.unknown,
+      },
+      coverage: switch (dto.coverage.value) {
+        'sufficient' => ReportObservedMetricCoverage.sufficient,
+        'partial' => ReportObservedMetricCoverage.partial,
+        _ => ReportObservedMetricCoverage.none,
+      },
+      sources: dto.sources.map(_mapObservedSource).toList(growable: false),
+      observedCount: dto.observedCount.toInt(),
+      expectedCount: dto.expectedCount?.toInt(),
+      windowStart: dto.windowStart,
+      windowEnd: dto.windowEnd,
+    );
+  }
+
+  ReportObservedMetricSource _mapObservedSource(
+    lucent.ReportObservedMetricDtoSourcesEnum source,
+  ) {
+    return switch (source.value) {
+      'manual' => ReportObservedMetricSource.manual,
+      'health_platform' => ReportObservedMetricSource.healthPlatform,
+      'reminder_plan' => ReportObservedMetricSource.reminderPlan,
+      'derived' => ReportObservedMetricSource.derived,
+      _ => ReportObservedMetricSource.derived,
+    };
   }
 
   ReportTrendSeries _mapTrend(lucent.ReportTrendDto dto) {

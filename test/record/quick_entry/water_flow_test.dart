@@ -63,6 +63,30 @@ void main() {
       expect(created?.unit, 'ml');
     });
 
+    test('does not emit or register undo when saving fails', () async {
+      final emitted = <String>[];
+      final undoActions = <QuickEntryUndoAction>[];
+      final flow = WaterQuickEntryFlow(
+        createRecord: (_) async => throw StateError('save failed'),
+        emitDataChange: emitted.add,
+        registerUndo: undoActions.add,
+      );
+
+      await expectLater(
+        flow.record(
+          const QuickEntryRecordContext(
+            occurredAt: '2026-07-28',
+            occurredTime: '08:30',
+          ),
+          const QuickEntryPreferences(),
+        ),
+        throwsStateError,
+      );
+
+      expect(emitted, isEmpty);
+      expect(undoActions, isEmpty);
+    });
+
     test('records a cup default with the cup unit', () async {
       DailyRecordCreateInput? created;
       final flow = WaterQuickEntryFlow(

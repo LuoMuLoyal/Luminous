@@ -14,6 +14,39 @@ enum ReportDashboardRange {
   final String apiValue;
 }
 
+enum ReportObservedMetricState { observed, unknown }
+
+enum ReportObservedMetricCoverage { sufficient, partial, none }
+
+enum ReportObservedMetricSource {
+  manual,
+  healthPlatform,
+  reminderPlan,
+  derived,
+}
+
+class ReportObservedMetric {
+  const ReportObservedMetric({
+    required this.value,
+    required this.state,
+    required this.coverage,
+    required this.sources,
+    required this.observedCount,
+    required this.expectedCount,
+    required this.windowStart,
+    required this.windowEnd,
+  });
+
+  final double? value;
+  final ReportObservedMetricState state;
+  final ReportObservedMetricCoverage coverage;
+  final List<ReportObservedMetricSource> sources;
+  final int observedCount;
+  final int? expectedCount;
+  final String windowStart;
+  final String windowEnd;
+}
+
 @freezed
 abstract class ReportDashboardQuery with _$ReportDashboardQuery {
   const factory ReportDashboardQuery({
@@ -86,6 +119,7 @@ abstract class ReportMetric with _$ReportMetric {
     required String delta,
     required ReportMetricDirection direction,
     required List<double> sparkline,
+    ReportObservedMetric? observedMetric,
   }) = _ReportMetric;
 }
 

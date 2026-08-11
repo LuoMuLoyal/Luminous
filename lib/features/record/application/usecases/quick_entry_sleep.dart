@@ -16,6 +16,7 @@ import 'package:luminous/features/record/presentation/quick_entry/sleep_flow.dar
 import 'package:luminous/features/record/presentation/services/quick_entry_undo.dart';
 import 'package:luminous/features/record/presentation/utils/date_time_formatters.dart';
 import 'package:luminous/features/record/presentation/widgets/dialogs/sleep_merge.dart';
+import 'package:luminous/features/record/presentation/widgets/forms/sleep_structured_fields.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 String sleepEventLabel(DailyRecordItem record) {
@@ -75,6 +76,120 @@ Future<void> undoDailyRecordQuickAction(
       context,
       AppLocalizations.of(context)!.recordQuickUndoFailedToast,
     );
+  }
+}
+
+Future<SleepQuickEntryStartOptions?> showSleepTypeSelectionDialog(
+  BuildContext context,
+) async {
+  final l10n = AppLocalizations.of(context)!;
+  final durationController = TextEditingController();
+  var sleepType = 'nightSleep';
+  String? quality;
+  try {
+    return await showAppDialog<SleepQuickEntryStartOptions>(
+      context: context,
+      maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+      scrollable: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.recordQuickSleepTypeTitle,
+              style: TypographyToken.level6.body(dialogContext),
+            ),
+            const SizedBox(height: Spacing.level4),
+            Row(
+              children: [
+                Expanded(
+                  child: FButton(
+                    key: const Key('record-quick-sleep-night-type'),
+                    variant: sleepType == 'nightSleep'
+                        ? FButtonVariant.primary
+                        : FButtonVariant.outline,
+                    onPress: () =>
+                        setDialogState(() => sleepType = 'nightSleep'),
+                    child: Text(l10n.recordQuickSleepNightAction),
+                  ),
+                ),
+                const SizedBox(width: Spacing.level3),
+                Expanded(
+                  child: FButton(
+                    key: const Key('record-quick-sleep-nap-type'),
+                    variant: sleepType == 'nap'
+                        ? FButtonVariant.primary
+                        : FButtonVariant.outline,
+                    onPress: () => setDialogState(() => sleepType = 'nap'),
+                    child: Text(l10n.recordQuickSleepNapAction),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.level3),
+            FTextField(
+              key: const Key('record-quick-sleep-approximate-duration'),
+              control: FTextFieldControl.managed(
+                controller: durationController,
+              ),
+              label: Text(l10n.recordQuickSleepApproximateDurationLabel),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: Spacing.level3),
+            FSelect<String>.rich(
+              key: const Key('record-quick-sleep-quality'),
+              label: Text(l10n.recordSleepQualityLabel),
+              hint: l10n.recordSleepQualityLabel,
+              format: (value) => sleepQualityOptions(
+                l10n,
+              ).firstWhere((option) => option.key == value).label,
+              control: FSelectControl.lifted(
+                value: quality,
+                onChange: (value) => setDialogState(() => quality = value),
+              ),
+              children: sleepQualityOptions(l10n)
+                  .map(
+                    (option) => FSelectItem.item(
+                      title: Text(option.label),
+                      value: option.key,
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: Spacing.level5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FButton(
+                  variant: FButtonVariant.ghost,
+                  onPress: () => Navigator.of(dialogContext).pop(),
+                  child: Text(l10n.commonCancel),
+                ),
+                const SizedBox(width: Spacing.level3),
+                FButton(
+                  onPress: () {
+                    final parsed = int.tryParse(durationController.text.trim());
+                    Navigator.of(dialogContext).pop(
+                      SleepQuickEntryStartOptions(
+                        sleepType: sleepType,
+                        approximateDurationMinutes: parsed != null && parsed > 0
+                            ? parsed
+                            : null,
+                        quality: quality,
+                      ),
+                    );
+                  },
+                  child: Text(l10n.commonConfirm),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  } finally {
+    durationController.dispose();
   }
 }
 
@@ -313,6 +428,18 @@ Future<void> handleSleepQuickAction(
     return;
   }
 
+  var sleepType = 'nightSleep';
+  int? approximateDurationMinutes;
+  String? quality;
+  if (SleepQuickEntryFlow.findOpenStarts(records).isEmpty) {
+    if (!context.mounted) return;
+    final selectedOptions = await showSleepTypeSelectionDialog(context);
+    if (!context.mounted || selectedOptions == null) return;
+    sleepType = selectedOptions.sleepType;
+    approximateDurationMinutes = selectedOptions.approximateDurationMinutes;
+    quality = selectedOptions.quality;
+  }
+
   late final SleepQuickEntryOutcome outcome;
   try {
     outcome = await flow.handleTap(
@@ -320,6 +447,9 @@ Future<void> handleSleepQuickAction(
         occurredAt: occurredAt,
         occurredTime: occurredTime,
         now: now,
+        sleepType: sleepType,
+        approximateDurationMinutes: approximateDurationMinutes,
+        quality: quality,
       ),
       candidateRecords: records,
     );

@@ -29,7 +29,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - **Health Event Contract**：生成客户端新增 `HealthEventsApi`，覆盖 active/create/end/detail/list/check-in 六个操作，以及 `HealthEventStatus`（`active`/`ended`）和 `HealthEventOutcome`（`improved`/`unchanged`/`worsened`）。daily record 与 dose log DTO 同步携带可空 `healthEventId`；Luminous 的 `health_event` domain slice 通过 repository 适配器隔离这些生成类型，且对生成器的 nullable `Object?` 字段做运行时类型校验。
 - **Proactive Suggestion Runtime Task 4**：`TodaySuggestionsDataDto` 新增并强制要求 `materializationStatus`（`empty`/`pending`/`ready`/`stale`/`failed`）、`sourceVersion`、可空 `computedAt` 和可空 `retryAfterSeconds`。Luminous 已从 Lucent OpenAPI 合同重新生成该 DTO 及其 `.g.dart`；Today 现有 domain mapper 暂不消费这些状态字段，待 Task 8 接入状态机。
 - **Proactive Suggestion Runtime Task 7**：Today Analysis REST 合同现在返回显式 envelope DTO，GET/refresh/generate/async 的 `computedAt`、`retryAfterSeconds`、版本与物化状态字段均有明确 schema；生成 client 已包含 `TodayAnalysisApi` 的 GET/refresh 方法及对应模型。Today domain/UI 状态映射仍留给 Task 8。
-- **Sparse Record Semantics Task 6**：Report metric、Today suggestion item 和 Today Analysis data 通过 OpenAPI 暴露同构 `observedMetric`：`value`（必返、可空）、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`（必返、可空）、`windowStart`、`windowEnd`。Report 的旧 `value`/`unit`/`status`/`delta`/`direction`/`sparkline` 仅作 deprecated 兼容投影；generated client 已重新生成，domain mapper 尚未切换。
+- **Sparse Record Semantics Task 6/7**：Report metric、Today suggestion item 和 Today Analysis data 通过 OpenAPI 暴露同构 `observedMetric`：`value`（必返、可空）、`state`、`coverage`、`sources`、`observedCount`、`expectedCount`（必返、可空）、`windowStart`、`windowEnd`。Report 的旧 `value`/`unit`/`status`/`delta`/`direction`/`sparkline` 仅作 deprecated 兼容投影；generated client 与 Today/Report domain mapper 已同步，旧 scalar 仍作为兼容 fallback。
 
 ## Luminous 已使用的后端领域
 

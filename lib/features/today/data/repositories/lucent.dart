@@ -5,6 +5,7 @@ import 'package:luminous/features/medicine/domain/entities/dose_log.dart';
 import 'package:luminous/features/medicine/domain/entities/reminder.dart';
 import 'package:luminous/features/medicine/domain/repositories/dose_log.dart';
 import 'package:luminous/features/medicine/domain/repositories/reminder.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
@@ -53,18 +54,37 @@ class LucentTodayRepository implements TodayRepository {
 
     final Map<String, num> recordCounts = {};
     final Map<String, String?> recordLatest = {};
+    final Map<String, Map<String, dynamic>?> recordPayloads = {};
+    var waterMetric = _unknownObservedMetric(dateStr);
     Map<String, dynamic>? sleepPayload;
     try {
       final summary = await dailyRecordRepository.fetchSummary(dateStr);
       for (final s in summary.summaries) {
         recordCounts[s.kind.name] = s.count;
         recordLatest[s.kind.name] = s.latest?.value;
+        recordPayloads[s.kind.name] = s.latest?.payload;
         if (s.kind.name == 'sleep') {
           sleepPayload = s.latest?.payload;
         }
       }
     } catch (e) {
       talker.error('LucentTodayRepository: fetchSummary failed: $e');
+    }
+
+    try {
+      final waterRecords = await dailyRecordRepository.fetchRecords(
+        dateStr,
+        kind: DailyRecordKind.water.name,
+        page: 1,
+        pageSize: 200,
+      );
+      waterMetric = _waterObservedMetric(
+        waterRecords.items,
+        total: waterRecords.total,
+        date: dateStr,
+      );
+    } catch (e) {
+      talker.error('LucentTodayRepository: fetch water records failed: $e');
     }
 
     final waterCount = (recordCounts['water'] ?? 0).toInt();
@@ -125,6 +145,7 @@ class LucentTodayRepository implements TodayRepository {
       water: TodayWaterSummary(
         completedCount: waterCount,
         targetCount: waterTargetCount,
+        observedMetric: waterMetric,
       ),
       medication: TodayMedicationSummary(
         medicineCount: todayMedicineCount,
@@ -137,6 +158,12 @@ class LucentTodayRepository implements TodayRepository {
         TodayVitalSummary(
           type: TodayVitalType.heartRate,
           valueLabel: recordLatest['vital'] ?? '--',
+          observedMetric: _observedMetric(
+            value: double.tryParse(recordLatest['vital'] ?? ''),
+            observed: recordLatest['vital'] != null,
+            observedCount: recordLatest['vital'] == null ? 0 : 1,
+            date: dateStr,
+          ),
         ),
         const TodayVitalSummary(
           type: TodayVitalType.bloodPressure,
@@ -145,6 +172,12 @@ class LucentTodayRepository implements TodayRepository {
         TodayVitalSummary(
           type: TodayVitalType.sleep,
           valueLabel: _formatSleepLabel(sleepPayload),
+          observedMetric: _observedMetric(
+            value: _sleepHours(recordPayloads['sleep']),
+            observed: sleepPayload != null,
+            observedCount: sleepPayload == null ? 0 : 1,
+            date: dateStr,
+          ),
         ),
         // Deferred by Product_Vision MVP: keep lightweight mood data in the
         // repository for future self-check-ins, but do not surface it as a
@@ -152,6 +185,12 @@ class LucentTodayRepository implements TodayRepository {
         TodayVitalSummary(
           type: TodayVitalType.mood,
           valueLabel: recordLatest['mood'] ?? '--',
+          observedMetric: _observedMetric(
+            value: null,
+            observed: recordLatest['mood'] != null,
+            observedCount: recordLatest['mood'] == null ? 0 : 1,
+            date: dateStr,
+          ),
         ),
       ],
       mealSuggestion: _staticMealSuggestion,
@@ -267,6 +306,93 @@ class LucentTodayRepository implements TodayRepository {
     if (durationMinutes is! num || durationMinutes <= 0) return '--';
     final hours = (durationMinutes / 60).toStringAsFixed(1);
     return '${hours}h';
+  }
+
+  static double? _sleepHours(Map<String, dynamic>? payload) {
+    final durationMinutes = payload?['durationMinutes'];
+    if (durationMinutes is! num || durationMinutes <= 0) return null;
+    return durationMinutes.toDouble() / 60;
+  }
+
+  static TodayObservedMetric _observedMetric({
+    required double? value,
+    required bool observed,
+    required int observedCount,
+    required String date,
+  }) {
+    final hasValue = observed && value != null;
+    return TodayObservedMetric(
+      value: hasValue ? value : null,
+      state: hasValue
+          ? TodayObservedMetricState.observed
+          : TodayObservedMetricState.unknown,
+      coverage: hasValue
+          ? TodayObservedMetricCoverage.sufficient
+          : TodayObservedMetricCoverage.none,
+      sources: hasValue ? const [TodayObservedMetricSource.manual] : const [],
+      observedCount: hasValue ? observedCount : 0,
+      expectedCount: null,
+      windowStart: date,
+      windowEnd: date,
+    );
+  }
+
+  static TodayObservedMetric _unknownObservedMetric(String date) {
+    return TodayObservedMetric(
+      value: null,
+      state: TodayObservedMetricState.unknown,
+      coverage: TodayObservedMetricCoverage.none,
+      sources: const [],
+      observedCount: 0,
+      expectedCount: null,
+      windowStart: date,
+      windowEnd: date,
+    );
+  }
+
+  static TodayObservedMetric _waterObservedMetric(
+    List<DailyRecordItem> records, {
+    required num total,
+    required String date,
+  }) {
+    var totalMl = 0.0;
+    var observedCount = 0;
+    var unobservableCount = 0;
+
+    for (final record in records) {
+      final value = double.tryParse(record.value ?? '');
+      if (record.unit?.trim().toLowerCase() == 'ml' &&
+          value != null &&
+          value.isFinite &&
+          value >= 0) {
+        totalMl += value;
+        observedCount += 1;
+      } else {
+        unobservableCount += 1;
+      }
+    }
+
+    final truncated = total > records.length;
+    final coverage = observedCount == 0
+        ? TodayObservedMetricCoverage.none
+        : unobservableCount > 0 || truncated
+        ? TodayObservedMetricCoverage.partial
+        : TodayObservedMetricCoverage.sufficient;
+
+    return TodayObservedMetric(
+      value: observedCount == 0 ? null : totalMl,
+      state: observedCount == 0
+          ? TodayObservedMetricState.unknown
+          : TodayObservedMetricState.observed,
+      coverage: coverage,
+      sources: observedCount == 0
+          ? const []
+          : const [TodayObservedMetricSource.manual],
+      observedCount: observedCount,
+      expectedCount: null,
+      windowStart: date,
+      windowEnd: date,
+    );
   }
 
   static String _formatTimeLabel(DateTime value) {

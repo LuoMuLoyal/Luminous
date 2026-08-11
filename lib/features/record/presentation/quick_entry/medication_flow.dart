@@ -54,6 +54,7 @@ class MedicationQuickMarkInput {
 enum MedicationQuickEntryOutcomeType {
   noCurrentMedicines,
   recordedSingle,
+  recordedTemporary,
   needsSelection,
   alreadyRecorded,
 }
@@ -66,6 +67,9 @@ class MedicationQuickEntryOutcome {
 
   const MedicationQuickEntryOutcome.recordedSingle()
     : this._(type: MedicationQuickEntryOutcomeType.recordedSingle);
+
+  const MedicationQuickEntryOutcome.recordedTemporary()
+    : this._(type: MedicationQuickEntryOutcomeType.recordedTemporary);
 
   const MedicationQuickEntryOutcome.needsSelection(
     MedicationQuickSelection selection,
@@ -95,10 +99,12 @@ class MedicationQuickBatchResult {
   const MedicationQuickBatchResult({
     required this.succeeded,
     required this.failed,
+    this.undoActions = const [],
   });
 
   final List<MedicationQuickChoice> succeeded;
   final List<MedicationQuickChoice> failed;
+  final List<QuickEntryUndoAction> undoActions;
 }
 
 class MedicationQuickChoice {
@@ -109,6 +115,7 @@ class MedicationQuickChoice {
     this.defaultSelected = false,
     this.reminderId,
     this.scheduledTime,
+    this.isTemporary = false,
   });
 
   final String id;
@@ -117,6 +124,7 @@ class MedicationQuickChoice {
   final bool defaultSelected;
   final String? reminderId;
   final String? scheduledTime;
+  final bool isTemporary;
 }
 
 class MedicationQuickEntryFlow {
@@ -167,7 +175,7 @@ class MedicationQuickEntryFlow {
     final choice = plannedChoices.first;
     if (choice.reminderId == null && choice.scheduledTime == null) {
       await _recordChoice(context, choice, previousLog: null);
-      return const MedicationQuickEntryOutcome.recordedSingle();
+      return const MedicationQuickEntryOutcome.recordedTemporary();
     }
 
     final previousLog = _matchingLog(choice, todayLogs);
@@ -185,10 +193,11 @@ class MedicationQuickEntryFlow {
   }) async {
     final succeeded = <MedicationQuickChoice>[];
     final failed = <MedicationQuickChoice>[];
+    final undoActions = <QuickEntryUndoAction>[];
 
     for (final choice in choices) {
       try {
-        await markDose(
+        final item = await markDose(
           MedicationQuickMarkInput(
             currentMedicineId: choice.currentMedicineId,
             status: 'taken',
@@ -198,6 +207,11 @@ class MedicationQuickEntryFlow {
           ),
         );
         succeeded.add(choice);
+        if (choice.isTemporary) {
+          undoActions.add(
+            QuickEntryUndoAction.deleteDoseLog(doseLogId: item.id),
+          );
+        }
       } catch (e, st) {
         appTalker.error(
           'MedicationQuickEntry: markDose failed for "${choice.name}" '
@@ -212,7 +226,11 @@ class MedicationQuickEntryFlow {
       emitDataChange(DataChangeTopic.doseLogs);
     }
 
-    return MedicationQuickBatchResult(succeeded: succeeded, failed: failed);
+    return MedicationQuickBatchResult(
+      succeeded: succeeded,
+      failed: failed,
+      undoActions: undoActions,
+    );
   }
 
   Future<DoseLogItem> _recordChoice(
@@ -308,7 +326,7 @@ class MedicationQuickEntryFlow {
       id: medicine.id,
       currentMedicineId: medicine.id,
       name: medicine.displayName,
-      scheduledTime: _formatTime(context.now),
+      isTemporary: true,
     );
   }
 
@@ -369,11 +387,5 @@ class MedicationQuickEntryFlow {
       hour,
       minute,
     );
-  }
-
-  String _formatTime(DateTime value) {
-    final hour = value.hour.toString().padLeft(2, '0');
-    final minute = value.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
   }
 }

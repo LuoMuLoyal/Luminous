@@ -21,6 +21,7 @@ import 'package:luminous/features/settings/data/repositories/lucent.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
 import 'package:luminous/features/settings/domain/repositories/user_settings.dart';
 import 'package:luminous/features/today/data/providers/today_suggestion.dart';
+import 'package:luminous/features/today/domain/entities/dashboard.dart';
 
 void main() {
   test(
@@ -32,7 +33,13 @@ void main() {
         overrides: [
           healthContextSnapshotProvider.overrideWith((ref) async => _snapshot),
           dailyRecordRepositoryProvider.overrideWithValue(
-            _FakeDailyRecordRepository(),
+            _FakeDailyRecordRepository(
+              waterRecords: [
+                _waterRecord(id: 'water-zero', value: '0'),
+                _waterRecord(id: 'water-500', value: '500'),
+                _waterRecord(id: 'water-cup', value: '1', unit: 'cup'),
+              ],
+            ),
           ),
           appDatabaseProvider.overrideWithValue(db),
           cachedDoseLogDataSourceProvider.overrideWith((ref) {
@@ -81,6 +88,12 @@ void main() {
       expect(dashboard.medication.pendingCount, 1);
       expect(dashboard.medication.nextDoseTimeLabel, '12:30');
       expect(dashboard.medication.nextMedicineName, 'Example medicine B');
+      expect(dashboard.water.observedMetric?.value, 500);
+      expect(
+        dashboard.water.observedMetric?.coverage,
+        TodayObservedMetricCoverage.partial,
+      );
+      expect(dashboard.water.observedMetric?.observedCount, 2);
     },
   );
 
@@ -119,20 +132,30 @@ void main() {
       expect(dashboard.medication.pendingCount, 2);
       expect(dashboard.medication.nextDoseTimeLabel, '--');
       expect(dashboard.medication.nextMedicineName, 'Example medicine A');
+      expect(dashboard.water.observedMetric?.value, isNull);
+      expect(
+        dashboard.water.observedMetric?.state,
+        TodayObservedMetricState.unknown,
+      );
     },
   );
 }
 
 class _FakeDailyRecordRepository implements DailyRecordRepository {
+  _FakeDailyRecordRepository({this.waterRecords = const []});
+
+  final List<DailyRecordItem> waterRecords;
+
   @override
   Future<DailyRecordListData> fetchRecords(
     String date, {
     String? kind,
     int page = 1,
     int pageSize = 50,
-  }) async {
-    return const DailyRecordListData(items: [], total: 0);
-  }
+  }) async => DailyRecordListData(
+    items: kind == DailyRecordKind.water.name ? waterRecords : const [],
+    total: kind == DailyRecordKind.water.name ? waterRecords.length : 0,
+  );
 
   @override
   Future<DailyRecordSummaryData> fetchSummary(String date) async {
@@ -181,6 +204,22 @@ class _FakeDailyRecordRepository implements DailyRecordRepository {
 
   @override
   Future<void> delete(String id) async {}
+}
+
+DailyRecordItem _waterRecord({
+  required String id,
+  required String value,
+  String unit = 'ml',
+}) {
+  return DailyRecordItem(
+    id: id,
+    kind: DailyRecordKind.water,
+    occurredAt: '2026-06-08',
+    value: value,
+    unit: unit,
+    createdAt: '2026-06-08T08:00:00.000Z',
+    updatedAt: '2026-06-08T08:00:00.000Z',
+  );
 }
 
 class _FakeDoseLogDataSource extends DoseLogRemoteDataSource {

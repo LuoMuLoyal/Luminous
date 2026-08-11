@@ -102,10 +102,10 @@ void main() {
           todayLogs: const [],
         );
 
-        expect(outcome.type, MedicationQuickEntryOutcomeType.recordedSingle);
+        expect(outcome.type, MedicationQuickEntryOutcomeType.recordedTemporary);
         expect(marked?.currentMedicineId, 'med-1');
         expect(marked?.reminderId, isNull);
-        expect(marked?.scheduledTime, '08:00');
+        expect(marked?.scheduledTime, isNull);
       },
     );
 
@@ -164,6 +164,12 @@ void main() {
           ['med-1', 'med-2'],
         );
         expect(outcome.selection?.defaultSelectedIds, {'med-1|rem-1|08:00'});
+        expect(
+          outcome.selection?.choices
+              .firstWhere((choice) => choice.currentMedicineId == 'med-2')
+              .isTemporary,
+          isTrue,
+        );
       },
     );
 
@@ -255,6 +261,38 @@ void main() {
         expect(result.succeeded.first.currentMedicineId, 'med-1');
         expect(result.failed, hasLength(1));
         expect(result.failed.first.currentMedicineId, 'med-2');
+      },
+    );
+
+    test(
+      'temporary selection returns undo actions for created dose logs',
+      () async {
+        final flow = MedicationQuickEntryFlow(
+          markDose: (input) async => _doseLog(
+            id: 'temporary-dose-1',
+            currentMedicineId: input.currentMedicineId,
+          ),
+          emitDataChange: (_) {},
+          registerUndo: (_) {},
+        );
+
+        final result = await flow.recordConfirmedSelection(
+          context: _context(),
+          choices: const [
+            MedicationQuickChoice(
+              id: 'med-1',
+              currentMedicineId: 'med-1',
+              name: 'Medicine med-1',
+              isTemporary: true,
+            ),
+          ],
+        );
+
+        expect(result.undoActions, [
+          const QuickEntryUndoAction.deleteDoseLog(
+            doseLogId: 'temporary-dose-1',
+          ),
+        ]);
       },
     );
   });

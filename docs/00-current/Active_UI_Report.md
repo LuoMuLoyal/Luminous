@@ -9,7 +9,7 @@ updated: 2026-08-11
 
 Last updated: 2026-08-11 (产品方向迁移说明；运行时 UI 未变)
 
-Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。OpenAPI 与 generated client 现在已暴露 `ReportMetricDto.observedMetric`，Flutter Report UI 在兼容期内仍通过 legacy scalar mapper 回退读取，Task 7 再切换到 coverage-aware domain。
+Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。OpenAPI、generated client 与 Report domain mapper 现在已暴露并保留 `ReportMetricDto.observedMetric`；Flutter UI 仍可读取 legacy scalar 展示，后续回顾页迁移再替换首屏呈现。
 
 > 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；这些变化尚未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
 

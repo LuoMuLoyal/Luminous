@@ -188,6 +188,7 @@
   "recordQuickMedicationAddAction": "Add medicine",
   "recordQuickMedicationSelectTitle": "Select medicines taken now",
   "recordQuickMedicationAlreadyRecordedToast": "Nearby dose already recorded",
+  "recordQuickMedicationTemporaryToast": "Temporary dose recorded without a reminder",
   "recordQuickMedicationLoadFailedToast": "Could not load medicines. Try again.",
   "recordQuickMedicationPartialFailedToast": "Saved {savedCount}, {failedCount} failed.",
   "@recordQuickMedicationPartialFailedToast": {
@@ -201,6 +202,10 @@
     }
   },
   "recordQuickSleepStartedToast": "Sleep tracking started",
+  "recordQuickSleepTypeTitle": "What kind of sleep is this?",
+  "recordQuickSleepNightAction": "Night sleep",
+  "recordQuickSleepNapAction": "Nap",
+  "recordQuickSleepApproximateDurationLabel": "Approximate duration (minutes, optional)",
   "recordQuickSleepLoadFailedToast": "Could not load sleep records. Try again.",
   "recordQuickSleepInvalidDurationToast": "Wake time must be after sleep start.",
   "recordQuickSleepSelectStartTitle": "Select the sleep to end",

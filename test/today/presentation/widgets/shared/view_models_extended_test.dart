@@ -131,6 +131,53 @@ void main() {
     });
   });
 
+  test(
+    'overview uses canonical water ml when observed metric is available',
+    () async {
+      final l10n = await loadZh();
+      final dashboard = TodayDashboard.signedOut().copyWith(
+        water: const TodayWaterSummary(
+          completedCount: 3,
+          targetCount: 8,
+          observedMetric: TodayObservedMetric(
+            value: 500,
+            state: TodayObservedMetricState.observed,
+            coverage: TodayObservedMetricCoverage.sufficient,
+            sources: [TodayObservedMetricSource.manual],
+            observedCount: 2,
+            expectedCount: null,
+            windowStart: '2026-08-11',
+            windowEnd: '2026-08-11',
+          ),
+        ),
+      );
+
+      expect(buildOverviewItems(l10n, dashboard)[1].value, '500 / 2000 ml');
+    },
+  );
+
+  test('overview keeps unknown water metric explicit', () async {
+    final l10n = await loadZh();
+    final dashboard = TodayDashboard.signedOut().copyWith(
+      water: const TodayWaterSummary(
+        completedCount: 3,
+        targetCount: 8,
+        observedMetric: TodayObservedMetric(
+          value: null,
+          state: TodayObservedMetricState.unknown,
+          coverage: TodayObservedMetricCoverage.none,
+          sources: [TodayObservedMetricSource.manual],
+          observedCount: 0,
+          expectedCount: null,
+          windowStart: '2026-08-11',
+          windowEnd: '2026-08-11',
+        ),
+      ),
+    );
+
+    expect(buildOverviewItems(l10n, dashboard)[1].value, '-- / 2000 ml');
+  });
+
   // ── medicationName ───────────────────────────────────────────
   group('medicationName', () {
     test('returns localized name for atorvastatin', () async {

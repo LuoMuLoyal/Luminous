@@ -134,6 +134,86 @@ void main() {
       expect(dashboard.patterns.single.kind, ReportInsightKind.medication);
     },
   );
+
+  test('Lucent report repository prefers generated observed metric', () async {
+    final repository = LucentReportRepository(
+      dataSource: _FakeReportRemoteDataSource(
+        _dashboardDto(
+          aiSummaryEnabled: false,
+          findings: const [],
+          patterns: const [],
+          trends: const [],
+          metrics: [
+            lucent.ReportMetricDto(
+              kind: lucent.ReportMetricDtoKindEnum.water,
+              value: '999',
+              unit: 'ml',
+              status: lucent.ReportMetricDtoStatusEnum.good,
+              delta: '999',
+              direction: lucent.ReportMetricDtoDirectionEnum.up,
+              sparkline: [999],
+              observedMetric: lucent.ReportObservedMetricDto(
+                value: 0,
+                state: lucent.ReportObservedMetricDtoStateEnum.observed,
+                coverage: lucent.ReportObservedMetricDtoCoverageEnum.sufficient,
+                sources: [lucent.ReportObservedMetricDtoSourcesEnum.manual],
+                observedCount: 1,
+                expectedCount: null,
+                windowStart: '2026-08-05',
+                windowEnd: '2026-08-11',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final dashboard = await repository.fetchDashboard(
+      const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+    );
+
+    final metric = dashboard.metrics.single;
+    expect(metric.value, '999');
+    expect(metric.observedMetric?.value, 0);
+    expect(
+      metric.observedMetric?.coverage,
+      ReportObservedMetricCoverage.sufficient,
+    );
+  });
+
+  test(
+    'Lucent report repository keeps scalar fallback when observed metric is absent',
+    () async {
+      final repository = LucentReportRepository(
+        dataSource: _FakeReportRemoteDataSource(
+          _dashboardDto(
+            aiSummaryEnabled: false,
+            findings: const [],
+            patterns: const [],
+            trends: const [],
+            metrics: [
+              lucent.ReportMetricDto(
+                kind: lucent.ReportMetricDtoKindEnum.water,
+                value: '500',
+                unit: 'ml',
+                status: lucent.ReportMetricDtoStatusEnum.good,
+                delta: '10%',
+                direction: lucent.ReportMetricDtoDirectionEnum.up,
+                sparkline: [500],
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final dashboard = await repository.fetchDashboard(
+        const ReportDashboardQuery(range: ReportDashboardRange.last7Days),
+      );
+
+      expect(dashboard.metrics.single.value, '500');
+      expect(dashboard.metrics.single.observedMetric, isNull);
+    },
+  );
 }
 
 class _FakeReportRemoteDataSource extends ReportRemoteDataSource {

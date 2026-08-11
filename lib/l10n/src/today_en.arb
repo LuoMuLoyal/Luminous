@@ -72,6 +72,25 @@
       }
     }
   },
+  "todayWaterOverviewMl": "{value} / {target} ml",
+  "@todayWaterOverviewMl": {
+    "placeholders": {
+      "value": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "todayWaterOverviewUnknown": "-- / {target} ml",
+  "@todayWaterOverviewUnknown": {
+    "placeholders": {
+      "target": {
+        "type": "int"
+      }
+    }
+  },
   "todayWaterRemainingCount": "{count} more to go",
   "@todayWaterRemainingCount": {
     "placeholders": {

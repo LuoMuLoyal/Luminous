@@ -7,7 +7,7 @@ updated: 2026-08-11
 
 # Active UI — Record
 
-Last updated: 2026-08-11 (Sparse Record Semantics sleep episodes)
+Last updated: 2026-08-11 (Sparse Record Semantics quick-entry boundaries)
 
 ## 支持的记录类型
 
@@ -17,7 +17,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics sleep episodes)
 - 心情
 - 笔记（独立类型：有自己的快捷操作、筛选、时间线项）
 - 睡眠（结构化录入：就寝/起床/质量/阶段）
-- Lucent 后端已支持 nightSleep/nap episode 与 `startedAt`/`endedAt`；当前 Flutter 快速录入继续发送兼容的 `startAt`/`endAt`，由后端按 nightSleep fallback 读取。
+- Lucent 后端已支持 nightSleep/nap episode；Flutter 快速录入合并睡眠时写入 `sleepType`、`startedAt`、`endedAt` 和 `durationMinutes`，旧临时 start/wake facts 仍只作为录入过程使用。
 - 用药（非创建型快捷操作）
 
 ## 自然语言录入
@@ -78,15 +78,15 @@ Last updated: 2026-08-11 (Sparse Record Semantics sleep episodes)
 - 阶段 3 已接入用药快速记录：
   - Record 用药入口读取当前药箱、提醒计划和所选日期 dose logs，不再跳空白创建页。
   - 0 种当前用药时弹轻量确认框，引导去 `/medicine/search` 添加药品。
-  - 1 种当前用药时，若当前时间前 30 分钟到后 2 小时内有 pending reminder slot，直接调用 slot-aware dose log mark；没有附近 slot 时仍走 `mark` 接口，但使用当前时间作为 `scheduledTime`，归属于该 current medicine 并可在同分钟内去重。
+  - 1 种当前用药时，若当前时间前 30 分钟到后 2 小时内有 pending reminder slot，直接调用 slot-aware dose log mark；没有附近 slot 时走临时服药路径，不猜测 `scheduledTime`，并明确提示未关联提醒。
   - 附近 slot 已 taken/skipped 时不重复写入，只提示附近用药已记录。
-  - 2+ 种当前用药时打开选择弹窗，默认选中附近 pending slot 对应药品；确认写入不显示撤销 toast，部分失败时保留失败项。
+  - 2+ 种当前用药时打开选择弹窗，默认选中附近 pending slot 对应药品；普通 reminder slot 确认写入不显示撤销 toast，临时服药选择会显示批量撤销 toast，部分失败时保留失败项。
   - 用药即时写入撤销走 dose log 真实回滚：新建 log 删除，已有 log 恢复旧状态，并刷新 `DataChangeTopic.doseLogs`。
 - 阶段 4 已接入睡眠快速记录：
   - 睡眠入口单击不再打开旧的时长选择 fast-entry 弹窗。
-  - 没有进行中睡眠时，单击按当前时间创建 `DailyRecordKind.sleep` 临时 start fact：`payload.sleepEvent=start`、`payload.eventAt=<UTC ISO>`，成功后显示可撤销 toast。
+  - 没有进行中睡眠时，单击先选择夜间睡眠或午睡，可选填写大致分钟数与睡眠质量，再按当前时间创建 `DailyRecordKind.sleep` 临时 start fact：`payload.sleepEvent=start`、`payload.sleepType=nightSleep|nap`、`payload.approximateDurationMinutes`、`payload.quality`、`payload.eventAt=<UTC ISO>`，成功后显示可撤销 toast。
   - 若前一天或当天存在一个未被 wake fact 关联的 start fact，再次单击先创建 wake fact：`payload.sleepEvent=wake`、`payload.eventAt=<UTC ISO>`、`payload.startedRecordId=<start id>`，随后展示合并确认。
-  - 合并确认展示入睡、醒来和总时长；确认后创建标准 sleep payload（`durationMinutes/startAt/endAt`），再删除 start/wake 临时事实。取消则保留两条事实。
+  - 合并确认展示入睡、醒来和总时长；确认后创建标准 sleep episode payload（`sleepType/startedAt/endedAt/durationMinutes`），再删除 start/wake 临时事实。取消则保留两条事实。
   - 若发现多个未结束 start，弹出选择对话框，由用户选择要结束哪一段；不自动猜测。
 - 阶段 5 已接入餐食快速记录：
   - 餐食入口单击不再打开旧的早/中/晚餐 fast-entry 弹窗，而是优先调用相机。

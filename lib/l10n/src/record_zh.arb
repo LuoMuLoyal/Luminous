@@ -188,6 +188,7 @@
   "recordQuickMedicationAddAction": "添加药品",
   "recordQuickMedicationSelectTitle": "选择本次服用的药",
   "recordQuickMedicationAlreadyRecordedToast": "附近用药已记录",
+  "recordQuickMedicationTemporaryToast": "已记录临时服药，未关联提醒",
   "recordQuickMedicationLoadFailedToast": "用药信息加载失败，请重试",
   "recordQuickMedicationPartialFailedToast": "已记录 {savedCount} 种，{failedCount} 种失败",
   "@recordQuickMedicationPartialFailedToast": {
@@ -201,6 +202,10 @@
     }
   },
   "recordQuickSleepStartedToast": "已开始记录睡眠",
+  "recordQuickSleepTypeTitle": "这次记录哪种睡眠？",
+  "recordQuickSleepNightAction": "夜间睡眠",
+  "recordQuickSleepNapAction": "午睡",
+  "recordQuickSleepApproximateDurationLabel": "大致时长（分钟，可选）",
   "recordQuickSleepLoadFailedToast": "睡眠记录加载失败，请重试",
   "recordQuickSleepInvalidDurationToast": "醒来时间必须晚于入睡时间",
   "recordQuickSleepSelectStartTitle": "选择要结束的睡眠",

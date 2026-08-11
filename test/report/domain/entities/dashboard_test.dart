@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luminous/core/design/semantic_color.dart';
 import 'package:luminous/features/report/domain/entities/dashboard.dart';
 
 void main() {
@@ -108,5 +110,33 @@ void main() {
       expect(ReportExportKind.values, contains(ReportExportKind.print));
       expect(ReportExportKind.values, contains(ReportExportKind.clinicShare));
     });
+  });
+
+  test('ReportMetric can carry an observed metric without scalar loss', () {
+    const metric = ReportMetric(
+      kind: ReportDataKind.sleep,
+      icon: Icons.nightlight,
+      color: SemanticColor.warning,
+      value: '--',
+      unit: 'h',
+      status: ReportStatus.insufficientData,
+      delta: '--',
+      direction: ReportMetricDirection.flat,
+      sparkline: [],
+      observedMetric: ReportObservedMetric(
+        value: null,
+        state: ReportObservedMetricState.unknown,
+        coverage: ReportObservedMetricCoverage.none,
+        sources: [ReportObservedMetricSource.manual],
+        observedCount: 0,
+        expectedCount: null,
+        windowStart: '2026-08-05',
+        windowEnd: '2026-08-11',
+      ),
+    );
+
+    expect(metric.value, '--');
+    expect(metric.observedMetric?.state, ReportObservedMetricState.unknown);
+    expect(metric.observedMetric?.expectedCount, isNull);
   });
 }

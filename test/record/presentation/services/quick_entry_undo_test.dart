@@ -65,5 +65,27 @@ void main() {
         expect(emitted, [DataChangeTopic.doseLogs]);
       },
     );
+
+    test('undo processes a batch of dose log actions', () async {
+      final deleted = <String>[];
+      final emitted = <String>[];
+      final service = QuickEntryUndoService(
+        deleteDailyRecord: (_) async {},
+        deleteDoseLog: (id) async => deleted.add(id),
+        emitDataChange: emitted.add,
+      );
+
+      await service.undo(
+        const QuickEntryUndoAction.batch(
+          actions: [
+            QuickEntryUndoAction.deleteDoseLog(doseLogId: 'dose-1'),
+            QuickEntryUndoAction.deleteDoseLog(doseLogId: 'dose-2'),
+          ],
+        ),
+      );
+
+      expect(deleted, ['dose-2', 'dose-1']);
+      expect(emitted, [DataChangeTopic.doseLogs, DataChangeTopic.doseLogs]);
+    });
   });
 }

@@ -37,12 +37,69 @@ void main() {
       expect(created?.payload, {
         'sleepEvent': 'start',
         'eventAt': '2026-07-28T15:15:00.000Z',
+        'sleepType': 'nightSleep',
       });
       expect(emitted, [DataChangeTopic.dailyRecords]);
       expect(undoActions, [
         const QuickEntryUndoAction.deleteDailyRecord(recordId: 'sleep-start-1'),
       ]);
     });
+
+    test('creates a nap start fact when context requests a nap', () async {
+      DailyRecordCreateInput? created;
+      final flow = SleepQuickEntryFlow(
+        createRecord: (input) async {
+          created = input;
+          return _record(id: 'nap-start-1', input: input);
+        },
+        deleteRecord: (_) async {},
+        emitDataChange: (_) {},
+        registerUndo: (_) {},
+      );
+
+      await flow.handleTap(
+        context: SleepQuickEntryContext(
+          occurredAt: '2026-07-28',
+          occurredTime: '13:15',
+          now: DateTime.utc(2026, 7, 28, 5, 15),
+          sleepType: 'nap',
+        ),
+        candidateRecords: const <DailyRecordItem>[],
+      );
+
+      expect(created?.payload?['sleepType'], 'nap');
+    });
+
+    test(
+      'stores optional approximate duration and quality on start fact',
+      () async {
+        DailyRecordCreateInput? created;
+        final flow = SleepQuickEntryFlow(
+          createRecord: (input) async {
+            created = input;
+            return _record(id: 'sleep-start-2', input: input);
+          },
+          deleteRecord: (_) async {},
+          emitDataChange: (_) {},
+          registerUndo: (_) {},
+        );
+
+        await flow.handleTap(
+          context: SleepQuickEntryContext(
+            occurredAt: '2026-07-28',
+            occurredTime: '13:15',
+            now: DateTime.utc(2026, 7, 28, 5, 15),
+            sleepType: 'nap',
+            approximateDurationMinutes: 45,
+            quality: 'good',
+          ),
+          candidateRecords: const <DailyRecordItem>[],
+        );
+
+        expect(created?.payload?['approximateDurationMinutes'], 45);
+        expect(created?.payload?['quality'], 'good');
+      },
+    );
 
     test('records wake fact and prepares a cross-day merge', () async {
       final created = <DailyRecordCreateInput>[];
@@ -80,9 +137,10 @@ void main() {
       });
       expect(outcome.merge?.durationMinutes, 475);
       expect(outcome.merge?.mergedInput.payload, {
+        'sleepType': 'nightSleep',
+        'startedAt': '2026-07-28T15:15:00.000Z',
+        'endedAt': '2026-07-28T23:10:00.000Z',
         'durationMinutes': 475,
-        'startAt': '2026-07-28T15:15:00.000Z',
-        'endAt': '2026-07-28T23:10:00.000Z',
       });
       expect(outcome.merge?.mergedInput.occurredAt, '2026-07-29');
       expect(outcome.merge?.mergedInput.occurredTime, '07:10');
@@ -112,6 +170,59 @@ void main() {
 
       expect(merge.durationMinutes, 95);
       expect(merge.mergedInput.payload?['durationMinutes'], 95);
+    });
+
+    test('preserves nap type when merging sleep facts', () {
+      final merge = SleepQuickEntryFlow.buildMerge(
+        context: SleepQuickEntryContext(
+          occurredAt: '2026-07-28',
+          occurredTime: '14:40',
+          now: DateTime.utc(2026, 7, 28, 6, 40),
+        ),
+        startRecord: _sleepStart(
+          id: 'nap-start',
+          occurredAt: '2026-07-28',
+          occurredTime: '13:05',
+          eventAt: '2026-07-28T05:05:00.000Z',
+          sleepType: 'nap',
+        ),
+        wakeRecord: _sleepWake(
+          id: 'nap-wake',
+          occurredAt: '2026-07-28',
+          occurredTime: '14:40',
+          eventAt: '2026-07-28T06:40:00.000Z',
+          startedRecordId: 'nap-start',
+        ),
+      );
+
+      expect(merge.mergedInput.payload?['sleepType'], 'nap');
+    });
+
+    test('preserves start quality when merging sleep facts', () {
+      final merge = SleepQuickEntryFlow.buildMerge(
+        context: SleepQuickEntryContext(
+          occurredAt: '2026-07-28',
+          occurredTime: '14:40',
+          now: DateTime.utc(2026, 7, 28, 6, 40),
+        ),
+        startRecord: _sleepStart(
+          id: 'sleep-start-quality',
+          occurredAt: '2026-07-28',
+          occurredTime: '13:05',
+          eventAt: '2026-07-28T05:05:00.000Z',
+          sleepType: 'nap',
+          quality: 'good',
+        ),
+        wakeRecord: _sleepWake(
+          id: 'sleep-wake-quality',
+          occurredAt: '2026-07-28',
+          occurredTime: '14:40',
+          eventAt: '2026-07-28T06:40:00.000Z',
+          startedRecordId: 'sleep-start-quality',
+        ),
+      );
+
+      expect(merge.mergedInput.payload?['quality'], 'good');
     });
 
     test('returns invalid duration when wake is not after start', () async {
@@ -237,13 +348,20 @@ DailyRecordItem _sleepStart({
   required String occurredAt,
   required String occurredTime,
   required String eventAt,
+  String sleepType = 'nightSleep',
+  String? quality,
 }) {
   return DailyRecordItem(
     id: id,
     kind: DailyRecordKind.sleep,
     occurredAt: occurredAt,
     occurredTime: occurredTime,
-    payload: {'sleepEvent': 'start', 'eventAt': eventAt},
+    payload: {
+      'sleepEvent': 'start',
+      'eventAt': eventAt,
+      'sleepType': sleepType,
+      if (quality != null) 'quality': quality,
+    },
     createdAt: eventAt,
     updatedAt: eventAt,
   );

@@ -88,33 +88,6 @@
 - [ ] overlap 只标记 data-quality warning，不静默删除任一 episode。
 - [ ] 运行 daily-record 和 collector specs，包含跨午夜夜睡与同日下午两段午睡。
 
-## Task 7 — Update Mobile Quick Entry and Domain Mappers
-
-**Files:**
-
-- Modify: `Luminous/lib/features/record/presentation/quick_entry/water_flow.dart`
-- Modify: `Luminous/lib/features/record/application/usecases/quick_entry_sleep.dart`
-- Modify: `Luminous/lib/features/record/presentation/quick_entry/sleep_flow.dart`
-- Modify: `Luminous/lib/features/record/presentation/quick_entry/medication_flow.dart`
-- Modify: `Luminous/lib/features/today/domain/entities/dashboard.dart`
-- Modify: `Luminous/lib/features/report/domain/entities/dashboard.dart`
-- Modify: `Luminous/lib/features/today/data/repositories/lucent.dart`
-- Modify: `Luminous/lib/features/report/data/repositories/lucent.dart`
-- Modify: `Luminous/test/record/quick_entry/water_flow_test.dart`
-- Modify: `Luminous/test/record/quick_entry/sleep_flow_test.dart`
-- Modify: `Luminous/test/record/quick_entry/medication_flow_test.dart`
-- Modify: `Luminous/test/today/domain/entities/dashboard_test.dart`
-- Modify: `Luminous/test/today/repository_test.dart`
-- Modify: `Luminous/test/report/domain/entities/dashboard_test.dart`
-- Modify: `Luminous/test/report/repository_test.dart`
-
-- [ ] 先写 widget/use-case tests：饮水默认一键保存 ml 且可改容量；睡眠弹窗选择夜睡/午睡并可输入近似时长/质量；服药按具体槽位确认。
-- [ ] water quick flow 只有服务端保存成功后才发布 DataChangeBus 和成功测量，不以打开/点击计成功。
-- [ ] sleep use case 写 episode payload，不再用同日单条 identity 覆盖午睡。
-- [ ] medication flow 必须携带 reminderId、scheduledFor、scheduledTime；找不到槽位时显示临时服药路径，不猜测最近提醒。
-- [ ] Today/Report domain entity 显式表达 unknown、coverage、sources，移除 mapper 内 `null ?? 0`。
-- [ ] 运行上述三个 feature 目录的目标测试。
-
 ## Task 8 — Make Health Platform Import Honest and Lossless
 
 **Files:**

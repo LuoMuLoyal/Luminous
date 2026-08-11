@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-11
 ---
 
 # Flutter Localization
 
-Last updated: 2026-07-30 (OAuth Weibo + Google sign-in strings)
+Last updated: 2026-08-11 (Sparse Record Semantics quick-entry strings)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -95,10 +95,11 @@ Persisted preference keys:
   quick-entry settings page and the long-press dialog.
 - Record quick medication strings (`recordQuickMedication*`) are owned by the Record ARB entries,
   even when an action routes to Medicine search, because the prompt and selection dialog live on the
-  Record page.
+  Record page. Temporary dose feedback uses `recordQuickMedicationTemporaryToast` and must remain
+  explicit that no reminder slot was matched.
 - Record quick sleep strings (`recordQuickSleep*`) are owned by the Record ARB entries because the
-  start toast, multi-start selection, merge confirmation, and sleep in-progress badge live on the
-  Record page.
+  start-type selection, optional approximate duration/quality fields, start toast, multi-start
+  selection, merge confirmation, and sleep in-progress badge live on the Record page.
 - Record quick meal strings (`recordQuickMeal*`) are owned by the Record ARB entries because the
   camera confirmation dialog lives on the Record page and saves a Record daily entry.
 - Record NLP generate-failure copy such as the `recordNlpGenerateFailedToast` fallback message is

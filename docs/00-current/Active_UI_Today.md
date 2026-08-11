@@ -45,6 +45,8 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - 睡眠 vital 行读取持久化睡眠记录的真实时长；无数据时回退 `--`。
 - 睡眠概览值不再追加单位（后端 `valueLabel` 已含单位）。
 - 用药概览值使用 `todayMedicationOverviewCount` l10n 键（"{done}/{total} 种"）。分母已修正为今日有提醒计划的药品数（`_todayScheduledMedicineIds`），无提醒时回退为全部当前药品数。
+- Today domain 的 water `observedMetric` 只汇总可确认的 `ml` 记录；无记录为 `unknown/none`，明确的 `0 ml` 保留为 observed zero，混入不可换算单位或分页不完整时标记 `partial`，不再把记录条数当作毫升数。
+- Today 摘要概览在有 observed metric 时显示 canonical ml（例如 `500 / 2000 ml`）；unknown 仍显示 `-- / 2000 ml`，不把记录条数投影成健康值。
 
 ## 观察项
 
