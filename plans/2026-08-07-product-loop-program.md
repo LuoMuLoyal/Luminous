@@ -10,22 +10,12 @@
 
 ---
 
-## Program Pre-conditions
-
-- [ ] 在 `Luminous/docs/00-current/Next_Plan.md` 把当前阶段切换到本计划。
-- [ ] 分别运行 `git -C Luminous status --short` 与 `git -C Lucent status --short`，把与本计划无关的用户改动记录在实施日志中并保持不动。
-- [ ] 读取根 `AGENTS.md`、`Luminous/AGENTS.md`、`Lucent/AGENTS.md` 以及 [ADR-0011](../docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)。
-- [ ] 为本计划建立一个跨仓库 feature 分支；不在默认分支直接实施。
-
 ## Workstream Order
 
 | Order | Plan | Outcome | Depends on |
 | --- | --- | --- | --- |
-| 1 | [Health Event Contract](2026-08-07-health-event-contract.md) | 可确认开始/结束、每日结果和关联记录的健康事件合同 | — |
-| 2 | [Proactive Suggestion Runtime](2026-08-07-proactive-suggestion-runtime.md) | 写事件触发有界重算，GET 只读现有结果 | Workstream 1 |
-| 3 | [Sparse Record Semantics](2026-08-07-sparse-record-semantics.md) | 服药槽位、饮水 ml、睡眠片段和 unknown 语义统一 | Workstream 1；与 2 的接口冻结后可并行 |
-| 4 | [Review Experience](2026-08-07-review-experience.md) | 第五 Tab 成为事件优先“回顾”，取消综合评分和整页锁定 | Workstreams 1–3 |
-| 5 | [Visit Summary and Product Measurement](2026-08-07-visit-summary-and-product-measurement.md) | 可选就诊摘要归位，闭环行为可被隐私克制地测量 | Workstream 4 |
+| 1 | [Review Experience](2026-08-07-review-experience.md) | 第五 Tab 成为事件优先“回顾”，取消综合评分和整页锁定 | Product-loop foundations |
+| 2 | [Visit Summary and Product Measurement](2026-08-07-visit-summary-and-product-measurement.md) | 可选就诊摘要归位，闭环行为可被隐私克制地测量 | Workstream 1 |
 
 ## Cross-Workstream Invariants
 
@@ -40,25 +30,13 @@
 
 ## Program Checkpoints
 
-### Checkpoint B — Proactive Runtime Ready
-
-- [ ] 写入相关记录后，无需打开 Today 即可观察到服务端重算任务完成。
-- [ ] 同一用户/日期的突发连续写入只形成一个有界重算窗口。
-- [ ] Today GET 不调用规则生成或 LLM；无结果、陈旧、失败和正常结果均有明确合同。
-
-### Checkpoint C — Semantics Ready
-
-- [ ] 同一药品一天两次服用按两个槽位呈现，任一槽位确认不影响另一个。
-- [ ] 零饮水、无饮水记录和覆盖不足是三种不同状态。
-- [ ] 夜间睡眠与午睡作为独立片段保存和回顾，不被同日去重覆盖。
-
-### Checkpoint D — Review Ready
+### Checkpoint A — Review Ready
 
 - [ ] 第五 Tab 对用户显示“回顾”，现有 `/report` 深链仍可打开。
 - [ ] 任一维度缺失不会锁住整个页面；事件事实、变化、完成情况和下一步仍可用。
 - [ ] 通用分数、默认导出卡、默认医生分享和强制 7/30 天主视图不再占据首屏。
 
-### Checkpoint E — Product Signal Ready
+### Checkpoint B — Product Signal Ready
 
 - [ ] 事件开始/结束、结果确认、建议曝光/处理、回顾打开、导出/分享动作均只在成功后记录。
 - [ ] 事件属性不包含症状原文、药名、自由文本备注或其他健康内容。
@@ -68,7 +46,7 @@
 
 - [ ] 在 `Lucent` 运行 `pnpm lint:check`、`pnpm typecheck`、`pnpm test`、`pnpm build`、`pnpm export:openapi`、`pnpm docs:check`、`pnpm docs:verify`、`pnpm docs:links`。
 - [ ] 在 `Luminous` 运行 `dart run scripts/bootstrap_generated_sources.dart`、`flutter analyze`、`flutter test`、`dart run scripts/run_daily_checks.dart`、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart`。
-- [ ] 在 Android 和 iOS 真机或模拟器各验证一次 Checkpoint A–E 的主路径；健康平台导入只在具备真实权限的设备上标记为已验证。
+- [ ] 在 Android 和 iOS 真机或模拟器各验证一次 Checkpoint A–B 的主路径；健康平台导入只在具备真实权限的设备上标记为已验证。
 - [ ] 检查 `git -C Lucent diff --check` 和 `git -C Luminous diff --check` 无空白错误，两个仓库的 diff 均不含冻结桌面/Web 的机会主义重构。
 - [ ] 更新 `Luminous/ROADMAP.md`、两个仓库的 current-state 与迁移日志；删除已经完成的计划条目，不保留完成标记。
 

@@ -14,16 +14,16 @@ Last updated: 2026-08-11
 
 ## 当前目标
 
-当前目标是执行 `Sparse Record Semantics`。`Health Event Contract` 与 `Proactive Suggestion Runtime` 已完成跨前后端合同、主动重算、Today 只读物化、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history，以及记录写入 → worker 物化 → Today GET 的版本收敛。
+当前目标是执行 `Review Experience`。`Health Event Contract`、`Proactive Suggestion Runtime` 与 `Sparse Record Semantics` 已完成跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history，以及记录写入 → worker 物化 → Today GET 的版本收敛。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **执行 Sparse Record Semantics**
-   - 子计划：[`../../plans/2026-08-07-sparse-record-semantics.md`](../../plans/2026-08-07-sparse-record-semantics.md)
-   - Water ml、coverage、unknown 与 observed zero 已在 Lucent 后端统一；generated client 与 Today/Report domain mapper 已同步 observed metric DTO
-   - Lucent 后端已统一服药 reminder slot 和睡眠 episode 语义；quick-entry 已保持槽位/episode 边界，下一步处理平台导入
+1. **执行 Review Experience**
+   - 子计划：[`../../plans/2026-08-07-review-experience.md`](../../plans/2026-08-07-review-experience.md)
+   - 先建立事件回顾 read model、后端 endpoint 和 Flutter domain/repository，再切换第五 Tab 的用户任务文案
+   - 保留 `/report` 深链和旧 dashboard 兼容代码；导出与 Clinic Summary 在主回顾稳定后移入 More
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化

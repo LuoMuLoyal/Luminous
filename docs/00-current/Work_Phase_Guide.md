@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-07
+updated: 2026-08-11
 ---
 
 # Work Phase Guide
 
-Last updated: 2026-08-07
+Last updated: 2026-08-11
 
 本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。短期任务放在 `plans/`，完成后删除计划，把稳定事实同步回 `docs/00-current/`。
 
@@ -48,7 +48,7 @@ Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文�
 - 跨 feature presentation 耦合通过 `DataChangeBus` 解耦。
 - 巨型文件拆分（`suggestion.dart` 952→125 行）。
 
-## Phase 5: `0.1.0` Release ← 当前阶段
+## Phase 5: `0.1.0` Release
 
 目标：完成现有版本的真实联调、发布验证和 `0.1.0` 正式发布。
 
@@ -92,11 +92,11 @@ dart run scripts/run_fullstack_checks.dart
 - **P1 体验缺口**：空态体系（横幅 CTA + 时间线空态）、危险操作确认链（6 处二次确认）、表单必填校验。
 - **P2 一致性打磨**：错误文案 mapper、日期格式收敛、剩余硬编码文案消除、触控目标与语义补齐、PIN 二次确认、骨架屏与真实版面对齐、桌面月历交互解耦、平板档限宽。
 
-## Phase 6: 产品闭环重构
+## Phase 6: 产品闭环重构 ← 当前阶段
 
-目标：按 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md) 实施健康事件、真正主动的建议链、统一数据口径、稀疏输入和事件回顾。
+目标：继续按 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md) 实施事件回顾和隐私克制的产品测量。Health Event Contract、Proactive Suggestion Runtime 和 Sparse Record Semantics 已完成，当前从 Review Experience 开始。
 
-进入条件：两个仓库工作树干净，并从 feature branch/worktree 开始。
+进入条件：Health Event Contract、Proactive Suggestion Runtime 和 Sparse Record Semantics 已完成跨前后端合同与验证；当前工作继续在 feature branch 上进行。
 
 ## Phase 7: P2/P3 扩展探索
 
