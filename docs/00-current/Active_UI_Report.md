@@ -33,10 +33,10 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## Review More 入口（Task 8，导出与就诊摘要已迁入）
 
-- `/report` 顶栏右上角新增「更多」按钮（`_ReviewTopBar` 的 `review-more-action`，tooltip 更多），打开 `showReportMoreActionsSheet`（`presentation/widgets/sheets/more_actions.dart`）：四项入口——就诊摘要（打开诊所摘要预览弹窗，旧 clinicShare 流程）、PDF（月度 PDF 导出）、打印/下载（打印 PDF 导出）、历史报告（push `/report/legacy` legacy 兼容页）；移动端 bottom sheet、桌面端 dialog，入口点击先关 sheet 再触发流程。
+- `/report` 顶栏右上角新增「更多」按钮（`_ReviewTopBar` 的 `review-more-action`，tooltip 更多），打开 `showReportMoreActionsSheet`（`presentation/widgets/sheets/more_actions.dart`）：四项入口——就诊摘要（走 `handleReportExportAction` 的 clinicShare 分支打开诊所摘要预览弹窗）、PDF（月度 PDF 导出）、打印/下载（打印 PDF 导出）、历史报告（push `/report/legacy` legacy 兼容页）；移动端 bottom sheet、桌面端 dialog，入口点击先关 sheet 再触发流程。
 - 导出/分享行为与旧 dashboard 装配一致（共享 `presentation/utils/export_actions.dart` 的 `handleReportExportAction`）：登录门槛 → clinicShare 预览 → security elevation（PIN 验证）→ dataExport POST → 下载链接/状态 toast；不改变任何后端 API 调用与数据流。字段级隐私与访问测量留待后续计划。
 - 文案口径：就诊摘要入口「就诊时按需使用 / Use as needed during your visit」，不暗示医生一定查看；分享按钮文案由「分享给医生/Share with doctor」改为「分享摘要/Share summary」（分享仍是用户显式动作，API 行为不变）。
-- 主路径回归（测试锁定）：首屏不渲染四张导出卡与 `ReportExportSection`，顶栏无 7/30 切换（`test/report/widgets/more_actions_test.dart` 8 个用例 + `test/report/page_test.dart` 既有断言）。
+- 主路径回归（测试锁定）：首屏不渲染四张导出卡与 `ReportExportSection`，顶栏无 7/30 切换（`test/report/widgets/more_actions_test.dart` 10 个用例 + `test/report/page_test.dart` 既有断言）。
 - Legacy 兼容页 `LegacyDashboardCompatPage`（`presentation/pages/legacy_dashboard_compat.dart`，路由 `/report/legacy`，slide 进入、含返回按钮）：按 d8c9c5f5e 旧装配重建移动端 dashboard（readiness 首卡 + 趋势/发现/建议历史 + AI 总结/规律 + 四张导出卡 + 7/30 天切换 + 下拉刷新），沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导）；取舍：不复刻旧桌面端双栏外壳，桌面宽度渲染同一移动端布局。旧 dashboard 文件保留原样未删除。
 
 ## Sparse Record Semantics 合同

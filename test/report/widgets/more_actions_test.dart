@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/security_elevation.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
@@ -23,6 +25,7 @@ import 'package:luminous/features/report/presentation/providers/dashboard.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/settings/domain/entities/user_settings.dart';
+import 'package:luminous/features/settings/presentation/providers/data_export.dart';
 import 'package:luminous/features/settings/presentation/providers/user_settings.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -290,6 +293,65 @@ void main() {
     },
   );
 
+  testWidgets('PDF export failure shows the export failed toast after PIN', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final exportController = _ThrowingDataExportController();
+
+    await pumpPage(
+      tester,
+      signedIn: true,
+      current: reviewActive(),
+      history: reviewHistoryPage(const []),
+      overrides: [
+        // 持有有效 elevation token，直接越过 PIN 弹窗进入导出请求。
+        securityElevationControllerProvider.overrideWith(
+          _VerifiedElevationController.new,
+        ),
+        dataExportControllerProvider.overrideWith(() => exportController),
+      ],
+      withToaster: true,
+    );
+
+    await tester.tap(find.byKey(const Key('review-more-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('more-pdf')));
+    await tester.pumpAndSettle();
+
+    // PDF 入口以 monthly 输入发起导出；请求失败经 Failure 分支弹 toast。
+    expect(exportController.lastInput, reportMonthlyPdfExportRequest);
+    expect(find.textContaining(l10n.reportExportFailedToast), findsOneWidget);
+
+    // Toast 自动移除计时器走完，避免测试结束时仍有挂起 Timer。
+    await tester.pump(const Duration(milliseconds: 1900));
+    await tester.pumpAndSettle();
+    expect(find.textContaining(l10n.reportExportFailedToast), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('signed-out PDF entry shows the auth required dialog', (
+    tester,
+  ) async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    await pumpPage(
+      tester,
+      signedIn: false,
+      current: null,
+      history: reviewHistoryPage(const []),
+    );
+
+    await tester.tap(find.byKey(const Key('review-more-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('more-pdf')));
+    await tester.pumpAndSettle();
+
+    // 未登录点击导出入口：不发起导出，引导登录对话框出现。
+    expect(find.byKey(const Key('auth-required-dialog')), findsOneWidget);
+    expect(find.text(l10n.authNotSignedIn), findsOneWidget);
+  });
+
   testWidgets(
     'legacy report entry opens the legacy dashboard compatibility page',
     (tester) async {
@@ -364,6 +426,7 @@ Future<void> pumpPage(
   EventReview? current,
   ReviewEventPage? history,
   List<Override> overrides = const [],
+  bool withToaster = false,
 }) async {
   tester.view.devicePixelRatio = 1;
   tester.view.physicalSize = const Size(390, 844);
@@ -391,7 +454,13 @@ Future<void> pumpPage(
         ),
         ...overrides,
       ],
-      child: const TestForuiApp(home: ReportPage()),
+      // FToaster 与生产装配一致（MaterialApp builder 之下、页面之上），
+      // 让导出失败的 toast 断言可用。
+      child: TestForuiApp(
+        home: withToaster
+            ? const FToaster(child: ReportPage())
+            : const ReportPage(),
+      ),
     ),
   );
   await tester.pump();
@@ -439,6 +508,33 @@ class _FakeUserSettingsController extends UserSettingsController {
       ),
       securityPin: SecurityPinSettings(enabled: true),
     );
+  }
+}
+
+/// 直接持有有效 elevation token，让 `showSecurityElevationDialog` 跳过
+/// PIN 弹窗返回 true，测试聚焦导出请求的 Failure 分支。
+class _VerifiedElevationController extends SecurityElevationController {
+  @override
+  SecurityElevationState build() {
+    return SecurityElevationVerified(
+      expiresAt: DateTime.now().add(const Duration(minutes: 5)),
+    );
+  }
+}
+
+/// 记录输入并抛错的导出控制器，验证 Failure toast 分支。
+class _ThrowingDataExportController extends DataExportController {
+  DataExportRequestInput? lastInput;
+
+  @override
+  Future<DataExportRequestDataDto?> build() async => null;
+
+  @override
+  Future<DataExportRequestDataDto?> requestExport([
+    DataExportRequestInput input = reportHospitalPdfLast7DaysExportRequest,
+  ]) async {
+    lastInput = input;
+    throw Exception('export failed in test');
   }
 }
 

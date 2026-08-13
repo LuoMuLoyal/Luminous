@@ -21,7 +21,6 @@ import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
 import 'package:luminous/features/report/presentation/utils/export_actions.dart';
-import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
@@ -228,17 +227,6 @@ class ReportPage extends ConsumerWidget {
     );
   }
 
-  /// More sheet 的「就诊摘要」入口：打开诊所摘要预览（旧 clinicShare 流程）。
-  ///
-  /// 未登录时与旧导出入口一致，引导登录后回到本页。
-  Future<void> _openClinicSummary(BuildContext context, WidgetRef ref) async {
-    if (!ref.read(authSessionProvider).canAccessProtectedData) {
-      unawaited(pushAuthRequiredRoute(context, Routes.report));
-      return;
-    }
-    await showClinicSummaryPreviewDialog(context);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
@@ -255,19 +243,30 @@ class ReportPage extends ConsumerWidget {
       child: _ReportMobileShell(
         onRefresh: () => _refresh(ref),
         header: _ReviewTopBar(
-          onMore: () => showReportMoreActionsSheet(
-            context,
-            onVisitSummary: () => _openClinicSummary(context, ref),
-            onPdf: () => handleReportExportAction(
+          onMore: () => unawaited(
+            showReportMoreActionsSheet(
               context,
-              ref,
-              ReportExportKind.monthly,
+              // 就诊摘要走共享导出处理的 clinicShare 分支（含登录守卫），
+              // 与 PDF/打印保持一致，不另设副本。
+              onVisitSummary: () => handleReportExportAction(
+                context,
+                ref,
+                ReportExportKind.clinicShare,
+              ),
+              onPdf: () => handleReportExportAction(
+                context,
+                ref,
+                ReportExportKind.monthly,
+              ),
+              onPrint: () => handleReportExportAction(
+                context,
+                ref,
+                ReportExportKind.print,
+              ),
+              onLegacyReport: () async {
+                await context.push(Routes.reportLegacyDashboard);
+              },
             ),
-            onPrint: () =>
-                handleReportExportAction(context, ref, ReportExportKind.print),
-            onLegacyReport: () async {
-              await context.push(Routes.reportLegacyDashboard);
-            },
           ),
         ),
         child: ReviewView(
