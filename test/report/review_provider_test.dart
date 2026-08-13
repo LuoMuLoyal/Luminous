@@ -183,6 +183,50 @@ void main() {
       expect(repo.historyCalls, 1);
     });
 
+    test('requests all events with a null status by default', () async {
+      final repo = _FakeReviewRepository(
+        page: const ReviewEventPage(items: [], total: 0),
+      );
+      final container = _container(repo);
+      addTearDown(container.dispose);
+
+      await container.read(reviewHistoryProvider.future);
+
+      expect(repo.lastHistoryStatus, isNull);
+    });
+
+    test(
+      'refetches with the selected status when the filter changes',
+      () async {
+        final repo = _FakeReviewRepository(
+          page: const ReviewEventPage(items: [], total: 0),
+        );
+        final container = _container(repo);
+        addTearDown(container.dispose);
+
+        await container.read(reviewHistoryProvider.future);
+        expect(repo.historyCalls, 1);
+
+        container
+            .read(reviewHistoryStatusProvider.notifier)
+            .select(ReviewEventStatus.active);
+        await _pumpEventQueue();
+        await container.read(reviewHistoryProvider.future);
+
+        expect(repo.historyCalls, 2);
+        expect(repo.lastHistoryStatus, ReviewEventStatus.active);
+
+        container
+            .read(reviewHistoryStatusProvider.notifier)
+            .select(ReviewEventStatus.ended);
+        await _pumpEventQueue();
+        await container.read(reviewHistoryProvider.future);
+
+        expect(repo.historyCalls, 3);
+        expect(repo.lastHistoryStatus, ReviewEventStatus.ended);
+      },
+    );
+
     test('returns an empty page when signed out', () async {
       final repo = _FakeReviewRepository();
       final container = ProviderContainer(
@@ -393,6 +437,7 @@ class _FakeReviewRepository implements ReviewRepository {
   int historyCalls = 0;
   int detailCalls = 0;
   String? lastDetailEventId;
+  ReviewEventStatus? lastHistoryStatus;
 
   @override
   Future<EventReview?> fetchCurrentReview() async {
@@ -411,6 +456,7 @@ class _FakeReviewRepository implements ReviewRepository {
     int limit = 20,
   }) async {
     historyCalls += 1;
+    lastHistoryStatus = status;
     if (error != null) {
       // ignore: only_throw_errors
       throw error!;

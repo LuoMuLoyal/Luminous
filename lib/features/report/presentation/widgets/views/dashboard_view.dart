@@ -1,3 +1,16 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// LEGACY — 兼容期保留，已不再装配到主路径。
+//
+// Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（review_view.dart），
+// 本文件及配套 section/dialog（score_hero、export、findings、readiness、
+// patterns、trend、ai_summary、suggestion_history、preview_empty、
+// range_picker_dialog、clinic_summary_preview_dialog）与
+// `widgets/shared/top_bar.dart`（7/30 天范围切换）均保留代码但不再被
+// `page.dart` 引用。Task 8 会把导出/就诊摘要迁入 More 后评估删除。
+//
+// 未完成兼容期评估前不要在此新增功能；需要改动 legacy 行为时先与
+// Review 主路径的回归测试核对。
+// ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';

@@ -11,13 +11,29 @@ import 'package:luminous/l10n/app_localizations.dart';
 ///
 /// 列表项只读展示事件头部信息；点开查看完整回顾属于后续任务。
 /// 历史加载失败不阻塞首屏——卡片内显示一行提示 + 轻量重试入口。
+///
+/// 筛选：提供 status（全部 / 进行中 / 已结束）轻量筛选，由页面装配层的
+/// [reviewHistoryStatusProvider] 驱动重新拉取。时间范围**不是** review
+/// list 合同的一部分（合同只有 status/cursor/limit），不提供日期过滤。
 class ReviewHistorySection extends StatelessWidget {
-  const ReviewHistorySection({super.key, required this.history, this.onRetry});
+  const ReviewHistorySection({
+    super.key,
+    required this.history,
+    this.onRetry,
+    this.selectedStatus,
+    this.onStatusChanged,
+  });
 
   final AsyncValue<ReviewEventPage> history;
 
   /// 历史加载失败时的重试回调（由页面装配层 invalidate history provider）。
   final VoidCallback? onRetry;
+
+  /// 当前选中的 status 筛选（null = 全部）。
+  final ReviewEventStatus? selectedStatus;
+
+  /// 筛选变化回调；为 null 时筛选按钮禁用（测试/独立使用场景）。
+  final ValueChanged<ReviewEventStatus?>? onStatusChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +67,13 @@ class ReviewHistorySection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: Spacing.level3),
+            _StatusFilterRow(
+              selectedStatus: selectedStatus,
+              onStatusChanged: onStatusChanged,
+            ),
+            const SizedBox(height: Spacing.level3),
             history.when(
+              skipLoadingOnRefresh: true,
               loading: () => const Padding(
                 padding: EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Center(child: FProgress()),
@@ -197,6 +219,49 @@ class _HistoryStatusChip extends StatelessWidget {
               ),
         ),
       ),
+    );
+  }
+}
+
+/// 历史的 status 轻量筛选行：全部 / 进行中 / 已结束。
+///
+/// 只做合同内的 status 过滤；时间范围不属于 review list 合同。
+class _StatusFilterRow extends StatelessWidget {
+  const _StatusFilterRow({
+    required this.selectedStatus,
+    required this.onStatusChanged,
+  });
+
+  final ReviewEventStatus? selectedStatus;
+  final ValueChanged<ReviewEventStatus?>? onStatusChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final options = <(String, ReviewEventStatus?, String)>[
+      ('all', null, l10n.reportReviewHistoryFilterAll),
+      ('active', ReviewEventStatus.active, l10n.reportReviewStatusActive),
+      ('ended', ReviewEventStatus.ended, l10n.reportReviewStatusEnded),
+    ];
+
+    return Wrap(
+      spacing: Spacing.level2,
+      runSpacing: Spacing.level2,
+      children: [
+        for (final (key, status, label) in options)
+          FButton(
+            key: Key('review-history-filter-$key'),
+            variant: status == selectedStatus
+                ? FButtonVariant.primary
+                : FButtonVariant.outline,
+            size: FButtonSizeVariant.sm,
+            onPress: onStatusChanged == null
+                ? null
+                : () => onStatusChanged!(status),
+            child: Text(label),
+          ),
+      ],
     );
   }
 }

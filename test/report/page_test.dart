@@ -10,10 +10,17 @@ import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
+import 'package:luminous/features/report/presentation/providers/dashboard.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/export.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/readiness.dart';
+import 'package:luminous/features/report/presentation/widgets/sections/score_hero.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -64,10 +71,19 @@ void main() {
       );
       expect(find.byKey(const Key('review-next-step-section')), findsOneWidget);
 
-      // 旧 dashboard 主路径内容不再装配。
+      // 旧 dashboard 主路径内容不再装配：不构建 ScoreHero、ExportSection
+      // 或 readiness 卡（canShowFullReport 整页锁所在），也不出现 7/30 天
+      // 范围切换（ReportTopBar/ReportRangeMenu 仅 legacy 文件保留）。
       expect(find.byKey(const Key('report-readiness-card')), findsNothing);
       expect(find.byKey(const Key('report-score-hero')), findsNothing);
       expect(find.byKey(const Key('report-export-section')), findsNothing);
+      expect(find.byType(ReportScoreHero), findsNothing);
+      expect(find.byType(ReportExportSection), findsNothing);
+      expect(find.byType(ReportReadinessSection), findsNothing);
+      expect(find.byType(ReportTopBar), findsNothing);
+      expect(find.byType(ReportRangeMenu), findsNothing);
+      expect(find.text(l10n.reportRangeLast7Days), findsNothing);
+      expect(find.text(l10n.reportRangeLast30Days), findsNothing);
 
       final scrollable = find.byType(Scrollable).first;
       final historySection = find.byKey(const Key('review-history-section'));
@@ -288,8 +304,155 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(healthEvents.createdTitle, '头痛观察');
+    expect(healthEvents.createdReasonRecordId, isNull);
+    expect(healthEvents.createdMedicineIds, isEmpty);
   });
 
+  testWidgets(
+    'start observation forwards symptom and medicine associations like today',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final healthEvents = _FakeHealthEventRepository();
+      final snapshot = _healthContextSnapshot.copyWith(
+        currentMedicines: [_currentMedicine],
+      );
+
+      await tester.pumpWidget(
+        _buildApp(
+          reviewRepository: _FakeReviewRepository(
+            current: null,
+            page: const ReviewEventPage(items: [], total: 0),
+          ),
+          healthEvents: healthEvents,
+          snapshot: snapshot,
+          records: const DailyRecordListData(items: [_symptomRecord], total: 1),
+          signedIn: true,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.tap(
+        find.byKey(const Key('review-start-observation-action')),
+      );
+      await tester.pumpAndSettle();
+
+      // 与 today 一致：选择器只在选项非空时出现。
+      expect(
+        find.byKey(const Key('health-event-association-record-1')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const Key('health-event-association-medicine-1')),
+        findsOneWidget,
+      );
+
+      await tester.enterText(
+        find.byKey(const Key('health-event-start-title-field')),
+        '发热观察',
+      );
+      await tester.tap(
+        find.byKey(const Key('health-event-association-record-1')),
+      );
+      await tester.tap(
+        find.byKey(const Key('health-event-association-medicine-1')),
+      );
+      await tester.tap(find.byKey(const Key('health-event-start-submit')));
+      await tester.pumpAndSettle();
+
+      expect(healthEvents.createdTitle, '发热观察');
+      expect(healthEvents.createdReasonRecordId, 'record-1');
+      expect(healthEvents.createdMedicineIds, ['medicine-1']);
+    },
+  );
+
+  testWidgets('legacy dashboard provider failure does not block the review', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+
+    // 旧 dashboard provider 被 override 为必失败：主路径不应 watch 它，
+    // review 内容照常渲染。
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+          reviewRepositoryProvider.overrideWithValue(
+            _FakeReviewRepository(
+              current: reviewActive(),
+              page: const ReviewEventPage(items: [], total: 0),
+            ),
+          ),
+          reportDashboardProvider.overrideWith(
+            (ref, query) async => throw Exception('legacy dashboard down'),
+          ),
+          healthContextSnapshotProvider.overrideWith(
+            (ref) async => _healthContextSnapshot,
+          ),
+          dailyRecordListForDateProvider.overrideWith(
+            (ref, date) async => const DailyRecordListData(items: [], total: 0),
+          ),
+        ],
+        child: const TestForuiApp(home: ReportPage()),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('review-event-header')), findsOneWidget);
+    expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
+    expect(find.text(l10n.reportReviewErrorTitle), findsNothing);
+  });
+
+  testWidgets('history status filter re-fetches with the selected status', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final reviewRepository = _FakeReviewRepository(
+      current: null,
+      page: const ReviewEventPage(items: [], total: 0),
+    );
+
+    await tester.pumpWidget(
+      _buildApp(reviewRepository: reviewRepository, signedIn: true),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(reviewRepository.lastHistoryStatus, isNull);
+
+    await tester.tap(find.byKey(const Key('review-history-filter-active')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(reviewRepository.historyCalls, 2);
+    expect(reviewRepository.lastHistoryStatus, ReviewEventStatus.active);
+
+    await tester.tap(find.byKey(const Key('review-history-filter-all')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(reviewRepository.historyCalls, 3);
+    expect(reviewRepository.lastHistoryStatus, isNull);
+  });
   testWidgets('active event header check-in calls the repository checkIn', (
     tester,
   ) async {
@@ -369,6 +532,8 @@ Widget _buildApp({
   required ReviewRepository reviewRepository,
   required bool signedIn,
   HealthEventRepository? healthEvents,
+  HealthContextSnapshot snapshot = _healthContextSnapshot,
+  DailyRecordListData records = const DailyRecordListData(items: [], total: 0),
 }) {
   return ProviderScope(
     overrides: [
@@ -380,9 +545,8 @@ Widget _buildApp({
       reviewRepositoryProvider.overrideWithValue(reviewRepository),
       if (healthEvents != null)
         healthEventRepositoryProvider.overrideWithValue(healthEvents),
-      healthContextSnapshotProvider.overrideWith(
-        (ref) async => _healthContextSnapshot,
-      ),
+      healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
+      dailyRecordListForDateProvider.overrideWith((ref, date) async => records),
     ],
     child: const TestForuiApp(home: ReportPage()),
   );
@@ -422,6 +586,7 @@ class _FakeReviewRepository implements ReviewRepository {
 
   int currentCalls = 0;
   int historyCalls = 0;
+  ReviewEventStatus? lastHistoryStatus;
 
   @override
   Future<EventReview?> fetchCurrentReview() async {
@@ -436,6 +601,7 @@ class _FakeReviewRepository implements ReviewRepository {
     int limit = 20,
   }) async {
     historyCalls += 1;
+    lastHistoryStatus = status;
     return page ?? const ReviewEventPage(items: [], total: 0);
   }
 
@@ -596,4 +762,29 @@ const _healthContextSnapshot = HealthContextSnapshot(
   allergies: [],
   conditions: [],
   currentMedicines: [],
+);
+
+const _currentMedicine = CurrentMedicineItem(
+  id: 'medicine-1',
+  source: 'manual',
+  sourceRefId: null,
+  displayName: '短期用药',
+  strengthText: null,
+  doseText: null,
+  route: null,
+  startedAt: null,
+  endedAt: null,
+  isCurrent: true,
+  note: null,
+  createdAt: '2026-08-09T00:00:00.000Z',
+  updatedAt: '2026-08-09T00:00:00.000Z',
+);
+
+const _symptomRecord = DailyRecordItem(
+  id: 'record-1',
+  kind: DailyRecordKind.symptom,
+  occurredAt: '2026-08-13T08:00:00.000Z',
+  title: '头晕',
+  createdAt: '2026-08-13T08:00:00.000Z',
+  updatedAt: '2026-08-13T08:00:00.000Z',
 );

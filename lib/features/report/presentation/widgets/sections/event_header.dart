@@ -45,6 +45,7 @@ class EventHeaderSection extends StatelessWidget {
             Row(
               children: [
                 _ReviewStatusChip(
+                  key: const Key('review-event-status-chip'),
                   label: switch (event.status) {
                     ReviewEventStatus.active => l10n.reportReviewStatusActive,
                     ReviewEventStatus.ended => l10n.reportReviewStatusEnded,
@@ -164,7 +165,7 @@ class EventHeaderSection extends StatelessWidget {
 
 /// 状态/结果徽标：带色调的小圆角 chip，非告警语义。
 class _ReviewStatusChip extends StatelessWidget {
-  const _ReviewStatusChip({required this.label, required this.tone});
+  const _ReviewStatusChip({super.key, required this.label, required this.tone});
 
   final String label;
   final SemanticColor tone;

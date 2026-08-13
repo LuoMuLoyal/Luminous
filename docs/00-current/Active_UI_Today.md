@@ -78,7 +78,7 @@ Today 根页为行动面板；手机端顺序为 `问候语 → 主建议卡 →
 - check-in 与结束都只接受“好转 / 差不多 / 加重”，结束必须由用户选择结果。
 - 三个确认弹窗由父层提供 repository action；请求失败时弹窗保留输入并显示可重试错误，取消不发请求。
 - 写入成功后刷新 active event、Today dashboard 和 suggestion 数据；桌面端暂不接入新入口。
-- check-in 日期按用户 profile 时区计算；缺失或无效时使用后端约定的 `Asia/Shanghai` 默认值。
+- check-in 日期按用户 profile 时区计算；缺失或无效时使用后端约定的 `Asia/Shanghai` 默认值。时区读取与 `yyyy-MM-dd` 日期键逻辑提取为共享工具 `lib/core/utils/local_date.dart`（`readUserTimezone` / `localDateKey`），today 与 report 的 check-in / 关联选项预读共用。
 
 ## 数据层
 

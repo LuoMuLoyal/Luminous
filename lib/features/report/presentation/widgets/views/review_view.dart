@@ -39,6 +39,8 @@ class ReviewView extends StatelessWidget {
     required this.onEndEvent,
     required this.onSignIn,
     this.onHistoryRetry,
+    this.historyStatus,
+    this.onHistoryStatusChanged,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -54,6 +56,11 @@ class ReviewView extends StatelessWidget {
 
   /// 历史加载失败时卡片内的轻量重试回调；缺省时不显示重试按钮。
   final VoidCallback? onHistoryRetry;
+
+  /// 历史 status 筛选的当前选中值与切换回调（页面装配层接到
+  /// reviewHistoryStatusProvider）。缺省时筛选按钮禁用。
+  final ReviewEventStatus? historyStatus;
+  final ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +113,12 @@ class ReviewView extends StatelessWidget {
         CompletedActionsSection(section: review.sections.completedActions),
         NextStepSection(section: review.sections.nextStep),
       ],
-      ReviewHistorySection(history: historyAsync, onRetry: onHistoryRetry),
+      ReviewHistorySection(
+        history: historyAsync,
+        onRetry: onHistoryRetry,
+        selectedStatus: historyStatus,
+        onStatusChanged: onHistoryStatusChanged,
+      ),
     ];
 
     return Column(

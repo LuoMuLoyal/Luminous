@@ -173,7 +173,9 @@ Persisted preference keys:
   feedback, expired-at) is owned by the Report ARB entries.
 - Event review copy (`reportReview*`) — four section titles, event status/kind/outcome labels,
   unknown-section reason codes, whatHappened/keyChanges/completedActions/nextStep fact wording,
-  red-flag safety notes, history, no-event and error states — is owned by the Report ARB entries
+  red-flag safety notes, history, history status filter (`reportReviewHistoryFilterAll`; the
+  active/ended filter chips reuse `reportReviewStatusActive` / `reportReviewStatusEnded`),
+  no-event and error states — is owned by the Report ARB entries
   (`report_*.arb` fragments, zh/en in sync). The review UI composes these keys over structured
   contract arguments; no review copy is hardcoded in widgets.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings

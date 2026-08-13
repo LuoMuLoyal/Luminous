@@ -427,6 +427,7 @@
   },
   "reportReviewHistoryTitle": "过去的观察",
   "reportReviewHistoryEmpty": "还没有已结束的观察。",
+  "reportReviewHistoryFilterAll": "全部",
   "reportReviewHistoryLoadFailed": "历史记录加载失败。",
   "reportReviewNoEventTitle": "现在没有进行中的观察",
   "reportReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",

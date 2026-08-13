@@ -131,22 +131,6 @@
 - [ ] 使用移动端约束完成布局；不新增桌面专属 breakpoint 或 sidebar 对等实现。
 - [ ] 运行 review view 和各 section widget tests。
 
-## Task 7 — Remove the Generic Dashboard From the Primary Path
-
-**Files:**
-
-- Modify: `Luminous/lib/features/report/presentation/widgets/views/dashboard_view.dart`
-- Modify: `Luminous/lib/features/report/presentation/widgets/shared/top_bar.dart`
-- Modify: `Luminous/lib/features/report/presentation/pages/page.dart`
-- Modify: `Luminous/test/report/page_test.dart`
-- Modify: `Luminous/test/report/repository_test.dart`
-
-- [ ] 写回归测试确保 primary page 不再构建 `ScoreHeroSection`、默认 `ExportSection` 或以 `canShowFullReport` 锁住所有内容。
-- [ ] 将现有 dashboard view 放到明确的 legacy/compatibility action，或仅保留代码但不从 primary route 调用；不删除文件。
-- [ ] 从 primary top bar 移除 7/30 天作为核心切换；在 history filter 中保留可选时间范围。
-- [ ] 单维趋势只有 coverage sufficient 时进入折叠详情；其他维度 unknown 不影响可用 section。
-- [ ] 运行 report presentation tests，确认旧 dashboard API 失败不会阻塞 event review。
-
 ## Task 8 — Move Export and Clinic Summary Into More
 
 **Files:**

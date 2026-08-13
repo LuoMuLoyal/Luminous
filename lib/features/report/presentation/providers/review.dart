@@ -71,18 +71,24 @@ Future<EventReview?> reviewCurrent(Ref ref) {
 
 /// 最近事件回顾历史（第一页，默认 20 条），keepAlive 缓存。
 ///
-/// 事件创建/结束/check-in 后自动刷新；
+/// 状态筛选由 [reviewHistoryStatusProvider] 驱动（null = 全部）；review
+/// list 合同只有 status/cursor/limit 三个过滤参数，**没有日期范围参数**——
+/// 时间范围（如旧 dashboard 的 7/30 天）属于历史筛选概念，不在当前合同
+/// 内，客户端不发明日期过滤。
+///
+/// 事件创建/结束/check-in 后自动刷新；筛选切换时本 provider 重建重取；
 /// `ref.invalidate(reviewHistoryProvider)` 即 retry；后续翻页由
 /// presentation 层直接调用 repository。
 @Riverpod(keepAlive: true)
 Future<ReviewEventPage> reviewHistory(Ref ref) {
+  final status = ref.watch(reviewHistoryStatusProvider);
   ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));
 
   return authGuarded(
     ref: ref,
     fetch: () => ref
         .watch(reviewRepositoryProvider)
-        .fetchHistory()
+        .fetchHistory(status: status)
         .timeout(
           _reviewTimeout,
           onTimeout: () => throw TimeoutException('review_history_timeout'),
@@ -90,6 +96,19 @@ Future<ReviewEventPage> reviewHistory(Ref ref) {
     signedOutFallback: () async => const ReviewEventPage(items: [], total: 0),
   );
 }
+
+/// 回顾历史的 status 筛选状态：null = 全部，active/ended 为合同内取值。
+class ReviewHistoryStatusNotifier extends Notifier<ReviewEventStatus?> {
+  @override
+  ReviewEventStatus? build() => null;
+
+  void select(ReviewEventStatus? status) => state = status;
+}
+
+final reviewHistoryStatusProvider =
+    NotifierProvider<ReviewHistoryStatusNotifier, ReviewEventStatus?>(
+      ReviewHistoryStatusNotifier.new,
+    );
 
 /// 指定事件 ID 的完整回顾。
 ///

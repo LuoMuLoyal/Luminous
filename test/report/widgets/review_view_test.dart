@@ -27,6 +27,8 @@ void main() {
     VoidCallback? onRetry,
     bool canAccessProtectedData = true,
     bool isPreview = false,
+    ReviewEventStatus? historyStatus,
+    ValueChanged<ReviewEventStatus?>? onHistoryStatusChanged,
   }) async {
     tester.view.devicePixelRatio = 1;
     tester.view.physicalSize = const Size(390, 844);
@@ -54,6 +56,8 @@ void main() {
               onCheckIn: onCheckIn ?? () {},
               onEndEvent: onEndEvent ?? () {},
               onSignIn: () {},
+              historyStatus: historyStatus,
+              onHistoryStatusChanged: onHistoryStatusChanged,
             ),
           ),
         ),
@@ -92,7 +96,14 @@ void main() {
 
       expect(find.byKey(const Key('review-event-header')), findsOneWidget);
       expect(find.text('感冒观察'), findsOneWidget);
-      expect(find.text(l10n.reportReviewStatusActive), findsOneWidget);
+      // 状态 chip 文案与历史筛选按钮共用「进行中」文案，按 key 锁定头部 chip。
+      expect(
+        find.descendant(
+          of: find.byKey(const Key('review-event-status-chip')),
+          matching: find.text(l10n.reportReviewStatusActive),
+        ),
+        findsOneWidget,
+      );
       expect(find.byKey(const Key('review-check-in-action')), findsOneWidget);
       expect(find.byKey(const Key('review-end-event-action')), findsOneWidget);
 
@@ -132,7 +143,13 @@ void main() {
 
     await tester.pump();
 
-    expect(find.text(l10n.reportReviewStatusEnded), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const Key('review-event-status-chip')),
+        matching: find.text(l10n.reportReviewStatusEnded),
+      ),
+      findsOneWidget,
+    );
     // 头部结果 chip 与变化趋势 chip 都可能出现「好转」。
     expect(find.text(l10n.reportReviewOutcomeImproved), findsWidgets);
     expect(find.byKey(const Key('review-check-in-action')), findsNothing);
@@ -159,9 +176,34 @@ void main() {
         find.text(l10n.reportReviewSectionCompletedActions),
         findsOneWidget,
       );
+      // 未知维度不影响其他可用 section：whatHappened / nextStep 照常渲染。
+      expect(find.text('记录了 5 条症状'), findsOneWidget);
+      expect(find.text(l10n.reportReviewNextStepCheckInPrompt), findsOneWidget);
       // 未知段落不显示分数或红色「需关注」状态。
       expect(find.textContaining('需关注'), findsNothing);
       expect(find.byKey(const Key('report-score-hero')), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'history status filter passes the selection through to the assembly layer',
+    (tester) async {
+      ReviewEventStatus? selected;
+      await pumpReviewView(
+        tester,
+        current: const AsyncValue<EventReview?>.data(null),
+        history: const AsyncValue<ReviewEventPage>.data(
+          ReviewEventPage(items: [], total: 0),
+        ),
+        historyStatus: ReviewEventStatus.active,
+        onHistoryStatusChanged: (status) => selected = status,
+      );
+
+      await tester.pump();
+
+      await tester.tap(find.byKey(const Key('review-history-filter-ended')));
+      await tester.pumpAndSettle();
+      expect(selected, ReviewEventStatus.ended);
     },
   );
 

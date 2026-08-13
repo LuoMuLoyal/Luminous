@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/core/widgets/common/state_views.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -21,8 +22,6 @@ import 'package:luminous/features/today/presentation/widgets/shared/section.dart
 import 'package:luminous/features/today/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/today/presentation/widgets/shared/view_models.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:timezone/data/latest.dart' as timezone_data;
-import 'package:timezone/timezone.dart' as timezone;
 
 class TodayDashboardView extends ConsumerWidget {
   const TodayDashboardView({
@@ -319,9 +318,9 @@ class _HealthEventSection extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     try {
-      final userTimezone = await _readUserTimezone(ref);
+      final userTimezone = await readUserTimezone(ref);
       final today = DateTime.parse(
-        _localDateKey(DateTime.now(), timeZoneName: userTimezone),
+        localDateKey(DateTime.now(), timeZoneName: userTimezone),
       );
       final records = await ref
           .read(dailyRecordListForDateProvider(today).future)
@@ -371,12 +370,12 @@ class _HealthEventSection extends ConsumerWidget {
         requiredMessage: l10n.todayHealthEventOutcomeRequired,
         submitErrorLabel: l10n.todayHealthEventSaveFailed,
         onSubmit: (outcome) async {
-          final userTimezone = await _readUserTimezone(ref);
+          final userTimezone = await readUserTimezone(ref);
           await ref
               .read(activeHealthEventProvider.notifier)
               .checkIn(
                 eventId: event.id,
-                date: _localDateKey(DateTime.now(), timeZoneName: userTimezone),
+                date: localDateKey(DateTime.now(), timeZoneName: userTimezone),
                 outcome: outcome,
               );
           saved = true;
@@ -532,41 +531,6 @@ class _ActiveHealthEventContent extends StatelessWidget {
       ],
     );
   }
-}
-
-Future<String?> _readUserTimezone(WidgetRef ref) async {
-  final cached = ref.read(healthContextSnapshotProvider);
-  if (cached.hasValue) return cached.value!.profile.timezone;
-  try {
-    return (await ref.read(
-      healthContextSnapshotProvider.future,
-    )).profile.timezone;
-  } catch (_) {
-    return null;
-  }
-}
-
-String _localDateKey(DateTime date, {String? timeZoneName}) {
-  const fallbackTimeZoneName = 'Asia/Shanghai';
-  var value = date.toLocal();
-  try {
-    timezone_data.initializeTimeZones();
-    value = timezone.TZDateTime.from(
-      date.toUtc(),
-      timezone.getLocation(
-        timeZoneName == null || timeZoneName.isEmpty
-            ? fallbackTimeZoneName
-            : timeZoneName,
-      ),
-    );
-  } catch (_) {
-    // Keep the backend's default timezone when the bundled timezone data is
-    // unavailable, rather than using a potentially different device date.
-    value = date.toUtc().add(const Duration(hours: 8));
-  }
-  return '${value.year.toString().padLeft(4, '0')}-'
-      '${value.month.toString().padLeft(2, '0')}-'
-      '${value.day.toString().padLeft(2, '0')}';
 }
 
 class _DesktopTodayDashboard extends StatelessWidget {

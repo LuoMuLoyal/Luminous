@@ -420,6 +420,7 @@
   },
   "reportReviewHistoryTitle": "Past observations",
   "reportReviewHistoryEmpty": "No past observations yet.",
+  "reportReviewHistoryFilterAll": "All",
   "reportReviewHistoryLoadFailed": "Couldn't load past observations.",
   "reportReviewNoEventTitle": "No observation in progress",
   "reportReviewNoEventDescription": "Start a health observation and this page will review what happened, what changed, what you completed, and what's next.",

@@ -114,6 +114,11 @@ void main() {
         findsOneWidget,
       );
       expect(find.textContaining('需关注'), findsNothing);
+      // 覆盖不足时后端不发 observed_changes，客户端不渲染任何趋势行
+      // （包括结果变化与单维数值趋势）。
+      expect(find.text(l10n.reportReviewChangeOutcomeTitle), findsNothing);
+      expect(find.text(l10n.reportReviewChangeWaterTitle), findsNothing);
+      expect(find.text(l10n.reportReviewChangeSleepTitle), findsNothing);
     });
 
     testWidgets('missing direction shows unknown instead of flat', (
@@ -352,6 +357,45 @@ void main() {
       await tester.tap(retryButton);
       expect(retryTapped, isTrue);
       await tester.pumpAndSettle();
+    });
+
+    testWidgets('renders the status filter with all selected by default', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        const ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(items: [], total: 0),
+          ),
+        ),
+      );
+
+      expect(find.text(l10n.reportReviewHistoryFilterAll), findsOneWidget);
+      expect(find.text(l10n.reportReviewStatusActive), findsOneWidget);
+      expect(find.text(l10n.reportReviewStatusEnded), findsOneWidget);
+    });
+
+    testWidgets('tapping a filter emits the selected status', (tester) async {
+      ReviewEventStatus? selected;
+      await pumpSection(
+        tester,
+        ReviewHistorySection(
+          history: const AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(items: [], total: 0),
+          ),
+          selectedStatus: null,
+          onStatusChanged: (status) => selected = status,
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('review-history-filter-active')));
+      await tester.pumpAndSettle();
+      expect(selected, ReviewEventStatus.active);
+
+      await tester.tap(find.byKey(const Key('review-history-filter-ended')));
+      await tester.pumpAndSettle();
+      expect(selected, ReviewEventStatus.ended);
     });
   });
 }

@@ -1,3 +1,12 @@
+// ═══════════════════════════════════════════════════════════════════════════
+// LEGACY — 兼容期保留，已不再装配到主路径。
+//
+// 旧 dashboard 的顶栏与 7/30 天范围切换（ReportTopBar / ReportRangeMenu /
+// ReportPeriodPill）。Task 6 起 `/report` 主路径改用 page.dart 内部的
+// `_ReviewTopBar`（仅标题，无范围切换），本文件仅供 legacy dashboard
+// widgets（dashboard_view / trend / dashboard_preview）使用，不属于
+// Review 主路径。Task 8 把导出迁入 More 后评估删除。
+// ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';

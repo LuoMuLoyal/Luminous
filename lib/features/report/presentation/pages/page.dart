@@ -4,6 +4,7 @@ import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/utils/local_date.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/auth/presentation/widgets/shared/required_dialog.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -11,13 +12,13 @@ import 'package:luminous/features/health_event/presentation/providers/active_eve
 import 'package:luminous/features/health_event/presentation/widgets/sheets/check_in.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/end_event.dart';
 import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
+import 'package:luminous/features/record/data/providers/record_access.dart';
+import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
 import 'package:luminous/features/report/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
-import 'package:timezone/data/latest.dart' as timezone_data;
-import 'package:timezone/timezone.dart' as timezone;
 
 /// 第五 Tab 的 Review 页：以健康事件为主单位的回顾首屏。
 ///
@@ -42,13 +43,16 @@ class ReportPage extends ConsumerWidget {
 
   /// 「开始健康观察」入口（无事件时）。
   ///
-  /// 跟进项（Task 7/8 与 today 对齐）：当前只转发标题到 create，不提供
-  /// 关联触发症状（reasonRecordId）与关联当前用药（currentMedicineIds）
-  /// 的选项——today 的 `_openStart` 会从 health context snapshot 与当日
-  /// 记录预读选项并转发参数，此处保持轻量，待 Review 交互与 More 收尾时
-  /// 补齐（见 migration log 2026-08-13 Review Task 6 修复条目）。
+  /// 与 today 的 `_openStart` 对齐：从 health context snapshot 预读当前用药
+  /// 选项、按用户时区的今天预读症状记录选项，并随创建请求转发
+  /// `reasonRecordId` / `currentMedicineIds`。选项加载失败时静默降级为
+  /// 空列表，不阻塞开始观察。创建成功后由 DataChangeBus（healthEvents
+  /// topic）驱动 review providers 自动刷新，无需手动 refresh。
   Future<void> _openStart(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
+    final currentMedicineOptions = await _readCurrentMedicineOptions(ref);
+    final reasonRecordOptions = await _readReasonRecordOptions(ref);
+    if (!context.mounted) return;
     await showAppDialog<void>(
       context: context,
       maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
@@ -57,6 +61,10 @@ class ReportPage extends ConsumerWidget {
         heading: l10n.todayHealthEventStartTitle,
         shortTitleLabel: l10n.todayHealthEventTitleLabel,
         hint: l10n.todayHealthEventTitleHint,
+        currentMedicineLabel: l10n.todayHealthEventCurrentMedicineLabel,
+        currentMedicineOptions: currentMedicineOptions,
+        reasonRecordLabel: l10n.todayHealthEventReasonRecordLabel,
+        reasonRecordOptions: reasonRecordOptions,
         cancelLabel: l10n.todayHealthEventCancelAction,
         submitLabel: l10n.todayHealthEventStartAction,
         submittingLabel: l10n.todayHealthEventSaveAction,
@@ -70,11 +78,69 @@ class ReportPage extends ConsumerWidget {
             }) async {
               await ref
                   .read(activeHealthEventProvider.notifier)
-                  .create(title: shortTitle);
+                  .create(
+                    title: shortTitle,
+                    reasonRecordId: reasonRecordId,
+                    currentMedicineIds: currentMedicineIds,
+                  );
               if (dialogContext.mounted) Navigator.of(dialogContext).pop();
             },
       ),
     );
+  }
+
+  Future<List<HealthEventAssociationOption>> _readCurrentMedicineOptions(
+    WidgetRef ref,
+  ) async {
+    try {
+      final snapshot = await ref
+          .read(healthContextSnapshotProvider.future)
+          .timeout(const Duration(seconds: 2));
+      return snapshot.currentMedicines
+          .where((medicine) => medicine.isCurrent)
+          .map(
+            (medicine) => HealthEventAssociationOption(
+              id: medicine.id,
+              label: medicine.displayName,
+            ),
+          )
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<List<HealthEventAssociationOption>> _readReasonRecordOptions(
+    WidgetRef ref,
+  ) async {
+    try {
+      final userTimezone = await readUserTimezone(ref);
+      final today = DateTime.parse(
+        localDateKey(DateTime.now(), timeZoneName: userTimezone),
+      );
+      final records = await ref
+          .read(dailyRecordListForDateProvider(today).future)
+          .timeout(const Duration(seconds: 2));
+      return records.items
+          .where((record) => record.kind == DailyRecordKind.symptom)
+          .map((record) {
+            final label = [record.title, record.value, record.note]
+                .map((value) => value?.trim())
+                .whereType<String>()
+                .firstWhere((value) => value.isNotEmpty, orElse: () => '');
+            return (record: record, label: label);
+          })
+          .where((item) => item.label.isNotEmpty)
+          .map(
+            (item) => HealthEventAssociationOption(
+              id: item.record.id,
+              label: item.label,
+            ),
+          )
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
   }
 
   Future<void> _openCheckIn(
@@ -99,12 +165,12 @@ class ReportPage extends ConsumerWidget {
         requiredMessage: l10n.todayHealthEventOutcomeRequired,
         submitErrorLabel: l10n.todayHealthEventSaveFailed,
         onSubmit: (outcome) async {
-          final userTimezone = await _readUserTimezone(ref);
+          final userTimezone = await readUserTimezone(ref);
           await ref
               .read(activeHealthEventProvider.notifier)
               .checkIn(
                 eventId: review.event.id,
-                date: _localDateKey(DateTime.now(), timeZoneName: userTimezone),
+                date: localDateKey(DateTime.now(), timeZoneName: userTimezone),
                 outcome: outcome,
               );
           if (dialogContext.mounted) Navigator.of(dialogContext).pop();
@@ -153,6 +219,7 @@ class ReportPage extends ConsumerWidget {
     final currentAsync = ref.watch(reviewCurrentProvider);
     final cachedReview = ref.watch(reviewLastCurrentProvider);
     final historyAsync = ref.watch(reviewHistoryProvider);
+    final historyStatus = ref.watch(reviewHistoryStatusProvider);
     final review = currentAsync.asData?.value ?? cachedReview;
 
     return ShellDeferredContent(
@@ -163,6 +230,9 @@ class ReportPage extends ConsumerWidget {
           currentAsync: currentAsync,
           cachedReview: cachedReview,
           historyAsync: historyAsync,
+          historyStatus: historyStatus,
+          onHistoryStatusChanged: (status) =>
+              ref.read(reviewHistoryStatusProvider.notifier).select(status),
           canAccessProtectedData: canAccessProtectedData,
           isPreview: isPreview,
           onRetry: () => ref.invalidate(reviewCurrentProvider),
@@ -234,39 +304,4 @@ class _ReportMobileShell extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<String?> _readUserTimezone(WidgetRef ref) async {
-  final cached = ref.read(healthContextSnapshotProvider);
-  if (cached.hasValue) return cached.value!.profile.timezone;
-  try {
-    return (await ref.read(
-      healthContextSnapshotProvider.future,
-    )).profile.timezone;
-  } catch (_) {
-    return null;
-  }
-}
-
-String _localDateKey(DateTime date, {String? timeZoneName}) {
-  const fallbackTimeZoneName = 'Asia/Shanghai';
-  var value = date.toLocal();
-  try {
-    timezone_data.initializeTimeZones();
-    value = timezone.TZDateTime.from(
-      date.toUtc(),
-      timezone.getLocation(
-        timeZoneName == null || timeZoneName.isEmpty
-            ? fallbackTimeZoneName
-            : timeZoneName,
-      ),
-    );
-  } catch (_) {
-    // Keep the backend's default timezone when the bundled timezone data is
-    // unavailable, rather than using a potentially different device date.
-    value = date.toUtc().add(const Duration(hours: 8));
-  }
-  return '${value.year.toString().padLeft(4, '0')}-'
-      '${value.month.toString().padLeft(2, '0')}-'
-      '${value.day.toString().padLeft(2, '0')}';
 }
