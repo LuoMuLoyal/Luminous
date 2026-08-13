@@ -8,8 +8,9 @@ It is a living document — directions shift as the product and community grow.
 Luminous is currently at `0.1.0-dev`. The core mobile experience is functional
 with all five tabs active, but the project has not yet shipped a stable release.
 The product direction has been re-baselined around time-bounded health events,
-sparse records, proactive guidance, and event-first review; the runtime still
-reflects parts of the previous general report/dashboard model.
+sparse records, proactive guidance, and event-first review; the fifth tab's
+user task is now Review and the previous general report/dashboard model is
+retained only as a legacy compatibility page under More.
 
 **What works today**
 
@@ -25,6 +26,12 @@ reflects parts of the previous general report/dashboard model.
 - AI assistant: SSE streaming chat, proposed actions (create / update / delete
   records, update settings), conversation history, context source controls,
   Markdown rendering for AI-generated text
+- Health events: user-confirmed start/end, per-day check-ins, related
+  symptoms/medicines/records, and improved/unchanged/worsened result
+- Review (fifth tab): event-first review view with four sections (what
+  happened / key changes / completed actions / next step), history filtering,
+  and More actions for visit summary, PDF and print exports; the old dashboard
+  remains reachable via a legacy compatibility page
 - Reports: AI-driven summaries, trend visualization (fl_chart), data export,
   suggestion history (lifecycle-aware: active / expired / dismissed)
 - Settings: theme (mode + family), locale, accessibility, notifications, data
@@ -51,10 +58,7 @@ reflects parts of the previous general report/dashboard model.
 - Stable release — still in dev phase
 - Real medicine barcode / OCR / prescription recognition flow
 - Push notification delivery (pending Lucent FCM/APNs)
-- Health-event lifecycle and result confirmation
-- Truly event-triggered proactive analysis with consistent dose, water, sleep,
-  and missing-data semantics
-- Event-first Review UI replacing the current generic Report dashboard task
+- Privacy-minimal closed-loop measurement and visit-summary hardening
 
 Desktop and the full authenticated Web app are intentionally frozen. Their
 existing code remains, but feature parity, distribution, and productization are
@@ -80,17 +84,10 @@ Finish integration, verification, and release of the existing runtime.
 
 Execute the plans indexed by
 [`plans/2026-08-07-product-loop-program.md`](plans/2026-08-07-product-loop-program.md).
+Workstream 1 (Review Experience — event-first review, `/report` compatibility,
+removal of the composite score, exports moved into More) is complete; the next
+workstream is active:
 
-- **Health Event Contract** — confirmed start/end, system proposals, related
-  symptoms/medicines/records, and improved/unchanged/worsened result
-- **Proactive Suggestion Runtime** — relevant changes trigger bounded
-  recomputation; opening Today is not the first generation trigger
-- **Sparse Record Semantics** — missing means unknown; medication uses reminder
-  slots; water uses ml; sleep supports night sleep and naps; optional health
-  imports cannot be a core prerequisite
-- **Review Experience** — keep the fifth tab and `/report` compatibility, rename
-  its user task to Review, remove the composite score and move optional exports
-  into More
 - **Visit Summary and Measurement** — harden the optional problem-oriented
   summary while privacy-minimal event, suggestion and review signals validate
   the core loop separately from exports

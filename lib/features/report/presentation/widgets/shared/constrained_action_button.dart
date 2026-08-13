@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:forui/forui.dart';
-import 'package:luminous/core/design/design.dart';
 
 /// 全宽动作按钮：让长文案（en / 大字体）在可用宽度内换行或省略，而不是
 /// 撑破 Forui 按钮内容 Row（RenderFlex overflow，Task 9 en / 大字体矩阵
@@ -18,6 +17,10 @@ class ConstrainedActionButton extends StatelessWidget {
     this.maxLines = 2,
   });
 
+  /// Forui 按钮内容横向 padding 12+12（FButtonSizeStyles 的 md/sm
+  /// contentPadding 均为 12；不用 Spacing.level6=28 以免多扣 4px 裕量）。
+  static const double _kContentPadding = 24;
+
   final VoidCallback onPress;
   final String label;
 
@@ -28,8 +31,10 @@ class ConstrainedActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 按钮内容横向 padding 12+12（Forui 默认 contentPadding）。
-        final maxLabelWidth = constraints.maxWidth - Spacing.level6;
+        // 前置条件：调用方为全宽按钮提供有界宽度（卡片 Column 内）；
+        // 若传入无界/0 宽度（如被直接放在无约束容器），退回不设上限，
+        // 让文案按自然宽度排版而不是被压成 0。
+        final maxLabelWidth = constraints.maxWidth - _kContentPadding;
         return FButton(
           onPress: onPress,
           child: ConstrainedBox(

@@ -14,16 +14,16 @@ Last updated: 2026-08-11
 
 ## 当前目标
 
-当前目标是执行 `Review Experience`。`Health Event Contract`、`Proactive Suggestion Runtime` 与 `Sparse Record Semantics` 已完成跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history，以及记录写入 → worker 物化 → Today GET 的版本收敛。
+当前目标是执行 `Visit Summary and Product Measurement`。`Health Event Contract`、`Proactive Suggestion Runtime`、`Sparse Record Semantics` 与 `Review Experience` 已完成跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、事件优先回顾主路径、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history、记录写入 → worker 物化 → Today GET 的版本收敛，以及 Today 开始事件 → 记录症状 → 剂量确认 → Review 更新 → 结束确认的桌面闭环。
 
 长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **执行 Review Experience**
-   - 子计划：[`../../plans/2026-08-07-review-experience.md`](../../plans/2026-08-07-review-experience.md)
-   - 先建立事件回顾 read model、后端 endpoint 和 Flutter domain/repository，再切换第五 Tab 的用户任务文案
-   - 保留 `/report` 深链和旧 dashboard 兼容代码；导出与 Clinic Summary 在主回顾稳定后移入 More
+1. **执行 Visit Summary and Product Measurement**
+   - 子计划：[`../../plans/2026-08-07-visit-summary-and-product-measurement.md`](../../plans/2026-08-07-visit-summary-and-product-measurement.md)
+   - 先修正就诊摘要的合同缺陷并持久化可撤销分享，再接入隐私克制的产品事件存储与客户端成功边界测量
+   - 导出与分享保持现有 API 行为；字段级隐私与访问测量由该工作流落地
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化

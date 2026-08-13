@@ -94,7 +94,7 @@ dart run scripts/run_fullstack_checks.dart
 
 ## Phase 6: 产品闭环重构 ← 当前阶段
 
-目标：继续按 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md) 实施事件回顾和隐私克制的产品测量。Health Event Contract、Proactive Suggestion Runtime 和 Sparse Record Semantics 已完成，当前从 Review Experience 开始。
+目标：继续按 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md) 实施事件回顾和隐私克制的产品测量。Health Event Contract、Proactive Suggestion Runtime、Sparse Record Semantics 与 Review Experience 已完成，当前从 Visit Summary and Product Measurement 开始。
 
 进入条件：Health Event Contract、Proactive Suggestion Runtime 和 Sparse Record Semantics 已完成跨前后端合同与验证；当前工作继续在 feature branch 上进行。
 

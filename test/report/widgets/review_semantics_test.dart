@@ -145,12 +145,17 @@ void main() {
       ],
       reason: 'active 状态',
     );
-    // 头部状态 chip 先于四段出现（历史筛选按钮的「进行中」不应抢先）。
-    final chipIndex = semantics.indexWhere(
-      (item) =>
-          item.label == l10n.reportReviewStatusActive && item.isButton == false,
+    // 头部状态 chip 先于四段出现：语义流中首个「进行中」节点必须是头部
+    // chip（非按钮）——若历史筛选按钮（tappable）抢先，说明顺序被破坏。
+    final firstActiveIndex = semantics.indexWhere(
+      (item) => item.label == l10n.reportReviewStatusActive,
     );
-    expect(chipIndex, isNot(-1));
+    expect(firstActiveIndex, isNot(-1));
+    expect(
+      semantics[firstActiveIndex].isButton,
+      isFalse,
+      reason: '首个「进行中」应是头部状态 chip 而不是筛选按钮',
+    );
   });
 
   testWidgets('ended 语义顺序：事件标题 → 已结束 → 结果 → 四段 → 历史', (tester) async {

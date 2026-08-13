@@ -14,8 +14,7 @@
 
 | Order | Plan | Outcome | Depends on |
 | --- | --- | --- | --- |
-| 1 | [Review Experience](2026-08-07-review-experience.md) | 第五 Tab 成为事件优先“回顾”，取消综合评分和整页锁定 | Product-loop foundations |
-| 2 | [Visit Summary and Product Measurement](2026-08-07-visit-summary-and-product-measurement.md) | 可选就诊摘要归位，闭环行为可被隐私克制地测量 | Workstream 1 |
+| 2 | [Visit Summary and Product Measurement](2026-08-07-visit-summary-and-product-measurement.md) | 可选就诊摘要归位，闭环行为可被隐私克制地测量 | Workstream 1（Review Experience，已完成） |
 
 ## Cross-Workstream Invariants
 
@@ -29,12 +28,6 @@
 - [ ] 每个 workstream 完成后更新两个仓库各自的 current-state、迁移日志和仍存在的任务；已完成条目按仓库规则直接删除。
 
 ## Program Checkpoints
-
-### Checkpoint A — Review Ready
-
-- [ ] 第五 Tab 对用户显示“回顾”，现有 `/report` 深链仍可打开。
-- [ ] 任一维度缺失不会锁住整个页面；事件事实、变化、完成情况和下一步仍可用。
-- [ ] 通用分数、默认导出卡、默认医生分享和强制 7/30 天主视图不再占据首屏。
 
 ### Checkpoint B — Product Signal Ready
 

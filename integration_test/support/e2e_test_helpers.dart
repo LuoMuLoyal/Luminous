@@ -930,12 +930,25 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
   String? markStatus;
   String? markDate;
 
+  /// 已写入的剂量条目（按 scheduledFor 日期留存），供
+  /// [fetchForDate] 返回——CachedDoseLogDataSource.mark 成功后经
+  /// `_refreshCache` 调 fetchForDate，若不覆盖会走真实 HTTP（DioException
+  /// → 幻影 pending-sync 条目 + 失败 toast 噪声）。
+  final List<DoseLogItem> _itemsByDate = [];
+
   Future<DoseLogItem> markForDate(
     String currentMedicineId,
     String status,
     String date,
   ) async {
     return create(currentMedicineId, status, date);
+  }
+
+  @override
+  Future<List<DoseLogItem>> fetchForDate(String date) async {
+    return _itemsByDate
+        .where((item) => item.scheduledFor == date)
+        .toList(growable: false);
   }
 
   @override
@@ -947,7 +960,9 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
     createCurrentMedicineId = currentMedicineId;
     createStatus = status;
     createDate = date;
-    return _item(currentMedicineId, status, date);
+    final item = _item(currentMedicineId, status, date);
+    _itemsByDate.add(item);
+    return item;
   }
 
   @override
@@ -961,7 +976,9 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
     markCurrentMedicineId = currentMedicineId;
     markStatus = status;
     markDate = date;
-    return _item(currentMedicineId, status, date);
+    final item = _item(currentMedicineId, status, date);
+    _itemsByDate.add(item);
+    return item;
   }
 
   DoseLogItem _item(String currentMedicineId, String status, String date) {

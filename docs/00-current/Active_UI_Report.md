@@ -7,7 +7,7 @@ updated: 2026-08-13
 
 # Active UI — Report
 
-Last updated: 2026-08-13 (Review Task 9 审查修复：Record 桌面溢出修复、e2e 剂量 key 修正、golden 尺寸表述修正)
+Last updated: 2026-08-13 (Review Task 10 收口：全量验证 + 文档定稿)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -51,6 +51,15 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 集成流程（离线/mock，Windows 桌面设备实跑 11 用例全绿）：`integration_test/report/report_e2e_test.dart` 重写为 ReviewView 断言（六状态核心路径 + More 四入口 sheet + Tab 往返保状态）；`shell_navigation_e2e_test.dart` 报告 Tab 断言改为 `review-no-event-card`；新增 `review_closed_loop_e2e_test.dart`——共享内存事实源（`E2eHealthEventLoopStore`）打通 HealthEventRepository 与 ReviewRepository，闭环：开始事件 → Record 写症状 → Medicine 确认槽位（`medicine-plan-dose-action-*`，桌面同样渲染剂量确认卡片）→ Review 看到更新（DataChangeBus 自动刷新）→ 结束并确认结果（Review 自动刷新为无事件 + 历史出现「好转」）。
   - Record 时间线 badge 桌面溢出修复（6.4px，阻断桌面 e2e）：badge 外层 `Flexible` + 内层文案 `Flexible` + 省略号，随本任务提交。
   - 环境限制：桌面窗口下 Today 健康事件卡片为移动布局专属（桌面未做功能对等），「开始事件」走 Review 无事件卡同一入口（同 StartEventSheet + ActiveHealthEvent notifier + DataChangeBus 链路）；`tester.view.physicalSize` 缩到手机宽度触发 riverpod 3.3.1 的 `UncontrolledProviderScope` setState-during-build 竞态（TickerMode 重建期间 subscription resume → 同步 invalidate），本环境无法以移动视口运行 e2e（见迁移日志，未伪造运行结果）。
+  - 质量审查修复（2026-08-13）：e2e 剂量 fake 补 `fetchForDate` override（mark 后 `_refreshCache` 不再走真实 HTTP，消除幻影 pending-sync 与失败 toast 噪声）；`constrained_action_button.dart` 横向 padding 用命名常量 `_kContentPadding = 24`（Forui md/sm contentPadding 12+12，原用 Spacing.level6=28 多扣 4px）并注明无界宽度回退分支前置条件；语义测试 chip 断言加强为首个「进行中」节点必须非按钮。
+
+## Review 收口（Task 10，全量验证与状态定稿）
+
+- 第五 Tab 用户任务为 **Review（回顾）**：底部导航/侧栏标签与页内文案均为「回顾/Review」；`/report` 路由路径、`features/report` 目录、`ShellTab.report` 枚举与 telemetry key 保留不动，**`/report` 是兼容路由**（深链与既有行为不变），代码层重命名留待兼容期结束后评估。
+- **桌面/Web 未做功能对等**：ReviewView 与 legacy 兼容页均为移动端约束布局，桌面窗口渲染同一布局，不新增桌面专属 breakpoint/sidebar；完整认证 Web 与桌面端保持冻结，不继续功能对等、发行或产品化。
+- **旧 dashboard 代码尚未删除**：`dashboard_view.dart` 及 sections、`top_bar.dart` 等 legacy 文件保留原样（文件头带 LEGACY 标注），仅经「更多 → 历史报告」（`/report/legacy` 兼容页）可达；`skeleton_view.dart` 仍被 ReviewView 骨架屏复用，非 legacy。删除评估留待兼容期结束。
+- 全量验证（Task 10，2026-08-13）：`dart run scripts/bootstrap_generated_sources.dart`（无生成物漂移）、`flutter analyze`（无问题）、`flutter test` 全量 **3067 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart` 全部通过；桌面 e2e（`report_e2e` 6 + `shell_navigation` 4 + `review_closed_loop` 1 = **11 用例**）此前已 `-d windows` 实跑全绿，Task 10 未重复执行（环境为 Windows 桌面，移动视口限制见迁移日志，未伪造运行结果）；`git diff --check` 无空白错误。
+- 保留的文档化限制：red flag 为用户级静态检查结果、不与事件药物对齐；`doseLogSources` capped 判定；changes 趋势为首末比较简化口径；`buildCurrent` 双重读取为低优先级遗留项；clinic summary 字段级隐私与闭环测量留待 Workstream 2（Visit Summary and Product Measurement）。
 
 ## Sparse Record Semantics 合同
 
@@ -59,7 +68,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 睡眠 episode 是 Lucent 后端和 Today collector 的语义；当前 Report 仍消费 legacy sleep scalar，尚未消费完整 sleep episode contract，也不提供 episode 级别的同日记录保留或“不按日期合并”保证。
 - 本次客户端合同同步没有改变 Report 页面可见结构、评分/导出/AI 摘要的既有行为；这些仍按本文件顶部的迁移说明和 TODO 管理。
 
-> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），导出/医生分享移入 More 与旧 dashboard 兼容页已在 Task 8 上线（见「Review More 入口」节），旧 dashboard 代码的删除评估待兼容期结束，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
+> 本文件继续记录当前已经实现的 `Report` 运行时事实。第五 Tab 用户任务已改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），导出/医生分享移入 More 与旧 dashboard 兼容页已在 Task 8 上线（见「Review More 入口」节），旧 dashboard 代码的删除评估待兼容期结束；遗留待办（Clinic Summary 字段级隐私、闭环测量）见 [[00-current/TODO]]「平台与验证」节，归属 Workstream 2。
 
 ## 页面结构（旧 dashboard，代码保留但已不装配）
 

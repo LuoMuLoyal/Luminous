@@ -154,7 +154,8 @@ void main() {
     );
     expect(find.text('好转'), findsWidgets);
 
-    // Allow pending Dio interceptor callbacks to settle.
+    // 剂量/事件写入全部走 mock 数据源（fetchForDate 已覆盖），流程内
+    // 无真实 HTTP；多泵几帧让 toast 计时器等异步收尾。
     await settleE2e(tester, frames: 30);
   });
 }
