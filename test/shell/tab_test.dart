@@ -68,4 +68,20 @@ void main() {
       expect(ShellTab.mine.label(l10n), l10n.tabMine);
     });
   });
+
+  group('ShellTab.label – fifth tab uses the Review task name', () {
+    test('zh label is 回顾', () {
+      final zh = lookupAppLocalizations(const Locale('zh'));
+      expect(ShellTab.report.label(zh), '回顾');
+    });
+
+    test('en label is Review', () {
+      final en = lookupAppLocalizations(const Locale('en'));
+      expect(ShellTab.report.label(en), 'Review');
+    });
+
+    test('legacy tab key stays shell-tab-report', () {
+      expect(ShellTab.report.testKey().value, 'shell-tab-report');
+    });
+  });
 }

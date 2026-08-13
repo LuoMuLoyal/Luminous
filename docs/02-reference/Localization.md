@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-13
 ---
 
 # Flutter Localization
 
-Last updated: 2026-08-11 (Sparse Record Semantics contract closure)
+Last updated: 2026-08-13 (Review Experience Task 5: fifth tab rename)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -54,6 +54,13 @@ Persisted preference keys:
 
 - Do not hardcode user-visible text in pages or widgets.
 - Add visible text to both ARB files.
+- The fifth tab's user-visible task name is Review (`回顾` / `Review`): the `tabReport`
+  ARB key (owned by the `common` fragment) renders the Review label for the tab, page app
+  bar, and command-palette entry. The `/report` route path, `ShellTab.report` enum,
+  `SemanticIcons.tabReport` icon token, feature directory, and telemetry keys are unchanged
+  (code-layer rename deferred until after the compatibility period). Legacy `report*` export
+  and suggestion-history strings keep their Report wording in export/history compatibility
+  contexts.
 - Assistant strings use `assistant*` ARB keys directly. Do not reintroduce compatibility alias
    layers for assistant l10n.
 - Report AI summary state copy such as generate/loading/error/disabled hints is owned by the Report

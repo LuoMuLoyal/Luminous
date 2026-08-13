@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-06
+updated: 2026-08-13
 ---
 
 # Routing (GoRouter)
 
-Last updated: 2026-08-06
+Last updated: 2026-08-13
 
 本文件是 [[architecture]] 拆分后的子文档。
 
@@ -24,7 +24,7 @@ StatefulShellRoute (preserves tab state)
 ├── ShellBranch 0: /          → Today dashboard
 ├── ShellBranch 1: /record    → Record list
 ├── ShellBranch 2: /medicine  → Medicine workspace
-├── ShellBranch 3: /report    → Report dashboard
+├── ShellBranch 3: /report    → Review (回顾)
 └── ShellBranch 4: /mine      → Mine/profile
 ```
 
@@ -97,6 +97,9 @@ class AppRoutes {
 The following routes are accessible without signing in so the app can be opened in preview mode:
 
 - `/`, `/record`, `/medicine`, `/report`, `/mine` — the five shell tabs.
+  The fifth tab's user-visible task name is Review (回顾) as of 2026-08-13; `/report` remains a
+  compatibility route and keeps its path, `ShellTab.report` enum, and telemetry keys so existing
+  deep links keep working. The code-layer rename is deferred until after the compatibility period.
 - `/settings`, `/assistant` — standalone pages that render their own sign-in prompts when needed.
 - `/legal`, `/report/clinic-summary` — shared/legal content.
 

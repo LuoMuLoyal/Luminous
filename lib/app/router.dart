@@ -45,6 +45,11 @@ class Routes {
   static const home = '/';
   static const record = '/record';
   static const medicine = '/medicine';
+
+  /// Compatibility route for the fifth tab. The user-facing task name is
+  /// Review (回顾); the `/report` path, `ShellTab.report` enum, feature
+  /// directory, and telemetry keys intentionally stay unchanged until the
+  /// compatibility period ends.
   static const report = '/report';
   static const mine = '/mine';
 

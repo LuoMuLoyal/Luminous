@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
 import 'package:luminous/features/auth/presentation/routes.dart';
@@ -8,8 +9,10 @@ import 'package:luminous/features/medicine/presentation/routes.dart';
 import 'package:luminous/features/notification/presentation/routes.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
 import 'package:luminous/features/record/presentation/routes.dart';
+import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/pages/page.dart';
 import 'package:luminous/features/search/presentation/providers/medicine_search.dart';
+import 'package:luminous/features/shell/presentation/tab.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/test_forui_app.dart';
@@ -132,6 +135,48 @@ void main() {
         expect(_routeIsInsideShell(path), isTrue);
       });
     }
+  });
+
+  group('fifth tab review rename keeps the /report route', () {
+    test('/report still resolves to the report shell branch', () {
+      expect(_routeIsInsideShell('/report'), isTrue);
+    });
+
+    testWidgets(
+      'deep link to /report renders the fifth tab with the Review label',
+      (tester) async {
+        tester.view.devicePixelRatio = 1;
+        tester.view.physicalSize = const Size(390, 844);
+        addTearDown(() {
+          tester.view.resetDevicePixelRatio();
+          tester.view.resetPhysicalSize();
+        });
+
+        await tester.pumpWidget(
+          _testableRouter(initialLocation: '/report', tester: tester),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        await tester.pump(const Duration(milliseconds: 300));
+
+        // The deep link stays on the shell and selects the report branch
+        // (same branch identity as ShellTab.report).
+        expect(find.byType(ReportPage), findsOneWidget);
+        final bottomNav = tester.widget<FBottomNavigationBar>(
+          find.byType(FBottomNavigationBar),
+        );
+        expect(bottomNav.index, ShellTab.report.index);
+
+        // Fifth tab label shows the user-facing task name 回顾 (zh).
+        expect(
+          find.descendant(
+            of: find.byKey(ShellTab.report.testKey()),
+            matching: find.text('回顾'),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
   });
 
   group('create/detail/edit sub-pages are top-level full-screen', () {
