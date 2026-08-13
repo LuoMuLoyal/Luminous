@@ -286,8 +286,8 @@ Future<void> openLoginFromSignedOutMine(WidgetTester tester) async {
 
 Future<void> tapMedicineDoseAction(WidgetTester tester, String label) async {
   final actionKey = switch (label) {
-    '跳过' || 'Skipped' => 'medicine-next-dose-action-skipped',
-    _ => 'medicine-next-dose-action-taken',
+    '跳过' || 'Skipped' => 'medicine-plan-dose-action-skipped',
+    _ => 'medicine-plan-dose-action-taken',
   };
   final action = find.byKey(Key(actionKey));
   await pumpUntilFound(tester, action);
@@ -926,6 +926,9 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
   String? createCurrentMedicineId;
   String? createStatus;
   String? createDate;
+  String? markCurrentMedicineId;
+  String? markStatus;
+  String? markDate;
 
   Future<DoseLogItem> markForDate(
     String currentMedicineId,
@@ -944,6 +947,24 @@ class E2eDoseLogRemoteDataSource extends DoseLogRemoteDataSource {
     createCurrentMedicineId = currentMedicineId;
     createStatus = status;
     createDate = date;
+    return _item(currentMedicineId, status, date);
+  }
+
+  @override
+  Future<DoseLogItem> mark({
+    required String currentMedicineId,
+    required String status,
+    required String date,
+    String? reminderId,
+    String? scheduledTime,
+  }) async {
+    markCurrentMedicineId = currentMedicineId;
+    markStatus = status;
+    markDate = date;
+    return _item(currentMedicineId, status, date);
+  }
+
+  DoseLogItem _item(String currentMedicineId, String status, String date) {
     return DoseLogItem(
       id: 'e2e-dose-log-1',
       currentMedicineId: currentMedicineId,

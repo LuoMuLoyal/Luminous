@@ -7,7 +7,7 @@ updated: 2026-08-13
 
 # Active UI — Report
 
-Last updated: 2026-08-13 (Review Task 9：视觉/无障碍/状态验证——a11y 顺序、golden 基线、en/dark/大字体矩阵、集成流程)
+Last updated: 2026-08-13 (Review Task 9 审查修复：Record 桌面溢出修复、e2e 剂量 key 修正、golden 尺寸表述修正)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -46,10 +46,11 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
   - 顶栏与内容区加 `Semantics(container: true, sortKey: OrdinalSortKey(1/0))`：只调整语义遍历顺序（正文先读、顶栏后读），不影响视觉布局、焦点顺序与点击命中；「更多」按钮加 `semanticsLabel`（此前是空 label 的图标按钮）。
   - 全宽动作按钮（check-in / 开始观察）与用药安全提醒标题行修复 en 长文案横向溢出（Forui 按钮内容 Row 对非 flex 子项给无界宽度，label 由 `widgets/shared/constrained_action_button.dart` 限宽换行/省略）。
   - 语义顺序由 `test/report/widgets/review_semantics_test.dart`（5 用例）按语义树遍历顺序断言；页面级断言用「遍历顺序拼接的文本流」做子串位置检查——ListView 会把整段正文文本合并进一个语义节点（label 换行拼接），该合并是滚动视图既有语义行为。
-- golden 视觉基线：`test/report/goldens/review_{active|ended|partial|no_event}_zh_light.png` 四张（390x844@1，zh + light + 常规字体），由 `test/report/review_golden_test.dart` 生成并锁定；应用未打包自定义字体，golden 使用 Flutter 测试默认字体，中文以占位方块呈现，布局结构完全确定。每张 golden 与全部矩阵用例断言无综合分数（`report-score-hero`）、无整页 readiness 锁（`report-readiness-card`）、无默认导出矩阵（`report-export-section`）。
+- golden 视觉基线：`test/report/goldens/review_{active|ended|partial|no_event}_zh_light.png` 四张（视口 390 宽、内容高度随状态裁剪：active/ended/partial 为 390x844、no_event 为 390x517；zh + light + 常规字体），由 `test/report/review_golden_test.dart` 生成并锁定；应用未打包自定义字体，golden 使用 Flutter 测试默认字体，中文以占位方块呈现，布局结构完全确定。每张 golden 与全部矩阵用例断言无综合分数（`report-score-hero`）、无整页 readiness 锁（`report-readiness-card`）、无默认导出矩阵（`report-export-section`）。
 - 矩阵 widget 测试（不生成 golden）：zh/en、dark、大字体（2x textScaler）各跑一遍四状态 + 大字体超长标题组合，断言 `takeException() == null`（溢出即失败）。
-- 集成流程（离线/mock，Windows 桌面设备实跑 11 用例全绿）：`integration_test/report/report_e2e_test.dart` 重写为 ReviewView 断言（六状态核心路径 + More 四入口 sheet + Tab 往返保状态）；`shell_navigation_e2e_test.dart` 报告 Tab 断言改为 `review-no-event-card`；新增 `review_closed_loop_e2e_test.dart`——共享内存事实源（`E2eHealthEventLoopStore`）打通 HealthEventRepository 与 ReviewRepository，闭环：开始事件 → Record 写症状 → Medicine 槽位（桌面布局无剂量确认卡片，验证计划区渲染与数据源装配）→ Review 看到更新（DataChangeBus 自动刷新）→ 结束并确认结果（Review 自动刷新为无事件 + 历史出现「好转」）。
-  - 环境限制：桌面窗口下 Today 健康事件卡片与 Medicine 剂量确认卡片为移动布局专属（桌面未做功能对等），「开始事件」走 Review 无事件卡同一入口（同 StartEventSheet + ActiveHealthEvent notifier + DataChangeBus 链路）；`tester.view.physicalSize` 缩到手机宽度触发 riverpod 3.3.1 的 `UncontrolledProviderScope` setState-during-build 竞态（TickerMode 重建期间 subscription resume → 同步 invalidate），本环境无法以移动视口运行 e2e；剂量确认 UI 步骤需要在移动视口执行（见迁移日志，未伪造运行结果）。
+- 集成流程（离线/mock，Windows 桌面设备实跑 11 用例全绿）：`integration_test/report/report_e2e_test.dart` 重写为 ReviewView 断言（六状态核心路径 + More 四入口 sheet + Tab 往返保状态）；`shell_navigation_e2e_test.dart` 报告 Tab 断言改为 `review-no-event-card`；新增 `review_closed_loop_e2e_test.dart`——共享内存事实源（`E2eHealthEventLoopStore`）打通 HealthEventRepository 与 ReviewRepository，闭环：开始事件 → Record 写症状 → Medicine 确认槽位（`medicine-plan-dose-action-*`，桌面同样渲染剂量确认卡片）→ Review 看到更新（DataChangeBus 自动刷新）→ 结束并确认结果（Review 自动刷新为无事件 + 历史出现「好转」）。
+  - Record 时间线 badge 桌面溢出修复（6.4px，阻断桌面 e2e）：badge 外层 `Flexible` + 内层文案 `Flexible` + 省略号，随本任务提交。
+  - 环境限制：桌面窗口下 Today 健康事件卡片为移动布局专属（桌面未做功能对等），「开始事件」走 Review 无事件卡同一入口（同 StartEventSheet + ActiveHealthEvent notifier + DataChangeBus 链路）；`tester.view.physicalSize` 缩到手机宽度触发 riverpod 3.3.1 的 `UncontrolledProviderScope` setState-during-build 竞态（TickerMode 重建期间 subscription resume → 同步 invalidate），本环境无法以移动视口运行 e2e（见迁移日志，未伪造运行结果）。
 
 ## Sparse Record Semantics 合同
 

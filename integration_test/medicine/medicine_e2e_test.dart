@@ -131,9 +131,9 @@ void main() {
 
     await tapMedicineDoseAction(tester, '已服用');
 
-    expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
-    expect(doseLogRemoteDataSource.createStatus, 'taken');
-    expect(doseLogRemoteDataSource.createDate, todayDateString());
+    expect(doseLogRemoteDataSource.markCurrentMedicineId, 'e2e-medicine-1');
+    expect(doseLogRemoteDataSource.markStatus, 'taken');
+    expect(doseLogRemoteDataSource.markDate, todayDateString());
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
 
@@ -153,9 +153,9 @@ void main() {
 
     await tapMedicineDoseAction(tester, '跳过');
 
-    expect(doseLogRemoteDataSource.createCurrentMedicineId, 'e2e-medicine-1');
-    expect(doseLogRemoteDataSource.createStatus, 'skipped');
-    expect(doseLogRemoteDataSource.createDate, todayDateString());
+    expect(doseLogRemoteDataSource.markCurrentMedicineId, 'e2e-medicine-1');
+    expect(doseLogRemoteDataSource.markStatus, 'skipped');
+    expect(doseLogRemoteDataSource.markDate, todayDateString());
     expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
   });
 }

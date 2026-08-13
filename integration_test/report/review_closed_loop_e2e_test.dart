@@ -12,11 +12,11 @@ import '../support/e2e_test_helpers.dart';
 /// 槽位确认 → Review 看到更新 → 结束并确认结果。
 ///
 /// 运行环境说明（Windows 桌面窗口）：
-/// - 桌面布局未做功能对等：Today 健康事件卡片与 Medicine 剂量确认卡片
-///   是移动布局专属（现有 medicine e2e 在桌面窗口同样拿不到剂量动作键）。
-///   因此「开始事件」走 Review 无事件卡的同一入口（同一 StartEventSheet +
-///   ActiveHealthEvent notifier + DataChangeBus 链路），Medicine 步验证
-///   计划区渲染与数据源装配；剂量确认 UI 步骤需要在移动视口执行。
+/// - 桌面布局未做功能对等：Today 健康事件卡片是移动布局专属，因此
+///   「开始事件」走 Review 无事件卡的同一入口（同一 StartEventSheet +
+///   ActiveHealthEvent notifier + DataChangeBus 链路）；Medicine 剂量确认
+///   卡片桌面同样渲染（medicine 页桌面/移动共用 dashboard 视图），可完整
+///   确认槽位。
 /// - 视口 resize 到手机宽度会触发 riverpod 3.3.1 在 TickerMode 重建期间的
 ///   setState-during-build 竞态，本环境无法以移动视口运行（见迁移日志）。
 ///
@@ -94,32 +94,16 @@ void main() {
     await settleE2e(tester, frames: 10);
 
     final input = dailyRecords.createInput;
-    if (input == null) {
-      // ignore: avoid_print
-      print(
-        'PROBE_RECORD: pageStillOpen=${tester.any(find.byKey(const Key('record-create-save-action')))} '
-        'titleShown=${tester.any(find.text('闭环症状'))} '
-        'valueShown=${tester.any(find.text('头痛'))}',
-      );
-    }
     expect(input, isNotNull, reason: '症状记录应经 repository 落库');
     expect(input!.kind, DailyRecordKind.symptom);
     expect(input.value, '头痛');
 
-    // ── 3. Medicine 槽位（桌面布局无剂量确认卡片，验证计划区渲染）──
+    // ── 3. Medicine 确认槽位（桌面同样渲染剂量确认卡片） ─────────
     await openTab(tester, '用药');
-    await pumpUntilFound(
-      tester,
-      find.byKey(const Key('medicine-today-plan')),
-      timeout: const Duration(seconds: 10),
-    );
-    expect(find.byKey(const Key('medicine-today-plan')), findsOneWidget);
-    // 剂量确认动作键是移动布局专属：桌面窗口不存在（与现有 medicine
-    // e2e 同因），此处只验证数据源装配可被下方 Review 步间接复用。
-    expect(
-      find.byKey(const Key('medicine-next-dose-action-taken')),
-      findsNothing,
-    );
+    await tapMedicineDoseAction(tester, '已服用');
+    expect(doseLogs.markCurrentMedicineId, 'e2e-medicine-1');
+    expect(doseLogs.markStatus, 'taken');
+    expect(doseLogs.markDate, todayDateString());
 
     // ── 4. Review 看到更新（active 事件 + 今日 check-in 入口） ──
     await openTab(tester, '报告');
