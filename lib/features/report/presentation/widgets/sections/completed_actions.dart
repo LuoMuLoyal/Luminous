@@ -88,7 +88,7 @@ class CompletedActionsSection extends StatelessWidget {
             ReviewFactRow(
               icon: SemanticIcons.statusDone,
               text: l10n.reportReviewCheckInRecordLabel(
-                reviewArgString(checkIn, 'date') ?? '–',
+                _checkInDateLabel(context, reviewArgString(checkIn, 'date')),
                 reviewOutcomeLabel(
                   l10n,
                   reviewOutcomeFromArg(reviewArgString(checkIn, 'outcome')),
@@ -105,5 +105,14 @@ class CompletedActionsSection extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  /// 契约日期（YYYY-MM-DD）与 header/history 一样经 [reviewShortDateLabel]
+  /// 本地化；日期缺失时用占位符，而不是把空串拼进文案。
+  String _checkInDateLabel(BuildContext context, String? date) {
+    if (date == null || date.isEmpty) {
+      return '–';
+    }
+    return reviewShortDateLabel(context, date);
   }
 }

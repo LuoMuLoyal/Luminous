@@ -10,11 +10,14 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// 过去的观察历史：按事件逐条列出（最近在前），不按月份分组。
 ///
 /// 列表项只读展示事件头部信息；点开查看完整回顾属于后续任务。
-/// 历史加载失败不阻塞首屏——只在卡片内显示一行简短提示。
+/// 历史加载失败不阻塞首屏——卡片内显示一行提示 + 轻量重试入口。
 class ReviewHistorySection extends StatelessWidget {
-  const ReviewHistorySection({super.key, required this.history});
+  const ReviewHistorySection({super.key, required this.history, this.onRetry});
 
   final AsyncValue<ReviewEventPage> history;
+
+  /// 历史加载失败时的重试回调（由页面装配层 invalidate history provider）。
+  final VoidCallback? onRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +56,29 @@ class ReviewHistorySection extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: Spacing.level3),
                 child: Center(child: FProgress()),
               ),
-              error: (_, __) => Text(
-                l10n.reportReviewHistoryLoadFailed,
-                style: TypographyToken.level3
-                    .body(context)
-                    .copyWith(color: context.theme.colors.mutedForeground),
+              error: (_, __) => Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.reportReviewHistoryLoadFailed,
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(
+                            color: context.theme.colors.mutedForeground,
+                          ),
+                    ),
+                  ),
+                  if (onRetry != null) ...[
+                    const SizedBox(width: Spacing.level3),
+                    FButton(
+                      key: const Key('review-history-retry'),
+                      variant: FButtonVariant.outline,
+                      size: FButtonSizeVariant.sm,
+                      onPress: onRetry,
+                      child: Text(l10n.todayRetryAction),
+                    ),
+                  ],
+                ],
               ),
               data: (page) => page.items.isEmpty
                   ? Text(

@@ -290,7 +290,7 @@
       }
     }
   },
-  "reportReviewWhatHappenedWindow": "{start} 至 {end}",
+  "reportReviewWhatHappenedWindow": "{start} – {end}",
   "@reportReviewWhatHappenedWindow": {
     "placeholders": {
       "start": {
@@ -308,6 +308,7 @@
   "reportReviewChangeDirectionUp": "上升",
   "reportReviewChangeDirectionDown": "下降",
   "reportReviewChangeDirectionFlat": "持平",
+  "reportReviewChangeDirectionUnknown": "方向未知",
   "reportReviewChangeOutcomeDetail": "从「{from}」变为「{to}」，共确认 {count} 次",
   "@reportReviewChangeOutcomeDetail": {
     "placeholders": {

@@ -301,6 +301,7 @@
   "reportReviewChangeDirectionUp": "Up",
   "reportReviewChangeDirectionDown": "Down",
   "reportReviewChangeDirectionFlat": "Flat",
+  "reportReviewChangeDirectionUnknown": "Unknown direction",
   "reportReviewChangeOutcomeDetail": "From {from} to {to} across {count} check-ins",
   "@reportReviewChangeOutcomeDetail": {
     "placeholders": {

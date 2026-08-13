@@ -38,6 +38,7 @@ class ReviewView extends StatelessWidget {
     required this.onCheckIn,
     required this.onEndEvent,
     required this.onSignIn,
+    this.onHistoryRetry,
   });
 
   final AsyncValue<EventReview?> currentAsync;
@@ -50,6 +51,9 @@ class ReviewView extends StatelessWidget {
   final VoidCallback onCheckIn;
   final VoidCallback onEndEvent;
   final VoidCallback onSignIn;
+
+  /// 历史加载失败时卡片内的轻量重试回调；缺省时不显示重试按钮。
+  final VoidCallback? onHistoryRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,7 @@ class ReviewView extends StatelessWidget {
         CompletedActionsSection(section: review.sections.completedActions),
         NextStepSection(section: review.sections.nextStep),
       ],
-      ReviewHistorySection(history: historyAsync),
+      ReviewHistorySection(history: historyAsync, onRetry: onHistoryRetry),
     ];
 
     return Column(

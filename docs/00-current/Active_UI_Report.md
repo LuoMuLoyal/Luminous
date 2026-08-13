@@ -23,8 +23,8 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 - `/report` 页面装配 `ReviewView`（`presentation/widgets/views/review_view.dart`）：事件头部 + 四段（发生了什么 / 有什么变化 / 完成了什么 / 接下来怎么办）+ 事件历史，移动端约束布局，不新增桌面专属 breakpoint 或 sidebar 对等实现（桌面与移动端同一布局）。
 - 事件头部：active 事件显示「进行中」与今日 check-in（`coverage.checkIns.todayCheckIn` 为空且 `availableActions` 含 check-in 时），同时保留「结束观察」入口；ended 事件显示用户确认的 outcome，无 check-in。check-in / 结束 / 开始观察均复用 health_event 的 bottom sheet 与 `ActiveHealthEvent` notifier。
-- 四段按 fixed 顺序渲染；每段独立 available/unknown：unknown 段显示 reasonCode 本地化的简短缺失原因（`no_observations` / `insufficient_coverage` / `no_completed_actions`，未知码折叠为通用文案），不显示 0 分或红色「需关注」状态。fact code：`health_event` / `observed_changes` / `completed_actions` / `active_check_in` / `event_ended`，用药安全提醒（`redFlags`）以 warning 色调结构化展示，无泛化建议文案。
-- 历史：`reviewHistoryProvider` 第一页按事件逐条列出（最近在前），不按月份分组；加载失败只在卡片内显示一行提示，不阻塞首屏。
+- 四段按 fixed 顺序渲染；每段独立 available/unknown：unknown 段显示 reasonCode 本地化的简短缺失原因（`no_observations` / `insufficient_coverage` / `no_completed_actions`，未知码折叠为通用文案），不显示 0 分或红色「需关注」状态。fact code：`health_event` / `observed_changes` / `completed_actions` / `active_check_in` / `event_ended`；数值趋势 direction 缺失/未知时如实显示「方向未知」而不伪装「持平」；用药安全提醒（`redFlags`）以 warning 色调结构化展示，无泛化建议文案。
+- 历史：`reviewHistoryProvider` 第一页按事件逐条列出（最近在前），不按月份分组；加载失败只在卡片内显示一行提示 + 轻量 inline 重试（invalidate history provider），不阻塞首屏。完成动作段落内的 check-in 日期与 header/history 一致经 `reviewShortDateLabel` 本地化。
 - 无事件：显示「开始健康观察」入口 + 最近事件历史；完全没有事件时给轻量解释，不自动生成周报。未登录 preview 显示 `SignInHintBanner`，隐藏开始入口。
 - 状态处理：首载 loading 显示骨架屏；刷新失败但 `reviewLastCurrentProvider` 有数据时继续渲染旧数据 + 轻量 stale 提示条；无缓存的错误显示 `StateErrorView` + 重试。
 - 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 移入 More 后收尾）。

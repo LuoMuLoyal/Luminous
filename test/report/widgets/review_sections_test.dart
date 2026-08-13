@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/completed_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/key_changes.dart';
@@ -114,6 +115,32 @@ void main() {
       );
       expect(find.textContaining('需关注'), findsNothing);
     });
+
+    testWidgets('missing direction shows unknown instead of flat', (
+      tester,
+    ) async {
+      await pumpSection(
+        tester,
+        KeyChangesSection(
+          section: reviewFactsSection('observed_changes', {
+            'water': {
+              'direction': null,
+              'firstValue': 1200,
+              'lastValue': 1300,
+              'firstDate': '2026-08-02',
+              'lastDate': '2026-08-03',
+              'observedDays': 2,
+            },
+          }),
+        ),
+      );
+
+      expect(
+        find.text(l10n.reportReviewChangeDirectionUnknown),
+        findsOneWidget,
+      );
+      expect(find.text(l10n.reportReviewChangeDirectionFlat), findsNothing);
+    });
   });
 
   group('CompletedActionsSection', () {
@@ -135,8 +162,9 @@ void main() {
       expect(find.text('已确认服药 9 次'), findsOneWidget);
       expect(find.text('跳过 2 次'), findsOneWidget);
       expect(find.text('未确认 1 次'), findsOneWidget);
-      expect(find.text('2026-08-02 · 加重'), findsOneWidget);
-      expect(find.text('2026-08-03 · 差不多'), findsOneWidget);
+      // 契约日期经 reviewShortDateLabel 本地化，与 header/history 一致。
+      expect(find.text('8月2日 · 加重'), findsOneWidget);
+      expect(find.text('8月3日 · 差不多'), findsOneWidget);
     });
 
     testWidgets('unknown state shows the completed-actions reason', (
@@ -290,9 +318,23 @@ void main() {
       expect(find.text(l10n.reportReviewHistoryEmpty), findsOneWidget);
     });
 
-    testWidgets('shows a lightweight failure line instead of blocking', (
+    testWidgets('shows a progress placeholder while history loads', (
       tester,
     ) async {
+      await pumpSection(
+        tester,
+        const ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.loading(),
+        ),
+      );
+
+      expect(find.byType(FProgress), findsOneWidget);
+    });
+
+    testWidgets('shows a lightweight failure line with an inline retry', (
+      tester,
+    ) async {
+      var retryTapped = false;
       await pumpSection(
         tester,
         ReviewHistorySection(
@@ -300,10 +342,16 @@ void main() {
             Exception('boom'),
             StackTrace.current,
           ),
+          onRetry: () => retryTapped = true,
         ),
       );
 
       expect(find.text(l10n.reportReviewHistoryLoadFailed), findsOneWidget);
+      final retryButton = find.byKey(const Key('review-history-retry'));
+      expect(retryButton, findsOneWidget);
+      await tester.tap(retryButton);
+      expect(retryTapped, isTrue);
+      await tester.pumpAndSettle();
     });
   });
 }

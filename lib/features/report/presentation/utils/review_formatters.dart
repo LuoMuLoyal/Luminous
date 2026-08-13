@@ -59,12 +59,14 @@ ReviewEventOutcome reviewOutcomeFromArg(String? value) {
   };
 }
 
-/// 数值趋势方向文案；无法识别的方向按持平处理（不宣称变化）。
+/// 数值趋势方向文案；方向缺失或无法识别时如实显示「方向未知」，
+/// 不伪装成「持平」。
 String reviewTrendDirectionLabel(AppLocalizations l10n, String? direction) {
   return switch (direction) {
     'up' => l10n.reportReviewChangeDirectionUp,
     'down' => l10n.reportReviewChangeDirectionDown,
-    _ => l10n.reportReviewChangeDirectionFlat,
+    'flat' => l10n.reportReviewChangeDirectionFlat,
+    _ => l10n.reportReviewChangeDirectionUnknown,
   };
 }
 

@@ -40,6 +40,13 @@ class ReportPage extends ConsumerWidget {
     ]);
   }
 
+  /// 「开始健康观察」入口（无事件时）。
+  ///
+  /// 跟进项（Task 7/8 与 today 对齐）：当前只转发标题到 create，不提供
+  /// 关联触发症状（reasonRecordId）与关联当前用药（currentMedicineIds）
+  /// 的选项——today 的 `_openStart` 会从 health context snapshot 与当日
+  /// 记录预读选项并转发参数，此处保持轻量，待 Review 交互与 More 收尾时
+  /// 补齐（见 migration log 2026-08-13 Review Task 6 修复条目）。
   Future<void> _openStart(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
     await showAppDialog<void>(
@@ -167,6 +174,7 @@ class ReportPage extends ConsumerWidget {
               ? () {}
               : () => _openEnd(context, ref, review),
           onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+          onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
         ),
       ),
     );

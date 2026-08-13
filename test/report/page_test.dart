@@ -5,6 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
+import 'package:luminous/features/health_context/data/providers/health_context.dart';
+import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
+import 'package:luminous/features/health_event/data/providers/health_event.dart';
+import 'package:luminous/features/health_event/domain/entities/health_event.dart';
+import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
@@ -245,11 +250,125 @@ void main() {
       );
     },
   );
+
+  // ── 事件交互接线（真实 ActiveHealthEvent → HealthEventRepository）──
+
+  testWidgets('start observation entry creates an event with the title', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final healthEvents = _FakeHealthEventRepository();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _FakeReviewRepository(
+          current: null,
+          page: const ReviewEventPage(items: [], total: 0),
+        ),
+        healthEvents: healthEvents,
+        signedIn: true,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.tap(find.byKey(const Key('review-start-observation-action')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('health-event-start-title-field')),
+      '头痛观察',
+    );
+    await tester.tap(find.byKey(const Key('health-event-start-submit')));
+    await tester.pumpAndSettle();
+
+    expect(healthEvents.createdTitle, '头痛观察');
+  });
+
+  testWidgets('active event header check-in calls the repository checkIn', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final healthEvents = _FakeHealthEventRepository();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _FakeReviewRepository(
+          current: reviewActive(),
+          page: const ReviewEventPage(items: [], total: 0),
+        ),
+        healthEvents: healthEvents,
+        signedIn: true,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.tap(find.byKey(const Key('review-check-in-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('health-event-check-in-outcome-improved')),
+    );
+    await tester.tap(find.byKey(const Key('health-event-check-in-submit')));
+    await tester.pumpAndSettle();
+
+    // 以当前 review 的事件 ID check-in，日期为本地 YYYY-MM-DD。
+    expect(healthEvents.checkedInEventId, 'evt-active');
+    expect(healthEvents.checkedInDate, matches(RegExp(r'^\d{4}-\d{2}-\d{2}$')));
+    expect(healthEvents.checkedInOutcome, HealthEventOutcome.improved);
+  });
+
+  testWidgets('active event header end action calls the repository end', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final healthEvents = _FakeHealthEventRepository();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _FakeReviewRepository(
+          current: reviewActive(),
+          page: const ReviewEventPage(items: [], total: 0),
+        ),
+        healthEvents: healthEvents,
+        signedIn: true,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    await tester.tap(find.byKey(const Key('review-end-event-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const Key('health-event-end-outcome-improved')),
+    );
+    await tester.tap(find.byKey(const Key('health-event-end-submit')));
+    await tester.pumpAndSettle();
+
+    expect(healthEvents.endedEventId, 'evt-active');
+    expect(healthEvents.endedOutcome, HealthEventOutcome.improved);
+  });
 }
 
 Widget _buildApp({
   required ReviewRepository reviewRepository,
   required bool signedIn,
+  HealthEventRepository? healthEvents,
 }) {
   return ProviderScope(
     overrides: [
@@ -259,6 +378,11 @@ Widget _buildApp({
             : _SignedOutAuthSessionNotifier.new,
       ),
       reviewRepositoryProvider.overrideWithValue(reviewRepository),
+      if (healthEvents != null)
+        healthEventRepositoryProvider.overrideWithValue(healthEvents),
+      healthContextSnapshotProvider.overrideWith(
+        (ref) async => _healthContextSnapshot,
+      ),
     ],
     child: const TestForuiApp(home: ReportPage()),
   );
@@ -378,3 +502,98 @@ class _ThrowingReviewRepository implements ReviewRepository {
     throw Exception('Test error');
   }
 }
+
+/// 记录 create/checkIn/end 调用参数的 fake，验证 page 层交互真实到达
+/// HealthEventRepository（沿用 today_health_event_section_test 惯例）。
+class _FakeHealthEventRepository implements HealthEventRepository {
+  String? createdTitle;
+  String? createdReasonRecordId;
+  List<String>? createdMedicineIds;
+  String? checkedInEventId;
+  String? checkedInDate;
+  HealthEventOutcome? checkedInOutcome;
+  String? endedEventId;
+  HealthEventOutcome? endedOutcome;
+
+  @override
+  Future<HealthEvent?> fetchActive() async => null;
+
+  @override
+  Future<HealthEvent?> fetchById(String eventId) async => null;
+
+  @override
+  Future<List<HealthEvent>> fetchHistory() async => const [];
+
+  @override
+  Future<HealthEvent> create({
+    required String title,
+    String? reasonRecordId,
+    List<String> currentMedicineIds = const [],
+  }) async {
+    createdTitle = title;
+    createdReasonRecordId = reasonRecordId;
+    createdMedicineIds = currentMedicineIds;
+    return _createdEvent(title);
+  }
+
+  @override
+  Future<HealthEvent> checkIn({
+    required String eventId,
+    required String date,
+    required HealthEventOutcome outcome,
+  }) async {
+    checkedInEventId = eventId;
+    checkedInDate = date;
+    checkedInOutcome = outcome;
+    return _createdEvent('感冒观察');
+  }
+
+  @override
+  Future<HealthEvent> end({
+    required String eventId,
+    required HealthEventOutcome outcome,
+  }) async {
+    endedEventId = eventId;
+    endedOutcome = outcome;
+    return _createdEvent('感冒观察');
+  }
+
+  HealthEvent _createdEvent(String title) {
+    return HealthEvent(
+      id: 'event-1',
+      title: title,
+      status: HealthEventStatus.active,
+      startedAt: '2026-08-13T00:00:00.000Z',
+      currentMedicineIds: const [],
+      coverage: const HealthEventCoverage(checkInCount: 0),
+    );
+  }
+}
+
+const _healthContextSnapshot = HealthContextSnapshot(
+  summary: HealthSummary(
+    age: null,
+    onboardingCompleted: true,
+    activeAllergyCount: 0,
+    conditionCount: 0,
+    currentMedicineCount: 0,
+    missingCoreProfileFields: [],
+  ),
+  profile: HealthProfile(
+    birthDate: null,
+    sexAtBirth: null,
+    heightCm: null,
+    weightKg: null,
+    bloodType: null,
+    locale: null,
+    timezone: 'Asia/Shanghai',
+    unitSystem: null,
+    onboardingCompletedAt: null,
+    emergencyContactName: null,
+    emergencyContactPhone: null,
+    extras: {},
+  ),
+  allergies: [],
+  conditions: [],
+  currentMedicines: [],
+);

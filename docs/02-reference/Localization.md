@@ -7,7 +7,7 @@ updated: 2026-08-13
 
 # Flutter Localization
 
-Last updated: 2026-08-13 (Review Experience Task 6: `reportReview*` keys added to the report fragment)
+Last updated: 2026-08-13 (Review Experience Task 6 review fixes: window template, direction-unknown key)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
