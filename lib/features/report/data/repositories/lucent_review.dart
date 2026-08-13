@@ -133,7 +133,8 @@ class LucentReviewRepository implements ReviewRepository {
         lucent.EventReviewSectionDtoStateEnum.unknownDefaultOpenApi =>
           ReviewSectionState.unknown,
       },
-      // 原因码按原文保留：契约新增原因码时不会折叠成 null。
+      // 原因码按原文保留；未知码在生成 DTO 反序列化层已被折叠为
+      // unknown_default_open_api 占位符，这里保留占位原文而不是折叠成 null。
       reasonCode: dto.reasonCode?.value,
       facts: dto.facts == null ? null : _mapFacts(dto.facts!),
     );
@@ -142,9 +143,10 @@ class LucentReviewRepository implements ReviewRepository {
   ReviewSectionFacts _mapFacts(lucent.EventReviewSectionFactsDto dto) {
     final rawArguments = dto.arguments;
     // 契约声明 arguments 为 object；防御非 map 值时保留 code 并降级为空
-    // 参数表，而不是让整个 section 失败。
+    // 参数表，而不是让整个 section 失败。拷贝为不可变 map，防止 mapper
+    // 上游引用后续被修改。
     final arguments = rawArguments is Map<String, dynamic>
-        ? rawArguments
+        ? Map<String, dynamic>.unmodifiable(rawArguments)
         : <String, dynamic>{};
     return ReviewSectionFacts(code: dto.code, arguments: arguments);
   }

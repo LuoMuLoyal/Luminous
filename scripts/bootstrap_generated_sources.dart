@@ -94,35 +94,35 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     );
   }
 
-  final filteredOutput = await Directory.systemTemp.createTemp(
-    'luminous-openapi-today-analysis-',
-  );
-  final reviewOutput = await Directory.systemTemp.createTemp(
-    'luminous-openapi-review-',
-  );
+  final filteredOutputs = <Directory>[];
   final supportingOutput = await Directory.systemTemp.createTemp(
     'luminous-openapi-supporting-',
   );
 
   try {
     // openapi-generator-cli 7.x 的 --global-property 只接受单值 apis，
-    // 因此 TodayAnalysis 与 Reports 各跑一次过滤生成，再合并拷贝。
-    await _generateFilteredApiClient(
-      context,
-      openApiFile: openApiFile,
-      generatorConfig: generatorConfig,
-      outputDirectory: filteredOutput,
-      apis: 'TodayAnalysis',
-      models: _todayAnalysisModels,
-    );
-    await _generateFilteredApiClient(
-      context,
-      openApiFile: openApiFile,
-      generatorConfig: generatorConfig,
-      outputDirectory: reviewOutput,
-      apis: 'Reports',
-      models: _reviewModels,
-    );
+    // 因此每个过滤客户端（TodayAnalysis、Reports 等）各跑一次生成再合并
+    // 拷贝。新增 API 面只需在 _filteredClients 里加一条配置。
+    for (final client in _filteredClients) {
+      final output = await Directory.systemTemp.createTemp(
+        'luminous-openapi-${client.apis.toLowerCase()}-',
+      );
+      filteredOutputs.add(output);
+      await _generateFilteredApiClient(
+        context,
+        openApiFile: openApiFile,
+        generatorConfig: generatorConfig,
+        outputDirectory: output,
+        apis: client.apis,
+        models: client.models,
+      );
+      _copyGeneratedFile(
+        output,
+        generatedClientRoot,
+        'lib/src/api/${client.apiFile}',
+      );
+      _copyGeneratedModels(output, generatedClientRoot);
+    }
     await _generateSupportingFiles(
       context,
       openApiFile: openApiFile,
@@ -130,18 +130,6 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
       outputDirectory: supportingOutput,
     );
 
-    _copyGeneratedFile(
-      filteredOutput,
-      generatedClientRoot,
-      'lib/src/api/today_analysis_api.dart',
-    );
-    _copyGeneratedFile(
-      reviewOutput,
-      generatedClientRoot,
-      'lib/src/api/reports_api.dart',
-    );
-    _copyGeneratedModels(filteredOutput, generatedClientRoot);
-    _copyGeneratedModels(reviewOutput, generatedClientRoot);
     _copyGeneratedFile(
       supportingOutput,
       generatedClientRoot,
@@ -153,8 +141,9 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
       'lib/src/deserialize.dart',
     );
   } finally {
-    await filteredOutput.delete(recursive: true);
-    await reviewOutput.delete(recursive: true);
+    for (final output in filteredOutputs) {
+      await output.delete(recursive: true);
+    }
     await supportingOutput.delete(recursive: true);
   }
 
@@ -440,4 +429,15 @@ const _reviewModels = [
   'EventReviewSectionsDto',
   'EventReviewSourceTimestampsDto',
   'EventReviewTodayCheckInDto',
+];
+
+/// 过滤客户端的数据驱动配置：每一条对应一次 openapi-generator 过滤生成
+/// 及一个 API 文件 + 一组模型的拷贝。新增合同面只需在此追加一条。
+const _filteredClients = <({String apis, String apiFile, List<String> models})>[
+  (
+    apis: 'TodayAnalysis',
+    apiFile: 'today_analysis_api.dart',
+    models: _todayAnalysisModels,
+  ),
+  (apis: 'Reports', apiFile: 'reports_api.dart', models: _reviewModels),
 ];

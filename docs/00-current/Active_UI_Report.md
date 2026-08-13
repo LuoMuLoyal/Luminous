@@ -14,8 +14,9 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 ## Review 领域层（已实现，UI 尚未切换）
 
 - 新增 `EventReview` 领域实体与 `ReviewRepository` 接口（current / history / detail），实现为 `LucentReviewRepository`，映射 Lucent event review read model：`GET /api/v1/user/reports/reviews/current`（无事件返回空信封 null，不是 404）、`GET .../reviews`（status/cursor/limit 分页）、`GET .../reviews/{eventId}`（foreign 404）。
-- 实体保留契约语义：四个 section 各自 available/unknown，unknown 段携带原样 reasonCode；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
-- 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（失败时保留最后一次成功数据，`ref.invalidate` 即重试）。dailyRecords / doseLogs 数据变化自动触发 current 刷新。
+- 实体保留契约语义：四个 section 各自 available/unknown；unknown 段的 reasonCode 已知码按原文保留，未知码在生成 DTO 反序列化层被折叠为 `unknown_default_open_api` 占位符；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
+- 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（通过 `ref.listen` 只采纳被接受的 AsyncData，失败时保留最后一次成功数据，登出/会话失效的 null 数据会清空缓存；`ref.invalidate` 即重试）。
+- 自动刷新覆盖：`reviewCurrentProvider` watch `dailyRecords` / `doseLogs` / `healthEvents` 三个 `DataChangeTopic`；`reviewHistoryProvider` watch `healthEvents`。health_event 的 create / end（含 outcome 确认）/ checkIn 在服务端确认成功后发射 `healthEvents`。
 - 当前 `/report` 页面与 dashboard 首屏不变；`EventReview` 尚未参与任何 UI 渲染，Task 5（路由/文案）与 Task 6（event-first 视图）落地后才切换。
 
 ## Sparse Record Semantics 合同

@@ -15,12 +15,24 @@ const _reviewTimeout = Duration(seconds: 10);
 /// failed refresh can keep stale data instead of a full skeleton. A null
 /// value means either "no events" or "nothing loaded yet" — combine with
 /// [reviewCurrentProvider] to tell the two apart.
+///
+/// 通过 `ref.listen` 只在 [reviewCurrentProvider] 真正采纳的 AsyncData 上
+/// 更新：riverpod 会丢弃被更新重建覆盖的陈旧 fetch 完成，因此这里天然免疫
+/// 慢请求迟到覆盖新数据。确认无事件或登出（AsyncData(null)）会清空缓存，
+/// 加载中/错误态则保留最后一次成功数据。
 class ReviewLastCurrentNotifier extends Notifier<EventReview?> {
   @override
-  EventReview? build() => null;
-
-  void set(EventReview? review) {
-    state = review;
+  EventReview? build() {
+    ref.listen<AsyncValue<EventReview?>>(reviewCurrentProvider, (_, next) {
+      // 用 asData 而不是 hasValue：可空数据为 null 时 hasValue 为 false，
+      // 但「确认无事件/登出」同样必须清空缓存。
+      final data = next.asData;
+      if (data != null) {
+        state = data.value;
+      }
+    });
+    // 初始状态直接取当前已采纳的数据，晚于 reviewCurrent 构建时也能播种。
+    return ref.read(reviewCurrentProvider).asData?.value;
   }
 }
 
@@ -32,39 +44,40 @@ final reviewLastCurrentProvider =
 /// 当前事件的回顾：后端优先 active 事件，否则最近 ended；用户没有任何
 /// 事件时 data 为 null（空信封语义，不是错误）。
 ///
-/// keepAlive 缓存最近结果；当 dailyRecords / doseLogs 变化时自动刷新。
-/// 失败时 riverpod 3 默认按指数退避自动重试（期间状态携带上一次数据），
-/// 重试耗尽后进入 error；无论哪种情况 [reviewLastCurrentProvider] 都保留
-/// 最后一次成功数据，`ref.invalidate(reviewCurrentProvider)` 即手动 retry。
+/// keepAlive 缓存最近结果；当 dailyRecords / doseLogs / healthEvents 数据
+/// 变化时自动刷新。失败时 riverpod 3 默认按指数退避自动重试（期间状态携带
+/// 上一次数据），重试耗尽后进入 error；无论哪种情况
+/// [reviewLastCurrentProvider] 都保留最后一次成功数据，
+/// `ref.invalidate(reviewCurrentProvider)` 即手动 retry。
 @Riverpod(keepAlive: true)
 Future<EventReview?> reviewCurrent(Ref ref) {
-  // Review 事实来自每日记录与剂量日志，数据变化后自动重取。
+  // Review 事实来自每日记录、剂量日志与事件本身，数据变化后自动重取。
   ref.watch(dataChangeVersionProvider(DataChangeTopic.dailyRecords));
   ref.watch(dataChangeVersionProvider(DataChangeTopic.doseLogs));
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));
 
   return authGuarded(
     ref: ref,
-    fetch: () async {
-      final review = await ref
-          .watch(reviewRepositoryProvider)
-          .fetchCurrentReview()
-          .timeout(
-            _reviewTimeout,
-            onTimeout: () => throw TimeoutException('review_current_timeout'),
-          );
-      ref.read(reviewLastCurrentProvider.notifier).set(review);
-      return review;
-    },
+    fetch: () => ref
+        .watch(reviewRepositoryProvider)
+        .fetchCurrentReview()
+        .timeout(
+          _reviewTimeout,
+          onTimeout: () => throw TimeoutException('review_current_timeout'),
+        ),
     signedOutFallback: () async => null,
   );
 }
 
 /// 最近事件回顾历史（第一页，默认 20 条），keepAlive 缓存。
 ///
+/// 事件创建/结束/check-in 后自动刷新；
 /// `ref.invalidate(reviewHistoryProvider)` 即 retry；后续翻页由
 /// presentation 层直接调用 repository。
 @Riverpod(keepAlive: true)
 Future<ReviewEventPage> reviewHistory(Ref ref) {
+  ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));
+
   return authGuarded(
     ref: ref,
     fetch: () => ref

@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luminous/core/auth/session_provider.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
+import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/report/data/providers/review.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/review.dart';
@@ -46,6 +48,8 @@ void main() {
       addTearDown(container.dispose);
 
       await container.read(reviewCurrentProvider.future);
+      // 页面从首帧就同时 watch 缓存，这里先激活 lastCurrent 监听。
+      expect(container.read(reviewLastCurrentProvider), same(firstReview));
 
       // 下一次刷新失败：AsyncError，但最后成功数据保留。
       repo.error = DioException(
@@ -70,6 +74,67 @@ void main() {
 
       expect(retried, same(secondReview));
       expect(container.read(reviewLastCurrentProvider), same(secondReview));
+    });
+
+    test('refetches current when health events change', () async {
+      final repo = _FakeReviewRepository(
+        current: _testReview(eventId: 'evt-1'),
+      );
+      final container = _container(repo);
+      addTearDown(container.dispose);
+
+      await container.read(reviewCurrentProvider.future);
+      expect(repo.currentCalls, 1);
+
+      container
+          .read(dataChangeBusProvider.notifier)
+          .emit(DataChangeTopic.healthEvents);
+      // riverpod 调度器在事件循环末尾执行刷新，等几拍让依赖链重建完成。
+      await _pumpEventQueue();
+      final value = await container.read(reviewCurrentProvider.future);
+
+      expect(value, isNotNull);
+      expect(repo.currentCalls, 2);
+    });
+
+    test('clears the cached review when the user signs out', () async {
+      // riverpod 3 的 updateOverrides 对 Notifier override 是 no-op，
+      // 用可翻转状态的会话 Notifier 模拟登出。
+      final auth = _SwitchableAuthSessionNotifier(
+        AuthUser(
+          id: 'user-1',
+          email: 'test@example.com',
+          nickname: 'Lumi',
+          avatar: null,
+          emailVerifiedAt: DateTime(2026, 1, 1),
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+        ),
+      );
+      final repo = _FakeReviewRepository(
+        current: _testReview(eventId: 'evt-1'),
+      );
+      final container = ProviderContainer(
+        retry: (count, error) => null,
+        overrides: [
+          authSessionProvider.overrideWith(() => auth),
+          reviewRepositoryProvider.overrideWithValue(repo),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(reviewCurrentProvider.future);
+      expect(container.read(reviewLastCurrentProvider), isNotNull);
+
+      // 登出：current 走 fallback，缓存必须清空。
+      auth.signOut();
+      await _pumpEventQueue();
+      final value = await container.read(reviewCurrentProvider.future);
+
+      expect(value, isNull);
+      // 登出后缓存清空，不向新会话泄漏上一用户的 review。
+      expect(container.read(reviewLastCurrentProvider), isNull);
+      expect(repo.currentCalls, 1);
     });
 
     test(
@@ -185,6 +250,13 @@ void main() {
 // Helpers
 // ---------------------------------------------------------------------------
 
+/// 让 riverpod 调度器（`Timer(Duration.zero)` 的刷新任务）跑完依赖链重建。
+Future<void> _pumpEventQueue() async {
+  for (var i = 0; i < 5; i += 1) {
+    await Future<void>.delayed(Duration.zero);
+  }
+}
+
 ProviderContainer _container(ReviewRepository repo) {
   // 关闭 riverpod 3 的默认指数退避重试，让失败立即以 AsyncError 暴露；
   // 生产代码的重试语义由 UI 层 ref.invalidate 驱动。
@@ -283,6 +355,31 @@ EventReview _testReview({required String eventId}) {
 // ---------------------------------------------------------------------------
 // Fake repository
 // ---------------------------------------------------------------------------
+
+/// 可翻转登录状态的会话 Notifier：模拟登出/切账户时
+/// [AuthSessionState] 状态变化驱动的 provider 重建。
+class _SwitchableAuthSessionNotifier extends AuthSessionNotifier {
+  _SwitchableAuthSessionNotifier(this.user);
+
+  final AuthUser? user;
+
+  @override
+  AuthSessionState build() => _stateFor(user);
+
+  void signOut() {
+    state = _stateFor(null);
+  }
+
+  AuthSessionState _stateFor(AuthUser? value) {
+    return value == null
+        ? const AuthSessionState(isAuthenticated: false, isLoading: false)
+        : AuthSessionState(
+            isAuthenticated: true,
+            isLoading: false,
+            user: value,
+          );
+  }
+}
 
 class _FakeReviewRepository implements ReviewRepository {
   _FakeReviewRepository({this.current, this.page, this.detail});

@@ -21,6 +21,7 @@ part 'data_change_bus.g.dart';
 /// | [currentMedicines] | mine (current medicine add/remove), search (add to current medicines) | medicineWorkspace, todayDashboard, healthContextSnapshot |
 /// | [doseLogs] | medicine (mark dose) | medicineWorkspace, todayDashboard |
 /// | [medicineReminders] | medicine (reminder create/update/delete) | medicineWorkspace, todayDashboard |
+/// | [healthEvents] | health_event (event create/end/outcome confirm/check-in) | reviewCurrent, reviewHistory |
 /// | [userSettings] | settings (water target, AI toggles) | todayDashboard |
 abstract final class DataChangeTopic {
   DataChangeTopic._();
@@ -40,7 +41,10 @@ abstract final class DataChangeTopic {
   /// Medicine reminders changed (create/update/delete).
   static const medicineReminders = 'medicineReminders';
 
-  /// User settings changed (water target, AI toggles, etc.).
+  /// Health events changed (created/ended, outcome confirmed, check-in).
+  static const healthEvents = 'healthEvents';
+
+  /// User settings changed (water target, AI toggles).
   static const userSettings = 'userSettings';
 }
 

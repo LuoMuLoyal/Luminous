@@ -1,5 +1,6 @@
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
+import 'package:luminous/core/providers/data_change_bus.dart';
 import 'package:luminous/features/health_event/data/providers/health_event.dart';
 import 'package:luminous/features/health_event/domain/entities/health_event.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -54,6 +55,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     );
     _ensureAuthenticated(expectedUserId);
     state = AsyncData(event);
+    _emitHealthEventsChanged();
     return event;
   }
 
@@ -71,6 +73,7 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     );
     _ensureAuthenticated(expectedUserId);
     state = AsyncData(event);
+    _emitHealthEventsChanged();
     return event;
   }
 
@@ -87,7 +90,14 @@ class ActiveHealthEvent extends _$ActiveHealthEvent {
     );
     _ensureAuthenticated(expectedUserId);
     state = const AsyncData(null);
+    _emitHealthEventsChanged();
     return event;
+  }
+
+  /// 事件创建/结束/结果确认/check-in 落库成功后广播，让 Review 等依赖
+  /// 事件数据的 provider 自动刷新。只在服务端确认成功且身份未变时发射。
+  void _emitHealthEventsChanged() {
+    ref.read(dataChangeBusProvider.notifier).emit(DataChangeTopic.healthEvents);
   }
 
   void _ensureAuthenticated(String? expectedUserId) {

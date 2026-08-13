@@ -231,6 +231,35 @@ void main() {
       expect(page.total, 42);
       expect(page.nextCursor, '2026-08-01T00:00:00.000Z|evt-2');
     });
+
+    test(
+      'forwards status, cursor and limit to the remote data source',
+      () async {
+        final dataSource = _FakeReviewRemoteDataSource(
+          page: lucent.EventReviewListDataDto(
+            items: const [],
+            total: 0,
+            nextCursor: null,
+          ),
+        );
+        final repository = LucentReviewRepository(dataSource: dataSource);
+
+        await repository.fetchHistory(
+          status: ReviewEventStatus.ended,
+          cursor: '2026-08-01T00:00:00.000Z|evt-2',
+          limit: 7,
+        );
+        expect(dataSource.lastStatus, ReviewEventStatus.ended);
+        expect(dataSource.lastCursor, '2026-08-01T00:00:00.000Z|evt-2');
+        expect(dataSource.lastLimit, 7);
+
+        // 默认参数：无状态过滤、limit 20。
+        await repository.fetchHistory();
+        expect(dataSource.lastStatus, isNull);
+        expect(dataSource.lastCursor, isNull);
+        expect(dataSource.lastLimit, 20);
+      },
+    );
   });
 
   group('LucentReviewRepository – detail', () {
@@ -275,6 +304,10 @@ class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
   lucent.EventReviewListDataDto? page;
   lucent.EventReviewDataDto? detail;
 
+  ReviewEventStatus? lastStatus;
+  String? lastCursor;
+  int? lastLimit;
+
   @override
   Future<lucent.EventReviewDataDto?> fetchCurrentReview() async => current;
 
@@ -283,7 +316,12 @@ class _FakeReviewRemoteDataSource extends ReviewRemoteDataSource {
     ReviewEventStatus? status,
     String? cursor,
     int? limit,
-  }) async => page!;
+  }) async {
+    lastStatus = status;
+    lastCursor = cursor;
+    lastLimit = limit;
+    return page!;
+  }
 
   @override
   Future<lucent.EventReviewDataDto> fetchReview(String eventId) async =>

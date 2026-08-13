@@ -77,10 +77,11 @@ abstract class ReviewSection with _$ReviewSection {
   const factory ReviewSection({
     required ReviewSectionState state,
 
-    /// state 为 unknown 时后端给出的固定原因码，按原文保留。
+    /// state 为 unknown 时后端给出的原因码。
     ///
-    /// 已知取值见 [ReviewSectionReasonCodes]；契约新增原因码时也原样透传，
-    /// 不会被折叠成 null 或空语义。
+    /// 已知取值见 [ReviewSectionReasonCodes]，按原文保留。契约新增的未知
+    /// 码在生成 DTO 反序列化层已被折叠为 `unknown_default_open_api` 占位
+    /// 符，此处保留该占位原文而不是折叠成 null。
     String? reasonCode,
 
     /// state 为 available 时的结构化事实。
