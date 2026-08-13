@@ -105,14 +105,17 @@ class _RedFlagList extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: Spacing.level2),
-              Text(
-                l10n.reportReviewRedFlagSectionTitle,
-                style: TypographyToken.level4
-                    .body(context)
-                    .copyWith(
-                      color: warning.solid(context),
-                      fontWeight: FontWeight.w600,
-                    ),
+              // 标题参与 flex 收缩：en 长文案下避免横向溢出（Task 9 矩阵）。
+              Expanded(
+                child: Text(
+                  l10n.reportReviewRedFlagSectionTitle,
+                  style: TypographyToken.level4
+                      .body(context)
+                      .copyWith(
+                        color: warning.solid(context),
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
               ),
             ],
           ),

@@ -42,10 +42,10 @@ void main() {
     await openTab(tester, '报告');
     await pumpUntilFound(
       tester,
-      find.byKey(const Key('report-readiness-card')),
+      find.byKey(const Key('review-no-event-card')),
       timeout: const Duration(seconds: 10),
     );
-    expect(find.byKey(const Key('report-readiness-card')), findsOneWidget);
+    expect(find.byKey(const Key('review-no-event-card')), findsOneWidget);
 
     await openTab(tester, '我的');
     await pumpUntilFound(

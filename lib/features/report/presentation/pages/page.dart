@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart' show OrdinalSortKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
@@ -313,6 +314,9 @@ class _ReviewTopBar extends StatelessWidget {
             onPress: onMore,
             variant: FButtonVariant.ghost,
             size: FButtonSizeVariant.sm,
+            // 图标按钮无可见文字：给 TalkBack/VoiceOver 显式 label，
+            // 否则语义树里是空 label 的不可读按钮（Task 9 a11y 校验）。
+            semanticsLabel: l10n.reportMoreTitle,
             child: const Icon(SemanticIcons.actionMore),
           ),
         ),
@@ -342,20 +346,31 @@ class _ReportMobileShell extends StatelessWidget {
         bottom: false,
         child: Column(
           children: [
-            header,
+            // 顶栏语义后置（Task 9 a11y 顺序）：要求「事件标题 → 状态/结果 →
+            // 四段 → 历史 → More」。Semantics sortKey 只调整语义遍历顺序，
+            // 不影响视觉布局、焦点顺序与点击命中。
+            Semantics(
+              container: true,
+              sortKey: const OrdinalSortKey(1),
+              child: header,
+            ),
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: onRefresh,
-                child: ListView(
-                  key: const PageStorageKey<String>('report-mobile-scroll'),
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level4,
-                    Spacing.level10,
+              child: Semantics(
+                container: true,
+                sortKey: const OrdinalSortKey(0),
+                child: RefreshIndicator(
+                  onRefresh: onRefresh,
+                  child: ListView(
+                    key: const PageStorageKey<String>('report-mobile-scroll'),
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level4,
+                      Spacing.level10,
+                    ),
+                    children: [child],
                   ),
-                  children: [child],
                 ),
               ),
             ),

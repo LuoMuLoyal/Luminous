@@ -25,6 +25,8 @@ import 'package:luminous/features/health_context/data/providers/health_context.d
 import 'package:luminous/features/health_context/domain/entities/snapshot.dart';
 import 'package:luminous/features/health_context/domain/entities/write_inputs.dart';
 import 'package:luminous/features/health_context/domain/repositories/snapshot.dart';
+import 'package:luminous/features/health_event/data/providers/health_event.dart';
+import 'package:luminous/features/health_event/domain/repositories/health_event.dart';
 import 'package:luminous/features/legal/data/repositories/lucent.dart'
     show legalRepositoryProvider;
 import 'package:luminous/features/legal/domain/entities/doc_type.dart';
@@ -51,8 +53,12 @@ import 'package:luminous/features/record/domain/repositories/daily.dart';
 import 'package:luminous/features/record/domain/repositories/record.dart';
 import 'package:luminous/features/report/data/providers/report.dart'
     show reportRepositoryProvider;
+import 'package:luminous/features/report/data/providers/review.dart'
+    show reviewRepositoryProvider;
+import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/domain/repositories/report.dart'
     show ReportRepository;
+import 'package:luminous/features/report/domain/repositories/review.dart';
 import 'package:luminous/features/search/data/repositories/lucent.dart'
     show medicineSearchRepositoryProvider;
 import 'package:luminous/features/search/domain/entities/entities.dart';
@@ -95,11 +101,13 @@ Future<ProviderContainer> pumpOfflineApp(
   AuthSessionNotifier Function()? authSessionOverride,
   AuthRepository? authRepository,
   HealthContextRepository? healthContextRepository,
+  HealthEventRepository? healthEventRepository,
   MedicineRiskCheckRepository? medicineRiskCheckRepository,
   NotificationPermissionService? notificationPermissionService,
   DailyRecordRepository? dailyRecordRepository,
   RecordRepository? recordRepository,
   ReportRepository? reportRepository,
+  ReviewRepository? reviewRepository,
   MedicineWorkspaceRepository? medicineWorkspaceRepository,
   DoseLogRemoteDataSource? doseLogRemoteDataSource,
   LegalRepository? legalRepository,
@@ -161,6 +169,10 @@ Future<ProviderContainer> pumpOfflineApp(
       todayRepositoryProvider.overrideWithValue(const MockTodayRepository()),
       if (reportRepository != null)
         reportRepositoryProvider.overrideWithValue(reportRepository),
+      if (healthEventRepository != null)
+        healthEventRepositoryProvider.overrideWithValue(healthEventRepository),
+      if (reviewRepository != null)
+        reviewRepositoryProvider.overrideWithValue(reviewRepository),
       recordRepositoryProvider.overrideWithValue(
         recordRepository ?? const MockRecordRepository(),
       ),
@@ -1212,3 +1224,44 @@ const _snapshotWithItems = HealthContextSnapshot(
     ),
   ],
 );
+
+/// Test-only fake [ReviewRepository]：离线 e2e 报告 Tab 数据源。
+///
+/// `current` / `page` 可变，测试内可先置空（no-event）再置入事件（active /
+/// ended）验证 Review 首屏各状态；不连接真实后端。
+class E2eReviewRepository implements ReviewRepository {
+  E2eReviewRepository({this.current, this.page});
+
+  EventReview? current;
+  ReviewEventPage? page;
+
+  int currentCalls = 0;
+  int historyCalls = 0;
+
+  @override
+  Future<EventReview?> fetchCurrentReview() async {
+    currentCalls += 1;
+    return current;
+  }
+
+  @override
+  Future<ReviewEventPage> fetchHistory({
+    ReviewEventStatus? status,
+    String? cursor,
+    int limit = 20,
+  }) async {
+    historyCalls += 1;
+    final items = page?.items ?? const <ReviewEvent>[];
+    return ReviewEventPage(
+      items: status == null
+          ? items
+          : items.where((event) => event.status == status).toList(),
+      total: status == null ? (page?.total ?? 0) : items.length,
+    );
+  }
+
+  @override
+  Future<EventReview> fetchReview(String eventId) async {
+    throw UnimplementedError('e2e 不需要事件详情回顾');
+  }
+}

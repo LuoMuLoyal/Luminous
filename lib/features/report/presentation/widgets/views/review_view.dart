@@ -10,6 +10,7 @@ import 'package:luminous/features/report/presentation/widgets/sections/key_chang
 import 'package:luminous/features/report/presentation/widgets/sections/next_step.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/review_history.dart';
 import 'package:luminous/features/report/presentation/widgets/sections/what_happened.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
@@ -217,10 +218,10 @@ class _StartObservationCard extends StatelessWidget {
             ),
             if (showStartAction) ...[
               const SizedBox(height: Spacing.level4),
-              FButton(
+              ConstrainedActionButton(
                 key: const Key('review-start-observation-action'),
                 onPress: onStartObservation,
-                child: Text(l10n.reportReviewStartObservationAction),
+                label: l10n.reportReviewStartObservationAction,
               ),
             ],
           ],

@@ -3,6 +3,7 @@ import 'package:forui/forui.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/utils/review_formatters.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/constrained_action_button.dart';
 import 'package:luminous/l10n/app_localizations.dart';
 
 /// 回顾首屏的事件头部：标题、进行中/已结束状态、观察时段与关联用药。
@@ -42,18 +43,32 @@ class EventHeaderSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 事件标题在最前：TalkBack/VoiceOver 语义顺序与视觉一致，
+            // 先读标题再读状态/结果（Task 9 a11y 顺序校验）。
+            Text(
+              event.title,
+              style: TypographyToken.level6
+                  .display(context)
+                  .copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: Spacing.level3),
             Row(
               children: [
-                _ReviewStatusChip(
-                  key: const Key('review-event-status-chip'),
-                  label: switch (event.status) {
-                    ReviewEventStatus.active => l10n.reportReviewStatusActive,
-                    ReviewEventStatus.ended => l10n.reportReviewStatusEnded,
-                    ReviewEventStatus.unknown => l10n.reportReviewStatusUnknown,
-                  },
-                  tone: isActive
-                      ? SemanticColor.primary
-                      : SemanticColor.neutral,
+                // chip 参与 flex 收缩：英文等长文案下避免与结束按钮同行
+                // 溢出（RenderFlex overflow 回归，Task 9 en 矩阵）。
+                Flexible(
+                  child: _ReviewStatusChip(
+                    key: const Key('review-event-status-chip'),
+                    label: switch (event.status) {
+                      ReviewEventStatus.active => l10n.reportReviewStatusActive,
+                      ReviewEventStatus.ended => l10n.reportReviewStatusEnded,
+                      ReviewEventStatus.unknown =>
+                        l10n.reportReviewStatusUnknown,
+                    },
+                    tone: isActive
+                        ? SemanticColor.primary
+                        : SemanticColor.neutral,
+                  ),
                 ),
                 const Spacer(),
                 if (isActive && showEndAction)
@@ -65,13 +80,6 @@ class EventHeaderSection extends StatelessWidget {
                     child: Text(l10n.reportReviewEndEventAction),
                   ),
               ],
-            ),
-            const SizedBox(height: Spacing.level3),
-            Text(
-              event.title,
-              style: TypographyToken.level6
-                  .display(context)
-                  .copyWith(fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: Spacing.level2),
             Text(
@@ -131,10 +139,10 @@ class EventHeaderSection extends StatelessWidget {
             ],
             if (canCheckIn) ...[
               const SizedBox(height: Spacing.level4),
-              FButton(
+              ConstrainedActionButton(
                 key: const Key('review-check-in-action'),
                 onPress: onCheckIn,
-                child: Text(l10n.reportReviewCheckInAction),
+                label: l10n.reportReviewCheckInAction,
               ),
             ] else if (isActive && todayCheckIn != null) ...[
               const SizedBox(height: Spacing.level3),
@@ -187,6 +195,8 @@ class _ReviewStatusChip extends StatelessWidget {
         ),
         child: Text(
           label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TypographyToken.level2
               .body(context)
               .copyWith(color: color, fontWeight: FontWeight.w600),

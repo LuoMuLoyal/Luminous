@@ -131,18 +131,6 @@
 - [ ] 使用移动端约束完成布局；不新增桌面专属 breakpoint 或 sidebar 对等实现。
 - [ ] 运行 review view 和各 section widget tests。
 
-## Task 9 — Visual, Accessibility, and State Verification
-
-**Files:**
-
-- Create: `Luminous/test/report/review_golden_test.dart`
-- Modify: `Luminous/integration_test/` 中现有五 Tab 主流程测试
-
-- [ ] 为 active、ended、partial、no-event 生成手机宽度 golden；确认没有综合分数、整页 readiness lock 或默认导出矩阵。
-- [ ] 使用大字体、中文、英文、dark mode 跑 widget/golden；长标题和 unknown reason 不溢出。
-- [ ] 检查 TalkBack/VoiceOver 顺序：事件标题 → 状态/结果 → 四段 → 历史 → More。
-- [ ] 集成流程验证：Today 开始事件 → Record 写症状 → Medicine 确认槽位 → Review 看到更新 → 结束并确认结果。
-
 ## Task 10 — Full Verification and Documentation
 
 **Files:**
