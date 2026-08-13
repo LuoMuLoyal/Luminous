@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-04
+updated: 2026-08-13
 ---
 
 # Active UI — Mine / Settings
 
-Last updated: 2026-08-04（同步失败重试异常日志；同步失败详情与重试入口）
+Last updated: 2026-08-13（同步失败详情不再暴露原始错误；诊断信息折叠面板与一键复制）
 
 ## Mine 根页结构
 
@@ -35,6 +35,10 @@ Last updated: 2026-08-04（同步失败重试异常日志；同步失败详情�
 - `syncFailedCountProvider` 查询 `PendingSyncDao.permanentlyFailedCount()`。
 - 详情对话框的“全部重试”会先通过 `PendingSyncDao.resetForRetry` 清除永久失败状态，再调用 `SyncWorker.flush()`；查看详情本身不再显示 Toast 占位提示。
 - “全部重试”失败的异常不再静默吞掉：记录到 `talker`（release 下经 `SentryTalkerObserver` 上报 Sentry），界面仍显示通用错误文案。`_retryAll` 改用 `try/finally` 保证无论成功、失败或异常都重置 `_isRetrying`，防止按钮长期处于 loading（2026-08-04）。
+- **用户面/诊断面分离（2026-08-13）**：
+  - `Last error` 区域不再直接展示原始 `DioException` / `LucentApiException` 字符串，而是显示本地化友好提示（网络超时、数据校验失败、服务器错误、登录过期等）。
+  - 原始错误、traceId、业务码、HTTP status 被折叠在「诊断信息」面板内，点击展开；面板提供「复制诊断信息」按钮，便于用户反馈问题时粘贴完整信息。
+  - 实现依赖：`SyncWorker` 写入时用 `LucentErrorMapper.toAppError` 生成 `PendingSyncErrorDetails` 并存入 `pending_sync_items.lastErrorDetails`；旧版本只写入 `lastError` 的条目仍兼容，用户面降级为通用提示，诊断面板仍可展示原始字符串。
 
 ## 健康档案
 
