@@ -7,7 +7,7 @@ updated: 2026-08-13
 
 # Active UI — Report
 
-Last updated: 2026-08-13 (Review Task 7：主路径移除旧 dashboard，历史增加 status 筛选，「开始观察」对齐 today)
+Last updated: 2026-08-13 (Review Task 8：导出与就诊摘要迁入右上角「更多」，旧 dashboard 转为 /report/legacy 兼容页)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -17,7 +17,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 实体保留契约语义：四个 section 各自 available/unknown；unknown 段的 reasonCode 已知码按原文保留，未知码在生成 DTO 反序列化层被折叠为 `unknown_default_open_api` 占位符；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
 - 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页，watch `reviewHistoryStatusProvider` 按 status 过滤重建重取）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（通过 `ref.listen` 只采纳被接受的 AsyncData，失败时保留最后一次成功数据，登出/会话失效的 null 数据会清空缓存；`ref.invalidate` 即重试）。
 - 自动刷新覆盖：`reviewCurrentProvider` watch `dailyRecords` / `doseLogs` / `healthEvents` 三个 `DataChangeTopic`；`reviewHistoryProvider` watch `healthEvents`。health_event 的 create / end（含 outcome 确认）/ checkIn 在服务端确认成功后发射 `healthEvents`。
-- Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（见下节）；Task 7 起旧 dashboard 主路径引用移除并收尾：`dashboard_view.dart`、sections、`top_bar.dart`（7/30 天范围切换）等 legacy 文件保留代码但不再从 `page.dart` 装配，文件头已加 LEGACY 标注，Task 8 把导出/就诊摘要迁入 More 后评估删除（`skeleton_view.dart` 仍被 ReviewView 的骨架屏复用，非 legacy）。
+- Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（见下节）；Task 7 起旧 dashboard 主路径引用移除并收尾：`dashboard_view.dart`、sections、`top_bar.dart`（7/30 天范围切换）等 legacy 文件保留代码但不再从 `page.dart` 装配，文件头已加 LEGACY 标注；Task 8 已把导出/就诊摘要迁入 More（见「Review More 入口」节），旧 dashboard 仅经 `/report/legacy` 兼容页可达，删除评估留待兼容期结束（`skeleton_view.dart` 仍被 ReviewView 的骨架屏复用，非 legacy）。
 
 ## Review 事件优先视图（Task 6，主内容已切换）
 
@@ -29,7 +29,15 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 「开始观察」已与 today 对齐：预读 health context snapshot 的当前用药选项与按用户时区当天解析的症状记录选项，随创建请求转发 `reasonRecordId` / `currentMedicineIds`；选项加载失败静默降级为空列表，不阻塞开始观察。创建成功后由 DataChangeBus 自动刷新 review。
 - 状态处理：首载 loading 显示骨架屏；刷新失败但 `reviewLastCurrentProvider` 有数据时继续渲染旧数据 + 轻量 stale 提示条；无缓存的错误显示 `StateErrorView` + 重试。
 - 主路径回归约束（测试锁定）：不构建 `ReportScoreHero` / `ReportExportSection` / `ReportReadinessSection`（`canShowFullReport` 整页锁所在）；顶栏无 7/30 天范围切换（`ReportTopBar` / `ReportRangeMenu` 仅 legacy 文件）；旧 `reportDashboardProvider` 失败不阻塞 review 渲染。
-- 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 移入 More 后收尾）。
+- 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 已将入口移入 More，见「Review More 入口」节）。
+
+## Review More 入口（Task 8，导出与就诊摘要已迁入）
+
+- `/report` 顶栏右上角新增「更多」按钮（`_ReviewTopBar` 的 `review-more-action`，tooltip 更多），打开 `showReportMoreActionsSheet`（`presentation/widgets/sheets/more_actions.dart`）：四项入口——就诊摘要（打开诊所摘要预览弹窗，旧 clinicShare 流程）、PDF（月度 PDF 导出）、打印/下载（打印 PDF 导出）、历史报告（push `/report/legacy` legacy 兼容页）；移动端 bottom sheet、桌面端 dialog，入口点击先关 sheet 再触发流程。
+- 导出/分享行为与旧 dashboard 装配一致（共享 `presentation/utils/export_actions.dart` 的 `handleReportExportAction`）：登录门槛 → clinicShare 预览 → security elevation（PIN 验证）→ dataExport POST → 下载链接/状态 toast；不改变任何后端 API 调用与数据流。字段级隐私与访问测量留待后续计划。
+- 文案口径：就诊摘要入口「就诊时按需使用 / Use as needed during your visit」，不暗示医生一定查看；分享按钮文案由「分享给医生/Share with doctor」改为「分享摘要/Share summary」（分享仍是用户显式动作，API 行为不变）。
+- 主路径回归（测试锁定）：首屏不渲染四张导出卡与 `ReportExportSection`，顶栏无 7/30 切换（`test/report/widgets/more_actions_test.dart` 8 个用例 + `test/report/page_test.dart` 既有断言）。
+- Legacy 兼容页 `LegacyDashboardCompatPage`（`presentation/pages/legacy_dashboard_compat.dart`，路由 `/report/legacy`，slide 进入、含返回按钮）：按 d8c9c5f5e 旧装配重建移动端 dashboard（readiness 首卡 + 趋势/发现/建议历史 + AI 总结/规律 + 四张导出卡 + 7/30 天切换 + 下拉刷新），沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导）；取舍：不复刻旧桌面端双栏外壳，桌面宽度渲染同一移动端布局。旧 dashboard 文件保留原样未删除。
 
 ## Sparse Record Semantics 合同
 
@@ -38,11 +46,11 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 睡眠 episode 是 Lucent 后端和 Today collector 的语义；当前 Report 仍消费 legacy sleep scalar，尚未消费完整 sleep episode contract，也不提供 episode 级别的同日记录保留或“不按日期合并”保证。
 - 本次客户端合同同步没有改变 Report 页面可见结构、评分/导出/AI 摘要的既有行为；这些仍按本文件顶部的迁移说明和 TODO 管理。
 
-> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），dashboard 的移除与导出/医生分享移入 More 仍未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
+> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），导出/医生分享移入 More 与旧 dashboard 兼容页已在 Task 8 上线（见「Review More 入口」节），旧 dashboard 代码的删除评估待兼容期结束，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
 
 ## 页面结构（旧 dashboard，代码保留但已不装配）
 
-> Task 6 起 `/report` 主内容已切换为 ReviewView（见「Review 事件优先视图」节）。Task 7 已收尾主路径：以下 dashboard 页面结构描述的是仍保留在仓库中的 legacy 视图代码（`dashboard_view.dart` 及其 sections、`top_bar.dart` 未删除，文件头带 LEGACY 标注；`skeleton_view.dart` 除外——它仍被 ReviewView 骨架屏复用）。Task 8 把导出/就诊摘要迁入 More 后评估删除。
+> Task 6 起 `/report` 主内容已切换为 ReviewView（见「Review 事件优先视图」节）。Task 7 已收尾主路径：以下 dashboard 页面结构描述的是仍保留在仓库中的 legacy 视图代码（`dashboard_view.dart` 及其 sections、`top_bar.dart` 未删除，文件头带 LEGACY 标注；`skeleton_view.dart` 除外——它仍被 ReviewView 骨架屏复用）。Task 8 起该视图仅经 More → 历史报告（`/report/legacy` 兼容页）可达，删除评估留待兼容期结束。
 
 - Lucent-backed report dashboard，真实 medication / water / sleep 聚合。
 - 用户可选范围：`last_7_days` / `last_30_days` / `custom`（Forui `FCalendar.grid` 日期范围选择器）。

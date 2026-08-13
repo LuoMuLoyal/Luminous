@@ -20,7 +20,9 @@ import 'package:share_plus/share_plus.dart';
 ///
 /// The preview is fetched on-demand from
 /// `POST /api/v1/user/reports/clinic-summary/preview`. The dialog includes
-/// [Download PDF] and [Share with Doctor] action buttons.
+/// [Download PDF] and [Share summary] action buttons — the summary is meant
+/// to be used as needed during a visit, it does not imply a doctor will
+/// view it.
 Future<void> showClinicSummaryPreviewDialog(BuildContext context) {
   final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
 

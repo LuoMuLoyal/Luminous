@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:luminous/app/router.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/local_date.dart';
@@ -16,8 +17,12 @@ import 'package:luminous/features/health_event/presentation/widgets/sheets/end_e
 import 'package:luminous/features/health_event/presentation/widgets/sheets/start_event.dart';
 import 'package:luminous/features/record/data/providers/record_access.dart';
 import 'package:luminous/features/record/domain/entities/record.dart';
+import 'package:luminous/features/report/domain/entities/dashboard.dart';
 import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
+import 'package:luminous/features/report/presentation/utils/export_actions.dart';
+import 'package:luminous/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart';
+import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -223,6 +228,17 @@ class ReportPage extends ConsumerWidget {
     );
   }
 
+  /// More sheet 的「就诊摘要」入口：打开诊所摘要预览（旧 clinicShare 流程）。
+  ///
+  /// 未登录时与旧导出入口一致，引导登录后回到本页。
+  Future<void> _openClinicSummary(BuildContext context, WidgetRef ref) async {
+    if (!ref.read(authSessionProvider).canAccessProtectedData) {
+      unawaited(pushAuthRequiredRoute(context, Routes.report));
+      return;
+    }
+    await showClinicSummaryPreviewDialog(context);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(authSessionProvider);
@@ -238,7 +254,22 @@ class ReportPage extends ConsumerWidget {
     return ShellDeferredContent(
       child: _ReportMobileShell(
         onRefresh: () => _refresh(ref),
-        header: const _ReviewTopBar(),
+        header: _ReviewTopBar(
+          onMore: () => showReportMoreActionsSheet(
+            context,
+            onVisitSummary: () => _openClinicSummary(context, ref),
+            onPdf: () => handleReportExportAction(
+              context,
+              ref,
+              ReportExportKind.monthly,
+            ),
+            onPrint: () =>
+                handleReportExportAction(context, ref, ReportExportKind.print),
+            onLegacyReport: () async {
+              await context.push(Routes.reportLegacyDashboard);
+            },
+          ),
+        ),
         child: ReviewView(
           currentAsync: currentAsync,
           cachedReview: cachedReview,
@@ -265,12 +296,29 @@ class ReportPage extends ConsumerWidget {
 }
 
 class _ReviewTopBar extends StatelessWidget {
-  const _ReviewTopBar();
+  const _ReviewTopBar({required this.onMore});
+
+  /// 右上角「更多」入口：就诊摘要 / PDF / 打印下载 / 兼容历史报告。
+  final VoidCallback onMore;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return FHeader.nested(title: Text(l10n.tabReport));
+    return FHeader.nested(
+      title: Text(l10n.tabReport),
+      suffixes: [
+        FTooltip(
+          tipBuilder: (context, controller) => Text(l10n.reportMoreTitle),
+          child: FButton.icon(
+            key: const Key('review-more-action'),
+            onPress: onMore,
+            variant: FButtonVariant.ghost,
+            size: FButtonSizeVariant.sm,
+            child: const Icon(SemanticIcons.actionMore),
+          ),
+        ),
+      ],
+    );
   }
 }
 

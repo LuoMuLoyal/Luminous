@@ -19,6 +19,7 @@ import 'package:luminous/features/record/presentation/pages/page.dart';
 import 'package:luminous/features/record/presentation/routes.dart'
     as record_routes;
 import 'package:luminous/features/report/presentation/pages/clinic_summary_shared.dart';
+import 'package:luminous/features/report/presentation/pages/legacy_dashboard_compat.dart';
 import 'package:luminous/features/report/presentation/pages/page.dart';
 import 'package:luminous/features/scan/presentation/routes.dart' as scan_routes;
 import 'package:luminous/features/settings/presentation/routes.dart'
@@ -107,6 +108,10 @@ class Routes {
   static const legalDetail = '/legal/:docType';
 
   static const reportClinicSummaryShared = '/report/clinic-summary/:token';
+
+  /// Legacy dashboard 兼容页（Task 8）：从 Review 页 More sheet 的
+  /// 「历史报告」入口进入，重建旧 dashboard 装配（7/30 天切换、导出卡）。
+  static const reportLegacyDashboard = '/report/legacy';
 }
 
 /// Route prefixes that are publicly accessible without authentication.
@@ -115,7 +120,13 @@ class Routes {
 /// separately in the redirect guard. Add new public route prefixes here
 /// when introducing pages that should be viewable while signed out
 /// (e.g. shared clinic summaries, legal documents).
-const _publicRoutePrefixes = <String>['/legal', '/report/clinic-summary'];
+const _publicRoutePrefixes = <String>[
+  '/legal',
+  '/report/clinic-summary',
+  // Legacy dashboard 兼容页沿用 `/report` 的公开预览语义（未登录显示
+  // preview 内容 + 登录引导，不重定向到 /login）。
+  '/report/legacy',
+];
 
 /// Top-level routes that can be visited while signed out so the user can
 /// preview the app before deciding to sign in.
@@ -253,6 +264,14 @@ GoRouter appRouter(Ref ref) => GoRouter(
       pageBuilder: (context, state) => slidePage(
         key: state.pageKey,
         child: ClinicSummarySharedPage(token: state.pathParameters['token']!),
+      ),
+    ),
+    // -- legacy dashboard compatibility page (Review More sheet entry) --
+    GoRoute(
+      path: Routes.reportLegacyDashboard,
+      pageBuilder: (context, state) => slidePage(
+        key: state.pageKey,
+        child: const LegacyDashboardCompatPage(),
       ),
     ),
   ],

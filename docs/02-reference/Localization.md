@@ -279,3 +279,15 @@ flutter test
   domain service.
 - The medicine fragment owns these keys; they are merged into `app_zh.arb` / `app_en.arb` by
   `dart scripts/arb_tools.dart merge` and then into Dart code by `flutter gen-l10n`.
+
+## 2026-08-13 Review Task 8 More sheet 与分享口径
+
+- Added 9 `reportMore*` keys to `lib/l10n/src/report_zh.arb` / `report_en.arb`（More sheet 标题
+  「更多/More」与就诊摘要、PDF 报告、打印/下载、历史报告四个入口的标题/副标题），所有权在
+  report 分片；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`
+  （生成文件为 gitignore 产物）。
+- 分享口径修正（不暗示医生一定查看）：`reportExportClinicShareTitle` 与
+  `reportClinicSummaryShare` 从「分享给医生 / Share with doctor」改为「分享摘要 / Share summary」；
+  就诊摘要入口副标题用「就诊时按需使用 / Use as needed during your visit」。分享仍为用户显式
+  动作，后端 API 与数据流不变。
+- Legacy 兼容页（`/report/legacy`）沿用 `tabReport` 与旧 `reportExport*` 文案，保持 Report 口径。

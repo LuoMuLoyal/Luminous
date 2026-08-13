@@ -131,21 +131,6 @@
 - [ ] 使用移动端约束完成布局；不新增桌面专属 breakpoint 或 sidebar 对等实现。
 - [ ] 运行 review view 和各 section widget tests。
 
-## Task 8 — Move Export and Clinic Summary Into More
-
-**Files:**
-
-- Create: `Luminous/lib/features/report/presentation/widgets/sheets/more_actions.dart`
-- Modify: `Luminous/lib/features/report/presentation/widgets/sections/export.dart`
-- Modify: `Luminous/lib/features/report/presentation/widgets/dialogs/clinic_summary_preview_dialog.dart`
-- Modify: `Luminous/lib/features/report/presentation/pages/page.dart`
-- Create: `Luminous/test/report/widgets/more_actions_test.dart`
-
-- [ ] 先写 widget test：首屏没有四张导出卡；右上 More 打开后可见就诊摘要、PDF、打印/下载和兼容历史报告入口。
-- [ ] More action 不暗示医生一定查看；文案改为“就诊时按需使用/Visit summary”。
-- [ ] 导出与分享保持现有 API 行为，字段隐私和访问测量由后续计划加强。
-- [ ] 运行 more action test 和现有 clinic summary tests，确认功能仍可到达。
-
 ## Task 9 — Visual, Accessibility, and State Verification
 
 **Files:**

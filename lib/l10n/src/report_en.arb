@@ -116,7 +116,7 @@
   "reportExportMonthlySubtitle": "PDF format",
   "reportExportPrintTitle": "Print preview",
   "reportExportPrintSubtitle": "Paper preview",
-  "reportExportClinicShareTitle": "Share with doctor",
+  "reportExportClinicShareTitle": "Share summary",
   "reportExportClinicShareSubtitle": "De-identified health summary",
   "reportExportRequestedToast": "Export request submitted.",
   "reportExportProcessingToast": "Export is still processing.",
@@ -190,7 +190,7 @@
   "reportClinicSummaryDisclaimerSection": "Disclaimer",
   "reportClinicSummaryEmpty": "No summary data available to generate",
   "reportClinicSummaryDownloadPdf": "Download PDF",
-  "reportClinicSummaryShare": "Share with Doctor",
+  "reportClinicSummaryShare": "Share summary",
   "reportClinicSummaryPdfEmpty": "PDF content is empty",
   "reportClinicSummaryPdfFailed": "PDF download failed, please try again later",
   "reportClinicSummarySharedTitle": "Clinic Summary",
@@ -427,5 +427,14 @@
   "reportReviewStartObservationAction": "Start health observation",
   "reportReviewErrorTitle": "Couldn't load the review",
   "reportReviewErrorDescription": "Check your connection and try again.",
-  "reportReviewStaleBanner": "Update failed — showing your last review"
+  "reportReviewStaleBanner": "Update failed — showing your last review",
+  "reportMoreTitle": "More",
+  "reportMoreVisitSummaryTitle": "Visit summary",
+  "reportMoreVisitSummarySubtitle": "Use as needed during your visit",
+  "reportMorePdfTitle": "PDF report",
+  "reportMorePdfSubtitle": "Monthly summary in PDF format",
+  "reportMorePrintTitle": "Print / download",
+  "reportMorePrintSubtitle": "Paper preview or save a PDF",
+  "reportMoreLegacyTitle": "Legacy report",
+  "reportMoreLegacySubtitle": "Compatibility view of the previous weekly report"
 }

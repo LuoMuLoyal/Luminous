@@ -41,6 +41,8 @@ GoRoute (top-level, no shell)
 ├── /notifications, /notifications/:id
 ├── /login, /login/oauth/*, /register, /forgot-password
 ├── /account, /account/oauth/wechat, /account/change-email
+├── /report/clinic-summary/:token
+├── /report/legacy
 └── /scan/barcode
 ```
 
@@ -102,6 +104,9 @@ The following routes are accessible without signing in so the app can be opened 
   deep links keep working. The code-layer rename is deferred until after the compatibility period.
 - `/settings`, `/assistant` — standalone pages that render their own sign-in prompts when needed.
 - `/legal`, `/report/clinic-summary` — shared/legal content.
+- `/report/legacy` — legacy dashboard 兼容页（2026-08-13 Review Task 8）：从回顾页 More sheet 的
+  「历史报告」入口 push 进入，沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导，
+  不重定向到 /login）。
 
 All other routes require an authenticated session. The redirect guard sends unauthenticated users to `/login` only when they reach a non-public, non-auth route, and it redirects authenticated users away from `/login`, `/register`, `/forgot-password`.
 
