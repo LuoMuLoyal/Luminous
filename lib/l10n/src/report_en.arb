@@ -213,5 +213,217 @@
         "type": "String"
       }
     }
-  }
+  },
+  "reportReviewSectionWhatHappened": "What happened",
+  "reportReviewSectionKeyChanges": "Key changes",
+  "reportReviewSectionCompletedActions": "Completed actions",
+  "reportReviewSectionNextStep": "Next step",
+  "reportReviewStatusActive": "Ongoing",
+  "reportReviewStatusEnded": "Ended",
+  "reportReviewStatusUnknown": "Unknown",
+  "reportReviewOutcomeLabel": "Outcome",
+  "reportReviewOutcomeImproved": "Improved",
+  "reportReviewOutcomeUnchanged": "About the same",
+  "reportReviewOutcomeWorsened": "Worsened",
+  "reportReviewOutcomeUnknown": "Unknown",
+  "reportReviewKindSymptom": "Symptom observation",
+  "reportReviewKindOther": "Health observation",
+  "reportReviewKindUnknown": "Health observation",
+  "reportReviewStartedLabel": "Started {date}",
+  "@reportReviewStartedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewEndedLabel": "Ended {date}",
+  "@reportReviewEndedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewMedicineCountLabel": "Linked to {count} medicines",
+  "@reportReviewMedicineCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewCheckInAction": "Confirm today's result",
+  "reportReviewCheckInDoneToday": "Today confirmed: {outcome}",
+  "@reportReviewCheckInDoneToday": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewEndEventAction": "End observation",
+  "reportReviewReasonNoObservations": "No observations were recorded during this window.",
+  "reportReviewReasonInsufficientCoverage": "Some records exist, but not enough to compute a trend.",
+  "reportReviewReasonNoCompletedActions": "No confirmed doses or check-ins yet.",
+  "reportReviewReasonUnknown": "This part is unavailable for now.",
+  "reportReviewWhatHappenedSymptomCount": "{count} symptom records",
+  "@reportReviewWhatHappenedSymptomCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewWhatHappenedCheckInCount": "{count} check-ins",
+  "@reportReviewWhatHappenedCheckInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewWhatHappenedWindow": "{start} – {end}",
+  "@reportReviewWhatHappenedWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewWindowUntilNow": "now",
+  "reportReviewChangeOutcomeTitle": "Outcome trend",
+  "reportReviewChangeWaterTitle": "Water",
+  "reportReviewChangeSleepTitle": "Sleep",
+  "reportReviewChangeDirectionUp": "Up",
+  "reportReviewChangeDirectionDown": "Down",
+  "reportReviewChangeDirectionFlat": "Flat",
+  "reportReviewChangeOutcomeDetail": "From {from} to {to} across {count} check-ins",
+  "@reportReviewChangeOutcomeDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewChangeNumericDetail": "{from} {unit} → {to} {unit} over {days} days",
+  "@reportReviewChangeNumericDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewChangeUnitMl": "ml",
+  "reportReviewChangeUnitHour": "h",
+  "reportReviewDoseSectionTitle": "Medication doses",
+  "reportReviewDoseConfirmedLabel": "Doses confirmed: {count}",
+  "@reportReviewDoseConfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewDoseSkippedLabel": "Skipped: {count}",
+  "@reportReviewDoseSkippedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewDoseUnconfirmedLabel": "Unconfirmed: {count}",
+  "@reportReviewDoseUnconfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewCheckInSectionTitle": "Check-in records",
+  "reportReviewCheckInRecordLabel": "{date} · {outcome}",
+  "@reportReviewCheckInRecordLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewMoreCountLabel": "{count} more records",
+  "@reportReviewMoreCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewNextStepCheckInPrompt": "You haven't checked in today yet.",
+  "reportReviewNextStepCheckInDonePrompt": "Today's result is confirmed.",
+  "reportReviewNextStepEndedPrompt": "This observation has ended. Outcome: {outcome}",
+  "@reportReviewNextStepEndedPrompt": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagSectionTitle": "Medicine safety notes",
+  "reportReviewRedFlagSevereAllergy": "{medicine} may contain a severe allergen: {label}",
+  "@reportReviewRedFlagSevereAllergy": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagInformationGap": "Key medication information is missing for {medicine}",
+  "@reportReviewRedFlagInformationGap": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagUnknown": "Safety note for {medicine}",
+  "@reportReviewRedFlagUnknown": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewHistoryTitle": "Past observations",
+  "reportReviewHistoryEmpty": "No past observations yet.",
+  "reportReviewHistoryLoadFailed": "Couldn't load past observations.",
+  "reportReviewNoEventTitle": "No observation in progress",
+  "reportReviewNoEventDescription": "Start a health observation and this page will review what happened, what changed, what you completed, and what's next.",
+  "reportReviewStartObservationAction": "Start health observation",
+  "reportReviewErrorTitle": "Couldn't load the review",
+  "reportReviewErrorDescription": "Check your connection and try again.",
+  "reportReviewStaleBanner": "Update failed — showing your last review"
 }

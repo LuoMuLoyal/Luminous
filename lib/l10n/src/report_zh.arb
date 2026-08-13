@@ -220,5 +220,217 @@
         "type": "String"
       }
     }
-  }
+  },
+  "reportReviewSectionWhatHappened": "发生了什么",
+  "reportReviewSectionKeyChanges": "有什么变化",
+  "reportReviewSectionCompletedActions": "完成了什么",
+  "reportReviewSectionNextStep": "接下来怎么办",
+  "reportReviewStatusActive": "进行中",
+  "reportReviewStatusEnded": "已结束",
+  "reportReviewStatusUnknown": "未知",
+  "reportReviewOutcomeLabel": "结果",
+  "reportReviewOutcomeImproved": "好转",
+  "reportReviewOutcomeUnchanged": "差不多",
+  "reportReviewOutcomeWorsened": "加重",
+  "reportReviewOutcomeUnknown": "未知",
+  "reportReviewKindSymptom": "症状观察",
+  "reportReviewKindOther": "健康观察",
+  "reportReviewKindUnknown": "健康观察",
+  "reportReviewStartedLabel": "开始于 {date}",
+  "@reportReviewStartedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewEndedLabel": "结束于 {date}",
+  "@reportReviewEndedLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewMedicineCountLabel": "关联 {count} 种用药",
+  "@reportReviewMedicineCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewCheckInAction": "确认今天结果",
+  "reportReviewCheckInDoneToday": "今天已确认：{outcome}",
+  "@reportReviewCheckInDoneToday": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewEndEventAction": "结束观察",
+  "reportReviewReasonNoObservations": "这段时间内还没有观察记录。",
+  "reportReviewReasonInsufficientCoverage": "有记录但还不足以看出变化趋势。",
+  "reportReviewReasonNoCompletedActions": "还没有已确认的服药或结果记录。",
+  "reportReviewReasonUnknown": "暂时无法展示这部分内容。",
+  "reportReviewWhatHappenedSymptomCount": "记录了 {count} 条症状",
+  "@reportReviewWhatHappenedSymptomCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewWhatHappenedCheckInCount": "确认了 {count} 次结果",
+  "@reportReviewWhatHappenedCheckInCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewWhatHappenedWindow": "{start} 至 {end}",
+  "@reportReviewWhatHappenedWindow": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewWindowUntilNow": "至今",
+  "reportReviewChangeOutcomeTitle": "结果变化",
+  "reportReviewChangeWaterTitle": "饮水",
+  "reportReviewChangeSleepTitle": "睡眠",
+  "reportReviewChangeDirectionUp": "上升",
+  "reportReviewChangeDirectionDown": "下降",
+  "reportReviewChangeDirectionFlat": "持平",
+  "reportReviewChangeOutcomeDetail": "从「{from}」变为「{to}」，共确认 {count} 次",
+  "@reportReviewChangeOutcomeDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewChangeNumericDetail": "{from} {unit} → {to} {unit}，观察 {days} 天",
+  "@reportReviewChangeNumericDetail": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewChangeUnitMl": "毫升",
+  "reportReviewChangeUnitHour": "小时",
+  "reportReviewDoseSectionTitle": "服药情况",
+  "reportReviewDoseConfirmedLabel": "已确认服药 {count} 次",
+  "@reportReviewDoseConfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewDoseSkippedLabel": "跳过 {count} 次",
+  "@reportReviewDoseSkippedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewDoseUnconfirmedLabel": "未确认 {count} 次",
+  "@reportReviewDoseUnconfirmedLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewCheckInSectionTitle": "结果确认记录",
+  "reportReviewCheckInRecordLabel": "{date} · {outcome}",
+  "@reportReviewCheckInRecordLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewMoreCountLabel": "还有 {count} 条记录",
+  "@reportReviewMoreCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportReviewNextStepCheckInPrompt": "今天还没有确认结果，记得打卡。",
+  "reportReviewNextStepCheckInDonePrompt": "今天的结果已确认。",
+  "reportReviewNextStepEndedPrompt": "这段观察已结束，结果：{outcome}",
+  "@reportReviewNextStepEndedPrompt": {
+    "placeholders": {
+      "outcome": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagSectionTitle": "用药安全提醒",
+  "reportReviewRedFlagSevereAllergy": "「{medicine}」可能含有严重过敏成分「{label}」",
+  "@reportReviewRedFlagSevereAllergy": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      },
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagInformationGap": "「{medicine}」缺少关键用药信息",
+  "@reportReviewRedFlagInformationGap": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewRedFlagUnknown": "「{medicine}」存在安全提醒",
+  "@reportReviewRedFlagUnknown": {
+    "placeholders": {
+      "medicine": {
+        "type": "String"
+      }
+    }
+  },
+  "reportReviewHistoryTitle": "过去的观察",
+  "reportReviewHistoryEmpty": "还没有已结束的观察。",
+  "reportReviewHistoryLoadFailed": "历史记录加载失败。",
+  "reportReviewNoEventTitle": "现在没有进行中的观察",
+  "reportReviewNoEventDescription": "开始一段健康观察后，这里会按「发生了什么、有什么变化、完成了什么、接下来怎么办」帮你回顾整个过程。",
+  "reportReviewStartObservationAction": "开始健康观察",
+  "reportReviewErrorTitle": "回顾暂时加载失败",
+  "reportReviewErrorDescription": "请检查网络后重试。",
+  "reportReviewStaleBanner": "更新失败，正在显示上次的回顾内容"
 }

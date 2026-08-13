@@ -7,17 +7,27 @@ updated: 2026-08-13
 
 # Active UI — Report
 
-Last updated: 2026-08-13 (Review domain 层已落地；运行时 UI 未变)
+Last updated: 2026-08-13 (Review Task 6：主内容切换为事件优先 ReviewView，旧 dashboard 代码保留未装配)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
-## Review 领域层（已实现，UI 尚未切换）
+## Review 领域层（已实现）
 
 - 新增 `EventReview` 领域实体与 `ReviewRepository` 接口（current / history / detail），实现为 `LucentReviewRepository`，映射 Lucent event review read model：`GET /api/v1/user/reports/reviews/current`（无事件返回空信封 null，不是 404）、`GET .../reviews`（status/cursor/limit 分页）、`GET .../reviews/{eventId}`（foreign 404）。
 - 实体保留契约语义：四个 section 各自 available/unknown；unknown 段的 reasonCode 已知码按原文保留，未知码在生成 DTO 反序列化层被折叠为 `unknown_default_open_api` 占位符；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
 - 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（通过 `ref.listen` 只采纳被接受的 AsyncData，失败时保留最后一次成功数据，登出/会话失效的 null 数据会清空缓存；`ref.invalidate` 即重试）。
 - 自动刷新覆盖：`reviewCurrentProvider` watch `dailyRecords` / `doseLogs` / `healthEvents` 三个 `DataChangeTopic`；`reviewHistoryProvider` watch `healthEvents`。health_event 的 create / end（含 outcome 确认）/ checkIn 在服务端确认成功后发射 `healthEvents`。
-- 当前 `/report` 页面与 dashboard 首屏不变；`EventReview` 尚未参与任何 UI 渲染，Task 5（路由/文案）与 Task 6（event-first 视图）落地后才切换。
+- Task 6 起 `/report` 主内容切换为事件优先的 `ReviewView`（见下节）；旧 dashboard 视图代码（`dashboard_view.dart`、sections、`top_bar.dart`、`skeleton_view.dart` 等）保留在文件中但不再从 `page.dart` 装配，Task 7 负责移除主路径引用并收尾。
+
+## Review 事件优先视图（Task 6，主内容已切换）
+
+- `/report` 页面装配 `ReviewView`（`presentation/widgets/views/review_view.dart`）：事件头部 + 四段（发生了什么 / 有什么变化 / 完成了什么 / 接下来怎么办）+ 事件历史，移动端约束布局，不新增桌面专属 breakpoint 或 sidebar 对等实现（桌面与移动端同一布局）。
+- 事件头部：active 事件显示「进行中」与今日 check-in（`coverage.checkIns.todayCheckIn` 为空且 `availableActions` 含 check-in 时），同时保留「结束观察」入口；ended 事件显示用户确认的 outcome，无 check-in。check-in / 结束 / 开始观察均复用 health_event 的 bottom sheet 与 `ActiveHealthEvent` notifier。
+- 四段按 fixed 顺序渲染；每段独立 available/unknown：unknown 段显示 reasonCode 本地化的简短缺失原因（`no_observations` / `insufficient_coverage` / `no_completed_actions`，未知码折叠为通用文案），不显示 0 分或红色「需关注」状态。fact code：`health_event` / `observed_changes` / `completed_actions` / `active_check_in` / `event_ended`，用药安全提醒（`redFlags`）以 warning 色调结构化展示，无泛化建议文案。
+- 历史：`reviewHistoryProvider` 第一页按事件逐条列出（最近在前），不按月份分组；加载失败只在卡片内显示一行提示，不阻塞首屏。
+- 无事件：显示「开始健康观察」入口 + 最近事件历史；完全没有事件时给轻量解释，不自动生成周报。未登录 preview 显示 `SignInHintBanner`，隐藏开始入口。
+- 状态处理：首载 loading 显示骨架屏；刷新失败但 `reviewLastCurrentProvider` 有数据时继续渲染旧数据 + 轻量 stale 提示条；无缓存的错误显示 `StateErrorView` + 重试。
+- 文案全部走 `report*` l10n 分片（zh/en 齐全），旧 `reportExport*`、诊所摘要等文案保持 Report 口径（Task 8 移入 More 后收尾）。
 
 ## Sparse Record Semantics 合同
 
@@ -26,9 +36,11 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 睡眠 episode 是 Lucent 后端和 Today collector 的语义；当前 Report 仍消费 legacy sleep scalar，尚未消费完整 sleep episode contract，也不提供 episode 级别的同日记录保留或“不按日期合并”保证。
 - 本次客户端合同同步没有改变 Report 页面可见结构、评分/导出/AI 摘要的既有行为；这些仍按本文件顶部的迁移说明和 TODO 管理。
 
-> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；这些变化尚未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
+> 本文件继续记录当前已经实现的 `Report` 运行时事实。产品方向已决定将用户可见任务改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），dashboard 的移除与导出/医生分享移入 More 仍未实现，待办见 [[00-current/TODO#`Report` 转为 `Review/回顾`]]。
 
-## 页面结构
+## 页面结构（旧 dashboard，代码保留但已不装配）
+
+> Task 6 起 `/report` 主内容已切换为 ReviewView（见「Review 事件优先视图」节）。以下 dashboard 页面结构描述的是仍保留在仓库中的 legacy 视图代码（`dashboard_view.dart` 及其 sections、`top_bar.dart`、`skeleton_view.dart` 未删除），Task 7 负责移除主路径引用并收尾。
 
 - Lucent-backed report dashboard，真实 medication / water / sleep 聚合。
 - 用户可选范围：`last_7_days` / `last_30_days` / `custom`（Forui `FCalendar.grid` 日期范围选择器）。

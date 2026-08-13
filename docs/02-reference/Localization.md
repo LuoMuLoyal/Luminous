@@ -7,7 +7,7 @@ updated: 2026-08-13
 
 # Flutter Localization
 
-Last updated: 2026-08-13 (Review Experience Task 5: fifth tab rename)
+Last updated: 2026-08-13 (Review Experience Task 6: `reportReview*` keys added to the report fragment)
 
 This file records the localization workflow and ownership rules. It is not a catalog of every
 current string.
@@ -171,6 +171,11 @@ Persisted preference keys:
 - Report root-page suggestion-history copy such as section title, empty state, lifecycle
   badges, and suggestion detail sheet labels (rule ID, trigger type, confidence, generated-at,
   feedback, expired-at) is owned by the Report ARB entries.
+- Event review copy (`reportReview*`) — four section titles, event status/kind/outcome labels,
+  unknown-section reason codes, whatHappened/keyChanges/completedActions/nextStep fact wording,
+  red-flag safety notes, history, no-event and error states — is owned by the Report ARB entries
+  (`report_*.arb` fragments, zh/en in sync). The review UI composes these keys over structured
+  contract arguments; no review copy is hardcoded in widgets.
 - Theme settings now own both mode strings (`system / light / dark`) and theme-family strings
   (`blue / green / neutral / orange / red / rose / slate / violet / yellow / zinc`), plus the
   section labels used by the theme settings subpage and the general-settings summary.
