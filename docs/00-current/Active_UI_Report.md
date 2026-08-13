@@ -2,14 +2,21 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-13
 ---
 
 # Active UI — Report
 
-Last updated: 2026-08-11 (Sparse Record Semantics contract；运行时 UI 未变)
+Last updated: 2026-08-13 (Review domain 层已落地；运行时 UI 未变)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
+
+## Review 领域层（已实现，UI 尚未切换）
+
+- 新增 `EventReview` 领域实体与 `ReviewRepository` 接口（current / history / detail），实现为 `LucentReviewRepository`，映射 Lucent event review read model：`GET /api/v1/user/reports/reviews/current`（无事件返回空信封 null，不是 404）、`GET .../reviews`（status/cursor/limit 分页）、`GET .../reviews/{eventId}`（foreign 404）。
+- 实体保留契约语义：四个 section 各自 available/unknown，unknown 段携带原样 reasonCode；coverage 的 state/coverage/sources 未知值映射为显式 `unknown` 成员而非空列表或 0；available actions 保留客户端可渲染项。
+- 展示层 provider：`reviewCurrentProvider`（keepAlive，优先 active 事件）、`reviewHistoryProvider`（缓存第一页）、`reviewDetailProvider`（autoDispose family，按事件 ID 隔离）与 `reviewLastCurrentProvider`（失败时保留最后一次成功数据，`ref.invalidate` 即重试）。dailyRecords / doseLogs 数据变化自动触发 current 刷新。
+- 当前 `/report` 页面与 dashboard 首屏不变；`EventReview` 尚未参与任何 UI 渲染，Task 5（路由/文案）与 Task 6（event-first 视图）落地后才切换。
 
 ## Sparse Record Semantics 合同
 

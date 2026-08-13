@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-13
 ---
 
 # Lucent OpenAPI Client
 
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 This file records the supported Flutter client workflow. API shape comes from Lucent controller/DTO
 code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose.
@@ -22,16 +22,26 @@ code plus a freshly exported local `../Lucent/docs/openapi.json`, not from prose
 
 ## Current Generated Baseline
 
-- Last known Lucent export: 114 paths / 254 schemas.
+- Last known Lucent export: 117 paths / 272 schemas.
 - Generated package uses the official OpenAPI Generator `dart-dio` generator with `json_serializable`
   and `copy_with_extension`. All enums include `unknownDefaultOpenApi` fallback via
   `enumUnknownDefaultCase=true`.
 - Generated package includes auth/account, user-scoped health context, daily records, AI daily-record
   candidate parsing, medicine search/detail, current medicines, dose logs, environment snapshot,
   schedule-only medicine reminders, read-only reminder delivery history, user settings, assistant
-  capability/conversation, report dashboard, Today AI analysis, report AI summary, public support
-  resources/app info, data export requests, notifications, legal documents, and assistant streaming
-  REST DTOs, and medicine risk check (static + LLM) DTOs.
+  capability/conversation, report dashboard, event review (current / history / detail read model),
+  Today AI analysis, report AI summary, public support resources/app info, data export requests,
+  notifications, legal documents, and assistant streaming REST DTOs, and medicine risk check
+  (static + LLM) DTOs.
+- Event review endpoints live in the generated `ReportsApi`:
+  `reportsControllerGetCurrentReviewV1` (no event → `EventReviewNullableResponseDto` with null
+  `data`, not a 404), `reportsControllerListReviewsV1` (status/cursor/limit, opaque
+  `startedAtISO|id` cursor), `reportsControllerGetEventReviewV1` (foreign/missing → 404). The 14
+  generated `EventReview*Dto` models mirror Lucent's read-model shape; domain mapping preserves
+  section state / reasonCode / coverage / sources instead of collapsing unknown values.
+- `scripts/bootstrap_generated_sources.dart` regenerates the filtered client as two
+  openapi-generator passes (TodayAnalysis and Reports) because the 7.x CLI accepts only a single
+  `apis` value per run; outputs are merged into `generated/lucent_api/` and formatted.
 - Current user-scoped business data uses `/api/v1/user/*`; account profile/security actions stay
   under `/api/v1/account/*`.
 - Legacy user-device registration is no longer part of the Lucent contract. Push identity is

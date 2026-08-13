@@ -71,6 +71,20 @@ import 'package:lucent_api/src/model/enable_security_pin_dto.dart';
 import 'package:lucent_api/src/model/end_health_event_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_dto.dart';
 import 'package:lucent_api/src/model/environment_snapshot_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_check_in_coverage_dto.dart';
+import 'package:lucent_api/src/model/event_review_coverage_summary_dto.dart';
+import 'package:lucent_api/src/model/event_review_data_dto.dart';
+import 'package:lucent_api/src/model/event_review_event_dto.dart';
+import 'package:lucent_api/src/model/event_review_list_data_dto.dart';
+import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_nullable_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_observed_source_dto.dart';
+import 'package:lucent_api/src/model/event_review_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_section_dto.dart';
+import 'package:lucent_api/src/model/event_review_section_facts_dto.dart';
+import 'package:lucent_api/src/model/event_review_sections_dto.dart';
+import 'package:lucent_api/src/model/event_review_source_timestamps_dto.dart';
+import 'package:lucent_api/src/model/event_review_today_check_in_dto.dart';
 import 'package:lucent_api/src/model/evidence_item_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_response_dto.dart';
@@ -524,6 +538,58 @@ ReturnType deserialize<ReturnType, BaseType>(
       return EnvironmentSnapshotResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'EventReviewCheckInCoverageDto':
+      return EventReviewCheckInCoverageDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'EventReviewCoverageSummaryDto':
+      return EventReviewCoverageSummaryDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'EventReviewDataDto':
+      return EventReviewDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewEventDto':
+      return EventReviewEventDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewListDataDto':
+      return EventReviewListDataDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewListResponseDto':
+      return EventReviewListResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewNullableResponseDto':
+      return EventReviewNullableResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'EventReviewObservedSourceDto':
+      return EventReviewObservedSourceDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'EventReviewResponseDto':
+      return EventReviewResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewSectionDto':
+      return EventReviewSectionDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewSectionFactsDto':
+      return EventReviewSectionFactsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewSectionsDto':
+      return EventReviewSectionsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'EventReviewSourceTimestampsDto':
+      return EventReviewSourceTimestampsDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'EventReviewTodayCheckInDto':
+      return EventReviewTodayCheckInDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'EvidenceItemDto':
       return EvidenceItemDto.fromJson(value as Map<String, dynamic>)

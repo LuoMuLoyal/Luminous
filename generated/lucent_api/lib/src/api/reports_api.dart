@@ -11,7 +11,11 @@ import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_nullable_response_dto.dart';
+import 'package:lucent_api/src/model/event_review_response_dto.dart';
 import 'package:lucent_api/src/model/generate_report_summary_dto.dart';
+import 'package:lucent_api/src/model/health_event_status.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
@@ -545,6 +549,76 @@ class ReportsApi {
     );
   }
 
+  /// Get the current event review for the authenticated user
+  ///
+  ///
+  /// Parameters:
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [EventReviewNullableResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<EventReviewNullableResponseDto>>
+  reportsControllerGetCurrentReviewV1({
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/reports/reviews/current';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    EventReviewNullableResponseDto? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<
+              EventReviewNullableResponseDto,
+              EventReviewNullableResponseDto
+            >(rawData, 'EventReviewNullableResponseDto', growable: true);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<EventReviewNullableResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Get authenticated user report dashboard
   ///
   ///
@@ -628,6 +702,83 @@ class ReportsApi {
     );
   }
 
+  /// Get one user event review by event id
+  ///
+  ///
+  /// Parameters:
+  /// * [eventId]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [EventReviewResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<EventReviewResponseDto>> reportsControllerGetEventReviewV1({
+    required String eventId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/reports/reviews/{eventId}'.replaceAll(
+      '{'
+      r'eventId'
+      '}',
+      eventId.toString(),
+    );
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    EventReviewResponseDto? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<EventReviewResponseDto, EventReviewResponseDto>(
+              rawData,
+              'EventReviewResponseDto',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<EventReviewResponseDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// Access a shared clinic summary by token (no auth required)
   ///
   ///
@@ -695,6 +846,89 @@ class ReportsApi {
     }
 
     return Response<ClinicSummaryDto>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// List the user event review history
+  ///
+  ///
+  /// Parameters:
+  /// * [status] - Filter events by status. No time range is required.
+  /// * [cursor] - Opaque cursor for pagination: composite of the last item startedAt ISO 8601 value and id joined with \"|\", as returned by nextCursor. Must not be constructed by the client.
+  /// * [limit] - Page size (1-100).
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [EventReviewListResponseDto] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<EventReviewListResponseDto>> reportsControllerListReviewsV1({
+    HealthEventStatus? status,
+    String? cursor,
+    int? limit = 20,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/reports/reviews';
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _queryParameters = <String, dynamic>{
+      if (status != null) r'status': status,
+      if (cursor != null) r'cursor': cursor,
+      if (limit != null) r'limit': limit,
+    };
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      queryParameters: _queryParameters,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    EventReviewListResponseDto? _responseData;
+
+    try {
+      final rawData = _response.data;
+      _responseData = rawData == null
+          ? null
+          : deserialize<EventReviewListResponseDto, EventReviewListResponseDto>(
+              rawData,
+              'EventReviewListResponseDto',
+              growable: true,
+            );
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<EventReviewListResponseDto>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,

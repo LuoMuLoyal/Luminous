@@ -97,16 +97,31 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
   final filteredOutput = await Directory.systemTemp.createTemp(
     'luminous-openapi-today-analysis-',
   );
+  final reviewOutput = await Directory.systemTemp.createTemp(
+    'luminous-openapi-review-',
+  );
   final supportingOutput = await Directory.systemTemp.createTemp(
     'luminous-openapi-supporting-',
   );
 
   try {
-    await _generateTodayAnalysisClient(
+    // openapi-generator-cli 7.x 的 --global-property 只接受单值 apis，
+    // 因此 TodayAnalysis 与 Reports 各跑一次过滤生成，再合并拷贝。
+    await _generateFilteredApiClient(
       context,
       openApiFile: openApiFile,
       generatorConfig: generatorConfig,
       outputDirectory: filteredOutput,
+      apis: 'TodayAnalysis',
+      models: _todayAnalysisModels,
+    );
+    await _generateFilteredApiClient(
+      context,
+      openApiFile: openApiFile,
+      generatorConfig: generatorConfig,
+      outputDirectory: reviewOutput,
+      apis: 'Reports',
+      models: _reviewModels,
     );
     await _generateSupportingFiles(
       context,
@@ -120,7 +135,13 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
       generatedClientRoot,
       'lib/src/api/today_analysis_api.dart',
     );
+    _copyGeneratedFile(
+      reviewOutput,
+      generatedClientRoot,
+      'lib/src/api/reports_api.dart',
+    );
     _copyGeneratedModels(filteredOutput, generatedClientRoot);
+    _copyGeneratedModels(reviewOutput, generatedClientRoot);
     _copyGeneratedFile(
       supportingOutput,
       generatedClientRoot,
@@ -133,6 +154,7 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
     );
   } finally {
     await filteredOutput.delete(recursive: true);
+    await reviewOutput.delete(recursive: true);
     await supportingOutput.delete(recursive: true);
   }
 
@@ -165,13 +187,15 @@ Future<void> _buildClient(ToolContext context, {String? openApiPath}) async {
   stdout.writeln('');
 }
 
-Future<void> _generateTodayAnalysisClient(
+Future<void> _generateFilteredApiClient(
   ToolContext context, {
   required File openApiFile,
   required File generatorConfig,
   required Directory outputDirectory,
+  required String apis,
+  required List<String> models,
 }) async {
-  final models = _todayAnalysisModels.join(':');
+  final modelList = models.join(':');
   await runLoggedCommand(
     'openapi-generator-cli',
     [
@@ -184,11 +208,11 @@ Future<void> _generateTodayAnalysisClient(
       outputDirectory.path,
       '-c',
       generatorConfig.path,
-      '--global-property=apis=TodayAnalysis,models=$models',
+      '--global-property=apis=$apis,models=$modelList',
       '--global-property=modelDocs=false,apiDocs=false,modelTests=false,apiTests=false',
     ],
     workingDirectory: context.repoRoot,
-    stepName: 'openapi-generator (filtered Today Analysis client)',
+    stepName: 'openapi-generator (filtered $apis client)',
   );
   stdout.writeln('');
 }
@@ -399,4 +423,21 @@ const _todayAnalysisModels = [
   'ReportObservedMetricDto',
   'SuggestionItemDto',
   'SuggestionObservedMetricDto',
+];
+
+const _reviewModels = [
+  'EventReviewCheckInCoverageDto',
+  'EventReviewCoverageSummaryDto',
+  'EventReviewDataDto',
+  'EventReviewEventDto',
+  'EventReviewListDataDto',
+  'EventReviewListResponseDto',
+  'EventReviewNullableResponseDto',
+  'EventReviewObservedSourceDto',
+  'EventReviewResponseDto',
+  'EventReviewSectionDto',
+  'EventReviewSectionFactsDto',
+  'EventReviewSectionsDto',
+  'EventReviewSourceTimestampsDto',
+  'EventReviewTodayCheckInDto',
 ];
