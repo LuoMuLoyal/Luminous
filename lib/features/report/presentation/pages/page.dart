@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
@@ -27,8 +29,10 @@ import 'package:luminous/l10n/app_localizations.dart';
 /// health_event 的 ActiveHealthEvent notifier 与 bottom sheet，服务端
 /// 成功后由 DataChangeBus 驱动 review providers 自动刷新。
 ///
-/// 旧 dashboard 视图（DashboardView 及其 section widgets）保留在各自文件中，
-/// 但已不再从本页装配（Task 7 负责移除主路径引用并收尾）。
+/// 旧 dashboard 视图（`dashboard_view.dart` 及其 sections、
+/// `widgets/shared/top_bar.dart` 的 7/30 天切换）已从主路径移除（Task 7
+/// 收尾），代码按兼容期保留、不再由本页装配——地位与保留范围见各文件头
+/// 的 LEGACY 标注。
 class ReportPage extends ConsumerWidget {
   const ReportPage({super.key});
 
@@ -50,8 +54,12 @@ class ReportPage extends ConsumerWidget {
   /// topic）驱动 review providers 自动刷新，无需手动 refresh。
   Future<void> _openStart(BuildContext context, WidgetRef ref) async {
     final l10n = AppLocalizations.of(context)!;
-    final currentMedicineOptions = await _readCurrentMedicineOptions(ref);
-    final reasonRecordOptions = await _readReasonRecordOptions(ref);
+    // 两类选项并行读取（happy path 等待减半），最坏等待取两条链路的
+    // 较大值而非之和；读取失败时各自静默降级为空列表，不阻塞开始观察。
+    final (currentMedicineOptions, reasonRecordOptions) = await (
+      _readCurrentMedicineOptions(ref),
+      _readReasonRecordOptions(ref),
+    ).wait;
     if (!context.mounted) return;
     await showAppDialog<void>(
       context: context,
@@ -114,7 +122,12 @@ class ReportPage extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     try {
-      final userTimezone = await readUserTimezone(ref);
+      // 时区读取单独加 2s 客户端上限：这是有意的快速降级取舍——选项读取
+      // 失败只影响「开始观察」弹窗里的可选关联项，静默降级为空列表即可，
+      // 不应被 health context provider 自身的 5s 超时拖住整个弹窗。
+      final userTimezone = await readUserTimezone(
+        ref,
+      ).timeout(const Duration(seconds: 2));
       final today = DateTime.parse(
         localDateKey(DateTime.now(), timeZoneName: userTimezone),
       );

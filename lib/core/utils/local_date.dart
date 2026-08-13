@@ -35,7 +35,7 @@ Future<String?> readUserTimezone(WidgetRef ref) async {
 /// bundled timezone data is unavailable — never throws.
 String localDateKey(DateTime date, {String? timeZoneName}) {
   const fallbackTimeZoneName = 'Asia/Shanghai';
-  var value = date.toLocal();
+  DateTime value;
   try {
     timezone_data.initializeTimeZones();
     value = timezone.TZDateTime.from(

@@ -69,6 +69,11 @@ Future<EventReview?> reviewCurrent(Ref ref) {
   );
 }
 
+/// 历史筛选切换后的失败立即进入 AsyncError，不走 riverpod 默认的指数
+/// 退避自动重试（否则失败会被 ~40s 的静默重试掩盖）。手动重试仍由
+/// `ref.invalidate(reviewHistoryProvider)` 驱动（section 内的 inline 重试）。
+Duration? _noHistoryRetry(int retryCount, Object error) => null;
+
 /// 最近事件回顾历史（第一页，默认 20 条），keepAlive 缓存。
 ///
 /// 状态筛选由 [reviewHistoryStatusProvider] 驱动（null = 全部）；review
@@ -79,7 +84,7 @@ Future<EventReview?> reviewCurrent(Ref ref) {
 /// 事件创建/结束/check-in 后自动刷新；筛选切换时本 provider 重建重取；
 /// `ref.invalidate(reviewHistoryProvider)` 即 retry；后续翻页由
 /// presentation 层直接调用 repository。
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: true, retry: _noHistoryRetry)
 Future<ReviewEventPage> reviewHistory(Ref ref) {
   final status = ref.watch(reviewHistoryStatusProvider);
   ref.watch(dataChangeVersionProvider(DataChangeTopic.healthEvents));

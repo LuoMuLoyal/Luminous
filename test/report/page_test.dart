@@ -428,7 +428,20 @@ void main() {
     });
     final reviewRepository = _FakeReviewRepository(
       current: null,
-      page: const ReviewEventPage(items: [], total: 0),
+      pageResolver: (status) => switch (status) {
+        ReviewEventStatus.active => reviewHistoryPage([
+          reviewEventItem(
+            id: 'evt-active-hist',
+            title: '进行中的观察',
+            status: ReviewEventStatus.active,
+            outcome: null,
+            endedAt: null,
+          ),
+        ]),
+        _ => reviewHistoryPage([
+          reviewEventItem(id: 'evt-ended-hist', title: '已结束的观察'),
+        ]),
+      },
     );
 
     await tester.pumpWidget(
@@ -438,6 +451,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
 
     expect(reviewRepository.lastHistoryStatus, isNull);
+    expect(find.text('已结束的观察'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('review-history-filter-active')));
     await tester.pump();
@@ -445,6 +459,9 @@ void main() {
 
     expect(reviewRepository.historyCalls, 2);
     expect(reviewRepository.lastHistoryStatus, ReviewEventStatus.active);
+    // 列表实际更新为过滤后数据，而不是沿用旧页。
+    expect(find.text('进行中的观察'), findsOneWidget);
+    expect(find.text('已结束的观察'), findsNothing);
 
     await tester.tap(find.byKey(const Key('review-history-filter-all')));
     await tester.pump();
@@ -452,6 +469,40 @@ void main() {
 
     expect(reviewRepository.historyCalls, 3);
     expect(reviewRepository.lastHistoryStatus, isNull);
+    expect(find.text('已结束的观察'), findsOneWidget);
+    expect(find.text('进行中的观察'), findsNothing);
+  });
+
+  testWidgets('filtered history failure shows the retry row immediately', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+    final reviewRepository = _FakeReviewRepository(
+      current: null,
+      page: const ReviewEventPage(items: [], total: 0),
+    )..throwOnStatus = ReviewEventStatus.active;
+
+    await tester.pumpWidget(
+      _buildApp(reviewRepository: reviewRepository, signedIn: true),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(reviewRepository.historyCalls, 1);
+
+    await tester.tap(find.byKey(const Key('review-history-filter-active')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+
+    // provider 已关闭自动重试：失败立即进入错误行，而不是被指数退避掩盖。
+    expect(reviewRepository.historyCalls, 2);
+    expect(find.text(l10n.reportReviewHistoryLoadFailed), findsOneWidget);
+    expect(find.byKey(const Key('review-history-retry')), findsOneWidget);
   });
   testWidgets('active event header check-in calls the repository checkIn', (
     tester,
@@ -579,10 +630,16 @@ class _SignedOutAuthSessionNotifier extends AuthSessionNotifier {
 }
 
 class _FakeReviewRepository implements ReviewRepository {
-  _FakeReviewRepository({this.current, this.page});
+  _FakeReviewRepository({this.current, this.page, this.pageResolver});
 
   EventReview? current;
   ReviewEventPage? page;
+
+  /// 按 status 返回不同页面的解析器（用于筛选列表更新断言）。
+  ReviewEventPage Function(ReviewEventStatus? status)? pageResolver;
+
+  /// 命中该 status 时抛错（用于「筛选失败立即渲染失败行」断言）。
+  ReviewEventStatus? throwOnStatus;
 
   int currentCalls = 0;
   int historyCalls = 0;
@@ -602,7 +659,12 @@ class _FakeReviewRepository implements ReviewRepository {
   }) async {
     historyCalls += 1;
     lastHistoryStatus = status;
-    return page ?? const ReviewEventPage(items: [], total: 0);
+    if (throwOnStatus != null && status == throwOnStatus) {
+      throw Exception('history fetch failed for status filter');
+    }
+    return pageResolver?.call(status) ??
+        page ??
+        const ReviewEventPage(items: [], total: 0);
   }
 
   @override

@@ -227,6 +227,39 @@ void main() {
       },
     );
 
+    test(
+      'history failure surfaces immediately without automatic retries',
+      () async {
+        final repo =
+            _FakeReviewRepository(
+                page: const ReviewEventPage(items: [], total: 0),
+              )
+              ..error = DioException(
+                requestOptions: RequestOptions(
+                  path: '/api/v1/user/reports/reviews',
+                ),
+                type: DioExceptionType.connectionTimeout,
+              );
+        // 不覆盖容器级 retry：靠 provider 自身的 retry 配置（关闭默认指数
+        // 退避）让失败立即以 AsyncError 暴露；若配置被回退，本用例会因
+        // 无限静默重试而超时失败。
+        final container = ProviderContainer(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            reviewRepositoryProvider.overrideWithValue(repo),
+          ],
+        );
+        addTearDown(container.dispose);
+
+        await expectLater(
+          container.read(reviewHistoryProvider.future),
+          throwsA(isA<DioException>()),
+        );
+        // 失败立即出现：repository 只被调用一次，没有自动重试。
+        expect(repo.historyCalls, 1);
+      },
+    );
+
     test('returns an empty page when signed out', () async {
       final repo = _FakeReviewRepository();
       final container = ProviderContainer(

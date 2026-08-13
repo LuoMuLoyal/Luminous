@@ -374,6 +374,26 @@ void main() {
       expect(find.text(l10n.reportReviewHistoryFilterAll), findsOneWidget);
       expect(find.text(l10n.reportReviewStatusActive), findsOneWidget);
       expect(find.text(l10n.reportReviewStatusEnded), findsOneWidget);
+      // 默认选中「全部」：all 按钮 primary，其余 outline。
+      expect(_filterButtonVariant(tester, 'all'), FButtonVariant.primary);
+      expect(_filterButtonVariant(tester, 'active'), FButtonVariant.outline);
+      expect(_filterButtonVariant(tester, 'ended'), FButtonVariant.outline);
+    });
+
+    testWidgets('marks the selected filter as primary', (tester) async {
+      await pumpSection(
+        tester,
+        const ReviewHistorySection(
+          history: AsyncValue<ReviewEventPage>.data(
+            ReviewEventPage(items: [], total: 0),
+          ),
+          selectedStatus: ReviewEventStatus.ended,
+        ),
+      );
+
+      expect(_filterButtonVariant(tester, 'ended'), FButtonVariant.primary);
+      expect(_filterButtonVariant(tester, 'all'), FButtonVariant.outline);
+      expect(_filterButtonVariant(tester, 'active'), FButtonVariant.outline);
     });
 
     testWidgets('tapping a filter emits the selected status', (tester) async {
@@ -398,4 +418,12 @@ void main() {
       expect(selected, ReviewEventStatus.ended);
     });
   });
+}
+
+/// 读取历史筛选按钮当前使用的 [FButtonVariant]。
+FButtonVariant _filterButtonVariant(WidgetTester tester, String key) {
+  final button = tester.widget<FButton>(
+    find.byKey(Key('review-history-filter-$key')),
+  );
+  return button.variant;
 }
