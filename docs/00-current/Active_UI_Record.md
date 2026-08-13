@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-13
 ---
 
 # Active UI — Record
 
-Last updated: 2026-08-11 (Sparse Record Semantics client contract)
+Last updated: 2026-08-13 (时间线 badge 桌面溢出修复)
 
 ## Sparse Record Semantics 客户端边界
 
@@ -61,6 +61,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics client contract)
 - 移动端图标容器背景使用 `softColor.muted(context)`（tinted background），圆角 `RadiusTokens.level3`，时间标签宽度 44px。
 - **空态**：`entries.isEmpty` 时渲染图标+标题+描述+CTA 结构化空态，CTA 跳 `/record/create?date=<选中日期>`。桌面端额外附"清除筛选"按钮。
 - **桌面端拖拽改日期**：时间线卡片（仅 `recordId != null` 的真实记录）包裹 `Draggable<TimelineDragData>`，可拖拽到日历日期单元格（`DragTarget`）改变记录日期。拖拽时源卡片半透明（opacity 0.4），拖拽预览为紧凑浮动卡片（图标+标题+日历图标）。目标日历日期悬浮高亮（primary 色调背景+边框）。成功后调用 `dailyRecordRepositoryProvider.update()` 更新 `occurredAt`，发射 `DataChangeTopic.dailyRecords` 触发看板刷新，自动导航到新日期，Toast 反馈结果。移动端不启用拖拽。
+- **桌面端 badge 溢出修复（2026-08-13）**：时间线标题行的状态 badge（`entry.badgeKey`）在桌面窄列下横向溢出（RenderFlex overflow，确定性复现并阻断 `-d windows` e2e）；badge 外层与内层文案均改为 `Flexible` 参与收缩 + 单行省略号截断（`timeline_item.dart`）。
 
 ## 创建与快捷操作
 

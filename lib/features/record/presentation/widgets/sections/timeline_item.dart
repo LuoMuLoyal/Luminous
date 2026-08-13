@@ -171,42 +171,51 @@ class TimelineCard extends StatelessWidget {
                         ),
                         if (entry.badgeKey != null) ...[
                           const SizedBox(width: Spacing.level3),
-                          FBadge.raw(
-                            builder: (context, style) {
-                              return DecoratedBox(
-                                decoration: ShapeDecoration(
-                                  color: colors.secondary,
-                                  shape: RoundedSuperellipseBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      RadiusTokens.level2,
+                          // 桌面端时间线列较窄：badge 参与 flex 收缩，过长时
+                          // 省略号截断，避免 RenderFlex 溢出（e2e 桌面宽度回归）。
+                          Flexible(
+                            child: FBadge.raw(
+                              builder: (context, style) {
+                                return DecoratedBox(
+                                  decoration: ShapeDecoration(
+                                    color: colors.secondary,
+                                    shape: RoundedSuperellipseBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        RadiusTokens.level2,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: Spacing.level2,
-                                    vertical: Spacing.level1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: Spacing.level2,
+                                      vertical: Spacing.level1,
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // badge 自身被外层 Flexible 限宽后，
+                                        // 内部文案也要参与收缩，否则内层
+                                        // Row 仍按无界宽度测量而溢出。
+                                        Flexible(
+                                          child: Text(
+                                            recordCopy(l10n, entry.badgeKey!),
+                                            style: TypographyToken.level3
+                                                .body(context)
+                                                .copyWith(
+                                                  color: colors.foreground,
+                                                  fontWeight: FontWeight.w700,
+                                                  letterSpacing: 0,
+                                                ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        recordCopy(l10n, entry.badgeKey!),
-                                        style: TypographyToken.level3
-                                            .body(context)
-                                            .copyWith(
-                                              color: colors.foreground,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 0,
-                                            ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ],
