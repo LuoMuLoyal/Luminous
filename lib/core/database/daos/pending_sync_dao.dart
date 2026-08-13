@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:drift/drift.dart';
 
 import '../cache_constants.dart';
 import '../database.dart';
+import '../models/pending_sync_error_details.dart';
 import '../tables/pending_sync_queue.dart';
 
 part 'pending_sync_dao.g.dart';
@@ -29,6 +31,7 @@ class PendingSyncEntry {
     required this.retryCount,
     required this.maxRetry,
     this.lastError,
+    this.errorDetails,
   });
   final String id;
   final String entityType;
@@ -38,7 +41,12 @@ class PendingSyncEntry {
   final DateTime createdAt;
   final int retryCount;
   final int maxRetry;
+
+  /// Raw exception text for backwards compatibility and diagnostics.
   final String? lastError;
+
+  /// Structured error details used for localized user-facing messages.
+  final PendingSyncErrorDetails? errorDetails;
 
   /// Whether this entry has exceeded the max retry count.
   bool get isPermanentlyFailed => retryCount >= maxRetry;
@@ -110,14 +118,25 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
   ///
   /// Uses `retryCount = retryCount + 1` at the database level so concurrent
   /// callers cannot race on the read-then-write value.
-  Future<void> markFailed(String id, String error) async {
+  ///
+  /// [raw] is the original exception string kept for diagnostics.
+  /// [details] is the structured breakdown used for localized UI messages.
+  Future<void> markFailed(
+    String id, {
+    required String raw,
+    PendingSyncErrorDetails? details,
+  }) async {
+    final detailsJson = details?.toJson();
     final rows = await (update(pendingSyncItems)..where((t) => t.id.equals(id)))
         .write(
           PendingSyncItemsCompanion.custom(
             isSyncing: const Variable(false),
             retryCount: pendingSyncItems.retryCount + const Variable(1),
             lastAttemptAt: Variable(DateTime.now()),
-            lastError: Variable(error),
+            lastError: Variable(raw),
+            lastErrorDetails: Variable(
+              detailsJson == null ? null : jsonEncode(detailsJson),
+            ),
           ),
         );
 
@@ -174,6 +193,7 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
         lastAttemptAt: Value(null),
         isSyncing: Value(false),
         lastError: Value(null),
+        lastErrorDetails: Value(null),
       ),
     );
   }
@@ -189,7 +209,19 @@ class PendingSyncDao extends DatabaseAccessor<AppDatabase>
       retryCount: r.retryCount,
       maxRetry: r.maxRetry,
       lastError: r.lastError,
+      errorDetails: _parseErrorDetails(r.lastErrorDetails),
     );
+  }
+
+  PendingSyncErrorDetails? _parseErrorDetails(String? json) {
+    if (json == null || json.isEmpty) return null;
+    try {
+      return PendingSyncErrorDetails.fromJson(
+        jsonDecode(json) as Map<String, dynamic>,
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   String _generateId() {

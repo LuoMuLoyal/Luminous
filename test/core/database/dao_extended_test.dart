@@ -329,7 +329,7 @@ void main() {
     });
 
     test('markFailed on non-existent row is a no-op', () async {
-      await dao.markFailed('nonexistent', 'error');
+      await dao.markFailed('nonexistent', raw: 'error');
       expect(await dao.pendingCount(), 0);
     });
 
@@ -345,7 +345,7 @@ void main() {
         // Exhaust all retries (default maxRetry = 5)
         for (var i = 0; i < 5; i++) {
           await dao.markSyncing(id);
-          await dao.markFailed(id, 'error $i');
+          await dao.markFailed(id, raw: 'error $i');
         }
 
         final ready = await dao.fetchReady();
@@ -423,7 +423,7 @@ void main() {
       // Exhaust all retries (default maxRetry = 5)
       for (var i = 0; i < 5; i++) {
         await dao.markSyncing(id);
-        await dao.markFailed(id, 'error $i');
+        await dao.markFailed(id, raw: 'error $i');
       }
 
       expect(await dao.permanentlyFailedCount(), 1);
@@ -448,7 +448,7 @@ void main() {
 
         for (var i = 0; i < 5; i++) {
           await dao.markSyncing(id);
-          await dao.markFailed(id, 'error');
+          await dao.markFailed(id, raw: 'error');
         }
         expect(await dao.permanentlyFailedCount(), 1);
 

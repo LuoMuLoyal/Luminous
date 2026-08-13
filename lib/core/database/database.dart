@@ -51,17 +51,17 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
 
     onUpgrade: (m, from, to) async {
-      // Future migrations: step through each version sequentially.
-      // if (from < 2) {
-      //   await m.addColumn(dailyRecordCacheEntries, ...);
-      // }
+      // Step through each version sequentially.
+      if (from < 2) {
+        await m.addColumn(pendingSyncItems, pendingSyncItems.lastErrorDetails);
+      }
       //
       // Version range strategy (if Web and native diverge):
       // - Native: versions 1–999

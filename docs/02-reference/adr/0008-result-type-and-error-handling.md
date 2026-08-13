@@ -112,7 +112,8 @@ class AppError {
   final AppErrorKind kind;     // network / auth / server / business / unknown
   final int? code;             // Lucent envelope code
   final int? statusCode;       // HTTP status
-  final String? requestId;
+  final String? requestId;     // X-Request-Id response header
+  final String? traceId;       // traceresponse header / traceparent
   final Object? cause;         // 原始异常
 }
 ```

@@ -39,6 +39,7 @@ class AppError {
     this.code,
     this.statusCode,
     this.requestId,
+    this.traceId,
     this.networkErrorCode,
     this.cause,
   });
@@ -66,6 +67,12 @@ class AppError {
   /// Lucent request ID (`X-Request-Id` header), if available.
   final String? requestId;
 
+  /// Backend trace id (from the `traceresponse` response header), if available.
+  ///
+  /// Unlike [requestId], this is used to correlate client-side failures with
+  /// server-side distributed traces.
+  final String? traceId;
+
   /// Network-layer error code for l10n mapping.
   ///
   /// When non-null, the presentation layer should use
@@ -84,6 +91,7 @@ class AppError {
       if (code != null) ', code: $code',
       if (statusCode != null) ', statusCode: $statusCode',
       if (requestId != null && requestId!.isNotEmpty) ', requestId: $requestId',
+      if (traceId != null && traceId!.isNotEmpty) ', traceId: $traceId',
       if (networkErrorCode != null) ', networkErrorCode: $networkErrorCode',
       ')',
     ];

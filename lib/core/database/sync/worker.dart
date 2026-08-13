@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:luminous/core/database/models/pending_sync_error_details.dart';
 import 'package:luminous/core/logger/logger.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/error_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_flutter/talker_flutter.dart' as talker_pkg;
 
@@ -97,7 +99,12 @@ class SyncWorker {
       talker.info('SyncWorker: synced ${entry.entityType} ${entry.id}');
     } on DioException catch (e) {
       final isPermanentlyFailed = entry.retryCount + 1 >= entry.maxRetry;
-      await pendingSyncDao.markFailed(entry.id, e.toString());
+      final appError = LucentErrorMapper.toAppError(e);
+      await pendingSyncDao.markFailed(
+        entry.id,
+        raw: e.toString(),
+        details: PendingSyncErrorDetails.fromAppError(appError, e.toString()),
+      );
       if (isPermanentlyFailed) {
         talker.error(
           'SyncWorker: item ${entry.id} permanently failed after '
@@ -110,7 +117,12 @@ class SyncWorker {
         );
       }
     } catch (e) {
-      await pendingSyncDao.markFailed(entry.id, e.toString());
+      final appError = LucentErrorMapper.toAppError(e);
+      await pendingSyncDao.markFailed(
+        entry.id,
+        raw: e.toString(),
+        details: PendingSyncErrorDetails.fromAppError(appError, e.toString()),
+      );
       talker.error('SyncWorker: item ${entry.id} unexpected error: $e');
     }
   }

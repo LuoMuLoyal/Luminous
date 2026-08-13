@@ -216,7 +216,7 @@ void main() {
       );
 
       await dao.markSyncing(id);
-      await dao.markFailed(id, 'network error');
+      await dao.markFailed(id, raw: 'network error');
 
       final ready = await dao.fetchReady();
       // Item should not be ready immediately (backoff not elapsed)
@@ -233,7 +233,7 @@ void main() {
       // Exhaust all retries
       for (var i = 0; i < 5; i++) {
         await dao.markSyncing(id);
-        await dao.markFailed(id, 'error $i');
+        await dao.markFailed(id, raw: 'error $i');
       }
 
       final ready = await dao.fetchReady();
@@ -250,7 +250,7 @@ void main() {
 
       for (var i = 0; i < 5; i++) {
         await dao.markSyncing(id);
-        await dao.markFailed(id, 'network error $i');
+        await dao.markFailed(id, raw: 'network error $i');
       }
 
       final failed = await dao.fetchPermanentlyFailed();
@@ -274,7 +274,7 @@ void main() {
 
       for (var i = 0; i < 5; i++) {
         await dao.markSyncing(id);
-        await dao.markFailed(id, 'network error');
+        await dao.markFailed(id, raw: 'network error');
       }
 
       await dao.resetForRetry(id);

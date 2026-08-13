@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-10
+updated: 2026-08-13
 ---
 
 # Data Layer
@@ -38,6 +38,8 @@ Widget
   network-error-code derivation, traceId binding). `lib/core/network/interceptors/error_interceptor.dart`
   delegates to it and only re-wraps the mapped exception into a rejected `DioException`, so the
   mapping logic is not duplicated between the interceptor and feature call sites.
+  `LucentErrorMapper.toAppError()` now preserves `traceId` on the resulting `AppError` so the
+  diagnostics panel in Mine sync failures can copy it.
 - `lib/core/network/sse.dart`: `LucentSseClient` — direct `text/event-stream` consumer with
   optional reconnect and capped exponential backoff (1s, 2s, 4s, ... clamped to 60s) so raising
   `maxReconnects` later cannot produce unbounded delays.
@@ -144,11 +146,15 @@ ADR-0009 introduced Drift-based local persistence. Repositories for `daily-recor
 - **Write**: optimistic local copy first, then remote confirm; on failure, enqueue to
   `pending_sync_queue` for replay via `SyncWorker` (connectivity listener + exponential backoff).
 - **Failure details**: `PendingSyncDao.fetchPermanentlyFailed()` exposes the diagnostic fields kept
-  in the queue (`entityType`, `entityId`, `operation`, retry counts, and `lastError`) for the Mine
-  sync-failure dialog. `resetForRetry()` clears the terminal retry state before a manual flush;
-  the queued payload is never rendered or modified by the UI. Pending sync ids use a
-  cryptographically random suffix (`Random.secure()`) so they remain unique across hot restarts
-  and isolates. `markFailed()` increments `retryCount` atomically at the database level
+  in the queue (`entityType`, `entityId`, `operation`, retry counts, `lastError`, and
+  `lastErrorDetails`) for the Mine sync-failure dialog. `lastErrorDetails` is a JSON-encoded
+  `PendingSyncErrorDetails` object produced by `LucentErrorMapper.toAppError()`; it carries
+  `message`, `code`, `statusCode`, `traceId`, `networkErrorCode`, and `kind` so the UI can show
+  localized user-facing messages without parsing raw exception strings. `lastError` is kept for
+  backwards compatibility and as the raw diagnostic fallback. `resetForRetry()` clears both error
+  columns before a manual flush; the queued payload is never rendered or modified by the UI. Pending
+  sync ids use a cryptographically random suffix (`Random.secure()`) so they remain unique across
+  hot restarts and isolates. `markFailed()` increments `retryCount` atomically at the database level
   (`retryCount = retryCount + 1`) so concurrent callers cannot race on a read-then-write value;
   backoff is computed by the shared `backoffForRetryCount()` helper.
 - **Cleanup**: `cacheCleanupProvider` trims expired cache rows at startup based on the user's

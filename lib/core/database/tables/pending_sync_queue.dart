@@ -18,6 +18,13 @@ class PendingSyncItems extends Table {
   BoolColumn get isSyncing => boolean().withDefault(const Constant(false))();
   TextColumn get lastError => text().nullable()();
 
+  /// Structured error details serialized as JSON.
+  ///
+  /// Stores the same failure information as [lastError] but in a form the
+  /// UI can map to localized user-facing messages without parsing the raw
+  /// exception string. Kept nullable so existing rows remain valid.
+  TextColumn get lastErrorDetails => text().nullable()();
+
   @override
   Set<Column<Object>> get primaryKey => {id};
 }

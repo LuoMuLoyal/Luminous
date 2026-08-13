@@ -96,7 +96,8 @@ class LucentDioClient {
 #### `error_interceptor.dart`
 
 封装 `DioException` → `LucentApiException` 映射。从 `LucentDioClient._mapToApiException()`
-+ `_fallbackMessage()` 提取。
++ `_fallbackMessage()` 提取。`LucentApiException` 保留 `traceId`（来自 `traceresponse`
+header），`LucentErrorMapper.toAppError()` 将其透传到 `AppError` 供诊断场景使用。
 
 #### `retry_interceptor.dart`
 

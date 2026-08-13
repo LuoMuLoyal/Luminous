@@ -198,7 +198,8 @@ class PendingSyncItems extends Table {
   IntColumn get retryCount => integer().withDefault(const Constant(0))();
   IntColumn get maxRetry => integer().withDefault(const Constant(5))();
   BoolColumn get isSyncing => boolean().withDefault(const Constant(false))();
-  TextColumn get lastError => text().nullable()();  // 上次失败原因
+  TextColumn get lastError => text().nullable()();  // 上次失败原因（原始字符串，兼容旧数据）
+  TextColumn get lastErrorDetails => text().nullable()();  // 结构化错误详情（JSON）
 }
 ```
 
@@ -208,8 +209,11 @@ class PendingSyncItems extends Table {
 - 网络恢复后，按 `createdAt` 升序重放 `isSyncing == false && retryCount < maxRetry` 的项。
 - 指数退避：`lastAttemptAt` 距当前时间不足 `30s * 2^retryCount` 时不重试。
 - 同步成功 → 删除该 pending item，确认本地乐观副本。
-- 同步失败 → `retryCount++`，记录 `lastError`，更新 `lastAttemptAt`。
-- `retryCount >= maxRetry` → 标记为永久失败，通过 talker 上报，UI 提示用户手动处理。
+- 同步失败 → `retryCount++`，记录 `lastError`（原始异常字符串）和 `lastErrorDetails`
+  （由 `LucentErrorMapper.toAppError()` 生成的结构化 JSON，包含 `code`、`statusCode`、
+  `traceId`、`networkErrorCode`、`kind` 等字段），更新 `lastAttemptAt`。
+- `retryCount >= maxRetry` → 标记为永久失败，通过 talker 上报，UI 提示用户手动处理；
+  UI 使用 `lastErrorDetails` 映射为本地化用户文案，原始错误仅在「诊断信息」折叠面板展示。
 
 **冲突处理 — last-write-wins 基于 `updatedAt`**：
 
@@ -277,7 +281,7 @@ MigrationStrategy get migration => MigrationStrategy(
   onUpgrade: (m, from, to) async {
     // 逐版本迁移，不支持跨版本跳级
     if (from < 2) {
-      await m.addColumn(pendingSyncItems, pendingSyncItems.lastError);
+      await m.addColumn(pendingSyncItems, pendingSyncItems.lastErrorDetails);
     }
     // 后续版本迁移在此追加
   },

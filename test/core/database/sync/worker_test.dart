@@ -86,7 +86,13 @@ void main() {
       verify(() => mockDao.fetchReady()).called(1);
       verifyNever(() => mockDao.markSyncing(any()));
       verifyNever(() => mockDao.remove(any()));
-      verifyNever(() => mockDao.markFailed(any(), any()));
+      verifyNever(
+        () => mockDao.markFailed(
+          any(),
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      );
     });
 
     test('replays entry successfully and removes it', () async {
@@ -106,7 +112,13 @@ void main() {
       expect(handlerCalled, isTrue);
       verify(() => mockDao.markSyncing('sync-001')).called(1);
       verify(() => mockDao.remove('sync-001')).called(1);
-      verifyNever(() => mockDao.markFailed(any(), any()));
+      verifyNever(
+        () => mockDao.markFailed(
+          any(),
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      );
     });
 
     test('marks failed on DioException and does not remove', () async {
@@ -114,7 +126,11 @@ void main() {
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
       when(() => mockDao.markSyncing('fail-001')).thenAnswer((_) async {});
       when(
-        () => mockDao.markFailed('fail-001', any()),
+        () => mockDao.markFailed(
+          'fail-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
       ).thenAnswer((_) async {});
 
       worker.registerHandler('daily_record', (e) async {
@@ -127,7 +143,13 @@ void main() {
       await worker.flush();
 
       verify(() => mockDao.markSyncing('fail-001')).called(1);
-      verify(() => mockDao.markFailed('fail-001', any())).called(1);
+      verify(
+        () => mockDao.markFailed(
+          'fail-001',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).called(1);
       verifyNever(() => mockDao.remove(any()));
     });
 
@@ -136,7 +158,11 @@ void main() {
       when(() => mockDao.fetchReady()).thenAnswer((_) async => [entry]);
       when(() => mockDao.markSyncing('generic-fail')).thenAnswer((_) async {});
       when(
-        () => mockDao.markFailed('generic-fail', any()),
+        () => mockDao.markFailed(
+          'generic-fail',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
       ).thenAnswer((_) async {});
 
       worker.registerHandler('daily_record', (e) async {
@@ -145,7 +171,13 @@ void main() {
 
       await worker.flush();
 
-      verify(() => mockDao.markFailed('generic-fail', any())).called(1);
+      verify(
+        () => mockDao.markFailed(
+          'generic-fail',
+          raw: any(named: 'raw'),
+          details: any(named: 'details'),
+        ),
+      ).called(1);
       verifyNever(() => mockDao.remove(any()));
     });
 

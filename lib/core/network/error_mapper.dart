@@ -78,6 +78,7 @@ abstract final class LucentErrorMapper {
       code: apiException.code,
       statusCode: apiException.statusCode,
       requestId: apiException.requestId,
+      traceId: apiException.traceId,
       networkErrorCode: apiException.networkErrorCode,
       cause: error,
     );
