@@ -17,6 +17,17 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   sub-file, not into `Current_State.md` (index only).
 - **Closing a TODO**: delete the line from `docs/00-current/TODO.md`.
 - **Finishing a plan**: delete the entire section from `plans/*.md`.
+- **Doc lifecycle**: active docs older than 90 days without updates, or unreferenced by
+  `doc-map.yaml` / doc links, are flagged by `dart run scripts/check_doc_coverage.dart --verify`
+  — review, update, or archive them to `docs/04-archive/`. Docs marked `status: frozen` are
+  exempt from the 90-day freshness checks.
+- **Front-matter**: every active doc in `00-current/*.md`, `01-product/*.md`, `02-reference/*.md`,
+  and `02-reference/how-to/*.md` must carry YAML front-matter (`status: active|frozen` /
+  `owner: frontend` / `quadrant: reference|explanation|how-to` / `updated: YYYY-MM-DD`);
+  `--verify` flags missing blocks, stale `updated`, and `status: stale` docs not yet archived.
+  `status: frozen` marks a doc intentionally frozen (desktop/Web-freeze, feature-freeze) —
+  exempt from the freshness checks but still must carry valid front-matter; `status: stale`
+  means the doc should be archived, not frozen.
 - **Visible text/l10n change**: sync `docs/02-reference/Localization.md`.
 - Completed items are **deleted** outright — no markers.
 

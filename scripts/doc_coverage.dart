@@ -365,6 +365,10 @@ class DocFreshnessReport {
 
 /// Analyzes doc freshness from front-matter. [contentByPath] maps a display
 /// path (e.g. `docs/00-current/TODO.md`) to file content.
+///
+/// Docs marked `status: frozen` are intentionally exempt from the freshness
+/// checks (they are skipped along with every other non-`active` status);
+/// `status: stale` docs are flagged for archiving.
 DocFreshnessReport analyzeDocFreshness({
   required Map<String, String> contentByPath,
   required String today,
@@ -385,6 +389,7 @@ DocFreshnessReport analyzeDocFreshness({
       return;
     }
     if (status != 'active') {
+      // Includes `status: frozen` — exempt from freshness by design.
       return;
     }
     final updated = frontMatter['updated'];
@@ -405,6 +410,209 @@ DocFreshnessReport analyzeDocFreshness({
     staleActiveDocs: List.unmodifiable(staleActive),
     staleStatusDocs: List.unmodifiable(staleStatus),
   );
+}
+
+// --- Verify mode (mirrors Lucent's doc-coverage-lib) --------------------
+
+/// Active docs that MUST stay fresh — everything outside 04-archive and the
+/// migration logs.
+const List<String> activeDocPatterns = [
+  'docs/README.md',
+  'docs/00-current/*.md',
+  'docs/01-product/*.md',
+  'docs/02-reference/*.md',
+  'docs/02-reference/adr/*.md',
+  'docs/02-reference/how-to/*.md',
+  'docs/03-logs/MigrationLog.md',
+];
+
+bool isActiveDoc(String path) =>
+    activeDocPatterns.any((pattern) => _matchesPattern(path, pattern));
+
+/// Content docs that MUST carry front-matter (status / owner / quadrant /
+/// updated). ADRs are exempt — they keep their conventional bare format.
+const List<String> frontMatterRequiredPatterns = [
+  'docs/00-current/*.md',
+  'docs/01-product/*.md',
+  'docs/02-reference/*.md',
+  'docs/02-reference/how-to/*.md',
+];
+
+bool isFrontMatterRequired(String path) => frontMatterRequiredPatterns.any(
+  (pattern) => _matchesPattern(path, pattern),
+);
+
+/// Docs intentionally frozen (`status: frozen`): exempt from the freshness
+/// checks (front-matter `updated` staleness), but still must carry valid
+/// front-matter. Distinct from `status: stale`, which means the doc should be
+/// archived.
+bool isFrozenDoc(String? content) {
+  if (content == null) {
+    return false;
+  }
+  return parseFrontMatter(content)['status'] == 'frozen';
+}
+
+/// Docs that should carry front-matter but do not (or have an empty block).
+List<String> findDocsMissingFrontMatter(
+  List<String> activeDocs,
+  Map<String, String> contentByPath,
+) {
+  return activeDocs
+      .where((path) {
+        if (!isFrontMatterRequired(path)) {
+          return false;
+        }
+        final content = contentByPath[path];
+        if (content == null) {
+          return false;
+        }
+        final frontMatter = parseFrontMatter(content);
+        return frontMatter['status'] == null ||
+            frontMatter['owner'] == null ||
+            frontMatter['quadrant'] == null ||
+            frontMatter['updated'] == null;
+      })
+      .toList(growable: false);
+}
+
+/// Literal (non-glob) doc paths referenced by rules that do not exist.
+List<String> findDocMapOrphans(
+  DocCoverageConfig config,
+  List<String> availableFiles,
+) {
+  final orphans = <String>[];
+  for (final rule in config.rules) {
+    for (final pattern in [
+      ...rule.requiredDocs,
+      ...rule.anyOfDocs,
+      ...rule.infoDocs,
+    ]) {
+      if (pattern.contains('*')) {
+        continue;
+      }
+      if (!availableFiles.contains(pattern)) {
+        orphans.add('${rule.name}: "$pattern" does not exist');
+      }
+    }
+  }
+  return orphans;
+}
+
+/// Glob doc patterns referenced by rules that match no existing file.
+List<String> findDocMapGlobOrphans(
+  DocCoverageConfig config,
+  List<String> availableFiles,
+) {
+  final orphans = <String>[];
+  for (final rule in config.rules) {
+    for (final pattern in [
+      ...rule.requiredDocs,
+      ...rule.anyOfDocs,
+      ...rule.infoDocs,
+    ]) {
+      if (!pattern.contains('*')) {
+        continue;
+      }
+      if (!availableFiles.any((file) => _matchesPattern(file, pattern))) {
+        orphans.add('${rule.name}: glob "$pattern" matches no existing file');
+      }
+    }
+  }
+  return orphans;
+}
+
+/// Docs with a standing reader channel (README nav / subdir READMEs) —
+/// exempt from the readership check.
+const List<String> exemptUnreferencedPatterns = [
+  'docs/02-reference/adr/**',
+  'docs/02-reference/how-to/**',
+];
+
+/// Active docs subject to the readership rule: `status: active` with
+/// `quadrant: reference|explanation`. Migration logs, READMEs, ADR/how-to
+/// (standing channels) and frozen docs are not subjects.
+List<String> readershipSubjectPaths(
+  List<String> activeDocs,
+  Map<String, String> contentByPath,
+) {
+  return activeDocs
+      .where((path) {
+        if (path.endsWith('/README.md')) {
+          return false;
+        }
+        if (exemptUnreferencedPatterns.any(
+          (pattern) => _matchesPattern(path, pattern),
+        )) {
+          return false;
+        }
+        final content = contentByPath[path];
+        if (content == null) {
+          return false;
+        }
+        final frontMatter = parseFrontMatter(content);
+        if (frontMatter['status'] != 'active') {
+          return false;
+        }
+        final quadrant = frontMatter['quadrant'];
+        return quadrant == 'reference' || quadrant == 'explanation';
+      })
+      .toList(growable: false);
+}
+
+/// Subject docs neither referenced by any doc-map rule nor linked from
+/// another doc in the vault ([linkedPaths]).
+List<String> findUnreferencedActiveDocs({
+  required DocCoverageConfig config,
+  required List<String> subjectPaths,
+  required Set<String> linkedPaths,
+}) {
+  return subjectPaths
+      .where((path) {
+        if (linkedPaths.contains(path)) {
+          return false;
+        }
+        return !config.rules.any((rule) {
+          return [
+            ...rule.requiredDocs,
+            ...rule.anyOfDocs,
+            ...rule.infoDocs,
+          ].any((pattern) => _matchesPattern(path, pattern));
+        });
+      })
+      .toList(growable: false);
+}
+
+/// Feature dirs under `lib/features/*` intentionally exempt from doc-map
+/// coverage. Keep this list minimal — prefer adding a doc-map rule over an
+/// exemption. Document the reason next to each entry.
+const List<String> exemptFeaturePatterns = <String>[];
+
+/// Feature dirs under `lib/features/*` not matched by any rule's `code` glob.
+///
+/// New features must ship with a doc-map rule so their changes are governed.
+/// [exemptions] is injectable so the branch is testable; defaults to the
+/// documented exemption list.
+List<String> findUncoveredFeatureDirs(
+  List<DocCoverageRule> rules,
+  List<String> featureDirs, {
+  List<String> exemptions = exemptFeaturePatterns,
+}) {
+  return featureDirs
+      .where((dir) {
+        if (exemptions.contains(dir)) {
+          return false;
+        }
+        // Features have no `<name>.module.ts`; probe the whole directory so both
+        // glob and literal code patterns can match.
+        final probe = 'lib/features/$dir/**';
+        return !rules.any((rule) {
+          return rule.codePatterns.any(
+            (pattern) => _matchesPattern(probe, pattern),
+          );
+        });
+      })
+      .toList(growable: false);
 }
 
 /// Collects all markdown files under [docsDir], excluding `.obsidian/`.

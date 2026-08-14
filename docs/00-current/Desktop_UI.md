@@ -1,5 +1,5 @@
 ---
-status: active
+status: frozen
 owner: frontend
 quadrant: reference
 updated: 2026-08-07

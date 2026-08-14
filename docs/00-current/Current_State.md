@@ -42,6 +42,7 @@ Sparse Record Semantics 的后端已提供统一 observed metric OpenAPI 合同�
 ### UI 页面状态
 
 - [[00-current/Active_Mobile_UI]] — 移动 UI 总览与启动流程
+- [[00-current/Desktop_UI]] — 桌面端 UI 现状（桌面产品表面冻结）
 - [[00-current/Active_UI_Today]] — Today 页面
 - [[00-current/Active_UI_Record]] — Record 页面
 - [[00-current/Active_UI_Medicine]] — Medicine 页面

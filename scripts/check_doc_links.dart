@@ -36,47 +36,12 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  final vault = _VaultIndex(docsDir);
+  final vault = VaultIndex(docsDir);
+  final filesToCheck = vault.markdownFiles;
+
   final problems = <String>[];
-
-  for (final file in vault.markdownFiles) {
-    final content = file.readAsStringSync();
-    final relative = vault.relativePath(file);
-    var inFence = false;
-
-    for (final rawLine in content.split(RegExp(r'\r?\n'))) {
-      final line = rawLine.trimRight();
-      final trimmed = line.trimLeft();
-
-      if (trimmed.startsWith('```')) {
-        inFence = !inFence;
-        continue;
-      }
-      if (inFence) {
-        continue;
-      }
-
-      // Inline code (`...`) is literal text — never a link.
-      final scanLine = _stripInlineCode(line);
-
-      for (final link in _extractWikilinks(scanLine)) {
-        final resolved = vault.resolveWikilink(link.target, fromFile: file);
-        if (resolved == null) {
-          problems.add('$relative: [[${link.raw}]] — no matching file');
-        }
-      }
-
-      for (final link in _extractMarkdownLinks(scanLine)) {
-        final url = link.url ?? link.target;
-        if (_isExternalUrl(url) || url.startsWith('#')) {
-          continue;
-        }
-        final resolved = vault.resolveRelativeLink(url, fromFile: file);
-        if (resolved == null) {
-          problems.add('$relative: [${link.text}]($url) — no matching file');
-        }
-      }
-    }
+  for (final file in filesToCheck) {
+    problems.addAll(checkDocFileLinks(vault, file));
   }
 
   if (problems.isNotEmpty) {
@@ -89,13 +54,61 @@ Future<void> main(List<String> args) async {
   }
 
   stdout.writeln(
-    'Doc links check passed (${vault.markdownFiles.length} files, '
+    'Doc links check passed (${filesToCheck.length} files, '
     'no broken links).',
   );
 }
 
-class _LinkMatch {
-  const _LinkMatch({
+/// Scans [file] for broken wikilinks and relative markdown links.
+///
+/// Returns human-readable problem strings prefixed with the vault-relative
+/// path (e.g. `00-current/TODO.md: [[Missing]] — no matching file`). Shared
+/// with the `--verify` mode of check_doc_coverage.dart so both tools resolve
+/// links identically.
+List<String> checkDocFileLinks(VaultIndex vault, File file) {
+  final problems = <String>[];
+  final content = file.readAsStringSync();
+  final relative = vault.relativePath(file);
+  var inFence = false;
+
+  for (final rawLine in content.split(RegExp(r'\r?\n'))) {
+    final line = rawLine.trimRight();
+    final trimmed = line.trimLeft();
+
+    if (trimmed.startsWith('```')) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) {
+      continue;
+    }
+
+    // Inline code (`...`) is literal text — never a link.
+    final scanLine = stripInlineCode(line);
+
+    for (final link in extractWikilinks(scanLine)) {
+      final resolved = vault.resolveWikilink(link.target, fromFile: file);
+      if (resolved == null) {
+        problems.add('$relative: [[${link.raw}]] — no matching file');
+      }
+    }
+
+    for (final link in extractMarkdownLinks(scanLine)) {
+      final url = link.url ?? link.target;
+      if (isExternalUrl(url) || url.startsWith('#')) {
+        continue;
+      }
+      final resolved = vault.resolveRelativeLink(url, fromFile: file);
+      if (resolved == null) {
+        problems.add('$relative: [${link.text}]($url) — no matching file');
+      }
+    }
+  }
+  return problems;
+}
+
+class DocLinkMatch {
+  const DocLinkMatch({
     required this.raw,
     required this.target,
     required this.text,
@@ -109,7 +122,7 @@ class _LinkMatch {
 }
 
 /// `[[target|alias]]` — returns the target without the alias part.
-Iterable<_LinkMatch> _extractWikilinks(String line) sync* {
+Iterable<DocLinkMatch> extractWikilinks(String line) sync* {
   final re = RegExp(r'\[\[([^\[\]]+)\]\]');
   for (final match in re.allMatches(line)) {
     final raw = match.group(1)!.trim();
@@ -117,12 +130,12 @@ Iterable<_LinkMatch> _extractWikilinks(String line) sync* {
       continue;
     }
     final target = raw.split('|').first.trim();
-    yield _LinkMatch(raw: raw, target: target, text: '');
+    yield DocLinkMatch(raw: raw, target: target, text: '');
   }
 }
 
 /// `[text](url)` and `![alt](url)` — returns the URL portion.
-Iterable<_LinkMatch> _extractMarkdownLinks(String line) sync* {
+Iterable<DocLinkMatch> extractMarkdownLinks(String line) sync* {
   final re = RegExp(r'!?\[([^\]]*)\]\(([^)\s]+)\)');
   for (final match in re.allMatches(line)) {
     final text = match.group(1) ?? '';
@@ -130,19 +143,19 @@ Iterable<_LinkMatch> _extractMarkdownLinks(String line) sync* {
     if (url.isEmpty) {
       continue;
     }
-    yield _LinkMatch(raw: url, target: url, text: text, url: url);
+    yield DocLinkMatch(raw: url, target: url, text: text, url: url);
   }
 }
 
-bool _isExternalUrl(String url) {
+bool isExternalUrl(String url) {
   return RegExp(r'^[a-zA-Z][a-zA-Z0-9+.-]*:').hasMatch(url);
 }
 
 /// Removes inline code spans (`` `...` ``) — literal text, never links.
-String _stripInlineCode(String line) => line.replaceAll(RegExp(r'`[^`]*`'), '');
+String stripInlineCode(String line) => line.replaceAll(RegExp(r'`[^`]*`'), '');
 
-class _VaultIndex {
-  _VaultIndex(this.docsDir) {
+class VaultIndex {
+  VaultIndex(this.docsDir) {
     _indexDir(docsDir, docsDir);
   }
 

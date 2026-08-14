@@ -12,6 +12,18 @@ Future<void> runDailyChecks(ToolContext context, {String? openApiPath}) async {
   );
   stdout.writeln('');
 
+  // Full-tree governance check (doc-map references, link integrity,
+  // front-matter, freshness, readership, feature coverage). Blocking —
+  // daily checks keep the per-rule coverage report advisory above, but
+  // structural doc-governance problems fail the run.
+  await runLoggedCommand(
+    'dart',
+    ['run', 'scripts/check_doc_coverage.dart', '--verify'],
+    workingDirectory: context.repoRoot,
+    stepName: 'dart run scripts/check_doc_coverage.dart --verify',
+  );
+  stdout.writeln('');
+
   // Wikilink / relative-link integrity for the docs vault (blocks on
   // broken links).
   await runLoggedCommand(

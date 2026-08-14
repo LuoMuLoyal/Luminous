@@ -300,6 +300,233 @@ updated: 2026-07-01
 
       expect(report.hasWarnings, isFalse);
     });
+
+    test('exempts status: frozen docs from freshness', () {
+      final report = analyzeDocFreshness(
+        contentByPath: {
+          'docs/00-current/Desktop_UI.md': _frontMatter(
+            status: 'frozen',
+            quadrant: 'reference',
+          ),
+        },
+        today: '2026-08-02',
+      );
+
+      expect(report.staleActiveDocs, isEmpty);
+      expect(report.staleStatusDocs, isEmpty);
+      expect(report.hasWarnings, isFalse);
+    });
+  });
+
+  group('isFrozenDoc', () {
+    test('true only for status: frozen front-matter', () {
+      expect(
+        isFrozenDoc(_frontMatter(status: 'frozen', quadrant: 'reference')),
+        isTrue,
+      );
+      expect(
+        isFrozenDoc(_frontMatter(status: 'active', quadrant: 'reference')),
+        isFalse,
+      );
+      expect(isFrozenDoc('# no front-matter'), isFalse);
+      expect(isFrozenDoc(null), isFalse);
+    });
+  });
+
+  group('findDocsMissingFrontMatter', () {
+    test('flags required docs without complete front-matter', () {
+      final missing = findDocsMissingFrontMatter(
+        ['docs/00-current/TODO.md', 'docs/02-reference/routing.md'],
+        {
+          'docs/00-current/TODO.md': '# TODO\n',
+          'docs/02-reference/routing.md': _frontMatter(
+            status: 'active',
+            quadrant: 'reference',
+          ),
+        },
+      );
+
+      expect(missing, ['docs/00-current/TODO.md']);
+    });
+
+    test('exempts ADRs from the front-matter requirement', () {
+      final missing = findDocsMissingFrontMatter(
+        ['docs/02-reference/adr/0001-x.md'],
+        {'docs/02-reference/adr/0001-x.md': '# ADR\n'},
+      );
+
+      expect(missing, isEmpty);
+    });
+  });
+
+  group('findDocMapOrphans', () {
+    test('flags literal doc references that do not exist', () {
+      const config = DocCoverageConfig([
+        DocCoverageRule(
+          name: 'auth',
+          codePatterns: ['lib/features/auth/**'],
+          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+          anyOfDocs: ['docs/00-current/Missing.md'],
+        ),
+      ]);
+
+      final orphans = findDocMapOrphans(config, ['docs/00-current/TODO.md']);
+
+      expect(orphans, ['auth: "docs/00-current/Missing.md" does not exist']);
+    });
+
+    test('skips glob patterns', () {
+      const config = DocCoverageConfig([
+        DocCoverageRule(
+          name: 'auth',
+          codePatterns: ['lib/features/auth/**'],
+          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+        ),
+      ]);
+
+      expect(findDocMapOrphans(config, []), isEmpty);
+    });
+  });
+
+  group('findDocMapGlobOrphans', () {
+    test('flags glob patterns that match no existing file', () {
+      const config = DocCoverageConfig([
+        DocCoverageRule(
+          name: 'auth',
+          codePatterns: ['lib/features/auth/**'],
+          requiredDocs: ['docs/02-reference/how-to/*.md'],
+        ),
+      ]);
+
+      final orphans = findDocMapGlobOrphans(config, [
+        'docs/00-current/TODO.md',
+      ]);
+
+      expect(orphans, [
+        'auth: glob "docs/02-reference/how-to/*.md" matches no existing file',
+      ]);
+    });
+  });
+
+  group('readershipSubjectPaths', () {
+    final contentByPath = <String, String>{
+      'docs/00-current/TODO.md': _frontMatter(
+        status: 'active',
+        quadrant: 'reference',
+      ),
+      'docs/01-product/Product_Vision.md': _frontMatter(
+        status: 'active',
+        quadrant: 'explanation',
+      ),
+      'docs/02-reference/how-to/run-tests.md': _frontMatter(
+        status: 'active',
+        quadrant: 'how-to',
+      ),
+      'docs/00-current/Desktop_UI.md': _frontMatter(
+        status: 'frozen',
+        quadrant: 'reference',
+      ),
+      'docs/02-reference/adr/0001-x.md': '# ADR\n',
+    };
+
+    test('includes active reference/explanation docs', () {
+      final subjects = readershipSubjectPaths([
+        'docs/00-current/TODO.md',
+        'docs/01-product/Product_Vision.md',
+      ], contentByPath);
+
+      expect(
+        subjects,
+        containsAll([
+          'docs/00-current/TODO.md',
+          'docs/01-product/Product_Vision.md',
+        ]),
+      );
+    });
+
+    test('excludes frozen, how-to, ADR and README docs', () {
+      final subjects = readershipSubjectPaths([
+        'docs/00-current/Desktop_UI.md',
+        'docs/02-reference/how-to/run-tests.md',
+        'docs/02-reference/adr/0001-x.md',
+        'docs/02-reference/how-to/README.md',
+      ], contentByPath);
+
+      expect(subjects, isEmpty);
+    });
+  });
+
+  group('findUnreferencedActiveDocs', () {
+    test('flags subjects not in doc-map and not linked from other docs', () {
+      const config = DocCoverageConfig([
+        DocCoverageRule(
+          name: 'record',
+          codePatterns: ['lib/features/record/**'],
+          requiredDocs: ['docs/00-current/Active_UI_Record.md'],
+        ),
+      ]);
+
+      final unreferenced = findUnreferencedActiveDocs(
+        config: config,
+        subjectPaths: [
+          'docs/00-current/Active_UI_Record.md',
+          'docs/00-current/Desktop_UI.md',
+        ],
+        linkedPaths: <String>{'docs/00-current/Active_UI_Record.md'},
+      );
+
+      expect(unreferenced, ['docs/00-current/Desktop_UI.md']);
+    });
+
+    test('doc-map listing satisfies the reference requirement', () {
+      const config = DocCoverageConfig([
+        DocCoverageRule(
+          name: 'app-shell',
+          codePatterns: ['lib/features/shell/**'],
+          requiredDocs: ['docs/00-current/Desktop_UI.md'],
+        ),
+      ]);
+
+      final unreferenced = findUnreferencedActiveDocs(
+        config: config,
+        subjectPaths: ['docs/00-current/Desktop_UI.md'],
+        linkedPaths: <String>{},
+      );
+
+      expect(unreferenced, isEmpty);
+    });
+  });
+
+  group('findUncoveredFeatureDirs', () {
+    test('flags feature dirs not matched by any rule', () {
+      const rules = [
+        DocCoverageRule(
+          name: 'auth',
+          codePatterns: ['lib/features/auth/**'],
+          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+        ),
+      ];
+
+      expect(
+        findUncoveredFeatureDirs(rules, ['auth', 'health_data', 'shell']),
+        ['health_data', 'shell'],
+      );
+    });
+
+    test('exemptions are honored', () {
+      const rules = [
+        DocCoverageRule(
+          name: 'auth',
+          codePatterns: ['lib/features/auth/**'],
+          requiredDocs: ['docs/03-logs/migration-log/*.md'],
+        ),
+      ];
+
+      expect(
+        findUncoveredFeatureDirs(rules, ['legacy'], exemptions: ['legacy']),
+        isEmpty,
+      );
+    });
   });
 
   group('loadDocCoverageConfig', () {
@@ -333,3 +560,16 @@ rules:
     });
   });
 }
+
+/// Builds a YAML front-matter block with the given status and quadrant.
+String _frontMatter({required String status, required String quadrant}) =>
+    '''
+---
+status: $status
+owner: frontend
+quadrant: $quadrant
+updated: 2026-08-01
+---
+
+# Doc
+''';

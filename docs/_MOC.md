@@ -12,6 +12,7 @@
 - [[00-current/Lucent_Contract_Snapshot]] — Lucent API 合同快照
 - [[00-current/Runtime_Snapshot]] — Luminous 运行时快照
 - [[00-current/Active_Mobile_UI]] — 活跃移动 UI 总览
+- [[00-current/Desktop_UI]] — 桌面端 UI 现状（桌面产品表面冻结）
 - [[00-current/Active_UI_Today]] — Today tab 当前状态
 - [[00-current/Active_UI_Record]] — Record tab 当前状态
 - [[00-current/Active_UI_Medicine]] — Medicine tab 当前状态
@@ -31,6 +32,7 @@
 ## 02-reference — 参考规范
 
 - [[02-reference/architecture]] — 目录结构与模块结构总览
+- [[02-reference/architecture-upgrade-analysis]] — 架构升级审查与建议
 - [[02-reference/state-management]] — Riverpod 状态管理
 - [[02-reference/routing]] — GoRouter 路由
 - [[02-reference/data-layer]] — 数据层与 API 客户端约定
