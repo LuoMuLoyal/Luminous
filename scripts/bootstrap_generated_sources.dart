@@ -450,6 +450,9 @@ const _reviewModels = [
   'ClinicSummaryRequestDto',
   'ClinicSummaryShareScopeDto',
   'ClinicSummaryShareResponseDto',
+  'ClinicSummaryShareListItemDto',
+  'ClinicSummaryShareListDataDto',
+  'ClinicSummaryShareListResponseDto',
 ];
 
 const _productEventsModels = [

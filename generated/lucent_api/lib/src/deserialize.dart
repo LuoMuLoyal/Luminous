@@ -29,6 +29,9 @@ import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_data_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_item_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_list_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_scope_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
@@ -393,6 +396,21 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ClinicSummaryRequestDto':
       return ClinicSummaryRequestDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryShareListDataDto':
+      return ClinicSummaryShareListDataDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ClinicSummaryShareListItemDto':
+      return ClinicSummaryShareListItemDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ClinicSummaryShareListResponseDto':
+      return ClinicSummaryShareListResponseDto.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'ClinicSummaryShareResponseDto':
       return ClinicSummaryShareResponseDto.fromJson(
