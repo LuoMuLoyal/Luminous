@@ -45,6 +45,8 @@ import 'package:lucent_api/src/model/create_health_context_condition_dto.dart';
 import 'package:lucent_api/src/model/create_health_event_dto.dart';
 import 'package:lucent_api/src/model/create_medicine_reminder_dto.dart';
 import 'package:lucent_api/src/model/create_notification_dto.dart';
+import 'package:lucent_api/src/model/create_product_event_batch_dto.dart';
+import 'package:lucent_api/src/model/create_product_event_dto.dart';
 import 'package:lucent_api/src/model/daily_record_attachment_dto.dart';
 import 'package:lucent_api/src/model/daily_record_attachment_input_dto.dart';
 import 'package:lucent_api/src/model/daily_record_candidate_data_dto.dart';
@@ -448,6 +450,12 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'CreateNotificationDto':
       return CreateNotificationDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'CreateProductEventBatchDto':
+      return CreateProductEventBatchDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'CreateProductEventDto':
+      return CreateProductEventDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'DailyRecordAttachmentDto':
       return DailyRecordAttachmentDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -834,6 +842,9 @@ ReturnType deserialize<ReturnType, BaseType>(
       return PollenIndicatorDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'PollenLevel':
+    case 'ProductEventName':
+    case 'ProductEventResult':
+    case 'ProductEventSurface':
     case 'QqOAuthAuthorizeDto':
       return QqOAuthAuthorizeDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -1176,6 +1187,7 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'UserCurrentMedicineItemDto':
       return UserCurrentMedicineItemDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'UserDevicePlatform':
     case 'UserFullDto':
       return UserFullDto.fromJson(value as Map<String, dynamic>) as ReturnType;
     case 'UserHealthProfileDto':

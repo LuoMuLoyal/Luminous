@@ -452,6 +452,15 @@ const _reviewModels = [
   'ClinicSummaryShareResponseDto',
 ];
 
+const _productEventsModels = [
+  'ProductEventName',
+  'ProductEventSurface',
+  'ProductEventResult',
+  'UserDevicePlatform',
+  'CreateProductEventDto',
+  'CreateProductEventBatchDto',
+];
+
 /// 过滤生成无法产出的内联响应模型（openapi-generator 7.x 的 `models=` 只接受
 /// 命名 schema，内联 schema 由生成器自动命名并输出 snake_case 文件名）。
 /// 从 supporting 全量输出复制。
@@ -469,4 +478,9 @@ const _filteredClients = <({String apis, String apiFile, List<String> models})>[
     models: _todayAnalysisModels,
   ),
   (apis: 'Reports', apiFile: 'reports_api.dart', models: _reviewModels),
+  (
+    apis: 'ProductEvents',
+    apiFile: 'product_events_api.dart',
+    models: _productEventsModels,
+  ),
 ];
