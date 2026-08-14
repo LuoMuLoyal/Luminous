@@ -63,11 +63,11 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - **桌面/Web 未做功能对等**：ReviewView 与 legacy 兼容页均为移动端约束布局，桌面窗口渲染同一布局，不新增桌面专属 breakpoint/sidebar；完整认证 Web 与桌面端保持冻结，不继续功能对等、发行或产品化。
 - **旧 dashboard 代码尚未删除**：`dashboard_view.dart` 及 sections、`top_bar.dart` 等 legacy 文件保留原样（文件头带 LEGACY 标注），仅经「更多 → 历史报告」（`/report/legacy` 兼容页）可达；`skeleton_view.dart` 仍被 ReviewView 骨架屏复用，非 legacy。删除评估留待兼容期结束。
 - 全量验证（Task 10，2026-08-13）：`dart run scripts/bootstrap_generated_sources.dart`（无生成物漂移）、`flutter analyze`（无问题）、`flutter test` 全量 **3067 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart` 全部通过；桌面 e2e（`report_e2e` 6 + `shell_navigation` 4 + `review_closed_loop` 1 = **11 用例**）此前已 `-d windows` 实跑全绿，Task 10 未重复执行（环境为 Windows 桌面，移动视口限制见迁移日志，未伪造运行结果）；`git diff --check` 无空白错误。
-- 保留的文档化限制：red flag 为用户级静态检查结果、不与事件药物对齐；`doseLogSources` capped 判定；changes 趋势为首末比较简化口径；`buildCurrent` 双重读取为低优先级遗留项；clinic summary 四个 section 键服务端必填（合同债，客户端占位反序列化）与旧 dashboard 删除评估留待兼容期结束。
+- 保留的文档化限制：red flag 为用户级静态检查结果、不与事件药物对齐；`doseLogSources` capped 判定；changes 趋势为首末比较简化口径；`buildCurrent` 双重读取为低优先级遗留项；旧 dashboard 删除评估留待兼容期结束。
 
 ## Visit Summary and Product Measurement 收口（Workstream 2 Task 10）
 
-- **公开分享页信封兼容修复**：`clinicSummarySharedProvider` 弃用生成客户端方法（真实后端返回 `{code,message,data}` 信封，生成客户端按裸 DTO 反序列化必抛），改为 raw Dio（`LucentApiPaths.clinicSummaryShared(token)`，`skipAuthorization: true` 与公开 PDF 一致）解信封 + `_fillMissingSections` 缺省补齐，与 preview provider 同一模式；provider 测试改写为同一 scripted-adapter harness（信封解包、缺 section 容忍、per-token 缓存、错误传播 4 条）。
+- **公开分享页信封兼容修复**：`clinicSummarySharedProvider` 弃用生成客户端方法（真实后端返回 `{code,message,data}` 信封，生成客户端按裸 DTO 反序列化必抛），改为 raw Dio（`LucentApiPaths.clinicSummaryShared(token)`，`skipAuthorization: true` 与公开 PDF 一致）解信封，与 preview provider 同一模式；四个 section 键已随响应合同改可选（2026-08-14 合同债收口），未选 section 反序列化为 null，`_fillMissingSections` 占位补齐已删除；provider 测试改写为同一 scripted-adapter harness（信封解包、缺 section 容忍、per-token 缓存、错误传播 4 条）。
 - **漏斗合同模型同步**：bootstrap 脚本 `_productEventsModels` 补全 5 个 Funnel schema（`FunnelDailyCountsDto`/`FunnelOptionalCountsDto`/`FunnelTotalsDto`/`FunnelWindowDto`/`FunnelResponseDto`），重新生成后生成包 build_runner 编译通过、两次 bootstrap 无漂移；admin funnel 端点客户端不消费，生成面仅作合同完整性。
 - 全量验证（2026-08-14）：`dart run scripts/bootstrap_generated_sources.dart`（两次运行无漂移）、`flutter analyze`（零问题）、`flutter test` 全量 **3119 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`（analyze/format/test/openapi-sync 全过）、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart`（137 文件无坏链）全部通过；桌面闭环 e2e（`integration_test/report/review_closed_loop_e2e_test.dart`）`-d windows` 实跑 1 test 通过（移动端实机仍受 Windows 桌面宿主环境限制，未伪造运行结果）；`git diff --check` 无空白错误。
 - 产品闭环程序（Workstream 1 + 2）实施完毕，`Luminous/plans/2026-08-07-product-loop-program.md` 与 `2026-08-07-visit-summary-and-product-measurement.md` 已删除（实施完毕文件已删）。
@@ -79,7 +79,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - 睡眠 episode 是 Lucent 后端和 Today collector 的语义；当前 Report 仍消费 legacy sleep scalar，尚未消费完整 sleep episode contract，也不提供 episode 级别的同日记录保留或“不按日期合并”保证。
 - 本次客户端合同同步没有改变 Report 页面可见结构、评分/导出/AI 摘要的既有行为；这些仍按本文件顶部的迁移说明和 TODO 管理。
 
-> 本文件继续记录当前已经实现的 `Report` 运行时事实。第五 Tab 用户任务已改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），导出/医生分享移入 More 与旧 dashboard 兼容页已在 Task 8 上线（见「Review More 入口」节），字段级隐私、可撤销分享与闭环测量在 Workstream 2 收口（见「Visit Summary and Product Measurement 收口」节）；旧 dashboard 代码的删除评估待兼容期结束；剩余合同债（四个 section 键服务端必填）见 [[00-current/TODO]]「产品闭环」节。
+> 本文件继续记录当前已经实现的 `Report` 运行时事实。第五 Tab 用户任务已改为“回顾”，以健康事件为主单位，移除综合健康评分并把导出/医生分享移入“更多”；事件优先 Review 视图已在 Task 6 上线（见上节），导出/医生分享移入 More 与旧 dashboard 兼容页已在 Task 8 上线（见「Review More 入口」节），字段级隐私、可撤销分享与闭环测量在 Workstream 2 收口（见「Visit Summary and Product Measurement 收口」节）；旧 dashboard 代码的删除评估待兼容期结束；clinic summary 四 section 键合同债已解除（响应合同改可选、客户端占位反序列化已移除，见迁移日志同日条目）。
 
 ## 页面结构（旧 dashboard，代码保留但已不装配）
 
