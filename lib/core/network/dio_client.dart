@@ -33,6 +33,11 @@ class LucentClient {
   MedicineRemindersApi get medicineReminders => _api.getMedicineRemindersApi();
   MedicinesApi get medicines => _api.getMedicinesApi();
   NotificationsApi get notifications => _api.getNotificationsApi();
+  // ProductEventsApi was added via the filtered generation path, so the
+  // generated LucentApi class has no getter for it yet. Constructing it from
+  // the shared Dio is equivalent to the generated getters and keeps the
+  // generated client untouched.
+  ProductEventsApi get productEvents => ProductEventsApi(_api.dio);
   ReminderDeliveriesApi get reminderDeliveries =>
       _api.getReminderDeliveriesApi();
   ReportsApi get reports => _api.getReportsApi();

@@ -78,3 +78,5 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - **公开路由**：`/legal` 和 `/reports/clinic-summary/shared/:token` 为公开访问（`@Public()` 装饰器）。
 - **API 路径常量**：`core/network/api_paths.dart`（`LucentApiPaths`）集中管理所有 `/api/v1/...` 路径字符串。
 - **用药风险检查**：`GET /api/v1/medicines/risk-check` 获取最新 static + llm 检查记录；`POST /api/v1/medicines/risk-check` 触发检查（body: `{ type: 'static' | 'llm' }`）。后端 `MedicineRiskCheckListener` 监听健康上下文/提醒变更事件自动 mark stale + debounce 静态检查。前端通过 `MedicineRiskCheckRemoteDataSource`（`data/datasources/risk_check_remote.dart`）封装 `LucentClient.medicines` API 调用 + `MedicineRiskCheckMapper` DTO 映射，repository 仅作薄包装委托。
+
+- **产品事件**：`POST /api/v1/user/product-events`（批量 1..50，白名单属性，clientEventId 幂等）。客户端 `LucentClient.productEvents` getter 用共享 Dio 直接构造 `ProductEventsApi`（生成端 `LucentApi` 尚无 getter，等下次全量客户端再生成补齐）。

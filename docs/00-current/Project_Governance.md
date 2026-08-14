@@ -52,3 +52,7 @@ Last updated: 2026-08-07 (产品表面冻结决策)
 ## CI/CD
 
 - `luminous-cd.yml` 在 Flutter Web 构建前新增 secrets 存在性校验步骤，确保 `LUCENT_BASE_URL` 和 `SENTRY_DSN` 已配置，防止空字符串注入 `--dart-define`。
+
+## 2026-08-14 文档覆盖映射
+
+- `docs/doc-map.yaml` 新增 `core-analytics` 规则（`lib/core/analytics/**` → 迁移日志 + Product_Safety_Privacy），产品测量代码纳入覆盖检查。

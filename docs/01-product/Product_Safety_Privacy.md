@@ -53,3 +53,9 @@ AI 总结、报告摘要和诊所/药师摘要都必须遵守最小必要原则�
 - AI 输出只能引用用户已记录、已授权或有来源支撑的信息；不能补写用户没有记录的事实。
 - 就诊摘要、PDF 和分享链接属于“回顾 > 更多”中的次级出口；用户必须先预览并确认，不能把生成或分享成功解释为医生已经查看或采纳。
 
+
+## 产品事件测量（2026-08-14）
+
+- 客户端只上报四个事件：`suggestion_impression`（surface=today + 白名单规则码，session 去重）、`review_opened`（surface=review，session 去重）、`visit_summary_previewed` / `visit_summary_exported`（surface=more，success/failure 边界）。
+- 上报内容仅含 name/surface/result/eventStatus(健康事件专用)/suggestionRuleCode(7 个白名单码)/appVersion/platform/occurredAt/clientEventId，无 metadata、无自由文本；离线事件入队本地 pending-sync 队列重试，clientEventId 幂等。
+- 服务端权威事件（health_event_*、suggestion_actioned、visit_summary_share_*）由服务端记录，客户端不得上报；share 创建/打开/撤销不落客户端事件。
