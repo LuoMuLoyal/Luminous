@@ -97,6 +97,11 @@ import 'package:lucent_api/src/model/event_review_today_check_in_dto.dart';
 import 'package:lucent_api/src/model/evidence_item_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_dto.dart';
 import 'package:lucent_api/src/model/forgot_password_response_dto.dart';
+import 'package:lucent_api/src/model/funnel_daily_counts_dto.dart';
+import 'package:lucent_api/src/model/funnel_optional_counts_dto.dart';
+import 'package:lucent_api/src/model/funnel_response_dto.dart';
+import 'package:lucent_api/src/model/funnel_totals_dto.dart';
+import 'package:lucent_api/src/model/funnel_window_dto.dart';
 import 'package:lucent_api/src/model/generate_daily_record_candidates_dto.dart';
 import 'package:lucent_api/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_api/src/model/generate_today_analysis_dto.dart';
@@ -645,6 +650,21 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ForgotPasswordResponseDto':
       return ForgotPasswordResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'FunnelDailyCountsDto':
+      return FunnelDailyCountsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'FunnelOptionalCountsDto':
+      return FunnelOptionalCountsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'FunnelResponseDto':
+      return FunnelResponseDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'FunnelTotalsDto':
+      return FunnelTotalsDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'FunnelWindowDto':
+      return FunnelWindowDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'GenerateDailyRecordCandidatesDto':
       return GenerateDailyRecordCandidatesDto.fromJson(

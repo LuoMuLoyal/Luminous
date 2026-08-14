@@ -462,6 +462,14 @@ const _productEventsModels = [
   'UserDevicePlatform',
   'CreateProductEventDto',
   'CreateProductEventBatchDto',
+  // Task 9 admin funnel schemas: the client does not consume the funnel
+  // endpoint, but filtered generation still deserializes every schema listed
+  // in deserialize.dart — omitting them breaks the generated package.
+  'FunnelDailyCountsDto',
+  'FunnelOptionalCountsDto',
+  'FunnelTotalsDto',
+  'FunnelWindowDto',
+  'FunnelResponseDto',
 ];
 
 /// 过滤生成无法产出的内联响应模型（openapi-generator 7.x 的 `models=` 只接受
