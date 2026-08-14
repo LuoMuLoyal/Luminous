@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'tooling_support.dart';
+
 /// Wikilink & relative-link integrity check for the Luminous docs vault.
 ///
 /// Scans `docs/**/*.md` (excluding `.obsidian/`) for:
@@ -10,21 +12,32 @@ import 'dart:io';
 /// case-insensitively (Obsidian semantics); relative links resolve from the
 /// containing file's directory. Any broken link exits with code 1.
 ///
-/// Usage: dart run scripts/check_doc_links.dart [--help]
+/// Usage:
+///   dart run scripts/check_doc_links.dart            # full vault scan
+///   dart run scripts/check_doc_links.dart --changed  # only changed docs
+///
+/// `--changed` reads the git change set (staged + unstaged + untracked) and
+/// checks only the outgoing links of the changed docs. When the change set
+/// deletes or renames docs, the whole vault is scanned instead so incoming
+/// links to the removed docs are caught. The full scan remains the default
+/// (no flag) for daily/CI use.
 
 Future<void> main(List<String> args) async {
   if (args.contains('--help') || args.contains('-h')) {
     stdout.writeln(_usage);
     return;
   }
+  var changedOnly = false;
   for (final arg in args) {
-    if (arg.startsWith('-')) {
-      stderr.writeln('Unexpected argument: $arg');
-      stderr.writeln('');
-      stderr.writeln(_usage);
-      exitCode = 64;
-      return;
+    if (arg == '--changed') {
+      changedOnly = true;
+      continue;
     }
+    stderr.writeln('Unexpected argument: $arg');
+    stderr.writeln('');
+    stderr.writeln(_usage);
+    exitCode = 64;
+    return;
   }
 
   final scriptFile = File.fromUri(Platform.script);
@@ -37,7 +50,27 @@ Future<void> main(List<String> args) async {
   }
 
   final vault = VaultIndex(docsDir);
-  final filesToCheck = vault.markdownFiles;
+  var filesToCheck = vault.markdownFiles;
+
+  if (changedOnly) {
+    try {
+      final changeSet = await _collectDocChangeSet(repoRoot);
+      if (changeSet.deletedDocs.isEmpty) {
+        filesToCheck = vault.markdownFiles
+            .where(
+              (file) =>
+                  changeSet.changedDocs.contains(vault.relativePath(file)),
+            )
+            .toList(growable: false);
+      }
+      // Deletions/renames: fall back to the whole vault so incoming links to
+      // the removed docs are reported as broken.
+    } on ProcessException catch (error) {
+      stderr.writeln(error.message);
+      exitCode = 1;
+      return;
+    }
+  }
 
   final problems = <String>[];
   for (final file in filesToCheck) {
@@ -105,6 +138,65 @@ List<String> checkDocFileLinks(VaultIndex vault, File file) {
     }
   }
   return problems;
+}
+
+/// Git change set of a working tree, scoped to the docs vault.
+class DocChangeSet {
+  const DocChangeSet({required this.changedDocs, required this.deletedDocs});
+
+  /// Vault-relative paths of changed markdown docs
+  /// (staged + unstaged + untracked).
+  final List<String> changedDocs;
+
+  /// Vault-relative paths of docs deleted or renamed (staged + unstaged).
+  final Set<String> deletedDocs;
+}
+
+/// Collects the docs-related git change set (staged + unstaged + untracked).
+Future<DocChangeSet> _collectDocChangeSet(Directory repoRoot) async {
+  final changed = <String>{};
+  final deleted = <String>{};
+  for (final cached in [false, true]) {
+    final diffArgs = ['diff', if (cached) '--cached', '--name-only'];
+    changed.addAll(
+      await captureCommandLines('git', [
+        ...diffArgs,
+        '--diff-filter=ADMR',
+      ], workingDirectory: repoRoot),
+    );
+    deleted.addAll(
+      await captureCommandLines('git', [
+        ...diffArgs,
+        '--diff-filter=D',
+      ], workingDirectory: repoRoot),
+    );
+  }
+  changed.addAll(
+    await captureCommandLines('git', [
+      'ls-files',
+      '--others',
+      '--exclude-standard',
+    ], workingDirectory: repoRoot),
+  );
+
+  return DocChangeSet(
+    changedDocs: filterChangedDocs(changed),
+    deletedDocs: filterChangedDocs(deleted).toSet(),
+  );
+}
+
+/// Vault-relative paths of markdown files under `docs/` among [changedPaths].
+List<String> filterChangedDocs(Iterable<String> changedPaths) {
+  return changedPaths
+      .map(_normalizePath)
+      .where(
+        (path) =>
+            path.startsWith('docs/') &&
+            path.endsWith('.md') &&
+            !path.contains('/.obsidian/'),
+      )
+      .map((path) => path.substring('docs/'.length))
+      .toList(growable: false);
 }
 
 class DocLinkMatch {
@@ -327,9 +419,14 @@ String _normalizePath(String path) {
 }
 
 const _usage = '''
-Usage: dart run scripts/check_doc_links.dart [--help]
+Usage: dart run scripts/check_doc_links.dart [--changed] [--help]
 
 Scans docs/**/*.md for wikilinks ([[path|alias]]) and relative markdown
 links, resolving them against the docs/ vault root. External URLs and
 #anchors are skipped. Broken links exit with code 1.
+
+  --changed   Only check docs in the git change set (staged + unstaged +
+              untracked). When the change set deletes or renames docs, the
+              whole vault is scanned so incoming links to the removed docs
+              are caught.
 ''';

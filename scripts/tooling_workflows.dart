@@ -115,11 +115,13 @@ Future<void> runPreCommitChecks(ToolContext context) async {
 
   // ── Wikilink integrity (blocking) ──────────────────────────────────
   // Broken doc links fail the commit regardless of SKIP_DOC_CHECK.
+  // --changed scopes the scan to the staged docs (full vault fallback
+  // when the change set deletes/renames docs) for fast commit feedback.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_links.dart'],
+    ['run', 'scripts/check_doc_links.dart', '--changed'],
     workingDirectory: context.repoRoot,
-    stepName: 'doc-links check',
+    stepName: 'doc-links check (changed)',
   );
   stdout.writeln('');
 

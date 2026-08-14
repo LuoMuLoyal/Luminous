@@ -5,6 +5,28 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../scripts/check_doc_links.dart';
 
 void main() {
+  group('filterChangedDocs', () {
+    test('keeps vault markdown paths only, in vault-relative form', () {
+      expect(
+        filterChangedDocs([
+          'docs/00-current/TODO.md',
+          'docs/03-logs/migration-log/2026-08-14.md',
+          'lib/features/auth/login_page.dart',
+          'docs/README.md',
+        ]),
+        [
+          '00-current/TODO.md',
+          '03-logs/migration-log/2026-08-14.md',
+          'README.md',
+        ],
+      );
+    });
+
+    test('excludes .obsidian files', () {
+      expect(filterChangedDocs(['docs/.obsidian/workspace.json']), isEmpty);
+    });
+  });
+
   group('checkDocFileLinks', () {
     test('reports broken wikilinks and relative links', () {
       final vault = _createVault({
