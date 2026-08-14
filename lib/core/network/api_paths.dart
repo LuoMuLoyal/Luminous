@@ -92,10 +92,9 @@ abstract final class LucentApiPaths {
   /// `POST /api/v1/user/reports/clinic-summary/preview` — the generated
   /// [ReportsApi] method deserializes the response directly as
   /// [ClinicSummaryDto], but the server wraps it in the `{code, message,
-  /// data}` envelope, and deselected sections are omitted from `data` while
-  /// the generated DTO marks them required. Raw [Dio] lets the preview
-  /// provider unwrap the envelope and fill missing sections with empty
-  /// defaults before deserializing.
+  /// data}` envelope. Raw [Dio] lets the preview provider unwrap the
+  /// envelope; the four section keys are optional in the contract, so
+  /// deselected sections deserialize to null.
   static const clinicSummaryPreview =
       '/api/v1/user/reports/clinic-summary/preview';
 
@@ -109,8 +108,9 @@ abstract final class LucentApiPaths {
   /// (no auth), same envelope-shape mismatch as [clinicSummaryPreview]: the
   /// generated [ReportsApi] method deserializes [ClinicSummaryDto] from the
   /// raw body, but the server wraps it in the `{code, message, data}`
-  /// envelope. Raw [Dio] lets the shared provider unwrap the envelope and
-  /// fill missing sections before deserializing. The call must set
+  /// envelope. Raw [Dio] lets the shared provider unwrap the envelope; the
+  /// four section keys are optional in the contract, so deselected sections
+  /// deserialize to null. The call must set
   /// `extra: {'skipAuthorization': true}` like [clinicSummarySharedPdf].
   static String clinicSummaryShared(String token) =>
       '/api/v1/user/reports/clinic-summary/shared/$token';

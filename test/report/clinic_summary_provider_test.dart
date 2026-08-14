@@ -139,9 +139,18 @@ Map<String, dynamic> _summaryJson({
         'sexAtBirth': 'male',
         'bloodType': 'A',
       },
-    if (sections.contains('allergies')) 'allergies': ['青霉素'],
-    if (sections.contains('conditions')) 'conditions': ['高血压'],
-    if (sections.contains('currentMedicines')) 'currentMedicines': ['阿莫西林'],
+    if (sections.contains('allergies'))
+      'allergies': [
+        {'label': '青霉素', 'reaction': '皮疹', 'severity': 'moderate'},
+      ],
+    if (sections.contains('conditions'))
+      'conditions': [
+        {'label': '高血压', 'status': 'active', 'diagnosedYear': 2023},
+      ],
+    if (sections.contains('currentMedicines'))
+      'currentMedicines': [
+        {'displayName': '阿莫西林', 'doseText': '0.5g 每日一次'},
+      ],
     if (findings != null) 'findings': findings,
     'disclaimer': '本摘要仅供参考，不构成医疗建议',
   };
@@ -235,8 +244,8 @@ void main() {
           clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
         );
 
-        expect(dto.profile.nickname, 'Lumi');
-        expect(dto.allergies, ['青霉素']);
+        expect(dto.profile!.nickname, 'Lumi');
+        expect(dto.allergies!.single.label, '青霉素');
         expect(dto.disclaimer, '本摘要仅供参考，不构成医疗建议');
 
         // The request carries only the selected fields — the default selection
@@ -307,9 +316,10 @@ void main() {
       );
 
       expect(dto.selectedFields, ['profile', 'currentMedicines']);
-      expect(dto.conditions, isEmpty);
-      expect(dto.allergies, isEmpty);
-      expect(dto.profile.nickname, 'Lumi');
+      // Deselected sections deserialize to null instead of placeholders.
+      expect(dto.conditions, isNull);
+      expect(dto.allergies, isNull);
+      expect(dto.profile!.nickname, 'Lumi');
     });
 
     test(
@@ -317,9 +327,7 @@ void main() {
       () async {
         final adapter = _ScriptedAdapter();
         // event_overview (profile) deselected: the server omits the profile
-        // key entirely, so the provider must fill a placeholder that
-        // satisfies the generated DTO's required keys (nickname +
-        // sexAtBirth).
+        // key entirely, so the optional contract field deserializes to null.
         adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
           o,
         ) async {
@@ -342,13 +350,43 @@ void main() {
         );
 
         expect(dto.selectedFields, ['conditions', 'currentMedicines']);
-        expect(dto.conditions, ['高血压']);
-        expect(dto.currentMedicines, ['阿莫西林']);
-        // Placeholder profile deserializes; it is never rendered because the
-        // content widget gates the profile section on selectedFields.
-        expect(dto.profile.nickname, '');
+        expect(dto.conditions!.single.label, '高血压');
+        expect(dto.currentMedicines!.single.displayName, '阿莫西林');
+        // The omitted profile section is null — no placeholder needed.
+        expect(dto.profile, isNull);
+        expect(dto.allergies, isNull);
       },
     );
+
+    test('tolerates a response without any of the four sections', () async {
+      // A selection mapping to no data section (e.g. water/sleep/notes) still
+      // omits every section key from the wire response; the optional contract
+      // fields must deserialize to null without throwing.
+      final adapter = _ScriptedAdapter();
+      adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
+        o,
+      ) async {
+        return _jsonBody(_envelope(_summaryJson(sections: const [])));
+      });
+      final dioClient = LucentDioClient(
+        baseUrl: 'http://localhost',
+        sessionStore: _MemSessionStore(),
+        httpClientAdapter: adapter,
+      );
+      addTearDown(dioClient.dispose);
+
+      final c = makeContainer(dioClient: dioClient);
+      final dto = await c.read(
+        clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
+      );
+
+      expect(dto.selectedFields, isEmpty);
+      expect(dto.profile, isNull);
+      expect(dto.allergies, isNull);
+      expect(dto.conditions, isNull);
+      expect(dto.currentMedicines, isNull);
+      expect(dto.disclaimer, '本摘要仅供参考，不构成医疗建议');
+    });
 
     test('propagates API errors', () async {
       final adapter = _ScriptedAdapter();
@@ -415,7 +453,7 @@ void main() {
 
         expect(dto.dataRange, 'last_7_days');
         expect(dto.findings, ['发现一条']);
-        expect(dto.allergies, ['青霉素']);
+        expect(dto.allergies!.single.label, '青霉素');
 
         // Public route: the request carries no Authorization header, exactly
         // like the public shared PDF download.
@@ -449,12 +487,13 @@ void main() {
         final dto = await c.read(clinicSummarySharedProvider('abc123').future);
 
         expect(dto.selectedFields, ['conditions', 'currentMedicines']);
-        expect(dto.conditions, ['高血压']);
-        expect(dto.currentMedicines, ['阿莫西林']);
-        // Placeholder profile deserializes; the content widget never renders it
-        // because rendering is gated on the server-echoed selectedFields.
-        expect(dto.profile.nickname, '');
-        expect(dto.allergies, isEmpty);
+        expect(dto.conditions!.single.label, '高血压');
+        expect(dto.currentMedicines!.single.displayName, '阿莫西林');
+        // The omitted sections deserialize to null; the content widget never
+        // renders null sections (rendering is gated on the server-echoed
+        // selectedFields AND on the section being present).
+        expect(dto.profile, isNull);
+        expect(dto.allergies, isNull);
       },
     );
 

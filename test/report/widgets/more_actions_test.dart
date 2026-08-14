@@ -586,9 +586,9 @@ ClinicSummaryDto _clinicDto() {
       sexAtBirth: 'male',
       bloodType: 'A',
     ),
-    allergies: const [],
-    conditions: const [],
-    currentMedicines: const [],
+    allergies: const <ClinicSummaryAllergyDto>[],
+    conditions: const <ClinicSummaryConditionDto>[],
+    currentMedicines: const <ClinicSummaryMedicineDto>[],
     findings: const [],
     disclaimer: '本摘要仅供参考，不构成医疗建议',
   );

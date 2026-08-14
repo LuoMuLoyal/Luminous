@@ -35,6 +35,12 @@ class ClinicSummaryContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context);
+    // Section data is optional in the contract: deselected sections arrive
+    // as null and must render nothing rather than crash.
+    final profile = dto.profile;
+    final allergies = dto.allergies;
+    final conditions = dto.conditions;
+    final currentMedicines = dto.currentMedicines;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -59,62 +65,66 @@ class ClinicSummaryContent extends StatelessWidget {
         const SizedBox(height: Spacing.level4),
 
         // Profile section — present only when the event_overview field is
-        // selected (the server omits deselected sections entirely).
-        if (_sectionSelected(dto.selectedFields, 'profile')) ...[
+        // selected AND the server included the section (deselected sections
+        // are omitted from the response entirely).
+        if (profile != null &&
+            _sectionSelected(dto.selectedFields, 'profile')) ...[
           _SectionTitle(text: l10n.reportClinicSummaryProfileSection),
           const SizedBox(height: Spacing.level2),
           MetaRow(
             label: l10n.reportClinicSummaryProfileNickname,
-            value: dto.profile.nickname,
+            value: profile.nickname,
           ),
           MetaRow(
             label: l10n.reportClinicSummaryProfileAge,
-            value: dto.profile.age != null
-                ? dto.profile.age!.toInt().toString()
+            value: profile.age != null
+                ? profile.age!.toInt().toString()
                 : l10n.reportClinicSummaryNotSet,
           ),
           MetaRow(
             label: l10n.reportClinicSummaryProfileSex,
-            value: dto.profile.sexAtBirth ?? l10n.reportClinicSummaryNotSet,
+            value: profile.sexAtBirth ?? l10n.reportClinicSummaryNotSet,
           ),
           MetaRow(
             label: l10n.reportClinicSummaryProfileBloodType,
-            value: dto.profile.bloodType ?? l10n.reportClinicSummaryNotSet,
+            value: profile.bloodType ?? l10n.reportClinicSummaryNotSet,
           ),
         ],
 
         // Allergies — not one of the six selectable fields, so it behaves
         // like findings/coverage metadata: always rendered when present,
         // regardless of the field selection.
-        if (dto.allergies.isNotEmpty) ...[
+        if (allergies != null && allergies.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reportClinicSummaryAllergiesSection),
           const SizedBox(height: Spacing.level2),
-          ...dto.allergies.map((e) => _BulletItem(text: e)),
+          ...allergies.map((e) => _BulletItem(text: e.label)),
         ],
 
         // Conditions.
-        if (_sectionSelected(dto.selectedFields, 'conditions') &&
-            dto.conditions.isNotEmpty) ...[
+        if (conditions != null &&
+            conditions.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'conditions')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reportClinicSummaryConditionsSection),
           const SizedBox(height: Spacing.level2),
-          ...dto.conditions.map((e) => _BulletItem(text: e)),
+          ...conditions.map((e) => _BulletItem(text: e.label)),
         ],
 
         // Current medicines.
-        if (_sectionSelected(dto.selectedFields, 'currentMedicines') &&
-            dto.currentMedicines.isNotEmpty) ...[
+        if (currentMedicines != null &&
+            currentMedicines.isNotEmpty &&
+            _sectionSelected(dto.selectedFields, 'currentMedicines')) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
           _SectionTitle(text: l10n.reportClinicSummaryMedicinesSection),
           const SizedBox(height: Spacing.level2),
-          ...dto.currentMedicines.map((e) => _BulletItem(text: e)),
+          ...currentMedicines.map((e) => _BulletItem(text: e.displayName)),
         ],
 
         // Key findings.

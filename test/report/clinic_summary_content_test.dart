@@ -28,10 +28,14 @@ ClinicSummaryCoverageDto _coverage() {
   );
 }
 
+/// Sentinel distinguishing "not passed" (use the populated default) from an
+/// explicit null (a deselected section omitted from the wire response).
+const _defaultSections = Object();
+
 ClinicSummaryDto _dto({
-  List<String> allergies = const ['青霉素', '头孢'],
-  List<String> conditions = const ['高血压'],
-  List<String> medicines = const ['阿莫西林'],
+  Object? allergies = _defaultSections,
+  Object? conditions = _defaultSections,
+  Object? medicines = _defaultSections,
   List<String>? findings = const ['长期服用需监测'],
   String dataRange = 'last_7_days',
   List<String> selectedFields = const [],
@@ -53,9 +57,37 @@ ClinicSummaryDto _dto({
       sexAtBirth: sexAtBirth,
       bloodType: bloodType,
     ),
-    allergies: allergies,
-    conditions: conditions,
-    currentMedicines: medicines,
+    allergies: identical(allergies, _defaultSections)
+        ? <ClinicSummaryAllergyDto>[
+            ClinicSummaryAllergyDto(
+              label: '青霉素',
+              reaction: '皮疹',
+              severity: 'moderate',
+            ),
+            ClinicSummaryAllergyDto(
+              label: '头孢',
+              reaction: null,
+              severity: null,
+            ),
+          ]
+        : (allergies as List?)?.cast<ClinicSummaryAllergyDto>(),
+    conditions: identical(conditions, _defaultSections)
+        ? <ClinicSummaryConditionDto>[
+            ClinicSummaryConditionDto(
+              label: '高血压',
+              status: 'active',
+              diagnosedYear: 2023,
+            ),
+          ]
+        : (conditions as List?)?.cast<ClinicSummaryConditionDto>(),
+    currentMedicines: identical(medicines, _defaultSections)
+        ? <ClinicSummaryMedicineDto>[
+            ClinicSummaryMedicineDto(
+              displayName: '阿莫西林',
+              doseText: '0.5g 每日一次',
+            ),
+          ]
+        : (medicines as List?)?.cast<ClinicSummaryMedicineDto>(),
     findings: findings,
     disclaimer: '本摘要仅供参考，不构成医疗建议',
   );
@@ -151,6 +183,36 @@ void main() {
     expect(find.text(l10n_.reportClinicSummaryFindingsSection), findsNothing);
     // Profile + disclaimer sections still render
     expect(find.text(l10n_.reportClinicSummaryProfileSection), findsOneWidget);
+    expect(
+      find.text(l10n_.reportClinicSummaryDisclaimerSection),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('renders nothing for omitted (null) sections without crashing', (
+    tester,
+  ) async {
+    // A deselected section is omitted from the wire response, so its DTO
+    // field is null — the widget must skip it instead of dereferencing.
+    await pumpContent(
+      tester,
+      _dto(
+        allergies: null,
+        conditions: null,
+        medicines: null,
+        selectedFields: const ['profile'],
+      ),
+    );
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryProfileSection), findsOneWidget);
+    expect(find.text('Lumi'), findsOneWidget);
+    expect(find.text(l10n_.reportClinicSummaryAllergiesSection), findsNothing);
+    expect(find.text(l10n_.reportClinicSummaryConditionsSection), findsNothing);
+    expect(find.text(l10n_.reportClinicSummaryMedicinesSection), findsNothing);
+    expect(find.text('青霉素'), findsNothing);
+    expect(find.text('高血压'), findsNothing);
+    expect(find.text('阿莫西林'), findsNothing);
     expect(
       find.text(l10n_.reportClinicSummaryDisclaimerSection),
       findsOneWidget,

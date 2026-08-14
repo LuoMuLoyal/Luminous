@@ -37,9 +37,9 @@ const kClinicSummaryDefaultFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
 ///
 /// The generated [ReportsApi] method cannot be used here: the response is
 /// wrapped in the `{code, message, data}` envelope (the generated client
-/// deserializes the raw body), and deselected sections are omitted while the
-/// generated [ClinicSummaryDto] marks them required. The raw [Dio] call
-/// unwraps the envelope and fills missing sections with empty defaults.
+/// deserializes the raw body). The raw [Dio] call unwraps the envelope; the
+/// four section keys are optional in the contract, so deselected sections
+/// deserialize to null.
 final clinicSummaryPreviewProvider = FutureProvider.autoDispose
     .family<ClinicSummaryDto, List<ClinicSummaryRequestDtoSelectedFieldsEnum>>((
       ref,
@@ -65,27 +65,7 @@ Future<ClinicSummaryDto> _fetchPreview(
   if (data is! Map<String, dynamic>) {
     throw StateError('clinic summary preview response has no data payload');
   }
-  return ClinicSummaryDto.fromJson(_fillMissingSections(data));
-}
-
-/// The server omits deselected section keys (profile / allergies / conditions
-/// / currentMedicines) instead of returning empty values, while the generated
-/// [ClinicSummaryDto] requires them. Fill them with empty defaults so the
-/// DTO deserializes; the content widget renders sections based on the
-/// server-provided `selectedFields`, so the placeholders never render.
-Map<String, dynamic> _fillMissingSections(Map<String, dynamic> data) {
-  final map = Map<String, dynamic>.from(data);
-  // The generated ClinicSummaryProfileDto requires both nickname and
-  // sexAtBirth — the placeholder must satisfy both, otherwise deselecting
-  // event_overview throws CheckedFromJsonException.
-  map.putIfAbsent(
-    'profile',
-    () => const <String, dynamic>{'nickname': '', 'sexAtBirth': ''},
-  );
-  map.putIfAbsent('allergies', () => const <String>[]);
-  map.putIfAbsent('conditions', () => const <String>[]);
-  map.putIfAbsent('currentMedicines', () => const <String>[]);
-  return map;
+  return ClinicSummaryDto.fromJson(data);
 }
 
 /// Fetches a shared clinic summary by its public token.
@@ -95,11 +75,9 @@ Map<String, dynamic> _fillMissingSections(Map<String, dynamic> data) {
 ///
 /// The generated [ReportsApi] method cannot be used here: like the preview,
 /// the response is wrapped in the `{code, message, data}` envelope (the
-/// generated client deserializes the raw body as a bare [ClinicSummaryDto]
-/// and throws against the real backend), and deselected section keys are
-/// omitted while the generated DTO marks them required. The raw [Dio] call
-/// unwraps the envelope and fills missing sections with empty defaults,
-/// reusing the same helper as the preview provider.
+/// generated client deserializes the raw body as a bare [ClinicSummaryDto]).
+/// The raw [Dio] call unwraps the envelope; the four section keys are
+/// optional in the contract, so deselected sections deserialize to null.
 final clinicSummarySharedProvider = FutureProvider.autoDispose
     .family<ClinicSummaryDto, String>((ref, token) async {
       final dio = ref.watch(lucentDioClientProvider).dio;
@@ -111,7 +89,7 @@ final clinicSummarySharedProvider = FutureProvider.autoDispose
       if (data is! Map<String, dynamic>) {
         throw StateError('clinic summary shared response has no data payload');
       }
-      return ClinicSummaryDto.fromJson(_fillMissingSections(data));
+      return ClinicSummaryDto.fromJson(data);
     });
 
 /// The current user's clinic summary shares, newest first.

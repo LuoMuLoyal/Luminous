@@ -24,7 +24,6 @@ Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-rec
 ### 平台与验证
 
 - 桌面端和完整认证 Web 应用冻结：保留代码，不继续功能对等、发行或产品化；手机端是唯一核心产品，`Luminous-website` 继续承担官网和竞赛展示
-- 合同债：就诊摘要响应的四个 section 键（profile/allergies/conditions/currentMedicines）在 Lucent 合同中被标记必填，但服务端字段选择会省略未选键，客户端只能靠 `_fillMissingSections` 占位反序列化；持久修复是把四键改为可选（公开分享页的信封兼容已在 Task 10 用 raw Dio 解信封解决，本债务仅剩合同层面）
 
 ## 延后（有明确原因）
 
