@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-14
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-13
+Last updated: 2026-08-14
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -24,7 +24,7 @@ Last updated: 2026-08-13
 - 桌面端和完整认证 Web 应用冻结：保留代码，不继续功能对等、发行或产品化；手机端是唯一核心产品，`Luminous-website` 继续承担官网和竞赛展示
 - 增加最小、隐私克制的闭环测量（归属 Workstream 2，见 `plans/2026-08-07-visit-summary-and-product-measurement.md`）：记录成功、建议卡曝光与处理、事件开始/结束、结果确认、回顾打开，以及“更多”中导出/分享动作；快捷入口点击不能代替保存成功
 
-- Clinic Summary 字段级隐藏 UI 与隐私选择尚未实现；“更多”中的统一预览与 PIN 安全提升已随迁移完成（Task 8），字段级隐私与安全确认归属 Workstream 2
+- 就诊摘要响应的四个 section 键（profile/allergies/conditions/currentMedicines）在 Lucent 合同中被标记必填，但服务端字段选择会省略未选中的键，客户端只能靠 `_fillMissingSections` 补齐占位反序列化；持久修复是把这四个键改为可选（含 `clinicSummarySharedProvider` 的公开分享页信封兼容问题，该 provider 仍走生成客户端、对真实响应会抛反序列化错误）
 - 当前没有可靠的 Review 打开、分享链接访问或事件结果测量；不能用导出请求成功推断医生查看或用户获益（归属 Workstream 2）
 
 ## 延后（有明确原因）

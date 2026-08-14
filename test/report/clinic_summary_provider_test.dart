@@ -964,6 +964,144 @@ void main() {
         expect(find.text(l10n.reportShareRevokedBody), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'creating a share invalidates the share list so the management sheet '
+      'shows the new share',
+      (tester) async {
+        var listCalls = 0;
+        when(
+          () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        ).thenAnswer((_) async {
+          listCalls += 1;
+          return _shareListResponse([_shareItem()]);
+        });
+        final service = _RecordingProductEventService();
+        final adapter = await openDialog(
+          tester,
+          client: client,
+          service: service,
+        );
+        adapter.on('POST', '/api/v1/user/reports/clinic-summary/share', (
+          o,
+        ) async {
+          return _jsonBody(
+            _envelope({
+              'shareId': 'share-new',
+              'token': 'tok',
+              'shareUrl':
+                  'https://example.com/api/v1/user/reports/clinic-summary/shared/def',
+              'expiresAt': '2026-07-08T08:00:00',
+              'scope': {
+                'eventId': null,
+                'dateFrom': '2026-06-02',
+                'dateTo': '2026-07-01',
+              },
+              'selectedFields': ['event_overview'],
+            }),
+          );
+        });
+
+        // Watch the share list provider from the pumped container so the
+        // invalidation (and its refetch) is observable.
+        final container = ProviderScope.containerOf(
+          tester.element(find.text('open preview')),
+        );
+        var notifications = 0;
+        final sub = container.listen(
+          clinicSummaryShareListProvider,
+          (_, __) => notifications += 1,
+        );
+        addTearDown(sub.close);
+        await container.read(clinicSummaryShareListProvider.future);
+        verify(
+          () => reportsApi.reportsControllerListClinicSummarySharesV1(),
+        ).called(1);
+
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+        await tester.ensureVisible(find.text(l10n.reportClinicSummaryShare));
+        await tester.tap(find.text(l10n.reportClinicSummaryShare));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text(l10n.reportShareConfirmAction));
+        await tester.pumpAndSettle();
+
+        expect(find.text(l10n.reportShareCreatedTitle), findsOneWidget);
+        // The create invalidated the cached list, so the next read refetches.
+        await container.read(clinicSummaryShareListProvider.future);
+        // The create invalidated the cached list: the provider rebuilt
+        // (listener notified again) and refetched from the API.
+        expect(listCalls, 2);
+        expect(notifications, greaterThan(1));
+      },
+    );
+
+    testWidgets(
+      'field toggles stay enabled during confirm and lock once created',
+      (tester) async {
+        final service = _RecordingProductEventService();
+        final adapter = await openDialog(
+          tester,
+          client: client,
+          service: service,
+        );
+        adapter.on('POST', '/api/v1/user/reports/clinic-summary/share', (
+          o,
+        ) async {
+          return _jsonBody(
+            _envelope({
+              'shareId': 'share-42',
+              'token': 'tok',
+              'shareUrl':
+                  'https://example.com/api/v1/user/reports/clinic-summary/shared/abc',
+              'expiresAt': '2026-07-08T08:00:00',
+              'scope': {
+                'eventId': null,
+                'dateFrom': '2026-06-02',
+                'dateTo': '2026-07-01',
+              },
+              'selectedFields': ['event_overview'],
+            }),
+          );
+        });
+
+        FCheckbox notesCheckbox() {
+          return tester.widget<FCheckbox>(
+            find.descendant(
+              of: find.byKey(const Key('clinic-summary-field-notes')),
+              matching: find.byType(FCheckbox),
+            ),
+          );
+        }
+
+        final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
+        await tester.ensureVisible(find.text(l10n.reportClinicSummaryShare));
+        await tester.tap(find.text(l10n.reportClinicSummaryShare));
+        await tester.pumpAndSettle();
+
+        // Confirm step: toggling must stay enabled (it affects the share
+        // being created).
+        expect(find.text(l10n.reportShareConfirmTitle), findsOneWidget);
+        expect(notesCheckbox().enabled, isTrue);
+
+        await tester.tap(find.text(l10n.reportShareConfirmAction));
+        await tester.pumpAndSettle();
+
+        // Created step: the link is fixed, toggles are locked so the preview
+        // cannot silently change behind the shown link.
+        expect(find.text(l10n.reportShareCreatedTitle), findsOneWidget);
+        expect(notesCheckbox().enabled, isFalse);
+
+        final requestsBefore = adapter.requests.length;
+        await tester.tap(
+          find.descendant(
+            of: find.byKey(const Key('clinic-summary-field-notes')),
+            matching: find.byType(FCheckbox),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(adapter.requests.length, requestsBefore);
+      },
+    );
   });
 }
 

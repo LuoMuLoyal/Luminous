@@ -171,6 +171,11 @@ class _ClinicSummaryPreviewContentState
           children: [
             _FieldSelectionPanel(
               selectedFields: _selectedFields,
+              // During the created/revoked steps the shown link is already
+              // fixed — toggling must not silently re-run the preview behind
+              // it. During the confirm step toggling stays enabled because it
+              // affects the share being created.
+              enabled: _shareStep == null || _shareStep == _ShareStep.confirm,
               onChanged: _updateSelection,
             ),
             const SizedBox(height: Spacing.level4),
@@ -289,6 +294,9 @@ class _ClinicSummaryPreviewContentState
       );
       switch (result) {
         case Success(:final value):
+          // The share list is cached (keepAlive) — invalidate it so the
+          // management sheet shows the newly created share on next open.
+          ref.invalidate(clinicSummaryShareListProvider);
           if (mounted) {
             setState(() {
               _shareResponse = value;
@@ -383,10 +391,17 @@ class _ClinicSummaryPreviewContentState
 class _FieldSelectionPanel extends StatelessWidget {
   const _FieldSelectionPanel({
     required this.selectedFields,
+    required this.enabled,
     required this.onChanged,
   });
 
   final List<ClinicSummaryRequestDtoSelectedFieldsEnum> selectedFields;
+
+  /// Whether the toggles can be changed. Disabled once the share link is
+  /// created/revoked, so the preview cannot silently change behind the
+  /// shown link.
+  final bool enabled;
+
   final ValueChanged<List<ClinicSummaryRequestDtoSelectedFieldsEnum>> onChanged;
 
   @override
@@ -412,9 +427,11 @@ class _FieldSelectionPanel extends StatelessWidget {
             selected: selectedFields.contains(field),
             // The last remaining selection cannot be disabled — an empty
             // field selection is rejected by the server.
-            enabled: selectedFields.contains(field)
-                ? selectedFields.length > 1
-                : true,
+            enabled:
+                enabled &&
+                (selectedFields.contains(field)
+                    ? selectedFields.length > 1
+                    : true),
             onChanged: (value) => onChanged(
               value
                   ? [...selectedFields, field]
@@ -479,6 +496,10 @@ class _FieldToggle extends StatelessWidget {
         FCheckbox(
           value: selected,
           enabled: enabled,
+          // The visible label is a separate Text in the row — expose it to
+          // screen readers via the checkbox semantics (register.dart
+          // pattern).
+          semanticsLabel: label,
           onChange: enabled ? onChanged : null,
         ),
         const SizedBox(width: Spacing.level3),

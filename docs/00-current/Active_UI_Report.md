@@ -38,6 +38,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - Task 8（Visit Summary and Product Measurement）起 More 为五入口：就诊摘要 / 分享管理 / PDF 报告 / 打印下载 / 历史报告。分享管理（`showShareManagementSheet`）列出当前用户的分享记录（创建时间/到期时间/访问次数/最近访问/已撤销态）并提供撤销，不展示任何访问者身份信息。
 - 就诊摘要预览弹窗（Task 8 字段级隐私）：六项字段选择（事件概况/症状变化/用药槽位/饮水/睡眠/备注），默认不选自由文本备注；未选字段不出现在 preview 请求、PDF 与分享中（服务端同一过滤视图）；分享创建前显示 7 天有效期与「链接持有者可查看」，创建后可复制链接或撤销，不暗示医生已收到。preview 与 share-create 因生成客户端与信封/缺省 section 不兼容而走原始 Dio 解信封（见 `docs/02-reference/OpenApi_Client.md`）。
 - 过敏记录不是六个可选字段之一，按元数据处理：服务端 `resolveSectionKeys` 恒包含 `allergies`，内容组件对过敏段「非空即渲染」（不受字段选择门控），与 findings/coverage 一致。
+- 分享管理列表为 keepAlive 缓存：预览弹窗内创建分享成功会失效该缓存，打开面板即见新分享；字段选择在分享已创建/已撤销步骤锁定（确认步骤仍可切换，影响正在创建的分享）。
 - 文案口径：就诊摘要入口「就诊时按需使用 / Use as needed during your visit」，不暗示医生一定查看；分享按钮文案由「分享给医生/Share with doctor」改为「分享摘要/Share summary」（分享仍是用户显式动作，API 行为不变）。
 - 主路径回归（测试锁定）：首屏不渲染四张导出卡与 `ReportExportSection`，顶栏无 7/30 切换（`test/report/widgets/more_actions_test.dart` 10 个用例 + `test/report/page_test.dart` 既有断言）。
 - Legacy 兼容页 `LegacyDashboardCompatPage`（`presentation/pages/legacy_dashboard_compat.dart`，路由 `/report/legacy`，slide 进入、含返回按钮）：按 d8c9c5f5e 旧装配重建移动端 dashboard（readiness 首卡 + 趋势/发现/建议历史 + AI 总结/规律 + 四张导出卡 + 7/30 天切换 + 下拉刷新），沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导）；取舍：不复刻旧桌面端双栏外壳，桌面宽度渲染同一移动端布局。旧 dashboard 文件保留原样未删除。

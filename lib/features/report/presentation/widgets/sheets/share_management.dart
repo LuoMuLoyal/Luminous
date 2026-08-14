@@ -64,9 +64,9 @@ class ShareManagementSheet extends ConsumerStatefulWidget {
 }
 
 class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
-  /// Share id whose revoke request is in flight — disables all revoke
-  /// buttons while any revoke is running.
-  String? _revokingShareId;
+  /// Share ids whose revoke request is in flight. A Set so independent rows
+  /// can be revoked concurrently; only the in-flight row's button spins.
+  final Set<String> _revokingShareIds = {};
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +89,12 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
           ),
           const SizedBox(height: Spacing.level4),
           ...switch (async) {
+            // Value-first: while a revoke refreshes the list the previous
+            // rows stay visible instead of flashing the spinner.
+            AsyncValue(:final hasValue) when hasValue => _shareList(
+              l10n,
+              async.value ?? const [],
+            ),
             AsyncValue(:final isLoading) when isLoading => [
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: Spacing.level6),
@@ -101,7 +107,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                 ),
               ),
             ],
-            AsyncValue(:final hasError) when hasError => [
+            _ => [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: Spacing.level4),
                 child: Column(
@@ -129,7 +135,6 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
                 ),
               ),
             ],
-            _ => _shareList(l10n, async.value ?? const []),
           },
           const SizedBox(height: Spacing.level4),
         ],
@@ -176,7 +181,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
       for (var i = 0; i < shares.length; i++) ...[
         _ShareRow(
           share: shares[i],
-          isRevoking: _revokingShareId == shares[i].id,
+          isRevoking: _revokingShareIds.contains(shares[i].id),
           onRevoke: () => _revoke(context, shares[i].id),
         ),
         if (i < shares.length - 1) const SizedBox(height: Spacing.level3),
@@ -186,7 +191,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
 
   Future<void> _revoke(BuildContext context, String shareId) async {
     final l10n = AppLocalizations.of(context)!;
-    setState(() => _revokingShareId = shareId);
+    setState(() => _revokingShareIds.add(shareId));
     try {
       final result = await runGuarded(
         ref: ref,
@@ -201,7 +206,7 @@ class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
       }
     } finally {
       if (mounted) {
-        setState(() => _revokingShareId = null);
+        setState(() => _revokingShareIds.remove(shareId));
       }
     }
   }
