@@ -17,7 +17,9 @@ import 'tooling_support.dart';
 /// must be listed in doc-map or linked from another doc), and `lib/features/*`
 /// doc-map coverage. Exit(1) on any problem.
 ///
-/// Bypass with `SKIP_DOC_CHECK=1` or `git commit --no-verify`.
+/// `SKIP_DOC_CHECK=1` bypasses the blocking coverage path only — it does not
+/// apply to `--verify` (or `--warning-only`). `git commit --no-verify` bypasses
+/// the whole hook.
 Future<void> main(List<String> args) async {
   final context = ToolContext.fromScript(Platform.script);
 
@@ -206,7 +208,8 @@ Options:
   --help              Show this help text.
 
 Environment:
-  SKIP_DOC_CHECK=1    Bypass the blocking check (ignored with --warning-only).
+  SKIP_DOC_CHECK=1    Bypass the blocking coverage check only (ignored with
+                      --warning-only; --verify always runs).
 ''';
 
 /// Collects `docs/**/*.md` contents (excluding `.obsidian/`) keyed by
@@ -321,7 +324,6 @@ Future<void> _runVerify(ToolContext context) async {
 
   // (c) Front-matter completeness on the required patterns.
   final activeDocs = availableDocs.where(isActiveDoc).toList(growable: false);
-  final docsBase = docsDir.path.replaceAll('\\', '/');
   final contentByPath = <String, String>{
     for (final doc in activeDocs)
       doc: File(
@@ -337,9 +339,11 @@ Future<void> _runVerify(ToolContext context) async {
   );
 
   // (d) Freshness — front-matter `updated` staleness and `status: stale`
-  // archiving. `status: frozen` docs are exempt by construction.
+  // archiving, scoped to active docs (04-archive and migration logs are not
+  // active, so an archived doc is never told to archive itself). `status:
+  // frozen` docs are exempt via [isFrozenDoc].
   final freshness = analyzeDocFreshness(
-    contentByPath: _collectDocContents(context.repoRoot),
+    contentByPath: contentByPath,
     today: _todayIso(),
   );
   problems.addAll(

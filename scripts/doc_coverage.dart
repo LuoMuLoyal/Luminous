@@ -379,6 +379,11 @@ DocFreshnessReport analyzeDocFreshness({
   final staleStatus = <String>[];
 
   contentByPath.forEach((path, content) {
+    // Intentionally frozen docs are exempt from all freshness checks —
+    // see [isFrozenDoc].
+    if (isFrozenDoc(content)) {
+      return;
+    }
     final frontMatter = parseFrontMatter(content);
     final status = frontMatter['status'];
     if (status == null) {
@@ -389,7 +394,6 @@ DocFreshnessReport analyzeDocFreshness({
       return;
     }
     if (status != 'active') {
-      // Includes `status: frozen` — exempt from freshness by design.
       return;
     }
     final updated = frontMatter['updated'];
@@ -550,6 +554,10 @@ List<String> readershipSubjectPaths(
         if (content == null) {
           return false;
         }
+        // Frozen docs are intentionally exempt from the readership rule.
+        if (isFrozenDoc(content)) {
+          return false;
+        }
         final frontMatter = parseFrontMatter(content);
         if (frontMatter['status'] != 'active') {
           return false;
@@ -593,6 +601,12 @@ const List<String> exemptFeaturePatterns = <String>[];
 /// New features must ship with a doc-map rule so their changes are governed.
 /// [exemptions] is injectable so the branch is testable; defaults to the
 /// documented exemption list.
+///
+/// The probe is `lib/features/<dir>/**`, matched syntactically against each
+/// rule pattern. Documented limitation: a rule whose code glob only covers
+/// real files (e.g. `lib/features/*/data/**`) does not syntactically match
+/// the probe, so it would not recognize the feature as covered — keep rules'
+/// code globs at the feature-directory level.
 List<String> findUncoveredFeatureDirs(
   List<DocCoverageRule> rules,
   List<String> featureDirs, {

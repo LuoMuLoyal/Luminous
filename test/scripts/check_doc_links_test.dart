@@ -27,6 +27,51 @@ void main() {
     });
   });
 
+  group('collectDocChangeSet', () {
+    test('pure rename (git mv) reports the old path as deleted', () async {
+      final repo = _createGitRepo({
+        'docs/a.md': '# A\n',
+        'docs/other.md': '# Other\n',
+      });
+      _runGit(repo, ['mv', 'docs/a.md', 'docs/b.md']);
+
+      final changeSet = await collectDocChangeSet(repo);
+
+      // deletedDocs non-empty is what main() checks to fall back to the
+      // full vault — without --no-renames a pure rename would be missed.
+      expect(changeSet.deletedDocs, contains('a.md'));
+      expect(changeSet.changedDocs, containsAll(['a.md', 'b.md']));
+    });
+
+    test('plain deletion reports the deleted doc', () async {
+      final repo = _createGitRepo({
+        'docs/a.md': '# A\n',
+        'docs/other.md': '# Other\n',
+      });
+      _runGit(repo, ['rm', 'docs/a.md']);
+
+      final changeSet = await collectDocChangeSet(repo);
+
+      expect(changeSet.deletedDocs, ['a.md']);
+      expect(changeSet.changedDocs, contains('a.md'));
+    });
+
+    test('edit-only changes leave deletedDocs empty', () async {
+      final repo = _createGitRepo({
+        'docs/a.md': '# A\n',
+        'docs/other.md': '# Other\n',
+      });
+      File(
+        '${repo.path}${Platform.pathSeparator}docs${Platform.pathSeparator}a.md',
+      ).writeAsStringSync('# A edited\n');
+
+      final changeSet = await collectDocChangeSet(repo);
+
+      expect(changeSet.deletedDocs, isEmpty);
+      expect(changeSet.changedDocs, ['a.md']);
+    });
+  });
+
   group('checkDocFileLinks', () {
     test('reports broken wikilinks and relative links', () {
       final vault = _createVault({
@@ -86,4 +131,43 @@ VaultIndex _createVault(Map<String, String> files) {
       ..writeAsStringSync(content);
   });
   return VaultIndex(tempRoot);
+}
+
+/// Creates a temp git repo with [files] committed, for change-set tests.
+Directory _createGitRepo(Map<String, String> files) {
+  final tempRoot = Directory.systemTemp.createTempSync(
+    'luminous-doc-changeset-test-',
+  );
+  addTearDown(() {
+    if (tempRoot.existsSync()) {
+      tempRoot.deleteSync(recursive: true);
+    }
+  });
+  _runGit(tempRoot, ['init']);
+  files.forEach((name, content) {
+    File('${tempRoot.path}${Platform.pathSeparator}$name')
+      ..createSync(recursive: true)
+      ..writeAsStringSync(content);
+  });
+  _runGit(tempRoot, ['add', '.']);
+  _runGit(tempRoot, [
+    '-c',
+    'user.name=Test',
+    '-c',
+    'user.email=test@example.com',
+    '-c',
+    'commit.gpgsign=false',
+    'commit',
+    '-m',
+    'init',
+  ]);
+  return tempRoot;
+}
+
+/// Runs [args] in [repo], failing the test on a non-zero exit.
+void _runGit(Directory repo, List<String> args) {
+  final result = Process.runSync('git', args, workingDirectory: repo.path);
+  if (result.exitCode != 0) {
+    fail('git ${args.join(' ')} failed:\n${result.stderr}');
+  }
 }

@@ -115,8 +115,12 @@ Future<void> runPreCommitChecks(ToolContext context) async {
 
   // ── Wikilink integrity (blocking) ──────────────────────────────────
   // Broken doc links fail the commit regardless of SKIP_DOC_CHECK.
-  // --changed scopes the scan to the staged docs (full vault fallback
+  // --changed scopes the scan to the git change set (full vault fallback
   // when the change set deletes/renames docs) for fast commit feedback.
+  // Scope note: the coverage check above judges only the staged snapshot
+  // (--staged), while the link scan reads staged + unstaged + untracked —
+  // link resolution sees the working tree, and a not-yet-staged deletion
+  // already breaks links, so the scan cannot be narrower.
   await runLoggedCommand(
     'dart',
     ['run', 'scripts/check_doc_links.dart', '--changed'],

@@ -15,7 +15,7 @@
 # 归档文档（04-archive/）不参与覆盖映射（历史可追溯，不强制同步）。
 # 活跃文档 front-matter 中的 status/updated 由 stale 检查消费；status: frozen 豁免新鲜度。
 # 每个 lib/features/* 目录都必须被至少一条规则的 code glob 覆盖
-# （--verify 校验，豁免列表见 doc_coverage.dart 的 EXEMPT_FEATURE_PATTERNS）。
+# （--verify 校验，豁免列表见 doc_coverage.dart 的 exemptFeaturePatterns）。
 # 迁移日志条目约定：描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数），见 AGENTS.md。
 
 rules:

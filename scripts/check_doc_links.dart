@@ -54,7 +54,7 @@ Future<void> main(List<String> args) async {
 
   if (changedOnly) {
     try {
-      final changeSet = await _collectDocChangeSet(repoRoot);
+      final changeSet = await collectDocChangeSet(repoRoot);
       if (changeSet.deletedDocs.isEmpty) {
         filesToCheck = vault.markdownFiles
             .where(
@@ -94,8 +94,8 @@ Future<void> main(List<String> args) async {
 
 /// Scans [file] for broken wikilinks and relative markdown links.
 ///
-/// Returns human-readable problem strings prefixed with the vault-relative
-/// path (e.g. `00-current/TODO.md: [[Missing]] — no matching file`). Shared
+/// Returns human-readable problem strings prefixed with the display path
+/// (e.g. `docs/00-current/TODO.md: [[Missing]] — no matching file`). Shared
 /// with the `--verify` mode of check_doc_coverage.dart so both tools resolve
 /// links identically.
 List<String> checkDocFileLinks(VaultIndex vault, File file) {
@@ -122,7 +122,7 @@ List<String> checkDocFileLinks(VaultIndex vault, File file) {
     for (final link in extractWikilinks(scanLine)) {
       final resolved = vault.resolveWikilink(link.target, fromFile: file);
       if (resolved == null) {
-        problems.add('$relative: [[${link.raw}]] — no matching file');
+        problems.add('docs/$relative: [[${link.raw}]] — no matching file');
       }
     }
 
@@ -133,7 +133,7 @@ List<String> checkDocFileLinks(VaultIndex vault, File file) {
       }
       final resolved = vault.resolveRelativeLink(url, fromFile: file);
       if (resolved == null) {
-        problems.add('$relative: [${link.text}]($url) — no matching file');
+        problems.add('docs/$relative: [${link.text}]($url) — no matching file');
       }
     }
   }
@@ -153,11 +153,22 @@ class DocChangeSet {
 }
 
 /// Collects the docs-related git change set (staged + unstaged + untracked).
-Future<DocChangeSet> _collectDocChangeSet(Directory repoRoot) async {
+///
+/// The diff queries pass `--no-renames`: with default rename detection a pure
+/// `git mv` shows up as a single R entry (only the NEW path in --name-only),
+/// so a `--diff-filter=D` query would miss it and the deletion fallback would
+/// silently skip the rename hazard. Disabling rename detection surfaces the
+/// move as a delete+add pair, putting the old path into [DocChangeSet.deletedDocs].
+Future<DocChangeSet> collectDocChangeSet(Directory repoRoot) async {
   final changed = <String>{};
   final deleted = <String>{};
   for (final cached in [false, true]) {
-    final diffArgs = ['diff', if (cached) '--cached', '--name-only'];
+    final diffArgs = [
+      'diff',
+      if (cached) '--cached',
+      '--name-only',
+      '--no-renames',
+    ];
     changed.addAll(
       await captureCommandLines('git', [
         ...diffArgs,

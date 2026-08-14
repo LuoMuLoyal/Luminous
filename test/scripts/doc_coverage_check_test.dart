@@ -302,19 +302,45 @@ updated: 2026-07-01
     });
 
     test('exempts status: frozen docs from freshness', () {
+      // updated is >120 days old — would be stale if it were active.
+      const frozenDoc = '''
+---
+status: frozen
+owner: frontend
+quadrant: reference
+updated: 2026-01-01
+---
+
+# Doc
+''';
       final report = analyzeDocFreshness(
-        contentByPath: {
-          'docs/00-current/Desktop_UI.md': _frontMatter(
-            status: 'frozen',
-            quadrant: 'reference',
-          ),
-        },
+        contentByPath: {'docs/00-current/Desktop_UI.md': frozenDoc},
         today: '2026-08-02',
       );
 
       expect(report.staleActiveDocs, isEmpty);
       expect(report.staleStatusDocs, isEmpty);
       expect(report.hasWarnings, isFalse);
+    });
+
+    test('flags the same doc when it is active instead of frozen', () {
+      const activeDoc = '''
+---
+status: active
+owner: frontend
+quadrant: reference
+updated: 2026-01-01
+---
+
+# Doc
+''';
+      final report = analyzeDocFreshness(
+        contentByPath: {'docs/00-current/Desktop_UI.md': activeDoc},
+        today: '2026-08-02',
+      );
+
+      expect(report.staleActiveDocs, ['docs/00-current/Desktop_UI.md']);
+      expect(report.hasWarnings, isTrue);
     });
   });
 
