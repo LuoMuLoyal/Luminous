@@ -104,4 +104,14 @@ abstract final class LucentApiPaths {
   /// deserializes [ClinicSummaryShareResponseDto] from the raw body, but the
   /// server wraps it in the envelope.
   static const clinicSummaryShare = '/api/v1/user/reports/clinic-summary/share';
+
+  /// `GET /api/v1/user/reports/clinic-summary/shared/{token}` — public route
+  /// (no auth), same envelope-shape mismatch as [clinicSummaryPreview]: the
+  /// generated [ReportsApi] method deserializes [ClinicSummaryDto] from the
+  /// raw body, but the server wraps it in the `{code, message, data}`
+  /// envelope. Raw [Dio] lets the shared provider unwrap the envelope and
+  /// fill missing sections before deserializing. The call must set
+  /// `extra: {'skipAuthorization': true}` like [clinicSummarySharedPdf].
+  static String clinicSummaryShared(String token) =>
+      '/api/v1/user/reports/clinic-summary/shared/$token';
 }

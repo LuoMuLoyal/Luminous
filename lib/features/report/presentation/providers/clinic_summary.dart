@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
@@ -91,12 +92,26 @@ Map<String, dynamic> _fillMissingSections(Map<String, dynamic> data) {
 ///
 /// Calls `GET /api/v1/user/reports/clinic-summary/shared/{token}` — no
 /// authentication required. Used by the public deep-link share page.
+///
+/// The generated [ReportsApi] method cannot be used here: like the preview,
+/// the response is wrapped in the `{code, message, data}` envelope (the
+/// generated client deserializes the raw body as a bare [ClinicSummaryDto]
+/// and throws against the real backend), and deselected section keys are
+/// omitted while the generated DTO marks them required. The raw [Dio] call
+/// unwraps the envelope and fills missing sections with empty defaults,
+/// reusing the same helper as the preview provider.
 final clinicSummarySharedProvider = FutureProvider.autoDispose
     .family<ClinicSummaryDto, String>((ref, token) async {
-      final api = ref.watch(lucentClientProvider).reports;
-      return api
-          .reportsControllerGetSharedClinicSummaryV1(token: token)
-          .then((r) => r.data!);
+      final dio = ref.watch(lucentDioClientProvider).dio;
+      final response = await dio.get<Map<String, dynamic>>(
+        LucentApiPaths.clinicSummaryShared(token),
+        options: Options(extra: const {'skipAuthorization': true}),
+      );
+      final data = response.data?['data'];
+      if (data is! Map<String, dynamic>) {
+        throw StateError('clinic summary shared response has no data payload');
+      }
+      return ClinicSummaryDto.fromJson(_fillMissingSections(data));
     });
 
 /// The current user's clinic summary shares, newest first.

@@ -142,3 +142,4 @@ operations.
 ## 2026-08-14 Clinic summary preview/share 信封绕行
 
 - `POST /user/reports/clinic-summary/preview` 与 `/share` 的服务端响应是 `{code, message, data}` 信封，而生成的 `ReportsApi` 把 body 直接当裸 `ClinicSummaryDto` / `ClinicSummaryShareResponseDto` 反序列化（会抛 `CheckedFromJsonException`）；且字段选择下未选中的 section 键会被服务端省略，生成的 DTO 却标记必填。这两个端点因此不走生成客户端，改由 `LucentApiPaths.clinicSummaryPreview` / `clinicSummaryShare` + 原始 Dio 调用：解信封、补齐缺失 section 空默认值后再 `fromJson`。预览 PDF（POST 带 body）由 `downloadAndSharePdf` 的 `postBody` 参数承载字段选择。
+- `GET /user/reports/clinic-summary/shared/{token}`（公开分享页）同型缺陷：Task 10 起同样走 raw Dio（`LucentApiPaths.clinicSummaryShared(token)` + `skipAuthorization: true`）解信封并复用同一 `_fillMissingSections` 补齐，不再使用生成客户端方法；相关 provider 测试以 scripted HttpClientAdapter 断言请求不带 Authorization 头。

@@ -147,50 +147,6 @@ Map<String, dynamic> _summaryJson({
   };
 }
 
-ClinicSummaryCoverageEntryDto _coverageEntry() {
-  return ClinicSummaryCoverageEntryDto(
-    state: ClinicSummaryCoverageEntryDtoStateEnum.observed,
-    coverage: ClinicSummaryCoverageEntryDtoCoverageEnum.none,
-    sources: const [ClinicSummaryCoverageEntryDtoSourcesEnum.manual],
-    observedCount: 0,
-    expectedCount: null,
-    windowStart: null,
-    windowEnd: null,
-  );
-}
-
-ClinicSummaryCoverageDto _coverage() {
-  return ClinicSummaryCoverageDto(
-    checkIns: _coverageEntry(),
-    water: _coverageEntry(),
-    dose: _coverageEntry(),
-    sleep: _coverageEntry(),
-  );
-}
-
-ClinicSummaryDto _dto({List<String>? findings}) {
-  return ClinicSummaryDto(
-    generatedAt: '2026-07-01T10:30:00',
-    scopeLabel: 'last_7_days',
-    start: '2026-06-24T00:00:00',
-    end: '2026-07-01T00:00:00',
-    selectedFields: const [],
-    coverage: _coverage(),
-    dataRange: 'last_7_days',
-    profile: ClinicSummaryProfileDto(
-      nickname: 'Lumi',
-      age: 30,
-      sexAtBirth: 'male',
-      bloodType: 'A',
-    ),
-    allergies: const ['青霉素'],
-    conditions: const ['高血压'],
-    currentMedicines: const ['阿莫西林'],
-    findings: findings,
-    disclaimer: '本摘要仅供参考',
-  );
-}
-
 ClinicSummaryShareListItemDto _shareItem({
   String id = 'share-1',
   String? revokedAt,
@@ -431,62 +387,130 @@ void main() {
   });
 
   group('clinicSummarySharedProvider', () {
-    test('fetches a shared summary by token', () async {
-      when(
-        () => reportsApi.reportsControllerGetSharedClinicSummaryV1(
-          token: 'abc123',
-        ),
-      ).thenAnswer(
-        (_) async => Response<ClinicSummaryDto>(
-          data: _dto(findings: const ['发现一条']),
-          requestOptions: RequestOptions(path: '/shared'),
-          statusCode: 200,
-        ),
+    Future<ProviderContainer> containerWithShared(
+      _ScriptedAdapter adapter,
+    ) async {
+      final dioClient = LucentDioClient(
+        baseUrl: 'http://localhost',
+        sessionStore: _MemSessionStore(),
+        httpClientAdapter: adapter,
       );
+      addTearDown(dioClient.dispose);
+      return makeContainer(dioClient: dioClient);
+    }
 
-      final c = ProviderContainer(
-        overrides: [lucentClientProvider.overrideWithValue(client)],
-      );
-      addTearDown(c.dispose);
+    test(
+      'fetches a shared summary by token via raw Dio (envelope unwrapped)',
+      () async {
+        final adapter = _ScriptedAdapter();
+        adapter.on(
+          'GET',
+          '/api/v1/user/reports/clinic-summary/shared/abc123',
+          (o) async =>
+              _jsonBody(_envelope(_summaryJson(findings: const ['发现一条']))),
+        );
 
-      final dto = await c.read(clinicSummarySharedProvider('abc123').future);
+        final c = await containerWithShared(adapter);
+        final dto = await c.read(clinicSummarySharedProvider('abc123').future);
 
-      expect(dto.dataRange, 'last_7_days');
-      expect(dto.findings, ['发现一条']);
-      verify(
-        () => reportsApi.reportsControllerGetSharedClinicSummaryV1(
-          token: 'abc123',
-        ),
-      ).called(1);
-    });
+        expect(dto.dataRange, 'last_7_days');
+        expect(dto.findings, ['发现一条']);
+        expect(dto.allergies, ['青霉素']);
+
+        // Public route: the request carries no Authorization header, exactly
+        // like the public shared PDF download.
+        final options = adapter.requests.single;
+        expect(
+          options.path,
+          '/api/v1/user/reports/clinic-summary/shared/abc123',
+        );
+        expect(options.extra['skipAuthorization'], isTrue);
+        expect(options.headers.containsKey('Authorization'), isFalse);
+      },
+    );
+
+    test(
+      'tolerates deselected sections omitted from the shared response',
+      () async {
+        // A share created with a partial field selection omits the deselected
+        // section keys — the provider must fill them instead of throwing.
+        final adapter = _ScriptedAdapter();
+        adapter.on(
+          'GET',
+          '/api/v1/user/reports/clinic-summary/shared/abc123',
+          (o) async => _jsonBody(
+            _envelope(
+              _summaryJson(sections: const ['conditions', 'currentMedicines']),
+            ),
+          ),
+        );
+
+        final c = await containerWithShared(adapter);
+        final dto = await c.read(clinicSummarySharedProvider('abc123').future);
+
+        expect(dto.selectedFields, ['conditions', 'currentMedicines']);
+        expect(dto.conditions, ['高血压']);
+        expect(dto.currentMedicines, ['阿莫西林']);
+        // Placeholder profile deserializes; the content widget never renders it
+        // because rendering is gated on the server-echoed selectedFields.
+        expect(dto.profile.nickname, '');
+        expect(dto.allergies, isEmpty);
+      },
+    );
 
     test('is per-token cached', () async {
-      when(
-        () => reportsApi.reportsControllerGetSharedClinicSummaryV1(
-          token: any(named: 'token'),
-        ),
-      ).thenAnswer(
-        (_) async => Response<ClinicSummaryDto>(
-          data: _dto(),
-          requestOptions: RequestOptions(path: '/shared'),
-          statusCode: 200,
-        ),
+      final adapter = _ScriptedAdapter();
+      adapter.on(
+        'GET',
+        '/api/v1/user/reports/clinic-summary/shared/a',
+        (o) async => _jsonBody(_envelope(_summaryJson())),
+      );
+      adapter.on(
+        'GET',
+        '/api/v1/user/reports/clinic-summary/shared/b',
+        (o) async => _jsonBody(_envelope(_summaryJson())),
       );
 
-      final c = ProviderContainer(
-        overrides: [lucentClientProvider.overrideWithValue(client)],
-      );
-      addTearDown(c.dispose);
-
+      final c = await containerWithShared(adapter);
       await c.read(clinicSummarySharedProvider('a').future);
       await c.read(clinicSummarySharedProvider('b').future);
 
-      verify(
-        () => reportsApi.reportsControllerGetSharedClinicSummaryV1(token: 'a'),
-      ).called(1);
-      verify(
-        () => reportsApi.reportsControllerGetSharedClinicSummaryV1(token: 'b'),
-      ).called(1);
+      expect(adapter.requests.map((r) => r.path), [
+        '/api/v1/user/reports/clinic-summary/shared/a',
+        '/api/v1/user/reports/clinic-summary/shared/b',
+      ]);
+    });
+
+    test('propagates API errors (expired / revoked / unknown token)', () async {
+      final adapter = _ScriptedAdapter();
+      adapter.on('GET', '/api/v1/user/reports/clinic-summary/shared/abc123', (
+        o,
+      ) async {
+        throw DioException(
+          requestOptions: o,
+          type: DioExceptionType.badResponse,
+          response: Response(
+            requestOptions: o,
+            statusCode: 404,
+            data: _envelope(null),
+          ),
+        );
+      });
+
+      final c = await containerWithShared(adapter);
+      // Keep the autoDispose provider alive while the error propagates.
+      final sub = c.listen<AsyncValue<ClinicSummaryDto>>(
+        clinicSummarySharedProvider('abc123'),
+        (_, __) {},
+      );
+      addTearDown(sub.close);
+
+      await expectLater(
+        c.read(clinicSummarySharedProvider('abc123').future),
+        // The error interceptor re-wraps the mapped LucentApiException
+        // inside a DioException, so the provider sees a DioException.
+        throwsA(isA<DioException>()),
+      );
     });
   });
 
