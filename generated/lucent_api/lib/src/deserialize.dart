@@ -24,9 +24,12 @@ import 'package:lucent_api/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_api/src/model/change_email_dto.dart';
 import 'package:lucent_api/src/model/change_password_dto.dart';
 import 'package:lucent_api/src/model/change_security_pin_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_list_data_dto.dart';
@@ -385,6 +388,12 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ChangeSecurityPinDto':
       return ChangeSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ClinicSummaryAllergyDto':
+      return ClinicSummaryAllergyDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryConditionDto':
+      return ClinicSummaryConditionDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ClinicSummaryCoverageDto':
       return ClinicSummaryCoverageDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
@@ -395,6 +404,9 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ClinicSummaryDto':
       return ClinicSummaryDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryMedicineDto':
+      return ClinicSummaryMedicineDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ClinicSummaryProfileDto':
       return ClinicSummaryProfileDto.fromJson(value as Map<String, dynamic>)

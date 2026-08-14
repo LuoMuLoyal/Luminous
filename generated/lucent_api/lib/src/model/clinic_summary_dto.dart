@@ -4,7 +4,10 @@
 
 // ignore_for_file: unused_element
 import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_allergy_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_condition_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_medicine_dto.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -34,13 +37,13 @@ class ClinicSummaryDto {
 
     required this.dataRange,
 
-    required this.profile,
+    this.profile,
 
-    required this.allergies,
+    this.allergies,
 
-    required this.conditions,
+    this.conditions,
 
-    required this.currentMedicines,
+    this.currentMedicines,
 
     this.findings,
 
@@ -74,21 +77,21 @@ class ClinicSummaryDto {
   @JsonKey(name: r'dataRange', required: true, includeIfNull: false)
   final String dataRange;
 
-  /// De-identified profile
-  @JsonKey(name: r'profile', required: true, includeIfNull: false)
-  final ClinicSummaryProfileDto profile;
+  /// De-identified profile. Optional: omitted when the section is deselected via selectedFields.
+  @JsonKey(name: r'profile', required: false, includeIfNull: false)
+  final ClinicSummaryProfileDto? profile;
 
-  /// Active allergies
-  @JsonKey(name: r'allergies', required: true, includeIfNull: false)
-  final List<String> allergies;
+  /// Active allergies. Optional: omitted when the section is deselected.
+  @JsonKey(name: r'allergies', required: false, includeIfNull: false)
+  final List<ClinicSummaryAllergyDto>? allergies;
 
-  /// Active conditions
-  @JsonKey(name: r'conditions', required: true, includeIfNull: false)
-  final List<String> conditions;
+  /// Active conditions. Optional: omitted when the section is deselected.
+  @JsonKey(name: r'conditions', required: false, includeIfNull: false)
+  final List<ClinicSummaryConditionDto>? conditions;
 
-  /// Current medicines
-  @JsonKey(name: r'currentMedicines', required: true, includeIfNull: false)
-  final List<String> currentMedicines;
+  /// Current medicines. Optional: omitted when the section is deselected.
+  @JsonKey(name: r'currentMedicines', required: false, includeIfNull: false)
+  final List<ClinicSummaryMedicineDto>? currentMedicines;
 
   /// Structured facts and change codes reused from the event review (e.g. health_event, observed_changes, no_completed_actions, active_check_in). `insufficient_coverage` is the fixed 资料不足 statement — no generic AI conclusions are ever added.
   @JsonKey(name: r'findings', required: false, includeIfNull: false)
