@@ -58,30 +58,34 @@ class ClinicSummaryContent extends StatelessWidget {
         const AppDivider(),
         const SizedBox(height: Spacing.level4),
 
-        // Profile section.
-        _SectionTitle(text: l10n.reportClinicSummaryProfileSection),
-        const SizedBox(height: Spacing.level2),
-        MetaRow(
-          label: l10n.reportClinicSummaryProfileNickname,
-          value: dto.profile.nickname,
-        ),
-        MetaRow(
-          label: l10n.reportClinicSummaryProfileAge,
-          value: dto.profile.age != null
-              ? dto.profile.age!.toInt().toString()
-              : l10n.reportClinicSummaryNotSet,
-        ),
-        MetaRow(
-          label: l10n.reportClinicSummaryProfileSex,
-          value: dto.profile.sexAtBirth ?? l10n.reportClinicSummaryNotSet,
-        ),
-        MetaRow(
-          label: l10n.reportClinicSummaryProfileBloodType,
-          value: dto.profile.bloodType ?? l10n.reportClinicSummaryNotSet,
-        ),
+        // Profile section — present only when the event_overview field is
+        // selected (the server omits deselected sections entirely).
+        if (_sectionSelected(dto.selectedFields, 'profile')) ...[
+          _SectionTitle(text: l10n.reportClinicSummaryProfileSection),
+          const SizedBox(height: Spacing.level2),
+          MetaRow(
+            label: l10n.reportClinicSummaryProfileNickname,
+            value: dto.profile.nickname,
+          ),
+          MetaRow(
+            label: l10n.reportClinicSummaryProfileAge,
+            value: dto.profile.age != null
+                ? dto.profile.age!.toInt().toString()
+                : l10n.reportClinicSummaryNotSet,
+          ),
+          MetaRow(
+            label: l10n.reportClinicSummaryProfileSex,
+            value: dto.profile.sexAtBirth ?? l10n.reportClinicSummaryNotSet,
+          ),
+          MetaRow(
+            label: l10n.reportClinicSummaryProfileBloodType,
+            value: dto.profile.bloodType ?? l10n.reportClinicSummaryNotSet,
+          ),
+        ],
 
         // Allergies.
-        if (dto.allergies.isNotEmpty) ...[
+        if (_sectionSelected(dto.selectedFields, 'allergies') &&
+            dto.allergies.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -91,7 +95,8 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Conditions.
-        if (dto.conditions.isNotEmpty) ...[
+        if (_sectionSelected(dto.selectedFields, 'conditions') &&
+            dto.conditions.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -101,7 +106,8 @@ class ClinicSummaryContent extends StatelessWidget {
         ],
 
         // Current medicines.
-        if (dto.currentMedicines.isNotEmpty) ...[
+        if (_sectionSelected(dto.selectedFields, 'currentMedicines') &&
+            dto.currentMedicines.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),
@@ -185,6 +191,14 @@ class ClinicSummaryContent extends StatelessWidget {
       'last_30_days' => l10n.reportRangeLast30Days,
       _ => dataRange,
     };
+  }
+
+  /// Whether [sectionKey] is included in the server-provided effective
+  /// section list. An empty list means the legacy "everything included"
+  /// semantics (the server echoes all four section keys when no selection is
+  /// given), so empty `selectedFields` keeps every section visible.
+  bool _sectionSelected(List<String> selectedFields, String sectionKey) {
+    return selectedFields.isEmpty || selectedFields.contains(sectionKey);
   }
 }
 

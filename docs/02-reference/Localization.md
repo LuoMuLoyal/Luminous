@@ -294,3 +294,10 @@ flutter test
   就诊摘要入口副标题用「就诊时按需使用 / Use as needed during your visit」。分享仍为用户显式
   动作，后端 API 与数据流不变。
 - Legacy 兼容页（`/report/legacy`）沿用 `tabReport` 与旧 `reportExport*` 文案，保持 Report 口径。
+
+## 2026-08-14 Task 8 字段级隐私与分享管理
+
+- Added `reportClinicSummaryField*` keys to `lib/l10n/src/report_zh.arb` / `report_en.arb`：字段选择面板标题「包含的内容 / Include」、六个字段（事件概况/症状变化/用药槽位/饮水/睡眠/备注）与隐私提示「仅所选内容会出现在预览、PDF 与分享链接中 / Only selected content appears in the preview, PDF and shared link.」。
+- Added `reportShare*` keys：创建前确认（标题、`reportShareConfirmExpiryHint(days)` 占位 int「链接自创建起 {days} 天内有效 / The link is valid for {days} days from creation」、链接持有者可查看提示）、创建后（已创建标题、到期时间、复制链接、链接已复制 toast、撤销分享）、撤销后（已撤销标题与失效说明）、失败文案、分享管理面板（标题、空态、加载失败、创建时间/到期时间/`reportShareAccessCount(count)` 占位 int/最近访问/暂无访问/已撤销徽章）。
+- Added `reportMoreShareManagement*` keys：More sheet 第五入口「分享管理 / Share management」标题与副标题。
+- 所有权在 report 分片；经 `dart scripts/arb_tools.dart merge` + `flutter gen-l10n` 合并进 `app_*.arb`（生成文件为 gitignore 产物）。

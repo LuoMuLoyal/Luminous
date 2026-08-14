@@ -34,6 +34,7 @@ ClinicSummaryDto _dto({
   List<String> medicines = const ['阿莫西林'],
   List<String>? findings = const ['长期服用需监测'],
   String dataRange = 'last_7_days',
+  List<String> selectedFields = const [],
   int? age = 30,
   String? sexAtBirth = 'male',
   String? bloodType = 'A',
@@ -43,7 +44,7 @@ ClinicSummaryDto _dto({
     scopeLabel: dataRange,
     start: '2026-06-24T00:00:00',
     end: '2026-07-01T00:00:00',
-    selectedFields: const [],
+    selectedFields: selectedFields,
     coverage: _coverage(),
     dataRange: dataRange,
     profile: ClinicSummaryProfileDto(
@@ -152,6 +153,87 @@ void main() {
     expect(find.text(l10n_.reportClinicSummaryProfileSection), findsOneWidget);
     expect(
       find.text(l10n_.reportClinicSummaryDisclaimerSection),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets(
+    'renders only the sections listed in selectedFields (deselected fields '
+    'are absent even when data exists)',
+    (tester) async {
+      // symptom_changes (conditions) and notes unselected: conditions are
+      // populated but the server excluded the section, so it must not render.
+      await pumpContent(
+        tester,
+        _dto(selectedFields: const ['profile', 'currentMedicines']),
+      );
+
+      final l10n_ = l10n(tester);
+      expect(
+        find.text(l10n_.reportClinicSummaryProfileSection),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n_.reportClinicSummaryConditionsSection),
+        findsNothing,
+      );
+      expect(find.text('高血压'), findsNothing);
+      // allergies is not in the effective section list either.
+      expect(
+        find.text(l10n_.reportClinicSummaryAllergiesSection),
+        findsNothing,
+      );
+      expect(
+        find.text(l10n_.reportClinicSummaryMedicinesSection),
+        findsOneWidget,
+      );
+      expect(find.text('阿莫西林'), findsOneWidget);
+      // findings + disclaimer are metadata and stay.
+      expect(
+        find.text(l10n_.reportClinicSummaryFindingsSection),
+        findsOneWidget,
+      );
+      expect(
+        find.text(l10n_.reportClinicSummaryDisclaimerSection),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('hides the profile section when event_overview is unselected', (
+    tester,
+  ) async {
+    await pumpContent(
+      tester,
+      _dto(selectedFields: const ['conditions', 'currentMedicines']),
+    );
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryProfileSection), findsNothing);
+    expect(find.text('Lumi'), findsNothing);
+    expect(
+      find.text(l10n_.reportClinicSummaryConditionsSection),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('empty selectedFields keeps every section (legacy semantics)', (
+    tester,
+  ) async {
+    await pumpContent(tester, _dto(selectedFields: const []));
+
+    final l10n_ = l10n(tester);
+    expect(find.text(l10n_.reportClinicSummaryProfileSection), findsOneWidget);
+    expect(
+      find.text(l10n_.reportClinicSummaryAllergiesSection),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n_.reportClinicSummaryConditionsSection),
+      findsOneWidget,
+    );
+    expect(
+      find.text(l10n_.reportClinicSummaryMedicinesSection),
       findsOneWidget,
     );
   });

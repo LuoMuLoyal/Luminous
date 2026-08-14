@@ -20,18 +20,24 @@ final FThemeData _foruiDark = appThemeData(
 /// A lightweight test app that wraps [child] with the same Forui theme
 /// bootstrap used by [LuminousApp].
 ///
-/// Use this for widget tests that do not need a [GoRouter].
+/// Use this for widget tests that do not need a [GoRouter]. Set
+/// [showToaster] when the widget under test shows toasts (e.g. from a dialog
+/// or bottom sheet): the toaster is then placed in the MaterialApp builder
+/// (above the Navigator, mirroring production), and the test is responsible
+/// for draining toast timers before it ends.
 class TestForuiApp extends StatelessWidget {
   const TestForuiApp({
     super.key,
     this.themeMode = ThemeMode.light,
     this.locale = const Locale('zh'),
     this.home,
+    this.showToaster = false,
   });
 
   final ThemeMode themeMode;
   final Locale locale;
   final Widget? home;
+  final bool showToaster;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +51,9 @@ class TestForuiApp extends StatelessWidget {
         data: Theme.of(context).brightness == Brightness.dark
             ? _foruiDark
             : _foruiLight,
-        child: child ?? const SizedBox.shrink(),
+        child: showToaster
+            ? FToaster(child: child ?? const SizedBox.shrink())
+            : child ?? const SizedBox.shrink(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         AppLocalizations.delegate,

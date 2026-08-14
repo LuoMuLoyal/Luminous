@@ -204,6 +204,54 @@
   "reportClinicSummaryLoading": "Generating clinic summary…",
   "reportClinicSummaryLoadFailed": "Failed to load clinic summary, please try again later",
   "reportClinicSummarySharedNetworkError": "Network connection failed, please check your network and try again",
+  "reportClinicSummaryFieldSectionTitle": "Include",
+  "reportClinicSummaryFieldEventOverview": "Event overview",
+  "reportClinicSummaryFieldSymptomChanges": "Symptom changes",
+  "reportClinicSummaryFieldMedicationSlots": "Medication slots",
+  "reportClinicSummaryFieldWater": "Water",
+  "reportClinicSummaryFieldSleep": "Sleep",
+  "reportClinicSummaryFieldNotes": "Notes",
+  "reportClinicSummaryFieldPrivacyHint": "Only selected content appears in the preview, PDF and shared link.",
+  "reportShareConfirmTitle": "Create share link",
+  "reportShareConfirmExpiryHint": "The link is valid for {days} days from creation",
+  "@reportShareConfirmExpiryHint": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportShareConfirmNotice": "Anyone with the link can view the selected content.",
+  "reportShareConfirmAction": "Create share",
+  "reportShareCreatedTitle": "Share link created",
+  "reportShareCreatedExpiresAt": "Expires at",
+  "reportShareCopyAction": "Copy link",
+  "reportShareCopiedToast": "Link copied",
+  "reportShareRevokeAction": "Revoke share",
+  "reportShareRevokedTitle": "Share revoked",
+  "reportShareRevokedBody": "The link no longer works and cannot be opened.",
+  "reportShareCreateFailed": "Failed to create the share, please try again later",
+  "reportShareRevokeFailed": "Failed to revoke the share, please try again later",
+  "reportShareManagementTitle": "Share management",
+  "reportShareManagementEmpty": "No shares yet",
+  "reportShareManagementEmptyHint": "Links created from the visit summary appear here.",
+  "reportShareManagementLoadFailed": "Failed to load shares, please try again later",
+  "reportShareCreatedAt": "Created at",
+  "reportShareExpiresAt": "Expires at",
+  "reportShareAccessCount": "{count} views",
+  "@reportShareAccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportShareAccessCountLabel": "Views",
+  "reportShareLastAccessed": "Last accessed",
+  "reportShareLastAccessedNever": "Not accessed yet",
+  "reportShareRevokedBadge": "Revoked",
+  "reportMoreShareManagementTitle": "Share management",
+  "reportMoreShareManagementSubtitle": "View and revoke shared links",
   "reportTrendEmptyTitle": "No trend data yet",
   "reportTrendEmptyBody": "Record water, medication, or sleep on at least 2 days to see your health trends.",
   "reportExportFailedWithReason": "Export failed: {reason}",

@@ -138,3 +138,7 @@ operations.
   `dart run scripts/bootstrap_generated_sources.dart`.
 - The `dart-dio` generator still produces Markdown doc stubs and package test stubs; these are
   tracked by the project baseline and regenerated alongside the rest of the package.
+
+## 2026-08-14 Clinic summary preview/share 信封绕行
+
+- `POST /user/reports/clinic-summary/preview` 与 `/share` 的服务端响应是 `{code, message, data}` 信封，而生成的 `ReportsApi` 把 body 直接当裸 `ClinicSummaryDto` / `ClinicSummaryShareResponseDto` 反序列化（会抛 `CheckedFromJsonException`）；且字段选择下未选中的 section 键会被服务端省略，生成的 DTO 却标记必填。这两个端点因此不走生成客户端，改由 `LucentApiPaths.clinicSummaryPreview` / `clinicSummaryShare` + 原始 Dio 调用：解信封、补齐缺失 section 空默认值后再 `fromJson`。预览 PDF（POST 带 body）由 `downloadAndSharePdf` 的 `postBody` 参数承载字段选择。

@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-13
+updated: 2026-08-14
 ---
 
 # Active UI — Report
 
-Last updated: 2026-08-13 (Review Task 10 收口：全量验证 + 文档定稿)
+Last updated: 2026-08-14 (Workstream 2 Task 8：就诊摘要字段级隐私选择与分享管理)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -34,7 +34,9 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 ## Review More 入口（Task 8，导出与就诊摘要已迁入）
 
 - `/report` 顶栏右上角新增「更多」按钮（`_ReviewTopBar` 的 `review-more-action`，tooltip 更多），打开 `showReportMoreActionsSheet`（`presentation/widgets/sheets/more_actions.dart`）：四项入口——就诊摘要（走 `handleReportExportAction` 的 clinicShare 分支打开诊所摘要预览弹窗）、PDF（月度 PDF 导出）、打印/下载（打印 PDF 导出）、历史报告（push `/report/legacy` legacy 兼容页）；移动端 bottom sheet、桌面端 dialog，入口点击先关 sheet 再触发流程。
-- 导出/分享行为与旧 dashboard 装配一致（共享 `presentation/utils/export_actions.dart` 的 `handleReportExportAction`）：登录门槛 → clinicShare 预览 → security elevation（PIN 验证）→ dataExport POST → 下载链接/状态 toast；不改变任何后端 API 调用与数据流。字段级隐私与访问测量留待后续计划。
+- 导出/分享行为与旧 dashboard 装配一致（共享 `presentation/utils/export_actions.dart` 的 `handleReportExportAction`）：登录门槛 → clinicShare 预览 → security elevation（PIN 验证）→ dataExport POST → 下载链接/状态 toast；不改变任何后端 API 调用与数据流。
+- Task 8（Visit Summary and Product Measurement）起 More 为五入口：就诊摘要 / 分享管理 / PDF 报告 / 打印下载 / 历史报告。分享管理（`showShareManagementSheet`）列出当前用户的分享记录（创建时间/到期时间/访问次数/最近访问/已撤销态）并提供撤销，不展示任何访问者身份信息。
+- 就诊摘要预览弹窗（Task 8 字段级隐私）：六项字段选择（事件概况/症状变化/用药槽位/饮水/睡眠/备注），默认不选自由文本备注；未选字段不出现在 preview 请求、PDF 与分享中（服务端同一过滤视图）；分享创建前显示 7 天有效期与「链接持有者可查看」，创建后可复制链接或撤销，不暗示医生已收到。preview 与 share-create 因生成客户端与信封/缺省 section 不兼容而走原始 Dio 解信封（见 `docs/02-reference/OpenApi_Client.md`）。
 - 文案口径：就诊摘要入口「就诊时按需使用 / Use as needed during your visit」，不暗示医生一定查看；分享按钮文案由「分享给医生/Share with doctor」改为「分享摘要/Share summary」（分享仍是用户显式动作，API 行为不变）。
 - 主路径回归（测试锁定）：首屏不渲染四张导出卡与 `ReportExportSection`，顶栏无 7/30 切换（`test/report/widgets/more_actions_test.dart` 10 个用例 + `test/report/page_test.dart` 既有断言）。
 - Legacy 兼容页 `LegacyDashboardCompatPage`（`presentation/pages/legacy_dashboard_compat.dart`，路由 `/report/legacy`，slide 进入、含返回按钮）：按 d8c9c5f5e 旧装配重建移动端 dashboard（readiness 首卡 + 趋势/发现/建议历史 + AI 总结/规律 + 四张导出卡 + 7/30 天切换 + 下拉刷新），沿用 `/report` 的公开预览语义（未登录显示 preview + 登录引导）；取舍：不复刻旧桌面端双栏外壳，桌面宽度渲染同一移动端布局。旧 dashboard 文件保留原样未删除。
@@ -128,6 +130,12 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - Mine/Settings 使用同一真实数据导出请求流；隐私设置由 Mine/Settings 持有。
 
 ## Clinic Summary（后端隐私保护医疗摘要）
+
+> Task 8（Workstream 2）起：预览弹窗支持六项字段级隐私选择（默认不含自由文本备注），
+> 未选字段在 preview/PDF/share 中均不存在；分享改为持久化可撤销记录（7 天有效），
+> 创建前显示有效期与「链接持有者可查看」，创建后可复制链接或撤销；More sheet 新增
+> 「分享管理」面板（创建/到期/访问次数/最近访问/已撤销态）。以下段落描述的是旧
+> Redis 24h TTL 分享链路，保留作历史说明。
 
 用于医生分享的后端侧脱敏摘要：
 

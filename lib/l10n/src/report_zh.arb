@@ -211,6 +211,54 @@
   "reportClinicSummaryLoading": "正在生成诊所摘要…",
   "reportClinicSummaryLoadFailed": "诊所摘要加载失败，请稍后重试",
   "reportClinicSummarySharedNetworkError": "网络连接失败，请检查网络后重试",
+  "reportClinicSummaryFieldSectionTitle": "包含的内容",
+  "reportClinicSummaryFieldEventOverview": "事件概况",
+  "reportClinicSummaryFieldSymptomChanges": "症状变化",
+  "reportClinicSummaryFieldMedicationSlots": "用药槽位",
+  "reportClinicSummaryFieldWater": "饮水",
+  "reportClinicSummaryFieldSleep": "睡眠",
+  "reportClinicSummaryFieldNotes": "备注",
+  "reportClinicSummaryFieldPrivacyHint": "仅所选内容会出现在预览、PDF 与分享链接中。",
+  "reportShareConfirmTitle": "创建分享链接",
+  "reportShareConfirmExpiryHint": "链接自创建起 {days} 天内有效",
+  "@reportShareConfirmExpiryHint": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reportShareConfirmNotice": "链接持有者可查看：任何获得此链接的人都能打开并看到所选内容。",
+  "reportShareConfirmAction": "创建分享",
+  "reportShareCreatedTitle": "分享链接已创建",
+  "reportShareCreatedExpiresAt": "到期时间",
+  "reportShareCopyAction": "复制链接",
+  "reportShareCopiedToast": "链接已复制",
+  "reportShareRevokeAction": "撤销分享",
+  "reportShareRevokedTitle": "分享已撤销",
+  "reportShareRevokedBody": "链接已失效，持有者无法再访问。",
+  "reportShareCreateFailed": "分享创建失败，请稍后重试",
+  "reportShareRevokeFailed": "撤销失败，请稍后重试",
+  "reportShareManagementTitle": "分享管理",
+  "reportShareManagementEmpty": "还没有分享记录",
+  "reportShareManagementEmptyHint": "在就诊摘要里创建的分享链接会显示在这里。",
+  "reportShareManagementLoadFailed": "分享记录加载失败，请稍后重试",
+  "reportShareCreatedAt": "创建时间",
+  "reportShareExpiresAt": "到期时间",
+  "reportShareAccessCount": "访问 {count} 次",
+  "@reportShareAccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportShareAccessCountLabel": "访问次数",
+  "reportShareLastAccessed": "最近访问",
+  "reportShareLastAccessedNever": "暂无访问",
+  "reportShareRevokedBadge": "已撤销",
+  "reportMoreShareManagementTitle": "分享管理",
+  "reportMoreShareManagementSubtitle": "查看和撤销分享链接",
   "reportTrendEmptyTitle": "暂无趋势数据",
   "reportTrendEmptyBody": "连续 2 天记录饮水、用药或睡眠后，这里会显示健康趋势变化。",
   "reportExportFailedWithReason": "导出失败：{reason}",

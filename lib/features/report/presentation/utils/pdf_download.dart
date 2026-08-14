@@ -21,7 +21,10 @@ enum PdfDownloadResult {
 ///
 /// Encapsulates the common logic shared between the authenticated clinic
 /// summary preview dialog and the public shared clinic summary page:
-///   1. GET the PDF as raw bytes (`ResponseType.bytes`).
+///   1. Fetch the PDF as raw bytes (`ResponseType.bytes`) — GET when
+///      [postBody] is null, otherwise POST with [postBody] as the JSON body
+///      (the clinic summary preview PDF carries the request scope + field
+///      selection in the body).
 ///   2. Return [PdfDownloadResult.empty] if the body is empty.
 ///   3. Write the bytes to a temp file named `{fileNamePrefix}-{timestamp}.pdf`.
 ///   4. Present `SharePlus.instance.share` with [shareSubject].
@@ -37,16 +40,17 @@ Future<PdfDownloadResult> downloadAndSharePdf({
   required String path,
   required String fileNamePrefix,
   required String shareSubject,
+  Map<String, dynamic>? postBody,
   bool skipAuth = false,
 }) async {
   try {
-    final response = await dio.get<List<int>>(
-      path,
-      options: Options(
-        responseType: ResponseType.bytes,
-        extra: skipAuth ? const {'skipAuthorization': true} : null,
-      ),
+    final options = Options(
+      responseType: ResponseType.bytes,
+      extra: skipAuth ? const {'skipAuthorization': true} : null,
     );
+    final response = postBody == null
+        ? await dio.get<List<int>>(path, options: options)
+        : await dio.post<List<int>>(path, data: postBody, options: options);
     final bytes = response.data ?? <int>[];
     if (bytes.isEmpty) {
       return PdfDownloadResult.empty;
