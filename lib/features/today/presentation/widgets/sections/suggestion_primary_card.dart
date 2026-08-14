@@ -242,7 +242,7 @@ class _SuggestionImpressionTrackerState
   void _attachAndCheck() {
     if (!mounted) return;
     _position?.removeListener(_onScroll);
-    _position = Scrollable.of(context).position;
+    _position = Scrollable.maybeOf(context)?.position;
     _position?.addListener(_onScroll);
     _checkVisibility();
   }

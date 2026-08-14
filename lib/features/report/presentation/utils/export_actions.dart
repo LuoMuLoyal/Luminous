@@ -61,12 +61,24 @@ Future<void> handleReportExportAction(
   switch (result) {
     case Success(:final value):
       // visit_summary_exported 只在服务端成功响应后记录（More sheet 的
-      // PDF/打印导出与 legacy 导出卡同走此路径）；失败分支记录 failure，
-      // 不得计为 exported。
+      // PDF/打印导出与 legacy 导出卡同走此路径）；HTTP 成功但请求本身处于
+      // 失败/闲置状态（_handleExportResult 对它们显示失败 toast）时记录
+      // failure，不得计为 exported。requested/processing 表示服务端已受理
+      // 导出（异步产物），与 completed 一样按 success 记录。
+      final uiStatus = dataExportUiStatusForRequest(value);
+      final exported = switch (uiStatus) {
+        DataExportUiStatus.idle ||
+        DataExportUiStatus.failed ||
+        DataExportUiStatus.unavailable => ProductEventResult.failure,
+        DataExportUiStatus.requested ||
+        DataExportUiStatus.processing ||
+        DataExportUiStatus.completed ||
+        DataExportUiStatus.completedLinkMissing => ProductEventResult.success,
+      };
       unawaited(
         ref
             .read(productEventServiceProvider)
-            .trackVisitSummaryExported(ProductEventResult.success),
+            .trackVisitSummaryExported(exported),
       );
       if (!context.mounted) return;
       await _handleExportResult(

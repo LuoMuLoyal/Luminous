@@ -611,6 +611,77 @@ void main() {
     expect(service.reviewOpenedCalls, 1);
   });
 
+  testWidgets(
+    'inactive-tab transitions do not consume the session review_opened',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final service = _RecordingProductEventService();
+      final repo = _FakeReviewRepository(
+        current: reviewActive(),
+        page: const ReviewEventPage(items: [], total: 0),
+      );
+      final activeTab = ValueNotifier<bool>(false);
+      addTearDown(activeTab.dispose);
+
+      // The ReportPage sits in a hidden shell branch (TickerMode disabled)
+      // while the review data loads.
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(_SignedInAuthSessionNotifier.new),
+            reviewRepositoryProvider.overrideWithValue(repo),
+            healthContextSnapshotProvider.overrideWith(
+              (ref) async => _healthContextSnapshot,
+            ),
+            dailyRecordListForDateProvider.overrideWith(
+              (ref, date) async =>
+                  const DailyRecordListData(items: [], total: 0),
+            ),
+            productEventServiceProvider.overrideWithValue(service),
+          ],
+          child: ValueListenableBuilder<bool>(
+            valueListenable: activeTab,
+            builder: (context, isActive, _) => TickerMode(
+              enabled: isActive,
+              child: const TestForuiApp(home: ReportPage()),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // While the tab is hidden the page never presents the data (the watch
+      // subscription is paused) — nothing may consume the once-per-session
+      // review_opened.
+      expect(find.byType(ReportSkeletonView), findsOneWidget);
+      expect(service.reviewOpenedCalls, 0);
+
+      // Tab becomes visible: the buffered data presentation is delivered and
+      // the first visible build records review_opened.
+      activeTab.value = true;
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('review-event-header')), findsOneWidget);
+      expect(service.reviewOpenedCalls, 1);
+
+      // A user-visible refresh presents a new data instance — re-reported,
+      // and the service still dedupes to one event per session.
+      await tester.drag(find.byType(ListView).first, const Offset(0, 300));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      expect(repo.currentCalls, 2);
+      expect(service.reviewOpenedCalls, greaterThanOrEqualTo(2));
+    },
+  );
+
   testWidgets('does not record review_opened when the review fails', (
     tester,
   ) async {

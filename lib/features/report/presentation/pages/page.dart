@@ -235,15 +235,6 @@ class ReportPage extends ConsumerWidget {
     final canAccessProtectedData = session.canAccessProtectedData;
     final isPreview = session.isConfirmedSignedOut;
 
-    // review_opened 在回顾数据「实际呈现」时记录：监听 provider 进入
-    // AsyncData 的状态过渡（含确认无事件 / 登出），而不是在导航点击时记录。
-    // 重复呈现（刷新、切 tab）由 service 按 session 去重，build 不重复计数。
-    ref.listen<AsyncValue<EventReview?>>(reviewCurrentProvider, (_, next) {
-      if (next.asData == null) return;
-      if (!ref.read(authSessionProvider).canAccessProtectedData) return;
-      unawaited(ref.read(productEventServiceProvider).trackReviewOpened());
-    });
-
     final currentAsync = ref.watch(reviewCurrentProvider);
     final cachedReview = ref.watch(reviewLastCurrentProvider);
     final historyAsync = ref.watch(reviewHistoryProvider);
@@ -251,57 +242,104 @@ class ReportPage extends ConsumerWidget {
     final review = currentAsync.asData?.value ?? cachedReview;
 
     return ShellDeferredContent(
-      child: _ReportMobileShell(
-        onRefresh: () => _refresh(ref),
-        header: _ReviewTopBar(
-          onMore: () => unawaited(
-            showReportMoreActionsSheet(
-              context,
-              // 就诊摘要走共享导出处理的 clinicShare 分支（含登录守卫），
-              // 与 PDF/打印保持一致，不另设副本。
-              onVisitSummary: () => handleReportExportAction(
+      child: _ReviewOpenedTracker(
+        child: _ReportMobileShell(
+          onRefresh: () => _refresh(ref),
+          header: _ReviewTopBar(
+            onMore: () => unawaited(
+              showReportMoreActionsSheet(
                 context,
-                ref,
-                ReportExportKind.clinicShare,
+                // 就诊摘要走共享导出处理的 clinicShare 分支（含登录守卫），
+                // 与 PDF/打印保持一致，不另设副本。
+                onVisitSummary: () => handleReportExportAction(
+                  context,
+                  ref,
+                  ReportExportKind.clinicShare,
+                ),
+                onPdf: () => handleReportExportAction(
+                  context,
+                  ref,
+                  ReportExportKind.monthly,
+                ),
+                onPrint: () => handleReportExportAction(
+                  context,
+                  ref,
+                  ReportExportKind.print,
+                ),
+                onLegacyReport: () async {
+                  await context.push(Routes.reportLegacyDashboard);
+                },
               ),
-              onPdf: () => handleReportExportAction(
-                context,
-                ref,
-                ReportExportKind.monthly,
-              ),
-              onPrint: () => handleReportExportAction(
-                context,
-                ref,
-                ReportExportKind.print,
-              ),
-              onLegacyReport: () async {
-                await context.push(Routes.reportLegacyDashboard);
-              },
             ),
           ),
-        ),
-        child: ReviewView(
-          currentAsync: currentAsync,
-          cachedReview: cachedReview,
-          historyAsync: historyAsync,
-          historyStatus: historyStatus,
-          onHistoryStatusChanged: (status) =>
-              ref.read(reviewHistoryStatusProvider.notifier).select(status),
-          canAccessProtectedData: canAccessProtectedData,
-          isPreview: isPreview,
-          onRetry: () => ref.invalidate(reviewCurrentProvider),
-          onStartObservation: () => _openStart(context, ref),
-          onCheckIn: review == null
-              ? () {}
-              : () => _openCheckIn(context, ref, review),
-          onEndEvent: review == null
-              ? () {}
-              : () => _openEnd(context, ref, review),
-          onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
-          onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
+          child: ReviewView(
+            currentAsync: currentAsync,
+            cachedReview: cachedReview,
+            historyAsync: historyAsync,
+            historyStatus: historyStatus,
+            onHistoryStatusChanged: (status) =>
+                ref.read(reviewHistoryStatusProvider.notifier).select(status),
+            canAccessProtectedData: canAccessProtectedData,
+            isPreview: isPreview,
+            onRetry: () => ref.invalidate(reviewCurrentProvider),
+            onStartObservation: () => _openStart(context, ref),
+            onCheckIn: review == null
+                ? () {}
+                : () => _openCheckIn(context, ref, review),
+            onEndEvent: review == null
+                ? () {}
+                : () => _openEnd(context, ref, review),
+            onSignIn: () => context.push(loginRouteForCurrentLocation(context)),
+            onHistoryRetry: () => ref.invalidate(reviewHistoryProvider),
+          ),
         ),
       ),
     );
+  }
+}
+
+/// Records `review_opened` when the review data is actually presented to the
+/// user — not on navigation taps, and never while the page is hidden.
+///
+/// Mechanism: the widget watches [reviewCurrentProvider]; flutter_riverpod
+/// pauses widget subscriptions while the subtree is ticker-muted (inactive
+/// shell branch), so this build only runs while the page is presented.
+/// Each distinct [AsyncValue] instance (one per fetch completion, including
+/// the confirmed no-event state) records at most once here — rebuilds with
+/// the same instance (theme / history-filter rebuilds) do not re-emit — and
+/// [ProductEventService.trackReviewOpened] further dedupes per session.
+/// A fetch completing while the tab is hidden is buffered by the paused
+/// subscription and delivered on the first visible build, so the user-visible
+/// presentation still records.
+class _ReviewOpenedTracker extends ConsumerStatefulWidget {
+  const _ReviewOpenedTracker({required this.child});
+
+  final Widget child;
+
+  @override
+  ConsumerState<_ReviewOpenedTracker> createState() =>
+      _ReviewOpenedTrackerState();
+}
+
+class _ReviewOpenedTrackerState extends ConsumerState<_ReviewOpenedTracker> {
+  /// The last [AsyncValue] instance already reported — identity comparison
+  /// prevents rebuild re-emission.
+  AsyncValue<EventReview?>? _lastPresented;
+
+  @override
+  Widget build(BuildContext context) {
+    final current = ref.watch(reviewCurrentProvider);
+    // Muted tickers mean this subtree is not presented (hidden shell branch).
+    // Riverpod already pauses the watch subscription there, but the explicit
+    // check keeps offstage edge cases safe. Signed-out previews are excluded.
+    if (TickerMode.valuesOf(context).enabled &&
+        current.asData != null &&
+        !identical(current, _lastPresented) &&
+        ref.read(authSessionProvider).canAccessProtectedData) {
+      _lastPresented = current;
+      unawaited(ref.read(productEventServiceProvider).trackReviewOpened());
+    }
+    return widget.child;
   }
 }
 

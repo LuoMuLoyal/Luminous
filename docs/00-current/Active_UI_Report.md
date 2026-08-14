@@ -230,4 +230,4 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 - Review 页在回顾数据实际呈现（AsyncData 过渡、登录态）时上报 `review_opened`（surface=review），session 去重。
 - 就诊摘要预览弹窗：preview 在服务端响应边界上报 `visit_summary_previewed`（surface=more），每次呈现一条；PDF 下载按结果上报 `visit_summary_exported`，失败计 failure 不计 exported。分享由服务端 share_created/opened/revoked 记录，客户端不上报。
-- More sheet 的 PDF/打印导出在 `handleReportExportAction` 的 Success/Failure 边界上报 `visit_summary_exported`（surface=more）。
+- More sheet 的 PDF/打印导出在 `handleReportExportAction` 上报 `visit_summary_exported`（surface=more）：HTTP 成功但请求状态为 idle/failed/unavailable 时记 failure，requested/processing/completed 才记 success。

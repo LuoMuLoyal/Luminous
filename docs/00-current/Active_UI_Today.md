@@ -163,3 +163,4 @@ Last updated: 2026-08-01
 ## 2026-08-14 建议卡曝光测量
 
 - 主建议卡进入可见区域时上报 `suggestion_impression`（surface=today，suggestionRuleCode=卡片 ruleId），按 session + 规则码去重；视口外/非活动 tab 不上报，build/rebuild 不重复计数。实现位于 `suggestion_primary_card.dart` 的 `_SuggestionImpressionTracker`。
+- 复审微调：曝光检测的滚动挂载改用 `Scrollable.maybeOf` 防御式取值（无行为变化）。
