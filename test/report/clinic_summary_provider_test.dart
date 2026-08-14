@@ -356,6 +356,44 @@ void main() {
       expect(dto.profile.nickname, 'Lumi');
     });
 
+    test(
+      'handles event_overview deselected (profile omitted) without throwing',
+      () async {
+        final adapter = _ScriptedAdapter();
+        // event_overview (profile) deselected: the server omits the profile
+        // key entirely, so the provider must fill a placeholder that
+        // satisfies the generated DTO's required keys (nickname +
+        // sexAtBirth).
+        adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
+          o,
+        ) async {
+          return _jsonBody(
+            _envelope(
+              _summaryJson(sections: const ['conditions', 'currentMedicines']),
+            ),
+          );
+        });
+        final dioClient = LucentDioClient(
+          baseUrl: 'http://localhost',
+          sessionStore: _MemSessionStore(),
+          httpClientAdapter: adapter,
+        );
+        addTearDown(dioClient.dispose);
+
+        final c = makeContainer(dioClient: dioClient);
+        final dto = await c.read(
+          clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
+        );
+
+        expect(dto.selectedFields, ['conditions', 'currentMedicines']);
+        expect(dto.conditions, ['高血压']);
+        expect(dto.currentMedicines, ['阿莫西林']);
+        // Placeholder profile deserializes; it is never rendered because the
+        // content widget gates the profile section on selectedFields.
+        expect(dto.profile.nickname, '');
+      },
+    );
+
     test('propagates API errors', () async {
       final adapter = _ScriptedAdapter();
       adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (

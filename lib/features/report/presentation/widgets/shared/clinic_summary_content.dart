@@ -83,9 +83,10 @@ class ClinicSummaryContent extends StatelessWidget {
           ),
         ],
 
-        // Allergies.
-        if (_sectionSelected(dto.selectedFields, 'allergies') &&
-            dto.allergies.isNotEmpty) ...[
+        // Allergies — not one of the six selectable fields, so it behaves
+        // like findings/coverage metadata: always rendered when present,
+        // regardless of the field selection.
+        if (dto.allergies.isNotEmpty) ...[
           const SizedBox(height: Spacing.level4),
           const AppDivider(),
           const SizedBox(height: Spacing.level4),

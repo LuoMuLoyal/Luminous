@@ -178,11 +178,14 @@ void main() {
         findsNothing,
       );
       expect(find.text('高血压'), findsNothing);
-      // allergies is not in the effective section list either.
+      // Allergies are not a selectable share field — rendered as metadata
+      // even when selectedFields does not include them (the server always
+      // includes the section; the widget renders it whenever present).
       expect(
         find.text(l10n_.reportClinicSummaryAllergiesSection),
-        findsNothing,
+        findsOneWidget,
       );
+      expect(find.text('青霉素'), findsOneWidget);
       expect(
         find.text(l10n_.reportClinicSummaryMedicinesSection),
         findsOneWidget,

@@ -74,7 +74,13 @@ Future<ClinicSummaryDto> _fetchPreview(
 /// server-provided `selectedFields`, so the placeholders never render.
 Map<String, dynamic> _fillMissingSections(Map<String, dynamic> data) {
   final map = Map<String, dynamic>.from(data);
-  map.putIfAbsent('profile', () => const <String, dynamic>{'nickname': ''});
+  // The generated ClinicSummaryProfileDto requires both nickname and
+  // sexAtBirth — the placeholder must satisfy both, otherwise deselecting
+  // event_overview throws CheckedFromJsonException.
+  map.putIfAbsent(
+    'profile',
+    () => const <String, dynamic>{'nickname': '', 'sexAtBirth': ''},
+  );
   map.putIfAbsent('allergies', () => const <String>[]);
   map.putIfAbsent('conditions', () => const <String>[]);
   map.putIfAbsent('currentMedicines', () => const <String>[]);
