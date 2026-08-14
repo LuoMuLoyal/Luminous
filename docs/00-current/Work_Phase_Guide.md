@@ -92,11 +92,9 @@ dart run scripts/run_fullstack_checks.dart
 - **P1 体验缺口**：空态体系（横幅 CTA + 时间线空态）、危险操作确认链（6 处二次确认）、表单必填校验。
 - **P2 一致性打磨**：错误文案 mapper、日期格式收敛、剩余硬编码文案消除、触控目标与语义补齐、PIN 二次确认、骨架屏与真实版面对齐、桌面月历交互解耦、平板档限宽。
 
-## Phase 6: 产品闭环重构 ← 当前阶段
+## Phase 6: 产品闭环重构（已完成）
 
-目标：继续按 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md) 实施事件回顾和隐私克制的产品测量。Health Event Contract、Proactive Suggestion Runtime、Sparse Record Semantics 与 Review Experience 已完成，当前从 Visit Summary and Product Measurement 开始。
-
-进入条件：Health Event Contract、Proactive Suggestion Runtime 和 Sparse Record Semantics 已完成跨前后端合同与验证；当前工作继续在 feature branch 上进行。
+目标：按 `plans/2026-08-07-product-loop-program.md`（实施完毕文件已删）实施事件回顾和隐私克制的产品测量。Health Event Contract、Proactive Suggestion Runtime、Sparse Record Semantics、Review Experience 与 Visit Summary and Product Measurement 全部完成并验证：健康事件跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、事件优先回顾主路径、可撤销分享与字段级隐私、闭环测量（客户端成功边界事件 + 服务端权威事件 + 管理员漏斗）均已收口。当前进入 0.1.0 发布验证阶段（见 `Next_Plan.md` 与仓库根 `ROADMAP.md`）。
 
 ## Phase 7: P2/P3 扩展探索
 

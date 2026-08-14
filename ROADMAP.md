@@ -8,9 +8,13 @@ It is a living document — directions shift as the product and community grow.
 Luminous is currently at `0.1.0-dev`. The core mobile experience is functional
 with all five tabs active, but the project has not yet shipped a stable release.
 The product direction has been re-baselined around time-bounded health events,
-sparse records, proactive guidance, and event-first review; the fifth tab's
-user task is now Review and the previous general report/dashboard model is
-retained only as a legacy compatibility page under More.
+sparse records, proactive guidance, event-first review, and privacy-minimal
+closed-loop measurement; the fifth tab's user task is now Review and the
+previous general report/dashboard model is retained only as a legacy
+compatibility page under More. The product-loop program (ADR-0011) is complete:
+the loop from event start → suggestion impression/action → outcome → review
+open is measured end-to-end, and the optional visit summary is field-level
+privacy-controlled with revocable shares.
 
 **What works today**
 
@@ -32,6 +36,14 @@ retained only as a legacy compatibility page under More.
   happened / key changes / completed actions / next step), history filtering,
   and More actions for visit summary, PDF and print exports; the old dashboard
   remains reachable via a legacy compatibility page
+- Visit summary: field-level privacy selection (free-text notes off by
+  default), revocable 7-day shares with token-hash-only storage, share
+  management (access count / revocation), public share page
+- Closed-loop measurement: client-reported success-boundary events
+  (suggestion impression / review opened / visit summary previewed+exported,
+  offline queue + idempotent retry), server-authoritative lifecycle events,
+  and an admin-only funnel endpoint (core loop vs optional exports separated,
+  small-sample suppression)
 - Reports: AI-driven summaries, trend visualization (fl_chart), data export,
   suggestion history (lifecycle-aware: active / expired / dismissed)
 - Settings: theme (mode + family), locale, accessibility, notifications, data
@@ -58,7 +70,10 @@ retained only as a legacy compatibility page under More.
 - Stable release — still in dev phase
 - Real medicine barcode / OCR / prescription recognition flow
 - Push notification delivery (pending Lucent FCM/APNs)
-- Privacy-minimal closed-loop measurement and visit-summary hardening
+- Deferred polish: AI session rename/delete, Markdown template upgrade,
+  visit-summary templating, symptom-medicine timeline (see `docs/00-current/TODO.md`)
+- Contract debt: the four clinic-summary section keys remain required in the
+  Lucent contract (client deserializes with placeholders)
 
 Desktop and the full authenticated Web app are intentionally frozen. Their
 existing code remains, but feature parity, distribution, and productization are
@@ -82,15 +97,15 @@ Finish integration, verification, and release of the existing runtime.
 
 ### Product Loop Program
 
-Execute the plans indexed by
-[`plans/2026-08-07-product-loop-program.md`](plans/2026-08-07-product-loop-program.md).
-Workstream 1 (Review Experience — event-first review, `/report` compatibility,
-removal of the composite score, exports moved into More) is complete; the next
-workstream is active:
-
-- **Visit Summary and Measurement** — harden the optional problem-oriented
-  summary while privacy-minimal event, suggestion and review signals validate
-  the core loop separately from exports
+The event-led product-loop program (ADR-0011) is **complete**. Workstream 1
+(Review Experience — event-first review, `/report` compatibility, removal of
+the composite score, exports moved into More) and Workstream 2 (Visit Summary
+and Measurement — revocable field-level-privacy shares, problem-oriented
+summary, privacy-minimal product events with the core loop measured separately
+from exports, admin funnel) are both shipped and verified. The plan files have
+been deleted (实施完毕文件已删); remaining work is tracked in
+[`docs/00-current/TODO.md`](docs/00-current/TODO.md) and the P2/P3 sections
+below.
 
 ### P2 → `1.1.0`
 

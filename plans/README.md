@@ -31,8 +31,12 @@ YYYY-MM-DD-short-task-name.md
 3. Move stable decisions and outcomes into the owning docs.
 4. Delete the plan file once it is no longer the active source of work.
 
-## Active Program
+## Current Plans
 
-The event-led product-loop program is accepted and active. Its dependency
-order and execution plans are indexed in
-[`2026-08-07-product-loop-program.md`](2026-08-07-product-loop-program.md).
+- [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
+- [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
+- [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
+
+The event-led product-loop program (`2026-08-07-product-loop-program.md`) and its
+execution plan (`2026-08-07-visit-summary-and-product-measurement.md`) were
+completed on 2026-08-14 and deleted (实施完毕文件已删).

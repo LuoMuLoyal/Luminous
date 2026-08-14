@@ -11,9 +11,11 @@ Last updated: 2026-08-14
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
-## 大型产品闭环重构（已决策，可启动）
+## 产品闭环（程序已收口，仅剩延后项）
 
-总计划见 [`../../plans/2026-08-07-product-loop-program.md`](../../plans/2026-08-07-product-loop-program.md)，决策依据见 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]。
+Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]）已实施完毕，
+计划文件已删：健康事件、主动建议、稀疏记录语义、事件优先回顾与隐私克制的闭环测量全部落地，
+就诊摘要支持字段级隐私选择与可撤销分享。以下为延后项与合同债。
 
 ### 健康事件与关键确认
 
@@ -22,10 +24,7 @@ Last updated: 2026-08-14
 ### 平台与验证
 
 - 桌面端和完整认证 Web 应用冻结：保留代码，不继续功能对等、发行或产品化；手机端是唯一核心产品，`Luminous-website` 继续承担官网和竞赛展示
-- 增加最小、隐私克制的闭环测量（归属 Workstream 2，见 `plans/2026-08-07-visit-summary-and-product-measurement.md`）：记录成功、建议卡曝光与处理、事件开始/结束、结果确认、回顾打开，以及“更多”中导出/分享动作；快捷入口点击不能代替保存成功
-
-- 就诊摘要响应的四个 section 键（profile/allergies/conditions/currentMedicines）在 Lucent 合同中被标记必填，但服务端字段选择会省略未选中的键，客户端只能靠 `_fillMissingSections` 补齐占位反序列化；持久修复是把这四个键改为可选（含 `clinicSummarySharedProvider` 的公开分享页信封兼容问题，该 provider 仍走生成客户端、对真实响应会抛反序列化错误）
-- 当前没有可靠的 Review 打开、分享链接访问或事件结果测量；不能用导出请求成功推断医生查看或用户获益（归属 Workstream 2）
+- 合同债：就诊摘要响应的四个 section 键（profile/allergies/conditions/currentMedicines）在 Lucent 合同中被标记必填，但服务端字段选择会省略未选键，客户端只能靠 `_fillMissingSections` 占位反序列化；持久修复是把四键改为可选（公开分享页的信封兼容已在 Task 10 用 raw Dio 解信封解决，本债务仅剩合同层面）
 
 ## 延后（有明确原因）
 

@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: explanation
-updated: 2026-08-07
+updated: 2026-08-14
 ---
 
 # Product Safety And Privacy
@@ -54,8 +54,19 @@ AI 总结、报告摘要和诊所/药师摘要都必须遵守最小必要原则�
 - 就诊摘要、PDF 和分享链接属于“回顾 > 更多”中的次级出口；用户必须先预览并确认，不能把生成或分享成功解释为医生已经查看或采纳。
 
 
-## 产品事件测量（2026-08-14）
+## 产品事件测量（2026-08-14 收口）
+
+客户端测量边界（Task 7-9 落地，Task 10 收口）：
 
 - 客户端只上报四个事件：`suggestion_impression`（surface=today + 白名单规则码，session 去重）、`review_opened`（surface=review，session 去重）、`visit_summary_previewed` / `visit_summary_exported`（surface=more，success/failure 边界）。
-- 上报内容仅含 name/surface/result/eventStatus(健康事件专用)/suggestionRuleCode(7 个白名单码)/appVersion/platform/occurredAt/clientEventId，无 metadata、无自由文本；离线事件入队本地 pending-sync 队列重试，clientEventId 幂等。
+- 上报内容仅含 name/surface/result/eventStatus(健康事件专用)/suggestionRuleCode(7 个白名单码)/appVersion/platform/occurredAt/clientEventId，无 metadata、无自由文本；离线事件入队本地 pending-sync 队列重试，clientEventId 幂等。载荷由封闭 sealed union（`lib/core/analytics/product_event.dart`）结构上限定，无法表达症状、标题、备注、记录值、PDF URL 或分享 token。
 - 服务端权威事件（health_event_*、suggestion_actioned、visit_summary_share_*）由服务端记录，客户端不得上报；share 创建/打开/撤销不落客户端事件。
+- 管理员漏斗（`GET /api/v1/user/product-events/funnel`）只输出核心/optional 计数，无 userId、规则码或健康内容；原始事件保留 90 天（见 `Lucent/docs/01-reference/data-retention.md`）。
+- 客户端不上报失败绝不打断用户主流程（fire-and-forget + 队列重试）；上报日志只含事件名与错误信息，不含载荷内容。
+
+## 分享与字段级隐私 UX（2026-08-14）
+
+- 就诊摘要字段级隐私选择：六项字段（事件概况/症状变化/用药槽位/饮水/睡眠/备注），**自由文本备注默认不选**；未选字段在 preview、PDF 与分享中都不存在（服务端单一过滤视图）。
+- 分享创建前展示 7 天有效期与「链接持有者可查看」提示，不暗示医生已收到；创建后属主可复制链接或撤销；公开分享页与 PDF 不要求登录，撤销后一律 404。
+- 分享记录只存 token 哈希，明文 token 创建时返回一次；分享管理面板只显示属主自己的记录（创建/到期/访问次数/最近访问/已撤销态），无任何访问者身份信息。
+- 入口与文案：就诊摘要入口为「就诊时按需使用」，分享按钮为「分享摘要」——导出/分享成功不等于医生查看或用户获益（测量口径同此）。

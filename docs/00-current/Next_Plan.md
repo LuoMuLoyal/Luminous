@@ -2,32 +2,32 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-14
 ---
 
 # Luminous Next Plan
 
-Last updated: 2026-08-11
+Last updated: 2026-08-14
 
 本文件只记录下一步实现顺序。当前事实见 [[00-current/Current_State]]；变更历史见 [[03-logs/MigrationLog]]。
 产品优先级以 [[02-reference/adr/0011-event-led-sparse-record-product-loop]] 和仓库根目录 `CONTEXT.md` 为准；历史 brainstorm 只用于追溯。
 
 ## 当前目标
 
-当前目标是执行 `Visit Summary and Product Measurement`。`Health Event Contract`、`Proactive Suggestion Runtime`、`Sparse Record Semantics` 与 `Review Experience` 已完成跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、事件优先回顾主路径、自动化检查、文档对齐和 PostgreSQL/Redis live acceptance；真实 E2E 已覆盖健康事件 ownership、start → check-in → end → history、记录写入 → worker 物化 → Today GET 的版本收敛，以及 Today 开始事件 → 记录症状 → 剂量确认 → Review 更新 → 结束确认的桌面闭环。
+产品闭环程序（`Health Event Contract`、`Proactive Suggestion Runtime`、`Sparse Record Semantics`、`Review Experience`、`Visit Summary and Product Measurement`）已全部实施完毕，计划文件已删（实施完毕文件已删）：健康事件跨前后端合同、主动重算、Today 只读物化、统一稀疏数据语义、事件优先回顾主路径与可撤销分享、字段级隐私、隐私克制的闭环测量（客户端四个成功边界事件 + 服务端权威事件 + 管理员漏斗）均已落地并通过全量验证。
 
-长期阶段排序见 [[00-current/Work_Phase_Guide]]。
+当前目标转为 **0.1.0 发布验证**（按仓库根 `ROADMAP.md`「Current Release → 0.1.0」）：只修阻断集成/发布的缺陷，跑完整移动端与全栈发布门禁。长期阶段排序见 [[00-current/Work_Phase_Guide]]。
 
 ## 立即下一步
 
-1. **执行 Visit Summary and Product Measurement**
-   - 子计划：[`../../plans/2026-08-07-visit-summary-and-product-measurement.md`](../../plans/2026-08-07-visit-summary-and-product-measurement.md)
-   - 先修正就诊摘要的合同缺陷并持久化可撤销分享，再接入隐私克制的产品事件存储与客户端成功边界测量
-   - 导出与分享保持现有 API 行为；字段级隐私与访问测量由该工作流落地
+1. **执行 0.1.0 发布验证**
+   - 全移动端 + 全栈发布门禁（`flutter analyze` / `flutter test` / daily checks / 双仓 docs 检查）
+   - 只修阻断当前集成或发布的问题，方向文档与运行时差异保持明确标注
 2. **继续冻结非核心平台**
    - 手机端是唯一核心产品
    - 桌面端和完整认证 Web 应用保留现有代码，但不继续功能对等、发行或产品化
    - `Luminous-website` 是竞赛/营销表面，不是签入式产品壳
+3. **延后项按优先级推进**（见 [[00-current/TODO]] 与 ROADMAP P2/P3）：AI 会话重命名与删除、就诊摘要模板化、症状-用药关联时间线等
 
 ## 延后但有用
 
