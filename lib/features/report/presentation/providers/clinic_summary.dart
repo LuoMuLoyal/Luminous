@@ -14,9 +14,13 @@ final clinicSummaryPreviewProvider =
         ref: ref,
         fetch: () {
           final api = ref.watch(lucentClientProvider).reports;
-          return api.reportsControllerPreviewClinicSummaryV1().then(
-            (r) => r.data!,
-          );
+          // Empty request body: every field is optional and the server falls
+          // back to the default last_30_days scope (legacy behavior).
+          return api
+              .reportsControllerPreviewClinicSummaryV1(
+                clinicSummaryRequestDto: ClinicSummaryRequestDto(),
+              )
+              .then((r) => r.data!);
         },
         signedOutFallback: () => pendingAuthSessionResolution(),
       );

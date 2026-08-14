@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -157,8 +158,12 @@ class _ClinicSummaryPreviewContentState
         tag: 'ClinicSummaryPreviewDialog._share',
         action: () async {
           final reportsApi = ref.read(lucentClientProvider).reports;
+          // Empty request body: every field is optional and the server falls
+          // back to the default last_30_days scope (legacy behavior).
           final response = await reportsApi
-              .reportsControllerShareClinicSummaryV1();
+              .reportsControllerShareClinicSummaryV1(
+                clinicSummaryRequestDto: ClinicSummaryRequestDto(),
+              );
           final shareUrl = response.data!.shareUrl;
           if (shareUrl.isEmpty) {
             if (mounted) {

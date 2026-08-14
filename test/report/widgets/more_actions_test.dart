@@ -538,9 +538,35 @@ class _ThrowingDataExportController extends DataExportController {
   }
 }
 
+ClinicSummaryCoverageEntryDto _coverageEntry() {
+  return ClinicSummaryCoverageEntryDto(
+    state: ClinicSummaryCoverageEntryDtoStateEnum.observed,
+    coverage: ClinicSummaryCoverageEntryDtoCoverageEnum.none,
+    sources: const [ClinicSummaryCoverageEntryDtoSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryCoverageDto _coverage() {
+  return ClinicSummaryCoverageDto(
+    checkIns: _coverageEntry(),
+    water: _coverageEntry(),
+    dose: _coverageEntry(),
+    sleep: _coverageEntry(),
+  );
+}
+
 ClinicSummaryDto _clinicDto() {
   return ClinicSummaryDto(
     generatedAt: '2026-08-13T09:00:00',
+    scopeLabel: 'last_7_days',
+    start: '2026-08-07T00:00:00',
+    end: '2026-08-13T00:00:00',
+    selectedFields: const [],
+    coverage: _coverage(),
     dataRange: 'last_7_days',
     profile: ClinicSummaryProfileDto(
       nickname: 'Lumi',

@@ -21,9 +21,35 @@ class _FakeLucentClient extends LucentClient {
   ReportsApi get reports => reportsApi;
 }
 
+ClinicSummaryCoverageEntryDto _coverageEntry() {
+  return ClinicSummaryCoverageEntryDto(
+    state: ClinicSummaryCoverageEntryDtoStateEnum.observed,
+    coverage: ClinicSummaryCoverageEntryDtoCoverageEnum.none,
+    sources: const [ClinicSummaryCoverageEntryDtoSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryCoverageDto _coverage() {
+  return ClinicSummaryCoverageDto(
+    checkIns: _coverageEntry(),
+    water: _coverageEntry(),
+    dose: _coverageEntry(),
+    sleep: _coverageEntry(),
+  );
+}
+
 ClinicSummaryDto _dto({List<String>? findings}) {
   return ClinicSummaryDto(
     generatedAt: '2026-07-01T10:30:00',
+    scopeLabel: 'last_7_days',
+    start: '2026-06-24T00:00:00',
+    end: '2026-07-01T00:00:00',
+    selectedFields: const [],
+    coverage: _coverage(),
     dataRange: 'last_7_days',
     profile: ClinicSummaryProfileDto(
       nickname: 'Lumi',
@@ -62,7 +88,9 @@ void main() {
   group('clinicSummaryPreviewProvider', () {
     test('returns the clinic summary for authenticated users', () async {
       when(
-        () => reportsApi.reportsControllerPreviewClinicSummaryV1(),
+        () => reportsApi.reportsControllerPreviewClinicSummaryV1(
+          clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+        ),
       ).thenAnswer(
         (_) async => Response<ClinicSummaryDto>(
           data: _dto(),
@@ -78,13 +106,17 @@ void main() {
       expect(dto.allergies, ['青霉素']);
       expect(dto.disclaimer, '本摘要仅供参考');
       verify(
-        () => reportsApi.reportsControllerPreviewClinicSummaryV1(),
+        () => reportsApi.reportsControllerPreviewClinicSummaryV1(
+          clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+        ),
       ).called(1);
     });
 
     test('propagates API errors', () async {
       when(
-        () => reportsApi.reportsControllerPreviewClinicSummaryV1(),
+        () => reportsApi.reportsControllerPreviewClinicSummaryV1(
+          clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+        ),
       ).thenThrow(
         DioException(
           requestOptions: RequestOptions(path: '/preview'),

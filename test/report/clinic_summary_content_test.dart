@@ -7,6 +7,27 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 import '../helpers/test_forui_app.dart';
 
+ClinicSummaryCoverageEntryDto _coverageEntry() {
+  return ClinicSummaryCoverageEntryDto(
+    state: ClinicSummaryCoverageEntryDtoStateEnum.observed,
+    coverage: ClinicSummaryCoverageEntryDtoCoverageEnum.none,
+    sources: const [ClinicSummaryCoverageEntryDtoSourcesEnum.manual],
+    observedCount: 0,
+    expectedCount: null,
+    windowStart: null,
+    windowEnd: null,
+  );
+}
+
+ClinicSummaryCoverageDto _coverage() {
+  return ClinicSummaryCoverageDto(
+    checkIns: _coverageEntry(),
+    water: _coverageEntry(),
+    dose: _coverageEntry(),
+    sleep: _coverageEntry(),
+  );
+}
+
 ClinicSummaryDto _dto({
   List<String> allergies = const ['青霉素', '头孢'],
   List<String> conditions = const ['高血压'],
@@ -19,6 +40,11 @@ ClinicSummaryDto _dto({
 }) {
   return ClinicSummaryDto(
     generatedAt: '2026-07-01T10:30:00',
+    scopeLabel: dataRange,
+    start: '2026-06-24T00:00:00',
+    end: '2026-07-01T00:00:00',
+    selectedFields: const [],
+    coverage: _coverage(),
     dataRange: dataRange,
     profile: ClinicSummaryProfileDto(
       nickname: 'Lumi',
