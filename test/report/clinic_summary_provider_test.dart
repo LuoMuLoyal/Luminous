@@ -69,6 +69,10 @@ void main() {
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
 
+  setUpAll(() {
+    registerFallbackValue(ClinicSummaryRequestDto());
+  });
+
   setUp(() {
     reportsApi = _MockReportsApi();
     client = _FakeLucentClient(reportsApi: reportsApi);
