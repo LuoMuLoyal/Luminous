@@ -35,7 +35,8 @@ Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-rec
   - 当前只使用基础 `MarkdownBody` 样式；后续统一设计标题、列表、代码块、引用、表格和链接的视觉模板
 
 - AI 消息操作按钮完善
-  - 复制、重新生成、重新发送需要从上下文菜单占位行为调整为明确可用的消息操作，并补齐对应 controller 链路
+  - 复制已可用（Clipboard + toast）；重新生成/重新发送仍是上下文菜单占位（`message_bubble.dart` 的 `onPress: null`），
+    需后端 controller 支持后接线（Lucent assistant 尚无 regenerate/resend 接口）
 
 - forui 0.25.0 toast dismiss 的 dispose-during-notifyListeners 风险
   - 现象：`FToasterEntry.dismiss()` 在 toast 入场动画完成前触发时，forui 非无障碍分支直接 `reverse()`，
@@ -49,8 +50,8 @@ Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-rec
 
 ## 审查暂缓项
 
-- 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/detail.dart`（853 行）、`quick_entry_panel.dart`（565 行）、`record/edit.dart`（511 行）、`report/page.dart`（470 行）、`settings/page.dart`（184 行）
-- 剩余约 15 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
+- 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
+- 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
 ## 实验性功能（稳定版后启动）
 
