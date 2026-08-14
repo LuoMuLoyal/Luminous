@@ -10,6 +10,7 @@ import 'package:lucent_api/src/deserialize.dart';
 import 'package:dio/dio.dart';
 
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_list_response_dto.dart';
 import 'package:lucent_api/src/model/event_review_nullable_response_dto.dart';
@@ -18,6 +19,7 @@ import 'package:lucent_api/src/model/generate_report_summary_dto.dart';
 import 'package:lucent_api/src/model/health_event_status.dart';
 import 'package:lucent_api/src/model/report_dashboard_response_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
+import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
 import 'package:lucent_api/src/model/today_suggestion_controller_explain_suggestion_async_v1202_response.dart';
 
 class ReportsApi {
@@ -25,10 +27,11 @@ class ReportsApi {
 
   const ReportsApi(this._dio);
 
-  /// Download a de-identified clinic summary as PDF (auth required)
+  /// Download a de-identified clinic summary as PDF (auth required) — POST so the request scope (eventId/date range + selectedFields) can be carried in the body, like the preview and export endpoints.
   ///
   ///
   /// Parameters:
+  /// * [clinicSummaryRequestDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -39,6 +42,7 @@ class ReportsApi {
   /// Returns a [Future]
   /// Throws [DioException] if API call or serialization fails
   Future<Response<void>> reportsControllerDownloadClinicSummaryPdfV1({
+    required ClinicSummaryRequestDto clinicSummaryRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -48,14 +52,29 @@ class ReportsApi {
   }) async {
     final _path = r'/api/v1/user/reports/clinic-summary/preview/pdf';
     final _options = Options(
-      method: r'GET',
+      method: r'POST',
       headers: <String, dynamic>{...?headers},
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(clinicSummaryRequestDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
@@ -117,6 +136,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
+  /// * [clinicSummaryRequestDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -124,10 +144,11 @@ class ReportsApi {
   /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
   /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
   ///
-  /// Returns a [Future] containing a [Response] with a [TodaySuggestionControllerExplainSuggestionAsyncV1202Response] as data
+  /// Returns a [Future] containing a [Response] with a [ReportsControllerExportClinicSummaryPdfAsyncV1201Response] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<TodaySuggestionControllerExplainSuggestionAsyncV1202Response>>
+  Future<Response<ReportsControllerExportClinicSummaryPdfAsyncV1201Response>>
   reportsControllerExportClinicSummaryPdfAsyncV1({
+    required ClinicSummaryRequestDto clinicSummaryRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -140,29 +161,44 @@ class ReportsApi {
       method: r'POST',
       headers: <String, dynamic>{...?headers},
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(clinicSummaryRequestDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
 
-    TodaySuggestionControllerExplainSuggestionAsyncV1202Response? _responseData;
+    ReportsControllerExportClinicSummaryPdfAsyncV1201Response? _responseData;
 
     try {
       final rawData = _response.data;
       _responseData = rawData == null
           ? null
           : deserialize<
-              TodaySuggestionControllerExplainSuggestionAsyncV1202Response,
-              TodaySuggestionControllerExplainSuggestionAsyncV1202Response
+              ReportsControllerExportClinicSummaryPdfAsyncV1201Response,
+              ReportsControllerExportClinicSummaryPdfAsyncV1201Response
             >(
               rawData,
-              'TodaySuggestionControllerExplainSuggestionAsyncV1202Response',
+              'ReportsControllerExportClinicSummaryPdfAsyncV1201Response',
               growable: true,
             );
     } catch (error, stackTrace) {
@@ -175,9 +211,7 @@ class ReportsApi {
       );
     }
 
-    return Response<
-      TodaySuggestionControllerExplainSuggestionAsyncV1202Response
-    >(
+    return Response<ReportsControllerExportClinicSummaryPdfAsyncV1201Response>(
       data: _responseData,
       headers: _response.headers,
       isRedirect: _response.isRedirect,
@@ -944,6 +978,7 @@ class ReportsApi {
   ///
   ///
   /// Parameters:
+  /// * [clinicSummaryRequestDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -954,6 +989,7 @@ class ReportsApi {
   /// Returns a [Future] containing a [Response] with a [ClinicSummaryDto] as data
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ClinicSummaryDto>> reportsControllerPreviewClinicSummaryV1({
+    required ClinicSummaryRequestDto clinicSummaryRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -966,11 +1002,26 @@ class ReportsApi {
       method: r'POST',
       headers: <String, dynamic>{...?headers},
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(clinicSummaryRequestDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,
@@ -1010,10 +1061,59 @@ class ReportsApi {
     );
   }
 
-  /// Create a shareable link for the clinic summary (24h expiry)
+  /// Revoke a clinic summary share (current user owns the share)
   ///
   ///
   /// Parameters:
+  /// * [shareId]
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future]
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<void>> reportsControllerRevokeClinicSummaryShareV1({
+    required String shareId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/v1/user/reports/clinic-summary/shares/{shareId}'
+        .replaceAll(
+          '{'
+          r'shareId'
+          '}',
+          shareId.toString(),
+        );
+    final _options = Options(
+      method: r'DELETE',
+      headers: <String, dynamic>{...?headers},
+      extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    return _response;
+  }
+
+  /// Create a revocable share link for the clinic summary (7-day expiry)
+  ///
+  ///
+  /// Parameters:
+  /// * [clinicSummaryRequestDto]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1025,6 +1125,7 @@ class ReportsApi {
   /// Throws [DioException] if API call or serialization fails
   Future<Response<ClinicSummaryShareResponseDto>>
   reportsControllerShareClinicSummaryV1({
+    required ClinicSummaryRequestDto clinicSummaryRequestDto,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1037,11 +1138,26 @@ class ReportsApi {
       method: r'POST',
       headers: <String, dynamic>{...?headers},
       extra: <String, dynamic>{'secure': <Map<String, String>>[], ...?extra},
+      contentType: 'application/json',
       validateStatus: validateStatus,
     );
 
+    dynamic _bodyData;
+
+    try {
+      _bodyData = jsonEncode(clinicSummaryRequestDto);
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _options.compose(_dio.options, _path),
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
     final _response = await _dio.request<Object>(
       _path,
+      data: _bodyData,
       options: _options,
       cancelToken: cancelToken,
       onSendProgress: onSendProgress,

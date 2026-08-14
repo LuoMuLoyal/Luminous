@@ -19,8 +19,11 @@ class ClinicSummaryProfileDto {
   /// Returns a new [ClinicSummaryProfileDto] instance.
   ClinicSummaryProfileDto({
     required this.nickname,
+
     this.age,
+
     required this.sexAtBirth,
+
     this.bloodType,
   });
 

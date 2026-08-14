@@ -24,9 +24,13 @@ import 'package:lucent_api/src/model/assistant_tool_capability_dto.dart';
 import 'package:lucent_api/src/model/change_email_dto.dart';
 import 'package:lucent_api/src/model/change_password_dto.dart';
 import 'package:lucent_api/src/model/change_security_pin_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_coverage_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_coverage_entry_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_profile_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_request_dto.dart';
 import 'package:lucent_api/src/model/clinic_summary_share_response_dto.dart';
+import 'package:lucent_api/src/model/clinic_summary_share_scope_dto.dart';
 import 'package:lucent_api/src/model/cn_medicine_detail_dto.dart';
 import 'package:lucent_api/src/model/confirm_assistant_proposal_dto.dart';
 import 'package:lucent_api/src/model/cooldown_message_dto.dart';
@@ -171,6 +175,8 @@ import 'package:lucent_api/src/model/report_summary_bullet_dto.dart';
 import 'package:lucent_api/src/model/report_summary_data_dto.dart';
 import 'package:lucent_api/src/model/report_summary_response_dto.dart';
 import 'package:lucent_api/src/model/report_trend_dto.dart';
+import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response.dart';
+import 'package:lucent_api/src/model/reports_controller_export_clinic_summary_pdf_async_v1201_response_data.dart';
 import 'package:lucent_api/src/model/reset_password_dto.dart';
 import 'package:lucent_api/src/model/run_risk_check_dto.dart';
 import 'package:lucent_api/src/model/security_pin_elevation_response_dto.dart';
@@ -369,16 +375,30 @@ ReturnType deserialize<ReturnType, BaseType>(
     case 'ChangeSecurityPinDto':
       return ChangeSecurityPinDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ClinicSummaryCoverageDto':
+      return ClinicSummaryCoverageDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ClinicSummaryCoverageEntryDto':
+      return ClinicSummaryCoverageEntryDto.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
     case 'ClinicSummaryDto':
       return ClinicSummaryDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'ClinicSummaryProfileDto':
       return ClinicSummaryProfileDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
+    case 'ClinicSummaryRequestDto':
+      return ClinicSummaryRequestDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
     case 'ClinicSummaryShareResponseDto':
       return ClinicSummaryShareResponseDto.fromJson(
             value as Map<String, dynamic>,
           )
+          as ReturnType;
+    case 'ClinicSummaryShareScopeDto':
+      return ClinicSummaryShareScopeDto.fromJson(value as Map<String, dynamic>)
           as ReturnType;
     case 'CnMedicineDetailDto':
       return CnMedicineDetailDto.fromJson(value as Map<String, dynamic>)
@@ -879,6 +899,16 @@ ReturnType deserialize<ReturnType, BaseType>(
           as ReturnType;
     case 'ReportTrendDto':
       return ReportTrendDto.fromJson(value as Map<String, dynamic>)
+          as ReturnType;
+    case 'ReportsControllerExportClinicSummaryPdfAsyncV1201Response':
+      return ReportsControllerExportClinicSummaryPdfAsyncV1201Response.fromJson(
+            value as Map<String, dynamic>,
+          )
+          as ReturnType;
+    case 'ReportsControllerExportClinicSummaryPdfAsyncV1201ResponseData':
+      return ReportsControllerExportClinicSummaryPdfAsyncV1201ResponseData.fromJson(
+            value as Map<String, dynamic>,
+          )
           as ReturnType;
     case 'ResetPasswordDto':
       return ResetPasswordDto.fromJson(value as Map<String, dynamic>)

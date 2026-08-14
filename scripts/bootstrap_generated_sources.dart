@@ -429,6 +429,13 @@ const _reviewModels = [
   'EventReviewSectionsDto',
   'EventReviewSourceTimestampsDto',
   'EventReviewTodayCheckInDto',
+  'ClinicSummaryCoverageEntryDto',
+  'ClinicSummaryCoverageDto',
+  'ClinicSummaryProfileDto',
+  'ClinicSummaryDto',
+  'ClinicSummaryRequestDto',
+  'ClinicSummaryShareScopeDto',
+  'ClinicSummaryShareResponseDto',
 ];
 
 /// 过滤客户端的数据驱动配置：每一条对应一次 openapi-generator 过滤生成
