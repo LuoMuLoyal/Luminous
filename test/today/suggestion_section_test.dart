@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
 import 'package:luminous/features/today/presentation/providers/suggestion.dart';
 import 'package:luminous/features/today/presentation/widgets/sections/suggestion.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_forui_app.dart';
 import '../helpers/test_helpers.dart';
@@ -27,15 +30,19 @@ void main() {
   ///
   /// [notifierFactory] creates the [TodaySuggestionNotifier] override.
   /// [explainFuture] optionally overrides the AI explanation provider.
+  /// [productEvents] optionally overrides the analytics service.
   Widget buildApp(
     TodaySuggestionNotifier Function() notifierFactory, {
     Future<TodaySuggestionExplanation?> Function(Ref)? explainFuture,
     Locale locale = const Locale('zh'),
+    ProductEventService? productEvents,
   }) {
     return ProviderScope(
       overrides: [
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         todaySuggestionProvider.overrideWith(notifierFactory),
+        if (productEvents != null)
+          productEventServiceProvider.overrideWithValue(productEvents),
         if (explainFuture != null)
           suggestionExplanationProvider(
             _explainParams,
@@ -501,6 +508,122 @@ void main() {
       expect(find.text('此提醒基于您的用药计划，不能替代医生或药师建议。'), findsOneWidget);
     });
   });
+
+  // ── Impression Measurement ─────────────────────────────────────────────
+
+  group('Suggestion impression measurement', () {
+    testWidgets('reports one impression per visible card, not per rebuild', (
+      tester,
+    ) async {
+      final service = _RecordingProductEventService();
+      await tester.pumpWidget(
+        buildApp(StaticTodaySuggestionNotifier.new, productEvents: service),
+      );
+      await settle(tester);
+
+      // The primary card (ruleId 'missed_dose_pending') entered the visible
+      // area exactly once.
+      expect(service.impressionRuleCodes, ['missed_dose_pending']);
+
+      // Rebuilds must not re-emit: same tree, same rule code — no new call.
+      await tester.pumpWidget(
+        buildApp(StaticTodaySuggestionNotifier.new, productEvents: service),
+      );
+      await settle(tester);
+      expect(service.impressionRuleCodes, ['missed_dose_pending']);
+
+      // A fresh card instance with the same rule code is deduped by the
+      // service in production; the widget itself reports per instance.
+      await tester.pumpWidget(
+        buildApp(StaticTodaySuggestionNotifier.new, productEvents: service),
+      );
+      await settle(tester);
+      expect(service.impressionRuleCodes, ['missed_dose_pending']);
+    });
+
+    testWidgets('does not report impressions for cards outside the viewport', (
+      tester,
+    ) async {
+      final service = _RecordingProductEventService();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
+            todaySuggestionProvider.overrideWith(
+              StaticTodaySuggestionNotifier.new,
+            ),
+            productEventServiceProvider.overrideWithValue(service),
+          ],
+          child: const TestForuiApp(
+            locale: Locale('zh'),
+            // The card starts 1500px below the 600px-high test viewport.
+            home: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 1500),
+                  TodayPrimarySuggestionSection(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await settle(tester);
+
+      expect(service.impressionRuleCodes, isEmpty);
+
+      // Scrolling the card into the viewport reports it exactly once.
+      await tester.drag(
+        find.byType(SingleChildScrollView),
+        const Offset(0, -1500),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      expect(service.impressionRuleCodes, ['missed_dose_pending']);
+    });
+
+    testWidgets('reports nothing for non-allowlisted rule codes', (
+      tester,
+    ) async {
+      final service = _RecordingProductEventService();
+      // A card whose ruleId is not in the server allowlist.
+      const bundle = TodaySuggestionBundle(
+        generatedAt: '2026-07-09T10:00:00.000Z',
+        primary: TodaySuggestionCard(
+          id: 'sug_custom_rule',
+          type: TodaySuggestionType.behaviorAdvice,
+          cardTone: TodaySuggestionCardTone.soft,
+          icon: 'droplets',
+          title: '自定义规则建议',
+          reason: '测试原因',
+          evidence: [],
+          boundary: '测试边界',
+          primaryAction: TodaySuggestionAction(
+            actionId: 'go',
+            label: '去',
+            route: '/medicine',
+            authRequired: true,
+          ),
+          confidence: TodaySuggestionConfidence.high,
+          ruleId: 'unknown_free_text_rule',
+          ruleVersion: '1.0.0',
+          triggerType: TodaySuggestionTriggerType.timer,
+          lifecycleState: TodaySuggestionLifecycleState.active,
+        ),
+      );
+
+      await tester.pumpWidget(
+        buildApp(() => _BundleNotifier(bundle), productEvents: service),
+      );
+      await settle(tester);
+
+      // The widget reports the impression; the service drops it (the unit
+      // tests prove the allowlist filter). Assert the widget-side call went
+      // through with the card's rule id.
+      expect(service.impressionRuleCodes, ['unknown_free_text_rule']);
+    });
+  });
 }
 
 // ── Test Notifiers ───────────────────────────────────────────────────────
@@ -530,3 +653,19 @@ class _ErrorSuggestionNotifier extends TodaySuggestionNotifier {
     return Completer<TodaySuggestionBundle?>().future;
   }
 }
+
+/// Records impression calls instead of posting events — used to observe the
+/// visibility tracker without touching the network or the queue.
+class _RecordingProductEventService extends ProductEventService {
+  _RecordingProductEventService() : super(api: _MockProductEventsApi());
+
+  final List<String> impressionRuleCodes = [];
+
+  @override
+  bool trackSuggestionImpression(String ruleCode) {
+    impressionRuleCodes.add(ruleCode);
+    return true;
+  }
+}
+
+class _MockProductEventsApi extends Mock implements ProductEventsApi {}

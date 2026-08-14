@@ -159,3 +159,7 @@ Last updated: 2026-08-01
 ## 2026-07-22 今日摘要卡片调整
 
 - **按钮对齐**：`Show basis` / `Hide` 展开按钮与右下角 `Generate` 操作按钮放入同一 `Row`，`crossAxisAlignment: CrossAxisAlignment.center`，消除原先不在同一水平线的问题。
+
+## 2026-08-14 建议卡曝光测量
+
+- 主建议卡进入可见区域时上报 `suggestion_impression`（surface=today，suggestionRuleCode=卡片 ruleId），按 session + 规则码去重；视口外/非活动 tab 不上报，build/rebuild 不重复计数。实现位于 `suggestion_primary_card.dart` 的 `_SuggestionImpressionTracker`。

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderAbstractViewport, RenderBox;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/features/today/domain/entities/dashboard.dart';
 import 'package:luminous/features/today/domain/entities/suggestion.dart';
@@ -70,108 +72,216 @@ class _SuggestionPrimaryCardState extends ConsumerState<SuggestionPrimaryCard>
     final isFading =
         card.lifecycleState == TodaySuggestionLifecycleState.fading;
 
-    return Opacity(
-      opacity: isFading ? 0.6 : 1.0,
-      // When a suggestion is fading out (pending dismissal) we disable all
-      // in-card interactions so users cannot trigger actions, feedback, or
-      // AI explain on a card that is about to disappear.
-      child: IgnorePointer(
-        ignoring: isFading,
-        child: FCard(
-          key: const Key('today-primary-suggestion-card'),
-          style: todayCardStyle(context, tone: cardTone),
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.level4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    TodayGlyphTile(
-                      icon: SuggestionIconMapping.resolve(card.icon),
-                      color: colorFor(card.cardTone),
-                      size: Spacing.level8,
-                      radius: RadiusTokens.level3,
-                      filled: true,
-                    ),
-                    const Spacer(),
-                    FButton(
-                      onPress: () =>
-                          openRoute(context, card.primaryAction.route),
-                      variant: isUrgent(card.cardTone)
-                          ? FButtonVariant.primary
-                          : FButtonVariant.secondary,
-                      size: FButtonSizeVariant.sm,
-                      child: Text(card.primaryAction.label),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: Spacing.level4),
-                Text(
-                  card.title,
-                  style: TypographyToken.level7
-                      .display(context)
-                      .copyWith(fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: Spacing.level2),
-                Text(
-                  card.reason,
-                  style: TypographyToken.level4
-                      .body(context)
-                      .copyWith(
-                        color: colors.mutedForeground,
-                        fontWeight: FontWeight.w600,
-                      ),
-                ),
-                if (card.subtype == 'water' && widget.dashboard != null) ...[
-                  const SizedBox(height: Spacing.level3),
-                  WaterProgressBar(progress: widget.dashboard!.water.progress),
-                ],
-                const SizedBox(height: Spacing.level3),
-                EvidenceToggleButton(
-                  expanded: _evidenceExpanded,
-                  onTap: _toggleEvidence,
-                  l10n: l10n,
-                ),
-                AnimatedBuilder(
-                  animation: _animation,
-                  builder: (context, child) =>
-                      FCollapsible(value: _animation.value, child: child!),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return _SuggestionImpressionTracker(
+      ruleCode: card.ruleId,
+      child: Opacity(
+        opacity: isFading ? 0.6 : 1.0,
+        // When a suggestion is fading out (pending dismissal) we disable all
+        // in-card interactions so users cannot trigger actions, feedback, or
+        // AI explain on a card that is about to disappear.
+        child: IgnorePointer(
+          ignoring: isFading,
+          child: FCard(
+            key: const Key('today-primary-suggestion-card'),
+            style: todayCardStyle(context, tone: cardTone),
+            child: Padding(
+              padding: const EdgeInsets.all(Spacing.level4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      const SizedBox(height: Spacing.level3),
-                      if (card.evidence.isNotEmpty) ...[
-                        EvidenceList(
-                          label: l10n.todaySuggestionEvidenceLabel,
-                          evidence: card.evidence,
-                        ),
-                        const SizedBox(height: Spacing.level3),
-                      ],
-                      SuggestionMetaBlock(
-                        label: l10n.todaySuggestionBoundaryLabel,
-                        value: card.boundary,
+                      TodayGlyphTile(
+                        icon: SuggestionIconMapping.resolve(card.icon),
+                        color: colorFor(card.cardTone),
+                        size: Spacing.level8,
+                        radius: RadiusTokens.level3,
+                        filled: true,
                       ),
-                      const SizedBox(height: Spacing.level3),
-                      SuggestionAiExplainButton(suggestionId: card.id),
+                      const Spacer(),
+                      FButton(
+                        onPress: () =>
+                            openRoute(context, card.primaryAction.route),
+                        variant: isUrgent(card.cardTone)
+                            ? FButtonVariant.primary
+                            : FButtonVariant.secondary,
+                        size: FButtonSizeVariant.sm,
+                        child: Text(card.primaryAction.label),
+                      ),
                     ],
                   ),
-                ),
-                if (card.feedbackOptions != null &&
-                    card.feedbackOptions!.isNotEmpty) ...[
                   const SizedBox(height: Spacing.level4),
-                  SuggestionFeedbackRow(
-                    suggestionId: card.id,
-                    feedbackOptions: card.feedbackOptions!,
+                  Text(
+                    card.title,
+                    style: TypographyToken.level7
+                        .display(context)
+                        .copyWith(fontWeight: FontWeight.w700),
                   ),
+                  const SizedBox(height: Spacing.level2),
+                  Text(
+                    card.reason,
+                    style: TypographyToken.level4
+                        .body(context)
+                        .copyWith(
+                          color: colors.mutedForeground,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                  if (card.subtype == 'water' && widget.dashboard != null) ...[
+                    const SizedBox(height: Spacing.level3),
+                    WaterProgressBar(
+                      progress: widget.dashboard!.water.progress,
+                    ),
+                  ],
+                  const SizedBox(height: Spacing.level3),
+                  EvidenceToggleButton(
+                    expanded: _evidenceExpanded,
+                    onTap: _toggleEvidence,
+                    l10n: l10n,
+                  ),
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) =>
+                        FCollapsible(value: _animation.value, child: child!),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: Spacing.level3),
+                        if (card.evidence.isNotEmpty) ...[
+                          EvidenceList(
+                            label: l10n.todaySuggestionEvidenceLabel,
+                            evidence: card.evidence,
+                          ),
+                          const SizedBox(height: Spacing.level3),
+                        ],
+                        SuggestionMetaBlock(
+                          label: l10n.todaySuggestionBoundaryLabel,
+                          value: card.boundary,
+                        ),
+                        const SizedBox(height: Spacing.level3),
+                        SuggestionAiExplainButton(suggestionId: card.id),
+                      ],
+                    ),
+                  ),
+                  if (card.feedbackOptions != null &&
+                      card.feedbackOptions!.isNotEmpty) ...[
+                    const SizedBox(height: Spacing.level4),
+                    SuggestionFeedbackRow(
+                      suggestionId: card.id,
+                      feedbackOptions: card.feedbackOptions!,
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+/// Reports a `suggestion_impression` once when the wrapped card first enters
+/// the visible area of its scroll viewport.
+///
+/// Lightweight visibility check without a third-party dependency:
+/// - the card's render box global rect is intersected with the enclosing
+///   [RenderAbstractViewport]'s rect on every scroll tick and after frames;
+/// - `TickerMode` gates the check so cards in inactive (muted) shell branches
+///   or hidden contexts do not report impressions;
+/// - [ProductEventService.trackSuggestionImpression] additionally dedupes per
+///   session and per rule code, so rebuilds never re-emit.
+class _SuggestionImpressionTracker extends ConsumerStatefulWidget {
+  const _SuggestionImpressionTracker({
+    required this.ruleCode,
+    required this.child,
+  });
+
+  final String ruleCode;
+  final Widget child;
+
+  @override
+  ConsumerState<_SuggestionImpressionTracker> createState() =>
+      _SuggestionImpressionTrackerState();
+}
+
+class _SuggestionImpressionTrackerState
+    extends ConsumerState<_SuggestionImpressionTracker> {
+  bool _impressionReported = false;
+  ScrollPosition? _position;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _attachAndCheck());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Fires when TickerMode flips (e.g. the Today shell branch becomes the
+    // active tab again) — re-check the newly visible card.
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkVisibility());
+  }
+
+  @override
+  void didUpdateWidget(covariant _SuggestionImpressionTracker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.ruleCode != widget.ruleCode) {
+      _impressionReported = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _checkVisibility());
+    }
+  }
+
+  @override
+  void dispose() {
+    _position?.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _attachAndCheck() {
+    if (!mounted) return;
+    _position?.removeListener(_onScroll);
+    _position = Scrollable.of(context).position;
+    _position?.addListener(_onScroll);
+    _checkVisibility();
+  }
+
+  void _onScroll() => _checkVisibility();
+
+  void _checkVisibility() {
+    if (!mounted || _impressionReported) return;
+    // Muted tickers mean this subtree is not actually presented (inactive
+    // shell branch, offstage context) — do not report impressions there.
+    if (!TickerMode.valuesOf(context).enabled) return;
+    if (!_isVisibleInViewport()) return;
+    _impressionReported = true;
+    ref
+        .read(productEventServiceProvider)
+        .trackSuggestionImpression(widget.ruleCode);
+  }
+
+  bool _isVisibleInViewport() {
+    try {
+      final renderObject = context.findRenderObject();
+      if (renderObject is! RenderBox || !renderObject.attached) return false;
+      final viewport = RenderAbstractViewport.maybeOf(renderObject);
+      if (viewport == null) return false;
+      // All real viewports (RenderViewport, _RenderSingleChildViewport) are
+      // RenderBoxes; the cast is defensive and never expected to throw.
+      final viewportBox = viewport as RenderBox;
+      final viewportRect =
+          viewportBox.localToGlobal(Offset.zero) & viewportBox.size;
+      final cardRect =
+          renderObject.localToGlobal(Offset.zero) & renderObject.size;
+      return viewportRect.overlaps(cardRect);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }
 
 /// Toggle button that expands/collapses the evidence section.
