@@ -24,6 +24,7 @@ import 'package:luminous/features/report/domain/entities/review.dart';
 import 'package:luminous/features/report/presentation/providers/review.dart';
 import 'package:luminous/features/report/presentation/utils/export_actions.dart';
 import 'package:luminous/features/report/presentation/widgets/sheets/more_actions.dart';
+import 'package:luminous/features/report/presentation/widgets/sheets/share_management.dart';
 import 'package:luminous/features/report/presentation/widgets/views/review_view.dart';
 import 'package:luminous/features/shell/presentation/deferred_content.dart';
 import 'package:luminous/l10n/app_localizations.dart';
@@ -256,6 +257,13 @@ class ReportPage extends ConsumerWidget {
                   ref,
                   ReportExportKind.clinicShare,
                 ),
+                onShareManagement: () async {
+                  if (!ref.read(authSessionProvider).canAccessProtectedData) {
+                    unawaited(pushAuthRequiredRoute(context, '/report'));
+                    return;
+                  }
+                  await showShareManagementSheet(context);
+                },
                 onPdf: () => handleReportExportAction(
                   context,
                   ref,
@@ -346,7 +354,7 @@ class _ReviewOpenedTrackerState extends ConsumerState<_ReviewOpenedTracker> {
 class _ReviewTopBar extends StatelessWidget {
   const _ReviewTopBar({required this.onMore});
 
-  /// 右上角「更多」入口：就诊摘要 / PDF / 打印下载 / 兼容历史报告。
+  /// 右上角「更多」入口：就诊摘要 / 分享管理 / PDF / 打印下载 / 兼容历史报告。
   final VoidCallback onMore;
 
   @override

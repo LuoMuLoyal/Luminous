@@ -83,6 +83,7 @@ void main() {
             body: SingleChildScrollView(
               child: ReportMoreActionsSheet(
                 onVisitSummary: () async {},
+                onShareManagement: () async {},
                 onPdf: () async {},
                 onPrint: () async {},
                 onLegacyReport: () async {},
@@ -97,6 +98,9 @@ void main() {
       expect(find.byKey(const Key('more-visit-summary')), findsOneWidget);
       expect(find.text(l10n.reportMoreVisitSummaryTitle), findsOneWidget);
       expect(find.text(l10n.reportMoreVisitSummarySubtitle), findsOneWidget);
+      expect(find.byKey(const Key('more-share-management')), findsOneWidget);
+      expect(find.text(l10n.reportMoreShareManagementTitle), findsOneWidget);
+      expect(find.text(l10n.reportMoreShareManagementSubtitle), findsOneWidget);
       expect(find.byKey(const Key('more-pdf')), findsOneWidget);
       expect(find.text(l10n.reportMorePdfTitle), findsOneWidget);
       expect(find.byKey(const Key('more-print')), findsOneWidget);
@@ -113,6 +117,7 @@ void main() {
     tester,
   ) async {
     var visitTaps = 0;
+    var shareManagementTaps = 0;
     var pdfTaps = 0;
     var printTaps = 0;
     var legacyTaps = 0;
@@ -123,6 +128,7 @@ void main() {
           body: SingleChildScrollView(
             child: ReportMoreActionsSheet(
               onVisitSummary: () async => visitTaps += 1,
+              onShareManagement: () async => shareManagementTaps += 1,
               onPdf: () async => pdfTaps += 1,
               onPrint: () async => printTaps += 1,
               onLegacyReport: () async => legacyTaps += 1,
@@ -135,6 +141,8 @@ void main() {
 
     await tester.tap(find.byKey(const Key('more-visit-summary')));
     await tester.pump();
+    await tester.tap(find.byKey(const Key('more-share-management')));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('more-pdf')));
     await tester.pump();
     await tester.tap(find.byKey(const Key('more-print')));
@@ -145,6 +153,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 150));
 
     expect(visitTaps, 1);
+    expect(shareManagementTaps, 1);
     expect(pdfTaps, 1);
     expect(printTaps, 1);
     expect(legacyTaps, 1);
@@ -171,6 +180,7 @@ void main() {
                   showReportMoreActionsSheet(
                     context,
                     onVisitSummary: () async => visitTaps += 1,
+                    onShareManagement: () async {},
                     onPdf: () async {},
                     onPrint: () async {},
                     onLegacyReport: () async {},
@@ -195,7 +205,7 @@ void main() {
     expect(find.byKey(const Key('more-visit-summary')), findsNothing);
   });
 
-  testWidgets('More button on the report page opens the four-entry sheet', (
+  testWidgets('More button on the report page opens the five-entry sheet', (
     tester,
   ) async {
     final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
@@ -228,7 +238,9 @@ void main() {
       current: reviewActive(),
       history: reviewHistoryPage(const []),
       overrides: [
-        clinicSummaryPreviewProvider.overrideWith((ref) async => _clinicDto()),
+        clinicSummaryPreviewProvider.overrideWith(
+          (ref, fields) async => _clinicDto(),
+        ),
       ],
     );
 

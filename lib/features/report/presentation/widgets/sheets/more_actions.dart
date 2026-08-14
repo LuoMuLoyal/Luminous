@@ -7,18 +7,20 @@ import 'package:luminous/l10n/app_localizations.dart';
 
 /// 回顾页右上角「更多」sheet。
 ///
-/// 四项入口（Task 8：导出与就诊摘要迁入 More）：
+/// 五项入口（Task 8：导出与就诊摘要迁入 More；Task 8 字段级隐私：分享管理）：
 /// 1. 就诊摘要（Visit summary）—— 打开诊所摘要预览弹窗，文案口径为
 ///    「就诊时按需使用」，不暗示医生一定查看；
-/// 2. PDF —— 月度 PDF 导出（旧「月度报告」导出卡同款 API 调用）；
-/// 3. 打印/下载 —— 打印 PDF 导出（旧「打印预览」导出卡同款 API 调用）；
-/// 4. 历史报告 —— 打开 legacy dashboard 兼容视图（`/report/legacy`）。
+/// 2. 分享管理（Share management）—— 查看与撤销分享链接；
+/// 3. PDF —— 月度 PDF 导出（旧「月度报告」导出卡同款 API 调用）；
+/// 4. 打印/下载 —— 打印 PDF 导出（旧「打印预览」导出卡同款 API 调用）；
+/// 5. 历史报告 —— 打开 legacy dashboard 兼容视图（`/report/legacy`）。
 ///
 /// 本 sheet 只负责呈现与触发回调，导出/分享的 API 行为由调用方装配的
 /// `handleReportExportAction` 保持与旧 dashboard 完全一致。
 Future<void> showReportMoreActionsSheet(
   BuildContext context, {
   required Future<void> Function() onVisitSummary,
+  required Future<void> Function() onShareManagement,
   required Future<void> Function() onPdf,
   required Future<void> Function() onPrint,
   required Future<void> Function() onLegacyReport,
@@ -32,6 +34,7 @@ Future<void> showReportMoreActionsSheet(
         maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
         builder: (_) => ReportMoreActionsSheet(
           onVisitSummary: onVisitSummary,
+          onShareManagement: onShareManagement,
           onPdf: onPdf,
           onPrint: onPrint,
           onLegacyReport: onLegacyReport,
@@ -55,6 +58,7 @@ Future<void> showReportMoreActionsSheet(
         ),
         child: ReportMoreActionsSheet(
           onVisitSummary: onVisitSummary,
+          onShareManagement: onShareManagement,
           onPdf: onPdf,
           onPrint: onPrint,
           onLegacyReport: onLegacyReport,
@@ -64,17 +68,19 @@ Future<void> showReportMoreActionsSheet(
   );
 }
 
-/// 四入口内容区；可直接渲染（测试）或经 [showReportMoreActionsSheet] 弹出。
+/// 五入口内容区；可直接渲染（测试）或经 [showReportMoreActionsSheet] 弹出。
 class ReportMoreActionsSheet extends StatelessWidget {
   const ReportMoreActionsSheet({
     super.key,
     required this.onVisitSummary,
+    required this.onShareManagement,
     required this.onPdf,
     required this.onPrint,
     required this.onLegacyReport,
   });
 
   final Future<void> Function() onVisitSummary;
+  final Future<void> Function() onShareManagement;
   final Future<void> Function() onPdf;
   final Future<void> Function() onPrint;
   final Future<void> Function() onLegacyReport;
@@ -105,6 +111,15 @@ class ReportMoreActionsSheet extends StatelessWidget {
             title: l10n.reportMoreVisitSummaryTitle,
             subtitle: l10n.reportMoreVisitSummarySubtitle,
             onTap: () => _run(context, onVisitSummary),
+          ),
+          const SizedBox(height: Spacing.level2),
+          _MoreActionTile(
+            key: const Key('more-share-management'),
+            icon: SemanticIcons.actionShare,
+            color: SemanticColor.warning,
+            title: l10n.reportMoreShareManagementTitle,
+            subtitle: l10n.reportMoreShareManagementSubtitle,
+            onTap: () => _run(context, onShareManagement),
           ),
           const SizedBox(height: Spacing.level2),
           _MoreActionTile(

@@ -1,0 +1,316 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
+import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/design/design.dart';
+import 'package:luminous/core/errors/result.dart';
+import 'package:luminous/core/errors/run_guarded.dart';
+import 'package:luminous/core/feedback/toast.dart';
+import 'package:luminous/core/utils/date_format_utils.dart';
+import 'package:luminous/core/widgets/common/dialog_shell.dart';
+import 'package:luminous/core/widgets/common/sheet_drag_handle.dart';
+import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
+import 'package:luminous/features/report/presentation/widgets/shared/components.dart';
+import 'package:luminous/l10n/app_localizations.dart';
+
+/// Shows the current user's clinic summary shares (desktop dialog / mobile
+/// bottom sheet).
+///
+/// Lists `GET /api/v1/user/reports/clinic-summary/shares` — each row shows
+/// created / expires / access count / last accessed (or "not accessed yet")
+/// and a revoke action for active shares. Revoked shares stay listed with
+/// their revocation time. The API never exposes visitor identity (no names,
+/// no IPs), and this sheet never infers or displays any.
+Future<void> showShareManagementSheet(BuildContext context) {
+  final isDesktop = MediaQuery.sizeOf(context).width >= Breakpoints.desktop;
+
+  if (isDesktop) {
+    return showFDialog<void>(
+      context: context,
+      builder: (dialogContext, _, __) => DialogShell(
+        maxWidth: LayoutScaleResolver.dialogStandardMaxWidth,
+        builder: (_) => const ShareManagementSheet(),
+      ),
+    );
+  }
+
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(RadiusTokens.level4),
+      ),
+    ),
+    builder: (_) => SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: const ShareManagementSheet(),
+      ),
+    ),
+  );
+}
+
+/// Share management content; can be rendered directly (tests) or popped via
+/// [showShareManagementSheet].
+class ShareManagementSheet extends ConsumerStatefulWidget {
+  const ShareManagementSheet({super.key});
+
+  @override
+  ConsumerState<ShareManagementSheet> createState() =>
+      _ShareManagementSheetState();
+}
+
+class _ShareManagementSheetState extends ConsumerState<ShareManagementSheet> {
+  /// Share id whose revoke request is in flight — disables all revoke
+  /// buttons while any revoke is running.
+  String? _revokingShareId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final async = ref.watch(clinicSummaryShareListProvider);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(Spacing.level5),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (MediaQuery.sizeOf(context).width < Breakpoints.desktop)
+            const Center(child: SheetDragHandle()),
+          Text(
+            l10n.reportShareManagementTitle,
+            style: TypographyToken.level6
+                .body(context)
+                .copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: Spacing.level4),
+          ...switch (async) {
+            AsyncValue(:final isLoading) when isLoading => [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: Spacing.level6),
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: FCircularProgress(),
+                  ),
+                ),
+              ),
+            ],
+            AsyncValue(:final hasError) when hasError => [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.level4),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      SemanticIcons.statusWarning,
+                      size: 28,
+                      color: SemanticColor.warning.solid(context),
+                    ),
+                    const SizedBox(height: Spacing.level3),
+                    Text(
+                      l10n.reportShareManagementLoadFailed,
+                      style: TypographyToken.level3.body(context),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: Spacing.level4),
+                    FButton(
+                      variant: FButtonVariant.outline,
+                      onPress: () =>
+                          ref.invalidate(clinicSummaryShareListProvider),
+                      child: Text(l10n.todayRetryAction),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            _ => _shareList(l10n, async.value ?? const []),
+          },
+          const SizedBox(height: Spacing.level4),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _shareList(
+    AppLocalizations l10n,
+    List<ClinicSummaryShareListItemDto> shares,
+  ) {
+    if (shares.isEmpty) {
+      return [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.level5),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                SemanticIcons.safetyNeutral,
+                size: 28,
+                color: context.theme.colors.mutedForeground,
+              ),
+              const SizedBox(height: Spacing.level3),
+              Text(
+                l10n.reportShareManagementEmpty,
+                style: TypographyToken.level4.body(context),
+              ),
+              const SizedBox(height: Spacing.level1),
+              Text(
+                l10n.reportShareManagementEmptyHint,
+                style: TypographyToken.level3
+                    .body(context)
+                    .copyWith(color: context.theme.colors.mutedForeground),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ];
+    }
+
+    return [
+      for (var i = 0; i < shares.length; i++) ...[
+        _ShareRow(
+          share: shares[i],
+          isRevoking: _revokingShareId == shares[i].id,
+          onRevoke: () => _revoke(context, shares[i].id),
+        ),
+        if (i < shares.length - 1) const SizedBox(height: Spacing.level3),
+      ],
+    ];
+  }
+
+  Future<void> _revoke(BuildContext context, String shareId) async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _revokingShareId = shareId);
+    try {
+      final result = await runGuarded(
+        ref: ref,
+        tag: 'ShareManagementSheet._revoke',
+        action: () =>
+            ref.read(clinicSummaryShareListProvider.notifier).revoke(shareId),
+      );
+      if (result case Failure()) {
+        if (context.mounted) {
+          await Toast.show(context, l10n.reportShareRevokeFailed);
+        }
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _revokingShareId = null);
+      }
+    }
+  }
+}
+
+/// One share row: created / expires / access count / last accessed (or
+/// 暂无访问) / revocation state. No visitor identity is shown anywhere.
+class _ShareRow extends ConsumerWidget {
+  const _ShareRow({
+    required this.share,
+    required this.isRevoking,
+    required this.onRevoke,
+  });
+
+  final ClinicSummaryShareListItemDto share;
+  final bool isRevoking;
+  final VoidCallback onRevoke;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context);
+    final colors = context.theme.colors;
+    final revoked = share.revokedAt != null;
+
+    return FCard(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.level4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (revoked) ...[
+              Row(
+                children: [
+                  FBadge.raw(
+                    style: .delta(
+                      decoration: .shapeDelta(
+                        color: SemanticColor.neutral.muted(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            RadiusTokens.levelFull,
+                          ),
+                        ),
+                      ),
+                    ),
+                    builder: (context, style) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Spacing.level3,
+                        vertical: Spacing.level1,
+                      ),
+                      child: Text(
+                        l10n.reportShareRevokedBadge,
+                        style: TypographyToken.level3
+                            .body(context)
+                            .copyWith(
+                              color: colors.mutedForeground,
+                              fontWeight: FontWeight.w700,
+                            ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: Spacing.level2),
+                  Expanded(
+                    child: Text(
+                      formatDateTimeFull(share.revokedAt!, locale),
+                      style: TypographyToken.level3
+                          .body(context)
+                          .copyWith(color: colors.mutedForeground),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Spacing.level3),
+            ],
+            MetaRow(
+              label: l10n.reportShareCreatedAt,
+              value: formatDateTimeFull(share.createdAt, locale),
+            ),
+            MetaRow(
+              label: l10n.reportShareExpiresAt,
+              value: formatDateTimeFull(share.expiresAt, locale),
+            ),
+            MetaRow(
+              label: l10n.reportShareAccessCountLabel,
+              value: l10n.reportShareAccessCount(share.accessCount.toInt()),
+            ),
+            MetaRow(
+              label: l10n.reportShareLastAccessed,
+              value: share.lastAccessedAt != null
+                  ? formatDateTimeFull(share.lastAccessedAt!, locale)
+                  : l10n.reportShareLastAccessedNever,
+            ),
+            if (!revoked) ...[
+              const SizedBox(height: Spacing.level3),
+              FButton(
+                variant: FButtonVariant.outline,
+                onPress: isRevoking ? null : onRevoke,
+                child: isRevoking
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: FCircularProgress(),
+                      )
+                    : Text(l10n.reportShareRevokeAction),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
