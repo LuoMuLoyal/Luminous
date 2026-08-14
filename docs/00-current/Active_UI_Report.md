@@ -225,3 +225,9 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - **section 重排**：导出区从 AI 总结后移至页面末尾（规律分析之后），引导先阅读再导出。桌面端导出从双栏上方移至双栏之后全宽展示。
 - **间距统一**：移动端各 section 间距从 `Spacing.level4` 统一为 `Spacing.level5`，视觉节奏一致。
 - **Findings 分隔线移除**：`findings.dart` 去掉标题与内容间的 `AppDivider`，与其他 section 头部风格统一。
+
+## 2026-08-14 回顾与就诊摘要成功边界测量
+
+- Review 页在回顾数据实际呈现（AsyncData 过渡、登录态）时上报 `review_opened`（surface=review），session 去重。
+- 就诊摘要预览弹窗：preview 在服务端响应边界上报 `visit_summary_previewed`（surface=more），每次呈现一条；PDF 下载按结果上报 `visit_summary_exported`，失败计 failure 不计 exported。分享由服务端 share_created/opened/revoked 记录，客户端不上报。
+- More sheet 的 PDF/打印导出在 `handleReportExportAction` 的 Success/Failure 边界上报 `visit_summary_exported`（surface=more）。

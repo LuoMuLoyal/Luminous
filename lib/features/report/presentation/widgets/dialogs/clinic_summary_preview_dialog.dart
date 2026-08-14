@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -73,10 +76,38 @@ class _ClinicSummaryPreviewContentState
   bool _isPdfDownloading = false;
   bool _isSharing = false;
 
+  /// One previewed event per dialog presentation. Riverpod auto-retries a
+  /// failed fetch with exponential backoff (invisible to the user), so
+  /// without this flag a single failed preview would flood events; the first
+  /// outcome of each dialog open is recorded, re-opening measures again.
+  bool _previewMeasured = false;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(clinicSummaryPreviewProvider);
+
+    // visit_summary_previewed 在服务端响应边界记录：AsyncData → success，
+    // AsyncError → failure（失败不算 previewed）。每次对话框呈现只记一条
+    // （自动重试与 rebuild 不重复计数）。
+    ref.listen<AsyncValue<ClinicSummaryDto>>(clinicSummaryPreviewProvider, (
+      _,
+      next,
+    ) {
+      if (_previewMeasured) return;
+      final service = ref.read(productEventServiceProvider);
+      if (next.hasValue) {
+        _previewMeasured = true;
+        unawaited(
+          service.trackVisitSummaryPreviewed(ProductEventResult.success),
+        );
+      } else if (next.hasError) {
+        _previewMeasured = true;
+        unawaited(
+          service.trackVisitSummaryPreviewed(ProductEventResult.failure),
+        );
+      }
+    });
 
     return async.when(
       loading: () => SizedBox(
@@ -127,6 +158,16 @@ class _ClinicSummaryPreviewContentState
         path: LucentApiPaths.clinicSummaryPreviewPdf,
         fileNamePrefix: 'clinic-summary',
         shareSubject: l10n.reportExportClinicShareTitle,
+      );
+      // visit_summary_exported 只在服务端响应边界记录：PDF 成功下载 →
+      // success；空响应 / 失败 → failure，不得计为 exported。
+      final service = ref.read(productEventServiceProvider);
+      unawaited(
+        service.trackVisitSummaryExported(
+          result == PdfDownloadResult.success
+              ? ProductEventResult.success
+              : ProductEventResult.failure,
+        ),
       );
       if (mounted) {
         switch (result) {

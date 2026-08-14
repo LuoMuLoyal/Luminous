@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/errors/result.dart';
 import 'package:luminous/core/errors/run_guarded.dart';
@@ -59,6 +60,14 @@ Future<void> handleReportExportAction(
   );
   switch (result) {
     case Success(:final value):
+      // visit_summary_exported 只在服务端成功响应后记录（More sheet 的
+      // PDF/打印导出与 legacy 导出卡同走此路径）；失败分支记录 failure，
+      // 不得计为 exported。
+      unawaited(
+        ref
+            .read(productEventServiceProvider)
+            .trackVisitSummaryExported(ProductEventResult.success),
+      );
       if (!context.mounted) return;
       await _handleExportResult(
         context: context,
@@ -67,6 +76,11 @@ Future<void> handleReportExportAction(
         request: value,
       );
     case Failure(:final error):
+      unawaited(
+        ref
+            .read(productEventServiceProvider)
+            .trackVisitSummaryExported(ProductEventResult.failure),
+      );
       if (!context.mounted) return;
       await Toast.show(
         context,

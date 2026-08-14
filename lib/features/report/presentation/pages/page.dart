@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:luminous/app/router.dart';
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/design/design.dart';
 import 'package:luminous/core/utils/local_date.dart';
@@ -233,6 +234,15 @@ class ReportPage extends ConsumerWidget {
     final session = ref.watch(authSessionProvider);
     final canAccessProtectedData = session.canAccessProtectedData;
     final isPreview = session.isConfirmedSignedOut;
+
+    // review_opened 在回顾数据「实际呈现」时记录：监听 provider 进入
+    // AsyncData 的状态过渡（含确认无事件 / 登出），而不是在导航点击时记录。
+    // 重复呈现（刷新、切 tab）由 service 按 session 去重，build 不重复计数。
+    ref.listen<AsyncValue<EventReview?>>(reviewCurrentProvider, (_, next) {
+      if (next.asData == null) return;
+      if (!ref.read(authSessionProvider).canAccessProtectedData) return;
+      unawaited(ref.read(productEventServiceProvider).trackReviewOpened());
+    });
 
     final currentAsync = ref.watch(reviewCurrentProvider);
     final cachedReview = ref.watch(reviewLastCurrentProvider);

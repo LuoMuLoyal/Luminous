@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucent_api/lucent_api.dart'
+    hide HealthEventStatus, HealthEventOutcome, DailyRecordKind;
+import 'package:luminous/core/analytics/product_event_service.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/features/auth/domain/entities/session.dart';
 import 'package:luminous/features/health_context/data/providers/health_context.dart';
@@ -23,6 +26,7 @@ import 'package:luminous/features/report/presentation/widgets/sections/score_her
 import 'package:luminous/features/report/presentation/widgets/shared/top_bar.dart';
 import 'package:luminous/features/report/presentation/widgets/views/skeleton_view.dart';
 import 'package:luminous/l10n/app_localizations.dart';
+import 'package:mocktail/mocktail.dart';
 
 import '../helpers/test_forui_app.dart';
 import 'widgets/review_fixtures.dart';
@@ -577,6 +581,121 @@ void main() {
     expect(healthEvents.endedEventId, 'evt-active');
     expect(healthEvents.endedOutcome, HealthEventOutcome.improved);
   });
+
+  // ── review_opened 成功边界测量 ──────────────────────────────────────────
+
+  testWidgets('records review_opened when review data is presented', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final service = _RecordingProductEventService();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _FakeReviewRepository(
+          current: reviewActive(),
+          page: const ReviewEventPage(items: [], total: 0),
+        ),
+        signedIn: true,
+        productEvents: service,
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(service.reviewOpenedCalls, 1);
+  });
+
+  testWidgets('does not record review_opened when the review fails', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final service = _RecordingProductEventService();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _ThrowingReviewRepository(),
+        signedIn: true,
+        productEvents: service,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(service.reviewOpenedCalls, 0);
+  });
+
+  testWidgets('does not record review_opened for signed-out previews', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(390, 844);
+    addTearDown(() {
+      tester.view.resetDevicePixelRatio();
+      tester.view.resetPhysicalSize();
+    });
+    final service = _RecordingProductEventService();
+
+    await tester.pumpWidget(
+      _buildApp(
+        reviewRepository: _FakeReviewRepository(),
+        signedIn: false,
+        productEvents: service,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(service.reviewOpenedCalls, 0);
+  });
+
+  testWidgets(
+    're-presentation after refresh re-triggers; session dedupe lives in the service',
+    (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      addTearDown(() {
+        tester.view.resetDevicePixelRatio();
+        tester.view.resetPhysicalSize();
+      });
+      final service = _RecordingProductEventService();
+      final repo = _FakeReviewRepository(
+        current: reviewActive(),
+        page: const ReviewEventPage(items: [], total: 0),
+      );
+
+      await tester.pumpWidget(
+        _buildApp(
+          reviewRepository: repo,
+          signedIn: true,
+          productEvents: service,
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(service.reviewOpenedCalls, 1);
+
+      // Pull-to-refresh re-presents the data; the page reports each
+      // presentation transition, and ProductEventService dedupes them to one
+      // event per session (covered by the service unit tests). Riverpod may
+      // emit the refresh completion more than once, so assert the floor.
+      await tester.drag(find.byType(ListView).first, const Offset(0, 300));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+
+      expect(repo.currentCalls, 2);
+      expect(service.reviewOpenedCalls, greaterThanOrEqualTo(2));
+    },
+  );
 }
 
 Widget _buildApp({
@@ -585,6 +704,7 @@ Widget _buildApp({
   HealthEventRepository? healthEvents,
   HealthContextSnapshot snapshot = _healthContextSnapshot,
   DailyRecordListData records = const DailyRecordListData(items: [], total: 0),
+  ProductEventService? productEvents,
 }) {
   return ProviderScope(
     overrides: [
@@ -598,10 +718,26 @@ Widget _buildApp({
         healthEventRepositoryProvider.overrideWithValue(healthEvents),
       healthContextSnapshotProvider.overrideWith((ref) async => snapshot),
       dailyRecordListForDateProvider.overrideWith((ref, date) async => records),
+      if (productEvents != null)
+        productEventServiceProvider.overrideWithValue(productEvents),
     ],
     child: const TestForuiApp(home: ReportPage()),
   );
 }
+
+/// Records review_opened calls instead of posting events.
+class _RecordingProductEventService extends ProductEventService {
+  _RecordingProductEventService() : super(api: _MockProductEventsApi());
+
+  int reviewOpenedCalls = 0;
+
+  @override
+  Future<void> trackReviewOpened() async {
+    reviewOpenedCalls += 1;
+  }
+}
+
+class _MockProductEventsApi extends Mock implements ProductEventsApi {}
 
 class _SignedInAuthSessionNotifier extends AuthSessionNotifier {
   @override
