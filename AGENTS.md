@@ -13,6 +13,9 @@ staged but no `docs/` file staged → commit blocked. Bypass with `SKIP_DOC_CHEC
   **Never overwrite** an existing entry — always append new sections below existing content.
   The pre-commit hook blocks commits where a staged migration-log file has more than 5 deleted
   lines (indicating overwrite rather than append).
+  - Entries describe change scope and verification conclusions; do not write exact
+    numbers that must stay in sync on later edits (e.g. total test counts).
+    （日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。）
 - **Current state**: UI/data/runtime changes go into the relevant `docs/00-current/*.md`
   sub-file, not into `Current_State.md` (index only).
 - **Closing a TODO**: delete the line from `docs/00-current/TODO.md`.

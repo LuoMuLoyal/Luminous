@@ -46,6 +46,7 @@ Last updated: 2026-08-07 (产品表面冻结决策)
 - `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。
 - `dart run scripts/check_doc_coverage.dart --verify`：校验 doc-map 引用存在、文档链接完整、front-matter 完整、90 天新鲜度（`status: frozen` 豁免）、活跃文档阅读入口（doc-map 规则或文档链接）、`lib/features/*` 覆盖完整性；已接入每日检查（阻断式）。
 - `scripts/check_doc_links.dart --changed`：pre-commit 只检查变更文档的外链；变更集含文档删除/重命名时全量扫描以捕获指向已删文档的入链。
+- 迁移日志条目描述变更范围与验证结论，不写需要持续同步的精确数字（如测试总数）。
 - `scripts/verify_lucent_openapi_sync.dart` 校验 OpenAPI JSON 以及当前生成客户端入口
   `lib/lucent_api.dart`、`lib/src/api.dart`、`lib/src/deserialize.dart` 是否存在。
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
