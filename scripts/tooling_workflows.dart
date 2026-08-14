@@ -89,14 +89,15 @@ Future<void> runPreCommitChecks(ToolContext context) async {
     await _checkMigrationLogOverwrite(context);
   }
 
-  // ── Documentation check (non-blocking) ───────────────────────
-  // Runs in warning-only mode so missing docs are reported but do
-  // not block the commit. Bypass entirely with SKIP_DOC_CHECK=1.
+  // ── Documentation check (blocking) ─────────────────────────────
+  // Code files staged but no docs/ file staged → exit(1), so a real
+  // commit is blocked. Only staged files are evaluated (--staged).
+  // Bypass entirely with SKIP_DOC_CHECK=1 or `git commit --no-verify`.
   await runLoggedCommand(
     'dart',
-    ['run', 'scripts/check_doc_coverage.dart', '--warning-only', '--staged'],
+    ['run', 'scripts/check_doc_coverage.dart', '--staged'],
     workingDirectory: context.repoRoot,
-    stepName: 'doc-check (warning only)',
+    stepName: 'doc-check (blocking)',
   );
   stdout.writeln('');
 

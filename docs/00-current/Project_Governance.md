@@ -43,7 +43,7 @@ Last updated: 2026-08-07 (产品表面冻结决策)
 
 ## 文档治理
 
-- `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：默认阻断模式——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于日常检查；`SKIP_DOC_CHECK=1` 可旁路。
+- `docs/doc-map.yaml` + `scripts/check_doc_coverage.dart`：阻断模式（pre-commit 实际启用，只评估暂存文件）——有代码变更但无 `docs/` 文件时 `exit(1)`；`--warning-only` 用于每日检查（保持警告模式，不阻断）；`SKIP_DOC_CHECK=1` 可旁路。
 - `scripts/verify_lucent_openapi_sync.dart` 校验 OpenAPI JSON 以及当前生成客户端入口
   `lib/lucent_api.dart`、`lib/src/api.dart`、`lib/src/deserialize.dart` 是否存在。
 - ARB 文件按功能模块拆分为 `lib/l10n/src/{fragment}_{locale}.arb`，通过 `scripts/arb_tools.dart` 合并。**绝对不要直接编辑 `app_zh.arb` / `app_en.arb`**。
