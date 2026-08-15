@@ -1,5 +1,9 @@
 part of '../views/mobile_dashboard_view.dart';
 
+/// Maximum drugbox rows rendered before collapsing the rest into the
+/// "more" footer.
+const _maxVisibleDrugboxItems = 3;
+
 class _DrugBoxSection extends StatelessWidget {
   const _DrugBoxSection({
     required this.workspace,
@@ -51,14 +55,18 @@ class _DrugBoxSection extends StatelessWidget {
                   _DrugBoxEmpty(l10n: l10n)
                 else ...[
                   _DrugBoxContent(
-                    items: items.take(3).toList(growable: false),
+                    items: items
+                        .take(_maxVisibleDrugboxItems)
+                        .toList(growable: false),
                     l10n: l10n,
                     onOpenReminder: onOpenReminder,
                   ),
-                  if (items.length > 3) ...[
+                  if (items.length > _maxVisibleDrugboxItems) ...[
                     const SizedBox(height: Spacing.level2),
                     _TruncatedFooter(
-                      label: l10n.medicineDrugboxMoreCount(items.length - 3),
+                      label: l10n.medicineDrugboxMoreCount(
+                        items.length - _maxVisibleDrugboxItems,
+                      ),
                       onTap: () => pushAuthRequiredRoute(
                         context,
                         Routes.mineMedicineNew,
