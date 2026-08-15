@@ -36,6 +36,7 @@ YYYY-MM-DD-short-task-name.md
 - [`2026-07-10-legal-compliance-pages.md`](2026-07-10-legal-compliance-pages.md)
 - [`2026-07-29-native-bridging-roadmap.md`](2026-07-29-native-bridging-roadmap.md)
 - [`2026-08-01-ai-chat-redesign-plan.md`](2026-08-01-ai-chat-redesign-plan.md)
+- [`2026-08-14-flutter-3.47-upgrade-plan.md`](2026-08-14-flutter-3.47-upgrade-plan.md)
 
 The event-led product-loop program (`2026-08-07-product-loop-program.md`) and its
 execution plan (`2026-08-07-visit-summary-and-product-measurement.md`) were
