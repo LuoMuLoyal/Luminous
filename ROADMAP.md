@@ -7,14 +7,14 @@ It is a living document — directions shift as the product and community grow.
 
 Luminous is currently at `0.1.0-dev`. The core mobile experience is functional
 with all five tabs active, but the project has not yet shipped a stable release.
-The product direction has been re-baselined around time-bounded health events,
-sparse records, proactive guidance, event-first review, and privacy-minimal
-closed-loop measurement; the fifth tab's user task is now Review and the
-previous general report/dashboard model is retained only as a legacy
-compatibility page under More. The product-loop program (ADR-0011) is complete:
-the loop from event start → suggestion impression/action → outcome → review
-open is measured end-to-end, and the optional visit summary is field-level
-privacy-controlled with revocable shares.
+The product direction has been re-baselined around a long-term health companion:
+low-burden sparse records, inspectable personal context, coverage-aware daily /
+weekly / monthly insights, proactive suggestions, and contextual AI answers.
+Food, water, sleep, mood, symptoms, activity, and medicine are peer domains.
+The previously planned event-led loop is implemented and remains a useful
+high-intensity mode, but it no longer defines the whole product or its north-star
+metric. The five-tab structure remains the current runtime and will be discussed
+separately after user-value research.
 
 **What works today**
 
@@ -44,8 +44,10 @@ privacy-controlled with revocable shares.
   offline queue + idempotent retry), server-authoritative lifecycle events,
   and an admin-only funnel endpoint (core loop vs optional exports separated,
   small-sample suppression)
-- Reports: AI-driven summaries, trend visualization (fl_chart), data export,
-  suggestion history (lifecycle-aware: active / expired / dismissed)
+- Legacy reports: generic AI summaries and composite-style trends remain only
+  on a compatibility surface pending deletion; data export and suggestion
+  history are real. New longitudinal insights must use explicit sources and
+  coverage rather than reuse the legacy report semantics.
 - Settings: theme (mode + family), locale, accessibility, notifications, data
   storage, AI context, security PIN, developer options (debug-only)
 - Design system: Forui-based, full i18n (zh / en) with ARB fragment splitting,
@@ -72,20 +74,27 @@ privacy-controlled with revocable shares.
 - Push notification delivery (pending Lucent FCM/APNs)
 - Deferred polish: AI session rename/delete, Markdown template upgrade,
   visit-summary templating, symptom-medicine timeline (see `docs/00-current/TODO.md`)
-- Contract debt: the four clinic-summary section keys remain required in the
-  Lucent contract (client deserializes with placeholders)
+- Long-term companion gap: ordinary food, water, sleep, and mood records can
+  enter context but do not yet consistently trigger proactive analysis; a new
+  coverage-aware daily / weekly / monthly insight contract is still required
 
-Desktop and the full authenticated Web app are intentionally frozen. Their
-existing code remains, but feature parity, distribution, and productization are
-not roadmap commitments. `Luminous-website` remains the product/competition site.
+The existing Flutter desktop and authenticated Web surfaces remain frozen for
+the current release, but desktop/Web are no longer treated as permanently
+discarded product directions. A separate study must first validate the large-
+screen job (reading and comparing longitudinal health information that is hard
+to inspect on mobile) and the Next.js + Tauri 2 candidate route. Feature parity,
+distribution, and productization are not current release commitments.
+`Luminous-website` remains the product/competition site.
 
 ---
 
 ## Directions
 
 Current priorities follow
-[ADR-0011](docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)
-and [Product Context](CONTEXT.md); the archived brainstorm remains historical input.
+[Product Vision](docs/01-product/Product_Vision.md) and
+[Product Context](CONTEXT.md). [ADR-0011](docs/02-reference/adr/0011-event-led-sparse-record-product-loop.md)
+is retained as the superseded historical decision for the already implemented
+event-loop program.
 
 ### Current Release → `0.1.0`
 
@@ -95,9 +104,9 @@ Finish integration, verification, and release of the existing runtime.
 - Run the full mobile and full-stack release gates
 - Keep current-state documentation honest about existing Report and Today behavior
 
-### Product Loop Program
+### Completed Event-Loop Program
 
-The event-led product-loop program (ADR-0011) is **complete**. Workstream 1
+The former event-led product-loop program (ADR-0011) is **complete**. Workstream 1
 (Review Experience — event-first review, `/report` compatibility, removal of
 the composite score, exports moved into More) and Workstream 2 (Visit Summary
 and Measurement — revocable field-level-privacy shares, problem-oriented
@@ -105,25 +114,43 @@ summary, privacy-minimal product events with the core loop measured separately
 from exports, admin funnel) are both shipped and verified. The plan files have
 been deleted (实施完毕文件已删); remaining work is tracked in
 [`docs/00-current/TODO.md`](docs/00-current/TODO.md) and the P2/P3 sections
-below.
+below. Completion of this program is an implementation fact, not evidence that
+users want an event-centred product.
 
-### P2 → `1.1.0`
+### User-Value Validation
 
-Harden the experience and add high-value features on the stable foundation.
+Before changing the five tabs or committing to desktop/Web productization,
+validate six questions with real users: low-burden input choice, minimum useful
+fields, helpful versus annoying proactive advice, contextual AI versus a generic
+model, value during non-sick weeks, and trust in cross-day/month data access.
+Use the study design in
+[`research/00-市场调研/05-长期健康伙伴用户价值验证.md`](research/00-市场调研/05-长期健康伙伴用户价值验证.md).
 
-- **Review Validation** — verify that users open event reviews and complete the
-  single result question; generic weekly/monthly report usage is not assumed
-- **Symptom-Medicine Timeline** — event-scoped evidence view with explicit data
-  coverage and no unsupported causal claims
-- **Visit Summary Hardening** — optional, problem-oriented export under Review
-  > More, with field-level privacy controls and access measurement
+### P2 → Long-Term Companion Core
 
-### P3 → `1.2.0+`
+Build only the capabilities required to test the companion hypothesis on the
+stable foundation.
+
+- **Low-Burden Inputs** — compare photo, natural language, one-tap, and verified
+  passive sources per domain; do not require one universal input method
+- **Coverage-Aware Insight Contract** — daily / weekly / monthly facts, source
+  coverage, limited patterns, and an explicit abstain state; no composite score
+  or generic AI report
+- **Proactive Companion Triggering** — allow ordinary lifestyle records to
+  trigger bounded analysis when evidence and action value are sufficient
+- **Health Context and Memory Controls** — separate chat memory from health
+  memory and make cited records inspectable, correctable, revocable, and deletable
+- **Contextual AI Evaluation** — blind-test structured personal context against
+  no context and user-written background before claiming differentiation
+
+### P3 → Adaptive Companion and Platform Research
 
 Extend product capabilities.
 
-- **Red-Flag Rules** — fixed rule table for high-risk symptom patterns (fever,
-  allergic reaction, breathing difficulty) with static safety copy
+- **Suggestion Adaptation** — calibrate timing, frequency, suppression, and
+  feedback through controlled experiments; do not optimize only for clicks
+- **Red-Flag Rules** — fixed, reviewed rules for high-risk symptom patterns with
+  static safety copy and professional-help boundaries
 - **Smart Reminder Priority** — context-aware reminder scheduling based on
   recording patterns and confirmation latency (requires Lucent rule extension)
 - **Verified Health Bridge** — optional read-only integration only for verified
@@ -132,6 +159,9 @@ Extend product capabilities.
   one-tap water logging and medication status
 - **Embedded Assistant** — inline AI entry points in Today / Medicine / Review
   instead of standalone-only access
+- **Large-Screen Job Study** — validate whether users open Web/desktop to read
+  and compare longitudinal information that is hard to inspect on mobile;
+  Next.js + Tauri 2 remains a candidate, not a committed architecture
 
 ### Scale & Platform → `2.0.0`
 
@@ -150,10 +180,10 @@ Broaden platform reach and prepare for larger scale.
 | -------- | -------------------- | ----------- |
 | `0.1.0-dev` | Current integration and release preparation | In progress |
 | `0.1.0`     | Existing runtime release | Planned     |
-| `0.2.0+`    | Event-led sparse-record product loop | Planned     |
-| `1.0.0`     | Stable validated product loop | Planned     |
-| `1.1.0`     | P2 feature polish    | Planned     |
-| `1.2.0`     | P3 feature expansion | Planned     |
+| `0.2.0+`    | Long-term companion core experiments | Candidate |
+| `1.0.0`     | Stable, user-validated companion loop | Candidate |
+| `1.1.0`     | Evidence-led refinement | Candidate |
+| `1.2.0`     | Adaptive companion / platform expansion | Candidate |
 | `2.0.0`     | Scale & platform     | Planned     |
 
 Releases follow [Semantic Versioning](https://semver.org/). Each release passes

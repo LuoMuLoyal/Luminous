@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-03
+updated: 2026-08-15
 ---
 
 # Luminous Current State
 
-Last updated: 2026-08-11
+Last updated: 2026-08-15
 
 本文件是 `00-current/` 目录的索引。具体实现细节由各子文件负责，变更历史见 `03-logs/migration-log/`。
 
@@ -42,7 +42,7 @@ Sparse Record Semantics 的后端已提供统一 observed metric OpenAPI 合同�
 ### UI 页面状态
 
 - [[00-current/Active_Mobile_UI]] — 移动 UI 总览与启动流程
-- [[00-current/Desktop_UI]] — 桌面端 UI 现状（桌面产品表面冻结）
+- [[00-current/Desktop_UI]] — 现有 Flutter 桌面端 UI 事实（当前不产品化；未来大屏方向另行研究）
 - [[00-current/Active_UI_Today]] — Today 页面
 - [[00-current/Active_UI_Record]] — Record 页面
 - [[00-current/Active_UI_Medicine]] — Medicine 页面

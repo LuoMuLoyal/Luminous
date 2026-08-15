@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-11
+updated: 2026-08-15
 ---
 
 # Work Phase Guide
 
-Last updated: 2026-08-11
+Last updated: 2026-08-15
 
 本文是 Luminous 的阶段总纲，用来决定每个时期先做什么、暂时不做什么。短期任务放在 `plans/`，完成后删除计划，把稳定事实同步回 `docs/00-current/`。
 
@@ -56,7 +56,7 @@ Forui 重构后消除可见 UI 破损和迁移噪声。五个 Tab overflow/文�
 
 关键边界：
 
-- 手机端是唯一核心产品；桌面端和完整认证 Web 应用冻结但不删除。
+- 手机端是当前首发与用户验证表面；现有 Flutter 桌面/Web 实现当前只维护共享回归，但这不是永久产品冻结。未来大屏方向等待独立用户任务与 Next.js + Tauri 2 候选路线调研，不承诺机械功能对等。
 - 优先修复阻断 `0.1.0` 联调、验证或发布的问题。
 - 当前状态文档必须继续描述真实运行时，不能把产品闭环方向写成已实现能力。
 
@@ -104,7 +104,7 @@ dart run scripts/run_fullstack_checks.dart
 
 - 就诊摘要模板化
 - 症状-用药关联时间线
-- 记录连续性激励
+- 暂停后恢复与低负担记录反馈（不采用连续打卡惩罚或综合分）
 
 候选方向（Brainstorm P3 — 1.2.0+）：
 

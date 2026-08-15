@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-07
+updated: 2026-08-15
 ---
 
 # Project Governance
 
-Last updated: 2026-08-07 (产品表面冻结决策)
+Last updated: 2026-08-15 (当前发布表面与未来大屏候选)
 
 ## 维护模式
 
@@ -37,9 +37,9 @@ Last updated: 2026-08-07 (产品表面冻结决策)
 
 - 移动端是当前产品表面。
 - 底部 tab 保留 `today / record / medicine / report / mine` 五个运行时入口；产品方向将 `report` 的用户任务和名称改为“回顾”，代码尚未迁移。
-- 完整认证 Web 应用冻结并保留代码，不继续功能对等、发行或产品化。
+- 现有 Flutter Web 应用保持当前维护边界；未来 Web 产品可能承担大屏纵向洞察，Next.js 是候选实现而非已定方案，完成独立调研前不扩展认证产品壳或追求功能对等。
 - `Luminous-site` 当前是竞赛/营销首页，不做签入式报告预览。
-- 桌面端冻结并保留代码，不继续功能对等、发行或产品化；共享代码回归仍需避免破坏现有实现。
+- 现有 Flutter 桌面端保留，当前只维护共享代码回归；这不是永久放弃桌面产品。未来桌面产品初步考虑用 Tauri 2 承载 Web 大屏体验，但用户任务、数据边界和技术路线尚未决策。
 
 ## 文档治理
 

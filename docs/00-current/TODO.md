@@ -13,17 +13,17 @@ Last updated: 2026-08-14
 
 ## 产品闭环（程序已收口，仅剩延后项）
 
-Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]）已实施完毕，
+Product Loop Program（历史决策见已被新产品方向取代的 [[02-reference/adr/0011-event-led-sparse-record-product-loop]]）已实施完毕，
 计划文件已删：健康事件、主动建议、稀疏记录语义、事件优先回顾与隐私克制的闭环测量全部落地，
 就诊摘要支持字段级隐私选择与可撤销分享。以下为延后项。
 
 ### 健康事件与关键确认
 
-- 饮食、心情和普通笔记保留录入与回看，退出首阶段主动建议闭环；数据足够时也只能先作为观察项
+- 饮食、饮水、睡眠和心情是健康伙伴纵向理解的平级数据源；覆盖率和来源足够时可进入主动建议闭环，普通笔记默认只作上下文证据
 
 ### 平台与验证
 
-- 桌面端和完整认证 Web 应用冻结：保留代码，不继续功能对等、发行或产品化；手机端是唯一核心产品，`Luminous-website` 继续承担官网和竞赛展示
+- 手机端继续承担当前首发与用户验证；桌面/Web 保留现有代码和未来方向，但在完成“大屏纵向健康阅读”用户任务及 Next.js + Tauri 2 候选路线调研前不启动产品化，也不承诺功能对等
 
 ## 延后（有明确原因）
 
@@ -52,15 +52,12 @@ Product Loop Program（决策依据 [[02-reference/adr/0011-event-led-sparse-rec
 - 超大文件拆分暂缓（Phase Guide 明确"现在不要做"）：`record/presentation/pages/detail.dart`（853 行）、`record/presentation/widgets/sections/quick_entry_panel.dart`（565 行）、`record/presentation/pages/edit.dart`（511 行）、`report/presentation/pages/page.dart`（438 行）、`settings/presentation/pages/page.dart`（184 行）
 - 剩余约 80 处 `!` 强制解引用：均为安全模式（有前置 null check），留待逐步清理
 
-## 实验性功能（稳定版后启动）
+## 实验性功能（当前冻结）
 
 - GenUI（Generative UI）渲染引擎
   - 现状：`proposedActions` 已是 GenUI 雏形（4 种固定类型 + 1 个固定卡片 `AssistantProposalCard`）
-  - 目标：扩展为开放式 UI 组件 JSON schema，LLM 返回结构化组件树，客户端 `GenUIRenderer` 递归渲染原生 Widget
-  - 路径：Phase 2 在 `proposedActions` 里新增 `type: "gen_ui"`，渐进式替代固定卡片
-  - 前置条件：稳定版发布后启动，Feature Flags `genUiEnabled` 已就绪
-  - 不需要 Firebase，纯客户端渲染 + Lucent 后端 LLM
-  - 预估工作量：15-23 个工作日
+  - 历史设想：扩展为开放式 UI 组件 JSON schema，由客户端渲染结构化组件树；该设想未获当前用户任务支持
+  - 决策：保留现有方向与 Feature Flag，不删除，也不在当前阶段推进；重新启动需单独证明用户任务和受控渲染边界
 
 ## Not in P0-P3 Scope
 

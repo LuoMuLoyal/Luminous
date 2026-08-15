@@ -1,8 +1,11 @@
 # ADR-0011: 事件期优先且允许稀疏记录的产品闭环
 
-- **Status**: accepted
+- **Status**: superseded
 - **Date**: 2026-08-07
+- **Superseded**: 2026-08-15 by the long-term health companion direction in [`Product_Vision.md`](../../01-product/Product_Vision.md)
 - **Deciders**: LuoMuLoyal
+
+> 本 ADR 保留事件闭环重构的历史决策与已经实施的运行时事实。其“事件为回顾主单位”和“手机端永久唯一核心产品”不再代表当前产品方向：健康事件现为平级专题，日/周/月纵向洞察升为核心；手机端承担当前首发，桌面/Web 等待独立用户任务与技术路线研究。
 
 ## Context
 
