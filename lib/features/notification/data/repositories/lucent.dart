@@ -31,8 +31,8 @@ class LucentNotificationRepository implements NotificationRepository {
     final dto = response.data!;
     ensureEnvelopeSuccess(code: dto.code, message: dto.message);
     return NotificationPage(
-      items: dto.items.map(_mapItem).toList(),
-      total: dto.total.toInt(),
+      items: dto.data.items.map(_mapItem).toList(),
+      total: dto.data.total.toInt(),
       page: page,
       pageSize: pageSize,
     );
@@ -62,7 +62,7 @@ class LucentNotificationRepository implements NotificationRepository {
     final response = await api.notificationsControllerGetUnreadCountV1();
     final dto = response.data!;
     ensureEnvelopeSuccess(code: dto.code, message: dto.message);
-    return dto.count.toInt();
+    return dto.data.count.toInt();
   }
 
   @override

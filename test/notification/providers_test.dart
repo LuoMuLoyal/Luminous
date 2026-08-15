@@ -50,7 +50,7 @@ class FakeNotificationsApi implements NotificationsApi {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
     return _response(
-      UnreadCountResponseDto(code: 0, message: '', count: unreadCount),
+      UnreadCountResponseDto(code: 0, message: '', data: UnreadCountDataDto(count: unreadCount)),
     );
   }
 
@@ -74,8 +74,10 @@ class FakeNotificationsApi implements NotificationsApi {
       NotificationListResponseDto(
         code: 0,
         message: '',
-        items: notifications,
-        total: notifications.length,
+        data: NotificationListDataDto(
+          items: notifications,
+          total: notifications.length,
+        ),
       ),
     );
   }
@@ -139,7 +141,7 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(UnreadCountResponseDto(code: 0, message: '', count: 0));
+    return _response(UnreadCountResponseDto(code: 0, message: '', data: UnreadCountDataDto(count: 0)));
   }
 
   @override
@@ -154,7 +156,11 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     return _response(
-      NotificationListResponseDto(code: 0, message: '', items: [], total: 0),
+      NotificationListResponseDto(
+        code: 0,
+        message: '',
+        data: NotificationListDataDto(items: [], total: 0),
+      ),
     );
   }
 
@@ -244,7 +250,11 @@ class _ErrorUnreadCountApi extends FakeNotificationsApi {
     ProgressCallback? onReceiveProgress,
   }) async {
     return _response(
-      UnreadCountResponseDto(code: 500001, message: 'Server error', count: 0),
+      UnreadCountResponseDto(
+        code: 500001,
+        message: 'Server error',
+        data: UnreadCountDataDto(count: 0),
+      ),
     );
   }
 }
