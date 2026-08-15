@@ -184,16 +184,31 @@ class MedicineReminderNotificationPlanner {
       candidate = 1;
     }
 
+    // Linear probing over the 31-bit space practically never saturates;
+    // the attempt cap only guards against degenerate inputs that would
+    // otherwise loop forever.
+    var attempts = 0;
     while (usedIds.contains(candidate)) {
       candidate = (candidate + 1) & 0x7fffffff;
       if (candidate == 0) {
         candidate = 1;
+      }
+      attempts += 1;
+      if (attempts > _maxIdProbeAttempts) {
+        throw StateError(
+          'Unable to allocate a unique notification id after '
+          '$_maxIdProbeAttempts probes (usedIds=${usedIds.length})',
+        );
       }
     }
 
     usedIds.add(candidate);
     return candidate;
   }
+
+  /// Upper bound on linear probing before giving up (see
+  /// [_allocateNotificationId]).
+  static const _maxIdProbeAttempts = 1000;
 
   /// Checks whether [scheduledAt] falls inside a DND window.
   ///
