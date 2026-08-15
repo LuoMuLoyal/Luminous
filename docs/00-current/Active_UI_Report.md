@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-14
+updated: 2026-08-15
 ---
 
 # Active UI — Report
 
-Last updated: 2026-08-14 (Workstream 2 Task 10：产品闭环收口 — 分享页信封修复、漏斗合同同步、全量验证)
+Last updated: 2026-08-15 (Workstream 2 Task 10：产品闭环收口 — 分享页信封修复、漏斗合同同步、全量验证)
 
 Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed metric，并继续提供由该 metric 派生的旧升数序列；该兼容序列保留 sufficient observed 值（包括 0 ml），排除 unknown/partial。Lucent 合同与 generated client 已提供 `ReportMetricDto.observedMetric`，Luminous Report domain 保留该字段；但当前 mapper 仍以 legacy `dto.value` / `dto.unit` / `dto.status` 填充主字段，仅附加映射 `observedMetric`，Flutter UI 也仍以 legacy scalar 为主要展示路径。
 
@@ -248,3 +248,9 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - Review 页在回顾数据实际呈现（AsyncData 过渡、登录态）时上报 `review_opened`（surface=review），session 去重。
 - 就诊摘要预览弹窗：preview 在服务端响应边界上报 `visit_summary_previewed`（surface=more），每次呈现一条；PDF 下载按结果上报 `visit_summary_exported`，失败计 failure 不计 exported。分享由服务端 share_created/opened/revoked 记录，客户端不上报。
 - More sheet 的 PDF/打印导出在 `handleReportExportAction` 上报 `visit_summary_exported`（surface=more）：HTTP 成功但请求状态为 idle/failed/unavailable 时记 failure，requested/processing/completed 才记 success。
+
+### 2026-08-15 — Clinic Summary 分享/预览走生成客户端
+
+响应契约信封化修复后,preview/share/shared 三处 raw Dio 手动解包 workaround 移除,
+统一走生成客户端(`reportsControllerPreviewClinicSummaryV1` 等);`api_paths.dart` 删除
+对应的信封解包常量与注释。行为不变(仍校验信封 code),错误路径由 DioException 驱动。

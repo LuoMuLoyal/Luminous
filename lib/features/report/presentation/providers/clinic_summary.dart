@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
-import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/providers/auth_guarded.dart';
 
 /// All six selectable clinic summary fields, in display order.
@@ -34,12 +33,6 @@ const kClinicSummaryDefaultFields = <ClinicSummaryRequestDtoSelectedFieldsEnum>[
 /// [selectedFields]; the server applies the selection so deselected sections
 /// are omitted from the response (and from the PDF / share, which consume the
 /// same filtered view).
-///
-/// The generated [ReportsApi] method cannot be used here: the response is
-/// wrapped in the `{code, message, data}` envelope (the generated client
-/// deserializes the raw body). The raw [Dio] call unwraps the envelope; the
-/// four section keys are optional in the contract, so deselected sections
-/// deserialize to null.
 final clinicSummaryPreviewProvider = FutureProvider.autoDispose
     .family<ClinicSummaryDto, List<ClinicSummaryRequestDtoSelectedFieldsEnum>>((
       ref,
@@ -56,40 +49,30 @@ Future<ClinicSummaryDto> _fetchPreview(
   Ref ref,
   List<ClinicSummaryRequestDtoSelectedFieldsEnum> selectedFields,
 ) async {
-  final dio = ref.watch(lucentDioClientProvider).dio;
-  final response = await dio.post<Map<String, dynamic>>(
-    LucentApiPaths.clinicSummaryPreview,
-    data: ClinicSummaryRequestDto(selectedFields: selectedFields).toJson(),
+  final api = ref.watch(lucentClientProvider).reports;
+  final response = await api.reportsControllerPreviewClinicSummaryV1(
+    clinicSummaryRequestDto:
+        ClinicSummaryRequestDto(selectedFields: selectedFields),
   );
-  final data = response.data?['data'];
-  if (data is! Map<String, dynamic>) {
-    throw StateError('clinic summary preview response has no data payload');
-  }
-  return ClinicSummaryDto.fromJson(data);
+  final dto = response.data!;
+  ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+  return dto.data;
 }
 
 /// Fetches a shared clinic summary by its public token.
 ///
 /// Calls `GET /api/v1/user/reports/clinic-summary/shared/{token}` — no
 /// authentication required. Used by the public deep-link share page.
-///
-/// The generated [ReportsApi] method cannot be used here: like the preview,
-/// the response is wrapped in the `{code, message, data}` envelope (the
-/// generated client deserializes the raw body as a bare [ClinicSummaryDto]).
-/// The raw [Dio] call unwraps the envelope; the four section keys are
-/// optional in the contract, so deselected sections deserialize to null.
 final clinicSummarySharedProvider = FutureProvider.autoDispose
     .family<ClinicSummaryDto, String>((ref, token) async {
-      final dio = ref.watch(lucentDioClientProvider).dio;
-      final response = await dio.get<Map<String, dynamic>>(
-        LucentApiPaths.clinicSummaryShared(token),
-        options: Options(extra: const {'skipAuthorization': true}),
+      final api = ref.watch(lucentClientProvider).reports;
+      final response = await api.reportsControllerGetSharedClinicSummaryV1(
+        token: token,
+        extra: const {'skipAuthorization': true},
       );
-      final data = response.data?['data'];
-      if (data is! Map<String, dynamic>) {
-        throw StateError('clinic summary shared response has no data payload');
-      }
-      return ClinicSummaryDto.fromJson(data);
+      final dto = response.data!;
+      ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+      return dto.data;
     });
 
 /// The current user's clinic summary shares, newest first.

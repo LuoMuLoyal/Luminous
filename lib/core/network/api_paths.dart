@@ -86,32 +86,4 @@ abstract final class LucentApiPaths {
   /// Downloads a shared clinic summary as PDF (no auth required).
   static String clinicSummarySharedPdf(String token) =>
       '/api/v1/user/reports/clinic-summary/shared/$token/pdf';
-
-  // ── Envelope-shaped responses (generated DTO is bare, not envelope) ─────
-
-  /// `POST /api/v1/user/reports/clinic-summary/preview` — the generated
-  /// [ReportsApi] method deserializes the response directly as
-  /// [ClinicSummaryDto], but the server wraps it in the `{code, message,
-  /// data}` envelope. Raw [Dio] lets the preview provider unwrap the
-  /// envelope; the four section keys are optional in the contract, so
-  /// deselected sections deserialize to null.
-  static const clinicSummaryPreview =
-      '/api/v1/user/reports/clinic-summary/preview';
-
-  /// `POST /api/v1/user/reports/clinic-summary/share` — same envelope-shape
-  /// mismatch as [clinicSummaryPreview]: the generated [ReportsApi] method
-  /// deserializes [ClinicSummaryShareResponseDto] from the raw body, but the
-  /// server wraps it in the envelope.
-  static const clinicSummaryShare = '/api/v1/user/reports/clinic-summary/share';
-
-  /// `GET /api/v1/user/reports/clinic-summary/shared/{token}` — public route
-  /// (no auth), same envelope-shape mismatch as [clinicSummaryPreview]: the
-  /// generated [ReportsApi] method deserializes [ClinicSummaryDto] from the
-  /// raw body, but the server wraps it in the `{code, message, data}`
-  /// envelope. Raw [Dio] lets the shared provider unwrap the envelope; the
-  /// four section keys are optional in the contract, so deselected sections
-  /// deserialize to null. The call must set
-  /// `extra: {'skipAuthorization': true}` like [clinicSummarySharedPdf].
-  static String clinicSummaryShared(String token) =>
-      '/api/v1/user/reports/clinic-summary/shared/$token';
 }

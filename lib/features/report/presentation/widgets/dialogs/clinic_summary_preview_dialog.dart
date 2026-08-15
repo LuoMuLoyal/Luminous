@@ -12,6 +12,7 @@ import 'package:luminous/core/errors/run_guarded.dart';
 import 'package:luminous/core/feedback/toast.dart';
 import 'package:luminous/core/network/api_paths.dart';
 import 'package:luminous/core/network/client_providers.dart';
+import 'package:luminous/core/network/envelope.dart';
 import 'package:luminous/core/utils/date_format_utils.dart';
 import 'package:luminous/core/widgets/common/dialog_shell.dart';
 import 'package:luminous/features/report/presentation/providers/clinic_summary.dart';
@@ -271,25 +272,21 @@ class _ClinicSummaryPreviewContentState
     notifier.set(true);
     setState(() => _isCreatingShare = true);
     try {
-      // 分享创建走原始 Dio：响应是 {code, message, data} 信封而生成的
-      // 客户端把 body 直接当 ClinicSummaryShareResponseDto 反序列化。
+      // 生成客户端直接反序列化信封（{code, message, data}），无需再手动解包。
       // 请求体携带当前字段选择，未选择字段不会进入分享内容。
       final result = await runGuarded(
         ref: ref,
         tag: 'ClinicSummaryPreviewDialog._createShare',
         action: () async {
-          final dio = ref.read(lucentDioClientProvider).dio;
-          final response = await dio.post<Map<String, dynamic>>(
-            LucentApiPaths.clinicSummaryShare,
-            data: ClinicSummaryRequestDto(
+          final api = ref.read(lucentClientProvider).reports;
+          final response = await api.reportsControllerShareClinicSummaryV1(
+            clinicSummaryRequestDto: ClinicSummaryRequestDto(
               selectedFields: _selectedFields,
-            ).toJson(),
+            ),
           );
-          final data = response.data?['data'];
-          if (data is! Map<String, dynamic>) {
-            throw StateError('share response has no data payload');
-          }
-          return ClinicSummaryShareResponseDto.fromJson(data);
+          final dto = response.data!;
+          ensureEnvelopeSuccess(code: dto.code, message: dto.message);
+          return dto;
         },
       );
       switch (result) {
@@ -318,7 +315,7 @@ class _ClinicSummaryPreviewContentState
 
   Future<void> _copyLink() async {
     final l10n = AppLocalizations.of(context)!;
-    final url = _shareResponse?.shareUrl ?? '';
+    final url = _shareResponse?.data.shareUrl ?? '';
     if (url.isEmpty) return;
     await Clipboard.setData(ClipboardData(text: url));
     if (mounted) {
@@ -328,7 +325,7 @@ class _ClinicSummaryPreviewContentState
 
   Future<void> _revokeShare() async {
     final l10n = AppLocalizations.of(context)!;
-    final shareId = _shareResponse?.shareId;
+    final shareId = _shareResponse?.data.shareId;
     if (shareId == null || shareId.isEmpty) {
       if (mounted) {
         await Toast.show(context, l10n.reportShareRevokeFailed);
@@ -618,14 +615,14 @@ class _ShareCreatedPanel extends StatelessWidget {
         const SizedBox(height: Spacing.level3),
         MetaRow(
           label: l10n.reportShareCreatedExpiresAt,
-          value: formatDateTimeFull(response.expiresAt, locale),
+          value: formatDateTimeFull(response.data.expiresAt, locale),
         ),
         const SizedBox(height: Spacing.level4),
         FCard(
           child: Padding(
             padding: const EdgeInsets.all(Spacing.level4),
             child: Text(
-              response.shareUrl,
+              response.data.shareUrl,
               style: TypographyToken.level3
                   .body(context)
                   .copyWith(color: colors.mutedForeground),

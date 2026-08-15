@@ -196,13 +196,22 @@ Response<ClinicSummaryShareListResponseDto> _shareListResponse(
 void main() {
   late _MockReportsApi reportsApi;
   late _FakeLucentClient client;
+  late List<ClinicSummaryRequestDto> previewRequests;
+
+  setUpAll(() {
+    registerFallbackValue(ClinicSummaryRequestDto(selectedFields: []));
+  });
 
   setUp(() {
     reportsApi = _MockReportsApi();
     client = _FakeLucentClient(reportsApi: reportsApi);
+    previewRequests = [];
   });
 
-  ProviderContainer makeContainer({LucentDioClient? dioClient}) {
+  ProviderContainer makeContainer({
+    LucentDioClient? dioClient,
+    bool useMockClient = true,
+  }) {
     final dio =
         dioClient ??
         LucentDioClient(
@@ -215,7 +224,7 @@ void main() {
       overrides: [
         authSessionProvider.overrideWith(SignedInAuthSessionNotifier.new),
         lucentDioClientProvider.overrideWithValue(dio),
-        lucentClientProvider.overrideWithValue(client),
+        if (useMockClient) lucentClientProvider.overrideWithValue(client),
       ],
     );
     addTearDown(c.dispose);
@@ -239,7 +248,7 @@ void main() {
         );
         addTearDown(dioClient.dispose);
 
-        final c = makeContainer(dioClient: dioClient);
+        final c = makeContainer(dioClient: dioClient, useMockClient: false);
         final dto = await c.read(
           clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
         );
@@ -275,7 +284,7 @@ void main() {
       );
       addTearDown(dioClient.dispose);
 
-      final c = makeContainer(dioClient: dioClient);
+      final c = makeContainer(dioClient: dioClient, useMockClient: false);
       await c.read(
         clinicSummaryPreviewProvider(kClinicSummaryAllFields).future,
       );
@@ -310,7 +319,7 @@ void main() {
       );
       addTearDown(dioClient.dispose);
 
-      final c = makeContainer(dioClient: dioClient);
+      final c = makeContainer(dioClient: dioClient, useMockClient: false);
       final dto = await c.read(
         clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
       );
@@ -344,7 +353,7 @@ void main() {
         );
         addTearDown(dioClient.dispose);
 
-        final c = makeContainer(dioClient: dioClient);
+        final c = makeContainer(dioClient: dioClient, useMockClient: false);
         final dto = await c.read(
           clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
         );
@@ -375,7 +384,7 @@ void main() {
       );
       addTearDown(dioClient.dispose);
 
-      final c = makeContainer(dioClient: dioClient);
+      final c = makeContainer(dioClient: dioClient, useMockClient: false);
       final dto = await c.read(
         clinicSummaryPreviewProvider(kClinicSummaryDefaultFields).future,
       );
@@ -405,7 +414,7 @@ void main() {
       );
       addTearDown(dioClient.dispose);
 
-      final c = makeContainer(dioClient: dioClient);
+      final c = makeContainer(dioClient: dioClient, useMockClient: false);
       // Keep the autoDispose provider alive while the error propagates.
       final sub = c.listen<AsyncValue<ClinicSummaryDto>>(
         clinicSummaryPreviewProvider(kClinicSummaryDefaultFields),
@@ -434,7 +443,7 @@ void main() {
         httpClientAdapter: adapter,
       );
       addTearDown(dioClient.dispose);
-      return makeContainer(dioClient: dioClient);
+      return makeContainer(dioClient: dioClient, useMockClient: false);
     }
 
     test(
@@ -611,6 +620,7 @@ void main() {
     required _FakeLucentClient client,
     required _RecordingProductEventService service,
     Map<String, Future<ResponseBody> Function(RequestOptions)>? handlers,
+    Object? previewError,
   }) async {
     final adapter = _ScriptedAdapter();
     adapter.on('POST', '/api/v1/user/reports/clinic-summary/preview', (
@@ -628,6 +638,22 @@ void main() {
       httpClientAdapter: adapter,
     );
     addTearDown(dioClient.dispose);
+    when(
+      () => reportsApi.reportsControllerPreviewClinicSummaryV1(
+        clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+      ),
+    ).thenAnswer((invocation) async {
+      previewRequests.add(
+        invocation.namedArguments[#clinicSummaryRequestDto]
+            as ClinicSummaryRequestDto,
+      );
+      if (previewError != null) throw previewError;
+      return Response<ClinicSummaryResponseDto>(
+        requestOptions: RequestOptions(path: '/preview'),
+        statusCode: 200,
+        data: ClinicSummaryResponseDto.fromJson(_envelope(_summaryJson())),
+      );
+    });
 
     await tester.pumpWidget(
       ProviderScope(
@@ -687,14 +713,10 @@ void main() {
         tester,
         client: client,
         service: service,
-        handlers: {
-          'POST /api/v1/user/reports/clinic-summary/preview': (o) async {
-            throw DioException(
-              requestOptions: o,
-              type: DioExceptionType.connectionError,
-            );
-          },
-        },
+        previewError: DioException(
+          requestOptions: RequestOptions(path: '/preview'),
+          type: DioExceptionType.connectionError,
+        ),
       );
 
       expect(service.previewResults, [ProductEventResult.failure]);
@@ -742,11 +764,7 @@ void main() {
       tester,
     ) async {
       final service = _RecordingProductEventService();
-      final adapter = await openDialog(
-        tester,
-        client: client,
-        service: service,
-      );
+      await openDialog(tester, client: client, service: service);
 
       final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
       for (final label in [
@@ -775,8 +793,7 @@ void main() {
 
       // The first preview request carries the default five-field selection
       // (notes off), matching the widget defaults.
-      final body = _requestBody(adapter.requests.first);
-      expect(body['selectedFields'], [
+      expect(previewRequests.single.selectedFields?.map((e) => e.value), [
         'event_overview',
         'symptom_changes',
         'medication_slots',
@@ -789,11 +806,7 @@ void main() {
       'toggling a field re-requests the preview with the new selection',
       (tester) async {
         final service = _RecordingProductEventService();
-        final adapter = await openDialog(
-          tester,
-          client: client,
-          service: service,
-        );
+        await openDialog(tester, client: client, service: service);
 
         await tester.tap(
           find.descendant(
@@ -803,9 +816,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(adapter.requests, hasLength(2));
-        final body = _requestBody(adapter.requests.last);
-        expect(body['selectedFields'], [
+        expect(previewRequests, hasLength(2));
+        expect(previewRequests.last.selectedFields?.map((e) => e.value), [
           'event_overview',
           'symptom_changes',
           'medication_slots',
@@ -823,11 +835,7 @@ void main() {
       tester,
     ) async {
       final service = _RecordingProductEventService();
-      final adapter = await openDialog(
-        tester,
-        client: client,
-        service: service,
-      );
+      await openDialog(tester, client: client, service: service);
 
       FCheckbox checkboxFor(String fieldValue) {
         return tester.widget<FCheckbox>(
@@ -858,7 +866,7 @@ void main() {
       expect(checkboxFor('sleep').enabled, isFalse);
 
       // Tapping the disabled last toggle does not fire another request.
-      final requestCount = adapter.requests.length;
+      final requestCount = previewRequests.length;
       await tester.tap(
         find.descendant(
           of: find.byKey(const Key('clinic-summary-field-sleep')),
@@ -866,10 +874,11 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(adapter.requests.length, requestCount);
+      expect(previewRequests.length, requestCount);
 
-      final body = _requestBody(adapter.requests.last);
-      expect(body['selectedFields'], ['sleep']);
+      expect(previewRequests.last.selectedFields?.map((e) => e.value), [
+        'sleep',
+      ]);
     });
   });
 
@@ -946,31 +955,37 @@ void main() {
           client: client,
           service: service,
         );
-        adapter.on('POST', '/api/v1/user/reports/clinic-summary/share', (
-          o,
-        ) async {
-          return _jsonBody(
-            _envelope({
-              'shareId': 'share-42',
-              'token': 'tok',
-              'shareUrl':
-                  'https://example.com/api/v1/user/reports/clinic-summary/shared/abc',
-              'expiresAt': '2026-07-08T08:00:00',
-              'scope': {
-                'eventId': null,
-                'dateFrom': '2026-06-02',
-                'dateTo': '2026-07-01',
-              },
-              'selectedFields': [
-                'event_overview',
-                'symptom_changes',
-                'medication_slots',
-                'water',
-                'sleep',
-              ],
-            }),
-          );
-        });
+        when(
+          () => reportsApi.reportsControllerShareClinicSummaryV1(
+            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+          ),
+        ).thenAnswer(
+          (_) async => Response<ClinicSummaryShareResponseDto>(
+            requestOptions: RequestOptions(path: '/share'),
+            statusCode: 200,
+            data: ClinicSummaryShareResponseDto.fromJson(
+              _envelope({
+                'shareId': 'share-42',
+                'token': 'tok',
+                'shareUrl':
+                    'https://example.com/api/v1/user/reports/clinic-summary/shared/abc',
+                'expiresAt': '2026-07-08T08:00:00',
+                'scope': {
+                  'eventId': null,
+                  'dateFrom': '2026-06-02',
+                  'dateTo': '2026-07-01',
+                },
+                'selectedFields': [
+                  'event_overview',
+                  'symptom_changes',
+                  'medication_slots',
+                  'water',
+                  'sleep',
+                ],
+              }),
+            ),
+          ),
+        );
 
         final l10n = await AppLocalizations.delegate.load(const Locale('zh'));
         await tester.ensureVisible(find.text(l10n.reportClinicSummaryShare));
@@ -980,17 +995,23 @@ void main() {
         await tester.pumpAndSettle();
 
         // The share request carries the current field selection (notes off).
-        final shareRequest = adapter.requests.firstWhere(
-          (r) => r.path.endsWith('/clinic-summary/share'),
+        final shareRequest = verify(
+          () => reportsApi.reportsControllerShareClinicSummaryV1(
+            clinicSummaryRequestDto: captureAny(
+              named: 'clinicSummaryRequestDto',
+            ),
+          ),
+        ).captured.single as ClinicSummaryRequestDto;
+        expect(
+          shareRequest.selectedFields?.map((e) => e.value),
+          [
+            'event_overview',
+            'symptom_changes',
+            'medication_slots',
+            'water',
+            'sleep',
+          ],
         );
-        final body = _requestBody(shareRequest);
-        expect(body['selectedFields'], [
-          'event_overview',
-          'symptom_changes',
-          'medication_slots',
-          'water',
-          'sleep',
-        ]);
 
         // Created state: link + expiry + copy + revoke.
         expect(find.text(l10n.reportShareCreatedTitle), findsOneWidget);
@@ -1040,30 +1061,32 @@ void main() {
           return _shareListResponse([_shareItem()]);
         });
         final service = _RecordingProductEventService();
-        final adapter = await openDialog(
-          tester,
-          client: client,
-          service: service,
+        await openDialog(tester, client: client, service: service);
+        when(
+          () => reportsApi.reportsControllerShareClinicSummaryV1(
+            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+          ),
+        ).thenAnswer(
+          (_) async => Response<ClinicSummaryShareResponseDto>(
+            requestOptions: RequestOptions(path: '/share'),
+            statusCode: 200,
+            data: ClinicSummaryShareResponseDto.fromJson(
+              _envelope({
+                'shareId': 'share-new',
+                'token': 'tok',
+                'shareUrl':
+                    'https://example.com/api/v1/user/reports/clinic-summary/shared/def',
+                'expiresAt': '2026-07-08T08:00:00',
+                'scope': {
+                  'eventId': null,
+                  'dateFrom': '2026-06-02',
+                  'dateTo': '2026-07-01',
+                },
+                'selectedFields': ['event_overview'],
+              }),
+            ),
+          ),
         );
-        adapter.on('POST', '/api/v1/user/reports/clinic-summary/share', (
-          o,
-        ) async {
-          return _jsonBody(
-            _envelope({
-              'shareId': 'share-new',
-              'token': 'tok',
-              'shareUrl':
-                  'https://example.com/api/v1/user/reports/clinic-summary/shared/def',
-              'expiresAt': '2026-07-08T08:00:00',
-              'scope': {
-                'eventId': null,
-                'dateFrom': '2026-06-02',
-                'dateTo': '2026-07-01',
-              },
-              'selectedFields': ['event_overview'],
-            }),
-          );
-        });
 
         // Watch the share list provider from the pumped container so the
         // invalidation (and its refetch) is observable.
@@ -1102,30 +1125,32 @@ void main() {
       'field toggles stay enabled during confirm and lock once created',
       (tester) async {
         final service = _RecordingProductEventService();
-        final adapter = await openDialog(
-          tester,
-          client: client,
-          service: service,
+        await openDialog(tester, client: client, service: service);
+        when(
+          () => reportsApi.reportsControllerShareClinicSummaryV1(
+            clinicSummaryRequestDto: any(named: 'clinicSummaryRequestDto'),
+          ),
+        ).thenAnswer(
+          (_) async => Response<ClinicSummaryShareResponseDto>(
+            requestOptions: RequestOptions(path: '/share'),
+            statusCode: 200,
+            data: ClinicSummaryShareResponseDto.fromJson(
+              _envelope({
+                'shareId': 'share-42',
+                'token': 'tok',
+                'shareUrl':
+                    'https://example.com/api/v1/user/reports/clinic-summary/shared/abc',
+                'expiresAt': '2026-07-08T08:00:00',
+                'scope': {
+                  'eventId': null,
+                  'dateFrom': '2026-06-02',
+                  'dateTo': '2026-07-01',
+                },
+                'selectedFields': ['event_overview'],
+              }),
+            ),
+          ),
         );
-        adapter.on('POST', '/api/v1/user/reports/clinic-summary/share', (
-          o,
-        ) async {
-          return _jsonBody(
-            _envelope({
-              'shareId': 'share-42',
-              'token': 'tok',
-              'shareUrl':
-                  'https://example.com/api/v1/user/reports/clinic-summary/shared/abc',
-              'expiresAt': '2026-07-08T08:00:00',
-              'scope': {
-                'eventId': null,
-                'dateFrom': '2026-06-02',
-                'dateTo': '2026-07-01',
-              },
-              'selectedFields': ['event_overview'],
-            }),
-          );
-        });
 
         FCheckbox notesCheckbox() {
           return tester.widget<FCheckbox>(
@@ -1154,7 +1179,7 @@ void main() {
         expect(find.text(l10n.reportShareCreatedTitle), findsOneWidget);
         expect(notesCheckbox().enabled, isFalse);
 
-        final requestsBefore = adapter.requests.length;
+        final requestsBefore = previewRequests.length;
         await tester.tap(
           find.descendant(
             of: find.byKey(const Key('clinic-summary-field-notes')),
@@ -1162,7 +1187,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(adapter.requests.length, requestsBefore);
+        expect(previewRequests.length, requestsBefore);
       },
     );
   });
