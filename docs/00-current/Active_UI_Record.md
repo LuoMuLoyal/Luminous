@@ -282,3 +282,8 @@ Last updated: 2026-08-15 (全仓库审查修复)
 ### 详情页分析轮询退避与防重入
 
 - `record/presentation/pages/detail.dart` 的餐食分析轮询从 `Timer.periodic`（固定 5s、fire-and-forget）改为链式单次 `Timer`：每轮 `invalidate` 后 `await` provider future 覆盖整个请求周期（防重入锁，请求超过间隔不再堆积并发），成功回到基础 5s 间隔、失败按指数退避至 30s 上限；`dispose` 时取消链，分析完成由 build 驱动照常停轮。
+
+### NLP 错误状态与保存失败信息
+
+- `nlp.dart` generate 失败时：无候选可回退才进入 `error` 态并展示错误横幅；保留旧候选时回到 `reviewing` 且清空 `errorMessage`，消除"审查中 + 错误提示"并存的困惑状态。
+- 并行保存失败时 `RecordNlpSaveOutcome.partial.message` 汇总全部失败原因（去重、换行拼接），不再只暴露最后一个错误。

@@ -95,13 +95,16 @@ class RecordNlpController extends Notifier<RecordNlpState> {
           .read(talkerProvider)
           .error('RecordNlpController.generate: failed: $error');
       final apiError = LucentErrorMapper.fromObject(error);
+      final hasPreviousCandidates = previousCandidates.isNotEmpty;
       state = state.copyWith(
-        status: previousCandidates.isEmpty
-            ? RecordNlpStatus.error
-            : RecordNlpStatus.reviewing,
+        // 保留旧候选时回到 reviewing；只有无候选可回退时才进入 error。
+        status: hasPreviousCandidates
+            ? RecordNlpStatus.reviewing
+            : RecordNlpStatus.error,
         resultMeta: previousMetadata,
         candidates: previousCandidates,
-        errorMessage: apiError.message,
+        // errorMessage 仅伴随 error 状态展示，避免"审查中 + 错误横幅"并存。
+        errorMessage: hasPreviousCandidates ? null : apiError.message,
       );
       return state;
     }
@@ -154,7 +157,7 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     );
 
     var savedCount = 0;
-    String? lastErrorMessage;
+    final errorMessages = <String>{};
     final failedItemsByIndex = <int, RecordNlpCandidateDraft>{};
 
     for (final result in results) {
@@ -162,7 +165,9 @@ class RecordNlpController extends Notifier<RecordNlpState> {
         savedCount += 1;
       } else {
         final item = currentCandidates[result.index];
-        lastErrorMessage = result.error;
+        if (result.error != null && result.error!.isNotEmpty) {
+          errorMessages.add(result.error!);
+        }
         failedItemsByIndex[result.index] = item.copyWith(
           selected: true,
           lastErrorMessage: result.error,
@@ -204,7 +209,10 @@ class RecordNlpController extends Notifier<RecordNlpState> {
     return RecordNlpSaveOutcome.partial(
       savedCount: savedCount,
       failedCount: failedItems.length,
-      message: lastErrorMessage ?? 'Unexpected error.',
+      // 汇总所有失败原因（去重），而不是只暴露最后一个。
+      message: errorMessages.isEmpty
+          ? 'Unexpected error.'
+          : errorMessages.join('\n'),
     );
   }
 
