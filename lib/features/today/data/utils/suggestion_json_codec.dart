@@ -23,22 +23,20 @@ class TodaySuggestionJsonCodec {
   static TodaySuggestionBundle bundleFromJson(String json) {
     final map = jsonDecode(json) as Map<String, dynamic>;
     return TodaySuggestionBundle(
-      generatedAt: map['generatedAt'] as String,
+      generatedAt: _asString(map['generatedAt']) ?? '',
       materializationStatus: TodaySuggestionMaterializationStatus.fromJson(
-        map['materializationStatus'] as String? ?? 'ready',
+        _asString(map['materializationStatus']) ?? 'ready',
       ),
       sourceVersion: _safeInt(map['sourceVersion']) ?? 0,
       computedAt: _parseDateTime(map['computedAt']),
       retryAfterSeconds: _safeInt(map['retryAfterSeconds']),
-      primary: map['primary'] != null
-          ? _cardFromJson(map['primary'] as Map<String, dynamic>)
-          : null,
-      secondary: (map['secondary'] as List<dynamic>?)
-          ?.map((e) => _cardFromJson(e as Map<String, dynamic>))
-          .toList(),
-      observations: (map['observations'] as List<dynamic>?)
-          ?.map((e) => _cardFromJson(e as Map<String, dynamic>))
-          .toList(),
+      primary: _cardFromJsonOrNull(map['primary']),
+      secondary: _asList(
+        map['secondary'],
+      )?.map(_cardFromJsonOrNull).whereType<TodaySuggestionCard>().toList(),
+      observations: _asList(
+        map['observations'],
+      )?.map(_cardFromJsonOrNull).whereType<TodaySuggestionCard>().toList(),
     );
   }
 
@@ -54,6 +52,22 @@ class TodaySuggestionJsonCodec {
     }
     return null;
   }
+
+  /// Type-guarded accessors: an unexpected cache shape (e.g. `id` decoded
+  /// as an int) yields a default instead of a raw `TypeError` crash.
+  /// Callers additionally treat a malformed bundle as stale cache and clear
+  /// it, so these fallbacks only soften recoverable cases.
+  static String? _asString(Object? value) => value is String ? value : null;
+
+  static Map<String, dynamic>? _asMap(Object? value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) {
+      return value.map((key, dynamic val) => MapEntry(key.toString(), val));
+    }
+    return null;
+  }
+
+  static List<dynamic>? _asList(Object? value) => value is List ? value : null;
 
   static Map<String, dynamic> _cardToJson(TodaySuggestionCard c) {
     return {
@@ -80,35 +94,45 @@ class TodaySuggestionJsonCodec {
 
   static TodaySuggestionCard _cardFromJson(Map<String, dynamic> m) {
     return TodaySuggestionCard(
-      id: m['id'] as String,
-      type: TodaySuggestionType.fromJson(m['type'] as String),
-      cardTone: TodaySuggestionCardTone.fromJson(m['cardTone'] as String),
-      icon: m['icon'] as String,
-      title: m['title'] as String,
-      reason: m['reason'] as String,
-      evidence: (m['evidence'] as List<dynamic>)
-          .map((e) => _evidenceFromJson(e as Map<String, dynamic>))
-          .toList(),
-      boundary: m['boundary'] as String,
-      primaryAction: _actionFromJson(
-        m['primaryAction'] as Map<String, dynamic>,
+      id: _asString(m['id']) ?? '',
+      type: TodaySuggestionType.fromJson(_asString(m['type']) ?? ''),
+      cardTone: TodaySuggestionCardTone.fromJson(
+        _asString(m['cardTone']) ?? '',
       ),
-      secondaryActions: (m['secondaryActions'] as List<dynamic>?)
-          ?.map((e) => _actionFromJson(e as Map<String, dynamic>))
-          .toList(),
-      confidence: _confidenceFromString(m['confidence'] as String),
-      ruleId: m['ruleId'] as String,
-      ruleVersion: m['ruleVersion'] as String,
-      triggerType: _triggerFromString(m['triggerType'] as String),
+      icon: _asString(m['icon']) ?? '',
+      title: _asString(m['title']) ?? '',
+      reason: _asString(m['reason']) ?? '',
+      evidence:
+          _asList(
+            m['evidence'],
+          )?.map((e) => _evidenceFromJson(_asMap(e) ?? const {})).toList() ??
+          const [],
+      boundary: _asString(m['boundary']) ?? '',
+      primaryAction: _actionFromJson(_asMap(m['primaryAction']) ?? const {}),
+      secondaryActions: _asList(
+        m['secondaryActions'],
+      )?.map((e) => _actionFromJson(_asMap(e) ?? const {})).toList(),
+      confidence: _confidenceFromString(_asString(m['confidence']) ?? ''),
+      ruleId: _asString(m['ruleId']) ?? '',
+      ruleVersion: _asString(m['ruleVersion']) ?? '',
+      triggerType: _triggerFromString(_asString(m['triggerType']) ?? ''),
       lifecycleState: TodaySuggestionLifecycleState.fromJson(
-        m['lifecycleState'] as String,
+        _asString(m['lifecycleState']) ?? '',
       ),
-      notificationEligible: m['notificationEligible'] as bool?,
-      feedbackOptions: (m['feedbackOptions'] as List<dynamic>?)
-          ?.map((f) => _feedbackFromString(f as String))
-          .toList(),
-      subtype: m['subtype'] as String?,
+      notificationEligible: m['notificationEligible'] is bool
+          ? m['notificationEligible'] as bool
+          : null,
+      feedbackOptions: _asList(
+        m['feedbackOptions'],
+      )?.map((f) => _feedbackFromString(_asString(f) ?? '')).toList(),
+      subtype: _asString(m['subtype']),
     );
+  }
+
+  /// Null-safe card decode for optional card slots.
+  static TodaySuggestionCard? _cardFromJsonOrNull(Object? value) {
+    final map = _asMap(value);
+    return map == null ? null : _cardFromJson(map);
   }
 
   static Map<String, dynamic> _evidenceToJson(TodaySuggestionEvidence e) => {
@@ -121,11 +145,11 @@ class TodaySuggestionJsonCodec {
 
   static TodaySuggestionEvidence _evidenceFromJson(Map<String, dynamic> m) =>
       TodaySuggestionEvidence(
-        kind: TodaySuggestionEvidenceKind.fromJson(m['kind'] as String),
-        label: m['label'] as String,
-        value: m['value'] as String,
-        recordId: m['recordId'] as String?,
-        medicineId: m['medicineId'] as String?,
+        kind: TodaySuggestionEvidenceKind.fromJson(_asString(m['kind']) ?? ''),
+        label: _asString(m['label']) ?? '',
+        value: _asString(m['value']) ?? '',
+        recordId: _asString(m['recordId']),
+        medicineId: _asString(m['medicineId']),
       );
 
   static Map<String, dynamic> _actionToJson(TodaySuggestionAction a) => {
@@ -137,10 +161,12 @@ class TodaySuggestionJsonCodec {
 
   static TodaySuggestionAction _actionFromJson(Map<String, dynamic> m) =>
       TodaySuggestionAction(
-        actionId: m['actionId'] as String,
-        label: m['label'] as String,
-        route: m['route'] as String,
-        authRequired: m['authRequired'] as bool,
+        actionId: _asString(m['actionId']) ?? '',
+        label: _asString(m['label']) ?? '',
+        route: _asString(m['route']) ?? '',
+        authRequired: m['authRequired'] is bool
+            ? m['authRequired'] as bool
+            : false,
       );
 
   static TodaySuggestionConfidence _confidenceFromString(String value) =>
