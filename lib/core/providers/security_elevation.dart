@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucent_api/lucent_api.dart';
 import 'package:luminous/core/auth/session_provider.dart';
 import 'package:luminous/core/network/client_providers.dart';
 import 'package:luminous/core/network/security_elevation_token_holder.dart';
@@ -54,22 +55,16 @@ class SecurityElevationController extends Notifier<SecurityElevationState> {
   ///
   /// Returns `true` on success, `false` on failure (wrong PIN, network
   /// error, PIN not enabled, etc.).
-  ///
-  /// Uses the raw Dio instance instead of the generated API client because
-  /// the backend `SecurityPinElevationResponseDto` OpenAPI schema does not
-  /// include the envelope wrapper (`code`/`message`/`data`), causing the
-  /// generated deserialization to fail.
   Future<bool> verify(String pin) async {
-    final dio = ref.read(lucentDioClientProvider).dio;
     try {
-      final response = await dio.post<Map<String, dynamic>>(
-        '/api/v1/user/settings/security-pin/verify',
-        data: <String, dynamic>{'pin': pin},
+      final api = ref.read(lucentClientProvider).userSettings;
+      final response = await api.userSettingsControllerVerifySecurityPinV1(
+        verifySecurityPinDto: VerifySecurityPinDto(pin: pin),
       );
-      final envelope = response.data!;
-      final data = envelope['data'] as Map<String, dynamic>;
-      final elevationToken = data['elevationToken'] as String;
-      final expiresAtStr = data['expiresAt'] as String;
+      final dto = response.data!;
+      final data = dto.data;
+      final elevationToken = data.elevationToken;
+      final expiresAtStr = data.expiresAt;
       final expiresAt =
           DateTime.tryParse(expiresAtStr) ??
           DateTime.now().add(const Duration(minutes: 15));

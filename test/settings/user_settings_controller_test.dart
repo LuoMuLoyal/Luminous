@@ -583,8 +583,12 @@ class _FakeUserSettingsApi implements UserSettingsApi {
     ProgressCallback? onReceiveProgress,
   }) async => _response(
     SecurityPinElevationResponseDto(
-      elevationToken: 'token',
-      expiresAt: '2026-06-12T01:00:00.000Z',
+      code: 0,
+      message: '',
+      data: SecurityPinElevationDataDto(
+        elevationToken: 'token',
+        expiresAt: '2026-06-12T01:00:00.000Z',
+      ),
     ),
   );
 

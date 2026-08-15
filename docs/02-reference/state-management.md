@@ -2,7 +2,7 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-02
+updated: 2026-08-15
 ---
 
 # State Management (Riverpod)
@@ -289,3 +289,9 @@ See [ADR-0001: Riverpod State Management](adr/0001-riverpod-state-management.md)
 [ADR-0006: riverpod_generator 与 Auth-Guarded Provider 工厂](adr/0006-riverpod-generator-and-auth-guard.md).
 
 ---
+
+### Security Elevation(2026-08-15)
+
+`SecurityElevationController.verify` 由 raw Dio 手动解包改为调用生成客户端
+`userSettingsControllerVerifySecurityPinV1`(响应 DTO 信封契约修复后生成客户端可直接解析);
+失败路径保持 `on Object` 吞错返回 false 的既有语义。
