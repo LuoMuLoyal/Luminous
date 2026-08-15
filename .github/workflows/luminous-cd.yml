@@ -76,8 +76,13 @@ jobs:
         run: dart compile js web/drift_worker.dart -o web/drift_worker.js -O4
 
       - name: Build Web (release) with env
+        # --wasm (stable since Flutter 3.29): ships a wasm binary plus a JS
+        # fallback that flutter_bootstrap.js loads automatically when the
+        # browser lacks WasmGC — modern Android Chrome gets wasm, older
+        # browsers (HarmonyOS ArkWeb, old WebViews) fall back to JS.
         run: |
           flutter build web --release \
+            --wasm \
             --base-href "/${{ github.event.repository.name }}/" \
             --dart-define=LUCENT_BASE_URL=${{ secrets.LUCENT_BASE_URL }} \
             --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} \

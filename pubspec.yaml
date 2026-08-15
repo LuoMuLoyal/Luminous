@@ -117,6 +117,11 @@ dependency_overrides:
   # conflicting with package_info_plus ^10.x (win32 ^6.x).
   # device_info_plus 13.x uses win32 ^6.x, resolving the conflict.
   device_info_plus: ^13.0.0
+  # elk_icon_picker 0.1.3 在 icon_selection_preview.dart 中用运行时构造的
+  # IconData 渲染导入图标,导致 web release 图标 tree-shaking 失败(0.1.3 为
+  # 最新版且未修复)。本地解包修复于 pkgs/elk_icon_picker-0.1.3,见迁移日志。
+  elk_icon_picker:
+    path: pkgs/elk_icon_picker-0.1.3
 
 flutter_launcher_icons:
   android: true

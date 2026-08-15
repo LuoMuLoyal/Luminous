@@ -168,6 +168,7 @@ Last updated: 2026-08-11 (Sparse Record Semantics observed metric contract)
 - 本地验证入口：`scripts/check_doc_coverage.dart`、`scripts/run_daily_checks.dart`、`scripts/run_fullstack_checks.dart`、`scripts/verify_lucent_openapi_sync.dart`。
 - GitHub Actions 在构建 APK 前检查生成客户端漂移。
 - `luminous-cd.yml` 在 Flutter Web 构建前校验 `LUCENT_BASE_URL` 和 `SENTRY_DSN` secrets 存在性，防止空字符串注入 `--dart-define`。
+- Flutter Web 发布构建目标为 wasm（`flutter build web --release --wasm`）：产物含 wasm 主程序 + JS fallback，`flutter_bootstrap.js` 按浏览器 WasmGC 支持自动选择——现代安卓 Chrome 走 wasm，无 WasmGC 的浏览器（鸿蒙 ArkWeb、旧 WebView）自动降级 JS。
 - Mock repositories 仅存在于 `test/helpers/mocks/`，生产代码使用 repository `signedOut()` 工厂返回静态预览数据。
 
 ## 页面脚手架

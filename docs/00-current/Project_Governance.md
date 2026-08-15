@@ -55,6 +55,7 @@ Last updated: 2026-08-15 (当前发布表面与未来大屏候选)
 ## CI/CD
 
 - `luminous-cd.yml` 在 Flutter Web 构建前新增 secrets 存在性校验步骤，确保 `LUCENT_BASE_URL` 和 `SENTRY_DSN` 已配置，防止空字符串注入 `--dart-define`。
+- `luminous-cd.yml` 的 Flutter Web 发布构建使用 `--wasm` 目标（自带 JS fallback 自动降级），服务移动 web 主战场（安卓 Chrome / 鸿蒙过渡）；桌面/大屏 Web 冻结，不扩展构建形态。
 
 ## 2026-08-14 文档覆盖映射
 
