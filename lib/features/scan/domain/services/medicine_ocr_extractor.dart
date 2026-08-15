@@ -31,6 +31,11 @@ class MedicineOcrExtractor {
     r'国药准[字淮宇][HhZzSsBbJjOo0l1|8B己已][A-Za-z0-9]{7,9}',
   );
 
+  /// Maximum characters of OCR text processed for approval-number matching.
+  /// OCR output can be arbitrarily long; truncating bounds the regex cost
+  /// (an approval number is always short, so nothing is lost).
+  static const _maxApprovalNumberTextLength = 500;
+
   /// Extract candidates from OCR text blocks. Strategies run serially;
   /// if approval number is found, it takes priority.
   List<MedicineMatchCandidate> extractCandidates(List<OcrTextBlock> blocks) {
@@ -38,10 +43,13 @@ class MedicineOcrExtractor {
 
     // Strategy 1: Approval number fuzzy match
     for (final block in blocks) {
-      final normalized = _normalizeApprovalNumber(block.text);
+      final text = block.text.length > _maxApprovalNumberTextLength
+          ? block.text.substring(0, _maxApprovalNumberTextLength)
+          : block.text;
+      final normalized = _applyOcrConfusion(text, stripWhitespace: true);
       final match = _approvalNumberPattern.firstMatch(normalized);
       if (match != null) {
-        final cleaned = _cleanApprovalNumber(match.group(0)!);
+        final cleaned = _applyOcrConfusion(match.group(0)!);
         return [
           MedicineMatchCandidate(
             query: cleaned,
@@ -56,21 +64,15 @@ class MedicineOcrExtractor {
     return _extractNameCandidates(blocks);
   }
 
-  /// Normalise OCR text for approval-number matching:
-  /// remove spaces and apply confusion mappings.
-  String _normalizeApprovalNumber(String text) {
-    final noSpaces = text.replaceAll(RegExp(r'\s'), '');
-    final buffer = StringBuffer();
-    for (final ch in noSpaces.split('')) {
-      buffer.write(_ocrConfusion[ch] ?? ch);
+  /// Apply the OCR confusion mappings to [text], optionally stripping all
+  /// whitespace first (approval-number matching ignores spacing).
+  String _applyOcrConfusion(String text, {bool stripWhitespace = false}) {
+    var normalized = text;
+    if (stripWhitespace) {
+      normalized = normalized.replaceAll(RegExp(r'\s'), '');
     }
-    return buffer.toString();
-  }
-
-  /// Clean a matched approval number to canonical form.
-  String _cleanApprovalNumber(String matched) {
     final buffer = StringBuffer();
-    for (final ch in matched.split('')) {
+    for (final ch in normalized.split('')) {
       buffer.write(_ocrConfusion[ch] ?? ch);
     }
     return buffer.toString();
