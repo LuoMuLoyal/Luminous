@@ -2,12 +2,12 @@
 status: active
 owner: frontend
 quadrant: reference
-updated: 2026-08-20
+updated: 2026-08-21
 ---
 
 # Luminous TODO
 
-Last updated: 2026-08-20
+Last updated: 2026-08-21
 
 本文件记录仍缺失或被故意门控的工作。当前事实见 [[00-current/Current_State]]；实现顺序见 [[00-current/Next_Plan]]。
 
@@ -39,6 +39,10 @@ Product Loop Program（历史决策见已被新产品方向取代的 [[02-refere
   - 现状：药箱项只能软删除，短期事件结束后「停药」会丢可见性
   - 方案：增加停用/归档状态，保留历史不出现在当前用药；涉及 health-context API 与药箱 UI
   - 依据：用药改造计划 3.3 节 F-2 与 2026-08-16 决策记录「处方 OCR、药箱停用/归档语义增强均为 0.1.0 后事项」；0.1.0 后按既有 P0→P1→P2 与全局依赖顺序恢复
+
+- Flutter 3.47.1 升级（配置类已就绪，等待 3.47.1 上的语义回归验证）
+  - 分支 `upgrade/flutter-3.47` 已含全部配置类改动：fluwx 6.0.2 / health 13.3.2 / jpush 3.5.1、AGP 9.1.0 + Gradle 9.3.1 + built-in Kotlin、iOS 15.0 / macOS 12.0 部署目标、CI 版本、`LUMOS_GRADLE_MIRROR=aliyun` 镜像兜底（默认关闭）
+  - 阻塞：flutter/flutter#191095 semantics 回归（MergeSemantics 嵌套兄弟 merge 组断言）仍未确认修复；在 3.47.1 上执行 `flutter upgrade` → analyze/test/构建冒烟 → 按 `plans/2026-08-14-flutter-3.47-upgrade-plan.md` 验收并合并
 
 - forui 0.25.0 toast dismiss 的 dispose-during-notifyListeners 风险
   - 现象：`FToasterEntry.dismiss()` 在 toast 入场动画完成前触发时，forui 非无障碍分支直接 `reverse()`，

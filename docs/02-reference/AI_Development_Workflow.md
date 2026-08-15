@@ -22,7 +22,9 @@ It complements:
 
 ## Current Integration Boundary
 
-- `Luminous` is on `Flutter 3.44.0` and `Dart 3.12.0`.
+- `Luminous` 日常开发在 `Flutter 3.44.x`（Dart 3.12）上；升级分支 `upgrade/flutter-3.47` 已含
+  3.47 配置类准备（依赖/AGP 9/Gradle 9.3.1/部署目标/CI 版本），被 flutter/flutter#191095
+  semantics 回归阻塞，等 3.47.1 后按 `plans/2026-08-14-flutter-3.47-upgrade-plan.md` 完成。
 - AI-assisted coding is enabled through committed repo instructions plus a
   committed MCP config, not by relying on private IDE state.
 - Shipping in-app AI features still use Lucent-owned APIs.

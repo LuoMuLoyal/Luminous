@@ -65,12 +65,12 @@ dependencies:
   lucent_api:
     path: generated/lucent_api
   url_launcher: ^6.3.2
-  fluwx: 5.7.5 # pinned: WeChat SDK requires exact version match for native builds
+  fluwx: ^6.0.2 # 6.x required: UISceneDelegate + Android Kotlin build fix (3.47 升级)
   flutter_markdown_plus: ^1.0.12
   email_validator: ^2.1.17
   mobile_scanner: ^7.2.0
   paddle_ocr_native: ^0.1.1
-  health: ^13.3.1
+  health: ^13.3.2
 
   sign_in_with_apple: ^8.1.0
   flutter_svg: ^2.1.0

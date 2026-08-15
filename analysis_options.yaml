@@ -46,3 +46,10 @@ analyzer:
   exclude:
     - generated/lucent_api/**
     - scripts/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
