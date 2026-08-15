@@ -50,6 +50,9 @@ class AppDatabase extends _$AppDatabase {
   /// For testing: pass an in-memory or custom executor.
   AppDatabase.forTesting(super.e);
 
+  /// Schema version history:
+  /// - 1: initial schema (all six tables as first created).
+  /// - 2: adds `lastErrorDetails` to [PendingSyncItems] (see [migration]).
   @override
   int get schemaVersion => 2;
 
