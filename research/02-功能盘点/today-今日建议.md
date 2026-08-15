@@ -21,11 +21,11 @@
 | F-11 轻动作区（5 个快捷入口） | 导航到确认用药/记录/风险检查/提醒/档案 | 真实现 | 保留 | P1 |
 | F-12 quick-entry 快速记录执行器 | 水一键记录真实落库+撤销 toast；用药快速确认批量落库、失败如实分项 | 真实现 | 保留 | P0 |
 | F-13 baseline observation（后端基线） | 只收录覆盖充分的观测值，连续天数达标才放行趋势规则 | 真实现 | 保留 | P1 |
-| F-14 环境/天气卡 | domain 内静态填充花粉高/紫外线中，UI 未渲染 | 假实现（数据伪造但无出口） | 删除 | P2 |
+| F-14 环境/天气卡 | domain 内静态填充花粉高/紫外线中，UI 未渲染 | 假实现（数据伪造但无出口） | 改造 | P2 |
 | F-15 顶栏助手/通知入口 | 助手入口跳转、通知铃铛用真实未读数 provider | 真实现 | 保留 | P2 |
 | F-16 页级状态锁（dashboard 门控整页） | dashboard 失败→整页错误视图，掩盖可独立渲染的建议区 | 部分实现 | 改造 | P1 |
 | F-17 建议卡曝光测量 | 视口内首次可见上报 `suggestion_impression`，去重防重 | 真实现 | 保留 | P2 |
-| F-18 静态兜底文案与死代码残留 | `todaySummaryFallbackNarrative`、`TodayMedicationKind.atorvastatin`、heartRate/bloodPressure/mood vital、mealSuggestion/lumiSuggestion、后端 `/today-analysis/recommendations` 静态池、secondaryActions `skip_dose` 死参数 | 假实现/死代码 | 删除 | P2 |
+| F-18 静态兜底文案与死代码残留 | `todaySummaryFallbackNarrative`、`TodayMedicationKind.atorvastatin`、heartRate/bloodPressure/mood vital、mealSuggestion/lumiSuggestion、后端 `/today-analysis/recommendations` 静态池、secondaryActions `skip_dose` 死参数 | 假实现/死代码，按改造执行 | 改造 | P2 |
 | F-19 咖啡因-睡眠/情绪-睡眠规则 | 用餐饮标题关键词充当"咖啡因记录"证据；未知情绪默认 3 分 | 部分实现 | 改造 | P1 |
 | F-20 health_context 快照层 | cache-first + 写失败入 pending sync 队列由 SyncWorker 真实重放 | 真实现 | 保留 | P1 |
 
@@ -37,7 +37,7 @@
 - 实际作用：这是产品主张的核心产物，且是真闭环：写入事件 → `RecomputeTriggerListener` 触发 → worker 重算（采集信号→7 条规则→抑制→仲裁→文案→持久化）→ 前端只读 GET 展示。证据不是 AI 联想，而是规则从真实信号构造，例如漏服规则的证据为"计划时间 + 今日状态 unconfirmed"（`Lucent/src/modules/today-suggestion/services/rules/medication/missed-dose.service.ts:94-106`），饮水不足的证据为"当前 ml / 目标 ml / 连续记录天数"且要求 observed 且 coverage sufficient（`rules/lifestyle/water-shortfall.service.ts:55-66,98-114`）。
 - 实现真实性：真实现。规则全部有阈值、baseline 门控和证据字段；GET 只读物化结果不触发计算（`services/suggestion.service.ts:44-99`）；无候选时仲裁返回 `primary: null`（`services/arbitration/arbiter.service.ts:28-30`），前端显示真实空态"今日暂无建议"。文案在 LLM 不可用时回退到人工审校模板并带边界句（`constants/copy-fallback.ts:18-64`，如"此提醒基于您的用药计划，不能替代医生或药师建议"）。
 - 结论：保留。
-- 仍需修的小问题：漏服卡的 secondaryActions 里 `skip_dose` 路由 `/medicine?action=skip`（`missed-dose.service.ts:113-120`）在 Luminous 没有任何消费方（grep 无处理），且前端主卡只渲染 `primaryAction`（`suggestion_primary_card.dart:102-110`），属死数据，应删或接成真实跳过动作。
+- 仍需修的小问题：漏服卡的 secondaryActions 里 `skip_dose` 路由 `/medicine?action=skip`（`missed-dose.service.ts:113-120`）在 Luminous 没有任何消费方（grep 无处理），且前端主卡只渲染 `primaryAction`（`suggestion_primary_card.dart:102-110`），属死数据，按改造接成真实跳过动作（保留代码与入口，接线或标注不排期），不做删除。
 - 优先级：P0。
 
 ### F-2 建议反馈（已采纳/稍后/不适用/不再看到）
@@ -93,7 +93,7 @@
 - 现状：症状记录、服药日志、健康事件 create/end/check-in、合格的建议物化版本触发分析队列；`userId+localDate+sourceVersion` 去重；每自然日最多生成 3 次、手动刷新 5 分钟冷却、claim 超时回收（`Lucent/src/modules/today-analysis/services/recompute/trigger.listener.ts:27-80`、`services/materialization/store.service.ts:70-223`）。普通 daily record（如纯饮水）不触发。
 - 实际作用：让已纳入触发范围的变化自动产生分析且成本有界。`GET` 只读历史物化不调 LLM。
 - 实现真实性：真实现。并发 claim、序列化事务、capped→stale 投影都齐全。普通记录不触发是刻意的成本控制，合理。
-- 结论：保留并扩展触发边界。普通饮水、餐食、睡眠和心情记录完全不触发，在旧的事件优先口径下属于成本控制，在长期健康伙伴定位下会漏掉非生病期间的核心价值。应以覆盖率、变化幅度、每日预算和去重规则决定是否重算，而不是按记录类型永久排除。
+- 结论：保留并扩展触发边界。普通饮水、餐食、睡眠和心情记录完全不触发，在旧的事件优先口径下属于成本控制，在长期健康伙伴定位下会漏掉非生病期间的核心价值。应以"维度平级门控"（覆盖率/变化幅度/日预算）和去重规则决定是否重算，而不是按记录类型永久排除。
 - 小问题：产出物目前主要出口是通知（`analysis.service.ts:323-342` 每次生成创建两条通知），Today 卡不接（见 F-6），导致这套物化机制的实际用户价值打折——接上前端后价值才闭环；生活记录触发后还要避免每记一杯水都生成新通知。
 - 优先级：P1。
 
@@ -114,7 +114,7 @@
 - 实际作用：轻量情境感。用药口径与概览一致（pendingCount）。
 - 实现真实性：部分实现。下午档"饮水还差 N 次"用的是**记录条数**口径的 `remainingCount`（`lucent.dart:90` 的 `recordCounts['water']`），在饮水数据 unknown（未记录或摘要接口失败）时断言"还差 8 次"，把未知映射成确定性缺口结论——与同页概览的 `-- / 2000 ml` 直接矛盾，触碰审计清单第 2 条。
 - 结论：改造。
-- 改造方案：问候语饮水分支改用 `observedMetric.state`：unknown 时不提缺口（如"下午好，今天还没记饮水"），observed 时才报 ml 缺口；或干脆删掉饮水缺口问候，只保留用药待确认（用药语义已收敛到 reminder slot，可信）。
+- 改造方案：问候语饮水分支改用 `observedMetric.state`（observed 口径：只统计已记录数据）：unknown 时不提缺口（如"下午好，今天还没记饮水"），observed 时才报 ml 缺口，未记录天数显示为"未记录"而非缺额；用药待确认问候保留（用药语义已收敛到 reminder slot，可信）。
 - 优先级：P2。
 
 ### F-10 健康观察（health event 区块）
@@ -157,18 +157,18 @@
 
 - 现状：**UI 上不存在**。但 `LucentTodayRepository.fetchDashboard` 给 domain 填了硬编码静态数据：花粉 high + 紫外线 medium（`Luminous/lib/features/today/data/repositories/lucent.dart:209-220`）、静态 `mealSuggestion`（高蛋白均衡午餐）和 `lumiSuggestion`（花粉防护）（`lucent.dart:202-224`），注释自述"Deferred by Product_Vision MVP，先不展示"。全工程 grep 确认 presentation 层无消费。
 - 实际作用：无。这是审计清单第 1 条的残留形态——用占位数据填充缺失字段，只是恰好没有渲染出口；一旦哪个 UI 误读 `dashboard.environment` 就会把伪造的花粉/紫外线级别当成事实展示。
-- 实现真实性：假实现（伪造数据驻留在生产 repository 路径）。Lucent 侧 `signal.types.ts:10` 有 `'environment'` signal source 但无任何环境 collector，后端同样无真实环境数据接入（B2 在 TODO 中排期真实天气 API）。
-- 结论：删除。
-- 改造方案：立即从 `TodayDashboard` 删掉 `environment`/`mealSuggestion`/`lumiSuggestion` 三个字段及静态常量（含 `signedOut()` 里的对应填充 `domain/entities/dashboard.dart:98-106`）；待 B2 接入真实天气 API 时以独立 feature 重新引入，并带数据源与更新时间标记。
+- 实现真实性：假实现（伪造数据驻留在生产 repository 路径）。Lucent 侧 `signal.types.ts:10` 有 `'environment'` signal source 但无任何环境 collector，后端同样无真实环境数据接入（已决策接高德天气/空气 API，城市手动选择）。
+- 结论：改造。
+- 改造方案（已决策）：后端 environment 模块重写——静态 reference 替换为高德天气/空气 API 客户端 + Redis 小时级缓存，`dataSource:'real'`、动态 updatedAt，key 走环境变量配置不硬编码；城市来源用户手动选择（免定位权限）；花粉/紫外线字段高德免费接口不含，标注"未实现"；前端降级为"环境上下文"——不作为 Today 主卡，而是进入助手工具与记录上下文（`TodayDashboard` 的静态填充随之移除，字段通路保留，以真实数据源重新装配）。
 - 优先级：P2。
 
 ### F-15 顶栏助手/通知入口
 
 - 现状：右上助手入口跳 `/assistant`（未登录弹登录引导）；通知铃铛未读点来自真实 `notificationUnreadCountProvider`（`widgets/shared/top_bar.dart:77-79,111-130`）。
 - 实际作用：正常入口。
-- 实现真实性：真实现。注意 domain 里的 `TodayUserSnapshot.hasUnreadNotifications` 恒为 `false`（`data/repositories/lucent.dart:142`）——是死字段，UI 实际绕开它用了真 provider，不构成假实现，但字段应删。
+- 实现真实性：真实现。注意 domain 里的 `TodayUserSnapshot.hasUnreadNotifications` 恒为 `false`（`data/repositories/lucent.dart:142`）——是死字段，UI 实际绕开它用了真 provider，不构成假实现，但字段应按改造接真实未读数替换。
 - 结论：保留。
-- 小问题：删死字段 `hasUnreadNotifications`。
+- 小问题：`hasUnreadNotifications` 恒 false 死字段按改造处理——接 notifications unread count 真实数据（该能力已存在，缺 Today 消费），替换恒 false 死字段，不做删除。
 - 优先级：P2。
 
 ### F-16 页级状态锁（dashboard 门控整页）
@@ -198,8 +198,8 @@
   - 后端 `GET /today-analysis/recommendations` 是 8 条静态泛化健康小贴士随机抽取（`Lucent/src/modules/today-analysis/services/pipeline/recommendations.service.ts:16-65`），Luminous 无任何调用——典型的"无数据强行生成泛化内容"端点，只是目前无前端出口。
 - 实际作用：均无真实用户价值。
 - 实现真实性：假实现/死代码。
-- 结论：删除。
-- 改造方案：删 `TodayMedicationKind`+`medicationName()`+`nextMedicine` 字段；vitals 只保留睡眠（或改为读 observedMetric 的列表）；删后端 recommendations 端点与服务（或在 openapi 标记 deprecated 一个周期后删）；兜底文案保留与否皆可，若保留建议改成中性引导（"点生成，用今天的记录整理一句总结"）。
+- 结论：改造。
+- 改造方案：① `nextMedicine`/`TodayMedicationKind` 硬编码改造为真实"下一剂"组件——按 reminder 计划 + dose log 已确认状态计算下一剂（前后端都有真实数据，缺前端计算接线），成为 Today/Medicine 的"下一剂"信息位；② 后端静态 recommendations 端点改造为"冷启动引导卡"——规则引擎空转时由系统侧模板输出只读引导（不假装建议、不自由联想），触发源仍限定为结构化记录/授权上下文/规则命中；③ mood vital 保留为"观察项"数据通路（心情是平级维度，情绪趋势进纵向洞察观察区），heartRate/bloodPressure 保留为 vitals 通路、改读 observedMetric 列表；④ 兜底文案保留，改为中性引导（"点生成，用今天的记录整理一句总结"）；`skip_dose` 死参数接成真实跳过动作（见 F-1 小问题）。
 - 优先级：P2。
 
 ### F-19 咖啡因-睡眠/情绪-睡眠规则
@@ -208,7 +208,7 @@
 - 实际作用：表面上是"咖啡因/情绪与睡眠的相关性洞察"，实际数据基础是关键词猜测+默认分填充。证据条目把猜测值呈现为"记录天数/总次数"这类事实口径，用户无法知道所谓咖啡因记录只是饭 title 里有"茶"字。
 - 实现真实性：部分实现（规则逻辑真实、阈值和基线门控真实，但信号源是启发式伪装的：触碰审计清单第 1、2 条——把关键词命中伪装成结构化记录，把未知情绪映射成 3 分）。
 - 结论：改造。
-- 改造方案：短期直接把这两条规则降级为 observations（不进主/次卡），证据文案改成如实口径（"近 N 天有 M 条餐饮记录提到咖啡/茶"）；情绪趋势序列剔除 unknown（不默认 3 分），平均分只统计可解析记录。中期若要保留该洞察，记录页加独立的咖啡因/情绪结构化入口（快速记录已支持 mood 三选/五选），让信号变成真数据。若不愿做结构化入口，删掉这两条规则比留着更诚实。
+- 改造方案：短期直接把这两条规则降级为 observations（不进主/次卡），证据文案改成如实口径（"近 N 天有 M 条餐饮记录提到咖啡/茶"）；情绪趋势序列剔除 unknown（不默认 3 分），平均分只统计可解析记录。中期若要保留该洞察，记录页加独立的咖啡因/情绪结构化入口（快速记录已支持 mood 三选/五选），让信号变成真数据。若结构化入口暂不排期，两条规则保持观察项降级形态，不做删除。
 - 优先级：P1。
 
 ### F-20 health_context 快照层
@@ -229,13 +229,13 @@
 1. F-6 是最大的产品缺口而非假实现：后端事件驱动的 Today Analysis 物化（F-7）做完了，前端却只接手动流式生成，"主动分析"在核心界面缺位；且空数据可生成泛化总结、LLM 与模板兜底不可区分。
 2. F-7 的触发范围仍是事件优先：普通生活记录不触发主动分析，无法完整验证非生病期间的伙伴价值。
 3. F-19 两条相关性规则的信号源是关键词启发式，证据口径把猜测伪装成事实，建议降级或改造。
-4. F-14/F-18 静态环境数据（花粉高/紫外线中）、硬编码药名枚举、静态 recommendations 端点等是竞赛期残留，应果断删除——它们暂时没有 UI 出口是运气，不是设计。
+4. F-14/F-18 静态环境数据（花粉高/紫外线中）、硬编码药名枚举、静态 recommendations 端点等是竞赛期残留，按改造方案执行——环境数据真实化（接高德天气/空气 API，城市手动选择）、下一剂组件接真实计算、recommendations 改造为冷启动引导卡，均不删除。
 5. F-9 问候语饮水口径与 F-16 页级状态锁是语义/韧性裂缝，工程量小、收益直接。
 
 **缺口**：
 
 - Today 缺"一键饮水"（执行器已存在，未接）。
 - 建议卡的 secondaryActions（如"跳过本次"）在后端产出但前端不渲染，动作集合不完整。
-- 环境/天气信号对产品"过敏/感冒场景"本有真实价值（花粉+过敏史→建议），但目前是伪造数据，要么接真天气 API（B2 已排期），要么彻底移除。
+- 环境/天气信号对产品"过敏/感冒场景"本有真实价值（花粉+过敏史→建议），已决策接高德天气/空气 API（城市手动选择、免定位权限），花粉/紫外线字段标注"未实现"；前端以"环境上下文"形态进入助手工具与记录上下文，不作为 Today 主卡。
 
-**总评**：主链路可信、可保留并继续投入；需要动手的是 F-6 前端接线、F-7 生活记录触发与日预算重构、F-19 降级、F-14/F-18 清理、F-9/F-16 两处小改造。本模块没有发现需要整体砍掉的功能，但若不补生活维度，实际验证的仍是事件助手而不是长期健康伙伴。
+**总评**：主链路可信、可保留并继续投入；需要动手的是 F-6 前端接线、F-7 生活记录触发与日预算重构、F-19 降级、F-14/F-18 真实化改造、F-9/F-16 两处小改造。本模块没有发现需要整体砍掉的功能，但若不补生活维度，实际验证的仍是事件助手而不是长期健康伙伴。

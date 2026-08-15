@@ -19,7 +19,7 @@
 | F-4 提醒投递历史 | 提醒每次投递的审计行展示 | 部分实现 | 改造 | P1 |
 | F-5 健康平台手动导入 | 从 HealthKit/Health Connect 拉数据写入日常记录 | 真实现 | 保留 | P1 |
 | F-6 健康数据自动同步开关 | 设置页"进入前台自动同步"开关 | 假实现（已被诚实禁用兜底） | 改造 | P2 |
-| F-7 环境快照接口（Lucent） | 按纬度带返回花粉/UV/AQI/温湿度 | 假实现（静态数据，且无消费方） | 删除 | P1 |
+| F-7 环境快照接口（Lucent） | 按纬度带返回花粉/UV/AQI/温湿度 | 静态桩（已决策真实化） | 改造 | P1 |
 | F-8 产品事件埋点与漏斗 | 客户端/服务端事件采集 + 管理端漏斗聚合 | 真实现 | 保留 | P1 |
 | F-9 App 壳与快捷键 | 五 Tab 壳、桌面侧栏、键盘快捷键 | 真实现 | 保留 | P2 |
 
@@ -51,7 +51,7 @@
   - 客户端接线真实（`Luminous/lib/core/push/jpush_gateway.dart:55-93`、`lifecycle.dart:47-70`），bootstrap 真实调用（`Luminous/lib/app/bootstrap.dart:83,157-162`）；消息处理会失效未读数并跳转 `/notifications`（`Luminous/lib/core/push/message_handler.dart:35-48`）。
   - 服务端真实 HTTP 调用（`Lucent/src/modules/notifications/services/jpush.provider.ts:71-91`），失败仅记日志不阻塞（`push-delivery.service.ts:23-37`）。
   - 不完整处：① 双端密钥都来自环境变量，缺省时全链路静默 no-op（客户端 `jpush_gateway.dart:41`，服务端 `jpush.provider.ts:26-27`），而 `Lucent/deploy/` 内无任何 JPUSH 配置痕迹——当前部署大概率从未真正发出过一条推送；② 推送结果（成功/失败/到达）不进任何投递记录，见 F-4。
-- 结论：保留。
+- 结论：保留。属运维缺口（密钥未入部署），上线前补齐即可，非代码造假。
 - 小问题：部署环境补齐 `JPUSH_APP_KEY`/`JPUSH_MASTER_SECRET` 前，该能力对外等于不存在；这不构成"假宣传"，因为 UI 没有任何地方声称推送可用。
 - 优先级：P1。
 
@@ -65,7 +65,7 @@
   - 状态侧同样：`'scheduled'/'failed'` 标签永不出现（失败路径重试而不落行）。
   - 文档漂移：`docs/00-current/Mock_Or_Deferred.md:59` 称"Worker 填充的提醒投递历史……尚未写入"已过时——in_app 行已在写入。
 - 结论：改造。
-- 改造方案：① `deliveryChannelLabel` 增加 `'in_app' → 应用内通知`，删掉 local/push/email/sms 四个死标签；② 若保留 push 通道的展示意图，就在调度器里 push 发送后按结果补写 `channel: 'push'` 行（成功 delivered / 失败 failed），否则连 push 标签一并删；③ 把 `Mock_Or_Deferred.md` 的过时描述修正为现状。历史面板本身（按时间列出已投递事实）符合"可追溯证据"主张，保留。
+- 改造方案：后端 scheduler 已落站内信（UserNotification），补 push 与本地投递的 `reminderDelivery` 落库——调度器里 push 发送后按结果补写 `channel: 'push'` 行（成功 delivered / 失败 failed），本地投递同样落库，列表即有真实数据；`deliveryChannelLabel` 增加 `'in_app' → 应用内通知` 等通道标签翻译（local/push/email/sms 标签保留为真实通道展示位）；把 `Mock_Or_Deferred.md` 的过时描述修正为现状。历史面板本身（按时间列出已投递事实）符合"可追溯证据"主张，保留。
 - 优先级：P1。
 
 ### F-5 健康平台手动导入（HealthKit / Health Connect）
@@ -86,19 +86,19 @@
   - 由此 availability 恒为 `notConfigured`，开关恒禁用、副标题显示"未配置"文案（`lib/features/settings/presentation/widgets/privacy_section.dart:34-43,124-137`），`toggle()` 在非 available 时直接 return（`health_auto_sync.dart:67-76`），`build()` 强制 false（:53-60）。
   - `PrefKeys.healthAutoSyncEnabled` 全代码库只有该 provider 自己读写（`lib/core/config/pref_keys.dart:128`），无任何消费方——即使将来有人把 `executorConfigured` 改成 true 而没有真接执行器，开关会变成"可打开但什么都不做"的纯假开关（潜在陷阱）。
 - 结论：改造。
-- 改造方案：二选一，不要维持现状的"永久禁用 tile"。A) 补齐执行器：用 roadmap 3.1 的后台同步基建（WorkManager/BGTask + 前台恢复钩子）消费该偏好，在前台恢复时同步最近 24h（与开关文案一致）；B) 若自动同步不在近期路线，把 tile 从隐私区移除、`health_auto_sync.dart` 与死文案一并删，保留 F-5 手动导入即可。倾向 A——该产品主张"优先使用既有数据而非要求手工记录"，前台自动同步对稀疏记录场景价值真实。
+- 改造方案（已决策）：改为可选执行器——引入 workmanager 周期任务（每日一次）+ App 启动时前台增量同步，复用现有 `health_sync` 真实导入逻辑（指纹去重已实现），按平台授权增量拉取；默认关闭，首次开启给一次性授权解释文案；iOS 上 workmanager 走 BGTaskScheduler、后台窗口受限，以"启动时同步"为主、周期任务为辅；平台导入数据带 source 来源标签，覆盖率统计区分"平台来源/手记来源"，"平台无数据"不等于"未记录"。该产品主张"优先使用既有数据而非要求手工记录"，前台自动同步对稀疏记录场景价值真实。
 - 优先级：P2。
 
 ### F-7 环境快照接口（Lucent environment 模块）
 
 - 现状：`GET /api/v1/environment/snapshot?lat&lon`，公开接口，按纬度带返回花粉等级、UV 指数、AQI、温湿度。
 - 实际作用：零。无任何消费方。
-- 实现真实性：假实现（静态数据伪装环境数据源）——
+- 实现真实性：静态桩，已决策真实化——
   - 返回体是六个硬编码 profile，`dataSource: 'static'`，`updatedAt` 写死 `2026-06-06`（`Lucent/src/modules/environment/config/reference.ts:8,23-174,176-191`）；service 只是转发（`services/snapshot.service.ts:11-22`）。没有任何真实天气/花粉/AQI API 接入。
   - 客户端零调用：`Luminous/lib` 全局搜索无任何 environment/snapshot 消费代码；Today 环境卡片的整套字符串（`lib/l10n/src/today_zh.arb:10,143-153`，含"今天空气中花粉较多，建议外出佩戴口罩"）只有 ARB 定义、无任何 Dart 引用，是死字符串。
   - 侥幸之处：正因为没接线，这条假数据目前不会到达任何用户；一旦按原文案接上 Today 卡片，就是"把 2026-06-06 的编造花粉数据当成今日事实"的典型假实现，且带健康建议性质，风险高。
-- 结论：删除。
-- 改造方案：删除整个 `Lucent/src/modules/environment/` 模块与 Luminous 侧环境相关死字符串；删除 `Mock_Or_Deferred.md` 里"Today 或 Mine 的环境上下文连线"的延后条目。若未来要做"花粉/天气提醒"，以真实数据源（商业气象 API）立项重做，且文案必须标注数据时间；在愿景里环境提醒从未进入核心闭环，不值得为它保留一个静态假源。
+- 结论：改造。
+- 改造方案（已决策）：后端 environment 模块重写——静态 reference 替换为高德天气/空气 API 客户端 + Redis 小时级缓存，`dataSource:'real'`、动态 updatedAt，key 走环境变量配置不硬编码；城市来源用户手动选择（免定位权限）；花粉/紫外线字段高德免费接口不含，标注"未实现"；消费面注册为助手工具（tool.service 增加 environment 工具），可选作为记录上下文快照，不做 Today 主卡；同步修正 `Mock_Or_Deferred.md` 里环境上下文连线条目的延后表述。模块代码与 Luminous 侧环境相关死字符串保留，等待真实数据源装配。
 - 优先级：P1。
 
 ### F-8 产品事件埋点与漏斗
@@ -125,9 +125,9 @@
 
 两个必须处理的失真点：
 
-1. **F-7 环境模块是纯粹的假数据资产**——静态硬编码 + 伪造的 `updatedAt`，且自带"花粉多请戴口罩"式健康建议文案。它今天无害只是因为没人接线；留在代码库里就是一颗等人踩的雷。删除，不改造。
+1. **F-7 环境模块当前是静态桩**——静态硬编码 + 伪造的 `updatedAt`，且自带"花粉多请戴口罩"式健康建议文案。它今天无害只是因为没人接线；已决策真实化——接高德天气/空气 API（城市手动选择、免定位权限），花粉/紫外线字段标注"未实现"，前端以"环境上下文"进入助手工具与记录上下文，不作为主卡。改造，不删除。
 2. **F-4 投递历史的多通道 UI 是假多样性**——四个通道标签、三个状态标签里，各只有一个会被使用，且真正使用的 `in_app` 反而没有翻译、原样裸奔。要么补 push 投递记录，要么砍掉死标签。
 
-一处诚实但悬空的半成品：**F-6 自动同步开关**被 `executorConfigured => false` 正确禁用，没有欺骗用户，但"永久禁用的设置项 + 无人消费的偏好键"本身就是负债；应接入真实前台/后台执行器，或移除。
+一处诚实但悬空的半成品：**F-6 自动同步开关**被 `executorConfigured => false` 正确禁用，没有欺骗用户，但"永久禁用的设置项 + 无人消费的偏好键"本身就是负债；已决策改为可选执行器——引入 workmanager 周期任务（每日一次）+ App 启动时前台增量同步，复用现有 health_sync 导入逻辑，默认关闭、首次开启给一次性授权解释。
 
-冗余与缺口：投递链路的缺口在"push/本地通知无送达回执"（用户无法核对推送是否真发出）；JPush 密钥未进入部署配置，使 F-3 在当前环境形同未启用——这是运维缺口而非代码造假，但决定推送能力何时真实存在。文档侧 `Mock_Or_Deferred.md` 关于投递历史"尚未写入"的描述已过时，需随 F-4 一并修正。
+冗余与缺口：投递链路的缺口在"push/本地通知无送达回执"（用户无法核对推送是否真发出）；JPush 密钥未进入部署配置，使 F-3 在当前环境形同未启用——这是运维缺口而非代码造假（上线前补齐部署密钥即可），但决定推送能力何时真实存在。文档侧 `Mock_Or_Deferred.md` 关于投递历史"尚未写入"的描述已过时，需随 F-4 一并修正。

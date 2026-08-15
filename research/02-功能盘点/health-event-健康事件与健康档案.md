@@ -23,7 +23,7 @@
 | H-12 | 无事件空态与入口 | Review 无事件卡 + 历史承接，不生成泛化周报 | 真实现 | 保留 | P1 |
 | C-1 | 档案字段真实用途核查（逐字段） | 见正文逐字段表：核心字段真用、3 个字段僵尸 | 混合 | 改造（按字段） | P1/P2 |
 | C-2 | 档案编辑入口（Mine 四页 + 搜索加药 + 设置同步） | 写成功才 toast、失败入 pending sync 真实重放、错误如实 | 真实现 | 保留 | P0 |
-| C-3 | Mine「档案提醒」静态假数据卡 | 硬编码 "Pollen, penicillin / 2 items"，且无渲染出口 | 假实现/死代码 | 删除 | P2 |
+| C-3 | Mine「档案提醒」静态假数据卡 | 硬编码 "Pollen, penicillin / 2 items"，且无渲染出口 | 假实现/死代码 | 改造 | P2 |
 | C-4 | 档案完成度与 readiness gaps | 7 项完成度 + gap 引导，真实数据驱动 | 真实现（口径粗糙） | 保留 | P1 |
 | C-5 | 档案→建议/风险/就诊摘要消费面 | 档案变更触发建议重算、过敏进风险检查、就诊摘要字段级隐私 | 真实现 | 保留 | P0 |
 
@@ -62,7 +62,7 @@
 - 实际作用：kind 目前不产生任何行为差异——symptom 与 other 的事件在创建、check-in、回顾、建议联动上完全同路径（唯一差异是 trigger listener 对 `kind === 'other'` 的 check-in 跳过建议重算，见 H-10）。「症状库」功能不存在。
 - 真伪判定：部分实现（半成品字段而非假实现——没有占位数据冒充，是直接没做完：契约留了口子，UI 不给入口）。
 - 结论：改造。
-- 改造方案：二选一。① 产品上不区分事件类型：删除 kind 字段与相关分支（`events.service.ts`、`trigger.listener.ts`、DTO、Review kind 标签），减少一条永远为默认值的契约；② 若未来要做类型（如「用药观察」「症状观察」分流），在 StartEventSheet 加二选控件并把 kind 传后端——在此之前不留「有字段无入口」的半成品。倾向 ①。症状库若要做，放在记录页的联想建议而非事件页（F-19 的咖啡因/情绪结构化入口一并规划）。
+- 改造方案：kind 字段保留（不删字段、不删分支），改造为回顾区"按事件类型筛选"的筛选标签——按 kind 过滤历史列表，纯 UI、零后端改造；中期增强为"症状标签集合"（事件创建时勾选症状、与记录页症状库联动），排期后做。事件期内 `kind === 'other'` 的 check-in 跳过建议重算分支保留（语义即"非症状事件不进症状建议"）。
 - 优先级：P1。
 
 ### H-5 事件历史列表（Review 历史区）
@@ -80,7 +80,7 @@
 - 实际作用：目前为零——过去事件只能看历史列表里的摘要，完整四段回顾只能看到最近一个（current 优先 active、否则最近 ended）。完整历史回顾是事件领域的可用性缺口，但不是长期健康伙伴的总价值缺口。
 - 真伪判定：部分实现（不是假实现——数据链路与 provider 都真，差 UI 接线这一环）。
 - 结论：改造。
-- 改造方案：历史行加 onTap → push 详情页（或底部弹层），复用 `ReviewView` 的事件头部+四段渲染（已有现成 widgets），接 `reviewDetailProvider(eventId)`；成功后上报 `review_opened`（复用 `_ReviewOpenedTracker` 的 session 去重语义）。工程量小、闭环价值直接。
+- 改造方案：历史行加 onTap → push 详情页（或底部弹层），复用 `ReviewView` 的事件头部+四段渲染（已有现成 widgets），接 `reviewDetailProvider(eventId)`；事件头部同时补 `reasonRecord` 关联展示一行（证据链，见 H-9）；成功后上报 `review_opened`（复用 `_ReviewOpenedTracker` 的 session 去重语义）。工程量小、闭环价值直接。
 - 优先级：P1。
 
 ### H-7 事件编辑/修改
@@ -101,7 +101,7 @@
   - 每段独立 available/unknown，unknown 只显示简短缺失原因，不显示分数或红色「需关注」；覆盖率（checkIns/dailyRecords/doseLogs 三源 state/coverage/sources/observedCount）与 sourceTimestamps 如实随行。
 - 实际作用：这是健康事件专题中最可信的回顾能力，也为纵向洞察提供了“事实、覆盖率、未知项”范式。它没有 AI 泛化、综合健康评分或把 unconfirmed 写成漏服，但不能替代非生病期日/周/月洞察。
 - 真伪判定：真实现。抽样验证了全部四个 builder 的输入都是窗口过滤的真实数据（dedicated count 查询 + capped reader 列表），未知一律 reason code 而非补 0/补「需关注」；客户端对未知 reason code 折叠为通用文案而不是造假（`lucent_review.dart:139-142`）。
-- 结论：保留（这是本模块最值得保留的资产）。
+- 结论：保留（这是本模块最值得保留的资产）。定位补充：事件回顾是"纵向洞察中的专题视图"，不再统领 Review——Review 职责改版为日/周/月洞察，事件成为其中专题视图，生活维度平级。
 - 改造方案：无必改项。已知限制（文档化）：red flag 为用户级静态检查、不与事件药物对齐——后续可把事件关联用药传入风险检查。
 - 优先级：P0。
 
@@ -120,7 +120,7 @@
 - 实际作用：事件的写入会让建议重新计算（间接联动成立），但「事件期 check-in 连续恶化→主动建议（如提醒就医/建议结束事件）」这类事件专属洞察不存在——事件数据对建议的唯一影响是触发重算本身。
 - 真伪判定：部分实现（重算联动是真，事件语义进建议规则是缺）。
 - 结论：改造。
-- 改造方案：① 短期：把事件窗口内 check-in 序列作为观察项信号（consumableSignalKinds 增加 `event_check_in_trend`），恶化序列（如最近连续 2 天 worsened）以 observation 级别（不进主卡）提示「持续加重，考虑结束观察或就医」，证据口径为 check-in 日期与结果序列（H-8 已有该数据基础）；② 客户端 suggestion provider 的 topic 列表补 `healthEvents`，让事件动作后建议卡与事件区块同频刷新（去掉对 onRefresh 的依赖）。
+- 改造方案：① 按"建议升级通知"规则（R2）：事件期内连续 2 次 check-in 为"加重"，或新记录症状 → 升级通知——经建议升级通知执行器投递（与 today-suggestion 物化同构，本地通知为主、JPush 为辅），每天最多 1 条，超出进 Today 次建议区不弹窗；信号接入：consumableSignalKinds 增加 `event_check_in_trend` 观察项，证据口径为 check-in 日期与结果序列（H-8 已有该数据基础）；② 客户端 suggestion provider 的 topic 列表补 `healthEvents`，让事件动作后建议卡与事件区块同频刷新（去掉对 onRefresh 的依赖）。
 - 优先级：P1。
 
 ### H-11 事件闭环测量
@@ -163,9 +163,13 @@
 
 - 实际作用：档案的真实价值集中在「过敏 → 用药安全」「档案缺失 → 档案不全建议」「当前用药 → 提醒/剂量/事件/就诊摘要」「时区 → 事件日期语义」四条线上；其余字段是展示性/计数性用途。
 - 真伪判定：混合——核心字段真实现，`unitSystem`、`emergencyContact`、`onboardingCompleted`、`extras` 四个字段符合「录了没用」僵尸模式（后端存储 + 前端表单齐全，但零业务消费），其中 unitSystem 与 emergencyContact 还有 UI 入口让用户真实填写，比纯死字段更有误导性（用户以为填了有用）。
-- 结论：改造（按字段）：
-  - P1：为 `weightKg`（BMI 显示/给药覆盖里做剂量换算提示）或 `conditions`（如「高血压/糖尿病」进建议规则）补真实出口，否则与 emergencyContact 一并移除表单入口；
-  - P2：`unitSystem`/`emergencyContact`/`onboardingCompleted`/`extras` 明确决策：要么接出口（如紧急联系人用于风险检查 escalation 或就诊摘要联系字段），要么从 DTO/表单/实体删除。推荐删除 unitSystem（无换算需求）与 extras；emergencyContact 保留在 profile 里但 Mine readiness 的 gap 计数去掉（填了不产生任何价值，不该被当作「完成」指标）。
+- 结论：改造（按字段，决策已定，不删除字段）：
+  - `weightKg`：改造为"体重记录维度"——档案字段保留为当前基线，新增时间序列记录（手动 + 平台导入）；与血糖趋势、血压 vital 合并为"vital 时间序列"基建，进纵向洞察周/月单维趋势（带覆盖率标注）；体重记录入口放记录页快捷记录（P1）；
+  - `conditions`：保留为档案字段，进入助手上下文（助手可读疾病史，回答"结合我的情况"问题）+ 健康事件创建时的可选关联；不进药物风险判断（MVP 门控，待规则库成熟再议）（P1）；
+  - `unitSystem`：接单位制显示切换（体重 kg/lb、饮水 ml/oz）（P2）；
+  - `emergencyContact`：标注延后，不排期（P2）；
+  - `onboardingCompleted`：改造为引导流程状态（P2）；
+  - `extras`：归档——自由扩展槽保留，标注不接入主路径，不排期（P2）。
 - 优先级：P1/P2。
 
 ### C-2 档案编辑入口（Mine 四编辑页 + 搜索加药 + 设置同步）
@@ -182,8 +186,7 @@
 - 现状：`mine/data/repositories/lucent.dart:126-152` 的 `_buildAlerts` 构造三条 `MineStatusCard`：过敏卡是 `const` 硬编码（title/subtitle/badge 全部静态），其 l10n 文案为「Allergies / Pollen, penicillin / 2 items」（`app_en.arb:2717-2719`）——**无论用户有没有过敏、有几个，都显示花粉/青霉素/2 项**；用药卡 badge 随 currentMedicineCount 切换，隐私卡全静态。且全工程 grep 确认 `dashboard.alerts` 在 presentation 层**没有任何渲染方**（Mine 页只渲染 archiveEntries 与 completion）。
 - 实际作用：无。这是审计清单第 1 条（占位数据补空）的又一实例：静态假数据驻留在生产 repository 路径，只是恰好没有 UI 出口；一旦 Mine 页后续渲染 alerts 区，就会把「你有 2 项过敏：花粉、青霉素」当成事实展示给用户。
 - 真伪判定：假实现/死代码。
-- 结论：删除。
-- 改造方案：删除 `MineDashboard.alerts` 字段、`_buildAlerts` 与三条静态卡（含 `MineStatusCard` 相关 copy key）；如确需提醒区，用真实数据（activeAllergyCount>0 时展示真实过敏标签列表）重建。
+- 结论：改造。去掉硬编码静态数据（"Pollen, penicillin / 2 items" 三条静态卡不再充当事实展示），改造为真实"档案提醒"卡：接真实健康档案（过敏/当前用药/档案缺口），由后端档案完整性计算驱动，成为 Mine 档案状态主卡的组成部分；`MineDashboard.alerts` 字段保留为真实数据出口，不再驻留静态占位。
 - 优先级：P2。
 
 ### C-4 档案完成度与 readiness gaps
@@ -192,7 +195,7 @@
 - 实际作用：档案录入的进度反馈与下一步引导。
 - 真伪判定：真实现（数据真实）。口径粗糙：完成度按「有值」而非「有用」（emergencyContact 填了就 +0 但它本来无用途——见 C-1；`basicInfoCompleted` 要求 birthDate+heightCm+sexAtBirth 三件套，weightKg 单独计项）。
 - 结论：保留。
-- 改造方案：完成度口径与 C-1 的字段决策对齐（删 unitSystem/emergencyContact 后同步调整分母与 gap 列表）；gap 描述与编辑页路由对应关系保持。
+- 改造方案：完成度口径与 C-1 的字段决策对齐（unitSystem 接显示切换、emergencyContact 标注延后、onboardingCompleted 改造为引导流程状态后，同步调整分母与 gap 列表，完成度按"有用"而非"有值"）；gap 描述与编辑页路由对应关系保持。
 - 优先级：P1。
 
 ### C-5 档案→建议/风险/就诊摘要消费面
@@ -200,16 +203,16 @@
 - 现状：档案变更（`HEALTH_CONTEXT_CHANGED`）触发 today-suggestion 重算（`trigger.listener.ts:66-76`）与缓存失效；过敏（active）进入用药风险检查的 severeAllergy 静态规则与 LLM 上下文（`risk-context-builder.service.ts`）；currentMedicines/allergies/conditions/birthDate/bloodType 进入就诊摘要（`clinic-summary/summary.service.ts:137-195`），就诊摘要支持字段级隐私选择（事件概况/症状/用药槽位/饮水/睡眠/备注，默认不含自由文本）与可撤销分享；assistant `get_user_profile` 读取档案（read tool）。客户端 Today 的「档案不全」建议、Today 健康观察关联用药选项、F-20 快照层的消费方（Today dashboard/用药确认）全部真实接线。
 - 实际作用：档案不是「录了放着」——过敏/缺失字段/当前用药分别驱动安全、建议、回顾三个产品面。
 - 真伪判定：真实现。
-- 结论：保留。
+- 结论：保留。就诊摘要消费面随"更多"入口降级——就诊摘要/PDF/分享移入"更多"，作为用户主动寻找的次级出口（surface=more），功能保留、入口下移，字段级隐私改造按需跟进。
 - 改造方案：无。
 - 优先级：P0。
 
 ## 后端投入错配判断
 
-1. **冗余端点/方法（应删）**：`GET /health-events`（list）与 `GET /health-events/{id}` 两个后端端点只被客户端 `LucentHealthEventRepository.fetchHistory/fetchById` 调用，而这两个 repository 方法**没有任何业务消费方**（客户端历史走 `GET /reports/reviews`）。即：后端两个查询端点 + 客户端两个方法构成一条完整但无用户的死链路。建议从 OpenAPI 与客户端 repository 删除（回顾列表是唯一合法出口），或反过来让 Review 历史复用 health-events list（不推荐——review 合同已含 status 筛选与分页）。`EventReview` 的 `currentMedicineIds` 与 `reasonRecordId` 在 events list/get 响应里同步保留以兼容（成本低）。
+1. **冗余端点/方法（归档标注）**：`GET /health-events`（list）与 `GET /health-events/{id}` 两个后端端点只被客户端 `LucentHealthEventRepository.fetchHistory/fetchById` 调用，而这两个 repository 方法**没有任何业务消费方**（客户端历史走 `GET /reports/reviews`）。即：后端两个查询端点 + 客户端两个方法构成一条完整但无用户的死链路。建议归档——端点与 repository 方法保留但标注"无业务消费方、不接入主路径"（回顾列表是唯一合法出口），或反过来让 Review 历史复用 health-events list（不推荐——review 合同已含 status 筛选与分页）。`EventReview` 的 `currentMedicineIds` 与 `reasonRecordId` 在 events list/get 响应里同步保留以兼容（成本低）。
 2. **投资完成但出口未接（P1 接线）**：`GET /reports/reviews/{eventId}` 后端完整实现 + 客户端 `reviewDetailProvider` 就绪，差历史行 onTap 这一环（H-6）。这是「后端投入超出当前 C 端使用」的典型——补 UI 比删后端便宜。
-3. **kind 字段的跨端半成品投入**：枚举、DTO、触发分支（check-in 时 kind=other 跳过重算）三处代码都写了，但 UI 无入口（H-4）。删字段或补选择器，二选一。
-4. **僵尸字段投入**：`unitSystem`（后端存储 + 前端表单 + 设置同步三处代码，零消费）、`emergencyContact`（两端表单 + Mine gap 逻辑，零业务消费）、`onboardingCompleted`（mapper 输出 + 客户端完成度计数，零写入方）、`extras`（两端自由槽，零使用）——这些是数据模型层「做了完整读写却无用户价值」的投入，删除或接出口。
+3. **kind 字段的跨端半成品投入**：枚举、DTO、触发分支（check-in 时 kind=other 跳过重算）三处代码都写了，但 UI 无入口（H-4）。决策已定：字段保留，改造为回顾区"按事件类型筛选"的筛选标签（纯 UI，零后端改造），不删字段。
+4. **僵尸字段投入**：`unitSystem`（后端存储 + 前端表单 + 设置同步三处代码，零消费）、`emergencyContact`（两端表单 + Mine gap 逻辑，零业务消费）、`onboardingCompleted`（mapper 输出 + 客户端完成度计数，零写入方）、`extras`（两端自由槽，零使用）——这些是数据模型层「做了完整读写却无用户价值」的投入，按字段决策逐项改造（见 C-1）：unitSystem 接显示切换、emergencyContact 标注延后、onboardingCompleted 改造为引导流程状态、extras 归档标注不接入主路径，不删除字段。
 5. **匹配良好部分**：event-review 四段 builder、check-in/end 服务端权威事件、漏斗聚合、时区语义贯穿——后端投入与 C 端使用完全匹配，没有超投。
 
 ## 模块级结论
@@ -219,7 +222,7 @@
 **整体改造建议（按优先级）**：
 
 - P0（无必改）：主链路全部真实现，不需要推倒重建。
-- P1：① 事件详情回顾接线（H-6，历史行点开完整四段，投资已就绪）；② 事件类型决策（H-4，删 kind 或接选择器，倾向删）；③ 事件 check-in 序列进建议观察项 + 客户端 suggestion provider 补 watch `healthEvents`（H-10）；④ 事件头部展示触发记录（H-9 的 reasonRecord 出口）；⑤ C-1 的字段决策（weightKg/conditions 补出口或删 emergencyContact 类表单）；⑥ C-4 完成度口径对齐。
-- P2：删除 C-3 Mine 静态假数据卡、删后端冗余 list/get 端点与客户端死 repository 方法、僵尸字段清理（unitSystem/extras/onboardingCompleted）。
+- P1：① 事件详情回顾接线（H-6，历史行点开完整四段，投资已就绪）；② 事件类型决策（H-4，kind 保留，改造为回顾区筛选标签）；③ 事件 check-in 序列进建议升级规则（R2：连续 2 次"加重"或新记录症状 → 升级通知，每天最多 1 条）+ 客户端 suggestion provider 补 watch `healthEvents`（H-10）；④ 事件头部展示触发记录（H-9 的 reasonRecord 出口）；⑤ C-1 的字段决策（weightKg 改造为体重记录维度、conditions 进助手上下文+事件创建可选关联、unitSystem 接显示切换、emergencyContact 标注延后）；⑥ C-4 完成度口径对齐。
+- P2：C-3 Mine 静态假数据卡改造为真实档案提醒卡（接真实档案，由后端档案完整性计算驱动）；后端冗余 list/get 端点与客户端死 repository 方法归档标注（不删除代码）；僵尸字段按字段决策逐项改造（unitSystem 接显示切换/emergencyContact 标注延后/onboardingCompleted 改造为引导流程状态/extras 归档）。
 
-**一句话总评**：健康事件是「用户确认 + 事实口径 + 稀疏容忍」三个产品原则落地最扎实的专题模块，值得保留；要动手的是把详情链路接上 UI、给事件数据在建议规则里一个真实席位，以及清掉档案侧四处「录了没用」的僵尸字段与一张假数据卡，不能再用事件完成数代表全部健康伙伴价值。
+**一句话总评**：健康事件是「用户确认 + 事实口径 + 稀疏容忍」三个产品原则落地最扎实的专题模块，值得保留；要动手的是把详情链路接上 UI、给事件数据在建议规则里一个真实席位，以及按字段决策逐项改造档案侧四处「录了没用」的字段（接出口或标注延后）、把静态假数据卡改造成真实档案提醒卡，不能再用事件完成数代表全部健康伙伴价值。

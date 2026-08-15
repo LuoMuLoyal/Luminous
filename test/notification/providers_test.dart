@@ -50,7 +50,11 @@ class FakeNotificationsApi implements NotificationsApi {
       throw DioException(requestOptions: RequestOptions(path: ''));
     }
     return _response(
-      UnreadCountResponseDto(code: 0, message: '', data: UnreadCountDataDto(count: unreadCount)),
+      UnreadCountResponseDto(
+        code: 0,
+        message: '',
+        data: UnreadCountDataDto(count: unreadCount),
+      ),
     );
   }
 
@@ -141,7 +145,13 @@ class FakeNotificationsApi implements NotificationsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    return _response(UnreadCountResponseDto(code: 0, message: '', data: UnreadCountDataDto(count: 0)));
+    return _response(
+      UnreadCountResponseDto(
+        code: 0,
+        message: '',
+        data: UnreadCountDataDto(count: 0),
+      ),
+    );
   }
 
   @override

@@ -40,4 +40,4 @@ Luminous 采用“健康事件期切入、日常轻量维护”的产品闭环�
 - 既有 Report、桌面端和 Web 代码不会删除，但沉没成本不再决定产品优先级。
 - 服药、饮水、睡眠和缺失数据必须在 Today、建议、回顾和导出之间使用同一语义。
 - 产品验证从“功能数量、导出次数、记录连续天数”转向事件开始/结束、建议处理、结果确认和回顾使用。
-- 产品领域术语以 [`../../../CONTEXT.md`](../../../CONTEXT.md) 为准，实施拆分以 `Luminous/plans/2026-08-07-product-loop-program.md`（实施完毕文件已删，2026-08-14 收口）为准。
+- 产品领域术语以 [`../../01-product/Product_Vision.md`](../../01-product/Product_Vision.md) 为准，实施拆分以 `Luminous/plans/2026-08-07-product-loop-program.md`（实施完毕文件已删，2026-08-14 收口）为准。

@@ -995,23 +995,22 @@ void main() {
         await tester.pumpAndSettle();
 
         // The share request carries the current field selection (notes off).
-        final shareRequest = verify(
-          () => reportsApi.reportsControllerShareClinicSummaryV1(
-            clinicSummaryRequestDto: captureAny(
-              named: 'clinicSummaryRequestDto',
-            ),
-          ),
-        ).captured.single as ClinicSummaryRequestDto;
-        expect(
-          shareRequest.selectedFields?.map((e) => e.value),
-          [
-            'event_overview',
-            'symptom_changes',
-            'medication_slots',
-            'water',
-            'sleep',
-          ],
-        );
+        final shareRequest =
+            verify(
+                  () => reportsApi.reportsControllerShareClinicSummaryV1(
+                    clinicSummaryRequestDto: captureAny(
+                      named: 'clinicSummaryRequestDto',
+                    ),
+                  ),
+                ).captured.single
+                as ClinicSummaryRequestDto;
+        expect(shareRequest.selectedFields?.map((e) => e.value), [
+          'event_overview',
+          'symptom_changes',
+          'medication_slots',
+          'water',
+          'sleep',
+        ]);
 
         // Created state: link + expiry + copy + revoke.
         expect(find.text(l10n.reportShareCreatedTitle), findsOneWidget);

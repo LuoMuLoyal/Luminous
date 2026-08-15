@@ -22,17 +22,17 @@
 | 11 | 公开分享页 + 公开 PDF | 免认证读分享、信封兼容、过期/撤销 404 | 真实现 | 保留 | — |
 | 12 | 就诊摘要占位数据问题（_fillMissingSections） | 曾以空默认值伪装「未选择/未返回」为「空数据」 | 已修复（代码中不存在） | 已修复 | — |
 | 13 | 就诊摘要测量 | previewed/exported 客户端边界 + 服务端 share_created/opened/revoked | 真实现 | 保留 | — |
-| 14 | Legacy AI 周报/月报生成（SSE 流） | 手动触发的泛化总结、真实增量流、范围切换缓存 | 真实现（仅 legacy 页可达） | 删除旧实现，不复用为纵向洞察 | P2 |
+| 14 | Legacy AI 周报/月报生成（SSE 流） | 手动触发的泛化总结、真实增量流、范围切换缓存 | 真实现（仅 legacy 页可达） | 改造（周/月纵向洞察生成器） | P2 |
 | 15 | AI 周报无事件/数据不足防护 | 数据不足时不得强行生成泛化周报 | 已消除（主路径无入口 + legacy 页 readiness 门控） | 已修复 | — |
 | 16 | AI 摘要用户开关 | user setting 关闭时前后端双拒绝 | 真实现 | 保留 | — |
 | 17 | 月度/打印 PDF 导出 | PIN 安全提升 + 队列生成 + COS 存储 + 通知 | 真实现 | 保留 | — |
 | 18 | 导出成功 ≠ 医生查看/获益的口径 | 分享文案不暗示已收到，测量按请求真实状态收敛 | 已消除（文案与测量均收敛） | 已修复 | — |
-| 19 | Legacy dashboard 兼容页（/report/legacy） | 旧周报视图兼容入口 | 真实现（计划内保留至兼容期结束） | 待删 | P2 |
-| 20 | 综合健康评分 | 跨维度权重打分 | 主路径已移除；legacy 页与后端仍存在 | 待删 | P2 |
-| 21 | 健康趋势/统计图表（legacy） | fl_chart 单指标折线、真实聚合 | 部分实现（legacy scalar 序列存在 unknown→0 映射） | 删除旧实现，保留纵向可视化需求 | P2 |
-| 22 | 建议历史回顾（legacy） | 建议生命周期状态列表 + 详情面板 | 真实现（仅 legacy 页） | 待删 | P2 |
+| 19 | Legacy dashboard 兼容页（/report/legacy） | 旧周报视图兼容入口 | 真实现（计划内保留至兼容期结束） | 改造（纵向洞察视图） | P2 |
+| 20 | 综合健康评分 | 跨维度权重打分 | 主路径已移除；legacy 页与后端仍存在 | 改造（洞察对象，不合成总分） | P2 |
+| 21 | 健康趋势/统计图表（legacy） | fl_chart 单指标折线、真实聚合 | 部分实现（legacy scalar 序列存在 unknown→0 映射） | 改造（observedMetric 口径） | P2 |
+| 22 | 建议历史回顾（legacy） | 建议生命周期状态列表 + 详情面板 | 真实现（仅 legacy 页） | 改造（Review「建议历史」详情视图） | P2 |
 
-统计：功能点 22 项。真实现 14 项；部分实现 2 项（历史翻页、字段级隐私门控）；已修复的历史假实现 3 项（占位数据、泛化周报、导出等同获益——均已在 2026-08-13/14 收口）；待删 legacy 残留 4 项；无当前存在的假实现，无死代码级「点击代替真实保存」。
+统计：功能点 22 项。真实现 14 项；部分实现 2 项（历史翻页、字段级隐私门控）；已修复的历史假实现 3 项（占位数据、泛化周报、导出等同获益——均已在 2026-08-13/14 收口）；legacy 残留 5 项（#14/#19/#20/#21/#22）统一改为「改造为纵向洞察」口径，不删除功能与代码；无当前存在的假实现，无死代码级「点击代替真实保存」。
 
 ---
 
@@ -46,7 +46,7 @@
 
 **真伪判定**：真实现。抽样验证：facts.service.ts 只输出事件身份 + 症状/check-in 计数，绝不输出自由文本；next-step.service.ts 只输出固定规则（active_check_in / event_ended + 已审核静态 redFlag 结构数据，显式 allowlist `REVIEWED_RED_FLAG_RULES`）；changes.service.ts 对无观察输出 `no_observations`、有观察不足输出 `insufficient_coverage`，方向缺失由客户端 `reviewTrendDirectionLabel` 如实显示「方向未知」。
 
-**结论**：保留。
+**结论**：保留。补充定位（已决策）：事件回顾是纵向洞察中的专题视图，不再统领 Review——事件是「伙伴的密集介入方式」，降为纵向洞察中的专题，生活维度平级；Review 职责改版为日/周/月纵向洞察，事件回顾作为其中专题视图嵌入（kind 改筛选标签）。
 
 **改造方案**：无（无需改动）。
 
@@ -116,7 +116,7 @@
 
 **真伪判定**：真实现。抽样验证：`summary.service.ts` `buildFindings` 只搬运 event review 的 fact code / reasonCode，无 review 时固定 `insufficient_coverage`；`applySelectedFields` 对未选 section 置 `undefined`（own property），序列化时字段被省略，任何输出路径都无法泄漏。
 
-**结论**：保留。
+**结论**：保留。定位：就诊摘要 preview 与分享、PDF/打印同为用户主动寻找的次级出口，入口移入「更多」，功能保留、入口下移；字段级隐私改造见 #8。
 
 **改造方案**：无。
 
@@ -135,7 +135,7 @@
 **改造方案**：
 - P1（二选一，推荐 a）：
   - a. 诚实化：六开关缩减为三个有效开关（事件概况/症状变化/用药槽位），移除饮水/睡眠/备注开关；或保留开关但注明「饮水/睡眠/备注不包含在摘要中」，并在 l10n 说明。
-  - b. 补齐内容：服务端把水/睡眠/备注做成真实 section（读 daily-records 汇总 + 事件备注），让开关名副其实——工作量大，与「就诊摘要为次级出口」的定位不符，不推荐。
+  - b. 改造为真实字段级脱敏：预览时按开关过滤字段——服务端把水/睡眠/备注做成真实 section（读 daily-records 汇总 + 事件备注），让开关名副其实；工作量大，与「就诊摘要为次级出口」的定位不符，不推荐。
 - P1：`ClinicSummaryContent` 对未映射字段的开关状态在服务端 `selectedFields` 回显中本就无对应键（回显的是 section keys 而非六字段），需保证 UI 开关状态与回显一致，避免「开关开但内容无变化」的认知偏差（当前默认行为已偏安全——备注默认关）。
 
 ### 9. 可撤销分享（7 天 TTL）
@@ -206,12 +206,13 @@
 
 **真伪判定**：真实现（链路真实）。但注意其消费面：主路径 `/report` 已完全移除 AI 摘要，`summary/generate`（非流式）、`summary/generate/async` + `status` 三个端点客户端零消费（仅 `generateStream` 被 legacy 页使用）；`ai_summary_remote.dart` 的非流式 `generate()` 方法是客户端死代码。
 
-**结论**：删除这套泛化 AI 报告实现（随 legacy 兼容页一并处理）。删除理由是输出形态与数据语义不可信，不代表周/月纵向理解退出产品。
+**结论**：改造——保留 SSE + BullMQ + LLM 基础设施，换新 prompt 与输入口径，改造为「周/月纵向洞察生成器」：只输出有来源和覆盖率的模式与低风险动作，证据不足弃权，不生成泛化长文（泛化输出形态与数据语义不可信，不代表周/月纵向理解退出产品）。
 
 **改造方案**：
+- P1：`summary/generate/stream` 链路保留，换新 prompt 与输入口径：输出固定为时间范围、覆盖率、有来源的已观察模式（最多一个）与低风险行动（最多一个），允许用户反馈；无足够数据时直接弃权，不生成泛化长文。
 - P1：客户端删除 `ai_summary_remote.dart` 非流式 `generate()`（死代码，调用方为零）。
-- P2：兼容期结束后删除 legacy 页与 dashboard AI 摘要装配；后端保留 `summary/generate/stream` 与否取决于是否还有任何客户端消费（移动端删除后即无消费，端点可随 dashboard 模块一并下线或降级为不暴露）。
-- P1：另立“纵向洞察”产品对象，不复用 legacy prompt：输出固定为时间范围、覆盖率、已观察事实、最多一个模式、最多一个低风险行动，并允许用户反馈；无足够数据时直接弃权。事件回顾作为专题嵌入，不再统领全部周/月内容。
+- P1：纵向洞察生成器装配到 Review 的日/周/月视图（与 #19 legacy dashboard 改造联动）；事件回顾作为专题嵌入，不再统领全部周/月内容。
+- P2：legacy 页上的旧 AI 摘要装配随 #19 改造一并处理（`summary/generate`、`summary/generate/async` + `status` 等零消费端点下线或降级为不暴露）。
 
 ### 15. AI 周报无事件/数据不足防护——已消除
 
@@ -223,11 +224,11 @@
 
 **真伪判定**：已消除。抽样验证：`readiness.dart` 三态主按钮映射（signedOut→登录 / insufficient→继续记录 / ready→生成总结）；`dashboard_view.dart` `canShowFullReport = readiness == ready`；主路径 Review 四段内容全部来自事件事实，无 LLM 参与。
 
-**注意**：后端 `summary/generate*` 端点本身没有服务端「数据不足拒绝」守卫（客户端 gate 是唯一防线），直接调 API 仍可对空数据生成（prompt 要求自述数据有限）。属低风险残留，随 legacy 删除后自然消失。
+**注意**：后端 `summary/generate*` 端点本身没有服务端「数据不足拒绝」守卫（客户端 gate 是唯一防线），直接调 API 仍可对空数据生成（prompt 要求自述数据有限）。属低风险残留，随 legacy 页改造为纵向洞察生成器后自然消失。
 
 **结论**：已修复。
 
-**改造方案**：P2（随 legacy 下线）；若保留端点，建议服务端对全 insufficient 请求返回 409/空结果以双保险。
+**改造方案**：P2（随 legacy 改造为纵向洞察生成器时一并处理）；建议服务端对全 insufficient 请求返回 409/空结果以双保险。
 
 ### 16. AI 摘要用户开关
 
@@ -271,10 +272,11 @@
 
 **真伪判定**：真实现（计划内保留，`Active_UI_Report.md` Task 10 明确「删除评估留待兼容期结束」）。
 
-**结论**：待删（兼容期结束后）。
+**结论**：改造——聚合计算逻辑保留（真实数据），重新装配为 Review 日/周/月纵向洞察视图：事实 / 覆盖率 / 一个模式 / 一个动作；「综合评分」输出去掉，代之以单维趋势 + 覆盖率展示。
 
 **改造方案**：
-- P2：兼容期结束（建议 0.1.0 发布后一个版本窗口）删除：`legacy_dashboard_compat.dart`、`dashboard_view.dart`、legacy sections（trend/findings/patterns/ai_summary/export/score_hero/suggestion_history/readiness 等）、`top_bar.dart` 范围切换、路由 `/report/legacy`、domain 侧 `dashboard.dart` 实体与 mapper（或降级为仅供数据导出 PDF 使用——注意 #17 的 PDF 生成仍依赖 dashboard 聚合数据，删除 dashboard 模块前需确认 data-export 的 PDF 数据源替代方案）。
+- P2：`legacy_dashboard_compat.dart`、`dashboard_view.dart` 与 legacy sections 不删除，重新装配为 Review 的日/周/月纵向洞察视图（聚合计算逻辑保留，`top_bar.dart` 范围切换改造为日/周/月切换）；「综合评分」输出移除，代之以单维趋势 + 覆盖率展示。
+- P2：路由 `/report/legacy` 与 domain 侧 `dashboard.dart` 实体/mapper 视装配进度迁移（注意 #17 的 PDF 生成仍依赖 dashboard 聚合数据，迁移前需确认 data-export 的 PDF 数据源替代方案）。
 - P2：客户端 domain 层保留 `ReportDashboard` 与否取决于 data-export 是否迁移到 event-review 口径；若 PDF 未来改为事件口径，dashboard 整套可连同后端一并下线。
 
 ### 20. 综合健康评分
@@ -285,9 +287,9 @@
 
 **真伪判定**：真实现但属「跨维度综合评分替代事实」模式的残留——产品愿景明确「综合健康评分退出产品方向」（`Product_Vision.md`：评分不透明、0 分 preview 无信息价值），主路径已遵守，legacy 未清。
 
-**结论**：删除 legacy 图表实现，但保留“在手机端看单维趋势、未来在桌面/Web 大屏做更清晰比较”的产品需求。新实现必须使用 `observedMetric` 或等价覆盖率模型，unknown 日不绘点也不补 0。
+**结论**：改造为「洞察对象」而非分数——覆盖率 + 单维趋势方向 + 值得关注的模式，不合成总分；单维趋势在手机端看，未来在桌面/Web 大屏做更清晰比较。新实现必须使用 `observedMetric` 或等价覆盖率模型，unknown 日不绘点也不补 0。
 
-**改造方案**：P2 删除后端 `buildScore` 及 dashboard DTO 的 score 字段（或随 dashboard 模块整体下线）；删除前确认 data-export PDF 无 score 依赖（医院 PDF 是否含评分需核对 `report-pdf/pdf.service.ts`，若含则 PDF 也随之改版）。
+**改造方案**：P2 移除后端 `buildScore` 及 dashboard DTO 的 score 字段的总分输出，代之以「洞察对象」（覆盖率 + 单维趋势方向 + 值得关注的模式，不合成总分）；改造前确认 data-export PDF 无 score 依赖（医院 PDF 是否含评分需核对 `report-pdf/pdf.service.ts`，若含则 PDF 也随之改版）。
 
 ### 21. 健康趋势/统计图表（legacy）
 
@@ -297,17 +299,19 @@
 
 **真伪判定**：部分实现——数据真实，但 unknown→0 的投影使图表可能误导（缺失日显示为 0 而非空），属「unknown 映射 0/持平」模式在 legacy 路径的残留（客户端 `dashboard.dart` 注释已声明「legacy scalar 主字段保留至 observed metric 迁移」）。
 
-**结论**：待删（随 legacy 下线，P2）。
+**结论**：改造——采用 observedMetric 口径：unknown 天不绘点、只绘已记录数据，补覆盖率标注。
 
-**改造方案**：P2 随 legacy 删除旧实现；纵向洞察另用 `observedMetric`（客户端 domain 已保留字段）或等价契约重建，unknown 天不绘点，并在图表旁直接显示“有记录 N 天 / 范围 M 天”。
+**改造方案**：P2 将 legacy 图表改按 `observedMetric`（客户端 domain 已保留字段）口径输出：unknown 天不绘点、只绘已记录数据，并在图表旁直接显示“有记录 N 天 / 范围 M 天”覆盖率标注；废除 unknown→0 投影（服务端兼容序列）与 unknown→flat/general（客户端 mapper）两处口径。
 
 ### 22. 建议历史回顾（legacy）
 
 **现状**：legacy 页 `suggestionHistoryProvider`（`/today/suggestions/history`）+ 客户端按 title|reason|type 去重取最高生命周期状态 + 点击弹详情面板（类型图标/生命周期 Badge/规则 meta/置信度/反馈）。
 
-**真伪判定**：真实现（数据源为真实历史 API）。仅 legacy 页消费，随 legacy 下线。
+**真伪判定**：真实现（数据源为真实历史 API）。仅 legacy 页消费，随 legacy 改造一并移入 Review。
 
-**结论**：待删（P2，随 legacy 一并评估）。
+**结论**：改造——改造为 Review「建议历史」详情视图（建议生命周期状态已真实存在）。
+
+**改造方案**：P2 将建议历史从 legacy 页移入 Review，作为「建议历史」详情视图：数据源为真实历史 API（`/today/suggestions/history`），保留按 title|reason|type 去重取最高生命周期状态与详情面板（类型图标/生命周期 Badge/规则 meta/置信度/反馈）。
 
 ---
 
@@ -319,7 +323,7 @@
 | 无事件强行生成泛化 AI 周报 | **主路径已确认不存在**（Review 无周报生成逻辑，无事件只给入口）；legacy 页 AI 摘要被 readiness==ready 门控 + prompt 约束不虚构。后端端点缺服务端守卫为低风险残留 |
 | 导出请求成功等同医生查看/用户获益 | **已消除**：文案「分享摘要/按需使用」不暗示已收到；测量按请求真实状态收敛；分享访问由服务端计数 |
 | 跨维度综合评分替代事实 | **主路径已移除**（评分 hero 不装配、测试锁定）；仅 legacy 页与后端残留（含 insufficient 得 18 分高于 needs_attention 15 分的权重缺陷） |
-| unknown 映射 0/空列表/「需关注」 | **Review 主路径已彻底修复**（显式 unknown 成员 + reasonCode + 「方向未知」文案）；legacy dashboard scalar 路径仍存在 unknown→0（服务端兼容序列）与 unknown→flat/general（客户端 mapper），随 legacy 删除 |
+| unknown 映射 0/空列表/「需关注」 | **Review 主路径已彻底修复**（显式 unknown 成员 + reasonCode + 「方向未知」文案）；legacy dashboard scalar 路径仍存在 unknown→0（服务端兼容序列）与 unknown→flat/general（客户端 mapper），随 legacy 改造为 observedMetric 口径（#21）一并修正 |
 
 ## 其他核查
 
@@ -333,19 +337,19 @@
 
 Lucent reports 模块存在明显超过 C 端消费面的投入：
 
-1. **Dashboard 全套**（`dashboard/context.service.ts` + `computation.service.ts` + `presenter.service.ts` + `ai-summary/` 全套 + `prompts/` + `schemas/` + SSE 端点 + BullMQ 队列）——约 2000+ 行核心逻辑 + 大量 spec，**当前仅被 `/report/legacy` 兼容页消费**，而该页是计划删除对象。data-export 的 PDF 生成依赖 dashboard 聚合，是 dashboard 存续的唯一真实理由。
+1. **Dashboard 全套**（`dashboard/context.service.ts` + `computation.service.ts` + `presenter.service.ts` + `ai-summary/` 全套 + `prompts/` + `schemas/` + SSE 端点 + BullMQ 队列）——约 2000+ 行核心逻辑 + 大量 spec，**当前仅被 `/report/legacy` 兼容页消费**，而该页正按纵向洞察方向改造（见 #19）。data-export 的 PDF 生成依赖 dashboard 聚合，是 dashboard 存续的唯一真实理由。
 2. **未消费端点**：`summary/generate`（非流式）、`summary/generate/async` + `status`、`clinic-summary/export/async` + `status`（队列 + 轮询全链路，移动端全部未用——客户端 PDF 走 `preview/pdf` POST 直下，导出走 `/data-export-requests`）。异步队列基础设施（`summary-queue.service.ts` / `pdf-queue.service.ts`）对当前唯一客户端是冗余投入。
-3. **建议**：兼容期结束后删除 legacy dashboard/泛化 AI-summary 消费面与未消费端点；先把 data-export 所需事实聚合迁移到 event-review/observed metric，再裁剪后端。新的纵向洞察服务应消费统一覆盖率与时间范围事实，不继承 legacy 的综合计算、unknown→0 或泛化长文生成。**先做客户端死代码清理与数据契约拆分，再评估后端裁剪，避免先砍后端影响导出。**
+3. **建议**：将 legacy dashboard 聚合逻辑保留并重新装配为纵向洞察视图（#19），删除泛化 AI-summary 消费面与未消费端点；先把 data-export 所需事实聚合迁移到 event-review/observed metric，再裁剪后端。新的纵向洞察服务应消费统一覆盖率与时间范围事实，不继承 legacy 的综合评分、unknown→0 或泛化长文生成。**先做客户端死代码清理与数据契约拆分，再评估后端裁剪，避免先砍后端影响导出。**
 
 ## 模块级结论（价值判断与整体改造建议）
 
-**价值判断**：当前事件 Review + 就诊摘要 + 分享管理 + 导出是**本仓库质量最高、假实现最少的模块之一**，应作为健康事件专题保留。但把全部报告能力收缩成事件回顾，同样不符合长期健康伙伴定位：用户还需要在非生病期间看懂一周和一个月的睡眠、饮水、餐食、心情与建议变化。旧 dashboard 的综合评分、unknown→0 和泛化 AI 周报应删除；纵向洞察要基于真实覆盖率另建，而不是恢复旧页面。
+**价值判断**：当前事件 Review + 就诊摘要 + 分享管理 + 导出是**本仓库质量最高、假实现最少的模块之一**，应作为健康事件专题保留。但把全部报告能力收缩成事件回顾，同样不符合长期健康伙伴定位：用户还需要在非生病期间看懂一周和一个月的睡眠、饮水、餐食、心情与建议变化。旧 dashboard 的综合评分、unknown→0 和泛化 AI 周报按新产品方向改造为纵向洞察口径（覆盖率 + 单维趋势 + 模式 + 一个动作）；纵向洞察要基于真实覆盖率重装配，而不是恢复旧页面。
 
 **遗留问题**（按优先级）：
 - P1：回顾历史无翻页 UI（超过 20 条事件不可达）；
 - P1：就诊摘要六字段选择中饮水/睡眠/备注三开关无实际内容门控，界面承诺与真实行为不一致（推荐裁剪为三有效开关或如实注明）；
 - P1：定义日/周/月纵向洞察的事实契约与覆盖率展示，不复用 legacy 泛化 AI 报告；
-- P2：legacy 兼容页（dashboard 视图 + 综合评分 + legacy scalar unknown→0 + AI 周报入口 + 未消费端点）按计划删除，删除时顺带清理客户端死代码（非流式 generate）与后端未消费端点；
+- P2：legacy 兼容页改造为纵向洞察（#19-#22：dashboard 视图重装配 + 评分改洞察对象 + scalar 改 observedMetric + AI 周报改洞察生成器），清理客户端死代码（非流式 generate）与后端未消费端点；
 - P2：文档漂移更新（Mock_Or_Deferred 分享管理条目、legacy scalar 口径）。
 
-**整体建议**：保留事件专题主路径；优先修隐私门控与历史可达性，同时建立纵向洞察的新契约；将 legacy 删除排入 0.1.0 发布后的首个版本窗口，并以此为契机完成后端 reports 模块的消费面对齐。
+**整体建议**：保留事件专题主路径；优先修隐私门控与历史可达性，同时建立纵向洞察的新契约；将 legacy 改造为纵向洞察排入 0.1.0 发布后的首个版本窗口，并以此为契机完成后端 reports 模块的消费面对齐。

@@ -51,8 +51,9 @@ Future<ClinicSummaryDto> _fetchPreview(
 ) async {
   final api = ref.watch(lucentClientProvider).reports;
   final response = await api.reportsControllerPreviewClinicSummaryV1(
-    clinicSummaryRequestDto:
-        ClinicSummaryRequestDto(selectedFields: selectedFields),
+    clinicSummaryRequestDto: ClinicSummaryRequestDto(
+      selectedFields: selectedFields,
+    ),
   );
   final dto = response.data!;
   ensureEnvelopeSuccess(code: dto.code, message: dto.message);

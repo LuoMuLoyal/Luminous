@@ -1,6 +1,6 @@
 # Glossary
 
-工程与运行时术语单一来源。产品领域语言见 [`../CONTEXT.md`](../CONTEXT.md)。
+工程与运行时术语单一来源。产品领域语言见 [`01-product/Product_Vision.md`](01-product/Product_Vision.md)。
 
 - **Lucent** — 活跃 NestJS 后端，Luminous 的 API 提供方。
 - **Luminous** — 活跃 Flutter 客户端。
@@ -11,7 +11,7 @@
 - **OpenAPI Client** — 从 Lucent `openapi.json` 生成的 Dart 客户端。参见 [[02-reference/OpenApi_Client]]。
 - **ADR** — Architecture Decision Record，见 [[02-reference/adr/README]]。
 - **P0–P3 优先级体系** — 跨项目产品优先级框架，定义于 [[04-archive/product/Product_Brainstorm_2026-07-07]]。P0 为发布前必做项，P1 为首发版本内，P2 为 1.1.0 候选，P3 为 1.2.0+ 候选。
-- **Clinic Summary** — 当前后端对就诊摘要的实现名，含 Redis 24h 分享链接与 PDF；产品名称和边界见 [`就诊摘要`](../CONTEXT.md)。
+- **Clinic Summary** — 当前后端对就诊摘要的实现名，含 Redis 24h 分享链接与 PDF；产品名称和边界见 [`01-product/Product_Vision.md`](01-product/Product_Vision.md)。
 - **Security PIN** — Lucent 6 位应用内安全码，替代旧 TOTP 2FA。
 - **SemanticColor** — 二维语义颜色枚举（6 色 × 5 tone），数据/领域层使用，widget 处解析。
 - **Spacing** — 项目间距 token，`level1`–`level12`。

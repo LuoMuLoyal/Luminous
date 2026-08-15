@@ -36,7 +36,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 - `/report` 顶栏右上角新增「更多」按钮（`_ReviewTopBar` 的 `review-more-action`，tooltip 更多），打开 `showReportMoreActionsSheet`（`presentation/widgets/sheets/more_actions.dart`）：四项入口——就诊摘要（走 `handleReportExportAction` 的 clinicShare 分支打开诊所摘要预览弹窗）、PDF（月度 PDF 导出）、打印/下载（打印 PDF 导出）、历史报告（push `/report/legacy` legacy 兼容页）；移动端 bottom sheet、桌面端 dialog，入口点击先关 sheet 再触发流程。
 - 导出/分享行为与旧 dashboard 装配一致（共享 `presentation/utils/export_actions.dart` 的 `handleReportExportAction`）：登录门槛 → clinicShare 预览 → security elevation（PIN 验证）→ dataExport POST → 下载链接/状态 toast；不改变任何后端 API 调用与数据流。
 - Task 8（Visit Summary and Product Measurement）起 More 为五入口：就诊摘要 / 分享管理 / PDF 报告 / 打印下载 / 历史报告。分享管理（`showShareManagementSheet`）列出当前用户的分享记录（创建时间/到期时间/访问次数/最近访问/已撤销态）并提供撤销，不展示任何访问者身份信息。
-- 就诊摘要预览弹窗（Task 8 字段级隐私）：六项字段选择（事件概况/症状变化/用药槽位/饮水/睡眠/备注），默认不选自由文本备注；未选字段不出现在 preview 请求、PDF 与分享中（服务端同一过滤视图）；分享创建前显示 7 天有效期与「链接持有者可查看」，创建后可复制链接或撤销，不暗示医生已收到。preview 与 share-create 因生成客户端与信封/缺省 section 不兼容而走原始 Dio 解信封（见 `docs/02-reference/OpenApi_Client.md`）。
+- 就诊摘要预览弹窗（Task 8 字段级隐私）：六项字段选择（事件概况/症状变化/用药槽位/饮水/睡眠/备注），默认不选自由文本备注；未选字段不出现在 preview 请求、PDF 与分享中（服务端同一过滤视图）；分享创建前显示 7 天有效期与「链接持有者可查看」，创建后可复制链接或撤销，不暗示医生已收到。preview 与 share-create 已随信封契约修复（2026-08-15）改用生成客户端（`reportsControllerPreviewClinicSummaryV1` / `reportsControllerShareClinicSummaryV1`），见「2026-08-15 — Clinic Summary 分享/预览走生成客户端」节。
 - 过敏记录不是六个可选字段之一，按元数据处理：服务端 `resolveSectionKeys` 恒包含 `allergies`，内容组件对过敏段「非空即渲染」（不受字段选择门控），与 findings/coverage 一致。
 - 分享管理列表为 keepAlive 缓存：预览弹窗内创建分享成功会失效该缓存，打开面板即见新分享；字段选择在分享已创建/已撤销步骤锁定（确认步骤仍可切换，影响正在创建的分享）。
 - 文案口径：就诊摘要入口「就诊时按需使用 / Use as needed during your visit」，不暗示医生一定查看；分享按钮文案由「分享给医生/Share with doctor」改为「分享摘要/Share summary」（分享仍是用户显式动作，API 行为不变）。
@@ -67,7 +67,7 @@ Lucent Report dashboard 的服务端水量源已统一为整数 ml 的 observed 
 
 ## Visit Summary and Product Measurement 收口（Workstream 2 Task 10）
 
-- **公开分享页信封兼容修复**：`clinicSummarySharedProvider` 弃用生成客户端方法（真实后端返回 `{code,message,data}` 信封，生成客户端按裸 DTO 反序列化必抛），改为 raw Dio（`LucentApiPaths.clinicSummaryShared(token)`，`skipAuthorization: true` 与公开 PDF 一致）解信封，与 preview provider 同一模式；四个 section 键已随响应合同改可选（2026-08-14 合同债收口），未选 section 反序列化为 null，`_fillMissingSections` 占位补齐已删除；provider 测试改写为同一 scripted-adapter harness（信封解包、缺 section 容忍、per-token 缓存、错误传播 4 条）。
+- **公开分享页信封兼容修复**：`clinicSummarySharedProvider` 改走生成客户端 `reportsControllerGetSharedClinicSummaryV1`（保留 `skipAuthorization: true`，与公开 PDF 一致）并校验信封，与 preview provider 同一模式；四个 section 键已随响应合同改可选（2026-08-14 合同债收口），未选 section 反序列化为 null，`_fillMissingSections` 占位补齐已删除；provider 测试改写为同一 scripted-adapter harness（信封解包、缺 section 容忍、per-token 缓存、错误传播 4 条）。
 - **漏斗合同模型同步**：bootstrap 脚本 `_productEventsModels` 补全 5 个 Funnel schema（`FunnelDailyCountsDto`/`FunnelOptionalCountsDto`/`FunnelTotalsDto`/`FunnelWindowDto`/`FunnelResponseDto`），重新生成后生成包 build_runner 编译通过、两次 bootstrap 无漂移；admin funnel 端点客户端不消费，生成面仅作合同完整性。
 - 全量验证（2026-08-14）：`dart run scripts/bootstrap_generated_sources.dart`（两次运行无漂移）、`flutter analyze`（零问题）、`flutter test` 全量 **3119 passed / 1 skipped**（跳过为既有）、`dart run scripts/run_daily_checks.dart`（analyze/format/test/openapi-sync 全过）、`dart run scripts/check_doc_coverage.dart --warning-only`、`dart run scripts/check_doc_links.dart`（137 文件无坏链）全部通过；桌面闭环 e2e（`integration_test/report/review_closed_loop_e2e_test.dart`）`-d windows` 实跑 1 test 通过（移动端实机仍受 Windows 桌面宿主环境限制，未伪造运行结果）；`git diff --check` 无空白错误。
 - 产品闭环程序（Workstream 1 + 2）实施完毕，`Luminous/plans/2026-08-07-product-loop-program.md` 与 `2026-08-07-visit-summary-and-product-measurement.md` 已删除（实施完毕文件已删）。

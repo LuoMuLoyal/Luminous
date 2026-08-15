@@ -39,9 +39,9 @@ updated: 2026-08-15
 | F-12 | GenUI 开放式渲染引擎 | 开放式组件 JSON schema + GenUIRenderer 递归渲染 | 未启动（Feature flag 默认关，无任何代码） | 冻结保留，不推进 | — |
 | F-13 | AI 回答免责与安全边界 | 系统提示限界 + 知识检索信封携带 disclaimer | 部分实现（仅后端 prompt 约束，客户端零免责呈现） | 改造 | P0 |
 | F-14 | 与 Today/Report 摘要联动 | 读取 historical_ai_summary 表中 Today/Report 历史 AI 摘要 | 真实现 | 保留 | P0 |
-| F-15 | 药品知识检索（说明书/DrugBank/医疗问答） | 三个 PGVector 语义检索工具 + 结构化药品库搜索 | 真实现（医疗问答语料质量与免责需管控） | 改造 | P1 |
+| F-15 | 药品知识检索（说明书/DrugBank/医疗问答） | 三个 PGVector 语义检索工具 + 结构化药品库搜索 | 真实现（医疗问答语料质量与免责需管控） | 保留（方向修正） | P1 |
 | F-16 | 提案式写入（建/改/删记录、改设置） | 后端生成提案草稿、客户端确认后经真实 record API 写入 | 真实现（写入在客户端执行，架构分叉） | 改造 | P1 |
-| F-17 | 助手状态栏/控制面板 sheet | 折叠状态栏与设置抽屉 | 死代码（3 个文件无引用，入口已迁 Settings） | 删除 | P2 |
+| F-17 | 助手状态栏/控制面板 sheet | 折叠状态栏与设置抽屉 | 死代码（3 个文件无引用，入口已迁 Settings） | 归档（保留不接入 shipping） | P2 |
 | F-18 | lib/core/ai/ app-side runtime seam | 实验性 app-side AI runtime 配置 seam | 死代码/实验 seam（默认关，无消费方，未接入 shipping） | 保留（标记实验） | P2 |
 
 真伪分布：真实现 10 项（F-1/3/6/8/9/10/11/14/15/16），部分实现 2 项（F-5/13），
@@ -67,7 +67,7 @@ updated: 2026-08-15
 - 真伪判定：真实现（按计划设计意图评估）。
 - 结论：改造（设计本身合理，落地时需补两个细节）。
 - 改造方案：
-  - P1：后端补 PATCH/DELETE 端点（软删除 + 列表过滤 `deleted`，方案已在计划中明确）；前端接 `conversation.dart` 两个新方法并复用 `runGuarded` 失败 toast。
+  - P1：后端补 PATCH/DELETE 端点（软删除 + 列表过滤 `deleted`，会话表已存在，方案已在计划中明确）；前端补菜单并接 `conversation.dart` 两个新方法，复用 `runGuarded` 失败 toast。
   - P1：删除当前活跃会话后状态处理要闭环：`conversationId` 置空 + 本地清空 + 刷新列表；若删除的是最新会话，应回退到 `loadLatestConversation` 兜底而非白屏。
   - P2：标题自动生成改由后端 LLM 摘要（首条消息截断 `truncate(compact, MAX_COMPACT_LENGTH)` 常得到半截话），重命名 UI 才真正少用。
 
@@ -99,7 +99,7 @@ updated: 2026-08-15
 - 真伪判定：部分实现——复制为真实现；重新生成/重新发送按计划设计意图评估（计划未单独成文，TODO.md 记为"需后端 controller 支持后接线（Lucent assistant 尚无 regenerate/resend 接口）"），设计意图=调 `_sendMessageInternal(appendUserMessage:false)` 复用现有流式管线并持久化新轮次。
 - 结论：改造。
 - 改造方案：
-  - P1：补后端 `regenerate`（按 conversationId+messageId 回滚到该轮再流式）或复用现有 `streamMessages`（前端重发该用户消息即可，后端 `persistAssistantTurn` 的 `findAppendStartIndex` 已具备去重追加能力——最低成本方案是前端接 `retryLastMessage` 同款路径，仅需 10 行内接线）。
+  - P1：后端 assistant 模块补 `regenerate`/`resend` 端点（重放会话上下文：按 conversationId+messageId 回滚到该轮再流式），前端接线菜单项；最低成本方案是前端接 `retryLastMessage` 同款路径（复用现有 `streamMessages`，后端 `persistAssistantTurn` 的 `findAppendStartIndex` 已具备去重追加能力），仅需 10 行内接线。
   - P2：重新生成后旧回答保留为灰色"已替换"态（聊天软件通用交互），避免上下文跳变。
 
 ### F-6 工具调用执行层（22 个工具）
@@ -200,7 +200,7 @@ updated: 2026-08-15
 - 现状：`search_medicine_leaflets`（说明书分块向量检索，先按向量聚合解析产品再过滤 chunk，歧义阈值 0.05）、`resolve_drugbank_entity`/`get_drugbank_detail`/`search_drugbank_passages`（DrugBank 实体解析+科学证据检索）、`search_cn_medicine_products`/`get_cn_medicine_detail`（结构化中文药品库）、`search_medical_qa_corpus`（`medical_qa_embeddings` 向量表，由 `scripts/import/medicine/import-medical-qa.ts` 从 DrugDataBase 的 `医疗问答数据集一共135万条` 导入，BLOCKED/CAUTION 关键词安全过滤、答案最短长度过滤、两阶段 filter→embed）。
 - 实际作用：回答药品问题时有真实证据底座；三级信任分层（说明书>DrugBank>医疗问答）写入 prompt。
 - 真伪判定：真实现。但**数据质量风险**：135 万条语料源为 alpaca_zh_demo 类开放医疗问答（机器生成、质量参差），导入脚本只做关键词级过滤，无法保证医学正确性；系统提示将其标为"curated"（`system.prompt.ts` "comes from a curated medical Q&A database"）名不副实。
-- 结论：改造。
+- 结论：保留（方向修正：说明书/审校数据优先，135 万开放语料降级为"低可信教育参考"并展示来源等级）。
 - 改造方案：
   - P1：把"curated"措辞改为"开放语料、低可信教育参考"；医疗问答类回答强制最低限度免责（与 F-13 联动）。
   - P1：对 135 万条语料增加"可验证性"分层：优先只把有结构化来源（药品说明书/中国食物成分表/已审校数据）的 chunk 标记为可引用，医疗问答仅作兜底，且 top-k 减半（现 `ASSISTANT_VECTOR_DEFAULT_LIMIT` 默认条数偏高）。
@@ -221,8 +221,8 @@ updated: 2026-08-15
 - 现状：`status_bar.dart`、`controls_sheet.dart`、`controls_sheet_opener.dart` 三个文件在代码库中零引用（grep 仅自引用）；实际设置入口已迁移到 `Settings → AI`（`settings/presentation/pages/ai.dart`），页面顶栏齿轮直接 `context.push(Routes.settingsAi)`。
 - 实际作用：无（死文件，纯历史残留）。
 - 真伪判定：死代码。
-- 结论：删除。
-- 改造方案：P2：删除 3 个文件及其 l10n 键（若 `assistantStatus*` 文案已被 status 简化版取代则一并清理），并补一条 migration log。
+- 结论：归档（不删除原则：保留代码与标记，不接入 shipping，不排期）。
+- 改造方案：P2：归档处理——3 个文件及 l10n 键保留，文件头加 `// Experimental/legacy — not part of the shipping assistant path.` 标记与维护者注释（若 `assistantStatus*` 文案已被 status 简化版取代可一并标注），不接入任何入口；若半年后仍无消费方再移入归档目录（不删除），并补一条 migration log 记录归档决定。
 
 ### F-18 lib/core/ai/ app-side runtime seam
 
@@ -230,7 +230,7 @@ updated: 2026-08-15
 - 实际作用：无。`Mock_Or_Deferred.md` 明言"app-side AI runtime 实验 seam，默认关闭；不接入 shipping 流程"，`Runtime_Snapshot.md` 将其列为 AI 开发增强（配合 copilot/cursor 配置）。
 - 真伪判定：死代码/实验 seam——**未被错误启用**（不是"错误启用的路径"，与后端真实链路无冲突）。
 - 结论：保留（标记实验）。作为开发期占位可留，但需注意：它不承载任何产品能力，若长期无人使用应按 F-12 同口径清理。
-- 改造方案：P2：文件头加 `// Experimental dev seam — not part of the shipping assistant path.` 注释与维护者姓名；半年内无消费方则删除。
+- 改造方案：P2：文件头加 `// Experimental dev seam — not part of the shipping assistant path.` 注释与维护者姓名；半年无消费方再归档（保留代码与标记，不删除）。
 
 ## 三、后端投入错配判断
 
@@ -253,5 +253,5 @@ Lucent 侧 assistant 模块的工程深度明显超过 C 端产品的必要投�
 - **定位匹配度**：`Product_Vision.md` 将 Assistant 与 Today 主动建议、Review 纵向洞察并列为健康伙伴的三个交付面。现状已承载解释、提案、辅助执行能力（F-11/F-14/F-16 均真实且有闭环），但个人证据展示和健康记忆治理仍不足。**保留并继续投入，按“上下文伙伴交互”而不是通用聊天产品管理。**
 - **信任缺口（P0，全部在客户端呈现层）**：a) 零免责呈现（F-13）；b) 参考来源不展示（F-7）；c) 低可信语料（135 万医疗问答）没有来源级信任标记（F-15）。这三点不修，AI 回答在医疗场景随时可能误导用户，且是产品口碑的最大风险点。
 - **成本黑洞判断**：不是黑洞——前端代码约 30 个文件、后端约 60 个文件，核心资产（工具层/提案/HITL）真且可用；黑洞风险在后端过度工程区（第三节），建议收敛而非加码。
-- **建议动作排序**：P0 补齐免责与来源展示 → P1 提案写入服务端化（或补偿接口）+ 记忆摘要压缩 → P1 会话重命名/删除落地（后端两端点 + 前端接线）→ P1 医疗问答信任分层 → P2 清理 F-17 等确定死代码；F-12 GenUI 与 F-18 实验 seam 保留冻结，不推进也不作为已交付能力。
+- **建议动作排序**：P0 补齐免责与来源展示 → P1 提案写入服务端化（或补偿接口）+ 记忆摘要压缩 → P1 会话重命名/删除落地（后端两端点 + 前端接线）→ P1 医疗问答信任分层 → P2 归档 F-17 等确定死代码（保留不接入 shipping）；F-12 GenUI 与 F-18 实验 seam 保留冻结，不推进也不作为已交付能力。
 - **一句话**：AI 链路是真实现、方向对、有闭环的底座能力；把它从“功能最重的聊天”改造成“证据最透明、能读取受控纵向上下文的伙伴交互”，才可能形成差异化。
