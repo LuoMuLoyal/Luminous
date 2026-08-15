@@ -12,7 +12,12 @@
 // The splash screen provides visual feedback while the canvaskit WASM loads.
 _flutter.loader.load({
   onEntrypointLoaded: async function (engineInitializer) {
-    const appRunner = await engineInitializer.initializeEngine();
+    // Pin the renderer explicitly: plain builds default to canvaskit anyway,
+    // but a future --wasm build would silently switch the default to skwasm
+    // (the layout bug above). Explicit keeps mobile rendering correct.
+    const appRunner = await engineInitializer.initializeEngine({
+      renderer: 'canvaskit',
+    });
     await appRunner.runApp();
   }
 });
